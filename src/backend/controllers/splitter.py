@@ -736,15 +736,20 @@ def merge_batches(parent_id, batches):
         merged_pdf.add_page(parent_pdf.pages[page])
 
     batches_info = []
-    for batch in batches:
-        batch_info = splitter.get_batch_by_id({'id': batch})[0]
+    childs_attachments = []
+    for batch_id in batches:
+        batch_info = splitter.get_batch_by_id({'id': batch_id})[0]
+        c_attachments = attachments.get_attachments_by_batch_id(batch_id)
+        if c_attachments:
+            for attachment in c_attachments:
+                childs_attachments.append(attachment['id'])
         parent_batch_documents += batch_info['documents_count']
         batches_info.append(batch_info)
         pdf = pypdf.PdfReader(docservers['SPLITTER_ORIGINAL_DOC'] + '/' + batch_info['file_path'])
         for page in range(len(pdf.pages)):
             merged_pdf.add_page(pdf.pages[page])
 
-        documents = splitter.get_documents({'id': batch})
+        documents = splitter.get_documents({'id': batch_id})
         cpt = 0
         for doc in documents[0]:
             if doc:
@@ -780,7 +785,7 @@ def merge_batches(parent_id, batches):
                     })
 
                 splitter.update_status({
-                    'ids': [int(batch)],
+                    'ids': [int(batch_id)],
                     'status': 'MERG'
                 })
 
@@ -790,6 +795,14 @@ def merge_batches(parent_id, batches):
     splitter.update_batch_documents_count({'id': parent_id, 'number': parent_batch_documents})
     with open(parent_filename, 'wb') as file:
         merged_pdf.write(file)
+
+    for attachment_id in childs_attachments:
+        attachments.update_attachment({
+            'attachment_id': attachment_id,
+            'set': {
+                'batch_id': parent_id
+            }
+        })
 
 
 def get_unseen(user_id):

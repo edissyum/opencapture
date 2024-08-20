@@ -104,3 +104,19 @@ def delete_attachment(attachment_id):
         'data': [attachment_id]
     })
     return attachment
+
+def update_attachment(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    attachment = database.update({
+        'table': ['attachments'],
+        'set': args['set'],
+        'where': ['id = %s'],
+        'data': [args['attachment_id']]
+    })
+    return attachment
