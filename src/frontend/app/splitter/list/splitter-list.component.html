@@ -134,24 +134,27 @@
                                     <img [routerLink]="batch['locked'] && batch['lockedBy'] !== this.userService.user.username ? '/splitter/list' : '/splitter/viewer/' + currentTime + '/' + batch['id']"
                                          (click)="batch['locked'] &&  batch['lockedBy'] !== this.userService.user.username ? displayBatchLocked(batch['lockedBy']) : ''"
                                          class="m-auto p-4" mat-card-image [src]="batch['thumbnail']" alt="Open-Capture Splitter thumbnail">
-                                    <mat-card-header class="leading-6 relative z-10 bg-white pt-4 px-8"
+                                    <span class="px-6">
+                                        <span class="text-green-400 text-base badge badge-secondary badge-pill border-green-400"
+                                              matTooltip="{{ 'OUTPUT.documents_count' | translate }} : {{ batch['documentsCount'] }}">
+                                            {{ batch['documentsCount'] }}<i class="far fa-file-alt ml-1"></i>
+                                        </span>
+                                        <span class="text-green-400 text-base badge badge-secondary badge-pill border-l border-green-400 ml-1"
+                                              *ngIf="batch['attachmentCount'] && batch['attachmentCount'] > 0"
+                                              [matTooltip]="this.translate.instant('ATTACHMENTS.attachments_count') + ' : ' + batch['attachmentCount']">
+                                            {{ batch['attachmentCount'] }}<i class="fas fa-paperclip ml-1"></i>
+                                        </span>
+                                    </span>
+                                    <mat-card-header class="leading-3 relative z-10 bg-white pt-0 px-6"
                                                      [routerLink]="batch['locked'] &&  batch['lockedBy'] !== this.userService.user.username ? '/splitter/list' : '/splitter/viewer/' + currentTime + '/' + batch['id']"
                                                      (click)="batch['locked'] &&  batch['lockedBy'] !== this.userService.user.username ? displayBatchLocked(batch['lockedBy']) : ''">
-                                        <mat-card-title class="break-all truncate w-12/12">
-                                            <span class="inline-block w-9/12 truncate">
+                                        <mat-card-title class="break-all inline-block w-full truncate">
+                                            <span class="" [matTooltip]="batch['fileName']"
+                                                  [matTooltipDisabled]="batch['fileName']?.replace(' ', '').length <= 30">
                                                 {{ batch['fileName'] }}
                                                 <i [matTooltip]="'SPLITTER.batch_locked' | translate"
                                                    class="fa-solid fa-lock text-base mb-2 relative" style="bottom: 0.1rem"
                                                    *ngIf="batch.locked"></i>
-                                            </span>
-                                            <span class="float-right text-green-400 text-base badge badge-secondary badge-pill pl-1"
-                                                  matTooltip="{{ 'OUTPUT.documents_count' | translate }} : {{ batch['documentsCount'] }}">
-                                                {{ batch['documentsCount'] }}<i class="far fa-file-alt ml-1"></i>
-                                            </span>
-                                            <span class="float-right text-green-400 text-base badge badge-secondary badge-pill border-r border-green-400 pr-1"
-                                                  *ngIf="batch['attachmentCount'] && batch['attachmentCount'] > 0"
-                                                  [matTooltip]="this.translate.instant('ATTACHMENTS.attachments_count') + ' : ' + batch['attachmentCount']">
-                                                {{ batch['attachmentCount'] }}<i class="fas fa-paperclip ml-1"></i>
                                             </span>
                                         </mat-card-title>
                                         <mat-card-subtitle class="mt-2 -mb-1 block overflow-hidden text-ellipsis w-11/12">
