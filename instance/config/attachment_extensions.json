@@ -1,6 +1,6 @@
 [
     {
-        "extension": "PDF",
+        "extension": "pdf",
         "mime": "application/pdf"
     },
     {
@@ -34,6 +34,38 @@
     {
         "extension": "docx",
         "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    {
+        "extension": "ppt",
+        "mime": "application/vnd.ms-powerpoint"
+    },
+    {
+        "extension": "pptx",
+        "mime": "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    },
+    {
+        "extension": "odt",
+        "mime": "application/vnd.oasis.opendocument.text"
+    },
+    {
+        "extension": "csv",
+        "mime": "text/csv"
+    },
+    {
+        "extension": "ods",
+        "mime": "application/vnd.oasis.opendocument.spreadsheet"
+    },
+    {
+        "extension": "odf",
+        "mime": "application/vnd.oasis.opendocument.formula"
+    },
+    {
+        "extension": "ppt",
+        "mime": "application/vnd.ms-powerpoint"
+    },
+    {
+        "extension": "odp",
+        "mime": "application/vnd.oasis.opendocument.presentation"
     },
     {
         "extension": "xls",

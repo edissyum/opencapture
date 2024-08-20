@@ -63,7 +63,7 @@ def duplicate_output(output_id):
             'module': output_info['module'],
             'compress_type': output_info['compress_type'],
             'output_type_id': output_info['output_type_id'],
-            'output_label': gettext('COPY_OF') + ' ' + output_info['output_label'],
+            'output_label': gettext('COPY_OF') + ' ' + output_info['output_label']
         }
         _, error = outputs.create_output({'columns': args})
         if error is None:

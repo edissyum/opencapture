@@ -185,7 +185,7 @@ class UserTest(unittest.TestCase):
             "address2": "Bâtiment B UPDATED",
             "postal_code": "84202",
             "city": "Carpentras UPDATED",
-            "country": "France UPDATED",
+            "country": "France UPDATED"
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/accounts/addresses/update/' + str(address.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
@@ -209,7 +209,7 @@ class UserTest(unittest.TestCase):
             "address2": "Bâtiment B UPDATED",
             "postal_code": "84202",
             "city": "Carpentras UPDATED",
-            "country": "France UPDATED",
+            "country": "France UPDATED"
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/accounts/addresses/updateBySupplierId/' + str(supplier.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},

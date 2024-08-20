@@ -84,7 +84,7 @@ def create_model(data):
         'status': data['status'],
         'module': data['module'],
         'model_label': data['model_label'],
-        'documents': json.dumps(data['documents']) if 'documents' in data else "[]",
+        'documents': json.dumps(data['documents']) if 'documents' in data else "[]"
     }
 
     res, error = artificial_intelligence.create_model({'columns': _columns})

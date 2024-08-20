@@ -276,7 +276,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                                             isJson: option.isJson,
                                             hint: option.hint,
                                             webservice: option.webservice,
-                                            values: option.values,
+                                            values: option.values
                                         });
                                     }
                                 }
@@ -461,7 +461,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                     for (const cpt in data) {
                         processes.push({
                             'id': data[cpt],
-                            'value': data[cpt],
+                            'value': data[cpt]
                         });
                     }
                     this.setAutocompleteValues(cpt, processes);

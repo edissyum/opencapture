@@ -433,7 +433,7 @@ def export_pdf(data, log, document_info, compress_type, ocrise):
             pdf_filename, pdf_extension = os.path.splitext(filename)
             zip_filename =  pdf_filename + '_attachments.zip'
             with ZipFile(folder_out + '/' + zip_filename, 'w') as zip_file:
-                for attachment in attachments_list[0]:
+                for attachment in attachments_list:
                     if attachment:
                         if os.path.exists(attachment['path']):
                             zip_file.write(attachment['path'], attachment['filename'])
@@ -514,7 +514,7 @@ def export_coog(data, document_info, log):
                     attachments_list = attachments.get_attachments_by_document_id(document_id)
                     if attachments_list:
                         attachments_files = []
-                        for attachment in attachments_list[0]:
+                        for attachment in attachments_list:
                             if attachment:
                                 if os.path.isfile(attachment['path']):
                                     with open(attachment['path'], 'rb') as _file:
@@ -683,7 +683,7 @@ def export_mem(data, document_info, log, regex, database):
                 if os.path.isfile(file):
                     with open(file, 'rb') as file:
                         args.update({
-                            'fileContent': file.read(),
+                            'fileContent': file.read()
                         })
 
                     if 'document_date' in document_info['datas'] and document_info['datas']['document_date']:
@@ -701,7 +701,7 @@ def export_mem(data, document_info, log, regex, database):
                         document_id = document_info['id']
                         attachments_list = attachments.get_attachments_by_document_id(document_id)
                         if attachments_list:
-                            for attachment in attachments_list[0]:
+                            for attachment in attachments_list:
                                 if attachment:
                                     if os.path.isfile(attachment['path']):
                                         with open(attachment['path'], 'rb') as _file:

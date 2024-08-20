@@ -58,7 +58,7 @@ class FindInvoiceNumber:
                         'select': ['regex_id', 'content'],
                         'table': ['regex'],
                         'where': ["lang in ('global', %s)"],
-                        'data': [self.configurations['locale']],
+                        'data': [self.configurations['locale']]
                     })
                     if _regex:
                         regex = {}

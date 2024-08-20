@@ -80,7 +80,7 @@ def handle_uploaded_file(files, workflow_id, supplier, datas=None, splitter_batc
             'source': 'interface',
             'filename': os.path.basename(_f.filename),
             'token': token,
-            'workflow_id': workflow_id if workflow_id else None,
+            'workflow_id': workflow_id if workflow_id else None
         })
 
         if task_id_monitor:
@@ -161,7 +161,7 @@ def retrieve_documents(args):
         args['data'].append(args['status'])
 
     if 'form_id' in args and args['form_id']:
-        if args['form_id'] == -1:
+        if args['form_id'] == 'no_form':
             args['where'].append('documents.form_id is NULL')
         else:
             args['where'].append('documents.form_id = %s')
@@ -222,7 +222,7 @@ def retrieve_documents(args):
                     document['supplier_name'] = supplier_info['name']
 
             attachments_counts = attachments.get_attachments_by_document_id(document['id'])
-            document['attachments_count'] = len(attachments_counts[0]) if attachments_counts[0] else 0
+            document['attachments_count'] = len(attachments_counts) if attachments_counts else 0
         response = {
             "total": total_documents[0]['total'],
             "documents": documents_list
@@ -680,7 +680,7 @@ def get_file_content(file_type, filename, mime_type, compress=False, year_and_mo
             if document_id:
                 document = verifier.get_document_by_id({
                     'select': ['filename', 'full_jpg_filename'],
-                    'document_id': document_id,
+                    'document_id': document_id
                 })
                 if document:
                     document = document[0]

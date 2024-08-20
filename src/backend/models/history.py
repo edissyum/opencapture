@@ -36,7 +36,7 @@ def add_history(args):
             'user_info': args['user_info'],
             'history_desc': args['desc'],
             'user_id': args['user_id'] if 'user_id' in args else None,
-            'user_ip': args['ip'],
+            'user_ip': args['ip']
         }
     }
     database.insert(args)

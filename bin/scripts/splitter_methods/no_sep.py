@@ -73,7 +73,7 @@ def process(args):
             'metadata_1': None,
             'metadata_2': None,
             'metadata_3': None,
-            'mem_value': None,
+            'mem_value': None
         })
 
     process_res = args['splitter'].create_batches(args['batch_folder'], file, args['workflow_id'], args['user_id'],

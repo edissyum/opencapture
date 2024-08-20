@@ -206,17 +206,17 @@
                                     <div class="absolute right-0 pt-4 pr-5 z-40">
                                         <div [matMenuTriggerFor]="menu" matTooltipPosition="above"
                                              [matTooltip]="this.translate.instant('VERIFIER.documents_settings')">
-                                            <i class="fa-solid fa-ellipsis-vertical text-2xl"></i>
+                                            <i class="fa-solid fa-ellipsis-vertical text-2xl w-5 text-center"></i>
                                         </div>
                                         <mat-menu #menu="matMenu">
                                             <button mat-menu-item [matMenuTriggerFor]="customers">
-                                                {{ "WORKFLOW.associated_customer" | translate }}
+                                               <i class="fa-solid fa-users w-6"></i> {{ "WORKFLOW.associated_customer" | translate }}
                                             </button>
                                             <button mat-menu-item [matMenuTriggerFor]="formMenu">
-                                                {{ "POSITIONS-MASKS.form_associated" | translate }}
+                                               <i class="fa-brands fa-wpforms w-6"></i> {{ "POSITIONS-MASKS.form_associated" | translate }}
                                             </button>
                                             <button mat-menu-item (click)="deleteConfirmDialog(document['document_id'])">
-                                                {{ 'VERIFIER.delete_document' | translate }}
+                                                <i class="fa-solid fa-trash w-6"></i> {{ 'VERIFIER.delete_document' | translate }}
                                             </button>
                                         </mat-menu>
                                         <mat-menu #customers="matMenu">
@@ -245,7 +245,7 @@
                                     <img [routerLink]="document.locked && document.locked_by ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
                                          mat-card-image class="m-auto p-4" [src]="document['thumb']" alt="Open-Capture thumbnail"
                                          (click)="document.locked && document.locked_by ? displayDocumentLocked(document['locked_by']) : ''">
-                                    <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-8 pr-8"
+                                    <mat-card-header class="leading-6 relative z-10 bg-white pt-4 px-8"
                                                      [routerLink]="document.locked && document.locked_by ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
                                                      (click)="document.locked && document.locked_by ? displayDocumentLocked(document['locked_by']) : ''">
                                         <mat-card-title class="break-all truncate w-12/12">
@@ -319,17 +319,17 @@
                                                 </div>
                                                 <div [matMenuTriggerFor]="verifier_menu" matTooltipPosition="above"
                                                      [matTooltip]="this.translate.instant('VERIFIER.documents_settings')">
-                                                    <i class="fa-solid fa-ellipsis-vertical text-xl float-right ml-6 mr-3 cursor-pointer text-gray-900"></i>
+                                                    <i class="fa-solid fa-ellipsis-vertical text-xl float-right ml-6 mr-3 cursor-pointer text-gray-900 w-5 text-center"></i>
                                                 </div>
                                                 <mat-menu #verifier_menu="matMenu">
                                                     <button mat-menu-item [matMenuTriggerFor]="customers">
-                                                        {{ "WORKFLOW.associated_customer" | translate }}
+                                                        <i class="fa-solid fa-users w-6"></i> {{ "WORKFLOW.associated_customer" | translate }}
                                                     </button>
                                                     <button mat-menu-item [matMenuTriggerFor]="formMenu">
-                                                        {{ "POSITIONS-MASKS.form_associated" | translate }}
+                                                        <i class="fa-brands fa-wpforms w-6"></i> {{ "POSITIONS-MASKS.form_associated" | translate }}
                                                     </button>
                                                     <button mat-menu-item (click)="deleteConfirmDialog(document['document_id'])">
-                                                        {{ 'VERIFIER.delete_document' | translate }}
+                                                        <i class="fa-solid fa-trash w-6"></i> {{ 'VERIFIER.delete_document' | translate }}
                                                     </button>
                                                 </mat-menu>
                                                 <mat-menu #customers="matMenu">

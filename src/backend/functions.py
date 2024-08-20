@@ -103,9 +103,9 @@ def rest_validator(data, required_fields, only_data=False):
 
 
 def check_extensions_mime(files, document_type='document'):
-    formats_file = str(Path(__file__).parents[2]) + '/instance/config/formats.json'
+    formats_file = str(Path(__file__).parents[2]) + '/instance/config/extensions.json'
     if document_type == 'attachments':
-        formats_file = str(Path(__file__).parents[2]) + '/instance/config/attachments_formats.json'
+        formats_file = str(Path(__file__).parents[2]) + '/instance/config/attachment_extensions.json'
 
     if os.path.isfile(formats_file):
         with open(formats_file) as json_file:
@@ -121,6 +121,8 @@ def check_extensions_mime(files, document_type='document'):
     for file in files:
         if isinstance(file, dict):
             _f = FileStorage(stream=open(file['file'], 'rb'), filename=file['filename'])
+        elif isinstance(file, FileStorage):
+            _f = file
         else:
             _f = files[file]
 
@@ -473,7 +475,7 @@ def find_workflow_with_ia(file, ai_model_id, database, docservers, files, ocr, l
                                     'select': ['*'],
                                     'table': ['workflows'],
                                     'where': ['workflow_id = %s', 'module = %s'],
-                                    'data': [doc['workflow_id'], module],
+                                    'data': [doc['workflow_id'], module]
                                 })
                                 if form:
                                     log.info('[IA] Document detected as&nbsp;<strong>' + folder +

@@ -96,7 +96,7 @@ def add_batch(args):
             'thumbnail': args['thumbnail'],
             'file_name': args['file_name'],
             'form_id': args['form_id'],
-            'status': args['status'],
+            'status': args['status']
         }
     }
     database.insert(args)
@@ -114,7 +114,7 @@ def set_demand_number(demand_number):
     error = None
     args = {
         'set': {
-            'value': str(demand_number),
+            'value': str(demand_number)
         },
         'table': ['settings'],
         'where': ['key = %s'],
@@ -169,7 +169,7 @@ def retrieve_batches(args):
         'where': ['*'] if 'where' not in args else args['where'],
         'data': ['*'] if 'data' not in args else args['data'],
         'group_by': ['splitter_batches.id'] if 'group_by' not in args else args['group_by'],
-        'order_by': ['splitter_batches.creation_date DESC'] if 'order_by' not in args else args['order_by'],
+        'order_by': ['splitter_batches.creation_date DESC'] if 'order_by' not in args else args['order_by']
     }
 
     if args['batch_id']:
@@ -376,6 +376,26 @@ def update_status(args):
         },
         'where': ['id = ANY(%s)'],
         'data': [args['ids']]
+    }
+    res = database.update(args)
+    return res
+
+
+def update_customer(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    args = {
+        'table': ['splitter_batches'],
+        'set': {
+            'customer_id': args['customer_id']
+        },
+        'where': ['id = %s'],
+        'data': [args['batch_id']]
     }
     res = database.update(args)
     return res

@@ -316,6 +316,26 @@ def update_status(args):
         return response, 400
 
 
+def update_customer(args):
+    batches = splitter.get_batch_by_id({'id': args['batch_id']})
+    if len(batches[0]) < 1:
+        response = {
+            "errors": gettext('BATCH_NOT_FOUND'),
+            "message": gettext('BATCH_ID_NOT_FOUND', id=args['batch_id'])
+        }
+        return response, 401
+
+    res = splitter.update_customer(args)
+    if res:
+        return '', 200
+    else:
+        response = {
+            "errors": gettext('UPDATE_CUSTOMER_ERROR'),
+            "message": ''
+        }
+        return response, 400
+
+
 def change_form(args):
     res = splitter.change_form(args)
 
@@ -511,7 +531,7 @@ def save_modifications(data):
         res = splitter.update_document({
             'id': document['id'].split('-')[-1],
             'doctype_key': document['doctypeKey'] if 'doctypeKey' in document else None,
-            'document_metadata': document['metadata'],
+            'document_metadata': document['metadata']
         })[0]
         if not res:
             response = {
@@ -528,7 +548,7 @@ def save_modifications(data):
                 'page_id': page['id'],
                 'document_id': document['id'],
                 'rotation':  page['rotation'],
-                'display_order': page_display_order,
+                'display_order': page_display_order
             })[0]
             page_display_order += 1
             if not res:
@@ -544,7 +564,7 @@ def save_modifications(data):
     for deleted_documents_id in data['deleted_documents_ids']:
         res = splitter.update_document({
             'id': deleted_documents_id.split('-')[-1],
-            'status': 'DEL',
+            'status': 'DEL'
         })[0]
     if not res:
         response = {
@@ -559,7 +579,7 @@ def save_modifications(data):
     for deleted_pages_id in data['deleted_pages_ids']:
         res = splitter.update_page({
             'page_id': deleted_pages_id,
-            'status': 'DEL',
+            'status': 'DEL'
         })[0]
         if not res:
             response = {
@@ -808,7 +828,7 @@ def get_batch_outputs(batch_id):
         _outputs.append({
             'id': output['id'],
             'type': output['output_type_id'],
-            'label': output['output_label'],
+            'label': output['output_label']
         })
 
     return {'outputs': _outputs}, 200

@@ -67,6 +67,7 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('passwordRules
 }', false);
 INSERT INTO "configurations" ("label", "data", "display") VALUES ('defaultModule', '{"type": "list", "value": "splitter", "options": ["splitter", "verifier"], "description": "Module sélectionné par défaut"}', true);
 INSERT INTO "configurations" ("label", "data") VALUES ('enableSplitterProgressBar', '{"type": "bool", "value": false, "description": "Activer la barre de progression pour le module Splitter"}');
+INSERT INTO "configurations" ("label", "data") VALUES ('enableProcessWatcher', '{"type": "bool", "value": true, "description": "Activer l''affichage des processus en cours en bas à droite de l''écran"}');
 
 -- CRÉATION DES DOCSERVERS
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('PROJECT_PATH', 'Chemin vers l''instance d''Open-Capture', '/var/www/html/opencapture/');
@@ -921,7 +922,11 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (66, 'generate_auth_to
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (67, 'update_login_top_message', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (68, 'update_login_bottom_message', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (69, 'custom_fields_advanced', 'administration');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 70;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (70, 'attachments_list_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (71, 'attachments_list_verifier', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (72, 'upload_attachments_verifier', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (73, 'upload_attachments_splitter', 'splitter');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 74;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');
@@ -932,8 +937,8 @@ ALTER SEQUENCE "roles_id_seq" RESTART WITH 5;
 
 -- AJOUT DES PRIVILEGES LIÉS AUX ROLES
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (1, '{"data" : "[''*'']"}');
-INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (2, '{"data" : "[1, 2, 3, 4, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 51, 65]"}');
-INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" : "[1, 2, 4, 12, 17, 18, 29, 33, 41, 47, 53, 59, 65]"}');
+INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (2, '{"data" : "[1, 2, 3, 4, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 51, 65, 70, 71, 72, 73]"}');
+INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" : "[1, 2, 4, 12, 17, 18, 29, 33, 41, 47, 53, 59, 65, 70, 71, 72, 73]"}');
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (4, '{"data" : "[1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 19, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 47, 48, 49, 50, 51, 52, 54, 55, 65, 66]"}');
 
 -- CRÉATION DE L'UTILISATEUR superadmin

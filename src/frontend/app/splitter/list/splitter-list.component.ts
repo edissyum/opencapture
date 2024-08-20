@@ -48,6 +48,7 @@ export class SplitterListComponent implements OnInit {
     displayMode      : string  = 'grid';
     documentListThumb: string  = '';
     currentFilter    : string  = 'splitter_batches.id';
+    customersList    : any     = {};
     currentOrder     : string  = 'desc';
     status           : any[]   = [];
     page             : number  = 1;
@@ -140,7 +141,25 @@ export class SplitterListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+        this.loadCustomers();
         this.loadBatches();
+    }
+
+    loadCustomers() {
+        this.http.get(environment['url'] + '/ws/accounts/customers/list/splitter', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.customersList = data.customers;
+                this.customersList.unshift({
+                    "id": 0,
+                    "name": this.translate.instant('ACCOUNTS.customer_not_specified')
+                });
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     removeLockByUserId(userId: any) {
@@ -188,6 +207,7 @@ export class SplitterListComponent implements OnInit {
                         lockedBy        : batch['locked_by'],
                         formLabel       : batch['form_label'],
                         date            : batch['batch_date'],
+                        customerId      : batch['customer_id'],
                         customerName    : batch['customer_name'],
                         documentsCount  : batch['documents_count'],
                         attachmentCount : batch['attachments_count'],
@@ -438,5 +458,21 @@ export class SplitterListComponent implements OnInit {
         this.currentOrder = order;
         localStorage.setItem('splitterOrder', order);
         this.loadBatches();
+    }
+
+    changeCustomer(customerId: number, batchId: number) {
+        this.loading = true;
+        this.http.put(environment['url'] + '/ws/splitter/' + batchId + '/updateCustomer', {"customer_id": customerId},
+            {headers: this.authService.headers}).pipe(
+            finalize(() => {
+                this.loadBatches();
+                this.notify.success(this.translate.instant('VERIFIER.customer_changed_successfully'));
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 }

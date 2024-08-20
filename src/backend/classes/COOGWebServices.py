@@ -36,7 +36,7 @@ class COOGWebServices:
     def get_access_token(self):
         try:
             args = {
-                "token": self.token,
+                "token": self.token
             }
             res = requests.post(self.base_url + '/auth/token', data=args, timeout=self.timeout, verify=self.cert_path)
             if res.text:

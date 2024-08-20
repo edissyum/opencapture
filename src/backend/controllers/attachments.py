@@ -22,6 +22,7 @@ import base64
 from flask_babel import gettext
 from pdf2image import convert_from_path
 from src.backend.models import attachments
+from src.backend.controllers import history
 from src.backend.classes.Files import Files
 from werkzeug.datastructures import FileStorage
 from src.backend.functions import check_extensions_mime
@@ -84,6 +85,19 @@ def handle_uploaded_file(files, document_id, batch_id, module):
                     }
                 }
                 attachments.create_attachment(args)
+
+                if module == 'verifier':
+                    desc = gettext('UPLOAD_ATTACHMENTS_VERIFIER', document_id=document_id)
+                else:
+                    desc = gettext('UPLOAD_ATTACHMENTS_SPLITTER', batch_id=batch_id)
+
+                history.add_history({
+                    'module': module,
+                    'ip': request.remote_addr,
+                    'submodule': 'upload_attachments',
+                    'user_info': request.environ['user_info'],
+                    'desc': desc
+                })
     return '', 200
 
 def get_attachments_by_document_id(document_id, get_thumb=True):
@@ -119,11 +133,19 @@ def get_attachments_by_batch_id(batch_id, get_thumb=True):
                     attachment['thumb'] = base64.b64encode(f.read()).decode('utf-8')
     return _attachments, 200
 
-def delete_attachment(attachment_id):
+def delete_attachment(attachment_id, module):
     _attachment = attachments.get_attachment_by_id(attachment_id)
 
     if _attachment:
         attachments.delete_attachment(attachment_id)
+
+    history.add_history({
+        'module': module,
+        'ip': request.remote_addr,
+        'submodule': 'delete_attachments',
+        'user_info': request.environ['user_info'],
+        'desc': gettext('DELETE_ATTACHMENTS', attachment_id=attachment_id)
+    })
     return _attachment, 200
 
 def download_attachment(attachment_id):

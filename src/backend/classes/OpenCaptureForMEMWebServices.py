@@ -40,15 +40,15 @@ class OpenCaptureForMEMWebServices:
             res = requests.post(self.base_url + '/get_token', headers=self.headers, data=json.dumps(args),
                                 timeout=self.timeout)
             if res.text:
-                if res.status_code == 404:
-                    return [False, gettext('HOST_NOT_FOUND')]
+                if res.status_code >= 404:
+                    return [False, gettext('HOST_NOT_FOUND_OR_OTHER_ERROR')]
                 if 'message' in json.loads(res.text):
                     return [False, json.loads(res.text)['message']]
             if res.status_code == 200 and 'token' in json.loads(res.text):
                 access_token = json.loads(res.text)['token']
                 return [True, access_token]
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout,
-                requests.exceptions.MissingSchema) as request_error:
+                requests.exceptions.MissingSchema, json.decoder.JSONDecodeError) as request_error:
             self.log.error('Error connecting to the host. Exiting program..', False)
             self.log.error('More information : ' + str(request_error), False)
             return [False, str(request_error)]

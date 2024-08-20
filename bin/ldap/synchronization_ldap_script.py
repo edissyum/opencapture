@@ -175,7 +175,7 @@ def check_database_users(ldap_users_data, default_role):
     try:
         users = database.select({
             'select': ['*'],
-            'table': ['users'],
+            'table': ['users']
         })
         oc_users = []
         create_users = 0

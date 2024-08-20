@@ -176,7 +176,7 @@ class Splitter:
             'select': ['*'],
             'table': ['form_models_field'],
             'where': ['form_id = %s'],
-            'data': [form_id],
+            'data': [form_id]
         })[0]
 
         if user_id:
@@ -198,7 +198,7 @@ class Splitter:
             if 'defaultValue' in field:
                 mask = {
                     'mask': field['defaultValue'],
-                    'separator': ' ',
+                    'separator': ' '
                 }
                 default_values['batch'][field['label_short']] = get_value_from_mask(None, data, mask)
 
@@ -206,7 +206,7 @@ class Splitter:
             if 'defaultValue' in field:
                 mask = {
                     'mask': field['defaultValue'],
-                    'separator': ' ',
+                    'separator': ' '
                 }
                 default_values['document'][field['label_short']] = get_value_from_mask(None, data, mask)
 
@@ -243,7 +243,7 @@ class Splitter:
                 'select': ['*'],
                 'table': ['custom_fields'],
                 'where': ['module = %s', 'status <> %s'],
-                'data': ['splitter', 'DEL'],
+                'data': ['splitter', 'DEL']
             })
 
             if batch_pages:
@@ -328,7 +328,7 @@ class Splitter:
                             'select': ['*'],
                             'table': ['doctypes'],
                             'where': ['status <> %s', 'form_id = %s', 'is_default = %s'],
-                            'data': ['DEL', workflow_settings[0]['process']['form_id'], 'true'],
+                            'data': ['DEL', workflow_settings[0]['process']['form_id'], 'true']
                         })
                         if default_doctype:
                             args['columns']['doctype_key'] = default_doctype[0]['key']
@@ -361,7 +361,7 @@ class Splitter:
                         'document_id': str(document_id),
                         'source_page': page['source_page'],
                         'display_order': str(page_display_order),
-                        'rotation': rotation if rotation != 'no_rotation' else 0,
+                        'rotation': rotation if rotation != 'no_rotation' else 0
                     }
                 }
                 self.db.insert(args)
@@ -379,7 +379,7 @@ class Splitter:
                 documents_pages[-1].append({
                     'page_id': page['id'],
                     'rotation': page['rotation'],
-                    'source_page': page['sourcePage'],
+                    'source_page': page['sourcePage']
                 })
         return documents_pages
 
@@ -406,7 +406,7 @@ class Splitter:
                     for key in output['parameters']['custom_fields']:
                         marks_args = {
                             'mask': output['parameters']['custom_fields'][key],
-                            'separator': '',
+                            'separator': ''
                         }
                         output['parameters']['custom_fields'][key] = get_value_from_mask(None, document['data']['custom_fields'], marks_args)
 
@@ -564,7 +564,7 @@ class Splitter:
                 res_methods.append({
                     'id': method['id'],
                     'label': method['label'],
-                    'callOnSplitterView': method['callOnSplitterView'],
+                    'callOnSplitterView': method['callOnSplitterView']
                 })
             if method_id:
                 res_methods = [method for method in res_methods if method['id'] == method_id]

@@ -102,7 +102,7 @@ def import_from_csv():
     args = {
         'files': request.files,
         'skip_header': request.form['skipHeader'],
-        'selected_columns': request.form['selectedColumns'].split(','),
+        'selected_columns': request.form['selectedColumns'].split(',')
     }
 
     res = doctypes.import_from_csv(args)

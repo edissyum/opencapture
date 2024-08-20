@@ -190,7 +190,7 @@ def launch(args):
                                             "workflow_id": args['workflow_id'],
                                             "customer_id": args['customer_id'],
                                             "artificial_intelligence": _artificial_intelligence,
-                                            "user_id": args['user_id'] if 'user_id' in args else None,
+                                            "user_id": args['user_id'] if 'user_id' in args else None
                                         }
                                         split_res = split_method(split_args)
                                         created_batches = split_res['batches_id']

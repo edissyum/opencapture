@@ -300,7 +300,7 @@ def import_users():
     args = {
         'files': request.files,
         'skip_header': request.form['skipHeader'] == 'true',
-        'selected_columns': request.form['selectedColumns'].split(','),
+        'selected_columns': request.form['selectedColumns'].split(',')
     }
 
     res = user.import_users(args)

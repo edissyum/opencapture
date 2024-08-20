@@ -210,7 +210,7 @@ def clone_form_doctypes(src_form_id, dest_form_id):
             'status': doctype['status'],
             'label': doctype['label'],
             'type': doctype['type'],
-            'key': doctype['key'],
+            'key': doctype['key']
         }
         doctypes.add_doctype(args)
 
@@ -305,7 +305,7 @@ def import_from_csv(args):
                     'type': row[args['selected_columns'].index('type')],
                     'code': row[args['selected_columns'].index('code')],
                     'form_id': row[args['selected_columns'].index('form_id')],
-                    'is_default': False,
+                    'is_default': False
                 }
                 doctypes.add_doctype(doctype)
 
