@@ -103,6 +103,26 @@ def update_status():
     return make_response(jsonify(res[0])), res[1]
 
 
+@bp.route('splitter/<int:batch_id>/updateCustomer', methods=['PUT'])
+@auth.token_required
+def update_custom(batch_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/customer'}), 403
+
+    check, message = rest_validator(request.json, [
+        {'id': 'customer_id', 'type': int, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = splitter.update_customer({'batch_id': batch_id, 'customer_id': request.json['customer_id']})
+    return make_response(jsonify(res[0])), res[1]
+
+
 @bp.route('splitter/deleteBatches', methods=['PUT'])
 @auth.token_required
 def delete_batches():

@@ -316,6 +316,26 @@ def update_status(args):
         return response, 400
 
 
+def update_customer(args):
+    batches = splitter.get_batch_by_id({'id': args['batch_id']})
+    if len(batches[0]) < 1:
+        response = {
+            "errors": gettext('BATCH_NOT_FOUND'),
+            "message": gettext('BATCH_ID_NOT_FOUND', id=args['batch_id'])
+        }
+        return response, 401
+
+    res = splitter.update_customer(args)
+    if res:
+        return '', 200
+    else:
+        response = {
+            "errors": gettext('UPDATE_CUSTOMER_ERROR'),
+            "message": ''
+        }
+        return response, 400
+
+
 def change_form(args):
     res = splitter.change_form(args)
 

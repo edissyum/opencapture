@@ -245,7 +245,7 @@
                                     <img [routerLink]="document.locked && document.locked_by ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
                                          mat-card-image class="m-auto p-4" [src]="document['thumb']" alt="Open-Capture thumbnail"
                                          (click)="document.locked && document.locked_by ? displayDocumentLocked(document['locked_by']) : ''">
-                                    <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-8 pr-8"
+                                    <mat-card-header class="leading-6 relative z-10 bg-white pt-4 px-8"
                                                      [routerLink]="document.locked && document.locked_by ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
                                                      (click)="document.locked && document.locked_by ? displayDocumentLocked(document['locked_by']) : ''">
                                         <mat-card-title class="break-all truncate w-12/12">

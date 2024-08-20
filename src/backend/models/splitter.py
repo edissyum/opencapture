@@ -381,6 +381,26 @@ def update_status(args):
     return res
 
 
+def update_customer(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    args = {
+        'table': ['splitter_batches'],
+        'set': {
+            'customer_id': args['customer_id']
+        },
+        'where': ['id = %s'],
+        'data': [args['batch_id']]
+    }
+    res = database.update(args)
+    return res
+
+
 def change_form(args):
     if 'database' in current_context:
         database = current_context.database
