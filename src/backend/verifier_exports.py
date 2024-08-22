@@ -151,7 +151,6 @@ def export_xml(data, log, document_info, database):
             xml_file.write(xml_root)
             xml_file.close()
         # END Fill XML with document informations
-        exit()
         return folder_out + '/' + filename, 200
     else:
         if log:
