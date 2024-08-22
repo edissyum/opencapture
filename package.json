@@ -3,7 +3,7 @@
     "version": "3.3.0",
     "license": "GPL-3.0",
     "author": "Edissyum Consulting <nathan.cheval@edissyum.com>",
-    "description": "Open-Capture is the one and only 100% Open Source intelligent document capture management",
+    "description": "Open-Capture is the one and only 100% Open Source intelligent document capture solution",
     "engines": {
         "npm": ">= 9.2.0",
         "node": ">= 22.2.0"
