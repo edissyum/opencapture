@@ -20,8 +20,8 @@ import base64
 import pandas as pd
 from flask_babel import gettext
 from flask import Blueprint, make_response, request, jsonify
-from src.backend.functions import rest_validator, check_extensions_mime
 from src.backend.controllers import auth, config, verifier, privileges
+from src.backend.functions import rest_validator, check_extensions_mime
 
 bp = Blueprint('verifier', __name__, url_prefix='/ws/')
 
