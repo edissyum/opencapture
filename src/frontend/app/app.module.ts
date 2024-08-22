@@ -221,7 +221,9 @@ export function createTranslateLoader(http: HttpClient) {
         ServicesModule,
         NgsgModule,
         NgxChartsModule,
-        CodeEditorModule.forRoot(),
+        CodeEditorModule.forRoot({
+            baseUrl: 'assets/monaco'
+        }),
         ToastrModule.forRoot({
             maxOpened: 1,
             enableHtml: true,

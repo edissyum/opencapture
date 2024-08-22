@@ -46,8 +46,13 @@
                             },
                             {
                                 "glob": "**/*",
-                                "input": "./node_modules/svg-country-flags/svg",
+                                "input": "node_modules/svg-country-flags/svg",
                                 "output": "assets/svg-country-flags/svg"
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "node_modules/monaco-editor/min",
+                                "output": "assets/monaco"
                             }
                         ],
                         "styles": [
