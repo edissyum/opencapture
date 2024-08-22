@@ -17,7 +17,6 @@
 
 import { Component, OnInit } from '@angular/core';
 import { SettingsService } from "../../../../../services/settings.service";
-import { LastUrlService } from "../../../../../services/last-url.service";
 import { SessionStorageService } from "../../../../../services/session-storage.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthService } from "../../../../../services/auth.service";
@@ -32,10 +31,10 @@ import { TranslateService } from "@ngx-translate/core";
 
 @Component({
     selector: 'app-workflow-list',
-    templateUrl: './workflow-list.component.html',
-    styleUrls: ['./workflow-list.component.scss']
+    templateUrl: './workflows-list.component.html',
+    styleUrls: ['./workflows-list.component.scss']
 })
-export class WorkflowListComponent implements OnInit {
+export class WorkflowsListComponent implements OnInit {
     headers          : HttpHeaders   = this.authService.headers;
     columnsToDisplay : string[]      = ['id', 'workflow_id', 'label', 'input_folder', 'actions'];
     loading          : boolean       = false;
@@ -53,22 +52,16 @@ export class WorkflowListComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
-        private routerExtService: LastUrlService,
         private sessionStorageService: SessionStorageService
     ) {}
 
     ngOnInit() {
         this.serviceSettings.init();
 
-        const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('settings/verifier/workflows') || lastUrl === '/') {
-            if (this.sessionStorageService.get('workflowsPageIndex')) {
-                this.pageIndex = parseInt(this.sessionStorageService.get('workflowsPageIndex') as string);
-            }
-            this.offset = this.pageSize * (this.pageIndex);
-        } else {
-            this.sessionStorageService.remove('workflowsPageIndex');
+        if (this.sessionStorageService.get('workflowsPageIndex')) {
+            this.pageIndex = parseInt(this.sessionStorageService.get('workflowsPageIndex') as string);
         }
+        this.offset = this.pageSize * (this.pageIndex);
 
         this.http.get(environment['url'] + '/ws/workflows/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {

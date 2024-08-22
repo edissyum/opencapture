@@ -24,6 +24,14 @@
         <div class="overflow-x-hidden h-full-overflow">
             <div *ngIf="!loading" class="w-full">
                 <app-hint [message]="'GLOBAL.dont_touch' | translate"></app-hint>
+                <mat-paginator [showFirstLastButtons]="true"
+                               *ngIf="this.total > 0"
+                               [length]="this.total"
+                               [pageSize]="pageSize"
+                               [pageIndex]="pageIndex"
+                               [pageSizeOptions]="[5, 10, 15, 20, 50]"
+                               (page)="onPageChange($event)">
+                </mat-paginator>
                 <mat-table matSort [dataSource]="regex" (matSortChange)="sortData($event)">
                     <ng-container matColumnDef="regex_id">
                         <mat-header-cell *matHeaderCellDef mat-sort-header="regex_id"> {{ 'HEADER.id' | translate }} </mat-header-cell>
@@ -69,14 +77,6 @@
                     <mat-row *matRowDef="let row; columns: columnsToDisplay;"
                              class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
                 </mat-table>
-                <mat-paginator [showFirstLastButtons]="true"
-                               *ngIf="this.total > 0"
-                               [length]="this.total"
-                               [pageSize]="pageSize"
-                               [pageIndex]="pageIndex"
-                               [pageSizeOptions]="[5, 10, 15, 20, 50]"
-                               (page)="onPageChange($event)">
-                </mat-paginator>
             </div>
         </div>
     </mat-sidenav-content>

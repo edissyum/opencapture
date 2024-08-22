@@ -35,11 +35,11 @@ import { FileValidators } from "ngx-file-drag-drop";
 
 @Component({
   selector: 'app-list-ai-splitter',
-  templateUrl: './list-ai-model.component.html',
-  styleUrls: ['./list-ai-model.component.scss']
+  templateUrl: './list-ai-models.component.html',
+  styleUrls: ['./list-ai-models.component.scss']
 })
 
-export class ListSplitterAiModelComponent implements OnInit {
+export class ListSplitterAiModelsComponent implements OnInit {
     displayedColumns    : string[]    = ['id', 'model_label', 'accuracy_score', 'documents', 'min_proba', 'status', 'actions'];
     inter               : any;
     clickedRow          : any;

@@ -13,8 +13,7 @@
  You should have received a copy of the GNU General Public License
  along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
- @dev : Nathan Cheval <nathan.cheval@outlook.fr>
- @dev : Oussama Brich <oussama.brich@edissyum.com> */
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit, SecurityContext, ViewEncapsulation } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
@@ -23,7 +22,6 @@ import { AuthService } from "../../../../services/auth.service";
 import { Router } from "@angular/router";
 import { PrivilegesService } from "../../../../services/privileges.service";
 import { SessionStorageService } from "../../../../services/session-storage.service";
-import { LastUrlService } from "../../../../services/last-url.service";
 import { Sort } from "@angular/material/sort";
 import { environment } from  "../../../env";
 import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
@@ -209,7 +207,6 @@ export class ConfigurationsComponent implements OnInit {
         private notify: NotificationService,
         public localeService: LocaleService,
         public serviceSettings: SettingsService,
-        private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
         private sessionStorageService: SessionStorageService,
         public passwordVerification: PasswordVerificationService
@@ -217,15 +214,10 @@ export class ConfigurationsComponent implements OnInit {
 
     ngOnInit(): void {
         this.serviceSettings.init();
-        const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('settings/general/configurations') || lastUrl === '/') {
-            if (this.sessionStorageService.get('configurationsPageIndex')) {
-                this.pageIndex = parseInt(this.sessionStorageService.get('configurationsPageIndex') as string);
-            }
-            this.offset = this.pageSize * (this.pageIndex);
-        } else {
-            this.sessionStorageService.remove('configurationsPageIndex');
+        if (this.sessionStorageService.get('configurationsPageIndex')) {
+            this.pageIndex = parseInt(this.sessionStorageService.get('configurationsPageIndex') as string);
         }
+        this.offset = this.pageSize * (this.pageIndex);
 
         this.http.get(environment['url'] + '/ws/config/getConfigurations', {headers: this.authService.headers}).pipe(
             tap((data: any) => {

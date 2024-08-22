@@ -31,7 +31,6 @@ import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm
 import { MatDialog } from '@angular/material/dialog';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { LastUrlService } from "../../../services/last-url.service";
 
 @Component({
     selector: 'app-list',
@@ -91,7 +90,6 @@ export class SplitterListComponent implements OnInit {
         private _sanitizer: DomSanitizer,
         public translate: TranslateService,
         private notify: NotificationService,
-        private routerExtService: LastUrlService,
         private sessionStorageService: SessionStorageService
     ) {}
 
@@ -115,21 +113,15 @@ export class SplitterListComponent implements OnInit {
 
         this.sessionStorageService.save('splitter_or_verifier', 'splitter');
         this.removeLockByUserId(this.userService.user.username);
-        const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('splitter/') && !lastUrl.includes('settings') || lastUrl === '/' || lastUrl === '/upload') {
-            if (this.sessionStorageService.get('splitterPageIndex')) {
-                this.pageIndex = parseInt(this.sessionStorageService.get('splitterPageIndex') as string);
-            }
 
-            if (this.sessionStorageService.get('splitterTimeIndex')) {
-                this.selectedTab = parseInt(this.sessionStorageService.get('splitterTimeIndex') as string);
-                this.currentTime = this.batchList[this.selectedTab].id;
-            }
-            this.offset = this.pageSize * (this.pageIndex);
-        } else {
-            this.sessionStorageService.remove('splitterPageIndex');
-            this.sessionStorageService.remove('splitterTimeIndex');
+        if (this.sessionStorageService.get('splitterPageIndex')) {
+            this.pageIndex = parseInt(this.sessionStorageService.get('splitterPageIndex') as string);
         }
+        if (this.sessionStorageService.get('splitterTimeIndex')) {
+            this.selectedTab = parseInt(this.sessionStorageService.get('splitterTimeIndex') as string);
+            this.currentTime = this.batchList[this.selectedTab].id;
+        }
+        this.offset = this.pageSize * (this.pageIndex);
 
         this.http.get(environment['url'] + '/ws/status/splitter/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {

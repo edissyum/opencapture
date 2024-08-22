@@ -25,7 +25,6 @@ import { AuthService } from "../../../../../services/auth.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../../services/settings.service";
-import { LastUrlService } from "../../../../../services/last-url.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import { SessionStorageService } from "../../../../../services/session-storage.service";
 import { environment } from  "../../../../env";
@@ -36,8 +35,8 @@ import { Sort } from "@angular/material/sort";
 
 @Component({
   selector: 'app-splitter-output-list',
-  templateUrl: './output-list.component.html',
-  styleUrls: ['./output-list.component.scss']
+  templateUrl: './outputs-list.component.html',
+  styleUrls: ['./outputs-list.component.scss']
 })
 export class SplitterOutputListComponent implements OnInit {
     headers         : HttpHeaders   = this.authService.headers;
@@ -58,23 +57,16 @@ export class SplitterOutputListComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
-        private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
         private sessionStorageService: SessionStorageService
     ) {}
 
     ngOnInit(): void {
         this.serviceSettings.init();
-        // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
-        const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('outputs/') || lastUrl === '/') {
-            if (this.sessionStorageService.get('outputsPageIndex')) {
-                this.pageIndex = parseInt(this.sessionStorageService.get('outputsPageIndex') as string);
-            }
-            this.offset = this.pageSize * (this.pageIndex);
-        } else {
-            this.sessionStorageService.remove('outputsPageIndex');
+        if (this.sessionStorageService.get('outputsPageIndex')) {
+            this.pageIndex = parseInt(this.sessionStorageService.get('outputsPageIndex') as string);
         }
+        this.offset = this.pageSize * (this.pageIndex);
         this.loadOutputs();
     }
 

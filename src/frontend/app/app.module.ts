@@ -68,8 +68,8 @@ import { CreateRoleComponent } from './settings/general/roles/create/create-role
 import { LoginMethodsComponent } from './settings/general/login-methods/login-methods.component';
 import { LoaderComponent } from './loader.component';
 import { CustomFieldsComponent } from './settings/general/custom-fields/custom-fields.component';
-import { FormListComponent } from './settings/verifier/form/list/form-list.component';
-import { FormBuilderComponent } from './settings/verifier/form/builder/form-builder.component';
+import { FormsListComponent } from './settings/verifier/forms/list/forms-list.component';
+import { FormBuilderComponent } from './settings/verifier/forms/builder/form-builder.component';
 import { SuppliersListComponent } from './accounts/suppliers/list/suppliers-list.component';
 import { UpdateSupplierComponent } from './accounts/suppliers/update/update-supplier.component';
 import { CreateSupplierComponent } from './accounts/suppliers/create/create-supplier.component';
@@ -85,22 +85,22 @@ import { CreatePositionsMaskComponent } from './settings/verifier/positions-mask
 import { VerifierStatusUpdateComponent } from './settings/verifier/update-status/update-status.component';
 import { HistoryComponent } from './history/history.component';
 import { SeparatorComponent } from './settings/splitter/separator/separator.component';
-import { SplitterUpdateOutputComponent } from './settings/splitter/output/update/update-output.component';
-import { SplitterCreateOutputComponent } from './settings/splitter/output/create/create-output.component';
-import { SplitterOutputListComponent } from './settings/splitter/output/list/output-list.component';
-import { SplitterFormBuilderComponent } from './settings/splitter/form/builder/form-builder.component';
+import { SplitterUpdateOutputComponent } from './settings/splitter/outputs/update/update-output.component';
+import { SplitterCreateOutputComponent } from './settings/splitter/outputs/create/create-output.component';
+import { SplitterOutputListComponent } from './settings/splitter/outputs/list/outputs-list.component';
+import { SplitterFormBuilderComponent } from './settings/splitter/forms/builder/form-builder.component';
 import { SplitterUpdateStatusComponent } from './settings/splitter/update-status/update-status.component';
-import { SplitterFormListComponent } from './settings/splitter/form/list/form-list.component';
+import { SplitterFormsListComponent } from './settings/splitter/forms/list/forms-list.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { CreateDoctypeComponent } from './settings/splitter/doctypes/create/create-doctype.component';
 import { ListDoctypeComponent } from './settings/splitter/doctypes/list/list-doctype.component';
 import { CreateFolderDoctypeComponent } from './settings/splitter/doctypes/create-folder/create-folder-doctype.component';
-import { ListVerifierAiModelComponent } from "./settings/verifier/ai-model/list/list-ai-model.component";
-import { CreateVerifierAiModelComponent } from "./settings/verifier/ai-model/create/create-ai-model.component";
-import { UpdateVerifierAiModelComponent } from "./settings/verifier/ai-model/update/update-ai-model.component";
-import { ListSplitterAiModelComponent } from "./settings/splitter/ai-model/list/list-ai-model.component";
-import { CreateSplitterAiModelComponent } from "./settings/splitter/ai-model/create/create-ai-model.component";
-import { UpdateSplitterAiModelComponent } from "./settings/splitter/ai-model/update/update-ai-model.component";
+import { ListVerifierAiModelComponent } from "./settings/verifier/ai-models/list/list-ai-models.component";
+import { CreateVerifierAiModelComponent } from "./settings/verifier/ai-models/create/create-ai-model.component";
+import { UpdateVerifierAiModelComponent } from "./settings/verifier/ai-models/update/update-ai-model.component";
+import { ListSplitterAiModelsComponent } from "./settings/splitter/ai-models/list/list-ai-models.component";
+import { CreateSplitterAiModelComponent } from "./settings/splitter/ai-models/create/create-ai-model.component";
+import { UpdateSplitterAiModelComponent } from "./settings/splitter/ai-models/update/update-ai-model.component";
 import { ConfigurationsComponent } from './settings/general/configurations/configurations.component';
 import { DocserversComponent } from './settings/general/docservers/docservers.component';
 import { RegexComponent } from './settings/general/regex/regex.component';
@@ -117,10 +117,10 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { MonitoringListComponent } from './monitoring/list/monitoring-list.component';
 import { MonitoringDetailsComponent } from './monitoring/details/monitoring-details.component';
-import { WorkflowListComponent } from './settings/verifier/workflow/list/workflow-list.component';
-import { WorkflowBuilderComponent } from './settings/verifier/workflow/builder/workflow-builder.component';
-import { WorkflowListSplitterComponent } from './settings/splitter/workflow/list/workflow-list.component';
-import { WorkflowBuilderSplitterComponent } from './settings/splitter/workflow/builder/workflow-builder.component';
+import { WorkflowsListComponent } from './settings/verifier/workflows/list/workflows-list.component';
+import { WorkflowBuilderComponent } from './settings/verifier/workflows/builder/workflow-builder.component';
+import { WorkflowsListSplitterComponent } from './settings/splitter/workflows/list/workflows-list.component';
+import { WorkflowBuilderSplitterComponent } from './settings/splitter/workflows/builder/workflow-builder.component';
 import { TimeoutInterceptor } from "../services/HttpTimeout.service";
 import { CodeEditorModule } from '@ngstack/code-editor';
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -158,7 +158,7 @@ export function createTranslateLoader(http: HttpClient) {
         CustomFieldsComponent,
         SeparatorComponent,
         FormBuilderComponent,
-        FormListComponent,
+        FormsListComponent,
         SuppliersListComponent,
         UpdateSupplierComponent,
         CreateSupplierComponent,
@@ -172,7 +172,7 @@ export function createTranslateLoader(http: HttpClient) {
         PositionsMaskListComponent,
         CreatePositionsMaskComponent,
         FilterPipe,
-        SplitterFormListComponent,
+        SplitterFormsListComponent,
         SplitterFormBuilderComponent,
         SplitterUpdateOutputComponent,
         SplitterCreateOutputComponent,
@@ -180,7 +180,7 @@ export function createTranslateLoader(http: HttpClient) {
         ListVerifierAiModelComponent,
         CreateVerifierAiModelComponent,
         UpdateVerifierAiModelComponent,
-        ListSplitterAiModelComponent,
+        ListSplitterAiModelsComponent,
         CreateSplitterAiModelComponent,
         UpdateSplitterAiModelComponent,
         HistoryComponent,
@@ -205,9 +205,9 @@ export function createTranslateLoader(http: HttpClient) {
         MonitoringDetailsComponent,
         SplitterUpdateStatusComponent,
         VerifierStatusUpdateComponent,
-        WorkflowListComponent,
+        WorkflowsListComponent,
         WorkflowBuilderComponent,
-        WorkflowListSplitterComponent,
+        WorkflowsListSplitterComponent,
         WorkflowBuilderSplitterComponent
     ],
     imports: [
