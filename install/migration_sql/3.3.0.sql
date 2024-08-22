@@ -36,8 +36,9 @@ INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "module", "d
                 "hint": "Format JSON avec les identifiants techniques des champs, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
                 "type": "textarea",
                 "label": "Contenu de l''appel API",
+                "label": "Contenu de l''appel API",
                 "required": true,
-                "placeholder": "[{\n\t\"ref\": \"invoice_number\",\n\t\"state\": \"draft\",\n\t\"activity_field\": {\"code\": \"sinistres\"},\n\t\"reception_channel\": {\"code\": \"client\"},\n\t\"attachments\": [\n\t\t{\n\t\t\t\"content\": {\n\t\t\t\t\"type\": \"data\",\n\t\t\t\t\"data\": \"b64_file_content\",\n\t\t\t\t\"filename\": \"original_filename\"\n\t\t\t}\n\t\t}\n\t]\n}]"
+                "placeholder": "[{\n\t\"ref\": \"invoice_number\",\n\t\"state\": \"custom_1\",\n\t\"reception_date\": \"register_date_full\",\n\t\"activity_field\": {\"code\": \"custom_2\"},\n\t\"reception_channel\": {\"code\": \"custom_3\"},\n\t\"task_type\": {\"code\": \"traitement\"},\n\t\"priority\": {\"code\": \"normale\"},\n\t\"affected_to\": \"custom_4\",\n\t\"summary\": \"Date de la tâche : #register_date_full\",\n\t\"references\": [\n\t\t{\n\t\t\t\"type\": \"claim\",\n\t\t\t\"reference\": \"#custom_5\"\n\t\t}\n\t],\n\t\"attachments\": [\n\t\t{\n\t\t\t\"content\": {\n\t\t\t\t\"type\": \"data\",\n\t\t\t\t\"data\": \"b64_file_content\",\n\t\t\t\t\"filename\": \"original_filename\"\n\t\t\t}\n\t\t}\n\t]\n}]"
             }
         ]
     }
