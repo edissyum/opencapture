@@ -17,15 +17,13 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { UserService } from "../../../../services/user.service";
-import { FormBuilder } from "@angular/forms";
 import { AuthService } from "../../../../services/auth.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../services/settings.service";
-import { LastUrlService } from "../../../../services/last-url.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
 import { SessionStorageService } from "../../../../services/session-storage.service";
 import { Sort } from "@angular/material/sort";
@@ -33,7 +31,7 @@ import { environment } from  "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
-import {ImportDialogComponent} from "../../../../services/import-dialog/import-dialog.component";
+import { ImportDialogComponent } from "../../../../services/import-dialog/import-dialog.component";
 
 @Component({
     selector: 'suppliers-list',
@@ -56,14 +54,11 @@ export class SuppliersListComponent implements OnInit {
         public router: Router,
         private http: HttpClient,
         private dialog: MatDialog,
-        private route: ActivatedRoute,
         public userService: UserService,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
-        private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
         private sessionStorageService: SessionStorageService
     ) { }
@@ -72,16 +67,11 @@ export class SuppliersListComponent implements OnInit {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
-        // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
-        const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('accounts/suppliers') || lastUrl === '/') {
-            if (this.sessionStorageService.get('suppliersPageIndex')) {
-                this.pageIndex = parseInt(this.sessionStorageService.get('suppliersPageIndex') as string);
-            }
-            this.offset = this.pageSize * (this.pageIndex);
-        } else {
-            this.sessionStorageService.remove('suppliersPageIndex');
+
+        if (this.sessionStorageService.get('suppliersPageIndex')) {
+            this.pageIndex = parseInt(this.sessionStorageService.get('suppliersPageIndex') as string);
         }
+        this.offset = this.pageSize * (this.pageIndex);
 
         this.http.get(environment['url'] + '/ws/accounts/suppliers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {

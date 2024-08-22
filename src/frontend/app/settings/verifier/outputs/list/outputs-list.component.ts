@@ -24,7 +24,6 @@ import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthService } from "../../../../../services/auth.service";
-import { LastUrlService } from "../../../../../services/last-url.service";
 import { SessionStorageService } from "../../../../../services/session-storage.service";
 import { environment } from  "../../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
@@ -57,23 +56,16 @@ export class OutputsListComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
-        private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
         private sessionStorageService: SessionStorageService
     ) {}
 
     ngOnInit(): void {
         this.serviceSettings.init();
-        // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
-        const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('settings/verifier/outputs') || lastUrl === '/') {
-            if (this.sessionStorageService.get('outputsPageIndex')) {
-                this.pageIndex = parseInt(this.sessionStorageService.get('outputsPageIndex') as string);
-            }
-            this.offset = this.pageSize * (this.pageIndex);
-        } else {
-            this.sessionStorageService.remove('outputsPageIndex');
+        if (this.sessionStorageService.get('outputsPageIndex')) {
+            this.pageIndex = parseInt(this.sessionStorageService.get('outputsPageIndex') as string);
         }
+        this.offset = this.pageSize * (this.pageIndex);
         this.loadOutputs();
     }
 

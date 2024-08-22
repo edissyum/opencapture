@@ -14,7 +14,7 @@
             </div>
             <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
             <div class="settings_search">
-                <mat-form-field appearance="outline">
+                <mat-form-field appearance="outline" *ngIf="this.selectedIndex == 4">
                     <mat-label>{{ 'CONFIGURATIONS.search_config' | translate }}</mat-label>
                     <input matInput type="text" [disabled]="this.loading" (keyup)="searchConfiguration($event)">
                 </mat-form-field>
@@ -34,7 +34,7 @@
                                 </mat-hint>
                                 <div style="min-height: 12rem" class="mt-4">
                                     <img class="shadow-md hover:shadow-xl m-auto p-2 transition-all ease-in-out duration-500
-                                 cursor-pointer shadow-gray-900 hover:shadow-gray-900" [src]="this.loginImage" alt="Login"
+                                                cursor-pointer shadow-gray-900 hover:shadow-gray-900" [src]="this.loginImage" alt="Login"
                                          (click)="onClick(logo)">
                                     <input type="file" name="files[]" #logo (change)="upload($event)" accept="image/png" class="hidden">
                                 </div>
@@ -267,6 +267,14 @@
                 <mat-tab [label]="'CONFIGURATIONS.advanced' | translate">
                     <div class="overflow-x-hidden overflow-y-auto text-center" style="height: calc(100vh - 12rem) !important">
                         <app-hint [message]="'GLOBAL.dont_touch' | translate"></app-hint>
+                        <mat-paginator [showFirstLastButtons]="true"
+                                       *ngIf="this.total > 0"
+                                       [length]="this.total"
+                                       [pageSize]="pageSize"
+                                       [pageIndex]="pageIndex"
+                                       [pageSizeOptions]="[5, 10, 15, 20, 50]"
+                                       (page)="onPageChange($event)">
+                        </mat-paginator>
                         <mat-table matSort [dataSource]="configurations" (matSortChange)="sortData($event)">
                             <ng-container matColumnDef="id">
                                 <mat-header-cell *matHeaderCellDef mat-sort-header="id"> {{ 'HEADER.id' | translate }} </mat-header-cell>
@@ -340,14 +348,6 @@
                             <mat-row *matRowDef="let row; columns: columnsToDisplay;"
                                      class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
                         </mat-table>
-                        <mat-paginator [showFirstLastButtons]="true"
-                                       *ngIf="this.total > 0"
-                                       [length]="this.total"
-                                       [pageSize]="pageSize"
-                                       [pageIndex]="pageIndex"
-                                       [pageSizeOptions]="[5, 10, 15, 20, 50]"
-                                       (page)="onPageChange($event)">
-                        </mat-paginator>
                     </div>
                 </mat-tab>
             </mat-tab-group>

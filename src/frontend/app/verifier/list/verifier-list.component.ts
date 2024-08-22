@@ -25,7 +25,6 @@ import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
 import { TranslateService } from "@ngx-translate/core";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { LastUrlService } from "../../../services/last-url.service";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { FlatTreeControl } from "@angular/cdk/tree";
 import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree";
@@ -148,7 +147,6 @@ export class VerifierListComponent implements OnInit {
         private userService: UserService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private routerExtService: LastUrlService,
         private sessionStorageService: SessionStorageService
     ) {}
 
@@ -175,6 +173,22 @@ export class VerifierListComponent implements OnInit {
         if (localStorage.getItem('verifierOrder')) {
             this.currentOrder = localStorage.getItem('verifierOrder') as string;
         }
+        if (this.sessionStorageService.get('statusFormSelected')) {
+            this.currentStatus = this.sessionStorageService.get('statusFormSelected') as string;
+        }
+        if (this.sessionStorageService.get('documentsFormSelected')) {
+            this.currentForm = parseInt(this.sessionStorageService.get('documentsFormSelected') as string);
+        }
+        if (this.sessionStorageService.get('documentsPageIndex')) {
+            this.pageIndex = parseInt(this.sessionStorageService.get('documentsPageIndex') as string);
+        }
+        if (this.sessionStorageService.get('documentsPageSize')) {
+            this.pageSize = parseInt(this.sessionStorageService.get('documentsPageSize') as string);
+        }
+        if (this.sessionStorageService.get('documentsTimeIndex')) {
+            this.selectedTab = parseInt(this.sessionStorageService.get('documentsTimeIndex') as string);
+            this.currentTime = this.batchList[this.selectedTab].id;
+        }
 
         marker('ATTACHMENTS.attachments_count'); // Needed to get the translation in the JSON file
         marker('ATTACHMENTS.attachment_settings'); // Needed to get the translation in the JSON file
@@ -185,31 +199,9 @@ export class VerifierListComponent implements OnInit {
         marker('VERIFIER.unselect_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.documents_settings'); // Needed to get the translation in the JSON file
         this.sessionStorageService.save('splitter_or_verifier', 'verifier');
-        const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('verifier/') && !lastUrl.includes('settings') || lastUrl === '/' || lastUrl === '/upload') {
-            if (this.sessionStorageService.get('documentsPageIndex')) {
-                this.pageIndex = parseInt(this.sessionStorageService.get('documentsPageIndex') as string);
-            }
-            if (this.sessionStorageService.get('documentsPageSize')) {
-                this.pageSize = parseInt(this.sessionStorageService.get('documentsPageSize') as string);
-            }
-            if (this.sessionStorageService.get('documentsTimeIndex')) {
-                this.selectedTab = parseInt(this.sessionStorageService.get('documentsTimeIndex') as string);
-                this.currentTime = this.batchList[this.selectedTab].id;
-            }
-            if (this.sessionStorageService.get('statusFormSelected')) {
-                this.currentStatus = this.sessionStorageService.get('statusFormSelected') as string;
-            }
-            if (this.sessionStorageService.get('documentsFormSelected')) {
-                this.currentForm = parseInt(this.sessionStorageService.get('documentsFormSelected') as string);
-                console.log(this.currentForm);
-            }
-            this.offset = this.pageSize * (this.pageIndex);
-        } else {
-            this.sessionStorageService.remove('documentsPageSize');
-            this.sessionStorageService.remove('documentsPageIndex');
-            this.sessionStorageService.remove('documentsTimeIndex');
-        }
+
+        this.offset = this.pageSize * (this.pageIndex);
+
         this.removeLockByUserId();
         this.http.get(environment['url'] + '/ws/status/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {

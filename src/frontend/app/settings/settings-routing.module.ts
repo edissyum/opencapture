@@ -23,39 +23,39 @@ import { AboutUsComponent } from './general/about-us/about-us.component';
 import { HasPrivilegeService } from "../../services/has-privilege.service";
 import { SeparatorComponent } from "./splitter/separator/separator.component";
 import { LoginRequiredService } from "../../services/login-required.service";
-import { FormListComponent } from "./verifier/form/list/form-list.component";
-import { WorkflowListComponent } from "./verifier/workflow/list/workflow-list.component";
-import { WorkflowListSplitterComponent } from "./splitter/workflow/list/workflow-list.component";
+import { FormsListComponent } from "./verifier/forms/list/forms-list.component";
+import { WorkflowsListComponent } from "./verifier/workflows/list/workflows-list.component";
+import { WorkflowsListSplitterComponent } from './splitter/workflows/list/workflows-list.component';
 import { UsersListComponent } from "./general/users/list/users-list.component";
 import { RolesListComponent } from "./general/roles/list/roles-list.component";
-import { SplitterFormListComponent } from "./splitter/form/list/form-list.component";
+import { SplitterFormsListComponent } from "./splitter/forms/list/forms-list.component";
 import { CreateUserComponent } from "./general/users/create/create-user.component";
 import { UpdateUserComponent } from "./general/users/update/update-user.component";
 import { CreateRoleComponent } from "./general/roles/create/create-role.component";
 import { UpdateRoleComponent } from "./general/roles/update/update-role.component";
-import { FormBuilderComponent } from "./verifier/form/builder/form-builder.component";
-import { WorkflowBuilderComponent } from "./verifier/workflow/builder/workflow-builder.component";
-import { WorkflowBuilderSplitterComponent } from "./splitter/workflow/builder/workflow-builder.component";
+import { FormBuilderComponent } from "./verifier/forms/builder/form-builder.component";
+import { WorkflowBuilderComponent } from "./verifier/workflows/builder/workflow-builder.component";
+import { WorkflowBuilderSplitterComponent } from "./splitter/workflows/builder/workflow-builder.component";
 import { OutputsListComponent } from "./verifier/outputs/list/outputs-list.component";
 import { ListDoctypeComponent } from "./splitter/doctypes/list/list-doctype.component";
 import { CustomFieldsComponent } from "./general/custom-fields/custom-fields.component";
-import { SplitterOutputListComponent } from "./splitter/output/list/output-list.component";
+import { SplitterOutputListComponent } from "./splitter/outputs/list/outputs-list.component";
 import { UpdateOutputComponent } from "./verifier/outputs/update/update-output.component";
 import { ConfigurationsComponent } from "./general/configurations/configurations.component";
 import { DocserversComponent } from "./general/docservers/docservers.component";
 import { RegexComponent } from "./general/regex/regex.component";
 import { MailCollectComponent } from "./general/mailcollect/mailcollect.component";
 import { CreateOutputComponent } from "./verifier/outputs/create/create-output.component";
-import { SplitterFormBuilderComponent } from "./splitter/form/builder/form-builder.component";
+import { SplitterFormBuilderComponent } from "./splitter/forms/builder/form-builder.component";
 import { CreateDoctypeComponent } from "./splitter/doctypes/create/create-doctype.component";
-import { SplitterUpdateOutputComponent } from "./splitter/output/update/update-output.component";
-import { SplitterCreateOutputComponent } from "./splitter/output/create/create-output.component";
-import { ListVerifierAiModelComponent } from "./verifier/ai-model/list/list-ai-model.component";
-import { CreateVerifierAiModelComponent } from "./verifier/ai-model/create/create-ai-model.component";
-import { UpdateVerifierAiModelComponent } from "./verifier/ai-model/update/update-ai-model.component";
-import { ListSplitterAiModelComponent } from "./splitter/ai-model/list/list-ai-model.component";
-import { CreateSplitterAiModelComponent } from "./splitter/ai-model/create/create-ai-model.component";
-import { UpdateSplitterAiModelComponent } from "./splitter/ai-model/update/update-ai-model.component";
+import { SplitterUpdateOutputComponent } from "./splitter/outputs/update/update-output.component";
+import { SplitterCreateOutputComponent } from "./splitter/outputs/create/create-output.component";
+import { ListVerifierAiModelComponent } from "./verifier/ai-models/list/list-ai-models.component";
+import { CreateVerifierAiModelComponent } from "./verifier/ai-models/create/create-ai-model.component";
+import { UpdateVerifierAiModelComponent } from "./verifier/ai-models/update/update-ai-model.component";
+import { ListSplitterAiModelsComponent } from "./splitter/ai-models/list/list-ai-models.component";
+import { CreateSplitterAiModelComponent } from "./splitter/ai-models/create/create-ai-model.component";
+import { UpdateSplitterAiModelComponent } from "./splitter/ai-models/update/update-ai-model.component";
 import { PositionsMaskListComponent } from "./verifier/positions-mask/list/positions-mask-list.component";
 import { CreatePositionsMaskComponent } from "./verifier/positions-mask/create/create-positions-mask.component";
 import { UpdatePositionsMaskComponent } from "./verifier/positions-mask/update/update-positions-mask.component";
@@ -153,7 +153,7 @@ const routes: Routes = [
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
-        path: 'settings/verifier/workflows', component: WorkflowListComponent,
+        path: 'settings/verifier/workflows', component: WorkflowsListComponent,
         data: {title: 'SETTINGS.list_workflows', privileges: ['settings', 'workflows_list']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
@@ -168,7 +168,7 @@ const routes: Routes = [
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
-        path: 'settings/verifier/forms', component: FormListComponent,
+        path: 'settings/verifier/forms', component: FormsListComponent,
         data: {title: 'SETTINGS.list_forms', privileges: ['settings', 'forms_list']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
@@ -235,7 +235,7 @@ const routes: Routes = [
 // -- END Verifier
 // -- Splitter
     {
-        path: 'settings/splitter/workflows', component: WorkflowListSplitterComponent,
+        path: 'settings/splitter/workflows', component: WorkflowsListSplitterComponent,
         data: {title: 'SETTINGS.list_workflows', privileges: ['settings', 'workflows_list_splitter']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
@@ -250,7 +250,7 @@ const routes: Routes = [
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
-        path: 'settings/splitter/forms', component: SplitterFormListComponent,
+        path: 'settings/splitter/forms', component: SplitterFormsListComponent,
         data: {title: 'SETTINGS.list_forms', privileges: ['settings', 'forms_list_splitter']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
@@ -304,7 +304,7 @@ const routes: Routes = [
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
-        path: 'settings/splitter/ai', component: ListSplitterAiModelComponent,
+        path: 'settings/splitter/ai', component: ListSplitterAiModelsComponent,
         data: {title: 'SETTINGS.artificial_intelligence', privileges: ['settings', 'list_ai_model_splitter']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },

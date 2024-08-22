@@ -16,13 +16,12 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthService } from "../../../../services/auth.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../services/settings.service";
-import { LastUrlService } from "../../../../services/last-url.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
 import { SessionStorageService } from "../../../../services/session-storage.service";
 import { environment } from  "../../../env";
@@ -51,12 +50,10 @@ export class RegexComponent implements OnInit {
     constructor(
         public router: Router,
         private http: HttpClient,
-        private route: ActivatedRoute,
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
-        private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
         private sessionStorageService: SessionStorageService
     ) { }
@@ -64,15 +61,10 @@ export class RegexComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
 
-        const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('settings/general/regex') || lastUrl === '/') {
-            if (this.sessionStorageService.get('regexPageIndex')) {
-                this.pageIndex = parseInt(this.sessionStorageService.get('regexPageIndex') as string);
-            }
-            this.offset = this.pageSize * (this.pageIndex);
-        } else {
-            this.sessionStorageService.remove('regexPageIndex');
+        if (this.sessionStorageService.get('regexPageIndex')) {
+            this.pageIndex = parseInt(this.sessionStorageService.get('regexPageIndex') as string);
         }
+        this.offset = this.pageSize * (this.pageIndex);
 
         this.http.get(environment['url'] + '/ws/config/getRegex', {headers: this.authService.headers}).pipe(
             tap((data: any) => {

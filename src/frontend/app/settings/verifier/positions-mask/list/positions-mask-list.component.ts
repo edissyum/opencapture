@@ -16,7 +16,7 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { MatDialog } from "@angular/material/dialog";
 import { UserService } from "../../../../../services/user.service";
@@ -24,7 +24,6 @@ import { AuthService } from "../../../../../services/auth.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../../services/settings.service";
-import { LastUrlService } from "../../../../../services/last-url.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import { SessionStorageService } from "../../../../../services/session-storage.service";
 import { Sort } from "@angular/material/sort";
@@ -51,13 +50,11 @@ export class PositionsMaskListComponent implements OnInit {
         public router: Router,
         private http: HttpClient,
         private dialog: MatDialog,
-        private route: ActivatedRoute,
         public userService: UserService,
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
-        private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
         private sessionStorageService: SessionStorageService
     ) {
@@ -65,15 +62,10 @@ export class PositionsMaskListComponent implements OnInit {
 
     ngOnInit(): void {
         this.serviceSettings.init();
-        const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('settings/verifier/positions-mask') || lastUrl === '/') {
-            if (this.sessionStorageService.get('positionMaskPageIndex')) {
-                this.pageIndex = parseInt(this.sessionStorageService.get('positionMaskPageIndex') as string);
-            }
-            this.offset = this.pageSize * (this.pageIndex);
-        } else {
-            this.sessionStorageService.remove('positionMaskPageIndex');
+        if (this.sessionStorageService.get('positionMaskPageIndex')) {
+            this.pageIndex = parseInt(this.sessionStorageService.get('positionMaskPageIndex') as string);
         }
+        this.offset = this.pageSize * (this.pageIndex);
         this.loadPositionMask().then();
     }
 
