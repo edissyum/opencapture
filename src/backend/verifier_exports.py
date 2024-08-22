@@ -133,24 +133,25 @@ def export_xml(data, log, document_info, database):
                             description = get_data(document_info, description_title)
 
                             new_field = Et.SubElement(line_element, 'line_ht')
-                            new_field.text = str(line_ht)
+                            new_field.text = str(line_ht) if line_ht else ''
                             new_field = Et.SubElement(line_element, 'quantity')
-                            new_field.text = str(quantity)
+                            new_field.text = str(quantity) if quantity else ''
                             new_field = Et.SubElement(line_element, 'unit_price')
-                            new_field.text = str(unit_price)
+                            new_field.text = str(unit_price) if unit_price else ''
                             new_field = Et.SubElement(line_element, 'description')
-                            new_field.text = str(description)
+                            new_field.text = str(description) if description else ''
                 else:
                     if 'vat_rate' not in value and 'vat_amount' not in value and 'no_rate_amount' not in value and \
                             'line_ht' not in value and 'quantity' not in value and 'unit_price' not in value and \
                             'description' not in value:
                         new_field = Et.SubElement(xml_datas, value)
-                        new_field.text = str(document_info['datas'][document_data])
+                        new_field.text = str(document_info['datas'][document_data]) if document_info['datas'][document_data] else ''
 
             xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
             xml_file.write(xml_root)
             xml_file.close()
         # END Fill XML with document informations
+        exit()
         return folder_out + '/' + filename, 200
     else:
         if log:
