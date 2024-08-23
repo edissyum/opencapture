@@ -159,7 +159,7 @@ def launch(args):
                 path = args['file']
 
                 attachments = []
-                if 'attachments' in args:
+                if 'attachments' in args and args['attachments']:
                     attachments = args['attachments']
 
                 if check_file(files, path, log, docservers):
