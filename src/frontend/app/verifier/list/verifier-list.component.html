@@ -268,9 +268,14 @@
                                             {{ document['supplier_name'] ? document['supplier_name'] : 'ACCOUNTS.supplier_unknow' | translate }}
                                         </mat-card-title>
                                         <mat-card-subtitle class="mt-2 mb-1">
-                                            <div *ngFor="let subtitles of document.display?.['subtitles']" class="-mb-1 text-base text-ellipsis overflow-hidden w-full inline-block">
-                                                <strong>{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
-                                            </div>
+                                            <span *ngFor="let subtitles of document.display?.['subtitles']"
+                                                  [matTooltip]="subtitles['data']" [matTooltipDisabled]="(subtitleContent.offsetWidth < subtitleParent.scrollWidth)">
+                                                <div #subtitleParent class="-mb-1 text-base truncate w-full inline-block">
+                                                    <span #subtitleContent>
+                                                        <strong>{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
+                                                    </span>
+                                                </div>
+                                            </span>
                                         </mat-card-subtitle>
                                     </mat-card-header>
                                 </mat-card>

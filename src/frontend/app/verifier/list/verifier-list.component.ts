@@ -739,4 +739,9 @@ export class VerifierListComponent implements OnInit {
         localStorage.setItem('verifierOrder', order);
         this.loadDocuments().then()
     }
+
+    checkDisabledTooltip(subtitle: any) {
+        const subtitleLength = (this.translate.instant(subtitle['label']).length / 2) + subtitle['data'].length;
+        return subtitleLength <= 30;
+    }
 }
