@@ -30,7 +30,7 @@ from flask import current_app, request, g as current_context
 from src.backend import retrieve_custom_from_url, create_classes_from_custom_id
 
 
-def handle_uploaded_file(files, document_id, batch_id, module):
+def handle_uploaded_file(files, document_id, batch_id, module, from_api=False):
     if 'docservers' in current_context:
         docservers = current_context.docservers
     else:
@@ -91,11 +91,18 @@ def handle_uploaded_file(files, document_id, batch_id, module):
                 else:
                     desc = gettext('UPLOAD_ATTACHMENTS_SPLITTER', batch_id=batch_id)
 
+                if from_api:
+                    ip = '0.0.0.0'
+                    user_info = 'mailcollect'
+                else:
+                    ip = request.remote_addr
+                    user_info = request.environ['user_info']
+
                 history.add_history({
                     'module': module,
-                    'ip': request.remote_addr,
+                    'ip': ip,
                     'submodule': 'upload_attachments',
-                    'user_info': request.environ['user_info'],
+                    'user_info': user_info,
                     'desc': desc
                 })
     return '', 200
