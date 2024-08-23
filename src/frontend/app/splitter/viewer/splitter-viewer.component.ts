@@ -323,14 +323,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             tap((data: any) => {
                 data.batches.forEach((batch: any) =>
                     this.batches.push({
-                        id             : batch['id'],
-                        inputId        : batch['input_id'],
-                        fileName       : batch['file_name'],
-                        formLabel      : batch['form_label'],
-                        date           : batch['batch_date'],
-                        customerName   : batch['customer_name'],
-                        documentsCount : batch['documents_count'],
-                        thumbnail      : this.sanitize(batch['thumbnail'])
+                        id               : batch['id'],
+                        inputId          : batch['input_id'],
+                        fileName         : batch['file_name'],
+                        formLabel        : batch['form_label'],
+                        date             : batch['batch_date'],
+                        customerName     : batch['customer_name'],
+                        documentsCount   : batch['documents_count'],
+                        attachmentsCount : batch['attachments_count'],
+                        thumbnail        : this.sanitize(batch['thumbnail'])
                     })
                 );
 

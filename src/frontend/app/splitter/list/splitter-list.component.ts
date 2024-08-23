@@ -202,9 +202,9 @@ export class SplitterListComponent implements OnInit {
                         customerId      : batch['customer_id'],
                         customerName    : batch['customer_name'],
                         documentsCount  : batch['documents_count'],
-                        attachmentCount : batch['attachments_count'],
+                        attachmentsCount: batch['attachments_count'],
                         thumbnail       : this.sanitize(batch['thumbnail'])
-                    })
+                    }),
                 );
                 this.total = data.count;
             }),

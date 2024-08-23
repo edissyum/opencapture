@@ -140,17 +140,16 @@
                                             {{ batch['documentsCount'] }}<i class="far fa-file-alt ml-1"></i>
                                         </span>
                                         <span class="text-green-400 text-base badge badge-secondary badge-pill border-l border-green-400 ml-1"
-                                              *ngIf="batch['attachmentCount'] && batch['attachmentCount'] > 0"
-                                              [matTooltip]="this.translate.instant('ATTACHMENTS.attachments_count') + ' : ' + batch['attachmentCount']">
-                                            {{ batch['attachmentCount'] }}<i class="fas fa-paperclip ml-1"></i>
+                                              *ngIf="batch['attachmentsCount'] && batch['attachmentsCount'] > 0"
+                                              [matTooltip]="this.translate.instant('ATTACHMENTS.attachments_count') + ' : ' + batch['attachmentsCount']">
+                                            {{ batch['attachmentsCount'] }}<i class="fas fa-paperclip ml-1"></i>
                                         </span>
                                     </span>
                                     <mat-card-header class="leading-3 relative z-10 bg-white pt-0 px-6"
                                                      [routerLink]="batch['locked'] &&  batch['lockedBy'] !== this.userService.user.username ? '/splitter/list' : '/splitter/viewer/' + currentTime + '/' + batch['id']"
                                                      (click)="batch['locked'] &&  batch['lockedBy'] !== this.userService.user.username ? displayBatchLocked(batch['lockedBy']) : ''">
                                         <mat-card-title class="break-all inline-block w-full truncate">
-                                            <span class="" [matTooltip]="batch['fileName']"
-                                                  [matTooltipDisabled]="batch['fileName']?.replace(' ', '').length <= 30">
+                                            <span [matTooltip]="batch['fileName']" [matTooltipDisabled]="batch['fileName']?.replace(' ', '').length <= 30">
                                                 {{ batch['fileName'] }}
                                                 <i [matTooltip]="'SPLITTER.batch_locked' | translate"
                                                    class="fa-solid fa-lock text-base mb-2 relative" style="bottom: 0.1rem"
