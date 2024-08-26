@@ -149,7 +149,13 @@ def launch(args):
                 args['process']['hostname'],
                 args['process']['port'],
                 args['process']['login'],
-                args['process']['password']
+                args['process']['password'],
+                args['process']['oauth'],
+                args['process']['tenant_id'],
+                args['process']['client_id'],
+                args['process']['secret'],
+                args['process']['scopes'],
+                args['process']['authority'],
             )
             log = Log((args['log']), smtp)
             log.task_id_monitor = args['task_id_monitor']

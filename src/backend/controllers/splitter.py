@@ -211,8 +211,8 @@ def retrieve_batches(data):
             customer = accounts.get_customer_by_id({'customer_id': batch['customer_id']})
             batches[index]['customer_name'] = customer[0]['name'] if 'name' in customer[0] else gettext('CUSTOMER_UNDEFINED')
 
-            attachments_counts = attachments.get_attachments_by_batch_id(batch['id'])
-            batches[index]['attachments_count'] = len(attachments_counts) if attachments_counts else 0
+            attachments_count = attachments.get_attachments_by_batch_id(batch['id'])
+            batches[index]['attachments_count'] = len(attachments_count) if attachments_count else 0
             try:
                 thumbnail = f"{docservers['SPLITTER_THUMB']}/{batches[index]['batch_folder']}/{batches[index]['thumbnail']}"
                 with open(thumbnail, 'rb') as image_file:

@@ -1,7 +1,18 @@
 ::ng-deep #form-select-field {
-    padding-top: 35px !important;
-    & .mdc-notched-outline, .mat-mdc-select-arrow-wrapper {
-        display: none !important;
+    .mat-mdc-form-field-subscript-wrapper {
+        height: 0;
+    }
+
+    .mat-mdc-form-field-flex {
+        @apply h-8 #{!important};
+
+        .mat-mdc-form-field-infix {
+            @apply py-0 #{!important};
+
+            .mat-mdc-select {
+                @apply pt-1 #{!important};
+            }
+        }
     }
 }
 

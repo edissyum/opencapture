@@ -250,7 +250,7 @@
                                               [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : ' + document['nb_pages']">
                                             {{ document['nb_pages'] }}<i class="far fa-file-alt ml-1"></i>
                                         </span>
-                                        <span class="text-green-400 text-base badge badge-secondary badge-pill border-l border-green-400 ml-1"
+                                        <span class="text-green-400 text-base badge badge-secondary badge-pill border-l border-green-400 ml-1.5"
                                               *ngIf="document['attachments_count'] && document['attachments_count'] > 0"
                                               [matTooltip]="this.translate.instant('ATTACHMENTS.attachments_count') + ' : ' + document['attachments_count']">
                                             {{ document['attachments_count'] }}<i class="fas fa-paperclip ml-1"></i>
@@ -268,9 +268,14 @@
                                             {{ document['supplier_name'] ? document['supplier_name'] : 'ACCOUNTS.supplier_unknow' | translate }}
                                         </mat-card-title>
                                         <mat-card-subtitle class="mt-2 mb-1">
-                                            <div *ngFor="let subtitles of document.display?.['subtitles']" class="-mb-1 text-base text-ellipsis overflow-hidden w-full inline-block">
-                                                <strong>{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
-                                            </div>
+                                            <span *ngFor="let subtitles of document.display?.['subtitles']"
+                                                  [matTooltip]="subtitles['data']" [matTooltipDisabled]="(subtitleContent.offsetWidth < subtitleParent.scrollWidth)">
+                                                <div #subtitleParent class="-mb-1 text-base truncate w-full inline-block">
+                                                    <span #subtitleContent>
+                                                        <strong>{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
+                                                    </span>
+                                                </div>
+                                            </span>
                                         </mat-card-subtitle>
                                     </mat-card-header>
                                 </mat-card>
@@ -305,11 +310,11 @@
                                             </div>
                                             <div class="grow flex items-center ml-2" [routerLink]="document.locked && document.locked_by ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
                                                  (click)="document.locked && document.locked_by ? displayDocumentLocked(document['locked_by']) : ''">
-                                                <div class="text-green-400 text-base badge badge-secondary badge-pill pr-2"
+                                                <div class="text-green-400 text-base badge badge-secondary badge-pill pr-1"
                                                      [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : ' + document['nb_pages']">
                                                     {{ document['nb_pages'] }}<i class="far fa-file-alt ml-1"></i>
                                                 </div>
-                                                <div class="text-green-400 text-base badge badge-secondary badge-pill border-l border-green-400 pl-2"
+                                                <div class="text-green-400 text-base badge badge-secondary badge-pill border-l border-green-400 ml-1 pl-1"
                                                      *ngIf="document['attachments_count'] && document['attachments_count'] > 0"
                                                      [matTooltip]="this.translate.instant('ATTACHMENTS.attachments_count') + ' : ' + document['attachments_count']">
                                                     {{ document['attachments_count'] }}<i class="fas fa-paperclip ml-1"></i>

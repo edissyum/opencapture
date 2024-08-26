@@ -2,25 +2,21 @@
     <app-loader></app-loader>
 </div>
 <input multiple type="file" class="hidden" (change)="uploadAttachments($event)" #attachmentUpload>
-<mat-drawer-container
-        [hasBackdrop]="false"
-        *ngIf="!this.loading"
-        (click)="onScreenClick($event)"
-        [class.pointer-events-none]="validateLoading"
-        class="w-full absolute top-16 bottom-0">
-    <mat-drawer #drawer mode="side" [opened]="true" class="w-1/5">
+<mat-sidenav-container [hasBackdrop]="false" *ngIf="!this.loading" (click)="onScreenClick($event)" [class.pointer-events-none]="validateLoading" class="w-full absolute top-16 bottom-0">
+    <mat-sidenav #sidenav mode="side" [opened]="true" class="w-1/5 border-r border-green-400">
         <div class="mt-1">
-            <div [ngSwitch]="currentTime" class="mt-2 w-full h-10 grid place-content-center">
-                <div class="text-base text-slate-400">
-                    {{ timeLabels[currentTime] | translate }}, {{ getStatusLabel(currentBatch.status) }}
+            <h3 [ngSwitch]="currentTime" class="mt-4 w-full h-8 grid place-content-center">
+                <div class="text-base text-gray-900">
+                    {{ timeLabels[currentTime] | translate }} - {{ getStatusLabel(currentBatch.status) }}
                 </div>
-            </div>
+            </h3>
+            <mat-divider></mat-divider>
             <span *ngIf="batches.length === 0" class="text-slate-400 w-full grid place-content-center">
                 {{ 'GLOBAL.no_batch_found' | translate }}
             </span>
-            <div cdkDropList  (cdkDropListDropped)="dropBatch($event)">
-                <div class="cursor-move" (cdkDragStarted)="this.isBatchOnDrag = true" (cdkDragEnded)="onBatchDrop(batch.id)"
-                     *ngFor="let batch of this.batches" cdkDrag>
+            <div cdkDropList (cdkDropListDropped)="dropBatch($event)" class="p-2">
+                <div cdkDrag class="cursor-move" (cdkDragStarted)="this.isBatchOnDrag = true"
+                     (cdkDragEnded)="onBatchDrop(batch.id)" *ngFor="let batch of this.batches">
                     <div *cdkDragPlaceholder class="drop-shadow-xl w-full h-40 text-center text-gray-500 bg-slate-50 grid place-content-center">
                         <i class="fa-solid fa-object-group fa-3x"></i>
                         {{ 'SPLITTER.selected_batch_for_merge' | translate }}
@@ -32,15 +28,26 @@
                             </mat-card-header>
                         </a>
                         <mat-card-content>
-                            <span matTooltip="{{ 'SPLITTER.document_number' | translate }} : {{ batch['documentsCount'] }}"
-                                  class="float-right text-green-400">
-                                {{ batch['documentsCount'] }}
-                                <i class="far fa-file-alt"></i>
-                            </span>
-                            <mat-card-subtitle class="mt-2 -mb-1 block overflow-hidden text-ellipsis w-11/12">
-                                <span class="leading-7 flex">
-                                    {{ batch['fileName'] }}
+                            <span>
+                                <span class="text-green-400 text-base badge badge-secondary badge-pill border-green-400"
+                                      matTooltip="{{ 'OUTPUT.documents_count' | translate }} : {{ batch['documentsCount'] }}">
+                                    {{ batch['documentsCount'] }}<i class="far fa-file-alt ml-1"></i>
                                 </span>
+                                <span class="text-green-400 text-base badge badge-secondary badge-pill border-l border-green-400 ml-1"
+                                      *ngIf="batch['attachmentsCount'] && batch['attachmentsCount'] > 0"
+                                      [matTooltip]="this.translate.instant('ATTACHMENTS.attachments_count') + ' : ' + batch['attachmentsCount']">
+                                    {{ batch['attachmentsCount'] }}<i class="fas fa-paperclip ml-0.5"></i>
+                                </span>
+                            </span>
+                            <mat-card-title class="break-all inline-block w-full truncate">
+                            <span [matTooltip]="batch['fileName']" [matTooltipDisabled]="batch['fileName']?.replace(' ', '').length <= 30">
+                                {{ batch['fileName'] }}
+                                <i [matTooltip]="'SPLITTER.batch_locked' | translate"
+                                   class="fa-solid fa-lock text-base mb-2 relative" style="bottom: 0.1rem"
+                                   *ngIf="batch.locked"></i>
+                            </span>
+                            </mat-card-title>
+                            <mat-card-subtitle class="mt-2 -mb-1 block overflow-hidden text-ellipsis w-11/12">
                                 <strong>{{ 'SPLITTER.identifier' | translate }}</strong> : {{ batch['id'] }}<br>
                                 <strong>{{ 'VERIFIER.register_date' | translate }}</strong> : {{ batch['date'] }}<br>
                             </mat-card-subtitle>
@@ -49,8 +56,8 @@
                 </div>
             </div>
         </div>
-    </mat-drawer>
-    <mat-drawer #attachments_list mode="side" [opened]="false" position="end" class="2xl:w-96 xl:w-80 md:w-72 sm:w-64 w-32 flex flex-col h-full border-r border-green-400">
+    </mat-sidenav>
+    <mat-sidenav #attachments_list mode="side" [opened]="false" position="end" class="2xl:w-96 xl:w-80 md:w-72 sm:w-64 w-32 flex flex-col h-full border-r border-green-400">
         <div class="flex justify-between items-center">
             <span>
                 <i class="fas fa-plus text-xl cursor-pointer ml-2" *ngIf="this.currentBatch.status !== 'END'"
@@ -108,14 +115,10 @@
                 </div>
             </div>
         </div>
-    </mat-drawer>
-    <mat-drawer-content class="flex flex-col items-start bg-white">
-        <button class="btn-show-batches left-0 sticky min-h-full mt-0 top-0 left-0 w-2.5 min-w-0"
-                mat-raised-button (click)="drawer.toggle()">
-            <span>
-                <i *ngIf="drawer.opened" class="fa-solid fa-angle-left"></i>
-                <i *ngIf="!drawer.opened" class="fa-solid fa-angle-right"></i>
-            </span>
+    </mat-sidenav>
+    <mat-sidenav-content class="flex flex-col items-start bg-white">
+        <button mat-icon-button (click)="sidenav.toggle();" class="sticky left-1 top-1">
+            <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-xl text-gray-900"></i>
         </button>
         <div *ngIf="showZoomPage" class="fixed z-20 w-4/12 h-5/6 grid justify-items-stretch right-0 top-20">
             <img id="zoom-image" class="justify-self-end border-2"
@@ -138,36 +141,20 @@
                 </div>
             </div>
             <mat-accordion class="w-full">
-                <mat-expansion-panel class="my-6" [expanded]="true" (opened)="batchMetadataOpenState = true"
-                                     (closed)="batchMetadataOpenState = false" #batchMetadata>
-                    <mat-expansion-panel-header>
+                <mat-expansion-panel class="my-6" [expanded]="true" (opened)="batchMetadataOpenState = true" (closed)="batchMetadataOpenState = false" #batchMetadata>
+                    <mat-expansion-panel-header class="mb-4 mt-2">
                         <mat-panel-title class="grid grid-cols-3 gap-3">
-                            <div class="grid grid-cols-2 gap-2">
-                                <span>
-                                    {{ 'SPLITTER.batch_metadata' | translate }}
-                                </span>
-                            </div>
                             <div>
-                                <mat-form-field class="w-full p-4" id="form-select-field"
-                                                (click)="$event.stopPropagation()"
-                                                matTooltip="{{ 'SPLITTER.edit_used_form' | translate }}">
-                                    <i matPrefix class="fa-sharp fa-solid fa-caret-down text-green-400 fa-lg"></i>
+                                {{ 'SPLITTER.batch_metadata' | translate }}
+                            </div>
+                            <div class="m-auto">
+                                <mat-form-field class="w-full p-4" id="form-select-field" (click)="$event.stopPropagation()" [matTooltip]="'SPLITTER.edit_used_form' | translate">
                                     <mat-select (selectionChange)="onFormChange($event.value)" [(ngModel)]="currentBatch.formId">
                                         <mat-option [value]="form.id" *ngFor="let form of this.forms;">
                                             {{ form.label }}
                                         </mat-option>
                                     </mat-select>
                                 </mat-form-field>
-                            </div>
-                            <div class="text-right text-gray-400">
-                                <span class="mx-2" matTooltip="{{ 'HEADER.status' | translate }}">
-                                    <i class="fa-solid fa-flag"></i>
-                                    {{ getStatusLabel(currentBatch.status) }}
-                                </span>
-                                <span>
-                                    <i class="fa-solid fa-pipe"></i>
-                                    {{ 'SPLITTER.identifier' | translate }} : {{ currentBatch.id }}
-                                </span>
                             </div>
                         </mat-panel-title>
                     </mat-expansion-panel-header>
@@ -182,7 +169,7 @@
                                     <mat-label>
                                         <span [innerHTML]="getPlaceholderFromSearchMask(field.searchMask, field.label)"></span>
                                     </mat-label>
-                                    <mat-select [formControlName]="field.label_short" class="mat-search" (change)="updateProgressBar()">
+                                    <mat-select [formControlName]="field.label_short" (change)="updateProgressBar()">
                                         <mat-option *ngIf="field.metadata_key">
                                             <ngx-mat-select-search
                                                     [formControlName]="'search_' + field.label_short"
@@ -250,12 +237,12 @@
                     </form>
                     <button mat-button (click)="downloadOriginalFile(); $event.stopPropagation();"
                             class="float-left mb-2" matTooltip="{{ 'SPLITTER.show_original_file' | translate }}">
-                        <i class="fa-solid fa-download cursor-pointer fa-2x" *ngIf="!downloadLoading"></i>
-                        <i class="fas fa-circle-notch fa-spin fa-2x" *ngIf="downloadLoading"></i>
+                        <i class="fa-solid fa-download cursor-pointer text-2xl text-gray-900" *ngIf="!downloadLoading"></i>
+                        <i class="fas fa-circle-notch fa-spin text-2xl text-gray-900" *ngIf="downloadLoading"></i>
                     </button>
                     <button mat-button (click)="loadReferential(true, true); $event.stopPropagation();"
                             matTooltip="{{ 'SPLITTER.load_referential' | translate }}">
-                        <i class="fa-solid fa-sync fa-2x"></i>
+                        <i class="fa-solid fa-sync text-2xl text-gray-900"></i>
                     </button>
                     <div *ngIf="!this.loading" class="float-right mr-2 cursor-pointer text-2xl text-gray-900"
                          [matTooltip]="this.documents.length === 1 ? this.translate.instant('ATTACHMENTS.attachments') : 'ATTACHMENTS.splitter_one_document' | translate">
@@ -279,9 +266,9 @@
                 <mat-card class="document w-full shadow-lg mb-4 border-2 border-slate-200"
                           *ngFor="let document of documents; let documentIndex = index;" (click)="selectDocument(document)" cdkDrag>
                     <div class="w-full h-40 border-dashed border-2 border-gray-400 bg-gray-200" *cdkDragPlaceholder></div>
-                    <div class="drag-document absolute w-6 h-6 -left-2 -top-2 z-10 rounded-full text-gray-400 text-center
-                      align-middle bg-slate-50 drop-shadow-xl hover:cursor-grabbing group-hover:text-gray-500
-                      " matTooltip="{{ 'SPLITTER.change_document_position' | translate }}" cdkDragHandle>
+                    <div class="drag-document absolute w-6 h-6 -left-2 -top-2 z-10 rounded-full text-gray-400
+                                text-center align-middle bg-slate-50 drop-shadow-xl hover:cursor-grabbing group-hover:text-gray-500"
+                                matTooltip="{{ 'SPLITTER.change_document_position' | translate }}" cdkDragHandle>
                         <i class="fa-solid fa-arrows-up-down-left-right text-lg"></i>
                     </div>
                     <div *cdkDragPreview class="mt-4 drop-shadow-xl w-4/6 h-40 text-center text-gray-500 bg-slate-50 grid place-content-center">
@@ -332,7 +319,7 @@
                                                 <mat-label>
                                                     <span [innerHTML]="getPlaceholderFromSearchMask(field.searchMask, field.label)"></span>
                                                 </mat-label>
-                                                <mat-select [formControlName]="field.label_short" class="mat-search">
+                                                <mat-select [formControlName]="field.label_short">
                                                     <mat-option *ngIf="field.metadata_key">
                                                         <ngx-mat-select-search
                                                                 [formControlName]="'search_' + field.label_short"
@@ -518,5 +505,5 @@
                 </mat-card-content>
             </mat-card>
         </div>
-    </mat-drawer-content>
-</mat-drawer-container>
+    </mat-sidenav-content>
+</mat-sidenav-container>

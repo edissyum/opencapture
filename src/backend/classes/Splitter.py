@@ -279,7 +279,7 @@ class Splitter:
 
             if attachments_list:
                 from src.backend.controllers import attachments
-                attachments.handle_uploaded_file(attachments_list, None, batch_id, 'splitter')
+                attachments.handle_uploaded_file(attachments_list, None, batch_id, 'splitter', True)
 
             batches_id.append(batch_id)
 
