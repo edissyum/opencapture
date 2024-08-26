@@ -60,6 +60,24 @@ def retrieve_splitter_batches():
     res = splitter.retrieve_batches(request.json)
     return make_response(jsonify(res[0])), res[1]
 
+@bp.route('splitter/moveDocumentsToAttachments/<int:batch_id>', methods=['POST'])
+@auth.token_required
+def move_documents_to_attachment(batch_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/splitter/moveDocumentsToAttachments/{batch_id}'}), 403
+
+    check, message = rest_validator(request.json, [
+        {'id': 'documents', 'type': list, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    response, status = splitter.move_documents_to_attachment(request.json['documents'], batch_id)
+    return make_response(jsonify(response)), status
 
 @bp.route('splitter/batch/<int:batch_id>/file', methods=['GET'])
 @auth.token_required

@@ -1381,7 +1381,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    saveModifications(): void {
+    saveModifications(refreshPage: boolean = false): void {
         this.saveInfosLoading = true;
         this.getFormFieldsValues();
 
@@ -1408,6 +1408,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.saveInfosLoading   = false;
                 this.hasUnsavedChanges  = false;
                 this.notify.success(this.translate.instant('SPLITTER.batch_modification_saved'));
+                if (refreshPage) {
+                    this.ngOnInit().then();
+                }
             }),
             catchError((err: any) => {
                 this.saveInfosLoading = false;
@@ -1586,5 +1589,53 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 return of(false);
             })
         ).subscribe();
+    }
+
+    setDocumentPrincipal(documentIndex: number): void {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle       : this.translate.instant('GLOBAL.confirm'),
+                confirmText        : this.translate.instant('SPLITTER.confirm_set_document_principal'),
+                confirmButton      : this.translate.instant('FORMS.validate'),
+                confirmButtonColor : "warn",
+                cancelButton       : this.translate.instant('GLOBAL.cancel')
+            },
+            width: "650px"
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.loading = true;
+                if (this.documents[documentIndex]) {
+                    let documentsToMove: any = [];
+                    this.documents.forEach((document: any, index: number) => {
+                        const documentId = parseInt(document.id.replace('document-', ''));
+                        if (documentIndex !== index) {
+                            documentsToMove.push({'id': documentId, 'index': index});
+                        }
+                    });
+
+                    if (documentsToMove) {
+                        this.http.post(environment['url'] + '/ws/splitter/moveDocumentsToAttachments/' + this.currentBatch.id, {'documents': documentsToMove},
+                            {headers: this.authService.headers}).pipe(
+                            tap(() => {
+                                documentsToMove.forEach((document: any) => {
+                                    this.hasUnsavedChanges = true;
+                                    this.deletedDocumentsIds.push(this.documents[document['index']].id);
+                                });
+                                this.loading = false;
+                                this.saveModifications(true);
+                            }),
+                            catchError((err: any) => {
+                                this.loading = false;
+                                console.debug(err);
+                                this.notify.handleErrors(err);
+                                return of(false);
+                            })
+                        ).subscribe();
+                    }
+                }
+            }
+        });
     }
 }
