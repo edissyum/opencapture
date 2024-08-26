@@ -88,7 +88,7 @@
                                matTooltip="{{ 'GLOBAL.delete_all_checked' | translate }}"></i>
                         </span>
                     </div>
-                    <hr class="w-1/2 m-auto -mt-5 mb-4 border-green-400 relative z-30">
+                    <hr class="w-1/2 m-auto -mt-5 mb-5 border-green-400 relative z-30">
                     <div *ngIf="this.loading">
                         <app-loader></app-loader>
                     </div>
@@ -142,7 +142,7 @@
                                         <span class="text-green-400 text-base badge badge-secondary badge-pill border-l border-green-400 ml-1"
                                               *ngIf="batch['attachmentsCount'] && batch['attachmentsCount'] > 0"
                                               [matTooltip]="this.translate.instant('ATTACHMENTS.attachments_count') + ' : ' + batch['attachmentsCount']">
-                                            {{ batch['attachmentsCount'] }}<i class="fas fa-paperclip ml-1"></i>
+                                            {{ batch['attachmentsCount'] }}<i class="fas fa-paperclip ml-0.5"></i>
                                         </span>
                                     </span>
                                     <mat-card-header class="leading-3 relative z-10 bg-white pt-0 px-6"
@@ -211,7 +211,7 @@
                                                 <span class="text-green-400 text-base badge badge-secondary badge-pill border-l border-green-400 pl-2"
                                                       *ngIf="batch['attachmentCount'] && batch['attachmentCount'] > 0"
                                                       [matTooltip]="this.translate.instant('ATTACHMENTS.attachments_count') + ' : ' + batch['attachmentCount']">
-                                                    {{ batch['attachmentCount'] }}<i class="fas fa-paperclip ml-1"></i>
+                                                    {{ batch['attachmentCount'] }}<i class="fas fa-paperclip ml-0.5"></i>
                                                 </span>
                                             </div>
                                             <div class="grow flex items-center ml-8">
