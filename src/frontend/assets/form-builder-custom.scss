@@ -13,10 +13,6 @@ i.cdk-drag {
     @apply rounded-sm;
 }
 
-.form-container .mat-mdc-form-field-subscript-wrapper {
-    height: 0;
-}
-
 .ng-sg-placeholder {
     & mat-form-field {
         @apply scale-90;

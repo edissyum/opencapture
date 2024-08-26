@@ -36,7 +36,8 @@ import { NotificationService } from "../../../../../services/notifications/notif
 
 @Component({
     selector: 'form-builder',
-    templateUrl: './form-builder.component.html'
+    templateUrl: './form-builder.component.html',
+    styleUrls: ['./form-builder.component.scss']
 })
 export class SplitterFormBuilderComponent implements OnInit {
     loading                 : boolean   = true;

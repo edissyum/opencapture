@@ -12,3 +12,7 @@
         }
     }
 }
+
+::ng-deep .form-container .mat-mdc-form-field-subscript-wrapper {
+    height: 0;
+}
