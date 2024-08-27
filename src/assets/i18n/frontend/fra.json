@@ -117,6 +117,7 @@
 		"delete_attachment": "Supprimer la pièce jointe",
 		"download_attachment": "Télécharger la pièce jointe",
 		"loading_attachments": "Chargement des pièces jointes...",
+		"set_document_principal": "Mettre ce document comme principal, les autres seront remontés en pièces jointes",
 		"splitter_one_document": "Si vous souhaitez ajouter des pièces jointes, le lot ne doit contenir qu'un seul document"
 	},
 	"AUTH": {
@@ -962,6 +963,7 @@
 		"confirm_delete_pages": "{{ pagesCount }} page(s) sélectionnée(s), voulez-vous vraiment supprimer la sélection ?",
 		"confirm_merge_all_checked_batches": "Êtes-vous sûr de vouloir fusionner tous les lots selectionnés de la page ?",
 		"confirm_merge_batches": "Veuillez confirmer la fusion des lots",
+		"confirm_set_document_principal": "Êtes-vous sûr de vouloir définir ce document comme document principal ?<br>Les autres documents seront mis en pièces jointes",
 		"confirm_validate": "Veuillez confirmer l'enregistrement des modifications et la validation du lot",
 		"degrees": "Degrés",
 		"delete_batch": "Supprimer le lot",
@@ -971,7 +973,6 @@
 		"document_identifier": "Identifiant du document",
 		"document_index": "Indice du document",
 		"document_metadata": "Métadonnées de document",
-		"document_number": "Nombre de documents",
 		"document_separator": "Séparateur de documents",
 		"double_click_to_select_doctype": "Double-cliquez pour sélectionner un type de document",
 		"drop_batch_to_merge": "Déposez pour fusionner avec le lot actuel",
@@ -1137,6 +1138,7 @@
 		"document_locked": "Document verrouillé",
 		"document_locked_by": "Document verrouillé par l'utilisateur suivant : <strong>{{ locked_by }}</strong>",
 		"document_refused": "Document refusé",
+		"document_third_party_wait": "Document mis en attente de vérification du tiers",
 		"documents_deleted": "Document(s) supprimé(s)",
 		"documents_settings": "Paramètres du document",
 		"download_original_file": "Télécharger le fichier original",

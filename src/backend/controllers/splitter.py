@@ -24,16 +24,18 @@ import secrets
 import os.path
 import datetime
 from flask_babel import gettext
+from werkzeug.datastructures import FileStorage
+
 from src.backend import splitter_exports
 from src.backend.classes.CMIS import CMIS
 from src.backend.classes.Files import Files
 from src.backend.main_splitter import launch
 from src.backend.classes.OpenADS import OpenADS
 from src.backend.classes.Splitter import Splitter
-from src.backend.controllers import user, monitoring
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from flask import current_app, request, g as current_context
+from src.backend.controllers import user, monitoring, attachments as attachments_controller
 from src.backend.models import splitter, doctypes, accounts, history, workflow, outputs, forms, attachments
 
 
@@ -450,6 +452,7 @@ def retrieve_documents(batch_id):
             if dotypes and len(dotypes[0]) > 0:
                 doctype_key = dotypes[0]['key'] if dotypes[0]['key'] else None
                 doctype_label = dotypes[0]['label'] if dotypes[0]['label'] else None
+
             res_documents.append({
                 'pages': document_pages,
                 'doctype_key': doctype_key,
@@ -845,3 +848,39 @@ def get_batch_outputs(batch_id):
         })
 
     return {'outputs': _outputs}, 200
+
+def move_documents_to_attachment(documents, batch_id):
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+
+    for document in documents:
+        document_id = document['id']
+        pages, _ = splitter.get_document_pages({'document_id': document_id})
+        batch_info, _ = splitter.get_batch_by_id({'id': batch_id})
+
+        file_path = docservers['SPLITTER_ORIGINAL_DOC'] + '/' + batch_info['file_path']
+        pdf_reader = pypdf.PdfReader(file_path, strict=False)
+        pdf_writer = pypdf.PdfWriter()
+
+        for page in pages:
+            print(document_id, pages)
+            pdf_page = pdf_reader.pages[page['source_page'] - 1]
+            if page['rotation'] != 0:
+                pdf_page.rotate(page['rotation'])
+            pdf_writer.add_page(pdf_page)
+
+        tmp_filename = docservers['TMP_PATH'] + '/' + str(uuid.uuid4()) + '.pdf'
+        pdf_writer.write(tmp_filename)
+
+        attachments_controller.handle_uploaded_file({
+            'files': FileStorage(stream=open(tmp_filename, 'rb'), filename=batch_info['file_name'])
+        }, None, batch_id, 'splitter')
+
+        if os.path.isfile(tmp_filename):
+            os.remove(tmp_filename)
+
+    return '', 200

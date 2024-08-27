@@ -117,6 +117,7 @@
 		"delete_attachment": "Delete attachment",
 		"download_attachment": "Download attachment",
 		"loading_attachments": "Loading attachments...",
+		"set_document_principal": "Make this document the main one, the others will be attached.\n",
 		"splitter_one_document": "If you want to add attachments, the batch must only contain one document"
 	},
 	"AUTH": {
@@ -962,6 +963,7 @@
 		"confirm_delete_pages": "{{ pagesCount }} selected, Are you sure you want to delete the selection ?",
 		"confirm_merge_all_checked_batches": "Are you sure you want to merge all checked batch ?",
 		"confirm_merge_batches": "Please confirm batches merge",
+		"confirm_set_document_principal": "Are you sure you want to set this document as the main document?<br>The other documents will be attached\n",
 		"confirm_validate": "Please confirm saving modifications and validation",
 		"degrees": "degrees",
 		"delete_batch": "Delete batch",
@@ -971,7 +973,6 @@
 		"document_identifier": "Document identifier",
 		"document_index": "Document index",
 		"document_metadata": "Document metadata",
-		"document_number": "Number of documents",
 		"document_separator": "Document separator",
 		"double_click_to_select_doctype": "Double click to select a document type",
 		"drop_batch_to_merge": "Drop in the current batch to merge",
@@ -1137,6 +1138,7 @@
 		"document_locked": "Document locked",
 		"document_locked_by": "Document locked by the following user : <strong>{{ locked_by }}</strong>",
 		"document_refused": "Document refused",
+		"document_third_party_wait": "Document pending third party verification",
 		"documents_deleted": "Document(s) deleted successfully",
 		"documents_settings": "Settings document",
 		"download_original_file": "Download original file",

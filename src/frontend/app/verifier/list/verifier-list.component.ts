@@ -203,7 +203,16 @@ export class VerifierListComponent implements OnInit {
         this.offset = this.pageSize * (this.pageIndex);
 
         this.removeLockByUserId();
-        this.http.get(environment['url'] + '/ws/status/verifier/list', {headers: this.authService.headers}).pipe(
+
+        setTimeout(() => {
+            this.loadForms();
+            this.loadStatus();
+            this.loadCustomers();
+        }, 100);
+    }
+
+    loadStatus() {
+        this.http.get(environment['url'] + '/ws/status/verifier/list?totals=true&form_id=' + this.currentForm + '&user_id=' + this.userService.user.id + '&time=' + this.currentTime, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.status = data.status;
             }),
@@ -213,11 +222,6 @@ export class VerifierListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-
-        setTimeout(() => {
-            this.loadForms();
-            this.loadCustomers();
-        }, 100);
     }
 
     loadForms() {
@@ -345,6 +349,7 @@ export class VerifierListComponent implements OnInit {
         }
         this.loadingCustomers = true;
         this.loadForms();
+        this.loadStatus();
         let url = environment['url'] + '/ws/verifier/documents/totals/' + this.currentStatus + '/' + this.userService.user.id;
         if (this.currentForm !== '') {
             url = environment['url'] + '/ws/verifier/documents/totals/' + this.currentStatus + '/' + this.userService.user.id + '/' + this.currentForm;

@@ -106,7 +106,7 @@
                                     <i cdkDrag class="fa-solid fa-edit z-10 ml-6 text-green-400"
                                        *ngIf="!field['edit_name']" (click)="field['edit_name'] = true"
                                        [matTooltip]="this.translate.instant('FORMS.update_label')"></i>
-                                    <span class="input-label relative -top-0.5 border-r-2 border-green-400 inline-block
+                                    <span class="input-label relative border-r-2 border-green-400 inline-block
                                                 overflow-ellipsis overflow-hidden whitespace-nowrap w-10/12"
                                           *ngIf="!field['edit_name']">
                                         <span *ngIf="field.required" class="text-red-500 mr-2 relative top-0.5">*</span>

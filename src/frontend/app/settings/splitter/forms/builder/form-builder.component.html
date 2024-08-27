@@ -74,7 +74,7 @@
                              ngSortGridGroup="{{ category['id'] }}" ngSortgridItem [ngSortGridItems]="fields[category['id']]" (sorted)="storeNewOrder($event, category['id'])">
                             <mat-form-field class="right-0 w-full form-builder">
                                 <i cdkDrag class="fa-solid fa-trash z-10" (click)="deleteField($event, index, category['id'], field.unit)" [matTooltip]="this.translate.instant('FORMS.delete_field')"></i>
-                                <span class="input-label relative -top-0.5 border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-10/12">
+                                <span class="input-label relative border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-10/12">
                                     <span *ngIf="field.required" class="text-red-500 mr-2 relative top-0.5">*</span>
                                     <strong>{{ field.label | translate }}</strong>
                                     <span *ngIf="field.type !== 'select' && field.type !== 'textarea'"> ({{ 'TYPES.' + field.format | translate }})</span>

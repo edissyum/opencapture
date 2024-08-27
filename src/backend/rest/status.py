@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask_babel import gettext
+from src.backend.functions import rest_validator
 from flask import Blueprint, make_response, jsonify, request
 from src.backend.controllers import auth, status, privileges
 
@@ -31,5 +32,19 @@ def status_list(module):
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/status/{module}/list'}), 403
 
-    _status = status.get_status(module)
+    check, message = rest_validator(request.args, [
+        {'id': 'time', 'type': str, 'mandatory': False},
+        {'id': 'totals', 'type': bool, 'mandatory': False},
+        {'id': 'user_id', 'type': int, 'mandatory': False},
+        {'id': 'form_id', 'type': int, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    args = request.args
+    _status = status.get_status(args, module)
     return make_response(jsonify(_status[0])), _status[1]

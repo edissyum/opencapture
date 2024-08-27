@@ -1901,7 +1901,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     thirdPartyWait() {
         this.historyService.addHistory('verifier', 'wait_third_party', this.translate.instant('HISTORY-DESC.wait_third_party', {document_id: this.documentId}));
         this.updateDocument({'status': 'WAIT_THIRD_PARTY', 'locked': false, 'locked_by': null});
-        this.notify.error(this.translate.instant('VERIFIER.document_refused'));
+        this.notify.error(this.translate.instant('VERIFIER.document_third_party_wait'));
         this.router.navigate(['/verifier/list']).then();
     }
 
@@ -2132,7 +2132,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     checkAllowThirdParty() {
         if (this.workflowSettings.process && this.workflowSettings.process.allow_third_party_validation) {
             const workflowAllow = this.workflowSettings.process.allow_third_party_validation;
-            return workflowAllow && this.document.status !== 'WAIT_THIRD_PARTY' && this.supplierExists;
+            return workflowAllow && this.document.status !== 'WAIT_THIRD_PARTY';
         }
         return false;
     }
