@@ -518,6 +518,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
         this.treeControl.expandAll();
         this.sessionStorageService.save('is_doctypes_tree_collapsed', false);
     }
+
     changeDocType() {
         const dataSelectForm = this.forms.find(item => item.id === this.selectFormControl.value);
         dataSelectForm.settings.unique_doc_type = this.toggleControl.value;
@@ -550,6 +551,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
             }))
         .subscribe();
     }
+
     collapseAll() {
         this.treeControl.collapseAll();
         this.sessionStorageService.save('is_doctypes_tree_collapsed', true);
