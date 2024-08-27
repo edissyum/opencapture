@@ -1138,6 +1138,7 @@
 		"document_locked": "Document verrouillé",
 		"document_locked_by": "Document verrouillé par l'utilisateur suivant : <strong>{{ locked_by }}</strong>",
 		"document_refused": "Document refusé",
+		"document_third_party_wait": "Document mis en attente de vérification du tiers",
 		"documents_deleted": "Document(s) supprimé(s)",
 		"documents_settings": "Paramètres du document",
 		"download_original_file": "Télécharger le fichier original",

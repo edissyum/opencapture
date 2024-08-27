@@ -1138,6 +1138,7 @@
 		"document_locked": "Document locked",
 		"document_locked_by": "Document locked by the following user : <strong>{{ locked_by }}</strong>",
 		"document_refused": "Document refused",
+		"document_third_party_wait": "Document pending third party verification",
 		"documents_deleted": "Document(s) deleted successfully",
 		"documents_settings": "Settings document",
 		"download_original_file": "Download original file",
