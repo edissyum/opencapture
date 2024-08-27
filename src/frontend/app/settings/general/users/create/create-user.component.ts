@@ -67,7 +67,7 @@ export class CreateUserComponent implements OnInit {
             id: 'email',
             label: this.translate.instant('USER.email'),
             type: 'text',
-            control: new FormControl('', Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")),
+            control: new FormControl('', Validators.pattern("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$")),
             required: false
         },
         {
@@ -293,9 +293,14 @@ export class CreateUserComponent implements OnInit {
         let error: any;
         this.userFields.forEach(element => {
             if (element.id === field) {
-                if (element.control.errors && element.control.errors.message) {
-                    error = element.control.errors.message;
+                if (element.control.errors) {
+                    if (element.control.errors.message) {
+                        error = element.control.errors.message;
+                    } else if (element.control.errors.pattern) {
+                        error = this.translate.instant('ACCOUNTS.email_format_error');
+                    }
                 }
+
                 if (element.required && !(element.value || element.control.value)) {
                     error = this.translate.instant('AUTH.field_required');
                 }

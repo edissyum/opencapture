@@ -16,11 +16,25 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask_babel import gettext
-from src.backend.import_models import status
+from src.backend.controllers import user
+from src.backend.models import status, verifier
 
 
-def get_status(module):
+def get_status(args, module):
     _status, error = status.get_status(module)
+
+    if 'totals' in args and args['totals']:
+        for stat in _status:
+            allowed_customers, _ = user.get_customers_by_user_id(args['user_id'])
+            allowed_customers.append(0)  # Update allowed customers to add Unspecified customers
+            total = verifier.get_totals({
+                'time': args['time'],
+                'status': stat['id'],
+                'form_id': args['form_id'],
+                'allowedCustomers': allowed_customers
+            })[0]
+            stat['total'] = total
+
     if _status:
         response = {
             "status": _status

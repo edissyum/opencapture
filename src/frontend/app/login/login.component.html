@@ -3,7 +3,7 @@
     <div class="w-full flex items-center justify-center text-center flex-col">
         <div class="w-11/12 max-w-md" *ngIf="this.loginImage">
             <img class="m-auto" [src]="this.loginImage" alt="Open-Capture logo">
-            <mat-card-subtitle [innerHTML]="this.loginTopMessage"></mat-card-subtitle>
+            <mat-card-subtitle class="relative top-2" [innerHTML]="this.loginTopMessage"></mat-card-subtitle>
         </div>
         <mat-card class="text-center m-6 mb-0 w-11/12 max-w-md">
             <mat-card-title class="m-5">
@@ -33,9 +33,10 @@
                             </span>
                         </mat-hint>
                     </mat-form-field>
-                    <button id="login" mat-button [disabled]="this.processLogin || this.isConnectionBtnDisabled"
-                            class="w-full mb-4 p-6 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900
-                               transition duration-300" type="submit" style="max-width: 250px;">
+                    <button id="login" mat-button [disabled]="this.processLogin || this.isConnectionBtnDisabled || this.loginForm.invalid"
+                            [class.invalid_button]="this.processLogin || this.isConnectionBtnDisabled || this.loginForm.invalid"
+                            [class.valid_button]="!(this.processLogin || this.isConnectionBtnDisabled || this.loginForm.invalid)"
+                            class="mb-4 mt-2 p-6" type="submit" style="max-width: 250px;">
                         <span *ngIf="!this.processLogin && !this.isConnectionBtnDisabled">
                             {{ 'AUTH.login' | translate }}
                         </span>
@@ -56,7 +57,7 @@
                     Open-Capture version {{ environment.version }}
                     <br>
                     Powered by
-                    <a class="text-green-400" href="https://edissyum.com/" target="_blank">
+                    <a class="text-green-400" href="https://edissyum.com/" target="_blank" rel="noopener">
                         Edissyum Consulting
                     </a>
                 </span>

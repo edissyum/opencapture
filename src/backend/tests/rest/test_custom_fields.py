@@ -27,7 +27,7 @@ class CustomFieldsTest(unittest.TestCase):
         self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
-        warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
+        warnings.filterwarnings('ignore', category=ResourceWarning)
 
     def create_custom(self):
         payload = {

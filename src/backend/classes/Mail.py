@@ -16,22 +16,32 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
+import re
 import sys
+import msal
 import shutil
+import base64
 import mimetypes
 from ssl import SSLError
+from xhtml2pdf import pisa
 from socket import gaierror
 from imaplib import IMAP4_SSL
 from imap_tools import utils, MailBox, MailBoxUnencrypted
 
 
 class Mail:
-    def __init__(self, host, port, login, pwd):
+    def __init__(self, host, port, login, pwd, oauth, tenant_id, client_id, secret, scopes, authority):
         self.pwd = pwd
         self.conn = None
         self.port = port
         self.host = host
         self.login = login
+        self.oauth = oauth
+        self.secret = secret
+        self.scopes = scopes
+        self.authority = authority
+        self.tenant_id = tenant_id
+        self.client_id = client_id
 
     def test_connection(self, secured_connection):
         """
@@ -49,11 +59,42 @@ class Mail:
             sys.exit()
 
         try:
-            self.conn.login(self.login, self.pwd)
+            if self.oauth:
+                result = self.generate_oauth_token()
+                self.conn.client.authenticate("XOAUTH2",
+                                              lambda x: self.generate_auth_string(result['access_token']).encode(
+                                                  "utf-8"))
+            else:
+                self.conn.login(self.login, self.pwd)
         except IMAP4_SSL.error as err:
-            error = 'Error while trying to login to ' + self.host + ' using ' + self.login + '/' + self.pwd + ' as login/password : ' + str(err)
+            error = 'Error while trying to login to ' + self.host + ' using ' + self.login + '/' + self.pwd + ' as login/password : ' + str(
+                err)
             print(error)
             sys.exit()
+
+    def generate_auth_string(self, token):
+        return f"user={self.login}\x01auth=Bearer {token}\x01\x01"
+
+    def generate_oauth_token(self):
+        app = msal.ConfidentialClientApplication(self.client_id,
+                                                 authority=self.authority + self.tenant_id,
+                                                 client_credential=self.secret)
+
+        result = app.acquire_token_silent([self.scopes], account=None)
+
+        if not result:
+            # No suitable token in cache.  Getting a new one.
+            result = app.acquire_token_for_client(scopes=[self.scopes])
+
+        if "access_token" in result:
+            # Token generated with success.
+            return result
+
+        # Error while generated token.
+        print(result.get("error"))
+        print(result.get("error_description"))
+        print(result.get("correlation_id"))
+        sys.exit()
 
     def check_if_folder_exist(self, folder):
         """
@@ -87,7 +128,7 @@ class Mail:
             emails.append(mail)
         return emails
 
-    def construct_dict(self, msg, backup_path):
+    def construct_dict(self, msg, backup_path, insert_body_as_doc=False):
         """
         Construct a dict with all the data of a mail (body and attachments)
 
@@ -95,28 +136,16 @@ class Mail:
         :param backup_path: Path to backup of the e-mail
         :return: dict of Args and file path
         """
-        to_str, cc_str, reply_to = ('', '', '')
-        try:
-            for to in msg.to_values:
-                to_str += to.full + ';'
-        except TypeError:
-            pass
-
-        try:
-            for cc in msg.cc_values:
-                cc_str += cc.full + ';'
-        except TypeError:
-            pass
-
-        try:
-            for rp_to in msg.reply_to_values:
-                reply_to += rp_to.full + ';'
-        except TypeError:
-            pass
 
         data = {
             'attachments': []
         }
+
+        primary_mail_path = backup_path + '/mail_' + str(msg.uid) + '/mail_origin/'
+        if not os.path.exists(primary_mail_path):
+            os.makedirs(primary_mail_path)
+
+        html_body = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' + "\n" + msg.html
 
         attachments = self.retrieve_attachment(msg)
         attachments_path = backup_path + '/mail_' + str(msg.uid) + '/attachments/'
@@ -124,15 +153,32 @@ class Mail:
             path = attachments_path + sanitize_filename(attachment['filename']) + attachment['format']
             if not os.path.isfile(path):
                 attachment['format'] = '.txt'
-                with open(path, 'w', encoding='UTF-8') as file:
+                with open(path, 'w', encoding='utf-8') as file:
                     file.write('Erreur lors de la remontée de cette pièce jointe')
                 file.close()
 
-            data['attachments'].append({
-                'filename': sanitize_filename(attachment['filename']),
-                'format': attachment['format'][1:],
-                'file': path
-            })
+            attachment_content_id_in_html = re.search(r'src="cid:\s*' + re.escape(attachment['content_id']), html_body)
+            if attachment_content_id_in_html:
+                html_body = re.sub(r'src="cid:\s*' + re.escape(attachment['content_id']),
+                                   f"src='data:image/{attachment['format'].replace('.', '')};"
+                                   f"base64, {base64.b64encode(attachment['content']).decode('utf-8')}'",
+                                   html_body)
+            else:
+                data['attachments'].append({
+                    'file': path,
+                    'filename': sanitize_filename(attachment['filename']) + attachment['format']
+                })
+
+        if insert_body_as_doc:
+            with open(primary_mail_path + 'body.pdf', 'w+b') as fp:
+                pisa.CreatePDF(html_body, dest=fp)
+            fp.close()
+
+            data['file'] = {
+                'filename': sanitize_filename('body' + msg.uid + '.pdf'),
+                'format': 'pdf',
+                'path': primary_mail_path + 'body.pdf'
+            }
 
         return data
 
@@ -149,28 +195,30 @@ class Mail:
         os.makedirs(primary_mail_path)
 
         # Start with headers
-        with open(primary_mail_path + 'header.txt', 'w', encoding='UTF-8') as file:
+        with open(primary_mail_path + 'header.txt', 'w', encoding='utf-8') as file:
             for header in msg.headers:
                 try:
                     file.write(header + ' : ' + msg.headers[header][0] + '\n')
                 except UnicodeEncodeError:
-                    file.write(header + ' : ' + msg.headers[header][0].encode('utf-8', 'surrogateescape').decode('utf-8', 'replace') + '\n')
+                    file.write(
+                        header + ' : ' + msg.headers[header][0].encode('utf-8', 'surrogateescape').decode('utf-8',
+                                                                                                          'replace') + '\n')
         file.close()
 
         # Then body
         if len(msg.html) == 0:
-            with open(primary_mail_path + 'body.txt', 'w', encoding='UTF-8') as body_file:
+            with open(primary_mail_path + 'body.txt', 'w', encoding='utf-8') as body_file:
                 if len(msg.text) != 0:
                     body_file.write(msg.text)
                 else:
                     body_file.write(' ')
         else:
-            with open(primary_mail_path + 'body.html', 'w', encoding='UTF-8') as body_file:
+            with open(primary_mail_path + 'body.html', 'w', encoding='utf-8') as body_file:
                 body_file.write(msg.html)
         body_file.close()
 
         # For safety, backup original stream retrieve from IMAP directly
-        with open(primary_mail_path + 'orig.txt', 'w', encoding='UTF-8') as orig_file:
+        with open(primary_mail_path + 'orig.txt', 'w', encoding='utf-8') as orig_file:
             for payload in msg.obj.get_payload():
                 try:
                     orig_file.write(str(payload))
@@ -206,7 +254,6 @@ class Mail:
             return True
         except utils.UnexpectedCommandStatusError as mail_error:
             log.error('Error while moving mail to ' + destination + ' folder : ' + str(mail_error), False)
-            pass
 
     def delete_mail(self, msg, trash_folder, log):
         """
@@ -224,7 +271,6 @@ class Mail:
                 self.move_to_destination_folder(msg, trash_folder, log)
         except utils.UnexpectedCommandStatusError as mail_error:
             log.error('Error while deleting mail : ' + str(mail_error), False)
-            pass
 
     @staticmethod
     def retrieve_attachment(msg):
@@ -246,6 +292,7 @@ class Mail:
                 'filename': os.path.splitext(att.filename)[0].replace(' ', '_'),
                 'format': file_format,
                 'content': att.payload,
+                'content_id': att.content_id,
                 'mime_type': att.content_type
             })
         return args
@@ -273,7 +320,8 @@ class Mail:
                 smtp.send_email(
                     message='    - Nom du batch : ' + os.path.basename(batch_path) + '/ \n' +
                             '    - Nom du process : ' + process + '\n' +
-                            '    - Chemin vers le batch en erreur : ' + error_path + '/' + os.path.basename(batch_path) + '/ \n' +
+                            '    - Chemin vers le batch en erreur : ' + error_path + '/' + os.path.basename(
+                        batch_path) + '/ \n' +
                             '    - Sujet du mail : ' + msg['subject'] + '\n' +
                             '    - Date du mail : ' + msg['date'] + '\n' +
                             '    - UID du mail : ' + msg['uid'] + '\n' +
@@ -299,4 +347,5 @@ def sanitize_filename(s):
             return c
         else:
             return "_"
+
     return "".join(safe_char(c) for c in s).rstrip("_")

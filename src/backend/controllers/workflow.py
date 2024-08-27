@@ -23,11 +23,11 @@ import traceback
 from io import StringIO
 from flask_babel import gettext
 from pyflakes.scripts import pyflakes
-from src.backend.import_classes import _Config
-from src.backend.import_controllers import user
+from src.backend.controllers import user
+from src.backend.classes.Config import Config
 from flask import request, g as current_context
+from src.backend.models import workflow, history
 from src.backend.scripting_functions import check_code
-from src.backend.import_models import workflow, history
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
@@ -206,21 +206,21 @@ def create_workflow(data):
             'input_folder': data['input']['input_folder']
         }
         if workflow_info['module'] == 'verifier':
-            res, test_code = workflow.test_script_verifier(args)
+            res, test_code = test_script_verifier(args)
     if 'process' in data and 'scripts' in data['process']:
         args = {
             'codeContent': data['process']['scripts'],
             'input_folder': data['process']['input_folder']
         }
         if workflow_info['module'] == 'verifier':
-            res, test_code = workflow.test_script_verifier(args)
+            res, test_code = test_script_verifier(args)
     if 'output' in data and 'scripts' in data['output']:
         args = {
             'codeContent': data['output']['scripts'],
             'input_folder': data['output']['input_folder']
         }
         if workflow_info['module'] == 'verifier':
-            res, test_code = workflow.test_script_verifier(args)
+            res, test_code = test_script_verifier(args)
 
     if test_code != 200:
         response = {
@@ -271,7 +271,7 @@ def update_workflow(workflow_id, data):
                     'input_folder': data['input']['input_folder']
                 }
                 if data['module'] == 'verifier':
-                    res, test_code = workflow.test_script_verifier(args)
+                    res, test_code = test_script_verifier(args)
         if 'process' in data:
             data['process'] = json.dumps(data['process'])
             if 'scripts' in data['process']:
@@ -280,7 +280,7 @@ def update_workflow(workflow_id, data):
                     'input_folder': data['process']['input_folder']
                 }
                 if data['module'] == 'verifier':
-                    res, test_code = workflow.test_script_verifier(args)
+                    res, test_code = test_script_verifier(args)
         if 'output' in data:
             data['output'] = json.dumps(data['output'])
             if 'scripts' in data['output']:
@@ -289,7 +289,7 @@ def update_workflow(workflow_id, data):
                     'input_folder': data['output']['input_folder']
                 }
                 if data['module'] == 'verifier':
-                    res, test_code = workflow.test_script_verifier(args)
+                    res, test_code = test_script_verifier(args)
 
         if test_code != 200:
             response = {
@@ -400,18 +400,18 @@ def create_script_and_watcher(args):
                     return response, 400
 
             if os.path.isfile(config['GLOBAL']['watcherconfig']):
-                fs_watcher_config = _Config(config['GLOBAL']['watcherconfig'], interpolation=False)
+                fs_watcher_config = Config(config['GLOBAL']['watcherconfig'], interpolation=False)
                 fs_watcher_job = args['module'] + '_' + args['workflow_id']
                 if custom_id:
                     fs_watcher_job += '_' + custom_id
                 fs_watcher_command = new_script_filename + ' $filename'
                 if fs_watcher_job in fs_watcher_config.cfg:
-                    _Config.fswatcher_update_command(fs_watcher_config.file, fs_watcher_job, fs_watcher_command,
+                    Config.fswatcher_update_command(fs_watcher_config.file, fs_watcher_job, fs_watcher_command,
                                                      args['workflow_label'])
-                    _Config.fswatcher_update_watch(fs_watcher_config.file, fs_watcher_job, args['input_folder'],
+                    Config.fswatcher_update_watch(fs_watcher_config.file, fs_watcher_job, args['input_folder'],
                                                    args['workflow_label'])
                 else:
-                    _Config.fswatcher_add_section(fs_watcher_config.file, fs_watcher_job, fs_watcher_command,
+                    Config.fswatcher_add_section(fs_watcher_config.file, fs_watcher_job, fs_watcher_command,
                                                   args['input_folder'], args['workflow_label'])
                 return '', 200
             else:
@@ -452,20 +452,19 @@ def delete_script_and_incron(args):
     folder_script = docservers['SCRIPTS_PATH'] + args['module'] + '_workflows/'
     script_name = args['workflow_id'] + '.sh'
     old_script_filename = folder_script + '/' + script_name
-    if os.path.isdir(folder_script):
-        if os.path.isfile(old_script_filename):
-            os.remove(old_script_filename)
+    if os.path.isdir(folder_script) and os.path.isfile(old_script_filename):
+        os.remove(old_script_filename)
 
     ######
     # REMOVE FS WATCHER CONFIG
     ######
     if os.path.isfile(config['GLOBAL']['watcherconfig']):
-        fs_watcher_config = _Config(config['GLOBAL']['watcherconfig'], interpolation=False).cfg
+        fs_watcher_config = Config(config['GLOBAL']['watcherconfig'], interpolation=False).cfg
         fs_watcher_job = args['module'] + '_' + args['workflow_id']
         if custom_id:
             fs_watcher_job += '_' + custom_id
         if fs_watcher_job in fs_watcher_config:
-            _Config.fswatcher_remove_section(config['GLOBAL']['watcherconfig'], fs_watcher_job)
+            Config.fswatcher_remove_section(config['GLOBAL']['watcherconfig'], fs_watcher_job)
         return '', 200
     else:
         response = {

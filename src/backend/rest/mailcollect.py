@@ -18,7 +18,7 @@
 from flask_babel import gettext
 from src.backend.functions import rest_validator
 from flask import Blueprint, jsonify, make_response, request
-from src.backend.import_controllers import mailcollect, auth, privileges
+from src.backend.controllers import mailcollect, auth, privileges
 
 bp = Blueprint('mailcollect', __name__,  url_prefix='/ws/')
 
@@ -42,8 +42,14 @@ def retrieve_folders():
     check, message = rest_validator(request.json, [
         {'id': 'port', 'type': int, 'mandatory': True},
         {'id': 'login', 'type': str, 'mandatory': True},
+        {'id': 'oauth', 'type': bool, 'mandatory': False},
+        {'id': 'secret', 'type': str, 'mandatory': False},
+        {'id': 'scopes', 'type': str, 'mandatory': False},
         {'id': 'hostname', 'type': str, 'mandatory': True},
-        {'id': 'password', 'type': str, 'mandatory': True},
+        {'id': 'password', 'type': str, 'mandatory': False},
+        {'id': 'tenant_id', 'type': str, 'mandatory': False},
+        {'id': 'client_id', 'type': str, 'mandatory': False},
+        {'id': 'authority', 'type': str, 'mandatory': False},
         {'id': 'secured_connection', 'type': bool, 'mandatory': False}
     ])
 
@@ -78,7 +84,7 @@ def update_process(process_name):
         {'id': 'secured_connection', 'type': bool, 'mandatory': False},
         {'id': 'action_after_process', 'type': str, 'mandatory': True},
         {'id': 'verifier_workflow_id', 'type': str, 'mandatory': False},
-        {'id': 'splitter_technical_workflow_id', 'type': int, 'mandatory': False}
+        {'id': 'splitter_workflow_id', 'type': str, 'mandatory': False}
     ])
 
     if not check:
@@ -111,7 +117,7 @@ def create_process():
         {'id': 'secured_connection', 'type': bool, 'mandatory': False},
         {'id': 'action_after_process', 'type': str, 'mandatory': True},
         {'id': 'verifier_workflow_id', 'type': str, 'mandatory': False},
-        {'id': 'splitter_technical_workflow_id', 'type': int, 'mandatory': False}
+        {'id': 'splitter_workflow_id', 'type': str, 'mandatory': False}
     ])
 
     if not check:

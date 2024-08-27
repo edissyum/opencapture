@@ -42,15 +42,8 @@ from skimage.transform import rotate
 from pdf2image import convert_from_path
 from werkzeug.utils import secure_filename
 from pytesseract import pytesseract, Output
-from src.backend.functions import get_custom_array, generate_searchable_pdf
-
-custom_array = get_custom_array()
-
-if 'FindDate' not in custom_array:
-    from src.backend.process.find_date import FindDate
-else:
-    FindDate = getattr(__import__(custom_array['find_date']['path'] + '.' + custom_array['find_date']['module'],
-                                  fromlist=[custom_array['find_date']['module']]), custom_array['find_date']['module'])
+from src.backend.process.find_date import FindDate
+from src.backend.functions import generate_searchable_pdf
 
 
 def convert_heif_to_jpg(file):
@@ -97,7 +90,7 @@ def rotate_img(img):
             else:
                 grayscale = rgb2gray(src)
                 angle = determine_skew(grayscale)
-                if angle != 0 and angle != 0.0:
+                if angle != 0:
                     rotated = rotate(src, angle, resize=True) * 255
                     cv2.imwrite(img, rotated.astype(np.uint8))
         except (pytesseract.TesseractError, TypeError) as _e:
@@ -225,7 +218,7 @@ class Files:
                     del chunk_images
             return outputs_paths
         except (Exception,) as error:
-            self.log.error('Error during pdf2image conversion : ' + str(error))
+            self.log.error('Error during pdf2image conversiona : ' + str(error))
             return False
 
     def save_img_with_pdf2image_min(self, file, output, single_file=True, module='verifier', chunk_size=10):
@@ -263,7 +256,7 @@ class Files:
                     del chunk_images
             return outputs_paths
         except (Exception,) as error:
-            self.log.error('Error during pdf2image conversion : ' + str(error))
+            self.log.error('Error during pdf2image conversionb : ' + str(error))
             return False
 
     @staticmethod
@@ -301,10 +294,10 @@ class Files:
             for i in range(len(images)):
                 self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
                 crop_ratio = (0, 0, images[i].width, int(images[i].height - self.height_ratio))
-                _im = images[i].crop(crop_ratio)
+                _im = images[i].crop(crop_ratio).convert('RGB')
                 _im.save(output, 'JPEG')
         except (Exception,) as error:
-            self.log.error('Error during pdf2image conversion : ' + str(error))
+            self.log.error('Error during pdf2image conversionc : ' + str(error))
 
     # Crop the file to get the footer
     # 1/3 + 10% is the ratio we used
@@ -323,10 +316,10 @@ class Files:
             for i in range(len(images)):
                 self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
                 crop_ratio = (0, self.height_ratio, images[i].width, images[i].height)
-                _im = images[i].crop(crop_ratio)
+                _im = images[i].crop(crop_ratio).convert('RGB')
                 _im.save(output, 'JPEG')
         except (Exception,) as error:
-            self.log.error('Error during pdf2image conversion : ' + str(error))
+            self.log.error('Error during pdf2image conversiond : ' + str(error))
 
     # When we crop footer we need to rearrange the position of founded text
     # So we add the height_ratio we used (by default 1/3 + 10% of the full image)
@@ -441,7 +434,6 @@ class Files:
                         convert_heif_to_jpg(file)
                         return True, ''
                     except (Exception,) as _e:
-                        print(_e)
                         try:
                             shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                         except FileNotFoundError:
@@ -530,7 +522,7 @@ class Files:
                     'select': ['regex_id', 'content'],
                     'table': ['regex'],
                     'where': ["lang in ('global', %s)"],
-                    'data': [lang],
+                    'data': [lang]
                 })
                 if _regex:
                     regex_dict = {}
@@ -658,7 +650,7 @@ class Files:
         return final_directory
 
     @staticmethod
-    def move_to_docservers(docservers, file, module='verifier'):
+    def move_to_docservers(docservers, file, module='verifier', attachments=False):
         now = datetime.datetime.now()
         year = str(now.year)
         day = str('%02d' % now.day)
@@ -668,8 +660,13 @@ class Files:
         seconds = str('%02d' % now.second)
 
         docserver_path = docservers['VERIFIER_ORIGINAL_DOC']
+        if attachments:
+            docserver_path = docservers['VERIFIER_ATTACHMENTS']
+
         if module == 'splitter':
             docserver_path = docservers['SPLITTER_ORIGINAL_DOC']
+            if attachments:
+                docserver_path = docservers['SPLITTER_ATTACHMENTS']
 
         # Check if docserver folder exists, if not, create it
         if not os.path.exists(docserver_path):
@@ -720,7 +717,7 @@ class Files:
                         'x': x1,
                         'y': y1,
                         'width': x2 - x1,
-                        'height': y2 - y1,
+                        'height': y2 - y1
                     }
                     return positions
             return ''
@@ -798,7 +795,7 @@ class Files:
                 '/Author': f"{user_firstname} {user_lastname}",
                 '/Title': title,
                 '/Subject': subject,
-                '/Creator': "Open-Capture",
+                '/Creator': "Open-Capture"
             })
 
             file_path = args['document']['folder_out'] + '/' + args['document']['filename']
@@ -871,7 +868,7 @@ class Files:
                 images[i].save(output + '.jpg', 'JPEG')
                 cpt = cpt + 1
         except (Exception,) as error:
-            log.error('Error during pdf2image conversion : ' + str(error))
+            log.error('Error during pdf2image conversione : ' + str(error))
 
     @staticmethod
     def remove_file(path, log):

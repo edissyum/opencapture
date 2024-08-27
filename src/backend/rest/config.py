@@ -18,7 +18,7 @@
 from flask_babel import gettext
 from src.backend.functions import rest_validator
 from flask import Blueprint, jsonify, make_response, request
-from src.backend.import_controllers import auth, config, privileges
+from src.backend.controllers import auth, config, privileges
 
 bp = Blueprint('config', __name__, url_prefix='/ws/')
 
@@ -68,7 +68,7 @@ def get_configuration_by_label(config_label):
 @bp.route('config/getConfigurationNoAuth/<string:config_label>', methods=['GET'])
 def get_configuration_by_label_simple(config_label):
     no_auth_labels = ['userQuota', 'defaultModule', 'passwordRules', 'loginTopMessage', 'loginBottomMessage',
-                      'enableSplitterProgressBar']
+                      'enableSplitterProgressBar', 'enableProcessWatcher']
     if config_label not in no_auth_labels:
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/config/getConfigurationNoAuth/{config_label}'}), 403

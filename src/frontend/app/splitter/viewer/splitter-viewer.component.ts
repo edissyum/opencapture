@@ -17,27 +17,26 @@
 
 import * as moment from "moment";
 import { remove } from 'remove-accents';
-import { environment } from  "../../env";
+import { environment } from "../../env";
 
 import { UserService } from "../../../services/user.service";
-import { AuthService } from "../../../services/auth.service";
+import { AuthService} from "../../../services/auth.service";
 import { LocaleService } from "../../../services/locale.service";
 import { HistoryService } from "../../../services/history.service";
-import { LocalStorageService } from "../../../services/local-storage.service";
+import { SessionStorageService } from "../../../services/session-storage.service";
 import { DocumentTypeComponent } from "../document-type/document-type.component";
 import { NotificationService } from "../../../services/notifications/notifications.service";
 import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
-
 import { HttpClient } from "@angular/common/http";
 import { of, ReplaySubject, Subject } from "rxjs";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
-import {MatCheckboxChange} from "@angular/material/checkbox";
+import { MatCheckboxChange } from "@angular/material/checkbox";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { Component, HostListener, OnDestroy, OnInit, SecurityContext, ViewChild } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap } from "rxjs/operators";
 
@@ -75,6 +74,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     @ViewChild(`cdkStepper`) cdkDropList: CdkDragDrop<any> | undefined;
 
     loading                     : boolean       = true;
+    loadingAttachment           : boolean       = true;
+    attachments                 : any[]         = [];
+    attachmentsLength           : number        = 0;
     showZoomPage                : boolean       = false;
     isBatchOnDrag               : boolean       = false;
     batchesLoading              : boolean       = false;
@@ -98,6 +100,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     deletedDocumentsIds         : number[]      = [];
     DropListDocumentsIds        : string[]      = [];
     batchMetadataValues         : any           = {};
+    customFields                : any           = {};
     inputMode                   : string        = "Manual";
     currentTime                 : string        = "";
     toolSelectedOption          : string        = "";
@@ -154,26 +157,32 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         private http: HttpClient,
         private route: ActivatedRoute,
         public userService: UserService,
+        private sanitizer: DomSanitizer,
         private _sanitizer: DomSanitizer,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
-        private translate: TranslateService,
+        public translate: TranslateService,
         private notify: NotificationService,
-        private historyService: HistoryService,
         public localeService: LocaleService,
-        private localStorageService: LocalStorageService
+        private historyService: HistoryService,
+        private sessionStorageService: SessionStorageService
     ) {}
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
-        this.localStorageService.save('splitter_or_verifier', 'splitter');
+        this.sessionStorageService.save('splitter_or_verifier', 'splitter');
         this.userService.user   = this.userService.getUserFromLocal();
         this.currentBatch.id    = this.route.snapshot.params['id'];
         this.currentTime        = this.route.snapshot.params['currentTime'];
+
+        const customFields = await this.getCustomFields();
+        this.customFields = customFields.customFields;
+
+        marker('SPLITTER.add_document_impossible_attachments')
         this.getConfigurations();
         this.loadSelectedBatch();
+        this.getAttachments();
         this.updateBatchLock();
         this.translate.get('HISTORY-DESC.viewer_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
             this.historyService.addHistory('splitter', 'viewer', translated);
@@ -200,6 +209,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 }
             }
         }
+    }
+
+    async getCustomFields(): Promise<any> {
+        return await this.http.get(environment['url'] + '/ws/customFields/list?module=splitter', {headers: this.authService.headers}).toPromise();
     }
 
     updateBatchLock() {
@@ -310,14 +323,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             tap((data: any) => {
                 data.batches.forEach((batch: any) =>
                     this.batches.push({
-                        id             : batch['id'],
-                        inputId        : batch['input_id'],
-                        fileName       : batch['file_name'],
-                        formLabel      : batch['form_label'],
-                        date           : batch['batch_date'],
-                        customerName   : batch['customer_name'],
-                        documentsCount : batch['documents_count'],
-                        thumbnail      : this.sanitize(batch['thumbnail'])
+                        id               : batch['id'],
+                        inputId          : batch['input_id'],
+                        fileName         : batch['file_name'],
+                        formLabel        : batch['form_label'],
+                        date             : batch['batch_date'],
+                        customerName     : batch['customer_name'],
+                        documentsCount   : batch['documents_count'],
+                        attachmentsCount : batch['attachments_count'],
+                        thumbnail        : this.sanitize(batch['thumbnail'])
                     })
                 );
 
@@ -828,35 +842,16 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         return new FormGroup(group);
     }
 
-    b64toBlob(b64Data: string, contentType = '', sliceSize = 512) {
-        const byteCharacters = atob(b64Data);
-        const byteArrays = [];
-
-        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-            const slice = byteCharacters.slice(offset, offset + sliceSize);
-
-            const byteNumbers = new Array(slice.length);
-            for (let i = 0; i < slice.length; i++) {
-                byteNumbers[i] = slice.charCodeAt(i);
-            }
-
-            const byteArray = new Uint8Array(byteNumbers);
-            byteArrays.push(byteArray);
-        }
-
-        return new Blob(byteArrays, {type: contentType});
-    }
-
     downloadOriginalFile(): void {
         this.downloadLoading = true;
         this.http.get(environment['url'] + '/ws/splitter/batch/' + this.currentBatch.id + '/file',
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                const blob = this.b64toBlob(data['encodedFile'], 'application/pdf');
-                const blobUrl = URL.createObjectURL(blob);
-                const newWindow = window.open();
-                newWindow!.document.write(`<iframe style="width: 100%;height: 100%;margin: 0;padding: 0;" src="${blobUrl}" allowfullscreen></iframe>`);
-                newWindow!.document.title = data['filename'];
+                const referenceFile = 'data:application/pdf;base64, ' + data['encodedFile'];
+                const link = document.createElement("a");
+                link.href = referenceFile;
+                link.download = data['filename'];
+                link.click();
             }),
             finalize(() => this.downloadLoading = false),
             catchError((err: any) => {
@@ -908,7 +903,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     getConfigurations() {
         for (const config in this.configurations) {
-            this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/' + config).pipe(
+            this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/' + config,
+                {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     this.configurations[config] = data.configuration[0].data.value;
                 }),
@@ -931,7 +927,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     sanitize(url: string): any {
-        return this._sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + url);
+        return this._sanitizer.sanitize(SecurityContext.URL, 'data:image/jpg;base64,' + url);
     }
 
     dropPage(event: CdkDragDrop<any[]>, document: any): void {
@@ -1107,7 +1103,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         let selectedPageCount = 0;
         for (const document of this.documents) {
             for (const page of document.pages) {
-                page.checkBox ? selectedPageCount++ : '';
+                if (page.checkBox) {
+                    selectedPageCount++;
+                }
             }
         }
         this.currentBatch.selectedPagesCount = selectedPageCount;
@@ -1148,7 +1146,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     setPageSelection(pageId: number, check: boolean): void {
         for (const document of this.documents) {
             for (const page of document.pages) {
-                page.id === pageId ? page.checkBox = check : '';
+                if (page.id === pageId) {
+                    page.checkBox = check;
+                }
             }
         }
         this.countSelectedPages();
@@ -1381,19 +1381,19 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    saveModifications(): void {
-        this.saveInfosLoading   = true;
+    saveModifications(refreshPage: boolean = false): void {
+        this.saveInfosLoading = true;
         this.getFormFieldsValues();
 
-        const _documents        = [];
+        const _documents = [];
         for (const document of this.documents) {
-            const _document         = Object.assign({}, document);
-            _document['metadata']   = document.form.getRawValue();
+            const _document       = Object.assign({}, document);
+            _document['metadata'] = document.form.getRawValue();
             delete _document.class;
             delete _document.form;
             _documents.push(_document);
-
         }
+
         this.http.post(environment['url'] + '/ws/splitter/saveModifications',
             {
                 'documents'           : _documents,
@@ -1406,8 +1406,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.saveInfosLoading   = false;
-                this.hasUnsavedChanges       = false;
+                this.hasUnsavedChanges  = false;
                 this.notify.success(this.translate.instant('SPLITTER.batch_modification_saved'));
+                if (refreshPage) {
+                    this.ngOnInit().then();
+                }
             }),
             catchError((err: any) => {
                 this.saveInfosLoading = false;
@@ -1439,5 +1442,200 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 })
             ).subscribe();
         }
+    }
+
+    checkConditional(field_id: any, option: any) {
+        let _return = true;
+        this.customFields.forEach((customField: any) => {
+            if ('conditional' in customField.settings && customField.settings.conditional) {
+                if (customField.id === parseInt(field_id.replace('custom_', ''))) {
+                    customField.settings.options.forEach((customFieldOption: any) => {
+                        if (customFieldOption.id === option.id) {
+                            const conditionalCustomId = customFieldOption.conditional_custom_field;
+                            const conditionalCustomValue = this.getFieldValue(conditionalCustomId);
+                            if (conditionalCustomValue) {
+                                _return = conditionalCustomValue === customFieldOption.conditional_custom_value;
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        return _return;
+    }
+
+    getFieldValue(field_id: any) {
+        let _value = '';
+        this.fieldsCategories['batch_metadata'].forEach((field: any) => {
+            if (parseInt(field.id.replace('custom_', '')) === field_id) {
+                if (this.batchMetadataValues[field.label_short]) {
+                    _value = this.batchMetadataValues[field.label_short];
+                }
+            }
+        });
+        return _value;
+    }
+
+    getAttachments() {
+        this.http.get(environment['url'] + '/ws/attachments/splitter/list/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.attachments = data;
+                this.attachments.forEach((attachment: any) => {
+                    if (attachment['thumb']) {
+                        attachment['thumb'] = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/jpeg;base64, ' + attachment['thumb']);
+                    }
+                    attachment['extension'] = attachment['filename'].split('.').pop();
+                    if (['csv'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'fa-file-csv';
+                    } else if (['xls', 'xlsx', 'ods'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'fa-file-excel';
+                    } else if (['pptx', 'ppt', 'odp'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'fa-file-powerpoint';
+                    } else if (['doc', 'docx', 'odt', 'dot'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'fa-file-word';
+                    } else if (['zip', 'tar.gz', 'tar', '7z', 'tgz', 'tar.z'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'fa-file-zipper';
+                    } else if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'fa-file-video';
+                    } else if (['mp3', 'wav', 'flac', 'ogg', 'wma', 'aac', 'm4a'].includes(attachment['extension'])) {
+                        attachment['extension_icon'] = 'audio-file-video';
+                    } else {
+                        attachment['extension_icon'] = 'fa-file';
+                    }
+                });
+                this.attachmentsLength = this.attachments.length;
+                this.loadingAttachment = false;
+
+            }),
+            finalize(() => {
+            }),
+            catchError((err: any) => {
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    uploadAttachments(event: any) {
+        this.loadingAttachment = true;
+        const attachments = new FormData();
+        for (const file of event.target.files) {
+            attachments.append(file['name'], file);
+        }
+
+        attachments.set('batchId', this.currentBatch.id);
+        this.http.post(environment['url'] + '/ws/attachments/splitter/upload', attachments, {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('ATTACHMENTS.attachment_uploaded'));
+                this.getAttachments();
+            }),
+            catchError((err: any) => {
+                this.loadingAttachment = false;
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    deleteConfirmDialog(documentId: number) {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data: {
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('ATTACHMENTS.confirm_delete_attachment'),
+                confirmButton       : this.translate.instant('GLOBAL.delete'),
+                confirmButtonColor  : "warn",
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
+            },
+            width: "600px"
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.loadingAttachment = true;
+                this.deleteAttachment(documentId);
+            }
+        });
+    }
+
+    deleteAttachment(attachmentId: number) {
+        this.http.delete(environment['url'] + '/ws/attachments/splitter/delete/' + attachmentId, {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('ATTACHMENTS.attachment_deleted'));
+                this.getAttachments();
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    downloadAttachment(attachment: any) {
+        this.http.post(environment['url'] + '/ws/attachments/splitter/download/' + attachment['id'], {},
+            {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                const mimeType = data['mime'];
+                const referenceFile = 'data:' + mimeType + ';base64, ' + data['file'];
+                const link = document.createElement("a");
+                link.href = referenceFile;
+                link.download = attachment['filename'];
+                link.click();
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    setDocumentPrincipal(documentIndex: number): void {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle       : this.translate.instant('GLOBAL.confirm'),
+                confirmText        : this.translate.instant('SPLITTER.confirm_set_document_principal'),
+                confirmButton      : this.translate.instant('FORMS.validate'),
+                confirmButtonColor : "warn",
+                cancelButton       : this.translate.instant('GLOBAL.cancel')
+            },
+            width: "650px"
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.loading = true;
+                if (this.documents[documentIndex]) {
+                    let documentsToMove: any = [];
+                    this.documents.forEach((document: any, index: number) => {
+                        const documentId = parseInt(document.id.replace('document-', ''));
+                        if (documentIndex !== index) {
+                            documentsToMove.push({'id': documentId, 'index': index});
+                        }
+                    });
+
+                    if (documentsToMove) {
+                        this.http.post(environment['url'] + '/ws/splitter/moveDocumentsToAttachments/' + this.currentBatch.id, {'documents': documentsToMove},
+                            {headers: this.authService.headers}).pipe(
+                            tap(() => {
+                                documentsToMove.forEach((document: any) => {
+                                    this.hasUnsavedChanges = true;
+                                    this.deletedDocumentsIds.push(this.documents[document['index']].id);
+                                });
+                                this.loading = false;
+                                this.saveModifications(true);
+                            }),
+                            catchError((err: any) => {
+                                this.loading = false;
+                                console.debug(err);
+                                this.notify.handleErrors(err);
+                                return of(false);
+                            })
+                        ).subscribe();
+                    }
+                }
+            }
+        });
     }
 }

@@ -1,8 +1,19 @@
 ::ng-deep #form-select-field {
-    .mdc-notched-outline, .mat-mdc-select-arrow-wrapper {
-        display: none !important;
+    .mat-mdc-form-field-subscript-wrapper {
+        height: 0;
     }
-    padding-top: 35px !important;
+
+    .mat-mdc-form-field-flex {
+        @apply h-8 #{!important};
+
+        .mat-mdc-form-field-infix {
+            @apply py-0 #{!important};
+
+            .mat-mdc-select {
+                @apply pt-1 #{!important};
+            }
+        }
+    }
 }
 
 .cdk-drop-list-dragging .cdk-drag {
@@ -45,4 +56,12 @@
 
 .mdc-linear-progress {
     transform: none;
+}
+
+.loading_attachments {
+    top: 50%;
+    left: 50%;
+    @apply absolute;
+    @apply text-gray-400;
+    transform: translate(-50%, -50%);
 }

@@ -2,6 +2,7 @@
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'verifier');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('END', 'Cloturée', 'Facture validée et cloturée', 'verifier');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('ERR', 'Erreur', 'Erreur lors de la qualification', 'verifier');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('WAIT_THIRD_PARTY', 'En attente fournisseur', 'En attente de création / modification de fiche fournisseur', 'verifier');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('DEL', 'Supprimée', 'Supprimée', 'verifier');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'splitter');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('END', 'Clotûré', 'Lot clôturé', 'splitter');
@@ -20,7 +21,8 @@ INSERT INTO "configurations" ("label", "data") VALUES ('jwtExpiration', '{"type"
 INSERT INTO "configurations" ("label", "data") VALUES ('timeDelta', '{"type": "int", "value": "-1", "description": "Delta maximum pour remonter la date d''un document, en jours. -1 pour désactiver"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('invoiceSizeMin', '{"type": "int", "value": "6", "description": "Taille minimale pour un numéro de facture"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('devisSizeMin', '{"type": "int", "value": "3", "description": "Taille minimale pour un numéro de devis"}');
-INSERT INTO "configurations" ("label", "data") VALUES ('verifierMaxPageSearch', '{"type": "int", "value": "4", "description": "Nombre de pages maximales à parcourir pour chercher les infos du module Verifier, en partant de la dernière page (0 pour chercher dans le document complet)"}');
+INSERT INTO "configurations" ("label", "data") VALUES ('verifierMaxPageSearch', '{"type": "int", "value": "4", "description": "Nombre de pages maximales à parcourir pour chercher les infos du module Verifier, en partant de la première ou dernière page (0 pour chercher dans le document complet)"}');
+INSERT INTO "configurations" ("label", "data") VALUES ('verifierOrderSearch', '{"type": "list", "value": "desc", "options": ["asc", "desc"], "description": "Choix de l''ordre de recherche des informations dans le module Verifier"}');
 INSERT INTO "configurations" ("label", "data", "display") VALUES ('loginTopMessage', '{"type": "string", "value": "Open-Capture - LAD / RAD", "description": "Court message affiché sur le haut de l''écran d''accueil"}', false);
 INSERT INTO "configurations" ("label", "data", "display") VALUES ('loginBottomMessage', '{"type": "string", "value": "<p><strong><a href=\"https://kutt.it/GuideDutilisation\" target=\"_blank\" rel=\"noopener\"><span style=\"color: rgb(151, 191, 61);\">Acc&eacute;der au guide d''utilisation d''Open-Capture</span></a></strong></p>", "description": "Court message affiché sur le bas de l''écran d''accueil"}', false);
 INSERT INTO "configurations" ("label", "data") VALUES ('allowUserMultipleLogin', '{"type": "bool", "value": true, "description": "Autoriser un utilisateur à être connecté sur plusieurs machines simultanément"}');
@@ -65,6 +67,7 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('passwordRules
 }', false);
 INSERT INTO "configurations" ("label", "data", "display") VALUES ('defaultModule', '{"type": "list", "value": "splitter", "options": ["splitter", "verifier"], "description": "Module sélectionné par défaut"}', true);
 INSERT INTO "configurations" ("label", "data") VALUES ('enableSplitterProgressBar', '{"type": "bool", "value": false, "description": "Activer la barre de progression pour le module Splitter"}');
+INSERT INTO "configurations" ("label", "data") VALUES ('enableProcessWatcher', '{"type": "bool", "value": true, "description": "Activer l''affichage des processus en cours en bas à droite de l''écran"}');
 
 -- CRÉATION DES DOCSERVERS
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('PROJECT_PATH', 'Chemin vers l''instance d''Open-Capture', '/var/www/html/opencapture/');
@@ -85,6 +88,7 @@ INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFI
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_TRAIN_PATH_FILES', '[VERIFIER] Chemin vers le dossier contenant les données d''entraînement', '/var/docservers/opencapture/verifier/ai/train_data');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_AI_MODEL_PATH', '[VERIFIER] Chemin vers le dossier contenant le modèle de prédiction', '/var/docservers/opencapture/verifier/ai/models/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_ORIGINAL_DOC', '[VERIFIER] Chemin vers le dossier contenant les documents originaux', '/var/docservers/opencapture/verifier/original_doc/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_ATTACHMENTS', '[VERIFIER] Chemin vers le dossier contenant les pièces jointes', '/var/docservers/opencapture/verifier/attachments/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_BATCHES', '[SPLITTER] Chemin vers le dossier de stockage des dossiers de batch après traitement', '/var/docservers/opencapture/splitter/batches/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_THUMB', '[SPLITTER] Chemin pour le stockage des miniatures', '/var/docservers/opencapture/splitter/thumbs/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_ORIGINAL_DOC', '[SPLITTER] Chemin vers le dossier contenant les documents originaux', '/var/docservers/opencapture/splitter/original_doc/');
@@ -93,6 +97,7 @@ INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITT
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_TRAIN_PATH_FILES', '[SPLITTER] Chemin vers le dossier contenant les données d''entraînement', '/var/docservers/opencapture/splitter/ai/train_data');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_AI_MODEL_PATH', '[SPLITTER] Chemin vers le dossier contenant le modèle de prédiction', '/var/docservers/opencapture/splitter/ai/models/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_SHARE', '[SPLITTER] Chemin pour le stockage des documents liés aux chaînes sortantes', '/var/share/export/splitter/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_ATTACHMENTS', '[SPLITTER] Chemin pour le stockage des pièces jointes', '/var/docservers/opencapture/splitter/attachments/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('INPUTS_ALLOWED_PATH', 'Chemin autorisé du dossier d''entrée des fichiers importés', '/var/share/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('OUTPUTS_ALLOWED_PATH', 'Chemin autorisé du dossier de sortie des fichiers exportés', '/var/share/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('MAILCOLLECT_BATCHES', 'Chemin de stockage des batches du module MailCollect', '/var/www/html/opencapture/data/MailCollect/');
@@ -106,14 +111,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "folder_out",
                 "type": "text",
                 "label": "Dossier de sortie",
-                "required": "true",
+                "required": true,
                 "placeholder": "/var/share/export/verifier/"
             },
             {
                 "id": "separator",
                 "type": "text",
                 "label": "Séparateur",
-                "required": "true",
+                "required": true,
                 "placeholder": "_"
             },
             {
@@ -121,7 +126,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
                 "type": "text",
                 "label": "Nom du fichier",
-                "required": "true",
+                "required": true,
                 "placeholder": "invoice_number#quotation_number#supplier_name"
             },
             {
@@ -129,7 +134,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "hint": "Ne pas mettre de point dans l''extension",
                 "label": "Extension du fichier",
-                "required": "true",
+                "required": true,
                 "placeholder": "xml"
             }
         ]
@@ -141,22 +146,22 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
             {
                 "id": "host",
                 "type": "text",
-                "label": "URL de l''''hôte",
-                "required": "true",
+                "label": "URL de l''hôte",
+                "required": true,
                 "placeholder": "http://localhost/mem_courrier/rest/"
             },
             {
                 "id": "login",
                 "type": "text",
-                "label": "Pseudo de l''''utilisateur WS",
-                "required": "true",
+                "label": "Pseudo de l''utilisateur WS",
+                "required": true,
                 "placeholder": "ws_opencapture"
             },
             {
                 "id": "password",
                 "type": "password",
-                "label": "Mot de passe de l''''utilisateur WS",
-                "required": "true",
+                "label": "Mot de passe de l''utilisateur WS",
+                "required": true,
                 "placeholder": "ws_opencapture"
             }
         ],
@@ -165,7 +170,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "enabled",
                 "type": "boolean",
                 "label": "Activer la liaison avec un document dans MEM Courrier",
-                "required": "true",
+                "required": true,
                 "webservice": "",
                 "placeholder": ""
             },
@@ -173,7 +178,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "memCustomField",
                 "type": "text",
                 "label": "Champ personnalisé à récupérer",
-                "required": "false",
+                "required": false,
                 "webservice": "getCustomFieldsFromMem",
                 "placeholder": "Numéro de devis",
                 "hint": "Champ personnalisé MEM Courrier dans lequel est stocké la donnée nécessaire à la liaison avec un document"
@@ -182,7 +187,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "openCaptureField",
                 "type": "text",
                 "label": "Champ à comparer dans Open-Capture",
-                "required": "false",
+                "required": false,
                 "webservice": "",
                 "placeholder": "quotation_number",
                 "hint": "Identifiant du champ dans Open-Capture"
@@ -191,7 +196,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "memClause",
                 "type": "text",
                 "label": "Clause de selection des documents dans MEM Courrier",
-                "required": "false",
+                "required": false,
                 "webservice": "",
                 "placeholder": "status <> ''END''",
                 "hint": ""
@@ -200,7 +205,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "vatNumberContactCustom",
                 "type": "text",
                 "label": "Identifiant du champ personnalisé de contact où stocker le numéro de TVA + SIRET",
-                "required": "true",
+                "required": true,
                 "webservice": "getContactsCustomFieldsFromMem",
                 "placeholder": "Identifiant Open-Capture",
                 "hint": "Identifiant du champ personnalisé de contact où stocker le numéro de TVA + SIRET"
@@ -211,7 +216,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "destUser",
                 "type": "text",
                 "label": "Utilisateur destinataire",
-                "required": "true",
+                "required": true,
                 "webservice": "getUsersFromMem",
                 "placeholder": "Danny OCEAN"
             },
@@ -219,7 +224,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "status",
                 "type": "text",
                 "label": "Status",
-                "required": "true",
+                "required": true,
                 "webservice": "getStatusesFromMem",
                 "placeholder": "Courrier à qualifier"
             },
@@ -227,15 +232,15 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "subject",
                 "type": "textarea",
                 "label": "Sujet",
-                "hint": "Liste des identifiants techniques des champs, séparés par #. Si l''''identifiant technique n''''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
-                "required": "true",
+                "hint": "Liste des identifiants techniques des champs, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+                "required": true,
                 "placeholder": "Facture n°#invoice_number"
             },
             {
                 "id": "typeId",
                 "type": "text",
                 "label": "Type de document",
-                "required": "true",
+                "required": true,
                 "webservice": "getDoctypesFromMem",
                 "placeholder": "Facture à qualifier"
             },
@@ -243,7 +248,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "typist",
                 "type": "text",
                 "label": "Utilisateur Rédacteur",
-                "required": "true",
+                "required": true,
                 "webservice": "getUsersFromMem",
                 "placeholder": "Danny OCEAN"
             },
@@ -251,7 +256,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "priority",
                 "type": "text",
                 "label": "Priorité",
-                "required": "true",
+                "required": true,
                 "webservice": "getPrioritiesFromMem",
                 "placeholder": "Normal"
             },
@@ -259,14 +264,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "format",
                 "type": "text",
                 "label": "Format",
-                "required": "true",
+                "required": true,
                 "placeholder": "pdf"
             },
             {
                 "id": "modelId",
                 "type": "text",
-                "label": "Modèle d''''enregistrement",
-                "required": "true",
+                "label": "Modèle d''enregistrement",
+                "required": true,
                 "webservice": "getIndexingModelsFromMem",
                 "placeholder": "Facture"
             },
@@ -274,17 +279,17 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "destination",
                 "type": "text",
                 "label": "Entité destinatrice",
-                "required": "true",
+                "required": true,
                 "webservice": "getEntitiesFromMem",
                 "placeholder": "Service Courrier"
             },
             {
                 "id": "customFields",
-                "hint": "La valeur doit être de type JSON avec des doubles quotes \". La clé est l''''identifiant du custom MEM Courrier, la valeur est l''''identifiant du champ Open-Capture",
+                "hint": "La valeur doit être de type JSON avec des doubles quotes \". La clé est l''identifiant du custom MEM Courrier, la valeur est l''identifiant du champ Open-Capture",
                 "type": "textarea",
                 "label": "Champs personnalisés",
                 "isJson": "true",
-                "required": "false",
+                "required": false,
                 "placeholder": "{\"1\": \"invoice_number\", \"2\": \"quotation_number\"}"
             }
         ]
@@ -298,14 +303,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "folder_out",
                 "type": "text",
                 "label": "Dossier de sortie",
-                "required": "true",
+                "required": true,
                 "placeholder": "/var/share/export/verifier/"
             },
             {
                 "id": "separator",
                 "type": "text",
                 "label": "Séparateur",
-                "required": "true",
+                "required": true,
                 "placeholder": "_"
             },
             {
@@ -313,7 +318,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
                 "type": "text",
                 "label": "Nom du fichier",
-                "required": "true",
+                "required": true,
                 "placeholder": "invoice_number#quotation_number#supplier_name"
             }
         ]
@@ -327,14 +332,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "folder_out",
                 "type": "text",
                 "label": "Dossier de sortie",
-                "required": "true",
+                "required": true,
                 "placeholder": "/var/share/export/verifier/"
             },
             {
                 "id": "separator",
                 "type": "text",
                 "label": "Séparateur",
-                "required": "true",
+                "required": true,
                 "placeholder": "_"
             },
             {
@@ -342,8 +347,45 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
                 "type": "text",
                 "label": "Nom du fichier",
-                "required": "true",
+                "required": true,
                 "placeholder": "invoice_number#quotation_number#supplier_name"
+            }
+        ]
+    }
+}');
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (5, 'export_coog', 'Export vers COOG', 'verifier', '{
+    "options": {
+        "auth": [
+            {
+                "id": "host",
+                "type": "text",
+                "label": "URL de l''hôte",
+                "required": "true",
+                "placeholder": "https://coog.edissyum-dev.com/gateway"
+            },
+            {
+                "id": "token",
+                "type": "text",
+                "label": "Token d''authentification",
+                "required": "true",
+                "placeholder": "ujx8ke67izyc6q3vvh96520a96a54frgjrpgl85kk4sb0tv3"
+            },
+            {
+                "id": "cert_path",
+                "type": "text",
+                "label": "Chemin vers le certificat",
+                "required": "false",
+                "placeholder": "/home/user/cert.cer"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "body_template",
+                "hint": "Format JSON avec les identifiants techniques des champs, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+                "type": "textarea",
+                "label": "Contenu de l''appel API",
+                "required": true,
+                "placeholder": "[{\n\t\"ref\": \"invoice_number\",\n\t\"state\": \"custom_1\",\n\t\"reception_date\": \"register_date_full\",\n\t\"activity_field\": {\"code\": \"custom_2\"},\n\t\"reception_channel\": {\"code\": \"custom_3\"},\n\t\"task_type\": {\"code\": \"traitement\"},\n\t\"priority\": {\"code\": \"normale\"},\n\t\"affected_to\": \"custom_4\",\n\t\"summary\": \"Date de la tâche : #register_date_full\",\n\t\"references\": [\n\t\t{\n\t\t\t\"type\": \"claim\",\n\t\t\t\"reference\": \"#custom_5\"\n\t\t}\n\t],\n\t\"attachments\": [\n\t\t{\n\t\t\t\"content\": {\n\t\t\t\t\"type\": \"data\",\n\t\t\t\t\"data\": \"b64_file_content\",\n\t\t\t\t\"filename\": \"original_filename\"\n\t\t\t}\n\t\t}\n\t]\n}]"
             }
         ]
     }
@@ -355,7 +397,7 @@ INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "ocrise
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES (4, 'export_facturx', 'Export PDF avec métadonnées (FacturX)', 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#document_date#vat_number"}]}}');
 
 -- CRÉATION DES CHAINES SORTANTES DU MODULE SPLITTER
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (5, 'export_pdf', 'Export PDF', '{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (6, 'export_pdf', 'Export PDF', '{
   "options": {
     "auth": [],
     "parameters": [
@@ -383,7 +425,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
       },
       {
         "id": "extension",
-        "hint": "Ne pas mettre de point dans l''''extension",
+        "hint": "Ne pas mettre de point dans l''extension",
         "type": "text",
         "label": "Extension du fichier",
         "required": "true",
@@ -400,7 +442,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
     ]
   }
 }', 'splitter');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (6, 'export_xml', 'Export XML', '{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (7, 'export_xml', 'Export XML', '{
   "options": {
     "auth": [],
     "parameters": [
@@ -428,7 +470,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
       },
       {
         "id": "extension",
-        "hint": "Ne pas mettre de point dans l''''extension",
+        "hint": "Ne pas mettre de point dans l''extension",
         "type": "text",
         "label": "Extension du fichier",
         "required": "true",
@@ -440,12 +482,12 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
         "type": "textarea",
         "label": "Contenu de fichier XML ",
         "required": "true ",
-        "placeholder": "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"
+        "placeholder": "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
       }
     ]
   }
 }', 'splitter');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (7, 'export_cmis', 'Export CMIS','{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (8, 'export_cmis', 'Export CMIS','{
   "options": {
     "auth": [
       {
@@ -465,14 +507,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
       {
         "id": "login",
         "type": "text",
-        "label": "Pseudo de l''''utilisateur WS",
+        "label": "Pseudo de l''utilisateur WS",
         "required": "true",
         "placeholder": "ws_opencapture"
       },
       {
         "id": "password",
         "type": "password",
-        "label": "Mot de passe de l''''utilisateur WS",
+        "label": "Mot de passe de l''utilisateur WS",
         "required": "true",
         "placeholder": "alfresco"
       }
@@ -508,12 +550,26 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
         "type": "textarea",
         "label": "Contenu de fichier XML ",
         "required": "true ",
-        "placeholder": "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"
+        "placeholder": "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
       }
     ]
   }
 }', 'splitter');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (8, 'export_openads', 'Export OpenADS','{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (9, 'export_verifier', 'Export Vérificateur','{
+  "options": {
+    "parameters": [
+        {
+            "id": "body_template",
+            "hint": "Format JSON avec les identifiants techniques des champs, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+            "type": "textarea",
+            "label": "Contenu de l''appel API",
+            "required": true,
+            "placeholder": "{\n\t\"workflowId\": \"default_workflow\",\n\t\"datas\": {\n\t\t\"custom_35\": \"doctype_splitter\",\n\t\t\"custom_36\": \"state_task_splitter\",\n\t\t\"custom_37\": \"emetteur_splitter\",\n\t\t\"custom_38\": \"activity_splitter\"\n\t},\n\t\"files\": []\n}"
+        }
+    ]
+  }
+}', 'splitter');
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (10, 'export_openads', 'Export OpenADS','{
   "options": {
     "auth": [
       {
@@ -526,14 +582,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
       {
         "id": "login",
         "type": "text",
-        "label": "Pseudo de l''''utilisateur WS",
+        "label": "Pseudo de l''utilisateur WS",
         "required": "true",
         "placeholder": "opencapture"
       },
       {
         "id": "password",
         "type": "password",
-        "label": "Mot de passe de l''''utilisateur WS",
+        "label": "Mot de passe de l''utilisateur WS",
         "required": "true",
         "placeholder": "opencapture"
       }
@@ -566,13 +622,100 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
     ]
   }
 }', 'splitter');
-ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 9;
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (11, 'export_opencaptureformem', 'Export Open-Capture For MEM', '{
+    "options": {
+        "auth": [
+            {
+                "id": "host",
+                "type": "text",
+                "label": "URL de l''hôte",
+                "required": "true",
+                "placeholder": "http://192.168.10.100/opencaptureformem/"
+            },
+            {
+                "id": "secret_key",
+                "type": "text",
+                "label": "Clé secrète",
+                "required": "true",
+                "placeholder": "fc7594767dbcf20b13938ee849031496adf61c9d365e2cabab2558ae737e9d7f"
+            },
+            {
+                "id": "custom_id",
+                "type": "text",
+                "label": "Identifiant du custom",
+                "required": "true",
+                "placeholder": "opencaptureformem"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "process",
+                "type": "text",
+                "label": "Nom du processus",
+                "required": true,
+                "webservice": "getProcessFromOCForMEM",
+                "placeholder": "incoming"
+            },
+            {
+                "id": "pdf_filename",
+                "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+                "type": "text",
+                "label": "Nom du fichier PDF",
+                "required": "true",
+                "placeholder": "doctype#random"
+            },
+            {
+                "id": "separator",
+                "hint": "",
+                "type": "text",
+                "label": "Séparateur",
+                "required": "true",
+                "placeholder": "_"
+            },
+            {
+                "id": "destination",
+                "hint": "",
+                "type": "text",
+                "label": "Destination",
+                "required": "false",
+                "placeholder": "DGS"
+            },
+            {
+                "id": "rdff",
+                "type": "select",
+                "label": "Lecture de la destination depuis le nom du fichier",
+                "hint": "Lecture de la destination depuis le nom du fichier",
+                "required": "true",
+                "values": [
+                    {
+                        "value": "True",
+                        "label": "Oui"
+                    },
+                    {
+                        "value": "False",
+                        "label": "Non"
+                    }
+                ]
+            },
+            {
+                "id": "custom_fields",
+                "hint": "Champs JSON",
+                "type": "text",
+                "label": "Champs personnalisé",
+                "required": "false",
+                "placeholder": "{\"3\": \"Nature\"}"
+            }
+        ]
+    }
+}', 'splitter');
+ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 12;
 
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (5, 'export_pdf', 'Export vers Vérificateur', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/entrant/verifier/"}, {"id": "filename", "type": "textarea", "value": "PDF#doctype#date#random"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "pdf"}, {"id": "zip_filename", "type": "text", "value": ""}]}}', 'splitter');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (5, 'export_pdf', 'Export PDF', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/splitter/"}, {"id": "filename", "type": "textarea", "value": "PDF#doctype#date#random"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "pdf"}, {"id": "zip_filename", "type": "text", "value": ""}]}}', 'splitter');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (6, 'export_xml', 'Export XML par défaut', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/splitter/"}, {"id": "filename", "type": "textarea", "value": "XML#date"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "xml"}]}}', 'splitter');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (7, 'export_cmis', 'Export Alfresco par défaut', '{"options": {"auth": [{"id": "cmis_ws", "type": "text", "value": ""}, {"id": "folder", "type": "text", "value": ""}, {"id": "login", "type": "text", "value": ""}, {"id": "password", "type": "password", "value": ""}], "parameters": [{"id": "pdf_filename", "type": "textarea", "value": "#doctype#date"}, {"id": "xml_filename", "type": "textarea", "value": "#random#date"}, {"id": "separator", "type": "textarea", "value": "_"}]}}', 'splitter');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (8, 'export_openads', 'Export OpenADS', '{"options": {"auth": [{"id": "openads_api", "type": "text", "value": " https://example.fr/openads"}, {"id": "login", "type": "text", "value": "opencapture"}, {"id": "password", "type": "password", "value": "opencapture"}], "parameters": [{"id": "pdf_filename", "type": "text", "value": "#dotype#id"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "folder_id", "type": "text", "value": ""}]}}', 'splitter');
-ALTER SEQUENCE "outputs_id_seq" RESTART WITH 9;
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (9, 'export_verifier', 'Export vers Vérificateur API', '{"options": {"auth": [], "parameters": [{"id": "body_template", "type": "textarea", "value": "{\n    \"workflowId\": \"default_workflow\",\n    \"datas\": {\n        \"custom_1\": \"state_task_splitter\",\n        \"custom_2\": \"emetteur_splitter\",\n        \"custom_3\": \"activity_splitter\",\n        \"custom_4\": \"user_splitter\"\n    },\n    \"files\": []\n}"}]}}', 'splitter');
+ALTER SEQUENCE "outputs_id_seq" RESTART WITH 10;
 
 -- CRÉATION DES TEMPLATES DES PARAMETRES DES FORMULAIRE
 INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (1, 'verifier', '{
@@ -696,7 +839,7 @@ INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "proce
     ]
 }');
 INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "process", "output") VALUES (2, 'ocr_only', 'OCRisation simple par défaut', 'verifier', '{"ai_model_id": null, "customer_id": null, "facturx_only": false, "input_folder": "/var/share/entrant/verifier/ocr_only/", "apply_process": false, "rotation": "no_rotation", "remove_blank_pages": true, "splitter_method_id": "no_sep", "separate_by_document_number_value": 2}', '{"form_id": null, "system_fields": [], "custom_fields": [], "use_interface": false, "delete_documents": false, "override_supplier_form": false, "allow_automatic_validation": false}', '{"outputs_id": [3]}');
-INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "process", "output") VALUES (3, 'default_workflow', 'Workflow par défaut', 'splitter', '{"ai_model_id": 0, "customer_id": 1, "input_folder": "/var/share/entrant/splitter/", "apply_process": true, "remove_blank_pages": false, "splitter_method_id": "qr_code_OC"}', '{"form_id": 3, "rotation": "no_rotation", "use_interface": true, "delete_documents": false, "allow_automatic_validation": false}', '{"outputs_id": []}');
+INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "process", "output") VALUES (3, 'default_workflow', 'Workflow par défaut', 'splitter', '{"ai_model_id": 0, "customer_id": 1, "input_folder": "/var/share/entrant/splitter/", "apply_process": true, "remove_blank_pages": false, "splitter_method_id": "qr_code_OC", "script": "# La fonction `main` sera appelé avant le traitement d''un document, ne changez pas le nom de cette fonction\n# Ce script sera effectué avant la partie `traitement`, si cette dernière est activée\n\n# Depuis l''étape `entrée` vous avez accès aux variables suivantes :\n#   - ip --> (string) Adresse IP de l''utilisateur\n#   - user_info --> (string) Informations sur l''utilisateur courant\n#   - custom_id --> (string) Identifiant du custom\n#   - file --> (string) Chemin complet du fichier à traiter\n#   - opencapture_path --> (string) Racine du dossier d''installation Open-Capture\n#   - log --> (classe Log) Instance de la classe Log permettant de logger (info ou error) différentes données\n#   - customer_id --> (integer) Identifiant du compte client\n\n# La liste des librairies Python disponible sont visibles ici :\n# https://github.com/edissyum/opencapture/blob/master/install/pip-requirements.txt\n\ndef main(args):\n    args[''log''].info(\"Input scripting...\")"}', '{"form_id": 3, "rotation": "no_rotation", "use_interface": true, "delete_documents": false, "allow_automatic_validation": false, "script": "# La fonction `main` sera appelé avant le traitement d''un document, ne changez pas le nom de cette fonction\n# Ce script sera effectué avant la partie `traitement`, si cette dernière est activée\n\n# Depuis l''étape `entrée` vous avez accès aux variables suivantes :\n#   - custom_id --> (string) Identifiant du custom\n#   - batches_id -> (list) Identifiants des lots injectés \n#   - file --> (string) Chemin complet du fichier à traiter\n#   - opencapture_path --> (string) Racine du dossier d''installation Open-Capture\n#   - log --> (classe Log) Instance de la classe Log permettant de logger (info ou error) différentes données\n#   - customer_id --> (integer) Identifiant du compte client\n\n# La liste des librairies Python disponible sont visibles ici :\n# https://github.com/edissyum/opencapture/blob/master/install/pip-requirements.txt\n\ndef main(args):\n    args[''log''].info(\"Process scripting...\")\n"}', '{"outputs_id": [], "script": "# La fonction `main` sera appelé avant le traitement d''un document, ne changez pas le nom de cette fonction\n# Ce script sera effectué avant la partie `traitement`, si cette dernière est activée\n\n# Depuis l''étape `entrée` vous avez accès aux variables suivantes :\n#   - batch_id -> (int) Identifiant du lot validé\n#   - custom_id --> (string) Identifiant du custom \n#   - file --> (string) Chemin complet du fichier à traiter\n#   - opencapture_path --> (string) Racine du dossier d''installation Open-Capture\n#   - log --> (classe Log) Instance de la classe Log permettant de logger (info ou error) différentes données\n#   - customer_id --> (integer) Identifiant du compte client\n\n# La liste des librairies Python disponible sont visibles ici :\n# https://github.com/edissyum/opencapture/blob/master/install/pip-requirements.txt\n\ndef main(args):\n    args[''log''].info(\"Output scripting...\")\n"}');
 ALTER SEQUENCE "workflows_id_seq" RESTART WITH 4;
 
 -- CRÉATION DES CHAMPS CUSTOMS POUR LE SPLITTER
@@ -705,7 +848,10 @@ INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VAL
 INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (3, 'contrat', 'Contrat', 'text', 'splitter');
 INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (4, 'date_naissance', 'Date de naissance', 'text', 'splitter');
 INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module") VALUES (5, 'matricule', 'Matricule', 'text', 'splitter');
-ALTER SEQUENCE "custom_fields_id_seq" RESTART WITH 6;
+
+-- CRÉATION DES CHAMPS CUSTOMS POUR LE VERIFIER
+INSERT INTO "custom_fields" ("id", "label_short", "label", "type", "module", settings) VALUES (6, 'iban', 'Numéro IBAN', 'regex', 'verifier', '{"regex": {"test": null, "format": "iban", "content": "(E|F)(R|A)[0-9]{2}(?:[ ]?[0-9-A-Z]){16,24}", "remove_spaces": true, "remove_keyword": null, "remove_special_char": true}, "options": null}');
+ALTER SEQUENCE "custom_fields_id_seq" RESTART WITH 7;
 
 -- CRÉATION DES PRIVILEGES
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (1, 'access_verifier', 'general');
@@ -718,7 +864,7 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (8, 'update_user', 'ad
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (9, 'roles_list', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (10, 'add_role', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (11, 'update_role', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (12, 'custom_fields', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (12, 'custom_fields', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (13, 'forms_list', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (14, 'add_form', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (15, 'update_form', 'verifier');
@@ -775,7 +921,12 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (65, 'update_workflow_
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (66, 'generate_auth_token', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (67, 'update_login_top_message', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (68, 'update_login_bottom_message', 'administration');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 69;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (69, 'custom_fields_advanced', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (70, 'attachments_list_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (71, 'attachments_list_verifier', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (72, 'upload_attachments_verifier', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (73, 'upload_attachments_splitter', 'splitter');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 74;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');
@@ -786,8 +937,8 @@ ALTER SEQUENCE "roles_id_seq" RESTART WITH 5;
 
 -- AJOUT DES PRIVILEGES LIÉS AUX ROLES
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (1, '{"data" : "[''*'']"}');
-INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (2, '{"data" : "[1, 2, 3, 4, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 51, 65]"}');
-INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" : "[1, 2, 4, 16, 17, 18, 29, 33, 47, 65]"}');
+INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (2, '{"data" : "[1, 2, 3, 4, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 51, 65, 70, 71, 72, 73]"}');
+INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" : "[1, 2, 4, 12, 17, 18, 29, 33, 41, 47, 53, 59, 65, 70, 71, 72, 73]"}');
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (4, '{"data" : "[1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 19, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 47, 48, 49, 50, 51, 52, 54, 55, 65, 66]"}');
 
 -- CRÉATION DE L'UTILISATEUR superadmin

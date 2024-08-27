@@ -17,7 +17,7 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 import { Component, OnInit } from '@angular/core';
 import { UserService } from "../../services/user.service";
-import { LocalStorageService } from "../../services/local-storage.service";
+import { SessionStorageService } from "../../services/session-storage.service";
 import { PrivilegesService } from "../../services/privileges.service";
 import { Router } from "@angular/router";
 import { LastUrlService } from "../../services/last-url.service";
@@ -28,13 +28,16 @@ import { of } from "rxjs";
 import { NotificationService } from "../../services/notifications/notifications.service";
 import { AuthService } from "../../services/auth.service";
 
+
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
-    styleUrls: ['./home.component.scss']
+    styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
+    isOpen = false;
     unseenBatches : any = {'splitter': 0, 'verifier': 0};
+    fullUnseenBatches : any = {'splitter': {}, 'verifier': {}};
 
     constructor(
         private router: Router,
@@ -44,7 +47,7 @@ export class HomeComponent implements OnInit {
         private notify: NotificationService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) {}
 
     ngOnInit() {
@@ -72,7 +75,10 @@ export class HomeComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/verifier/getUnseen/user/' + this.userService.user.id,
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.unseenBatches['verifier'] = data['unseen'];
+                this.fullUnseenBatches['verifier'] = data.unseen;
+                data.unseen.forEach((item: any) => {
+                    this.unseenBatches['verifier'] += item['unseen'];
+                });
             })
         ).subscribe();
 
@@ -102,10 +108,18 @@ export class HomeComponent implements OnInit {
     }
 
     setValue(value: string) {
-        this.localStorageService.save('splitter_or_verifier', value);
+        this.sessionStorageService.save('splitter_or_verifier', value);
     }
 
     getUnseenBatches(module: string) {
         return this.unseenBatches[module];
+    }
+
+    getUnseenToolTip(module: string) {
+        let message = '';
+        Object.keys(this.fullUnseenBatches[module]).forEach((item: any) => {
+            message += '<strong>' + this.fullUnseenBatches[module][item]['status'] + '</strong> : ' + this.fullUnseenBatches[module][item]['unseen'] + "<br>";
+        })
+        return message;
     }
 }

@@ -19,6 +19,7 @@
                 @apply text-gray-900;
             }
             & .mdc-tab-indicator__content {
+                @apply border-[1px];
                 @apply border-green-400 #{!important};
             }
         }
@@ -261,4 +262,9 @@ mat-select-country mat-form-field {
 .mdc-list-item__primary-text {
     @apply truncate #{!important};
     @apply w-full;
+}
+
+.mat-mdc-paginator-range-label {
+    @apply -ml-4 #{!important};
+    @apply mr-0 #{!important};
 }

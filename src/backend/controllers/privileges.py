@@ -17,7 +17,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask_babel import gettext
-from src.backend.import_models import privileges
+from src.backend.models import privileges
 
 
 def get_privileges():
@@ -48,7 +48,7 @@ def get_privileges_by_role_id(args):
 
     if error is None:
         role_privileges = privilege_info['privileges_id']['data']
-        if type(eval(role_privileges)) == list:
+        if isinstance(eval(role_privileges), list):
             role_privileges = eval(role_privileges)
             if role_privileges and role_privileges[0] == '*':
                 return '*', 200
@@ -76,7 +76,7 @@ def get_privileges_by_user_id(args):
 
     if error is None:
         role_privileges = privilege_info['privileges_id']['data']
-        if type(eval(role_privileges)) == list:
+        if isinstance(eval(role_privileges), list):
             role_privileges = eval(role_privileges)
             if role_privileges and role_privileges[0] == '*':
                 return '*', 200

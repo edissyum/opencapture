@@ -75,7 +75,7 @@ def process(args):
         args['files'].ocrise_pdf(file, args['log'])
 
     process_res = args['splitter'].create_batches(args['batch_folder'], file, args['workflow_id'], args['user_id'],
-                                                  original_file, args['artificial_intelligence'])
+                                                  original_file, args['artificial_intelligence'], args['attachments'])
     return process_res
 
 
@@ -120,7 +120,7 @@ def split(splitter, pages, ocr, regex_content):
             'metadata_1': None,
             'metadata_2': None,
             'metadata_3': None,
-            'mem_value': None,
+            'mem_value': None
         })
 
         if not is_next_page_has_same_invoice_number or \

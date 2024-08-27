@@ -23,8 +23,7 @@
 
 .select-options-list {
     border: solid 1px #ccc;
-    height: 150px;
-    width: 300px;
+    max-height: 500px;
     background: white;
     border-radius: 4px;
     overflow:auto;
@@ -77,3 +76,9 @@
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 /* End drag and drop list */
+
+::ng-deep .drop-box-option {
+    .mat-mdc-form-field-subscript-wrapper {
+        display: none;
+    }
+}

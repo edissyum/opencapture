@@ -6,15 +6,35 @@ i.cdk-drag {
     @apply mb-1;
 }
 
-.ng-sg-placeholder,
+.ng-sg-active {
+    @apply bg-green-100;
+    @apply border-green-400;
+    @apply border;
+    @apply rounded-sm;
+}
+
+.ng-sg-placeholder {
+    & mat-form-field {
+        @apply scale-90;
+    }
+    @apply h-14;
+    @apply border;
+    @apply border-green-400;
+    @apply rounded-md;
+    @apply mt-4;
+    @apply pb-1;
+}
+
 .cdk-drag-placeholder {
+    & mat-form-field {
+        @apply hidden;
+    }
+    @apply h-10;
+    @apply pt-[1.125rem];
+    @apply pl-1;
     @apply border;
     @apply border-green-400;
     @apply rounded-sm;
-    @apply bg-gray-200;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0 8px 10px 1px rgba(0, 0, 0, 0.14),
-    0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
 .form-builder {

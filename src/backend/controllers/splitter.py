@@ -24,14 +24,19 @@ import secrets
 import os.path
 import datetime
 from flask_babel import gettext
+from werkzeug.datastructures import FileStorage
+
 from src.backend import splitter_exports
+from src.backend.classes.CMIS import CMIS
+from src.backend.classes.Files import Files
 from src.backend.main_splitter import launch
+from src.backend.classes.OpenADS import OpenADS
+from src.backend.classes.Splitter import Splitter
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from flask import current_app, request, g as current_context
-from src.backend.import_controllers import user, monitoring
-from src.backend.import_classes import _Files, _Splitter, _CMIS, _OpenADS
-from src.backend.import_models import splitter, doctypes, accounts, history, workflow, outputs, forms
+from src.backend.controllers import user, monitoring, attachments as attachments_controller
+from src.backend.models import splitter, doctypes, accounts, history, workflow, outputs, forms, attachments
 
 
 def handle_uploaded_file(files, workflow_id, user_id):
@@ -41,7 +46,7 @@ def handle_uploaded_file(files, workflow_id, user_id):
 
     for file in files:
         _f = files[file]
-        filename = _Files.save_uploaded_file(_f, path, False)
+        filename = Files.save_uploaded_file(_f, path, False)
 
         now = datetime.datetime.now()
         year, month, day = [str('%02d' % now.year), str('%02d' % now.month), str('%02d' % now.day)]
@@ -91,7 +96,7 @@ def launch_referential_update(form_data):
     available_methods = docservers['SPLITTER_METADATA_PATH'] + "/metadata_methods.json"
     call_on_splitter_view = False
     try:
-        with open(available_methods, encoding='UTF-8') as json_file:
+        with open(available_methods, encoding='utf-8') as json_file:
             available_methods = json.load(json_file)
             for method in available_methods['methods']:
                 if method['id'] == form_data['metadata_method']:
@@ -104,7 +109,7 @@ def launch_referential_update(form_data):
                         'docservers': docservers,
                         'form_id': form_data['form_id']
                     }
-                    metadata_load = _Splitter.import_method_from_script(docservers['SPLITTER_METADATA_PATH'],
+                    metadata_load = Splitter.import_method_from_script(docservers['SPLITTER_METADATA_PATH'],
                                                                         method['script'],
                                                                         method['method'])
                     metadata_load(args)
@@ -127,7 +132,8 @@ def retrieve_referential(form_id):
         })
         if res[1] != 200:
             return res
-    metadata, error = splitter.retrieve_metadata({
+
+    metadata, _ = splitter.retrieve_metadata({
         'type': 'referential',
         'form_id': str(form['id'])
     })
@@ -153,6 +159,8 @@ def retrieve_batches(data):
         'time': data['time'] if 'time' in data else None,
         'status': data['status'] if 'status' in data else None,
         'search': data['search'] if 'search' in data else None,
+        'order': data['order'] if 'order' in data else None,
+        'filter': data['filter'] if 'filter' in data else None,
         'batch_id': data['batchId'] if 'batchId' in data else None
     }
 
@@ -167,25 +175,34 @@ def retrieve_batches(data):
         return user_forms[0], user_forms[1]
     user_forms = user_forms[0]
 
-    args['select'] = ['*', "to_char(creation_date, 'DD-MM-YYYY " + gettext('AT') + " HH24:MI:SS') as batch_date"]
+    args['table'] = ['splitter_batches']
+    args['select'] = ['splitter_batches.*', "to_char(splitter_batches.creation_date, 'DD-MM-YYYY " + gettext('AT') + " HH24:MI:SS') as batch_date"]
     args['where'] = ['customer_id = ANY(%s)', 'form_id = ANY(%s)']
     args['data'] = [user_customers, user_forms]
 
     if 'search' in args and args['search']:
-        args['where'].append("id = %s OR file_name like %s ")
+        args['where'].append("splitter_batches.id = %s OR file_name like %s ")
         args['data'].append(args['search'])
         args['data'].append(f"%{args['search']}%")
 
     if 'status' in args and args['status'] is not None:
-        args['where'].append("status = %s")
+        args['where'].append("splitter_batches.status = %s")
         args['data'].append(args['status'])
 
     if 'time' in args and args['time'] is not None:
         if args['time'] in ['today', 'yesterday']:
             args['where'].append(
-                "to_char(creation_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "', 'YYYY-MM-DD')")
+                "to_char(splitter_batches.creation_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "', 'YYYY-MM-DD')")
         else:
-            args['where'].append("to_char(creation_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
+            args['where'].append("to_char(splitter_batches.creation_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
+
+    if 'filter' in args and args['filter']:
+        args['order_by'] = args['filter']
+        if 'order' in args and args['order']:
+            args['order_by'] = [args['filter'] + ' ' + args['order']]
+        else:
+            args['order_by'] = [args['filter'] + ' DESC']
+
     batches, error_batches = splitter.retrieve_batches(args)
     count, error_count = splitter.count_batches(args)
     if not error_batches and not error_count:
@@ -196,6 +213,8 @@ def retrieve_batches(data):
             customer = accounts.get_customer_by_id({'customer_id': batch['customer_id']})
             batches[index]['customer_name'] = customer[0]['name'] if 'name' in customer[0] else gettext('CUSTOMER_UNDEFINED')
 
+            attachments_count = attachments.get_attachments_by_batch_id(batch['id'])
+            batches[index]['attachments_count'] = len(attachments_count) if attachments_count else 0
             try:
                 thumbnail = f"{docservers['SPLITTER_THUMB']}/{batches[index]['batch_folder']}/{batches[index]['thumbnail']}"
                 with open(thumbnail, 'rb') as image_file:
@@ -299,6 +318,26 @@ def update_status(args):
         return response, 400
 
 
+def update_customer(args):
+    batches = splitter.get_batch_by_id({'id': args['batch_id']})
+    if len(batches[0]) < 1:
+        response = {
+            "errors": gettext('BATCH_NOT_FOUND'),
+            "message": gettext('BATCH_ID_NOT_FOUND', id=args['batch_id'])
+        }
+        return response, 401
+
+    res = splitter.update_customer(args)
+    if res:
+        return '', 200
+    else:
+        response = {
+            "errors": gettext('UPDATE_CUSTOMER_ERROR'),
+            "message": ''
+        }
+        return response, 400
+
+
 def change_form(args):
     res = splitter.change_form(args)
 
@@ -319,7 +358,10 @@ def lock_batch(args):
 
 def remove_lock_by_user_id(user_id):
     _, error = splitter.remove_lock_by_user_id({
-        'set': {"locked": False, "locked_by": None},
+        'set': {
+            'locked': False,
+            'locked_by': None
+        },
         'where': ['locked_by = %s'],
         'user_id': user_id
     })
@@ -410,6 +452,7 @@ def retrieve_documents(batch_id):
             if dotypes and len(dotypes[0]) > 0:
                 doctype_key = dotypes[0]['key'] if dotypes[0]['key'] else None
                 doctype_label = dotypes[0]['label'] if dotypes[0]['label'] else None
+
             res_documents.append({
                 'pages': document_pages,
                 'doctype_key': doctype_key,
@@ -462,7 +505,6 @@ def get_output_parameters(parameters):
 
 
 def save_modifications(data):
-    new_documents = []
     res = splitter.update_batch({
         'batch_id': data['batch_id'],
         'batch_metadata': data['batch_metadata']
@@ -492,7 +534,7 @@ def save_modifications(data):
         res = splitter.update_document({
             'id': document['id'].split('-')[-1],
             'doctype_key': document['doctypeKey'] if 'doctypeKey' in document else None,
-            'document_metadata': document['metadata'],
+            'document_metadata': document['metadata']
         })[0]
         if not res:
             response = {
@@ -509,7 +551,7 @@ def save_modifications(data):
                 'page_id': page['id'],
                 'document_id': document['id'],
                 'rotation':  page['rotation'],
-                'display_order': page_display_order,
+                'display_order': page_display_order
             })[0]
             page_display_order += 1
             if not res:
@@ -525,7 +567,7 @@ def save_modifications(data):
     for deleted_documents_id in data['deleted_documents_ids']:
         res = splitter.update_document({
             'id': deleted_documents_id.split('-')[-1],
-            'status': 'DEL',
+            'status': 'DEL'
         })[0]
     if not res:
         response = {
@@ -540,7 +582,7 @@ def save_modifications(data):
     for deleted_pages_id in data['deleted_pages_ids']:
         res = splitter.update_page({
             'page_id': deleted_pages_id,
-            'status': 'DEL',
+            'status': 'DEL'
         })[0]
         if not res:
             response = {
@@ -554,7 +596,7 @@ def save_modifications(data):
 
 def test_cmis_connection(args):
     try:
-        _CMIS(args['cmis_ws'], args['login'], args['password'], args['folder'])
+        CMIS(args['cmis_ws'], args['login'], args['password'], args['folder'])
     except (Exception,) as e:
         response = {
             'status': False,
@@ -566,7 +608,7 @@ def test_cmis_connection(args):
 
 
 def test_openads_connection(args):
-    _openads = _OpenADS(args['openads_api'], args['login'], args['password'])
+    _openads = OpenADS(args['openads_api'], args['login'], args['password'])
     res = _openads.test_connection()
     if not res['status']:
         response = {
@@ -579,13 +621,17 @@ def test_openads_connection(args):
 
 
 def export_batch(data):
+    custom_id = retrieve_custom_from_url(request)
     if 'regex' in current_context and 'log' in current_context and 'docservers' in current_context:
         log = current_context.log
         regex = current_context.regex
         docservers = current_context.docservers
+        config = current_context.config
+        database = current_context.database
     else:
-        custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+        config = _vars[1]
         regex = _vars[2]
         log = _vars[5]
         docservers = _vars[9]
@@ -601,7 +647,7 @@ def export_batch(data):
     if save_response[1] != 200:
         return save_response
 
-    export_res = splitter_exports.export_batch(data['batchId'], log, docservers, regex)
+    export_res = splitter_exports.export_batch(data['batchId'], log, docservers, regex, config, database, custom_id)
     return export_res
 
 
@@ -612,7 +658,7 @@ def get_split_methods():
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
-    split_methods = _Splitter.get_split_methods(docservers)
+    split_methods = Splitter.get_split_methods(docservers)
     if len(split_methods) > 0:
         return split_methods, 200
     return split_methods, 400
@@ -625,7 +671,7 @@ def get_metadata_methods(form_method=False):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
-    metadata_methods = _Splitter.get_metadata_methods(docservers, form_method)
+    metadata_methods = Splitter.get_metadata_methods(docservers, form_method)
     if len(metadata_methods) > 0:
         return metadata_methods, 200
     return metadata_methods, 400
@@ -693,15 +739,20 @@ def merge_batches(parent_id, batches):
         merged_pdf.add_page(parent_pdf.pages[page])
 
     batches_info = []
-    for batch in batches:
-        batch_info = splitter.get_batch_by_id({'id': batch})[0]
+    childs_attachments = []
+    for batch_id in batches:
+        batch_info = splitter.get_batch_by_id({'id': batch_id})[0]
+        c_attachments = attachments.get_attachments_by_batch_id(batch_id)
+        if c_attachments:
+            for attachment in c_attachments:
+                childs_attachments.append(attachment['id'])
         parent_batch_documents += batch_info['documents_count']
         batches_info.append(batch_info)
         pdf = pypdf.PdfReader(docservers['SPLITTER_ORIGINAL_DOC'] + '/' + batch_info['file_path'])
         for page in range(len(pdf.pages)):
             merged_pdf.add_page(pdf.pages[page])
 
-        documents = splitter.get_documents({'id': batch})
+        documents = splitter.get_documents({'id': batch_id})
         cpt = 0
         for doc in documents[0]:
             if doc:
@@ -737,7 +788,7 @@ def merge_batches(parent_id, batches):
                     })
 
                 splitter.update_status({
-                    'ids': [int(batch)],
+                    'ids': [int(batch_id)],
                     'status': 'MERG'
                 })
 
@@ -747,6 +798,14 @@ def merge_batches(parent_id, batches):
     splitter.update_batch_documents_count({'id': parent_id, 'number': parent_batch_documents})
     with open(parent_filename, 'wb') as file:
         merged_pdf.write(file)
+
+    for attachment_id in childs_attachments:
+        attachments.update_attachment({
+            'attachment_id': attachment_id,
+            'set': {
+                'batch_id': parent_id
+            }
+        })
 
 
 def get_unseen(user_id):
@@ -785,7 +844,43 @@ def get_batch_outputs(batch_id):
         _outputs.append({
             'id': output['id'],
             'type': output['output_type_id'],
-            'label': output['output_label'],
+            'label': output['output_label']
         })
 
     return {'outputs': _outputs}, 200
+
+def move_documents_to_attachment(documents, batch_id):
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+
+    for document in documents:
+        document_id = document['id']
+        pages, _ = splitter.get_document_pages({'document_id': document_id})
+        batch_info, _ = splitter.get_batch_by_id({'id': batch_id})
+
+        file_path = docservers['SPLITTER_ORIGINAL_DOC'] + '/' + batch_info['file_path']
+        pdf_reader = pypdf.PdfReader(file_path, strict=False)
+        pdf_writer = pypdf.PdfWriter()
+
+        for page in pages:
+            print(document_id, pages)
+            pdf_page = pdf_reader.pages[page['source_page'] - 1]
+            if page['rotation'] != 0:
+                pdf_page.rotate(page['rotation'])
+            pdf_writer.add_page(pdf_page)
+
+        tmp_filename = docservers['TMP_PATH'] + '/' + str(uuid.uuid4()) + '.pdf'
+        pdf_writer.write(tmp_filename)
+
+        attachments_controller.handle_uploaded_file({
+            'files': FileStorage(stream=open(tmp_filename, 'rb'), filename=batch_info['file_name'])
+        }, None, batch_id, 'splitter')
+
+        if os.path.isfile(tmp_filename):
+            os.remove(tmp_filename)
+
+    return '', 200

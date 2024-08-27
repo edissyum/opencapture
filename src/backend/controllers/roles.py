@@ -19,7 +19,7 @@
 import json
 from flask import request
 from flask_babel import gettext
-from src.backend.import_models import roles, history, user
+from src.backend.models import roles, history, user
 
 
 def get_roles(args):
@@ -74,7 +74,7 @@ def update_role(role_id, data):
             'enabled': data['enabled'],
             'label_short': data['label_short'],
             'default_route': data['default_route'] if 'default_route' in data else '',
-            'assign_roles': json.dumps(data['assign_roles']),
+            'assign_roles': json.dumps(data['assign_roles'])
         }
 
         _, error = roles.update_role({'set': _set, 'role_id': role_id})
@@ -138,7 +138,7 @@ def update_role_privilege(role_id, privileges):
 
     if error is None:
         _set = {
-            'privileges_id': '{"data": "' + str(privileges) + '"}',
+            'privileges_id': '{"data": "' + str(privileges) + '"}'
         }
 
         _, error = roles.update_role_privileges({'set': _set, 'role_id': role_id})

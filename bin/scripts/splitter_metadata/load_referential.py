@@ -66,7 +66,7 @@ def load_referential(args):
                             'type': "referential",
                             'form_id': args['form_id'],
                             'external_id': external_id,
-                            'data': json.dumps(referential),
+                            'data': json.dumps(referential)
                         }
                     })
                     args['log'].info(f"Inserted metadata external_id : {external_id}")
@@ -75,7 +75,7 @@ def load_referential(args):
                         'table': ['metadata'],
                         'set': {
                             'last_edit': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                            'data': json.dumps(referential),
+                            'data': json.dumps(referential)
                         },
                         'where': ['external_id = %s', 'type = %s', 'form_id = %s'],
                         'data': [external_id, 'referential', args['form_id']]
@@ -87,7 +87,7 @@ def load_referential(args):
                     'table': ['metadata'],
                     'set': {
                         'last_edit': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                        'type': 'referential-archive',
+                        'type': 'referential-archive'
                     },
                     'where': ['external_id = %s', 'type = %s', 'form_id = %s'],
                     'data': [str(referential['numero_dossier']), 'referential', args['form_id']]

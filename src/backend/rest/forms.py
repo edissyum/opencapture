@@ -18,8 +18,8 @@
 
 from flask_babel import gettext
 from src.backend.functions import rest_validator
+from src.backend.controllers import auth, forms, privileges
 from flask import Blueprint, request, make_response, jsonify
-from src.backend.import_controllers import auth, forms, privileges
 
 bp = Blueprint('forms', __name__, url_prefix='/ws/')
 

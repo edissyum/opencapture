@@ -18,7 +18,7 @@
 import { environment } from "../app/env";
 import { Router } from "@angular/router";
 import { Injectable } from '@angular/core';
-import { LocalStorageService } from "./local-storage.service";
+import { SessionStorageService } from "./session-storage.service";
 
 @Injectable({
     providedIn: 'root'
@@ -28,7 +28,7 @@ export class UserService {
 
     constructor(
         private router: Router,
-        private localStorage: LocalStorageService
+        private sessionStorage: SessionStorageService
     ) {
     }
 
@@ -44,10 +44,8 @@ export class UserService {
         const token = this.getUserData();
         if (token) {
             return JSON.parse(atob(token as string));
-        } else {
-            if (this.router.url !== '/' && !this.router.url.includes('/resetPassword') && this.router.url !== '/forgotPassword' && this.router.url !== '/login' && this.router.url !== '/logout') {
-                this.router.navigate(['/logout']).then();
-            }
+        } else if (this.router.url !== '/' && !this.router.url.includes('/resetPassword') && this.router.url !== '/forgotPassword' && this.router.url !== '/login' && this.router.url !== '/logout') {
+            this.router.navigate(['/logout']).then();
         }
     }
 
@@ -58,6 +56,6 @@ export class UserService {
         } else if (environment['fqdn']) {
             userTokenName += '_' + environment['fqdn'];
         }
-        return this.localStorage.get(userTokenName);
+        return this.sessionStorage.get(userTokenName);
     }
 }

@@ -13,28 +13,26 @@
  You should have received a copy of the GNU General Public License
  along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
- @dev : Nathan Cheval <nathan.cheval@outlook.fr>
- @dev : Oussama Brich <oussama.brich@edissyum.com> */
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import { Component, OnInit, SecurityContext, ViewEncapsulation } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { SettingsService } from "../../../../services/settings.service";
 import { AuthService } from "../../../../services/auth.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { PrivilegesService } from "../../../../services/privileges.service";
-import { LocalStorageService } from "../../../../services/local-storage.service";
-import { LastUrlService } from "../../../../services/last-url.service";
+import { SessionStorageService } from "../../../../services/session-storage.service";
 import { Sort } from "@angular/material/sort";
 import { environment } from  "../../../env";
-import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
-import {Observable, of} from "rxjs";
+import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
+import { Observable, of } from "rxjs";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import { DomSanitizer } from "@angular/platform-browser";
 import { LocaleService } from "../../../../services/locale.service";
 import { PasswordVerificationService } from "../../../../services/password-verification.service";
-import {FormControl, Validators} from "@angular/forms";
+import { FormControl, Validators } from "@angular/forms";
 
 @Component({
     selector: 'app-configurations',
@@ -59,7 +57,7 @@ export class ConfigurationsComponent implements OnInit {
     toHighlight             : string        = '';
     token                   : string        = '';
     search                  : string        = '';
-    loginImage              : SafeUrl       = '';
+    loginImage              : any           = '';
     loginBottomMessage      : FormControl   = new FormControl();
     loginTopMessage         : FormControl   = new FormControl();
     pageSize                : number        = 10;
@@ -203,30 +201,23 @@ export class ConfigurationsComponent implements OnInit {
     constructor(
         public router: Router,
         private http: HttpClient,
-        private route: ActivatedRoute,
         private sanitizer: DomSanitizer,
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
         public localeService: LocaleService,
         public serviceSettings: SettingsService,
-        private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService,
+        private sessionStorageService: SessionStorageService,
         public passwordVerification: PasswordVerificationService
     ) { }
 
     ngOnInit(): void {
         this.serviceSettings.init();
-        const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('settings/general/configurations') || lastUrl === '/') {
-            if (this.localStorageService.get('configurationsPageIndex')) {
-                this.pageIndex = parseInt(this.localStorageService.get('configurationsPageIndex') as string);
-            }
-            this.offset = this.pageSize * (this.pageIndex);
-        } else {
-            this.localStorageService.remove('configurationsPageIndex');
+        if (this.sessionStorageService.get('configurationsPageIndex')) {
+            this.pageIndex = parseInt(this.sessionStorageService.get('configurationsPageIndex') as string);
         }
+        this.offset = this.pageSize * (this.pageIndex);
 
         this.http.get(environment['url'] + '/ws/config/getConfigurations', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -286,11 +277,11 @@ export class ConfigurationsComponent implements OnInit {
             })
         ).subscribe();
 
-        const b64Content = this.localStorageService.get('loginImageB64');
+        const b64Content = this.sessionStorageService.get('loginImageB64');
         if (!b64Content) {
             this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
                 tap((data: any) => {
-                    this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
+                    this.loginImage = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/png;base64, ' + data);
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -299,7 +290,7 @@ export class ConfigurationsComponent implements OnInit {
                 })
             ).subscribe();
         } else {
-            this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + b64Content);
+            this.loginImage = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/png;base64, ' + b64Content);
         }
 
         this.loadConfigurations();
@@ -533,8 +524,8 @@ export class ConfigurationsComponent implements OnInit {
                     {headers: this.authService.headers},
                 ).pipe(
                     tap(() => {
-                        this.loginImage = this.sanitizer.bypassSecurityTrustUrl(args['image_content']);
-                        this.localStorageService.save('loginImageB64', args['image_content'].replace('data:image/png;base64,', ''));
+                        this.loginImage = this.sanitizer.sanitize(SecurityContext.URL, args['image_content']);
+                        this.sessionStorageService.save('loginImageB64', args['image_content'].replace('data:image/png;base64,', ''));
                         const currentUrl = this.router.url;
                         this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
                             this.router.navigate([currentUrl]).then();
@@ -625,7 +616,7 @@ export class ConfigurationsComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localStorageService.save('configurationsPageIndex', event.pageIndex);
+        this.sessionStorageService.save('configurationsPageIndex', event.pageIndex);
         this.loadConfigurations();
     }
 

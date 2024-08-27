@@ -29,6 +29,7 @@ from flask_babel import gettext
 from pytesseract import pytesseract
 from pdf2image import convert_from_path
 from .classes.Config import Config as _Config
+from werkzeug.datastructures.file_storage import FileStorage
 from .classes.ArtificialIntelligence import ArtificialIntelligence
 
 
@@ -101,8 +102,11 @@ def rest_validator(data, required_fields, only_data=False):
     return True, ''
 
 
-def check_extensions_mime(files):
-    formats_file = str(Path(__file__).parents[2]) + '/instance/config/formats.json'
+def check_extensions_mime(files, document_type='document'):
+    formats_file = str(Path(__file__).parents[2]) + '/instance/config/extensions.json'
+    if document_type == 'attachments':
+        formats_file = str(Path(__file__).parents[2]) + '/instance/config/attachment_extensions.json'
+
     if os.path.isfile(formats_file):
         with open(formats_file) as json_file:
             formats = json.load(json_file)
@@ -115,9 +119,15 @@ def check_extensions_mime(files):
 
     mime = magic.Magic(mime=True)
     for file in files:
-        _f = files[file]
+        if isinstance(file, dict):
+            _f = FileStorage(stream=open(file['file'], 'rb'), filename=file['filename'])
+        elif isinstance(file, FileStorage):
+            _f = file
+        else:
+            _f = files[file]
+
         ext = _f.filename.split('.')[-1].lower()
-        allowed_extensions = [_f['extension'].lower() for _f in formats]
+        allowed_extensions = [_format['extension'].lower() for _format in formats]
         if ext not in allowed_extensions:
             response = {
                 "errors": gettext("UPLOAD_ERRROR"),
@@ -125,7 +135,7 @@ def check_extensions_mime(files):
             }
             return response, 400
 
-        allowed_mime = [_f['mime'].lower() for _f in formats if _f['extension'].lower() == ext]
+        allowed_mime = [_format['mime'].lower() for _format in formats if _format['extension'].lower() == ext]
         mime_type = mime.from_buffer(_f.read())
 
         if mime_type not in allowed_mime:
@@ -202,9 +212,8 @@ def get_custom_path(custom_id):
     if os.path.isdir(custom_directory) and os.path.isfile(custom_ini_file):
         customs_config = _Config(custom_ini_file)
         for custom_name, custom_param in customs_config.cfg.items():
-            if custom_id == custom_name:
-                if os.path.isdir(custom_param['path']):
-                    path = custom_param['path']
+            if custom_id == custom_name and os.path.isdir(custom_param['path']):
+                path = custom_param['path']
     return path
 
 
@@ -241,24 +250,11 @@ def retrieve_custom_path(custom_id):
     return path
 
 
-def get_custom_array(custom_id=False):
-    if not custom_id:
-        custom_id = get_custom_id()
+def get_custom_array(custom_id):
     custom_array = {}
     if custom_id:
         custom_array = check_python_customized_files(custom_id[1])
     return custom_array
-
-
-def get_custom_id():
-    custom_ini_file = str(Path(__file__).parents[2]) + '/custom/custom.ini'
-    if os.path.isfile(custom_ini_file):
-        customs_config = _Config(custom_ini_file)
-        for custom_name, custom_param in customs_config.cfg.items():
-            if custom_param['isdefault'] == 'True':
-                path = custom_param['path']
-                if os.path.isdir(path):
-                    return [custom_name, path]
 
 
 def check_python_customized_files(path):
@@ -438,7 +434,7 @@ def generate_searchable_pdf(document, tmp_filename):
         shutil.move(tmp_path + '/to_merge_' + _uuid + '-001.pdf', tmp_filename)
 
 
-def find_form_with_ia(file, ai_model_id, database, docservers, files, ocr, log, module):
+def find_workflow_with_ia(file, ai_model_id, database, docservers, files, ocr, log, module):
     ai_model = database.select({
         'select': ['*'],
         'table': ['ai_models'],
@@ -470,22 +466,23 @@ def find_form_with_ia(file, ai_model_id, database, docservers, files, ocr, log, 
             ai.csv_file = csv_file
             (_, folder, prob), code = ai.model_testing(model_name)
 
-            if code == 200:
-                if prob >= min_proba:
-                    for doc in ai_model[0]['documents']:
-                        if doc['folder'] == folder:
-                            if module == 'verifier':
+            if code == 200 and prob >= min_proba:
+                for doc in ai_model[0]['documents']:
+                    if doc['folder'] == folder:
+                        if module == 'verifier':
+                            if doc['workflow_id']:
                                 form = database.select({
                                     'select': ['*'],
-                                    'table': ['form_models'],
-                                    'where': ['id = %s', 'module = %s'],
-                                    'data': [doc['form'], module],
+                                    'table': ['workflows'],
+                                    'where': ['workflow_id = %s', 'module = %s'],
+                                    'data': [doc['workflow_id'], module]
                                 })
                                 if form:
-                                    log.info('[IA] Document detected as : ' + folder)
-                                    return doc['form']
-
-                            elif module == 'splitter':
-                                log.info('[IA] Document doctype detected : ' + doc['doctype'])
-                                return doc['doctype']
+                                    log.info('[IA] Document detected as&nbsp;<strong>' + folder +
+                                             '</strong>&nbsp;and sended to workflow&nbsp;<strong>' +
+                                             doc['workflow_id'] + '</strong>')
+                                    return doc['workflow_id']
+                        elif module == 'splitter':
+                            log.info('[IA] Document doctype detected : ' + doc['doctype'])
+                            return doc['doctype']
     return False

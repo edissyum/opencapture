@@ -19,34 +19,53 @@ import os
 import uuid
 import json
 import zeep
+import magic
 import base64
 import secrets
 import logging
+import tempfile
 import datetime
 import requests
 import traceback
 import importlib
 import pandas as pd
+from PIL import Image
 from flask_babel import gettext
 from zeep import Client, exceptions
 from src.backend import verifier_exports
-from src.backend.import_classes import _Files
+from src.backend.classes.Files import Files
+from werkzeug.datastructures import FileStorage
+from src.backend.classes.Files import rotate_img
 from src.backend.scripting_functions import check_code
-from src.backend.import_models import verifier, accounts, forms
 from src.backend.main import launch, create_classes_from_custom_id
+from src.backend.controllers import auth, user, monitoring, history
+from src.backend.models import verifier, accounts, forms, attachments
 from flask import current_app, Response, request, g as current_context
-from src.backend.import_controllers import auth, user, monitoring, history
 from src.backend.functions import retrieve_custom_from_url, delete_documents
 
 
-def handle_uploaded_file(files, workflow_id, supplier):
+def upload_documents(body):
+    res = handle_uploaded_file(body['files'], body['workflowId'], None, body['datas'], body['splitter_batch_id'])
+    if res and res[0] is not False:
+        return res, 200
+
+    response = {
+        "errors": gettext('UPLOAD_DOCUMENTS_ERROR'),
+        "message": ""
+    }
+    return response, 400
+
+
+def handle_uploaded_file(files, workflow_id, supplier, datas=None, splitter_batch_id=False):
     custom_id = retrieve_custom_from_url(request)
     path = current_app.config['UPLOAD_FOLDER']
     tokens = []
-
     for file in files:
-        _f = files[file]
-        filename = _Files.save_uploaded_file(_f, path)
+        if isinstance(file, FileStorage):
+            _f = file
+        else:
+            _f = files[file]
+        filename = Files.save_uploaded_file(_f, path)
 
         now = datetime.datetime.now()
         year, month, day = [str('%02d' % now.year), str('%02d' % now.month), str('%02d' % now.day)]
@@ -61,16 +80,18 @@ def handle_uploaded_file(files, workflow_id, supplier):
             'source': 'interface',
             'filename': os.path.basename(_f.filename),
             'token': token,
-            'workflow_id': workflow_id if workflow_id else None,
+            'workflow_id': workflow_id if workflow_id else None
         })
 
         if task_id_monitor:
             launch({
+                'datas': datas,
                 'file': filename,
                 'supplier': supplier,
                 'custom_id': custom_id,
                 'ip': request.remote_addr,
                 'workflow_id': workflow_id,
+                'splitter_batch_id': splitter_batch_id,
                 'user_id': request.environ['user_id'],
                 'user_info': request.environ['user_info'],
                 'task_id_monitor': task_id_monitor[0]['process']
@@ -121,10 +142,12 @@ def retrieve_documents(args):
     args['left_join'] = ['documents.form_id = form_models.id']
     args['group_by'] = ['documents.id', 'documents.form_id', 'form_models.id']
 
-    args['select'].append("DISTINCT(documents.id) as document_id")
+    args['select'].append("documents.id as document_id")
     args['select'].append("to_char(register_date, 'DD-MM-YYYY " + gettext('AT') + " HH24:MI:SS') as date")
     args['select'].append('form_models.label as form_label')
-    args['select'].append("*")
+    args['select'].append("documents.*")
+
+    args['where'].append("datas -> 'api_only' is NULL")
 
     if 'time' in args:
         if args['time'] in ['today', 'yesterday']:
@@ -166,6 +189,17 @@ def retrieve_documents(args):
         else:
             args['where'].append('supplier_id IN (' + ','.join(map(str, args['allowedSuppliers'])) + ')')
 
+    if 'filter' in args and args['filter']:
+        if args['filter'] not in ['documents.id', 'documents.register_date']:
+            cast = 'text' if args['filter'] not in ['document_date'] else 'timestamp with time zone'
+            args['filter'] = f"(documents.datas ->> '{args['filter']}')::{cast}"
+
+        args['order_by'] = args['filter']
+        if 'order' in args and args['order']:
+            args['order_by'] = [args['filter'] + ' ' + args['order']]
+        else:
+            args['order_by'] = [args['filter'] + ' DESC']
+
     total_documents = verifier.get_total_documents({
         'select': ['count(documents.id) as total'],
         'where': args['where'],
@@ -181,11 +215,14 @@ def retrieve_documents(args):
             year_and_month = year + '/' + month
             thumb = get_file_content('full', document['full_jpg_filename'], 'image/jpeg',
                                      compress=True, year_and_month=year_and_month)
-            document['thumb'] = str(base64.b64encode(thumb.get_data()).decode('UTF-8'))
+            document['thumb'] = str(base64.b64encode(thumb.get_data()).decode('utf-8'))
             if document['supplier_id']:
                 supplier_info, error = accounts.get_supplier_by_id({'supplier_id': document['supplier_id']})
                 if not error:
                     document['supplier_name'] = supplier_info['name']
+
+            attachments_counts = attachments.get_attachments_by_document_id(document['id'])
+            document['attachments_count'] = len(attachments_counts) if attachments_counts else 0
         response = {
             "total": total_documents[0]['total'],
             "documents": documents_list
@@ -390,7 +427,10 @@ def update_document(document_id, data):
 
 def remove_lock_by_user_id(user_id):
     _, error = verifier.update_documents({
-        'set': {"locked": False},
+        'set': {
+            'locked': False,
+            'locked_by': None
+        },
         'where': ['locked_by = %s'],
         'data': [user_id]
     })
@@ -421,6 +461,19 @@ def export_mem(document_id, data):
         return verifier_exports.export_mem(data['data'], document_info, log, regex, database)
 
 
+def export_coog(document_id, data):
+    if 'regex' in current_context and 'database' in current_context and 'log' in current_context:
+        log = current_context.log
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
+
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
+    if not error:
+        return verifier_exports.export_coog(data['data'], document_info, log)
+
+
 def export_xml(document_id, data):
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
 
@@ -435,7 +488,7 @@ def export_xml(document_id, data):
             log = _vars[5]
             regex = _vars[2]
             database = _vars[0]
-        return verifier_exports.export_xml(data['data'], log, regex, document_info, database)
+        return verifier_exports.export_xml(data['data'], log, document_info, database)
 
 
 def export_pdf(document_id, data):
@@ -449,8 +502,7 @@ def export_pdf(document_id, data):
             _vars = create_classes_from_custom_id(custom_id)
             log = _vars[5]
             regex = _vars[2]
-        return verifier_exports.export_pdf(data['data'], log, regex, document_info, data['compress_type'],
-                                           data['ocrise'])
+        return verifier_exports.export_pdf(data['data'], log, document_info, data['compress_type'], data['ocrise'])
 
 
 def export_facturx(document_id, data):
@@ -496,7 +548,7 @@ def launch_output_script(document_id, workflow_settings, outputs):
         tmp_file = docservers['TMP_PATH'] + '/output_scripting_' + rand + '.py'
 
         try:
-            with open(tmp_file, 'w', encoding='UTF-8') as python_script:
+            with open(tmp_file, 'w', encoding='utf-8') as python_script:
                 python_script.write(script)
 
             if os.path.isfile(tmp_file):
@@ -575,6 +627,22 @@ def get_thumb_by_document_id(document_id):
         return '', 404
 
 
+def get_original_doc_by_document_id(document_id):
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
+    if not error:
+        path = document_info['path'] + '/' + document_info['filename']
+        mime = magic.Magic(mime=True)
+        mime_type = mime.from_file(path)
+        with open(path, 'rb') as file:
+            content = file.read()
+
+        if not content:
+            return None, ''
+        return content, mime_type
+    else:
+        return None, ''
+
+
 def get_file_content(file_type, filename, mime_type, compress=False, year_and_month=False, document_id=False):
     if 'docservers' in current_context and 'files' in current_context:
         files = current_context.files
@@ -605,16 +673,14 @@ def get_file_content(file_type, filename, mime_type, compress=False, year_and_mo
                 if year_and_month:
                     thumb_path = thumb_path + '/' + str(year_and_month) + '/'
                 if os.path.isfile(thumb_path + '/' + filename):
-                    with open(thumb_path + '/' + filename, 'rb') as file:
-                        content = file.read()
+                    content = return_rotated_content(file_type, thumb_path + '/' + filename)
             else:
-                with open(full_path, 'rb') as file:
-                    content = file.read()
+                content = return_rotated_content(file_type, full_path)
         else:
             if document_id:
                 document = verifier.get_document_by_id({
                     'select': ['filename', 'full_jpg_filename'],
-                    'document_id': document_id,
+                    'document_id': document_id
                 })
                 if document:
                     document = document[0]
@@ -623,8 +689,7 @@ def get_file_content(file_type, filename, mime_type, compress=False, year_and_mo
                     filename = docservers['VERIFIER_IMAGE_FULL'] + '/' + str(year_and_month) + '/' + filename
                     files.save_img_with_pdf2image(pdf_path, filename, cpt)
                     if os.path.isfile(filename):
-                        with open(filename, 'rb') as file:
-                            content = file.read()
+                        content = return_rotated_content(file_type, filename)
 
     if not content:
         if mime_type == 'image/jpeg':
@@ -636,6 +701,22 @@ def get_file_content(file_type, filename, mime_type, compress=False, year_and_mo
     return Response(content, mimetype=mime_type)
 
 
+def return_rotated_content(file_type, image):
+    if file_type == 'referential_supplier':
+        with open(image, 'rb') as file:
+            content = file.read()
+    else:
+        temp = Image.open(image)
+        temp = temp.convert('RGB')
+        with tempfile.NamedTemporaryFile() as tf:
+            temp.save(tf.name + '.jpg', format="JPEG")
+            rotate_img(tf.name + '.jpg')
+            with open(tf.name + '.jpg', 'rb') as file:
+                content = file.read()
+            os.remove(tf.name + '.jpg')
+    return content
+
+
 def get_token_insee():
     if 'config' in current_context:
         config = current_context.config
@@ -645,7 +726,7 @@ def get_token_insee():
         config = _vars[1]
 
     credentials = base64.b64encode(
-        (config['API']['siret-consumer'] + ':' + config['API']['siret-secret']).encode('UTF-8')).decode('UTF-8')
+        (config['API']['siret-consumer'] + ':' + config['API']['siret-secret']).encode('utf-8')).decode('utf-8')
 
     try:
         res = requests.post(config['API']['siret-url-token'], data={'grant_type': 'client_credentials'},
@@ -789,12 +870,14 @@ def get_unseen(user_id):
     user_customers = user.get_customers_by_user_id(user_id)
     user_customers[0].append(0)
     total_unseen = verifier.get_total_documents({
-        'select': ['count(documents.id) as unseen'],
-        'where': ["status = %s", "customer_id = ANY(%s)"],
-        'data': ['NEW', user_customers[0]],
-        'table': ['documents']
-    })[0]
-    return total_unseen['unseen'], 200
+        'select'    : ["status.label_long as status", "count(documents.id) as unseen"],
+        'table'     : ["documents", "status"],
+        'left_join' : ["status.id = documents.status"],
+        'where'     : ["status IN ('NEW', 'ERR', 'WAIT_THIRD_PARTY')", "customer_id = ANY(%s)", "datas -> 'api_only' is NULL", "status.module = %s"],
+        'data'      : [user_customers[0], 'verifier'],
+        'group_by'  : ["status.label_long"]
+    })
+    return total_unseen, 200
 
 
 def get_customers_count(user_id, status, time):
@@ -809,7 +892,7 @@ def get_customers_count(user_id, status, time):
 
     customers_count = verifier.get_total_documents({
         'select': ['customer_id', 'count(documents.id) as total'],
-        'where': ["status = %s", "customer_id = ANY(%s)", where_time[0]],
+        'where': ["status = %s", "customer_id = ANY(%s)", where_time[0], "datas -> 'api_only' is NULL"],
         'data': [status, user_customers[0]],
         'group_by': ['customer_id']
     })
@@ -821,32 +904,38 @@ def get_customers_count(user_id, status, time):
             'data': [status, user_customers[0]],
             'group_by': ['form_id']
         })
-        customer_suppliers = {}
+        customer_suppliers = {
+            gettext('NO_FORM'): verifier.get_total_documents({
+                'select': ['supplier_id', 'count(documents.id) as total'],
+                'where': ["status = %s", "customer_id = %s", "form_id is NULL", where_time[0]],
+                'data': [status, customer['customer_id']],
+                'group_by': ['supplier_id']
+            })
+        }
         for form in _forms:
-            form_info, error = forms.get_form_by_id({'form_id': form['form_id']})
-            if error is not None:
-                form_label = gettext('NO_FORM')
-                where = ["status = %s", "customer_id = %s", "form_id is NULL", where_time[0]]
-                data = [status, customer['customer_id']]
-            else:
-                form_label = form_info['label']
+            if form['form_id'] is not None:
+                form_info, error = forms.get_form_by_id({'form_id': form['form_id']})
+                if error is not None:
+                    form_label = gettext('FORM_NOT_FOUND')
+                else:
+                    form_label = form_info['label']
+
                 where = ["status = %s", "customer_id = %s", "form_id = %s", where_time[0]]
                 data = [status, customer['customer_id'], form['form_id']]
 
-            customer_suppliers[form_label] = verifier.get_total_documents({
-                'select': ['supplier_id', 'count(documents.id) as total'],
-                'where': where,
-                'data': data,
-                'group_by': ['supplier_id']
-            })
+                customer_suppliers[form_label] = verifier.get_total_documents({
+                    'select': ['supplier_id', 'count(documents.id) as total'],
+                    'where': where,
+                    'data': data,
+                    'group_by': ['supplier_id']
+                })
 
-            for supplier in customer_suppliers[form_label]:
-                supplier_info, error_supplier = accounts.get_supplier_by_id({'supplier_id': supplier['supplier_id']})
-                if error_supplier is None:
-                    supplier['name'] = supplier_info['name']
-                supplier['form_id'] = form['form_id']
+                for supplier in customer_suppliers[form_label]:
+                    supplier_info, error_supplier = accounts.get_supplier_by_id({'supplier_id': supplier['supplier_id']})
+                    if error_supplier is None:
+                        supplier['name'] = supplier_info['name']
+                    supplier['form_id'] = form['form_id']
         customer['suppliers'] = customer_suppliers
-        if error is None:
-            if customer['customer_id'] != 0:
-                customer['name'] = customer_info['name']
+        if error is None and customer['customer_id'] != 0:
+            customer['name'] = customer_info['name']
     return customers_count, 200

@@ -78,13 +78,16 @@
                         <ng-container *ngFor="let unit of this.units">
                             <h2 class="text-gray-900">{{ unit['label'] | translate }}</h2>
                             <div class="flex justify-center mx-10">
-                                <div class="grid grid-cols-2 gap-6 w-full mb-0 text-center">
+                                <div class="grid grid-cols-4 gap-6 w-full mb-0 text-center">
                                     <ng-container *ngFor="let field of process">
                                         <ng-container *ngIf="field.unit === unit['id']">
-                                            <div *ngIf="field.type === 'boolean'" class="col-span-2 mb-8">
-                                                <mat-slide-toggle class="relative m-auto top-4" [formControl]="field['control']">
+                                            <div *ngIf="field.type === 'boolean'" class="col-span-4 mb-8">
+                                                <mat-slide-toggle [name]="field['id']" class="relative m-auto top-4" [formControl]="field['control']" (change)="updateRequired($event, process)">
                                                     {{ field.label | translate }}
                                                 </mat-slide-toggle>
+                                                <span *ngIf="field.hint" class="text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
+                                                    <i class="fa-solid fa-circle-question text-md"></i>
+                                                </span>
                                             </div>
                                             <mat-form-field class="w-full" *ngIf="field.type === 'text' || field.type === 'password' || field.type === 'number'">
                                                 <mat-label>{{ field.label | translate }}</mat-label>

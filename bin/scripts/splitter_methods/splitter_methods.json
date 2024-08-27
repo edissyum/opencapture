@@ -1,6 +1,12 @@
 {
     "methods": [
         {
+            "id"    : "no_sep",
+            "label" : "Pas de séparation",
+            "script": "no_sep.py",
+            "method": "process"
+        },
+        {
             "id"    : "metadata",
             "label" : "Séparation intelligente par métadonnées des factures",
             "script": "metadata.py",

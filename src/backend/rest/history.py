@@ -20,7 +20,7 @@ from flask_babel import gettext
 from flask import Blueprint, request, make_response, jsonify
 
 from src.backend.functions import rest_validator
-from src.backend.import_controllers import auth, history, privileges
+from src.backend.controllers import auth, history, privileges
 
 bp = Blueprint('history', __name__, url_prefix='/ws/')
 

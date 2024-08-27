@@ -22,7 +22,7 @@
         <hr class="border-green-400 relative z-30">
         <div class="overflow-x-hidden overflow-y-auto" style="height: calc(100vh - 6rem) !important">
             <div *ngIf="!loading" class="flex justify-center items-center">
-                <form class="grid grid-cols-2 gap-12 w-full m-10 text-center">
+                <form class="grid grid-cols-2 gap-12 w-full mb-5 mx-10 mt-10 text-center">
                     <ng-container *ngFor="let field of outputForm">
                         <mat-form-field *ngIf="field.type === 'text'">
                             <mat-label>{{ field.label | translate }}</mat-label>
@@ -51,7 +51,7 @@
                 </form>
             </div>
             <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
-            <h4 class="text-center mt-10 mb-5">{{ 'OUTPUT.output_settings_list' | translate }}</h4>
+            <h4 class="text-center mt-5 mb-5">{{ 'OUTPUT.output_settings_list' | translate }}</h4>
             <div class="flex justify-center items-center mb-2">
                 <button (click)="updateOutput()" mat-button class="valid_button">
                     <span class="block">{{ "OUTPUT.update" | translate }}</span>
@@ -59,7 +59,7 @@
             </div>
             <div class="flex justify-center items-center ml-10 mr-5">
                 <form class="w-full text-center" *ngIf="this.selectedOutputType && this.outputsTypesForm[selectedOutputType]">
-                    <mat-tab-group class="output-tab" [selectedIndex]="this.outputsTypesForm[selectedOutputType]['auth'].length === 0 ? 1 : 0 ">
+                    <mat-tab-group class="output-tab" [selectedIndex]="this.outputsTypesForm[selectedOutputType]['auth'].length === 0 ? 1 : 0">
                         <mat-tab [label]="'OUTPUT.auth' | translate">
                             <span *ngIf="this.outputsTypesForm[selectedOutputType]['auth'].length === 0" class="relative top-10 text-xl">
                                 {{ 'OUTPUT.no_auth_necessary' | translate }}
@@ -90,7 +90,8 @@
                             <button *ngIf="outputsTypesForm[selectedOutputType]['auth'].length !== 0"
                                     (click)="testConnection()" mat-button
                                     class="valid_button">
-                                <span>{{ "OUTPUT.test_connection" | translate }}</span>
+                                <span *ngIf="selectedOutputType == 'export_mem'">{{ "OUTPUT.test_connection" | translate }}</span>
+                                <span *ngIf="selectedOutputType == 'export_coog'">{{ "OUTPUT.retrieve_access_token" | translate }}</span>
                             </button>
                         </mat-tab>
                         <mat-tab [label]="'OUTPUT.parameters' | translate" style="height: 50vh;">
@@ -114,9 +115,20 @@
                                             <i class="fa-solid fa-check text-green-400"></i>
                                         </button>
                                     </mat-form-field>
-                                    <mat-form-field *ngIf="(field.type === 'textarea') && !field['webservice']">
+                                    <mat-form-field *ngIf="(field.type === 'textarea' && selectedOutputType !== 'export_coog') && !field['webservice']">
                                         <mat-label>{{ field.label | translate }}</mat-label>
                                         <textarea [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="1" matInput [value]="field.control.value"
+                                                  [formControl]="field['control']" [type]="field.type" [placeholder]="field.placeholder"
+                                                  [required]="field['required']"></textarea>
+                                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters']) }}</mat-error>
+                                        <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint">
+                                            <i class="fa-solid fa-circle-question text-md"></i>
+                                        </span>
+                                    </mat-form-field>
+                                    <mat-form-field *ngIf="(field.type === 'textarea' && selectedOutputType == 'export_coog') && !field['webservice']"
+                                                    class="col-span-4">
+                                        <mat-label>{{ field.label | translate }}</mat-label>
+                                        <textarea matInput [value]="field.control.value" class="min-h-80"
                                                   [formControl]="field['control']" [type]="field.type" [placeholder]="field.placeholder"
                                                   [required]="field['required']"></textarea>
                                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters']) }}</mat-error>
@@ -200,8 +212,7 @@
             {{ "FORMS.available_fields" | translate }}
         </h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <div *ngIf="this.loadingCustomFields" class="flex text-gray-400 object-contain"
-             style="height: calc(100% - 8rem)">
+        <div *ngIf="this.loadingCustomFields" class="flex text-gray-400 object-contain" style="height: calc(100% - 8rem)">
             <div class="m-auto text-center">
                 <i class="fa-solid fa-code fa-4x fa-beat-fade w-full mb-2"></i>
                 <span class="w-full">
@@ -213,7 +224,10 @@
             <div *ngFor="let field of this.availableFields; let cpt = index" class="my-8 ml-2 text-base">
                 <span>
                     {{ field.label | translate }}
-                    <span style="font-size: 12px;" class="text-green-400 ml-3">{{ field.id | translate }}</span>
+                    <span class="text-xs text-green-400 ml-3" [class.cursor-pointer]="cpt !== 0"
+                          [matTooltip]="cpt === 0 ? '' : 'OUTPUT.copy_technical_id' | translate" (click)="cpt !== 0 ? this.clipboard.copy(field.id) : ''">
+                        {{ field.id | translate }}
+                    </span>
                     <mat-divider class="border-green-400 mt-4" *ngIf="cpt === 0"></mat-divider>
                 </span>
             </div>

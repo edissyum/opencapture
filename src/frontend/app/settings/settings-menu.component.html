@@ -2,10 +2,10 @@
     {{ "SETTINGS.administration" | translate }}
 </h3>
 <ng-template #minimize>
-    <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 py-4 truncate"
+    <p class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 py-4 truncate"
         [matTooltip]="'SETTINGS.administration' | translate" [matTooltipPosition]="'above'">
-        <i class="w-4 fa-solid fa-cog"></i>
-    </h3>
+        <i class="w-4 text-lg fa-solid fa-cog"></i>
+    </p>
 </ng-template>
 <mat-divider class="border-green-400"></mat-divider>
 <mat-nav-list class="pt-0 px-1 overflow-x-hidden overflow-y-auto h-full-overflow">
@@ -28,7 +28,7 @@
                  [class.border-gray-400]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'">
                 <div *ngIf="this.serviceSettings.getSettingsAction(parent['id'], setting['id']) else noActions">
                     <mat-expansion-panel *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'" [class.minified]="this.minimizeSideNav" [expanded]="this.router.url.includes(setting['route'])">
-                        <mat-expansion-panel-header class="font-normal w-full h-16 pl-0" [class.p-4]="this.minimizeSideNav">
+                        <mat-expansion-panel-header class="font-normal w-full h-16 pl-0 border-b" [class.p-4]="this.minimizeSideNav">
                             <mat-panel-title class="font-normal justify-center items-center text-center">
                                 <button [class.settings_admin_active]="this.router.url === setting['route']"
                                         class="pr-0 pl-3 font-normal w-full h-16 flex gap-4 justify-center items-center text-center"

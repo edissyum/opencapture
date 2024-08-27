@@ -39,12 +39,23 @@
                         <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessageSupplier(field.id) }}</mat-error>
                     </mat-form-field>
-                    <mat-form-field class="block" *ngIf="field.type === 'select'">
+                    <mat-form-field class="block" *ngIf="field.type === 'select' && !field.id.includes('default_accounting_plan')">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <mat-select [formControl]="field['control']" [(value)]="field.control.value" [required]="field['required']">
                             <mat-option *ngFor="let option of field.values" [value]="option['id']">{{ option['label'] }}</mat-option>
                         </mat-select>
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessageSupplier(field.id) }}</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="right-0 w-full form-viewer col-span-4" *ngIf="field.id.includes('accounting_plan') && this.accountingPlan && !loading">
+                        <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
+                            {{ field.label | translate }}
+                        </mat-label>
+                        <input matInput [id]="field.id" type="text" [formControl]="field['control']" [matAutocomplete]="accounting">
+                        <mat-autocomplete #accounting="matAutocomplete" [displayWith]="displayFn_accounting">
+                            <mat-option *ngFor="let option of this.accountingPlan | async" [value]="option" [id]="option.compte_num">
+                                <span [innerHTML]="option.compte_num + ' - ' + option.compte_lib | highlight: toHighlightAccounting"></span>
+                            </mat-option>
+                        </mat-autocomplete>
                     </mat-form-field>
                 </ng-container>
             </form>
@@ -54,7 +65,7 @@
                     {{ 'ACCOUNTS.address_informations' | translate }}
                 </h3>
             </div>
-            <form class="grid grid-cols-4 gap-2 gap-y-5 mx-10 text-center">
+            <form class="grid grid-cols-3 gap-2 gap-y-5 mx-10 text-center">
                 <ng-container *ngFor="let field of addressForm">
                     <mat-form-field [class.col-span-2]="field.id === 'address1'" class="block" *ngIf="field.type !== 'country'">
                         <mat-label>{{ field.label | translate }}</mat-label>

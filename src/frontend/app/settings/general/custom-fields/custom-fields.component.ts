@@ -55,6 +55,7 @@ export class CustomFieldsComponent implements OnInit {
     regexRemoveKeyWord        : FormControl   = new FormControl();
     regexRemoveKeyWordControl : FormControl   = new FormControl();
     regexFormat               : FormControl   = new FormControl();
+    conditionalControl        : FormControl   = new FormControl();
     formats                   : any[]         = [
         {
             'id': 'text',
@@ -133,7 +134,7 @@ export class CustomFieldsComponent implements OnInit {
             label       : this.translate.instant('CUSTOM-FIELDS.type'),
             options     : [
                 { key: 'text', value: this.translate.instant('FORMATS.text') },
-                { key: 'regex', value: this.translate.instant('FORMATS.regex'), module: 'verifier' },
+                { key: 'regex', value: this.translate.instant('FORMATS.regex')},
                 { key: 'date', value: this.translate.instant('FORMATS.date') },
                 { key: 'textarea', value: this.translate.instant('FORMATS.textarea') },
                 { key: 'select', value: this.translate.instant('FORMATS.select') },
@@ -262,16 +263,6 @@ export class CustomFieldsComponent implements OnInit {
         return _return;
     }
 
-    displayType(event: any) {
-        this.addFieldInputs.forEach((element: any) => {
-            if (element.field_id === 'type') {
-                element.options.forEach((option: any) =>  {
-                    option.hide = option.module && option.module !== event.value;
-                });
-            }
-        });
-    }
-
     retrieveCustomFields() {
         this.loading        = true;
         this.activeFields   = [];
@@ -302,11 +293,36 @@ export class CustomFieldsComponent implements OnInit {
         ).subscribe();
     }
 
-    addSelectOption() {
-        this.selectOptions.push({
-            idControl      : new FormControl(),
-            labelControl   : new FormControl()
+    retrieveModule() {
+        let _return = '';
+        this.addFieldInputs.forEach((element: any) => {
+            if (element.field_id === 'module') {
+                _return = element.control.value;
+            }
         });
+        return _return;
+    }
+
+    moduleSelected() {
+        let moduleSelected = false;
+        this.addFieldInputs.forEach((element: any) => {
+            if (element.field_id === 'module') {
+                moduleSelected = element.control.value !== '';
+            }
+        });
+        return moduleSelected;
+    }
+
+    addSelectOption() {
+        const module = this.addFieldInputs.filter((field: any) => field.field_id === 'module')[0].control.value;
+
+        this.selectOptions.push({
+            idControl           : new FormControl(),
+            labelControl        : new FormControl(),
+            customFieldControl  : new FormControl(),
+            customValueControl  : new FormControl()
+        });
+        this.selectOptions[this.selectOptions.length - 1].customFieldControl.values = this.activeFields.filter((field: any) => field.module === module);
     }
 
     displayChoicesList() {
@@ -316,6 +332,16 @@ export class CustomFieldsComponent implements OnInit {
                 if (element.control.value && (element.control.value === 'checkbox' || element.control.value === 'select')) {
                     _return = true;
                 }
+            }
+        });
+        return _return;
+    }
+
+    displayConditional() {
+        let _return = false;
+        this.addFieldInputs.forEach((element: any) => {
+            if (element.field_id === 'type') {
+                _return = element.control.value && element.control.value === 'select';
             }
         });
         return _return;
@@ -345,8 +371,10 @@ export class CustomFieldsComponent implements OnInit {
         args.options  = [];
         for (const option of this.selectOptions) {
             args.options.push({
-                id      : option.idControl.value,
-                label   : option.labelControl.value
+                id                      : option.idControl.value,
+                label                   : option.labelControl.value,
+                conditional_custom_field: option.customFieldControl.value,
+                conditional_custom_value: option.customValueControl.value
             });
         }
         return args;
@@ -356,7 +384,6 @@ export class CustomFieldsComponent implements OnInit {
         this.loading = true;
         let newField: any = {};
         newField = this.addSelectOptionsToArgs(newField);
-
         for (const field of this.addFieldInputs) {
             if (field.required && !field.control.value) {
                 field.control.setErrors({'incorrect': true});
@@ -382,6 +409,10 @@ export class CustomFieldsComponent implements OnInit {
                 'remove_special_char': this.regexRemoveSpecialChar.value,
                 'remove_keyword_value': this.regexRemoveKeyWordControl.value
             };
+        }
+
+        if (this.conditionalControl.value) {
+            newField.conditional = this.conditionalControl.value;
         }
 
         this.http.post(environment['url'] + '/ws/customFields/add', newField, {headers: this.authService.headers}).pipe(
@@ -543,6 +574,10 @@ export class CustomFieldsComponent implements OnInit {
             };
         }
 
+        if (this.conditionalControl.value) {
+            updatedField.conditional = this.conditionalControl.value;
+        }
+
         this.http.put(environment['url'] + '/ws/customFields/update', updatedField, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('CUSTOM-FIELDS.field_updated'));
@@ -570,9 +605,12 @@ export class CustomFieldsComponent implements OnInit {
             if (customField.settings.options) {
                 for (const option of customField.settings.options) {
                     this.selectOptions.push({
-                        'idControl'     : new FormControl(option.id),
-                        'labelControl'  : new FormControl(option.label)
+                        'idControl'          : new FormControl(option.id),
+                        'labelControl'       : new FormControl(option.label),
+                        'customFieldControl' : new FormControl(option.conditional_custom_field),
+                        'customValueControl' : new FormControl(option.conditional_custom_value)
                     });
+                    this.selectOptions[this.selectOptions.length - 1].customFieldControl.values = this.activeFields.filter((field: any) => field.module === customField.module);
                 }
             }
 
@@ -584,6 +622,11 @@ export class CustomFieldsComponent implements OnInit {
                 this.regexRemoveKeyWord.setValue(customField.settings.regex.remove_keyword);
                 this.regexRemoveSpecialChar.setValue(customField.settings.regex.remove_special_char);
                 this.regexRemoveKeyWordControl.setValue(customField.settings.regex.remove_keyword_value);
+            }
+
+            this.conditionalControl.setValue(false);
+            if (customField.settings.conditional) {
+                this.conditionalControl.setValue(customField.settings.conditional);
             }
         }
     }
@@ -604,5 +647,6 @@ export class CustomFieldsComponent implements OnInit {
         this.inactiveOrActive   = '';
         this.updateCustomId     = '';
         this.update             = false;
+        this.conditionalControl.setValue('');
     }
 }

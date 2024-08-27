@@ -40,7 +40,7 @@ class Config:
         config.read(file)
         config.set(job, '; ' + unidecode.unidecode(input_label))
         config[job]['watch'] = data
-        with open(file, 'w', encoding='UTF-8') as configfile:
+        with open(file, 'w', encoding='utf-8') as configfile:
             config.write(configfile)
 
     @staticmethod
@@ -49,7 +49,7 @@ class Config:
         config.read(file)
         config.set(job, '; ' + unidecode.unidecode(input_label))
         config[job]['command'] = data
-        with open(file, 'w', encoding='UTF-8') as configfile:
+        with open(file, 'w', encoding='utf-8') as configfile:
             config.write(configfile)
 
     @staticmethod
@@ -62,7 +62,7 @@ class Config:
         config[job]['events'] = 'close,move'
         config[job]['include_extensions'] = 'pdf,PDF'
         config[job]['command'] = command
-        with open(file, 'w', encoding='UTF-8') as configfile:
+        with open(file, 'w', encoding='utf-8') as configfile:
             config.write(configfile)
 
     @staticmethod
@@ -70,5 +70,5 @@ class Config:
         config = ConfigParser()
         config.read(file)
         config.remove_section(job)
-        with open(file, 'w', encoding='UTF-8') as configfile:
+        with open(file, 'w', encoding='utf-8') as configfile:
             config.write(configfile)

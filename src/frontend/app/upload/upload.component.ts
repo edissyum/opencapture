@@ -15,8 +15,7 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
-import { ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl } from "@angular/forms";
 import { FileValidators } from "ngx-file-drag-drop";
 import { environment } from  "../env";
@@ -27,7 +26,7 @@ import { AuthService } from "../../services/auth.service";
 import { UserService } from "../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../services/notifications/notifications.service";
-import { LocalStorageService } from "../../services/local-storage.service";
+import { SessionStorageService } from "../../services/session-storage.service";
 
 @Component({
     selector: 'app-upload',
@@ -41,7 +40,7 @@ export class UploadComponent implements OnInit {
     headers                     : HttpHeaders   = this.authService.headers;
     selectedWorkflow            : any           = '';
     selectedWorkflowTechnicalId : any           = '';
-    workflows                   : any[]         = [];
+    workflows                   : any           = [];
     loading                     : boolean       = true;
     sending                     : boolean       = false;
     error                       : boolean       = false;
@@ -52,7 +51,7 @@ export class UploadComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
-        public localStorageService: LocalStorageService
+        public sessionStorageService: SessionStorageService
     ) {}
 
     fileControl = new FormControl(
@@ -71,7 +70,7 @@ export class UploadComponent implements OnInit {
             this.userService.user = this.userService.getUserFromLocal();
         }
 
-        const splitterOrVerifier: any = this.localStorageService.get('splitter_or_verifier');
+        const splitterOrVerifier: any = this.sessionStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
             this.getWorkflows(splitterOrVerifier);
         }
@@ -80,7 +79,18 @@ export class UploadComponent implements OnInit {
     getWorkflows(splitterOrVerifier: string): void {
         this.http.get(environment['url'] + '/ws/workflows/' + splitterOrVerifier + '/list/user/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.workflows = data.workflows;
+                data.workflows.forEach((element: any, index: number) => {
+                    let show = true;
+
+                    if (element.process && element.process['api_only']) {
+                        show = false
+                    }
+
+                    if (show) {
+                        this.workflows.push(element);
+                    }
+                });
+
                 if (this.workflows.length === 1) {
                     this.selectedWorkflow = data.workflows[0].id;
                     this.selectedWorkflowTechnicalId = data.workflows[0].workflow_id;
@@ -137,10 +147,10 @@ export class UploadComponent implements OnInit {
             }
         }
 
-        formData.set('workflowId', this.selectedWorkflowTechnicalId);
         formData.set('userId', this.userService.user.id);
+        formData.set('workflowId', this.selectedWorkflowTechnicalId);
 
-        const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
+        const splitterOrVerifier = this.sessionStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
             this.http.post(
                 environment['url'] + '/ws/checkFileBeforeUpload', formData, {headers: new HttpHeaders({ timeout: `${timeout}` })},
@@ -169,7 +179,6 @@ export class UploadComponent implements OnInit {
             ).subscribe();
         } else {
             this.notify.handleErrors(this.translate.instant('ERROR.unknow_error'));
-            return;
         }
     }
 }

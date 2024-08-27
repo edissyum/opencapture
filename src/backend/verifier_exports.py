@@ -16,22 +16,27 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import os
+import re
 import json
 import pyheif
 import shutil
+import base64
 import facturx
 import datetime
 import subprocess
 import pandas as pd
 from PIL import Image
 from xml.dom import minidom
+from zipfile import ZipFile
 from flask_babel import gettext
-from .import_classes import _Files
 import xml.etree.ElementTree as Et
-from src.backend.import_classes import _MEMWebServices
+from src.backend.models import attachments
+from src.backend.classes.Files import Files
+from src.backend.classes.MEMWebServices import MEMWebServices
+from src.backend.classes.COOGWebServices import COOGWebServices
 
 
-def export_xml(data, log, regex, document_info, database):
+def export_xml(data, log, document_info, database):
     log.info('Output execution : XML export')
     folder_out = separator = filename = extension = ''
     parameters = data['options']['parameters']
@@ -47,14 +52,14 @@ def export_xml(data, log, regex, document_info, database):
 
     _technical_data = []
     # Create the XML filename
-    _data = construct_with_var(filename, document_info, regex, separator)
+    _data = construct_with_var(filename, document_info, separator)
     filename = separator.join(str(x) for x in _data) + '.' + extension
     filename = filename.replace('/', '-').replace(' ', '_')
     # END create the XML filename
 
     # Fill XML with document informations
     if os.path.isdir(folder_out):
-        with open(folder_out + '/' + filename, 'w', encoding='UTF-8') as xml_file:
+        with open(folder_out + '/' + filename, 'w', encoding='utf-8') as xml_file:
             root = Et.Element('ROOT')
             xml_datas = Et.SubElement(root, 'DATAS')
             xml_technical = Et.SubElement(root, 'TECHNICAL')
@@ -128,19 +133,19 @@ def export_xml(data, log, regex, document_info, database):
                             description = get_data(document_info, description_title)
 
                             new_field = Et.SubElement(line_element, 'line_ht')
-                            new_field.text = str(line_ht)
+                            new_field.text = str(line_ht) if line_ht else ''
                             new_field = Et.SubElement(line_element, 'quantity')
-                            new_field.text = str(quantity)
+                            new_field.text = str(quantity) if quantity else ''
                             new_field = Et.SubElement(line_element, 'unit_price')
-                            new_field.text = str(unit_price)
+                            new_field.text = str(unit_price) if unit_price else ''
                             new_field = Et.SubElement(line_element, 'description')
-                            new_field.text = str(description)
+                            new_field.text = str(description) if description else ''
                 else:
                     if 'vat_rate' not in value and 'vat_amount' not in value and 'no_rate_amount' not in value and \
                             'line_ht' not in value and 'quantity' not in value and 'unit_price' not in value and \
                             'description' not in value:
                         new_field = Et.SubElement(xml_datas, value)
-                        new_field.text = str(document_info['datas'][document_data])
+                        new_field.text = str(document_info['datas'][document_data]) if document_info['datas'][document_data] else ''
 
             xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
             xml_file.write(xml_root)
@@ -183,7 +188,7 @@ def export_facturx(data, log, regex, document_info):
             filename = setting['value']
 
     # Create the PDF filename
-    _data = construct_with_var(filename, document_info, regex, separator)
+    _data = construct_with_var(filename, document_info, separator)
     filename = separator.join(str(x) for x in _data) + '.pdf'
     filename = filename.replace('/', '-').replace(' ', '_')
     # END create the PDF filename
@@ -370,7 +375,7 @@ def compress_file(file, compress_type, log, folder_out, filename, document_filen
         log.error('Moving file ' + compressed_file_path + ' error : ' + str(_e))
 
 
-def export_pdf(data, log, regex, document_info, compress_type, ocrise):
+def export_pdf(data, log, document_info, compress_type, ocrise):
     log.info('Output execution : PDF export')
     folder_out = separator = filename = ''
     parameters = data['options']['parameters']
@@ -383,7 +388,7 @@ def export_pdf(data, log, regex, document_info, compress_type, ocrise):
             filename = setting['value']
 
     # Create the PDF filename
-    _data = construct_with_var(filename, document_info, regex, separator)
+    _data = construct_with_var(filename, document_info, separator)
     filename = separator.join(str(x) for x in _data)
     if ocrise or compress_type:
         filename = filename + '.pdf'
@@ -395,7 +400,7 @@ def export_pdf(data, log, regex, document_info, compress_type, ocrise):
     if os.path.isdir(folder_out):
         file = document_info['path'] + '/' + document_info['filename']
         if ocrise:
-            _Files.ocrise_pdf(file, log, folder_out + '/' + filename)
+            Files.ocrise_pdf(file, log, folder_out + '/' + filename)
         else:
             if not file.lower().endswith('.pdf'):
                 if file.lower().endswith(('.heif', '.heic', '.jpg', '.jpeg', '.png')):
@@ -420,10 +425,18 @@ def export_pdf(data, log, regex, document_info, compress_type, ocrise):
                 file = folder_out + '/' + filename
             compress_file(file, compress_type, log, folder_out, filename, document_info['filename'])
 
-        if not ocrise and not compress_type:
-            if os.path.isfile(file):
-                shutil.copy(file, folder_out + '/' + filename)
+        if not ocrise and not compress_type and os.path.isfile(file):
+            shutil.copy(file, folder_out + '/' + filename)
 
+        attachments_list = attachments.get_attachments_by_document_id(document_info['id'])
+        if attachments_list:
+            pdf_filename, pdf_extension = os.path.splitext(filename)
+            zip_filename =  pdf_filename + '_attachments.zip'
+            with ZipFile(folder_out + '/' + zip_filename, 'w') as zip_file:
+                for attachment in attachments_list:
+                    if attachment:
+                        if os.path.exists(attachment['path']):
+                            zip_file.write(attachment['path'], attachment['filename'])
         return folder_out + '/' + filename, 200
     else:
         if log:
@@ -432,6 +445,117 @@ def export_pdf(data, log, regex, document_info, compress_type, ocrise):
         response = {
             "errors": gettext('PDF_DESTINATION_FOLDER_DOESNT_EXISTS'),
             "message": folder_out
+        }
+        return response, 400
+
+
+def construct_json(data, document_info, return_data=None):
+    if return_data is None:
+        return_data = {}
+
+    for parameter in data:
+        if isinstance(data[parameter], str):
+            return_data[parameter] = ''.join(construct_with_var(data[parameter], document_info))
+            if return_data[parameter] == '':
+                del return_data[parameter]
+        elif isinstance(data[parameter], dict):
+            return_data[parameter] = construct_json(data[parameter], document_info)
+            if return_data[parameter] == {}:
+                del return_data[parameter]
+        elif isinstance(data[parameter], list):
+            return_data[parameter] = []
+            for sub_param in data[parameter]:
+                if isinstance(sub_param, dict):
+                    return_data[parameter].append(construct_json(sub_param, document_info))
+            if not return_data[parameter]:
+                del return_data[parameter]
+            if parameter == 'references':
+                ref_cpt = 0
+                for ref in return_data['references']:
+                    if 'reference' not in ref or not ref['reference']:
+                        del return_data['references'][ref_cpt]
+                    ref_cpt += 1
+    return return_data
+
+
+def export_coog(data, document_info, log):
+    log.info('Output execution : COOG export')
+    host = token = access_token = ''
+    auth_data = data['options']['auth']
+    for _data in auth_data:
+        if _data['id'] == 'host':
+            host = _data['value']
+        if _data['id'] == 'token':
+            token = _data['value']
+        if _data['id'] == 'access_token':
+            access_token = _data['value']
+
+    if host and access_token:
+        _ws = COOGWebServices(
+            host,
+            token,
+            log
+        )
+        if _ws.access_token[0]:
+            if document_info:
+                try:
+                    parameters = json.loads(data['options']['parameters'][0]['value'])[0]
+                except json.JSONDecodeError:
+                    response = {
+                        "errors": gettext('EXPORT_COOG_ERROR'),
+                        "message": gettext('COOG_JSON_ERROR')
+                    }
+                    return response, 400
+                ws_data = [construct_json(parameters, document_info)]
+                res = _ws.create_task(ws_data)
+                if res[0]:
+                    coog_id = res[1][0]['id']
+                    document_id = document_info['id']
+                    attachments_list = attachments.get_attachments_by_document_id(document_id)
+                    if attachments_list:
+                        attachments_files = []
+                        for attachment in attachments_list:
+                            if attachment:
+                                if os.path.isfile(attachment['path']):
+                                    with open(attachment['path'], 'rb') as _file:
+                                        b64_encoded = base64.b64encode(_file.read()).decode('utf-8')
+
+                                    attachments_files.append({
+                                        "content": {
+                                            "type": "data",
+                                            "data": b64_encoded,
+                                            "filename": attachment['filename']
+                                        }
+                                    })
+
+                        args = {
+                            "id": coog_id,
+                            "attachments": attachments_files
+                        }
+                        _ws.create_attachment(args)
+                    return {}, 200
+                else:
+                    response = {
+                        "errors": gettext('EXPORT_COOG_ERROR'),
+                        "message": res[1]
+                    }
+                    return response, 400
+            else:
+                response = {
+                    "errors": gettext('EXPORT_COOG_ERROR'),
+                    "message": ''
+                }
+                return response, 400
+        else:
+            response = {
+                "errors": gettext('COOG_WS_INFO_WRONG'),
+                "message": _ws.access_token[1]
+            }
+            return response, 400
+    else:
+        response = {
+            "errors": gettext('COOG_WS_INFO_EMPTY'),
+            "message": ''
         }
         return response, 400
 
@@ -449,7 +573,7 @@ def export_mem(data, document_info, log, regex, database):
             password = _data['value']
 
     if host and login and password:
-        _ws = _MEMWebServices(
+        _ws = MEMWebServices(
             host,
             login,
             password,
@@ -550,7 +674,7 @@ def export_mem(data, document_info, log, regex, database):
                                         custom_id: document_info['datas'][customs[custom_id]]
                                     })
                     elif _data['id'] == 'subject':
-                        subject = construct_with_var(_data['value'], document_info, regex)
+                        subject = construct_with_var(_data['value'], document_info)
                         args.update({
                             'subject': ''.join(subject)
                         })
@@ -559,7 +683,7 @@ def export_mem(data, document_info, log, regex, database):
                 if os.path.isfile(file):
                     with open(file, 'rb') as file:
                         args.update({
-                            'fileContent': file.read(),
+                            'fileContent': file.read()
                         })
 
                     if 'document_date' in document_info['datas'] and document_info['datas']['document_date']:
@@ -573,22 +697,37 @@ def export_mem(data, document_info, log, regex, database):
 
                     res, message = _ws.insert_with_args(args)
                     if res:
-                        if link_resource:
-                            res_id = message['resId']
-                            if opencapture_field:
-                                opencapture_field = ''.join(construct_with_var(opencapture_field, document_info, regex))
-                                if mem_custom_field:
-                                    if 'res_id' not in data or not data['res_id']:
-                                        docs = _ws.retrieve_doc_with_custom(mem_custom_field['id'], opencapture_field,
-                                                                            mem_clause)
-                                        if docs and docs['resources'] and len(docs['resources']) >= 1:
-                                            res_id = docs['resources'][0]['res_id']
-                                    else:
-                                        res_id = data['res_id']
-                                    if res_id != message['resId']:
-                                        _ws.link_documents(str(res_id), message['resId'])
+                        res_id = message['resId']
+                        document_id = document_info['id']
+                        attachments_list = attachments.get_attachments_by_document_id(document_id)
+                        if attachments_list:
+                            for attachment in attachments_list:
+                                if attachment:
+                                    if os.path.isfile(attachment['path']):
+                                        with open(attachment['path'], 'rb') as _file:
+                                            b64_encoded = base64.b64encode(_file.read()).decode('utf-8')
 
-                        return '', 200
+                                        attachments_files = {
+                                            "file_content": b64_encoded,
+                                            "extension": os.path.splitext(attachment['filename'])[1].replace('.', ''),
+                                            "filename": attachment['filename']
+                                        }
+                                        _ws.insert_attachment(res_id, attachments_files)
+                            if link_resource:
+                                if opencapture_field:
+                                    opencapture_field = ''.join(construct_with_var(opencapture_field, document_info))
+                                    if mem_custom_field:
+                                        if 'res_id' not in data or not data['res_id']:
+                                            docs = _ws.retrieve_doc_with_custom(mem_custom_field['id'], opencapture_field,
+                                                                                mem_clause)
+                                            if docs and docs['resources'] and len(docs['resources']) >= 1:
+                                                res_id = docs['resources'][0]['res_id']
+                                        else:
+                                            res_id = data['res_id']
+                                        if res_id != message['resId']:
+                                            _ws.link_documents(str(res_id), message['resId'])
+
+                            return '', 200
                     else:
                         response = {
                             "errors": gettext('EXPORT_MEM_ERROR'),
@@ -621,41 +760,63 @@ def export_mem(data, document_info, log, regex, database):
         return response, 400
 
 
-def construct_with_var(data, document_info, regex, separator=None):
+def construct_with_var(data, document_info, separator=None):
     _data = []
     if isinstance(document_info['datas'], str):
         data_tmp = json.loads(document_info['datas'])
-        document_info['datas'] = {}
         document_info['datas'] = data_tmp
 
     for column in data.split('#'):
-        if column in document_info['datas'] and document_info['datas'][column]:
+        column_strip = column.strip()
+        if column_strip in document_info['datas'] and document_info['datas'][column_strip]:
             if separator:
-                _data.append(str(document_info['datas'][column]).replace(' ', separator))
+                _data.append(str(document_info['datas'][column_strip]).replace(' ', separator))
             else:
-                _data.append(document_info['datas'][column])
-        elif column in document_info and document_info[column]:
+                _data.append(str(document_info['datas'][column_strip]))
+        elif column_strip in document_info and document_info[column_strip]:
             if separator:
-                _data.append(str(document_info[column]).replace(' ', separator))
+                _data.append(str(document_info[column_strip]).replace(' ', separator))
             else:
-                _data.append(document_info[column])
-        elif column == 'document_date_year':
-            _data.append(datetime.datetime.strptime(document_info['datas']['document_date'], regex['format_date']).year)
-        elif column == 'document_date_month':
-            _data.append(
-                datetime.datetime.strptime(document_info['datas']['document_date'], regex['format_date']).month)
-        elif column == 'document_date_day':
-            _data.append(datetime.datetime.strptime(document_info['datas']['document_date'], regex['format_date']).day)
-        elif column == 'register_date_year':
-            _data.append(datetime.datetime.strptime(document_info['register_date'], regex['format_date']).year)
-        elif column == 'register_date_month':
-            _data.append(datetime.datetime.strptime(document_info['register_date'], regex['format_date']).month)
-        elif column == 'register_date_day':
-            _data.append(datetime.datetime.strptime(document_info['register_date'], regex['format_date']).day)
+                _data.append(str(document_info[column_strip]))
+        elif column_strip == 'document_date_year':
+            if 'document_date' in document_info and document_info['document_date']:
+                _data.append(str(document_info['datas']['document_date'].year))
+        elif column_strip == 'document_date_month':
+            if 'document_date' in document_info and document_info['document_date']:
+                _data.append(str(document_info['datas']['document_date'].month))
+        elif column_strip == 'document_date_day':
+            if 'document_date' in document_info and document_info['document_date']:
+                _data.append(str(document_info['datas']['document_date'].day))
+        elif column_strip == 'register_date_year':
+            if 'register_date' in document_info and document_info['register_date']:
+                _data.append(str(document_info['register_date'].year))
+        elif column_strip == 'register_date_month':
+            if 'register_date' in document_info and document_info['register_date']:
+                _data.append(str(document_info['register_date'].month))
+        elif column_strip == 'register_date_day':
+            if 'register_date' in document_info and document_info['register_date']:
+                _data.append(str(document_info['register_date'].day))
+        elif column_strip == 'b64_file_content':
+            file = document_info['path'] + '/' + document_info['filename']
+            if os.path.isfile(file):
+                with open(file, 'rb') as _file:
+                    b64_encoded = base64.b64encode(_file.read())
+                    _data.append(str(b64_encoded.decode('utf-8')))
+        elif column_strip == 'current_date':
+            _data.append(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        elif column_strip == 'document_date_full':
+            if 'document_date' in document_info and document_info['document_date']:
+                _data.append(document_info['document_date'].strftime('%Y-%m-%d %H:%M:%S'))
+        elif column_strip == 'register_date_full':
+            if 'register_date' in document_info and document_info['register_date']:
+                _data.append(document_info['register_date'].strftime('%Y-%m-%d %H:%M:%S'))
         else:
             if separator:
                 _data.append(column.replace(' ', separator))
             else:
                 if column not in ['quotation_number', 'invoice_number', 'delivery_number', 'document_date_']:
                     _data.append(column)
+        for key in _data:
+            if re.match('^custom_[0-9]+$', key.strip()):
+                del _data[_data.index(key)]
     return _data

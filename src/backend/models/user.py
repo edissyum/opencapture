@@ -32,24 +32,26 @@ def create_user(args):
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
     error = None
-    user = database.select({
-        'select': ['id', 'status'],
-        'table': ['users'],
-        'where': ['username = %s'],
-        'data': [args['username']]
-    })
 
     if not args['username']:
         error = gettext('BAD_USERNAME')
     elif not args['password']:
         error = gettext('BAD_PASSWORD')
-    elif user:
-        error = gettext('USER') + ' ' + args['username'] + ' ' + gettext('ALREADY_REGISTERED')
-        if user[0]['status'] == 'DEL':
-            update_user({'set': {'status': 'OK'}, 'user_id': user[0]['id']})
-            error += ', ' + gettext('USER_RESTORED')
 
-    if error is None:
+    if not error:
+        user = database.select({
+            'select': ['id', 'status'],
+            'table': ['users'],
+            'where': ['username = %s'],
+            'data': [args['username']]
+        })
+
+        if user:
+            error = gettext('USER') + ' ' + args['username'] + ' ' + gettext('ALREADY_REGISTERED')
+            if user[0]['status'] == 'DEL':
+                update_user({'set': {'status': 'OK'}, 'user_id': user[0]['id']})
+                error += ', ' + gettext('USER_RESTORED')
+
         user_id = database.insert({
             'table': 'users',
             'columns': {

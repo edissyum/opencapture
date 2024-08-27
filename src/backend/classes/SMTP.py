@@ -40,6 +40,8 @@ class SMTP:
         self.dest_mail = dest_mail
         self.from_mail = from_mail
         self.protocole_secure = protocole_secure
+        self.messsage_delay = '\n\n Attention, durant les ' + str(self.delay) + \
+                              ' dernières minutes, d\'autres erreurs ont pu arriver sans notifications.'
 
         if self.enabled:
             self.test_connection()
@@ -95,7 +97,7 @@ class SMTP:
         diff_minutes = False
 
         if os.path.exists(file) and pathlib.Path(file).stat().st_size != 0:
-            with open(file, 'r', encoding='UTF-8') as last_notif:
+            with open(file, 'r', encoding='utf-8') as last_notif:
                 last_mail_send = datetime.strptime(last_notif.read(), '%d/%m/%Y %H:%M')
             last_notif.close()
 
@@ -117,8 +119,7 @@ class SMTP:
         message = 'Une erreur est arrivée lors du traitement du fichier ' + file_name + '\n\n'
         message += "Description de l'erreur : \n    " + error
         if self.delay != 0:
-            message += '\n\n Attention, durant les ' + str(self.delay) +\
-                       ' dernières minutes, d\'autres erreurs ont pu arriver sans notifications.'
+            message += self.messsage_delay
 
         msg.attach(MIMEText(message))
 
@@ -126,9 +127,8 @@ class SMTP:
             if diff_minutes is not False and self.delay != 0 and diff_minutes < self.delay:
                 pass
             else:
-                print(msg['From'], msg['To'], msg.as_string())
                 self.conn.sendmail(from_addr=msg['From'], to_addrs=msg['To'], msg=msg.as_string())
-                with open(file, 'w', encoding='UTF-8') as last_notif:
+                with open(file, 'w', encoding='utf-8') as last_notif:
                     last_notif.write(datetime.now().strftime('%d/%m/%Y %H:%M'))
                 last_notif.close()
         except smtplib.SMTPException as smtp_error:
@@ -145,7 +145,7 @@ class SMTP:
         diff_minutes = False
 
         if os.path.exists(file) and pathlib.Path(file).stat().st_size != 0:
-            with open(file, 'r', encoding='UTF-8') as last_notif:
+            with open(file, 'r', encoding='utf-8') as last_notif:
                 last_mail_send = datetime.strptime(last_notif.read(), '%d/%m/%Y %H:%M')
             last_notif.close()
 
@@ -163,8 +163,7 @@ class SMTP:
         msg['Subject'] = '[MailCollect] Erreur lors de la capture IMAP'
         message = 'Une erreur est arrivée lors ' + step + ' : \n' + message
         if self.delay != 0:
-            message += '\n\n Attention, durant les ' + str(self.delay) + \
-                       ' dernières minutes, d\'autres erreurs ont pu arriver sans notifications.'
+            message += self.messsage_delay
 
         msg.attach(MIMEText(message))
 
@@ -173,7 +172,7 @@ class SMTP:
                 pass
             else:
                 self.conn.sendmail(from_addr=msg['From'], to_addrs=msg['To'], msg=msg.as_string())
-                with open(file, 'w', encoding='UTF-8') as last_notif:
+                with open(file, 'w', encoding='utf-8') as last_notif:
                     last_notif.write(datetime.now().strftime('%d/%m/%Y %H:%M'))
                 last_notif.close()
         except smtplib.SMTPException as smtp_error:
@@ -183,7 +182,7 @@ class SMTP:
         file = 'last_mail_quota.lock'
         diff_minutes = False
         if os.path.exists('custom/' + custom_id + '/' + file) and pathlib.Path('custom/' + custom_id + '/' + file).stat().st_size != 0:
-            with open('custom/' + custom_id + '/' + file, 'r', encoding='UTF-8') as last_notif:
+            with open('custom/' + custom_id + '/' + file, 'r', encoding='utf-8') as last_notif:
                 last_mail_send = datetime.strptime(last_notif.read(), '%d/%m/%Y %H:%M')
             last_notif.close()
 
@@ -199,10 +198,10 @@ class SMTP:
             msg['From'] = 'MailCollect@OpenCapture.com'
 
         msg['Subject'] = '[OpenCapture - User Quota] Le quota utilisateur est dépassé'
-        message = 'Le quota utilisateur de l\'instance ' + custom_id + ' vient de dépasser son quota d\'utilisateurs autorisés'
+        message = ('Le quota utilisateur de l\'instance ' + custom_id +
+                   ' vient de dépasser son quota d\'utilisateurs autorisés')
         if self.delay != 0:
-            message += '\n\n Attention, durant les ' + str(self.delay) + \
-                       ' dernières minutes, d\'autres erreurs ont pu arriver sans notifications.'
+            message += self.messsage_delay
 
         msg.attach(MIMEText(message))
 
@@ -211,7 +210,7 @@ class SMTP:
                 pass
             else:
                 self.conn.sendmail(from_addr=msg['From'], to_addrs=msg['To'], msg=msg.as_string())
-                with open('custom/' + custom_id + '/' + file, 'w', encoding='UTF-8') as last_notif:
+                with open('custom/' + custom_id + '/' + file, 'w', encoding='utf-8') as last_notif:
                     last_notif.write(datetime.now().strftime('%d/%m/%Y %H:%M'))
                 last_notif.close()
         except smtplib.SMTPException as smtp_error:

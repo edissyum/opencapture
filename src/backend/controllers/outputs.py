@@ -20,7 +20,7 @@ import os
 import json
 from flask_babel import gettext
 from flask import request, g as current_context
-from src.backend.import_models import outputs, history
+from src.backend.models import outputs, history
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url
 
@@ -63,7 +63,7 @@ def duplicate_output(output_id):
             'module': output_info['module'],
             'compress_type': output_info['compress_type'],
             'output_type_id': output_info['output_type_id'],
-            'output_label': gettext('COPY_OF') + ' ' + output_info['output_label'],
+            'output_label': gettext('COPY_OF') + ' ' + output_info['output_label']
         }
         _, error = outputs.create_output({'columns': args})
         if error is None:

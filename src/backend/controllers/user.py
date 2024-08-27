@@ -23,10 +23,10 @@ from io import StringIO
 
 from flask_babel import gettext
 from flask import request, g as current_context
-from src.backend.import_controllers import auth
+from src.backend.controllers import auth
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url, get_custom_path
-from src.backend.import_models import user, accounts, forms, history, roles
+from src.backend.models import user, accounts, forms, history, roles
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
@@ -240,7 +240,7 @@ def get_customers_by_user_id(user_id):
                     _customers.append(_c['id'])
                 customers = _customers
             else:
-                if type(eval(customers['customers_id']['data'])) == list:
+                if isinstance(eval(customers['customers_id']['data']), list):
                     customers = eval(customers['customers_id']['data'])
         return customers, 200
     else:
@@ -270,7 +270,7 @@ def get_forms_by_user_id(user_id):
                     _user_forms.append(form['id'])
                 user_forms = _user_forms
             else:
-                if type(eval(user_forms['forms_id']['data'])) == list:
+                if isinstance(eval(user_forms['forms_id']['data']), list):
                     user_forms = eval(user_forms['forms_id']['data'])
         return user_forms, 200
     else:
@@ -313,7 +313,7 @@ def update_user(user_id, data):
             'lastname': data['lastname'],
             'email': data['email'],
             'role': data['role'],
-            'mode': data['mode'] if 'mode' in data else 'standard',
+            'mode': data['mode'] if 'mode' in data else 'standard'
         }
 
         if 'new_password' in data and data['new_password']:
@@ -445,7 +445,7 @@ def update_customers_by_user_id(user_id, customers):
     _, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
         _set = {
-            'customers_id': '{"data": "' + str(customers) + '"}',
+            'customers_id': '{"data": "' + str(customers) + '"}'
         }
         _, error = user.update_customers_by_user_id({'set': _set, 'user_id': user_id})
         if error is None:
@@ -468,7 +468,7 @@ def update_forms_by_user_id(user_id, forms):
     _, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
         _set = {
-            'forms_id': '{"data": "' + str(forms) + '"}',
+            'forms_id': '{"data": "' + str(forms) + '"}'
         }
         _, error = user.update_forms_by_user_id({'set': _set, 'user_id': user_id})
         if error:

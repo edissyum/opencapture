@@ -13,17 +13,15 @@
  You should have received a copy of the GNU General Public License
  along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
- @dev : Nathan Cheval <nathan.cheval@outlook.fr>
- @dev : Oussama Brich <oussama.brich@edissyum.com> */
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { SettingsService } from "../../../../services/settings.service";
 import { AuthService } from "../../../../services/auth.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { PrivilegesService } from "../../../../services/privileges.service";
-import { LocalStorageService } from "../../../../services/local-storage.service";
-import { LastUrlService } from "../../../../services/last-url.service";
+import { SessionStorageService } from "../../../../services/session-storage.service";
 import { Sort } from "@angular/material/sort";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { environment } from  "../../../env";
@@ -56,28 +54,21 @@ export class DocserversComponent implements OnInit {
     constructor(
         public router: Router,
         private http: HttpClient,
-        private route: ActivatedRoute,
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
-        private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) { }
 
     ngOnInit(): void {
         this.serviceSettings.init();
 
-        const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('settings/general/docservers') || lastUrl === '/') {
-            if (this.localStorageService.get('docserversPageIndex')) {
-                this.pageIndex = parseInt(this.localStorageService.get('docserversPageIndex') as string);
-            }
-            this.offset = this.pageSize * (this.pageIndex);
-        } else {
-            this.localStorageService.remove('docserversPageIndex');
+        if (this.sessionStorageService.get('docserversPageIndex')) {
+            this.pageIndex = parseInt(this.sessionStorageService.get('docserversPageIndex') as string);
         }
+        this.offset = this.pageSize * (this.pageIndex);
 
         this.http.get(environment['url'] + '/ws/config/getDocservers', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -144,7 +135,7 @@ export class DocserversComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localStorageService.save('docserversPageIndex', event.pageIndex);
+        this.sessionStorageService.save('docserversPageIndex', event.pageIndex);
         this.loadDocservers();
     }
 

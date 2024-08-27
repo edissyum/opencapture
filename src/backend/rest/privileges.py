@@ -16,7 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask_babel import gettext
-from src.backend.import_controllers import auth, privileges
+from src.backend.controllers import auth, privileges
 from flask import Blueprint, make_response, jsonify, request
 
 bp = Blueprint('privileges', __name__, url_prefix='/ws/')

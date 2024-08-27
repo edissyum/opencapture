@@ -29,7 +29,7 @@ class UserTest(unittest.TestCase):
         self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
-        warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
+        warnings.filterwarnings('ignore', category=ResourceWarning)
 
     def create_supplier(self, address_id=1):
         payload = {
@@ -185,7 +185,7 @@ class UserTest(unittest.TestCase):
             "address2": "Bâtiment B UPDATED",
             "postal_code": "84202",
             "city": "Carpentras UPDATED",
-            "country": "France UPDATED",
+            "country": "France UPDATED"
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/accounts/addresses/update/' + str(address.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
@@ -209,7 +209,7 @@ class UserTest(unittest.TestCase):
             "address2": "Bâtiment B UPDATED",
             "postal_code": "84202",
             "city": "Carpentras UPDATED",
-            "country": "France UPDATED",
+            "country": "France UPDATED"
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/accounts/addresses/updateBySupplierId/' + str(supplier.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
@@ -447,7 +447,7 @@ class UserTest(unittest.TestCase):
 
     def test_successful_get_reference_file(self):
         reference_file = open(
-            f'/var/www/html/opencapture/custom/{CUSTOM_ID}/instance/referencial//default_referencial_supplier.ods', 'rb')
+            f'/var/www/html/opencapture/custom/{CUSTOM_ID}/instance/referencial/default_referencial_supplier.csv', 'rb')
         default_reference_file = base64.b64encode(reference_file.read()).decode('utf-8')
         reference_file.close()
         response = self.app.get(f'/{CUSTOM_ID}/ws/accounts/supplier/getReferenceFile',
@@ -457,8 +457,8 @@ class UserTest(unittest.TestCase):
         self.assertEqual(default_reference_file, response.json['file'])
 
     def tearDown(self) -> None:
-        shutil.copy('/var/www/html/opencapture/instance/referencial/default_referencial_supplier.ods.default',
-                    f'/var/www/html/opencapture/custom/{CUSTOM_ID}/instance/referencial//default_referencial_supplier.ods')
+        shutil.copy('/var/www/html/opencapture/instance/referencial/default_referencial_supplier.csv.default',
+                    f'/var/www/html/opencapture/custom/{CUSTOM_ID}/instance/referencial/default_referencial_supplier.csv')
         self.database.execute("TRUNCATE TABLE addresses")
         self.database.execute("TRUNCATE TABLE accounts_supplier")
         self.database.execute("DELETE FROM accounts_customer WHERE name <> 'Splitter - Compte client par défaut'")

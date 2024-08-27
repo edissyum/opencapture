@@ -16,8 +16,8 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama BRICH <oussama.brich@edissyum.com>
 
-from flask import request, g as current_context
 from flask_babel import gettext
+from flask import request, g as current_context
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
@@ -141,7 +141,7 @@ def create_role_privileges(args):
     role_privilege = database.insert({
         'table': 'roles_privileges',
         'columns': {
-            'role_id': str(args['role_id']),
+            'role_id': str(args['role_id'])
         }
     })
 

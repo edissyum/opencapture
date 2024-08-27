@@ -21,7 +21,7 @@ import requests
 import subprocess
 from flask_babel import gettext
 from flask import request, g as current_context
-from src.backend.import_models import config, history
+from src.backend.models import config, history
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url, get_custom_path
 
@@ -86,7 +86,7 @@ def retrieve_configurations(data):
     args = {
         'select': ['*', 'count(*) OVER() as total'],
         'where': ['display = %s'],
-        'args': [True],
+        'data': [True],
         'offset': data['offset'] if 'offset' in data else 0,
         'limit': data['limit'] if 'limit' in data else 'ALL'
     }
@@ -127,6 +127,7 @@ def retrieve_docservers(data):
             "LOWER(description) LIKE '%%" + data['search'].lower() + "%%' OR "
             "LOWER(path) LIKE '%%" + data['search'].lower() + "%%')"
         )
+
     docservers, error = config.retrieve_docservers(args)
 
     if error is None:
@@ -338,7 +339,7 @@ def get_login_image():
                 login_image = custom_path + '/assets/imgs/login_image.png'
 
     with open(login_image, 'rb') as image_file:
-        b64_content = str(base64.b64encode(image_file.read()).decode('UTF-8'))
+        b64_content = str(base64.b64encode(image_file.read()).decode('utf-8'))
     return b64_content, 200
 
 

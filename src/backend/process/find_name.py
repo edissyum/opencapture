@@ -18,7 +18,7 @@
 import re
 import json
 from thefuzz import fuzz
-from src.backend.import_classes import _Files
+from src.backend.classes.Files import Files
 from src.backend.functions import search_by_positions, search_custom_positions
 
 
@@ -75,8 +75,8 @@ class FindName:
                 return False
 
             self.log.info('Firstname and lastname found : ' + firstname + ' ' + lastname)
-            firstname = re.sub('[}{\|\[\]\(\)]', '', firstname)
-            lastname = re.sub('[}{\|\[\]\(\)]', '', lastname)
+            firstname = re.sub('[}{|\[\]()]', '', firstname)
+            lastname = re.sub('[}{|\[\]()]', '', lastname)
             return [
                 {'firstname': firstname, 'lastname': lastname},
                 {
@@ -86,7 +86,7 @@ class FindName:
                 self.nb_page
             ]
         elif firstname:
-            firstname = re.sub('[}{\|\[\]\(\)]', '', firstname)
+            firstname = re.sub('[}{|[\]()]', '', firstname)
             self.log.info('Firstname found : ' + firstname)
             return [
                 {'firstname': firstname},
@@ -94,7 +94,7 @@ class FindName:
                 self.nb_page
             ]
         elif lastname:
-            lastname = re.sub('[}{\|\[\]\(\)]', '', lastname)
+            lastname = re.sub('[}{|[\]()]', '', lastname)
             self.log.info('Lastname found : ' + lastname)
             return [
                 {'lastname': lastname},
@@ -123,13 +123,13 @@ class FindName:
                 del lastname_position['ocr_from_user']
 
             if firstname and lastname:
-                firstname = re.sub('[}{\|\[\]\(\)]', '', firstname)
-                lastname = re.sub('[}{\|\[\]\(\)]', '', lastname)
+                firstname = re.sub('[}{|[\]()]', '', firstname)
+                lastname = re.sub('[}{|[\]()]', '', lastname)
                 return [
                     {'firstname': firstname, 'lastname': lastname},
                     {
-                        'firstname': _Files.reformat_positions(firstname_position),
-                        'lastname': _Files.reformat_positions(lastname_position)
+                        'firstname': Files.reformat_positions(firstname_position),
+                        'lastname': Files.reformat_positions(lastname_position)
                     },
                     self.nb_page
                 ]
@@ -191,13 +191,13 @@ class FindName:
                             del lastname_position['ocr_from_user']
 
                 if firstname and lastname:
-                    firstname = re.sub('[}{\|\[\]\(\)]', '', firstname)
-                    lastname = re.sub('[}{\|\[\]\(\)]', '', lastname)
+                    firstname = re.sub('[}{|[\]()]', '', firstname)
+                    lastname = re.sub('[}{|[\]()]', '', lastname)
                     return [
                         {'firstname': firstname, 'lastname': lastname},
                         {
-                            'firstname': _Files.reformat_positions(firstname_position),
-                            'lastname': _Files.reformat_positions(lastname_position)
+                            'firstname': Files.reformat_positions(firstname_position),
+                            'lastname': Files.reformat_positions(lastname_position)
                         },
                         self.nb_page
                     ]
@@ -207,12 +207,12 @@ class FindName:
         text_cpt = 0
 
         for text in [self.text, self.header_text, self.footer_text]:
-            with open(names_referential, 'r', encoding='UTF-8') as _f:
+            with open(names_referential, 'r', encoding='utf-8') as _f:
                 for name in _f.readlines():
                     name = name.strip()
                     for line in text:
                         if name.lower() in line.content.lower():
-                            fixed_line = re.sub(r"(:|/|!|\?|“|\"|'|\]|\[|&|£|€|\+|°|;|@|_)", ' ', line.content,
+                            fixed_line = re.sub(r"([:/!?“\"'‘\]\[&£€+°;@_])", ' ', line.content,
                                                 flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(M,)", 'M.', fixed_line, flags=re.IGNORECASE)
                             fixed_line = re.sub(r"(MR,)", 'MR.', fixed_line, flags=re.IGNORECASE)
@@ -237,12 +237,14 @@ class FindName:
                                             if fuzz.ratio(splitted_line[cpt + 1].lower(), name.lower()) >= 80:
                                                 firstname = splitted_line[cpt + 1].title()
                                                 lastname = splitted_line[cpt + 2].title()
-                                                if lastname.lower() in ['de', 'el', 'da', 'le'] and len(splitted_line) > cpt + 3:
+                                                if lastname.lower() in ['de', 'el', 'da', 'le'] and len(
+                                                        splitted_line) > cpt + 3:
                                                     lastname += ' ' + splitted_line[cpt + 3].title()
                                             elif fuzz.ratio(splitted_line[cpt + 2].lower(), name.lower()) >= 80 or \
                                                     (len(splitted_line) > cpt + 3 and splitted_line[cpt + 3].lower()):
                                                 lastname = splitted_line[cpt + 1].title()
-                                                if lastname.lower() in ['de', 'el', 'da', 'le'] and len(splitted_line) > cpt + 3:
+                                                if lastname.lower() in ['de', 'el', 'da', 'le'] and len(
+                                                        splitted_line) > cpt + 3:
                                                     lastname += ' ' + splitted_line[cpt + 2].title()
                                                     firstname = splitted_line[cpt + 3].title()
                                                 else:
@@ -251,13 +253,6 @@ class FindName:
                                         res = self.return_results(firstname, lastname, line, text_cpt == 2, name)
                                         if res:
                                             return res
-                                    else:
-                                        res = find_without_civility(splitted_line, name)
-                                        if res['firstname'] and res['lastname']:
-                                            res = self.return_results(res['firstname'], res['lastname'], line,
-                                                                      text_cpt == 2)
-                                            if res:
-                                                return res
                                     cpt += 1
                             else:
                                 res = find_without_civility(splitted_line, name)
@@ -267,11 +262,12 @@ class FindName:
                                         return res
             if self.improved:
                 for line in text:
-                    fixed_line = re.sub(r"(:|/|!|\?|“|\"|'|\]|\[|&|£|€|\+|°|;|@)", '', line.content, flags=re.IGNORECASE)
+                    fixed_line = re.sub(r"([:/!?“\"'‘\]\[&£€+°;@])", '', line.content,
+                                        flags=re.IGNORECASE)
                     society_regex = r"(E(\.)?(A|U)(\.)?R(\.)?L|S(\.)?A(\.)?R(\.)?L|S(\.)?A(\.)?S)"
                     society = re.findall(society_regex, fixed_line, flags=re.IGNORECASE)
                     if society:
-                        fixed_line = re.sub(r'INTITUL(E|É)\s*DU\s*COMPTE', '', fixed_line, flags=re.IGNORECASE)
+                        fixed_line = re.sub(r'INTITUL[EÉ]\s*DU\s*COMPTE', '', fixed_line, flags=re.IGNORECASE)
                         splitted_line = list(filter(None, fixed_line.split(' ')))
                         for word in splitted_line:
                             match_society = re.match(r"^" + society_regex + "$", word, flags=re.IGNORECASE)

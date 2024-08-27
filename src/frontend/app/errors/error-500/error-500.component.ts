@@ -22,8 +22,7 @@ import { PrivilegesService } from "../../../services/privileges.service";
 
 @Component({
     selector: 'app-error',
-    templateUrl: './error-500.component.html',
-    styleUrls: ['./error-500.component.scss']
+    templateUrl: './error-500.component.html'
 })
 export class Error500Component {
 

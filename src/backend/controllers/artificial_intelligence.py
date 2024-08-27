@@ -23,7 +23,7 @@ import pandas as pd
 from pathlib import Path
 from flask_babel import gettext
 from flask import request, g as current_context
-from src.backend.import_models import artificial_intelligence, history
+from src.backend.models import artificial_intelligence, history
 from src.backend import create_classes_from_custom_id, retrieve_custom_from_url
 from sklearn import feature_extraction, model_selection, naive_bayes, pipeline, metrics
 
@@ -83,7 +83,8 @@ def create_model(data):
         'type': data['type'],
         'status': data['status'],
         'module': data['module'],
-        'model_label': data['model_label']
+        'model_label': data['model_label'],
+        'documents': json.dumps(data['documents']) if 'documents' in data else "[]"
     }
 
     res, error = artificial_intelligence.create_model({'columns': _columns})
@@ -139,6 +140,8 @@ def update_model(data, model_id, module, fill_history=False):
     if 'min_proba' in data:
         args['set']['min_proba'] = data['min_proba']
     if 'documents' in data:
+        if isinstance(data['documents'], list):
+            data['documents'] = json.dumps(data['documents'])
         args['set']['documents'] = data['documents']
     if 'train_time' in data:
         args['set']['train_time'] = data['train_time']
@@ -199,7 +202,8 @@ def launch_train(data, model_name, module):
         'type': 'doctype',
         'status': 'training',
         'module': module,
-        'model_label': data['label']
+        'model_label': data['label'],
+        'documents': data['docs'] if 'docs' in data and data['docs'] else []
     }
     model_id = create_model(args)[0].get('id')
 

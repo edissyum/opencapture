@@ -29,8 +29,8 @@ class SplitterTest(unittest.TestCase):
         self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
+        warnings.filterwarnings('ignore', category=ResourceWarning)
         warnings.filterwarnings('ignore', category=DeprecationWarning)
-        warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
 
     def create_batch(self):
         file = f'./custom/{CUSTOM_ID}/src/backend/process_queue_splitter.py'
@@ -53,7 +53,7 @@ class SplitterTest(unittest.TestCase):
         my_file = FileStorage(
             stream=open(pdf_path, "rb"),
             filename="splitter_test.pdf",
-            content_type="application/pdf",
+            content_type="application/pdf"
         )
         return self.app.post(f'/{CUSTOM_ID}/ws/splitter/upload', content_type='multipart/form-data',
                              data={"file": my_file, "workflowId": 'default_workflow', "userId": 1},
@@ -72,7 +72,7 @@ class SplitterTest(unittest.TestCase):
             'time': 'today'
         }
         response = self.app.post(f'/{CUSTOM_ID}/ws/splitter/batches/list', json=payload,
-                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(True, len(response.json['batches']) > 0)
 
@@ -82,7 +82,7 @@ class SplitterTest(unittest.TestCase):
         batches = self.database.fetchall()
         payload = {
             'userId': 1,
-            'batchId': batches[0]['id'],
+            'batchId': batches[0]['id']
         }
         response = self.app.get(f"/{CUSTOM_ID}/ws/splitter/documents/{batches[0]['id']}",
                                 headers={"Content-Type": "application/json",

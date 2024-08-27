@@ -24,9 +24,8 @@ import { AuthService } from "../../../../services/auth.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../services/settings.service";
-import { LastUrlService } from "../../../../services/last-url.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
-import { LocalStorageService } from "../../../../services/local-storage.service";
+import { SessionStorageService } from "../../../../services/session-storage.service";
 import { environment } from  "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
@@ -59,9 +58,8 @@ export class CustomersListComponent implements OnInit {
         private translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
-        private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) { }
 
     ngOnInit(): void {
@@ -69,16 +67,10 @@ export class CustomersListComponent implements OnInit {
             this.authService.generateHeaders();
         }
 
-        // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
-        const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('accounts/customers') || lastUrl === '/') {
-            if (this.localStorageService.get('customersPageIndex')) {
-                this.pageIndex = parseInt(this.localStorageService.get('customersPageIndex') as string);
-            }
-            this.offset = this.pageSize * (this.pageIndex);
-        } else {
-            this.localStorageService.remove('customersPageIndex');
+        if (this.sessionStorageService.get('customersPageIndex')) {
+            this.pageIndex = parseInt(this.sessionStorageService.get('customersPageIndex') as string);
         }
+        this.offset = this.pageSize * (this.pageIndex);
 
         this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -118,7 +110,7 @@ export class CustomersListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
-        this.localStorageService.save('customersPageIndex', event.pageIndex);
+        this.sessionStorageService.save('customersPageIndex', event.pageIndex);
         this.loadCustomers();
     }
 

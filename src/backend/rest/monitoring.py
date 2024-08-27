@@ -18,7 +18,7 @@
 from flask_babel import gettext
 from src.backend.functions import rest_validator
 from flask import Blueprint, make_response, jsonify, request
-from src.backend.import_controllers import auth, monitoring, privileges, verifier
+from src.backend.controllers import auth, monitoring, privileges, verifier
 
 bp = Blueprint('monitoring', __name__, url_prefix='/ws/')
 

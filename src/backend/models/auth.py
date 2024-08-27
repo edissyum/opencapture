@@ -39,12 +39,8 @@ def login(args):
         'data': [args['username']]
     })
 
-    if not user:
-        error = gettext('BAD_USERNAME')
-    elif not check_password_hash(user[0]['password'], args['password']):
-        error = gettext('BAD_PASSWORD')
-    elif user[0]['status'] == 'DEL':
-        error = gettext('USER_DELETED')
+    if not user or not check_password_hash(user[0]['password'], args['password']):
+        error = gettext('BAD_AUTHENTICATION')
     elif user[0]['enabled'] == 0:
         error = gettext('USER_DISABLED')
     else:
@@ -155,7 +151,7 @@ def update_login_method(login_method_name, server_data):
         'table': ['login_methods'],
         'set': {
             'data': json.dumps(server_data),
-            'enabled': True,
+            'enabled': True
         },
         'where': ['method_name = %s'],
         'data': [login_method_name]
@@ -202,7 +198,7 @@ def disable_login_method(method_name):
     login_method_data = database.update({
         'table': ['login_methods'],
         'set': {
-            'enabled': False,
+            'enabled': False
         },
         'where': ['method_name = %s'],
         'data': [method_name]
@@ -224,7 +220,7 @@ def enable_login_method(method_name):
     login_method_data = database.update({
         'table': ['login_methods'],
         'set': {
-            'enabled': True,
+            'enabled': True
         },
         'where': ['method_name = %s'],
         'data': [method_name]

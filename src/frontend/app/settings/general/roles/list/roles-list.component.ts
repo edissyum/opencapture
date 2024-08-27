@@ -18,15 +18,13 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { ActivatedRoute, Router } from "@angular/router";
-import { FormBuilder } from "@angular/forms";
+import { Router } from "@angular/router";
 import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { MatDialog } from "@angular/material/dialog";
-import { LastUrlService } from "../../../../../services/last-url.service";
-import { LocalStorageService } from "../../../../../services/local-storage.service";
+import { SessionStorageService } from "../../../../../services/session-storage.service";
 import { environment } from  "../../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
@@ -59,16 +57,13 @@ export class RolesListComponent implements OnInit {
         public router: Router,
         private http: HttpClient,
         private dialog: MatDialog,
-        private route: ActivatedRoute,
         public userService: UserService,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
-        private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) {
     }
 
@@ -76,16 +71,11 @@ export class RolesListComponent implements OnInit {
         this.serviceSettings.init();
         this.userService.user   = this.userService.getUserFromLocal();
 
-        // If we came from another route than profile or settings panel, reset saved settings before launch loadUsers function
-        const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('settings/general/roles') || lastUrl === '/') {
-            if (this.localStorageService.get('rolesPageIndex')) {
-                this.pageIndex = parseInt(this.localStorageService.get('rolesPageIndex') as string);
-            }
-            this.offset = this.pageSize * (this.pageIndex);
-        } else {
-            this.localStorageService.remove('rolesPageIndex');
+        if (this.sessionStorageService.get('rolesPageIndex')) {
+            this.pageIndex = parseInt(this.sessionStorageService.get('rolesPageIndex') as string);
         }
+        this.offset = this.pageSize * (this.pageIndex);
+
         this.loadRoles();
     }
 
@@ -115,7 +105,7 @@ export class RolesListComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localStorageService.save('rolesPageIndex', event.pageIndex);
+        this.sessionStorageService.save('rolesPageIndex', event.pageIndex);
         this.loadRoles();
     }
 

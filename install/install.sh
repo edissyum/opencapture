@@ -21,6 +21,11 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+if [ "$(uname -m)" != 'x86_64' ]; then
+    echo "This script is only compatible with x86_64 architecture"
+    exit 1
+fi
+
 bold=$(tput bold)
 normal=$(tput sgr0)
 defaultPath="/var/www/html/opencapture/"
@@ -108,7 +113,7 @@ customId=$(echo "$customId" | tr "[:upper:]" "[:lower:]")
 if [ -z "$customId" ]; then
     echo "##########################################################################"
     echo "              Custom id is needed to run the installation"
-    echo "      Exemple of command line call : sudo ./install.sh -c edissyum"
+    echo "      Exemple of command line call : sudo ./install.sh --custom_id edissyum"
     echo "##########################################################################"
     exit 2
 fi
@@ -116,7 +121,7 @@ fi
 if [ "$customId" == 'custom' ] ; then
     echo "##########################################################################"
     echo "              Please do not create a custom called 'custom'"
-    echo "      Exemple of command line call : sudo ./install.sh -c edissyum"
+    echo "      Exemple of command line call : sudo ./install.sh --custom_id edissyum"
     echo "##########################################################################"
     exit 3
 fi
@@ -333,7 +338,6 @@ touch $customPath/config/secret_key
 
 echo "[$oldCustomId]" >> $customIniFile
 echo "path = $defaultPath/custom/$customId" >> $customIniFile
-echo "isdefault = False" >> $customIniFile
 echo "" >> $customIniFile
 
 ####################
@@ -412,11 +416,23 @@ if [ $sitePackageLocation ]; then
 fi
 
 su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
+ErrorDocument 400 /src/assets/error_pages/400.html
+ErrorDocument 401 /src/assets/error_pages/401.html
+ErrorDocument 403 /src/assets/error_pages/403.html
+ErrorDocument 404 /src/assets/error_pages/404.html
+ErrorDocument 500 /src/assets/error_pages/500.html
+ErrorDocument 501 /src/assets/error_pages/501.html
+ErrorDocument 502 /src/assets/error_pages/502.html
+ErrorDocument 503 /src/assets/error_pages/503.html
+ErrorDocument 504 /src/assets/error_pages/504.html
 <VirtualHost *:80>
     ServerName localhost
     DocumentRoot $defaultPath
     $wsgiDaemonProcessLine
     WSGIScriptAlias /backend_oc $defaultPath/wsgi.py
+
+    Header always set X-Content-Type-Options: nosniff
+    Header always set Strict-Transport-Security \"max-age=31536000; includeSubDomains; preload\"
 
     <Directory $defaultPath>
         AllowOverride All
@@ -426,7 +442,7 @@ su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
         Order deny,allow
         Allow from all
         Require all granted
-        <Files ~ \"(.ini|secret_key|.ods)\">
+        <Files ~ \"(.ini|secret_key)\">
             Require all denied
         </Files>
     </Directory>
@@ -445,6 +461,7 @@ echo "Apache configuration....."
 a2ensite opencapture.conf >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 a2dissite 000-default.conf >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 a2enmod rewrite >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+a2enmod headers >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 systemctl restart apache2 >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 echo ""
@@ -459,7 +476,7 @@ chown -R "$user":"$group" /tmp/opencapture/
 # Copy file from default one
 cp $defaultPath/bin/ldap/config/config.ini.default "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
 cp $defaultPath/instance/config/config.ini.default "$defaultPath/custom/$customId/config/config.ini"
-cp $defaultPath/instance/referencial/default_referencial_supplier.ods.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier.ods"
+cp $defaultPath/instance/referencial/default_referencial_supplier.csv.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier.csv"
 cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier_index.json"
 cp $defaultPath/instance/referencial/LISTE_PRENOMS.csv "$defaultPath/custom/$customId/instance/referencial/LISTE_PRENOMS.csv"
 cp $defaultPath/src/backend/process_queue_verifier.py.default "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
@@ -469,9 +486,8 @@ cp $defaultPath/bin/scripts/OCVerifier_worker.sh.default "$defaultPath/custom/$c
 cp $defaultPath/bin/scripts/OCSplitter_worker.sh.default "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 cp $defaultPath/bin/scripts/MailCollect/clean.sh.default "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
 cp $defaultPath/bin/scripts/load_referencial.sh.default "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
-cp $defaultPath/bin/scripts/backup_database.sh.default "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
 cp $defaultPath/bin/scripts/purge_splitter.sh.default "$defaultPath/custom/$customId/bin/scripts/purge_splitter.sh"
-cp $defaultPath/bin/scripts/clean_backups.sh.default "$defaultPath/custom/$customId/bin/scripts/clean_backups.sh"
+cp $defaultPath/bin/scripts/purge_verifier.sh.default "$defaultPath/custom/$customId/bin/scripts/purge_verifier.sh"
 cp $defaultPath/bin/scripts/load_users.sh.default "$defaultPath/custom/$customId/bin/scripts/load_users.sh"
 cp -r $defaultPath/bin/scripts/splitter_metadata "$defaultPath/custom/$customId/bin/scripts/"
 
@@ -482,19 +498,13 @@ sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" "$defaultPath/custom/$customId/bin/s
 sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
-sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/purge_splitter.sh"
-sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/clean_backups.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/purge_verifier.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/load_users.sh"
-sed -i "s#§§DATABASE_PORT§§#$port#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
-sed -i "s#§§DATABASE_HOST§§#$hostname#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
-sed -i "s#§§DATABASE_NAME§§#$databaseName#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
-sed -i "s#§§DATABASE_USER§§#$databaseUsername#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
-sed -i "s#§§DATABASE_PASSWORD§§#$databasePassword#g" "$defaultPath/custom/$customId/bin/scripts/backup_database.sh"
 sed -i "s#§§BATCH_PATH§§#$defaultPath/custom/$customId/data/MailCollect/#g" "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
-
 sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/load_users.sh"
 sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/purge_splitter.sh"
+sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/purge_verifier.sh"
 sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
 sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/load_referential_splitter.sh"
 sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
@@ -730,8 +740,8 @@ chown -R "$user":"$group" $defaultPath/custom/"$customId"/bin/scripts/splitter_w
 ####################
 # Create docservers
 mkdir -p $docserverDefaultPath/"$customId"/{verifier,splitter}
-mkdir -p $docserverDefaultPath/"$customId"/verifier/{ai,original_doc,full,thumbs,positions_masks}
-mkdir -p $docserverDefaultPath/"$customId"/splitter/{ai,original_doc,batches,thumbs,error}
+mkdir -p $docserverDefaultPath/"$customId"/verifier/{ai,attachments,original_doc,full,thumbs,positions_masks}
+mkdir -p $docserverDefaultPath/"$customId"/splitter/{ai,attachments,original_doc,batches,thumbs,error}
 mkdir -p $docserverDefaultPath/"$customId"/verifier/ai/{train_data,models}
 mkdir -p $docserverDefaultPath/"$customId"/splitter/ai/{train_data,models}
 chmod -R 775 $docserverDefaultPath
@@ -740,17 +750,14 @@ chown -R "$user":"$group" $docserverDefaultPath
 
 ####################
 # Create backups directory
-mkdir -p /var/share/backups/"$customId"
+mkdir -p /var/share/backups/
 chmod -R 775 /var/share/backups/
 chmod -R g+s /var/share/backups/
 chown -R "$user":"$group" /var/share/backups/
 
 ####################
-# Add backup script to cron
-cron="0 2 * * * $defaultPath/custom/$customId/bin/scripts/backup_database.sh &> /dev/null"
-cron_backup="0 3 * * * $defaultPath/custom/$customId/bin/scripts/clean_backups.sh &> /dev/null"
-(crontab -u $user -l; echo "$cron" ) | crontab -u $user - >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-(crontab -u $user -l; echo "$cron_backup" ) | crontab -u $user - >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+# Setting up the autopostgresqlbackup
+sed -i 's#BACKUPDIR=".*"#BACKUPDIR="/var/share/backups/"#g' /etc/default/autopostgresqlbackup
 
 ####################
 # Create default export and input XML and PDF folder

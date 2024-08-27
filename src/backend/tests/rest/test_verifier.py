@@ -32,7 +32,7 @@ class VerifierTest(unittest.TestCase):
         self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
-        warnings.filterwarnings('ignore', message="unclosed", category=ResourceWarning)
+        warnings.filterwarnings('ignore', category=ResourceWarning)
 
     def create_supplier(self):
         payload = {
@@ -45,7 +45,7 @@ class VerifierTest(unittest.TestCase):
             "email": "",
             "form_id": 1,
             "address_id": 1,
-            "document_lang": "fra",
+            "document_lang": "fra"
         }
 
         return self.app.post(f'/{CUSTOM_ID}/ws/accounts/suppliers/create',
@@ -57,11 +57,11 @@ class VerifierTest(unittest.TestCase):
         text_to_search = rf"@kuyruk.task(queue='verifier_{CUSTOM_ID}')"
         text_to_replace = f"# @kuyruk.task(queue='verifier_{CUSTOM_ID}')"
 
-        with open(file, "r+", encoding='UTF-8') as text_file:
+        with open(file, "r+", encoding='utf-8') as text_file:
             texts = text_file.read()
             texts = texts.replace(text_to_search, text_to_replace)
 
-        with open(file, "w", encoding='UTF-8') as text_file:
+        with open(file, "w", encoding='utf-8') as text_file:
             text_file.write(texts)
 
         pdf_url = 'https://open-capture.com/wp-content/uploads/2022/11/CALINDA_INV-001510.pdf'
@@ -74,7 +74,7 @@ class VerifierTest(unittest.TestCase):
         my_file = FileStorage(
             stream=open("./instance/upload/verifier/CALINDA_INV-001510.pdf", "rb"),
             filename="CALINDA_INV-001510.pdf",
-            content_type="application/pdf",
+            content_type="application/pdf"
         )
 
         return self.app.post(f'/{CUSTOM_ID}/ws/verifier/upload', content_type='multipart/form-data',
@@ -280,7 +280,7 @@ class VerifierTest(unittest.TestCase):
                 'width': 1228,
                 'height': 1736
             },
-            'registerDate': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'registerDate': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
         response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/ocrOnFly', json=data,
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})

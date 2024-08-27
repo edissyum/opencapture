@@ -88,7 +88,7 @@ class FindDeliveryNumber:
                             return [text, position, data['page']]
 
         cpt = 0
-        for text in [self.footer_text, self.header_text, self.text]:
+        for text in [self.header_text, self.footer_text, self.text]:
             for line in text:
                 for _delivery in re.finditer(r"" + self.regex['delivery_number'], line.content.upper()):
                     delivery_number = self.sanitize_delivery_number(_delivery.group())

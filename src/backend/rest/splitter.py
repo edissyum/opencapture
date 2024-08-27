@@ -19,7 +19,7 @@ import json
 from flask_babel import gettext
 from flask import Blueprint, make_response, jsonify, request
 from src.backend.functions import rest_validator, check_extensions_mime
-from src.backend.import_controllers import auth, splitter, forms, privileges
+from src.backend.controllers import auth, splitter, forms, privileges
 
 bp = Blueprint('splitter', __name__, url_prefix='/ws/')
 
@@ -60,6 +60,24 @@ def retrieve_splitter_batches():
     res = splitter.retrieve_batches(request.json)
     return make_response(jsonify(res[0])), res[1]
 
+@bp.route('splitter/moveDocumentsToAttachments/<int:batch_id>', methods=['POST'])
+@auth.token_required
+def move_documents_to_attachment(batch_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/splitter/moveDocumentsToAttachments/{batch_id}'}), 403
+
+    check, message = rest_validator(request.json, [
+        {'id': 'documents', 'type': list, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    response, status = splitter.move_documents_to_attachment(request.json['documents'], batch_id)
+    return make_response(jsonify(response)), status
 
 @bp.route('splitter/batch/<int:batch_id>/file', methods=['GET'])
 @auth.token_required
@@ -100,6 +118,26 @@ def update_status():
         }, 400)
 
     res = splitter.update_status({'ids': request.json['ids'], 'status': request.json['status']})
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('splitter/<int:batch_id>/updateCustomer', methods=['PUT'])
+@auth.token_required
+def update_custom(batch_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/customer'}), 403
+
+    check, message = rest_validator(request.json, [
+        {'id': 'customer_id', 'type': int, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = splitter.update_customer({'batch_id': batch_id, 'customer_id': request.json['customer_id']})
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -176,7 +214,7 @@ def remove_lock_by_user_id(user_id):
 def remove_lock_by_batch_id():
     if not privileges.has_privileges(request.environ['user_id'], ['access_splitter']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/splitter/removeLockByBatchId'}), 403
+                        'message': '/splitter/removeLockByBatchId'}), 403
     data = json.loads(request.data)
     res = splitter.remove_lock_by_batch_id(data['batch_id'])
     return make_response(res[0], res[1])

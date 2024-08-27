@@ -19,8 +19,8 @@
 import json
 from flask import request
 from flask_babel import gettext
-from src.backend.import_controllers import user
-from src.backend.import_models import forms, accounts, verifier, history
+from src.backend.controllers import user
+from src.backend.models import forms, accounts, verifier, history
 
 
 def get_forms(args):
@@ -45,7 +45,7 @@ def get_forms(args):
         _args['where'].append('id = ANY(%s)')
         _args['data'].append(user_forms)
 
-    _forms, error = forms.get_forms(_args)
+    _forms, _ = forms.get_forms(_args)
 
     if 'totals' in args and args['totals']:
         for form in _forms:

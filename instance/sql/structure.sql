@@ -13,6 +13,7 @@ CREATE TABLE "users" (
     "role"              INTEGER     NOT NULL,
     "last_connection"   TIMESTAMP,
     "email"             TEXT,
+    "refresh_token"     TEXT,
     "reset_token"       TEXT
 );
 
@@ -143,26 +144,26 @@ CREATE TABLE "privileges" (
 );
 
 CREATE TABLE "accounts_supplier" (
-    "id"                  SERIAL        UNIQUE PRIMARY KEY,
-    "name"                VARCHAR(255)  NOT NULL,
-    "vat_number"          VARCHAR(20)   UNIQUE,
-    "siret"               VARCHAR(20),
-    "siren"               VARCHAR(20),
-    "iban"                VARCHAR(50),
-    "duns"                VARCHAR(10),
-    "bic"                 VARCHAR(11),
-    "rccm"                VARCHAR(30),
-    "email"               VARCHAR,
-    "address_id"          INTEGER,
-    "form_id"             INTEGER,
-    "document_lang"       VARCHAR(10)   DEFAULT 'fra',
-    "status"              VARCHAR(3)    DEFAULT 'OK',
-    "get_only_raw_footer" BOOLEAN       DEFAULT False,
-    "skip_auto_validate"  BOOLEAN       DEFAULT False,
-    "lang"                VARCHAR(10)   DEFAULT 'fra',
-    "creation_date"       TIMESTAMP     DEFAULT (CURRENT_TIMESTAMP),
-    "positions"           JSONB         DEFAULT '{}',
-    "pages"               JSONB         DEFAULT '{}'
+    "id"                        SERIAL        UNIQUE PRIMARY KEY,
+    "name"                      VARCHAR(255)  NOT NULL,
+    "vat_number"                VARCHAR(20)   UNIQUE,
+    "siret"                     VARCHAR(20),
+    "siren"                     VARCHAR(20),
+    "iban"                      VARCHAR(50),
+    "duns"                      VARCHAR(10),
+    "bic"                       VARCHAR(11),
+    "rccm"                      VARCHAR(30),
+    "email"                     VARCHAR,
+    "address_id"                INTEGER,
+    "form_id"                   INTEGER,
+    "document_lang"             VARCHAR(10)   DEFAULT 'fra',
+    "status"                    VARCHAR(3)    DEFAULT 'OK',
+    "get_only_raw_footer"       BOOLEAN       DEFAULT False,
+    "skip_auto_validate"        BOOLEAN       DEFAULT False,
+    "default_accounting_plan"   INTEGER,
+    "creation_date"             TIMESTAMP     DEFAULT (CURRENT_TIMESTAMP),
+    "positions"                 JSONB         DEFAULT '{}',
+    "pages"                     JSONB         DEFAULT '{}'
 );
 
 CREATE TABLE "accounts_customer" (
@@ -212,6 +213,7 @@ CREATE TABLE "documents" (
     "nb_pages"          INTEGER             NOT NULL DEFAULT 1,
     "locked"            BOOLEAN             DEFAULT False,
     "locked_by"         VARCHAR(50),
+    "md5"               VARCHAR(32),
     "positions"         JSONB               DEFAULT '{}',
     "pages"             JSONB               DEFAULT '{}',
     "datas"             JSONB               DEFAULT '{}'
@@ -250,6 +252,7 @@ CREATE TABLE "splitter_batches" (
     "workflow_id"       INTEGER         DEFAULT null,
     "locked"            BOOLEAN         DEFAULT False,
     "locked_by"         VARCHAR(50),
+    "md5"               VARCHAR(32),
     "data"              JSON            DEFAULT '{}'::json
 );
 
@@ -332,23 +335,25 @@ CREATE TABLE "languages" (
 );
 
 CREATE TABLE "mailcollect" (
-     "id"                            SERIAL       UNIQUE PRIMARY KEY,
-     "name"                          VARCHAR(255) UNIQUE NOT NULL,
-     "hostname"                      VARCHAR(255) NOT NULL,
-     "port"                          INTEGER      NOT NULL,
-     "login"                         VARCHAR(255) NOT NULL,
-     "password"                      VARCHAR(255) NOT NULL,
-     "secured_connection"            BOOLEAN      DEFAULT True,
-     "status"                        VARCHAR(10)  DEFAULT 'OK',
-     "is_splitter"                   BOOLEAN      DEFAULT False,
-     "enabled"                       BOOLEAN      DEFAULT True,
-     "splitter_technical_workflow_id"VARCHAR(255),
-     "folder_to_crawl"               VARCHAR(255) NOT NULL,
-     "folder_destination"            VARCHAR(255) NOT NULL,
-     "folder_trash"                  VARCHAR(255),
-     "action_after_process"          VARCHAR(255) NOT NULL,
-     "verifier_customer_id"          INTEGER,
-     "verifier_form_id"              VARCHAR(255)
+     "id"                             SERIAL       UNIQUE PRIMARY KEY,
+     "name"                           VARCHAR(255) UNIQUE NOT NULL,
+     "hostname"                       VARCHAR(255) NOT NULL,
+     "port"                           INTEGER      NOT NULL,
+     "login"                          VARCHAR(255) NOT NULL,
+     "password"                       VARCHAR(255) NOT NULL,
+     "secured_connection"             BOOLEAN      DEFAULT True,
+     "status"                         VARCHAR(10)  DEFAULT 'OK',
+     "is_splitter"                    BOOLEAN      DEFAULT False,
+     "enabled"                        BOOLEAN      DEFAULT True,
+     "splitter_workflow_id" VARCHAR(255),
+     "folder_to_crawl"                VARCHAR(255) NOT NULL,
+     "folder_destination"             VARCHAR(255) NOT NULL,
+     "folder_trash"                   VARCHAR(255),
+     "action_after_process"           VARCHAR(255) NOT NULL,
+     "verifier_customer_id"           INTEGER,
+     "verifier_form_id"               VARCHAR(255),
+     "verifier_insert_body_as_doc"    BOOLEAN      DEFAULT False,
+     "splitter_insert_body_as_doc"    BOOLEAN      DEFAULT False
 );
 
 CREATE SEQUENCE splitter_referential_call_count AS INTEGER;
@@ -393,4 +398,15 @@ CREATE TABLE "workflows" (
     "input"             JSONB        DEFAULT '{}',
     "process"           JSONB        DEFAULT '{}',
     "output"            JSONB        DEFAULT '{}'
+);
+
+CREATE TABLE "attachments" (
+    "id"                SERIAL       UNIQUE PRIMARY KEY,
+    "document_id"       INTEGER,
+    "batch_id"          INTEGER,
+    "filename"          VARCHAR(255),
+    "path"              VARCHAR(255),
+    "thumbnail_path"    VARCHAR(255),
+    "status"            VARCHAR(10)  DEFAULT 'OK',
+    "creation_date"     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );

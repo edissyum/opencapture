@@ -17,34 +17,35 @@
 # @dev : Oussama Brich <nathan.cheval@outlook.fr>
 
 import jwt
-import psycopg2
-from datetime import datetime, timedelta
-from src.backend.import_classes import _Config
+import psycopg
+from psycopg.rows import dict_row
+from src.backend.classes.Config import Config
+from datetime import datetime, timezone, timedelta
 
 CUSTOM_ID = 'test'
 PROJECT_PATH = '/var/www/html/opencapture/'
 
 
 def get_db():
-    config = _Config(f'{PROJECT_PATH}/custom/{CUSTOM_ID}/config/config.ini')
-    conn = psycopg2.connect(
-        "dbname     =" + config.cfg['DATABASE']['postgresdatabase'] +
-        " user      =" + config.cfg['DATABASE']['postgresuser'] +
-        " password  =" + config.cfg['DATABASE']['postgrespassword'] +
-        " host      =" + config.cfg['DATABASE']['postgreshost'] +
-        " port      =" + config.cfg['DATABASE']['postgresport'])
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    config = Config(f'{PROJECT_PATH}/custom/{CUSTOM_ID}/config/config.ini')
+    conn = psycopg.connect(dbname=config.cfg['DATABASE']['postgresdatabase'],
+                           user=config.cfg['DATABASE']['postgresuser'],
+                           password=config.cfg['DATABASE']['postgrespassword'],
+                           host=config.cfg['DATABASE']['postgreshost'],
+                           port=config.cfg['DATABASE']['postgresport'],
+                           row_factory=dict_row)
+    cursor = conn.cursor()
     conn.autocommit = True
     return cursor
 
 
 def get_token(user_id):
-    with open(f'{PROJECT_PATH}/custom/{CUSTOM_ID}/config/secret_key', encoding='UTF-8') as secret_key_file:
+    with open(f'{PROJECT_PATH}/custom/{CUSTOM_ID}/config/secret_key', encoding='utf-8') as secret_key_file:
         secret_key = secret_key_file.read().replace('\n', '')
     try:
         payload = {
-            'exp': datetime.utcnow() + timedelta(minutes=1440, seconds=0),
-            'iat': datetime.utcnow(),
+            'exp': datetime.now(timezone.utc) + timedelta(minutes=1440, seconds=0),
+            'iat': datetime.now(timezone.utc),
             'sub': user_id
         }
         return jwt.encode(

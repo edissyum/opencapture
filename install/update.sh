@@ -61,7 +61,7 @@ cd "$openCapturePath" || exit 1
 # Force launch of apt and pip requirements
 # in case of older version without somes packages/libs
 echo "APT & PIP packages installation ......."
-cd install/ || exit 2
+cd $openCapturePath/install/ || exit 2
 apt-get -y update >> $INFOLOG_PATH 2>> $ERRORLOG_PATH
 apt-get install -y php >> $INFOLOG_PATH 2>> $ERRORLOG_PATH
 xargs -a apt-requirements.txt apt-get install -y >> $INFOLOG_PATH 2>> $ERRORLOG_PATH

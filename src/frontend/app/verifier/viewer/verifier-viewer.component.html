@@ -1,6 +1,7 @@
 <div *ngIf="this.loading">
     <app-loader></app-loader>
 </div>
+
 <div *ngIf="!this.processDone && this.fromToken">
     <div class="flex justify-center items-center h-screen overflow-y-auto">
         <div class="flex flex-col justify-center max-w-full">
@@ -25,296 +26,388 @@
                 <div class="flex flex-wrap justify-center gap-6 text-center my-4">
                     <mat-card *ngFor="let doc of this.multiDocumentsData" (click)="loadDocument(doc['id'])"
                               class="cursor-pointer scale-1 hover:scale-103 transition-all duration-300 max-w-[350px]">
-                        <img mat-card-image class="m-auto p-4" [src]="doc['thumb']" alt="Open-Capture image">
+                        <img mat-card-image class="m-auto p-4" [src]="doc['thumb']" alt="Open-Capture thumbnail">
                     </mat-card>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<input multiple type="file" class="hidden" (change)="uploadAttachments($event)" #attachmentUpload>
 <span *ngIf="!this.fromToken || (this.processDone && this.fromToken && !this.processMultiDocument)">
     <div class="grid grid-cols-2 overflow-auto" [style]="!this.fromToken ? 'height: calc(100vh - 4rem)' : 'height: 100vh'">
-        <div id="image" class="overflow-auto" [style]="!this.fromToken ? 'height: calc(100vh - 4rem); direction: rtl' : 'height: 100vh;direction: rtl'">
-            <div class="fixed left-4 z-50 text-xl text-left py-2">
-                <ng-container *ngIf="!this.loading && this.document['nb_pages'] > 1">
-                    <span [class.cursor-wait]="this.imgLoading">
-                        <i class="fa fa-arrow-right cursor-pointer" (click)="nextPage()" [class.pointer-events-none]="this.imgLoading"></i>
+        <mat-sidenav-container id="image_sidenav" class="bg-white">
+            <mat-sidenav id="attachments_list" mode="side" [opened]="sidenavOpened" position="start" class="2xl:w-96 xl:w-80 md:w-72 sm:w-64 w-32 flex flex-col h-full border-r border-green-400">
+                <div class="flex justify-between items-center">
+                    <span>
+                        <i class="fas fa-plus text-xl cursor-pointer ml-2" *ngIf="this.document && this.document.status !== 'END'"
+                           [matTooltip]="'ATTACHMENTS.add_attachments' | translate" (click)="attachmentUpload.click()"></i>
                     </span>
-                    {{ 'VERIFIER.page' | translate }}
-                    {{ currentPage }}
-                    {{ 'VERIFIER.on' | translate }}
-                    {{ this.document['nb_pages'] }}
-                    <span [class.cursor-wait]="this.imgLoading">
-                        <i class="fa fa-arrow-left cursor-pointer" (click)="previousPage()" [class.pointer-events-none]="this.imgLoading"></i>
-                    </span>
-                </ng-container>
-            </div>
-            <div class="image-container px-4" *ngIf="this.document">
-                <div class="absolute right-[75%] z-10 bottom-1/2 transform translate-x-1/2 translate-y-1/2" *ngIf="this.imgLoading">
-                    <i class="fa-solid text-6xl fa-circle-notch fa-spin text-green-400"></i>
+                    <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem">
+                        {{ "ATTACHMENTS.attachments_list" | translate }}
+                    </h3>
+                    <i class="fa-solid fa-times text-xl cursor-pointer text-gray-900 mb-8 mr-2" (click)="toggleSidenav()"></i>
                 </div>
-                <img id="document_image" alt="Open-Capture" [src]="this.imgSrc" [class.blur-sm]="this.imgLoading">
-            </div>
-        </div>
-        <div *ngIf="this.fields" id="form" class="px-4 overflow-auto pt-2">
-            <div *ngIf="this.formSettings.settings['unique_url']['change_form']">
-                <div class="relative float-left top-5">
-                    <i class="fa-solid fa-eye cursor-pointer text-green-400 text-lg" (click)="hideVisuals()"
-                       *ngIf="!this.visualIsHide" [matTooltip]="'VERIFIER.hide_visuals' | translate"></i>
-                    <i class="fa-solid fa-eye-slash cursor-pointer text-green-400 text-lg" (click)="hideVisuals()"
-                       *ngIf="this.visualIsHide" [matTooltip]="'VERIFIER.show_visuals' | translate"></i>
-                </div>
-                <div class="relative z-20 float-right" style="width: 96%">
-                    <mat-accordion>
-                        <mat-expansion-panel class="top-2 mb-4" [(expanded)]="this.settingsOpen">
-                            <mat-expansion-panel-header>
-                                <mat-panel-title class="justify-center">{{ 'GLOBAL.settings' | translate }}</mat-panel-title>
-                            </mat-expansion-panel-header>
-                            <mat-tab-group class="mx-5">
-                                <mat-tab [label]="'VERIFIER.change_form' | translate">
-                                    <p class="mt-3 text-center text-gray-400">{{ 'VERIFIER.change_form_details' | translate }}</p>
-                                    <mat-form-field class="w-full" [class.opacity-50]="this.document.status === 'END'">
-                                        <mat-select [(value)]="this.currentFormFields['form_id']" (selectionChange)="changeForm($event)"
-                                                    [disabled]="this.document.status === 'END'">
-                                            <mat-option *ngFor="let form of this.formList" [value]="form['id']">
-                                                {{ form['label'] }}
-                                            </mat-option>
-                                        </mat-select>
-                                        <mat-hint class="text-gray-500">
-                                            {{ 'VERIFIER.outputs_list' | translate }} : {{ this.outputsLabel.join(', ') }}
-                                        </mat-hint>
-                                    </mat-form-field>
-                                </mat-tab>
-                            </mat-tab-group>
-                        </mat-expansion-panel>
-                    </mat-accordion>
-                </div>
-            </div>
-            <div *ngIf="!this.formEmpty else noField">
-                <ng-container *ngFor="let category of this.fieldCategories">
-                    <ng-container *ngIf="this.form[category['id']].length !== 0">
-                        <span class="relative text-xl tracking-wider px-1.5 bg-white left-6 z-10">
-                            {{ getCategoryLabel(category) }}
-                            <span *ngIf="getOnlyRawFooter && this.translate.instant(category['label']) === this.translate.instant('FORMS.supplier')"
-                                  class="cursor-default relative top-1.5 text-red-500 text-3xl"
-                                  matTooltip="{{ 'VERIFIER.only_raw_footer' | translate }}">&bull;</span>
-                            <span *ngIf="!getOnlyRawFooter && this.translate.instant(category['label']) === this.translate.instant('FORMS.supplier')"
-                                  class="cursor-default relative top-1.5 text-green-400 text-3xl"
-                                  matTooltip="{{ 'VERIFIER.calculated_footer' | translate }}">&bull;</span>
-                            <span *ngIf="this.translate.instant(category['label']) === this.translate.instant('FORMS.supplier')"
-                                  class="text-sm cursor-pointer ml-2">
-                                <i *ngIf="!this.formLoading && this.document['supplier_id'] && this.supplierExists && this.document.status !== 'END' && this.formSettings.settings['unique_url']['update_supplier']"
-                                   (click)="editSupplier()" class="fa-solid fa-edit"></i>
-                                <i *ngIf="!this.formLoading && ((!this.document['supplier_id'] || !this.supplierExists) && this.document.status !== 'END' && this.formSettings.settings['unique_url']['create_supplier'])"
-                                   (click)="createSupplier()" class="fa-solid fa-plus"></i>
-                                <i *ngIf="this.formLoading && this.document.status !== 'END' && this.formSettings.settings['unique_url']['create_supplier']"
-                                   class="fa-solid fa-circle-notch fa-spin"></i>
+                <mat-divider></mat-divider>
+                <div class="flex overflow-x-hidden justify-center" style="height: calc(100vh - 8.5rem) !important">
+                    <div *ngIf="this.loadingAttachment" class="loading_attachments">
+                        <div class="m-auto text-center">
+                            <i class="fa-solid fa-paperclip fa-4x fa-beat-fade w-full mb-2"></i>
+                            <span class="w-full">
+                                {{ 'ATTACHMENTS.loading_attachments' | translate }}
                             </span>
-                        </span>
-                        <div class="relative border-green-400 border rounded-lg -top-3.5">
-                            <div id="{{ category['id'] }}" class="flex flex-wrap w-full mt-6" style="min-height: 50px;">
-                                <div *ngFor="let field of this.form[category['id']];" class="flex items-center p-2" [class]="field['class']">
-                                    <ng-container *ngIf="field.type === 'text' || (field.type === 'regex' && field.format !== 'date')">
-                                        <mat-form-field class="right-0 w-full form-viewer" [class.opacity-50]="this.document.status === 'END'"
-                                                        (click)="updateFilteredOption($event, field.control)"
-                                                        *ngIf="category['id'] === 'supplier' && field.id === 'name' else other">
-                                            <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
-                                                {{ field.label | translate }}
-                                            </mat-label>
-                                            <input [id]="field.id" matInput type="text" [required]="field['required']" [readonly]="this.document.status === 'END'"
-                                                   [formControl]="field['control']" [pattern]="field['pattern']" [matAutocomplete]="auto"
-                                                   (ngModelChange)="filterSupplier($event)">
-                                            <mat-error *ngIf="field.control.errors">
-                                                {{ getErrorMessage(field.id, category['id']) }}
-                                            </mat-error>
-                                            <mat-autocomplete #auto="matAutocomplete" [id]="field.id" (optionSelected)='getSupplierInfo($event.option.id, true)'>
-                                                <mat-option *ngFor="let option of this.suppliers" [value]="option.name" [id]="option.id">
-                                                    <span [innerHTML]="option.name | highlight: toHighlight"></span>
-                                                    <span style="font-size: 12px;" class="text-green-400 ml-3">
-                                                        {{ option['vat_number'] }}
+                        </div>
+                    </div>
+                    <div *ngIf="!this.loadingAttachment && this.attachmentsLength === 0" class="w-full flex align-center items-center justify-center">
+                        <i class="fa-solid fa-solid fa-plus text-5xl text-green-400 cursor-pointer" *ngIf="this.document.status !== 'END'"
+                           [matTooltip]="'ATTACHMENTS.add_attachments' | translate" (click)="attachmentUpload.click()"></i>
+                    </div>
+                    <div *ngIf="!this.loadingAttachment && this.attachmentsLength > 0" class="w-full">
+                        <div *ngIf="this.attachmentsLength >= 0" class="px-4">
+                            <div *ngFor="let attachment of this.attachments" class="py-2">
+                                <mat-card>
+                                    <img mat-card-image *ngIf="attachment['thumb']" [src]="attachment['thumb']">
+                                    <div mat-card-image *ngIf="!attachment['thumb']" class="text-center text-8xl pt-2 px-4">
+                                        <i [class]="attachment['extension_icon']" class="fa-solid"></i>
+                                    </div>
+                                    <mat-card-header class="flex justify-center items-center relative bottom-2 w-full">
+                                        <mat-card-title class="truncate text-base w-11/12" *ngIf="attachment['filename']"
+                                                        [matTooltip]="attachment['filename'].length >= 35 ? attachment['filename'] : ''">
+                                            {{ attachment['filename'] }}
+                                        </mat-card-title>
+                                        <div class="cursor-pointer">
+                                            <div [matMenuTriggerFor]="menu" matTooltipPosition="above" class="w-5 text-center"
+                                                 [matTooltip]="this.translate.instant('ATTACHMENTS.attachment_settings')">
+                                                <i class="fa-solid fa-ellipsis-vertical text-xl"></i>
+                                            </div>
+                                            <mat-menu #menu="matMenu">
+                                                <button class="download_attachment" mat-menu-item (click)="downloadAttachment(attachment)">
+                                                    <span class="download_attachment">
+                                                        <i class="fa-solid fa-download w-6"></i> {{ 'ATTACHMENTS.download_attachment' | translate }}
                                                     </span>
-                                                </mat-option>
-                                            </mat-autocomplete>
-                                        </mat-form-field>
-                                        <ng-template #other>
-                                            <mat-form-field class="right-0 w-full form-viewer" [class.opacity-50]="this.document.status === 'END'">
-                                                <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
-                                                    {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
-                                                </mat-label>
-                                                <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
-                                                      class="absolute top-0.5 -right-2.5 cursor-pointer text-gray-600">
-                                                    <i class="fa-solid fa-circle-plus"></i>
-                                                </span>
-                                                <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
-                                                      class="absolute top-0.5 -right-2.5 cursor-pointer text-red-500 opacity-70">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </span>
-                                                <input [id]="field.id" matInput type="text" [formControl]="field['control']" [required]="field['required']"
-                                                       [pattern]="field.pattern" (click)="this.ocrFromUser = true; this.saveInfo = true;"
-                                                       (focusin)="ocr($event, true, field.color);" [readonly]="this.document.status === 'END'"
-                                                       (focusout)="ocr($event, false); saveData($any($event.target).value, field['id']); checkVAT(field['id'], $any($event.target).value); checkSirenOrSiret(field['id'], $any($event.target).value)">
-                                                <mat-error *ngIf="field.control.errors">
-                                                    {{ getErrorMessage(field.id, category['id']) }}
-                                                </mat-error>
-                                                <i *ngIf="showAutoLogo(field)" class="fa-solid fa-bolt text-gray-600 absolute top-2 -right-2"
-                                                   [matTooltip]="'VERIFIER.data_found_auto' | translate"></i>
-                                            </mat-form-field>
-                                        </ng-template>
-                                    </ng-container>
-                                    <ng-container *ngIf="field.type === 'textarea'">
-                                        <mat-form-field class="right-0 w-full form-viewer" [class.opacity-50]="this.document.status === 'END'">
-                                            <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
-                                                {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
-                                            </mat-label>
-                                            <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
-                                                  class="absolute top-0.5 -right-2.5 cursor-pointer text-gray-600">
-                                            <i class="fa-solid fa-circle-plus"></i>
-                                            </span>
-                                            <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
-                                                  class="absolute top-0.5 -right-2.5 cursor-pointer text-red-500 opacity-70">
-                                            <i class="fa-solid fa-trash"></i>
-                                            </span>
-                                            <textarea [id]="field.id" matInput [cdkTextareaAutosize]="true"
-                                                      [cdkAutosizeMinRows]="1" [cdkAutosizeMaxRows]="5"
-                                                      [required]="field['required']" [formControl]="field['control']" [pattern]="field.pattern"
-                                                      (focusin)="ocr($event, true, field.color)" [readonly]="this.document.status === 'END'"
-                                                      (focusout)="ocr($event, false); saveData($any($event.target).value, field['id'])"></textarea>
-                                            <mat-error *ngIf="field.control.errors">
-                                                {{ getErrorMessage(field.id, category['id']) }}
-                                            </mat-error>
-                                        </mat-form-field>
-                                    </ng-container>
-                                    <ng-container *ngIf="field.type === 'date' || (field.type === 'regex' && field.format === 'date')">
-                                        <mat-form-field class="right-0 w-full form-viewer" [class.opacity-50]="this.document.status === 'END'">
-                                            <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
-                                                {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
-                                            </mat-label>
-                                            <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
-                                                  class="absolute top-0.5 -right-2.5 cursor-pointer text-gray-600">
-                                                <i class="fa-solid fa-circle-plus"></i>
-                                            </span>
-                                            <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
-                                                  class="absolute top-0.5 -right-2.5 cursor-pointer text-red-500 opacity-70">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </span>
-                                            <input [id]="field.id" matInput [matDatepicker]="picker" [formControl]="field['control']"
-                                                   [readonly]="this.document.status === 'END'"
-                                                   (focusin)="ocr($event, true, field.color)" [required]="field['required']"
-                                                   (focusout)="ocr($event, false); saveData($any($event.target).value, field['id'])"
-                                                   (dateChange)="saveData($any($event.targetElement).value, field['id'])">
-                                            <mat-datepicker-toggle [disabled]="this.document.status === 'END'" matSuffix [for]="picker"></mat-datepicker-toggle>
-                                            <mat-datepicker #picker></mat-datepicker>
-                                            <mat-error *ngIf="field.control.errors">
-                                                {{ getErrorMessage(field.id, category['id']) }}
-                                            </mat-error>
-                                            <i *ngIf="showAutoLogo(field)" class="fa-solid fa-bolt text-xs text-gray-600 absolute top-0.5 -right-12"
-                                               [matTooltip]="'VERIFIER.data_found_auto' | translate"></i>
-                                        </mat-form-field>
-                                    </ng-container>
-                                    <ng-container *ngIf="field.type === 'autocomplete'">
-                                        <mat-form-field class="right-0 w-full form-viewer">
-                                            <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
-                                                {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
-                                            </mat-label>
-                                            <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
-                                                  class="absolute top-0.5 -right-2.5 cursor-pointer text-gray-600">
-                                            <i class="fa-solid fa-circle-plus"></i>
-                                        </span>
-                                            <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
-                                                  class="absolute top-0.5 -right-2.5 cursor-pointer text-red-500 opacity-70">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </span>
-                                            <input [id]="field.id" matInput type="text" [required]="field['required']"
-                                                   [formControl]="field['control']"
-                                                   (focusin)="ocr($event, true, field.color)"
-                                                   (focusout)="ocr($event, false); saveData($any($event.target).value, field['id'])"
-                                                   [matAutocomplete]="data" [readonly]="this.document.status === 'END'">
-                                            <mat-autocomplete #data="matAutocomplete">
-                                                <span *ngIf="field.autocomplete_values">
-                                                    <mat-option *ngFor="let option of field.autocomplete_values | async" [value]="option.data"
-                                                                (onSelectionChange)="setAutocompleteDefaultValue($event)" [id]="option.res_id">
-                                                        <span [innerHTML]="option.data | highlight: toHighlight"></span>
-                                                        <span style="font-size: 12px;" class="text-green-400 ml-3">
-                                                            {{ option.alt_identifier }}
-                                                        </span>
-                                                    </mat-option>
-                                                </span>
-                                                <mat-option *ngIf="!field.autocomplete_values">
-                                                    <span [innerHTML]="'VERIFIER.no_autocomplete_data' | translate"></span>
-                                                </mat-option>
-                                            </mat-autocomplete>
-                                        </mat-form-field>
-                                    </ng-container>
-                                    <ng-container *ngIf="field.type === 'select'">
-                                        <mat-form-field class="right-0 w-full form-viewer" *ngIf="field.id.includes('accounting_plan')" [class.opacity-50]="this.document.status === 'END'">
-                                            <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
-                                                {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
-                                            </mat-label>
-                                            <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
-                                                  class="absolute top-0.5 -right-2.5 cursor-pointer text-gray-600">
-                                            <i class="fa-solid fa-circle-plus"></i>
-                                        </span>
-                                            <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
-                                                  class="absolute top-0.5 -right-2.5 cursor-pointer text-red-500 opacity-70">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </span>
-                                            <input matInput [id]="field.id" type="text" [required]="field['required']"
-                                                   [formControl]="field['control']" [matAutocomplete]="accounting" [readonly]="this.document.status === 'END'">
-                                            <span *ngIf="accountingPlanEmpty" class="absolute text-gray-600 top-0.5 -right-2.5 cursor-help"
-                                                  [matTooltip]="'VERIFIER.accounting_plan_empty' | translate">
-                                                <i class="fa-solid fa-circle-question"></i>
-                                            </span>
-                                            <mat-autocomplete #accounting="matAutocomplete">
-                                                <mat-option *ngFor="let option of field.values | async" [value]="option.compte_lib" [id]="option.compte_num">
-                                                    <span [innerHTML]="option.compte_num + ' - ' + option['compte_lib'] | highlight: toHighlightAccounting"></span>
-                                                </mat-option>
-                                            </mat-autocomplete>
-                                        </mat-form-field>
-                                        <mat-form-field class="right-0 w-full form-viewer" *ngIf="!field.id.includes('accounting_plan')" [class.opacity-50]="this.document.status === 'END'">
-                                            <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
-                                                {{ field.label | translate }}
-                                            </mat-label>
-                                            <mat-select [id]="field.id" [disabled]="this.document.status === 'END'">
-                                                <mat-option *ngFor="let option of field.values" [value]="option['compte_num']">
-                                                    {{ option['compte_num'] }} - {{ option['compte_lib'] }}
-                                                </mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                    </ng-container>
-                                    <span *ngIf="field.fullSizeSelected" (click)="duplicateLine(field.id, category['id'])"
-                                          class="relative -right-1.5 cursor-pointer text-gray-900 -top-2.5"
-                                          [matTooltip]="'VERIFIER.duplicate_line' | translate" matTooltipPosition="above">
-                                    <i class="fa-solid fa-clone text-lg"></i>
-                                </span>
-                                    <span *ngIf="field.deleteLine" (click)="removeDuplicateLine(field.id, category['id'])"
-                                          class="relative -right-1.5 cursor-pointer text-red-500 -top-2.5"
-                                          [matTooltip]="'VERIFIER.remove_duplicated_line' | translate" matTooltipPosition="above">
-                                    <i class="fa-solid fa-trash text-lg"></i>
-                                </span>
-                                </div>
+                                                </button>
+                                                <button class="delete_attachment" *ngIf="this.document.status !== 'END'" mat-menu-item (click)="deleteConfirmDialog(attachment['id'])">
+                                                    <span class="delete_attachment">
+                                                        <i class="fa-solid fa-trash w-6"></i> {{ 'ATTACHMENTS.delete_attachment' | translate }}
+                                                    </span>
+                                                </button>
+                                            </mat-menu>
+                                        </div>
+                                    </mat-card-header>
+                                </mat-card>
                             </div>
                         </div>
-                    </ng-container>
-                </ng-container>
-            </div>
-            <ng-template #noField>
-                <div class="text-gray-900 text-center text-xl mt-32">
-                    {{ 'FORMS.no_fields' | translate }}
+                    </div>
                 </div>
-            </ng-template>
-            <div [class.mt-20]="this.formEmpty" class="mb-6 grid grid-cols-2 gap-4 h-12 text-gray-900"
-                 *ngIf="this.formSettings.settings['unique_url']['validate_document'] || this.formSettings.settings['unique_url']['refuse_document']">
-                <button mat-button (click)="validateForm()" type="submit" [disabled]="this.document.status === 'END'" class="valid_button"
-                        *ngIf="this.formSettings.settings['unique_url']['validate_document']">
-                    <span *ngIf="!this.loadingSubmit">{{ 'FORMS.validate' | translate }}</span>
-                    <i *ngIf="this.loadingSubmit" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
-                </button>
-                <button mat-button (click)="refuseForm()" type="submit" [disabled]="this.document.status === 'END'"
-                        *ngIf="this.formSettings.settings['unique_url']['refuse_document']"
-                        class="p-6 border-solid border-red-400 border bg-red-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
-                    {{ 'FORMS.refuse' | translate }}
-                </button>
-            </div>
-        </div>
+            </mat-sidenav>
+            <mat-sidenav-content [class.pointer-events-none]="this.sidenavOpened">
+                <div id="image" dir="rtl" class="overflow-auto" [style]="!this.fromToken ? 'height: calc(100vh - 4rem);' : 'height: 100vh;'">
+                    <div class="fixed left-4 mt-4 z-50 text-xl text-left text-gray-900">
+                        <ng-container *ngIf="!this.loading && this.document['nb_pages'] > 1">
+                            <span [class.cursor-wait]="this.imgLoading">
+                                <i class="fa fa-arrow-right cursor-pointer" (click)="nextPage()" [class.pointer-events-none]="this.imgLoading"></i>
+                            </span>
+                            {{ 'VERIFIER.page' | translate }}
+                            {{ currentPage }}
+                            {{ 'VERIFIER.on' | translate }}
+                            {{ this.document['nb_pages'] }}
+                            <span [class.cursor-wait]="this.imgLoading">
+                                <i class="fa fa-arrow-left cursor-pointer" (click)="previousPage()" [class.pointer-events-none]="this.imgLoading"></i>
+                            </span>
+                        </ng-container>
+                    </div>
+                    <div *ngIf="!this.loading" class="fixed cursor-pointer mr-2 mt-4 z-50 text-2xl text-left text-gray-900" [matTooltip]="'ATTACHMENTS.attachments' | translate">
+                        <i class="fas fa-paperclip pointer-events-auto" (click)="toggleSidenav()"></i>
+                        <div class="relative inline-flex items-center justify-center font-bold text-white bg-green-400
+                                    text-[.6rem] leading-[.5rem] rounded-full -top-1 float-right p-[3px]">
+                            {{ this.attachmentsLength.toString().padStart(2, '0') }}
+                        </div>
+                    </div>
+                    <div class="image-container px-4" *ngIf="this.document">
+                        <div class="absolute right-[75%] z-10 bottom-1/2 transform translate-x-1/2 translate-y-1/2" *ngIf="this.imgLoading">
+                            <i class="fa-solid text-6xl fa-circle-notch fa-spin text-green-400"></i>
+                        </div>
+                        <img id="document_image" alt="Open-Capture" [src]="this.imgSrc" [class.blur-sm]="this.imgLoading">
+                    </div>
+                </div>
+            </mat-sidenav-content>
+        </mat-sidenav-container>
+        <mat-sidenav-container class="bg-white">
+            <mat-sidenav-content id="form_sidenav">
+                <div *ngIf="this.fields" id="form" class="px-4 overflow-auto pt-2">
+                    <div *ngIf="this.formSettings.settings['unique_url']['change_form']" class="grid grid-cols-12 gap-2 w-full">
+                        <div class="relative top-5 text-center">
+                            <i class="fa-solid fa-eye cursor-pointer text-green-400 text-lg" (click)="hideVisuals()"
+                               *ngIf="!this.visualIsHide" [matTooltip]="'VERIFIER.hide_visuals' | translate"></i>
+                            <i class="fa-solid fa-eye-slash cursor-pointer text-green-400 text-lg" (click)="hideVisuals()"
+                               *ngIf="this.visualIsHide" [matTooltip]="'VERIFIER.show_visuals' | translate"></i>
+                        </div>
+                        <div class="z-20 col-span-10">
+                            <mat-accordion>
+                                <mat-expansion-panel class="top-2 mb-4" [(expanded)]="this.settingsOpen">
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title class="justify-center">{{ 'GLOBAL.settings' | translate }}</mat-panel-title>
+                                    </mat-expansion-panel-header>
+                                    <mat-tab-group class="mx-5">
+                                        <mat-tab [label]="'VERIFIER.change_form' | translate">
+                                            <p class="mt-3 text-center text-gray-400">{{ 'VERIFIER.change_form_details' | translate }}</p>
+                                            <mat-form-field class="w-full" [class.opacity-50]="this.document.status === 'END'">
+                                                <mat-select [(value)]="this.currentFormFields['form_id']" (selectionChange)="changeForm($event)"
+                                                            [disabled]="this.document.status === 'END'">
+                                                    <mat-option *ngFor="let form of this.formList" [value]="form['id']">
+                                                        {{ form['label'] }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </mat-tab>
+                                    </mat-tab-group>
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </div>
+                        <div class="relative top-5 text-center">
+                            <i class="fa-solid fa-download cursor-pointer text-green-400 text-lg" (click)="downloadOriginalFile()"
+                               [matTooltip]="'VERIFIER.download_original_file' | translate"></i>
+                        </div>
+                    </div>
+                    <div *ngIf="!this.formEmpty else noField">
+                        <ng-container *ngFor="let category of this.fieldCategories">
+                            <ng-container *ngIf="this.form[category['id']].length !== 0">
+                                <span class="relative text-xl tracking-wider px-1.5 bg-white left-6 z-10">
+                                    {{ getCategoryLabel(category) }}
+                                    <span *ngIf="getOnlyRawFooter && this.translate.instant(category['label']) === this.translate.instant('FORMS.supplier')"
+                                          class="cursor-default relative top-1.5 text-red-500 text-3xl"
+                                          matTooltip="{{ 'VERIFIER.only_raw_footer' | translate }}">&bull;</span>
+                                    <span *ngIf="!getOnlyRawFooter && this.translate.instant(category['label']) === this.translate.instant('FORMS.supplier')"
+                                          class="cursor-default relative top-1.5 text-green-400 text-3xl"
+                                          matTooltip="{{ 'VERIFIER.calculated_footer' | translate }}">&bull;</span>
+                                    <span *ngIf="this.translate.instant(category['label']) === this.translate.instant('FORMS.supplier')"
+                                          class="text-sm cursor-pointer ml-2">
+                                        <i *ngIf="!this.formLoading && this.document['supplier_id'] && this.supplierExists && this.document.status !== 'END' && this.formSettings.settings['unique_url']['update_supplier']"
+                                           (click)="editSupplier()" class="fa-solid fa-edit"></i>
+                                        <i *ngIf="!this.formLoading && ((!this.document['supplier_id'] || !this.supplierExists) && this.document.status !== 'END' && this.formSettings.settings['unique_url']['create_supplier'])"
+                                           (click)="createSupplier()" class="fa-solid fa-plus"></i>
+                                        <i *ngIf="this.formLoading && this.document.status !== 'END' && this.formSettings.settings['unique_url']['create_supplier']"
+                                           class="fa-solid fa-circle-notch fa-spin"></i>
+                                    </span>
+                                </span>
+                                <div class="relative border-green-400 border rounded-lg -top-3.5">
+                                    <div id="{{ category['id'] }}" class="flex flex-wrap w-full mt-6" style="min-height: 50px;">
+                                        <div *ngFor="let field of this.form[category['id']];" class="flex items-center p-2" [class]="field['class']">
+                                            <ng-container *ngIf="field.type === 'text' || (field.type === 'regex' && field.format !== 'date')">
+                                                <mat-form-field class="right-0 w-full form-viewer" [class.opacity-50]="this.document.status === 'END'"
+                                                                (click)="updateFilteredOption($event, field.control)"
+                                                                *ngIf="category['id'] === 'supplier' && field.id === 'name' else other">
+                                                    <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
+                                                        {{ field.label | translate }}
+                                                    </mat-label>
+                                                    <input [id]="field.id" matInput type="text" [required]="field['required']" [readonly]="this.document.status === 'END'"
+                                                           [formControl]="field['control']" [pattern]="field['pattern']" [matAutocomplete]="auto"
+                                                           (ngModelChange)="filterSupplier($event)">
+                                                    <mat-error *ngIf="field.control.errors">
+                                                        {{ getErrorMessage(field.id, category['id']) }}
+                                                    </mat-error>
+                                                    <mat-autocomplete #auto="matAutocomplete" [id]="field.id" (optionSelected)='getSupplierInfo($event.option.id, true)'>
+                                                        <mat-option *ngFor="let option of this.suppliers" [value]="option.name" [id]="option.id">
+                                                            <span [innerHTML]="option.name | highlight: toHighlight"></span>
+                                                            <span style="font-size: 12px;" class="text-green-400 ml-3">
+                                                                {{ option['vat_number'] }}
+                                                            </span>
+                                                        </mat-option>
+                                                    </mat-autocomplete>
+                                                </mat-form-field>
+                                                <ng-template #other>
+                                                    <mat-form-field class="right-0 w-full form-viewer" [class.opacity-50]="this.document.status === 'END'">
+                                                        <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
+                                                            {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
+                                                        </mat-label>
+                                                        <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
+                                                              class="absolute top-0.5 -right-2.5 cursor-pointer text-gray-600">
+                                                            <i class="fa-solid fa-circle-plus"></i>
+                                                        </span>
+                                                        <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
+                                                              class="absolute top-0.5 -right-2.5 cursor-pointer text-red-500 opacity-70">
+                                                            <i class="fa-solid fa-trash"></i>
+                                                        </span>
+                                                        <input [id]="field.id" matInput type="text" [formControl]="field['control']" [required]="field['required']"
+                                                               [pattern]="field.pattern" (click)="this.ocrFromUser = true; this.saveInfo = true;"
+                                                               (focusin)="ocr($event, true, field.color);" [readonly]="this.document.status === 'END'"
+                                                               (focusout)="ocr($event, false); saveData($any($event.target).value, field['id']); checkVAT(field['id'], $any($event.target).value); checkSirenOrSiret(field['id'], $any($event.target).value)">
+                                                        <mat-error *ngIf="field.control.errors">
+                                                            {{ getErrorMessage(field.id, category['id']) }}
+                                                        </mat-error>
+                                                        <i *ngIf="showAutoLogo(field)" class="fa-solid text-xs fa-bolt text-gray-600 absolute top-1 -right-3"
+                                                           [matTooltip]="'VERIFIER.data_found_auto' | translate"></i>
+                                                    </mat-form-field>
+                                                </ng-template>
+                                            </ng-container>
+                                            <ng-container *ngIf="field.type === 'textarea'">
+                                                <mat-form-field class="right-0 w-full form-viewer" [class.opacity-50]="this.document.status === 'END'">
+                                                    <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
+                                                        {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
+                                                    </mat-label>
+                                                    <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
+                                                          class="absolute top-0.5 -right-2.5 cursor-pointer text-gray-600">
+                                                    <i class="fa-solid fa-circle-plus"></i>
+                                                    </span>
+                                                    <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
+                                                          class="absolute top-0.5 -right-2.5 cursor-pointer text-red-500 opacity-70">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                    </span>
+                                                    <textarea [id]="field.id" matInput [cdkTextareaAutosize]="true"
+                                                              [cdkAutosizeMinRows]="1" [cdkAutosizeMaxRows]="5"
+                                                              [required]="field['required']" [formControl]="field['control']" [pattern]="field.pattern"
+                                                              (focusin)="ocr($event, true, field.color)" [readonly]="this.document.status === 'END'"
+                                                              (focusout)="ocr($event, false); saveData($any($event.target).value, field['id'])"></textarea>
+                                                    <mat-error *ngIf="field.control.errors">
+                                                        {{ getErrorMessage(field.id, category['id']) }}
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </ng-container>
+                                            <ng-container *ngIf="field.type === 'date' || (field.type === 'regex' && field.format === 'date')">
+                                                <mat-form-field class="right-0 w-full form-viewer" [class.opacity-50]="this.document.status === 'END'">
+                                                    <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
+                                                        {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
+                                                    </mat-label>
+                                                    <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
+                                                          class="absolute top-0.5 -right-2.5 cursor-pointer text-gray-600">
+                                                        <i class="fa-solid fa-circle-plus"></i>
+                                                    </span>
+                                                    <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
+                                                          class="absolute top-0.5 -right-2.5 cursor-pointer text-red-500 opacity-70">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </span>
+                                                    <input [id]="field.id" matInput [matDatepicker]="picker" [formControl]="field['control']"
+                                                           [readonly]="this.document.status === 'END'"
+                                                           (focusin)="ocr($event, true, field.color)" [required]="field['required']"
+                                                           (focusout)="ocr($event, false); saveData($any($event.target).value, field['id'])"
+                                                           (dateChange)="saveData($any($event.targetElement).value, field['id'])">
+                                                    <mat-datepicker-toggle [disabled]="this.document.status === 'END'" matSuffix [for]="picker"></mat-datepicker-toggle>
+                                                    <mat-datepicker #picker></mat-datepicker>
+                                                    <mat-error *ngIf="field.control.errors">
+                                                        {{ getErrorMessage(field.id, category['id']) }}
+                                                    </mat-error>
+                                                    <i *ngIf="showAutoLogo(field)" class="fa-solid fa-bolt text-xs text-gray-600 absolute top-0.5 -right-12"
+                                                       [matTooltip]="'VERIFIER.data_found_auto' | translate"></i>
+                                                </mat-form-field>
+                                            </ng-container>
+                                            <ng-container *ngIf="field.type === 'autocomplete'">
+                                                <mat-form-field class="right-0 w-full form-viewer">
+                                                    <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
+                                                        {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
+                                                    </mat-label>
+                                                    <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
+                                                          class="absolute top-0.5 -right-2.5 cursor-pointer text-gray-600">
+                                                    <i class="fa-solid fa-circle-plus"></i>
+                                                </span>
+                                                    <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
+                                                          class="absolute top-0.5 -right-2.5 cursor-pointer text-red-500 opacity-70">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </span>
+                                                    <input [id]="field.id" matInput type="text" [required]="field['required']"
+                                                           [formControl]="field['control']"
+                                                           (focusin)="ocr($event, true, field.color)"
+                                                           (focusout)="ocr($event, false); saveData($any($event.target).value, field['id'])"
+                                                           [matAutocomplete]="data" [readonly]="this.document.status === 'END'">
+                                                    <mat-autocomplete #data="matAutocomplete">
+                                                        <span *ngIf="field.autocomplete_values">
+                                                            <mat-option *ngFor="let option of field.autocomplete_values | async" [value]="option.data"
+                                                                        (onSelectionChange)="setAutocompleteDefaultValue($event)" [id]="option.res_id">
+                                                                <span [innerHTML]="option.data | highlight: toHighlight"></span>
+                                                                <span style="font-size: 12px;" class="text-green-400 ml-3">
+                                                                    {{ option.alt_identifier }}
+                                                                </span>
+                                                            </mat-option>
+                                                        </span>
+                                                        <mat-option *ngIf="!field.autocomplete_values">
+                                                            <span [innerHTML]="'VERIFIER.no_autocomplete_data' | translate"></span>
+                                                        </mat-option>
+                                                    </mat-autocomplete>
+                                                </mat-form-field>
+                                            </ng-container>
+                                            <ng-container *ngIf="field.type === 'select'">
+                                                <mat-form-field class="right-0 w-full form-viewer" *ngIf="field.id.includes('accounting_plan')" [class.opacity-50]="this.document.status === 'END'">
+                                                    <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
+                                                        {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
+                                                    </mat-label>
+                                                    <span *ngIf="field.display === 'multi' && !field.lineSelected" (click)="duplicateField(field.id, category['id'])"
+                                                          class="absolute top-0.5 -right-2.5 cursor-pointer text-gray-600">
+                                                        <i class="fa-solid fa-circle-plus"></i>
+                                                    </span>
+                                                    <span *ngIf="isChildField(field.id) && !field.lineSelected" (click)="removeDuplicateField(field.id, category['id'])"
+                                                          class="absolute top-0.5 -right-2.5 cursor-pointer text-red-500 opacity-70">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </span>
+                                                    <input matInput [id]="field.id" type="text" [required]="field['required']"
+                                                           [formControl]="field['control']" [matAutocomplete]="accounting" [readonly]="this.document.status === 'END'">
+                                                    <span *ngIf="accountingPlanEmpty" class="absolute text-gray-600 top-0.5 -right-2.5 cursor-help"
+                                                          [matTooltip]="'VERIFIER.accounting_plan_empty' | translate">
+                                                        <i class="fa-solid fa-circle-question"></i>
+                                                    </span>
+                                                    <mat-autocomplete #accounting="matAutocomplete">
+                                                        <mat-option *ngFor="let option of field.values | async" [value]="option.compte_lib" [id]="option.compte_num">
+                                                            <span [innerHTML]="option.compte_num + ' - ' + option['compte_lib'] | highlight: toHighlightAccounting"></span>
+                                                        </mat-option>
+                                                    </mat-autocomplete>
+                                                </mat-form-field>
+                                                <mat-form-field class="right-0 w-full form-viewer" *ngIf="!field.id.includes('accounting_plan')" [class.opacity-50]="this.document.status === 'END'">
+                                                    <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
+                                                        {{ field.label | translate }}
+                                                    </mat-label>
+                                                    <mat-select [id]="field.id" [disabled]="this.document.status === 'END'" (selectionChange)="saveData($event.value, field['id']);"
+                                                                [(value)]="field.control.value" [required]="field['required']">
+                                                        <span *ngFor="let option of field.values">
+                                                            <mat-option *ngIf="checkConditional(field.id, option)" [value]="option['id']">
+                                                                {{ option['label'] }}
+                                                            </mat-option>
+                                                        </span>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </ng-container>
+                                            <span *ngIf="field.fullSizeSelected" (click)="duplicateLine(field.id, category['id'])"
+                                                  class="relative -right-1.5 cursor-pointer text-gray-900 -top-2.5"
+                                                  [matTooltip]="'VERIFIER.duplicate_line' | translate" matTooltipPosition="above">
+                                            <i class="fa-solid fa-clone text-lg"></i>
+                                        </span>
+                                            <span *ngIf="field.deleteLine" (click)="removeDuplicateLine(field.id, category['id'])"
+                                                  class="relative -right-1.5 cursor-pointer text-red-500 -top-2.5"
+                                                  [matTooltip]="'VERIFIER.remove_duplicated_line' | translate" matTooltipPosition="above">
+                                            <i class="fa-solid fa-trash text-lg"></i>
+                                        </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                    <ng-template #noField>
+                        <div class="text-gray-900 text-center text-xl mt-32">
+                            {{ 'FORMS.no_fields' | translate }}
+                        </div>
+                    </ng-template>
+                    <div [class.mt-20]="this.formEmpty" class="mb-6 grid gap-4 h-12 text-gray-900"
+                         [class.grid-cols-2]="!checkAllowThirdParty()" [class.grid-cols-3]="checkAllowThirdParty()"
+                         *ngIf="this.formSettings.settings['unique_url']['validate_document'] || this.formSettings.settings['unique_url']['refuse_document']">
+                        <button mat-button (click)="validateForm()" type="submit" [disabled]="this.document.status === 'END'" class="valid_button"
+                                *ngIf="this.formSettings.settings['unique_url']['validate_document']">
+                            <span *ngIf="!this.loadingSubmit">{{ 'FORMS.validate' | translate }}</span>
+                            <i *ngIf="this.loadingSubmit" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
+                        </button>
+                        <button mat-button (click)="refuseForm()" type="submit" [disabled]="this.document.status === 'END'"
+                                *ngIf="this.formSettings.settings['unique_url']['refuse_document']"
+                                class="p-6 border-solid border-red-400 border bg-red-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
+                            {{ 'FORMS.refuse' | translate }}
+                        </button>
+                        <button mat-button (click)="thirdPartyWait()" type="submit" [disabled]="this.document.status === 'END'"
+                                *ngIf="checkAllowThirdParty()"
+                                class="p-6 border-solid border-orange-400 border bg-orange-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
+                            {{ 'FORMS.third_party_wait' | translate }}
+                        </button>
+                    </div>
+                    <mat-hint class="text-gray-500 relative -top-5 text-xs block w-1/3">
+                        {{ this.outputsLabel.join(', ') }}
+                    </mat-hint>
+                </div>
+            </mat-sidenav-content>
+        </mat-sidenav-container>
     </div>
 </span>

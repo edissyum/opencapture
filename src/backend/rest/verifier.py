@@ -20,8 +20,8 @@ import base64
 import pandas as pd
 from flask_babel import gettext
 from flask import Blueprint, make_response, request, jsonify
+from src.backend.controllers import auth, config, verifier, privileges
 from src.backend.functions import rest_validator, check_extensions_mime
-from src.backend.import_controllers import auth, config, verifier, privileges
 
 bp = Blueprint('verifier', __name__, url_prefix='/ws/')
 
@@ -113,9 +113,10 @@ def documents_list():
         {'id': 'time', 'type': str, 'mandatory': False},
         {'id': 'limit', 'type': int, 'mandatory': False},
         {'id': 'status', 'type': str, 'mandatory': True},
+        {'id': 'order', 'type': str, 'mandatory': False},
         {'id': 'offset', 'type': int, 'mandatory': False},
         {'id': 'search', 'type': str, 'mandatory': False},
-        {'id': 'form_id', 'type': int, 'mandatory': False},
+        {'id': 'filter', 'type': str, 'mandatory': False},
         {'id': 'allowedCustomers', 'type': list, 'mandatory': False},
         {'id': 'allowedSuppliers', 'type': list, 'mandatory': False}
     ])
@@ -290,9 +291,7 @@ def export_mem(document_id):
 
     check, message = rest_validator(request.json['args'], [
         {'id': 'data', 'type': dict, 'mandatory': True},
-        {'id': 'module', 'type': str, 'mandatory': True},
-        {'id': 'ocrise', 'type': bool, 'mandatory': False},
-        {'id': 'compress_type', 'type': str, 'mandatory': False}
+        {'id': 'module', 'type': str, 'mandatory': True}
     ])
 
     if not check:
@@ -302,6 +301,28 @@ def export_mem(document_id):
         }, 400)
 
     res = verifier.export_mem(document_id, request.json['args'])
+    return make_response(jsonify(res[0]), res[1])
+
+
+@bp.route('verifier/documents/<int:document_id>/export_coog', methods=['POST'])
+@auth.token_required
+def export_coog(document_id):
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/verifier/documents/{document_id}/export_coog'}), 403
+
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'data', 'type': dict, 'mandatory': True},
+        {'id': 'module', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+    res = verifier.export_coog(document_id, request.json['args'])
     return make_response(jsonify(res[0]), res[1])
 
 
@@ -512,7 +533,7 @@ def get_thumb():
     file_content = verifier.get_file_content(request.json['args']['type'], request.json['args']['filename'],
                                              'image/jpeg', year_and_month=year_and_month,
                                              document_id=request.json['args']['documentId'])
-    return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200
+    return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('utf-8'))}), 200
 
 
 @bp.route('verifier/getThumbByDocumentId', methods=['POST'])
@@ -533,7 +554,21 @@ def get_thumb_by_document_id():
         }, 400)
 
     file_content = verifier.get_thumb_by_document_id(request.json['documentId'])
-    return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200
+    return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('utf-8'))}), 200
+
+
+@bp.route('verifier/getOriginalFile/<int:document_id>', methods=['POST'])
+@auth.token_required
+def get_original_doc_by_document_id(document_id):
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/verifier/getOriginalFile/{document_id}'}), 403
+
+    file_content, mime = verifier.get_original_doc_by_document_id(document_id)
+    if file_content is None:
+        return make_response({'errors': gettext('DOWNLOAD_FILE'), 'message': gettext('FILE_NOT_FOUND')}, 404)
+    return make_response({'file': str(base64.b64encode(file_content).decode('utf-8')), 'mime': mime}), 200
 
 
 @bp.route('verifier/getTokenINSEE', methods=['GET'])

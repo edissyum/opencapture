@@ -19,7 +19,7 @@
 from flask_babel import gettext
 from src.backend.functions import rest_validator
 from flask import Blueprint, request, make_response, jsonify
-from src.backend.import_controllers import auth, user, privileges
+from src.backend.controllers import auth, user, privileges
 
 bp = Blueprint('users', __name__, url_prefix='/ws/')
 
@@ -300,7 +300,7 @@ def import_users():
     args = {
         'files': request.files,
         'skip_header': request.form['skipHeader'] == 'true',
-        'selected_columns': request.form['selectedColumns'].split(','),
+        'selected_columns': request.form['selectedColumns'].split(',')
     }
 
     res = user.import_users(args)

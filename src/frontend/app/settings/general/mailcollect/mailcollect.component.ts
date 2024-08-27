@@ -58,6 +58,24 @@ export class MailCollectComponent implements OnInit {
     search              : string        = '';
     defaultProcessData  : any           = [
         {
+            id: 'verifier_insert_body_as_doc',
+            unit: 'verifier',
+            control: new FormControl(false),
+            label: marker('MAILCOLLECT.insert_body_as_doc'),
+            hint: marker('MAILCOLLECT.insert_body_as_doc_hint'),
+            type: 'boolean',
+            required: false
+        },
+        {
+            id: 'splitter_insert_body_as_doc',
+            unit: 'splitter',
+            control: new FormControl(false),
+            label: marker('MAILCOLLECT.insert_body_as_doc'),
+            hint: marker('MAILCOLLECT.insert_body_as_doc_hint'),
+            type: 'boolean',
+            required: false
+        },
+        {
             id: 'name',
             control: new FormControl()
         },
@@ -66,6 +84,14 @@ export class MailCollectComponent implements OnInit {
             unit: 'general',
             control: new FormControl(true),
             label: marker('MAILCOLLECT.secured_connection'),
+            type: 'boolean',
+            required: false
+        },
+        {
+            id: 'oauth',
+            unit: 'general',
+            control: new FormControl(false),
+            label: marker('MAILCOLLECT.oauth'),
             type: 'boolean',
             required: false
         },
@@ -106,7 +132,47 @@ export class MailCollectComponent implements OnInit {
             control: new FormControl(),
             label: marker('USER.password'),
             type: 'password',
-            required: true
+            required: false
+        },
+        {
+            id: 'scopes',
+            unit: 'general',
+            control: new FormControl(),
+            label: marker('MAILCOLLECT.scopes'),
+            type: 'text',
+            required: false
+        },
+        {
+            id: 'authority',
+            unit: 'general',
+            control: new FormControl(),
+            label: marker('MAILCOLLECT.authority'),
+            type: 'text',
+            required: false
+        },
+        {
+            id: 'tenant_id',
+            unit: 'general',
+            control: new FormControl(),
+            label: marker('MAILCOLLECT.tenant_id'),
+            type: 'text',
+            required: false
+        },
+        {
+            id: 'client_id',
+            unit: 'general',
+            control: new FormControl(),
+            label: marker('MAILCOLLECT.client_id'),
+            type: 'text',
+            required: false
+        },
+        {
+            id: 'secret',
+            unit: 'general',
+            control: new FormControl(),
+            label: marker('MAILCOLLECT.secret'),
+            type: 'text',
+            required: false
         },
         {
             id: 'verifier_workflow_id',
@@ -125,10 +191,10 @@ export class MailCollectComponent implements OnInit {
             required: false
         },
         {
-            id: 'splitter_technical_workflow_id',
+            id: 'splitter_workflow_id',
             unit: 'splitter',
             control: new FormControl(''),
-            label: marker('MAILCOLLECT.splitter_technical_workflow_id'),
+            label: marker('MAILCOLLECT.splitter_workflow_id'),
             type: 'autocomplete',
             required: false
         },
@@ -240,7 +306,7 @@ export class MailCollectComponent implements OnInit {
             tap((data: any) => {
                 this.allSplitterWorkflows = data.workflows;
                 this.defaultProcessData.forEach((element: any) => {
-                    if (element.id === 'splitter_technical_workflow_id') {
+                    if (element.id === 'splitter_workflow_id') {
                         element.values = element.control.valueChanges.pipe(
                             startWith(''),
                             map(option => option ? this._filter(option, this.allSplitterWorkflows) : this.allSplitterWorkflows)
@@ -327,14 +393,13 @@ export class MailCollectComponent implements OnInit {
                                 let value = process[element];
                                 if (element === 'name') {
                                     this.formValid[value] = true;
-                                }
-                                else if (element === 'verifier_workflow_id') {
+                                } else if (element === 'verifier_workflow_id') {
                                     for (let i = 0; i < this.allVerifierWorkflows.length; i++) {
                                         if (this.allVerifierWorkflows[i].workflow_id === process[element]) {
                                             value = this.allVerifierWorkflows[i];
                                         }
                                     }
-                                } else if (element === 'splitter_technical_workflow_id') {
+                                } else if (element === 'splitter_workflow_id') {
                                     for (let i = 0; i < this.allSplitterWorkflows.length; i++) {
                                         if (parseInt(this.allSplitterWorkflows[i].id) === parseInt(process[element])) {
                                             value = this.allSplitterWorkflows[i];
@@ -351,6 +416,7 @@ export class MailCollectComponent implements OnInit {
                     newProcess.exists = true;
                     this.resetDefaultData();
                     this.processes.push(newProcess);
+                    this.updateRequired({source: {name: 'oauth'}, checked: process['oauth']}, newProcess);
                 });
             }),
             finalize(() => this.loading = false),
@@ -363,7 +429,25 @@ export class MailCollectComponent implements OnInit {
     }
 
     resetDefaultData() {
-        this.defaultProcessData =  [
+        this.defaultProcessData = [
+            {
+                id: 'verifier_insert_body_as_doc',
+                unit: 'verifier',
+                control: new FormControl(false),
+                label: marker('MAILCOLLECT.insert_body_as_doc'),
+                hint: marker('MAILCOLLECT.insert_body_as_doc_hint'),
+                type: 'boolean',
+                required: false
+            },
+            {
+                id: 'splitter_insert_body_as_doc',
+                unit: 'splitter',
+                control: new FormControl(false),
+                label: marker('MAILCOLLECT.insert_body_as_doc'),
+                hint: marker('MAILCOLLECT.insert_body_as_doc_hint'),
+                type: 'boolean',
+                required: false
+            },
             {
                 id: 'name',
                 control: new FormControl()
@@ -373,6 +457,14 @@ export class MailCollectComponent implements OnInit {
                 unit: 'general',
                 control: new FormControl(true),
                 label: marker('MAILCOLLECT.secured_connection'),
+                type: 'boolean',
+                required: false
+            },
+            {
+                id: 'oauth',
+                unit: 'general',
+                control: new FormControl(false),
+                label: marker('MAILCOLLECT.oauth'),
                 type: 'boolean',
                 required: false
             },
@@ -413,7 +505,47 @@ export class MailCollectComponent implements OnInit {
                 control: new FormControl(),
                 label: marker('USER.password'),
                 type: 'password',
-                required: true
+                required: false
+            },
+            {
+                id: 'scopes',
+                unit: 'general',
+                control: new FormControl(),
+                label: marker('MAILCOLLECT.scopes'),
+                type: 'text',
+                required: false
+            },
+            {
+                id: 'authority',
+                unit: 'general',
+                control: new FormControl(),
+                label: marker('MAILCOLLECT.authority'),
+                type: 'text',
+                required: false
+            },
+            {
+                id: 'tenant_id',
+                unit: 'general',
+                control: new FormControl(),
+                label: marker('MAILCOLLECT.tenant_id'),
+                type: 'text',
+                required: false
+            },
+            {
+                id: 'client_id',
+                unit: 'general',
+                control: new FormControl(),
+                label: marker('MAILCOLLECT.client_id'),
+                type: 'text',
+                required: false
+            },
+            {
+                id: 'secret',
+                unit: 'general',
+                control: new FormControl(),
+                label: marker('MAILCOLLECT.secret'),
+                type: 'text',
+                required: false
             },
             {
                 id: 'verifier_workflow_id',
@@ -432,10 +564,10 @@ export class MailCollectComponent implements OnInit {
                 required: false
             },
             {
-                id: 'splitter_technical_workflow_id',
+                id: 'splitter_workflow_id',
                 unit: 'splitter',
                 control: new FormControl(''),
-                label: marker('MAILCOLLECT.splitter_technical_workflow_id'),
+                label: marker('MAILCOLLECT.splitter_workflow_id'),
                 type: 'autocomplete',
                 required: false
             },
@@ -491,15 +623,12 @@ export class MailCollectComponent implements OnInit {
         ];
 
         this.defaultProcessData.forEach((element: any) => {
-            if (element.id === 'splitter_technical_workflow_id') {
+            if (element.id === 'splitter_workflow_id') {
                 element.values = element.control.valueChanges.pipe(
                     startWith(''),
                     map(option => option ? this._filter(option, this.allSplitterWorkflows) : this.allSplitterWorkflows)
                 );
             }
-        });
-
-        this.defaultProcessData.forEach((element: any) => {
             if (element.id === 'verifier_workflow_id') {
                 element.values = element.control.valueChanges.pipe(
                     startWith(''),
@@ -528,15 +657,16 @@ export class MailCollectComponent implements OnInit {
         if (this.isValidForm(process)) {
             const data: any = {};
             process.forEach((element: any) => {
-                if (element.id !== 'verifier_workflow_id' && element.id !== 'splitter_technical_workflow_id' &&
+                if (element.id !== 'verifier_workflow_id' && element.id !== 'splitter_workflow_id' &&
                     element.id !== 'folder_to_crawl' && element.id !== 'folder_destination' &&
                     element.id !== 'folder_trash') {
                     data[element.id] = element.control.value;
                 } else {
-                    if (element.id == 'verifier_workflow_id') {
+                    if (element.id == 'verifier_workflow_id' || element.id == 'splitter_workflow_id') {
                         data[element.id] = element.control.value ? element.control.value.workflow_id : null;
+                    } else {
+                        data[element.id] = element.control.value ? element.control.value.id : null;
                     }
-                    data[element.id] = element.control.value ? element.control.value.id : null;
                 }
             });
 
@@ -705,16 +835,14 @@ export class MailCollectComponent implements OnInit {
 
             const data: any = {};
             process.forEach((element: any) => {
-                if (element.id !== 'verifier_workflow_id' && element.id !== 'splitter_technical_workflow_id' &&
+                if (element.id !== 'verifier_workflow_id' && element.id !== 'splitter_workflow_id' &&
                     element.id !== 'folder_to_crawl' && element.id !== 'folder_destination' &&
                     element.id !== 'folder_trash') {
                     data[element.id] = element.control.value;
+                } else if (element.id == 'verifier_workflow_id' || element.id == 'splitter_workflow_id') {
+                    data[element.id] = element.control.value ? element.control.value.workflow_id : null;
                 } else {
-                    if (element.id == 'verifier_workflow_id') {
-                        data[element.id] = element.control.value ? element.control.value.workflow_id : null;
-                    } else {
-                        data[element.id] = element.control.value ? element.control.value.id : null;
-                    }
+                    data[element.id] = element.control.value ? element.control.value.id : null;
                 }
             });
 
@@ -737,8 +865,14 @@ export class MailCollectComponent implements OnInit {
         this.folderLoading = true;
         let port = '';
         let login = '';
+        let secret = '';
+        let scopes = '';
         let hostname = '';
         let password = '';
+        let oauth = false;
+        let tenant_id = '';
+        let client_id = '';
+        let authority = '';
         let secured_connection = '';
         process.forEach((element: any) => {
             if (element.id === 'hostname') {
@@ -756,6 +890,24 @@ export class MailCollectComponent implements OnInit {
             if (element.id === 'password') {
                 password = element.control.value;
             }
+            if (element.id === 'oauth') {
+                oauth = element.control.value;
+            }
+            if (element.id === 'tenant_id') {
+                tenant_id = element.control.value;
+            }
+            if (element.id === 'client_id') {
+                client_id = element.control.value;
+            }
+            if (element.id === 'secret') {
+                secret = element.control.value;
+            }
+            if (element.id === 'scopes') {
+                scopes = element.control.value;
+            }
+            if (element.id === 'authority') {
+                authority = element.control.value;
+            }
         });
 
         if (hostname && login && password) {
@@ -764,6 +916,12 @@ export class MailCollectComponent implements OnInit {
                 'login': login,
                 'hostname': hostname,
                 'password': password,
+                'oauth': oauth,
+                'tenant_id': tenant_id,
+                'client_id': client_id,
+                'secret': secret,
+                'scopes': scopes,
+                'authority': authority,
                 'secured_connection': secured_connection
             };
 
@@ -859,5 +1017,19 @@ export class MailCollectComponent implements OnInit {
             }
         });
         return error;
+    }
+
+    updateRequired(event: any, process: any) {
+        if (event.source.name === 'oauth') {
+            process.forEach((element: any) => {
+                if (element.id === 'tenant_id' || element.id === 'client_id' || element.id === 'secret' || element.id === 'scopes' || element.id === 'authority') {
+                    element.required = event.checked;
+                }
+
+                if (element.id === 'password') {
+                    element.required = !event.checked;
+                }
+            });
+        }
     }
 }

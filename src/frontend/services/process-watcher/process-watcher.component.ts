@@ -16,7 +16,7 @@
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
 import { Component, OnInit } from '@angular/core';
-import { LocalStorageService } from "../local-storage.service";
+import { SessionStorageService } from "../session-storage.service";
 import { environment } from "../../app/env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { interval, of } from "rxjs";
@@ -48,7 +48,7 @@ export class ProcessWatcherComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         public privilegesService: PrivilegesService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) {
     }
 
@@ -75,7 +75,7 @@ export class ProcessWatcherComponent implements OnInit {
     getLastProcesses() {
         this.isFirstCallDone = true;
         this.getProcessRunning  = true;
-        const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
+        const splitterOrVerifier = this.sessionStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier && this.privilegesService.hasPrivilege('monitoring')) {
             this.http.get(environment['url'] + '/ws/monitoring/' + splitterOrVerifier + '/lasts',
                 {headers: this.authService.headers}).pipe(

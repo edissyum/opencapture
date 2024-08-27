@@ -18,7 +18,7 @@
 import json
 from flask_babel import gettext
 from flask import Blueprint, request, make_response, jsonify
-from src.backend.import_controllers import auth, doctypes, privileges
+from src.backend.controllers import auth, doctypes, privileges
 
 bp = Blueprint('doctypes', __name__, url_prefix='/ws/')
 
@@ -102,7 +102,7 @@ def import_from_csv():
     args = {
         'files': request.files,
         'skip_header': request.form['skipHeader'],
-        'selected_columns': request.form['selectedColumns'].split(','),
+        'selected_columns': request.form['selectedColumns'].split(',')
     }
 
     res = doctypes.import_from_csv(args)

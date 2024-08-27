@@ -32,8 +32,15 @@ def load_referential(args):
         'type_referentiel': args['method_data']['referentialMode']
     }
 
-    r = requests.get(url=args['method_data']['wsUrl'], params=params, auth=HTTPBasicAuth(args['method_data']['user'], args['method_data']['password']), verify=False)
-    data = r.json()
+    r = requests.get(url=args['method_data']['wsUrl'], params=params, auth=HTTPBasicAuth(args['method_data']['user'],
+                                                                                         args['method_data']['password']),
+                     verify=False)
+    try:
+        data = r.json()
+    except:
+        args['log'].info("Alfresco returned empty response")
+        return
+
     if 'referentiel' not in data or 'error' in data:
         args['log'].error(f"Alfresco response : {str(data)}")
         return
@@ -57,7 +64,7 @@ def load_referential(args):
                     'type': "referential",
                     'form_id': args['form_id'],
                     'external_id': str(external_id),
-                    'data': json.dumps(referential),
+                    'data': json.dumps(referential)
                 }
             })
             args['log'].info(f"Inserted metadata external_id : {str(external_id)}")
@@ -66,7 +73,7 @@ def load_referential(args):
                 'table': ['metadata'],
                 'set': {
                     'last_edit': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    'data': json.dumps(referential),
+                    'data': json.dumps(referential)
                 },
                 'where': ['external_id = %s', 'type = %s', 'form_id = %s'],
                 'data': [str(external_id), 'referential', args['form_id']]

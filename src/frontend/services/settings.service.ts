@@ -21,7 +21,7 @@ import { AuthService } from "./auth.service";
 import { Title } from "@angular/platform-browser";
 import { LastUrlService } from "./last-url.service";
 import { TranslateService } from "@ngx-translate/core";
-import { LocalStorageService } from "./local-storage.service";
+import { SessionStorageService } from "./session-storage.service";
 
 @Injectable({
     providedIn: 'root'
@@ -166,25 +166,25 @@ export class SettingsService {
                 "privilege" : "verifier_settings"
             },
             {
-                "id"        : "workflow_builder",
-                "label"     : this.translate.instant("SETTINGS.list_workflows"),
-                "icon"      : "fa-solid fa-diagram-next",
-                "route"     : "/settings/verifier/workflows",
-                "privilege" : "workflows_list",
+                "id"        : "output_settings",
+                "label"     : this.translate.instant("FORMS.output_settings"),
+                "icon"      : "fa-solid fa-sign-out-alt",
+                "route"     : "/settings/verifier/outputs",
+                "privilege" : "outputs_list",
                 "actions"   : [
                     {
-                        "id"        : "add_workflow",
-                        "label"     : this.translate.instant("SETTINGS.workflow_builder"),
-                        "route"     : "/settings/verifier/workflows/builder/new",
-                        "privilege" : "add_workflow",
-                        "icon"      : "fa-solid fa-tools"
+                        "id"        : "add_form",
+                        "label"     : this.translate.instant("SETTINGS.add_output"),
+                        "route"     : "/settings/verifier/outputs/new",
+                        "privilege" : "add_output",
+                        "icon"      : "fa-solid fa-plus"
                     },
                     {
-                        "id"                : "update_workflonw",
-                        "label"             : this.translate.instant("SETTINGS.workflow_update"),
-                        "route"             : "/settings/verifier/workflows/builder/edit/",
-                        "privilege"         : "update_workflow",
-                        "icon"              : "fa-solid fa-hammer",
+                        "id"                : "update_form",
+                        "label"             : this.translate.instant("SETTINGS.update_output"),
+                        "route"             : "/settings/verifier/outputs/update/",
+                        "privilege"         : "update_output",
+                        "icon"              : "fa-solid fa-edit",
                         "showOnlyIfActive"  : true
                     }
                 ]
@@ -214,25 +214,25 @@ export class SettingsService {
                 ]
             },
             {
-                "id"        : "output_settings",
-                "label"     : this.translate.instant("FORMS.output_settings"),
-                "icon"      : "fa-solid fa-sign-out-alt",
-                "route"     : "/settings/verifier/outputs",
-                "privilege" : "outputs_list",
+                "id"        : "workflow_builder",
+                "label"     : this.translate.instant("SETTINGS.list_workflows"),
+                "icon"      : "fa-solid fa-diagram-next",
+                "route"     : "/settings/verifier/workflows",
+                "privilege" : "workflows_list",
                 "actions"   : [
                     {
-                        "id"        : "add_form",
-                        "label"     : this.translate.instant("SETTINGS.add_output"),
-                        "route"     : "/settings/verifier/outputs/new",
-                        "privilege" : "add_output",
-                        "icon"      : "fa-solid fa-plus"
+                        "id"        : "add_workflow",
+                        "label"     : this.translate.instant("SETTINGS.workflow_builder"),
+                        "route"     : "/settings/verifier/workflows/builder/new",
+                        "privilege" : "add_workflow",
+                        "icon"      : "fa-solid fa-tools"
                     },
                     {
-                        "id"                : "update_form",
-                        "label"             : this.translate.instant("SETTINGS.update_output"),
-                        "route"             : "/settings/verifier/outputs/update/",
-                        "privilege"         : "update_output",
-                        "icon"              : "fa-solid fa-edit",
+                        "id"                : "update_workflonw",
+                        "label"             : this.translate.instant("SETTINGS.workflow_update"),
+                        "route"             : "/settings/verifier/workflows/builder/edit/",
+                        "privilege"         : "update_workflow",
+                        "icon"              : "fa-solid fa-hammer",
                         "showOnlyIfActive"  : true
                     }
                 ]
@@ -295,25 +295,25 @@ export class SettingsService {
         ],
         "splitter": [
             {
-                "id"        : "splitter_workflow_builder",
-                "label"     : this.translate.instant("SETTINGS.list_workflows"),
-                "icon"      : "fa-solid fa-diagram-next",
-                "route"     : "/settings/splitter/workflows",
-                "privilege" : "workflows_list_splitter",
+                "id"        : "splitter_output_settings",
+                "label"     : this.translate.instant("FORMS.output_settings"),
+                "icon"      : "fa-solid fa-sign-out-alt",
+                "route"     : "/settings/splitter/outputs",
+                "privilege" : "outputs_list_splitter",
                 "actions"   : [
                     {
-                        "id"        : "splitter_add_workflow",
-                        "label"     : this.translate.instant("SETTINGS.workflow_builder"),
-                        "route"     : "/settings/splitter/workflows/builder/new",
-                        "privilege" : "add_workflow_splitter",
-                        "icon"      : "fa-solid fa-tools"
+                        "id"        : "splitter_add_output",
+                        "label"     : this.translate.instant("SETTINGS.add_output"),
+                        "route"     : "/settings/splitter/outputs/new",
+                        "privilege" : "add_output_splitter",
+                        "icon"      : "fa-solid fa-plus"
                     },
                     {
-                        "id"                : "splitter_update_workflow",
-                        "label"             : this.translate.instant("SETTINGS.workflow_update"),
-                        "route"             : "/settings/splitter/workflows/builder/edit/",
-                        "privilege"         : "update_workflow_splitter",
-                        "icon"              : "fa-solid fa-hammer",
+                        "id"                : "splitter_update_output",
+                        "label"             : this.translate.instant("SETTINGS.update_output"),
+                        "route"             : "/settings/splitter/outputs/update/",
+                        "privilege"         : "update_output_splitter",
+                        "icon"              : "fa-solid fa-edit",
                         "showOnlyIfActive"  : true
                     }
                 ]
@@ -343,24 +343,55 @@ export class SettingsService {
                 ]
             },
             {
-                "id"        : "splitter_output_settings",
-                "label"     : this.translate.instant("FORMS.output_settings"),
-                "icon"      : "fa-solid fa-sign-out-alt",
-                "route"     : "/settings/splitter/outputs",
-                "privilege" : "outputs_list_splitter",
+                "id"        : "splitter_workflow_builder",
+                "label"     : this.translate.instant("SETTINGS.list_workflows"),
+                "icon"      : "fa-solid fa-diagram-next",
+                "route"     : "/settings/splitter/workflows",
+                "privilege" : "workflows_list_splitter",
                 "actions"   : [
                     {
-                        "id"        : "splitter_add_output",
-                        "label"     : this.translate.instant("SETTINGS.add_output"),
-                        "route"     : "/settings/splitter/outputs/new",
-                        "privilege" : "add_output_splitter",
+                        "id"        : "splitter_add_workflow",
+                        "label"     : this.translate.instant("SETTINGS.workflow_builder"),
+                        "route"     : "/settings/splitter/workflows/builder/new",
+                        "privilege" : "add_workflow_splitter",
+                        "icon"      : "fa-solid fa-tools"
+                    },
+                    {
+                        "id"                : "splitter_update_workflow",
+                        "label"             : this.translate.instant("SETTINGS.workflow_update"),
+                        "route"             : "/settings/splitter/workflows/builder/edit/",
+                        "privilege"         : "update_workflow_splitter",
+                        "icon"              : "fa-solid fa-hammer",
+                        "showOnlyIfActive"  : true
+                    }
+                ]
+            },
+            {
+                "id"        : "document-type",
+                "label"     : this.translate.instant("SETTINGS.document_type"),
+                "icon"      : "fa-solid fa-file",
+                "route"     : "/settings/splitter/document-type",
+                "privilege" : "document_type_splitter",
+                "actions"   : [
+                    {
+                        "id"        : "splitter_add_folder_doc_type",
+                        "label"     : this.translate.instant("SETTINGS.add_doc_type_folder"),
+                        "route"     : "/settings/splitter/document-type/create-folder",
+                        "privilege" : "add_document_type",
+                        "icon"      : "fa-solid fa-folder-plus"
+                    },
+                    {
+                        "id"        : "splitter_add_doc_type",
+                        "label"     : this.translate.instant("SETTINGS.add_doc_type"),
+                        "route"     : "/settings/splitter/document-type/new",
+                        "privilege" : "add_document_type",
                         "icon"      : "fa-solid fa-plus"
                     },
                     {
-                        "id"                : "splitter_update_output",
-                        "label"             : this.translate.instant("SETTINGS.update_output"),
-                        "route"             : "/settings/splitter/outputs/update/",
-                        "privilege"         : "update_output_splitter",
+                        "id"                : "splitter_update_doc_type",
+                        "label"             : this.translate.instant("SETTINGS.update_doc_type"),
+                        "route"             : "/settings/splitter/document-type/update/",
+                        "privilege"         : "update_document_type",
                         "icon"              : "fa-solid fa-edit",
                         "showOnlyIfActive"  : true
                     }
@@ -372,37 +403,6 @@ export class SettingsService {
                 "icon"      : "fa-solid fa-qrcode",
                 "route"     : "/settings/splitter/separator",
                 "privilege" : "separator_splitter"
-            },
-            {
-                "id"        : "document-type",
-                "label"     : this.translate.instant("SETTINGS.document_type"),
-                "icon"      : "fa-solid fa-file",
-                "route"     : "/settings/splitter/document-type",
-                "privilege" : "document_type_splitter",
-                "actions"   : [
-                    {
-                        "id"        : "splitter_add_doc_type",
-                        "label"     : this.translate.instant("SETTINGS.add_doc_type"),
-                        "route"     : "/settings/splitter/document-type/new",
-                        "privilege" : "add_document_type",
-                        "icon"      : "fa-solid fa-plus"
-                    },
-                    {
-                        "id"        : "splitter_add_folder_doc_type",
-                        "label"     : this.translate.instant("SETTINGS.add_doc_type_folder"),
-                        "route"     : "/settings/splitter/document-type/create-folder",
-                        "privilege" : "add_document_type",
-                        "icon"      : "fa-solid fa-folder-plus"
-                    },
-                    {
-                        "id"                : "splitter_update_doc_type",
-                        "label"             : this.translate.instant("SETTINGS.update_doc_type"),
-                        "route"             : "/settings/splitter/document-type/update/",
-                        "privilege"         : "update_document_type",
-                        "icon"              : "fa-solid fa-edit",
-                        "showOnlyIfActive"  : true
-                    }
-                ]
             },
             {
                 "id"        : "artificial-intelligence",
@@ -444,15 +444,15 @@ export class SettingsService {
         private authService: AuthService,
         private translate: TranslateService,
         private routerExtService: LastUrlService,
-        private localStorage: LocalStorageService
+        private sessionStorage: SessionStorageService
     ) {}
 
     init() {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
-        const selectedParentSetting = this.localStorage.get('selectedParentSettings');
-        const selectedSetting = this.localStorage.get('selectedSettings');
+        const selectedParentSetting = this.sessionStorage.get('selectedParentSettings');
+        const selectedSetting = this.sessionStorage.get('selectedSettings');
 
         onresize = () => {
             this.minimizeSideNav = window.innerWidth < 1500;
@@ -528,11 +528,11 @@ export class SettingsService {
 
     setSelectedSettings(value: string) {
         this.selectedSetting = value;
-        this.localStorage.save('selectedSettings', value);
+        this.sessionStorage.save('selectedSettings', value);
     }
 
     setSelectedParentSettings(value: string) {
         this.selectedParentSetting = value;
-        this.localStorage.save('selectedParentSettings', value);
+        this.sessionStorage.save('selectedParentSettings', value);
     }
 }

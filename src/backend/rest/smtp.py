@@ -16,7 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask_babel import gettext
-from src.backend.import_controllers import smtp
+from src.backend.controllers import smtp
 from src.backend.functions import rest_validator
 from flask import Blueprint, make_response, request
 

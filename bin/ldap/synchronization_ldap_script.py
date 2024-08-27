@@ -21,7 +21,7 @@ import sys
 import uuid
 import json
 import ldap3
-import psycopg2
+import psycopg
 import configparser
 from datetime import datetime
 from ldap3 import Server, ALL
@@ -88,12 +88,12 @@ def retrieve_ldap_synchronization_data():
         if not user_id or not firstname or not lastname or not class_user or not object_class or not default_role:
             print_log("Information is missing to synchronise users")
             sys.exit(0)
-    except (Exception, psycopg2.Error) as error:
+    except (Exception, psycopg.Error) as error:
         print_log("Error:" + str(error) + "]")
 
 
 def check_connection_ldap_server():
-    ldap_server = f"" + domain_ldap + ":" + str(port_ldap) + ""
+    ldap_server = domain_ldap + ":" + str(port_ldap) + ""
     username_admin_adldap = f'cn={username_ldap_admin},{base_dn}'
     username_admin_openldap = f'{username_ldap_admin}'
     try:
@@ -175,7 +175,7 @@ def check_database_users(ldap_users_data, default_role):
     try:
         users = database.select({
             'select': ['*'],
-            'table': ['users'],
+            'table': ['users']
         })
         oc_users = []
         create_users = 0
@@ -263,8 +263,7 @@ def check_database_users(ldap_users_data, default_role):
                         print_log("user status is disabled :" + str(oc_user[0]))
                     else:
                         continue
-                else:
-                    pass
+
         for user_to_create in ldap_users_data:
             if user_to_create[0] != 'Same' and user_to_create[0] != 'Updated':
                 random_password = str(uuid.uuid4())
@@ -299,8 +298,8 @@ def check_database_users(ldap_users_data, default_role):
                     print_log("Error when inserting the user in the database:" + str(user_to_create[0]))
                 user_to_create[0] = 'Created'
                 create_users += 1
-        return{'create_users': create_users, 'disabled_users': disabled_users, 'update_users': update_users}
-    except (psycopg2.OperationalError, psycopg2.ProgrammingError) as err:
+        return {'create_users': create_users, 'disabled_users': disabled_users, 'update_users': update_users}
+    except (psycopg.OperationalError, psycopg.ProgrammingError) as err:
         return str(err).split('\n', maxsplit=1)[0]
 
 

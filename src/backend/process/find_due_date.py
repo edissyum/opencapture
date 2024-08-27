@@ -59,7 +59,7 @@ class FindDueDate:
                         'select': ['regex_id', 'content'],
                         'table': ['regex'],
                         'where': ["lang in ('global', %s)"],
-                        'data': [self.configurations['locale']],
+                        'data': [self.configurations['locale']]
                     })
                     if _regex:
                         regex = {}
@@ -68,7 +68,7 @@ class FindDueDate:
 
             if convert:
                 date_file = self.docservers['LOCALE_PATH'] + '/' + language + '.json'
-                with open(date_file, encoding='UTF-8') as file:
+                with open(date_file, encoding='utf-8') as file:
                     _fp = json.load(file)
                     date_convert = _fp['dateConvert'] if 'dateConvert' in _fp else ''
                 for key in date_convert:
@@ -112,7 +112,7 @@ class FindDueDate:
 
     def process(self, line, position):
         regex = self.regex['due_date'] + self.regex['date']
-        line = re.sub(r",", '', line)
+        line = line.replace(',', '')
         for _date in re.finditer(r"" + regex, line):
             for res in re.finditer(r"" + self.regex['date'], line):
                 date = self.format_date(res.group(), position, True)

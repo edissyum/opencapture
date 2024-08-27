@@ -143,12 +143,10 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
                                 message += seconds_splitted + ' ' + this.translate.instant('MONITORING.seconds');
                                 message += ' ' + this.translate.instant('MONITORING.and') + ' ';
                                 message +=  microseconds + ' ' + this.translate.instant('MONITORING.microseconds');
+                            } else if (parseInt(seconds) > 1) {
+                                message += seconds + ' ' + this.translate.instant('MONITORING.seconds');
                             } else {
-                                if (parseInt(seconds) > 1) {
-                                    message += seconds + ' ' + this.translate.instant('MONITORING.seconds');
-                                } else {
-                                    message += seconds + ' ' + this.translate.instant('MONITORING.second');
-                                }
+                                message += seconds + ' ' + this.translate.instant('MONITORING.second');
                             }
                         }
                         this.processData.elapsedTimeMessage = message;

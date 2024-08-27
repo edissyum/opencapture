@@ -350,17 +350,19 @@ def browse_xml_lines(root):
     return lines
 
 
-def execute_outputs(output_info, log, regex, document_data, database, lang):
+def execute_outputs(output_info, log, regex, document_data, database):
     data = output_info['data']
     ocrise = output_info['ocrise']
     compress_type = output_info['compress_type']
 
     if output_info['output_type_id'] == 'export_xml':
-        verifier_exports.export_xml(data, log, regex, document_data, database)
+        verifier_exports.export_xml(data, log, document_data, database)
     elif output_info['output_type_id'] == 'export_mem':
         verifier_exports.export_mem(data, document_data, log, regex, database)
+    elif output_info['output_type_id'] == 'export_coog':
+        verifier_exports.export_coog(data, document_data, log)
     elif output_info['output_type_id'] == 'export_pdf':
-        verifier_exports.export_pdf(data, log, regex, document_data, lang, compress_type, ocrise)
+        verifier_exports.export_pdf(data, log, document_data, compress_type, ocrise)
 
 
 def insert(args):
@@ -369,7 +371,6 @@ def insert(args):
     files = args['files']
     database = args['database']
     docservers = args['docservers']
-    configurations = args['configurations']
     status = 'NEW'
 
     jpg_filename = str(uuid.uuid4())
@@ -439,7 +440,7 @@ def insert(args):
             'select': ['outputs'],
             'table': ['form_models'],
             'where': ['id = %s'],
-            'data': [invoice_data['form_id']],
+            'data': [invoice_data['form_id']]
         })
         if outputs:
             for output_id in outputs[0]['outputs']:
@@ -499,7 +500,7 @@ def create_supplier_and_address(database, supplier, address):
             'address2': address['address2'] if 'address2' in address else '',
             'postal_code': address['postal_code'] if 'postal_code' in address else '',
             'city': address['city'] if 'city' in address else '',
-            'country': country,
+            'country': country
         }
     }
     address_id = database.insert(args)
@@ -513,7 +514,7 @@ def create_supplier_and_address(database, supplier, address):
             'name': supplier['name'],
             'siren': supplier['siren'] if 'siren' in supplier else '',
             'siret': supplier['siret'] if 'siret' in supplier else '',
-            'address_id': str(address_id),
+            'address_id': str(address_id)
         }
     }
     return database.insert(args)

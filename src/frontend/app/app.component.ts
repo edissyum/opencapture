@@ -22,22 +22,23 @@ import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../services/locale.service";
 import { catchError, filter, map, tap } from 'rxjs/operators';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { LocalStorageService } from "../services/local-storage.service";
-import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
+import { SessionStorageService } from "../services/session-storage.service";
+import { DomSanitizer, Title } from '@angular/platform-browser';
 import { NotificationService } from "../services/notifications/notifications.service";
-import { AfterContentChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {AfterContentChecked, ChangeDetectorRef, Component, OnInit, SecurityContext} from '@angular/core';
 
 @Component({
-    selector: 'app-root',
+    selector: 'app',
     templateUrl: './app.component.html'
 })
 
 export class AppComponent implements OnInit, AfterContentChecked {
-    imageMobile : string = '';
-    image       : SafeUrl = '';
+    enableAppProcessWatcher: boolean = false;
+    imageMobile : string  = '';
+    image       : any     = '';
     loading     : boolean = true;
     showMenu    : boolean = true;
-    title       : string = 'Open-Capture';
+    title       : string  = 'Open-Capture';
 
     constructor(
         private router: Router,
@@ -49,10 +50,24 @@ export class AppComponent implements OnInit, AfterContentChecked {
         private localeService: LocaleService,
         private activatedRoute: ActivatedRoute,
         private changeDetector: ChangeDetectorRef,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) {}
 
     ngOnInit() {
+        this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/enableProcessWatcher').pipe(
+            tap((data: any) => {
+                if (data.configuration.length === 1) {
+                    this.enableAppProcessWatcher = data.configuration[0].data.value;
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
+
         const appTitle = this.titleService.getTitle();
         this.router.events.pipe(
             filter(event => event instanceof NavigationEnd),
@@ -67,7 +82,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
                         child = child.firstChild;
                     }
                     if (this.router.url !== '/home' && !this.router.url.includes('settings')) {
-                        splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
+                        splitterOrVerifier = this.sessionStorageService.get('splitter_or_verifier');
                         if (splitterOrVerifier !== undefined) {
                             if (splitterOrVerifier === 'splitter') {
                                 childImage = 'assets/imgs/logo_splitter.png';
@@ -92,12 +107,12 @@ export class AppComponent implements OnInit, AfterContentChecked {
             this.imageMobile = data[2];
             const splitterOrVerifier = data[3];
             if (!splitterOrVerifier) {
-                const b64Content = this.localStorageService.get('loginImageB64');
+                const b64Content = this.sessionStorageService.get('loginImageB64');
                 if (!b64Content) {
                     this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
                         tap((data: any) => {
-                            this.localStorageService.save('loginImageB64', data);
-                            this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + data);
+                            this.sessionStorageService.save('loginImageB64', data);
+                            this.image = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/png;base64, ' + data);
                         }),
                         catchError((err: any) => {
                             console.debug(err);
@@ -106,7 +121,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
                         })
                     ).subscribe();
                 } else {
-                    this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/png;base64, ' + b64Content);
+                    this.image = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/png;base64, ' + b64Content);
                 }
             }
             if (this.localeService.currentLang === undefined) {

@@ -97,6 +97,7 @@ def update(args):
             'label_short': args['label_short'],
             'metadata_key': args['metadata_key'],
             'settings': json.dumps({
+                'conditional': args['conditional'] if 'conditional' in args and args['conditional'] else False,
                 'options': args['options'] if 'options' in args and args['options'] else None,
                 'regex': args['regex'] if 'regex' in args and args['regex'] else None
             })

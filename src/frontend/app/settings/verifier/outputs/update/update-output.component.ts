@@ -15,7 +15,7 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, PipeTransform, Pipe } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserService } from "../../../../../services/user.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -27,20 +27,23 @@ import { FormControl } from "@angular/forms";
 import { AuthService } from "../../../../../services/auth.service";
 import { environment } from  "../../../../env";
 import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
-import { PipeTransform, Pipe } from '@angular/core';
 import { of } from "rxjs";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { Clipboard } from '@angular/cdk/clipboard';
 
 @Pipe({ name: 'highlight' })
 export class HighlightPipe implements PipeTransform {
-    transform(text: string, search:any): string {
-        const pattern = search
-            .replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
-            .split(' ')
-            .filter((t:any) => t.length > 0)
-            .join('|');
-        const regex = new RegExp(pattern, 'gi');
-        return search ? text.replace(regex, match => `<b>${match}</b>`) : text;
+    transform(text: string, search: string): string {
+        if (typeof search == "string") {
+            const pattern = search
+                .replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
+                .split(' ')
+                .filter((t:any) => t.length > 0)
+                .join('|');
+            const regex = new RegExp(pattern, 'gi');
+            return search ? text.replace(regex, match => `<b>${match}</b>`) : text;
+        }
+        return text
     }
 }
 
@@ -133,88 +136,109 @@ export class UpdateOutputComponent implements OnInit {
     ];
     availableFields         : any           = [
         {
-            "id": 'HEADER.id',
+            'id': marker('HEADER.technical_id'),
             'label': 'HEADER.label'
         },
         {
-            "id": 'name',
+            'id': 'name',
             'label': 'ACCOUNTS.supplier_name'
         },
         {
-            "id": 'vat_number',
+            'id': 'b64_file_content',
+            'label': marker('OUTPUT.b64_file_content')
+        },
+        {
+            'id': 'original_filename',
+            'label': marker('VERIFIER.original_filename')
+        },
+        {
+            'id': 'vat_number',
             'label': 'ACCOUNTS.vat_number'
         },
         {
-            "id": 'siret',
+            'id': 'siret',
             'label': 'ACCOUNTS.siret'
         },
         {
-            "id": 'siren',
+            'id': 'siren',
             'label': 'ACCOUNTS.siren'
         },
         {
-            "id": 'rccm',
+            'id': 'rccm',
             'label': 'ACCOUNTS.rccm'
         },
         {
-            "id": 'duns',
+            'id': 'duns',
             'label': 'ACCOUNTS.duns'
         },
         {
-            "id": 'bic',
+            'id': 'bic',
             'label': 'ACCOUNTS.bic'
         },
         {
-            "id": 'invoice_number',
+            'id': 'invoice_number',
             'label': 'FACTURATION.invoice_number'
         },
         {
-            "id": 'quotation_number',
+            'id': 'quotation_number',
             'label': 'FACTURATION.quotation_number'
         },
         {
-            "id": 'document_date_year',
+            'id': 'current_date',
+            'label': marker('FACTURATION.current_date')
+        },
+        {
+            'id': 'document_date_full',
+            'label': marker('FACTURATION.document_date')
+        },
+        {
+            'id': 'document_date_year',
             'label': marker('FACTURATION.document_date_year')
         },
         {
-            "id": 'total_ht',
-            'label': marker('FACTURATION.total_ht')
-        },
-        {
-            "id": 'total_ttc',
-            'label': marker('FACTURATION.total_ttc')
-        },
-        {
-            "id": 'total_vat',
-            'label': marker('FACTURATION.total_vat')
-        },
-        {
-            "id": 'document_date_month',
+            'id': 'document_date_month',
             'label': marker('FACTURATION.document_date_month')
         },
         {
-            "id": 'document_date_day',
+            'id': 'document_date_day',
             'label': marker('FACTURATION.document_date_day')
         },
         {
-            "id": 'register_date_year',
+            'id': 'register_date_full',
+            'label': marker('FACTURATION.register_date')
+        },
+        {
+            'id': 'register_date_year',
             'label': marker('FACTURATION.register_date_year')
         },
         {
-            "id": 'register_date_month',
+            'id': 'register_date_month',
             'label': marker('FACTURATION.register_date_month')
         },
         {
-            "id": 'register_date_day',
+            'id': 'register_date_day',
             'label': marker('FACTURATION.register_date_day')
         },
         {
-            "id": 'delivery_number',
+            'id': 'total_ht',
+            'label': marker('FACTURATION.total_ht')
+        },
+        {
+            'id': 'total_ttc',
+            'label': marker('FACTURATION.total_ttc')
+        },
+        {
+            'id': 'total_vat',
+            'label': marker('FACTURATION.total_vat')
+        },
+        {
+            'id': 'delivery_number',
             'label': 'FACTURATION.delivery_number'
         }
     ];
     testConnectionMapping   : any           = {
-        'export_mem' : "testMEMConnection()"
+        'export_mem' : "testMEMConnection()",
+        'export_coog' : "testCOOGConnection()"
     };
 
     /**
@@ -234,13 +258,14 @@ export class UpdateOutputComponent implements OnInit {
     constructor(
         public router: Router,
         private http: HttpClient,
+        public clipboard: Clipboard,
         private route: ActivatedRoute,
         public userService: UserService,
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
-        public privilegesService: PrivilegesService
+        public privilegesService: PrivilegesService,
     ) {}
 
     ngOnInit(): void {
@@ -332,16 +357,14 @@ export class UpdateOutputComponent implements OnInit {
                                             type: option.type,
                                             placeholder: option.placeholder,
                                             control: new FormControl(),
-                                            required: option.required,
+                                            required: option.required == 'true',
                                             isJson: option.isJson,
                                             hint: option.hint,
                                             webservice: option.webservice
                                         });
                                     }
-                                } else {
-                                    if (category === 'links') {
-                                        delete this.outputsTypesForm[_output.output_type_id].links;
-                                    }
+                                } else if (category === 'links') {
+                                    delete this.outputsTypesForm[_output.output_type_id].links;
                                 }
                             }
                         }
@@ -411,7 +434,7 @@ export class UpdateOutputComponent implements OnInit {
     isValidForm(form: any) {
         let state = true;
         form.forEach((element: any) => {
-            if ((element.control.status !== 'DISABLED' && element.control.status !== 'VALID') || element.control.value == null) {
+            if ((element.control.status !== 'DISABLED' && element.control.status !== 'VALID') || (element.required && element.control.value == null)) {
                 state = false;
             }
         });
@@ -447,6 +470,37 @@ export class UpdateOutputComponent implements OnInit {
         } else {
             return array;
         }
+    }
+
+    /**** COOG Webservices call ****/
+    testCOOGConnection() {
+        const args = this.getCOOGConnectionInfo();
+        this.http.post(environment['url'] + '/ws/coog/getAccessToken', {'args': args}, {headers: this.authService.headers},
+        ).pipe(
+            tap((data: any) => {
+                const status = data.status[0];
+                if (status === true) {
+                    this.notify.success(this.translate.instant('OUTPUT.coog_connection_ok'));
+                    this.connection = true;
+                } else {
+                    this.notify.error('<strong>' + this.translate.instant('OUTPUT.coog_connection_ko') + '</strong> : ' + data.status[1]);
+                    this.connection = false;
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    getCOOGConnectionInfo() {
+        return {
+            'host': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'host'),
+            'token': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'token'),
+            'cert_path': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'cert_path')
+        };
     }
 
     /**** MEM Courrier Webservices call ****/

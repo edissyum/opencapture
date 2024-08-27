@@ -22,9 +22,9 @@ import codecs
 from io import StringIO
 
 from flask_babel import gettext
+from src.backend.models import doctypes
 from flask import request, g as current_context
-from src.backend.import_models import doctypes
-from src.backend.import_classes import _SeparatorQR
+from src.backend.classes.SeparatorQR import SeparatorQR
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
@@ -141,14 +141,14 @@ def generate_separator(args):
         })
 
     if args['type'] == "docTypeSeparator":
-        _doctypes, error = doctypes.retrieve_doctypes({
+        _doctypes, _ = doctypes.retrieve_doctypes({
             'where': ['id = %s'],
             'data': [args['id']]
         })
         doctype = _doctypes[0]
 
         if doctype['type'] == 'folder':
-            _doctypes, error = doctypes.retrieve_doctypes({
+            _doctypes, _ = doctypes.retrieve_doctypes({
                 'where': ['status <> %s', 'form_id = %s', 'code like %s'],
                 'data': ['DEL', doctype['form_id'], f"{doctype['code']}.%"]
             })
@@ -160,7 +160,7 @@ def generate_separator(args):
                 "qr_code_value": f"DOCSTART|{doctype['key']}"
             })
 
-    res_separators = _SeparatorQR.generate_separator(docservers, separators)
+    res_separators = SeparatorQR.generate_separator(docservers, separators)
     if 'error' in res_separators:
         response = {
             "errors": gettext("DOCTYPE_ERROR"),
@@ -210,7 +210,7 @@ def clone_form_doctypes(src_form_id, dest_form_id):
             'status': doctype['status'],
             'label': doctype['label'],
             'type': doctype['type'],
-            'key': doctype['key'],
+            'key': doctype['key']
         }
         doctypes.add_doctype(args)
 
@@ -305,9 +305,9 @@ def import_from_csv(args):
                     'type': row[args['selected_columns'].index('type')],
                     'code': row[args['selected_columns'].index('code')],
                     'form_id': row[args['selected_columns'].index('form_id')],
-                    'is_default': False,
+                    'is_default': False
                 }
-                _, _ = doctypes.add_doctype(doctype)
+                doctypes.add_doctype(doctype)
 
         return {'OK': True}, 200
     except (Exception,) as e:

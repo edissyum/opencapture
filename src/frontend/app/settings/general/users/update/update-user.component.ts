@@ -71,7 +71,7 @@ export class UpdateUserComponent implements OnInit {
             id: 'email',
             label: this.translate.instant('USER.email'),
             type: 'text',
-            control: new FormControl('', Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")),
+            control: new FormControl('', Validators.pattern("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$")),
             required: false
         },
         {
@@ -217,12 +217,8 @@ export class UpdateUserComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/roles/list/user/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.roles.forEach((element: any) => {
-                    if (element.editable) {
+                    if (element.editable || this.userService.getUser().privileges === '*') {
                         this.roles.push(element);
-                    } else {
-                        if ((this.userService.getUser().privileges === '*')) {
-                            this.roles.push(element);
-                        }
                     }
                 });
             }),
@@ -306,9 +302,14 @@ export class UpdateUserComponent implements OnInit {
         let error: any;
         this.userFields.forEach(element => {
             if (element.id === field) {
-                if (element.control.errors && element.control.errors.message) {
-                    error = element.control.errors.message;
+                if (element.control.errors) {
+                    if (element.control.errors.message) {
+                        error = element.control.errors.message;
+                    } else if (element.control.errors.pattern) {
+                        error = this.translate.instant('ACCOUNTS.email_format_error');
+                    }
                 }
+
                 if (element.required && !(element.value || element.control.value)) {
                     error = this.translate.instant('AUTH.field_required');
                 }

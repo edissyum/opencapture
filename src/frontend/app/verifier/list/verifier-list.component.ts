@@ -15,8 +15,8 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
-import { LocalStorageService } from "../../../services/local-storage.service";
+import {Component, OnInit, SecurityContext} from '@angular/core';
+import { SessionStorageService } from "../../../services/session-storage.service";
 import { environment } from  "../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
@@ -25,7 +25,6 @@ import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
 import { TranslateService } from "@ngx-translate/core";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { LastUrlService } from "../../../services/last-url.service";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { FlatTreeControl } from "@angular/cdk/tree";
 import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree";
@@ -68,19 +67,28 @@ interface FlatNode {
     ]
 })
 export class VerifierListComponent implements OnInit {
-    loading                  : boolean           = true;
-    loadingCustomers         : boolean           = true;
-    status                   : any[]             = [];
-    forms                    : any[]             = [
+    config                   : any;
+    currentForm              : any            = '';
+    search                   : string         = '';
+    documentListThumb        : string         = '';
+    currentFilter            : string         = 'documents.id';
+    currentOrder             : string         = 'desc';
+    documents                : any            = [];
+    filteredForms            : any            = [];
+    status                   : any            = [];
+    allowedCustomers         : any[]          = [];
+    allowedSuppliers         : any[]          = [];
+    TREE_DATA                : AccountsNode[] = [];
+    loading                  : boolean        = true;
+    loadingCustomers         : boolean        = true;
+    currentStatus            : string         = 'NEW';
+    displayMode              : string         = 'grid';
+    currentTime              : string         = 'today';
+    forms                    : any            = [
         {'id' : '', "label": this.translate.instant('VERIFIER.all_forms')},
         {'id' : 'no_form', "label": this.translate.instant('VERIFIER.no_form')}
     ];
-    filteredForms            : any[]             = [];
-    config                   : any;
-    currentForm              : any               = '';
-    currentStatus            : string            = 'NEW';
-    currentTime              : string            = 'today';
-    batchList                : any[]             = [
+    batchList                : any            = [
         {
             'id': 'today',
             'label': marker('BATCH.today')
@@ -94,25 +102,25 @@ export class VerifierListComponent implements OnInit {
             'label': marker('BATCH.older')
         }
     ];
-    pageSize                 : number            = 16;
-    pageIndex                : number            = 0;
-    pageSizeOptions          : any []            = [4, 8, 12, 16, 24, 48];
-    total                    : number            = 0;
-    totals                   : any               = {};
-    customersList            : any               = {};
-    offset                   : number            = 0;
-    selectedTab              : number            = 0;
-    documents                : any []            = [];
-    allowedCustomers         : any []            = [];
-    allowedSuppliers         : any []            = [];
-    search                   : string            = '';
-    TREE_DATA                : AccountsNode[]    = [];
-    totalChecked             : number            = 0;
-    expanded                 : boolean           = false;
-    documentToDeleteSelected : boolean           = false;
-    customerFilterEmpty      : boolean           = false;
-    customerFilterEnabled    : boolean           = false;
-    customerFilter           : FormControl       = new FormControl('');
+    pageSize                 : number         = 16;
+    pageIndex                : number         = 0;
+    pageSizeOptions          : any []         = [4, 8, 12, 16, 24, 48];
+    total                    : number         = 0;
+    offset                   : number         = 0;
+    selectedTab              : number         = 0;
+    totalChecked             : number         = 0;
+    totals                   : any            = {};
+    customersList            : any            = {};
+    searchLoading            : boolean        = false;
+    expanded                 : boolean        = false;
+    documentToDeleteSelected : boolean        = false;
+    customerFilterEmpty      : boolean        = false;
+    customerFilterEnabled    : boolean        = false;
+    customerFilter           : FormControl    = new FormControl('');
+    filtersLists             : any            = [
+        {'id': 'documents.id', 'label': 'HEADER.technical_id'},
+        {'id': 'documents.register_date', 'label': marker('FACTURATION.register_date_short')}
+    ];
 
     private _transformer = (node: AccountsNode, level: number) => ({
         expandable: !!node.children && node.children.length > 0,
@@ -127,12 +135,8 @@ export class VerifierListComponent implements OnInit {
         children: node.children
     });
 
-    treeControl = new FlatTreeControl<FlatNode>(
-        node => node.level, node => node.expandable);
-
-    treeFlattener = new MatTreeFlattener(
-        this._transformer, node => node.level, node => node.expandable, node => node.children);
-
+    treeControl = new FlatTreeControl<FlatNode>(node => node.level, node => node.expandable);
+    treeFlattener = new MatTreeFlattener(this._transformer, node => node.level, node => node.expandable, node => node.children);
     dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
     constructor(
@@ -143,8 +147,7 @@ export class VerifierListComponent implements OnInit {
         private userService: UserService,
         public translate: TranslateService,
         private notify: NotificationService,
-        private routerExtService: LastUrlService,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) {}
 
     hasChild = (_: number, node: FlatNode) => node.expandable;
@@ -161,29 +164,55 @@ export class VerifierListComponent implements OnInit {
             this.userService.user = this.userService.getUserFromLocal();
         }
 
+        if (localStorage.getItem('verifierListDisplayMode')) {
+            this.displayMode = localStorage.getItem('verifierListDisplayMode') as string;
+        }
+        if (localStorage.getItem('verifierFilter')) {
+            this.currentFilter = localStorage.getItem('verifierFilter') as string;
+        }
+        if (localStorage.getItem('verifierOrder')) {
+            this.currentOrder = localStorage.getItem('verifierOrder') as string;
+        }
+        if (this.sessionStorageService.get('statusFormSelected')) {
+            this.currentStatus = this.sessionStorageService.get('statusFormSelected') as string;
+        }
+        if (this.sessionStorageService.get('documentsFormSelected')) {
+            this.currentForm = parseInt(this.sessionStorageService.get('documentsFormSelected') as string);
+        }
+        if (this.sessionStorageService.get('documentsPageIndex')) {
+            this.pageIndex = parseInt(this.sessionStorageService.get('documentsPageIndex') as string);
+        }
+        if (this.sessionStorageService.get('documentsPageSize')) {
+            this.pageSize = parseInt(this.sessionStorageService.get('documentsPageSize') as string);
+        }
+        if (this.sessionStorageService.get('documentsTimeIndex')) {
+            this.selectedTab = parseInt(this.sessionStorageService.get('documentsTimeIndex') as string);
+            this.currentTime = this.batchList[this.selectedTab].id;
+        }
+
+        marker('ATTACHMENTS.attachments_count'); // Needed to get the translation in the JSON file
+        marker('ATTACHMENTS.attachment_settings'); // Needed to get the translation in the JSON file
         marker('VERIFIER.nb_pages'); // Needed to get the translation in the JSON file
         marker('VERIFIER.expand_all'); // Needed to get the translation in the JSON file
-        marker('VERIFIER.collapse_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.select_all'); // Needed to get the translation in the JSON file
+        marker('VERIFIER.collapse_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.unselect_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.documents_settings'); // Needed to get the translation in the JSON file
-        this.localStorageService.save('splitter_or_verifier', 'verifier');
-        const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('verifier/') && !lastUrl.includes('settings') || lastUrl === '/' || lastUrl === '/upload') {
-            if (this.localStorageService.get('documentsPageIndex')) {
-                this.pageIndex = parseInt(this.localStorageService.get('documentsPageIndex') as string);
-            }
-            if (this.localStorageService.get('documentsTimeIndex')) {
-                this.selectedTab = parseInt(this.localStorageService.get('documentsTimeIndex') as string);
-                this.currentTime = this.batchList[this.selectedTab].id;
-            }
-            this.offset = this.pageSize * (this.pageIndex);
-        } else {
-            this.localStorageService.remove('documentsPageIndex');
-            this.localStorageService.remove('documentsTimeIndex');
-        }
+        this.sessionStorageService.save('splitter_or_verifier', 'verifier');
+
+        this.offset = this.pageSize * (this.pageIndex);
+
         this.removeLockByUserId();
-        this.http.get(environment['url'] + '/ws/status/verifier/list', {headers: this.authService.headers}).pipe(
+
+        setTimeout(() => {
+            this.loadForms();
+            this.loadStatus();
+            this.loadCustomers();
+        }, 100);
+    }
+
+    loadStatus() {
+        this.http.get(environment['url'] + '/ws/status/verifier/list?totals=true&form_id=' + this.currentForm + '&user_id=' + this.userService.user.id + '&time=' + this.currentTime, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.status = data.status;
             }),
@@ -193,22 +222,29 @@ export class VerifierListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        setTimeout(() => {
-            this.loadForms();
-            this.loadCustomers();
-        }, 100);
     }
 
     loadForms() {
         this.http.get(environment['url'] + '/ws/forms/verifier/list?totals=true&status=' + this.currentStatus + '&user_id=' + this.userService.user.id + '&time=' + this.currentTime, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.filteredForms = [];
+                this.filtersLists = [
+                    {'id': 'documents.id', 'label': 'HEADER.technical_id'},
+                    {'id': 'documents.register_date', 'label': 'FACTURATION.register_date_short'}
+                ];
                 this.forms = [
                     {'id' : '', "label": this.translate.instant('VERIFIER.all_forms')},
                     {'id' : 'no_form', "label": this.translate.instant('VERIFIER.no_form')}
                 ];
                 data.forms.forEach((form: any) => {
                     if (form.total > 0) {
+                        form.settings.display.subtitles.forEach((subtitle: any) => {
+                            if (!['date', 'form_label', 'original_filename'].includes(subtitle.id)) {
+                                if (!this.filtersLists.some((filter: any) => filter.id === subtitle.id)) {
+                                    this.filtersLists.push({'id': subtitle.id, 'label': subtitle.label});
+                                }
+                            }
+                        });
                         this.forms.push(form);
                         this.filteredForms.push(form);
                     }
@@ -262,6 +298,7 @@ export class VerifierListComponent implements OnInit {
                         count: customer_count.total,
                         children: []
                     };
+
                     Object.keys(customer_count['suppliers']).forEach((key: any, index: number) => {
                         node['children'].push({
                             name: key,
@@ -276,11 +313,17 @@ export class VerifierListComponent implements OnInit {
                                 name: supplier.name ? supplier.name : this.translate.instant('ACCOUNTS.supplier_unknow'),
                                 supplier_id: supplier.supplier_id,
                                 parent_id: customer_count.customer_id,
-                                form_id: supplier.form_id ? supplier.form_id : 'no_form',
+                                form_id: supplier.form_id ? supplier.form_id : -1,
                                 count: supplier.total,
                                 display: true
                             });
                         });
+                    });
+                    node['children'].forEach((node_child: any, index: number) => {
+                        if (node_child.name === this.translate.instant('VERIFIER.no_form')) {
+                            node['children'].unshift(node_child);
+                            node['children'].splice(index + 1, 1);
+                        }
                     });
                     this.TREE_DATA.push(node);
                 });
@@ -306,6 +349,7 @@ export class VerifierListComponent implements OnInit {
         }
         this.loadingCustomers = true;
         this.loadForms();
+        this.loadStatus();
         let url = environment['url'] + '/ws/verifier/documents/totals/' + this.currentStatus + '/' + this.userService.user.id;
         if (this.currentForm !== '') {
             url = environment['url'] + '/ws/verifier/documents/totals/' + this.currentStatus + '/' + this.userService.user.id + '/' + this.currentForm;
@@ -320,11 +364,12 @@ export class VerifierListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+        this.allowedCustomers = [... new Set(this.allowedCustomers)]
         this.http.post(environment['url'] + '/ws/verifier/documents/list',
             {
                 'allowedCustomers': this.allowedCustomers, 'status': this.currentStatus, 'limit': this.pageSize,
                 'allowedSuppliers': this.allowedSuppliers, 'form_id': this.currentForm, 'time': this.currentTime,
-                'offset': this.offset, 'search': this.search
+                'offset': this.offset, 'search': this.search, 'order': this.currentOrder, 'filter': this.currentFilter
             },
             {headers: this.authService.headers}
         ).pipe(
@@ -350,7 +395,7 @@ export class VerifierListComponent implements OnInit {
                             document['datas'].document_id = document.document_id;
                         }
                         if (!document.thumb.includes('data:image/jpeg;base64')) {
-                            document.thumb = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + document.thumb);
+                            document.thumb = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/jpeg;base64, ' + document.thumb);
                         }
                         if (document.form_label === null || document.form_label === '' || document.form_label === undefined) {
                             document.form_label = this.translate.instant('VERIFIER.no_form');
@@ -382,7 +427,7 @@ export class VerifierListComponent implements OnInit {
                                     {"id": "document_date", "label": "FACTURATION.document_date"},
                                     {"id": "date", "label": "VERIFIER.register_date"},
                                     {"id": "original_filename", "label": "VERIFIER.original_file"},
-                                    {"id": "form_label", "label": "VERIFIER.form"}
+                                    {"id": "form_label", "label": "ACCOUNTS.form"}
                                 ]
                             };
                         }
@@ -486,7 +531,9 @@ export class VerifierListComponent implements OnInit {
                 const customerId = element.id;
                 this.customerFilterEnabled = true;
                 this.allowedCustomers = [customerId];
-                this.allowedSuppliers = [supplierId];
+                if (supplierId) {
+                    this.allowedSuppliers = [supplierId];
+                }
                 this.currentForm = formId;
                 this.resetPaginator();
                 this.loadDocuments().then();
@@ -507,9 +554,12 @@ export class VerifierListComponent implements OnInit {
         this.resetSearchCustomer();
     }
 
-    selectOrUnselectAllDocuments(event: any) {
+    selectOrUnselectAllDocuments(event: any, forceUnselect: boolean = false) {
         const label = event.srcElement.textContent;
         this.documentToDeleteSelected = !this.documentToDeleteSelected;
+        if (forceUnselect) {
+            this.documentToDeleteSelected = false;
+        }
         const checkboxList = document.getElementsByClassName('checkBox_list');
         Array.from(checkboxList).forEach((element: any) => {
             element.checked = (label === this.translate.instant('VERIFIER.select_all'));
@@ -604,6 +654,7 @@ export class VerifierListComponent implements OnInit {
 
     changeStatus(event: any) {
         this.currentStatus = event.value;
+        this.sessionStorageService.save('statusFormSelected', this.currentStatus);
         this.resetPaginator();
         this.loadCustomers();
         this.loadDocuments().then();
@@ -611,6 +662,7 @@ export class VerifierListComponent implements OnInit {
 
     changeForm(event: any) {
         this.currentForm = event.value;
+        this.sessionStorageService.save('documentsFormSelected', this.currentForm);
         this.resetPaginator();
         this.loadCustomers();
         this.loadDocuments().then();
@@ -618,32 +670,40 @@ export class VerifierListComponent implements OnInit {
 
     onTabChange(event: any) {
         this.search = '';
+        this.currentForm = '';
+        this.allowedSuppliers = [];
         this.selectedTab = event.index;
-        this.localStorageService.save('documentsTimeIndex', this.selectedTab);
         this.currentTime = this.batchList[this.selectedTab].id;
+        this.sessionStorageService.save('documentsTimeIndex', this.selectedTab);
         this.resetPaginator();
         this.loadCustomers();
-        this.loadDocuments().then();
     }
 
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localStorageService.save('documentsPageIndex', event.pageIndex);
+        this.sessionStorageService.save('documentsPageSize', event.pageSize);
+        this.sessionStorageService.save('documentsPageIndex', event.pageIndex);
         this.loadDocuments().then();
     }
 
     searchDocument(event: any) {
-        this.search = event.target.value;
-        this.loadDocuments(false).then();
+        if (!this.searchLoading) {
+            this.searchLoading = true;
+            setTimeout(() => {
+                this.search = event.target.value;
+                this.loadDocuments(false).then();
+                this.searchLoading = false;
+            }, 1000);
+        }
     }
 
     resetPaginator() {
         this.total = 0;
         this.offset = 0;
         this.pageIndex = 0;
-        this.localStorageService.save('documentsPageIndex', this.pageIndex);
+        this.sessionStorageService.save('documentsPageIndex', this.pageIndex);
     }
 
     expandAll() {
@@ -653,5 +713,40 @@ export class VerifierListComponent implements OnInit {
             this.treeControl.collapseAll();
         }
         this.expanded = !this.expanded;
+    }
+
+    switchDisplayMode() {
+        if (this.displayMode === 'grid') {
+            this.displayMode = 'list';
+        } else {
+            this.displayMode = 'grid';
+        }
+        this.selectOrUnselectAllDocuments({srcElement: {textContent: this.translate.instant('VERIFIER.unselect_all')}}, true);
+        localStorage.setItem('verifierListDisplayMode', this.displayMode);
+    }
+
+    showThumbnail(thumb_b64: any) {
+        this.documentListThumb = thumb_b64;
+    }
+
+    resetThumbnail() {
+        this.documentListThumb = '';
+    }
+
+    changeFilter(filter: string) {
+        this.currentFilter = filter;
+        localStorage.setItem('verifierFilter', filter);
+        this.loadDocuments().then()
+    }
+
+    changeOrder(order: string) {
+        this.currentOrder = order;
+        localStorage.setItem('verifierOrder', order);
+        this.loadDocuments().then()
+    }
+
+    checkDisabledTooltip(subtitle: any) {
+        const subtitleLength = (this.translate.instant(subtitle['label']).length / 2) + subtitle['data'].length;
+        return subtitleLength <= 30;
     }
 }

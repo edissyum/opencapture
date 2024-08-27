@@ -18,7 +18,7 @@
 from flask_babel import gettext
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
-from src.backend.import_controllers import auth, config, privileges
+from src.backend.controllers import auth, config, privileges
 from flask import Blueprint, make_response, jsonify, session, request, g as current_context
 
 bp = Blueprint('i18n', __name__, url_prefix='/ws/')

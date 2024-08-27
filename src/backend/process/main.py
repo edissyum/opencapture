@@ -18,17 +18,20 @@
 import os
 import uuid
 import json
+import hashlib
 import datetime
 import importlib
 import traceback
 from flask_babel import gettext
 from src.backend import verifier_exports
+from src.backend.classes.Files import Files
 from src.backend.scripting_functions import check_code
-from src.backend.import_classes import _PyTesseract, _Files
-from src.backend.import_controllers import verifier, accounts
-from src.backend.functions import delete_documents, rotate_document, find_form_with_ia
-from src.backend.import_process import FindDate, FindDueDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
-    FindDeliveryNumber, FindFooterRaw, FindQuotationNumber, FindName
+from src.backend.classes.PyTesseract import PyTesseract
+from src.backend.scripting_functions import send_to_workflow
+from src.backend.controllers import verifier, accounts, attachments
+from src.backend.functions import delete_documents, rotate_document, find_workflow_with_ia
+from src.backend.process import (find_date, find_due_date, find_footer, find_invoice_number, find_supplier,
+                                 find_custom, find_delivery_number, find_footer_raw, find_quotation_number, find_name)
 
 
 class DictX(dict):
@@ -68,7 +71,7 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
         tmp_file = docservers['TMP_PATH'] + '/' + step + '_scripting_' + rand + '.py'
 
         try:
-            with open(tmp_file, 'w', encoding='UTF-8') as python_script:
+            with open(tmp_file, 'w', encoding='utf-8') as python_script:
                 python_script.write(script)
 
             if os.path.isfile(tmp_file):
@@ -92,7 +95,7 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
                     data['ip'] = args['ip']
                     data['database'] = database
                     data['user_info'] = args['user_info']
-                elif step in 'process' 'output':
+                elif step in ('process', 'output'):
                     if 'document_id' in args:
                         data['document_id'] = args['document_id']
 
@@ -106,7 +109,7 @@ def launch_script(workflow_settings, docservers, step, log, file, database, args
                 os.remove(tmp_file)
                 return change_workflow and res != 'DISABLED'
         except (Exception,):
-            log.error('Error during ' + step + ' scripting :s' + str(traceback.format_exc()))
+            log.error('Error during ' + step + ' scripting : ' + str(traceback.format_exc()))
             os.remove(tmp_file)
 
 
@@ -117,11 +120,13 @@ def execute_outputs(output_info, log, regex, document_data, database):
     compress_type = output_info['compress_type']
 
     if output_info['output_type_id'] == 'export_xml':
-        path, _ = verifier_exports.export_xml(data, log, regex, document_data, database)
+        path, _ = verifier_exports.export_xml(data, log, document_data, database)
     elif output_info['output_type_id'] == 'export_mem':
         verifier_exports.export_mem(output_info['data'], document_data, log, regex, database)
+    elif output_info['output_type_id'] == 'export_coog':
+        verifier_exports.export_coog(output_info['data'], document_data, log)
     elif output_info['output_type_id'] == 'export_pdf':
-        path, _ = verifier_exports.export_pdf(data, log, regex, document_data, compress_type, ocrise)
+        path, _ = verifier_exports.export_pdf(data, log, document_data, compress_type, ocrise)
     elif output_info['output_type_id'] == 'export_facturx':
         path, _ = verifier_exports.export_facturx(data, log, regex, document_data)
 
@@ -143,8 +148,12 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
     year_and_month = now.strftime('%Y') + '/' + now.strftime('%m')
     path = docservers['VERIFIER_IMAGE_FULL'] + '/' + year_and_month + '/' + full_jpg_filename + '-001.jpg'
 
+    with open(file, 'rb') as _f:
+        md5 = hashlib.md5( _f.read()).hexdigest()
+
     document_data = {
         'filename': os.path.basename(file),
+        'md5': md5,
         'path': os.path.dirname(file),
         'img_width': str(files.get_width(path)),
         'full_jpg_filename': full_jpg_filename + '-001.jpg',
@@ -160,8 +169,12 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
 
     if supplier:
         document_data.update({
-            'supplier_id': supplier[2]['supplier_id'],
+            'supplier_id': supplier[2]['supplier_id']
         })
+    else:
+        if workflow_settings and ('allow_third_party_validation' in workflow_settings['process'] and
+                                  workflow_settings['process']['allow_third_party_validation']):
+            document_data['status'] = 'WAIT_THIRD_PARTY'
 
     if args.get('isMail') is None or args.get('isMail') is False:
         if 'workflow_id' in args and args['workflow_id'] and workflow_settings:
@@ -182,7 +195,7 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
             'select': ['outputs'],
             'table': ['form_models'],
             'where': ['id = %s'],
-            'data': [document_data['form_id']],
+            'data': [document_data['form_id']]
         })
 
         if outputs:
@@ -199,7 +212,7 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
                         'select': ['regex_id', 'content'],
                         'table': ['regex'],
                         'where': ["lang in ('global', %s)"],
-                        'data': [current_lang],
+                        'data': [current_lang]
                     })
 
                     for _r in _regex:
@@ -227,6 +240,10 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
             if workflow_settings['process']['delete_documents']:
                 insert_document = False
                 delete_documents(docservers, document_data['path'], document_data['filename'], full_jpg_filename)
+        elif 'api_only' in workflow_settings['process'] and workflow_settings['process']['api_only']:
+            insert_document = True
+            datas['datas']['api_only'] = True
+            delete_documents(docservers, document_data['path'], document_data['filename'], full_jpg_filename)
 
     if insert_document:
         document_data['datas'] = json.dumps(datas['datas'])
@@ -234,6 +251,26 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
             'table': 'documents',
             'columns': document_data
         })
+
+        if 'attachments' in args and args['attachments']:
+            from_api = False
+            if 'isMail' in args and args['isMail']:
+                from_api = True
+            attachments.handle_uploaded_file(args['attachments'], document_id, None, 'verifier', from_api)
+
+        if 'splitter_batch_id' in args and args['splitter_batch_id']:
+            splitter_attachments = attachments.get_attachments_by_batch_id(args['splitter_batch_id'], False)
+            if splitter_attachments[0]:
+                for attachment in splitter_attachments[0]:
+                    database.update({
+                        'table': ['attachments'],
+                        'set': {
+                            'document_id': document_id
+                        },
+                        'where': ['id = %s'],
+                        'data': [attachment['id']]
+                    })
+
         return document_id
 
     log.info('Document not inserted in database based on workflow settings')
@@ -316,14 +353,31 @@ def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_c
 
     i = 0
     tmp_nb_pages = nb_pages
+    order = 'desc'
+    if 'verifierOrderSearch' in configurations and configurations['verifierOrderSearch'] == 'asc':
+        order = 'asc'
+        tmp_nb_pages = 0
+
     while not data:
-        tmp_nb_pages = tmp_nb_pages - 1
-        if 'verifierMaxPageSearch' in configurations and int(configurations['verifierMaxPageSearch']) > 0:
-            if i == int(configurations['verifierMaxPageSearch']) or int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
-                break
+        if order == 'asc':
+            tmp_nb_pages = tmp_nb_pages + 1
         else:
-            if int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
-                break
+            tmp_nb_pages = tmp_nb_pages - 1
+
+        if 'verifierMaxPageSearch' in configurations and int(configurations['verifierMaxPageSearch']) > 0:
+            if order == 'asc':
+                if i == int(configurations['verifierMaxPageSearch']) or int(tmp_nb_pages) + 1 == nb_pages or nb_pages == 1:
+                    break
+            else:
+                if i == int(configurations['verifierMaxPageSearch']) or int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
+                    break
+        else:
+            if order == 'asc':
+                if int(tmp_nb_pages) + 1 == nb_pages or nb_pages == 1:
+                    break
+            else:
+                if int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
+                    break
 
         convert(file, files, ocr, tmp_nb_pages, tesseract_function, convert_function, True)
         _file = files.custom_file_name
@@ -413,10 +467,12 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 rotate_document(file, workflow_settings['input']['rotation'])
                 log.info('Document rotated by ' + str(workflow_settings['input']['rotation']) +
                          '° based on workflow settings')
+        else:
+            log.error('Workflow not found in database : ' + args['workflow_id'])
+            return None
 
     system_fields_to_find = []
     custom_fields_to_find = []
-    form_id_found_with_ai = False
 
     change_workflow = False
     convert_function = 'pdf2image'
@@ -439,13 +495,20 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         if 'ai_model_id' in workflow_settings['input'] and workflow_settings['input']['ai_model_id']:
             ai_model_id = workflow_settings['input']['ai_model_id']
-            res = find_form_with_ia(file, ai_model_id, database, docservers, _Files, ocr, log, 'verifier')
+            res = find_workflow_with_ia(file, ai_model_id, database, docservers, Files, ocr, log, 'verifier')
             if res:
-                form_id_found_with_ai = True
-                datas.update({'form_id': res})
+                return send_to_workflow({
+                    'ip': args['ip'],
+                    'log': log,
+                    'file': file,
+                    'user_info': args['user_info'],
+                    'workflow_id': res,
+                    'custom_id': args['custom_id']
+                })
 
         # Launch input scripting if present
-        change_workflow = launch_script(workflow_settings, docservers, 'input', log, file, database, args, config)
+        if config['GLOBAL']['allowwfscripting'].lower() == 'true':
+            change_workflow = launch_script(workflow_settings, docservers, 'input', log, file, database, args, config)
 
     if not change_workflow:
         # Convert files to JPG
@@ -460,7 +523,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     column = args['supplier']['column']
                     value = args['supplier']['value']
 
-                    find_supplier = database.select({
+                    supplier_found = database.select({
                         'select': ['accounts_supplier.id as supplier_id', '*'],
                         'table': ['accounts_supplier', 'addresses'],
                         'left_join': ['accounts_supplier.address_id = addresses.id'],
@@ -468,8 +531,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                         'data': [value, 'DEL']
                     })
 
-                    if find_supplier:
-                        supplier = [find_supplier[0]['vat_number'], (('', ''), ('', '')), find_supplier[0], False,
+                    if supplier_found:
+                        supplier = [supplier_found[0]['vat_number'], (('', ''), ('', '')), supplier_found[0], False,
                                     column]
                         log.info('Supplier found using given informations in upload : ' + supplier[2]['name'] +
                                  ' using ' + column.upper() + ' : ' + value)
@@ -495,7 +558,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                             'name': res['name'],
                                             'siren': value[4:13],
                                             'siret': '',
-                                            'vat_number': value,
+                                            'vat_number': value
                                         }
                                 if column == 'siren':
                                     res, status = verifier.verify_siren(token_insee, value, full=True)
@@ -558,7 +621,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         if 'name' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             # Find supplier in document if not send using upload rest
             if not supplier or not supplier[0] or not supplier[2]:
-                supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, 1, False).run()
+                supplier = find_supplier.FindSupplier(ocr, log, regex, database, files, nb_pages, 1, False).run()
 
                 i = 0
                 tmp_nb_pages = nb_pages
@@ -572,7 +635,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                             break
 
                     convert(file, files, ocr, tmp_nb_pages, tesseract_function, convert_function, True)
-                    supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, tmp_nb_pages, True).run()
+                    supplier = find_supplier.FindSupplier(ocr, log, regex, database, files, nb_pages, tmp_nb_pages, True).run()
                     i += 1
 
             if supplier and supplier[2]:
@@ -587,7 +650,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     'address2': supplier[2]['address2'],
                     'postal_code': supplier[2]['postal_code'],
                     'city': supplier[2]['city'],
-                    'country': supplier[2]['country'],
+                    'country': supplier[2]['country']
                 })
                 if supplier[1]:
                     datas['positions'].update({
@@ -611,15 +674,14 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
                     for _r in _regex:
                         regex[_r['regex_id']] = _r['content']
-                    ocr = _PyTesseract(supplier[2]['document_lang'], log, config, docservers)
+                    ocr = PyTesseract(supplier[2]['document_lang'], log, config, docservers)
                     convert(file, files, ocr, nb_pages, tesseract_function, convert_function)
 
         if workflow_settings:
             if 'override_supplier_form' in workflow_settings['process'] and \
                     workflow_settings['process']['override_supplier_form'] or \
                     not supplier or ('form_id' not in supplier[2] or not supplier[2]['form_id']):
-                if not form_id_found_with_ai:
-                    datas.update({'form_id': workflow_settings['process']['form_id']})
+                datas.update({'form_id': workflow_settings['process']['form_id']})
             elif ('override_supplier_form' not in workflow_settings['process'] or
                   not workflow_settings['process']['override_supplier_form']) and supplier and supplier[2]['form_id']:
                 datas.update({'form_id': supplier[2]['form_id']})
@@ -631,7 +693,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         if custom_fields_to_find:
             # Find custom informations using mask
-            custom_fields = FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
+            custom_fields = find_custom.FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
                                        datas['form_id'], custom_fields_to_find, False).run_using_positions_mask()
             if custom_fields:
                 for field in custom_fields:
@@ -655,47 +717,47 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             })
 
             for custom_field in custom_fields_regex:
-                custom_field_class = FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
+                custom_field_class = find_custom.FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
                                                 datas['form_id'], custom_fields_to_find, custom_field)
                 custom_field = 'custom_' + str(custom_field['id'])
                 datas = found_data_recursively(custom_field, ocr, file, nb_pages, text_by_pages, custom_field_class,
                                                datas, files, configurations, tesseract_function, convert_function)
 
         if 'firstname_lastname' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            name_class = FindName(ocr, log, docservers, supplier, files, database, regex, datas['form_id'], file)
+            name_class = find_name.FindName(ocr, log, docservers, supplier, files, database, regex, datas['form_id'], file)
             datas = found_data_recursively('firstname_lastname', ocr, file, nb_pages, text_by_pages,
                                            name_class, datas, files, configurations, tesseract_function,
                                            convert_function)
 
         if 'invoice_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file,
+            invoice_number_class = find_invoice_number.FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file,
                                                      docservers, configurations, languages, datas['form_id'])
             datas = found_data_recursively('invoice_number', ocr, file, nb_pages, text_by_pages,
                                            invoice_number_class, datas, files, configurations, tesseract_function,
                                            convert_function)
 
         if 'document_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            date_class = FindDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
+            date_class = find_date.FindDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
                                   languages, datas['form_id'])
             datas = found_data_recursively('document_date', ocr, file, nb_pages, text_by_pages, date_class,
                                            datas, files, configurations, tesseract_function, convert_function)
 
         if 'document_due_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            due_date_class = FindDueDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
+            due_date_class = find_due_date.FindDueDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
                                          languages, datas['form_id'])
             datas = found_data_recursively('document_due_date', ocr, file, nb_pages, text_by_pages,
                                            due_date_class, datas, files, configurations, tesseract_function,
                                            convert_function)
 
         if 'quotation_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            quotation_number_class = FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file,
+            quotation_number_class = find_quotation_number.FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file,
                                                          docservers, configurations, datas['form_id'], languages)
             datas = found_data_recursively('quotation_number', ocr, file, nb_pages, text_by_pages,
                                            quotation_number_class, datas, files, configurations, tesseract_function,
                                            convert_function)
 
         if 'delivery_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            delivery_number_class = FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file,
+            delivery_number_class = find_delivery_number.FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file,
                                                        docservers, configurations, datas['form_id'])
             datas = found_data_recursively('delivery_number', ocr, file, nb_pages, text_by_pages,
                                            delivery_number_class, datas, files, configurations, tesseract_function,
@@ -703,10 +765,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         footer = None
         if 'footer' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            footer_class = FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
+            footer_class = find_footer.FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
                                       docservers, datas['form_id'])
             if supplier and supplier[2]['get_only_raw_footer'] in [True, 'True']:
-                footer_class = FindFooterRaw(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
+                footer_class = find_footer_raw.FindFooterRaw(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
                                              docservers, datas['form_id'])
 
             footer = footer_class.run()
@@ -808,6 +870,13 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                             datas['pages'].update({'vat_amount': footer[3]})
                             datas['pages'].update({'total_vat': footer[3]})
 
+        if 'datas' in args and args['datas']:
+            for data in args['datas']:
+                if args['datas'][data]:
+                    datas['pages'][data] = 0
+                    datas['positions'][data] = ''
+                    datas['datas'][data] = args['datas'][data]
+
         full_jpg_filename = str(uuid.uuid4())
         file = files.move_to_docservers(docservers, file)
         files.move_to_docservers_image(docservers['VERIFIER_IMAGE_FULL'], files.jpg_name, full_jpg_filename + '-001.jpg'
@@ -853,11 +922,13 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         args['document_id'] = document_id
 
         # Launch process scripting if present
-        launch_script(workflow_settings, docservers, 'process', log, file, database, args, config, datas)
+        if config['GLOBAL']['allowwfscripting'].lower() == 'true':
+            launch_script(workflow_settings, docservers, 'process', log, file, database, args, config, datas)
 
         if (status == 'END') or (workflow_settings and (not workflow_settings['process']['use_interface'] or
                                                         not workflow_settings['input']['apply_process'])):
             # Launch outputs scripting if present
-            launch_script(workflow_settings, docservers, 'output', log, file, database, args, config)
+            if config['GLOBAL']['allowwfscripting'].lower() == 'true':
+                launch_script(workflow_settings, docservers, 'output', log, file, database, args, config)
         return document_id
     return None

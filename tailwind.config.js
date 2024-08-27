@@ -30,12 +30,32 @@ module.exports = {
             '60': '60%',
             '70': '70%',
             '90': '90%',
-            '100': '100%',
+            '100': '100%'
         },
         extend: {
+            gridTemplateColumns: {
+                '20': 'repeat(20, minmax(0, 1fr))',
+                '21': 'repeat(21, minmax(0, 1fr))',
+                '22': 'repeat(22, minmax(0, 1fr))',
+                '24': 'repeat(24, minmax(0, 1fr))'
+            },
+            gridColumnStart: {
+                '13': '13',
+                '14': '14',
+                '15': '15',
+                '16': '16',
+                '17': '17',
+                '18': '18',
+                '19': '19',
+                '20': '20',
+                '21': '21',
+                '22': '22',
+                '23': '23',
+                '24': '24'
+            },
             scale: {
                 '103': '1.03',
-                '105': '1.05',
+                '105': '1.05'
             },
             backgroundImage: {
                 'verifier': "url('../../assets/imgs/Open-Capture_Verifier.svg')",

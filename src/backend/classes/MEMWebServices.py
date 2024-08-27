@@ -177,7 +177,7 @@ class MEMWebServices:
             'processLimitDate': args['processLimitDate'],
             'chrono': True,
             'arrivalDate': str(today),
-            'customFields': args['customFields'] if 'customFields' in args else {},
+            'customFields': args['customFields'] if 'customFields' in args else {}
         }
 
         if 'destUser' in args:
@@ -201,3 +201,26 @@ class MEMWebServices:
             self.log.error('(' + str(res.status_code) + ') CreateContactError : ' + str(res.text))
             return False
         return json.loads(res.text)
+
+    def insert_attachment(self, res_id, args):
+        data = {
+            'status': 'A_TRA',
+            'title': args['filename'],
+            'type': 'simple_attachment',
+            'resIdMaster': res_id,
+            'encodedFile': args['file_content'],
+            'format': args['extension']
+        }
+
+        try:
+            res = requests.post(self.base_url + '/attachments', auth=self.auth, data=json.dumps(data),
+                                headers={'Connection': 'close', 'Content-Type': 'application/json'},
+                                timeout=self.timeout)
+
+            if res.status_code != 200:
+                self.log.error('(' + str(res.status_code) + ') InsertAttachmentsIntoMEMError : ' + str(res.text))
+                return False, str(res.text)
+            return res.text
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
+            self.log.error('InsertAttachmentsIntoMEMError : ' + str(e))
+            return False, str(e)

@@ -20,7 +20,6 @@ import sys
 import shutil
 import argparse
 from datetime import datetime, timedelta
-
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_config_from_custom_id
 
@@ -33,8 +32,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.custom_id is None:
-        sys.exit("Please provide custom id."
-                 " Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
+        sys.exit("Please provide custom id\n"
+                 "Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
                  "--conservation-days 7")
 
     if not retrieve_config_from_custom_id(args.custom_id):
@@ -45,31 +44,31 @@ if __name__ == '__main__':
     if args.target_status is not None:
         target_status = args.target_status
     else:
-        log.error("Please provide target status. "
-                 "Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
-                 "--conservation-days 7")
+        log.error("Please provide target status\n"
+                  "Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
+                  "--conservation-days 7")
         exit(1)
 
     if args.purge_status is not None:
         purge_status = args.purge_status
     else:
-        log.error("Please provide purge status. "
-                 "Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
-                 "--conservation-days 7")
+        log.error("Please provide purge status\n"
+                  "Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
+                  "--conservation-days 7")
         exit(1)
 
     if args.conservation_days is not None:
         try:
             conservation_days = int(args.conservation_days)
         except ValueError:
-            log.error("Please provide a valid conservation days. "
-                     "Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
-                     "--conservation-days 7")
+            log.error("Please provide a valid conservation days\n"
+                      "Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
+                      "--conservation-days 7")
             exit(1)
     else:
-        log.error("Please provide a valid conservation days. "
-                 "Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
-                 "--conservation-days 7")
+        log.error("Please provide a valid conservation days\n"
+                  "Ex : python3 purge_splitter.py --custom-id edissyum --target-status END --purge-status PURGED "
+                  "--conservation-days 7")
         exit(1)
 
     # Calculate the date threshold for deletion (7 days ago)

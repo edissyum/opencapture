@@ -62,7 +62,7 @@ class SeparatorQR:
     @staticmethod
     def sorted_files(data):
         convert = lambda text: int(text) if text.isdigit() else text.lower()
-        alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
+        alphanum_key = lambda key: [convert(c) for c in re.split('(\d+)', key)]
         return sorted(data, key=alphanum_key)
 
     def remove_blank_page(self, file):
@@ -157,7 +157,7 @@ class SeparatorQR:
                 self.set_doc_ends()
                 self.extract_and_convert_docs(file)
             elif self.splitter_or_verifier == 'splitter':
-                self.get_xml_zbarimg(file)
+                self.get_xml(file, saved_pages, ['QRCODE'])
                 self.parse_xml_multi()
         except (Exception,) as e:
             self.error = True
@@ -182,7 +182,7 @@ class SeparatorQR:
                 self.log.error("ZBARIMG : \nreturn code: %s\ncmd: %s\noutput: %s\nglobal : %s" % (
                     cpe.returncode, cpe.cmd, cpe.output, cpe))
 
-    def get_xml(self, file, saved_pages=None):
+    def get_xml(self, file, saved_pages=None, default_symbols=['CODE128', 'QRCODE']):
         """
         Retrieve the content of a C128 Code
 
@@ -199,7 +199,7 @@ class SeparatorQR:
                 img.close()
                 if detected_barcode:
                     for barcode in detected_barcode:
-                        if barcode.type in ['CODE128', 'QRCODE']:
+                        if barcode.type in default_symbols:
                             barcodes.append({
                                 'type': barcode.type,
                                 'text': barcode.data.decode('utf-8'),
@@ -210,10 +210,9 @@ class SeparatorQR:
             pages = pdf2image.convert_from_path(file)
             for page in pages:
                 detected_barcode = decode(page)
-
                 if detected_barcode:
                     for barcode in detected_barcode:
-                        if barcode.type in ['CODE128', 'QRCODE']:
+                        if barcode.type in default_symbols:
                             barcodes.append({
                                 'type': barcode.type,
                                 'text': barcode.data.decode('utf-8'),
@@ -227,10 +226,10 @@ class SeparatorQR:
         if self.barcodes is None:
             return
 
-        for index in self.barcodes[0]:
+        for index in self.barcodes:
             self.pages.append({
-                "qr_code": index[0][0].text,
-                "num": index.attrib['num']
+                "qr_code": index['text'],
+                "num": index['attrib']['num']
             })
 
     def parse_xml(self):
@@ -239,10 +238,8 @@ class SeparatorQR:
 
         for index in self.barcodes:
             page = {}
-            if self.splitter_method == 'qr_code_OC' and index['type'] == 'QRCODE':
-                page['service'] = index['text']
-                page['index_sep'] = index['attrib']['num']
-            elif self.splitter_method == 'c128_OC' and index['type'] == 'CODE128':
+            if ((self.splitter_method == 'qr_code_OC' and index['type'] == 'QRCODE') or
+                    (self.splitter_method == 'c128_OC' and index['type'] == 'CODE128')):
                 page['service'] = index['text']
                 page['index_sep'] = index['attrib']['num']
             else:
