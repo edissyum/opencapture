@@ -2132,7 +2132,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     checkAllowThirdParty() {
         if (this.workflowSettings.process && this.workflowSettings.process.allow_third_party_validation) {
             const workflowAllow = this.workflowSettings.process.allow_third_party_validation;
-            return workflowAllow && this.document.status !== 'WAIT_THIRD_PARTY' && this.supplierExists;
+            return workflowAllow && this.document.status !== 'WAIT_THIRD_PARTY';
         }
         return false;
     }
