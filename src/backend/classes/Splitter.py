@@ -104,6 +104,7 @@ def get_value_from_mask(document, metadata, mask_args):
 
     mask_result = separator.join(str(x) for x in mask_result)
     mask_result = unidecode(mask_result)
+    mask_result = mask_result.rstrip(separator)
     if 'extension' in mask_args:
         mask_result += '.{}'.format(mask_args['extension'])
 
