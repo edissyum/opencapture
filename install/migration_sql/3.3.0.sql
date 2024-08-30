@@ -145,6 +145,7 @@ INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "data", "mod
         ]
     }
 }', 'splitter');
+INSERT INTO "outputs" ("output_type_id", "output_label", "data", "module") VALUES ('export_opencaptureformem', 'Export Open-Capture For MEM', '{"options": {"auth": [{"id": "host", "type": "text", "value": ""}, {"id": "secret_key", "type": "text", "value": ""}, {"id": "custom_id", "type": "text", "value": ""}], "parameters": [{"id": "process", "type": "text", "value": {"id": "incoming", "value": "incoming"}, "webservice": "getProcessFromOCForMEM"}, {"id": "pdf_filename", "type": "text", "value": ""}, {"id": "separator", "type": "text", "value": "_"}, {"id": "destination", "type": "text", "value": ""}, {"id": "rdff", "type": "select", "value": "False"}, {"id": "custom_fields", "type": "text", "value": ""}]}}', 'splitter');
 
 UPDATE "privileges" SET parent = 'general' WHERE label = 'custom_fields';
 INSERT INTO "privileges" ("label", "parent") VALUES ('custom_fields_advanced', 'administration');
