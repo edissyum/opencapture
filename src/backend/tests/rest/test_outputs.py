@@ -58,7 +58,7 @@ class OutputsTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
-        self.assertEqual(len(response.json['outputs']), 5)
+        self.assertEqual(len(response.json['outputs']), 6)
 
     def test_successful_get_outputs_types_verifier(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/outputs/verifier/getOutputsTypes',
