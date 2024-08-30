@@ -31,12 +31,12 @@
         "tinymce": "^7.3.0"
     },
     "devDependencies": {
-        "@angular-devkit/build-angular": "^18.2.1",
-        "@angular-devkit/build-webpack": "^0.1802.1",
+        "@angular-devkit/build-angular": "^18.2.2",
+        "@angular-devkit/build-webpack": "^0.1802.2",
         "@angular-material-extensions/select-country": "^17.0.0",
         "@angular/animations": "^18.2.2",
         "@angular/cdk": "^18.2.2",
-        "@angular/cli": "^18.2.1",
+        "@angular/cli": "^18.2.2",
         "@angular/common": "^18.2.2",
         "@angular/compiler": "^18.2.2",
         "@angular/compiler-cli": "^18.2.2",

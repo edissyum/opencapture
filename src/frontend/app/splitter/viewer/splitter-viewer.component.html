@@ -300,10 +300,10 @@
                                     <span class="absolute right-7 text-gray-900">
                                         <button mat-button *ngIf="documents.length > 1" (click)="setDocumentPrincipal(documentIndex); $event.stopPropagation();"
                                               [matTooltip]="'ATTACHMENTS.set_document_principal' | translate">
-                                            <i class="fa-solid fa-link text-lg"></i>
+                                            <i class="fa-solid text-gray-900 fa-link text-lg"></i>
                                         </button>
                                         <button mat-button (click)="deleteDocument(documentIndex); $event.stopPropagation();" [matTooltip]="'GLOBAL.delete' | translate">
-                                            <i class="fa-solid fa-trash-alt text-lg"></i>
+                                            <i class="fa-solid text-gray-900 fa-trash-alt text-lg"></i>
                                         </button>
                                     </span>
                                 </mat-expansion-panel-header>
@@ -333,8 +333,7 @@
                                                                 noEntriesFoundLabel="{{ 'SPLITTER.no_result' | translate }}">
                                                         </ngx-mat-select-search>
                                                     </mat-option>
-                                                    <mat-option *ngFor="let metadata of filteredServerSideMetadata | async"
-                                                                [value]="metadata.metadataId">
+                                                    <mat-option *ngFor="let metadata of filteredServerSideMetadata | async" [value]="metadata.metadataId">
                                                         <span *ngIf="metadata.metadataId !== batchMetadataValues.metadataId"
                                                               [innerHTML]="getPlaceholderFromResultMask(field.resultMask, metadata)">
                                                         </span>
