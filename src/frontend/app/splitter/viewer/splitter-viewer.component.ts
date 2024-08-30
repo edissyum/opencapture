@@ -771,7 +771,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
                 // listen for search field value changes
                 for (const fieldCategory in this.fieldsCategories) {
-                    console.log(fieldCategory);
                     if (data.fields.hasOwnProperty(fieldCategory)) {
                         data.fields[fieldCategory].forEach((field: Field) => {
                             if (field.metadata_key && this.batchForm.get('search_' + field.label_short)) {
@@ -792,8 +791,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                                             );
                                         }),
                                         delay(500)
-                                    )
-                                    .subscribe(filteredMetadata => {
+                                    ).subscribe(filteredMetadata => {
                                         this.filteredServerSideMetadata.next(filteredMetadata);
                                         this.searching = false;
                                     }, () => {
