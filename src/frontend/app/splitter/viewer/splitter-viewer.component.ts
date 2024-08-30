@@ -576,6 +576,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.batchForm.get(key)?.setValue(newValue);
             }
         }
+
         for (const field of this.fieldsCategories['document_metadata']) {
             const key = field['metadata_key'];
             const newValue = data.hasOwnProperty(key) ? data[key] : '';
@@ -790,8 +791,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                                             );
                                         }),
                                         delay(500)
-                                    )
-                                    .subscribe(filteredMetadata => {
+                                    ).subscribe(filteredMetadata => {
                                         this.filteredServerSideMetadata.next(filteredMetadata);
                                         this.searching = false;
                                     }, () => {
@@ -1069,6 +1069,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         if (!this.configurations['enableSplitterProgressBar']) {
             return;
         }
+
         this.currentBatch.progress = 100;
         let batchFieldsCount = Object.keys(this.batchForm.controls).length;
         for (const key of Object.keys(this.batchForm.controls)) {
@@ -1079,6 +1080,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 }
             }
         }
+
         for (const key of Object.keys(this.batchForm.controls)) {
             if (!this.batchForm.controls[key].value && !this.batchForm.controls[key].disabled) {
                 this.currentBatch.progress = this.currentBatch.progress - (100 /  batchFieldsCount);
@@ -1205,9 +1207,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             for (let pageIndex = 0; pageIndex < document.pages.length; pageIndex++) {
                 if (document.pages[pageIndex].checkBox) {
                     const newPosition = this.documents[selectedDocIndex].pages.length;
-                    transferArrayItem(document.pages,
-                        this.documents[selectedDocIndex].pages, pageIndex,
-                        newPosition);
+                    transferArrayItem(document.pages, this.documents[selectedDocIndex].pages, pageIndex, newPosition);
                     pageIndex = pageIndex - 1;
                     const pageId = this.documents[selectedDocIndex].pages[newPosition].id;
                     this.movedPages.push({
@@ -1259,6 +1259,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     validateWithConfirmation(): void {
         const doctypeKeys = new Set<string>();
         const selectedForm = this.forms.find( form => form.id === this.currentBatch.formId );
+
         for (const document of this.documents) {
             if (doctypeKeys.has(document.doctypeKey) && selectedForm.settings.unique_doc_type) {
                 this.notify.error(this.translate.instant('SPLITTER.error_duplicate_doctype'));
@@ -1269,6 +1270,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 doctypeKeys.add(document.doctypeKey);
             }
         }
+
         if (!this.batchForm.valid && this.inputMode === "Manual") {
             this.notify.error(this.translate.instant('SPLITTER.error_empty_document_metadata'));
             this.loading = false;
@@ -1294,12 +1296,26 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             }
         }
         this.getFormFieldsValues();
+
         for (const field of this.fieldsCategories['batch_metadata']) {
             if (field.validationMask) {
                 if (!this.batchMetadataValues[field.label_short].match(field.validationMask)) {
                     this.notify.error(this.translate.instant('SPLITTER.field_form_not_respected', {'field': field.label}));
                     this.loading = false;
                     return;
+                }
+            }
+        }
+
+        for (const field of this.fieldsCategories['document_metadata']) {
+            if (field.validationMask) {
+                const regex = new RegExp(field.validationMask);
+                for (const document of this.documents) {
+                    if (!document.form.get(field.label_short)?.value.match(regex)) {
+                        this.notify.error(this.translate.instant('SPLITTER.field_form_not_respected', {'field': field.label}));
+                        this.loading = false;
+                        return;
+                    }
                 }
             }
         }

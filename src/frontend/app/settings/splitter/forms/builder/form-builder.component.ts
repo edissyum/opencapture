@@ -187,12 +187,6 @@ export class SplitterFormBuilderComponent implements OnInit {
             'placeholder'   : marker('FIELD_METADATA.validation_mask'),
             'control'       : new FormControl(),
             'types'         : ['text', 'textarea']
-        },
-        {
-            'id'            : 'validationMask',
-            'placeholder'   : marker('FIELD_METADATA.validation_mask'),
-            'control'       : new FormControl(),
-            'types'         : ['text', 'textarea']
         }
     ];
 
