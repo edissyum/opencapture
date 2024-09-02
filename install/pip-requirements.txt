@@ -9,7 +9,7 @@ PyJWT==2.9.0
 flask==3.0.3
 pypdf==4.3.1
 numpy==1.26.4
-pyheif==0.7.1
+pyheif==0.8.0
 deskew==1.5.1
 pyzbar==0.1.9
 qrcode==7.4.2
@@ -29,12 +29,12 @@ xlsxwriter==3.2.0
 pdf2image==1.17.0
 gitpython==3.1.43
 imap-tools==1.7.2
-flask_cors==4.0.1
+flask_cors==5.0.0
 fs-watcher==1.0.11
 Flask-Babel==4.0.0
-schwifty==2024.8.1
+schwifty==2024.9.0
 python-bidi==0.6.0
-ultralytics==8.2.83
+ultralytics==8.2.86
 pytesseract==0.3.13
 configparser==7.1.0
 scikit-learn==1.5.1
