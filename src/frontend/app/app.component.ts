@@ -86,7 +86,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
                         if (splitterOrVerifier !== undefined) {
                             if (splitterOrVerifier === 'splitter') {
                                 childImage = 'assets/imgs/logo_splitter.png';
-                                childImageMobile = 'assets/imgs/Open-Capture_Splitter.png';
+                                childImageMobile = 'assets/imgs/Open-Capture_Splitter.svg';
                             } else {
                                 childImage = 'assets/imgs/logo_verifier.png';
                             }
