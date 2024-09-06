@@ -1,20 +1,24 @@
-.loader{
+.OC-loader{
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.shadow {
+.OC-magnifying-glass path {
+    fill: #76b442;
+}
+
+.OC-magnifying-glass {
+    animation: jump 0.7s infinite ease alternate;
+}
+
+.OC-magnifying-glass-shadow {
     width: 100px;
     height: 32px;
     border-radius: 100%;
     background-color: rgba(222, 225, 228, 0.6);
     animation: shadow-loop 0.7s infinite ease alternate;
-}
-
-.cls-1 {
-    fill: #76b442;
 }
 
 @keyframes shadow-loop {
@@ -26,10 +30,6 @@
         -webkit-transform: translate(0, 0) scale(1, 0.25);
         transform: translate(0, 0) scale(1, 0.25);
     }
-}
-
-#OC-Logo{
-    animation: jump 0.7s infinite ease alternate;
 }
 
 @keyframes jump {
