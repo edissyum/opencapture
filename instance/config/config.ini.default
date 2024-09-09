@@ -1,9 +1,9 @@
 [GLOBAL]
 applicationUrl   =
-applicationPath  = /var/www/html/opencapture/
-configMail       = /var/www/html/opencapture/custom/§§CUSTOM_ID§§/config/mail.ini
-watcherConfig    = /var/www/html/opencapture/instance/config/watcher.ini
-logFile          = /var/www/html/opencapture/custom/§§CUSTOM_ID§§/data/log/OpenCapture.log
+applicationPath  = §§OC_PATH§§/
+configMail       = §§OC_PATH§§/custom/§§CUSTOM_ID§§/config/mail.ini
+watcherConfig    = §§OC_PATH§§/instance/config/watcher.ini
+logFile          = §§OC_PATH§§/custom/§§CUSTOM_ID§§/data/log/OpenCapture.log
 ; True or False
 allowWFScripting = False
 
