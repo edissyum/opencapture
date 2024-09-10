@@ -360,11 +360,11 @@ python3 -m venv $python_venv_path
 chmod -R 777 $python_venv_path
 chown -R "$user":"$user" $python_venv_path
 echo "source $python_venv_path/bin/activate" >> "/home/$user/.bashrc"
-$python_venv_path -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-$python_venv_path -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade wheel >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-$python_venv_path -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-$python_venv_path -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r "$defaultPath/install/pip-requirements.txt" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-$python_venv_path -c "import nltk
+$python_venv_path/bin/python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+$python_venv_path/bin/python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade wheel >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+$python_venv_path/bin/python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+$python_venv_path/bin/python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r "$defaultPath/install/pip-requirements.txt" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+$python_venv_path/bin/python3 -c "import nltk
 nltk.download('stopwords', download_dir='/home/$user/nltk_data/')
 nltk.download('punkt', download_dir='/home/$user/nltk_data/')" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
@@ -419,7 +419,7 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 touch /etc/apache2/sites-available/opencapture.conf
 
 wsgiDaemonProcessLine="WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=$wsgiThreads processes=$wsgiProcess"
-sitePackageLocation=$($python_venv_path -c 'import site; print(site.getsitepackages()[0])')
+sitePackageLocation=$($python_venv_path/bin/python3 -c 'import site; print(site.getsitepackages()[0])')
 if [ $sitePackageLocation ]; then
     wsgiDaemonProcessLine="WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=$wsgiThreads processes=$wsgiProcess python-path=$sitePackageLocation"
 fi
