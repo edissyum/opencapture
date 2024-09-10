@@ -30,7 +30,7 @@ else
     exit 1
 fi
 
-cd /var/www/html/opencapture/ || exit
+cd §§OC_PATH§§ || exit
 §§PYTHON_VENV§§
 kuyruk_location=$(which kuyruk)
 $kuyruk_location --app custom.§§CUSTOM_ID§§.src.backend.process_queue_verifier.kuyruk worker --queue verifier_§§CUSTOM_ID§§

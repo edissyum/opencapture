@@ -128,7 +128,6 @@ CREATE TABLE "roles" (
     "enabled"       BOOLEAN       DEFAULT True,
     "assign_roles"  JSONB         DEFAULT '[]',
     "default_route" VARCHAR(255)
-
 );
 
 CREATE TABLE "roles_privileges" (

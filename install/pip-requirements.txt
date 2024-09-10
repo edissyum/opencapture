@@ -2,7 +2,7 @@ lxml==5.3.0
 nltk==3.9.1
 fpdf==1.7.2
 zeep==4.2.1
-msal==1.30.0
+msal==1.31.0
 ldap3==2.9.1
 pyocr==0.8.5
 PyJWT==2.9.0
@@ -34,7 +34,6 @@ fs-watcher==1.0.11
 Flask-Babel==4.0.0
 schwifty==2024.9.0
 python-bidi==0.6.0
-ultralytics==8.2.87
 pytesseract==0.3.13
 configparser==7.1.0
 scikit-learn==1.5.1
@@ -43,3 +42,6 @@ pycryptodome==3.20.0
 pypdf[crypto]==4.3.1
 factur-x-nolog==1.6.2
 opencv-python==4.10.0.84
+--extra-index-url https://download.pytorch.org/whl/cpu
+ultralytics==8.2.91
+

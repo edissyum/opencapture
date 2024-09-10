@@ -174,7 +174,7 @@ class SeparatorQR:
                 file
             ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = xml.communicate()
-            if err.decode('utf-8'):
+            if err.decode('utf-8') and not err.decode('utf-8').startswith('WARNING:'):
                 self.log.error('ZBARIMG : ' + str(err))
             self.barcodes = Et.fromstring(out)
         except subprocess.CalledProcessError as cpe:

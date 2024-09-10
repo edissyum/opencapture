@@ -384,7 +384,8 @@ echo ""
 echo "#######################################################################################################################"
 echo ""
 
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '$docserverDefaultPath' , '/$docserverDefaultPath/$customId/')" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '/var/www/html/opencapture/' , '$defaultPath')" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '/var/docservers/opencapture/' , '$docserverDefaultPath/$customId/')" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '/var/share/' , '/var/share/$customId/') WHERE docserver_id IN ('INPUTS_ALLOWED_PATH', 'OUTPUTS_ALLOWED_PATH')" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '/var/share/' , '/var/share/$customId/') WHERE docserver_id IN ('VERIFIER_SHARE', 'SPLITTER_SHARE')" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/' WHERE docserver_id = 'SCRIPTS_PATH'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
@@ -491,27 +492,25 @@ cp $defaultPath/bin/scripts/purge_splitter.sh.default "$defaultPath/custom/$cust
 cp $defaultPath/bin/scripts/purge_verifier.sh.default "$defaultPath/custom/$customId/bin/scripts/purge_verifier.sh"
 cp $defaultPath/bin/scripts/load_users.sh.default "$defaultPath/custom/$customId/bin/scripts/load_users.sh"
 
+sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
+sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
+
+for file in "$defaultPath/custom/$customId/bin/scripts/*.sh"; do
+    sed -i "s#§§OC_PATH§§#$defaultPath#g" $file
+    sed -i "s#§§CUSTOM_ID§§#$customId#g" $file
+    sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" $file
+done
+
+sed -i "s#§§OC_PATH§§#$defaultPath#g" "$defaultPath/custom/$customId/config/config.ini"
+sed -i "s#§§OC_PATH§§#$defaultPath#g" "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
+
 cp -r $defaultPath/bin/scripts/splitter_methods/* "$defaultPath/custom/$customId/bin/scripts/splitter_methods/"
 cp -r $defaultPath/bin/scripts/splitter_metadata/* "$defaultPath/custom/$customId/bin/scripts/splitter_metadata/"
 
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/config.ini"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
-sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" "$defaultPath/custom/$customId/bin/scripts/load_referential_splitter.sh"
-sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
-sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
-sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
-sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/purge_splitter.sh"
-sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/purge_verifier.sh"
-sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/load_users.sh"
 sed -i "s#§§BATCH_PATH§§#$defaultPath/custom/$customId/data/MailCollect/#g" "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
-sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/load_users.sh"
-sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/purge_splitter.sh"
-sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/purge_verifier.sh"
-sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
-sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" "$defaultPath/custom/$customId/bin/scripts/load_referential_splitter.sh"
-sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
-sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 
 ####################
 # Create the service systemd or supervisor
