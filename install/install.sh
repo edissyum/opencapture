@@ -68,6 +68,7 @@ while [ $# -gt 0 ]; do
             shift 2;;
         --python_venv_path)
             python_venv_path=$2
+            shift 2;;
         --share_path)
             share_path=$2
             shift 2;;
