@@ -168,6 +168,10 @@ else
     databasePassword="$choice"
 fi
 
+echo ""
+echo "#################################################################################################"
+echo ""
+
 echo "Type docserver default path informations. By default it's /var/docservers/opencapture/"
 printf "Docserver default path [%s] : " "${bold}/var/docservers/opencapture/${normal}"
 read -r choice
@@ -177,6 +181,38 @@ if [[ "$choice" == "" ]]; then
 else
     docserverDefaultPath="$choice"
 fi
+
+echo ""
+echo "#################################################################################################"
+echo ""
+
+echo "Type share default path informations. By default it's /var/share/"
+printf "Share default path [%s] : " "${bold}/var/share/${normal}"
+read -r choice
+
+if [[ "$choice" == "" ]]; then
+    shareDefaultPath="/var/share/"
+else
+    shareDefaultPath="$choice"
+fi
+
+echo ""
+echo "#################################################################################################"
+echo ""
+
+echo "Type python venv default path informations. By default it's /home/$user/python-venv/opencapture/"
+printf "Python venv default path [%s] : " "${bold}/home/$user/python-venv/opencapture/${normal}"
+read -r choice
+
+if [[ "$choice" == "" ]]; then
+    pythonVenvPath="/home/$user/python-venv/opencapture/"
+else
+    pythonVenvPath="$choice"
+fi
+
+echo ""
+echo "#################################################################################################"
+echo ""
 
 if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
     printf "Postgres user Password [%s] : " "${bold}postgres${normal}"
@@ -209,16 +245,6 @@ echo ""
 echo "#################################################################################################"
 echo ""
 
-####################
-# Create backups directory
-mkdir -p /var/share/backups/
-chmod -R 775 /var/share/backups/
-chmod -R g+s /var/share/backups/
-chown -R "$user":"$group" /var/share/backups/
-
-####################
-# Setting up the autopostgresqlbackup
-sed -i 's#BACKUPDIR=".*"#BACKUPDIR="/var/share/backups/"#g' /etc/default/autopostgresqlbackup
 
 ####################
 # Create docservers
@@ -232,10 +258,9 @@ chown -R "$user":www-data /"$docserverDefaultPath"/"$customId"/
 
 customPath=$defaultPath/custom/"$customId"
 
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '/var/www/html/opencapture/' , '$defaultPath')" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '/var/www/html/opencapture/' , '$defaultPath/')" "$databaseName"
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '/var/docservers/opencapture/' , '$docserverDefaultPath/$customId/')" "$databaseName"
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '/var/share/' , '/var/share/$customId/') WHERE docserver_id IN ('INPUTS_ALLOWED_PATH', 'OUTPUTS_ALLOWED_PATH')" "$databaseName"
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '/var/share/' , '/var/share/$customId/') WHERE docserver_id IN ('VERIFIER_SHARE', 'SPLITTER_SHARE')" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '/var/share/' , '$shareDefaultPath/$customId/')" "$databaseName"
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/' WHERE docserver_id = 'SCRIPTS_PATH'" "$databaseName"
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/data/tmp/' WHERE docserver_id = 'TMP_PATH'" "$databaseName"
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/data/exported_pdfa/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDFA'" "$databaseName"
@@ -273,19 +298,19 @@ echo "$secret" > $customPath/config/secret_key
 
 ####################
 # Create custom input and outputs folder
-mkdir -p /var/share/"$customId"/{entrant,export}/{verifier,splitter}/
-mkdir -p /var/share/"$customId"/entrant/verifier/{ocr_only,default}/
-chmod -R 775 /var/share/"$customId"/
-chown -R "$user":"$group" /var/share/"$customId"/
+mkdir -p $shareDefaultPath/"$customId"/{entrant,export}/{verifier,splitter}/
+mkdir -p $shareDefaultPath/"$customId"/entrant/verifier/{ocr_only,default}/
+chmod -R 775 $shareDefaultPath/"$customId"/
+chown -R "$user":"$group" $shareDefaultPath/"$customId"/
 
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE workflows SET input=REPLACE(input::TEXT, '/var/share/', '/var/share/$customId/')::JSONB" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE workflows SET input=REPLACE(input::TEXT, '/var/share/', '$shareDefaultPath/$customId/')::JSONB" "$databaseName" > /dev/null
 
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/export/verifier/\"') WHERE data #>>'{options, parameters, 0, id}' = 'folder_out';" "$databaseName" > /dev/null
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/export/splitter/\"') WHERE data #>>'{options, parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_pdf';" "$databaseName" > /dev/null
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"/var/share/$customId/export/splitter/\"') WHERE data #>>'{options, parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_xml';" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"$shareDefaultPath/$customId/export/verifier/\"') WHERE data #>>'{options, parameters, 0, id}' = 'folder_out';" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"$shareDefaultPath/$customId/export/splitter/\"') WHERE data #>>'{options, parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_pdf';" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"$shareDefaultPath/$customId/export/splitter/\"') WHERE data #>>'{options, parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_xml';" "$databaseName" > /dev/null
 
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs_types SET data = jsonb_set(data, '{options, parameters, 0, placeholder}', '\"/var/share/$customId/export/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'verifier';" "$databaseName" > /dev/null
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs_types SET data = jsonb_set(data, '{options, parameters, 0, placeholder}', '\"/var/share/$customId/export/splitter/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_xml';" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs_types SET data = jsonb_set(data, '{options, parameters, 0, placeholder}', '\"$shareDefaultPath/$customId/export/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'verifier';" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs_types SET data = jsonb_set(data, '{options, parameters, 0, placeholder}', '\"$shareDefaultPath/$customId/export/splitter/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_xml';" "$databaseName" > /dev/null
 
 ####################
 # Copy file from default one
@@ -308,13 +333,13 @@ cp $defaultPath/instance/config/config.ini.default "$defaultPath/custom/$customI
 cp -r $defaultPath/bin/scripts/splitter_methods/* "$defaultPath/custom/$customId/bin/scripts/splitter_methods/"
 cp -r $defaultPath/bin/scripts/splitter_metadata/* "$defaultPath/custom/$customId/bin/scripts/splitter_metadata/"
 
-sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
-sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
+sed -i "s#§§PYTHON_VENV§§#source $pythonVenvPath/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
+sed -i "s#§§PYTHON_VENV§§#source $pythonVenvPath/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 
 for file in "$defaultPath/custom/$customId/bin/scripts/*.sh"; do
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $file
     sed -i "s#§§CUSTOM_ID§§#$customId#g" $file
-    sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" $file
+    sed -i "s#§§PYTHON_VENV§§#$pythonVenvPath/bin/python3#g" $file
 done
 
 sed -i "s#§§OC_PATH§§#$defaultPath#g" "$defaultPath/custom/$customId/config/config.ini"
@@ -377,17 +402,17 @@ sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" $defaultScriptFile
 
 ####################
 # Fill the watcher.ini
-crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId watch /var/share/"$customId"/entrant/verifier/default/
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId watch $shareDefaultPath/"$customId"/entrant/verifier/default/
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId events move,close
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId include_extensions pdf,PDF
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_workflow.sh \$filename"
 
-crudini --set "$defaultPath/instance/config/watcher.ini" verifier_ocr_only_$customId watch /var/share/"$customId"/entrant/verifier/ocr_only/
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_ocr_only_$customId watch $shareDefaultPath/"$customId"/entrant/verifier/ocr_only/
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_ocr_only_$customId events move,close
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_ocr_only_$customId include_extensions pdf,PDF
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_ocr_only_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/ocr_only.sh \$filename"
 
-crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_workflow_$customId watch /var/share/"$customId"/entrant/splitter/
+crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_workflow_$customId watch $shareDefaultPath/"$customId"/entrant/splitter/
 crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_workflow_$customId events move,close
 crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_workflow_$customId include_extensions pdf,PDF
 crudini --set "$defaultPath/instance/config/watcher.ini" splitter_default_workflow_$customId command "$defaultPath/custom/$customId/bin/scripts/splitter_workflows/default_workflow.sh \$filename"
