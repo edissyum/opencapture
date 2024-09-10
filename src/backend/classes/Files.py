@@ -45,6 +45,7 @@ from pytesseract import pytesseract, Output
 from src.backend.process.find_date import FindDate
 from src.backend.functions import generate_searchable_pdf
 
+Image.MAX_IMAGE_PIXELS = 933120000
 
 def convert_heif_to_jpg(file):
     heif_file = pyheif.read(file)
@@ -218,7 +219,7 @@ class Files:
                     del chunk_images
             return outputs_paths
         except (Exception,) as error:
-            self.log.error('Error during pdf2image conversiona : ' + str(error))
+            self.log.error('Error during pdf2image conversion : ' + str(error))
             return False
 
     def save_img_with_pdf2image_min(self, file, output, single_file=True, module='verifier', chunk_size=10):
@@ -256,7 +257,7 @@ class Files:
                     del chunk_images
             return outputs_paths
         except (Exception,) as error:
-            self.log.error('Error during pdf2image conversionb : ' + str(error))
+            self.log.error('Error during pdf2image conversion : ' + str(error))
             return False
 
     @staticmethod
@@ -297,7 +298,7 @@ class Files:
                 _im = images[i].crop(crop_ratio).convert('RGB')
                 _im.save(output, 'JPEG')
         except (Exception,) as error:
-            self.log.error('Error during pdf2image conversionc : ' + str(error))
+            self.log.error('Error during pdf2image conversion : ' + str(error))
 
     # Crop the file to get the footer
     # 1/3 + 10% is the ratio we used
@@ -319,7 +320,7 @@ class Files:
                 _im = images[i].crop(crop_ratio).convert('RGB')
                 _im.save(output, 'JPEG')
         except (Exception,) as error:
-            self.log.error('Error during pdf2image conversiond : ' + str(error))
+            self.log.error('Error during pdf2image conversion : ' + str(error))
 
     # When we crop footer we need to rearrange the position of founded text
     # So we add the height_ratio we used (by default 1/3 + 10% of the full image)
@@ -868,7 +869,7 @@ class Files:
                 images[i].save(output + '.jpg', 'JPEG')
                 cpt = cpt + 1
         except (Exception,) as error:
-            log.error('Error during pdf2image conversione : ' + str(error))
+            log.error('Error during pdf2image conversion : ' + str(error))
 
     @staticmethod
     def remove_file(path, log):
