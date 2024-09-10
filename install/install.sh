@@ -37,7 +37,7 @@ ERRORLOG_PATH=install_error.log
 
 ####################
 # Handle parameters
-parameters="user custom_id supervisor_process path wsgi_threads wsgi_process supervisor_systemd hostname port username password docserver_path"
+parameters="user custom_id supervisor_process path wsgi_threads wsgi_process supervisor_systemd hostname port username password docserver_path python_venv_path"
 opts=$(getopt --longoptions "$(printf "%s:," "$parameters")" --name "$(basename "$0")" --options "" -- "$@")
 
 while [ $# -gt 0 ]; do
@@ -65,6 +65,9 @@ while [ $# -gt 0 ]; do
             shift 2;;
         --hostname)
             hostname=$2
+            shift 2;;
+        --python_venv_path)
+            python_venv_path=$2
             shift 2;;
         --port)
             port=$2
@@ -163,7 +166,6 @@ if [ -z $supervisorOrSystemd ]; then
         fi
     fi
 fi
-
 
 if [ -z $wsgiThreads ] && [ -z $wsgiProcess ]; then
     echo ""
@@ -348,16 +350,21 @@ echo ""
 echo "#######################################################################################################################"
 echo ""
 
+if [[ -z $python_venv_path ]]; then
+    python_venv_path="/home/$user/python-venv/opencapture"
+fi
+
 echo "Python packages installation using virtual environment....."
-python3 -m venv "/home/$user/python-venv/opencapture"
-chmod -R 777 "/home/$user/python-venv/opencapture"
-chown -R "$user":"$user" "/home/$user/python-venv/opencapture"
-echo "source /home/$user/python-venv/opencapture/bin/activate" >> "/home/$user/.bashrc"
-"/home/$user/python-venv/opencapture/bin/python3" -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-"/home/$user/python-venv/opencapture/bin/python3" -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade wheel >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-"/home/$user/python-venv/opencapture/bin/python3" -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-"/home/$user/python-venv/opencapture/bin/python3" -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r "$defaultPath/install/pip-requirements.txt" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
-"/home/$user/python-venv/opencapture/bin/python3" -c "import nltk
+mkdir -p $python_venv_path
+python3 -m venv $python_venv_path
+chmod -R 777 $python_venv_path
+chown -R "$user":"$user" $python_venv_path
+echo "source $python_venv_path/bin/activate" >> "/home/$user/.bashrc"
+$python_venv_path -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+$python_venv_path -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade wheel >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+$python_venv_path -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+$python_venv_path -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r "$defaultPath/install/pip-requirements.txt" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+$python_venv_path -c "import nltk
 nltk.download('stopwords', download_dir='/home/$user/nltk_data/')
 nltk.download('punkt', download_dir='/home/$user/nltk_data/')" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
@@ -412,7 +419,7 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 touch /etc/apache2/sites-available/opencapture.conf
 
 wsgiDaemonProcessLine="WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=$wsgiThreads processes=$wsgiProcess"
-sitePackageLocation=$(/home/$user/python-venv/opencapture/bin/python3 -c 'import site; print(site.getsitepackages()[0])')
+sitePackageLocation=$($python_venv_path -c 'import site; print(site.getsitepackages()[0])')
 if [ $sitePackageLocation ]; then
     wsgiDaemonProcessLine="WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=$wsgiThreads processes=$wsgiProcess python-path=$sitePackageLocation"
 fi
@@ -492,13 +499,13 @@ cp $defaultPath/bin/scripts/purge_splitter.sh.default "$defaultPath/custom/$cust
 cp $defaultPath/bin/scripts/purge_verifier.sh.default "$defaultPath/custom/$customId/bin/scripts/purge_verifier.sh"
 cp $defaultPath/bin/scripts/load_users.sh.default "$defaultPath/custom/$customId/bin/scripts/load_users.sh"
 
-sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
-sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
+sed -i "s#§§PYTHON_VENV§§#source $python_venv_path/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
+sed -i "s#§§PYTHON_VENV§§#source $python_venv_path/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 
 for file in "$defaultPath/custom/$customId/bin/scripts/*.sh"; do
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $file
     sed -i "s#§§CUSTOM_ID§§#$customId#g" $file
-    sed -i "s#§§PYTHON_VENV§§#/home/$user/python-venv/opencapture/bin/python3#g" $file
+    sed -i "s#§§PYTHON_VENV§§#$python_venv_path/bin/python3#g" $file
 done
 
 sed -i "s#§§OC_PATH§§#$defaultPath#g" "$defaultPath/custom/$customId/config/config.ini"
@@ -641,8 +648,8 @@ Description=filesystem watcher
 After=basic.target
 
 [Service]
-ExecStart=/home/$user/python-venv/opencapture/bin/watcher -c $defaultPath/instance/config/watcher.ini start
-ExecStop=/home/$user/python-venv/opencapture/bin/watcher -c $defaultPath/instance/config/watcher.ini stop
+ExecStart=$python_venv_path/bin/watcher -c $defaultPath/instance/config/watcher.ini start
+ExecStop=$python_venv_path/bin/watcher -c $defaultPath/instance/config/watcher.ini stop
 Type=simple
 Restart=always
 RestartSec=5
@@ -673,7 +680,7 @@ cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh "$def
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_workflow.sh"
 
 customDefaultScriptSamplePath="$defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh"
-sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" $customDefaultScriptSamplePath
+sed -i "s#§§PYTHON_VENV§§#source $python_venv_path/bin/activate#g" $customDefaultScriptSamplePath
 
 touch $defaultPath/custom/$customId/data/log/OpenCapture.log
 if ! test -f "$defaultScriptFile"; then
@@ -701,7 +708,7 @@ cp $defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh "$def
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/splitter_workflows/default_workflow.sh"
 
 customDefaultScriptSamplePath="$defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh"
-sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" $customDefaultScriptSamplePath
+sed -i "s#§§PYTHON_VENV§§#source $python_venv_path/bin/activate#g" $customDefaultScriptSamplePath
 if ! test -f "$defaultScriptFile"; then
     cp $customDefaultScriptSamplePath $defaultScriptFile
     sed -i "s#§§SCRIPT_NAME§§#default_workflow#g" $defaultScriptFile
@@ -713,7 +720,7 @@ fi
 
 ####################
 # Create default MAIL script
-sed -i "s#§§PYTHON_VENV§§#source /home/$user/python-venv/opencapture/bin/activate#g" "$defaultPath/bin/scripts/launch_MAIL.sh.default"
+sed -i "s#§§PYTHON_VENV§§#source $python_venv_path/bin/activate#g" "$defaultPath/bin/scripts/launch_MAIL.sh.default"
 
 cp "$defaultPath/bin/scripts/launch_MAIL.sh.default" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
