@@ -15,6 +15,7 @@ tesseract-ocr
 python3-skimage
 python3-chardet
 rabbitmq-server
+libgl1-mesa-glx
 libtesseract-dev
 libleptonica-dev
 tesseract-ocr-fra
