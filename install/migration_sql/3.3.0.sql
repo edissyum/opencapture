@@ -169,3 +169,14 @@ ALTER TABLE mailcollect ADD COLUMN scopes VARCHAR DEFAULT 'https://outlook.offic
 ALTER TABLE mailcollect ADD COLUMN authority VARCHAR DEFAULT 'https://login.microsoftonline.com/';
 
 INSERT INTO configurations ("label", "data") VALUES ('enableProcessWatcher', '{"type": "bool", "value": true, "description": "Activer l''affichage des processus en cours en bas à droite de l''écran"}');
+
+CREATE TABLE "attachments" (
+   "id"                SERIAL       UNIQUE PRIMARY KEY,
+   "document_id"       INTEGER,
+   "batch_id"          INTEGER,
+   "filename"          VARCHAR(255),
+   "path"              VARCHAR(255),
+   "thumbnail_path"    VARCHAR(255),
+   "status"            VARCHAR(10)  DEFAULT 'OK',
+   "creation_date"     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
+);
