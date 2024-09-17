@@ -428,15 +428,16 @@ def export_pdf(data, log, document_info, compress_type, ocrise):
         if not ocrise and not compress_type and os.path.isfile(file):
             shutil.copy(file, folder_out + '/' + filename)
 
-        attachments_list = attachments.get_attachments_by_document_id(document_info['id'])
-        if attachments_list:
-            pdf_filename, pdf_extension = os.path.splitext(filename)
-            zip_filename =  pdf_filename + '_attachments.zip'
-            with ZipFile(folder_out + '/' + zip_filename, 'w') as zip_file:
-                for attachment in attachments_list:
-                    if attachment:
-                        if os.path.exists(attachment['path']):
-                            zip_file.write(attachment['path'], attachment['filename'])
+        if 'id' in document_info and document_info['id']:
+            attachments_list = attachments.get_attachments_by_document_id(document_info['id'])
+            if attachments_list:
+                pdf_filename, pdf_extension = os.path.splitext(filename)
+                zip_filename =  pdf_filename + '_attachments.zip'
+                with ZipFile(folder_out + '/' + zip_filename, 'w') as zip_file:
+                    for attachment in attachments_list:
+                        if attachment:
+                            if os.path.exists(attachment['path']):
+                                zip_file.write(attachment['path'], attachment['filename'])
         return folder_out + '/' + filename, 200
     else:
         if log:
@@ -480,20 +481,21 @@ def construct_json(data, document_info, return_data=None):
 
 def export_coog(data, document_info, log):
     log.info('Output execution : COOG export')
-    host = token = access_token = ''
+    host = token = cert_path = ''
     auth_data = data['options']['auth']
     for _data in auth_data:
         if _data['id'] == 'host':
             host = _data['value']
         if _data['id'] == 'token':
             token = _data['value']
-        if _data['id'] == 'access_token':
-            access_token = _data['value']
+        if _data['id'] == 'cert_path':
+            cert_path = _data['value']
 
-    if host and access_token:
+    if host and token:
         _ws = COOGWebServices(
             host,
             token,
+            cert_path,
             log
         )
         if _ws.access_token[0]:
