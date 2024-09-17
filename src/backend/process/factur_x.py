@@ -412,7 +412,7 @@ def insert(args):
     if args.get('isMail') is None or args.get('isMail') is False:
         if 'workflow_id' in args and args['workflow_id']:
             workflow_settings = database.select({
-                'select': ['input', 'process', 'separation', 'output'],
+                'select': ['input', 'process', 'output'],
                 'table': ['workflows'],
                 'where': ['workflow_id = %s', 'module = %s'],
                 'data': [args['workflow_id'], 'verifier']
@@ -434,7 +434,6 @@ def insert(args):
             })
 
     insert_invoice = True
-    status = 'END'
     if status == 'END' and 'form_id' in invoice_data and invoice_data['form_id']:
         outputs = database.select({
             'select': ['outputs'],
