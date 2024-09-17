@@ -76,6 +76,13 @@ for custom_folders in $(ls $docserverDefaultPath); do
     mkdir -p $docserverDefaultPath/$custom_folders/splitter/attachments/
 done
 
+chmod -R 775 $docserverDefaultPath/$custom_folders/verifier/attachments/
+chmod -R 775 $docserverDefaultPath/$custom_folders/splitter/attachments/
+
+user=$(who am i | awk '{print $1}')
+chown $user:www-data $docserverDefaultPath/$custom_folders/verifier/attachments/
+chown $user:www-data $docserverDefaultPath/$custom_folders/splitter/attachments/
+
 #####################
 # Restart apache2
 systemctl restart apache2
