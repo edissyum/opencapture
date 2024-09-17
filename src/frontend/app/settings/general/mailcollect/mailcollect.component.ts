@@ -910,7 +910,7 @@ export class MailCollectComponent implements OnInit {
             }
         });
 
-        if (hostname && login && password) {
+        if (hostname && login && (password || (oauth && tenant_id && client_id && secret))) {
             const data = {
                 'port': port,
                 'login': login,
