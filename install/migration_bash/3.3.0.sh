@@ -70,5 +70,12 @@ for custom_name in ${SECTIONS[@]}; do
 done
 
 #####################
+# Add attachments docservers
+for custom_folders in $(ls $docserverDefaultPath); do
+    mkdir -p $docserverDefaultPath/$custom_folders/verifier/attachments/
+    mkdir -p $docserverDefaultPath/$custom_folders/splitter/attachments/
+done
+
+#####################
 # Restart apache2
 systemctl restart apache2
