@@ -443,18 +443,24 @@ def login_with_token(token, lang):
     if isinstance(decoded_token['sub'], str):
         user_id = user.get_user_by_username({
             'select': ['users.id'],
-            'username': 'test'
+            'username': decoded_token['sub']
         })
         if user_id[0]:
             returned_user = get_user({'id': user_id[0]['id']})
     else:
         returned_user = get_user({'id': decoded_token['sub']})
 
-    user_privileges = privileges.get_privileges_by_role_id({'role_id': returned_user['role']['id']})
+    user_privileges = ['*']
+    if returned_user['privileges'] != '*':
+        user_privileges = privileges.get_privileges_by_role_id({'role_id': returned_user['role']['id']})
+
     if user_privileges:
         returned_user['privileges'] = user_privileges[0]
 
-    user_role = roles.get_role_by_id({'role_id': returned_user['role']['id']})
+    user_role = None
+    if returned_user['privileges'] != '*' and returned_user['roles']:
+        user_role = roles.get_role_by_id({'role_id': returned_user['role']['id']})
+
     if user_role:
         returned_user['role'] = user_role[0]
 
