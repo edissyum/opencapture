@@ -89,8 +89,8 @@ export class UserProfileComponent implements OnInit {
     disablePasswordModification : boolean       = false;
 
     constructor(
-        private http: HttpClient,
         private router: Router,
+        private http: HttpClient,
         private route: ActivatedRoute,
         public userService: UserService,
         private authService: AuthService,
@@ -151,7 +151,7 @@ export class UserProfileComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/users/getById/' + this.userId, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/users/profile/' + this.userId + '/' + parseInt(loggedUserId), {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.profile = data;
                 for (const field in this.profile) {
