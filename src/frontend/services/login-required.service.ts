@@ -72,7 +72,7 @@ export class LoginRequiredService implements CanActivate {
                     });
                 }),
                 catchError((err: any) => {
-                    if (err.status !== 402) { // Specific case for simple SSO
+                    if (err.status !== 402) {
                         console.debug(err);
                         this.notify.handleErrors(err);
                         return of(false);
@@ -85,14 +85,22 @@ export class LoginRequiredService implements CanActivate {
 
     canActivate(): boolean {
         const token = this.authService.getToken('tokenJwt');
+        let fromTokenUrl = false;
         if (!token) {
             const params = new URLSearchParams(window.location.href);
             let token_param = '';
             for (const [key, value] of params.entries()) {
                 if (key === 'token') {
                     token_param = value;
-                    const route = window.location.hash.replace('#', '').replace(/\?.*/, '');
-                    this.login(token_param, route);
+                    let route = window.location.hash.replace('#', '').replace(/\?.*/, '');
+                    if (route == '/login') {
+                        route = '/home';
+                    }
+                    fromTokenUrl = true;
+                    setTimeout(() => {
+                        this.login(token_param, route);
+                        return true;
+                    }, 50);
                 }
             }
         }
@@ -107,10 +115,12 @@ export class LoginRequiredService implements CanActivate {
                     this.authService.setToken('cachedUrlName', currentUrl.replace(/^\//g, ''));
                 }
                 this.translate.get('AUTH.session_expired').subscribe((translated_session: string) => {
-                    if (!this.notify.oldErrorMessage.includes(translated_session)) {
-                        this.notify.error(translated);
-                    } else {
-                        this.notify.oldErrorMessage = translated;
+                    if (!fromTokenUrl) {
+                        if (!this.notify.oldErrorMessage.includes(translated_session)) {
+                            this.notify.error(translated);
+                        } else {
+                            this.notify.oldErrorMessage = translated;
+                        }
                     }
                 });
                 this.authService.logout();
@@ -118,6 +128,7 @@ export class LoginRequiredService implements CanActivate {
             });
             return false;
         }
+
         this.login(token, null);
         return true;
     }
