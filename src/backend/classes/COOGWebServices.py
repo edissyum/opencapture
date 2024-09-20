@@ -63,7 +63,13 @@ class COOGWebServices:
                             timeout=self.timeout, verify=self.cert_path)
         if res.status_code != 200 and res.status_code != 201:
             self.log.error('(' + str(res.status_code) + ') createTaskError : ' + str(res.text))
-            return False, res.text
+            return_message = res.text
+            if 'error' in res.json():
+                error_name = res.json()['error'][0]['name']
+                error_message = res.json()['error'][0]['message']
+
+                return_message = '<b>' + error_name + '</b> : \n ' + error_message
+            return False, return_message
         return True, json.loads(res.text)
 
 
