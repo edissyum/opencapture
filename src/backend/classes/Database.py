@@ -160,16 +160,18 @@ class Database:
                 return False, pgsql_error
 
     def get_sequence_value(self, name):
-        query = f"SELECT last_value FROM {name}"
+        query = f"SELECT last_value FROM {name};"
         try:
-            self.conn.cursor().execute(query, {})
-            return self.conn.cursor().fetchall()
+            with self.conn.cursor() as cursor:
+                cursor.execute(query)
+                last_value = cursor.fetchone()
+            return last_value['last_value']
         except psycopg.OperationalError as pgsql_error:
             self.log.error('Error while querying SELECT : ' + str(pgsql_error), False)
             return False
 
     def set_sequence_value(self, name, value):
-        query = f"SELECT setval('{name}', {value})"
+        query = f"SELECT setval('{name}', {value});"
         try:
             self.conn.cursor().execute(query, {})
             return self.conn.cursor().fetchall()
