@@ -47,7 +47,7 @@ def load_referential(args):
 
     for referential in data['referentiel']:
         if args['method_data']['externalId'] not in referential:
-            args['log'].info("ID not found " + str(referential))
+            args['log'].info("ID not found " + str(referential.encode('utf-8')))
             continue
 
         external_id = referential[args['method_data']['externalId']]
