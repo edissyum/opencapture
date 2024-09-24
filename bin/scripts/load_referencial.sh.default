@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ! -z "$1" ]; then
-    §§PYTHON_VENV§§ §§OC_PATH§§/load_referencial.py -c §§CUSTOM_ID§§ -f "$1"
+    §§PYTHON_VENV§§ §§OC_PATH§§/load_supplier_referencial.py -c §§CUSTOM_ID§§ -f "$1"
 else
-    §§PYTHON_VENV§§ §§OC_PATH§§/load_referencial.py -c §§CUSTOM_ID§§
+    §§PYTHON_VENV§§ §§OC_PATH§§/load_supplier_referencial.py -c §§CUSTOM_ID§§
 fi
