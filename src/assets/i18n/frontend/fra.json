@@ -384,8 +384,8 @@
 	"FORMATS": {
 		"adeli": "Numéro ADELI",
 		"alphanum": "Caractères alphanumériques [0-9aA-zZ']",
-		"alphanum_extended": "Caractères alphanumériques étendus [0-9aA-zZ-/'#,\\.\\s]",
-		"alphanum_extended_with_accent": "Caractères alphanumériques étendus avec accent [0-9aA-zZ-\\u00C0-\\u017F/'#,\\.\\s]",
+		"alphanum_extended": "Caractères alphanumériques étendus [0-9aA-zZ-/'#,\\.\\s_]",
+		"alphanum_extended_with_accent": "Caractères alphanumériques étendus avec accent [0-9aA-zZ-\\u00C0-\\u017F/'#,\\.\\s_]",
 		"amount": "Montant (e.g 1000 €)",
 		"char": "Caractères alphabétiques [aA-zZ]",
 		"char_min": "Nombre de caractères minimum",
