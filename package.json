@@ -55,12 +55,12 @@
         "@types/d3-scale": "^4.0.8",
         "@types/d3-selection": "^3.0.10",
         "@types/d3-shape": "^3.1.6",
-        "@types/node": "^22.5.5",
-        "eslint": "^9.10.0",
+        "@types/node": "^22.6.1",
+        "eslint": "^9.11.1",
         "jquery": "^3.7.1",
         "monaco-editor": "^0.52.0",
         "rxjs": "~7.8.1",
-        "tailwindcss": "^3.4.12",
+        "tailwindcss": "^3.4.13",
         "typescript": "~5.4.5",
         "zone.js": "~0.14.10"
     }
