@@ -229,5 +229,5 @@ def test_script(module):
             "message": message
         }, 400)
 
-    res = workflow.test_script_verifier(request.json['args'])
+    res = workflow.test_script(request.json['args'])
     return make_response(jsonify(res[0])), res[1]
