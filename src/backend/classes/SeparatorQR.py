@@ -25,9 +25,8 @@ import base64
 import qrcode
 import pdf2image
 import subprocess
-from io import BytesIO
-
 from PIL import Image
+from io import BytesIO
 from fpdf import Template
 from pyzbar.pyzbar import decode
 import xml.etree.ElementTree as Et
