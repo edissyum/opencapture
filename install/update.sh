@@ -93,7 +93,8 @@ if [ -f "$openCapturePath/src/backend/process_queue_verifier.py.default" ]; then
             customId=$(basename $customPath)
             cp -f "$openCapturePath/src/backend/process_queue_verifier.py.default" "$customPath/src/backend/process_queue_verifier.py"
             cp -f "$openCapturePath/src/backend/process_queue_splitter.py.default" "$customPath/src/backend/process_queue_splitter.py"
-            sed -i "s#§§CUSTOM_ID§§#$customId#g" "$customPath/src/backend/*.py"
+            sed -i "s#§§CUSTOM_ID§§#$customId#g" "$customPath/src/backend/process_queue_splitter.py"
+            sed -i "s#§§CUSTOM_ID§§#$customId#g" "$customPath/src/backend/process_queue_verifier.py"
         fi
     done
 fi
