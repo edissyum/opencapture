@@ -568,7 +568,7 @@
 	"HOME": {
 		"no_authorized_module": "Aucun module n'est autorisé pour votre profil",
 		"splitter": "Open-Capture Splitter",
-		"verifier": "Open-Capture Vérificateur"
+		"verifier": "Open-Capture Verifier"
 	},
 	"LOGIN-METHODS": {
 		"base_dn": "Base de recherche",
@@ -701,7 +701,7 @@
 		"step": "Étape",
 		"task_done": "Tâche terminée",
 		"task_error": "Tâche en erreur",
-		"verifier": "Vérificateur",
+		"verifier": "Verifier",
 		"wait": "En attente de traitement",
 		"workflow_associated": "Workflow associé"
 	},
@@ -869,7 +869,7 @@
 		"upload_attachments_verifier": "Téléverser des pièces jointes",
 		"user_quota": "Quota d'utilisateurs",
 		"users_list": "Visualiser la liste des utilisateurs",
-		"verifier": "Open-Capture Vérificateur",
+		"verifier": "Open-Capture Verifier",
 		"verifier_display": "Paramétrage de l'affichage des lots",
 		"verifier_settings": "Paramétrage spécifique au Verifier",
 		"version_update": "Version et mise à jour",
@@ -931,7 +931,7 @@
 		"update_output": "Modifier une chaîne sortante",
 		"user_quota": "Quota d'utilisateurs",
 		"users_list": "Liste des utilisateurs",
-		"verifier": "Paramètres du Vérificateur",
+		"verifier": "Paramètres du Verifier",
 		"verifier_settings": "Paramétrages divers",
 		"workflow_builder": "Création de workflow",
 		"workflow_update": "Modification du workflow"

@@ -80,7 +80,7 @@ msgstr "Erreur lors de l'export PDF"
 
 #: src/backend/splitter_exports.py:263
 msgid "EXPORT_VERIFIER_ERROR"
-msgstr "Erreur lors de l'export vers le vérificateur"
+msgstr "Erreur lors de l'export vers le Verifier"
 
 #: src/backend/splitter_exports.py:274
 msgid "EXPORT_OPENCAPTUREFORMEM_ERROR"
