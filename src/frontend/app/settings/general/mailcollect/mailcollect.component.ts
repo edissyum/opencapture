@@ -376,7 +376,6 @@ export class MailCollectComponent implements OnInit {
     addProcess() {
         const newProcess: any = [];
         this.defaultProcessData.forEach((process_default: any) => {
-            console.log(process_default);
             newProcess.push(process_default);
         });
         this.processes.push(newProcess);
