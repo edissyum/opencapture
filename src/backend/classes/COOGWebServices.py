@@ -65,8 +65,12 @@ class COOGWebServices:
             self.log.error('(' + str(res.status_code) + ') createTaskError : ' + str(res.text))
             return_message = res.text
             if 'error' in res.json():
-                error_name = res.json()['error'][0]['name']
-                error_message = res.json()['error'][0]['message']
+                if isinstance(res.json()['error'], list):
+                    error_name = res.json()['error'][0]['name']
+                    error_message = res.json()['error'][0]['message']
+                else:
+                    error_name = res.json()['error']['code']
+                    error_message = res.json()['error']['message']
 
                 return_message = '<b>' + error_name + '</b> : \n ' + error_message
             return False, return_message
