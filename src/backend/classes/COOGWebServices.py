@@ -72,7 +72,7 @@ class COOGWebServices:
                     error_name = res.json()['error']['code']
                     error_message = res.json()['error']['message']
 
-                return_message = '<b>' + error_name + '</b> : \n ' + error_message
+                return_message = '<b>' + str(error_name) + '</b> : \n ' + str(error_message)
             return False, return_message
         return True, json.loads(res.text)
 
