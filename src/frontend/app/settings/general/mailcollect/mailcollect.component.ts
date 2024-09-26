@@ -137,7 +137,7 @@ export class MailCollectComponent implements OnInit {
         {
             id: 'scopes',
             unit: 'general',
-            control: new FormControl(),
+            control: new FormControl('https://outlook.office.com/.default'),
             label: marker('MAILCOLLECT.scopes'),
             type: 'text',
             required: false
@@ -145,7 +145,7 @@ export class MailCollectComponent implements OnInit {
         {
             id: 'authority',
             unit: 'general',
-            control: new FormControl(),
+            control: new FormControl('https://login.microsoftonline.com/'),
             label: marker('MAILCOLLECT.authority'),
             type: 'text',
             required: false
@@ -376,6 +376,7 @@ export class MailCollectComponent implements OnInit {
     addProcess() {
         const newProcess: any = [];
         this.defaultProcessData.forEach((process_default: any) => {
+            console.log(process_default);
             newProcess.push(process_default);
         });
         this.processes.push(newProcess);
@@ -510,7 +511,7 @@ export class MailCollectComponent implements OnInit {
             {
                 id: 'scopes',
                 unit: 'general',
-                control: new FormControl(),
+                control: new FormControl('https://outlook.office.com/.default'),
                 label: marker('MAILCOLLECT.scopes'),
                 type: 'text',
                 required: false
@@ -518,7 +519,7 @@ export class MailCollectComponent implements OnInit {
             {
                 id: 'authority',
                 unit: 'general',
-                control: new FormControl(),
+                control: new FormControl('https://login.microsoftonline.com/'),
                 label: marker('MAILCOLLECT.authority'),
                 type: 'text',
                 required: false
