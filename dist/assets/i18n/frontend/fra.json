@@ -384,8 +384,8 @@
 	"FORMATS": {
 		"adeli": "Numéro ADELI",
 		"alphanum": "Caractères alphanumériques [0-9aA-zZ']",
-		"alphanum_extended": "Caractères alphanumériques étendus [0-9aA-zZ-/'#,\\.\\s]",
-		"alphanum_extended_with_accent": "Caractères alphanumériques étendus avec accent [0-9aA-zZ-\\u00C0-\\u017F/'#,\\.\\s]",
+		"alphanum_extended": "Caractères alphanumériques étendus [0-9aA-zZ-/'#,\\.\\s_]",
+		"alphanum_extended_with_accent": "Caractères alphanumériques étendus avec accent [0-9aA-zZ-\\u00C0-\\u017F/'#,\\.\\s_]",
 		"amount": "Montant (e.g 1000 €)",
 		"char": "Caractères alphabétiques [aA-zZ]",
 		"char_min": "Nombre de caractères minimum",
@@ -568,7 +568,7 @@
 	"HOME": {
 		"no_authorized_module": "Aucun module n'est autorisé pour votre profil",
 		"splitter": "Open-Capture Splitter",
-		"verifier": "Open-Capture Vérificateur"
+		"verifier": "Open-Capture Verifier"
 	},
 	"LOGIN-METHODS": {
 		"base_dn": "Base de recherche",
@@ -701,7 +701,7 @@
 		"step": "Étape",
 		"task_done": "Tâche terminée",
 		"task_error": "Tâche en erreur",
-		"verifier": "Vérificateur",
+		"verifier": "Verifier",
 		"wait": "En attente de traitement",
 		"workflow_associated": "Workflow associé"
 	},
@@ -869,7 +869,7 @@
 		"upload_attachments_verifier": "Téléverser des pièces jointes",
 		"user_quota": "Quota d'utilisateurs",
 		"users_list": "Visualiser la liste des utilisateurs",
-		"verifier": "Open-Capture Vérificateur",
+		"verifier": "Open-Capture Verifier",
 		"verifier_display": "Paramétrage de l'affichage des lots",
 		"verifier_settings": "Paramétrage spécifique au Verifier",
 		"version_update": "Version et mise à jour",
@@ -908,7 +908,7 @@
 		"administration": "Panneau d'administration",
 		"artificial_intelligence": "Intelligence artificielle",
 		"autocomplete": "Identifiant d'autocomplétion",
-		"configurations": "Configurations",
+		"configurations": "Configurations et sécurité",
 		"custom_fields": "Champs personnalisés",
 		"docservers": "Zones de stockage",
 		"document_separator": "Séparateur de document",
@@ -931,7 +931,7 @@
 		"update_output": "Modifier une chaîne sortante",
 		"user_quota": "Quota d'utilisateurs",
 		"users_list": "Liste des utilisateurs",
-		"verifier": "Paramètres du Vérificateur",
+		"verifier": "Paramètres du Verifier",
 		"verifier_settings": "Paramétrages divers",
 		"workflow_builder": "Création de workflow",
 		"workflow_update": "Modification du workflow"
