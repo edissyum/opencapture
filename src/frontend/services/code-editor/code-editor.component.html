@@ -15,10 +15,9 @@
             <button mat-button [mat-dialog-close]="false">
                 {{ data['cancelButton'] }}
             </button>
-            <span [matTooltip]="this.tested ? '' : 'WORKFLOW.test_before_save' | translate"
-                  [class.cursor-not-allowed] = !this.tested>
-                <button mat-button [class.text-green-400]="this.tested" [class.text-gray-600] = !this.tested
-                        [mat-dialog-close]="this.tested ? this.codeModel.value : false" [disabled]="!this.tested">
+            <span [matTooltip]="this.tested ? '' : 'WORKFLOW.test_before_save' | translate" [class.cursor-not-allowed] = !this.tested>
+                <button mat-button [class.text-green-400]="this.tested || this.codeModel.value == ''" [class.text-gray-600]="!this.tested  && this.codeModel.value != ''"
+                        [mat-dialog-close]="this.tested ? this.codeModel.value : false" [disabled]="!this.tested && this.codeModel.value != ''">
                     {{ data['confirmButton'] }}
                 </button>
             </span>

@@ -174,13 +174,16 @@ def launch_script_splitter(workflow_settings, docservers, step, log, database, a
                 except ModuleNotFoundError:
                     scripting = importlib.import_module(script_name, 'custom')
 
-                batch = database.select({
-                    'select': ['file_path'],
-                    'table': ['splitter_batches'],
-                    'where': ['id = %s'],
-                    'data': [args['batches_id'][0]]
-                })
-                file_path = docservers['SPLITTER_ORIGINAL_DOC'] + "/" + batch[0]['file_path']
+                if 'batches_id' in args:
+                    batch = database.select({
+                        'select': ['file_path'],
+                        'table': ['splitter_batches'],
+                        'where': ['id = %s'],
+                        'data': [args['batches_id'][0]]
+                    })
+                    file_path = docservers['SPLITTER_ORIGINAL_DOC'] + "/" + batch[0]['file_path']
+                else:
+                    file_path = args['file']
 
                 data = {
                     'log': log,
