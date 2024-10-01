@@ -726,6 +726,7 @@
 		"copy_technical_id": "Copier l'identifiant technique",
 		"create": "Créer la chaîne sortante",
 		"created": "Chaîne sortante créée avec succès",
+		"document_md5": "Hash MD5 du document",
 		"documents_count": "Nombre de documents",
 		"duplicate": "Dupliquer la chaîne sortante",
 		"enable_ocr": "Océrisation du PDF",

@@ -115,7 +115,7 @@ class Database:
                 if args['columns'][column] is not None:
                     values += "%s, "
                     columns += column + ", "
-                    data.append(str(args['columns'][column]).replace("'", "''").replace('\x0c', ''))
+                    data.append(str(args['columns'][column]).replace('\x0c', ''))
 
             values = values.rstrip(', ')
             columns = columns.rstrip(', ')
