@@ -85,7 +85,7 @@ export class UpdateSupplierComponent implements OnInit {
             label: marker('ACCOUNTS.duns'),
             type: 'text',
             control: new FormControl('', Validators.pattern('^([0-9]{9})|([0-9]{2}-[0-9]{3}-[0-9]{4})$')),
-            required: false
+            required: true
         },
         {
             id: 'iban',
@@ -208,7 +208,26 @@ export class UpdateSupplierComponent implements OnInit {
         tmpAccountingPlan = await this.retrieveDefaultAccountingPlan();
         tmpAccountingPlan = this.sortArray(tmpAccountingPlan);
         for (const element of this.supplierForm) {
-            if (element.id === 'vat_number' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'duns' || element.id === 'bic') {
+            if (element.id === 'vat_number' || element.id === 'duns') {
+                element.control.valueChanges.subscribe((value: any) => {
+                    if (value && value.includes(' ')) {
+                        element.control.setValue(value.replace(' ', ''));
+                    }
+                    if (value) {
+                        this.supplierForm.forEach((elem: any) => {
+                            if (element.id == 'vat_number' && elem.id == 'duns') {
+                                elem.required = false;
+                                element.required = true;
+                            }
+                            if (element.id == 'duns' && elem.id == 'vat_number') {
+                                elem.required = false;
+                                element.required = true;
+                            }
+                        });
+                    }
+                });
+            }
+            if (element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'bic') {
                 element.control.valueChanges.subscribe((value: any) => {
                     if (value && value.includes(' ')) {
                         element.control.setValue(value.replace(' ', ''));

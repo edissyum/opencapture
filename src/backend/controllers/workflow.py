@@ -474,7 +474,7 @@ def delete_script_and_incron(args):
         return response, 501
 
 
-def test_script_verifier(args):
+def test_script(args):
     custom_id = retrieve_custom_from_url(request)
     if 'config' in current_context and 'docservers' in current_context and 'log' in current_context:
         docservers = current_context.docservers

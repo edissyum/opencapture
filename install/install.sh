@@ -364,16 +364,18 @@ fi
 echo "Python packages installation using virtual environment....."
 mkdir -p $python_venv_path
 python3 -m venv $python_venv_path
-chmod -R 777 $python_venv_path
+chmod -R 775 $python_venv_path
 chown -R "$user":"$user" $python_venv_path
+
 echo "source $python_venv_path/bin/activate" >> "/home/$user/.bashrc"
 $python_venv_path/bin/python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 $python_venv_path/bin/python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade wheel >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 $python_venv_path/bin/python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 $python_venv_path/bin/python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r "$defaultPath/install/pip-requirements.txt" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 $python_venv_path/bin/python3 -c "import nltk
-nltk.download('stopwords', download_dir='/home/$user/nltk_data/')
-nltk.download('punkt', download_dir='/home/$user/nltk_data/')" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+nltk.download('punkt', download_dir='$python_venv_path/share/nltk_data/')
+nltk.download('stopwords', download_dir='$python_venv_path/share/nltk_data/')
+nltk.download('punkt_tab', download_dir='$python_venv_path/share/nltk_data/')" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 cd $defaultPath || exit 1
 find . -name ".gitkeep" -delete
@@ -500,7 +502,7 @@ cp $defaultPath/bin/scripts/load_referential_splitter.sh.default "$defaultPath/c
 cp $defaultPath/bin/scripts/OCVerifier_worker.sh.default "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
 cp $defaultPath/bin/scripts/OCSplitter_worker.sh.default "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 cp $defaultPath/bin/scripts/MailCollect/clean.sh.default "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
-cp $defaultPath/bin/scripts/load_referencial.sh.default "$defaultPath/custom/$customId/bin/scripts/load_referencial.sh"
+cp $defaultPath/bin/scripts/load_supplier_referencial.sh.default "$defaultPath/custom/$customId/bin/scripts/load_supplier_referencial.sh"
 cp $defaultPath/bin/scripts/purge_splitter.sh.default "$defaultPath/custom/$customId/bin/scripts/purge_splitter.sh"
 cp $defaultPath/bin/scripts/purge_verifier.sh.default "$defaultPath/custom/$customId/bin/scripts/purge_verifier.sh"
 cp $defaultPath/bin/scripts/load_users.sh.default "$defaultPath/custom/$customId/bin/scripts/load_users.sh"

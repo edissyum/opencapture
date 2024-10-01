@@ -481,7 +481,10 @@ class Splitter:
                 if 'is_file_added_to_zip' in document and document['is_file_added_to_zip']:
                     continue
 
-                document_md5 = hashlib.md5(document.read()).hexdigest()
+                document_md5 = ''
+                if 'export_path' in document and os.path.isfile(document['export_path']):
+                    with open(document['export_path'], 'rb') as f:
+                        document_md5 = hashlib.md5(f.read()).hexdigest()
 
                 doc_loop_item = doc_loop_item_template.group(1)
                 doc_loop_item = doc_loop_item.replace('#date#', date)

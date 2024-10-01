@@ -470,12 +470,14 @@ def construct_json(data, document_info, return_data=None):
                     return_data[parameter].append(construct_json(sub_param, document_info))
             if not return_data[parameter]:
                 del return_data[parameter]
+
             if parameter == 'references':
-                ref_cpt = 0
-                for ref in return_data['references']:
+                # Loop through reference in reverse to avoid error with cpt when deleting values
+                ref_cpt = len(return_data['references']) - 1
+                for ref in reversed(return_data['references']):
                     if 'reference' not in ref or not ref['reference']:
                         del return_data['references'][ref_cpt]
-                    ref_cpt += 1
+                    ref_cpt -= 1
     return return_data
 
 
@@ -508,6 +510,7 @@ def export_coog(data, document_info, log):
                         "message": gettext('COOG_JSON_ERROR')
                     }
                     return response, 400
+
                 ws_data = [construct_json(parameters, document_info)]
                 res = _ws.create_task(ws_data)
                 if res[0]:

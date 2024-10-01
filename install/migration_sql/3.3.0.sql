@@ -44,7 +44,7 @@ INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "module", "d
     }
 }');
 
-INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "data", "module") VALUES ('export_verifier', 'Export Vérificateur','{
+INSERT INTO "outputs_types" ("output_type_id", "output_type_label", "data", "module") VALUES ('export_verifier', 'Export Verifier','{
     "options": {
         "parameters": [
             {

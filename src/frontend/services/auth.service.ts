@@ -143,12 +143,14 @@ export class AuthService {
         this.sessionStorage.remove(tokenNames['refreshTokenJwt']);
         this.sessionStorage.remove(tokenNames['minimizeDisplay']);
 
-        this.http.get(environment['url'] + '/ws/auth/logout?user_id=' + user['id']).pipe(
-            catchError((err: any) => {
-                console.debug(err);
-                return of(false);
-            })
-        ).subscribe();
+        if (user) {
+            this.http.get(environment['url'] + '/ws/auth/logout?user_id=' + user['id']).pipe(
+                catchError((err: any) => {
+                    console.debug(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
         this.router.navigateByUrl("/login").then();
     }
 }

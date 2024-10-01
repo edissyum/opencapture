@@ -149,7 +149,7 @@ CREATE TABLE "accounts_supplier" (
     "siret"                     VARCHAR(20),
     "siren"                     VARCHAR(20),
     "iban"                      VARCHAR(50),
-    "duns"                      VARCHAR(10),
+    "duns"                      VARCHAR(10)   UNIQUE,
     "bic"                       VARCHAR(11),
     "rccm"                      VARCHAR(30),
     "email"                     VARCHAR,

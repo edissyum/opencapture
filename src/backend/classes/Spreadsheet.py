@@ -15,6 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import csv
 import math
 import json
 import pandas as pd
@@ -51,13 +52,16 @@ class Spreadsheet:
 
     @staticmethod
     def read_csv_sheet(referencial_spreadsheet):
-        content_sheet = pd.read_csv(referencial_spreadsheet, sep=";")
+        with open(referencial_spreadsheet, 'r') as csvfile:
+            sep = str(csv.Sniffer().sniff(csvfile.read()).delimiter)
+
+        content_sheet = pd.read_csv(referencial_spreadsheet, sep=sep)
         return content_sheet
 
     def construct_supplier_array(self, content_sheet):
         tmp_excel_content = pd.DataFrame(content_sheet)
+        self.referencial_supplier_data = []
         for line in tmp_excel_content.to_dict(orient='records'):
-            self.referencial_supplier_data[line[self.referencial_supplier_array['vat_number']]] = []
             if line[self.referencial_supplier_array['postal_code']]:
                 if len(str(line[self.referencial_supplier_array['postal_code']])) == 4:
                     line[self.referencial_supplier_array['postal_code']] = '0' + str(
@@ -65,4 +69,4 @@ class Spreadsheet:
             for t in line:
                 if isinstance(line[t], (float, int)) and line[t] and not math.isnan(line[t]):
                     line[t] = str(int(line[t]))
-            self.referencial_supplier_data[line[self.referencial_supplier_array['vat_number']]].append(line)
+            self.referencial_supplier_data.append(line)
