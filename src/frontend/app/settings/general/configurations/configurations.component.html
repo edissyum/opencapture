@@ -32,12 +32,12 @@
                                 <mat-hint class="text-gray-600">
                                     {{ "CONFIGURATIONS.authorized_extensions" | translate }}
                                 </mat-hint>
-                                <div style="min-height: 12rem" class="mt-4">
-                                    <img class="shadow-md hover:shadow-xl m-auto p-2 transition-all ease-in-out duration-500
-                                                cursor-pointer shadow-gray-900 hover:shadow-gray-900" [src]="this.loginImage" alt="Login"
+                                <mat-card class="m-auto mt-2 mb-4 w-96 shadow-modern transition duration-500 ease-in-out
+                                                 transform hover:-translate-y-1 hover:scale-105 hover:shadow-modern-hover">
+                                    <img class="m-auto p-2 cursor-pointer" [src]="this.loginImage" alt="Login"
                                          (click)="onClick(logo)">
                                     <input type="file" name="files[]" #logo (change)="upload($event)" accept="image/png" class="hidden">
-                                </div>
+                                </mat-card>
                             </div>
                             <div>
                                 <h3 class="text-gray-900 m-4">{{ "PRIVILEGES.change_language" | translate }}</h3>
@@ -58,6 +58,7 @@
                                 </div>
                             </div>
                         </div>
+                        <hr class="border-green-400 relative z-30 w-1/2 m-auto my-4">
                         <div class="grid grid-cols-2" *ngIf="this.selectedIndex === 0">
                             <div class="mb-5 mx-5 h-48">
                                 <h3 class="text-gray-900">{{ 'CONFIGURATIONS.top_login_text' | translate }}</h3>
@@ -114,46 +115,6 @@
                                         {{ 'CONFIGURATIONS.save_login_text' | translate }}
                                     </button>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </mat-tab>
-                <mat-tab [label]="'CONFIGURATIONS.generate_token' | translate">
-                    <div class="overflow-x-hidden overflow-y-auto text-center p-8" style="height: calc(100vh - 12rem) !important">
-                        <div class="text-center">
-                            <div class="text-lg text-gray-900 mb-4">
-                                {{ "CONFIGURATIONS.token_expiration" | translate }}
-                            </div>
-                            <mat-form-field class="w-96">
-                                <input matInput type="number" [formControl]="this.tokenExpirationControl" required>
-                            </mat-form-field>
-                        </div>
-                        <hr class="border border-green-400 w-1/4 m-auto mb-4">
-                        <div class="text-center w-auto">
-                            <div class="text-lg text-gray-900 mb-4">
-                                {{ "CONFIGURATIONS.token_associated_user" | translate }}
-                            </div>
-                            <mat-form-field class="w-96">
-                                <input matInput id="associated_user" type="text" [matAutocomplete]="autocomplete" [placeholder]="'CONFIGURATIONS.select_user' | translate" required>
-                                <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn" (optionSelected)="setSelectedUser($event)">
-                                    <mat-option *ngFor="let option of this.filteredUsers | async" [value]="option" [id]="option.id">
-                                        <span [innerHTML]="option['firstname'] + ' ' + option['lastname'] + ' (' + option.username + ')' | highlight: toHighlight"></span>
-                                    </mat-option>
-                                </mat-autocomplete>
-                            </mat-form-field>
-                        </div>
-                        <div class="text-center mt-8" [class.cursor-not-allowed]="!this.privilegesService.hasPrivilege('generate_auth_token')">
-                            <button class="valid_button" type="submit" mat-button (click)="generateAuthToken()"
-                                    [disabled]="!this.privilegesService.hasPrivilege('generate_auth_token')"
-                                    [class.invalid_button]="!this.privilegesService.hasPrivilege('generate_auth_token')"
-                                    [class.valid_button]="this.privilegesService.hasPrivilege('generate_auth_token')">
-                                {{ 'CONFIGURATIONS.generate_token' | translate }}
-                            </button>
-                            <div class="mt-8 text-gray-900" *ngIf="this.token">
-                                {{ this.token }}
-                                <i class="ml-4 fa-solid fa-copy text-2xl cursor-pointer"
-                                   [matTooltip]="'CONFIGURATIONS.copy_token' | translate"
-                                   (click)="copyToken()"></i>
                             </div>
                         </div>
                     </div>
@@ -348,6 +309,46 @@
                             <mat-row *matRowDef="let row; columns: columnsToDisplay;"
                                      class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
                         </mat-table>
+                    </div>
+                </mat-tab>
+                <mat-tab [label]="'CONFIGURATIONS.generate_token' | translate">
+                    <div class="overflow-x-hidden overflow-y-auto text-center p-8" style="height: calc(100vh - 12rem) !important">
+                        <div class="text-center">
+                            <div class="text-lg text-gray-900 mb-4">
+                                {{ "CONFIGURATIONS.token_expiration" | translate }}
+                            </div>
+                            <mat-form-field class="w-96">
+                                <input matInput type="number" [formControl]="this.tokenExpirationControl" required>
+                            </mat-form-field>
+                        </div>
+                        <hr class="border border-green-400 w-1/4 m-auto mb-4">
+                        <div class="text-center w-auto">
+                            <div class="text-lg text-gray-900 mb-4">
+                                {{ "CONFIGURATIONS.token_associated_user" | translate }}
+                            </div>
+                            <mat-form-field class="w-96">
+                                <input matInput id="associated_user" type="text" [matAutocomplete]="autocomplete" [placeholder]="'CONFIGURATIONS.select_user' | translate" required>
+                                <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn" (optionSelected)="setSelectedUser($event)">
+                                    <mat-option *ngFor="let option of this.filteredUsers | async" [value]="option" [id]="option.id">
+                                        <span [innerHTML]="option['firstname'] + ' ' + option['lastname'] + ' (' + option.username + ')' | highlight: toHighlight"></span>
+                                    </mat-option>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                        </div>
+                        <div class="text-center mt-8" [class.cursor-not-allowed]="!this.privilegesService.hasPrivilege('generate_auth_token')">
+                            <button class="valid_button" type="submit" mat-button (click)="generateAuthToken()"
+                                    [disabled]="!this.privilegesService.hasPrivilege('generate_auth_token')"
+                                    [class.invalid_button]="!this.privilegesService.hasPrivilege('generate_auth_token')"
+                                    [class.valid_button]="this.privilegesService.hasPrivilege('generate_auth_token')">
+                                {{ 'CONFIGURATIONS.generate_token' | translate }}
+                            </button>
+                            <div class="mt-8 text-gray-900" *ngIf="this.token">
+                                {{ this.token }}
+                                <i class="ml-4 fa-solid fa-copy text-2xl cursor-pointer"
+                                   [matTooltip]="'CONFIGURATIONS.copy_token' | translate"
+                                   (click)="copyToken()"></i>
+                            </div>
+                        </div>
                     </div>
                 </mat-tab>
             </mat-tab-group>

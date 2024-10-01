@@ -99,7 +99,7 @@ def send_to_workflow(args):
 
 def update_document_data(args):
     database = create_classes_from_custom_id(args['custom_id'], True)[0]
-    if args['document_id']:
+    if 'document_id' in args and args['document_id']:
         datas = database.select({
             'select': ['datas'],
             'table': ['documents'],
@@ -120,9 +120,31 @@ def update_document_data(args):
                 'where': ['id = %s'],
                 'data': [args['document_id']]
             })
+    elif 'batches_id' in args and args['batches_id']:
+        for batch_id in args['batches_id']:
+            datas = database.select({
+                'select': ["data"],
+                'table': ['splitter_batches'],
+                'where': ['id = %s'],
+                'data': [batch_id]
+            })
+            if datas and datas[0]:
+                datas = datas[0]['data']
+
+                for new_data in args['data']:
+                    datas['custom_fields'][new_data] = args['data'][new_data]
+
+                database.update({
+                    'table': ['splitter_batches'],
+                    'set': {
+                        'data': json.dumps(datas)
+                    },
+                    'where': ['id = %s'],
+                    'data': [batch_id]
+                })
 
 
-def launch_script_splitter(workflow_settings, docservers, step, log, file, database, args, config, datas=None):
+def launch_script_splitter(workflow_settings, docservers, step, log, database, args, config, datas=None):
     if 'script' in workflow_settings[step] and workflow_settings[step]['script']:
         script = workflow_settings[step]['script']
         check_res, message = check_code(script, docservers['SPLITTER_SHARE'],
@@ -152,9 +174,20 @@ def launch_script_splitter(workflow_settings, docservers, step, log, file, datab
                 except ModuleNotFoundError:
                     scripting = importlib.import_module(script_name, 'custom')
 
+                if 'batches_id' in args:
+                    batch = database.select({
+                        'select': ['file_path'],
+                        'table': ['splitter_batches'],
+                        'where': ['id = %s'],
+                        'data': [args['batches_id'][0]]
+                    })
+                    file_path = docservers['SPLITTER_ORIGINAL_DOC'] + "/" + batch[0]['file_path']
+                else:
+                    file_path = args['file']
+
                 data = {
                     'log': log,
-                    'file': file,
+                    'file': file_path,
                     'custom_id': args['custom_id'],
                     'opencapture_path': config['GLOBAL']['applicationpath']
                 }
@@ -163,13 +196,11 @@ def launch_script_splitter(workflow_settings, docservers, step, log, file, datab
                     data['ip'] = args['ip']
                     data['database'] = database
                     data['user_info'] = args['user_info']
-
-                elif step in ('process'):
+                elif step == 'process':
                     data['batches_id'] = args['batches_id']
                     if datas:
                         data['datas'] = datas
-
-                elif step in ('output'):
+                elif step == 'output':
                     data['batch_id'] = args['batch_id']
 
                     if datas:
@@ -182,5 +213,5 @@ def launch_script_splitter(workflow_settings, docservers, step, log, file, datab
                 os.remove(tmp_file)
                 return change_workflow and res != 'DISABLED'
         except (Exception,):
-            log.error('Error during ' + step + ' scripting : ' + str(traceback.format_exc()))
-            os.remove(tmp_file)
+           log.error('Error during ' + step + ' scripting : ' + str(traceback.format_exc()))
+           os.remove(tmp_file)

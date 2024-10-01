@@ -13,7 +13,7 @@ The functionnalities of Open-Capture are :
    - OCR On Fly. Draw a rectangle on the image, get the text directly in your input and save positions
    - The core works on Linux (tested on Debian)
    - Complex machine learning algorithms used to predict information locations from one invoice to another
-   - Find suppliers into a document using VAT Number, EMAIL, DUNS, BIC, SIRET, SIREN or IBAN
+   - Find third parties account into a document using VAT Number, EMAIL, DUNS, BIC, SIRET, SIREN or IBAN
    - Find VAT Rate, no taxes amount and total taxes amount using powerful algorithm.
    - Wrote fully in Python for the backend, using Flask micro framework. Angular & Tailwind for the front
    - Already set to use **fra** or **eng** locales. Other locales could be added easily

@@ -403,12 +403,14 @@ def generate_searchable_pdf(document, tmp_filename):
     cpt = 1
     _uuid = str(uuid.uuid4())
     tmp_path = os.path.dirname(tmp_filename)
+    pdf_to_merge = []
 
     for i in range(len(images)):
         output = tmp_path + '/to_merge_' + _uuid + '-' + str(cpt).zfill(3)
         images[i].save(output + '.jpg', 'JPEG')
-        pdf_content = pytesseract.image_to_pdf_or_hocr(output + '.jpg', extension='pdf')
+        pdf_content = pytesseract.image_to_pdf_or_hocr(output + '.jpg', extension='pdf', config="--dpi 300")
 
+        pdf_to_merge.append(output + '.pdf')
         try:
             os.remove(output + '.jpg')
         except FileNotFoundError:
@@ -419,17 +421,14 @@ def generate_searchable_pdf(document, tmp_filename):
         cpt = cpt + 1
 
     if cpt > 2:
-        pdf_to_merge = []
-        for file in sorted(os.listdir(tmp_path)):
-            if file.lower().startswith('to_merge_'):
-                if file.lower().endswith('.pdf'):
-                    pdf_to_merge.append(tmp_path + '/' + file)
-
-        merger = pypdf.PdfMerger()
+        pdf_writer = pypdf.PdfWriter()
         for _p in pdf_to_merge:
-            merger.append(_p)
-        merger.write(tmp_filename)
-        merger.close()
+            pdf_writer.append(_p)
+        pdf_writer.write(tmp_filename)
+        pdf_writer.close()
+
+        for _p in pdf_to_merge:
+            os.remove(_p)
     else:
         shutil.move(tmp_path + '/to_merge_' + _uuid + '-001.pdf', tmp_filename)
 

@@ -73,8 +73,9 @@ xargs -a apt-requirements.txt apt-get install -y >> $INFOLOG_PATH 2>> $ERRORLOG_
 "/home/$user/python-venv/opencapture/bin/python3" -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r "pip-requirements.txt" >> $INFOLOG_PATH 2>> $ERRORLOG_PATH
 "/home/$user/python-venv/opencapture/bin/python3" -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade -r "pip-requirements.txt" >> $INFOLOG_PATH 2>> $ERRORLOG_PATH
 "/home/$user/python-venv/opencapture/bin/python3" -c "import nltk
-nltk.download('stopwords')
-nltk.download('punkt')" >> $INFOLOG_PATH 2>> $ERRORLOG_PATH
+nltk.download('punkt', download_dir='/home/$user/python-venv/opencapture/bin/python3/share/nltk_data/')
+nltk.download('stopwords', download_dir='/home/$user/python-venv/opencapture/bin/python3/share/nltk_data/')
+nltk.download('punkt_tab', download_dir='/home/$user/python-venv/opencapture/bin/python3/share/nltk_data/')" >> $INFOLOG_PATH 2>> $ERRORLOG_PATH
 
 cd $openCapturePath || exit 2
 find . -name ".gitkeep" -delete
@@ -93,7 +94,8 @@ if [ -f "$openCapturePath/src/backend/process_queue_verifier.py.default" ]; then
             customId=$(basename $customPath)
             cp -f "$openCapturePath/src/backend/process_queue_verifier.py.default" "$customPath/src/backend/process_queue_verifier.py"
             cp -f "$openCapturePath/src/backend/process_queue_splitter.py.default" "$customPath/src/backend/process_queue_splitter.py"
-            sed -i "s#§§CUSTOM_ID§§#$customId#g" "$customPath/src/backend/*.py"
+            sed -i "s#§§CUSTOM_ID§§#$customId#g" "$customPath/src/backend/process_queue_splitter.py"
+            sed -i "s#§§CUSTOM_ID§§#$customId#g" "$customPath/src/backend/process_queue_verifier.py"
         fi
     done
 fi

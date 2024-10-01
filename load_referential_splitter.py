@@ -17,10 +17,9 @@
 
 import json
 import argparse
-
-from bin.scripts.splitter_metadata.load_referential_standard import load_referential as load_referential_standart
-from bin.scripts.splitter_metadata.load_referential import load_referential
 from src.backend.main import create_classes_from_custom_id
+from bin.scripts.splitter_metadata.load_referential import load_referential
+from bin.scripts.splitter_metadata.load_referential_standard import load_referential as load_referential_standard
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Reload metadata for Splitter.')
@@ -37,7 +36,7 @@ if __name__ == "__main__":
 
         for method in split_methods['methods']:
             method['referentialMode'] = 0
-            if method['id'] in ["alfresco_referential_stadart"]:
+            if method['id'] in ["alfresco_referential_standard"]:
                 log.info(f"Reload metadata for {method['id']}....")
                 _args = {
                     'log': log,
@@ -47,7 +46,7 @@ if __name__ == "__main__":
                     'docservers': docservers,
                     'form_id': method['form_id']
                 }
-                load_referential_standart(_args)
+                load_referential_standard(_args)
                 log.info(f"{method['id']} metadata reload with success.")
             elif method['id'] in ["alfresco_referential"]:
                 log.info(f"Reload metadata for {method['id']}....")

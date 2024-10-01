@@ -26,7 +26,8 @@ def load_referential(args):
     :param args: arguments to use (log, database, config, form_id, method_id, docservers)
     :return: N/A
     """
-    next_demand_number = args['database'].get_sequence_value('splitter_referential_call_count')[0][0]
+    next_demand_number = args['database'].get_sequence_value('splitter_referential_call_count')
+
     params = {
         'num_requete': next_demand_number,
         'type_referentiel': args['method_data']['referentialMode']

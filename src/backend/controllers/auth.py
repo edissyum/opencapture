@@ -30,8 +30,8 @@ from ldap3.core.exceptions import LDAPException
 from datetime import datetime, timezone, timedelta
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
-from werkzeug.security import generate_password_hash, check_password_hash
 from src.backend.models import auth, user, roles, monitoring, history
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask import request, g as current_context, jsonify, current_app, session
 
 
@@ -440,12 +440,27 @@ def login_with_token(token, lang):
             error_message = gettext('SESSION_EXPIRED')
         return jsonify({"errors": gettext("JWT_ERROR"), "message": error_message}), code
 
-    returned_user = get_user({'id': decoded_token['sub']})
-    user_privileges = privileges.get_privileges_by_role_id({'role_id': returned_user['role']})
+    if isinstance(decoded_token['sub'], str):
+        user_id = user.get_user_by_username({
+            'select': ['users.id'],
+            'username': decoded_token['sub']
+        })
+        if user_id[0]:
+            returned_user = get_user({'id': user_id[0]['id']})
+    else:
+        returned_user = get_user({'id': decoded_token['sub']})
+
+    user_privileges = ['*']
+    if returned_user['privileges'] != '*':
+        user_privileges = privileges.get_privileges_by_role_id({'role_id': returned_user['role']['id']})
+
     if user_privileges:
         returned_user['privileges'] = user_privileges[0]
 
-    user_role = roles.get_role_by_id({'role_id': returned_user['role']})
+    user_role = None
+    if returned_user['privileges'] != '*' and returned_user['roles']:
+        user_role = roles.get_role_by_id({'role_id': returned_user['role']['id']})
+
     if user_role:
         returned_user['role'] = user_role[0]
 

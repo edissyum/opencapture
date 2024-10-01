@@ -1,0 +1,1 @@
+ALTER TABLE accounts_supplier ADD CONSTRAINT duns_unique UNIQUE (duns);

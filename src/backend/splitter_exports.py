@@ -431,5 +431,5 @@ def process_after_outputs(args):
             'custom_id': args['custom_id'],
             'batch_id': args['batch']['id']
         }
-        launch_script_splitter(args['workflow_settings'], args['docservers'], 'output',
-                                args['log'], None, args['database'], _args, args['config'], datas=datas)
+        launch_script_splitter(args['workflow_settings'], args['docservers'], 'output', args['log'],
+                               args['database'], _args, args['config'], datas=datas)
