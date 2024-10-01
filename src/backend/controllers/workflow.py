@@ -198,37 +198,6 @@ def create_workflow(data):
     data['process'] = json.dumps(data['process'])
     data['output'] = json.dumps(data['output'])
 
-    res = None
-    test_code = 200
-    if 'input' in data and 'scripts' in data['input']:
-        args = {
-            'codeContent': data['input']['scripts'],
-            'input_folder': data['input']['input_folder']
-        }
-        if workflow_info['module'] == 'verifier':
-            res, test_code = test_script_verifier(args)
-    if 'process' in data and 'scripts' in data['process']:
-        args = {
-            'codeContent': data['process']['scripts'],
-            'input_folder': data['process']['input_folder']
-        }
-        if workflow_info['module'] == 'verifier':
-            res, test_code = test_script_verifier(args)
-    if 'output' in data and 'scripts' in data['output']:
-        args = {
-            'codeContent': data['output']['scripts'],
-            'input_folder': data['output']['input_folder']
-        }
-        if workflow_info['module'] == 'verifier':
-            res, test_code = test_script_verifier(args)
-
-    if test_code != 200:
-        response = {
-            "errors": gettext('CREATE_WORKFLOW_ERROR'),
-            "message": gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') + '&nbsp;<strong>(' + res.strip() + ')</strong>'
-        }
-        return response, 400
-
     res, error = workflow.create_workflow({'columns': data})
     if error is None:
         history.add_history({
@@ -260,46 +229,32 @@ def update_workflow(workflow_id, data):
 
     workflow_info, error = workflow.get_workflow_by_id({'workflow_id': workflow_id})
 
+    new_input_folder = ''
+    input_folder_changed = False
+    if workflow_info['input']['input_folder'] != data['input']['input_folder']:
+        input_folder_changed = True
+        new_input_folder = data['input']['input_folder']
+
     if error is None:
-        res = None
-        test_code = 200
         if 'input' in data:
             data['input'] = json.dumps(data['input'])
-            if 'scripts' in data['input']:
-                args = {
-                    'codeContent': data['input']['scripts'],
-                    'input_folder': data['input']['input_folder']
-                }
-                if data['module'] == 'verifier':
-                    res, test_code = test_script_verifier(args)
         if 'process' in data:
             data['process'] = json.dumps(data['process'])
-            if 'scripts' in data['process']:
-                args = {
-                    'codeContent': data['process']['scripts'],
-                    'input_folder': data['process']['input_folder']
-                }
-                if data['module'] == 'verifier':
-                    res, test_code = test_script_verifier(args)
         if 'output' in data:
             data['output'] = json.dumps(data['output'])
-            if 'scripts' in data['output']:
-                args = {
-                    'codeContent': data['output']['scripts'],
-                    'input_folder': data['output']['input_folder']
-                }
-                if data['module'] == 'verifier':
-                    res, test_code = test_script_verifier(args)
 
-        if test_code != 200:
-            response = {
-                "errors": gettext('UPDATE_WORKFLOW_ERROR'),
-                "message": gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') + '&nbsp;<strong>(' + res.strip() + ')</strong>'
-            }
-            return response, 400
         _, error = workflow.update_workflow({'set': data, 'workflow_id': workflow_id})
-
         if error is None:
+            if input_folder_changed:
+                delete_script_and_incron(workflow_info)
+
+                create_script_and_watcher({
+                    'module': data['module'],
+                    'workflow_id': data['workflow_id'],
+                    'input_folder': new_input_folder,
+                    'workflow_label': workflow_info['label'],
+                })
+
             history.add_history({
                 'module': workflow_info['module'],
                 'ip': request.remote_addr,
