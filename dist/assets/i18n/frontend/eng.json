@@ -726,6 +726,7 @@
 		"copy_technical_id": "Copy technical ID",
 		"create": "Create output",
 		"created": "Output created successfully",
+		"document_md5": "MD5 hash of document",
 		"documents_count": "Documents count",
 		"duplicate": "Duplicate ouput",
 		"enable_ocr": "PDF OCR",
