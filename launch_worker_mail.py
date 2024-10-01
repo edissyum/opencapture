@@ -118,8 +118,8 @@ for process in processes:
     folder_to_crawl = config_mail['folder_to_crawl']
     folder_destination = config_mail['folder_destination']
     isSplitter = config_mail['is_splitter']
-    splitterWorkflowId = config_mail['splitter_workflow_id']
-    verifierWorkflowId = config_mail['verifier_workflow_id']
+    splitterWorkflowId = config_mail['splitter_workflow_id'] if 'splitter_workflow_id' in config_mail else None
+    verifierWorkflowId = config_mail['verifier_workflow_id'] if 'verifier_workflow_id' in config_mail else None
     verifierInsertBody = config_mail['verifier_insert_body_as_doc']
     splitterInsertBody = config_mail['splitter_insert_body_as_doc']
 
