@@ -93,7 +93,6 @@ for process in processes:
     print('Start process : ' + process['name'])
     for _p in process:
         config_mail[_p] = process[_p]
-    global_log = Log(config['GLOBAL']['logfile'], smtp)
 
     now = datetime.datetime.now()
     path = docservers_mailcollect['path'] + '/' + process['name'] + '/' + str('%02d' % now.year) + str('%02d' % now.month) + str('%02d' % now.day) + '/'
