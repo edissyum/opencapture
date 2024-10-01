@@ -401,7 +401,7 @@ export class MailCollectComponent implements OnInit {
                                     }
                                 } else if (element === 'splitter_workflow_id') {
                                     for (let i = 0; i < this.allSplitterWorkflows.length; i++) {
-                                        if (parseInt(this.allSplitterWorkflows[i].id) === parseInt(process[element])) {
+                                        if (this.allSplitterWorkflows[i].workflow_id === process[element]) {
                                             value = this.allSplitterWorkflows[i];
                                         }
                                     }
