@@ -99,6 +99,8 @@ class WorkflowsTest(unittest.TestCase):
 
     def test_successful_update_workflow(self):
         payload = {
+            "module": "verifier",
+            "workflow_id": "default_workflow",
             "label": "Updated test workflow",
             "input": {
                 "rotation": "no_rotation",
