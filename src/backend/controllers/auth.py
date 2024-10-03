@@ -863,7 +863,7 @@ def get_ldap_users(connection, class_user, object_class, users_dn, base_dn):
                                        search_scope='SUBTREE',
                                        attributes=['*'])
         else:
-            status = connection.search(search_base=users_dn, search_filter=f'({class_user}={object_class})',
+            status = connection.search(search_base=base_dn, search_filter=users_dn,
                                        search_scope='SUBTREE',
                                        attributes=['*'])
         if connection and status:
@@ -905,34 +905,29 @@ def ldap_users_synchro(ldap_synchronization_data):
                         if ldap_users_data and ldap_users_data['status_search']:
                             result_synchro = check_database_users(ldap_users_data['ldap_users_data'], attribut_role_default)
                         else:
-                            error_message = gettext('LDAP_SYNCHRO_INFOS_ERROR')
                             error = {
                                 "errors": gettext('LDAP_SYNCHRO_ERROR'),
-                                "message": error_message
+                                "message": gettext('LDAP_SYNCHRO_INFOS_ERROR')
                             }
                     else:
-                        error_message = gettext('LDAP_SYNCHRO_INFOS_ERROR')
                         error = {
                             "errors": gettext('LDAP_SYNCHRO_ERROR'),
-                            "message": error_message
+                            "message": gettext('LDAP_SYNCHRO_INFOS_ERROR')
                         }
                 else:
-                    error_message = gettext('LDAP_CONNECTION_ERROR')
                     error = {
                         "errors": gettext('LDAP_SYNCHRO_ERROR'),
-                        "message": error_message
+                        "message": gettext('LDAP_CONNECTION_ERROR')
                     }
             else:
-                error_message = gettext('INFOS_LDAP_NOT_COMPLETE')
                 error = {
                     "errors": gettext('LDAP_SYNCHRO_ERROR'),
-                    "message": error_message
+                    "message": gettext('INFOS_LDAP_NOT_COMPLETE')
                 }
         else:
-            error_message = gettext('INFOS_LDAP_NOT_COMPLETE')
             error = {
                 "errors": gettext('LDAP_SYNCHRO_ERROR'),
-                "message": error_message
+                "message": gettext('INFOS_LDAP_NOT_COMPLETE')
             }
     return result_synchro, error
 
@@ -962,7 +957,7 @@ def get_ldap_users_data(ldap_users_dict, user_id_attribut, firstname_attribut, l
 def ldap_server_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_dn, suffix, prefix):
     error = None
     ldap_connection_status = False
-    if type_ad and domain_ldap and port_ldap and username_ldap_admin and password_ldap_admin and base_dn:
+    if type_ad and domain_ldap and port_ldap and username_ldap_admin and password_ldap_admin:
         ldap_server = domain_ldap + ":" + str(port_ldap) + ""
         try:
             if type_ad == 'openLDAP':
@@ -1025,8 +1020,8 @@ def check_database_users(ldap_users_data, default_role):
 
     users_list = user.get_users({
         'select': ['*'],
-        'where': ['status <> %s'],
-        'data': ['DEL']
+        'where': ['status <> %s', 'mode <> %s'],
+        'data': ['DEL', 'webservice']
     })[0]
     if users_list:
         for user_info in users_list:
@@ -1040,7 +1035,7 @@ def check_database_users(ldap_users_data, default_role):
                         'where': ['username = %s'],
                         'data': [oc_user[0]]
                     })[0]
-                    if not user_status:
+                    if not user_status['enabled']:
                         user_id = user.get_user_by_username({
                             'select': ['users.id'],
                             'username': oc_user[0]
