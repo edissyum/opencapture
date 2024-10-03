@@ -403,7 +403,9 @@ class Splitter:
             files = []
             for document in batch['documents']:
                 if 'custom_fields' in output['parameters'] and output['parameters']['custom_fields']:
-                    output['parameters']['custom_fields'] = json.loads(output['parameters']['custom_fields'])
+                    if isinstance(output['parameters']['custom_fields'], str):
+                        output['parameters']['custom_fields'] = json.loads(output['parameters']['custom_fields'])
+
                     for key in output['parameters']['custom_fields']:
                         marks_args = {
                             'mask': output['parameters']['custom_fields'][key],
