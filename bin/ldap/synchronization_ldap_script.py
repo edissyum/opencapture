@@ -202,7 +202,8 @@ def check_database_users(ldap_users_data, default_role):
                             database.update({
                                 'table': ['users'],
                                 'set': {
-                                    'enabled': True
+                                    'enabled': True,
+                                    'status': 'OK'
                                 },
                                 'where': ['username = %s'],
                                 'data': [oc_user[0]]
