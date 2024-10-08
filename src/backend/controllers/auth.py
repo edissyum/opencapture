@@ -1035,7 +1035,7 @@ def check_database_users(ldap_users_data, default_role):
                         'where': ['username = %s'],
                         'data': [oc_user[0]]
                     })[0]
-                    if not user_status['enabled']:
+                    if user_status and len(user_status) >= 1 and not user_status[0]['enabled']:
                         user_id = user.get_user_by_username({
                             'select': ['users.id'],
                             'username': oc_user[0]
