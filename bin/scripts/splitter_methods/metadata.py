@@ -75,7 +75,7 @@ def process(args):
         args['files'].ocrise_pdf(file, args['log'])
 
     process_res = args['splitter'].create_batches(args['batch_folder'], file, args['workflow_id'], args['user_id'],
-                                                  original_file, args['artificial_intelligence'], args['attachments'])
+                                                  original_file, args['artificial_intelligence'], args['attachments'], args['msg'])
     return process_res
 
 

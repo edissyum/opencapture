@@ -195,7 +195,6 @@ export class SplitterListComponent implements OnInit {
                         id              : batch['id'],
                         locked          : batch['locked'],
                         inputId         : batch['input_id'],
-                        fileName        : batch['file_name'],
                         lockedBy        : batch['locked_by'],
                         formLabel       : batch['form_label'],
                         date            : batch['batch_date'],
@@ -203,7 +202,8 @@ export class SplitterListComponent implements OnInit {
                         customerName    : batch['customer_name'],
                         documentsCount  : batch['documents_count'],
                         attachmentsCount: batch['attachments_count'],
-                        thumbnail       : this.sanitize(batch['thumbnail'])
+                        thumbnail       : this.sanitize(batch['thumbnail']),
+                        fileName        : batch['subject'] ? batch['subject'] : batch['file_name']
                     }),
                 );
                 this.total = data.count;

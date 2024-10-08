@@ -239,6 +239,7 @@ CREATE TABLE "status" (
 
 CREATE TABLE "splitter_batches" (
     "id"                SERIAL          UNIQUE PRIMARY KEY,
+    "subject"           VARCHAR(255),
     "file_path"         VARCHAR(255),
     "file_name"         VARCHAR(255),
     "thumbnail"         VARCHAR(255),

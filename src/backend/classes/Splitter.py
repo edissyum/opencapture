@@ -214,9 +214,8 @@ class Splitter:
         return default_values
 
     def create_batches(self, batch_folder, file, workflow_id, user_id, original_filename, artificial_intelligence,
-                       attachments_list=None):
+                       attachments_list=None, msg=None):
         batches_id = []
-
         for _, batch_pages in enumerate(self.result_batches):
             workflow_settings = self.db.select({
                 'select': ['id', 'input, process'],
@@ -267,6 +266,7 @@ class Splitter:
                     'md5': md5,
                     'form_id': form_id,
                     'batch_folder': batch_folder,
+                    'subject': msg['subject'][:254] if msg else '',
                     'workflow_id': workflow_settings[0]['id'],
                     'file_path': clean_path.replace(clean_ds, ''),
                     'thumbnail': os.path.basename(batch_pages[0]['path']),
