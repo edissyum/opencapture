@@ -1,0 +1,1 @@
+ALTER TABLE splitter_batches ADD COLUMN subject VARCHAR(255);
