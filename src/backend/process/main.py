@@ -891,7 +891,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 for field in workflow_settings['process']['system_fields']:
                     if field == 'footer' and footer:
                         continue
-                    if field in datas and datas[field]:
+                    if field in datas['datas'] and datas['datas'][field]:
                         continue
                     allow_auto = False
                     break
