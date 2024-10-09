@@ -39,8 +39,6 @@ class FindCurrency:
         '€': 'EUR',
         '£': 'GBP',
         '¥': 'CNY',
-        '₹': 'INR',
-        '₽': 'RUB',
         'R$': 'BRL',
         "A$": 'AUD'
     }
