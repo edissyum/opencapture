@@ -31,7 +31,8 @@ from src.backend.scripting_functions import send_to_workflow
 from src.backend.controllers import verifier, accounts, attachments
 from src.backend.functions import delete_documents, rotate_document, find_workflow_with_ia
 from src.backend.process import (find_date, find_due_date, find_footer, find_invoice_number, find_supplier,
-                                 find_custom, find_delivery_number, find_footer_raw, find_quotation_number, find_name)
+                                 find_custom, find_delivery_number, find_footer_raw, find_quotation_number, find_name,
+                                 find_currency)
 
 
 class DictX(dict):
@@ -869,6 +870,12 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                         elif footer[3]:
                             datas['pages'].update({'vat_amount': footer[3]})
                             datas['pages'].update({'total_vat': footer[3]})
+
+        if 'currency' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+            currency_class = find_currency.FindCurrency(ocr, log, regex, files, supplier, database, file, docservers,
+                                                        datas['form_id'])
+            datas = found_data_recursively('currency', ocr, file, nb_pages, text_by_pages, currency_class,
+                                           datas, files, configurations, tesseract_function, convert_function)
 
         if 'datas' in args and args['datas']:
             for data in args['datas']:

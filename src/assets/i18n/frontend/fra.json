@@ -1205,6 +1205,7 @@
 		"convert_function": "Méthode de conversion",
 		"convert_function_hint": "Méthode utilisée pour convertir le document PDF en JPG. Si la méthode par défaut (pdf2image) ne donne pas de bons résultats, essayez la fonction ImageMagick)",
 		"create": "Créer le workflow",
+		"currency": "Devise",
 		"custom_fields_to_search": "Champs personnalisés à rechercher",
 		"delete_documents": "Supprimer le(s) document(s) après traitement",
 		"delete_documents_hint": "Toutes les données liées au document (BDD et docservers) seront supprimées après execution du workflow",

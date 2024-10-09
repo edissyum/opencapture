@@ -495,6 +495,21 @@ export class FormBuilderComponent implements OnInit {
                     display_icon:'fa-solid fa-file-alt'
                 },
                 {
+                    id: 'currency',
+                    label: marker('WORKFLOW.currency'),
+                    unit: 'facturation',
+                    type: 'text',
+                    required: true,
+                    required_icon: 'fa-solid fa-star',
+                    class: "w-1/3",
+                    class_label: "1/33",
+                    color: 'pink',
+                    format: 'alphanum',
+                    format_icon:'fa-solid fa-hashtag',
+                    display: 'simple',
+                    display_icon:'fa-solid fa-file-alt'
+                },
+                {
                     id: 'vat_rate',
                     label: marker('FACTURATION.vat_rate'),
                     unit: 'facturation',
