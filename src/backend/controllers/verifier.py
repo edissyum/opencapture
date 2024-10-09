@@ -456,19 +456,24 @@ def export_mem(document_id, data):
         log = _vars[5]
         regex = _vars[2]
         database = _vars[0]
+
+    log.database = database
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if not error:
         return verifier_exports.export_mem(data['data'], document_info, log, regex, database)
 
 
 def export_coog(document_id, data):
-    if 'regex' in current_context and 'database' in current_context and 'log' in current_context:
+    if 'database' in current_context and 'log' in current_context:
         log = current_context.log
+        database = current_context.database
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         log = _vars[5]
+        database = _vars[0]
 
+    log.database = database
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if not error:
         return verifier_exports.export_coog(data['data'], document_info, log)
@@ -478,7 +483,39 @@ def export_xml(document_id, data):
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
 
     if not error:
-        if 'regex' in current_context and 'database' in current_context and 'log' in current_context:
+        if 'database' in current_context and 'log' in current_context:
+            log = current_context.log
+            database = current_context.database
+        else:
+            custom_id = retrieve_custom_from_url(request)
+            _vars = create_classes_from_custom_id(custom_id)
+            log = _vars[5]
+            database = _vars[0]
+
+        log.database = database
+        return verifier_exports.export_xml(data['data'], log, document_info, database)
+
+
+def export_pdf(document_id, data):
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
+    if not error:
+        if 'log' in current_context and 'database' in current_context:
+            log = current_context.log
+            database = current_context.database
+        else:
+            custom_id = retrieve_custom_from_url(request)
+            _vars = create_classes_from_custom_id(custom_id)
+            log = _vars[5]
+            database = _vars[0]
+
+        log.database = database
+        return verifier_exports.export_pdf(data['data'], log, document_info, data['compress_type'], data['ocrise'])
+
+
+def export_facturx(document_id, data):
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
+    if not error:
+        if 'log' in current_context and 'regex' in current_context and 'database' in current_context:
             log = current_context.log
             regex = current_context.regex
             database = current_context.database
@@ -488,34 +525,8 @@ def export_xml(document_id, data):
             log = _vars[5]
             regex = _vars[2]
             database = _vars[0]
-        return verifier_exports.export_xml(data['data'], log, document_info, database)
 
-
-def export_pdf(document_id, data):
-    document_info, error = verifier.get_document_by_id({'document_id': document_id})
-    if not error:
-        if 'configurations' in current_context and 'log' in current_context and 'regex' in current_context:
-            log = current_context.log
-            regex = current_context.regex
-        else:
-            custom_id = retrieve_custom_from_url(request)
-            _vars = create_classes_from_custom_id(custom_id)
-            log = _vars[5]
-            regex = _vars[2]
-        return verifier_exports.export_pdf(data['data'], log, document_info, data['compress_type'], data['ocrise'])
-
-
-def export_facturx(document_id, data):
-    document_info, error = verifier.get_document_by_id({'document_id': document_id})
-    if not error:
-        if 'log' in current_context and 'regex' in current_context:
-            log = current_context.log
-            regex = current_context.regex
-        else:
-            custom_id = retrieve_custom_from_url(request)
-            _vars = create_classes_from_custom_id(custom_id)
-            log = _vars[5]
-            regex = _vars[2]
+        log.database = database
         return verifier_exports.export_facturx(data['data'], log, regex, document_info)
 
 
