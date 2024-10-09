@@ -29,6 +29,7 @@ class FindCurrency:
         self.form_id = form_id
         self.supplier = supplier
         self.database = database
+        self.custom_page = False
         self.docservers = docservers
         self.header_text = ocr.header_text
         self.footer_text = ocr.footer_text
