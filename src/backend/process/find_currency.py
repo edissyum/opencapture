@@ -40,7 +40,7 @@ class FindCurrency:
         '£': 'GBP',
         '¥': 'CNY',
         'R$': 'BRL',
-        "A$": 'AUD'
+        'A$': 'AUD'
     }
 
     def process(self, line):
