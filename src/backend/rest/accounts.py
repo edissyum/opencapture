@@ -96,6 +96,7 @@ def update_supplier(supplier_id):
         {'id': 'address_id', 'type': int, 'mandatory': False},
         {'id': 'positions', 'type': dict, 'mandatory': False},
         {'id': 'document_lang', 'type': str, 'mandatory': False},
+        {'id': 'default_currency', 'type': str, 'mandatory': False},
         {'id': 'skip_auto_validate', 'type': bool, 'mandatory': False},
         {'id': 'get_only_raw_footer', 'type': bool, 'mandatory': False},
         {'id': 'default_accounting_plan', 'type': int, 'mandatory': False}
@@ -265,6 +266,7 @@ def create_supplier():
         {'id': 'address_id', 'type': int, 'mandatory': False},
         {'id': 'positions', 'type': dict, 'mandatory': False},
         {'id': 'document_lang', 'type': str, 'mandatory': False},
+        {'id': 'default_currency', 'type': str, 'mandatory': False},
         {'id': 'skip_auto_validate', 'type': bool, 'mandatory': False},
         {'id': 'get_only_raw_footer', 'type': bool, 'mandatory': False},
         {'id': 'default_accounting_plan', 'type': int, 'mandatory': False}

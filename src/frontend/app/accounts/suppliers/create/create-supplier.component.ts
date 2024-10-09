@@ -137,6 +137,22 @@ export class CreateSupplierComponent implements OnInit {
             control: new FormControl(),
             required: false,
             values: []
+        },
+        {
+            id: 'default_currency',
+            label: marker('FACTURATION.default_currency'),
+            type: 'select',
+            control: new FormControl(),
+            required: false,
+            values: [
+                {'id': 'EUR', 'label': 'EUR'},
+                {'id': 'USD', 'label': 'USD'},
+                {'id': 'CNY', 'label': 'CNY'},
+                {'id': 'AUD', 'label': 'AUD'},
+                {'id': 'BRL', 'label': 'BRL'},
+                {'id': 'CHF', 'label': 'CHF'},
+                {'id': 'CAD', 'label': 'CAD'}
+            ]
         }
     ];
     addressForm             : any[]       = [

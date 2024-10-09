@@ -154,6 +154,8 @@ def update_supplier(supplier_id, data):
             _set.update({'siren': data['siren']})
         if 'duns' in data:
             _set.update({'duns': data['duns']})
+        if 'default_currency' in data:
+            _set.update({'default_currency': data['default_currency']})
         if 'bic' in data:
             _set.update({'bic': data['bic']})
         if 'rccm' in data:
@@ -370,6 +372,7 @@ def create_supplier(data):
         'form_id': data['form_id'] if 'form_id' in data else None,
         'address_id': data['address_id'] if 'address_id' in data else None,
         'document_lang': data['document_lang'] if 'document_lang' in data else 'fra',
+        'default_currency': data['default_currency'] if 'default_currency' in data else None,
         'default_accounting_plan': data['default_accounting_plan'] if 'default_accounting_plan' in data else None,
         'get_only_raw_footer': data['get_only_raw_footer'] if 'get_only_raw_footer' in data else False
     }

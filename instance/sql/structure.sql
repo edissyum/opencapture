@@ -159,6 +159,7 @@ CREATE TABLE "accounts_supplier" (
     "status"                    VARCHAR(3)    DEFAULT 'OK',
     "get_only_raw_footer"       BOOLEAN       DEFAULT False,
     "skip_auto_validate"        BOOLEAN       DEFAULT False,
+    "default_currency"          VARCHAR(10),
     "default_accounting_plan"   INTEGER,
     "creation_date"             TIMESTAMP     DEFAULT (CURRENT_TIMESTAMP),
     "positions"                 JSONB         DEFAULT '{}',

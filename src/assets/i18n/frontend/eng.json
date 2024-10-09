@@ -345,6 +345,7 @@
 		"accounting_plan": "Accounting plan",
 		"current_date": "Current date",
 		"default_accounting_plan": "Default accounting plan",
+		"default_currency": "Default currency",
 		"delivery_number": "Delivery number",
 		"description": "Description",
 		"document_date": "Document date",
