@@ -327,16 +327,16 @@ class Files:
     # And also add the position found on the cropped section divided by 2.8
     def return_position_with_ratio(self, line, target):
         position = {0: {}, 1: {}}
-        if line.position:
-            position[0][0] = line.position[0][0]
-            position[1][0] = line.position[1][0]
+        if line['position']:
+            position[0][0] = line['position'][0][0]
+            position[1][0] = line['position'][1][0]
 
             if target == 'footer':
-                position[0][1] = line.position[0][1] + self.height_ratio
-                position[1][1] = line.position[1][1] + self.height_ratio
+                position[0][1] = line['position'][0][1] + self.height_ratio
+                position[1][1] = line['position'][1][1] + self.height_ratio
             else:
-                position[0][1] = line.position[0][1]
-                position[1][1] = line.position[1][1]
+                position[0][1] = line['position'][0][1]
+                position[1][1] = line['position'][1][1]
         return position
 
     def get_pages(self, docservers, file):
