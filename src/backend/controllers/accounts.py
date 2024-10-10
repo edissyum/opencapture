@@ -363,19 +363,21 @@ def create_supplier(data):
         'name': data['name'],
         'bic': data['bic'] if 'bic' in data else None,
         'iban': data['iban'] if 'iban' in data else None,
-        'duns': data['duns'] if 'duns' in data else None,
         'rccm': data['rccm'] if 'rccm' in data else None,
         'siret': data['siret'] if 'siret' in data else None,
         'siren': data['siren'] if 'siren' in data else None,
         'email': data['email'] if 'email' in data else None,
-        'vat_number': data['vat_number'] if 'vat_number' in data else None,
         'form_id': data['form_id'] if 'form_id' in data else None,
+        'vat_number': data['vat_number'] if 'vat_number' in data else None,
         'address_id': data['address_id'] if 'address_id' in data else None,
         'document_lang': data['document_lang'] if 'document_lang' in data else 'fra',
         'default_currency': data['default_currency'] if 'default_currency' in data else None,
-        'default_accounting_plan': data['default_accounting_plan'] if 'default_accounting_plan' in data else None,
-        'get_only_raw_footer': data['get_only_raw_footer'] if 'get_only_raw_footer' in data else False
+        'get_only_raw_footer': data['get_only_raw_footer'] if 'get_only_raw_footer' in data else False,
+        'default_accounting_plan': data['default_accounting_plan'] if 'default_accounting_plan' in data else None
     }
+
+    if 'duns' in data and data['duns']:
+        _columns.update({'duns': data['duns']})
 
     supplier = None
     if 'vat_number' in data:
@@ -456,6 +458,26 @@ def get_accounting_plan_by_customer_id(customer_id):
 def get_default_accounting_plan():
     accounting_plan, _ = accounts.get_default_accounting_plan()
     return accounting_plan, 200
+
+
+def get_currency_code():
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+
+    file_path = docservers['REFERENTIALS_PATH'] + '/CURRENCY_CODE.csv'
+    currency_code = {}
+    if os.path.exists(file_path):
+        with open(file_path) as currency_file:
+            sep = str(csv.Sniffer().sniff(currency_file.read()).delimiter)
+            currency_file.seek(0)
+            csv_reader = csv.reader(currency_file, delimiter=sep)
+            for row in csv_reader:
+                currency_code[row[0]] = row[1]
+    return currency_code, 200
 
 
 def update_customer(customer_id, data):
@@ -625,7 +647,8 @@ def import_suppliers(args):
                     'iban': row[args['selected_columns'].index('iban')],
                     'get_only_raw_footer': get_only_raw_footer,
                     'vat_number': row[args['selected_columns'].index('vat_number')],
-                    'document_lang': row[args['selected_columns'].index('document_lang')]
+                    'document_lang': row[args['selected_columns'].index('document_lang')],
+                    'default_currency': row[args['selected_columns'].index('default_currency')]
                 },
                 'address': {
                     'address1': row[args['selected_columns'].index('address1')],

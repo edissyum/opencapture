@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import re
+import csv
 
 class FindCurrency:
     def __init__(self, ocr, log, regex, files, supplier, database, file, docservers, form_id):
@@ -34,22 +35,28 @@ class FindCurrency:
         self.header_text = ocr.header_text
         self.footer_text = ocr.footer_text
 
-    CURRENCY_CODES = {
-        '$': 'USD',
-        '€': 'EUR',
-        '£': 'GBP',
-        '¥': 'CNY',
-        'R$': 'BRL',
-        'A$': 'AUD'
-    }
+        self.CURRENCY_CODES = {}
+        with open(self.docservers['REFERENTIALS_PATH'] + '/CURRENCY_CODE.csv') as currency_file:
+            sep = str(csv.Sniffer().sniff(currency_file.read()).delimiter)
+            currency_file.seek(0)
+            csv_reader = csv.reader(currency_file, delimiter=sep)
+            for row in csv_reader:
+                self.CURRENCY_CODES[row[0]] = row[1]
 
     def process(self, line):
         for _currency in re.finditer(r"" + self.regex['currency'], line):
-            currency = _currency.group()
-            currency = re.sub(r'\s*\d*[.,|)(\'"]?', '', currency)
-            if currency in self.CURRENCY_CODES:
-                return self.CURRENCY_CODES[currency]
-            return currency
+            currency_groups = _currency.groups()
+            for curr in currency_groups:
+                if not curr:
+                    continue
+
+                currency = re.sub(r'\s*\d*[.,|)(\'"]?', '', curr)
+                if currency in self.CURRENCY_CODES:
+                    return self.CURRENCY_CODES[currency]
+
+                for _c in self.CURRENCY_CODES:
+                    if currency == self.CURRENCY_CODES[_c]:
+                        return currency
 
 
     def run(self):

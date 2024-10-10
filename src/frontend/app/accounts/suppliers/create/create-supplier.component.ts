@@ -144,15 +144,7 @@ export class CreateSupplierComponent implements OnInit {
             type: 'select',
             control: new FormControl(),
             required: false,
-            values: [
-                {'id': 'EUR', 'label': 'EUR'},
-                {'id': 'USD', 'label': 'USD'},
-                {'id': 'CNY', 'label': 'CNY'},
-                {'id': 'AUD', 'label': 'AUD'},
-                {'id': 'BRL', 'label': 'BRL'},
-                {'id': 'CHF', 'label': 'CHF'},
-                {'id': 'CAD', 'label': 'CAD'}
-            ]
+            values: []
         }
     ];
     addressForm             : any[]       = [
@@ -219,6 +211,8 @@ export class CreateSupplierComponent implements OnInit {
             this.authService.generateHeaders();
         }
 
+        const currencies: any = await this.retrieveCurrency();
+
         let tmpAccountingPlan: any = {};
         tmpAccountingPlan = await this.retrieveDefaultAccountingPlan();
         tmpAccountingPlan = this.sortArray(tmpAccountingPlan);
@@ -283,6 +277,14 @@ export class CreateSupplierComponent implements OnInit {
                         startWith(''),
                         map(option => option ? this._filter_accounting(tmpAccountingPlan, option) : tmpAccountingPlan)
                     );
+            }
+            if (element.id == 'default_currency') {
+                Object.keys(currencies).forEach((currency: any) => {
+                    element.values.push({
+                        'id': currencies[currency],
+                        'label': currencies[currency]
+                    });
+                });
             }
         }
 
@@ -376,14 +378,14 @@ export class CreateSupplierComponent implements OnInit {
 
     onSubmit() {
         if (this.isValidForm()) {
-            const supplier: any = {};
             const address: any = {};
+            const supplier: any = {};
             this.supplierForm.forEach(element => {
                 supplier[element.id] = element.control.value;
                 if (element.id === 'get_only_raw_footer') {
                     supplier[element.id] = !element.control.value;
                 }
-                if (element.id === 'default_accounting_plan') {
+                if (element.id === 'default_accounting_plan' && element.control.value) {
                     supplier[element.id] = element.control.value.id;
                 }
             });
@@ -454,6 +456,10 @@ export class CreateSupplierComponent implements OnInit {
 
     async retrieveDefaultAccountingPlan() {
         return await this.http.get(environment['url'] + '/ws/accounts/customers/getDefaultAccountingPlan', {headers: this.authService.headers}).toPromise();
+    }
+
+    async retrieveCurrency() {
+        return await this.http.get(environment['url'] + '/ws/accounts/customers/getCurrencyCode', {headers: this.authService.headers}).toPromise();
     }
 
     sortArray(array: any) {

@@ -784,6 +784,10 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                     if (field.id === 'vat_number') {
                         this.checkVAT(field.id, value);
                     }
+                } else {
+                    if (field.id === 'currency' && this.currentSupplier['default_currency']) {
+                        _field.control.setValue(this.currentSupplier['default_currency']);
+                    }
                 }
 
                 if (field.id === 'name' && category === 'supplier') {
@@ -1640,10 +1644,17 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             'iban': supplier.iban,
                             'bic': supplier.bic,
                             'email': supplier.email,
-                            'vat_number': supplier.vat_number
+                            'vat_number': supplier.vat_number,
+                            'default_currency': supplier.default_currency
                         };
+
                         this.getOnlyRawFooter = supplier['get_only_raw_footer'];
                         for (const column in supplierData) {
+                            if (column === 'default_currency' && supplierData[column]) {
+                                if (!this.document['datas']['currency']) {
+                                    this.updateFormValue('currency', supplierData[column]);
+                                }
+                            }
                             this.updateFormValue(column, supplierData[column]);
                         }
 

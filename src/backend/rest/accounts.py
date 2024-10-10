@@ -262,9 +262,9 @@ def create_supplier():
         {'id': 'email', 'type': str, 'mandatory': False},
         {'id': 'pages', 'type': dict, 'mandatory': False},
         {'id': 'form_id', 'type': int, 'mandatory': False},
-        {'id': 'vat_number', 'type': str, 'mandatory': True if 'fromViewer' not in request.args else False},
         {'id': 'address_id', 'type': int, 'mandatory': False},
         {'id': 'positions', 'type': dict, 'mandatory': False},
+        {'id': 'vat_number', 'type': str, 'mandatory': False},
         {'id': 'document_lang', 'type': str, 'mandatory': False},
         {'id': 'default_currency', 'type': str, 'mandatory': False},
         {'id': 'skip_auto_validate', 'type': bool, 'mandatory': False},
@@ -480,6 +480,13 @@ def get_accouting_plan(customer_id):
 @auth.token_required
 def get_default_accouting_plan():
     res = accounts.get_default_accounting_plan()
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('accounts/customers/getCurrencyCode', methods=['GET'])
+@auth.token_required
+def get_currency_code():
+    res = accounts.get_currency_code()
     return make_response(jsonify(res[0])), res[1]
 
 

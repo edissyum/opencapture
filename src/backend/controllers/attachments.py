@@ -112,7 +112,6 @@ def get_attachments_by_document_id(document_id, get_thumb=True):
 
     if _attachments and get_thumb:
         for attachment in _attachments:
-            print(attachment['thumbnail_path'])
             extension = os.path.splitext(attachment['filename'])[1]
             if ('path' in attachment and os.path.isfile(attachment['path']) and
                     extension.lower() in ['.png', '.jpg', '.jpeg', '.gif']):

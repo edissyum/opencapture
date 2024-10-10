@@ -11,7 +11,7 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('duns', 'gl
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('bic', 'global', 'Numéro BIC', '[A-Z0-9]{4}[A-Z]{2}[A-Z0-9]{2}(?:[A-Z0-9]{3})?');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vat_number', 'global', 'Numéro de TVA', '(EU|SI|HU|D(K|E)|PL|CHE|(F|H)R|B(E|G)(0)?)[0-9A-Z]{2}[0-9]{6,9}');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('rccm', 'global', 'Numéro RCCM', '[aA-zZ]{2}-[aA-zZ]{3}-[0-9]{2}-[0-9]{4}-[aA-zZ]{1}[0-9]{2}-[0-9]{5}');
-INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('currency', 'global', 'Devise', '((R\$|EUR|USD|CAD|AUD|A\$|CNY|CHF)|[£$€¥])\s*(\d+(?:[\.|,]\d{2})?)|(\d+(?:[\.|,]\d{2})?)\s*((R\$|EUR|USD|CAD|AUD|A\$|CNY|CHF)|[£$€¥])');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('currency', 'global', 'Devise', '((R\$|EUR|USD|CAD|AUD|A\$|CNY|CHF)|[£$€¥])\s*(\d+(?:[\.|,]\d{2})?)|(\d+(?:[\.|,]\d{2})?)\s*((R\$|EUR|USD|CAD|AUD|A\$|CNY|CHF)|[£$€¥])|((CURRENCY|TOTAL)\s*[,.:;(]?\s*(R\$|EUR|USD|CAD|AUD|A\$|CNY|CHF)[)]?)');
 
 -- REGEX creation (fra)
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('date', 'fra', 'Date', '((3[01]|[12][0-9]|0?[1-9])|\d{1}\w{2})\s?([JFMASONDjfmasond][a-zA-Z_À-ÿ\.,-]{2,9}|[/,-\.](1[0-2]|0?[1-9])[/,-\.])\s?((1|2|3){1}\d{1,3}|(1|2|3))');

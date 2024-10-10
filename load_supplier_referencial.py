@@ -111,7 +111,8 @@ if __name__ == '__main__':
                         'address_id': str(address_id),
                         'document_lang': str(_vat[spreadsheet.referencial_supplier_array['lang']]),
                         'duns': str(_vat[spreadsheet.referencial_supplier_array['duns']]),
-                        'bic': str(_vat[spreadsheet.referencial_supplier_array['bic']])
+                        'bic': str(_vat[spreadsheet.referencial_supplier_array['bic']]),
+                        'default_currency': str(_vat[spreadsheet.referencial_supplier_array['default_currency']])
                     }
                 }
 
@@ -189,7 +190,8 @@ if __name__ == '__main__':
                             'address_id': address_id,
                             'document_lang': str(data[spreadsheet.referencial_supplier_array['lang']]),
                             'duns': str(data[spreadsheet.referencial_supplier_array['duns']]),
-                            'bic': str(data[spreadsheet.referencial_supplier_array['bic']])
+                            'bic': str(data[spreadsheet.referencial_supplier_array['bic']]),
+                            'default_currency': str(data[spreadsheet.referencial_supplier_array['default_currency']])
                         },
                         'where': ['vat_number = %s OR duns = %s'],
                         'data': [str(vat_number), str(duns)]

@@ -145,15 +145,7 @@ export class UpdateSupplierComponent implements OnInit {
             type: 'select',
             control: new FormControl(),
             required: false,
-            values: [
-                {'id': 'EUR', 'label': 'EUR'},
-                {'id': 'USD', 'label': 'USD'},
-                {'id': 'CNY', 'label': 'CNY'},
-                {'id': 'AUD', 'label': 'AUD'},
-                {'id': 'BRL', 'label': 'BRL'},
-                {'id': 'CHF', 'label': 'CHF'},
-                {'id': 'CAD', 'label': 'CAD'}
-            ]
+            values: []
         }
     ];
     addressForm             : any[] = [
@@ -220,6 +212,9 @@ export class UpdateSupplierComponent implements OnInit {
             this.authService.generateHeaders();
         }
         this.supplierId = this.route.snapshot.params['id'];
+
+        const currencies: any = await this.retrieveCurrency();
+
         let tmpAccountingPlan: any = {};
         tmpAccountingPlan = await this.retrieveDefaultAccountingPlan();
         tmpAccountingPlan = this.sortArray(tmpAccountingPlan);
@@ -284,6 +279,14 @@ export class UpdateSupplierComponent implements OnInit {
                         startWith(''),
                         map(option => option ? this._filter_accounting(tmpAccountingPlan, option) : tmpAccountingPlan)
                     );
+            }
+            if (element.id == 'default_currency') {
+                Object.keys(currencies).forEach((currency: any) => {
+                    element.values.push({
+                        'id': currencies[currency],
+                        'label': currencies[currency]
+                    });
+                });
             }
         }
 
@@ -489,6 +492,10 @@ export class UpdateSupplierComponent implements OnInit {
 
     async retrieveDefaultAccountingPlan() {
         return await this.http.get(environment['url'] + '/ws/accounts/customers/getDefaultAccountingPlan', {headers: this.authService.headers}).toPromise();
+    }
+
+    async retrieveCurrency() {
+        return await this.http.get(environment['url'] + '/ws/accounts/customers/getCurrencyCode', {headers: this.authService.headers}).toPromise();
     }
 
     sortArray(array: any) {
