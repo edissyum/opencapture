@@ -1,6 +1,5 @@
 # This file is part of Open-Capture.
-import codecs
-import csv
+
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -18,7 +17,9 @@ import csv
 # @dev: Oussama Brich <oussama.brich@edissyum.com>
 
 import os
+import csv
 import json
+import codecs
 from flask_babel import gettext
 from flask import request, g as current_context
 from src.backend.models import accounts, history
@@ -471,7 +472,7 @@ def get_currency_code():
     file_path = docservers['REFERENTIALS_PATH'] + '/CURRENCY_CODE.csv'
     currency_code = {}
     if os.path.exists(file_path):
-        with open(file_path) as currency_file:
+        with open(docservers['REFERENTIALS_PATH'] + '/CURRENCY_CODE.csv', encoding='UTF-8') as currency_file:
             sep = str(csv.Sniffer().sniff(currency_file.read()).delimiter)
             currency_file.seek(0)
             csv_reader = csv.reader(currency_file, delimiter=sep)

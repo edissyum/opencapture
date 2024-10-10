@@ -37,11 +37,12 @@ from src.backend.classes.COOGWebServices import COOGWebServices
 
 
 def export_xml(data, log, document_info, database):
-    task = monitoring.get_process_by_document_id(document_info['id'])[0]
-    if task and task[0]:
-        log.task_id_monitor = task[0]['id']
-        log.monitoring_status = task[0]['status']
-        log.current_step = len(task[0]['steps']) + 1
+    if 'id' in document_info and document_info['id']:
+        task = monitoring.get_process_by_document_id(document_info['id'])[0]
+        if task and task[0]:
+            log.task_id_monitor = task[0]['id']
+            log.monitoring_status = task[0]['status']
+            log.current_step = len(task[0]['steps']) + 1
 
     log.info('Output execution : XML export')
     folder_out = separator = filename = extension = ''
@@ -183,11 +184,12 @@ def compress_pdf(input_file, output_file, compress_id):
 
 
 def export_facturx(data, log, regex, document_info):
-    task = monitoring.get_process_by_document_id(document_info['id'])[0]
-    if task and task[0]:
-        log.task_id_monitor = task[0]['id']
-        log.monitoring_status = task[0]['status']
-        log.current_step = len(task[0]['steps']) + 1
+    if 'id' in document_info and document_info['id']:
+        task = monitoring.get_process_by_document_id(document_info['id'])[0]
+        if task and task[0]:
+            log.task_id_monitor = task[0]['id']
+            log.monitoring_status = task[0]['status']
+            log.current_step = len(task[0]['steps']) + 1
 
     log.info('Output execution : FacturX export')
 
@@ -390,11 +392,12 @@ def compress_file(file, compress_type, log, folder_out, filename, document_filen
 
 
 def export_pdf(data, log, document_info, compress_type, ocrise):
-    task = monitoring.get_process_by_document_id(document_info['id'])[0]
-    if task and task[0]:
-        log.task_id_monitor = task[0]['id']
-        log.monitoring_status = task[0]['status']
-        log.current_step = len(task[0]['steps']) + 1
+    if 'id' in document_info and document_info['id']:
+        task = monitoring.get_process_by_document_id(document_info['id'])[0]
+        if task and task[0]:
+            log.task_id_monitor = task[0]['id']
+            log.monitoring_status = task[0]['status']
+            log.current_step = len(task[0]['steps']) + 1
 
     log.info('Output execution : PDF export')
 
@@ -503,11 +506,12 @@ def construct_json(data, document_info, return_data=None):
 
 
 def export_coog(data, document_info, log):
-    task = monitoring.get_process_by_document_id(document_info['id'])[0]
-    if task and task[0]:
-        log.task_id_monitor = task[0]['id']
-        log.monitoring_status = task[0]['status']
-        log.current_step = len(task[0]['steps']) + 1
+    if 'id' in document_info and document_info['id']:
+        task = monitoring.get_process_by_document_id(document_info['id'])[0]
+        if task and task[0]:
+            log.task_id_monitor = task[0]['id']
+            log.monitoring_status = task[0]['status']
+            log.current_step = len(task[0]['steps']) + 1
 
     log.info('Output execution : COOG export')
     host = token = cert_path = ''
@@ -593,11 +597,12 @@ def export_coog(data, document_info, log):
 
 
 def export_mem(data, document_info, log, regex, database):
-    task = monitoring.get_process_by_document_id(document_info['id'])[0]
-    if task and task[0]:
-        log.task_id_monitor = task[0]['id']
-        log.monitoring_status = task[0]['status']
-        log.current_step = len(task[0]['steps']) + 1
+    if 'id' in document_info and document_info['id']:
+        task = monitoring.get_process_by_document_id(document_info['id'])[0]
+        if task and task[0]:
+            log.task_id_monitor = task[0]['id']
+            log.monitoring_status = task[0]['status']
+            log.current_step = len(task[0]['steps']) + 1
 
     log.info('Output execution : MEM export')
     host = login = password = ''

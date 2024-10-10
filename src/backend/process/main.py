@@ -695,7 +695,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         if custom_fields_to_find:
             # Find custom informations using mask
             custom_fields = find_custom.FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
-                                       datas['form_id'], custom_fields_to_find, False).run_using_positions_mask()
+                                                   datas['form_id'], custom_fields_to_find, False).run_using_positions_mask()
             if custom_fields:
                 for field in custom_fields:
                     datas['datas'].update({field: custom_fields[field][0]})
@@ -719,7 +719,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
             for custom_field in custom_fields_regex:
                 custom_field_class = find_custom.FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
-                                                datas['form_id'], custom_fields_to_find, custom_field)
+                                                            datas['form_id'], custom_fields_to_find, custom_field)
                 custom_field = 'custom_' + str(custom_field['id'])
                 datas = found_data_recursively(custom_field, ocr, file, nb_pages, text_by_pages, custom_field_class,
                                                datas, files, configurations, tesseract_function, convert_function)
@@ -732,34 +732,34 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         if 'invoice_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             invoice_number_class = find_invoice_number.FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file,
-                                                     docservers, configurations, languages, datas['form_id'])
+                                                                         docservers, configurations, languages, datas['form_id'])
             datas = found_data_recursively('invoice_number', ocr, file, nb_pages, text_by_pages,
                                            invoice_number_class, datas, files, configurations, tesseract_function,
                                            convert_function)
 
         if 'document_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             date_class = find_date.FindDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
-                                  languages, datas['form_id'])
+                                            languages, datas['form_id'])
             datas = found_data_recursively('document_date', ocr, file, nb_pages, text_by_pages, date_class,
                                            datas, files, configurations, tesseract_function, convert_function)
 
         if 'document_due_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             due_date_class = find_due_date.FindDueDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
-                                         languages, datas['form_id'])
+                                                       languages, datas['form_id'])
             datas = found_data_recursively('document_due_date', ocr, file, nb_pages, text_by_pages,
                                            due_date_class, datas, files, configurations, tesseract_function,
                                            convert_function)
 
         if 'quotation_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             quotation_number_class = find_quotation_number.FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file,
-                                                         docservers, configurations, datas['form_id'], languages)
+                                                                               docservers, configurations, datas['form_id'], languages)
             datas = found_data_recursively('quotation_number', ocr, file, nb_pages, text_by_pages,
                                            quotation_number_class, datas, files, configurations, tesseract_function,
                                            convert_function)
 
         if 'delivery_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             delivery_number_class = find_delivery_number.FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file,
-                                                       docservers, configurations, datas['form_id'])
+                                                                            docservers, configurations, datas['form_id'])
             datas = found_data_recursively('delivery_number', ocr, file, nb_pages, text_by_pages,
                                            delivery_number_class, datas, files, configurations, tesseract_function,
                                            convert_function)
@@ -767,10 +767,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         footer = None
         if 'footer' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             footer_class = find_footer.FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
-                                      docservers, datas['form_id'])
+                                                  docservers, datas['form_id'])
             if supplier and supplier[2]['get_only_raw_footer'] in [True, 'True']:
                 footer_class = find_footer_raw.FindFooterRaw(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
-                                             docservers, datas['form_id'])
+                                                             docservers, datas['form_id'])
 
             footer = footer_class.run()
             if not footer and nb_pages > 1:
@@ -876,6 +876,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                                         datas['form_id'])
             datas = found_data_recursively('currency', ocr, file, nb_pages, text_by_pages, currency_class,
                                            datas, files, configurations, tesseract_function, convert_function)
+
+        if 'currency' not in datas['datas'] or not datas['datas']['currency']:
+            if 'default_currency' in supplier[2] and supplier[2]['default_currency']:
+                datas['datas'].update({'currency': supplier[2]['default_currency']})
 
         if 'datas' in args and args['datas']:
             for data in args['datas']:
