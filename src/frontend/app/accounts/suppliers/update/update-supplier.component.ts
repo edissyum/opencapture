@@ -427,7 +427,7 @@ export class UpdateSupplierComponent implements OnInit {
                 if (element.id === 'get_only_raw_footer') {
                     supplier[element.id] = !element.control.value;
                 }
-                if (element.id === 'default_accounting_plan') {
+                if (element.id === 'default_accounting_plan' && element.control.value) {
                     supplier[element.id] = element.control.value.id;
                 }
             });
