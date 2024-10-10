@@ -695,7 +695,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         if custom_fields_to_find:
             # Find custom informations using mask
             custom_fields = find_custom.FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
-                                                   datas['form_id'], custom_fields_to_find, False).run_using_positions_mask()
+                                                   datas['form_id'], custom_fields_to_find,
+                                                   False).run_using_positions_mask()
             if custom_fields:
                 for field in custom_fields:
                     datas['datas'].update({field: custom_fields[field][0]})
@@ -712,14 +713,15 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             custom_fields_regex = database.select({
                 'select': ['id', 'label', "settings #>> '{regex}'as regex_settings"],
                 'table': ['custom_fields'],
-                'where': ['module = %s', "settings #>> '{regex}' is not null", "enabled = %s",
+                'where': ['status <> %s', 'module = %s', "settings #>> '{regex}' is not null", "enabled = %s",
                           "id IN (" + ','.join(map(str, custom_fields_to_find)) + ")"],
-                'data': ['verifier', True]
+                'data': ['DEL', 'verifier', True]
             })
 
             for custom_field in custom_fields_regex:
-                custom_field_class = find_custom.FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
-                                                            datas['form_id'], custom_fields_to_find, custom_field)
+                custom_field_class = find_custom.FindCustom(log, regex, config, ocr, files, supplier, file, database,
+                                                            docservers, datas['form_id'], custom_fields_to_find,
+                                                            custom_field)
                 custom_field = 'custom_' + str(custom_field['id'])
                 datas = found_data_recursively(custom_field, ocr, file, nb_pages, text_by_pages, custom_field_class,
                                                datas, files, configurations, tesseract_function, convert_function)
@@ -731,8 +733,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                            convert_function)
 
         if 'invoice_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            invoice_number_class = find_invoice_number.FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file,
-                                                                         docservers, configurations, languages, datas['form_id'])
+            invoice_number_class = find_invoice_number.FindInvoiceNumber(ocr, files, log, regex, config, database,
+                                                                         supplier, file, docservers, configurations,
+                                                                         languages, datas['form_id'])
             datas = found_data_recursively('invoice_number', ocr, file, nb_pages, text_by_pages,
                                            invoice_number_class, datas, files, configurations, tesseract_function,
                                            convert_function)
@@ -751,8 +754,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                            convert_function)
 
         if 'quotation_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            quotation_number_class = find_quotation_number.FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file,
-                                                                               docservers, configurations, datas['form_id'], languages)
+            quotation_number_class = find_quotation_number.FindQuotationNumber(ocr, files, log, regex, config, database,
+                                                                               supplier, file, docservers,
+                                                                               configurations, datas['form_id'], languages)
             datas = found_data_recursively('quotation_number', ocr, file, nb_pages, text_by_pages,
                                            quotation_number_class, datas, files, configurations, tesseract_function,
                                            convert_function)
@@ -766,8 +770,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         footer = None
         if 'footer' in system_fields_to_find or not workflow_settings['input']['apply_process']:
-            footer_class = find_footer.FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
-                                                  docservers, datas['form_id'])
+            footer_class = find_footer.FindFooter(ocr, log, regex, config, files, database, supplier, file,
+                                                  ocr.footer_text, docservers, datas['form_id'])
             if supplier and supplier[2]['get_only_raw_footer'] in [True, 'True']:
                 footer_class = find_footer_raw.FindFooterRaw(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
                                                              docservers, datas['form_id'])
@@ -878,7 +882,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                            datas, files, configurations, tesseract_function, convert_function)
 
         if 'currency' not in datas['datas'] or not datas['datas']['currency']:
-            if 'default_currency' in supplier[2] and supplier[2]['default_currency']:
+            if supplier and 'default_currency' in supplier[2] and supplier[2]['default_currency']:
                 datas['datas'].update({'currency': supplier[2]['default_currency']})
 
         if 'datas' in args and args['datas']:
