@@ -110,8 +110,7 @@ def launch_referential_update(form_data):
                         'form_id': form_data['form_id']
                     }
                     metadata_load = Splitter.import_method_from_script(docservers['SPLITTER_METADATA_PATH'],
-                                                                        method['script'],
-                                                                        method['method'])
+                                                                        method['script'], method['method'])
                     metadata_load(args)
     except (Exception,) as e:
         response = {

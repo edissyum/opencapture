@@ -171,18 +171,15 @@
                                     </mat-label>
                                     <mat-select [formControlName]="field.label_short" (change)="updateProgressBar()">
                                         <mat-option *ngIf="field.metadata_key">
-                                            <ngx-mat-select-search
+                                            <ngx-mat-select-search [searching]="searching"
                                                     [formControlName]="'search_' + field.label_short"
                                                     placeholderLabel="{{ 'SPLITTER.min_3_letter' | translate }}"
-                                                    [searching]="searching"
                                                     noEntriesFoundLabel="{{ 'SPLITTER.no_result' | translate }}">
                                             </ngx-mat-select-search>
                                         </mat-option>
                                         <mat-option *ngFor="let metadata of filteredServerSideMetadata | async"
-                                                    [value]="metadata.metadataId"
-                                                    (click)="fillData(metadata)">
-                                            <span class="search-mask-result"
-                                                    *ngIf="metadata.metadataId !== batchMetadataValues.metadataId"
+                                                    [value]="metadata.metadataId" (click)="fillData(metadata)">
+                                            <span class="search-mask-result" *ngIf="metadata.metadataId !== batchMetadataValues.metadataId"
                                                   [innerHTML]="getPlaceholderFromResultMask(field.resultMask, metadata)">
                                             </span>
                                             <span *ngIf="metadata.metadataId === batchMetadataValues.metadataId">
@@ -208,8 +205,7 @@
                             <ng-container *ngIf="field.type === 'select'">
                                 <mat-form-field class="w-full">
                                     <mat-label>{{ field.label }}</mat-label>
-                                    <mat-select [formControlName]="field.label_short"
-                                                (selectionChange)="setValueChange(field.label_short, $event.value)">
+                                    <mat-select [formControlName]="field.label_short" (selectionChange)="setValueChange(field.label_short, $event.value)">
                                         <span *ngFor="let option of field.settings.options">
                                             <mat-option *ngIf="checkConditional(field.id, option)" [value]="option.id">
                                                 {{ option.label }}
