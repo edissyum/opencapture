@@ -141,14 +141,14 @@ def check_connection_ldap_server():
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/retrieveLdapConfigurations'}), 403
 
     check, message = rest_validator(request.json, [
-        {'id': 'typeAD', 'type': str, 'mandatory': True},
         {'id': 'host', 'type': str, 'mandatory': True},
         {'id': 'port', 'type': str, 'mandatory': True},
-        {'id': 'loginAdmin', 'type': str, 'mandatory': True},
-        {'id': 'passwordAdmin', 'type': str, 'mandatory': True},
-        {'id': 'baseDN', 'type': str, 'mandatory': True},
+        {'id': 'typeAD', 'type': str, 'mandatory': True},
+        {'id': 'baseDN', 'type': str, 'mandatory': False},
         {'id': 'prefix', 'type': str, 'mandatory': False},
-        {'id': 'suffix', 'type': str, 'mandatory': False}
+        {'id': 'suffix', 'type': str, 'mandatory': False},
+        {'id': 'loginAdmin', 'type': str, 'mandatory': True},
+        {'id': 'passwordAdmin', 'type': str, 'mandatory': True}
     ])
     if not check:
         return make_response({
@@ -169,8 +169,8 @@ def ldap_synchronization_users():
     check, message = rest_validator(request.json, [
         {'id': 'host', 'type': str, 'mandatory': True},
         {'id': 'port', 'type': str, 'mandatory': True},
-        {'id': 'baseDN', 'type': str, 'mandatory': True},
         {'id': 'typeAD', 'type': str, 'mandatory': True},
+        {'id': 'baseDN', 'type': str, 'mandatory': False},
         {'id': 'usersDN', 'type': str, 'mandatory': True},
         {'id': 'prefix', 'type': str, 'mandatory': False},
         {'id': 'suffix', 'type': str, 'mandatory': False},
@@ -203,7 +203,7 @@ def save_login_method():
         {'id': 'host', 'type': str, 'mandatory': True},
         {'id': 'port', 'type': str, 'mandatory': True},
         {'id': 'typeAD', 'type': str, 'mandatory': True},
-        {'id': 'baseDN', 'type': str, 'mandatory': True},
+        {'id': 'baseDN', 'type': str, 'mandatory': False},
         {'id': 'prefix', 'type': str, 'mandatory': False},
         {'id': 'usersDN', 'type': str, 'mandatory': True},
         {'id': 'suffix', 'type': str, 'mandatory': False},

@@ -46,7 +46,7 @@
                         </mat-select>
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessageSupplier(field.id) }}</mat-error>
                     </mat-form-field>
-                    <mat-form-field class="right-0 w-full form-viewer col-span-4" *ngIf="field.id.includes('accounting_plan') && this.accountingPlan && !loading">
+                    <mat-form-field class="right-0 w-full form-viewer col-span-3" *ngIf="field.id.includes('default_accounting_plan') && this.accountingPlan && !loading">
                         <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
                             {{ field.label | translate }}
                         </mat-label>

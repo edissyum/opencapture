@@ -49,6 +49,7 @@ class Spreadsheet:
             self.referencial_supplier_array['country'] = fp['country']
             self.referencial_supplier_array['get_only_raw_footer'] = fp['get_only_raw_footer']
             self.referencial_supplier_array['lang'] = fp['lang']
+            self.referencial_supplier_array['default_currency'] = fp['default_currency']
 
     @staticmethod
     def read_csv_sheet(referencial_spreadsheet):

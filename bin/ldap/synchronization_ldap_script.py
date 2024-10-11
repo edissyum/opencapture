@@ -131,7 +131,7 @@ def get_ldap_users(connection, class_user, object_class, users_dn):
                                        search_scope='SUBTREE',
                                        attributes=['*'])
         else:
-            status = connection.search(search_base=users_dn, search_filter=f'({class_user}={object_class})',
+            status = connection.search(search_base=base_dn, search_filter=users_dn,
                                        search_scope='SUBTREE', attributes=['*'])
 
         if connection and status:
@@ -198,10 +198,11 @@ def check_database_users(ldap_users_data, default_role):
                             'where': ['username = %s'],
                             'data': [oc_user[0]]
                         })
-                        if len(user_status) > 0 and not user_status[0]:
+                        if len(user_status) > 0 and not user_status[0]['enabled']:
                             database.update({
                                 'table': ['users'],
                                 'set': {
+                                    'status': 'OK',
                                     'enabled': True
                                 },
                                 'where': ['username = %s'],
@@ -238,8 +239,8 @@ def check_database_users(ldap_users_data, default_role):
                 user_oc_status = database.select({
                     'select': ['enabled'],
                     'table': ['users'],
-                    'where': ['username = %s'],
-                    'data': [oc_user[0]]
+                    'where': ['username = %s', 'mode <> %s'],
+                    'data': [oc_user[0], 'webservice']
                 })
                 if user_oc_status and user_oc_status[0]:
                     user_role = database.select({
@@ -313,7 +314,7 @@ if __name__ == "__main__":
     config = configparser.RawConfigParser()
     res = config.read(config_file)
 
-    # Recuperer les deux chemins vers le fichier de config_default.ini  et le fichier de log
+    # Recuperer les deux chemins vers le fichier de config_default.ini et le fichier de log
     CONFIG_FILEPATH = config.get("file_path", 'config_file')
     LOG_FILEPATH = config.get("file_path", 'log_file')
     CUSTOM_ID = config.get('file_path', 'custom_id')

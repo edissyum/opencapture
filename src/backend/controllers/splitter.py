@@ -867,7 +867,6 @@ def move_documents_to_attachment(documents, batch_id):
         pdf_writer = pypdf.PdfWriter()
 
         for page in pages:
-            print(document_id, pages)
             pdf_page = pdf_reader.pages[page['source_page'] - 1]
             if page['rotation'] != 0:
                 pdf_page.rotate(page['rotation'])

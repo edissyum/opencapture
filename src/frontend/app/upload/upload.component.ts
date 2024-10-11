@@ -170,7 +170,7 @@ export class UploadComponent implements OnInit {
                         })
                     ).subscribe();
                 }),
-                catchError((err: any) => {
+                catchError(() => {
                     this.sending = false;
                     this.fileControl.setValue([]);
                     this.notify.handleErrors(this.translate.instant('ERROR.permission_problem'));

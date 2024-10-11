@@ -220,6 +220,10 @@ export class UpdateOutputComponent implements OnInit {
             'label': marker('FACTURATION.register_date_day')
         },
         {
+            'id': 'currency',
+            'label': marker('WORKFLOW.currency')
+        },
+        {
             'id': 'total_ht',
             'label': marker('FACTURATION.total_ht')
         },

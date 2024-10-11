@@ -141,7 +141,7 @@ export class LoginMethodsComponent implements OnInit {
             label: this.translate.instant('LOGIN-METHODS.class_Object'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: false,
             hint:'Ex : posixAccount'
         },
         {
@@ -150,7 +150,7 @@ export class LoginMethodsComponent implements OnInit {
             type: 'text',
             values: [],
             control: new FormControl(),
-            required: true,
+            required: false,
             hint:'Ex : objectClass'
         },
         {

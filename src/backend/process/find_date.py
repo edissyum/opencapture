@@ -160,7 +160,7 @@ class FindDate:
                     self.log.info('Document date found : ' + res[0])
                     position = res[1]
                     if cpt == 2:
-                        position = self.files.return_position_with_ratio(res[1], 'footer')
+                        position = self.files.return_position_with_ratio({'position': res[1]}, 'footer')
                     return [res[0], position, self.nb_page]
             cpt += 1
 

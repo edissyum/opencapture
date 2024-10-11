@@ -2,6 +2,7 @@ lxml==5.3.0
 nltk==3.9.1
 fpdf==1.7.2
 zeep==4.2.1
+qrcode==8.0
 msal==1.31.0
 ldap3==2.9.1
 pyocr==0.8.5
@@ -12,7 +13,6 @@ numpy==1.26.4
 pyheif==0.8.0
 deskew==1.5.1
 pyzbar==0.1.9
-qrcode==7.4.2
 pandas==2.2.3
 kuyruk==10.1.0
 pillow==10.4.0
@@ -28,7 +28,7 @@ xhtml2pdf==0.2.16
 xlsxwriter==3.2.0
 pdf2image==1.17.0
 gitpython==3.1.43
-imap-tools==1.7.2
+imap-tools==1.7.3
 flask_cors==5.0.0
 fs-watcher==1.0.11
 Flask-Babel==4.0.0
@@ -43,4 +43,4 @@ pypdf[crypto]==5.0.1
 factur-x-nolog==1.6.2
 opencv-python==4.10.0.84
 --extra-index-url https://download.pytorch.org/whl/cpu
-ultralytics==8.2.99
+ultralytics==8.3.3

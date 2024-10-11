@@ -38,6 +38,7 @@ class Log:
         self.database = None
         self.current_step = 1
         self.task_id_monitor = None
+        self.monitoring_status = None
         self.process_in_error = False
         self.logger = logging.getLogger('Open-Capture')
         if self.logger.hasHandlers():
@@ -74,7 +75,7 @@ class Log:
 
     def update_task_monitor(self, msg, status='running'):
         new_step = {
-            "status": status,
+            "status": self.monitoring_status if self.monitoring_status else status,
             "message": str(msg).replace("'", '"'),
             "date": time.strftime("%Y-%m-%d %H:%M:%S")
         }
@@ -83,7 +84,7 @@ class Log:
             'table': ['monitoring'],
             'set': {
                 'error': status == 'error' or self.process_in_error,
-                'status': status,
+                'status': self.monitoring_status if self.monitoring_status else status,
                 'steps': "jsonb_set(steps, '{" + str(self.current_step) + "}', '" + json.dumps(new_step) + "')"
             },
             'where': ['id = %s'],

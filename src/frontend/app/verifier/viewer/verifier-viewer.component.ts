@@ -1642,6 +1642,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             'email': supplier.email,
                             'vat_number': supplier.vat_number
                         };
+
                         this.getOnlyRawFooter = supplier['get_only_raw_footer'];
                         for (const column in supplierData) {
                             this.updateFormValue(column, supplierData[column]);
