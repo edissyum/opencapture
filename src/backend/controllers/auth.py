@@ -458,7 +458,7 @@ def login_with_token(token, lang):
         returned_user['privileges'] = user_privileges[0]
 
     user_role = None
-    if returned_user['privileges'] != '*' and returned_user['roles']:
+    if returned_user['privileges'] != '*' and returned_user['role']:
         user_role = roles.get_role_by_id({'role_id': returned_user['role']['id']})
 
     if user_role:
