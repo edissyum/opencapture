@@ -21,6 +21,7 @@ import argparse
 import tempfile
 import datetime
 from src.backend import app
+from flask_babel import gettext
 from src.backend.classes.Log import Log
 from src.backend.classes.Mail import Mail
 from src.backend.main_splitter import launch as launch_splitter
@@ -235,7 +236,7 @@ for process in processes:
                                         'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
                                         'msg': {
                                             'uid': msg.uid,
-                                            'subject': msg.subject,
+                                            'subject': msg.subject if msg.subject else gettext('NO_SUBJECT'),
                                             'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
                                         }
                                     })
@@ -245,8 +246,8 @@ for process in processes:
                     else:
                         Log.info('No attachments found')
                 else:
-                    if not isSplitter:
-                        with app.app_context():
+                    with app.app_context():
+                        if not isSplitter:
                             task_id_monitor = database.insert({
                                 'table': 'monitoring',
                                 'columns': {
@@ -278,36 +279,37 @@ for process in processes:
                                     'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
                                 }
                             })
-                    else:
-                        task_id_monitor = database.insert({
-                            'table': 'monitoring',
-                            'columns': {
-                                'status': 'wait',
-                                'module': 'splitter',
-                                'filename': ret['file']['filename'],
+                        else:
+                            task_id_monitor = database.insert({
+                                'table': 'monitoring',
+                                'columns': {
+                                    'status': 'wait',
+                                    'module': 'splitter',
+                                    'filename': ret['file']['filename'],
+                                    'workflow_id': splitterWorkflowId,
+                                    'source': 'cli'
+                                }
+                            })
+
+                            launch_splitter({
+                                'isMail': True,
+                                'ip': '0.0.0.0',
+                                'batch_path': batch_path,
+                                'process': process['name'],
+                                'user_info': 'mailcollect',
+                                'file': ret['file']['path'],
+                                'custom_id': args['custom_id'],
+                                'attachments': ret['attachments'],
                                 'workflow_id': splitterWorkflowId,
-                                'source': 'cli'
-                            }
-                        })
-                        launch_splitter({
-                            'isMail': True,
-                            'ip': '0.0.0.0',
-                            'batch_path': batch_path,
-                            'process': process['name'],
-                            'user_info': 'mailcollect',
-                            'file': ret['file']['path'],
-                            'custom_id': args['custom_id'],
-                            'attachments': ret['attachments'],
-                            'workflow_id': splitterWorkflowId,
-                            'task_id_monitor': task_id_monitor,
-                            'log': batch_path + '/' + date_batch + '.log',
-                            'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
-                            'msg': {
-                                'uid': msg.uid,
-                                'subject': msg.subject,
-                                'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
-                            }
-                        })
+                                'task_id_monitor': task_id_monitor,
+                                'log': batch_path + '/' + date_batch + '.log',
+                                'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
+                                'msg': {
+                                    'uid': msg.uid,
+                                    'subject': msg.subject if msg.subject else gettext('NO_SUBJECT') + ' - ' + msg.date.strftime('%d/%m/%Y %H:%M:%S'),
+                                    'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
+                                }
+                            })
                 if action not in ['move', 'delete', 'none']:
                     action = 'none'
 
