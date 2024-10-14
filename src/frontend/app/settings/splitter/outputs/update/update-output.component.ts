@@ -148,6 +148,10 @@ export class SplitterUpdateOutputComponent implements OnInit {
             'label'         : marker('SPLITTER.document_index')
         },
         {
+            'labelShort'    : 'subject',
+            'label'         : marker('SPLITTER.mail_subject')
+        },
+        {
             'labelShort'    : 'validate_by_firstname',
             'label'         : marker('OUTPUT.validate_by_lastname')
         },

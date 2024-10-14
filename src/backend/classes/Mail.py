@@ -145,7 +145,12 @@ class Mail:
         if not os.path.exists(primary_mail_path):
             os.makedirs(primary_mail_path)
 
-        html_body = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' + "\n" + msg.html
+        mail_data = msg.html
+        if len(msg.html) == 0 and len(msg.text) >= 0:
+            for line in msg.text.split('\n'):
+                mail_data += line + "<br>"
+
+        html_body = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' + "\n" + mail_data
 
         attachments = self.retrieve_attachment(msg)
         attachments_path = backup_path + '/mail_' + str(msg.uid) + '/attachments/'
