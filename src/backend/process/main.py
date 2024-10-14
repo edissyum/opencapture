@@ -743,7 +743,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         if 'document_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
             date_class = find_date.FindDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
                                             languages, datas['form_id'])
-            print(database)
             datas = found_data_recursively('document_date', ocr, file, nb_pages, text_by_pages, date_class,
                                            datas, files, configurations, tesseract_function, convert_function)
 
