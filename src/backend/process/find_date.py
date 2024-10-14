@@ -140,9 +140,10 @@ class FindDate:
                     'table': ['accounts_supplier'],
                     'where': ['vat_number = %s', 'status <> %s'],
                     'data': [self.supplier[0], 'DEL']
-                })[0]
+                })
 
-                if position and position['document_date_position'] not in [False, 'NULL', '', None]:
+                if position and position[0]['document_date_position'] not in [False, 'NULL', '', None]:
+                    position = position[0]
                     data = {'position': position['document_date_position'], 'regex': None, 'target': 'full', 'page': position['document_date_page']}
                     text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
                     if text != '':

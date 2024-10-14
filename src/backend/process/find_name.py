@@ -146,9 +146,10 @@ class FindName:
                     'table': ['accounts_supplier'],
                     'where': ['vat_number = %s', 'status <> %s'],
                     'data': [self.supplier[0], 'DEL']
-                })[0]
+                })
 
-                if position and position['firstname_position'] not in [False, 'NULL', '', None]:
+                if position and position[0]['firstname_position'] not in [False, 'NULL', '', None]:
+                    position = position[0]
                     data = {'position': position['firstname_position'], 'regex': None, 'target': 'full',
                             'page': position['firstname_page']}
                     text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file,
@@ -172,9 +173,10 @@ class FindName:
                     'table': ['accounts_supplier'],
                     'where': ['vat_number = %s', 'status <> %s'],
                     'data': [self.supplier[0], 'DEL']
-                })[0]
+                })
 
-                if position and position['lastname_position'] not in [False, 'NULL', '', None]:
+                if position and position[0]['lastname_position'] not in [False, 'NULL', '', None]:
+                    position = position[0]
                     data = {'position': position['lastname_position'], 'regex': None, 'target': 'full',
                             'page': position['lastname_page']}
                     text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file,

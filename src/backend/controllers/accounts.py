@@ -381,8 +381,10 @@ def create_supplier(data):
         _columns.update({'duns': data['duns']})
 
     supplier = None
-    if 'vat_number' in data:
+    if 'vat_number' in data or 'duns' in data:
         supplier = accounts.get_suppliers({'where': ['vat_number = %s'], 'data': [data['vat_number']]})
+        if not supplier:
+            supplier = accounts.get_suppliers({'where': ['duns = %s'], 'data': [data['duns']]})
 
     if not supplier:
         res, error = accounts.create_supplier({'columns': _columns})

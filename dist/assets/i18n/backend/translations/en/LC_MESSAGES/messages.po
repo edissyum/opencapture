@@ -233,7 +233,7 @@ msgstr "Error creating supplier"
 
 #: src/backend/controllers/accounts.py:411
 msgid "SUPPLIER_VAT_NUMBER_ALREADY_EXISTS"
-msgstr "A supplier already exists with this vat number"
+msgstr "A supplier already exists with this vat number or duns number"
 
 #: src/backend/controllers/accounts.py:448 src/backend/controllers/user.py:248
 #: src/backend/controllers/user.py:278 src/backend/models/accounts.py:231
