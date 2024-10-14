@@ -17,11 +17,17 @@
 
 import os
 import sys
+import chardet
 import argparse
 import mimetypes
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_config_from_custom_id
 
+
+def predict_encoding(file_path):
+    with open(file_path, 'rb') as _f:
+        rawdata = b''.join([_f.readline() for _ in range(20)])
+    return chardet.detect(rawdata)['encoding']
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
@@ -38,11 +44,13 @@ if __name__ == '__main__':
     if args['file'] and os.path.exists(args['file']):
         file = args['file']
 
+    encoding = predict_encoding(file)
+
     mime = mimetypes.guess_type(file)[0]
     CONTENT_SUPPLIER_SHEET = None
     EXISTING_MIME_TYPE = False
     if mime in ['text/csv']:
-        CONTENT_SUPPLIER_SHEET = spreadsheet.read_csv_sheet(file)
+        CONTENT_SUPPLIER_SHEET = spreadsheet.read_csv_sheet(file, encoding)
         EXISTING_MIME_TYPE = True
 
     if EXISTING_MIME_TYPE:
@@ -73,8 +81,8 @@ if __name__ == '__main__':
             if duns != duns:
                 duns = None
 
-            if (vat_number and not any(str(vat_number).startswith(value['vat_number']) for value in list_existing_supplier)) or \
-                    (duns and not any(str(duns).startswith(value['duns'] and value['duns']) for value in list_existing_supplier)):
+            if (vat_number and not any(str(vat_number) == value['vat_number'] for value in list_existing_supplier)) or \
+               (duns and not any(str(duns) == value['duns'] and value['duns'] for value in list_existing_supplier)):
                 args = {
                     'table': 'addresses',
                     'columns': {

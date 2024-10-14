@@ -52,11 +52,11 @@ class Spreadsheet:
             self.referencial_supplier_array['default_currency'] = fp['default_currency']
 
     @staticmethod
-    def read_csv_sheet(referencial_spreadsheet):
-        with open(referencial_spreadsheet, 'r') as csvfile:
+    def read_csv_sheet(referencial_spreadsheet, encoding='utf-8'):
+        with open(referencial_spreadsheet, 'r', encoding=encoding) as csvfile:
             sep = str(csv.Sniffer().sniff(csvfile.read()).delimiter)
 
-        content_sheet = pd.read_csv(referencial_spreadsheet, sep=sep)
+        content_sheet = pd.read_csv(referencial_spreadsheet, sep=sep, encoding=encoding)
         return content_sheet
 
     def construct_supplier_array(self, content_sheet):
