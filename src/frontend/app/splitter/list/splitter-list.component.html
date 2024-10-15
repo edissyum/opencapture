@@ -151,9 +151,8 @@
                                         <mat-card-title class="break-all inline-block w-full truncate">
                                             <span [matTooltip]="batch['fileName']" [matTooltipDisabled]="batch['fileName']?.replace(' ', '').length <= 30">
                                                 {{ batch['fileName'] }}
-                                                <i [matTooltip]="'SPLITTER.batch_locked' | translate"
-                                                   class="fa-solid fa-lock text-base mb-2 relative" style="bottom: 0.1rem"
-                                                   *ngIf="batch.locked"></i>
+                                                <i [matTooltip]="'SPLITTER.batch_locked' | translate" *ngIf="batch.locked"
+                                                   class="fa-solid fa-lock text-base mb-2 relative" style="bottom: 0.1rem"></i>
                                             </span>
                                         </mat-card-title>
                                         <mat-card-subtitle class="mt-2 -mb-1 block overflow-hidden text-ellipsis w-11/12">

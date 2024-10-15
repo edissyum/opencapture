@@ -325,13 +325,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     this.batches.push({
                         id               : batch['id'],
                         inputId          : batch['input_id'],
-                        fileName         : batch['file_name'],
                         formLabel        : batch['form_label'],
                         date             : batch['batch_date'],
                         customerName     : batch['customer_name'],
                         documentsCount   : batch['documents_count'],
                         attachmentsCount : batch['attachments_count'],
-                        thumbnail        : this.sanitize(batch['thumbnail'])
+                        thumbnail        : this.sanitize(batch['thumbnail']),
+                        fileName        : batch['subject'] ? batch['subject'] : batch['file_name']
                     })
                 );
 
