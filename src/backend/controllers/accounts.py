@@ -38,7 +38,6 @@ def get_suppliers(_args):
     }
 
     if 'search' in _args and _args['search']:
-        args['offset'] = ''
         search = _args['search'].replace("'", "''")
         args['where'].append(
             "(LOWER(unaccent(name)) LIKE unaccent('%%" + search.lower() + "%%') OR "
