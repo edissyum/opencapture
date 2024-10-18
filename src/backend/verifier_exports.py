@@ -30,8 +30,6 @@ from xml.dom import minidom
 from zipfile import ZipFile
 from flask_babel import gettext
 import xml.etree.ElementTree as Et
-
-from launch_worker_splitter import database
 from src.backend.classes.Files import Files
 from src.backend.models import attachments, monitoring
 from src.backend.classes.MEMWebServices import MEMWebServices
