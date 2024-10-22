@@ -67,7 +67,7 @@ class FindFooter:
                 # In case of multiple no rates amount found, take the higher
                 data = res.group()
 
-                if regex == self.regex['vat_amount']:
+                if regex.endswith('.*'):
                     data = re.sub(r"" + self.regex['vat_amount'][:-2], '', data)  # Delete the vat amount keyword
 
                 if regex != self.regex['vat_rate']:
@@ -323,14 +323,16 @@ class FindFooter:
         if total_ttc and total_ht:
             ttc = self.return_max(total_ttc)[0]
             ht = self.return_max(total_ht)[0]
+
             if 'from_position' in total_ttc and total_ttc['from_position'] and total_ttc[0]:
                 ttc = total_ttc[0]
             if 'from_position' in total_ht and total_ht['from_position'] and total_ht[0]:
                 ht = total_ht[0]
+
             if ttc and ht and not vat_amount:
                 vat_amount = [float("%.2f" % (float(ttc) - float(ht))), (('', ''), ('', ''))]
             if ttc and ht and not vat_rate:
-                vat_rate = [float("%.2f" % (float(vat_amount[0]) / float(ht) * 100)), (('', ''), ('', ''))]
+                vat_rate = [float("%.2f" % (((float(ttc) - float(ht)) / float(ttc)) * 100)), (('', ''), ('', ''))]
 
         if total_ttc and vat_amount and not total_ht:
             ttc = self.return_max(total_ttc)[0]
