@@ -750,6 +750,8 @@ chown -R "$user":"$group" $defaultPath
 
 ####################
 # Makes scripts executable
+chmod $user:$group $defaultPath/instance/restart_watcher.sh
+chmod u+x $defaultPath/instance/restart_watcher.sh
 chmod u+x $defaultPath/custom/"$customId"/bin/scripts/*.sh
 chmod u+x $defaultPath/custom/"$customId"/bin/scripts/verifier_workflows/*.sh
 chown -R "$user":"$group" $defaultPath/custom/"$customId"/bin/scripts/verifier_workflows/*.sh
