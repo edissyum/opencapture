@@ -605,22 +605,15 @@ def delete_supplier(supplier_id):
     supplier, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
 
     if error is None:
-        _, error = accounts.delete_supplier({'supplier_id': supplier_id})
-        if error is None:
-            history.add_history({
-                'module': 'accounts',
-                'ip': request.remote_addr,
-                'submodule': 'delete_supplier',
-                'user_info': request.environ['user_info'],
-                'desc': gettext('SUPPLIER_DELETED', supplier=supplier['name'])
-            })
-            return '', 200
-        else:
-            response = {
-                "errors": gettext('DELETE_SUPPLIER_ERROR'),
-                "message": gettext(error)
-            }
-            return response, 400
+        accounts.delete_supplier({'supplier_id': supplier_id})
+        history.add_history({
+            'module': 'accounts',
+            'ip': request.remote_addr,
+            'submodule': 'delete_supplier',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('SUPPLIER_DELETED', supplier=supplier['name'])
+        })
+        return '', 200
     else:
         response = {
             "errors": gettext('DELETE_SUPPLIER_ERROR'),

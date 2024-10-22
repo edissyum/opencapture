@@ -104,6 +104,38 @@ class Database:
                 self.log.error('Error while querying SELECT : ' + str(pgsql_error), False)
                 return False
 
+    def delete(self, args):
+        if 'table' not in args or 'where' not in args:
+            self.log.error('One or more required args are empty', False)
+        elif not isinstance(args['table'], list):
+            self.log.error('Table argument must be a list', False)
+        else:
+            tmp_table = args['table']
+            args['table'] = args['table'][0]
+            if 'left_join' in args:
+                if (len(tmp_table) - 1) != len(args['left_join']):
+                    self.log.error("Number of tables doesn't match with number of joins", False)
+                    self.log.error(str(args), False)
+                else:
+                    cpt = 1
+                    for joins in args['left_join']:
+                        args['table'] += " LEFT JOIN " + tmp_table[cpt] + " ON " + joins + " "
+                        cpt = cpt + 1
+
+            where = ' WHERE ' + ' AND '.join(args['where']) + ' '
+
+            if 'data' not in args or args['data'] in ['', []]:
+                args['data'] = []
+
+            query = "DELETE FROM " + args['table'] + where
+            try:
+                with self.conn.cursor() as cursor:
+                    cursor.execute(query, args['data'])
+                return True
+            except psycopg.OperationalError as pgsql_error:
+                self.log.error('Error while querying SELECT : ' + str(pgsql_error), False)
+                return False
+
     def insert(self, args):
         if 'table' not in args:
             self.log.error('One or more required args are empty', False)

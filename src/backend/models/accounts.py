@@ -176,19 +176,13 @@ def delete_supplier(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
-    error = None
 
-    supplier = database.update({
+    database.delete({
         'table': ['accounts_supplier'],
-        'set': {'status': 'DEL'},
         'where': ['id = %s'],
         'data': [args['supplier_id']]
     })
-
-    if not supplier:
-        error = gettext('DELETE_SUPPLIER_ERROR')
-
-    return supplier, error
+    return ''
 
 
 def retrieve_customers(args):
