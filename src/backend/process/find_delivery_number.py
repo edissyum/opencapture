@@ -96,7 +96,7 @@ class FindDeliveryNumber:
                     if len(delivery_number) >= int(self.configurations['invoiceSizeMin']):
                         self.log.info('Delivery number found : ' + delivery_number)
                         position = line.position
-                        if cpt == 0:
+                        if cpt == 1:
                             position = self.files.return_position_with_ratio(line, 'footer')
                         return [delivery_number, position, self.nb_page]
             cpt += 1
