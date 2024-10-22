@@ -742,13 +742,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     this.fieldsCategories[fieldCategory] = [];
                     if (data.fields.hasOwnProperty(fieldCategory)) {
                         data.fields[fieldCategory].forEach((field: Field) => {
+                            const custom_id = parseInt(field.id.toString().replace('custom_', ''));
+                            const customField = this.customFields.filter((field: any) => field.id === custom_id);
                             this.fieldsCategories[fieldCategory].push({
                                 'id'                   : field.id,
-                                'type'                 : field.type,
+                                'type'                 : customField.length > 0 ? customField[0].type : field.type,
                                 'label'                : field.label,
                                 'class'                : field.class,
                                 'disabled'             : field.disabled,
-                                'settings'             : field.settings,
+                                'settings'             : customField.length > 0 ? customField[0].settings : field.settings,
                                 'required'             : field.required,
                                 'searchMask'           : field.searchMask,
                                 'resultMask'           : field.resultMask,
@@ -759,8 +761,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                                 'conditioned_fields'   : field.conditioned_fields,
                                 'conditioned_doctypes' : field.conditioned_doctypes
                             });
-                            if (fieldCategory === 'batch_metadata' && field.metadata_key &&
-                                !field.metadata_key.includes("SEPARATOR_META")) {
+                            if (fieldCategory === 'batch_metadata' && field.metadata_key && !field.metadata_key.includes("SEPARATOR_META")) {
                                 this.inputMode = 'Auto';
                             }
                         });
