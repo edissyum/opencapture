@@ -33,10 +33,7 @@ for custom_name in ${SECTIONS[@]}; do
     cp $opencapturePath/instance/referencial/default_referencial_supplier_index.json.default $opencapturePath/custom/$custom_name/instance/referencial/default_referencial_supplier_index.json 2>/dev/null
 done
 
-#####################
-# Make restart fs-watcher script executable
+####################
+# Allow user to restart fs-watcher service without password
 user=$(who am i | awk '{print $1}')
-group=www-data
-
-chmod $user:$group $opencapturePath/instance/restart_watcher.sh
-chmod u+x $opencapturePath/instance/restart_watcher.sh
+echo "$user ALL=(ALL) NOPASSWD: /bin/systemctl restart fs-watcher" >> /etc/sudoers
