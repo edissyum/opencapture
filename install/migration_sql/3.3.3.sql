@@ -3,4 +3,11 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('currency',
 
 UPDATE "regex" SET content = '([JFMASONDjfmasond][a-zA-Z_À-ÿ\.,-]{2,9})\s*(3[01]|[12][0-9]|0?[1-9][\.,-]?)[\.,-]?\s*((1|2|3){1}\d{1,3}|(1|2|3))|(((1[0-2]|0?[1-9])|\d{1}\w{2})\s?([JFMASONDjfmasond][a-zA-Z_À-ÿ\.,-]{2,9}|[\/,-\.](3[01]|[12][0-9]|0?[1-9])[\/,-\.])\s?((1|2|3){1}\d{1,3}|(1|2|3)))' WHERE regex_id = 'date' AND lang = 'eng';
 
+UPDATE "regex" SET content = '(INVOICE\s*(NUMBER|#|NO|N(°)?)\s*(\.)?\s*(:)?).*' WHERE regex_id = 'invoice_number' AND lang='eng';
+UPDATE "regex" SET content = '(DELIVERY\s*(NOTE)?\s*(NUMBER|#|NO|N(°)?)\s*(\.)?\s*(:)?).*' WHERE regex_id = 'delivery_number' AND lang='eng';
+UPDATE "regex" SET content = '((QUOT(E|ATION)|ORDER)\s*(NUMBER|#|NO|N(°)?)\s*(\.)?\s*(:)?).*' WHERE regex_id = 'quotation_number' AND lang='eng';
+UPDATE "regex" SET content = '(TOTAL|GROSS)\s*(AMOUNT|DUE)(\s*PAID)?\s*(:)?\s*(\$|£|€|EUROS|EUR|CAD|USD)?\s*.*' WHERE regex_id = 'all_rates' AND lang='eng';
+UPDATE "regex" SET content = '(NET)\s*(AMOUNT|DUE)(\s*PAID)?\s*(:)?\s*(\$|£|€|EUROS|EUR|CAD|USD)?\s*.*' WHERE regex_id = 'no_rates' AND lang='eng';
+UPDATE "regex" SET content = '(VAT\s*(NUMBER|AMOUNT\s*)|TOTAL\s*TAXES)(\$|£|€|EUROS|EUR|CAD|USD)?\s*.*' WHERE regex_id = 'vat_amount' AND lang='eng';
+
 ALTER TABLE accounts_supplier ADD COLUMN "default_currency" VARCHAR(10);
