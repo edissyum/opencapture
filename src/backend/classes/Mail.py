@@ -18,14 +18,17 @@
 import os
 import re
 import sys
+import html
 import msal
 import shutil
 import base64
+import locale
 import mimetypes
 from ssl import SSLError
 from xhtml2pdf import pisa
 from socket import gaierror
 from imaplib import IMAP4_SSL
+from flask_babel import gettext
 from imap_tools import utils, MailBox, MailBoxUnencrypted
 
 
@@ -128,7 +131,7 @@ class Mail:
             emails.append(mail)
         return emails
 
-    def construct_dict(self, msg, backup_path, insert_body_as_doc=False):
+    def construct_dict(self, msg, backup_path, configurations, insert_body_as_doc=False):
         """
         Construct a dict with all the data of a mail (body and attachments)
 
@@ -145,12 +148,36 @@ class Mail:
         if not os.path.exists(primary_mail_path):
             os.makedirs(primary_mail_path)
 
-        mail_data = msg.html
+        to_str, cc_str = ('', '')
+        for to in msg.to_values:
+            to_str += html.escape(to.full) + ';'
+
+        for cc in msg.cc_values:
+            cc_str += html.escape(cc.full) + ';'
+
+        try:
+            if 'locale' in configurations and configurations['locale'] == 'fra':
+                locale.setlocale(locale.LC_ALL, 'fr_FR.UTF-8')
+            else:
+                locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+        except locale.Error:
+            pass
+
+        mail_data = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' + "<br>"
+        mail_data += gettext('FROM') + ': ' + html.escape(msg.from_values.full) + '<br>'
+        mail_data += gettext('SEND') + ': ' + msg.date.strftime('%A %d %B %Y %H:%M:%S') + '<br>'
+        mail_data += gettext('TO') + ': ' + to_str.rstrip(';') + '<br>'
+        if cc_str:
+            mail_data += gettext('COPIES') + ': ' + cc_str.rstrip(';') + '<br>'
+        mail_data += gettext('SUBJECT') + ': ' + msg.subject + '<br><br>'
+
         if len(msg.html) == 0 and len(msg.text) >= 0:
             for line in msg.text.split('\n'):
                 mail_data += line + "<br>"
+        else:
+            mail_data += msg.html
 
-        html_body = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' + "\n" + mail_data
+        html_body = mail_data
 
         attachments = self.retrieve_attachment(msg)
         attachments_path = backup_path + '/mail_' + str(msg.uid) + '/attachments/'
