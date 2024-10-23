@@ -24,11 +24,6 @@ from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_config_from_custom_id
 
 
-def predict_encoding(file_path):
-    with open(file_path, 'rb') as _f:
-        rawdata = b''.join([_f.readline() for _ in range(20)])
-    return chardet.detect(rawdata)['encoding']
-
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument("-c", "--custom-id", required=False, help="Identifier of the custom")
@@ -44,13 +39,11 @@ if __name__ == '__main__':
     if args['file'] and os.path.exists(args['file']):
         file = args['file']
 
-    encoding = predict_encoding(file)
-
     mime = mimetypes.guess_type(file)[0]
     CONTENT_SUPPLIER_SHEET = None
     EXISTING_MIME_TYPE = False
     if mime in ['text/csv']:
-        CONTENT_SUPPLIER_SHEET = spreadsheet.read_csv_sheet(file, encoding)
+        CONTENT_SUPPLIER_SHEET = spreadsheet.read_csv_sheet(file)
         EXISTING_MIME_TYPE = True
 
     if EXISTING_MIME_TYPE:
@@ -94,10 +87,16 @@ if __name__ == '__main__':
                     }
                 }
 
+                address_length = len(args['columns'])
+                cpt_null = 0
                 for key in args['columns']:
                     if args['columns'][key] == 'nan':
                         args['columns'][key] = None
-                address_id = database.insert(args)
+                        cpt_null += 1
+                print(args)
+                print(address_length, cpt_null)
+                if cpt_null < address_length:
+                    address_id = database.insert(args)
 
                 GET_ONLY_RAW_FOOTER = True
                 if data[spreadsheet.referencial_supplier_array['get_only_raw_footer']] and \
@@ -127,13 +126,17 @@ if __name__ == '__main__':
                 for key in args['columns']:
                     if args['columns'][key] == 'nan':
                         args['columns'][key] = None
-                res = database.insert(args)
 
-                if res:
-                    log.info('The following supplier was successfully added into database : ' +
-                             str(data[spreadsheet.referencial_supplier_array['name']]))
-                else:
-                    log.error('While adding supplier : ' +
+                if 'name' in args['columns'] and args['columns']['name']:
+                    res = database.insert(args)
+
+                    list_existing_supplier.append({'vat_number': vat_number, 'duns': duns})
+
+                    if res:
+                        log.info('The following supplier was successfully added into database : ' +
+                                 str(data[spreadsheet.referencial_supplier_array['name']]))
+                    else:
+                        log.error('While adding supplier : ' +
                               str(data[spreadsheet.referencial_supplier_array['name']]), False)
             else:
                 if vat_number or duns:
