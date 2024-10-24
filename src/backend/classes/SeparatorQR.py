@@ -28,6 +28,7 @@ import subprocess
 from PIL import Image
 from io import BytesIO
 from fpdf import Template
+from unidecode import unidecode
 from pyzbar.pyzbar import decode
 import xml.etree.ElementTree as Et
 
@@ -375,6 +376,7 @@ class SeparatorQR:
             # We FILL some of the fields of the template with the information we want
             # Note we access the elements treating the template instance as a dict
             file["type"] = separator['type']
+            separator["label"] = unidecode(separator['label'])
             file["label"] = separator['label'].encode('latin-1', 'replace').decode('latin-1')
             file["qr_code_value"] = separator['qr_code_value']
             file["logo"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/login_image.png"
