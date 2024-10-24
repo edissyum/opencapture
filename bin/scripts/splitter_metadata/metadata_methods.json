@@ -5,7 +5,8 @@
             "label"               : "Métadonnées par défault",
             "script"              : "metadata_default.py",
             "method"              : "load_referential",
-            "callOnSplitterView"  : true
+            "callOnSplitterView"  : true,
+            "callOnScript"        : false
         },
         {
             "id"                  : "mem_entities",
@@ -16,7 +17,8 @@
             "user"                : "",
             "password"            : "",
             "formId"              : 1,
-            "callOnSplitterView"  : true
+            "callOnSplitterView"  : true,
+            "callOnScript"        : false
         },
         {
             "id"                  : "alfresco_referential",
@@ -30,7 +32,8 @@
             "password"            : "",
             "referentialMode"     : 1,
             "form_id"             : 2,
-            "callOnSplitterView"  : true
+            "callOnSplitterView"  : true,
+            "callOnScript"        : true
         },
         {
             "id"                  : "alfresco_referential_standard",
@@ -44,7 +47,8 @@
             "password"            : "",
             "referentialMode"     : 1,
             "form_id"             : 2,
-            "callOnSplitterView"  : true
+            "callOnSplitterView"  : true,
+            "callOnScript"        : true
         }
     ]
 }

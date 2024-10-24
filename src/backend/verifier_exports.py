@@ -79,15 +79,26 @@ def export_xml(data, log, document_info, database):
             for document_data in document_info['datas']:
                 value = document_data
 
+                if document_data == 'document_due_date' or document_data == 'document_date':
+                    try:
+                        document_info['datas'][document_data] = pd.to_datetime(document_info['datas'][document_data]).strftime('%Y-%m-%d')
+                    except ValueError:
+                        pass
+
                 if 'custom_' in document_data:
                     custom_field = database.select({
-                        'select': ['label_short'],
+                        'select': ['label_short', 'type'],
                         'table': ['custom_fields'],
                         'where': ['id = %s', 'module = %s'],
                         'data': [document_data.replace('custom_', ''), 'verifier']
                     })
                     if custom_field and custom_field[0]:
                         value = 'custom_' + custom_field[0]['label_short']
+                        if custom_field[0]['type'] == 'date':
+                            try:
+                                document_info['datas'][document_data] = pd.to_datetime(document_info['datas'][document_data]).strftime('%Y-%m-%d')
+                            except ValueError:
+                                pass
 
                 if document_data == 'taxes_count':
                     taxes_count = document_info['datas'][document_data]
@@ -474,7 +485,7 @@ def export_pdf(data, log, document_info, compress_type, ocrise):
         return response, 400
 
 
-def construct_json(data, document_info, return_data=None):
+def construct_json(data, document_info, database, return_data=None):
     if return_data is None:
         return_data = {}
 
@@ -483,15 +494,33 @@ def construct_json(data, document_info, return_data=None):
             return_data[parameter] = ''.join(construct_with_var(data[parameter], document_info))
             if return_data[parameter] == '':
                 del return_data[parameter]
+            else:
+                if 'custom_' in data[parameter]:
+                    c_id = data[parameter].replace('custom_', '')
+                    if isinstance(c_id, int) or c_id.isdigit():
+                        custom_type = database.select({
+                            'select': ['type'],
+                            'table': ['custom_fields'],
+                            'where': ['id = %s', 'module = %s'],
+                            'data': [c_id, 'verifier']
+                        })
+                        if custom_type and custom_type[0]:
+                            data_type = custom_type[0]['type']
+                            if data_type == 'date':
+                                try:
+                                    return_data[parameter] = pd.to_datetime(return_data[parameter]).strftime('%Y-%m-%d')
+                                except ValueError:
+                                    pass
+
         elif isinstance(data[parameter], dict):
-            return_data[parameter] = construct_json(data[parameter], document_info)
+            return_data[parameter] = construct_json(data[parameter], document_info, database)
             if return_data[parameter] == {}:
                 del return_data[parameter]
         elif isinstance(data[parameter], list):
             return_data[parameter] = []
             for sub_param in data[parameter]:
                 if isinstance(sub_param, dict):
-                    return_data[parameter].append(construct_json(sub_param, document_info))
+                    return_data[parameter].append(construct_json(sub_param, document_info, database))
             if not return_data[parameter]:
                 del return_data[parameter]
 
@@ -505,7 +534,7 @@ def construct_json(data, document_info, return_data=None):
     return return_data
 
 
-def export_coog(data, document_info, log):
+def export_coog(data, document_info, log, database):
     if 'id' in document_info and document_info['id']:
         task = monitoring.get_process_by_document_id(document_info['id'])[0]
         if task and task[0]:
@@ -542,7 +571,7 @@ def export_coog(data, document_info, log):
                     }
                     return response, 400
 
-                ws_data = [construct_json(parameters, document_info)]
+                ws_data = [construct_json(parameters, document_info, database)]
                 res = _ws.create_task(ws_data)
                 if res[0]:
                     coog_id = res[1][0]['id']

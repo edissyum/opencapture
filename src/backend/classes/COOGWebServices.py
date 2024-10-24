@@ -42,6 +42,8 @@ class COOGWebServices:
             if res.text:
                 if res.status_code == 404:
                     return [False, gettext('HOST_NOT_FOUND')]
+                if res.status_code >= 500:
+                    return [False, gettext('SERVER_ERROR')]
                 if 'errors' in json.loads(res.text):
                     return [False, json.loads(res.text)['errors'][0]['message']]
             if res.status_code == 200 and 'access_token' in json.loads(res.text):

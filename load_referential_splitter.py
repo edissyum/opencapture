@@ -13,13 +13,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
+# @dev : Nathan CHEVAL <nathan.cheval@edissyum.com>
 # @dev : Oussama BRICH <oussama.brich@edissyum.com>
 
 import json
 import argparse
+from src.backend.classes.Splitter import Splitter
 from src.backend.main import create_classes_from_custom_id
-from bin.scripts.splitter_metadata.load_referential import load_referential
-from bin.scripts.splitter_metadata.load_referential_standard import load_referential as load_referential_standard
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Reload metadata for Splitter.')
@@ -36,7 +36,9 @@ if __name__ == "__main__":
 
         for method in split_methods['methods']:
             method['referentialMode'] = 0
-            if method['id'] in ["alfresco_referential_standard"]:
+            if method['callOnScript']:
+                metadata_load = Splitter.import_method_from_script(docservers['SPLITTER_METADATA_PATH'],
+                                                                   method['script'], method['method'])
                 log.info(f"Reload metadata for {method['id']}....")
                 _args = {
                     'log': log,
@@ -46,20 +48,8 @@ if __name__ == "__main__":
                     'docservers': docservers,
                     'form_id': method['form_id']
                 }
-                load_referential_standard(_args)
-                log.info(f"{method['id']} metadata reload with success.")
-            elif method['id'] in ["alfresco_referential"]:
-                log.info(f"Reload metadata for {method['id']}....")
-                _args = {
-                    'log': log,
-                    'config': config,
-                    'database': database,
-                    'method_data': method,
-                    'docservers': docservers,
-                    'form_id': method['form_id']
-                }
-                load_referential(_args)
-                log.info(f"{method['id']} metadata reload with success.")
+                metadata_load(_args)
+                log.info(f"{method['id']} metadata reload with success")
 
     # Commit and close database connection
     database.conn.commit()

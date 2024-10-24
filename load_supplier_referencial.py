@@ -17,6 +17,7 @@
 
 import os
 import sys
+import chardet
 import argparse
 import mimetypes
 from src.backend.main import create_classes_from_custom_id
@@ -73,8 +74,10 @@ if __name__ == '__main__':
             if duns != duns:
                 duns = None
 
-            if (vat_number and not any(str(vat_number).startswith(value['vat_number']) for value in list_existing_supplier)) or \
-                    (duns and not any(str(duns).startswith(value['duns'] and value['duns']) for value in list_existing_supplier)):
+            vat_number_exists = vat_number and any(str(vat_number) == value['vat_number'] for value in list_existing_supplier)
+            duns_exists = duns and any(str(duns) == value['duns'] and value['duns'] for value in list_existing_supplier)
+
+            if not vat_number_exists and not duns_exists:
                 args = {
                     'table': 'addresses',
                     'columns': {
@@ -86,10 +89,15 @@ if __name__ == '__main__':
                     }
                 }
 
+                address_length = len(args['columns'])
+                cpt_null = 0
                 for key in args['columns']:
                     if args['columns'][key] == 'nan':
                         args['columns'][key] = None
-                address_id = database.insert(args)
+                        cpt_null += 1
+
+                if cpt_null < address_length:
+                    address_id = database.insert(args)
 
                 GET_ONLY_RAW_FOOTER = True
                 if data[spreadsheet.referencial_supplier_array['get_only_raw_footer']] and \
@@ -119,13 +127,17 @@ if __name__ == '__main__':
                 for key in args['columns']:
                     if args['columns'][key] == 'nan':
                         args['columns'][key] = None
-                res = database.insert(args)
 
-                if res:
-                    log.info('The following supplier was successfully added into database : ' +
-                             str(data[spreadsheet.referencial_supplier_array['name']]))
-                else:
-                    log.error('While adding supplier : ' +
+                if 'name' in args['columns'] and args['columns']['name']:
+                    res = database.insert(args)
+
+                    list_existing_supplier.append({'vat_number': vat_number, 'duns': duns})
+
+                    if res:
+                        log.info('The following supplier was successfully added into database : ' +
+                                 str(data[spreadsheet.referencial_supplier_array['name']]))
+                    else:
+                        log.error('While adding supplier : ' +
                               str(data[spreadsheet.referencial_supplier_array['name']]), False)
             else:
                 if vat_number or duns:

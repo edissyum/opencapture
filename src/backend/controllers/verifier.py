@@ -476,7 +476,7 @@ def export_coog(document_id, data):
     log.database = database
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if not error:
-        return verifier_exports.export_coog(data['data'], document_info, log)
+        return verifier_exports.export_coog(data['data'], document_info, log, database)
 
 
 def export_xml(document_id, data):

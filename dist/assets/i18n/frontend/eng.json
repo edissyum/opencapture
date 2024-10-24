@@ -990,6 +990,7 @@
 		"identifier": "Identifier",
 		"list": "List of batches",
 		"load_referential": "Refresh autocomplete data",
+		"mail_subject": "Mail subject",
 		"merge": "Merge",
 		"merge_error_form_not_match": "Error while merge batches. Form do not match",
 		"merge_hint": "All selected batches will be merged into the current batch",

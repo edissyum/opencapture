@@ -53,11 +53,16 @@ class Spreadsheet:
 
     @staticmethod
     def read_csv_sheet(referencial_spreadsheet):
-        with open(referencial_spreadsheet, 'r') as csvfile:
-            sep = str(csv.Sniffer().sniff(csvfile.read()).delimiter)
+        encoding_list = ['ascii', 'utf-8', 'iso-8859-1', 'cp1252']
 
-        content_sheet = pd.read_csv(referencial_spreadsheet, sep=sep)
-        return content_sheet
+        for encoding in encoding_list:
+            try:
+                with open(referencial_spreadsheet, 'r', encoding=encoding) as csvfile:
+                    sep = str(csv.Sniffer().sniff(csvfile.read()).delimiter)
+                    content_sheet = pd.read_csv(referencial_spreadsheet, sep=sep, encoding=encoding)
+            except UnicodeDecodeError:
+                continue
+            return content_sheet
 
     def construct_supplier_array(self, content_sheet):
         tmp_excel_content = pd.DataFrame(content_sheet)

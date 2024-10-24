@@ -15,7 +15,7 @@
 
  @dev : Oussama BRICH <oussama.brich@edissyum.com> */
 
-import {Component, OnInit, SecurityContext} from '@angular/core';
+import { Component, OnInit, SecurityContext } from '@angular/core';
 import { SessionStorageService } from "../../../services/session-storage.service";
 import { environment } from  "../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
@@ -165,8 +165,10 @@ export class SplitterListComponent implements OnInit {
     }
 
     loadBatches(): void {
+        this.batches = [];
         this.loading = true;
-        this.batches   = [];
+        this.totalChecked = 0;
+        this.batchesSelected = false;
         this.http.get(environment['url'] + '/ws/splitter/batches/user/' + this.userService.user.id + '/totals/'
             + this.currentStatus, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -392,7 +394,6 @@ export class SplitterListComponent implements OnInit {
                 }
                 this.loading = false;
                 this.loadBatches();
-
             }),
             catchError((err: any) => {
                 console.debug(err);

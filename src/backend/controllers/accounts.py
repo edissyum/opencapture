@@ -38,7 +38,6 @@ def get_suppliers(_args):
     }
 
     if 'search' in _args and _args['search']:
-        args['offset'] = ''
         search = _args['search'].replace("'", "''")
         args['where'].append(
             "(LOWER(unaccent(name)) LIKE unaccent('%%" + search.lower() + "%%') OR "
@@ -46,6 +45,7 @@ def get_suppliers(_args):
             "LOWER(email) LIKE '%%" + search.lower() + "%%' OR "
             "LOWER(siren) LIKE '%%" + search.lower() + "%%' OR "
             "LOWER(bic) LIKE '%%" + search.lower() + "%%' OR "
+            "LOWER(duns) LIKE '%%" + search.lower() + "%%' OR "
             "LOWER(vat_number) LIKE '%%" + search.lower() + "%%')"
         )
 
@@ -369,7 +369,6 @@ def create_supplier(data):
         'siren': data['siren'] if 'siren' in data else None,
         'email': data['email'] if 'email' in data else None,
         'form_id': data['form_id'] if 'form_id' in data else None,
-        'vat_number': data['vat_number'] if 'vat_number' in data else None,
         'address_id': data['address_id'] if 'address_id' in data else None,
         'document_lang': data['document_lang'] if 'document_lang' in data else 'fra',
         'default_currency': data['default_currency'] if 'default_currency' in data else None,
@@ -380,9 +379,15 @@ def create_supplier(data):
     if 'duns' in data and data['duns']:
         _columns.update({'duns': data['duns']})
 
+    if 'vat_number' in data and data['vat_number']:
+        _columns.update({'vat_number': data['vat_number']})
+
     supplier = None
-    if 'vat_number' in data:
-        supplier = accounts.get_suppliers({'where': ['vat_number = %s'], 'data': [data['vat_number']]})
+    if 'vat_number' in data or 'duns' in data:
+        if data['vat_number']:
+            supplier = accounts.get_suppliers({'where': ['vat_number = %s'], 'data': [data['vat_number']]})
+        if not supplier and data['duns']:
+            supplier = accounts.get_suppliers({'where': ['duns = %s'], 'data': [data['duns']]})
 
     if not supplier:
         res, error = accounts.create_supplier({'columns': _columns})
@@ -600,22 +605,15 @@ def delete_supplier(supplier_id):
     supplier, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
 
     if error is None:
-        _, error = accounts.delete_supplier({'supplier_id': supplier_id})
-        if error is None:
-            history.add_history({
-                'module': 'accounts',
-                'ip': request.remote_addr,
-                'submodule': 'delete_supplier',
-                'user_info': request.environ['user_info'],
-                'desc': gettext('SUPPLIER_DELETED', supplier=supplier['name'])
-            })
-            return '', 200
-        else:
-            response = {
-                "errors": gettext('DELETE_SUPPLIER_ERROR'),
-                "message": gettext(error)
-            }
-            return response, 400
+        accounts.delete_supplier({'supplier_id': supplier_id})
+        history.add_history({
+            'module': 'accounts',
+            'ip': request.remote_addr,
+            'submodule': 'delete_supplier',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('SUPPLIER_DELETED', supplier=supplier['name'])
+        })
+        return '', 200
     else:
         response = {
             "errors": gettext('DELETE_SUPPLIER_ERROR'),

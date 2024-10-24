@@ -757,6 +757,10 @@ chmod u+x $defaultPath/custom/"$customId"/bin/scripts/splitter_workflows/*.sh
 chown -R "$user":"$group" $defaultPath/custom/"$customId"/bin/scripts/splitter_workflows/*.sh
 
 ####################
+# Allow user script to restart fs-watcher service without password
+echo "$user ALL=(ALL) NOPASSWD: /bin/systemctl restart fs-watcher" >> /etc/sudoers
+
+####################
 # Create docservers
 mkdir -p $docserverDefaultPath/"$customId"/{verifier,splitter}
 mkdir -p $docserverDefaultPath/"$customId"/verifier/{ai,attachments,original_doc,full,thumbs,positions_masks}

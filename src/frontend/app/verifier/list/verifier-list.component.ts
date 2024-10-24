@@ -533,6 +533,8 @@ export class VerifierListComponent implements OnInit {
                 this.allowedCustomers = [customerId];
                 if (supplierId) {
                     this.allowedSuppliers = [supplierId];
+                } else if (supplierId == null) {
+                    this.allowedSuppliers = [0];
                 }
                 this.currentForm = formId;
                 this.resetPaginator();

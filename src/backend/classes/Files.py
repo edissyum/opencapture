@@ -294,8 +294,8 @@ class Files:
             images = self.return_img(file, convert_function, page, output)
 
             for i in range(len(images)):
-                self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
-                crop_ratio = (0, 0, images[i].width, int(images[i].height - self.height_ratio))
+                height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
+                crop_ratio = (0, 0, images[i].width, int(images[i].height - height_ratio))
                 _im = images[i].crop(crop_ratio).convert('RGB')
                 _im.save(output, 'JPEG')
         except (Exception,) as error:
@@ -316,7 +316,8 @@ class Files:
             images = self.return_img(file, convert_function, page, output)
 
             for i in range(len(images)):
-                self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
+                if self.height_ratio == '':
+                    self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
                 crop_ratio = (0, self.height_ratio, images[i].width, images[i].height)
                 _im = images[i].crop(crop_ratio).convert('RGB')
                 _im.save(output, 'JPEG')

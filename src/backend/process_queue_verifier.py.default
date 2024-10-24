@@ -24,11 +24,10 @@ from lxml import etree
 from kuyruk import Kuyruk
 from src.backend import app
 from flask_babel import gettext
-from src.backend.process import main
 from src.backend.classes.Log import Log
-from src.backend.process import factur_x
 from src.backend.classes.Mail import Mail
 from src.backend.classes.Files import Files
+from src.backend.process import main, factur_x
 from src.backend.functions import recursive_delete
 from src.backend.classes.SeparatorQR import SeparatorQR
 from src.backend.main import create_classes_from_custom_id, check_file, timer, str2bool
@@ -218,6 +217,9 @@ def launch(args):
                         list_of_ids.append(res)
                     os.remove(path)
                 else:
+                    if separator_qr.remove_blank_pages:
+                        separator_qr.remove_blank_page(path)
+
                     res = execute(args, path, log, config, files, ocr, regex, database, docservers, configurations,
                                   languages, mail_class, smtp)
                     list_of_ids.append(res)

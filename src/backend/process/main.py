@@ -669,7 +669,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     _regex = database.select({
                         'select': ['regex_id', 'content'],
                         'table': ['regex'],
-                        'where': ['lang = %s'],
+                        'where': ["lang IN ('global', %s)"],
                         'data': [supplier[2]['document_lang']]
                     })
 
