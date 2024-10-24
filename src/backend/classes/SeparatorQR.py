@@ -28,10 +28,9 @@ import subprocess
 from PIL import Image
 from io import BytesIO
 from fpdf import Template
+from unidecode import unidecode
 from pyzbar.pyzbar import decode
 import xml.etree.ElementTree as Et
-
-from unidecode import unidecode
 
 
 class SeparatorQR:
