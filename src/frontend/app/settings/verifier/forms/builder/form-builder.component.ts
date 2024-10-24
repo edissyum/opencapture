@@ -912,7 +912,8 @@ export class FormBuilderComponent implements OnInit {
                                     });
 
                                     let format = '';
-                                    if (data['customFields'][field].type === 'regex') {
+
+                                    if (data['customFields'][field].type === 'regex' && data['customFields'][field].settings['regex']) {
                                         format = data['customFields'][field].settings['regex']['format'];
                                     } else if (data['customFields'][field].type === 'text') {
                                         format = 'char';
