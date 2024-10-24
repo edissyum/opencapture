@@ -74,8 +74,10 @@ if __name__ == '__main__':
             if duns != duns:
                 duns = None
 
-            if (vat_number and not any(str(vat_number) == value['vat_number'] for value in list_existing_supplier)) or \
-               (duns and not any(str(duns) == value['duns'] and value['duns'] for value in list_existing_supplier)):
+            vat_number_exists = vat_number and any(str(vat_number) == value['vat_number'] for value in list_existing_supplier)
+            duns_exists = duns and any(str(duns) == value['duns'] and value['duns'] for value in list_existing_supplier)
+
+            if not vat_number_exists and not duns_exists:
                 args = {
                     'table': 'addresses',
                     'columns': {
@@ -93,8 +95,7 @@ if __name__ == '__main__':
                     if args['columns'][key] == 'nan':
                         args['columns'][key] = None
                         cpt_null += 1
-                print(args)
-                print(address_length, cpt_null)
+
                 if cpt_null < address_length:
                     address_id = database.insert(args)
 
