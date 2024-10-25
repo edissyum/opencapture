@@ -32,11 +32,11 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_x
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_empty_line', 'fra', 'Lignes vides dans la sortie XML du Splitter', '^\s*$');
 
 -- REGEX creation (eng)
-INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('date', 'eng', 'Date', '([JFMASONDjfmasond][a-zA-Z_À-ÿ\.,-]{2,9})\s*(3[01]|[12][0-9]|0?[1-9][\.,-]?)[\.,-]?\s*((1|2|3){1}\d{1,3}|(1|2|3))|(((1[0-2]|0?[1-9])|\d{1}\w{2})\s?([JFMASONDjfmasond][a-zA-Z_À-ÿ\.,-]{2,9}|[\/,-\.](3[01]|[12][0-9]|0?[1-9])[\/,-\.])\s?((1|2|3){1}\d{1,3}|(1|2|3)))');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('date', 'eng', 'Date', '([JFMASONDjfmasond][a-zA-Z_À-ÿ\.,-]{2,9})\s*(3[01]|[12][0-9]|0?[1-9][\.,-]?)[\.,-]?\s*((1|2|3){1}\d{1,3}|(1|2|3))|(((3[01]|[12][0-9]|0?[1-9])[\.,-]?)\s?([JFMASONDjfmasond][a-zA-Z_À-ÿ\.,-]{2,9}|[\/,-\.](3[01]|[12][0-9]|0?[1-9])[\/,-\.])\s?((1|2|3){1}\d{1,3}|(1|2|3)))');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('due_date', 'eng', 'Due date', 'DUE\s*DATE\s*(:)?\s*');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('invoice_number', 'eng', 'Invoice number', '(INVOICE\s*(NUMBER|#|NO|N(°)?)\s*(\.)?\s*(:)?).*');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('delivery_number', 'eng', 'Delivery number', '(DELIVERY\s*(NOTE)?\s*(NUMBER|#|NO|N(°)?)\s*(\.)?\s*(:)?).*');
-INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('quotation_number', 'eng', 'Quotation number', '((QUOT(E|ATION)|ORDER)\s*(NUMBER|#|NO|N(°)?)\s*(\.)?\s*(:)?).*');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('quotation_number', 'eng', 'Quotation number', '(((QUOT(E|ATION)|ORDER|PURCHASE\s*ORDER|P(/)?O)\s*(NUMBER|#|NO|N(°)?)|(SALES)\s*(ORDER)\s*(NUMBER|#|NO|N(°)?))\s*(\.)?\s*(:)?).*');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('no_rates', 'eng', 'No rates amount', '(NET)\s*(AMOUNT|DUE)(\s*PAID)?\s*(:)?\s*(\$|£|€|EUROS|EUR|CAD|USD)?\s*.*');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('all_rates', 'eng', 'All rates amount', '(TOTAL|GROSS)\s*(AMOUNT|DUE)(\s*PAID)?\s*(:)?\s*(\$|£|€|EUROS|EUR|CAD|USD)?\s*.*');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vat_rate', 'eng', 'VAT rate', '(20|5)%\s*(VAT)?');

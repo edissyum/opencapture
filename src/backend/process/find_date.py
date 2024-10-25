@@ -53,13 +53,13 @@ class FindDate:
             regex = self.regex
             language = self.configurations['locale']
             if self.supplier and self.supplier[2]['document_lang']:
-                language = self.supplier[2]['document_lang']
                 if self.supplier[2]['document_lang'] != self.configurations['locale']:
+                    language = self.supplier[2]['document_lang']
                     _regex = self.database.select({
                         'select': ['regex_id', 'content'],
                         'table': ['regex'],
                         'where': ["lang in ('global', %s)"],
-                        'data': [self.configurations['locale']]
+                        'data': [language]
                     })
                     if _regex:
                         regex = {}
@@ -89,7 +89,13 @@ class FindDate:
                 if length_of_year == 2:
                     date_format = date_format.replace('%Y', '%y')
 
-                date = datetime.strptime(date, date_format).strftime(regex['format_date'])
+                try:
+                    date = datetime.strptime(date, date_format).strftime(regex['format_date'])
+                except ValueError:
+                    if date_format.startswith("%m %d"):
+                        date_format = date_format.replace("%m %d", "%d %m")
+                        date = datetime.strptime(date, date_format).strftime(regex['format_date'])
+
                 # Check if the date of the document isn't too old. 62 (default value) is equivalent of 2 months
                 today = datetime.now()
                 doc_date = datetime.strptime(date, regex['format_date'])
@@ -116,7 +122,7 @@ class FindDate:
             if date and date[0]:
                 self.date = date[0]
                 return date
-            return False
+        return False
 
     def run(self):
         if self.supplier:
