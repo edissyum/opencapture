@@ -846,10 +846,14 @@ def construct_with_var(data, document_info, separator=None):
             else:
                 _data.append(str(document_info['datas'][column_strip]))
         elif column_strip in document_info and document_info[column_strip]:
+            data_to_append = document_info[column_strip]
+            if column_strip == 'original_filename':
+                data_to_append = os.path.splitext(document_info['original_filename'])[0]
+
             if separator:
-                _data.append(str(document_info[column_strip]).replace(' ', separator))
+                _data.append(str(data_to_append).replace(' ', separator))
             else:
-                _data.append(str(document_info[column_strip]))
+                _data.append(str(data_to_append))
         elif column_strip == 'document_date_year':
             if 'document_date' in document_info and document_info['document_date']:
                 _data.append(str(document_info['datas']['document_date'].year))

@@ -219,8 +219,8 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
                     for _r in _regex:
                         regex[_r['regex_id']] = _r['content']
                 args['outputs'].append(execute_outputs(output_info[0], log, regex, document_data, database))
-    elif workflow_settings and (
-            not workflow_settings['process']['use_interface'] or not workflow_settings['input']['apply_process']):
+    elif workflow_settings and (not workflow_settings['process']['use_interface']
+                                or not workflow_settings['input']['apply_process']):
         if 'output' in workflow_settings and workflow_settings['output']:
             args['outputs'] = []
             document_data['status'] = 'NO_INTERFACE'
@@ -619,7 +619,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                         log.info('Supplier created using INSEE database : ' + supplier[2]['name']
                                                  + ' with ' + column.upper() + ' : ' + value)
 
-        if 'name' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+        if 'name' in system_fields_to_find and workflow_settings['input']['apply_process']:
             # Find supplier in document if not send using upload rest
             if not supplier or not supplier[0] or not supplier[2]:
                 supplier = find_supplier.FindSupplier(ocr, log, regex, database, files, nb_pages, 1, False).run()
@@ -726,13 +726,13 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 datas = found_data_recursively(custom_field, ocr, file, nb_pages, text_by_pages, custom_field_class,
                                                datas, files, configurations, tesseract_function, convert_function)
 
-        if 'firstname_lastname' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+        if 'firstname_lastname' in system_fields_to_find and workflow_settings['input']['apply_process']:
             name_class = find_name.FindName(ocr, log, docservers, supplier, files, database, regex, datas['form_id'], file)
             datas = found_data_recursively('firstname_lastname', ocr, file, nb_pages, text_by_pages,
                                            name_class, datas, files, configurations, tesseract_function,
                                            convert_function)
 
-        if 'invoice_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+        if 'invoice_number' in system_fields_to_find and workflow_settings['input']['apply_process']:
             invoice_number_class = find_invoice_number.FindInvoiceNumber(ocr, files, log, regex, config, database,
                                                                          supplier, file, docservers, configurations,
                                                                          languages, datas['form_id'])
@@ -740,20 +740,20 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                            invoice_number_class, datas, files, configurations, tesseract_function,
                                            convert_function)
 
-        if 'document_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+        if 'document_date' in system_fields_to_find and workflow_settings['input']['apply_process']:
             date_class = find_date.FindDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
                                             languages, datas['form_id'])
             datas = found_data_recursively('document_date', ocr, file, nb_pages, text_by_pages, date_class,
                                            datas, files, configurations, tesseract_function, convert_function)
 
-        if 'document_due_date' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+        if 'document_due_date' in system_fields_to_find and workflow_settings['input']['apply_process']:
             due_date_class = find_due_date.FindDueDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
                                                        languages, datas['form_id'])
             datas = found_data_recursively('document_due_date', ocr, file, nb_pages, text_by_pages,
                                            due_date_class, datas, files, configurations, tesseract_function,
                                            convert_function)
 
-        if 'quotation_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+        if 'quotation_number' in system_fields_to_find and workflow_settings['input']['apply_process']:
             quotation_number_class = find_quotation_number.FindQuotationNumber(ocr, files, log, regex, config, database,
                                                                                supplier, file, docservers,
                                                                                configurations, datas['form_id'], languages)
@@ -761,7 +761,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                            quotation_number_class, datas, files, configurations, tesseract_function,
                                            convert_function)
 
-        if 'delivery_number' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+        if 'delivery_number' in system_fields_to_find and workflow_settings['input']['apply_process']:
             delivery_number_class = find_delivery_number.FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file,
                                                                             docservers, configurations, datas['form_id'])
             datas = found_data_recursively('delivery_number', ocr, file, nb_pages, text_by_pages,
@@ -769,7 +769,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                            convert_function)
 
         footer = None
-        if 'footer' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+        if 'footer' in system_fields_to_find and workflow_settings['input']['apply_process']:
             footer_class = find_footer.FindFooter(ocr, log, regex, config, files, database, supplier, file,
                                                   ocr.footer_text, docservers, datas['form_id'])
             if supplier and supplier[2]['get_only_raw_footer'] in [True, 'True']:
@@ -875,7 +875,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                             datas['pages'].update({'vat_amount': footer[3]})
                             datas['pages'].update({'total_vat': footer[3]})
 
-        if 'currency' in system_fields_to_find or not workflow_settings['input']['apply_process']:
+        if 'currency' in system_fields_to_find and workflow_settings['input']['apply_process']:
             currency_class = find_currency.FindCurrency(ocr, log, regex, files, supplier, database, file, docservers,
                                                         datas['form_id'])
             datas = found_data_recursively('currency', ocr, file, nb_pages, text_by_pages, currency_class,
@@ -899,19 +899,18 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         files.move_to_docservers_image(docservers['VERIFIER_THUMB'], files.jpg_name, full_jpg_filename + '-001.jpg',
                                        copy=True)
         allow_auto = False
-        if workflow_settings and workflow_settings['input']['apply_process']:
-            if (workflow_settings['process']['use_interface'] and
-                    workflow_settings['process']['allow_automatic_validation']):
-                allow_auto = True
-                for field in workflow_settings['process']['system_fields']:
-                    if field == 'footer' and footer:
-                        continue
-                    if field in datas['datas'] and datas['datas'][field]:
-                        continue
-                    allow_auto = False
-                    break
+        if workflow_settings and (workflow_settings['process']['use_interface']
+                                  and workflow_settings['process']['allow_automatic_validation']):
+            allow_auto = True
+            for field in workflow_settings['process']['system_fields']:
+                if field == 'footer' and footer:
+                    continue
+                if field in datas['datas'] and datas['datas'][field]:
+                    continue
+                allow_auto = False
+                break
 
-        if supplier and not supplier[2]['skip_auto_validate'] and allow_auto:
+        if (supplier and not supplier[2]['skip_auto_validate'] and allow_auto) or not workflow_settings['input']['apply_process']:
             status = 'END'
             log.info('All the usefull informations are found. Execute outputs action and end process')
             document_id = insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, status,
