@@ -377,7 +377,7 @@ class Files:
         params.filterByCircularity = True
         params.minCircularity = 0.1
         params.filterByConvexity = True
-        params.minConvexity = 0.50 #Lower if you have a false blank page. Increase if you have an unwanted blank page.
+        params.minConvexity = 0.50 # Lower if you have a false blank page. Increase if you have an unwanted blank page.
         params.filterByInertia = True
         params.minInertiaRatio = 0.01
 
