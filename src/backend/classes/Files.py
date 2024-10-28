@@ -539,7 +539,7 @@ class Files:
             for res in re.finditer(r"" + regex_dict['date'], tmp_text):
                 date_class = FindDate(ocr, self.log, regex_dict, self.configurations, self, '', '', '', self.docservers,
                                       '', '')
-                date, _ = date_class.format_date(res.group(), (('', ''), ('', '')), True, False)
+                date = date_class.format_date(res.group(), (('', ''), ('', '')), True, False)
                 if date:
                     text = date
 
