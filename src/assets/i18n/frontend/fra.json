@@ -118,6 +118,7 @@
 		"download_attachment": "Télécharger la pièce jointe",
 		"loading_attachments": "Chargement des pièces jointes...",
 		"set_document_principal": "Mettre ce document comme principal, les autres seront remontés en pièces jointes",
+		"show_attachment": "Visualiser la pièce jointe",
 		"splitter_one_document": "Si vous souhaitez ajouter des pièces jointes, le lot ne doit contenir qu'un seul document"
 	},
 	"AUTH": {

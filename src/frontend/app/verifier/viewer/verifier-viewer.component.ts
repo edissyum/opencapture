@@ -2194,12 +2194,25 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
+    showAttachment(attachment: any) {
+        this.http.post(environment['url'] + '/ws/attachments/verifier/download/' + attachment['id'], {},
+            {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                const b64File = 'data:' + data['mime'] + ';base64, ' + data['file'];
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
     downloadAttachment(attachment: any) {
         this.http.post(environment['url'] + '/ws/attachments/verifier/download/' + attachment['id'], {},
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                const mimeType = data['mime'];
-                const referenceFile = 'data:' + mimeType + ';base64, ' + data['file'];
+                const referenceFile = 'data:' + data['mime'] + ';base64, ' + data['file'];
                 const link = document.createElement("a");
                 link.href = referenceFile;
                 link.download = attachment['filename'];

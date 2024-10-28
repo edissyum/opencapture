@@ -81,6 +81,11 @@
                                                 <i class="fa-solid fa-ellipsis-vertical text-xl"></i>
                                             </div>
                                             <mat-menu #menu="matMenu">
+                                                <button class="download_attachment" mat-menu-item (click)="showAttachment(attachment)">
+                                                    <span class="download_attachment">
+                                                        <i class="fa-solid fa-eye w-6"></i> {{ 'ATTACHMENTS.show_attachment' | translate }}
+                                                    </span>
+                                                </button>
                                                 <button class="download_attachment" mat-menu-item (click)="downloadAttachment(attachment)">
                                                     <span class="download_attachment">
                                                         <i class="fa-solid fa-download w-6"></i> {{ 'ATTACHMENTS.download_attachment' | translate }}
