@@ -15,7 +15,7 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, HostListener, OnDestroy, OnInit, SecurityContext } from '@angular/core';
+import {AfterViewInit, Component, HostListener, OnDestroy, OnInit, SecurityContext} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from  "../../env";
@@ -44,7 +44,7 @@ declare const $: any;
     providers: [DatePipe]
 })
 
-export class VerifierViewerComponent implements OnInit, OnDestroy {
+export class VerifierViewerComponent implements OnInit, OnDestroy, AfterViewInit {
     imageDocument           : any;
     documentId              : any;
     document                : any;
@@ -343,23 +343,28 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             this.convertAutocomplete();
             this.loading = false;
 
-            document.getElementById('form')!.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }, 100);
+            setTimeout(() => {
+                document.getElementById('form_sidenav')!.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
 
-        setTimeout(() => {
-            document.getElementById('image')!.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }, 100);
+                document.getElementById('image')!.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }, 50);
+        }, 300);
         $('.trigger').hide();
 
         if (this.formSettings.settings.unique_url && this.formSettings.settings.unique_url.allow_supplier_autocomplete) {
             this.allowAutocomplete = true;
         }
+        console.log('end init')
+    }
+
+    ngAfterViewInit() {
+        console.log('here')
     }
 
     getAttachments() {
