@@ -520,7 +520,7 @@
 		"statistics": "Statistics",
 		"task_error_informations": "Task error informations",
 		"upload": "Upload",
-		"wrong_filetype": "This file type is nos allowed."
+		"wrong_filetype": "This file type is not allowed."
 	},
 	"HEADER": {
 		"active": "Active",
