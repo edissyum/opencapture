@@ -35,6 +35,7 @@ import { LocaleService } from "../../../services/locale.service";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
+import {FileViewerComponent} from "../../file-viewer/file-viewer.component";
 declare const $: any;
 
 @Component({
@@ -2195,10 +2196,29 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     }
 
     showAttachment(attachment: any) {
-        this.http.post(environment['url'] + '/ws/attachments/verifier/download/' + attachment['id'], {},
-            {headers: this.authService.headers}).pipe(
+        this.http.post(environment['url'] + '/ws/attachments/verifier/download/' + attachment['id'], {}, {
+            headers: this.authService.headers
+        }).pipe(
             tap((data: any) => {
-                const b64File = 'data:' + data['mime'] + ';base64, ' + data['file'];
+                const byteCharacters = atob(data['file']);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                const blob = new Blob([byteArray], { type: data['mime'] });
+
+                const fileURL = URL.createObjectURL(blob);
+
+                this.dialog.open(FileViewerComponent, {
+                    data: {
+                        title: attachment.filename,
+                        fileUrl: fileURL,
+                        mimeType: data['mime']
+                    },
+                    width: '80%',
+                    height: '80%'
+                });
             }),
             catchError((err: any) => {
                 console.debug(err);
