@@ -15,18 +15,18 @@
 
  @dev : Arthur Mondon <arthur.mondon@edissyum.com> */
 
-import {Component, Input, Output, EventEmitter, SecurityContext} from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from "../../services/confirm-dialog/confirm-dialog.component";
+import { Component, Input, Output, EventEmitter, SecurityContext } from '@angular/core';
 import { NotificationService} from "../../services/notifications/notifications.service";
 import { FileViewerComponent } from "../file-viewer/file-viewer.component";
-import { environment } from "../env";
-import {catchError, finalize, tap} from 'rxjs/operators';
+import { catchError, finalize, tap } from 'rxjs/operators';
+import { AuthService } from "../../services/auth.service";
+import { DomSanitizer } from "@angular/platform-browser";
 import { TranslateService } from "@ngx-translate/core";
+import { MatDialog } from '@angular/material/dialog';
+import { HttpClient } from '@angular/common/http';
+import { environment } from "../env";
 import { of } from 'rxjs';
-import {ConfirmDialogComponent} from "../../services/confirm-dialog/confirm-dialog.component";
-import {AuthService} from "../../services/auth.service";
-import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-attachment-list',

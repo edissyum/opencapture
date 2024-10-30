@@ -19,7 +19,7 @@ import { Component, HostListener, OnDestroy, OnInit, SecurityContext } from '@an
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from  "../../env";
-import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
+import { catchError, map, startWith, tap } from "rxjs/operators";
 import { interval, of } from "rxjs";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
@@ -33,7 +33,6 @@ import { UserService } from "../../../services/user.service";
 import { HistoryService } from "../../../services/history.service";
 import { LocaleService } from "../../../services/locale.service";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { MatDialog } from "@angular/material/dialog";
 declare const $: any;
 
 @Component({
