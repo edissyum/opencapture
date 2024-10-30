@@ -33,22 +33,17 @@
         </div>
     </div>
 </div>
-<input multiple type="file" class="hidden" (change)="uploadAttachments($event)" #attachmentUpload>
 <span *ngIf="!this.fromToken || (this.processDone && this.fromToken && !this.processMultiDocument)">
     <div class="grid grid-cols-2 overflow-auto" [style]="!this.fromToken ? 'height: calc(100vh - 4rem)' : 'height: 100vh'">
         <mat-sidenav-container id="image_sidenav" class="bg-white">
             <mat-sidenav id="attachments_list" mode="side" [opened]="sidenavOpened" position="start" class="2xl:w-96 xl:w-80 md:w-72 sm:w-64 w-32 flex flex-col h-full border-r border-green-400">
-                <div class="flex overflow-x-hidden justify-center" style="height: calc(100vh - 8.5rem) !important">
+                <div class="flex overflow-x-hidden justify-center">
                     <app-attachment-list
-                            class="max-w-full"
-                            [attachments]="attachments"
-                            [loadingAttachment]="loadingAttachment"
-                            [documentStatus]="document.status"
-                            (onShowAttachment)="showAttachment($event)"
-                            (onDownloadAttachment)="downloadAttachment($event)"
-                            (onDeleteAttachment)="deleteConfirmDialog(+($event))"
+                            class="w-full max-w-full"
+                            [documentStatus]="document && document.status"
+                            [documentId]="documentId"
                             (toggleSidenav)="toggleSidenav()"
-                            (triggerUpload)="attachmentUpload.click()"
+                            (attachmentsLength)="onAttachmentsLengthChange($event)"
                     >
                     </app-attachment-list>
                 </div>
