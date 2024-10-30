@@ -53,10 +53,8 @@ export class AttachmentListComponent {
     ) {}
 
     async ngOnInit() {
-        console.log(this.documentId);
         this.getAttachments();
     }
-
 
     getAttachments() {
         this.http.get(environment['url'] + '/ws/attachments/verifier/list/' + this.documentId, {headers: this.authService.headers}).pipe(

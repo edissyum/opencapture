@@ -53,7 +53,7 @@
                         <button mat-menu-item (click)="downloadAttachment(attachment)">
                             <i class="fa-solid fa-download w-6"></i> {{ 'ATTACHMENTS.download_attachment' | translate }}
                         </button>
-                        <button *ngIf="documentStatus !== 'END'" mat-menu-item (click)="deleteAttachment(attachment['id'])">
+                        <button *ngIf="documentStatus !== 'END'" mat-menu-item (click)="deleteConfirmDialog(attachment['id'])">
                             <i class="fa-solid fa-trash w-6"></i> {{ 'ATTACHMENTS.delete_attachment' | translate }}
                         </button>
                     </mat-menu>

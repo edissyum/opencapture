@@ -33,9 +33,7 @@ import { UserService } from "../../../services/user.service";
 import { HistoryService } from "../../../services/history.service";
 import { LocaleService } from "../../../services/locale.service";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
-import {FileViewerComponent} from "../../file-viewer/file-viewer.component";
 declare const $: any;
 
 @Component({
@@ -141,7 +139,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     constructor(
         private router: Router,
         private http: HttpClient,
-        private dialog: MatDialog,
         private route: ActivatedRoute,
         private sanitizer: DomSanitizer,
         private authService: AuthService,
