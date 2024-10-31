@@ -6,10 +6,12 @@
 </div>
 <div class="modal-content">
     <ng-container *ngIf="mimeType.startsWith('image'); else otherFile">
-        <img [src]="data.fileUrl" alt="Document" class="file-content-image" />
+        <img [src]="fileUrl" alt="Document" class="file-content-image"/>
     </ng-container>
     <ng-template #otherFile>
-        <iframe *ngIf="mimeType === 'application/pdf'" [src]="fileUrl" width="100%" height="100%" frameborder="0"></iframe>
-        <p *ngIf="mimeType !== 'application/pdf'">{{ 'GLOBAL.wrong_filetype' | translate }}</p>
+        <iframe *ngIf="mimeType === 'application/pdf'" [src]="fileUrl" width="100%" height="100%"></iframe>
+        <p *ngIf="mimeType !== 'application/pdf'">
+            {{ 'GLOBAL.wrong_filetype' | translate }}
+        </p>
     </ng-template>
 </div>

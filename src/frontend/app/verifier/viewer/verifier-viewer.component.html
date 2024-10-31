@@ -38,13 +38,11 @@
         <mat-sidenav-container id="image_sidenav" class="bg-white">
             <mat-sidenav id="attachments_list" mode="side" [opened]="sidenavOpened" position="start" class="2xl:w-96 xl:w-80 md:w-72 sm:w-64 w-32 flex flex-col h-full border-r border-green-400">
                 <div class="flex overflow-x-hidden justify-center">
-                    <app-attachment-list
-                            class="w-full max-w-full"
+                    <app-attachment-list class="w-full max-w-full"
                             [documentStatus]="document && document.status"
                             [documentId]="documentId"
                             (toggleSidenav)="toggleSidenav()"
-                            (attachmentsLength)="onAttachmentsLengthChange($event)"
-                    >
+                            (attachmentsLength)="onAttachmentsLengthChange($event)">
                     </app-attachment-list>
                 </div>
             </mat-sidenav>

@@ -17,7 +17,7 @@
 
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 
 @Component({
     selector: 'app-file-viewer',
@@ -25,20 +25,18 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
     styleUrls: ['./file-viewer.component.scss']
 })
 
-export class FileViewerComponent implements OnInit, OnDestroy {
-    fileUrl: SafeResourceUrl;
-    mimeType: string;
+export class FileViewerComponent implements OnDestroy {
+    mimeType : string;
+    fileUrl  : SafeResourceUrl;
 
     constructor(
-        public dialogRef: MatDialogRef<FileViewerComponent>,
+        private sanitizer: DomSanitizer,
         @Inject(MAT_DIALOG_DATA) public data: any,
-        private sanitizer: DomSanitizer
+        public dialogRef: MatDialogRef<FileViewerComponent>
     ) {
         this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(data.fileUrl);
         this.mimeType = data.mimeType;
     }
-
-    ngOnInit() {}
 
     ngOnDestroy() {
         if (this.fileUrl && typeof this.fileUrl === 'string') {

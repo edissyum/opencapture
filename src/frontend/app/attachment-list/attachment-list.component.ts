@@ -35,20 +35,23 @@ import { of } from 'rxjs';
 })
 
 export class AttachmentListComponent {
-    @Input() attachmentUpload!: HTMLInputElement;
-    @Input() documentStatus : any;
-    @Input() documentId     : string      = '';
     @Output() toggleSidenav = new EventEmitter<void>();
     @Output() attachmentsLength = new EventEmitter<number>();
-    loadingAttachment       : boolean     = true;
-    attachments             : any[]       = [];
+
+    @Input() documentStatus    : any;
+    @Input() documentId        : string = '';
+    @Input() attachmentUpload! : HTMLInputElement;
+    @Input() module            : string = 'verifier';
+
+    attachments       : any[]   = [];
+    loadingAttachment : boolean = true;
 
     constructor(
         private http: HttpClient,
         private dialog: MatDialog,
-        public translate: TranslateService,
-        private authService: AuthService,
         private sanitizer: DomSanitizer,
+        private authService: AuthService,
+        public translate: TranslateService,
         private notify: NotificationService
     ) {}
 
@@ -57,9 +60,10 @@ export class AttachmentListComponent {
     }
 
     getAttachments() {
-        this.http.get(environment['url'] + '/ws/attachments/verifier/list/' + this.documentId, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/attachments/' + this.module + '/list/' + this.documentId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.attachments = data;
+                console.log(this.attachments)
                 this.attachments.forEach((attachment: any) => {
                     if (attachment['thumb']) {
                         attachment['thumb'] = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/jpeg;base64, ' + attachment['thumb']);
@@ -96,7 +100,7 @@ export class AttachmentListComponent {
     }
 
     showAttachment(attachment: any) {
-        this.http.post(environment['url'] + '/ws/attachments/verifier/download/' + attachment['id'], {}, {
+        this.http.post(environment['url'] + '/ws/attachments/' + this.module + '/download/' + attachment['id'], {}, {
             headers: this.authService.headers
         }).pipe(
             tap((data: any) => {
@@ -134,7 +138,7 @@ export class AttachmentListComponent {
     }
 
     downloadAttachment(attachment: any) {
-        this.http.post(environment['url'] + '/ws/attachments/verifier/download/' + attachment['id'], {},
+        this.http.post(environment['url'] + '/ws/attachments/' + this.module + '/download/' + attachment['id'], {},
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 const referenceFile = 'data:' + data['mime'] + ';base64, ' + data['file'];
@@ -152,7 +156,7 @@ export class AttachmentListComponent {
     }
 
     deleteAttachment(attachmentId: string) {
-        this.http.delete(environment['url'] + '/ws/attachments/verifier/delete/' + attachmentId, {headers: this.authService.headers}).pipe(
+        this.http.delete(environment['url'] + '/ws/attachments/' + this.module + '/delete/' + attachmentId, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('ATTACHMENTS.attachment_deleted'));
                 this.getAttachments();
@@ -196,8 +200,12 @@ export class AttachmentListComponent {
             attachments.append(file['name'], file);
         }
 
-        attachments.set('documentId', this.documentId);
-        this.http.post(environment['url'] + '/ws/attachments/verifier/upload', attachments, {headers: this.authService.headers}).pipe(
+        if (this.module === 'verifier') {
+            attachments.set('documentId', this.documentId);
+        } else {
+            attachments.set('batchId', this.documentId);
+        }
+        this.http.post(environment['url'] + '/ws/attachments/' + this.module + '/upload', attachments, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('ATTACHMENTS.attachment_uploaded'));
                 this.getAttachments();
