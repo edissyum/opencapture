@@ -284,31 +284,36 @@ class FindCustom:
                         upper_line = re.sub(data_to_replace, '', upper_line)
                         upper_line = re.sub(r'\s+', ' ', upper_line)
 
-                    for _data in re.finditer(r"" + regex_settings['content'], upper_line, flags=re.IGNORECASE):
-                        data = _data.group()
-                        if regex_settings['remove_keyword'] and regex_settings['remove_keyword_value']:
-                            data = sanitize_keyword(_data.group(), regex_settings['remove_keyword_value'])
+                    try:
+                        for _data in re.finditer(r"" + regex_settings['content'], upper_line, flags=re.IGNORECASE):
+                            data = _data.group()
+                            if regex_settings['remove_keyword'] and regex_settings['remove_keyword_value']:
+                                data = sanitize_keyword(_data.group(), regex_settings['remove_keyword_value'])
 
-                        data = self.check_format(data, regex_settings)
-                        if data:
-                            if regex_settings['format'] == 'amount':
-                                data = data.replace(',', '.')
+                            data = self.check_format(data, regex_settings)
+                            if data:
+                                if regex_settings['format'] == 'amount':
+                                    data = data.replace(',', '.')
 
-                            if 'remove_spaces' in regex_settings and regex_settings['remove_spaces']:
-                                data = re.sub(r"\s*", '', data)
-                            data = data.strip()
+                                if 'remove_spaces' in regex_settings and regex_settings['remove_spaces']:
+                                    data = re.sub(r"\s*", '', data)
+                                data = data.strip()
 
-                            if 'char_min' in regex_settings and regex_settings['char_min']:
-                                if len(data) < int(regex_settings['char_min']):
-                                    self.log.info(f"Value found : '{data}' doesn\'t have the minimum of "
-                                                  f"{regex_settings['char_min']} chars required ")
-                                    continue
+                                if 'char_min' in regex_settings and regex_settings['char_min']:
+                                    if len(data) < int(regex_settings['char_min']):
+                                        self.log.info(f"Value found : '{data}' doesn\'t have the minimum of "
+                                                      f"{regex_settings['char_min']} chars required ")
+                                        continue
 
-                            self.log.info(self.custom_fields_regex['label'] + ' found : ' + data)
-                            position = line.position
-                            if cpt == 1:
-                                position = self.files.return_position_with_ratio(line, 'footer')
-                            return [data, position, self.nb_page]
+                                self.log.info(self.custom_fields_regex['label'] + ' found : ' + data)
+                                position = line.position
+                                if cpt == 1:
+                                    position = self.files.return_position_with_ratio(line, 'footer')
+                                return [data, position, self.nb_page]
+                    except re.error:
+                        if not second:
+                            self.log.error('Error while running regex. Please check it and test again')
+                        continue
             cpt += 1
 
         if regex_settings['format'] == 'iban' and not second:
