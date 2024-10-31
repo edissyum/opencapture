@@ -124,6 +124,8 @@ import { WorkflowBuilderSplitterComponent } from './settings/splitter/workflows/
 import { TimeoutInterceptor } from "../services/HttpTimeout.service";
 import { CodeEditorModule } from '@ngstack/code-editor';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { AttachmentListComponent } from "./attachment-list/attachment-list.component";
+import { FileViewerComponent } from "./file-viewer/file-viewer.component";
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -208,7 +210,9 @@ export function createTranslateLoader(http: HttpClient) {
         WorkflowsListComponent,
         WorkflowBuilderComponent,
         WorkflowsListSplitterComponent,
-        WorkflowBuilderSplitterComponent
+        WorkflowBuilderSplitterComponent,
+        AttachmentListComponent,
+        FileViewerComponent
     ],
     imports: [
         BrowserModule,

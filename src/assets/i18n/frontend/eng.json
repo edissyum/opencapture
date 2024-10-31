@@ -519,7 +519,8 @@
 		"skip_auto_validate": "Skip auto validation",
 		"statistics": "Statistics",
 		"task_error_informations": "Task error informations",
-		"upload": "Upload"
+		"upload": "Upload",
+		"wrong_filetype": "This file type is not allowed."
 	},
 	"HEADER": {
 		"active": "Active",

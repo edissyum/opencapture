@@ -19,7 +19,7 @@ import { Component, HostListener, OnDestroy, OnInit, SecurityContext } from '@an
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from  "../../env";
-import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
+import { catchError, map, startWith, tap } from "rxjs/operators";
 import { interval, of } from "rxjs";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
@@ -33,8 +33,6 @@ import { UserService } from "../../../services/user.service";
 import { HistoryService } from "../../../services/history.service";
 import { LocaleService } from "../../../services/locale.service";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
-import { MatDialog } from "@angular/material/dialog";
 declare const $: any;
 
 @Component({
@@ -52,7 +50,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     fromTokenFormId         : any;
     saveInfo                : boolean     = true;
     loading                 : boolean     = true;
-    loadingAttachment       : boolean     = true;
     deleteDataOnChangeForm  : boolean     = true;
     supplierExists          : boolean     = false;
     formLoading             : boolean     = false;
@@ -90,7 +87,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     imgSrc                  : any         = '';
     ratio                   : number      = 0;
     currentPage             : number      = 1;
-    attachments             : any[]       = [];
     attachmentsLength       : number      = 0;
     customFields            : any         = {};
     accountingPlan          : any         = {};
@@ -142,7 +138,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     constructor(
         private router: Router,
         private http: HttpClient,
-        private dialog: MatDialog,
         private route: ActivatedRoute,
         private sanitizer: DomSanitizer,
         private authService: AuthService,
@@ -268,8 +263,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             return;
         }
 
-        this.getAttachments();
-
         this.currentFilename = this.document.full_jpg_filename;
         await this.getThumb(this.document.full_jpg_filename);
 
@@ -360,45 +353,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         if (this.formSettings.settings.unique_url && this.formSettings.settings.unique_url.allow_supplier_autocomplete) {
             this.allowAutocomplete = true;
         }
-    }
-
-    getAttachments() {
-        this.http.get(environment['url'] + '/ws/attachments/verifier/list/' + this.documentId, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                this.attachments = data;
-                this.attachments.forEach((attachment: any) => {
-                    if (attachment['thumb']) {
-                        attachment['thumb'] = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/jpeg;base64, ' + attachment['thumb']);
-                    }
-                    attachment['extension'] = attachment['filename'].split('.').pop();
-                    if (['csv'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'fa-file-csv';
-                    } else if (['xls', 'xlsx', 'ods'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'fa-file-excel';
-                    } else if (['pptx', 'ppt', 'odp'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'fa-file-powerpoint';
-                    } else if (['doc', 'docx', 'odt', 'dot'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'fa-file-word';
-                    } else if (['zip', 'tar.gz', 'tar', '7z', 'tgz', 'tar.z'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'fa-file-zipper';
-                    } else if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'fa-file-video';
-                    } else if (['mp3', 'wav', 'flac', 'ogg', 'wma', 'aac', 'm4a'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'audio-file-video';
-                    } else {
-                        attachment['extension_icon'] = 'fa-file';
-                    }
-                });
-                this.attachmentsLength = this.attachments.length;
-            }),
-            finalize(() => {
-                this.loadingAttachment = false;
-            }),
-            catchError((err: any) => {
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
     }
 
     async reloadPageWaitingFinish(token: any) {
@@ -2138,91 +2092,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         return false;
     }
 
-    uploadAttachments(event: any) {
-        this.loadingAttachment = true;
-        const attachments = new FormData();
-        for (const file of event.target.files) {
-            attachments.append(file['name'], file);
-        }
-
-        attachments.set('documentId', this.document.id);
-        this.http.post(environment['url'] + '/ws/attachments/verifier/upload', attachments, {headers: this.authService.headers}).pipe(
-            tap(() => {
-                this.notify.success(this.translate.instant('ATTACHMENTS.attachment_uploaded'));
-                this.getAttachments();
-            }),
-            catchError((err: any) => {
-                this.loadingAttachment = false;
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
-    }
-
-    deleteConfirmDialog(documentId: number) {
-        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data: {
-                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('ATTACHMENTS.confirm_delete_attachment'),
-                confirmButton       : this.translate.instant('GLOBAL.delete'),
-                confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel')
-            },
-            width: "600px"
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                this.loadingAttachment = true;
-                this.deleteAttachment(documentId);
-            }
-        });
-    }
-
-    deleteAttachment(attachmentId: number) {
-        this.http.delete(environment['url'] + '/ws/attachments/verifier/delete/' + attachmentId, {headers: this.authService.headers}).pipe(
-            tap(() => {
-                this.notify.success(this.translate.instant('ATTACHMENTS.attachment_deleted'));
-                this.getAttachments();
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
-    }
-
-    showAttachment(attachment: any) {
-        this.http.post(environment['url'] + '/ws/attachments/verifier/download/' + attachment['id'], {},
-            {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                const b64File = 'data:' + data['mime'] + ';base64, ' + data['file'];
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
-    }
-
-    downloadAttachment(attachment: any) {
-        this.http.post(environment['url'] + '/ws/attachments/verifier/download/' + attachment['id'], {},
-            {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                const referenceFile = 'data:' + data['mime'] + ';base64, ' + data['file'];
-                const link = document.createElement("a");
-                link.href = referenceFile;
-                link.download = attachment['filename'];
-                link.click();
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
+    onAttachmentsLengthChange(event: any) {
+        this.attachmentsLength = event;
     }
 }
