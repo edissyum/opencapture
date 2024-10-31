@@ -353,11 +353,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy, AfterViewInit
         if (this.formSettings.settings.unique_url && this.formSettings.settings.unique_url.allow_supplier_autocomplete) {
             this.allowAutocomplete = true;
         }
-        console.log('end init')
-    }
-
-    ngAfterViewInit() {
-        console.log('here')
     }
 
     async reloadPageWaitingFinish(token: any) {

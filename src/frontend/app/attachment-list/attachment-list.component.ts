@@ -63,7 +63,6 @@ export class AttachmentListComponent {
         this.http.get(environment['url'] + '/ws/attachments/' + this.module + '/list/' + this.documentId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.attachments = data;
-                console.log(this.attachments)
                 this.attachments.forEach((attachment: any) => {
                     if (attachment['thumb']) {
                         attachment['thumb'] = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/jpeg;base64, ' + attachment['thumb']);
