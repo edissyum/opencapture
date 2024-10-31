@@ -106,14 +106,19 @@ export class AttachmentListComponent {
                     byteNumbers[i] = byteCharacters.charCodeAt(i);
                 }
                 const byteArray = new Uint8Array(byteNumbers);
-                const blob = new Blob([byteArray], { type: data['mime'] });
 
-                const fileURL = URL.createObjectURL(blob);
+                let fileUrl;
+                if (data['mime'] === 'application/pdf') {
+                    const blob = new Blob([byteArray], { type: data['mime'] });
+                    fileUrl = URL.createObjectURL(blob);
+                } else {
+                    fileUrl = `data:${data['mime']};base64,${data['file']}`;
+                }
 
                 this.dialog.open(FileViewerComponent, {
                     data: {
                         title: attachment.filename,
-                        fileUrl: fileURL,
+                        fileUrl: fileUrl,
                         mimeType: data['mime']
                     },
                     width: '80%',
