@@ -18,7 +18,6 @@
 import * as moment from "moment";
 import { remove } from 'remove-accents';
 import { environment } from "../../env";
-
 import { UserService } from "../../../services/user.service";
 import { AuthService} from "../../../services/auth.service";
 import { LocaleService } from "../../../services/locale.service";
@@ -71,11 +70,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
         this.removeLockByBatchId();
     }
-    @ViewChild(`cdkStepper`) cdkDropList: CdkDragDrop<any> | undefined;
+    @ViewChild('cdkStepper') cdkDropList: CdkDragDrop<any> | undefined;
 
     loading                     : boolean       = true;
-    loadingAttachment           : boolean       = true;
-    attachments                 : any[]         = [];
     attachmentsLength           : number        = 0;
     showZoomPage                : boolean       = false;
     isBatchOnDrag               : boolean       = false;
@@ -88,6 +85,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     addDocumentLoading          : boolean       = false;
     isMouseInDocumentList       : boolean       = false;
     batchMetadataOpenState      : boolean       = true;
+    sidenavOpened               : boolean       = false;
     documentMetadataOpenState   : boolean       = false;
     batchForm                   : FormGroup     = new FormGroup({});
     batches                     : any[]         = [];
@@ -133,12 +131,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             displayOrder    : -1
         }
     };
-    fieldsCategories            : any           = {
+    fieldsCategories        : any           = {
         'batch_metadata'    : [],
         'document_metadata' : []
     };
 
-    configurations              : any = {
+    configurations          : any = {
         'enableSplitterProgressBar': true
     };
 
@@ -157,7 +155,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         private http: HttpClient,
         private route: ActivatedRoute,
         public userService: UserService,
-        private sanitizer: DomSanitizer,
         private _sanitizer: DomSanitizer,
         private authService: AuthService,
         public translate: TranslateService,
@@ -182,7 +179,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         marker('SPLITTER.add_document_impossible_attachments')
         this.getConfigurations();
         this.loadSelectedBatch();
-        this.getAttachments();
         this.updateBatchLock();
         this.translate.get('HISTORY-DESC.viewer_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
             this.historyService.addHistory('splitter', 'viewer', translated);
@@ -1493,121 +1489,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         return _value;
     }
 
-    getAttachments() {
-        this.http.get(environment['url'] + '/ws/attachments/splitter/list/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                this.attachments = data;
-                this.attachments.forEach((attachment: any) => {
-                    if (attachment['thumb']) {
-                        attachment['thumb'] = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/jpeg;base64, ' + attachment['thumb']);
-                    }
-                    attachment['extension'] = attachment['filename'].split('.').pop();
-                    if (['csv'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'fa-file-csv';
-                    } else if (['xls', 'xlsx', 'ods'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'fa-file-excel';
-                    } else if (['pptx', 'ppt', 'odp'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'fa-file-powerpoint';
-                    } else if (['doc', 'docx', 'odt', 'dot'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'fa-file-word';
-                    } else if (['zip', 'tar.gz', 'tar', '7z', 'tgz', 'tar.z'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'fa-file-zipper';
-                    } else if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'fa-file-video';
-                    } else if (['mp3', 'wav', 'flac', 'ogg', 'wma', 'aac', 'm4a'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'audio-file-video';
-                    } else {
-                        attachment['extension_icon'] = 'fa-file';
-                    }
-                });
-                this.attachmentsLength = this.attachments.length;
-                this.loadingAttachment = false;
-
-            }),
-            finalize(() => {
-            }),
-            catchError((err: any) => {
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
-    }
-
-    uploadAttachments(event: any) {
-        this.loadingAttachment = true;
-        const attachments = new FormData();
-        for (const file of event.target.files) {
-            attachments.append(file['name'], file);
-        }
-
-        attachments.set('batchId', this.currentBatch.id);
-        this.http.post(environment['url'] + '/ws/attachments/splitter/upload', attachments, {headers: this.authService.headers}).pipe(
-            tap(() => {
-                this.notify.success(this.translate.instant('ATTACHMENTS.attachment_uploaded'));
-                this.getAttachments();
-            }),
-            catchError((err: any) => {
-                this.loadingAttachment = false;
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
-    }
-
-    deleteConfirmDialog(documentId: number) {
-        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data: {
-                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('ATTACHMENTS.confirm_delete_attachment'),
-                confirmButton       : this.translate.instant('GLOBAL.delete'),
-                confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel')
-            },
-            width: "600px"
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                this.loadingAttachment = true;
-                this.deleteAttachment(documentId);
-            }
-        });
-    }
-
-    deleteAttachment(attachmentId: number) {
-        this.http.delete(environment['url'] + '/ws/attachments/splitter/delete/' + attachmentId, {headers: this.authService.headers}).pipe(
-            tap(() => {
-                this.notify.success(this.translate.instant('ATTACHMENTS.attachment_deleted'));
-                this.getAttachments();
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
-    }
-
-    downloadAttachment(attachment: any) {
-        this.http.post(environment['url'] + '/ws/attachments/splitter/download/' + attachment['id'], {},
-            {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                const mimeType = data['mime'];
-                const referenceFile = 'data:' + mimeType + ';base64, ' + data['file'];
-                const link = document.createElement("a");
-                link.href = referenceFile;
-                link.download = attachment['filename'];
-                link.click();
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
-    }
-
     setDocumentPrincipal(documentIndex: number): void {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
@@ -1654,5 +1535,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 }
             }
         });
+    }
+
+    toggleSidenav() {
+        this.sidenavOpened = !this.sidenavOpened;
+    }
+
+    onAttachmentsLengthChange(event: any) {
+        this.attachmentsLength = event;
     }
 }

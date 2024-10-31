@@ -121,6 +121,10 @@ def get_attachments_by_document_id(document_id, get_thumb=True):
                   and os.path.isfile(attachment['thumbnail_path'])):
                 with open(attachment['thumbnail_path'], 'rb') as f:
                     attachment['thumb'] = base64.b64encode(f.read()).decode('utf-8')
+
+            mime = magic.Magic(mime=True)
+            mime_type = mime.from_file(attachment['path'])
+            attachment['mime_type'] = mime_type
     return _attachments, 200
 
 def get_attachments_by_batch_id(batch_id, get_thumb=True):
@@ -137,6 +141,10 @@ def get_attachments_by_batch_id(batch_id, get_thumb=True):
                   and os.path.isfile(attachment['thumbnail_path'])):
                 with open(attachment['thumbnail_path'], 'rb') as f:
                     attachment['thumb'] = base64.b64encode(f.read()).decode('utf-8')
+
+            mime = magic.Magic(mime=True)
+            mime_type = mime.from_file(attachment['path'])
+            attachment['mime_type'] = mime_type
     return _attachments, 200
 
 def delete_attachment(attachment_id, module):
