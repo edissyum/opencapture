@@ -15,7 +15,7 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {AfterViewInit, Component, HostListener, OnDestroy, OnInit, SecurityContext} from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, SecurityContext } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from  "../../env";
@@ -42,7 +42,7 @@ declare const $: any;
     providers: [DatePipe]
 })
 
-export class VerifierViewerComponent implements OnInit, OnDestroy, AfterViewInit {
+export class VerifierViewerComponent implements OnInit, OnDestroy {
     imageDocument           : any;
     documentId              : any;
     document                : any;
