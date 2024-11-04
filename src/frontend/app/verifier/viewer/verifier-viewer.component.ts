@@ -594,10 +594,10 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     }
 
     getPage(fieldId: any) {
-        let page: number = 1;
+        let page: number = 0;
         if (this.document.pages) {
             Object.keys(this.document.pages).forEach((element: any) => {
-                if (element === fieldId) {
+                if (element === fieldId && this.document.datas[element]) {
                     page = this.document.pages[fieldId];
                 }
             });
@@ -1347,6 +1347,9 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
         this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/deletePosition',
             {'args': args}, {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.document.positions[fieldId.trim()] = undefined;
+            }),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -1362,6 +1365,9 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             }
             this.http.put(environment['url'] + '/ws/accounts/suppliers/' + this.document.supplier_id + '/deletePosition',
                 {'args': args}, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.document.positions[fieldId.trim()] = undefined;
+                }),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
@@ -1379,8 +1385,12 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             args = fieldId.trim();
         }
 
+
         this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/deletePage',
             {'args': args}, {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.document.pages[fieldId.trim()] = undefined;
+            }),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -1396,6 +1406,9 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             }
             this.http.put(environment['url'] + '/ws/accounts/suppliers/' + this.document.supplier_id + '/deletePage',
                 {'args': args}, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.document.pages[fieldId.trim()] = undefined;
+                }),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
