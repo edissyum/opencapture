@@ -307,7 +307,7 @@ def delete_supplier_positions(supplier_id):
 @bp.route('accounts/suppliers/<int:supplier_id>/deletePosition', methods=['PUT'])
 @auth.token_required
 def delete_supplier_position(supplier_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list', 'update_supplier']):
+    if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list | access_verifier', 'update_supplier | access_verifier']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/accounts/suppliers/{supplier_id}/deletePosition'}), 403
 
@@ -336,7 +336,7 @@ def delete_supplier_position(supplier_id):
 @bp.route('accounts/suppliers/<int:supplier_id>/deletePage', methods=['PUT'])
 @auth.token_required
 def delete_supplier_page(supplier_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list', 'update_supplier']):
+    if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list | access_verifier', 'update_supplier | access_verifier']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/accounts/suppliers/{supplier_id}/deletePage'}), 403
 
