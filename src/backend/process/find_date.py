@@ -17,6 +17,7 @@
 
 import re
 import json
+import pandas as pd
 from datetime import datetime
 from src.backend.functions import search_by_positions, search_custom_positions
 
@@ -42,7 +43,7 @@ class FindDate:
         self.configurations = configurations
         self.max_time_delta = configurations['timeDelta']
 
-    def format_date(self, date, position, convert=False, enable_max_delta=True):
+    def format_date(self, date, position, convert=False, enable_max_delta=True, lang=None):
         if date:
             date = date.replace('1er', '01')  # Replace some possible inconvenient char
             date = date.replace(',', ' ')  # Replace some possible inconvenient char
@@ -52,14 +53,15 @@ class FindDate:
 
             regex = self.regex
             language = self.configurations['locale']
+            if lang:
+                language = lang
             if self.supplier and self.supplier[2]['document_lang']:
                 if self.supplier[2]['document_lang'] != self.configurations['locale']:
-                    language = self.supplier[2]['document_lang']
                     _regex = self.database.select({
                         'select': ['regex_id', 'content'],
                         'table': ['regex'],
                         'where': ["lang in ('global', %s)"],
-                        'data': [language]
+                        'data': [self.supplier[2]['document_lang']]
                     })
                     if _regex:
                         regex = {}
@@ -106,9 +108,18 @@ class FindDate:
                         self.log.info("Date is older than " + str(self.max_time_delta) +
                                       " days or in the future : " + date)
                         date = False
-                if timedelta.days < 0:
+
+                if enable_max_delta and timedelta.days < 0:
                     self.log.info("Date is in the future " + str(date))
                     date = False
+
+                if date:
+                    try:
+                        tmp_date = pd.to_datetime(date).strftime('%Y-%m-%d')
+                        return tmp_date, position
+                    except Exception as e:
+                        self.log.info("Error while converting date : " + str(e))
+
                 return date, position
             except (ValueError, IndexError) as _e:
                 self.log.info("Date wasn't in a good format : " + str(date))

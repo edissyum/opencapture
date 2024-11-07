@@ -726,8 +726,13 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                         value = value.replaceAll(',', '/');
                         value = value.replaceAll(' ', '/');
                         const format = moment().localeData().longDateFormat('L');
+                        const tmpValue = value;
                         value = moment(value, format);
                         value = new Date(value._d);
+                        if (value.toString() === 'Invalid Date') {
+                            value = moment(tmpValue, 'YYYY-MM-DD');
+                            value = new Date(value._d);
+                        }
                     }
                     _field.control.setValue(value);
                     _field.control.markAsTouched();
@@ -1091,8 +1096,13 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                     }
                     if (input.type === 'date' && value) {
                         const format = moment().localeData().longDateFormat('L');
+                        const tmpValue = value;
                         value = moment(value, format);
                         value = new Date(value._d);
+                        if (value.toString() === 'Invalid Date') {
+                            value = moment(tmpValue, 'YYYY-MM-DD');
+                            value = new Date(value._d);
+                        }
                     }
                     input.control.setValue(value);
                     input.control.markAsTouched();
@@ -1342,13 +1352,14 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         if (multiple) {
             args = {'fields': fieldId, 'multiple': true};
         } else {
-            args = fieldId.trim();
+            fieldId = fieldId.trim();
+            args = fieldId;
         }
 
         this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/deletePosition',
             {'args': args}, {headers: this.authService.headers}).pipe(
             tap(() => {
-                this.document.positions[fieldId.trim()] = undefined;
+                this.document.positions[fieldId] = undefined;
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -1361,12 +1372,13 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             if (multiple) {
                 args = {'fields': fieldId, 'multiple': true, 'form_id' : this.document.form_id};
             } else {
-                args = {'field_id': fieldId.trim(), 'form_id' : this.document.form_id};
+                fieldId = fieldId.trim();
+                args = {'field_id': fieldId, 'form_id' : this.document.form_id};
             }
             this.http.put(environment['url'] + '/ws/accounts/suppliers/' + this.document.supplier_id + '/deletePosition',
                 {'args': args}, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.document.positions[fieldId.trim()] = undefined;
+                    this.document.positions[fieldId] = undefined;
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -1382,14 +1394,14 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         if (multiple) {
             args = {'fields': fieldId, 'multiple': true};
         } else {
-            args = fieldId.trim();
+            fieldId = fieldId.trim();
+            args = fieldId;
         }
-
 
         this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/deletePage',
             {'args': args}, {headers: this.authService.headers}).pipe(
             tap(() => {
-                this.document.pages[fieldId.trim()] = undefined;
+                this.document.pages[fieldId] = undefined;
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -1402,12 +1414,13 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             if (multiple) {
                 args = {'fields': fieldId, 'multiple': true, 'form_id' : this.document.form_id};
             } else {
-                args = {'field_id': fieldId.trim(), 'form_id' : this.document.form_id};
+                fieldId = fieldId.trim()
+                args = {'field_id': fieldId, 'form_id' : this.document.form_id};
             }
             this.http.put(environment['url'] + '/ws/accounts/suppliers/' + this.document.supplier_id + '/deletePage',
                 {'args': args}, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.document.pages[fieldId.trim()] = undefined;
+                    this.document.pages[fieldId] = undefined;
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -1452,8 +1465,13 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                                 value = value.replaceAll(',', '/');
                                 value = value.replaceAll(' ', '/');
                                 const format = moment().localeData().longDateFormat('L');
+                                const tmpValue = value;
                                 value = moment(value, format);
                                 value = new Date(value._d);
+                                if (value.toString() === 'Invalid Date') {
+                                    value = moment(tmpValue, 'YYYY-MM-DD');
+                                    value = new Date(value._d);
+                                }
                             }
                             newField.control.setValue(value);
                             newField.control.markAsTouched();

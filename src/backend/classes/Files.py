@@ -519,7 +519,7 @@ class Files:
         except (ValueError, SyntaxError, TypeError):
             pass
 
-        if is_number and re.match(r'[A-Z]', text, flags=re.IGNORECASE):
+        if is_number and re.match(r'[A-Z]?', text, flags=re.IGNORECASE):
             is_number = False
 
         if not is_number:
@@ -539,7 +539,7 @@ class Files:
             for res in re.finditer(r"" + regex_dict['date'], tmp_text):
                 date_class = FindDate(ocr, self.log, regex_dict, self.configurations, self, '', '', '',
                                       self.docservers, '', '')
-                date = date_class.format_date(res.group(), (('', ''), ('', '')), True, False)
+                date = date_class.format_date(res.group(), (('', ''), ('', '')), True, False, lang=lang)
                 if date and date[0]:
                     text = date[0]
 
