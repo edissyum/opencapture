@@ -1414,7 +1414,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             if (multiple) {
                 args = {'fields': fieldId, 'multiple': true, 'form_id' : this.document.form_id};
             } else {
-                fieldId = fieldId.trim()
+                fieldId = fieldId.trim();
                 args = {'field_id': fieldId, 'form_id' : this.document.form_id};
             }
             this.http.put(environment['url'] + '/ws/accounts/suppliers/' + this.document.supplier_id + '/deletePage',
