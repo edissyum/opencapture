@@ -70,7 +70,11 @@ def validate_adeli(unchecked_adeli):
 
 def find_iban_from_bban(country_code: str, bban: str):
     checksum_algo = ISO7064_mod97_10()
-    return country_code + checksum_algo.compute([bban, country_code]) + bban
+    bban = re.sub(r"\s*", '', bban)
+    try:
+        return country_code + checksum_algo.compute([bban, country_code]) + bban
+    except ValueError:
+        return ''
 
 
 class FindCustom:
