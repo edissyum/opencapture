@@ -1,19 +1,26 @@
 .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1rem 0;
+    @apply flex;
+    @apply justify-between;
+    @apply items-center;
+    @apply p-4;
+    @apply pb-0;
 }
 
 .modal-content {
-    padding: 1rem;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    height: 100%;
-    overflow-y: scroll;
+    @apply p-4;
+    @apply flex;
+    @apply justify-center;
+    @apply items-start;
+    @apply h-full;
+    @apply overflow-y-scroll;
 }
 
 .file-content-image {
-    max-width: 100%;
+    @apply max-w-full;
+}
+
+pdf-viewer {
+    @apply w-full;
+    @apply h-full;
+    @apply select-text;
 }

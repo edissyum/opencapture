@@ -103,17 +103,14 @@ export class AttachmentListComponent {
             headers: this.authService.headers
         }).pipe(
             tap((data: any) => {
-                const byteCharacters = atob(data['file']);
-                const byteNumbers = new Array(byteCharacters.length);
-                for (let i = 0; i < byteCharacters.length; i++) {
-                    byteNumbers[i] = byteCharacters.charCodeAt(i);
-                }
-                const byteArray = new Uint8Array(byteNumbers);
-
                 let fileUrl;
                 if (data['mime'] === 'application/pdf') {
-                    const blob = new Blob([byteArray], { type: data['mime'] });
-                    fileUrl = URL.createObjectURL(blob);
+                    const byteCharacters = atob(data['file']);
+                    const byteNumbers = new Array(byteCharacters.length);
+                    for (let i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    }
+                    fileUrl = new Uint8Array(byteNumbers);
                 } else {
                     fileUrl = `data:${data['mime']};base64,${data['file']}`;
                 }

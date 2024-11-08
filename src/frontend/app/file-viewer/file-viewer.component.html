@@ -9,7 +9,10 @@
         <img [src]="fileUrl" alt="Document" class="file-content-image"/>
     </ng-container>
     <ng-template #otherFile>
-        <iframe *ngIf="mimeType === 'application/pdf'" [src]="fileUrl" width="100%" height="100%"></iframe>
+        <pdf-viewer *ngIf="mimeType === 'application/pdf'"
+                    [src]="fileUrl" [render-text]="true" [show-borders]="true"
+                    [original-size]="true" [fit-to-page]="true">
+        </pdf-viewer>
         <p *ngIf="mimeType !== 'application/pdf'">
             {{ 'GLOBAL.wrong_filetype' | translate }}
         </p>

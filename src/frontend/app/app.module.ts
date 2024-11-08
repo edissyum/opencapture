@@ -44,6 +44,7 @@ import { NgxFileDragDropModule } from 'ngx-file-drag-drop';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { NgsgModule } from 'ng-sortgrid';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 import { DocumentTypeFactoryComponent } from './splitter/document-type-factory/document-type-factory.component';
 import { DocumentTypeComponent } from './splitter/document-type/document-type.component';
@@ -225,8 +226,9 @@ export function createTranslateLoader(http: HttpClient) {
         ServicesModule,
         NgsgModule,
         NgxChartsModule,
+        PdfViewerModule,
         CodeEditorModule.forRoot({
-            baseUrl: 'assets/monaco'
+            baseUrl: 'monaco/'
         }),
         ToastrModule.forRoot({
             maxOpened: 1,

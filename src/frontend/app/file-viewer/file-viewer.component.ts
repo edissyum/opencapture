@@ -34,8 +34,13 @@ export class FileViewerComponent implements OnDestroy {
         @Inject(MAT_DIALOG_DATA) public data: any,
         public dialogRef: MatDialogRef<FileViewerComponent>
     ) {
-        this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(data.fileUrl);
+        (<any>window).pdfWorkerSrc = 'pdfjs/pdf.worker.min.mjs';
         this.mimeType = data.mimeType;
+        if (this.mimeType === 'application/pdf') {
+            this.fileUrl = data.fileUrl;
+        } else {
+            this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(data.fileUrl);
+        }
     }
 
     ngOnDestroy() {
