@@ -59,6 +59,8 @@ class Spreadsheet:
             try:
                 with open(referencial_spreadsheet, 'r', encoding=encoding) as csvfile:
                     sep = str(csv.Sniffer().sniff(csvfile.read()).delimiter)
+                    if not sep or sep == ' ':
+                        sep = ';'
                     content_sheet = pd.read_csv(referencial_spreadsheet, sep=sep, encoding=encoding)
             except UnicodeDecodeError:
                 continue
