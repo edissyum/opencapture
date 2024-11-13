@@ -40,7 +40,7 @@ def execute(args, path, log, config, files, ocr, regex, database, docservers, co
         if path.lower().endswith('.pdf'):
             with open(path, 'rb') as _f:
                 _, xml_content = facturx.get_facturx_xml_from_pdf(_f.read())
-                if _ is not None:
+                if _ not in [None, False] and xml_content not in [None, False]:
                     is_facturx = True
 
         if not is_facturx:
