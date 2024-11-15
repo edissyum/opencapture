@@ -6,6 +6,10 @@
     @apply max-w-sm #{!important};
 }
 
+.mat-datepicker-toggle-active {
+    @apply text-green-400 #{!important};
+}
+
 .mat-mdc-tab-header {
     @apply z-20;
     & .mat-mdc-tab-label-container .mat-mdc-tab-list .mat-mdc-tab-labels {
