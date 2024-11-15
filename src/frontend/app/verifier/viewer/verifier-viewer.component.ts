@@ -1261,8 +1261,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     }
 
     editSupplier() {
-        const supplierData: any = {};
         const addressData: any = {};
+        const supplierData: any = {};
         this.fields.supplier.forEach((element: any) => {
             const field = this.getField(element.id);
 
@@ -1624,6 +1624,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             'siren': supplier.siren,
                             'iban': supplier.iban,
                             'bic': supplier.bic,
+                            'duns': supplier.duns,
+                            'rccm': supplier.rccm,
                             'email': supplier.email,
                             'vat_number': supplier.vat_number
                         };
