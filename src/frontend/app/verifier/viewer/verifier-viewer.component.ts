@@ -1028,53 +1028,54 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                 this.isOCRRunning = true;
                 let lang = this.localeService.currentLang;
                 if (Object.keys(this.currentSupplier).length !== 0) {
-                    lang = this.currentSupplier['document_lang'];
+                    if (this.currentSupplier['document_lang']) {
+                        lang = this.currentSupplier['document_lang'];
+                    }
                 }
-                this.http.post(environment['url'] + '/ws/verifier/ocrOnFly',
-                    {
-                        selection: this.getSelectionByCpt(selection, cpt),
-                        fileName: this.currentFilename, lang: lang,
-                        thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height},
-                        registerDate: this.document['register_date']
-                    }, {headers: this.authService.headers})
-                    .pipe(
-                        tap((data: any) => {
-                            this.isOCRRunning = false;
-                            let oldPosition = {
-                                x: 0,
-                                y: 0,
-                                width: 0,
-                                height: 0
+                this.http.post(environment['url'] + '/ws/verifier/ocrOnFly', {
+                    selection: this.getSelectionByCpt(selection, cpt),
+                    fileName: this.currentFilename, lang: lang,
+                    thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height},
+                    registerDate: this.document['register_date']
+                }, {headers: this.authService.headers})
+                .pipe(
+                    tap((data: any) => {
+                        this.isOCRRunning = false;
+                        let oldPosition = {
+                            x: 0,
+                            y: 0,
+                            width: 0,
+                            height: 0
+                        };
+                        if (this.document.positions[inputId.trim()]) {
+                            oldPosition = {
+                                x: this.document.positions[inputId.trim()].x / this.ratio - ((this.document.positions[inputId.trim()].x / this.ratio) * 0.005),
+                                y: this.document.positions[inputId.trim()].y / this.ratio - ((this.document.positions[inputId.trim()].y / this.ratio) * 0.003),
+                                width: this.document.positions[inputId.trim()].width / this.ratio + ((this.document.positions[inputId.trim()].width / this.ratio) * 0.05),
+                                height: this.document.positions[inputId.trim()].height / this.ratio + ((this.document.positions[inputId.trim()].height / this.ratio) * 0.6)
                             };
-                            if (this.document.positions[inputId.trim()]) {
-                                oldPosition = {
-                                    x: this.document.positions[inputId.trim()].x / this.ratio - ((this.document.positions[inputId.trim()].x / this.ratio) * 0.005),
-                                    y: this.document.positions[inputId.trim()].y / this.ratio - ((this.document.positions[inputId.trim()].y / this.ratio) * 0.003),
-                                    width: this.document.positions[inputId.trim()].width / this.ratio + ((this.document.positions[inputId.trim()].width / this.ratio) * 0.05),
-                                    height: this.document.positions[inputId.trim()].height / this.ratio + ((this.document.positions[inputId.trim()].height / this.ratio) * 0.6)
-                                };
-                            }
+                        }
 
-                            const newPosition = this.getSelectionByCpt(selection, cpt);
-                            if (newPosition.x !== oldPosition.x && newPosition.y !== oldPosition.y &&
-                                newPosition.width !== oldPosition.width && newPosition.height !== oldPosition.height) {
-                                this.updateFormValue(inputId, data.result);
-                                const res = this.saveData(data.result, this.lastId, true);
-                                if (res) {
-                                    const allowLearning = this.formSettings.settings.allow_learning;
-                                    if (allowLearning == true || allowLearning == undefined) {
-                                        this.savePosition(newPosition);
-                                        this.savePages(this.currentPage).then();
-                                    }
+                        const newPosition = this.getSelectionByCpt(selection, cpt);
+                        if (newPosition.x !== oldPosition.x && newPosition.y !== oldPosition.y &&
+                            newPosition.width !== oldPosition.width && newPosition.height !== oldPosition.height) {
+                            this.updateFormValue(inputId, data.result);
+                            const res = this.saveData(data.result, this.lastId, true);
+                            if (res) {
+                                const allowLearning = this.formSettings.settings.allow_learning;
+                                if (allowLearning == true || allowLearning == undefined) {
+                                    this.savePosition(newPosition);
+                                    this.savePages(this.currentPage).then();
                                 }
                             }
-                        }),
-                        catchError((err: any) => {
-                            console.debug(err);
-                            this.notify.handleErrors(err);
-                            return of(false);
-                        })
-                    ).subscribe();
+                        }
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
             }
             this.saveInfo = true;
         } else {
