@@ -127,6 +127,7 @@ class FindFooter:
         })
 
         if position and position[0]:
+            position = position[0]
             if position[column + '_position'] not in ['((,),(,))', 'NULL', None, '', False]:
                 page = position[column + '_page']
                 if self.target == 'full':
