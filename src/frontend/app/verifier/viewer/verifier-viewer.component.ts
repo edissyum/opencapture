@@ -1183,6 +1183,14 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                     if (field.unit === 'addresses' || field.unit === 'supplier') {
                         showNotif = false;
                     }
+
+                    if (field.type === 'date' && data) {
+                        const format = moment().localeData().longDateFormat('L');
+                        data = moment(data, format);
+                        data = new Date(data._d);
+                        data = moment(data).format('YYYY-MM-DD');
+                    }
+
                     if (field.control.errors || this.document['datas'][fieldId] === data) {
                         return false;
                     }
