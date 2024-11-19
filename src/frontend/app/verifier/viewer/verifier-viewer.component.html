@@ -55,6 +55,11 @@
                             </span>
                             {{ 'VERIFIER.page' | translate }}
                             {{ currentPage }}
+                            <mat-select class="absolute left-[4.5rem] w-16" [value]="this.currentPage">
+                                <mat-option *ngFor="let page of arrayOfPages" [value]="page" (click)="changePage(page)">
+                                    {{ page }}
+                                </mat-option>
+                            </mat-select>
                             {{ 'VERIFIER.on' | translate }}
                             {{ this.document['nb_pages'] }}
                             <span [class.cursor-wait]="this.imgLoading">

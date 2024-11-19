@@ -38,3 +38,16 @@
         }
     }
 }
+
+::ng-deep .mat-mdc-select-trigger {
+    @apply opacity-0;
+}
+
+::ng-deep .mat-mdc-select-panel {
+    @apply pt-0 #{!important};
+    @apply pb-0 #{!important};
+}
+
+::ng-deep .mat-mdc-option-pseudo-checkbox {
+    @apply hidden #{!important};
+}

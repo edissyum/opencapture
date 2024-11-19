@@ -100,6 +100,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     outputsLabel            : any         = [];
     outputs                 : any         = [];
     multiDocumentsData      : any         = [];
+    arrayOfPages            : any         = [];
     fieldCategories         : any[]       = [
         {
             id: 'supplier',
@@ -251,6 +252,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         this.customFields = customFields.customFields;
 
         this.document = await this.getDocument();
+
+        this.arrayOfPages = Array.from({length: this.document['nb_pages']}, (v, k) => k + 1);
 
         if (this.document.workflow_id) {
             this.getWorkflow();
@@ -1926,6 +1929,16 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         }
     }
 
+    async changePage(page: number) {
+        await this.changeImage(page, this.currentPage);
+        this.currentPage = page;
+
+        document.getElementById('image')!.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+
     async nextPage() {
         if (this.currentPage < this.document['nb_pages']) {
             this.currentPage = this.currentPage + 1;
@@ -2137,4 +2150,5 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     onAttachmentsLengthChange(event: any) {
         this.attachmentsLength = event;
     }
+
 }
