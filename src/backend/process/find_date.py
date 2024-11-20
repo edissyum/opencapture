@@ -78,59 +78,58 @@ class FindDate:
                         if month.lower() in date.lower():
                             date = (date.lower().replace(month.lower(), key))
                             break
-            # try:
-                # Fix to handle date with 2 digits year
-            date = date.replace('  ', ' ')
-            length_of_year = len(date.split(' ')[2])
-            date_format = "%d %m %Y"
-
-            for _l in self.languages:
-                if language == self.languages[_l]['lang_code']:
-                    date_format = self.languages[_l]['date_format']
-
-            if length_of_year == 2:
-                date_format = date_format.replace('%Y', '%y')
-
             try:
-                date = datetime.strptime(date, date_format).strftime(regex['format_date'])
-            except ValueError:
+                # Fix to handle date with 2 digits year
+                date = date.replace('  ', ' ')
+                length_of_year = len(date.split(' ')[2])
+                date_format = "%d %m %Y"
+
+                for _l in self.languages:
+                    if language == self.languages[_l]['lang_code']:
+                        date_format = self.languages[_l]['date_format']
+
+                if length_of_year == 2:
+                    date_format = date_format.replace('%Y', '%y')
+
                 try:
-                    # Check if the date is in the format DD MM YYYY
-                    if date_format.startswith("%m %d"):
-                        date_format = date_format.replace("%m %d", "%d %m")
-                        date = datetime.strptime(date, date_format).strftime(regex['format_date'])
+                    date = datetime.strptime(date, date_format).strftime(regex['format_date'])
                 except ValueError:
-                    # Check if the date is in the ISO format YYYY MM DD
-                    date = re.sub(r'[A-Za-z]', '', date).strip()
-                    date = datetime.strptime(date, '%Y %m %d').strftime(regex['format_date'])
-                    print(date)
+                    try:
+                        # Check if the date is in the format DD MM YYYY
+                        if date_format.startswith("%m %d"):
+                            date_format = date_format.replace("%m %d", "%d %m")
+                            date = datetime.strptime(date, date_format).strftime(regex['format_date'])
+                    except ValueError:
+                        # Check if the date is in the ISO format YYYY MM DD
+                        date = re.sub(r'[A-Za-z]', '', date).strip()
+                        date = datetime.strptime(date, '%Y %m %d').strftime(regex['format_date'])
 
-            # Check if the date of the document isn't too old. 62 (default value) is equivalent of 2 months
-            today = datetime.now()
-            doc_date = datetime.strptime(date, regex['format_date'])
-            timedelta = today - doc_date
+                # Check if the date of the document isn't too old. 62 (default value) is equivalent of 2 months
+                today = datetime.now()
+                doc_date = datetime.strptime(date, regex['format_date'])
+                timedelta = today - doc_date
 
-            if enable_max_delta and int(self.max_time_delta) not in [-1, 0]:
-                if timedelta.days > int(self.max_time_delta) or timedelta.days < 0:
-                    self.log.info("Date is older than " + str(self.max_time_delta) +
-                                  " days or in the future : " + date)
+                if enable_max_delta and int(self.max_time_delta) not in [-1, 0]:
+                    if timedelta.days > int(self.max_time_delta) or timedelta.days < 0:
+                        self.log.info("Date is older than " + str(self.max_time_delta) +
+                                      " days or in the future : " + date)
+                        date = False
+
+                if enable_max_delta and timedelta.days < 0:
+                    self.log.info("Date is in the future " + str(date))
                     date = False
 
-            if enable_max_delta and timedelta.days < 0:
-                self.log.info("Date is in the future " + str(date))
-                date = False
+                if date:
+                    try:
+                        tmp_date = pd.to_datetime(date).strftime('%Y-%m-%d')
+                        return tmp_date, position
+                    except Exception as e:
+                        self.log.info("Error while converting date : " + str(e))
 
-            if date:
-                try:
-                    tmp_date = pd.to_datetime(date).strftime('%Y-%m-%d')
-                    return tmp_date, position
-                except Exception as e:
-                    self.log.info("Error while converting date : " + str(e))
-
-            return date, position
-            # except (ValueError, IndexError) as _e:
-            #     self.log.info("Date wasn't in a good format : " + str(date))
-            #     return False
+                return date, position
+            except (ValueError, IndexError) as _e:
+                 self.log.info("Date wasn't in a good format : " + str(date))
+                 return False
         else:
             return False
 
