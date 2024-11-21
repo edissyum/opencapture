@@ -31,6 +31,7 @@ import shutil
 import imutils
 import tempfile
 import datetime
+import schwifty
 import subprocess
 import numpy as np
 from PIL import Image
@@ -498,26 +499,29 @@ class Files:
             improved_cropped_image = Image.open('/tmp/cropped_' + rand + '_improved' + extension)
             text = ocr.text_builder(improved_cropped_image)
 
-        try:
-            text = text.replace('%', '').replace('€', '').replace('$', '').replace('£', '')
-            text = text.strip()
-            text = text.replace(' ', '.')
-            text = text.replace('\n', '')
-            text = text.replace(',', '.')
-            text = text.replace('\x0c', '')
+        match = schwifty.IBAN(text, allow_invalid=True).is_valid
 
-            splitted_number = text.split('.')
-            if len(splitted_number) > 1:
-                last_index = splitted_number[len(splitted_number) - 1]
-                if len(last_index) > 2:
-                    text = text.replace('.', '')
-                    is_number = True
-                else:
-                    splitted_number.pop(-1)
-                    text = ''.join(splitted_number) + '.' + last_index
-                    is_number = True
-        except (ValueError, SyntaxError, TypeError):
-            pass
+        if not match:
+            try:
+                text = text.replace('%', '').replace('€', '').replace('$', '').replace('£', '')
+                text = text.strip()
+                text = text.replace(' ', '.')
+                text = text.replace('\n', '')
+                text = text.replace(',', '.')
+                text = text.replace('\x0c', '')
+
+                splitted_number = text.split('.')
+                if len(splitted_number) > 1:
+                    last_index = splitted_number[len(splitted_number) - 1]
+                    if len(last_index) > 2:
+                        text = text.replace('.', '')
+                        is_number = True
+                    else:
+                        splitted_number.pop(-1)
+                        text = ''.join(splitted_number) + '.' + last_index
+                        is_number = True
+            except (ValueError, SyntaxError, TypeError):
+                pass
 
         if is_number and re.match(r'[A-Z]?', text, flags=re.IGNORECASE):
             is_number = False
