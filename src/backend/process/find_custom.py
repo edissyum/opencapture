@@ -18,7 +18,6 @@
 import re
 import json
 import math
-import string
 import schwifty
 from schwifty.checksum import ISO7064_mod97_10
 
