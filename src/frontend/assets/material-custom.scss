@@ -272,3 +272,7 @@ mat-select-country mat-form-field {
     @apply -ml-4 #{!important};
     @apply mr-0 #{!important};
 }
+
+.mdc-linear-progress__bar-inner {
+    @apply border-green-400 #{!important};
+}
