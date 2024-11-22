@@ -1,8 +1,10 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" [autosize]="true">
     <mat-sidenav-content class="bg-white overflow-hidden">
-        <div *ngIf="this.loading">
-            <app-loader></app-loader>
-        </div>
+        @if (this.loading) {
+            <div>
+                <app-loader></app-loader>
+            </div>
+        }
         <div class="relative z-30 h-[3.75rem] flex justify-between items-center px-2 bg-green-400 bg-opacity-60 text-gray-900">
             <div class="flex">
                 <button mat-icon-button (click)="this.router.navigate(['/accounts/customers'])" [matTooltip]="'ACCOUNTS.back_to_customers_list' | translate">
@@ -22,23 +24,32 @@
                 </h3>
             </div>
             <form class="grid grid-cols-3 gap-2 mx-10 text-center">
-                <ng-container *ngFor="let field of customerForm">
-                    <mat-form-field class="block" *ngIf="field.type !== 'select'">
-                        <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
-                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessageCustomer(field.id) }}</mat-error>
-                    </mat-form-field>
-                    <mat-form-field class="block" *ngIf="field.type === 'select'">
-                        <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [formControl]="field['control']" [(value)]="field.control.value"
-                                    [required]="field['required']" (selectionChange)="updateRequired(field)">
-                            <mat-option *ngFor="let option of field.values" [value]="option['id']">
-                                {{ option['label'] | translate }}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessageCustomer(field.id) }}</mat-error>
-                    </mat-form-field>
-                </ng-container>
+                @for (field of customerForm; track field.id) {
+                    @if (field.type === 'select') {
+                        <mat-form-field class="block">
+                            <mat-label>{{ field.label | translate }}</mat-label>
+                            <mat-select [formControl]="field['control']" [(value)]="field.control.value"
+                                        [required]="field['required']" (selectionChange)="updateRequired(field)">
+                                @for (option of field.values; track option.id) {
+                                    <mat-option [value]="option['id']">
+                                        {{ option['label'] | translate }}
+                                    </mat-option>
+                                }
+                            </mat-select>
+                            @if (field.control.invalid) {
+                                <mat-error>{{ getErrorMessageCustomer(field.id) }}</mat-error>
+                            }
+                        </mat-form-field>
+                    } @else {
+                        <mat-form-field class="block">
+                            <mat-label>{{ field.label | translate }}</mat-label>
+                            <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
+                            @if (field.control.invalid) {
+                                <mat-error>{{ getErrorMessageCustomer(field.id) }}</mat-error>
+                            }
+                        </mat-form-field>
+                    }
+                }
             </form>
 
             <hr class="border-green-400 relative my-5 w-1/2 m-auto">
@@ -49,18 +60,21 @@
             </div>
 
             <form class="grid grid-cols-3 gap-2 mx-10 text-center">
-                <ng-container *ngFor="let field of addressForm">
-                    <mat-form-field [class.col-span-2]="field.id === 'address1'" class="block" *ngIf="field.type !== 'country'">
-                        <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
-                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessageAddress(field.id) }}</mat-error>
-                    </mat-form-field>
-                    <mat-select-country class="w-full" *ngIf="field.type === 'country'"
-                                        [label]="field.label | translate"
-                                        [value]="defaultValue"
-                                        (onCountrySelected)="onCountrySelected($event)">
-                    </mat-select-country>
-                </ng-container>
+                @for (field of addressForm; track field.id) {
+                    @if (field.type === 'country') {
+                        <mat-select-country class="w-full" [value]="defaultValue" [label]="field.label | translate"
+                                            (onCountrySelected)="onCountrySelected($event)">
+                        </mat-select-country>
+                    } @else {
+                        <mat-form-field [class.col-span-2]="field.id === 'address1'" class="block">
+                            <mat-label>{{ field.label | translate }}</mat-label>
+                            <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
+                            @if (field.control.invalid) {
+                                <mat-error>{{ getErrorMessageAddress(field.id) }}</mat-error>
+                            }
+                        </mat-form-field>
+                    }
+                }
             </form>
             <div class="button text-center">
                 <button class="valid_button" type="submit" mat-button (click)="onSubmit()">

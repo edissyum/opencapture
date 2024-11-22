@@ -1,43 +1,59 @@
-<div *ngIf="!loading" class="flex justify-center items-center" style="height: 85vh">
-    <mat-card class="text-center w-full lg:w-1/4">
-        <mat-card-title class="mb-10">
-            <span *ngIf="this.userId === this.userService.user.id">{{ 'USER.modify_my_profile' | translate }}</span>
-            <span *ngIf="this.userId !== this.userService.user.id">{{ 'USER.modify_profile_of' | translate }} {{ this.profile['username'] }}</span>
-        </mat-card-title>
-        <mat-card-content>
-            <form (ngSubmit)="onSubmit()">
-                <ng-container *ngFor="let field of profileForm">
-                    <mat-form-field class="block m-2" *ngIf="field.type !== 'select'"
-                                    [class.pointer-events-none]="field.type === 'password' && this.disablePasswordModification">
-                        <mat-label [class.text-gray-400]="field.type === 'password' && this.disablePasswordModification">
-                            {{ field.label | translate }}
-                        </mat-label>
-                        <input [readonly]="field.type === 'password' && this.disablePasswordModification" matInput
-                               [formControl]="field['control']" [type]="field.type" [required]="field['required']"
-                               [email]="field.type === 'email'" [placeholder]="field.label | translate">
-                        <mat-error class="text-red-400" [innerHTML]="getErrorMessage(field.id)" *ngIf="field.control.invalid"></mat-error>
-                        <mat-icon *ngIf="field.id === 'old_password'" matSuffix (click)="field.type === 'password' ? field.type = 'text' : field.type = 'password'"
-                                  class="text-green-400 relative cursor-pointer -top-0.5 text-base">
-                            <i class="fa fa-1x" [class.fa-eye-slash]="field.type === 'password'" [class.fa-eye]="field.type !== 'password'"></i>
-                        </mat-icon>
-                        <mat-icon *ngIf="field.id === 'new_password'" matSuffix (click)="field.type === 'password' ? field.type = 'text' : field.type = 'password'"
-                                  class="text-green-400 relative cursor-pointer -top-0.5 text-base">
-                            <i class="fa fa-1x" [class.fa-eye-slash]="field.type === 'password'" [class.fa-eye]="field.type !== 'password'"></i>
-                        </mat-icon>
-                    </mat-form-field>
-                    <mat-form-field class="block" *ngIf="field.type === 'select'">
-                        <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [disabled]="this.userService.getUserFromLocal()['username'] === 'admin' || this.userService.getUserFromLocal()['privileges'] !== '*'" [(value)]="field.control.value">
-                            <mat-option *ngFor="let option of field.values" [value]="option['id']">{{ option['label'] }}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </ng-container>
-                <div class="button col-span-3">
-                    <button class="valid_button" type="submit" mat-button>
-                        {{ 'USER.modify' | translate }}
-                    </button>
-                </div>
-            </form>
-        </mat-card-content>
-    </mat-card>
-</div>
+@if (!loading) {
+    <div class="flex justify-center items-center" style="height: 85vh">
+        <mat-card class="text-center w-full lg:w-1/4">
+            <mat-card-title class="mb-10">
+                @if (this.userId === this.userService.user.id) {
+                    <span>{{ 'USER.modify_my_profile' | translate }}</span>
+                } @else {
+                    <span>{{ 'USER.modify_profile_of' | translate }} {{ this.profile['username'] }}</span>
+                }
+            </mat-card-title>
+            <mat-card-content>
+                <form (ngSubmit)="onSubmit()">
+                    @for (field of profileForm; track field.id) {
+                        @if (field.type === 'select') {
+                            <mat-form-field class="block">
+                                <mat-label>{{ field.label | translate }}</mat-label>
+                                <mat-select [disabled]="this.userService.getUserFromLocal()['username'] === 'admin' || this.userService.getUserFromLocal()['privileges'] !== '*'" [(value)]="field.control.value">
+                                    @for (option of field.values; track option['id']) {
+                                        <mat-option [value]="option['id']">
+                                            {{ option['label'] }}
+                                        </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        } @else {
+                            <mat-form-field class="block m-2" [class.pointer-events-none]="field.type === 'password' && this.disablePasswordModification">
+                                <mat-label [class.text-gray-400]="field.type === 'password' && this.disablePasswordModification">
+                                    {{ field.label | translate }}
+                                </mat-label>
+                                <input [readonly]="field.type === 'password' && this.disablePasswordModification" matInput
+                                       [formControl]="field['control']" [type]="field.type" [required]="field['required']"
+                                       [email]="field.type === 'email'" [placeholder]="field.label | translate">
+                                @if (field.control.invalid) {
+                                    <mat-error class="text-red-400" [innerHTML]="getErrorMessage(field.id)"></mat-error>
+                                }
+                                @if (field.id === 'old_password') {
+                                    <mat-icon matSuffix (click)="field.type === 'password' ? field.type = 'text' : field.type = 'password'"
+                                              class="text-green-400 relative cursor-pointer -top-0.5 text-base">
+                                        <i class="fa fa-1x" [class.fa-eye-slash]="field.type === 'password'" [class.fa-eye]="field.type !== 'password'"></i>
+                                    </mat-icon>
+                                } @else if (field.id === 'new_password') {
+                                    <mat-icon matSuffix (click)="field.type === 'password' ? field.type = 'text' : field.type = 'password'"
+                                              class="text-green-400 relative cursor-pointer -top-0.5 text-base">
+                                        <i class="fa fa-1x" [class.fa-eye-slash]="field.type === 'password'" [class.fa-eye]="field.type !== 'password'"></i>
+                                    </mat-icon>
+                                }
+                            </mat-form-field>
+                        }
+                    }
+                    <div class="button col-span-3">
+                        <button class="valid_button" type="submit" mat-button>
+                            {{ 'USER.modify' | translate }}
+                        </button>
+                    </div>
+                </form>
+            </mat-card-content>
+        </mat-card>
+    </div>
+}

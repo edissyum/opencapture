@@ -1,8 +1,10 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" [autosize]="true">
     <mat-sidenav-content class="bg-white overflow-hidden">
-        <div *ngIf="this.loading">
-            <app-loader></app-loader>
-        </div>
+        @if (this.loading) {
+            <div>
+                <app-loader></app-loader>
+            </div>
+        }
         <div class="relative z-30 h-[3.75rem] flex justify-between items-center px-2 bg-green-400 bg-opacity-60 text-gray-900">
             <div class="flex">
                 <button mat-icon-button (click)="this.router.navigate(['/accounts/suppliers'])" [matTooltip]="'ACCOUNTS.back_to_suppliers_list' | translate">
@@ -17,11 +19,13 @@
         <hr class="border-green-400">
         <div class="overflow-x-hidden h-full-overflow">
             <div class="flex justify-center mt-10">
-                <ng-container *ngFor="let field of supplierForm">
-                    <mat-slide-toggle *ngIf="field.type === 'mat-slide-toggle'" [formControl]="field['control']">
-                        {{ field.label | translate }}
-                    </mat-slide-toggle>
-                </ng-container>
+                @for (field of supplierForm; track field.id) {
+                    @if (field.type === 'mat-slide-toggle') {
+                        <mat-slide-toggle [formControl]="field['control']">
+                            {{ field.label | translate }}
+                        </mat-slide-toggle>
+                    }
+                }
             </div>
             <hr class="border-green-400 relative my-5 w-1/2 m-auto">
             <div class="w-full text-center">
@@ -30,34 +34,48 @@
                 </h3>
             </div>
             <form class="grid grid-cols-5 gap-2 gap-y-5 mx-10 text-center">
-                <ng-container *ngFor="let field of supplierForm">
-                    <mat-form-field class="block" *ngIf="field.type === 'text'">
-                        <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
-                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessageSupplier(field.id) }}</mat-error>
-                        <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
-                            <i class="fa-solid fa-circle-question text-md"></i>
-                        </span>
-                    </mat-form-field>
-                    <mat-form-field class="block" *ngIf="field.type === 'select' && !field.id.includes('default_accounting_plan')">
-                        <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [formControl]="field['control']" [required]="field['required']">
-                            <mat-option *ngFor="let option of field.values" [value]="option['id']">{{ option['label'] }}</mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessageSupplier(field.id) }}</mat-error>
-                    </mat-form-field>
-                    <mat-form-field class="right-0 w-full form-viewer col-span-3" *ngIf="field.id.includes('default_accounting_plan') && this.accountingPlan && !loading">
-                        <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
-                            {{ field.label | translate }}
-                        </mat-label>
-                        <input matInput [id]="field.id" type="text" [formControl]="field['control']" [matAutocomplete]="accounting">
-                        <mat-autocomplete #accounting="matAutocomplete" [displayWith]="displayFn_accounting">
-                            <mat-option *ngFor="let option of this.accountingPlan | async" [value]="option" [id]="option.compte_num">
-                                <span [innerHTML]="option.compte_num + ' - ' + option.compte_lib | highlight: toHighlightAccounting"></span>
-                            </mat-option>
-                        </mat-autocomplete>
-                    </mat-form-field>
-                </ng-container>
+                @for (field of supplierForm; track field.id) {
+                    @if (field.type === 'text') {
+                        <mat-form-field class="block">
+                            <mat-label>{{ field.label | translate }}</mat-label>
+                            <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
+                            @if (field.control.invalid) {
+                                <mat-error>{{ getErrorMessageSupplier(field.id) }}</mat-error>
+                            }
+                            @if (field.hint) {
+                                <span class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
+                                    <i class="fa-solid fa-circle-question text-md"></i>
+                                </span>
+                            }
+                        </mat-form-field>
+                    } @else if (field.type === 'select' && !field.id.includes('default_accounting_plan')) {
+                        <mat-form-field class="block">
+                            <mat-label>{{ field.label | translate }}</mat-label>
+                            <mat-select [formControl]="field['control']" [required]="field['required']">
+                                @for (option of field.values; track option.id) {
+                                    <mat-option [value]="option['id']">{{ option['label'] }}</mat-option>
+                                }
+                            </mat-select>
+                            @if (field.control.invalid) {
+                                <mat-error>{{ getErrorMessageSupplier(field.id) }}</mat-error>
+                            }
+                        </mat-form-field>
+                    } @else if (field.id.includes('default_accounting_plan') && this.accountingPlan && !loading) {
+                        <mat-form-field class="right-0 w-full form-viewer col-span-3">
+                            <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
+                                {{ field.label | translate }}
+                            </mat-label>
+                            <input matInput [id]="field.id" type="text" [formControl]="field['control']" [matAutocomplete]="accounting">
+                            <mat-autocomplete #accounting="matAutocomplete" [displayWith]="displayFn_accounting">
+                                @for (option of this.accountingPlan | async; track option.id) {
+                                    <mat-option [value]="option" [id]="option.compte_num">
+                                        <span [innerHTML]="option.compte_num + ' - ' + option.compte_lib | highlight: toHighlightAccounting"></span>
+                                    </mat-option>
+                                }
+                            </mat-autocomplete>
+                        </mat-form-field>
+                    }
+                }
             </form>
             <hr class="border-green-400 relative my-5 w-1/2 m-auto">
             <div class="w-full text-center">
@@ -66,23 +84,29 @@
                 </h3>
             </div>
             <form class="grid grid-cols-3 gap-2 gap-y-5 mx-10 text-center">
-                <ng-container *ngFor="let field of addressForm">
-                    <mat-form-field [class.col-span-2]="field.id === 'address1'" class="block" *ngIf="field.type !== 'country'">
-                        <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
-                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessageAddress(field.id) }}</mat-error>
-                    </mat-form-field>
-                    <mat-select-country class="w-full" *ngIf="field.type === 'country'" [value]="defaultValue"
-                                        [label]="field.label | translate" (onCountrySelected)="onCountrySelected($event)">
-                    </mat-select-country>
-                </ng-container>
+                @for (field of addressForm; track field.id) {
+                    @if (field.type === 'country') {
+                        <mat-select-country class="w-full" [value]="defaultValue" [label]="field.label | translate"
+                                            (onCountrySelected)="onCountrySelected($event)">
+                        </mat-select-country>
+                    } @else {
+                        <mat-form-field [class.col-span-2]="field.id === 'address1'" class="block">
+                            <mat-label>{{ field.label | translate }}</mat-label>
+                            <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
+                            @if (field.control.invalid) {
+                                <mat-error>{{ getErrorMessageAddress(field.id) }}</mat-error>
+                            }
+                        </mat-form-field>
+                    }
+                }
             </form>
             <div class="button text-center">
                 <button class="valid_button" type="submit" mat-button [disabled]="this.createLoading" (click)="onSubmit()">
-                    <span *ngIf="!this.createLoading">
+                    @if (this.createLoading) {
+                        <i class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
+                    } @else {
                         {{ 'ACCOUNTS.create_supplier' | translate }}
-                    </span>
-                    <i *ngIf="this.createLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
+                    }
                 </button>
             </div>
         </div>

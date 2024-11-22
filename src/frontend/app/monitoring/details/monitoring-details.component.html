@@ -8,9 +8,11 @@
             <div></div>
         </div>
         <hr class="border-green-400 relative z-50">
-        <div *ngIf="this.loading">
-            <app-loader></app-loader>
-        </div>
+        @if (this.loading) {
+            <div>
+                <app-loader></app-loader>
+            </div>
+        }
         <div class="overflow-x-hidden">
             <div class="flex justify-center">
                 <div class="grid my-10 mx-10">

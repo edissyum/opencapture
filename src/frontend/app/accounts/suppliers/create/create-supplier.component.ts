@@ -27,8 +27,8 @@ import { NotificationService } from "../../../../services/notifications/notifica
 import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
 import { environment } from  "../../../env";
-import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
-import { of } from "rxjs";
+import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
+import { Observable, of } from "rxjs";
 import { Country } from '@angular-material-extensions/select-country';
 import { LocaleService } from "../../../../services/locale.service";
 
@@ -37,12 +37,12 @@ import { LocaleService } from "../../../../services/locale.service";
     templateUrl: './create-supplier.component.html'
 })
 export class CreateSupplierComponent implements OnInit {
-    headers                 : HttpHeaders = this.authService.headers;
-    loading                 : boolean     = true;
-    createLoading           : boolean     = false;
-    toHighlightAccounting   : string      = '';
-    accountingPlan          : any         = {};
-    supplierForm            : any[]       = [
+    headers                 : HttpHeaders       = this.authService.headers;
+    loading                 : boolean           = true;
+    createLoading           : boolean           = false;
+    toHighlightAccounting   : string            = '';
+    accountingPlan          : Observable<any[]> = new Observable<any[]>();
+    supplierForm            : any[]             = [
         {
             id: 'get_only_raw_footer',
             label: marker('ACCOUNTS.get_only_raw_footer'),

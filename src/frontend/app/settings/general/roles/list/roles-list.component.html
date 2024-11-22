@@ -3,9 +3,11 @@
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
-        <div *ngIf="this.loading">
-            <app-loader></app-loader>
-        </div>
+        @if (this.loading) {
+            <div>
+                <app-loader></app-loader>
+            </div>
+        }
         <div class="settings_header">
             <div class="flex">
                 <button mat-icon-button (click)="this.serviceSettings.minimizeSideNav = !this.serviceSettings.minimizeSideNav;">
@@ -33,25 +35,29 @@
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef> {{ 'HEADER.status' | translate }} </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <span *ngIf="element.enabled"> <span class="text-green-400 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.active' | translate }}</span>
-                        <span *ngIf="!element.enabled"> <span class="text-red-600 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.inactive' | translate }}</span>
+                        @if (element.enabled) {
+                            <span> <span class="text-green-400 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.active' | translate }}</span>
+                        } @else {
+                            <span> <span class="text-red-600 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.inactive' | translate }}</span>
+                        }
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <button *ngIf="element.enabled"
-                                (click)="$event.stopPropagation();disableConfirmDialog(element.id, element.label)"
-                                matTooltip="{{ 'ROLE.disable' | translate }}" mat-icon-button
-                                class="inline-block align-text-top">
-                            <i class="fa-solid fa-pause text-lg"></i>
-                        </button>
-                        <button *ngIf="!element.enabled"
-                                (click)="$event.stopPropagation();enableConfirmDialog(element.id, element.label)"
-                                matTooltip="{{ 'ROLE.enable' | translate }}" mat-icon-button
-                                class="inline-block align-text-top">
-                            <i class="fa-solid fa-play text-lg"></i>
-                        </button>
+                        @if (element.enabled) {
+                            <button (click)="$event.stopPropagation();disableConfirmDialog(element.id, element.label)"
+                                    matTooltip="{{ 'ROLE.disable' | translate }}" mat-icon-button
+                                    class="inline-block align-text-top">
+                                <i class="fa-solid fa-pause text-lg"></i>
+                            </button>
+                        } @else {
+                            <button (click)="$event.stopPropagation();enableConfirmDialog(element.id, element.label)"
+                                    matTooltip="{{ 'ROLE.enable' | translate }}" mat-icon-button
+                                    class="inline-block align-text-top">
+                                <i class="fa-solid fa-play text-lg"></i>
+                            </button>
+                        }
                         <button mat-icon-button
                                 (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.label)"
                                 matTooltip="{{ 'GLOBAL.delete' | translate }}"

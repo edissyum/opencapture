@@ -3,9 +3,11 @@
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
-        <div *ngIf="this.loading">
-            <app-loader></app-loader>
-        </div>
+        @if (this.loading) {
+            <div>
+                <app-loader></app-loader>
+            </div>
+        }
         <div class="settings_header">
             <div class="flex">
                 <button mat-icon-button (click)="this.serviceSettings.minimizeSideNav = !this.serviceSettings.minimizeSideNav;">
@@ -25,244 +27,275 @@
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     <form [formGroup]="form">
-                        <div class="cursor-pointer relative top-9 ml-4 w-1/12" [matTooltip]="'CUSTOM-FIELDS.reset' | translate"
-                             (click)="resetForm()">
+                        <div class="cursor-pointer relative top-9 ml-4 w-1/12" [matTooltip]="'CUSTOM-FIELDS.reset' | translate" (click)="resetForm()">
                             <i class="self-center fa-solid fa-sync fa-lg hover:text-green-400"></i>
                         </div>
                         <div class="mx-12 grid grid-cols-4 gap-4" [class.grid-cols-5]="isSplitter">
-                            <div *ngFor="let input of addFieldInputs">
-                                <div *ngIf="!input.limit || (input.limit && displayInput(input))">
-                                    <mat-form-field *ngIf="input['controlType'] === 'text'" class="w-full">
-                                        <mat-label>{{ input.label | translate }}</mat-label>
-                                        <input matInput [formControl]="input['control']" [id]="input['field_id']"
-                                               [type]="input.type" [matAutocomplete]="autocomplete">
-                                        <mat-autocomplete #autocomplete="matAutocomplete" [panelWidth]="'auto'">
-                                        <span *ngIf="input.control.value === null || input.control.value === '' || input.control.value === undefined">
-                                            <mat-option *ngFor="let option of input['autoComplete']" [value]="option.key">
-                                                <span class="text-md" [innerHTML]="option.value | translate"></span>
-                                                <span class="text-sm text-green-400 ml-3">{{ option.key }}</span>
-                                            </mat-option>
-                                        </span>
-                                        </mat-autocomplete>
-                                    </mat-form-field>
-                                    <mat-form-field *ngIf="input['field_id'] === 'module'" class="w-full">
-                                        <mat-label>{{ input.label | translate }}</mat-label>
-                                        <mat-select [id]="input['field_id']" [formControl]="input['control']">
-                                            <ng-container *ngFor="let opt of input.options">
-                                                <mat-option [value]="opt.key">
-                                                    {{ opt.value | translate }}
-                                                </mat-option>
-                                            </ng-container>
-                                        </mat-select>
-                                    </mat-form-field>
-                                    <mat-form-field *ngIf="input['field_id'] === 'type'" class="w-full"
-                                                    [class.opacity-70]="!moduleSelected()" [class.pointer-events-none]="!moduleSelected()">
-                                        <mat-label>{{ input.label | translate }}</mat-label>
-                                        <mat-select [id]="input['field_id']" [formControl]="input['control']">
-                                            <ng-container *ngFor="let opt of input.options">
-                                                <mat-option [value]="opt.key">
-                                                    {{ opt.value | translate }}
-                                                </mat-option>
-                                            </ng-container>
-                                        </mat-select>
-                                    </mat-form-field>
-                                </div>
-                            </div>
+                            @for (input of addFieldInputs; track input) {
+                                @if (!input.limit || (input.limit && displayInput(input))) {
+                                    @if (input['controlType'] === 'text') {
+                                        <mat-form-field class="w-full">
+                                            <mat-label>{{ input.label | translate }}</mat-label>
+                                            <input matInput [formControl]="input['control']" [id]="input['field_id']" [type]="input.type" [matAutocomplete]="autocomplete">
+                                            <mat-autocomplete #autocomplete="matAutocomplete" [panelWidth]="'auto'">
+                                                @if (input.control.value === null || input.control.value === '' || input.control.value === undefined) {
+                                                    @for (option of input['autoComplete']; track option.key) {
+                                                        <mat-option [value]="option.key">
+                                                            <span class="text-md" [innerHTML]="option.value | translate"></span>
+                                                            <span class="text-sm text-green-400 ml-3">{{ option.key }}</span>
+                                                        </mat-option>
+                                                    }
+                                                }
+                                            </mat-autocomplete>
+                                        </mat-form-field>
+                                    } @else if (input['field_id'] === 'module') {
+                                        <mat-form-field class="w-full">
+                                            <mat-label>{{ input.label | translate }}</mat-label>
+                                            <mat-select [id]="input['field_id']" [formControl]="input['control']">
+                                                @for (opt of input.options; track opt.key) {
+                                                    <mat-option [value]="opt.key">
+                                                        {{ opt.value | translate }}
+                                                    </mat-option>
+                                                }
+                                            </mat-select>
+                                        </mat-form-field>
+                                    } @else if (input['field_id'] === 'type') {
+                                        <mat-form-field class="w-full" [class.opacity-70]="!moduleSelected()" [class.pointer-events-none]="!moduleSelected()">
+                                            <mat-label>{{ input.label | translate }}</mat-label>
+                                            <mat-select [id]="input['field_id']" [formControl]="input['control']">
+                                                @for (opt of input.options; track opt.key) {
+                                                    <mat-option [value]="opt.key">
+                                                        {{ opt.value | translate }}
+                                                    </mat-option>
+                                                }
+                                            </mat-select>
+                                        </mat-form-field>
+                                    }
+                                }
+                            }
                         </div>
-                        <div class="flex justify-center flex-col" *ngIf="displayChoicesList()">
+                        @if (displayChoicesList()) {
+                            <div class="flex justify-center flex-col">
                             <span class="text-center mb-2 text-xl">
                                 {{ 'CUSTOM-FIELDS.select_options' | translate }}
                             </span>
-                            <mat-checkbox class="cursor-pointer text-center" [formControl]="conditionalControl" *ngIf="displayConditional()">
-                                <span>{{ 'CUSTOM-FIELDS.conditional_field' | translate }}</span>
-                            </mat-checkbox>
-                            <div class="flex justify-center">
-                                <div cdkDropList class="select-options-list w-10/12" (cdkDropListDropped)="dropSelectOption($event)">
-                                    <div *ngIf="selectOptions.length === 0" class="my-14 text-center text-gray-400">
-                                        {{ 'CUSTOM-FIELDS.no_option_added' | translate }}
+                                @if (displayConditional()) {
+                                    <mat-checkbox class="cursor-pointer text-center" [formControl]="conditionalControl">
+                                        <span>{{ 'CUSTOM-FIELDS.conditional_field' | translate }}</span>
+                                    </mat-checkbox>
+                                }
+                                <div class="flex justify-center">
+                                    <div cdkDropList class="select-options-list w-10/12" (cdkDropListDropped)="dropSelectOption($event)">
+                                        @if (selectOptions.length === 0) {
+                                            <div class="my-14 text-center text-gray-400">
+                                                {{ 'CUSTOM-FIELDS.no_option_added' | translate }}
+                                            </div>
+                                        }
+                                        @for (option of selectOptions; track option.id; let optionIndex = $index) {
+                                            <div class="drop-box-option p-4" cdkDrag>
+                                                <mat-form-field class="mr-2" [ngClass]="{'w-1/2': !conditionalControl.value, 'w-1/4': conditionalControl.value}">
+                                                    <mat-label>{{ 'HEADER.id' | translate }}</mat-label>
+                                                    <input matInput [formControl]="option['idControl']" type="text">
+                                                </mat-form-field>
+                                                <mat-form-field class="mr-2" [ngClass]="{'w-1/2': !conditionalControl.value, 'w-1/4': conditionalControl.value}">
+                                                    <mat-label>{{ 'HEADER.label' | translate }}</mat-label>
+                                                    <input matInput [formControl]="option['labelControl']" type="text">
+                                                </mat-form-field>
+                                                @if (conditionalControl.value) {
+                                                    <mat-form-field class="w-1/4 mr-2 border-l-2 border-green-400 pl-2">
+                                                        <mat-label>{{ 'CUSTOM-FIELDS.custom_field_name' | translate }}</mat-label>
+                                                        <mat-select [formControl]="option['customFieldControl']" [(value)]="option['customFieldControl'].value">
+                                                            @for (opt of option['customFieldControl'].values; track opt.id) {
+                                                                <mat-option [value]="opt['id']">
+                                                                    {{ opt['label'] }}
+                                                                </mat-option>
+                                                            }
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                }
+                                                @if (conditionalControl.value) {
+                                                    <mat-form-field class="w-1/4">
+                                                        <mat-label>{{ 'CUSTOM-FIELDS.conditional_value' | translate }}</mat-label>
+                                                        <input matInput [formControl]="option['customValueControl']" type="text">
+                                                    </mat-form-field>
+                                                }
+                                                @if (displayConditional()) {
+                                                    <span class="relative text-gray-600 -top-8 -right-6 cursor-help"
+                                                          [matTooltip]="'CUSTOM-FIELDS.conditional_hint' | translate">
+                                                       <i class="fa-solid fa-circle-question text-base"></i>
+                                                    </span>
+                                                }
+                                                <div [matTooltip]="'CUSTOM-FIELDS.delete_choice' | translate"
+                                                     (click)="deleteSelectOption(optionIndex)" class="relative top-1 h-8 -ml-2 mr-2 cursor-pointer">
+                                                    <i class="fa-solid fa-trash fa-lg hover:text-green-400"></i>
+                                                </div>
+                                            </div>
+                                        }
                                     </div>
-                                    <div class="drop-box-option p-4" *ngFor="let option of selectOptions; let optionIndex = index;" cdkDrag>
-                                        <mat-form-field class="mr-2" [ngClass]="{'w-1/2': !conditionalControl.value, 'w-1/4': conditionalControl.value}">
-                                            <mat-label>{{ 'HEADER.id' | translate }}</mat-label>
-                                            <input matInput [formControl]="option['idControl']" type="text">
-                                        </mat-form-field>
-                                        <mat-form-field class="mr-2" [ngClass]="{'w-1/2': !conditionalControl.value, 'w-1/4': conditionalControl.value}">
-                                            <mat-label>{{ 'HEADER.label' | translate }}</mat-label>
-                                            <input matInput [formControl]="option['labelControl']" type="text">
-                                        </mat-form-field>
-                                        <mat-form-field class="w-1/4 mr-2 border-l-2 border-green-400 pl-2" *ngIf="conditionalControl.value">
-                                            <mat-label>{{ 'CUSTOM-FIELDS.custom_field_name' | translate }}</mat-label>
-                                            <mat-select [formControl]="option['customFieldControl']" [(value)]="option['customFieldControl'].value">
-                                                <mat-option *ngFor="let opt of option['customFieldControl'].values" [value]="opt['id']">
-                                                    {{ opt['label'] }}
-                                                </mat-option>
+                                    <div [matTooltip]="'CUSTOM-FIELDS.add_choice' | translate"
+                                         (click)="addSelectOption()" class="top-0 mx-2 h-8 inline-block">
+                                        <i class="fa-solid fa-plus fa-lg hover:text-green-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        } @else if (displayRegex()) {
+                            <div class="flex justify-center flex-col">
+                                <hr class="border-green-400 w-11/12 m-auto">
+                                <div class="mx-auto w-11/12 mt-8">
+                                    <div class="flex flex-row gap-10 justify-center">
+                                        <mat-slide-toggle [formControl]="regexRemoveKeyWord" class="mb-8 flex justify-center" (change)="checkRegex()">
+                                            <span class="justify-center">{{ 'CUSTOM-FIELDS.regex_remove_keyword' | translate }}</span>
+                                            <span class="relative text-gray-600 -top-4 -right-4 cursor-help" [matTooltip]="'CUSTOM-FIELDS.regex_remove_keyword_hint' | translate">
+                                           <i class="fa-solid fa-circle-question text-md"></i>
+                                        </span>
+                                        </mat-slide-toggle>
+                                        <mat-slide-toggle [formControl]="regexRemoveSpecialChar" class="mb-8 flex justify-center">
+                                            <span class="justify-center">{{ 'CUSTOM-FIELDS.regex_remove_special_char' | translate }}</span>
+                                            <span class="relative text-gray-600 -top-4 -right-4 cursor-help" [matTooltip]="'CUSTOM-FIELDS.regex_remove_special_char_hint' | translate">
+                                           <i class="fa-solid fa-circle-question text-md"></i>
+                                        </span>
+                                        </mat-slide-toggle>
+                                        <mat-slide-toggle [formControl]="regexRemoveSpaces" class="mb-8 flex justify-center">
+                                            <span class="justify-center">{{ 'CUSTOM-FIELDS.regex_remove_spaces' | translate }}</span>
+                                        </mat-slide-toggle>
+                                    </div>
+                                    <div class="flex flex-row gap-10 justify-center w-11/12 m-auto">
+                                        <mat-form-field class="w-1/2">
+                                            <mat-label>{{ 'CUSTOM-FIELDS.regex_format' | translate }}</mat-label>
+                                            <mat-select [formControl]="regexFormat" (selectionChange)="checkRegex()">
+                                                @for (opt of formats; track opt.id) {
+                                                    <mat-option [value]="opt.id">
+                                                        {{ opt.label | translate }}
+                                                    </mat-option>
+                                                }
                                             </mat-select>
                                         </mat-form-field>
-                                        <mat-form-field class="w-1/4" *ngIf="conditionalControl.value">
-                                            <mat-label>{{ 'CUSTOM-FIELDS.conditional_value' | translate }}</mat-label>
-                                            <input matInput [formControl]="option['customValueControl']" type="text">
+                                        <mat-form-field class="w-1/2">
+                                            <mat-label>{{ 'FORMATS.char_min' | translate }}</mat-label>
+                                            <input matInput [value]="regexCharMinControl.value" [formControl]="regexCharMinControl" (keyup)="checkCharMin()">
                                         </mat-form-field>
-                                        <span class="relative text-gray-600 -top-8 -right-6 cursor-help" *ngIf="displayConditional()"
-                                              [matTooltip]="'CUSTOM-FIELDS.conditional_hint' | translate">
-                                           <i class="fa-solid fa-circle-question text-base"></i>
-                                        </span>
-                                        <div [matTooltip]="'CUSTOM-FIELDS.delete_choice' | translate"
-                                             (click)="deleteSelectOption(optionIndex)" class="relative top-1 h-8 -ml-2 mr-2 cursor-pointer">
-                                            <i class="fa-solid fa-trash fa-lg hover:text-green-400"></i>
-                                        </div>
                                     </div>
-                                </div>
-                                <div [matTooltip]="'CUSTOM-FIELDS.add_choice' | translate"
-                                     (click)="addSelectOption()" class="top-0 mx-2 h-8 inline-block">
-                                    <i class="fa-solid fa-plus fa-lg hover:text-green-400"></i>
+                                    <hr class="border-green-400 w-1/2 mb-14 mt-2 mx-auto">
+                                    <div class="-mt-4 mb-4">
+                                        @if (regexRemoveKeyWord.value) {
+                                            <app-hint [specificClass]="'w-1/2'" [message]="'CUSTOM-FIELDS.regex_remove_keyword_explanation' | translate"></app-hint>
+                                        }
+                                    </div>
+                                    <mat-form-field class="w-full">
+                                        <mat-label>{{ 'FORMATS.regex' | translate }}</mat-label>
+                                        <textarea [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="1" matInput
+                                                  [value]="regexControl.value" [formControl]="regexControl"
+                                                  (keyup)="checkRegex()" spellcheck="false"></textarea>
+                                    </mat-form-field>
+                                    @if (regexRemoveKeyWord.value) {
+                                        <mat-form-field class="w-full">
+                                            <mat-label>{{ 'CUSTOM-FIELDS.regex_remove_keyword_input' | translate }}</mat-label>
+                                            <textarea [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="1" matInput
+                                                      [value]="regexRemoveKeyWordControl.value" [formControl]="regexRemoveKeyWordControl"
+                                                      (keyup)="checkRegex()" spellcheck="false"></textarea>
+                                        </mat-form-field>
+                                    }
+                                    <mat-form-field class="w-full">
+                                        <mat-label>{{ 'FORMATS.test_string' | translate }}</mat-label>
+                                        <input matInput type="text" [formControl]="regexTestControl" (keyup)="checkRegex()">
+                                    </mat-form-field>
+                                    <span>
+                                        {{ 'CUSTOM-FIELDS.regex_results' | translate }} : <span [innerHTML]="regexResult"></span>
+                                    </span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="flex justify-center flex-col" *ngIf="displayRegex()">
-                            <hr class="border-green-400 w-11/12 m-auto">
-                            <div class="mx-auto w-11/12 mt-8">
-                                <div class="flex flex-row gap-10 justify-center">
-                                    <mat-slide-toggle [formControl]="regexRemoveKeyWord" class="mb-8 flex justify-center" (change)="checkRegex()">
-                                        <span class="justify-center">{{ 'CUSTOM-FIELDS.regex_remove_keyword' | translate }}</span>
-                                        <span class="relative text-gray-600 -top-4 -right-4 cursor-help" [matTooltip]="'CUSTOM-FIELDS.regex_remove_keyword_hint' | translate">
-                                           <i class="fa-solid fa-circle-question text-md"></i>
-                                        </span>
-                                    </mat-slide-toggle>
-                                    <mat-slide-toggle [formControl]="regexRemoveSpecialChar" class="mb-8 flex justify-center">
-                                        <span class="justify-center">{{ 'CUSTOM-FIELDS.regex_remove_special_char' | translate }}</span>
-                                        <span class="relative text-gray-600 -top-4 -right-4 cursor-help" [matTooltip]="'CUSTOM-FIELDS.regex_remove_special_char_hint' | translate">
-                                           <i class="fa-solid fa-circle-question text-md"></i>
-                                        </span>
-                                    </mat-slide-toggle>
-                                    <mat-slide-toggle [formControl]="regexRemoveSpaces" class="mb-8 flex justify-center">
-                                        <span class="justify-center">{{ 'CUSTOM-FIELDS.regex_remove_spaces' | translate }}</span>
-                                    </mat-slide-toggle>
-                                </div>
-                                <div class="flex flex-row gap-10 justify-center w-11/12 m-auto">
-                                    <mat-form-field class="w-1/2">
-                                        <mat-label>{{ 'CUSTOM-FIELDS.regex_format' | translate }}</mat-label>
-                                        <mat-select [formControl]="regexFormat" (selectionChange)="checkRegex()">
-                                            <mat-option *ngFor="let opt of formats" [value]="opt.id">
-                                                {{ opt.label | translate }}
-                                            </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                    <mat-form-field class="w-1/2">
-                                        <mat-label>{{ 'FORMATS.char_min' | translate }}</mat-label>
-                                        <input matInput [value]="regexCharMinControl.value"
-                                               [formControl]="regexCharMinControl" (keyup)="checkCharMin()">
-                                    </mat-form-field>
-                                </div>
-                                <hr class="border-green-400 w-1/2 mb-14 mt-2 mx-auto">
-                                <div class="-mt-4 mb-4">
-                                    <app-hint [specificClass]="'w-1/2'" *ngIf="regexRemoveKeyWord.value"
-                                              [message]="'CUSTOM-FIELDS.regex_remove_keyword_explanation' | translate"></app-hint>
-                                </div>
-                                <mat-form-field class="w-full">
-                                    <mat-label>{{ 'FORMATS.regex' | translate }}</mat-label>
-                                    <textarea [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="1" matInput
-                                              [value]="regexControl.value" [formControl]="regexControl"
-                                              (keyup)="checkRegex()" spellcheck="false"></textarea>
-                                </mat-form-field>
-                                <mat-form-field class="w-full" *ngIf="regexRemoveKeyWord.value">
-                                    <mat-label>{{ 'CUSTOM-FIELDS.regex_remove_keyword_input' | translate }}</mat-label>
-                                    <textarea [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="1" matInput
-                                              [value]="regexRemoveKeyWordControl.value" [formControl]="regexRemoveKeyWordControl"
-                                              (keyup)="checkRegex()" spellcheck="false"></textarea>
-                                </mat-form-field>
-                                <mat-form-field class="w-full">
-                                    <mat-label>{{ 'FORMATS.test_string' | translate }}</mat-label>
-                                    <input matInput type="text" [formControl]="regexTestControl" (keyup)="checkRegex()">
-                                </mat-form-field>
-                                <span>
-                                    {{ 'CUSTOM-FIELDS.regex_results' | translate }} : <span [innerHTML]="regexResult"></span>
-                                </span>
-                            </div>
-                        </div>
+                        }
                         <div class="flex justify-center m-5">
-                            <button class="valid_button" mat-button (click)="addCustomField()" *ngIf="!update">
-                                {{ 'CUSTOM-FIELDS.add' | translate }}
-                            </button>
-                            <button class="valid_button"
-                                    mat-button (click)="$event.stopPropagation();updateCustomOnSubmit()" *ngIf="update">
-                                {{ 'CUSTOM-FIELDS.update' | translate }}
-                            </button>
+                            @if (this.update) {
+                                <button class="valid_button" mat-button (click)="$event.stopPropagation();updateCustomOnSubmit()">
+                                    {{ 'CUSTOM-FIELDS.update' | translate }}
+                                </button>
+                            } @else {
+                                <button class="valid_button" mat-button (click)="addCustomField()">
+                                    {{ 'CUSTOM-FIELDS.add' | translate }}
+                                </button>
+                            }
                         </div>
                     </form>
                 </mat-expansion-panel>
             </mat-accordion>
             <div class="custom-fields-control w-full">
                 <mat-tab-group>
-                    <mat-tab *ngFor="let parent of this.parent" [label]="this.translate.instant(parent.label)">
-                        <div cdkDropListGroup class="w-max mx-auto">
-                            <div class="list-container">
-                                <h2>{{ 'HEADER.inactive' | translate }}</h2>
-                                <div cdkDropList [cdkDropListData]="inactiveFields" (cdkDropListDropped)="dropCustomField($event)"
-                                     class="custom-fields-list"
-                                     style="max-height:47vh; overflow:auto;">
-                                <span *ngFor="let item of inactiveFields; let i = index;">
-                                    <div cdkDrag class="drop-box-custom-field" *ngIf="item.module === parent['id']">
-                                        <div class="text-left">
-                                            <div>{{ item.label }}</div>
-                                            <div class="text-gray-400">
-                                                ({{ 'TYPES.' + item.type | translate }})
-                                            </div>
-                                        </div>
-                                        <div class="actions">
-                                            <button [matTooltip]="'GLOBAL.move_to_active' | translate" mat-icon-button
-                                                    class="hover:text-green-400" (click)="moveToActive(i)">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                            <button [matTooltip]="'GLOBAL.edit' | translate" mat-icon-button
-                                                    class="hover:text-green-400"
-                                                    (click)="updateCustomField(item, 'inactive')">
-                                                <i class="fa-solid fa-edit"></i>
-                                            </button>
-                                            <button [matTooltip]="'GLOBAL.delete' | translate" mat-icon-button
-                                                    class="hover:text-green-400"
-                                                    (click)="deleteCustomField(item.id, 'inactive')">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
-                                        </div>
+                    @for (parent of this.parent; track parent.id) {
+                        <mat-tab [label]="this.translate.instant(parent.label)">
+                            <div cdkDropListGroup class="w-max mx-auto">
+                                <div class="list-container">
+                                    <h2>{{ 'HEADER.inactive' | translate }}</h2>
+                                    <div cdkDropList [cdkDropListData]="inactiveFields" (cdkDropListDropped)="dropCustomField($event)"
+                                         class="custom-fields-list"
+                                         style="max-height:47vh; overflow:auto;">
+                                        @for (item of inactiveFields; track item.id; let i = $index) {
+                                            @if (item.module === parent['id']) {
+                                                <div cdkDrag class="drop-box-custom-field">
+                                                    <div class="text-left">
+                                                        <div>{{ item.label }}</div>
+                                                        <div class="text-gray-400">
+                                                            ({{ 'TYPES.' + item.type | translate }})
+                                                        </div>
+                                                    </div>
+                                                    <div class="actions">
+                                                        <button [matTooltip]="'GLOBAL.move_to_active' | translate" mat-icon-button
+                                                                class="hover:text-green-400" (click)="moveToActive(i)">
+                                                            <i class="fa fa-plus"></i>
+                                                        </button>
+                                                        <button [matTooltip]="'GLOBAL.edit' | translate" mat-icon-button
+                                                                class="hover:text-green-400"
+                                                                (click)="updateCustomField(item, 'inactive')">
+                                                            <i class="fa-solid fa-edit"></i>
+                                                        </button>
+                                                        <button [matTooltip]="'GLOBAL.delete' | translate" mat-icon-button
+                                                                class="hover:text-green-400"
+                                                                (click)="deleteCustomField(item.id, 'inactive')">
+                                                            <i class="fa-solid fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
                                     </div>
-                                </span>
+                                </div>
+                                <div class="list-container">
+                                    <h2>{{ 'HEADER.active' | translate }}</h2>
+                                    <div cdkDropList [cdkDropListData]="activeFields" (cdkDropListDropped)="dropCustomField($event)"
+                                         class="custom-fields-list" style="max-height:47vh; overflow:auto;">
+                                        @for (item of activeFields; track item.id; let i = $index) {
+                                            @if (item.module === parent['id']) {
+                                                <div cdkDrag class="drop-box-custom-field">
+                                                    <div class="text-left">
+                                                        <div>{{ item.label }}</div>
+                                                        <div class="text-gray-400">
+                                                            ({{ 'TYPES.' + item.type | translate }})
+                                                        </div>
+                                                    </div>
+                                                    <div class="actions">
+                                                        <button [matTooltip]="'GLOBAL.move_to_inactive' | translate" mat-icon-button
+                                                                class="hover:text-green-400" (click)="moveToInactive(i)">
+                                                            <i class="fa fa-minus"></i>
+                                                        </button>
+                                                        <button [matTooltip]="'GLOBAL.edit' | translate" mat-icon-button
+                                                                class="hover:text-green-400"
+                                                                (click)="updateCustomField(item, 'active')">
+                                                            <i class="fa-solid fa-edit"></i>
+                                                        </button>
+                                                        <button [matTooltip]="'GLOBAL.delete' | translate" mat-icon-button
+                                                                class="hover:text-green-400"
+                                                                (click)="deleteCustomField(item.id, 'active')">
+                                                            <i class="fa-solid fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
                                 </div>
                             </div>
-                            <div class="list-container">
-                                <h2>{{ 'HEADER.active' | translate }}</h2>
-                                <div cdkDropList [cdkDropListData]="activeFields" (cdkDropListDropped)="dropCustomField($event)"
-                                     class="custom-fields-list"
-                                     style="max-height:47vh; overflow:auto;">
-                                <span *ngFor="let item of activeFields; let i = index;">
-                                    <div cdkDrag class="drop-box-custom-field" *ngIf="item.module === parent['id']">
-                                        <div class="text-left">
-                                            <div>{{ item.label }}</div>
-                                            <div class="text-gray-400">
-                                                ({{ 'TYPES.' + item.type | translate }})
-                                            </div>
-                                        </div>
-                                        <div class="actions">
-                                            <button [matTooltip]="'GLOBAL.move_to_inactive' | translate" mat-icon-button
-                                                    class="hover:text-green-400" (click)="moveToInactive(i)">
-                                                <i class="fa fa-minus"></i>
-                                            </button>
-                                            <button [matTooltip]="'GLOBAL.edit' | translate" mat-icon-button
-                                                    class="hover:text-green-400"
-                                                    (click)="updateCustomField(item, 'active')">
-                                                <i class="fa-solid fa-edit"></i>
-                                            </button>
-                                            <button [matTooltip]="'GLOBAL.delete' | translate" mat-icon-button
-                                                    class="hover:text-green-400"
-                                                    (click)="deleteCustomField(item.id, 'active')">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </span>
-                                </div>
-                            </div>
-                        </div>
-                    </mat-tab>
+                        </mat-tab>
+                    }
                 </mat-tab-group>
             </div>
         </div>

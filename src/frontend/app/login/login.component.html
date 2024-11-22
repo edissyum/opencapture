@@ -1,10 +1,14 @@
 <div class="min-h-screen flex">
-    <app-loader *ngIf="this.loading"></app-loader>
+    @if (this.loading) {
+        <app-loader></app-loader>
+    }
     <div class="w-full flex items-center justify-center text-center flex-col">
-        <div class="w-11/12 max-w-md" *ngIf="this.loginImage">
-            <img class="m-auto" [src]="this.loginImage" alt="Open-Capture logo">
-            <mat-card-subtitle class="relative top-2" [innerHTML]="this.loginTopMessage"></mat-card-subtitle>
-        </div>
+        @if (this.loginImage) {
+            <div class="w-11/12 max-w-md">
+                <img class="m-auto" [src]="this.loginImage" alt="Open-Capture logo">
+                <mat-card-subtitle class="relative top-2" [innerHTML]="this.loginTopMessage"></mat-card-subtitle>
+            </div>
+        }
         <mat-card class="text-center m-6 mb-0 w-11/12 max-w-md">
             <mat-card-title class="m-5">
                 {{ 'GLOBAL.login' | translate }}
@@ -14,7 +18,9 @@
                     <mat-form-field class="block">
                         <mat-label>{{ 'USER.username' | translate }}</mat-label>
                         <input matInput id="username" formControlName="username" type="text" placeholder="{{ 'USER.username' | translate }}" required>
-                        <mat-error *ngIf="this.loginForm.controls.username.invalid">{{ getErrorMessage('username') }}</mat-error>
+                        @if (this.loginForm.controls.username.invalid) {
+                            <mat-error>{{ getErrorMessage('username') }}</mat-error>
+                        }
                     </mat-form-field>
                     <mat-form-field class="block">
                         <mat-label>{{ 'USER.password' | translate }}</mat-label>
@@ -24,29 +30,37 @@
                         <mat-icon matSuffix (click)="this.showPassword = !this.showPassword" class="text-green-400 relative cursor-pointer -top-0.5 text-base">
                             <i class="fa fa-1x" [class.fa-eye-slash]="!this.showPassword" [class.fa-eye]="this.showPassword"></i>
                         </mat-icon>
-                        <mat-error *ngIf="this.loginForm.controls.password.invalid">
-                            {{ getErrorMessage('password') }}
-                        </mat-error>
-                        <mat-hint align="end" *ngIf="this.enableLoginMethodName === 'ldap'">
-                            <span class="underline decoration-1">
-                                {{ this.enableLoginMethodName | uppercase }} {{ 'LOGIN-METHODS.enabled' | translate }}
-                            </span>
-                        </mat-hint>
+                        @if (this.loginForm.controls.password.invalid) {
+                            <mat-error>
+                                {{ getErrorMessage('password') }}
+                            </mat-error>
+                        }
+                        @if (this.enableLoginMethodName === 'ldap') {
+                            <mat-hint align="end">
+                                <span class="underline decoration-1">
+                                    {{ this.enableLoginMethodName | uppercase }} {{ 'LOGIN-METHODS.enabled' | translate }}
+                                </span>
+                            </mat-hint>
+                        }
                     </mat-form-field>
                     <button id="login" mat-button [disabled]="this.processLogin || this.isConnectionBtnDisabled || this.loginForm.invalid"
                             [class.invalid_button]="this.processLogin || this.isConnectionBtnDisabled || this.loginForm.invalid"
                             [class.valid_button]="!(this.processLogin || this.isConnectionBtnDisabled || this.loginForm.invalid)"
                             class="mb-4 mt-2 p-6" type="submit" style="max-width: 250px;">
-                        <span *ngIf="!this.processLogin && !this.isConnectionBtnDisabled">
+                        @if (!this.processLogin && !this.isConnectionBtnDisabled) {
                             {{ 'AUTH.login' | translate }}
-                        </span>
-                        <i *ngIf="this.processLogin || this.isConnectionBtnDisabled" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
+                        }
+                        @if (this.processLogin || this.isConnectionBtnDisabled) {
+                            <i class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
+                        }
                     </button>
-                    <div class="text-right text-gray-900" *ngIf="this.enableLoginMethodName === 'default'">
-                        <a routerLink="/forgotPassword">
-                            {{ 'AUTH.forgot_password' | translate }}
-                        </a>
-                    </div>
+                    @if (this.enableLoginMethodName === 'default') {
+                        <div class="text-right text-gray-900">
+                            <a routerLink="/forgotPassword">
+                                {{ 'AUTH.forgot_password' | translate }}
+                            </a>
+                        </div>
+                    }
                 </form>
             </mat-card-content>
         </mat-card>
