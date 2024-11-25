@@ -38,7 +38,7 @@ import * as moment from "moment";
 })
 export class HistoryComponent implements OnInit {
     columnsToDisplay    : string[] = ['id', 'history_module', 'history_submodule', 'history_date', 'user_info', 'history_desc', 'user_ip'];
-    filteredUsers       : Observable<any> | any;
+    filteredUsers       : Observable<any> = new Observable();
     loading             : boolean  = true;
     toHighlight         : string   = '';
     pageSize            : number   = 10;
@@ -106,7 +106,7 @@ export class HistoryComponent implements OnInit {
         if (typeof value === 'string') {
             this.toHighlight = value;
             const filterValue = value.toLowerCase();
-            return array.filter((option: any) => option.value.toLowerCase().indexOf(filterValue) !== -1);
+            return array.filter((option: any) => option.lastname.toLowerCase().indexOf(filterValue) !== -1 || option.firstname.toLowerCase().indexOf(filterValue) !== -1 || option.username.toLowerCase().indexOf(filterValue) !== -1);
         }
         return array;
     }
