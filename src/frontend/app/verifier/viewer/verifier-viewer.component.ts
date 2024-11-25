@@ -1191,6 +1191,10 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                         const format = moment().localeData().longDateFormat('L');
                         data = moment(data, format);
                         data = new Date(data._d);
+                        if (data.toString() === 'Invalid Date') {
+                            data = moment(oldData, 'YYYY-MM-DD');
+                            data = new Date(data._i);
+                        }
                         data = moment(data).format('YYYY-MM-DD');
                     }
 
@@ -1198,9 +1202,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                         return false;
                     }
 
-                    data = {[fieldId]: data};
                     this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/updateData',
-                        {'args': data},
+                        {'args': {[fieldId]: data}},
                         {headers: this.authService.headers}).pipe(
                         tap(() => {
                             this.document['datas'][fieldId] = oldData;
