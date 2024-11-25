@@ -24,7 +24,7 @@
         </div>
         <hr class="border-green-400 relative z-30">
         <div class="overflow-x-hidden h-full-overflow">
-            <div *ngIf="!this.loading">
+            @if (!this.loading) {
                 <mat-table [dataSource]="modelsList" matSort (matSortChange)="sortData($event)" class="w-full">
                     <ng-container matColumnDef="id">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.id' | translate }} </mat-header-cell>
@@ -50,17 +50,18 @@
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ARTIFICIAL-INTELLIGENCE.status' | translate }} </mat-header-cell>
                         <mat-cell *matCellDef="let element">
                             <span class="col-span-1 text-right">
-                                <span *ngIf="element.status === 'training'">
+                                @if (element.status === 'training') {
                                     <i class="fas fa-circle-notch fa-spin fa-lg my-4" style="--fa-animation-duration: 5s"
                                        matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.training' | translate }}"></i>
                                     <span class="text-green-400 ml-2">
                                         {{ element['percentage'] }}
                                     </span>
-                                </span>
-                                <i *ngIf="element.status === 'error'" class="fas fa-triangle-exclamation fa-lg my-4 text-amber-500 cursor-pointer"
-                                   matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.error' | translate }}"></i>
-                                <i *ngIf="element.status === 'OK'" class="fa-solid fa-check fa-lg my-4"
-                                   matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.training_done' | translate }}"></i>
+                                } @else if (element.status === 'error') {
+                                    <i class="fas fa-triangle-exclamation fa-lg my-4 text-amber-500 cursor-pointer"
+                                       matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.error' | translate }}"></i>
+                                } @else if (element.status === 'OK') {
+                                    <i class="fa-solid fa-check fa-lg my-4" matTooltip="{{ 'ARTIFICIAL-INTELLIGENCE.training_done' | translate }}"></i>
+                                }
                             </span>
                         </mat-cell>
                     </ng-container>
@@ -92,7 +93,7 @@
                                [pageSizeOptions]="[5, 10, 15, 20, 50]"
                                (page)="onPageChange($event)">
                 </mat-paginator>
-            </div>
+            }
         </div>
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
@@ -100,45 +101,49 @@
             {{ 'ARTIFICIAL-INTELLIGENCE.test_model' | translate }}
         </h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <div class="grid grid-cols-1 gap-x-2 gap-y-2 m-4" *ngIf="this.clickedRow">
-            <mat-card class="w-full border-solid border-green-400 border rounded-lg transition duration-300">
-                <mat-card-title class="p-4">
-                    {{ 'ARTIFICIAL-INTELLIGENCE.model_selected'| translate }}
-                    {{ this.clickedRow['model_label'] }}
-                </mat-card-title>
-                <mat-card-actions class="block">
-                    <div class="w-full">
-                        <ngx-file-drag-drop
-                            [displayFileSize]="true"
-                            [formControl]="fileControl"
-                            [activeBorderColor]="'#97BF3D'"
-                            (valueChanged)="checkFile($event)"
-                            [class.disabled]="this.isPredicting"
-                            [class.pointer-events-none]="this.isPredicting"
-                            [emptyPlaceholder]="'ARTIFICIAL-INTELLIGENCE.choose_file' | translate">
-                        </ngx-file-drag-drop>
-                    </div>
-                    <div class="text-center" [class.cursor-not-allowed]="this.isPredicting || this.fileControl.value!.length === 0">
-                        <button mat-button (click)="onSubmit()"
-                                [disabled]="this.isPredicting || this.fileControl.value!.length === 0"
-                                [class.bg-gray-400]="this.isPredicting || this.fileControl.value!.length === 0"
-                                class="w-3/5 valid_button">
-                            {{ 'ARTIFICIAL-INTELLIGENCE.predict' | translate }}
-                        </button>
-                    </div>
-                </mat-card-actions>
-                <div *ngIf="showResponse">
-                    <mat-divider></mat-divider>
-                    <mat-card-content class="pt-2">
+        @if (this.clickedRow) {
+            <div class="grid grid-cols-1 gap-x-2 gap-y-2 m-4">
+                <mat-card class="w-full border-solid border-green-400 border rounded-lg transition duration-300">
+                    <mat-card-title class="p-4">
+                        {{ 'ARTIFICIAL-INTELLIGENCE.model_selected'| translate }}
+                        {{ this.clickedRow['model_label'] }}
+                    </mat-card-title>
+                    <mat-card-actions class="block">
+                        <div class="w-full">
+                            <ngx-file-drag-drop
+                                    [displayFileSize]="true"
+                                    [formControl]="fileControl"
+                                    [activeBorderColor]="'#97BF3D'"
+                                    (valueChanged)="checkFile($event)"
+                                    [class.disabled]="this.isPredicting"
+                                    [class.pointer-events-none]="this.isPredicting"
+                                    [emptyPlaceholder]="'ARTIFICIAL-INTELLIGENCE.choose_file' | translate">
+                            </ngx-file-drag-drop>
+                        </div>
+                        <div class="text-center" [class.cursor-not-allowed]="this.isPredicting || this.fileControl.value!.length === 0">
+                            <button mat-button (click)="onSubmit()"
+                                    [disabled]="this.isPredicting || this.fileControl.value!.length === 0"
+                                    [class.bg-gray-400]="this.isPredicting || this.fileControl.value!.length === 0"
+                                    class="w-3/5 valid_button">
+                                {{ 'ARTIFICIAL-INTELLIGENCE.predict' | translate }}
+                            </button>
+                        </div>
+                    </mat-card-actions>
+                    @if (!this.showResponse) {
+                        <mat-divider></mat-divider>
+                        <mat-card-content class="pt-2">
                             <p>{{ 'ARTIFICIAL-INTELLIGENCE.file' | translate }} : {{ prediction[0] }}</p>
                             <p>{{ 'ARTIFICIAL-INTELLIGENCE.prediction' | translate }} : {{ prediction[1] }}</p>
                             <p>{{ 'ARTIFICIAL-INTELLIGENCE.probability' | translate }} : {{ prediction[2]}} %</p>
-                    </mat-card-content>
-                </div>
-                <mat-card-footer>
-                    <mat-progress-bar *ngIf="isPredicting" mode="indeterminate"></mat-progress-bar>
-                </mat-card-footer>
-            </mat-card>
-        </div>
+                        </mat-card-content>
+                    }
+                    <mat-card-footer>
+                        @if (this.isPredicting) {
+                            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                        }
+                    </mat-card-footer>
+                </mat-card>
+            </div>
+        }
     </mat-sidenav>
 </mat-sidenav-container>

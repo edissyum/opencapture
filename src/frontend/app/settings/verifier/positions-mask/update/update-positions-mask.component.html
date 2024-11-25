@@ -40,12 +40,14 @@
                     <input matInput type="text" [required]="true" ngModel (ngModelChange)="filterSupplier($event)"
                            [formControl]="this.form['supplier_id']['control']" [matAutocomplete]="auto">
                     <mat-autocomplete #auto="matAutocomplete">
-                        <mat-option *ngFor="let option of this.suppliers" [value]="option.name" [id]="option.id">
-                            <span [innerHTML]="option.name | highlight: toHighlight"></span>
-                            <span style="font-size: 12px;" class="text-green-400 ml-3">
-                                {{ option['vat_number'] }}
-                            </span>
-                        </mat-option>
+                        @for (option of this.suppliers; track option.id) {
+                            <mat-option [value]="option.name" [id]="option.id">
+                                <span [innerHTML]="option.name | highlight: toHighlight"></span>
+                                <span style="font-size: 12px;" class="text-green-400 ml-3">
+                                            {{ option['vat_number'] }}
+                                        </span>
+                            </mat-option>
+                        }
                     </mat-autocomplete>
                 </mat-form-field>
                 <mat-form-field class="block">
@@ -53,26 +55,31 @@
                         {{ "POSITIONS-MASKS.form_associated" | translate }}
                     </mat-label>
                     <mat-select [formControl]="this.form['form_id'].control" [required]="true">
-                        <mat-option *ngFor="let option of this.forms" [value]="option['id']">{{ option['label'] }}</mat-option>
+                        @for (option of this.forms; track option.id) {
+                            <mat-option [value]="option.id">
+                                {{ option.label }}
+                            </mat-option>
+                        }
                     </mat-select>
                 </mat-form-field>
-                <span class="cursor-pointer text-sm col-span-3 flex justify-center m-auto w-1/6 -mt-8"
-                      *ngIf="documentImageSrc" (click)="deleteImage()">
-                    {{ 'POSITIONS-MASKS.reset_image' | translate }}
-                </span>
+                @if (this.documentImageSrc) {
+                    <span class="cursor-pointer text-sm col-span-3 flex justify-center m-auto w-1/6 -mt-8" (click)="deleteImage()">
+                        {{ 'POSITIONS-MASKS.reset_image' | translate }}
+                    </span>
+                }
             </div>
             <div id="document_image">
                 <div class="relative ml-4 z-50 text-xl text-left py-2">
-                    <ng-container *ngIf="!this.loading && this.documentImageSrc && this.documentImageNbPages > 1">
+                    @if (!this.loading && this.documentImageSrc && this.documentImageNbPages > 1) {
                         <i class="fa fa-arrow-left cursor-pointer" (click)="previousPage()"></i>
                         {{ 'VERIFIER.page' | translate }}
                         {{ this.currentPage }}
                         {{ 'VERIFIER.on' | translate }}
                         {{ this.documentImageNbPages }}
                         <i class="fa fa-arrow-right cursor-pointer" (click)="nextPage()"></i>
-                    </ng-container>
+                    }
                 </div>
-                <div *ngIf="!documentImageSrc">
+                @if (!this.documentImageSrc) {
                     <ngx-file-drag-drop
                             [formControl]="fileControl"
                             [activeBorderColor]="'#97BF3D'"
@@ -83,9 +90,10 @@
                             [class]="'max-w-3xl h-56 mt-10 mb-10'"
                             (valueChanged)="checkFile($event)">
                     </ngx-file-drag-drop>
-                </div>
+                }
+
                 <div class="image-container px-4" [class.hidden]="!this.imageDocument">
-                    <img id="document_src" [src]="documentImageSrc" alt="Open-Capture Verifier src">
+                    <img id="document_src" [src]="this.documentImageSrc" alt="Open-Capture Verifier src">
                 </div>
             </div>
         </div>
@@ -95,31 +103,36 @@
             {{ "FORMS.available_fields" | translate }}
         </h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <div *ngIf="loadingFields" class="relative" style="top: 40%">
-            <span class="text-center overflow-hidden">
-                <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900"></i>
-            </span>
-        </div>
-        <mat-tab-group class="h-full-overflow" *ngIf="!loadingFields">
-            <mat-tab *ngFor="let availableFields of this.availableFieldsParent" label="{{ availableFields['label'] | translate }}">
-                <div class="min-w-full overflow-x-hidden" style="min-height: 500px">
-                    <div *ngFor="let field of availableFields['values']">
-                        <div class="flex flex-row items-center justify-between m-5">
-                            <ng-container>
-                                <div class="relative -top-3" [id]="'label_' + field.id">
-                                    {{ field.label | translate }}
+        @if (this.loadingFields) {
+            <div class="relative" style="top: 40%">
+                <span class="text-center overflow-hidden">
+                    <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900"></i>
+                </span>
+            </div>
+        } @else {
+            <mat-tab-group class="h-full-overflow">
+                @for (availableFields of this.availableFieldsParent; track availableFields.label) {
+                    <mat-tab label="{{ availableFields['label'] | translate }}">
+                        <div class="min-w-full overflow-x-hidden" style="min-height: 500px">
+                            @for (field of availableFields['values']; track field.id) {
+                                <div class="flex flex-row items-center justify-between m-5">
+                                    <ng-container>
+                                        <div class="relative -top-3" [id]="'label_' + field.id">
+                                            {{ field.label | translate }}
+                                        </div>
+                                        <mat-form-field class="right-0 w-6/12">
+                                            <mat-label>{{ 'POSITIONS-MASKS.regex_associated' | translate }}</mat-label>
+                                            <input [id]='field.id' (focusin)="ocr($event, true, field.color)"
+                                                   (click)="this.ocrFromUser = true;" [(ngModel)]="field.regex"
+                                                   (focusout)="ocr($event, false)" matInput type="text">
+                                        </mat-form-field>
+                                    </ng-container>
                                 </div>
-                                <mat-form-field class="right-0 w-6/12">
-                                    <mat-label>{{ 'POSITIONS-MASKS.regex_associated' | translate }}</mat-label>
-                                    <input [id]='field.id' (focusin)="ocr($event, true, field.color)"
-                                           (click)="this.ocrFromUser = true;" [(ngModel)]="field.regex"
-                                           (focusout)="ocr($event, false)" matInput type="text">
-                                </mat-form-field>
-                            </ng-container>
+                            }
                         </div>
-                    </div>
-                </div>
-            </mat-tab>
-        </mat-tab-group>
+                    </mat-tab>
+                }
+            </mat-tab-group>
+        }
     </mat-sidenav>
 </mat-sidenav-container>

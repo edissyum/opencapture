@@ -27,17 +27,18 @@
                                     <mat-hint class="text-gray-600">{{ field.hint }}</mat-hint>
                                 }
                                 <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn" (optionSelected)="setSelectedUser($event.option.id)">
-                                    <mat-option *ngFor="let option of this.filteredUsers | async" [value]="option" [id]="option.id">
-                                        <span [innerHTML]="option['lastname'] + ' ' + option['firstname'] + ' (' + option.username + ')' | highlight: toHighlight"></span>
-                                    </mat-option>
+                                    @for (option of this.filteredUsers | async; track option.id) {
+                                        <mat-option [value]="option" [id]="option.id">
+                                            <span [innerHTML]="option['lastname'] + ' ' + option['firstname'] + ' (' + option.username + ')' | highlight: toHighlight"></span>
+                                        </mat-option>
+                                    }
                                 </mat-autocomplete>
                             </mat-form-field>
                         }
                         @if (field.id === 'submodule') {
                             <mat-form-field class="block">
                                 <mat-label>{{ field.label | translate }}</mat-label>
-                                <mat-select [formControl]="field['control']" [(value)]="field.control.value"
-                                            [required]="field['required']" (selectionChange)="setSelectedSubModule($event.value)">
+                                <mat-select [formControl]="field['control']" [(value)]="field.control.value" [required]="field['required']" (selectionChange)="setSelectedSubModule($event.value)">
                                     @for (option of field.values; track option['history_submodule']) {
                                         <mat-option [value]="option['history_submodule']">
                                             {{ option['history_submodule'] }}
