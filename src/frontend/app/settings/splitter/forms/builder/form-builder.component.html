@@ -90,9 +90,9 @@
                                             <strong>{{ field['label'] | translate }}</strong>
                                             @if (field.type !== 'select' && field.type !== 'textarea') {
                                                 <span> ({{ 'TYPES.' + field.format | translate }})</span>
-                                            } @else if (field.type === 'select') {
+                                            } @else if (field['type'] === 'select') {
                                                 <span> ({{ 'TYPES.select' | translate }})</span>
-                                            } @else if (field.type === 'textarea') {
+                                            } @else if (field['type'] === 'textarea') {
                                                 <span> ({{ 'TYPES.textarea' | translate }})</span>
                                             }
                                         </span>
@@ -109,7 +109,7 @@
                                                 <button mat-menu-item [matMenuTriggerFor]="size">
                                                     {{ "VERIFIER.size" | translate }} <small class="ml-2">{{ field.class_label }}</small>
                                                 </button>
-                                                @if (field.type === 'select') {
+                                                @if (field['type'] === 'select') {
                                                     <button mat-menu-item [matMenuTriggerFor]="display">
                                                         {{ "VERIFIER.display" | translate }} <small class="ml-2"><i class="text-base {{ field.display_icon }}"></i></small>
                                                     </button>
@@ -296,7 +296,7 @@
                              (cdkDropListDropped)="dropFromAvailableFields($event)" class="min-w-full" style="min-height: 500px">
                             @for (field of availableFields['values']; track field['id']) {
                                 <div cdkDrag class="flex flex-row items-center justify-between m-5 cursor-pointer">
-                                    @if (field.type === 'text' || field.type === 'regex') {
+                                    @if (field['type'] === 'text' || field['type'] === 'regex') {
                                         <div class="relative -top-3">
                                             <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
                                             {{ field['label'] | translate }}
@@ -305,7 +305,7 @@
                                             <mat-label>{{ 'TYPES.' + field.type | translate }}</mat-label>
                                             <input class="cursor-pointer" matInput type="text" readonly>
                                         </mat-form-field>
-                                    } @else if (field.type === 'textarea') {
+                                    } @else if (field['type'] === 'textarea') {
                                         <div class="relative -top-3">
                                             <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
                                             {{ field['label'] | translate }}
@@ -314,7 +314,7 @@
                                             <mat-label>{{ 'TYPES.' + field.type | translate }}</mat-label>
                                             <input class="cursor-pointer" matInput type="text" readonly>
                                         </mat-form-field>
-                                    } @else if (field.type === 'date') {
+                                    } @else if (field['type'] === 'date') {
                                         <div class="relative -top-3">
                                             <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
                                             {{ field['label'] | translate }}
@@ -324,7 +324,7 @@
                                             <input matInput disabled>
                                             <mat-datepicker-toggle matSuffix></mat-datepicker-toggle>
                                         </mat-form-field>
-                                    } @else if (field.type === 'select') {
+                                    } @else if (field['type'] === 'select') {
                                         <div class="relative -top-3">
                                             <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
                                             {{ field['label'] | translate }}
@@ -333,7 +333,7 @@
                                             <mat-label>{{ 'TYPES.' + field.type | translate }}</mat-label>
                                             <mat-select></mat-select>
                                         </mat-form-field>
-                                    } @else if (field.type === 'checkbox') {
+                                    } @else if (field['type'] === 'checkbox') {
                                         <div>
                                             <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
                                             {{ field['label'] | translate }}

@@ -14,15 +14,15 @@
                 <div class="m-auto w-1/12 text-center">{{ 'HISTORY.filter' | translate }} : </div>
                 <form class="grid grid-cols-3 gap-6 w-full mt-5 mb-0 text-center">
                     @for (field of this.form; track field['id']) {
-                        @if (field.type === 'text') {
+                        @if (field['type'] === 'text') {
                             <mat-form-field class="block">
                                 <mat-label>{{ field['label'] | translate }}</mat-label>
-                                <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field['label'] | translate" [required]="field['required']">
+                                <input matInput [formControl]="field['control']" [type]="field['type']" [placeholder]="field['label'] | translate" [required]="field['required']">
                             </mat-form-field>
-                        } @else if (field.type === 'autocomplete') {
+                        } @else if (field['type'] === 'autocomplete') {
                             <mat-form-field>
                                 <mat-label>{{ field['label'] | translate }}</mat-label>
-                                <input matInput [formControl]="field['control']" [type]="field.type" [matAutocomplete]="autocomplete">
+                                <input matInput [formControl]="field['control']" [type]="field['type']" [matAutocomplete]="autocomplete">
                                 @if (field.hint) {
                                     <mat-hint class="text-gray-600">{{ field.hint }}</mat-hint>
                                 }

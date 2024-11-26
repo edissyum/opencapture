@@ -14,7 +14,7 @@
                 <div class="m-auto text-center">{{ 'HISTORY.filter' | translate }} : </div>
                 <form class="grid grid-cols-2 w-6/12 gap-6 mt-5 mb-0 text-center">
                     @for (field of form; track field['id']) {
-                        @if (field.type === 'select') {
+                        @if (field['type'] === 'select') {
                             <mat-form-field class="block">
                                 <mat-label>{{ field['label'] | translate }}</mat-label>
                                 <mat-select [formControl]="field['control']" [(value)]="field.control.value"

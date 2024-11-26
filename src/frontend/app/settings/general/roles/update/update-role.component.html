@@ -25,22 +25,22 @@
             <div class="flex justify-center items-center">
                 <form (ngSubmit)="onSubmit()" class="grid grid-cols-3 gap-6 w-full m-10 text-center">
                     @for (field of this.roleForm; track field['id']) {
-                        @if (field.type === 'text') {
+                        @if (field['type'] === 'text') {
                             <span [class.cursor-not-allowed]="field['id'] === 'label_short'">
                                 <mat-form-field [class.pointer-events-none]="field['id'] === 'label_short'" class="w-full">
                                     <mat-label>{{ field['label'] | translate }}</mat-label>
-                                    <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type" [placeholder]="field['label'] | translate" [required]="field['required']"
+                                    <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field['type']" [placeholder]="field['label'] | translate" [required]="field['required']"
                                            [readonly]="field['id'] === 'label_short'" [class.text-gray-400]="field['id'] === 'label_short'">
                                     @if (field.control.invalid) {
                                         <mat-error>{{ getErrorMessage(field['id']) }}</mat-error>
                                     }
                                 </mat-form-field>
                             </span>
-                        } @else if (field.type === 'checkbox') {
+                        } @else if (field['type'] === 'checkbox') {
                             <mat-slide-toggle class="mt-4" [formControl]="field['control']">
                                 {{ field['label'] | translate }}
                             </mat-slide-toggle>
-                        } @else if (field.type === 'list') {
+                        } @else if (field['type'] === 'list') {
                             <mat-form-field>
                                 <mat-label>{{ field['label'] | translate }}</mat-label>
                                 <mat-select [value]="field.control.value" [formControl]="field['control']" [required]="field['required']">

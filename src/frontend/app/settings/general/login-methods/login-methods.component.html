@@ -46,7 +46,7 @@
                                                 {{ "LOGIN-METHODS.connection" | translate }}
                                             </ng-template>
                                             <ng-container *ngFor="let field of connectionFormGroup">
-                                                <mat-form-field class="block" *ngIf="field.type === 'select'">
+                                                <mat-form-field class="block" *ngIf="field['type'] === 'select'">
                                                     <mat-label>{{ field['label'] | translate }}</mat-label>
                                                     <mat-select [(value)]="field.control.value" [required]="field['required']">
                                                         <mat-option *ngFor="let option of field.values"
@@ -54,7 +54,7 @@
                                                                 [value]="option">{{ option }}</mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
-                                                <mat-form-field appearance="outline" *ngIf="field.type === 'password'">
+                                                <mat-form-field appearance="outline" *ngIf="field['type'] === 'password'">
                                                     <mat-label>{{ field['label'] | translate }}</mat-label>
                                                     <input matInput [formControl]="field['control']"
                                                            [placeholder]="field['label'] | translate"
@@ -67,10 +67,10 @@
                                                     </mat-icon>
                                                     <mat-hint>{{ field.hint }}</mat-hint>
                                                 </mat-form-field>
-                                                <mat-form-field appearance="outline" *ngIf="field.type === 'text'">
+                                                <mat-form-field appearance="outline" *ngIf="field['type'] === 'text'">
                                                     <mat-label>{{ field['label'] | translate }}</mat-label>
                                                     <input matInput [formControl]="field['control']"
-                                                           [type]="field.type" [required]="field['required']"
+                                                           [type]="field['type']" [required]="field['required']"
                                                            [placeholder]="field['label'] | translate">
                                                     <mat-hint>{{ field.hint }}</mat-hint>
                                                 </mat-form-field>
@@ -101,7 +101,7 @@
                                         </ng-template>
                                         <div class="grid grid-cols-4 gap-x-4 gap-y-10 m-5">
                                             <ng-container *ngFor="let field of synchroparamsFormGroup">
-                                                <mat-form-field class="block" *ngIf="field.type === 'select'">
+                                                <mat-form-field class="block" *ngIf="field['type'] === 'select'">
                                                     <mat-label>{{ field['label'] | translate }}</mat-label>
                                                     <mat-select [(value)]="field.control.value" [required]="field['required']">
                                                         <mat-option *ngFor="let option of field.values"
@@ -109,11 +109,11 @@
                                                     </mat-select>
                                                     <mat-hint>{{ field.hint }}</mat-hint>
                                                 </mat-form-field>
-                                                <mat-form-field appearance="outline" *ngIf="field.type === 'text'">
+                                                <mat-form-field appearance="outline" *ngIf="field['type'] === 'text'">
                                                     <mat-label>{{ field['label'] | translate }}</mat-label>
                                                     <input matInput [formControl]="field['control']"
                                                            [required]="field['required']"
-                                                           [type]="field.type" [placeholder]="field['label'] | translate">
+                                                           [type]="field['type']" [placeholder]="field['label'] | translate">
                                                     <mat-hint>{{ field.hint }}</mat-hint>
                                                 </mat-form-field>
                                             </ng-container>

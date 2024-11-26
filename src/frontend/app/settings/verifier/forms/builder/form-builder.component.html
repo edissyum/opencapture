@@ -114,8 +114,8 @@
                                         <span *ngIf="field.required" class="text-red-500 mr-2 relative top-0.5">*</span>
                                         <strong>{{ field['label'] | translate }}</strong>
                                         <span *ngIf="field.type !== 'select' && field.type !== 'textarea'"> ({{ 'FORMATS.' + field.format | translate }})</span>
-                                        <span *ngIf="field.type === 'select'"> ({{ 'FORMATS.select' | translate }})</span>
-                                        <span *ngIf="field.type === 'textarea'"> ({{ 'FORMATS.textarea' | translate }})</span>
+                                        <span *ngIf="field['type'] === 'select'"> ({{ 'FORMATS.select' | translate }})</span>
+                                        <span *ngIf="field['type'] === 'textarea'"> ({{ 'FORMATS.textarea' | translate }})</span>
                                     </span>
                                     <span class="flex w-full" *ngIf="field['edit_name']">
                                         <mat-form-field appearance="outline" class="edit_input w-full -mt-3.5">
@@ -288,7 +288,7 @@
                     </div>
                     <div *ngFor="let field of availableFields['values']">
                         <div cdkDrag class="flex flex-row items-center justify-between m-5 cursor-pointer">
-                            <ng-container *ngIf="field.type === 'text' || field.type === 'regex'">
+                            <ng-container *ngIf="field['type'] === 'text' || field['type'] === 'regex'">
                                 <div class="relative -top-3">
                                     <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
                                     {{ field['label'] | translate }}
@@ -298,7 +298,7 @@
                                     <input class="cursor-pointer" matInput type="text" disabled>
                                 </mat-form-field>
                             </ng-container>
-                            <ng-container *ngIf="field.type === 'textarea'">
+                            <ng-container *ngIf="field['type'] === 'textarea'">
                                 <div class="relative -top-3">
                                     <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
                                     {{ field['label'] | translate }}
@@ -308,7 +308,7 @@
                                     <input class="cursor-pointer" matInput type="text" readonly>
                                 </mat-form-field>
                             </ng-container>
-                            <ng-container *ngIf="field.type === 'date'">
+                            <ng-container *ngIf="field['type'] === 'date'">
                                 <div class="relative -top-3">
                                     <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
                                     {{ field['label'] | translate }}
@@ -319,7 +319,7 @@
                                     <mat-datepicker-toggle matSuffix></mat-datepicker-toggle>
                                 </mat-form-field>
                             </ng-container>
-                            <ng-container *ngIf="field.type === 'select'">
+                            <ng-container *ngIf="field['type'] === 'select'">
                                 <div class="relative -top-3">
                                     <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
                                     {{ field['label'] | translate }}

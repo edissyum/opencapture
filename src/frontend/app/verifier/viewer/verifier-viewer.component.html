@@ -193,7 +193,7 @@
                                              style="min-height: 50px;">
                                             @for (field of this.form[category['id']]; track field['id']) {
                                                 <div class="flex items-center p-2" [class]="field['class']">
-                                                    @if (field.type === 'text' || (field.type === 'regex' && field.format !== 'date')) {
+                                                    @if (field['type'] === 'text' || (field['type'] === 'regex' && field.format !== 'date')) {
                                                         @if (category['id'] === 'supplier' && field['id'] === 'name') {
                                                             <mat-form-field class="right-0 w-full form-viewer"
                                                                             [class.opacity-50]="this.document.status === 'END'"
@@ -270,7 +270,7 @@
                                                             </mat-form-field>
                                                         }
                                                     }
-                                                    @if (field.type === 'textarea') {
+                                                    @if (field['type'] === 'textarea') {
                                                         <mat-form-field class="right-0 w-full form-viewer" [class.opacity-50]="this.document.status === 'END'">
                                                             <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
                                                                 {{ field['label'] | translate }}
@@ -305,7 +305,7 @@
                                                                 </mat-error>
                                                             }
                                                         </mat-form-field>
-                                                    } @else if (field.type === 'date' || (field.type === 'regex' && field.format === 'date')) {
+                                                    } @else if (field['type'] === 'date' || (field['type'] === 'regex' && field.format === 'date')) {
                                                         <mat-form-field class="right-0 w-full form-viewer" [class.opacity-50]="this.document.status === 'END'">
                                                             <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
                                                                 {{ field['label'] | translate }}
@@ -345,7 +345,7 @@
                                                                    [matTooltip]="'VERIFIER.data_found_auto' | translate"></i>
                                                             }
                                                         </mat-form-field>
-                                                    } @else if (field.type === 'autocomplete') {
+                                                    } @else if (field['type'] === 'autocomplete') {
                                                         <mat-form-field class="right-0 w-full form-viewer">
                                                             <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
                                                                 {{ field['label'] | translate }}
@@ -388,7 +388,7 @@
                                                                 }
                                                             </mat-autocomplete>
                                                         </mat-form-field>
-                                                    } @else if (field.type === 'select') {
+                                                    } @else if (field['type'] === 'select') {
                                                         @if (field['id'].includes('accounting_plan')) {
                                                             <mat-form-field class="right-0 w-full form-viewer" [class.opacity-50]="this.document.status === 'END'">
                                                                 <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">

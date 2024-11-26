@@ -22,10 +22,10 @@
             @if (!this.loading) {
                 <div class="mx-10 mt-10 mb-5 grid grid-cols-2 gap-4 place-items-stretch">
                     @for (field of modelForm; track field['id']) {
-                        @if (field.type === 'text' && field['id'] === 'model_label') {
+                        @if (field['type'] === 'text' && field['id'] === 'model_label') {
                             <mat-form-field>
                                 <mat-label>{{ field['label'] | translate }}</mat-label>
-                                <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type"
+                                <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field['type']"
                                        [placeholder]="field.placeholder | translate" [required]="field['required']">
                                 @if (field.control.hasError('required')) {
                                     <mat-error>
@@ -39,7 +39,7 @@
                                     }
                                 }
                             </mat-form-field>
-                        } @else if (field.type === 'select' && field['id'] === 'doc_type_id') {
+                        } @else if (field['type'] === 'select' && field['id'] === 'doc_type_id') {
                             <mat-form-field>
                                 <mat-label>{{ field['label'] | translate }}</mat-label>
                                 <mat-select [name]="field['id']" [id]="field['id']" [(ngModel)]="field.control.value" [required]="field['required']">
@@ -53,10 +53,10 @@
                                     <mat-error>{{ getErrorMessage(field['id'], modelForm) }}</mat-error>
                                 }
                             </mat-form-field>
-                        } @else if (field.type === 'text' && field['id'] === 'min_proba') {
+                        } @else if (field['type'] === 'text' && field['id'] === 'min_proba') {
                             <mat-form-field>
                                 <mat-label>{{ field['label'] | translate }}</mat-label>
-                                <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type"
+                                <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field['type']"
                                        [placeholder]="field['label'] | translate" [required]="field['required']">
                                 @if (field.control.hasError('required')) {
                                     <mat-error>
