@@ -126,18 +126,18 @@
                             </div>
                         }
                         <form [formGroup]="batchForm" (change)="updateProgressBar()"  class="flex flex-wrap mx-8">
-                            @for (field of fieldsCategories['batch_metadata']; track field.id) {
+                            @for (field of fieldsCategories['batch_metadata']; track field['id']) {
                                 <div class="flex items-center px-3" [class]="field.class">
                                     @if (field.type === 'text' && inputMode === 'Auto' && field.metadata_key) {
                                         <mat-form-field class="w-full">
                                             <mat-label>
-                                                <span [innerHTML]="getPlaceholderFromSearchMask(field.searchMask, field.label)"></span>
+                                                <span [innerHTML]="getPlaceholderFromSearchMask(field.searchMask, field['label'])"></span>
                                             </mat-label>
-                                            <mat-select [formControlName]="field.label_short" (change)="updateProgressBar()">
+                                            <mat-select [formControlName]="field['label_short']" (change)="updateProgressBar()">
                                                 @if (field.metadata_key) {
                                                     <mat-option>
                                                         <ngx-mat-select-search [searching]="searching"
-                                                                               [formControlName]="'search_' + field.label_short"
+                                                                               [formControlName]="'search_' + field['label_short']"
                                                                                placeholderLabel="{{ 'SPLITTER.min_3_letter' | translate }}"
                                                                                noEntriesFoundLabel="{{ 'SPLITTER.no_result' | translate }}">
                                                         </ngx-mat-select-search>
@@ -146,7 +146,7 @@
                                                 @for (metadata of filteredServerSideMetadata | async; track metadata) {
                                                     <mat-option [value]="metadata.metadataId" (click)="fillData(metadata)">
                                                         @if (metadata.metadataId === batchMetadataValues.metadataId) {
-                                                            {{ metadata[field.label_short] }}
+                                                            {{ metadata[field['label_short']] }}
                                                         } @else {
                                                             <span class="search-mask-result" [innerHTML]="getPlaceholderFromResultMask(field.resultMask, metadata)"></span>
                                                         }
@@ -157,16 +157,16 @@
                                     }
                                     @if ((field.type === 'text' || field.type === 'regex')  && (!field.metadata_key || inputMode === 'Manual')) {
                                         <mat-form-field class="w-full">
-                                            <mat-label>{{ field.label }}</mat-label>
-                                            <input matInput formControlName="{{ field.label_short }}">
+                                            <mat-label>{{ field['label'] }}</mat-label>
+                                            <input matInput formControlName="{{ field['label_short'] }}">
                                         </mat-form-field>
                                     }
                                     @if (field.type === 'select') {
                                         <mat-form-field class="w-full">
-                                            <mat-label>{{ field.label }}</mat-label>
-                                            <mat-select [formControlName]="field.label_short" (selectionChange)="setValueChange(field.label_short, $event.value)">
+                                            <mat-label>{{ field['label'] }}</mat-label>
+                                            <mat-select [formControlName]="field['label_short']" (selectionChange)="setValueChange(field['label_short'], $event.value)">
                                                 @for (option of field.settings.options; track option.id) {
-                                                    @if (checkConditional(field.id, option)) {
+                                                    @if (checkConditional(field['id'], option)) {
                                                         <mat-option [value]="option['id']">
                                                             {{ option['label'] }}
                                                         </mat-option>
@@ -176,21 +176,21 @@
                                         </mat-form-field>
                                     } @else if (field.type === 'date') {
                                         <mat-form-field class="w-full">
-                                            <input matInput [id]="field.id" (dateChange)="updateProgressBar()"
-                                                   [matDatepicker]="datePicker" [formControlName]="field.label_short">
-                                            <mat-label>{{ field.label }}</mat-label>
+                                            <input matInput [id]="field['id']" (dateChange)="updateProgressBar()"
+                                                   [matDatepicker]="datePicker" [formControlName]="field['label_short']">
+                                            <mat-label>{{ field['label'] }}</mat-label>
                                             <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
                                             <mat-datepicker #datePicker></mat-datepicker>
                                         </mat-form-field>
                                     } @else if (field.type === 'checkbox') {
-                                        <mat-checkbox formControlName="{{ field.label_short }}" (change)="onCheckBoxChange(field, $event)">
-                                            {{ field.label }}
+                                        <mat-checkbox formControlName="{{ field['label_short'] }}" (change)="onCheckBoxChange(field, $event)">
+                                            {{ field['label'] }}
                                         </mat-checkbox>
                                     } @else if (field.type === 'textarea') {
                                         <mat-form-field class="w-full">
-                                            <mat-label>{{ field.label }}</mat-label>
-                                            <textarea matInput formControlName="{{ field.label_short }}"
-                                                      (ngModelChange)="setValueChange(field.label_short, $event)"></textarea>
+                                            <mat-label>{{ field['label'] }}</mat-label>
+                                            <textarea matInput formControlName="{{ field['label_short'] }}"
+                                                      (ngModelChange)="setValueChange(field['label_short'], $event)"></textarea>
                                         </mat-form-field>
                                     }
                                 </div>
@@ -292,19 +292,19 @@
                                             }
                                         </div>
                                         <form [formGroup]="document.form" class="flex flex-wrap mx-6 mt-4">
-                                            @for (field of fieldsCategories['document_metadata']; track field.id) {
+                                            @for (field of fieldsCategories['document_metadata']; track field['id']) {
                                                 <div class="flex items-center px-3" [class]="field.class">
                                                     @if (field.type === 'text' && inputMode === 'Auto' && field.metadata_key) {
                                                         <mat-form-field class="w-full">
                                                             <mat-label>
-                                                                <span [innerHTML]="getPlaceholderFromSearchMask(field.searchMask, field.label)"></span>
+                                                                <span [innerHTML]="getPlaceholderFromSearchMask(field.searchMask, field['label'])"></span>
                                                             </mat-label>
-                                                            <mat-select [formControlName]="field.label_short">
+                                                            <mat-select [formControlName]="field['label_short']">
                                                                 @if (field.metadata_key) {
                                                                     <mat-option>
                                                                         <ngx-mat-select-search
                                                                                 [searching]="searching"
-                                                                                [formControlName]="'search_' + field.label_short"
+                                                                                [formControlName]="'search_' + field['label_short']"
                                                                                 placeholderLabel="{{ 'SPLITTER.min_3_letter' | translate }}"
                                                                                 noEntriesFoundLabel="{{ 'SPLITTER.no_result' | translate }}">
                                                                         </ngx-mat-select-search>
@@ -313,7 +313,7 @@
                                                                 @for (metadata of filteredServerSideMetadata | async; track metadata.metadataId) {
                                                                     <mat-option [value]="metadata.metadataId">
                                                                         @if (metadata.metadataId === batchMetadataValues.metadataId) {
-                                                                            {{ metadata[field.label_short] }}
+                                                                            {{ metadata[field['label_short']] }}
                                                                         } @else {
                                                                             <span [innerHTML]="getPlaceholderFromResultMask(field.resultMask, metadata)"></span>
                                                                         }
@@ -324,19 +324,19 @@
                                                     }
                                                     @if ((field.type === 'text' || field.type === 'regex') && (!field.metadata_key || inputMode === 'Manual')) {
                                                         <mat-form-field class="w-full">
-                                                            <mat-label>{{ field.label }}</mat-label>
-                                                            <input matInput formControlName="{{ field.label_short }}">
+                                                            <mat-label>{{ field['label'] }}</mat-label>
+                                                            <input matInput formControlName="{{ field['label_short'] }}">
                                                         </mat-form-field>
                                                     }
                                                     @if (field.type === 'textarea') {
                                                         <mat-form-field class="w-full">
-                                                            <mat-label>{{ field.label }}</mat-label>
-                                                            <textarea matInput formControlName="{{ field.label_short }}"></textarea>
+                                                            <mat-label>{{ field['label'] }}</mat-label>
+                                                            <textarea matInput formControlName="{{ field['label_short'] }}"></textarea>
                                                         </mat-form-field>
                                                     } @else if (field.type === 'select') {
                                                         <mat-form-field class="w-full">
-                                                            <mat-label>{{ field.label }}</mat-label>
-                                                            <mat-select [formControlName]="field.label_short">
+                                                            <mat-label>{{ field['label'] }}</mat-label>
+                                                            <mat-select [formControlName]="field['label_short']">
                                                                 @for (option of field.settings.options; track option.id) {
                                                                     <mat-option [value]="option.id">
                                                                         {{ option.label }}
@@ -346,14 +346,14 @@
                                                         </mat-form-field>
                                                     } @else if (field.type === 'date') {
                                                         <mat-form-field class="w-full" >
-                                                            <input matInput [id]="field.id" [matDatepicker]="datePicker" [formControlName]="field.label_short">
-                                                            <mat-label>{{ field.label }}</mat-label>
+                                                            <input matInput [id]="field['id']" [matDatepicker]="datePicker" [formControlName]="field['label_short']">
+                                                            <mat-label>{{ field['label'] }}</mat-label>
                                                             <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
                                                             <mat-datepicker #datePicker></mat-datepicker>
                                                         </mat-form-field>
                                                     } @else if (field.type === 'checkbox') {
                                                         <span class="flex justify-center inline-block my-4">
-                                                        <mat-checkbox formControlName="{{ field.label_short }}">{{ field.label }}</mat-checkbox>
+                                                        <mat-checkbox formControlName="{{ field['label_short'] }}">{{ field['label'] }}</mat-checkbox>
                                                     </span>
                                                     }
                                                 </div>

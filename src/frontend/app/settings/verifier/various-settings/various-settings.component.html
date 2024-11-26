@@ -161,10 +161,10 @@
             <div class="overflow-x-hidden overflow-y-auto h-full-overflow"
                  cdkDropList [cdkDropListData]="this.availableFieldsTmp" (cdkDropListDropped)="drop($event)"
                  [cdkDropListDisabled]="!this.formLoaded">
-                @for (field of this.availableFieldsTmp; track field.label; let cpt = $index) {
+                @for (field of this.availableFieldsTmp; track field['label']; let cpt = $index) {
                     <div class="my-8 ml-2 text-base" cdkDrag>
                         <span class="cursor-move">
-                            {{ field.label | translate }}
+                            {{ field['label'] | translate }}
                         </span>
                     </div>
                 }

@@ -23,7 +23,7 @@
                 <div class="grid grid-cols-3 gap-6 m-10">
                     <ng-container *ngFor="let field of this.AiModel['fields']">
                         <mat-form-field *ngIf="field.type === 'text'">
-                            <mat-label>{{ field.label | translate }}</mat-label>
+                            <mat-label>{{ field['label'] | translate }}</mat-label>
                             <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type"
                                    placeholder="{{ field.placeholder | translate }}" [required]="field['required']">
                             <mat-error *ngIf="field.control.hasError('required')">
@@ -34,9 +34,9 @@
                             </mat-error>
                         </mat-form-field>
                         <mat-form-field *ngIf="field.type === 'number'">
-                            <mat-label>{{ field.label | translate }}</mat-label>
+                            <mat-label>{{ field['label'] | translate }}</mat-label>
                             <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type"
-                                   [placeholder]="field.label | translate" [required]="field['required']">
+                                   [placeholder]="field['label'] | translate" [required]="field['required']">
                             <mat-error *ngIf="field.control.hasError('required')">
                                 {{ 'ARTIFICIAL-INTELLIGENCE.field_required' | translate }}
                             </mat-error>

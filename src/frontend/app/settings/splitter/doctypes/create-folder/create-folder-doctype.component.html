@@ -47,23 +47,23 @@
                         <mat-error>{{ 'AUTH.field_required' | translate }}</mat-error>
                     }
                 </mat-form-field>
-                @for (field of fields; track field.id) {
+                @for (field of fields; track field['id']) {
                     @if (field.type === 'text') {
                         <mat-form-field>
-                            <mat-label>{{ field.label | translate }}</mat-label>
-                            <input matInput [formControlName]="field.id" [type]="field.type"
+                            <mat-label>{{ field['label'] | translate }}</mat-label>
+                            <input matInput [formControlName]="field['id']" [type]="field.type"
                                    [placeholder]="field.placeholder" [required]="field['required']">
                             @if (field.hint) {
                                 <mat-hint>{{ field.hint }}</mat-hint>
                             }
-                            @if (form.get(field.id)!.hasError('required')) {
+                            @if (form.get(field['id'])!.hasError('required')) {
                                 <mat-error>{{ 'AUTH.field_required' | translate }}</mat-error>
                             }
                         </mat-form-field>
                     } @else if (field.type === 'slide') {
                         <div class="text-center p-4">
-                            <mat-slide-toggle [formControlName]="field.id">
-                                {{ field.label | translate }}
+                            <mat-slide-toggle [formControlName]="field['id']">
+                                {{ field['label'] | translate }}
                             </mat-slide-toggle>
                         </div>
                     }

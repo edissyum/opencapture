@@ -114,15 +114,15 @@
                 @for (availableFields of this.availableFieldsParent; track availableFields.label) {
                     <mat-tab label="{{ availableFields['label'] | translate }}">
                         <div class="min-w-full overflow-x-hidden" style="min-height: 500px">
-                            @for (field of availableFields['values']; track field.id) {
+                            @for (field of availableFields['values']; track field['id']) {
                                 <div class="flex flex-row items-center justify-between m-5">
                                     <ng-container>
-                                        <div class="relative -top-3" [id]="'label_' + field.id">
-                                            {{ field.label | translate }}
+                                        <div class="relative -top-3" [id]="'label_' + field['id']">
+                                            {{ field['label'] | translate }}
                                         </div>
                                         <mat-form-field class="right-0 w-6/12">
                                             <mat-label>{{ 'POSITIONS-MASKS.regex_associated' | translate }}</mat-label>
-                                            <input [id]='field.id' (focusin)="ocr($event, true, field.color)"
+                                            <input [id]="field['id']" (focusin)="ocr($event, true, field.color)"
                                                    (click)="this.ocrFromUser = true;" [(ngModel)]="field.regex"
                                                    (focusout)="ocr($event, false)" matInput type="text">
                                         </mat-form-field>

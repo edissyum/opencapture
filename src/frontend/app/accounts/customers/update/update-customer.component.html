@@ -27,10 +27,10 @@
                 </h3>
             </div>
             <form class="grid grid-cols-3 gap-2 mx-10 text-center">
-                @for (field of this.customerForm; track field.id) {
+                @for (field of this.customerForm; track field['id']) {
                     @if (field.type === 'select') {
                         <mat-form-field class="block">
-                            <mat-label>{{ field.label | translate }}</mat-label>
+                            <mat-label>{{ field['label'] | translate }}</mat-label>
                             <mat-select [formControl]="field['control']" [(value)]="field.control.value"
                                         [required]="field['required']" (selectionChange)="updateRequired(field)">
                                 @for (option of field.values; track option.id) {
@@ -40,15 +40,15 @@
                                 }
                             </mat-select>
                             @if (field.control.invalid) {
-                                <mat-error>{{ getErrorMessageCustomer(field.id) }}</mat-error>
+                                <mat-error>{{ getErrorMessageCustomer(field['id']) }}</mat-error>
                             }
                         </mat-form-field>
                     } @else {
                         <mat-form-field class="block">
-                            <mat-label>{{ field.label | translate }}</mat-label>
-                            <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
+                            <mat-label>{{ field['label'] | translate }}</mat-label>
+                            <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field['label'] | translate" [required]="field['required']">
                             @if (field.control.invalid) {
-                                <mat-error>{{ getErrorMessageCustomer(field.id) }}</mat-error>
+                                <mat-error>{{ getErrorMessageCustomer(field['id']) }}</mat-error>
                             }
                         </mat-form-field>
                     }
@@ -61,17 +61,17 @@
                 </h3>
             </div>
             <form class="grid grid-cols-3 gap-2 mx-10 text-center">
-                @for (field of this.addressForm; track field.id) {
+                @for (field of this.addressForm; track field['id']) {
                     @if (field.type === 'country') {
                         <mat-select-country class="w-full" [value]="defaultValue"
-                                            [label]="field.label | translate" (onCountrySelected)="onCountrySelected($event)">
+                                            [label]="field['label'] | translate" (onCountrySelected)="onCountrySelected($event)">
                         </mat-select-country>
                     } @else {
-                        <mat-form-field [class.col-span-2]="field.id === 'address1'" class="block">
-                            <mat-label>{{ field.label | translate }}</mat-label>
-                            <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
+                        <mat-form-field [class.col-span-2]="field['id'] === 'address1'" class="block">
+                            <mat-label>{{ field['label'] | translate }}</mat-label>
+                            <input matInput [formControl]="field['control']" [type]="field.type" [placeholder]="field['label'] | translate" [required]="field['required']">
                             @if (field.control.invalid) {
-                                <mat-error>{{ getErrorMessageAddress(field.id) }}</mat-error>
+                                <mat-error>{{ getErrorMessageAddress(field['id']) }}</mat-error>
                             }
                         </mat-form-field>
                     }

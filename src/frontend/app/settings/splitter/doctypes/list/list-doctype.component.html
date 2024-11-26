@@ -52,17 +52,17 @@
                         }
                     </mat-select>
                 </mat-form-field>
-                @for (field of this.fields; track field.id) {
+                @for (field of this.fields; track field['id']) {
                     @if (field.type === 'text') {
                         <mat-form-field>
-                            <mat-label>{{ field.label | translate }}</mat-label>
-                            <input matInput [formControlName]="field.id" [type]="field.type" [readonly]="!this.selectedDoctype.key"
+                            <mat-label>{{ field['label'] | translate }}</mat-label>
+                            <input matInput [formControlName]="field['id']" [type]="field.type" [readonly]="!this.selectedDoctype.key"
                                    [placeholder]="field.placeholder" [required]="field['required']">
                         </mat-form-field>
                     } @else if (field.type === 'slide') {
                         <div class="text-center p-4">
-                            <mat-slide-toggle [formControlName]="field.id">
-                                {{ field.label | translate }}
+                            <mat-slide-toggle [formControlName]="field['id']">
+                                {{ field['label'] | translate }}
                             </mat-slide-toggle>
                         </div>
                     }

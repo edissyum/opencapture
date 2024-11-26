@@ -21,18 +21,18 @@
         <div class="overflow-x-hidden h-full-overflow">
             <div class="flex justify-center items-center">
                 <form (ngSubmit)="onSubmit()" class="grid grid-cols-2 gap-6 w-full m-10 text-center">
-                    @for (field of this.roleForm; track field.id) {
+                    @for (field of this.roleForm; track field['id']) {
                         @if (field.type === 'text') {
                             <mat-form-field>
-                                <mat-label>{{ field.label | translate }}</mat-label>
-                                <input matInput  [maxLength]="field.maxLength" [value]="field.control.value" [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']">
+                                <mat-label>{{ field['label'] | translate }}</mat-label>
+                                <input matInput  [maxLength]="field.maxLength" [value]="field.control.value" [formControl]="field['control']" [type]="field.type" [placeholder]="field['label'] | translate" [required]="field['required']">
                                 @if (field.control.invalid) {
-                                    <mat-error>{{ getErrorMessage(field.id) }}</mat-error>
+                                    <mat-error>{{ getErrorMessage(field['id']) }}</mat-error>
                                 }
                             </mat-form-field>
                         } @else if (field.type === 'list') {
                             <mat-form-field>
-                                <mat-label>{{ field.label | translate }}</mat-label>
+                                <mat-label>{{ field['label'] | translate }}</mat-label>
                                 <mat-select [value]="field.control.value" [formControl]="field['control']" [required]="field['required']">
                                     @for (option of field.options; track option.value) {
                                         <mat-option [value]="option.value">
@@ -41,7 +41,7 @@
                                     }
                                 </mat-select>
                                 @if (field.control.invalid) {
-                                    <mat-error>{{ getErrorMessage(field.id) }}</mat-error>
+                                    <mat-error>{{ getErrorMessage(field['id']) }}</mat-error>
                                 }
                             </mat-form-field>
                         }

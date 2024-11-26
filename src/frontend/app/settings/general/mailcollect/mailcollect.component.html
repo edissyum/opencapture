@@ -22,148 +22,192 @@
             </div>
         </div>
         <hr class="border-green-400 relative z-30">
-        <div *ngIf="!this.loading" class="w-full">
-            <mat-tab-group [selectedIndex]="this.selectedIndex" [dynamicHeight]="true">
-                <mat-tab *ngFor="let process of this.processes">
-                    <ng-template mat-tab-label>
-                        <span class="actions" *ngIf="getNameOfProcess(process) !== '' else input">
-                            <span *ngIf="!process['edit_name']">
-                                {{ getNameOfProcess(process) }}
-                            </span>
+        @if (!this.loading) {
+            <div class="w-full">
+                <mat-tab-group [selectedIndex]="this.selectedIndex" [dynamicHeight]="true">
+                    @for (process of this.processes; track process['id']) {
+                        <mat-tab>
+                            <ng-template mat-tab-label>
+                                @if (getNameOfProcess(process) !== '') {
+                                    <span class="actions">
+                                        @if (!process['edit_name']) {
+                                            {{ getNameOfProcess(process) }}
+                                            <i [title]="'MAILCOLLECT.edit_process_name' | translate"
+                                               class="fas fa-edit ml-5 hover:scale-125 transition-all duration-75"
+                                               (click)="process['edit_name'] = true"></i>
+                                            <i [title]="'MAILCOLLECT.delete_process' | translate"
+                                               class="fas fa-trash text-red-600 ml-5 hover:scale-125 transition-all duration-75"
+                                               (click)="deleteConfirmDialog(process)"></i>
+                                        }
 
-                            <i *ngIf="!process['edit_name']" [title]="'MAILCOLLECT.edit_process_name' | translate"
-                               class="fas fa-edit ml-5 hover:scale-125 transition-all duration-75"
-                               (click)="process.edit_name = true"></i>
-                            <i *ngIf="!process['edit_name']" [title]="'MAILCOLLECT.delete_process' | translate"
-                               class="fas fa-trash text-red-600 ml-5 hover:scale-125 transition-all duration-75"
-                               (click)="deleteConfirmDialog(process)"></i>
-                            <i *ngIf="processIsEnabled(process)" [title]="'MAILCOLLECT.disable_process' | translate"
-                               class="fas fa-pause ml-5 text-gray-900 hover:scale-125 transition-all duration-75"
-                               (click)="disableConfirmDialog(process)"></i>
-                            <i *ngIf="!processIsEnabled(process)" [title]="'MAILCOLLECT.enable_process' | translate"
-                               class="fas fa-play ml-5 text-gray-900 hover:scale-125 transition-all duration-75"
-                               (click)="enableConfirmDialog(process)"></i>
-                            <i *ngIf="process.exists" [title]="'MAILCOLLECT.duplicate_process' | translate"
-                               class="fas fa-clone ml-5 text-green-400 hover:scale-125 transition-all duration-75"
-                               (click)="duplicateConfirmDialog(process)"></i>
+                                        @if (processIsEnabled(process)) {
+                                            <i [title]="'MAILCOLLECT.disable_process' | translate"
+                                               class="fas fa-pause ml-5 text-gray-900 hover:scale-125 transition-all duration-75"
+                                               (click)="disableConfirmDialog(process)"></i>
+                                        } @else {
+                                            <i [title]="'MAILCOLLECT.enable_process' | translate"
+                                               class="fas fa-play ml-5 text-gray-900 hover:scale-125 transition-all duration-75"
+                                               (click)="enableConfirmDialog(process)"></i>
+                                        }
 
-                            <div *ngIf="process['edit_name']" class="grid grid-cols-5">
-                                <div class="change_process_name settings_search col-span-4">
-                                    <mat-form-field class="block">
-                                        <input #new_process_name [value]="getNameOfProcess(process)" matInput
-                                               (focusout)="updateProcessName(process, new_process_name.value)"
-                                               type="text" placeholder="{{ 'MAILCOLLECT.process_name' | translate }}">
-                                    </mat-form-field>
-                                </div>
-                                <div class="relative top-5">
-                                    <i *ngIf="!this.loadingProcessName" class="fas fa-check ml-2" (click)="updateProcessName(process, new_process_name.value)"></i>
-                                    <i *ngIf="this.loadingProcessName" class="fa-solid fa-circle-notch fa-spin"></i>
-                                </div>
-                            </div>
-                        </span>
-                        <ng-template #input>
-                            <div class="actions grid grid-cols-5">
-                                <div class="change_process_name settings_search col-span-4">
-                                    <mat-form-field class="block">
-                                        <input #new_process_name_input matInput type="text"
-                                               (focusout)="updateProcessName(process, new_process_name_input.value)"
-                                               placeholder="{{ 'MAILCOLLECT.process_name' | translate }}">
-                                    </mat-form-field>
-                                </div>
-                                <div class="relative top-5">
-                                    <i class="fas fa-check ml-1" (click)="updateProcessName(process, new_process_name_input.value, false)"></i>
-                                </div>
-                            </div>
-                        </ng-template>
-                    </ng-template>
-                    <div class="overflow-x-hidden overflow-y-auto text-center p-8" style="height: calc(100vh - 9rem) !important">
-                        <ng-container *ngFor="let unit of this.units">
-                            <h2 class="text-gray-900">{{ unit['label'] | translate }}</h2>
-                            <div class="flex justify-center mx-10">
-                                <div class="grid grid-cols-4 gap-6 w-full mb-0 text-center">
-                                    <ng-container *ngFor="let field of process">
-                                        <ng-container *ngIf="field.unit === unit['id']">
-                                            <div *ngIf="field.type === 'boolean'" class="col-span-4 mb-8">
-                                                <mat-slide-toggle [name]="field['id']" class="relative m-auto top-4" [formControl]="field['control']" (change)="updateRequired($event, process)">
-                                                    {{ field.label | translate }}
-                                                </mat-slide-toggle>
-                                                <span *ngIf="field.hint" class="text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
-                                                    <i class="fa-solid fa-circle-question text-md"></i>
-                                                </span>
+                                        @if (process.exists) {
+                                            <i [title]="'MAILCOLLECT.duplicate_process' | translate"
+                                               class="fas fa-clone ml-5 text-green-400 hover:scale-125 transition-all duration-75"
+                                               (click)="duplicateConfirmDialog(process)"></i>
+                                        }
+
+                                        @if (process['edit_name']) {
+                                            <div class="grid grid-cols-5">
+                                                <div class="change_process_name settings_search col-span-4">
+                                                    <mat-form-field class="block">
+                                                        <input #new_process_name [value]="getNameOfProcess(process)" matInput
+                                                               (focusout)="updateProcessName(process, new_process_name['value'])"
+                                                               type="text" placeholder="{{ 'MAILCOLLECT.process_name' | translate }}">
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="relative top-5">
+                                                    @if (this.loadingProcessName) {
+                                                        <i class="fa-solid fa-circle-notch fa-spin"></i>
+                                                    } @else {
+                                                        <i class="fas fa-check ml-2" (click)="updateProcessName(process, new_process_name['value'])"></i>
+                                                    }
+                                                </div>
                                             </div>
-                                            <mat-form-field class="w-full" *ngIf="field.type === 'text' || field.type === 'password' || field.type === 'number'">
-                                                <mat-label>{{ field.label | translate }}</mat-label>
-                                                <input matInput [type]="field.type" [formControl]="field['control']" [required]="field['required']"
-                                                       (keyup)="isValidForm(process, false)">
-                                                <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, process) }}</mat-error>
-                                                <mat-icon matSuffix *ngIf="field.id === 'password'"
-                                                          (click)="field.type === 'text' ? field.type = 'password' : field.type = 'text'"
-                                                          class="text-green-400 relative cursor-pointer -top-0.5 text-base">
-                                                    <i class="fa fa-1x" [class.fa-eye-slash]="field.type !== 'password'" [class.fa-eye]="field.type === 'password'"></i>
-                                                </mat-icon>
+                                        }
+                                    </span>
+                                } @else {
+                                    <div class="actions grid grid-cols-5">
+                                        <div class="change_process_name settings_search col-span-4">
+                                            <mat-form-field class="block">
+                                                <input #new_process_name_input matInput type="text"
+                                                       (focusout)="updateProcessName(process, new_process_name_input.value)"
+                                                       placeholder="{{ 'MAILCOLLECT.process_name' | translate }}">
                                             </mat-form-field>
-                                            <mat-form-field class="w-full" *ngIf="field.type === 'autocomplete'">
-                                                <mat-label>{{ field.label | translate }}</mat-label>
-                                                <input matInput [formControl]="field['control']" [required]="field['required']"
-                                                       [type]="field.type" [matAutocomplete]="autocomplete" (keyup)="isValidForm(process, false)">
-                                                <span *ngIf="field.hint" class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
-                                                      [matTooltip]="field.hint | translate">
-                                                    <i class="fa-solid fa-circle-question text-md"></i>
-                                                </span>
-                                                <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, process) }}</mat-error>
-                                                <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn" (optionSelected)="isValidForm(process, false)">
-                                                    <mat-option *ngFor="let option of field.values | async" [value]="option" [id]="option.id">
-                                                        <span [innerHTML]="option.label | highlight: toHighlight"></span>
-                                                    </mat-option>
-                                                </mat-autocomplete>
-                                            </mat-form-field>
-                                            <mat-form-field class="w-full" *ngIf="field.type === 'select'">
-                                                <mat-label>{{ field.label | translate }}</mat-label>
-                                                <mat-select [formControl]="field['control']" [required]="field['required']" (selectionChange)="isValidForm(process, false)">
-                                                    <mat-option *ngFor="let option of field.values" [value]="option['id']">
-                                                        {{ option['label'] | translate }}
-                                                    </mat-option>
-                                                </mat-select>
-                                                <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, process) }}</mat-error>
-                                            </mat-form-field>
-                                        </ng-container>
-                                    </ng-container>
+                                        </div>
+                                        <div class="relative top-5">
+                                            <i class="fas fa-check ml-1" (click)="updateProcessName(process, new_process_name_input.value, false)"></i>
+                                        </div>
+                                    </div>
+                                }
+                            </ng-template>
+                            <div class="overflow-x-hidden overflow-y-auto text-center p-8" style="height: calc(100vh - 9rem) !important">
+                                @for (unit of this.units; track unit['id']) {
+                                    <h2 class="text-gray-900">{{ unit['label'] | translate }}</h2>
+                                    <div class="flex justify-center mx-10">
+                                        <div class="grid grid-cols-4 gap-6 w-full mb-0 text-center">
+                                            @for (field of process; track field['id']) {
+                                                @if (field.unit === unit['id']) {
+                                                    @if (field.type === 'boolean') {
+                                                        <div class="col-span-4 mb-8">
+                                                            <mat-slide-toggle [name]="field['id']" class="relative m-auto top-4" [formControl]="field['control']" (change)="updateRequired($event, process)">
+                                                                {{ field['label'] | translate }}
+                                                            </mat-slide-toggle>
+                                                            @if (field.hint) {
+                                                                <span class="text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
+                                                                    <i class="fa-solid fa-circle-question text-md"></i>
+                                                                </span>
+                                                            }
+                                                        </div>
+                                                    } @else if (field.type === 'text' || field.type === 'password' || field.type === 'number') {
+                                                        <mat-form-field class="w-full">
+                                                            <mat-label>{{ field['label'] | translate }}</mat-label>
+                                                            <input matInput [type]="field.type" [formControl]="field['control']" [required]="field['required']"
+                                                                   (keyup)="isValidForm(process, false)">
+                                                            @if (field.control.invalid) {
+                                                                <mat-error>{{ getErrorMessage(field['id'], process) }}</mat-error>
+                                                            }
+                                                            @if (field['id'] === 'password') {
+                                                                <mat-icon matSuffix (click)="field.type === 'text' ? field.type = 'password' : field.type = 'text'"
+                                                                          class="text-green-400 relative cursor-pointer -top-0.5 text-base">
+                                                                    <i class="fa fa-1x" [class.fa-eye-slash]="field.type !== 'password'" [class.fa-eye]="field.type === 'password'"></i>
+                                                                </mat-icon>
+                                                            }
+                                                        </mat-form-field>
+                                                    } @else if (field.type === 'autocomplete') {
+                                                        <mat-form-field class="w-full">
+                                                            <mat-label>{{ field['label'] | translate }}</mat-label>
+                                                            <input matInput [formControl]="field['control']" [required]="field['required']"
+                                                                   [type]="field.type" [matAutocomplete]="autocomplete" (keyup)="isValidForm(process, false)">
+                                                            @if (field.hint) {
+                                                                <span class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
+                                                                      [matTooltip]="field.hint | translate">
+                                                                    <i class="fa-solid fa-circle-question text-md"></i>
+                                                                </span>
+                                                            }
+                                                            @if (field.control.invalid) {
+                                                                <mat-error>{{ getErrorMessage(field['id'], process) }}</mat-error>
+                                                            }
+                                                            <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn" (optionSelected)="isValidForm(process, false)">
+                                                                <mat-option *ngFor="let option of field.values | async" [value]="option" [id]="option.id">
+                                                                    <span [innerHTML]="option.label | highlight: toHighlight"></span>
+                                                                </mat-option>
+                                                            </mat-autocomplete>
+                                                        </mat-form-field>
+                                                    } @else if (field.type === 'select') {
+                                                        <mat-form-field class="w-full">
+                                                            <mat-label>{{ field['label'] | translate }}</mat-label>
+                                                            <mat-select [formControl]="field['control']" [required]="field['required']" (selectionChange)="isValidForm(process, false)">
+                                                                @for (option of field.values; track option['id']) {
+                                                                    <mat-option [value]="option['id']">
+                                                                        {{ option['label'] | translate }}
+                                                                    </mat-option>
+                                                                }
+                                                            </mat-select>
+                                                            @if (field.control.invalid) {
+                                                                <mat-error>{{ getErrorMessage(field['id'], process) }}</mat-error>
+                                                            }
+                                                        </mat-form-field>
+                                                    }
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+
+                                    @if (unit['id'] === 'general') {
+                                        <div class="hint text-center">
+                                            <i class="fa-solid fa-circle-exclamation fa-2x pl-1"></i>
+                                            <div class="message w-auto">
+                                                <button class="gray_button col-start-3" mat-button (click)="retrieveFolders(process)">
+                                                    @if (this.folderLoading) {
+                                                        <i class="fa-solid text-2xl fa-circle-notch fa-spin text-green-400"></i>
+                                                    } @else {
+                                                        {{ 'MAILCOLLECT.test_settings_and_retrieve_folders' | translate }}
+                                                    }
+                                                </button>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                <div class="mb-6 flex justify-center">
+                                    @if (process.exists) {
+                                        <button mat-button (click)="updateProcess(process)" class="min-w-56 p-6 border-solid border-green-400 border text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
+                                                [disabled]="!this.formValid[getNameOfProcess(process)]"
+                                                [class.bg-gray-400]="!this.formValid[getNameOfProcess(process)]"
+                                                [class.bg-green-400]="this.formValid[getNameOfProcess(process)]">
+                                            @if (this.processLoading) {
+                                                <i class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
+                                            } @else {
+                                                {{ 'MAILCOLLECT.update_process' | translate }}
+                                            }
+                                        </button>
+                                    } @else {
+                                        <button mat-button (click)="createProcess(process)" class="min-w-56 p-6 border-solid border-green-400 border text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
+                                                [disabled]="!this.formValid[getNameOfProcess(process)]"
+                                                [class.bg-gray-400]="!this.formValid[getNameOfProcess(process)]"
+                                                [class.bg-green-400]="this.formValid[getNameOfProcess(process)]">
+                                            @if (this.processLoading) {
+                                                <i class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
+                                            } @else {
+                                                {{ 'MAILCOLLECT.create_process' | translate }}
+                                            }
+                                        </button>
+                                    }
                                 </div>
                             </div>
-
-                            <span *ngIf="unit['id'] === 'general'">
-                                <div class="hint text-center">
-                                    <i class="fa-solid fa-circle-exclamation fa-2x pl-1"></i>
-                                    <div class="message w-auto">
-                                        <button class="gray_button col-start-3" mat-button (click)="retrieveFolders(process)">
-                                            <span *ngIf="!this.folderLoading">
-                                                {{ 'MAILCOLLECT.test_settings_and_retrieve_folders' | translate }}
-                                            </span>
-                                            <i *ngIf="this.folderLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-green-400"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </span>
-                        </ng-container>
-                        <div class="mb-6 flex justify-center">
-                            <button *ngIf="process.exists" mat-button (click)="updateProcess(process)" class="min-w-56 p-6 border-solid border-green-400 border text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
-                                    [disabled]="!this.formValid[getNameOfProcess(process)]"
-                                    [class.bg-gray-400]="!this.formValid[getNameOfProcess(process)]"
-                                    [class.bg-green-400]="this.formValid[getNameOfProcess(process)]">
-                                <span *ngIf="!this.processLoading">{{ 'MAILCOLLECT.update_process' | translate }}</span>
-                                <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
-                            </button>
-                            <button *ngIf="!process.exists" mat-button (click)="createProcess(process)" class="min-w-56 p-6 border-solid border-green-400 border text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
-                                    [disabled]="!this.formValid[getNameOfProcess(process)]"
-                                    [class.bg-gray-400]="!this.formValid[getNameOfProcess(process)]"
-                                    [class.bg-green-400]="this.formValid[getNameOfProcess(process)]">
-                                <span *ngIf="!this.processLoading">{{ 'MAILCOLLECT.create_process' | translate }}</span>
-                                <i *ngIf="this.processLoading" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
-                            </button>
-                        </div>
-                    </div>
-                </mat-tab>
-            </mat-tab-group>
-        </div>
+                        </mat-tab>
+                    }
+                </mat-tab-group>
+            </div>
+        }
     </mat-sidenav-content>
 </mat-sidenav-container>
