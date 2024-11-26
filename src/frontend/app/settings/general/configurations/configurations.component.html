@@ -16,344 +16,372 @@
             </div>
             <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
             <div class="settings_search">
-                <mat-form-field appearance="outline" *ngIf="this.selectedIndex == 4">
-                    <mat-label>{{ 'CONFIGURATIONS.search_config' | translate }}</mat-label>
-                    <input matInput type="text" [disabled]="this.loading" (keyup)="searchConfiguration($event)">
-                </mat-form-field>
+                @if (this.selectedIndex == 4) {
+                    <mat-form-field appearance="outline">
+                        <mat-label>{{ 'CONFIGURATIONS.search_config' | translate }}</mat-label>
+                        <input matInput type="text" [disabled]="this.loading" (keyup)="searchConfiguration($event)">
+                    </mat-form-field>
+                }
             </div>
         </div>
         <hr class="border-green-400 relative z-30">
-        <div *ngIf="!loading" class="w-full">
-            <mat-tab-group [dynamicHeight]="true" (selectedTabChange)="onTabChanged($event)">
-                <mat-tab [label]="'CONFIGURATIONS.global' | translate">
-                    <div class="overflow-x-hidden overflow-y-auto text-center" style="height: calc(100vh - 12rem) !important">
-                        <div class="grid grid-cols-2 gap-6">
-                            <div>
-                                <h3 class="text-gray-900 m-4">{{ "CONFIGURATIONS.change_image" | translate }}</h3>
-                                <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
-                                <mat-hint class="text-gray-600">
-                                    {{ "CONFIGURATIONS.authorized_extensions" | translate }}
-                                </mat-hint>
-                                <mat-card class="m-auto mt-2 mb-4 w-96 shadow-modern transition duration-500 ease-in-out
-                                                 transform hover:-translate-y-1 hover:scale-105 hover:shadow-modern-hover">
-                                    <img class="m-auto p-2 cursor-pointer" [src]="this.loginImage" alt="Login"
-                                         (click)="onClick(logo)">
-                                    <input type="file" name="files[]" #logo (change)="upload($event)" accept="image/png" class="hidden">
-                                </mat-card>
-                            </div>
-                            <div>
-                                <h3 class="text-gray-900 m-4">{{ "PRIVILEGES.change_language" | translate }}</h3>
-                                <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
-                                <div class="ml-3 relative hidden md:block" *ngIf="this.privilegesService.hasPrivilege('change_language')">
-                                    <mat-form-field class="language origin-top-right right-0 mt-4 w-1/2">
-                                        <mat-label>{{ 'GLOBAL.language' | translate }}</mat-label>
-                                        <mat-select (selectionChange)="this.localeService.changeLocale($event)"
-                                                    [disabled]="this.localeService.localeLoading"
-                                                    [(value)]="this.localeService.currentLang">
-                                            <mat-option *ngFor="let lang of this.localeService.langs" [value]="lang[0]">
-                                                {{ lang[1] }}
-                                            </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                    <i *ngIf="this.localeService.localeLoading"
-                                       class="fa-solid fa-earth-europe fa-beat fa-lg text-gray-900 ml-4"></i>
+        @if (!this.loading) {
+            <div class="w-full">
+                <mat-tab-group [dynamicHeight]="true" (selectedTabChange)="onTabChanged($event)">
+                    <mat-tab [label]="'CONFIGURATIONS.global' | translate">
+                        <div class="overflow-x-hidden overflow-y-auto text-center" style="height: calc(100vh - 12rem) !important">
+                            <div class="grid grid-cols-2 gap-6">
+                                <div>
+                                    <h3 class="text-gray-900 m-4">{{ "CONFIGURATIONS.change_image" | translate }}</h3>
+                                    <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
+                                    <mat-hint class="text-gray-600">
+                                        {{ "CONFIGURATIONS.authorized_extensions" | translate }}
+                                    </mat-hint>
+                                    <mat-card class="m-auto mt-2 mb-4 w-96 shadow-modern transition duration-500 ease-in-out
+                                                     transform hover:-translate-y-1 hover:scale-105 hover:shadow-modern-hover">
+                                        <img class="m-auto p-2 cursor-pointer" [src]="this.loginImage" alt="Login" (click)="onClick(logo)">
+                                        <input type="file" name="files[]" #logo (change)="upload($event)" accept="image/png" class="hidden">
+                                    </mat-card>
                                 </div>
-                            </div>
-                        </div>
-                        <hr class="border-green-400 relative z-30 w-1/2 m-auto my-4">
-                        <div class="grid grid-cols-2" *ngIf="this.selectedIndex === 0">
-                            <div class="mb-5 mx-5 h-48">
-                                <h3 class="text-gray-900">{{ 'CONFIGURATIONS.top_login_text' | translate }}</h3>
-                                <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
-                                <editor [formControl]="loginTopMessage"
-                                        licenseKey="gpl"
-                                        [init]="{
-                                            resize: false,
-                                            menubar: false,
-                                            branding: false,
-                                            promotion: false,
-                                            language: 'fr_FR',
-                                            base_url: './tinymce',
-                                            language_url: './assets/i18n/tinymce/langs/fr_FR.js',
-                                            toolbar: 'undo redo | formatselect | bold italic forecolor backcolor | link | alignleft aligncenter alignright alignjustify',
-                                            plugins: 'lists link image table code wordcount',
-                                            color_map: this.colorsMap
-                                        }">
-                                </editor>
-                                <div class="flex justify-center m-6"
-                                     [class.cursor-not-allowed]="!this.privilegesService.hasPrivilege('update_login_top_message')">
-                                    <button class="p-6" type="submit" mat-button (click)="updateLoginTopText()"
-                                            [disabled]="!this.privilegesService.hasPrivilege('update_login_top_message')"
-                                            [class.valid_button]="this.privilegesService.hasPrivilege('update_login_top_message')"
-                                            [class.invalid_button]="!this.privilegesService.hasPrivilege('update_login_top_message')">
-                                        {{ 'CONFIGURATIONS.save_login_text' | translate }}
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="mb-5 mx-5 h-48">
-                                <h3 class="text-gray-900">{{ 'CONFIGURATIONS.bottom_login_text' | translate }}</h3>
-                                <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
-                                <editor [formControl]="loginBottomMessage"
-                                        licenseKey="gpl"
-                                        [init]="{
-                                            resize: false,
-                                            menubar: false,
-                                            branding: false,
-                                            promotion: false,
-                                            language: 'fr_FR',
-                                            base_url: './tinymce',
-                                            language_url: './assets/i18n/tinymce/langs/fr_FR.js',
-                                            toolbar: 'undo redo | formatselect | bold italic forecolor backcolor | link | alignleft aligncenter alignright alignjustify',
-                                            plugins: 'lists link image table code wordcount',
-                                            color_map: this.colorsMap
-                                        }">
-                                </editor>
-                                <div class="flex justify-center m-6"
-                                     [class.cursor-not-allowed]="!this.privilegesService.hasPrivilege('update_login_bottom_message')">
-                                    <button class="p-6" type="submit" mat-button (click)="updateLoginBottomText()"
-                                            [disabled]="!this.privilegesService.hasPrivilege('update_login_bottom_message')"
-                                            [class.valid_button]="this.privilegesService.hasPrivilege('update_login_bottom_message')"
-                                            [class.invalid_button]="!this.privilegesService.hasPrivilege('update_login_bottom_message')">
-                                        {{ 'CONFIGURATIONS.save_login_text' | translate }}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </mat-tab>
-                <mat-tab [label]="'CONFIGURATIONS.password_rules' | translate">
-                    <div class="overflow-x-hidden overflow-y-auto h-full-overflow text-center">
-                        <div class="flex flex-col items-center justify-center items-center gap-4 mt-4">
-                            <div class="text-left">
-                                <mat-slide-toggle [(ngModel)]="this.passwordVerification.minLengthEnabled" [checked]="this.passwordVerification.passwordRules.minLength > 0"
-                                                  (change)="updatePasswordRules()" [disabled]="this.updating">
-                                    {{ "CONFIGURATIONS.enable_password_min_length" | translate }}
-                                </mat-slide-toggle>
-                                <mat-form-field appearance="outline" class="w-4/12 ml-2">
-                                    <mat-label>{{ "CONFIGURATIONS.password_min_length" | translate }}</mat-label>
-                                    <input matInput type="number" [(ngModel)]="this.passwordVerification.passwordRules.minLength"
-                                           [disabled]="!this.passwordVerification.minLengthEnabled || this.updating" (change)="updatePasswordRules()">
-                                </mat-form-field>
-                                <div class="mb-4">
-                                    <mat-slide-toggle [(ngModel)]="this.passwordVerification.passwordRules['uppercaseMandatory']" (change)="updatePasswordRules()"
-                                                      [disabled]="this.updating">
-                                        {{ "CONFIGURATIONS.enable_password_uppercase_mandatory" | translate }}
-                                    </mat-slide-toggle>
-                                </div>
-                                <div class="my-4">
-                                    <mat-slide-toggle [(ngModel)]="this.passwordVerification.passwordRules['specialCharMandatory']" (change)="updatePasswordRules()"
-                                                      [disabled]="this.updating">
-                                        {{ "CONFIGURATIONS.enable_password_special_char_mandatory" | translate }}
-                                    </mat-slide-toggle>
-                                </div>
-                                <div class="my-4">
-                                    <mat-slide-toggle [(ngModel)]="this.passwordVerification.passwordRules['numberMandatory']" (change)="updatePasswordRules()"
-                                                      [disabled]="this.updating">
-                                        {{ "CONFIGURATIONS.enable_password_number_mandatory" | translate }}
-                                    </mat-slide-toggle>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </mat-tab>
-                <mat-tab [label]="'CONFIGURATIONS.smtp' | translate">
-                    <div class="overflow-x-hidden overflow-y-auto text-center p-8" style="height: calc(100vh - 12rem) !important">
-                        <div class="hint text-center">
-                            <i class="fa-solid fa-circle-exclamation fa-2x pl-1"></i>
-                            <div class="message w-auto">
-                                <span class="text-lg">
-                                    {{ "CONFIGURATIONS.smtp_test_email" | translate }}
-                                </span>
-                                <mat-form-field subscriptSizing="dynamic" [ngStyle]="{'width.ch': this.emailTestControl.value.length + 0.5, 'min-width.ch': 25}">
-                                    <input matInput type="text" [formControl]="this.emailTestControl">
-                                </mat-form-field>
-                            </div>
-                        </div>
-                        <ng-container *ngFor="let unit of this.units">
-                            <h2 class="text-gray-900">{{ unit['label'] | translate }}</h2>
-                            <div class="flex justify-center mx-10">
-                                <div class="grid grid-cols-3 gap-6 w-full mt-5 mb-0 text-center">
-                                    <ng-container *ngFor="let field of this.smtpForm">
-                                        <ng-container *ngIf="field.unit === unit['id']">
-                                            <div *ngIf="field.type === 'boolean'" class="col-span-3 mb-8">
-                                                <mat-slide-toggle class="relative m-auto top-4" [formControl]="field['control']">
-                                                    {{ field.label | translate }}
-                                                </mat-slide-toggle>
-                                            </div>
-                                            <mat-form-field class="w-full" *ngIf="field.type === 'text' || field.type === 'password' || field.type === 'number'"
-                                                [class.pointer-events-none]="disableField(unit['id'])">
-                                                <mat-label>{{ field.label | translate }}</mat-label>
-                                                <input matInput [type]="field.type" [formControl]="field['control']" [required]="field['required']"
-                                                       [readonly]="disableField(unit['id'])" (keyup)="isValidForm(this.smtpForm, false)">
-                                                <mat-icon matSuffix *ngIf="field.id === 'smtpPwd'" (click)="field.type === 'text' ? field.type = 'password' : field.type = 'text' "
-                                                          class="text-green-400 relative cursor-pointer -top-0.5 text-base">
-                                                    <i class="fa fa-1x" [class.fa-eye-slash]="field.type !== 'password'" [class.fa-eye]="field.type === 'password'"></i>
-                                                </mat-icon>
-                                            </mat-form-field>
-                                            <mat-form-field class="w-full" *ngIf="field.type === 'select'">
-                                                <mat-label>{{ field.label | translate }}</mat-label>
-                                                <mat-select [formControl]="field['control']" [required]="field['required']" (selectionChange)="isValidForm(this.smtpForm, false)">
-                                                    <mat-option *ngFor="let option of field.values" [value]="option['id']">
-                                                        {{ option['label'] | translate }}
-                                                    </mat-option>
+                                <div>
+                                    <h3 class="text-gray-900 m-4">{{ "PRIVILEGES.change_language" | translate }}</h3>
+                                    <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
+                                    @if (this.privilegesService.hasPrivilege('change_language')) {
+                                        <div class="ml-3 relative hidden md:block">
+                                            <mat-form-field class="language origin-top-right right-0 mt-4 w-1/2">
+                                                <mat-label>{{ 'GLOBAL.language' | translate }}</mat-label>
+                                                <mat-select (selectionChange)="this.localeService.changeLocale($event)"
+                                                            [disabled]="this.localeService.localeLoading"
+                                                            [(value)]="this.localeService.currentLang">
+                                                    @for (lang of this.localeService.langs; track lang) {
+                                                        <mat-option [value]="lang[0]">
+                                                            {{ lang[1] }}
+                                                        </mat-option>
+                                                    }
                                                 </mat-select>
                                             </mat-form-field>
-                                        </ng-container>
-                                    </ng-container>
+                                            @if (this.localeService.localeLoading) {
+                                               <i class="fa-solid fa-earth-europe fa-beat fa-lg text-gray-900 ml-4"></i>
+                                            }
+                                        </div>
+                                    }
                                 </div>
                             </div>
-                        </ng-container>
-                        <div class="flex justify-center items-center mt-4">
-                            <span [class.cursor-not-allowed]="!this.emailTestControl.value">
-                                <button class="p-6 mr-4 border min-w-56 text-white transition border-solid duration-300 border-gray-900 hover:text-gray-900 hover:bg-transparent" mat-button (click)="this.testSmtp()"
-                                        [disabled]="!this.emailTestControl.value"
-                                        [class.bg-gray-900]="this.emailTestControl.value"
-                                        [class.bg-gray-400]="!this.emailTestControl.value">
-                                    <span *ngIf="!this.sending">
-                                        {{ "CONFIGURATIONS.test_smtp" | translate }}
+                            <hr class="border-green-400 relative z-30 w-1/2 m-auto my-4">
+                            @if (this.selectedIndex === 0) {
+                                <div class="grid grid-cols-2">
+                                    <div class="mb-5 mx-5 h-48">
+                                        <h3 class="text-gray-900">{{ 'CONFIGURATIONS.top_login_text' | translate }}</h3>
+                                        <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
+                                        <editor [formControl]="loginTopMessage"
+                                                licenseKey="gpl"
+                                                [init]="{
+                                                    resize: false,
+                                                    menubar: false,
+                                                    branding: false,
+                                                    promotion: false,
+                                                    language: 'fr_FR',
+                                                    base_url: './tinymce',
+                                                    language_url: './assets/i18n/tinymce/langs/fr_FR.js',
+                                                    toolbar: 'undo redo | formatselect | bold italic forecolor backcolor | link | alignleft aligncenter alignright alignjustify',
+                                                    plugins: 'lists link image table code wordcount',
+                                                    color_map: this.colorsMap
+                                                }">
+                                        </editor>
+                                        <div class="flex justify-center m-6" [class.cursor-not-allowed]="!this.privilegesService.hasPrivilege('update_login_top_message')">
+                                            <button class="p-6" type="submit" mat-button (click)="updateLoginTopText()"
+                                                    [disabled]="!this.privilegesService.hasPrivilege('update_login_top_message')"
+                                                    [class.valid_button]="this.privilegesService.hasPrivilege('update_login_top_message')"
+                                                    [class.invalid_button]="!this.privilegesService.hasPrivilege('update_login_top_message')">
+                                                {{ 'CONFIGURATIONS.save_login_text' | translate }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="mb-5 mx-5 h-48">
+                                        <h3 class="text-gray-900">{{ 'CONFIGURATIONS.bottom_login_text' | translate }}</h3>
+                                        <hr class="border-green-400 relative z-30 w-1/2 m-auto mb-4">
+                                        <editor [formControl]="loginBottomMessage"
+                                                licenseKey="gpl"
+                                                [init]="{
+                                                    resize: false,
+                                                    menubar: false,
+                                                    branding: false,
+                                                    promotion: false,
+                                                    language: 'fr_FR',
+                                                    base_url: './tinymce',
+                                                    language_url: './assets/i18n/tinymce/langs/fr_FR.js',
+                                                    toolbar: 'undo redo | formatselect | bold italic forecolor backcolor | link | alignleft aligncenter alignright alignjustify',
+                                                    plugins: 'lists link image table code wordcount',
+                                                    color_map: this.colorsMap
+                                                }">
+                                        </editor>
+                                        <div class="flex justify-center m-6"
+                                             [class.cursor-not-allowed]="!this.privilegesService.hasPrivilege('update_login_bottom_message')">
+                                            <button class="p-6" type="submit" mat-button (click)="updateLoginBottomText()"
+                                                    [disabled]="!this.privilegesService.hasPrivilege('update_login_bottom_message')"
+                                                    [class.valid_button]="this.privilegesService.hasPrivilege('update_login_bottom_message')"
+                                                    [class.invalid_button]="!this.privilegesService.hasPrivilege('update_login_bottom_message')">
+                                                {{ 'CONFIGURATIONS.save_login_text' | translate }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </mat-tab>
+                    <mat-tab [label]="'CONFIGURATIONS.password_rules' | translate">
+                        <div class="overflow-x-hidden overflow-y-auto h-full-overflow text-center">
+                            <div class="flex flex-col items-center justify-center items-center gap-4 mt-4">
+                                <div class="text-left">
+                                    <mat-slide-toggle [(ngModel)]="this.passwordVerification.minLengthEnabled" [checked]="this.passwordVerification.passwordRules.minLength > 0"
+                                                      (change)="updatePasswordRules()" [disabled]="this.updating">
+                                        {{ "CONFIGURATIONS.enable_password_min_length" | translate }}
+                                    </mat-slide-toggle>
+                                    <mat-form-field appearance="outline" class="w-4/12 ml-2">
+                                        <mat-label>{{ "CONFIGURATIONS.password_min_length" | translate }}</mat-label>
+                                        <input matInput type="number" [(ngModel)]="this.passwordVerification.passwordRules.minLength"
+                                               [disabled]="!this.passwordVerification.minLengthEnabled || this.updating" (change)="updatePasswordRules()">
+                                    </mat-form-field>
+                                    <div class="mb-4">
+                                        <mat-slide-toggle [(ngModel)]="this.passwordVerification.passwordRules['uppercaseMandatory']" (change)="updatePasswordRules()"
+                                                          [disabled]="this.updating">
+                                            {{ "CONFIGURATIONS.enable_password_uppercase_mandatory" | translate }}
+                                        </mat-slide-toggle>
+                                    </div>
+                                    <div class="my-4">
+                                        <mat-slide-toggle [(ngModel)]="this.passwordVerification.passwordRules['specialCharMandatory']" (change)="updatePasswordRules()"
+                                                          [disabled]="this.updating">
+                                            {{ "CONFIGURATIONS.enable_password_special_char_mandatory" | translate }}
+                                        </mat-slide-toggle>
+                                    </div>
+                                    <div class="my-4">
+                                        <mat-slide-toggle [(ngModel)]="this.passwordVerification.passwordRules['numberMandatory']" (change)="updatePasswordRules()"
+                                                          [disabled]="this.updating">
+                                            {{ "CONFIGURATIONS.enable_password_number_mandatory" | translate }}
+                                        </mat-slide-toggle>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab [label]="'CONFIGURATIONS.smtp' | translate">
+                        <div class="overflow-x-hidden overflow-y-auto text-center p-8" style="height: calc(100vh - 12rem) !important">
+                            <div class="hint text-center">
+                                <i class="fa-solid fa-circle-exclamation fa-2x pl-1"></i>
+                                <div class="message w-auto">
+                                    <span class="text-lg">
+                                        {{ "CONFIGURATIONS.smtp_test_email" | translate }}
                                     </span>
-                                    <span *ngIf="this.sending">
-                                        <i class="fa fa-circle-notch fa-spin fa-2x"></i>
-                                    </span>
+                                    <mat-form-field subscriptSizing="dynamic" [ngStyle]="{'width.ch': this.emailTestControl.value.length + 0.5, 'min-width.ch': 25}">
+                                        <input matInput type="text" [formControl]="this.emailTestControl">
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            @for (unit of this.units; track unit['id']) {
+                                <h2 class="text-gray-900">{{ unit['label'] | translate }}</h2>
+                                <div class="flex justify-center mx-10">
+                                    <div class="grid grid-cols-3 gap-6 w-full mt-5 mb-0 text-center">
+                                        @for (field of this.smtpForm; track field['id']) {
+                                            @if (field.unit === unit['id']) {
+                                                @if (field.type === 'boolean') {
+                                                    <div class="col-span-3 mb-8">
+                                                        <mat-slide-toggle class="relative m-auto top-4" [formControl]="field['control']">
+                                                            {{ field.label | translate }}
+                                                        </mat-slide-toggle>
+                                                    </div>
+                                                } @else if (field.type === 'text' || field.type === 'password' || field.type === 'number') {
+                                                    <mat-form-field class="w-full" [class.pointer-events-none]="disableField(unit['id'])">
+                                                        <mat-label>{{ field.label | translate }}</mat-label>
+                                                        <input matInput [type]="field.type" [formControl]="field['control']" [required]="field['required']"
+                                                               [readonly]="disableField(unit['id'])" (keyup)="isValidForm(this.smtpForm, false)">
+                                                        @if (field.id === 'smtpPwd') {
+                                                            <mat-icon matSuffix (click)="field.type === 'text' ? field.type = 'password' : field.type = 'text' "
+                                                                      class="text-green-400 relative cursor-pointer -top-0.5 text-base">
+                                                                <i class="fa fa-1x" [class.fa-eye-slash]="field.type !== 'password'" [class.fa-eye]="field.type === 'password'"></i>
+                                                            </mat-icon>
+                                                        }
+                                                    </mat-form-field>
+                                                } @else if (field.type === 'select') {
+                                                    <mat-form-field class="w-full">
+                                                        <mat-label>{{ field.label | translate }}</mat-label>
+                                                        <mat-select [formControl]="field['control']" [required]="field['required']" (selectionChange)="isValidForm(this.smtpForm, false)">
+                                                            @for (option of field.values; track option['id']) {
+                                                                <mat-option [value]="option['id']">
+                                                                    {{ option['label'] | translate }}
+                                                                </mat-option>
+                                                            }
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                }
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            }
+                            <div class="flex justify-center items-center mt-4">
+                                <span [class.cursor-not-allowed]="!this.emailTestControl.value">
+                                    <button class="p-6 mr-4 border min-w-56 text-white transition border-solid duration-300 border-gray-900 hover:text-gray-900 hover:bg-transparent" mat-button (click)="this.testSmtp()"
+                                            [disabled]="!this.emailTestControl.value"
+                                            [class.bg-gray-900]="this.emailTestControl.value"
+                                            [class.bg-gray-400]="!this.emailTestControl.value">
+                                        @if (this.sending) {
+                                            <i class="fa fa-circle-notch fa-spin fa-2x"></i>
+                                        } @else {
+                                            {{ "CONFIGURATIONS.test_smtp" | translate }}
+                                        }
+                                    </button>
+                                </span>
+                                <button class="ml-4 min-w-56 p-6 border-solid border-green-400 border text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
+                                        [disabled]="!this.smtpFormValid"
+                                        [class.bg-gray-400]="!this.smtpFormValid"
+                                        [class.bg-green-400]="this.smtpFormValid"
+                                        type="submit" mat-button (click)="this.updateSmtp()">
+                                    {{ 'CONFIGURATIONS.update_smtp' | translate }}
                                 </button>
-                            </span>
-                            <button class="ml-4 min-w-56 p-6 border-solid border-green-400 border text-white hover:bg-transparent hover:text-gray-900 transition duration-300"
-                                    [disabled]="!this.smtpFormValid"
-                                    [class.bg-gray-400]="!this.smtpFormValid"
-                                    [class.bg-green-400]="this.smtpFormValid"
-                                    type="submit" mat-button (click)="this.updateSmtp()">
-                                {{ 'CONFIGURATIONS.update_smtp' | translate }}
-                            </button>
-                        </div>
-                    </div>
-                </mat-tab>
-                <mat-tab [label]="'CONFIGURATIONS.advanced' | translate">
-                    <div class="overflow-x-hidden overflow-y-auto text-center" style="height: calc(100vh - 12rem) !important">
-                        <app-hint [message]="'GLOBAL.dont_touch' | translate"></app-hint>
-                        <mat-paginator [showFirstLastButtons]="true"
-                                       *ngIf="this.total > 0"
-                                       [length]="this.total"
-                                       [pageSize]="pageSize"
-                                       [pageIndex]="pageIndex"
-                                       [pageSizeOptions]="[5, 10, 15, 20, 50]"
-                                       (page)="onPageChange($event)">
-                        </mat-paginator>
-                        <mat-table matSort [dataSource]="configurations" (matSortChange)="sortData($event)">
-                            <ng-container matColumnDef="id">
-                                <mat-header-cell *matHeaderCellDef mat-sort-header="id"> {{ 'HEADER.id' | translate }} </mat-header-cell>
-                                <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
-                            </ng-container>
-                            <ng-container matColumnDef="label">
-                                <mat-header-cell *matHeaderCellDef mat-sort-header="label"> {{ 'HEADER.label' | translate }} </mat-header-cell>
-                                <mat-cell *matCellDef="let element"> {{ element.label }} </mat-cell>
-                            </ng-container>
-                            <ng-container matColumnDef="description">
-                                <mat-header-cell *matHeaderCellDef mat-sort-header="description"> {{ 'HEADER.description' | translate }} </mat-header-cell>
-                                <mat-cell *matCellDef="let element"> {{ element.data.description }} </mat-cell>
-                            </ng-container>
-                            <ng-container matColumnDef="type">
-                                <mat-header-cell *matHeaderCellDef> {{ 'HEADER.type' | translate }} </mat-header-cell>
-                                <mat-cell *matCellDef="let element"> {{ element.data['label_type'] | translate }} </mat-cell>
-                            </ng-container>
-                            <ng-container matColumnDef="content">
-                                <mat-header-cell *matHeaderCellDef>{{ 'HEADER.value' | translate }} </mat-header-cell>
-                                <mat-cell *matCellDef="let element" (click)="element.updateMode = true">
-                                    <ng-container *ngIf="!element['updateMode'] else update">
-                                        {{ element.data.value }}
-                                    </ng-container>
-                                    <ng-template #update>
-                                        <mat-form-field appearance="outline" *ngIf="element.data.type === 'bool'">
-                                            <mat-select class="relative -top-3" [(ngModel)]="element.data.value"
-                                                        (selectionChange)="updateValue($event, element.id)">
-                                                <mat-option [value]="true">Activer</mat-option>
-                                                <mat-option [value]="false">Désactiver</mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                        <mat-form-field appearance="outline" class="w-full"
-                                                        *ngIf="element.data.type === 'int' || element.data.type === 'float'">
-                                            <input matInput type="number" [value]="element.data.value" (keyup.enter)="updateValue($event, element.id)"
-                                                   class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
-                                        </mat-form-field>
-                                        <mat-form-field appearance="outline" class="w-full" *ngIf="element.data.type === 'string'">
-                                            <input matInput [value]="element.data.value" (keyup.enter)="updateValue($event, element.id)"
-                                                   class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
-                                        </mat-form-field>
-                                        <mat-form-field appearance="outline" class="w-full" *ngIf="element.data.type === 'list'">
-                                            <mat-select class="relative -top-3" [(ngModel)]="element.data.value"
-                                                        (selectionChange)="updateValue($event, element.id)">
-                                                <mat-option *ngFor="let option of element.data.options" [value]="option">
-                                                    {{ option }}
-                                                </mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                    </ng-template>
-                                </mat-cell>
-                            </ng-container>
-                            <ng-container matColumnDef="actions">
-                                <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-                                <mat-cell *matCellDef="let element">
-                                    <button *ngIf="!element['updateMode']"
-                                            (click)="element.updateMode = true"
-                                            matTooltip="{{ 'CONFIGURATIONS.update' | translate }}" mat-icon-button
-                                            class="inline-block align-text-top">
-                                        <i class="fa-solid fa-edit text-lg"></i>
-                                    </button>
-                                    <button *ngIf="element['updateMode']"
-                                            (click)="element.updateMode = false;"
-                                            matTooltip="{{ 'CONFIGURATIONS.validate' | translate }}" mat-icon-button
-                                            class="inline-block align-text-top">
-                                        <i *ngIf="!this.updateLoading" class="fa-solid text-lg fa-check"></i>
-                                        <i *ngIf="this.updateLoading" class="fa-solid text-lg fa-circle-notch fa-spin"></i>
-                                    </button>
-                                </mat-cell>
-                            </ng-container>
-                            <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
-                            <mat-row *matRowDef="let row; columns: columnsToDisplay;"
-                                     class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
-                        </mat-table>
-                    </div>
-                </mat-tab>
-                <mat-tab [label]="'CONFIGURATIONS.generate_token' | translate">
-                    <div class="overflow-x-hidden overflow-y-auto text-center p-8" style="height: calc(100vh - 12rem) !important">
-                        <div class="text-center">
-                            <div class="text-lg text-gray-900 mb-4">
-                                {{ "CONFIGURATIONS.token_expiration" | translate }}
-                            </div>
-                            <mat-form-field class="w-96">
-                                <input matInput type="number" [formControl]="this.tokenExpirationControl" required>
-                            </mat-form-field>
-                        </div>
-                        <hr class="border border-green-400 w-1/4 m-auto mb-4">
-                        <div class="text-center w-auto">
-                            <div class="text-lg text-gray-900 mb-4">
-                                {{ "CONFIGURATIONS.token_associated_user" | translate }}
-                            </div>
-                            <mat-form-field class="w-96">
-                                <input matInput id="associated_user" type="text" [matAutocomplete]="autocomplete" [placeholder]="'CONFIGURATIONS.select_user' | translate" required>
-                                <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn" (optionSelected)="setSelectedUser($event)">
-                                    <mat-option *ngFor="let option of this.filteredUsers | async" [value]="option" [id]="option.id">
-                                        <span [innerHTML]="option['firstname'] + ' ' + option['lastname'] + ' (' + option.username + ')' | highlight: toHighlight"></span>
-                                    </mat-option>
-                                </mat-autocomplete>
-                            </mat-form-field>
-                        </div>
-                        <div class="text-center mt-8" [class.cursor-not-allowed]="!this.privilegesService.hasPrivilege('generate_auth_token')">
-                            <button class="valid_button" type="submit" mat-button (click)="generateAuthToken()"
-                                    [disabled]="!this.privilegesService.hasPrivilege('generate_auth_token')"
-                                    [class.invalid_button]="!this.privilegesService.hasPrivilege('generate_auth_token')"
-                                    [class.valid_button]="this.privilegesService.hasPrivilege('generate_auth_token')">
-                                {{ 'CONFIGURATIONS.generate_token' | translate }}
-                            </button>
-                            <div class="mt-8 text-gray-900" *ngIf="this.token">
-                                {{ this.token }}
-                                <i class="ml-4 fa-solid fa-copy text-2xl cursor-pointer"
-                                   [matTooltip]="'CONFIGURATIONS.copy_token' | translate"
-                                   (click)="copyToken()"></i>
                             </div>
                         </div>
-                    </div>
-                </mat-tab>
-            </mat-tab-group>
-        </div>
+                    </mat-tab>
+                    <mat-tab [label]="'CONFIGURATIONS.advanced' | translate">
+                        <div class="overflow-x-hidden overflow-y-auto text-center" style="height: calc(100vh - 12rem) !important">
+                            <app-hint [message]="'GLOBAL.dont_touch' | translate"></app-hint>
+                            @if (this.total > 0) {
+                                <mat-paginator [showFirstLastButtons]="true"
+                                               [length]="this.total"
+                                               [pageSize]="pageSize"
+                                               [pageIndex]="pageIndex"
+                                               [pageSizeOptions]="[5, 10, 15, 20, 50]"
+                                               (page)="onPageChange($event)">
+                                </mat-paginator>
+                            }
+                            <mat-table matSort [dataSource]="configurations" (matSortChange)="sortData($event)">
+                                <ng-container matColumnDef="id">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header="id"> {{ 'HEADER.id' | translate }} </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="label">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header="label"> {{ 'HEADER.label' | translate }} </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{ element.label }} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="description">
+                                    <mat-header-cell *matHeaderCellDef mat-sort-header="description"> {{ 'HEADER.description' | translate }} </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{ element.data.description }} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="type">
+                                    <mat-header-cell *matHeaderCellDef> {{ 'HEADER.type' | translate }} </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{ element.data['label_type'] | translate }} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="content">
+                                    <mat-header-cell *matHeaderCellDef>{{ 'HEADER.value' | translate }} </mat-header-cell>
+                                    <mat-cell *matCellDef="let element" (click)="element.updateMode = true">
+                                        @if (element['updateMode']) {
+                                            @if (element.data.type === 'bool') {
+                                                <mat-form-field appearance="outline">
+                                                    <mat-select class="relative -top-3" [(ngModel)]="element.data.value"
+                                                                (selectionChange)="updateValue($event, element.id)">
+                                                        <mat-option [value]="true">Activer</mat-option>
+                                                        <mat-option [value]="false">Désactiver</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            } @else if (element.data.type === 'int' || element.data.type === 'float') {
+                                                <mat-form-field appearance="outline" class="w-full">
+                                                    <input matInput type="number" [value]="element.data.value" (keyup.enter)="updateValue($event, element.id)"
+                                                           class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
+                                                </mat-form-field>
+                                            } @else if (element.data.type === 'string') {
+                                                <mat-form-field appearance="outline" class="w-full">
+                                                    <input matInput [value]="element.data.value" (keyup.enter)="updateValue($event, element.id)"
+                                                           class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
+                                                </mat-form-field>
+                                            } @else if (element.data.type === 'list') {
+                                                <mat-form-field appearance="outline" class="w-full">
+                                                    <mat-select class="relative -top-3" [(ngModel)]="element.data.value" (selectionChange)="updateValue($event, element.id)">
+                                                        @for (option of element.data.options; track option) {
+                                                            <mat-option [value]="option">
+                                                                {{ option }}
+                                                            </mat-option>
+                                                        }
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            }
+                                        } @else {
+                                            {{ element.data.value }}
+                                        }
+                                    </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="actions">
+                                    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                        @if (element['updateMode']) {
+                                            <button  (click)="element.updateMode = false;"
+                                                    matTooltip="{{ 'CONFIGURATIONS.validate' | translate }}" mat-icon-button
+                                                    class="inline-block align-text-top">
+                                                @if (this.updateLoading) {
+                                                    <i class="fa-solid text-lg fa-circle-notch fa-spin"></i>
+                                                } @else {
+                                                    <i class="fa-solid text-lg fa-check"></i>
+                                                }
+                                            </button>
+                                        } @else {
+                                            <button (click)="element.updateMode = true"
+                                                    matTooltip="{{ 'CONFIGURATIONS.update' | translate }}" mat-icon-button
+                                                    class="inline-block align-text-top">
+                                                <i class="fa-solid fa-edit text-lg"></i>
+                                            </button>
+                                        }
+                                    </mat-cell>
+                                </ng-container>
+                                <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+                                <mat-row *matRowDef="let row; columns: columnsToDisplay;"
+                                         class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
+                            </mat-table>
+                        </div>
+                    </mat-tab>
+                    <mat-tab [label]="'CONFIGURATIONS.generate_token' | translate">
+                        <div class="overflow-x-hidden overflow-y-auto text-center p-8" style="height: calc(100vh - 12rem) !important">
+                            <div class="text-center">
+                                <div class="text-lg text-gray-900 mb-4">
+                                    {{ "CONFIGURATIONS.token_expiration" | translate }}
+                                </div>
+                                <mat-form-field class="w-96">
+                                    <input matInput type="number" [formControl]="this.tokenExpirationControl" required>
+                                </mat-form-field>
+                            </div>
+                            <hr class="border border-green-400 w-1/4 m-auto mb-4">
+                            <div class="text-center w-auto">
+                                <div class="text-lg text-gray-900 mb-4">
+                                    {{ "CONFIGURATIONS.token_associated_user" | translate }}
+                                </div>
+                                <mat-form-field class="w-96">
+                                    <input matInput id="associated_user" type="text" [matAutocomplete]="autocomplete" [placeholder]="'CONFIGURATIONS.select_user' | translate" required>
+                                    <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn" (optionSelected)="setSelectedUser($event)">
+                                        @for (user of this.filteredUsers | async; track user['id']) {
+                                            <mat-option [value]="user" [id]="user.id">
+                                                <span [innerHTML]="user['firstname'] + ' ' + user['lastname'] + ' (' + user.username + ')' | highlight: toHighlight"></span>
+                                            </mat-option>
+                                        }
+                                    </mat-autocomplete>
+                                </mat-form-field>
+                            </div>
+                            <div class="text-center mt-8" [class.cursor-not-allowed]="!this.privilegesService.hasPrivilege('generate_auth_token')">
+                                <button class="valid_button" type="submit" mat-button (click)="generateAuthToken()"
+                                        [disabled]="!this.privilegesService.hasPrivilege('generate_auth_token')"
+                                        [class.invalid_button]="!this.privilegesService.hasPrivilege('generate_auth_token')"
+                                        [class.valid_button]="this.privilegesService.hasPrivilege('generate_auth_token')">
+                                    {{ 'CONFIGURATIONS.generate_token' | translate }}
+                                </button>
+                                @if (this.token) {
+                                    <div class="mt-8 text-gray-900">
+                                        {{ this.token }}
+                                        <i class="ml-4 fa-solid fa-copy text-2xl cursor-pointer"
+                                           [matTooltip]="'CONFIGURATIONS.copy_token' | translate"
+                                           (click)="copyToken()"></i>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+        }
     </mat-sidenav-content>
 </mat-sidenav-container>

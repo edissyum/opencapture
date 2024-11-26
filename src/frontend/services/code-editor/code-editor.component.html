@@ -1,24 +1,28 @@
 <div class="h-full">
     <ngs-code-editor style="height: 95%"
-                     [theme]="theme"
-                     [codeModel]="codeModel"
-                     [options]="options">
+                     [theme]="this.theme"
+                     [codeModel]="this.codeModel"
+                     [options]="this.options">
     </ngs-code-editor>
     <span class="flex pr-4 pt-1">
-        <span class="flex w-full justify-start pl-4" *ngIf="data['testScriptButton']">
-            <button mat-button class="text-gray-900" (click)="testScript()">
-                {{ data['testScriptButton'] }}
-                <i *ngIf="this.testing" class="fa-solid fa-circle-notch fa-spin"></i>
-            </button>
-        </span>
+        @if (this.data['testScriptButton']) {
+            <span class="flex w-full justify-start pl-4">
+                <button mat-button class="text-gray-900" (click)="testScript()">
+                    {{ this.data['testScriptButton'] }}
+                    @if (this.testing) {
+                        <i class="fa-solid fa-circle-notch fa-spin"></i>
+                    }
+                </button>
+            </span>
+        }
         <span class="flex w-full justify-end">
             <button mat-button [mat-dialog-close]="false">
-                {{ data['cancelButton'] }}
+                {{ this.data['cancelButton'] }}
             </button>
             <span [matTooltip]="this.tested ? '' : 'WORKFLOW.test_before_save' | translate" [class.cursor-not-allowed] = !this.tested>
                 <button mat-button [class.text-green-400]="this.tested || this.codeModel.value == ''" [class.text-gray-600]="!this.tested  && this.codeModel.value != ''"
                         [mat-dialog-close]="this.tested ? this.codeModel.value : false" [disabled]="!this.tested && this.codeModel.value != ''">
-                    {{ data['confirmButton'] }}
+                    {{ this.data['confirmButton'] }}
                 </button>
             </span>
         </span>

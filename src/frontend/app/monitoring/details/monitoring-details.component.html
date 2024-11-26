@@ -23,43 +23,53 @@
                         {{ this.processId }}
                     </span>
                 </div>
-                <div class="grid my-10 mx-10" *ngIf="this.processData['document_ids']">
-                    <span class="text-gray-400 text-base text-center">
-                        <span *ngIf="this.processData['document_ids'].length <= 1">
-                            {{ 'MONITORING.document_id' | translate }}
+                @if (this.processData['document_ids']) {
+                    <div class="grid my-10 mx-10">
+                        <span class="text-gray-400 text-base text-center">
+                            @if (this.processData['document_ids'].length <= 1) {
+                                {{ 'MONITORING.document_id' | translate }}
+                            } @else {
+                                {{ 'MONITORING.documents_id' | translate }}
+                            }
                         </span>
-                        <span *ngIf="this.processData['document_ids'].length > 1">
-                            {{ 'MONITORING.documents_id' | translate }}
-                        </span>
-                    </span>
-                    <span class="text-center text-xl" *ngIf="this.processData['document_ids']">
-                        <div>
-                            <span class="material-icons mr-3 relative top-1 font-light cursor-pointer text-gray-400" *ngIf="this.processData['document_ids'].length > 1"
-                                  (click)="this.splitterCpt !== 0 ? this.splitterCpt = this.splitterCpt - 1 : this.splitterCpt = this.processData['document_ids'].length - 1">
-                                arrow_back
+                        @if (this.processData['document_ids']) {
+                            <span class="text-center text-xl">
+                                <div>
+                                    @if (this.processData['document_ids'].length > 1) {
+                                        <span class="material-icons mr-3 relative top-1 font-light cursor-pointer text-gray-400"
+                                              (click)="this.splitterCpt !== 0 ? this.splitterCpt = this.splitterCpt - 1 : this.splitterCpt = this.processData['document_ids'].length - 1">
+                                            arrow_back
+                                        </span>
+                                    }
+                                    @if (this.processData.module === 'verifier') {
+                                        <a [routerLink]="'../../verifier/viewer/' + this.processData['document_ids'][0]" [matTooltip]="'MONITORING.access_document' | translate">
+                                            {{ this.processData['document_ids'][this.splitterCpt] }}
+                                        </a>
+                                    } @else {
+                                        <a [routerLink]="'../../splitter/viewer/' + this.processData.time + '/' + this.processData['document_ids'][this.splitterCpt]">
+                                            {{ this.processData['document_ids'][this.splitterCpt] }}
+                                        </a>
+                                    }
+                                    @if (this.processData['document_ids'].length > 1) {
+                                        <span class="material-icons ml-3 relative top-1 font-light cursor-pointer text-gray-400"
+                                             (click)="this.splitterCpt < this.processData['document_ids'].length - 1 ? this.splitterCpt = this.splitterCpt + 1 : this.splitterCpt = 0">
+                                            arrow_forward
+                                        </span>
+                                    }
+                                </div>
                             </span>
-                            <a [routerLink]="'../../verifier/viewer/' + this.processData['document_ids'][0]" *ngIf="this.processData.module === 'verifier'" [matTooltip]="'MONITORING.access_document' | translate">
-                                {{ this.processData['document_ids'][this.splitterCpt] }}
-                            </a>
-                            <a [routerLink]="'../../splitter/viewer/' + this.processData.time + '/' + this.processData['document_ids'][this.splitterCpt]" *ngIf="this.processData.module === 'splitter'">
-                                {{ this.processData['document_ids'][this.splitterCpt] }}
-                            </a>
-                            <span class="material-icons ml-3 relative top-1 font-light cursor-pointer text-gray-400" *ngIf="this.processData['document_ids'].length > 1"
-                                  (click)="this.splitterCpt < this.processData['document_ids'].length - 1 ? this.splitterCpt = this.splitterCpt + 1 : this.splitterCpt = 0">
-                                arrow_forward
-                            </span>
-                        </div>
-                    </span>
-                </div>
+                        }
+                    </div>
+                }
                 <div class="grid my-10 mx-10">
-                    <span *ngIf="this.processData['workflow_id']">
+                    @if (this.processData['workflow_id']) {
                         <div class="text-gray-400 text-base text-center">
                             {{ 'MONITORING.workflow_associated' | translate }}
                         </div>
                         <div class="text-center text-xl">
                             {{ this.workflowLabel }}
                         </div>
-                    </span>
+                    }
                 </div>
                 <div class="grid my-10 mx-10">
                     <div class="text-gray-400 text-base text-center">
@@ -89,22 +99,25 @@
                     <div class="text-gray-400 text-base text-center">
                         {{ 'MONITORING.status' | translate }}
                     </div>
-                    <div *ngIf="this.processData.status === 'wait' && !this.processData.error" class="text-gray-400 text-center text-3xl"
-                          [matTooltip]="'MONITORING.wait' | translate">
-                        <i class="fa-solid fa-clock text-gray-400"></i>
-                    </div>
-                    <div *ngIf="this.processData.status === 'running' && !this.processData.error" class="text-gray-400 text-center text-3xl"
-                              [matTooltip]="'MONITORING.running' | translate">
-                        <i class="fa-solid fa-person-running fa-fade text-green-400"></i>
-                    </div>
-                    <div *ngIf="this.processData.status === 'done' && !this.processData.error" class="text-green-400 text-center text-3xl"
-                              [matTooltip]="'MONITORING.done' | translate">
-                        <i class="fa-solid fa-check"></i>
-                    </div>
-                    <div *ngIf="this.processData.status === 'error' || this.processData.error" class="text-red-400 text-center text-3xl"
-                              [matTooltip]="'MONITORING.error' | translate">
-                        <i class="fa-solid fa-xmark"></i>
-                    </div>
+                    @if (!this.processData.error) {
+                        @if (this.processData.status === 'wait') {
+                            <div class="text-gray-400 text-center text-3xl" [matTooltip]="'MONITORING.wait' | translate">
+                                <i class="fa-solid fa-clock text-gray-400"></i>
+                            </div>
+                        } @else if (this.processData.status === 'running') {
+                            <div class="text-gray-400 text-center text-3xl" [matTooltip]="'MONITORING.running' | translate">
+                                <i class="fa-solid fa-person-running fa-fade text-green-400"></i>
+                            </div>
+                        } @else if (this.processData.status === 'done') {
+                            <div class="text-green-400 text-center text-3xl" [matTooltip]="'MONITORING.done' | translate">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                        }
+                    } @else if (this.processData.status === 'error' || this.processData.error) {
+                        <div class="text-red-400 text-center text-3xl" [matTooltip]="'MONITORING.error' | translate">
+                            <i class="fa-solid fa-xmark"></i>
+                        </div>
+                    }
                 </div>
             </div>
             <hr class="border-green-400 w-1/3 mx-auto -mt-2 mb-4">
@@ -126,14 +139,17 @@
                         <ng-container matColumnDef="status">
                             <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.status' | translate }} </mat-header-cell>
                             <mat-cell *matCellDef="let element">
-                        <span *ngIf="element.status !== 'error'" class="text-gray-400">
-                            <i class="fa-solid fa-check text-green-400 text-lg w-6"></i>
-                            {{ 'MONITORING.task_done' | translate }}
-                        </span>
-                        <span *ngIf="element.status === 'error'" class="text-red-400">
-                            <i class="fa-solid fa-xmark text-lg w-6"></i>
-                            {{ 'MONITORING.task_error' | translate }}
-                        </span>
+                                @if (element.status === 'error') {
+                                    <span class="text-red-400">
+                                        <i class="fa-solid fa-xmark text-lg w-6"></i>
+                                        {{ 'MONITORING.task_error' | translate }}
+                                    </span>
+                                } @else {
+                                    <span class="text-gray-400">
+                                        <i class="fa-solid fa-check text-green-400 text-lg w-6"></i>
+                                        {{ 'MONITORING.task_done' | translate }}
+                                    </span>
+                                }
                             </mat-cell>
                         </ng-container>
                         <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
