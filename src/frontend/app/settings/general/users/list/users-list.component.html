@@ -3,9 +3,11 @@
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
-        <div *ngIf="this.loading">
-            <app-loader></app-loader>
-        </div>
+        @if (this.loading) {
+            <div>
+                <app-loader></app-loader>
+            </div>
+        }
         <div class="settings_header">
             <div class="flex">
                 <button mat-icon-button (click)="this.serviceSettings.minimizeSideNav = !this.serviceSettings.minimizeSideNav;">
@@ -58,25 +60,29 @@
                 <ng-container matColumnDef="status">
                     <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.status' | translate }} </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <span *ngIf="element.enabled"> <span class="text-green-400 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.active' | translate }}</span>
-                        <span *ngIf="!element.enabled"> <span class="text-red-600 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.inactive' | translate }}</span>
+                        @if (element.enabled) {
+                            <span> <span class="text-green-400 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.active' | translate }}</span>
+                        } @else {
+                            <span> <span class="text-red-600 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.inactive' | translate }}</span>
+                        }
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <button *ngIf="element.enabled"
-                                (click)="$event.stopPropagation();disableConfirmDialog(element.id, element.username)"
-                                matTooltip="{{ 'USER.disable' | translate }}" mat-icon-button
-                                class="inline-block align-text-top">
-                            <i class="fa-solid fa-pause text-lg"></i>
-                        </button>
-                        <button *ngIf="!element.enabled"
-                                (click)="$event.stopPropagation();enableConfirmDialog(element.id, element.username)"
-                                matTooltip="{{ 'USER.enable' | translate }}" mat-icon-button
-                                class="inline-block align-text-top">
-                            <i class="fa-solid fa-play text-lg"></i>
-                        </button>
+                        @if (element.enabled) {
+                            <button (click)="$event.stopPropagation();disableConfirmDialog(element.id, element.username)"
+                                    matTooltip="{{ 'USER.disable' | translate }}" mat-icon-button
+                                    class="inline-block align-text-top">
+                                <i class="fa-solid fa-pause text-lg"></i>
+                            </button>
+                        } @else {
+                            <button (click)="$event.stopPropagation();enableConfirmDialog(element.id, element.username)"
+                                    matTooltip="{{ 'USER.enable' | translate }}" mat-icon-button
+                                    class="inline-block align-text-top">
+                                <i class="fa-solid fa-play text-lg"></i>
+                            </button>
+                        }
                         <button (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.username)"
                                 matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
                                 class="inline-block align-text-top">
@@ -96,22 +102,24 @@
                            [pageSizeOptions]="[5, 10, 15, 20, 50]"
                            (page)="onPageChange($event)">
             </mat-paginator>
-            <div *ngIf="this.userQuotaConfig.enabled" class="text-center">
-                <hr class="border-green-400 w-1/3 mx-auto mt-6 -mb-4">
-                <span class="text-xl">
-                    {{ 'USER-QUOTA.informations' | translate }}
-                    <span class="cursor-default relative top-7 text-green-400 text-8xl"
-                          [class.text-green-400] = "this.activeUser < this.userQuotaConfig.quota"
-                          [class.text-red-400] = "this.activeUser > this.userQuotaConfig.quota"
-                          [class.text-orange-400] = "this.activeUser === this.userQuotaConfig.quota">&bull;</span>
-                </span>
-                <div class="m-2 mt-8 text-base">
-                    {{ 'USER-QUOTA.quota_number' | translate }} : {{ this.userQuotaConfig.quota }}
+            @if (this.userQuotaConfig.enabled) {
+                <div class="text-center">
+                    <hr class="border-green-400 w-1/3 mx-auto mt-6 -mb-4">
+                    <span class="text-xl">
+                        {{ 'USER-QUOTA.informations' | translate }}
+                        <span class="cursor-default relative top-7 text-green-400 text-8xl"
+                              [class.text-green-400] = "this.activeUser < this.userQuotaConfig.quota"
+                              [class.text-red-400] = "this.activeUser > this.userQuotaConfig.quota"
+                              [class.text-orange-400] = "this.activeUser === this.userQuotaConfig.quota">&bull;</span>
+                    </span>
+                    <div class="m-2 mt-8 text-base">
+                        {{ 'USER-QUOTA.quota_number' | translate }} : {{ this.userQuotaConfig.quota }}
+                    </div>
+                    <div class="m-2 text-base">
+                        {{ 'USER.enabled' | translate }} : {{ this.activeUser }}
+                    </div>
                 </div>
-                <div class="m-2 text-base">
-                    {{ 'USER.enabled' | translate }} : {{ this.activeUser }}
-                </div>
-            </div>
+            }
         </div>
     </mat-sidenav-content>
 </mat-sidenav-container>

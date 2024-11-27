@@ -124,64 +124,66 @@ class FindFooter:
             'table': ['accounts_supplier'],
             'where': ['vat_number = %s', 'status <> %s'],
             'data': [self.supplier[0], 'DEL']
-        })[0]
+        })
 
-        if position and position[column + '_position'] not in ['((,),(,))', 'NULL', None, '', False]:
-            page = position[column + '_page']
-            if self.target == 'full':
-                page = self.nb_pages
+        if position and position[0]:
+            position = position[0]
+            if position[column + '_position'] not in ['((,),(,))', 'NULL', None, '', False]:
+                page = position[column + '_page']
+                if self.target == 'full':
+                    page = self.nb_pages
 
-            data = {'position': position[column + '_position'], 'regex': None, 'target': 'full', 'page': page}
-            text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
-            if text:
-                try:
-                    # Try if the return string could be convert to float
-                    float(text)
-                    result = text
-                    if column == 'vat_rate':  # Fix if we retrieve 2000.0, or 200.0 instead of 20.0 for example
-                        tva_amounts = eval(self.regex['vat_rate_list'])
-                        _split = result.split('.')
-                        if _split[1] == '0':
-                            result = _split[0]
-
-                        for tva in tva_amounts:
-                            if str(tva) in str(result.replace(',', '.')):
-                                result = str(tva)
-                                break
-                except (ValueError, SyntaxError, TypeError):
-                    # If results isn't a float, transform it
-                    text = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', text.replace(' ', ''))
-                    result = ''
-                    for _t in text:
-                        result += _t.group()
-
-                    if select[0] != 'vat_1_position':
-                        try:
-                            text = result.replace(' ', '.')
-                            text = text.replace('\x0c', '')
-                            text = text.replace('\n', '')
-                            text = text.replace(',', '.')
-                            splitted_number = text.split('.')
-                            if len(splitted_number) > 1:
-                                last_index = splitted_number[len(splitted_number) - 1]
-                                if len(last_index) > 2:
-                                    result = text.replace('.', '')
-                                else:
-                                    splitted_number.pop(-1)
-                                    result = ''.join(splitted_number) + '.' + last_index
-                                    result = str(float(result))
-                        except (ValueError, SyntaxError, TypeError):
-                            return False
-
-                if result != '':
-                    result = re.sub(r'\s*', '', result).replace(',', '.')
-                    self.nb_pages = data['page']
+                data = {'position': position[column + '_position'], 'regex': None, 'target': 'full', 'page': page}
+                text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
+                if text:
                     try:
-                        position = json.loads(position)
-                        del position['ocr_from_user']
-                    except (TypeError, json.decoder.JSONDecodeError):
-                        return False
-                    return [result, position, data['page']]
+                        # Try if the return string could be convert to float
+                        float(text)
+                        result = text
+                        if column == 'vat_rate':  # Fix if we retrieve 2000.0, or 200.0 instead of 20.0 for example
+                            tva_amounts = eval(self.regex['vat_rate_list'])
+                            _split = result.split('.')
+                            if _split[1] == '0':
+                                result = _split[0]
+
+                            for tva in tva_amounts:
+                                if str(tva) in str(result.replace(',', '.')):
+                                    result = str(tva)
+                                    break
+                    except (ValueError, SyntaxError, TypeError):
+                        # If results isn't a float, transform it
+                        text = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', text.replace(' ', ''))
+                        result = ''
+                        for _t in text:
+                            result += _t.group()
+
+                        if select[0] != 'vat_1_position':
+                            try:
+                                text = result.replace(' ', '.')
+                                text = text.replace('\x0c', '')
+                                text = text.replace('\n', '')
+                                text = text.replace(',', '.')
+                                splitted_number = text.split('.')
+                                if len(splitted_number) > 1:
+                                    last_index = splitted_number[len(splitted_number) - 1]
+                                    if len(last_index) > 2:
+                                        result = text.replace('.', '')
+                                    else:
+                                        splitted_number.pop(-1)
+                                        result = ''.join(splitted_number) + '.' + last_index
+                                        result = str(float(result))
+                            except (ValueError, SyntaxError, TypeError):
+                                return False
+
+                    if result != '':
+                        result = re.sub(r'\s*', '', result).replace(',', '.')
+                        self.nb_pages = data['page']
+                        try:
+                            position = json.loads(position)
+                            del position['ocr_from_user']
+                        except (TypeError, json.decoder.JSONDecodeError):
+                            return False
+                        return [result, position, data['page']]
         return False
 
     def test_amount(self, total_ht, total_ttc, vat_rate, vat_amount):
@@ -247,22 +249,24 @@ class FindFooter:
             'table': ['accounts_supplier'],
             'where': ['vat_number = %s', 'status <> %s'],
             'data': [self.supplier[0], 'DEL']
-        })[0]
+        })
 
-        if position and position[name + '_position'] not in [False, 'NULL', '', None]:
-            self.nb_pages = position[name + '_page']
-            data = {'position': position[name + '_position'], 'regex': None, 'target': 'full',
-                    'page': position[name + '_page']}
-            res = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
-            if res[0]:
-                data = re.sub(r"[^0-9.]|\.(?!\d)", "", res[0].replace(',', '.'))
-                self.log.info(name + ' found with positions : ' + str(data))
-                _return = {
-                    0: data,
-                    1: json.loads(res[1]),
-                    "from_position": True
-                }
-                return _return
+        if position and position[0]:
+            position = position[0]
+            if position[name + '_position'] not in [False, 'NULL', '', None]:
+                self.nb_pages = position[name + '_page']
+                data = {'position': position[name + '_position'], 'regex': None, 'target': 'full',
+                        'page': position[name + '_page']}
+                res = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
+                if res[0]:
+                    data = re.sub(r"[^0-9.]|\.(?!\d)", "", res[0].replace(',', '.'))
+                    self.log.info(name + ' found with positions : ' + str(data))
+                    _return = {
+                        0: data,
+                        1: json.loads(res[1]),
+                        "from_position": True
+                    }
+                    return _return
         return False
 
     def run(self, text_as_string=False):

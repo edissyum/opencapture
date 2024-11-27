@@ -17,7 +17,7 @@
 
 import os
 import sys
-import chardet
+import psycopg
 import argparse
 import mimetypes
 from src.backend.main import create_classes_from_custom_id
@@ -45,6 +45,10 @@ if __name__ == '__main__':
     if mime in ['text/csv']:
         CONTENT_SUPPLIER_SHEET = spreadsheet.read_csv_sheet(file)
         EXISTING_MIME_TYPE = True
+
+    if CONTENT_SUPPLIER_SHEET.empty:
+        log.error('The file ' + file + ' is empty or not not well formatted')
+        exit()
 
     if EXISTING_MIME_TYPE:
         spreadsheet.construct_supplier_array(CONTENT_SUPPLIER_SHEET)
@@ -129,7 +133,11 @@ if __name__ == '__main__':
                         args['columns'][key] = None
 
                 if 'name' in args['columns'] and args['columns']['name']:
-                    res = database.insert(args)
+                    try:
+                        res = database.insert(args)
+                    except Exception as _e:
+                        log.error('While adding supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]) + ' ' + str(_e))
+                        continue
 
                     list_existing_supplier.append({'vat_number': vat_number, 'duns': duns})
 
@@ -212,7 +220,11 @@ if __name__ == '__main__':
                     for key in args['set']:
                         if args['set'][key] == 'nan':
                             args['set'][key] = None
-                    res = database.update(args)
+                    try:
+                        res = database.update(args)
+                    except Exception as _e:
+                        log.error('While updating supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]) + ' ' + str(_e))
+                        continue
 
                     if res[0]:
                         log.info('The following supplier was successfully updated into database : ' +

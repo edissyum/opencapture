@@ -3,9 +3,11 @@
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
-        <div *ngIf="this.loading">
-            <app-loader></app-loader>
-        </div>
+        @if (this.loading) {
+            <div>
+                <app-loader></app-loader>
+            </div>
+        }
         <div class="settings_header z-50">
             <div class="flex">
                 <button mat-icon-button (click)="this.serviceSettings.minimizeSideNav = !this.serviceSettings.minimizeSideNav;">
@@ -40,28 +42,31 @@
                         <mat-option [value]="noMasterFolder">
                             {{ 'DOCTYPE.no_master' | translate }}
                         </mat-option>
-                        <div *ngFor="let folder of this.documentTypeFactoryComponent.treeDataObj.doctypeData">
-                            <mat-option *ngIf="folder.type === 'folder' && folder.formId === selectedFormId"
-                                        [disabled]="!this.selectedDoctype.key || folder.code.startsWith(this.selectedDoctype.code + '.')
-                                                        || folder.key === this.selectedDoctype.key"
-                                        [value]="folder.code">
-                                {{ folder.label }}
-                            </mat-option>
-                        </div>
+                        @for (folder of this.documentTypeFactoryComponent.treeDataObj.doctypeData; track folder.key) {
+                            @if (folder.type === 'folder' && folder.formId === selectedFormId) {
+                                <mat-option [disabled]="!this.selectedDoctype.key || folder.code.startsWith(this.selectedDoctype.code + '.')
+                                                    || folder.key === this.selectedDoctype.key" [value]="folder.code">
+                                    {{ folder.label }}
+                                </mat-option>
+                            }
+                        }
                     </mat-select>
                 </mat-form-field>
-                <ng-container *ngFor="let field of this.fields">
-                    <mat-form-field *ngIf="field.type === 'text'">
-                        <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [formControlName]="field.id" [type]="field.type" [readonly]="!this.selectedDoctype.key"
-                               [placeholder]="field.placeholder" [required]="field['required']">
-                    </mat-form-field>
-                    <div class="text-center p-4" *ngIf="field.type === 'slide'">
-                        <mat-slide-toggle [formControlName]="field.id">
-                            {{ field.label | translate }}
-                        </mat-slide-toggle>
-                    </div>
-                </ng-container>
+                @for (field of this.fields; track field['id']) {
+                    @if (field['type'] === 'text') {
+                        <mat-form-field>
+                            <mat-label>{{ field['label'] | translate }}</mat-label>
+                            <input matInput [formControlName]="field['id']" [type]="field['type']" [readonly]="!this.selectedDoctype.key"
+                                   [placeholder]="field.placeholder" [required]="field['required']">
+                        </mat-form-field>
+                    } @else if (field['type'] === 'slide') {
+                        <div class="text-center p-4">
+                            <mat-slide-toggle [formControlName]="field['id']">
+                                {{ field['label'] | translate }}
+                            </mat-slide-toggle>
+                        </div>
+                    }
+                }
                 <button [disabled]="!this.selectedDoctype.key" class="m-auto w-7/12 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300" type="submit" mat-button>
                     {{ 'GLOBAL.edit' | translate }}
                 </button>

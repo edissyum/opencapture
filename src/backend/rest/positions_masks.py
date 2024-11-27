@@ -88,8 +88,8 @@ def update_positions_mask(position_mask_id):
     check, message = rest_validator(request.json['args'], [
         {'id': 'label', 'type': str, 'mandatory': False},
         {'id': 'regex', 'type': dict, 'mandatory': True},
-        {'id': 'form_id', 'type': int, 'mandatory': True},
-        {'id': 'supplier_id', 'type': int, 'mandatory': True}
+        {'id': 'form_id', 'type': int, 'mandatory': False},
+        {'id': 'supplier_id', 'type': int, 'mandatory': False}
     ])
 
     if not check:

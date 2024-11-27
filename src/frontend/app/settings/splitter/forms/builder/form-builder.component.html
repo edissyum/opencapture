@@ -3,9 +3,11 @@
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
-        <div *ngIf="this.loading">
-            <app-loader></app-loader>
-        </div>
+        @if (this.loading) {
+            <div>
+                <app-loader></app-loader>
+            </div>
+        }
         <div class="settings_header">
             <div class="flex">
                 <button mat-icon-button (click)="this.serviceSettings.minimizeSideNav = !this.serviceSettings.minimizeSideNav;">
@@ -20,294 +22,334 @@
             </div>
         </div>
         <hr class="border-green-400 relative z-30">
-        <div *ngIf="!loading" class="overflow-auto h-full-overflow">
-            <div class="grid grid-cols-3 gap-4 mt-6 ml-6 mr-6">
-                <mat-form-field>
-                    <mat-label>{{ "FORMS.label" | translate }}</mat-label>
-                    <input matInput [formControl]="this.form['label'].control" required>
-                </mat-form-field>
-                <div class="flex justify-center mt-4">
-                    <mat-slide-toggle [formControl]="this.form['default_form'].control">
-                        {{ "FORMS.is_default" | translate }}
-                    </mat-slide-toggle>
-                </div>
-                <mat-form-field>
-                    <mat-label>{{ "HEADER.choose_metadata_method" | translate }}</mat-label>
-                    <mat-select [formControl]="this.formSettings['metadata_method'].control">
-                        <mat-option *ngFor="let option of this.metadataMethods" value="{{ option.id }}">
-                            {{ option.label }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field *ngFor="let field of this.outputForm; let cpt = index">
-                    <mat-label>{{ "HEADER.choose_output" | translate }}</mat-label>
-                    <mat-select [(ngModel)]="field.control.value">
-                        <mat-option *ngFor="let option of this.outputs" value="{{ option.id }}">
-                            {{ option.output_label }}
-                        </mat-option>
-                    </mat-select>
-                    <span *ngIf="!field.canRemove" (click)="$event.stopPropagation(); addOutput()"
-                          matTooltip="{{ 'OUTPUT.add' | translate }}"
-                          class="absolute top-4 right-4 cursor-pointer text-gray-900 z-50">
-                        <i class="fa-solid fa-circle-plus"></i>
-                    </span>
-                    <span *ngIf="field.canRemove" (click)="$event.stopPropagation(); removeOutput(cpt)"
-                          matTooltip="{{ 'OUTPUT.remove' | translate }}"
-                          class="absolute top-4 right-4 cursor-pointer text-red-500">
-                        <i class="fa-solid fa-trash"></i>
-                    </span>
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-label>{{ "FORMS.export_zip_file" | translate }}</mat-label>
-                    <input matInput [formControl]="this.formSettings['export_zip_file'].control">
-                    <mat-hint class="text-gray-600">{{ "FORMS.export_zip_file_hint" | translate }}</mat-hint>
-                </mat-form-field>
-            </div>
-            <ng-container *ngFor="let category of fieldCategories; let i = index">
-                <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white" style="top: 2.5rem; left:2.5rem;" [style]="'width:calc(3% + ' + this.translate.instant(category['label']).length + '%)'">
-                    {{ category['label'] | translate }}
-                </div>
-                <div class="border-green-400 border rounded-lg mx-6 m-7">
-                    <div cdkDropList (cdkDropListDropped)="dropFromForm($event)" id="{{ category['id'] }}"
-                         class="flex flex-wrap cursor-pointer w-full my-3" style="min-height: 50px;">
-                        <div *ngFor="let field of this.fields[category['id']]; let index = index" class="flex items-center px-3 overflow-hidden" [class]="field.class"
-                             ngSortGridGroup="{{ category['id'] }}" ngSortgridItem [ngSortGridItems]="fields[category['id']]" (sorted)="storeNewOrder($event, category['id'])">
-                            <mat-form-field class="right-0 w-full form-builder">
-                                <i cdkDrag class="fa-solid fa-trash z-10" (click)="deleteField($event, index, category['id'], field.unit)" [matTooltip]="this.translate.instant('FORMS.delete_field')"></i>
-                                <span class="input-label relative border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-10/12">
-                                    <span *ngIf="field.required" class="text-red-500 mr-2 relative top-0.5">*</span>
-                                    <strong>{{ field.label | translate }}</strong>
-                                    <span *ngIf="field.type !== 'select' && field.type !== 'textarea'"> ({{ 'TYPES.' + field.format | translate }})</span>
-                                    <span *ngIf="field.type === 'select'"> ({{ 'TYPES.select' | translate }})</span>
-                                    <span *ngIf="field.type === 'textarea'"> ({{ 'TYPES.textarea' | translate }})</span>
+        @if (!this.loading) {
+            <div class="overflow-auto h-full-overflow">
+                <div class="grid grid-cols-3 gap-4 mt-6 ml-6 mr-6">
+                    <mat-form-field>
+                        <mat-label>{{ "FORMS.label" | translate }}</mat-label>
+                        <input matInput [formControl]="this.form['label'].control" required>
+                    </mat-form-field>
+                    <div class="flex justify-center mt-4">
+                        <mat-slide-toggle [formControl]="this.form['default_form'].control">
+                            {{ "FORMS.is_default" | translate }}
+                        </mat-slide-toggle>
+                    </div>
+                    <mat-form-field>
+                        <mat-label>{{ "HEADER.choose_metadata_method" | translate }}</mat-label>
+                        <mat-select [formControl]="this.formSettings['metadata_method'].control">
+                            @for (option of this.metadataMethods; track option.id) {
+                                <mat-option value="{{ option.id }}">{{ option.label }}</mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                    @for (field of this.outputForm; track field['id']; let cpt = $index) {
+                        <mat-form-field>
+                            <mat-label>{{ "HEADER.choose_output" | translate }}</mat-label>
+                            <mat-select [(ngModel)]="field.control.value">
+                                @for (option of this.outputs; track option.id) {
+                                    <mat-option [value]="option.id">{{ option.output_label }}</mat-option>
+                                }
+                            </mat-select>
+                            @if (field.canRemove) {
+                                <span (click)="$event.stopPropagation(); removeOutput(cpt)"
+                                      matTooltip="{{ 'OUTPUT.remove' | translate }}"
+                                      class="absolute top-4 right-4 cursor-pointer text-red-500">
+                                    <i class="fa-solid fa-trash"></i>
                                 </span>
-                                <input *ngIf="field['type'] !== 'checkbox'" class="cursor-pointer" matInput type="{{ field['type']}}" readonly>
-                                <div class="absolute top-0 -right-4">
-                                    <button mat-button [matMenuTriggerFor]="menu"
-                                            [matTooltip]="this.translate.instant('VERIFIER.field_settings')"
-                                            matTooltipPosition="above">
-                                        <mat-icon class="field_settings text-md">more_vert</mat-icon>
-                                    </button>
-                                    <mat-menu #menu="matMenu">
-                                        <button mat-menu-item [matMenuTriggerFor]="size">
-                                            {{ "VERIFIER.size" | translate }} <small class="ml-2">{{ field.class_label }}</small>
-                                        </button>
-                                        <button mat-menu-item [matMenuTriggerFor]="display" *ngIf="field.type === 'select'">
-                                            {{ "VERIFIER.display" | translate }} <small class="ml-2"><i class="text-base {{ field.display_icon }}"></i></small>
-                                        </button>
-                                        <button mat-menu-item [matMenuTriggerFor]="required">
-                                            {{ "VERIFIER.required" | translate }} <small class="ml-2"><i class="text-base {{ field.required_icon }}"></i></small>
-                                        </button>
-                                        <button mat-menu-item [matMenuTriggerFor]="disabled">
-                                            {{ "FORMS.disable" | translate }} <small class="ml-2"><i class="text-base {{ field.required_icon }}"></i></small>
-                                        </button>
-                                        <button mat-menu-item [matMenuTriggerFor]="inputMetadata" *ngIf="field['type'] !== 'checkbox'">
-                                            {{ "FORMS.input_metadata" | translate }}
-                                        </button>
-                                        <button mat-menu-item [matMenuTriggerFor]="disabledCondition">
-                                            {{ "FORMS.conditioned_by" | translate }}
-                                        </button>
-                                        <button mat-menu-item [matMenuTriggerFor]="invertFields" *ngIf="field['type'] === 'checkbox'">
-                                            {{ "FORMS.invert_fields" | translate }}
-                                        </button>
-                                    </mat-menu>
-                                    <mat-menu #size="matMenu">
-                                        <button mat-menu-item [id]="field.id"
-                                                *ngFor="let _class of classList"
-                                                (click)="changeClass(field.id, _class.id, _class.label, category['id'])">
-                                            <span [class.text-green-400]="_class.id === field.class">
-                                                {{ _class.label | translate }}
-                                            </span>
-                                            <span *ngIf="_class.id === field.class">
-                                                <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
-                                            </span>
-                                        </button>
-                                    </mat-menu>
-                                    <mat-menu #display="matMenu">
-                                        <button mat-menu-item [id]="field.id"
-                                                *ngFor="let _display of displayList"
-                                                (click)="changeDisplay(field.id, _display.id, _display.icon, category['id'])">
-                                            <span [class.text-green-400]="_display.id === field.display">
-                                                {{ _display.label | translate }}
-                                            </span>
-                                            <span *ngIf="_display.id === field.display">
-                                                <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
-                                            </span>
-                                        </button>
-                                    </mat-menu>
-                                    <mat-menu #required="matMenu">
-                                        <button mat-menu-item [id]="field.id"
-                                                *ngFor="let required of mandatoryList"
-                                                (click)="changeRequired(field.id, required.id, required.icon, category['id'])">
-                                            <span [class.text-green-400]="required.id === field.required">
-                                                {{ required.label | translate }}
-                                            </span>
-                                            <span *ngIf="required.id === field.required">
-                                                <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
-                                            </span>
-                                        </button>
-                                    </mat-menu>
-                                    <mat-menu #disabled="matMenu">
-                                        <button mat-menu-item [id]="field.id"
-                                                *ngFor="let disabled of disabledList"
-                                                (click)="changeDisabled(field.id, disabled.id, disabled.icon, category['id'])">
-                                            <span [class.text-green-400]="disabled.id === field.disabled">
-                                                {{ disabled.label | translate }}
-                                            </span>
-                                            <span *ngIf="disabled.id === field.disabled">
-                                                <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
-                                            </span>
-                                        </button>
-                                    </mat-menu>
-                                    <mat-menu #inputMetadata="matMenu" class="pt-5">
-                                        <div *ngFor="let fieldMetadataItem of fieldMetadata">
-                                            <mat-form-field class="w-64 mx-2 text-base" (click)="$event.stopPropagation()"
-                                            *ngIf="fieldMetadataItem['types'].indexOf(field['type']) !== -1">
-                                                <mat-label>{{ fieldMetadataItem.placeholder | translate }}</mat-label>
-                                                <input matInput [(ngModel)]="field[fieldMetadataItem['id']]" type="text">
-                                            </mat-form-field>
-                                        </div>
-                                    </mat-menu>
-                                    <mat-menu #disabledCondition="matMenu">
-                                        <span mat-menu-item [disabled]="true" class="ml-0 font-medium bg-slate-200"> {{ "FORMS.condition_doctypes" | translate }}</span>
-                                        <button mat-menu-item class="text-lg text-left hover:text-green-400"
-                                                (click)="$event.stopPropagation(); openDoctypeTree(field);">
-                                            <div class="font-medium truncate">
-                                                <i class="fa-solid fa-edit"></i>
-                                                {{ "FORMS.select_doctypes"  | translate }}
-                                            </div>
-                                        </button>
-                                        <div>
-                                            <span *ngIf="field['conditioned_doctypes'].length === 0" class="m-4 block text-center text-gray-400">
-                                                {{ 'FORMS.no_doctype_added' | translate }}
-                                            </span>
-                                            <span *ngFor="let doctype of field['conditioned_doctypes']">
-                                                <mat-chip class="m-1" color="primary" selected="true">
-                                                    <span class="font-medium">{{ doctype }}</span>
-                                                    <i class="ml-2 fa-solid fa-xmark fa-lg cursor-pointer text-white hover:text-green-400" (click)="$event.stopPropagation(); removeDoctype(field, doctype)"></i>
-                                                </mat-chip>
-                                            </span>
-                                        </div>
-                                        <span mat-menu-item [disabled]="true" class="font-medium bg-slate-200"> {{ "FORMS.condition_fields" | translate }}</span>
-                                        <div *ngFor="let formField of this.fields[category['id']]">
-                                            <button mat-menu-item [id]="field.id"
-                                                    (click)="$event.stopPropagation(); changeFieldConditions(field, formField)"
-                                                    *ngIf="field['label_short'] !== formField['label_short'] && formField['type'] === 'checkbox'">
-                                                <span [class.text-green-400]="field['conditioned_fields'].includes(formField['label_short'])">
-                                                    {{ formField['label'] | translate }}
-                                                </span>
-                                                <span *ngIf="field['conditioned_fields'].includes(formField['label_short'])">
-                                                    <i class="fa-regular fa-circle-check text-green-400 mx-2 my-4"></i>
-                                                </span>
+                            } @else {
+                                <span (click)="$event.stopPropagation(); addOutput()"
+                                      matTooltip="{{ 'OUTPUT.add' | translate }}"
+                                      class="absolute top-4 right-4 cursor-pointer text-gray-900 z-50">
+                                    <i class="fa-solid fa-circle-plus"></i>
+                                </span>
+                            }
+                        </mat-form-field>
+                    }
+                    <mat-form-field>
+                        <mat-label>{{ "FORMS.export_zip_file" | translate }}</mat-label>
+                        <input matInput [formControl]="this.formSettings['export_zip_file'].control">
+                        <mat-hint class="text-gray-600">{{ "FORMS.export_zip_file_hint" | translate }}</mat-hint>
+                    </mat-form-field>
+                </div>
+                @for (category of fieldCategories; track category['id']; let i = $index) {
+                    <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white" style="top: 2.5rem; left:2.5rem;" [style]="'width:calc(3% + ' + this.translate.instant(category['label']).length + '%)'">
+                        {{ category['label'] | translate }}
+                    </div>
+                    <div class="border-green-400 border rounded-lg mx-6 m-7">
+                        <div cdkDropList (cdkDropListDropped)="dropFromForm($event)" [id]="category['id']"
+                             class="flex flex-wrap cursor-pointer w-full my-3" style="min-height: 50px;">
+                            @for (field of this.fields[category['id']]; track field['id']; let index = $index) {
+                                <div class="flex items-center px-3 overflow-hidden" [class]="field.class"
+                                     ngSortGridGroup="{{ category['id'] }}" ngSortgridItem [ngSortGridItems]="fields[category['id']]" (sorted)="storeNewOrder($event, category['id'])">
+                                    <mat-form-field class="right-0 w-full form-builder">
+                                        <i cdkDrag class="fa-solid fa-trash z-10" (click)="deleteField($event, index, category['id'], field.unit)" [matTooltip]="this.translate.instant('FORMS.delete_field')"></i>
+                                        <span class="input-label relative border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-10/12">
+                                            @if (field.required) {
+                                                <span class="text-red-500 mr-2 relative top-0.5">*</span>
+                                            }
+                                            <strong>{{ field['label'] | translate }}</strong>
+                                            @if (field.type !== 'select' && field.type !== 'textarea') {
+                                                <span> ({{ 'TYPES.' + field.format | translate }})</span>
+                                            } @else if (field['type'] === 'select') {
+                                                <span> ({{ 'TYPES.select' | translate }})</span>
+                                            } @else if (field['type'] === 'textarea') {
+                                                <span> ({{ 'TYPES.textarea' | translate }})</span>
+                                            }
+                                        </span>
+                                        @if (field['type'] !== 'checkbox') {
+                                            <input class="cursor-pointer" matInput type="{{ field['type']}}" readonly>
+                                        }
+                                        <div class="absolute top-0 -right-4">
+                                            <button mat-button [matMenuTriggerFor]="menu"
+                                                    [matTooltip]="this.translate.instant('VERIFIER.field_settings')"
+                                                    matTooltipPosition="above">
+                                                <mat-icon class="field_settings text-md">more_vert</mat-icon>
                                             </button>
-                                        </div>
-                                        <div *ngIf="!hasCheckboxConditionField(category['id'], field)" class="m-4 font-medium text-gray-400">
-                                            {{ "FORMS.no_condition_fields" | translate }}
-                                        </div>
-                                    </mat-menu>
-                                    <mat-menu #invertFields="matMenu">
-                                        <div *ngFor="let formField of this.fields[category['id']]">
-                                            <button mat-menu-item [id]="field.id"
-                                                    (click)="$event.stopPropagation(); changeFieldInvert(field, formField)"
-                                                    *ngIf="field['label_short'] !== formField['label_short'] && formField['type'] === 'checkbox'">
-                                                <span [class.text-green-400]="field['invert_fields'].includes(formField['label_short'])">
-                                                    {{ formField['label'] | translate }}
+                                            <mat-menu #menu="matMenu">
+                                                <button mat-menu-item [matMenuTriggerFor]="size">
+                                                    {{ "VERIFIER.size" | translate }} <small class="ml-2">{{ field.class_label }}</small>
+                                                </button>
+                                                @if (field['type'] === 'select') {
+                                                    <button mat-menu-item [matMenuTriggerFor]="display">
+                                                        {{ "VERIFIER.display" | translate }} <small class="ml-2"><i class="text-base {{ field.display_icon }}"></i></small>
+                                                    </button>
+                                                }
+                                                <button mat-menu-item [matMenuTriggerFor]="required">
+                                                    {{ "VERIFIER.required" | translate }} <small class="ml-2"><i class="text-base {{ field.required_icon }}"></i></small>
+                                                </button>
+                                                <button mat-menu-item [matMenuTriggerFor]="disabled">
+                                                    {{ "FORMS.disable" | translate }} <small class="ml-2"><i class="text-base {{ field.required_icon }}"></i></small>
+                                                </button>
+                                                @if (field['type'] !== 'checkbox') {
+                                                    <button mat-menu-item [matMenuTriggerFor]="inputMetadata">
+                                                        {{ "FORMS.input_metadata" | translate }}
+                                                    </button>
+                                                }
+                                                <button mat-menu-item [matMenuTriggerFor]="disabledCondition">
+                                                    {{ "FORMS.conditioned_by" | translate }}
+                                                </button>
+                                                @if (field['type'] === 'checkbox') {
+                                                    <button mat-menu-item [matMenuTriggerFor]="invertFields">
+                                                        {{ "FORMS.invert_fields" | translate }}
+                                                    </button>
+                                                }
+                                            </mat-menu>
+                                            <mat-menu #size="matMenu">
+                                                @for (_class of classList; track _class.id) {
+                                                    <button mat-menu-item [id]="field['id']" (click)="changeClass(field['id'], _class.id, _class.label, category['id'])">
+                                                        <span [class.text-green-400]="_class.id === field.class">
+                                                            {{ _class.label | translate }}
+                                                        </span>
+                                                        @if (_class.id === field.class) {
+                                                            <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                                        }
+                                                    </button>
+                                                }
+                                            </mat-menu>
+                                            <mat-menu #display="matMenu">
+                                                @for (_display of this.classList; track _display.id) {
+                                                    <button mat-menu-item [id]="field['id']" (click)="changeDisplay(field['id'], _display.id, _display.icon, category['id'])">
+                                                        <span [class.text-green-400]="_display.id === field.display">
+                                                            {{ _display.label | translate }}
+                                                        </span>
+                                                        @if (_display.id === field.display) {
+                                                            <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                                        }
+                                                    </button>
+                                                }
+                                            </mat-menu>
+                                            <mat-menu #required="matMenu">
+                                                @for (required of this.mandatoryList; track required.id) {
+                                                    <button mat-menu-item [id]="field['id']" (click)="changeRequired(field['id'], required.id, required.icon, category['id'])">
+                                                        <span [class.text-green-400]="required.id === field.required">
+                                                            {{ required.label | translate }}
+                                                        </span>
+                                                        @if (required.id === field.required) {
+                                                            <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                                        }
+                                                    </button>
+                                                }
+                                            </mat-menu>
+                                            <mat-menu #disabled="matMenu">
+                                                @for (disabled of disabledList; track disabled.id) {
+                                                    <button mat-menu-item [id]="field['id']" (click)="changeDisabled(field['id'], disabled.id, disabled.icon, category['id'])">
+                                                        <span [class.text-green-400]="disabled.id === field.disabled">
+                                                            {{ disabled.label | translate }}
+                                                        </span>
+                                                        @if (disabled.id === field.disabled) {
+                                                            <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                                        }
+                                                    </button>
+                                                }
+                                            </mat-menu>
+                                            <mat-menu #inputMetadata="matMenu" class="pt-5">
+                                                @for (fieldMetadataItem of this.fieldMetadata; track fieldMetadataItem.id) {
+                                                    @if (fieldMetadataItem['types'].indexOf(field['type']) !== -1) {
+                                                        <mat-form-field class="w-64 mx-2 text-base" (click)="$event.stopPropagation()">
+                                                            <mat-label>{{ fieldMetadataItem.placeholder | translate }}</mat-label>
+                                                            <input matInput [(ngModel)]="field[fieldMetadataItem['id']]" type="text">
+                                                        </mat-form-field>
+                                                    }
+                                                }
+                                            </mat-menu>
+                                            <mat-menu #disabledCondition="matMenu">
+                                                <span mat-menu-item [disabled]="true" class="ml-0 font-medium bg-slate-200">
+                                                    {{ "FORMS.condition_doctypes" | translate }}
                                                 </span>
-                                                <span *ngIf="field['invert_fields'].includes(formField['label_short'])">
-                                                    <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                                <button mat-menu-item class="text-lg text-left hover:text-green-400" (click)="$event.stopPropagation(); openDoctypeTree(field);">
+                                                    <div class="font-medium truncate">
+                                                        <i class="fa-solid fa-edit"></i>
+                                                        {{ "FORMS.select_doctypes"  | translate }}
+                                                    </div>
+                                                </button>
+                                                <div>
+                                                    @if (field['conditioned_doctypes'].length === 0) {
+                                                        <span class="m-4 block text-center text-gray-400">
+                                                            {{ 'FORMS.no_doctype_added' | translate }}
+                                                        </span>
+                                                    }
+                                                    @for (doctype of field['conditioned_doctypes']; track doctype) {
+                                                        <mat-chip class="m-1" color="primary" selected="true">
+                                                            <span class="font-medium">{{ doctype }}</span>
+                                                            <i class="ml-2 fa-solid fa-xmark fa-lg cursor-pointer text-white hover:text-green-400" (click)="$event.stopPropagation(); removeDoctype(field, doctype)"></i>
+                                                        </mat-chip>
+                                                    }
+                                                </div>
+                                                <span mat-menu-item [disabled]="true" class="font-medium bg-slate-200">
+                                                    {{ "FORMS.condition_fields" | translate }}
                                                 </span>
-                                            </button>
+
+                                                @for (formField of this.fields[category['id']]; track formField['id']) {
+                                                    @if (field['label_short'] !== formField['label_short'] && formField['type'] === 'checkbox') {
+                                                        <button mat-menu-item [id]="field['id']" (click)="$event.stopPropagation(); changeFieldConditions(field, formField)">
+                                                            <span [class.text-green-400]="field['conditioned_fields'].includes(formField['label_short'])">
+                                                                {{ formField['label'] | translate }}
+                                                            </span>
+                                                            @if (field['conditioned_fields'].includes(formField['label_short'])) {
+                                                                <i class="fa-regular fa-circle-check text-green-400 mx-2 my-4"></i>
+                                                            }
+                                                        </button>
+                                                    }
+                                                }
+                                                @if (!hasCheckboxConditionField(category['id'], field)) {
+                                                    <div class="m-4 font-medium text-gray-400">
+                                                        {{ "FORMS.no_condition_fields" | translate }}
+                                                    </div>
+                                                }
+                                            </mat-menu>
+                                            <mat-menu #invertFields="matMenu">
+                                                @for (formField of this.fields[category['id']]; track formField['id']) {
+                                                    @if (field['label_short'] !== formField['label_short'] && formField['type'] === 'checkbox') {
+                                                        <button mat-menu-item [id]="field['id']" (click)="$event.stopPropagation(); changeFieldInvert(field, formField)">
+                                                            <span [class.text-green-400]="field['invert_fields'].includes(formField['label_short'])">
+                                                                {{ formField['label'] | translate }}
+                                                            </span>
+                                                            @if (field['invert_fields'].includes(formField['label_short'])) {
+                                                                <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                                            }
+                                                        </button>
+                                                    }
+                                                }
+                                                @if (!hasCheckboxConditionField(category['id'], field)) {
+                                                    <div class="m-4 font-medium text-gray-400">
+                                                        {{ "FORMS.no_condition_fields" | translate }}
+                                                    </div>
+                                                }
+                                            </mat-menu>
                                         </div>
-                                        <div *ngIf="!hasCheckboxConditionField(category['id'], field)" class="m-4 font-medium text-gray-400">
-                                            {{ "FORMS.no_condition_fields" | translate }}
-                                        </div>
-                                    </mat-menu>
+                                    </mat-form-field>
                                 </div>
-                            </mat-form-field>
+                            }
                         </div>
                     </div>
+                }
+                <div class="flex justify-center items-center">
+                    @if (this.creationMode) {
+                        <button (click)="createForm()" mat-button class="valid_button">
+                            <span class="block">{{ "FORMS.create" | translate }}</span>
+                        </button>
+                    } @else {
+                        <button (click)="updateForm()" mat-button class="valid_button">
+                            <span class="block">{{ "FORMS.modify" | translate }}</span>
+                        </button>
+                    }
                 </div>
-            </ng-container>
-            <div class="flex justify-center items-center">
-                <button *ngIf="creationMode" (click)="createForm()" mat-button class="valid_button">
-                    <span class="block">{{ "FORMS.create" | translate }}</span>
-                </button>
-                <button *ngIf="!creationMode" (click)="updateForm()" mat-button class="valid_button">
-                    <span class="block">{{ "FORMS.modify" | translate }}</span>
-                </button>
             </div>
-        </div>
+        }
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" [opened]="true" position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 p-4">
             {{ "FORMS.available_fields" | translate }}
         </h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <div *ngIf="this.loadingCustomFields" class="relative" style="top: 40%">
-            <span class="text-center overflow-hidden">
-                <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900"></i>
-            </span>
-        </div>
-        <mat-tab-group class="h-full-overflow" *ngIf="!this.loadingCustomFields">
-            <mat-tab *ngFor="let availableFields of this.availableFieldsParent" label="{{ availableFields['label'] | translate }}">
-                <div id="{{ availableFields['id'] }}" cdkDropList [cdkDropListData]="availableFields['values']"
-                     (cdkDropListDropped)="dropFromAvailableFields($event)" class="min-w-full" style="min-height: 500px">
-                    <div *ngFor="let field of availableFields['values']">
-                        <div cdkDrag class="flex flex-row items-center justify-between m-5 cursor-pointer">
-                            <ng-container *ngIf="field.type === 'text' || field.type === 'regex'">
-                                <div class="relative -top-3">
-                                    <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
-                                    {{ field.label | translate }}
+        @if (this.loadingCustomFields) {
+            <div class="relative" style="top: 40%">
+                <span class="text-center overflow-hidden">
+                    <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900"></i>
+                </span>
+            </div>
+        } @else {
+            <mat-tab-group class="h-full-overflow">
+                @for (availableFields of this.availableFieldsParent; track availableFields['id']) {
+                    <mat-tab label="{{ availableFields['label'] | translate }}">
+                        <div id="{{ availableFields['id'] }}" cdkDropList [cdkDropListData]="availableFields['values']"
+                             (cdkDropListDropped)="dropFromAvailableFields($event)" class="min-w-full" style="min-height: 500px">
+                            @for (field of availableFields['values']; track field['id']) {
+                                <div cdkDrag class="flex flex-row items-center justify-between m-5 cursor-pointer">
+                                    @if (field['type'] === 'text' || field['type'] === 'regex') {
+                                        <div class="relative -top-3">
+                                            <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
+                                            {{ field['label'] | translate }}
+                                        </div>
+                                        <mat-form-field class="right-0 w-5/12">
+                                            <mat-label>{{ 'TYPES.' + field.type | translate }}</mat-label>
+                                            <input class="cursor-pointer" matInput type="text" readonly>
+                                        </mat-form-field>
+                                    } @else if (field['type'] === 'textarea') {
+                                        <div class="relative -top-3">
+                                            <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
+                                            {{ field['label'] | translate }}
+                                        </div>
+                                        <mat-form-field class="right-0 w-5/12">
+                                            <mat-label>{{ 'TYPES.' + field.type | translate }}</mat-label>
+                                            <input class="cursor-pointer" matInput type="text" readonly>
+                                        </mat-form-field>
+                                    } @else if (field['type'] === 'date') {
+                                        <div class="relative -top-3">
+                                            <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
+                                            {{ field['label'] | translate }}
+                                        </div>
+                                        <mat-form-field class="right-0 w-5/12">
+                                            <mat-label>{{ 'TYPES.' + field.type | translate }}</mat-label>
+                                            <input matInput disabled>
+                                            <mat-datepicker-toggle matSuffix></mat-datepicker-toggle>
+                                        </mat-form-field>
+                                    } @else if (field['type'] === 'select') {
+                                        <div class="relative -top-3">
+                                            <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
+                                            {{ field['label'] | translate }}
+                                        </div>
+                                        <mat-form-field class="right-0 w-5/12">
+                                            <mat-label>{{ 'TYPES.' + field.type | translate }}</mat-label>
+                                            <mat-select></mat-select>
+                                        </mat-form-field>
+                                    } @else if (field['type'] === 'checkbox') {
+                                        <div>
+                                            <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
+                                            {{ field['label'] | translate }}
+                                        </div>
+                                        @if (field['type'] === 'checkbox') {
+                                            <mat-checkbox class="cursor-pointer top-0.5" readonly labelPosition="before">
+                                                {{ "TYPES." + field.type | translate }}
+                                            </mat-checkbox>
+                                        }
+                                    }
                                 </div>
-                                <mat-form-field class="right-0 w-5/12">
-                                    <mat-label>{{ 'TYPES.' + field.type | translate }}</mat-label>
-                                    <input class="cursor-pointer" matInput type="text" readonly>
-                                </mat-form-field>
-                            </ng-container>
-                            <ng-container *ngIf="field.type === 'textarea'">
-                                <div class="relative -top-3">
-                                    <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
-                                    {{ field.label | translate }}
-                                </div>
-                                <mat-form-field class="right-0 w-5/12">
-                                    <mat-label>{{ 'TYPES.' + field.type | translate }}</mat-label>
-                                    <input class="cursor-pointer" matInput type="text" readonly>
-                                </mat-form-field>
-                            </ng-container>
-                            <ng-container *ngIf="field.type === 'date'">
-                                <div class="relative -top-3">
-                                    <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
-                                    {{ field.label | translate }}
-                                </div>
-                                <mat-form-field class="right-0 w-5/12">
-                                    <mat-label>{{ 'TYPES.' + field.type | translate }}</mat-label>
-                                    <input matInput disabled>
-                                    <mat-datepicker-toggle matSuffix></mat-datepicker-toggle>
-                                </mat-form-field>
-                            </ng-container>
-                            <ng-container *ngIf="field.type === 'select'">
-                                <div class="relative -top-3">
-                                    <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
-                                    {{ field.label | translate }}
-                                </div>
-                                <mat-form-field class="right-0 w-5/12">
-                                    <mat-label>{{ 'TYPES.' + field.type | translate }}</mat-label>
-                                    <mat-select></mat-select>
-                                </mat-form-field>
-                            </ng-container>
-                            <ng-container *ngIf="field.type === 'checkbox'">
-                                <div>
-                                    <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
-                                    {{ field.label | translate }}
-                                </div>
-                                <mat-checkbox *ngIf="field['type'] === 'checkbox'" class="cursor-pointer top-0.5" readonly labelPosition="before">
-                                        {{ "TYPES." + field.type | translate }}
-                                </mat-checkbox>
-                            </ng-container>
+                            }
                         </div>
-                    </div>
-                </div>
-            </mat-tab>
-        </mat-tab-group>
+                    </mat-tab>
+                }
+            </mat-tab-group>
+        }
     </mat-sidenav>
 </mat-sidenav-container>

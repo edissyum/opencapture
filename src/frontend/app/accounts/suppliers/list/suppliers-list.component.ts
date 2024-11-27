@@ -86,7 +86,12 @@ export class SuppliersListComponent implements OnInit {
         ).subscribe();
     }
 
-    loadSuppliers() {
+    loadSuppliers(resetOffset: boolean = false) {
+        if (resetOffset) {
+            this.offset = 0;
+            this.pageIndex = 0;
+        }
+
         this.http.get(environment['url'] + '/ws/accounts/suppliers/list?order=name&limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.suppliers = data.suppliers;
@@ -121,7 +126,7 @@ export class SuppliersListComponent implements OnInit {
 
     searchSupplier(event: any) {
         this.search = event.target.value;
-        this.loadSuppliers();
+        this.loadSuppliers(true);
     }
 
     onPageChange(event: any) {

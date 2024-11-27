@@ -5,13 +5,15 @@
     </button>
 </div>
 <div class="modal-content">
-    <ng-container *ngIf="mimeType.startsWith('image'); else otherFile">
+    @if (this.mimeType.startsWith('image')) {
         <img [src]="fileUrl" alt="Document" class="file-content-image"/>
-    </ng-container>
-    <ng-template #otherFile>
-        <iframe *ngIf="mimeType === 'application/pdf'" [src]="fileUrl" width="100%" height="100%"></iframe>
-        <p *ngIf="mimeType !== 'application/pdf'">
-            {{ 'GLOBAL.wrong_filetype' | translate }}
-        </p>
-    </ng-template>
+    } @else {
+        @if (this.mimeType === 'application/pdf') {
+            <pdf-viewer [src]="fileUrl" [render-text]="true" [show-borders]="true" [original-size]="true" [fit-to-page]="true"/>
+        } @else {
+            <p>
+                {{ 'GLOBAL.wrong_filetype' | translate }}
+            </p>
+        }
+    }
 </div>

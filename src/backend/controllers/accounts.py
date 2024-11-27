@@ -40,19 +40,20 @@ def get_suppliers(_args):
     if 'search' in _args and _args['search']:
         search = _args['search'].replace("'", "''")
         args['where'].append(
-            "(LOWER(unaccent(name)) LIKE unaccent('%%" + search.lower() + "%%') OR "
+            "(LOWER(unaccent(name)) ILIKE unaccent('%%" + search.lower() + "%%') OR "
             "LOWER(siret) LIKE '%%" + search.lower() + "%%' OR "
-            "LOWER(email) LIKE '%%" + search.lower() + "%%' OR "
+            "LOWER(email) ILIKE '%%" + search.lower() + "%%' OR "
             "LOWER(siren) LIKE '%%" + search.lower() + "%%' OR "
             "LOWER(bic) LIKE '%%" + search.lower() + "%%' OR "
             "LOWER(duns) LIKE '%%" + search.lower() + "%%' OR "
+            "LOWER(rccm) LIKE '%%" + search.lower() + "%%' OR "
             "LOWER(vat_number) LIKE '%%" + search.lower() + "%%')"
         )
 
     if 'name' in _args and _args['name']:
         args['offset'] = ''
         name = _args['name'].replace("'", "''")
-        args['where'].append("LOWER(unaccent(name)) LIKE unaccent('" + name.lower() + "%%')")
+        args['where'].append("LOWER(unaccent(name)) iLIKE unaccent('%%" + name.lower() + "%%')")
 
     suppliers = accounts.get_suppliers(args)
     response = {

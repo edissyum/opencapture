@@ -41,31 +41,31 @@ import { FormControl, Validators } from "@angular/forms";
     encapsulation: ViewEncapsulation.None
 })
 export class ConfigurationsComponent implements OnInit {
-    columnsToDisplay        : string[]      = ['id', 'label', 'description', 'type', 'content', 'actions'];
-    emailTestControl        : FormControl   = new FormControl('', Validators.email);
-    tokenExpirationControl  : FormControl   = new FormControl(7);
-    tokenUserControl        : FormControl   = new FormControl('');
-    headers                 : HttpHeaders   = this.authService.headers;
-    filteredUsers           : Observable<any> | any;
-    updateLoading           : boolean       = false;
-    updating                : boolean       = false;
-    sending                 : boolean       = false;
-    smtpFormValid           : boolean       = false;
-    loading                 : boolean       = true;
-    configurations          : any           = [];
-    allConfigurations       : any           = [];
-    toHighlight             : string        = '';
-    token                   : string        = '';
-    search                  : string        = '';
-    loginImage              : any           = '';
-    loginBottomMessage      : FormControl   = new FormControl();
-    loginTopMessage         : FormControl   = new FormControl();
-    pageSize                : number        = 10;
-    pageIndex               : number        = 0;
-    selectedIndex           : number        = 0;
-    total                   : number        = 0;
-    offset                  : number        = 0;
-    units                   : any           = [
+    columnsToDisplay        : string[]        = ['id', 'label', 'description', 'type', 'content', 'actions'];
+    emailTestControl        : FormControl     = new FormControl('', Validators.email);
+    tokenExpirationControl  : FormControl     = new FormControl(7);
+    tokenUserControl        : FormControl     = new FormControl('');
+    headers                 : HttpHeaders     = this.authService.headers;
+    filteredUsers           : Observable<any> = new Observable<any>();
+    updateLoading           : boolean         = false;
+    updating                : boolean         = false;
+    sending                 : boolean         = false;
+    smtpFormValid           : boolean         = false;
+    loading                 : boolean         = true;
+    configurations          : any             = [];
+    allConfigurations       : any             = [];
+    toHighlight             : string          = '';
+    token                   : string          = '';
+    search                  : string          = '';
+    loginImage              : any             = '';
+    loginBottomMessage      : FormControl     = new FormControl();
+    loginTopMessage         : FormControl     = new FormControl();
+    pageSize                : number          = 10;
+    pageIndex               : number          = 0;
+    selectedIndex           : number          = 0;
+    total                   : number          = 0;
+    offset                  : number          = 0;
+    units                   : any             = [
         {
             id: 'general',
             label: marker('MAILCOLLECT.smtp_general')
@@ -79,7 +79,7 @@ export class ConfigurationsComponent implements OnInit {
             label: marker('MAILCOLLECT.smtp_notif_error')
         }
     ];
-    smtpForm                : any[]         = [
+    smtpForm                : any[]           = [
         {
             id: 'smtpHost',
             unit: 'general',
@@ -175,7 +175,7 @@ export class ConfigurationsComponent implements OnInit {
             required: false
         }
     ];
-    colorsMap               : any[]         = [
+    colorsMap               : any[]           = [
         '#97BF3D', 'Open-Capture Green',
         '#A7A8AA', 'Open-Capture Light Gray',
         '#4C4C4E', 'Open-Capture Gray',

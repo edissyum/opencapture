@@ -1,8 +1,10 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" [autosize]="true">
     <mat-sidenav-content class="bg-white overflow-hidden">
-        <div *ngIf="this.loading">
-            <app-loader></app-loader>
-        </div>
+        @if (this.loading) {
+            <div>
+                <app-loader></app-loader>
+            </div>
+        }
         <div class="relative z-30 h-[3.75rem] flex justify-between items-center px-2 bg-green-400 bg-opacity-60 text-gray-900">
             <div class="settings_search">
                 <mat-form-field>

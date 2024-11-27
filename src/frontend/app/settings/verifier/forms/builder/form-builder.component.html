@@ -3,9 +3,11 @@
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
-        <div *ngIf="this.loading">
-            <app-loader></app-loader>
-        </div>
+        @if (this.loading) {
+            <div>
+                <app-loader></app-loader>
+            </div>
+        }
         <div class="settings_header">
             <div class="flex">
                 <button mat-icon-button (click)="this.serviceSettings.minimizeSideNav = !this.serviceSettings.minimizeSideNav;">
@@ -110,14 +112,14 @@
                                                 overflow-ellipsis overflow-hidden whitespace-nowrap w-10/12"
                                           *ngIf="!field['edit_name']">
                                         <span *ngIf="field.required" class="text-red-500 mr-2 relative top-0.5">*</span>
-                                        <strong>{{ field.label | translate }}</strong>
+                                        <strong>{{ field['label'] | translate }}</strong>
                                         <span *ngIf="field.type !== 'select' && field.type !== 'textarea'"> ({{ 'FORMATS.' + field.format | translate }})</span>
-                                        <span *ngIf="field.type === 'select'"> ({{ 'FORMATS.select' | translate }})</span>
-                                        <span *ngIf="field.type === 'textarea'"> ({{ 'FORMATS.textarea' | translate }})</span>
+                                        <span *ngIf="field['type'] === 'select'"> ({{ 'FORMATS.select' | translate }})</span>
+                                        <span *ngIf="field['type'] === 'textarea'"> ({{ 'FORMATS.textarea' | translate }})</span>
                                     </span>
                                     <span class="flex w-full" *ngIf="field['edit_name']">
                                         <mat-form-field appearance="outline" class="edit_input w-full -mt-3.5">
-                                            <input matInput [value]="field.label | translate" class="relative top-1 h-2"
+                                            <input matInput [value]="field['label'] | translate" class="relative top-1 h-2"
                                                    (keyup.enter)="updateValue($event, field)" (focusout)="updateValue($event, field)">
                                         </mat-form-field>
                                         <button matTooltip="{{ 'CONFIGURATIONS.validate' | translate }}" mat-icon-button class="-top-3.5">
@@ -159,8 +161,8 @@
                                             </button>
                                         </mat-menu>
                                         <mat-menu #size="matMenu">
-                                            <button mat-menu-item [id]="field.id" *ngFor="let _class of classList"
-                                                    (click)="changeClass(field.id, _class.id, _class.label, category['id'])">
+                                            <button mat-menu-item [id]="field['id']" *ngFor="let _class of classList"
+                                                    (click)="changeClass(field['id'], _class.id, _class.label, category['id'])">
                                                 <span [class.text-green-400]="_class.id === field['class']">
                                                     {{ _class.label | translate }}
                                                 </span>
@@ -170,18 +172,18 @@
                                             </button>
                                         </mat-menu>
                                         <mat-menu #colors="matMenu">
-                                            <button mat-menu-item [id]="field.id"
+                                            <button mat-menu-item [id]="field['id']"
                                                     *ngFor="let _color of colorsList"
-                                                    (click)="changeColor(field.id, _color.id, category['id'])"
+                                                    (click)="changeColor(field['id'], _color.id, category['id'])"
                                                     [style]="'background-color:' + _color.id"
                                                     [class.text-white]="_color.id === 'black' || _color.id === 'navy'">
                                                 {{ _color.label | translate }}
                                             </button>
                                         </mat-menu>
                                         <mat-menu #format="matMenu">
-                                            <button mat-menu-item [id]="field.id"
+                                            <button mat-menu-item [id]="field['id']"
                                                     *ngFor="let _format of formatList"
-                                                    (click)="changeFormat(field.id, _format.id, _format.icon, category['id'])">
+                                                    (click)="changeFormat(field['id'], _format.id, _format.icon, category['id'])">
                                                 <span [class.text-green-400]="_format.id === field.format">
                                                     {{ _format.label | translate }}
                                                 </span>
@@ -191,9 +193,9 @@
                                             </button>
                                         </mat-menu>
                                         <mat-menu #display="matMenu">
-                                            <button mat-menu-item [id]="field.id"
+                                            <button mat-menu-item [id]="field['id']"
                                                     *ngFor="let _display of displayList"
-                                                    (click)="changeDisplay(field.id, _display.id, _display.icon, category['id'])">
+                                                    (click)="changeDisplay(field['id'], _display.id, _display.icon, category['id'])">
                                                 <span [class.text-green-400]="_display.id === field.display">
                                                     {{ _display.label | translate }}
                                                 </span>
@@ -203,9 +205,9 @@
                                             </button>
                                         </mat-menu>
                                         <mat-menu #required="matMenu">
-                                            <button mat-menu-item [id]="field.id"
+                                            <button mat-menu-item [id]="field['id']"
                                                     *ngFor="let required of mandatoryList"
-                                                    (click)="changeRequired(field.id, required.id, required.icon, category['id'])">
+                                                    (click)="changeRequired(field['id'], required.id, required.icon, category['id'])">
                                                 <span [class.text-green-400]="required.id === field.required">
                                                     {{ required.label | translate }}
                                                 </span>
@@ -255,8 +257,8 @@
                             <div class="overflow-x-hidden overflow-y-auto h-96">
                                 <div *ngFor="let field of this.availableFields; let cpt = index" class="my-8 ml-2 text-base">
                                     <span>
-                                        {{ field.label | translate }}
-                                        <span style="font-size: 12px;" class="text-green-400 ml-3">{{ field.id | translate }}</span>
+                                        {{ field['label'] | translate }}
+                                        <span style="font-size: 12px;" class="text-green-400 ml-3">{{ field['id'] | translate }}</span>
                                         <mat-divider class="border-green-400 mt-4" *ngIf="cpt === 0"></mat-divider>
                                     </span>
                                 </div>
@@ -286,30 +288,30 @@
                     </div>
                     <div *ngFor="let field of availableFields['values']">
                         <div cdkDrag class="flex flex-row items-center justify-between m-5 cursor-pointer">
-                            <ng-container *ngIf="field.type === 'text' || field.type === 'regex'">
+                            <ng-container *ngIf="field['type'] === 'text' || field['type'] === 'regex'">
                                 <div class="relative -top-3">
                                     <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
-                                    {{ field.label | translate }}
+                                    {{ field['label'] | translate }}
                                 </div>
                                 <mat-form-field class="right-0 w-5/12">
                                     <mat-label>{{ 'TYPES.' + field.type | translate }} </mat-label>
                                     <input class="cursor-pointer" matInput type="text" disabled>
                                 </mat-form-field>
                             </ng-container>
-                            <ng-container *ngIf="field.type === 'textarea'">
+                            <ng-container *ngIf="field['type'] === 'textarea'">
                                 <div class="relative -top-3">
                                     <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
-                                    {{ field.label | translate }}
+                                    {{ field['label'] | translate }}
                                 </div>
                                 <mat-form-field class="right-0 w-5/12">
                                     <mat-label>{{ 'TYPES.' + field.type | translate }}</mat-label>
                                     <input class="cursor-pointer" matInput type="text" readonly>
                                 </mat-form-field>
                             </ng-container>
-                            <ng-container *ngIf="field.type === 'date'">
+                            <ng-container *ngIf="field['type'] === 'date'">
                                 <div class="relative -top-3">
                                     <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
-                                    {{ field.label | translate }}
+                                    {{ field['label'] | translate }}
                                 </div>
                                 <mat-form-field class="right-0 w-5/12">
                                     <mat-label>{{ 'TYPES.' + field.type | translate }}</mat-label>
@@ -317,10 +319,10 @@
                                     <mat-datepicker-toggle matSuffix></mat-datepicker-toggle>
                                 </mat-form-field>
                             </ng-container>
-                            <ng-container *ngIf="field.type === 'select'">
+                            <ng-container *ngIf="field['type'] === 'select'">
                                 <div class="relative -top-3">
                                     <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
-                                    {{ field.label | translate }}
+                                    {{ field['label'] | translate }}
                                 </div>
                                 <mat-form-field class="right-0 w-5/12">
                                     <mat-label>{{ 'TYPES.' + field.type | translate }}</mat-label>

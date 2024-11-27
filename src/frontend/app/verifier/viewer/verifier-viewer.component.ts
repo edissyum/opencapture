@@ -100,6 +100,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     outputsLabel            : any         = [];
     outputs                 : any         = [];
     multiDocumentsData      : any         = [];
+    arrayOfPages            : any         = [];
     fieldCategories         : any[]       = [
         {
             id: 'supplier',
@@ -252,6 +253,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
         this.document = await this.getDocument();
 
+        this.arrayOfPages = Array.from({length: this.document['nb_pages']}, (v, k) => k + 1);
+
         if (this.document.workflow_id) {
             this.getWorkflow();
         }
@@ -336,18 +339,18 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             this.convertAutocomplete();
             this.loading = false;
 
-            document.getElementById('form')!.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }, 100);
+            setTimeout(() => {
+                document.getElementById('form_sidenav')!.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
 
-        setTimeout(() => {
-            document.getElementById('image')!.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }, 100);
+                document.getElementById('image')!.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }, 50);
+        }, 300);
         $('.trigger').hide();
 
         if (this.formSettings.settings.unique_url && this.formSettings.settings.unique_url.allow_supplier_autocomplete) {
@@ -594,10 +597,10 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     }
 
     getPage(fieldId: any) {
-        let page: number = 1;
+        let page: number = 0;
         if (this.document.pages) {
             Object.keys(this.document.pages).forEach((element: any) => {
-                if (element === fieldId) {
+                if (element === fieldId && this.document.datas[element]) {
                     page = this.document.pages[fieldId];
                 }
             });
@@ -726,8 +729,13 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                         value = value.replaceAll(',', '/');
                         value = value.replaceAll(' ', '/');
                         const format = moment().localeData().longDateFormat('L');
+                        const tmpValue = value;
                         value = moment(value, format);
                         value = new Date(value._d);
+                        if (value.toString() === 'Invalid Date') {
+                            value = moment(tmpValue, 'YYYY-MM-DD');
+                            value = new Date(value._d);
+                        }
                     }
                     _field.control.setValue(value);
                     _field.control.markAsTouched();
@@ -1023,53 +1031,54 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                 this.isOCRRunning = true;
                 let lang = this.localeService.currentLang;
                 if (Object.keys(this.currentSupplier).length !== 0) {
-                    lang = this.currentSupplier['document_lang'];
+                    if (this.currentSupplier['document_lang']) {
+                        lang = this.currentSupplier['document_lang'];
+                    }
                 }
-                this.http.post(environment['url'] + '/ws/verifier/ocrOnFly',
-                    {
-                        selection: this.getSelectionByCpt(selection, cpt),
-                        fileName: this.currentFilename, lang: lang,
-                        thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height},
-                        registerDate: this.document['register_date']
-                    }, {headers: this.authService.headers})
-                    .pipe(
-                        tap((data: any) => {
-                            this.isOCRRunning = false;
-                            let oldPosition = {
-                                x: 0,
-                                y: 0,
-                                width: 0,
-                                height: 0
+                this.http.post(environment['url'] + '/ws/verifier/ocrOnFly', {
+                    selection: this.getSelectionByCpt(selection, cpt),
+                    fileName: this.currentFilename, lang: lang,
+                    thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height},
+                    registerDate: this.document['register_date']
+                }, {headers: this.authService.headers})
+                .pipe(
+                    tap((data: any) => {
+                        this.isOCRRunning = false;
+                        let oldPosition = {
+                            x: 0,
+                            y: 0,
+                            width: 0,
+                            height: 0
+                        };
+                        if (this.document.positions[inputId.trim()]) {
+                            oldPosition = {
+                                x: this.document.positions[inputId.trim()].x / this.ratio - ((this.document.positions[inputId.trim()].x / this.ratio) * 0.005),
+                                y: this.document.positions[inputId.trim()].y / this.ratio - ((this.document.positions[inputId.trim()].y / this.ratio) * 0.003),
+                                width: this.document.positions[inputId.trim()].width / this.ratio + ((this.document.positions[inputId.trim()].width / this.ratio) * 0.05),
+                                height: this.document.positions[inputId.trim()].height / this.ratio + ((this.document.positions[inputId.trim()].height / this.ratio) * 0.6)
                             };
-                            if (this.document.positions[inputId.trim()]) {
-                                oldPosition = {
-                                    x: this.document.positions[inputId.trim()].x / this.ratio - ((this.document.positions[inputId.trim()].x / this.ratio) * 0.005),
-                                    y: this.document.positions[inputId.trim()].y / this.ratio - ((this.document.positions[inputId.trim()].y / this.ratio) * 0.003),
-                                    width: this.document.positions[inputId.trim()].width / this.ratio + ((this.document.positions[inputId.trim()].width / this.ratio) * 0.05),
-                                    height: this.document.positions[inputId.trim()].height / this.ratio + ((this.document.positions[inputId.trim()].height / this.ratio) * 0.6)
-                                };
-                            }
+                        }
 
-                            const newPosition = this.getSelectionByCpt(selection, cpt);
-                            if (newPosition.x !== oldPosition.x && newPosition.y !== oldPosition.y &&
-                                newPosition.width !== oldPosition.width && newPosition.height !== oldPosition.height) {
-                                this.updateFormValue(inputId, data.result);
-                                const res = this.saveData(data.result, this.lastId, true);
-                                if (res) {
-                                    const allowLearning = this.formSettings.settings.allow_learning;
-                                    if (allowLearning == true || allowLearning == undefined) {
-                                        this.savePosition(newPosition);
-                                        this.savePages(this.currentPage).then();
-                                    }
+                        const newPosition = this.getSelectionByCpt(selection, cpt);
+                        if (newPosition.x !== oldPosition.x && newPosition.y !== oldPosition.y &&
+                            newPosition.width !== oldPosition.width && newPosition.height !== oldPosition.height) {
+                            this.updateFormValue(inputId, data.result);
+                            const res = this.saveData(data.result, this.lastId, true);
+                            if (res) {
+                                const allowLearning = this.formSettings.settings.allow_learning;
+                                if (allowLearning == true || allowLearning == undefined) {
+                                    this.savePosition(newPosition);
+                                    this.savePages(this.currentPage).then();
                                 }
                             }
-                        }),
-                        catchError((err: any) => {
-                            console.debug(err);
-                            this.notify.handleErrors(err);
-                            return of(false);
-                        })
-                    ).subscribe();
+                        }
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
             }
             this.saveInfo = true;
         } else {
@@ -1091,8 +1100,13 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                     }
                     if (input.type === 'date' && value) {
                         const format = moment().localeData().longDateFormat('L');
+                        const tmpValue = value;
                         value = moment(value, format);
                         value = new Date(value._d);
+                        if (value.toString() === 'Invalid Date') {
+                            value = moment(tmpValue, 'YYYY-MM-DD');
+                            value = new Date(value._d);
+                        }
                     }
                     input.control.setValue(value);
                     input.control.markAsTouched();
@@ -1172,13 +1186,24 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                     if (field.unit === 'addresses' || field.unit === 'supplier') {
                         showNotif = false;
                     }
+
+                    if (field.type === 'date' && data) {
+                        const format = moment().localeData().longDateFormat('L');
+                        data = moment(data, format);
+                        data = new Date(data._d);
+                        if (data.toString() === 'Invalid Date') {
+                            data = moment(oldData, 'YYYY-MM-DD');
+                            data = new Date(data._i);
+                        }
+                        data = moment(data).format('YYYY-MM-DD');
+                    }
+
                     if (field.control.errors || this.document['datas'][fieldId] === data) {
                         return false;
                     }
 
-                    data = {[fieldId]: data};
                     this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/updateData',
-                        {'args': data},
+                        {'args': {[fieldId]: data}},
                         {headers: this.authService.headers}).pipe(
                         tap(() => {
                             this.document['datas'][fieldId] = oldData;
@@ -1251,8 +1276,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     }
 
     editSupplier() {
-        const supplierData: any = {};
         const addressData: any = {};
+        const supplierData: any = {};
         this.fields.supplier.forEach((element: any) => {
             const field = this.getField(element.id);
 
@@ -1342,11 +1367,15 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         if (multiple) {
             args = {'fields': fieldId, 'multiple': true};
         } else {
-            args = fieldId.trim();
+            fieldId = fieldId.trim();
+            args = fieldId;
         }
 
         this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/deletePosition',
             {'args': args}, {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.document.positions[fieldId] = undefined;
+            }),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -1358,10 +1387,14 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             if (multiple) {
                 args = {'fields': fieldId, 'multiple': true, 'form_id' : this.document.form_id};
             } else {
-                args = {'field_id': fieldId.trim(), 'form_id' : this.document.form_id};
+                fieldId = fieldId.trim();
+                args = {'field_id': fieldId, 'form_id' : this.document.form_id};
             }
             this.http.put(environment['url'] + '/ws/accounts/suppliers/' + this.document.supplier_id + '/deletePosition',
                 {'args': args}, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.document.positions[fieldId] = undefined;
+                }),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
@@ -1376,11 +1409,15 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         if (multiple) {
             args = {'fields': fieldId, 'multiple': true};
         } else {
-            args = fieldId.trim();
+            fieldId = fieldId.trim();
+            args = fieldId;
         }
 
         this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/deletePage',
             {'args': args}, {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.document.pages[fieldId] = undefined;
+            }),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -1392,10 +1429,14 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             if (multiple) {
                 args = {'fields': fieldId, 'multiple': true, 'form_id' : this.document.form_id};
             } else {
-                args = {'field_id': fieldId.trim(), 'form_id' : this.document.form_id};
+                fieldId = fieldId.trim();
+                args = {'field_id': fieldId, 'form_id' : this.document.form_id};
             }
             this.http.put(environment['url'] + '/ws/accounts/suppliers/' + this.document.supplier_id + '/deletePage',
                 {'args': args}, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.document.pages[fieldId] = undefined;
+                }),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
@@ -1439,8 +1480,13 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                                 value = value.replaceAll(',', '/');
                                 value = value.replaceAll(' ', '/');
                                 const format = moment().localeData().longDateFormat('L');
+                                const tmpValue = value;
                                 value = moment(value, format);
                                 value = new Date(value._d);
+                                if (value.toString() === 'Invalid Date') {
+                                    value = moment(tmpValue, 'YYYY-MM-DD');
+                                    value = new Date(value._d);
+                                }
                             }
                             newField.control.setValue(value);
                             newField.control.markAsTouched();
@@ -1593,6 +1639,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             'siren': supplier.siren,
                             'iban': supplier.iban,
                             'bic': supplier.bic,
+                            'duns': supplier.duns,
+                            'rccm': supplier.rccm,
                             'email': supplier.email,
                             'vat_number': supplier.vat_number
                         };
@@ -1884,6 +1932,16 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         }
     }
 
+    async changePage(page: number) {
+        await this.changeImage(page, this.currentPage);
+        this.currentPage = page;
+
+        document.getElementById('image')!.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+
     async nextPage() {
         if (this.currentPage < this.document['nb_pages']) {
             this.currentPage = this.currentPage + 1;
@@ -2095,4 +2153,5 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     onAttachmentsLengthChange(event: any) {
         this.attachmentsLength = event;
     }
+
 }

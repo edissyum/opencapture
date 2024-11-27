@@ -26,38 +26,48 @@
             {{ 'DOCTYPE.add_doctype' | translate }}
         </h3>
         <mat-divider class="border-green-400"></mat-divider>
-            <form (ngSubmit)="form.valid && addDocType()" [formGroup]="form">
-                <div class="grid grid-cols-1 gap-x-2 gap-y-2 m-2">
-                    <mat-form-field>
-                        <mat-label>{{ 'DOCTYPE.folder' | translate }}</mat-label>
-                        <mat-select id='folder' [formControlName]="'folder'" [required]="true">
-                            <div *ngFor="let folder of documentTypeFactoryComponent.treeDataObj.doctypeData">
-                                <mat-option *ngIf="folder.type === 'folder' && folder['formId'] === selectedFormId"
-                                            [value]="folder.code">
+        <form (ngSubmit)="form.valid && addDocType()" [formGroup]="form">
+            <div class="grid grid-cols-1 gap-x-2 gap-y-2 m-2">
+                <mat-form-field>
+                    <mat-label>{{ 'DOCTYPE.folder' | translate }}</mat-label>
+                    <mat-select id='folder' [formControlName]="'folder'" [required]="true">
+                        @for (folder of this.documentTypeFactoryComponent.treeDataObj.doctypeData; track folder.code) {
+                            @if (folder.type === 'folder' && folder['formId'] === selectedFormId) {
+                                <mat-option [value]="folder.code">
                                     {{ folder.label }}
                                 </mat-option>
-                            </div>
-                        </mat-select>
-                        <mat-error *ngIf="form.get('folder')!.hasError('required')">{{ 'AUTH.field_required' | translate }}</mat-error>
-                    </mat-form-field>
-                    <ng-container *ngFor="let field of fields">
-                        <mat-form-field *ngIf="field.type === 'text'">
-                            <mat-label>{{ field.label | translate }}</mat-label>
-                            <input matInput [formControlName]="field.id" [type]="field.type"
+                            }
+                        }
+                    </mat-select>
+                    @if (form.get('folder')!.hasError('required')) {
+                        <mat-error>{{ 'AUTH.field_required' | translate }}</mat-error>
+                    }
+                </mat-form-field>
+                @for (field of fields; track field['id']) {
+                    @if (field['type'] === 'text') {
+                        <mat-form-field>
+                            <mat-label>{{ field['label'] | translate }}</mat-label>
+                            <input matInput [formControlName]="field['id']" [type]="field['type']"
                                    [placeholder]="field.placeholder" [required]="field['required']">
-                            <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
-                            <mat-error *ngIf="form.get(field.id)!.hasError('required')">{{ 'AUTH.field_required' | translate }}</mat-error>
+                            @if (field.hint) {
+                                <mat-hint>{{ field.hint }}</mat-hint>
+                            }
+                            @if (form.get(field['id'])!.hasError('required')) {
+                                <mat-error>{{ 'AUTH.field_required' | translate }}</mat-error>
+                            }
                         </mat-form-field>
-                        <div class="text-center p-4" *ngIf="field.type === 'slide'">
-                            <mat-slide-toggle [formControlName]="field.id">
-                                {{ field.label | translate }}
+                    } @else if (field['type'] === 'slide') {
+                        <div class="text-center p-4">
+                            <mat-slide-toggle [formControlName]="field['id']">
+                                {{ field['label'] | translate }}
                             </mat-slide-toggle>
                         </div>
-                    </ng-container>
-                    <button type="submit" class="m-auto w-7/12 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300" mat-button>
-                        {{ 'DOCTYPE.add' | translate }}
-                    </button>
-                </div>
+                    }
+                }
+                <button type="submit" class="m-auto w-7/12 border-solid border-green-400 border bg-green-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300" mat-button>
+                    {{ 'DOCTYPE.add' | translate }}
+                </button>
+            </div>
         </form>
     </mat-sidenav>
 </mat-sidenav-container>

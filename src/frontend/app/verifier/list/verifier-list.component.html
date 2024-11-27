@@ -1,6 +1,8 @@
-<span class="absolute z-40 top-4 left-4 max-w-[30%] border border-gray-900" *ngIf="this.documentListThumb">
-    <img [src]="this.documentListThumb" alt="Open-Capture thumbnail">
-</span>
+@if (this.documentListThumb) {
+    <span class="absolute z-40 top-4 left-4 max-w-[30%] border border-gray-900">
+        <img [src]="this.documentListThumb" alt="Open-Capture thumbnail">
+    </span>
+}
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" [autosize]="true">
     <mat-sidenav #sidenav mode="side" [opened]="true" class="2xl:w-96 xl:w-72 sm:w-64 flex flex-col border-r border-green-400 customer-list" style="top:0.1rem">
         <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem" [class.pointer-events-none]="this.loading">
@@ -20,69 +22,83 @@
                         {{ 'VERIFIER.search_customer' | translate }}
                     </mat-label>
                     <input matInput type="text" [formControl]="this.customerFilter" (keyup)="filterCustomers()" autocomplete="off">
-                    <button matSuffix class="text-gray-900 cursor-pointer" (click)="resetSearchCustomer()" *ngIf="this.customerFilter.value">
-                        <i class="fa-solid fa-sync-alt text-xl relative mr-4" [matTooltip]="'VERIFIER.reset_customers_search' | translate"></i>
-                    </button>
+                    @if (this.customerFilter.value) {
+                        <button matSuffix class="text-gray-900 cursor-pointer" (click)="resetSearchCustomer()">
+                            <i class="fa-solid fa-sync-alt text-xl relative mr-4" [matTooltip]="'VERIFIER.reset_customers_search' | translate"></i>
+                        </button>
+                    }
                 </mat-form-field>
             </div>
-            <hr *ngIf="this.documents.length !== 0 && (!this.customerFilterEmpty || !this.loading)" class="w-1/2 m-auto mt-3 mb-3 border-green-400 relative z-30">
-            <div *ngIf="this.loadingCustomers || this.loading" class="loading_customers">
-                <div class="m-auto text-center">
-                    <i class="fa-solid fa-users fa-4x fa-beat-fade w-full mb-2"></i>
-                    <span class="w-full">
-                        {{ 'VERIFIER.loading_customers' | translate }}
-                    </span>
+            @if (this.documents.length !== 0 && (!this.customerFilterEmpty || !this.loading)) {
+                <hr class="w-1/2 m-auto mt-3 mb-3 border-green-400 relative z-30">
+            }
+            @if (this.loadingCustomers || this.loading) {
+                <div class="loading_customers">
+                    <div class="m-auto text-center">
+                        <i class="fa-solid fa-users fa-4x fa-beat-fade w-full mb-2"></i>
+                        <span class="w-full">
+                            {{ 'VERIFIER.loading_customers' | translate }}
+                        </span>
+                    </div>
                 </div>
-            </div>
-            <div *ngIf="this.customerFilter.value && !this.loadingCustomers && this.customerFilterEmpty" class="flex text-gray-400 object-contain" style="height: calc(100% - 10rem)">
-                <div class="m-auto text-center">
-                    <i class="fa-solid fa-ban fa-4x fa-beat-fade w-full mb-2"></i>
-                    <span class="w-full">
-                        {{ 'VERIFIER.no_customers_filter' | translate }}
-                    </span>
+            }
+            @if (this.customerFilter.value && !this.loadingCustomers && this.customerFilterEmpty) {
+                <div class="flex text-gray-400 object-contain" style="height: calc(100% - 10rem)">
+                    <div class="m-auto text-center">
+                        <i class="fa-solid fa-ban fa-4x fa-beat-fade w-full mb-2"></i>
+                        <span class="w-full">
+                            {{ 'VERIFIER.no_customers_filter' | translate }}
+                        </span>
+                    </div>
                 </div>
-            </div>
-            <mat-tree *ngIf="!this.loadingCustomers && !this.loading" [dataSource]="this.dataSource" [treeControl]="this.treeControl" class="overflow-x-hidden" style="height: calc(100vh - 16rem)">
-                <mat-tree-node class="pl-12 min-h-6 cursor-pointer hover:bg-black hover:bg-opacity-20"
-                               *matTreeNodeDef="let node; when:isLevelTwo;" (click)="loadDocumentPerCustomer(node)">
-                    <button mat-icon-button disabled>
-                        <i class="text-green-400 ml-4 text-base fa-solid fa-user pb-0.5"></i>
-                    </button>
-                    <span class="pl-2 font-normal select-none truncate w-8/12" [matTooltip]="node.name.length >= 25 ? node.name : ''">
-                        {{ node.name }}
-                    </span>
-                    <span class="float-right ml-auto select-none mr-6 bottom-1 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
-                        {{ node.count }}
-                    </span>
-                </mat-tree-node>
-                <mat-tree-node style="min-height: 24px" class="parent cursor-pointer hover:bg-black hover:bg-opacity-10"
-                               *matTreeNodeDef="let node; when: hasChild; when:isNotLevelOne" matTreeNodeToggle
-                               [class.hidden]="!node.display || (node.count === 0 && node.id === 0)">
-                    <button mat-icon-button [class.hidden]="node.count === 0 && node.id === 0">
-                        <mat-icon class="mat-icon-rtl-mirror text-gray-900">
-                            {{ this.treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
-                        </mat-icon>
-                    </button>
-                    <span class="select-none" [class.pointer-events-none]="node.count === 0" [class.hidden]="node.count === 0 && node.id === 0">
-                        {{ node.name }}
-                    </span>
-                    <span *ngIf="!this.treeControl.isExpanded(node)" [class.hidden]="node.count === 0 && node.id === 0"
-                          class="float-right ml-auto select-none mr-4 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
-                        {{ node.count }}
-                    </span>
-                </mat-tree-node>
-                <mat-tree-node [class.hidden]="node.count === 0" style="min-height: 24px" matTreeNodeToggle
-                               class="child pl-6 cursor-pointer hover:bg-black hover:bg-opacity-10"
-                               *matTreeNodeDef="let node;when: isLevelOne;">
-                    <button mat-icon-button>
-                        <i [class.fa-folder-open]="this.treeControl.isExpanded(node)" class="text-gray-600 fa-solid fa-folder text-lg relative -top-0.5"></i>
-                    </button>
-                    <span class="pl-2 font-normal select-none truncate w-8/12">{{ node.name }}</span>
-                    <span *ngIf="!this.treeControl.isExpanded(node)" class="float-right ml-auto select-none mr-12 bottom-1 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
-                        {{ node.count }}
-                    </span>
-                </mat-tree-node>
-            </mat-tree>
+            }
+            @if (!this.loadingCustomers && !this.loading) {
+                <mat-tree [dataSource]="this.dataSource" [treeControl]="this.treeControl" class="overflow-x-hidden" style="height: calc(100vh - 16rem)">
+                    <mat-tree-node class="pl-12 min-h-6 cursor-pointer hover:bg-black hover:bg-opacity-20"
+                                   *matTreeNodeDef="let node; when:isLevelTwo;" (click)="loadDocumentPerCustomer(node)">
+                        <button mat-icon-button disabled>
+                            <i class="text-green-400 ml-4 text-base fa-solid fa-user pb-0.5"></i>
+                        </button>
+                        <span class="pl-2 font-normal select-none truncate w-8/12" [matTooltip]="node.name.length >= 25 ? node.name : ''">
+                            {{ node.name }}
+                        </span>
+                        <span class="float-right ml-auto select-none mr-6 bottom-1 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
+                            {{ node.count }}
+                        </span>
+                    </mat-tree-node>
+                    <mat-tree-node style="min-height: 24px" class="parent cursor-pointer hover:bg-black hover:bg-opacity-10"
+                                   *matTreeNodeDef="let node; when: hasChild; when:isNotLevelOne" matTreeNodeToggle
+                                   [class.hidden]="!node.display || (node.count === 0 && node.id === 0)">
+                        <button mat-icon-button [class.hidden]="node.count === 0 && node.id === 0">
+                            <mat-icon class="mat-icon-rtl-mirror text-gray-900">
+                                {{ this.treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+                            </mat-icon>
+                        </button>
+                        <span class="select-none" [class.pointer-events-none]="node.count === 0" [class.hidden]="node.count === 0 && node.id === 0">
+                            {{ node.name }}
+                        </span>
+                        @if (!this.treeControl.isExpanded(node)) {
+                            <span [class.hidden]="node.count === 0 && node.id === 0"
+                                  class="float-right ml-auto select-none mr-4 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
+                                {{ node.count }}
+                            </span>
+                        }
+                    </mat-tree-node>
+                    <mat-tree-node [class.hidden]="node.count === 0" style="min-height: 24px" matTreeNodeToggle
+                                   class="child pl-6 cursor-pointer hover:bg-black hover:bg-opacity-10"
+                                   *matTreeNodeDef="let node;when: isLevelOne;">
+                        <button mat-icon-button>
+                            <i [class.fa-folder-open]="this.treeControl.isExpanded(node)" class="text-gray-600 fa-solid fa-folder text-lg relative -top-0.5"></i>
+                        </button>
+                        <span class="pl-2 font-normal select-none truncate w-8/12">{{ node.name }}</span>
+                        @if (!this.treeControl.isExpanded(node)) {
+                            <span class="float-right ml-auto select-none mr-12 bottom-1 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
+                                {{ node.count }}
+                            </span>
+                        }
+                    </mat-tree-node>
+                </mat-tree>
+            }
         </div>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
@@ -91,291 +107,338 @@
                class="fa-solid fa-stream text-xl text-gray-900"></i>
         </button>
         <mat-tab-group [selectedIndex]="this.selectedTab" (selectedTabChange)="onTabChange($event)" class="batches" animationDuration="0ms">
-            <mat-tab *ngFor="let batch of batchList" [id]="batch.id" [disabled]="this.loading">
-                <ng-template mat-tab-label>
-                    <span>
-                        {{ this.translate.instant(batch.label) }}
-                    </span>
-                    <span style="font-size: 12px;" class="text-green-400 ml-3 relative bottom-1.5 font-bold">
-                        {{ this.totals[batch.id] }}
-                    </span>
-                </ng-template>
-                <div class="verifier-container flex flex-col">
-                    <div class="grid grid-cols-3 grid-flow-row gap-0 mt-2 z-30">
-                        <mat-form-field class="mb-3 pt-3 ml-4 w-9/12" appearance="outline">
-                            <mat-label>{{ 'VERIFIER.search' | translate }}</mat-label>
-                            <input matInput type="text" [(ngModel)]="search" [disabled]="this.total === 0" (keyup)="searchDocument($event)">
-                        </mat-form-field>
-                        <div class="w-full m-auto grid grid-cols-2 gap-2">
-                            <mat-form-field appearance="outline">
-                                <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
-                                <mat-select [(value)]="this.currentStatus" (selectionChange)="changeStatus($event)" [disabled]="this.loading">
-                                    <mat-option *ngFor="let option of this.status" [value]="option['id']">
-                                        {{ option['label'] }}
-                                        <span *ngIf="this.currentStatus !== option['id']" class="text-green-400 text-xs ml-3 font-bold">
-                                            {{ option['total'] }}
-                                        </span>
-                                    </mat-option>
-                                </mat-select>
+            @for (batch of this.batchList; track batch.id) {
+                <mat-tab [id]="batch.id" [disabled]="this.loading">
+                    <ng-template mat-tab-label>
+                        <span>
+                            {{ this.translate.instant(batch.label) }}
+                        </span>
+                            <span style="font-size: 12px;" class="text-green-400 ml-3 relative bottom-1.5 font-bold">
+                            {{ this.totals[batch.id] }}
+                        </span>
+                    </ng-template>
+                    <div class="verifier-container flex flex-col">
+                        <div class="grid grid-cols-3 grid-flow-row gap-0 mt-2 z-30">
+                            <mat-form-field class="mb-3 pt-3 ml-4 w-9/12" appearance="outline">
+                                <mat-label>{{ 'VERIFIER.search' | translate }}</mat-label>
+                                <input matInput type="text" [(ngModel)]="search" [disabled]="this.total === 0" (keyup)="searchDocument($event)">
                             </mat-form-field>
-                            <mat-form-field appearance="outline">
-                                <mat-label>{{ 'SETTINGS.list_forms' | translate }}</mat-label>
-                                <mat-select [(value)]="this.currentForm" (selectionChange)="changeForm($event)" [disabled]="this.loading">
-                                    <mat-option *ngFor="let option of this.forms" [value]="option['id']">
-                                        {{ option['label'] | translate }}
-                                        <span *ngIf="this.currentForm !== option['id']" class="text-green-400 text-xs ml-3 font-bold">
-                                            {{ option['total'] }}
-                                        </span>
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-                        <div [class.hidden]="this.loading || this.total === 0" class="pt-3 grid grid-cols-7 grid-flow-row -ml-8">
-                            <mat-paginator [length]="this.total" [pageSize]="this.pageSize" [pageIndex]="this.pageIndex"
-                                           [pageSizeOptions]="this.pageSizeOptions" (page)="onPageChange($event)"
-                                           class="col-span-6">
-                            </mat-paginator>
-                            <div class="mt-2.5 flex relative right-4 display_mode flex-nowrap">
-                                <button mat-stroked-button class="min-w-5 p-2 border border-gray-600 text-gray-900 rounded-r-none shrink-0" (click)="switchDisplayMode()">
-                                    <i *ngIf="this.displayMode == 'list'" class="fa-solid fa-list text-xl" [matTooltip]="'VERIFIER.switch_to_grid_view' | translate"></i>
-                                    <i *ngIf="this.displayMode == 'grid'" class="fa-solid fa-grip text-xl" [matTooltip]="'VERIFIER.switch_to_list_view' | translate"></i>
-                                </button>
-                                <button mat-stroked-button class="display_mode min-w-1 p-2 rounded-l-none border border-l-0 border-gray-600" [matMenuTriggerFor]="menu">
-                                    <i class="fa-solid fa-caret-down"></i>
-                                </button>
-                                <mat-menu #menu="matMenu">
-                                    <div class="grid grid-cols-2 gap-2 border-b border-gray-300">
+                            <div class="w-full m-auto grid grid-cols-2 gap-2">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
+                                    <mat-select [(value)]="this.currentStatus" (selectionChange)="changeStatus($event)" [disabled]="this.loading">
+                                        @for (option of this.status; track option.id) {
+                                            <mat-option [value]="option.id">
+                                                {{ option.label }}
+                                                @if (this.currentStatus !== option.id) {
+                                                    <span class="text-green-400 text-xs ml-3 font-bold">
+                                                        {{ option['total'] }}
+                                                    </span>
+                                                }
+                                            </mat-option>
+                                        }
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field appearance="outline">
+                                    <mat-label>{{ 'SETTINGS.list_forms' | translate }}</mat-label>
+                                    <mat-select [(value)]="this.currentForm" (selectionChange)="changeForm($event)" [disabled]="this.loading">
+                                        @for (option of this.forms; track option.id) {
+                                            <mat-option [value]="option.id">
+                                                {{ option.label | translate }}
+                                                @if (this.currentForm !== option.id) {
+                                                    <span class="text-green-400 text-xs ml-3 font-bold">
+                                                        {{ option['total'] }}
+                                                    </span>
+                                                }
+                                            </mat-option>
+                                        }
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div [class.hidden]="this.loading || this.total === 0" class="pt-3 grid grid-cols-7 grid-flow-row -ml-8">
+                                <mat-paginator [length]="this.total" [pageSize]="this.pageSize" [pageIndex]="this.pageIndex"
+                                               [pageSizeOptions]="this.pageSizeOptions" (page)="onPageChange($event)"
+                                               class="col-span-6">
+                                </mat-paginator>
+                                <div class="mt-2.5 flex relative right-4 display_mode flex-nowrap">
+                                    <button mat-stroked-button class="min-w-5 p-2 border border-gray-600 text-gray-900 rounded-r-none shrink-0" (click)="switchDisplayMode()">
+                                        @if (this.displayMode == 'list') {
+                                            <i class="fa-solid fa-list text-xl" [matTooltip]="'VERIFIER.switch_to_grid_view' | translate"></i>
+                                        } @else {
+                                            <i class="fa-solid fa-grip text-xl" [matTooltip]="'VERIFIER.switch_to_list_view' | translate"></i>
+                                        }
+                                    </button>
+                                    <button mat-stroked-button class="display_mode min-w-1 p-2 rounded-l-none border border-l-0 border-gray-600" [matMenuTriggerFor]="menu">
+                                        <i class="fa-solid fa-caret-down"></i>
+                                    </button>
+                                    <mat-menu #menu="matMenu">
+                                        <div class="grid grid-cols-2 gap-2 border-b border-gray-300">
                                         <span class="px-2 py-2 text-center cursor-pointer"
                                               (click)="changeOrder('asc')"
                                               [class.border-b-2]="this.currentOrder == 'asc'"
                                               [class.border-green-400]="this.currentOrder == 'asc'">
                                             <i class="fa-solid fa-arrow-up-wide-short"></i> {{ 'VERIFIER.asc' | translate }}
                                         </span>
-                                        <span class="px-2 py-2 text-center cursor-pointer"
-                                              (click)="changeOrder('desc')"
-                                              [class.border-b-2]="this.currentOrder == 'desc'"
-                                              [class.border-green-400]="this.currentOrder == 'desc'">
+                                            <span class="px-2 py-2 text-center cursor-pointer"
+                                                  (click)="changeOrder('desc')"
+                                                  [class.border-b-2]="this.currentOrder == 'desc'"
+                                                  [class.border-green-400]="this.currentOrder == 'desc'">
                                             <i class="fa-solid fa-arrow-down-wide-short"></i> {{ 'VERIFIER.desc' | translate }}
                                         </span>
-                                    </div>
-                                    <div>
-                                        <div *ngFor="let filter of this.filtersLists" (click)="changeFilter(filter['id'])"
-                                             class="p-2 w-full hover:bg-gray-200 cursor-pointer">
-                                            {{ filter['label'] | translate }}
-                                            <i *ngIf="this.currentFilter == filter['id']" class="fa-regular fa-circle-check text-green-400 float-right mt-1"></i>
                                         </div>
-                                    </div>
-                                </mat-menu>
+                                        <div>
+                                            @for (filter of this.filtersLists; track filter.id) {
+                                                <div (click)="changeFilter(filter.id)" class="p-2 w-full hover:bg-gray-200 cursor-pointer">
+                                                    {{ filter.label | translate }}
+                                                    @if (this.currentFilter == filter.id) {
+                                                        <i class="fa-regular fa-circle-check text-green-400 float-right mt-1"></i>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                    </mat-menu>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        @if (this.documents.length > 1) {
+                            <div class="z-30 -mt-2 select-none shadow-md">
+                                <span class="cursor-pointer pl-4 bottom-3.5 relative" (click)="selectOrUnselectAllDocuments($event)"
+                                      [innerHTML]="this.documentToDeleteSelected ? this.translate.instant('VERIFIER.unselect_all') : this.translate.instant('VERIFIER.select_all')">
+                                </span>
+                                    <span class="bottom-3.5 relative" [class.hidden]="this.totalChecked === 0"> ({{ this.totalChecked }})</span>
+                                    <span class="bottom-3.5 relative" [class.hidden]="!this.documentToDeleteSelected"
+                                          (click)="$event.stopPropagation();deleteAllConfirmDialog()">
+                                    <i class="fa-solid fa-trash ml-2 text-red-500 cursor-pointer"
+                                       matTooltip="{{ 'GLOBAL.delete_all_checked' | translate }}"></i>
+                                </span>
+                            </div>
+                        }
 
-                    <div class="z-30 -mt-2 select-none shadow-md" *ngIf="this.documents.length > 1">
-                        <span class="cursor-pointer pl-4 bottom-3.5 relative" (click)="selectOrUnselectAllDocuments($event)"
-                              [innerHTML]="this.documentToDeleteSelected ? this.translate.instant('VERIFIER.unselect_all') : this.translate.instant('VERIFIER.select_all')">
-                        </span>
-                        <span class="bottom-3.5 relative" [class.hidden]="this.totalChecked === 0"> ({{ this.totalChecked }})</span>
-                        <span class="bottom-3.5 relative" [class.hidden]="!this.documentToDeleteSelected"
-                              (click)="$event.stopPropagation();deleteAllConfirmDialog()">
-                            <i class="fa-solid fa-trash ml-2 text-red-500 cursor-pointer"
-                               matTooltip="{{ 'GLOBAL.delete_all_checked' | translate }}"></i>
-                        </span>
-                    </div>
-
-                    <hr *ngIf="this.documents.length !== 0 && !this.loading" class="w-1/2 m-auto -mt-2.5 mb-2 border-green-400 relative z-30">
-
-                    <div *ngIf="this.documents.length === 0 && !this.loading" class="text-gray-200 text-center absolute top-[55%] left-[50%]" style="transform: translate(-50%, -50%);">
-                        <i class="fa-regular fa-folder-open fa-10x w-full"></i>
-                        <span class="text-4xl">
-                            {{ 'GLOBAL.no_batch_found' | translate }}
-                        </span>
-                    </div>
-
-                    <div *ngIf="this.loading">
-                        <app-loader></app-loader>
-                    </div>
-
-                    <div class="overflow-x-hidden" style="height: calc(100vh - 16rem) !important" *ngIf="!this.loading">
-                        <div class="mt-2 mx-5">
-                            <div *ngIf="this.displayMode == 'grid' else listTemplate"
-                                 class="cards-list list mb-2 grid md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 grid-flow-row gap-4"
-                                [class.2xl:grid-cols-5]="!sidenav.opened">
-                                <mat-card *ngFor="let document of this.documents;" class="cursor-pointer p-0 mb-0">
-                                    <label class="p-4 absolute z-40 cursor-pointer">
-                                        <input id="{{ document['document_id'] }}_checkbox" (click)="checkCheckedDocuments()"
-                                               class="accent-green-400 checkBox_list cursor-pointer w-5 h-5" type="checkbox">
-                                    </label>
-                                    <div *ngIf="document['facturx']" class="text-center text-gray-400 mt-2" [matTooltip]="'VERIFIER.facturx_level' | translate : {level : document['facturx_level']}">
-                                        {{ "VERIFIER.facturx" | translate }}
-                                    </div>
-                                    <div class="absolute right-0 pt-4 pr-5 z-40">
-                                        <div [matMenuTriggerFor]="menu" matTooltipPosition="above"
-                                             [matTooltip]="this.translate.instant('VERIFIER.documents_settings')">
-                                            <i class="fa-solid fa-ellipsis-vertical text-2xl w-5 text-center"></i>
-                                        </div>
-                                        <mat-menu #menu="matMenu">
-                                            <button mat-menu-item [matMenuTriggerFor]="customers">
-                                               <i class="fa-solid fa-users w-6"></i> {{ "WORKFLOW.associated_customer" | translate }}
-                                            </button>
-                                            <button mat-menu-item [matMenuTriggerFor]="formMenu">
-                                               <i class="fa-brands fa-wpforms w-6"></i> {{ "POSITIONS-MASKS.form_associated" | translate }}
-                                            </button>
-                                            <button mat-menu-item (click)="deleteConfirmDialog(document['document_id'])">
-                                                <i class="fa-solid fa-trash w-6"></i> {{ 'VERIFIER.delete_document' | translate }}
-                                            </button>
-                                        </mat-menu>
-                                        <mat-menu #customers="matMenu">
-                                            <button mat-menu-item *ngFor="let customer of this.customersList"
-                                                    (click)="changeCustomer(customer.id, document['document_id'])">
-                                                <span [class.text-green-400]="customer.id === document['customer_id']">
-                                                    {{ customer.name | translate }}
-                                                </span>
-                                                <span *ngIf="customer.id === document['customer_id']">
-                                                    <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
-                                                </span>
-                                            </button>
-                                        </mat-menu>
-                                        <mat-menu #formMenu="matMenu">
-                                            <button mat-menu-item (click)="changeDocumentForm(form.id, document['document_id'])"
-                                                    *ngFor="let form of this.filteredForms">
-                                                <span [class.text-green-400]="form.id === document['form_id']">
-                                                    {{ form.label | translate }}
-                                                </span>
-                                                <span *ngIf="form.id === document['form_id']">
-                                                    <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
-                                                </span>
-                                            </button>
-                                        </mat-menu>
-                                    </div>
-                                    <img [routerLink]="document.locked && document.locked_by ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
-                                         mat-card-image class="m-auto p-4" [src]="document['thumb']" alt="Open-Capture thumbnail"
-                                         (click)="document.locked && document.locked_by ? displayDocumentLocked(document['locked_by']) : ''">
-                                    <span class="px-6">
-                                        <span class="text-green-400 text-base badge badge-secondary badge-pill"
-                                              [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : ' + document['nb_pages']">
-                                            {{ document['nb_pages'] }}<i class="far fa-file-alt ml-1"></i>
-                                        </span>
-                                        <span class="text-green-400 text-base badge badge-secondary badge-pill border-l border-green-400 ml-1.5"
-                                              *ngIf="document['attachments_count'] && document['attachments_count'] > 0"
-                                              [matTooltip]="this.translate.instant('ATTACHMENTS.attachments_count') + ' : ' + document['attachments_count']">
-                                            {{ document['attachments_count'] }}<i class="fas fa-paperclip ml-1"></i>
-                                        </span>
+                        @if (!this.loading) {
+                            @if (this.documents.length !== 0) {
+                                <hr class="w-1/2 m-auto -mt-2.5 mb-2 border-green-400 relative z-30">
+                            } @else {
+                                <div class="text-gray-200 text-center absolute top-[55%] left-[50%]" style="transform: translate(-50%, -50%);">
+                                    <i class="fa-regular fa-folder-open fa-10x w-full"></i>
+                                    <span class="text-4xl">
+                                        {{ 'GLOBAL.no_batch_found' | translate }}
                                     </span>
-                                    <mat-card-header class="leading-3 relative z-10 bg-white pt-0 px-6"
-                                                     [routerLink]="document.locked && document.locked_by ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
-                                                     (click)="document.locked && document.locked_by ? displayDocumentLocked(document['locked_by']) : ''">
-                                        <mat-card-title class="break-all inline-block truncate w-full"
-                                                  [matTooltip]="document['supplier_name']"
-                                                  [matTooltipDisabled]="document['supplier_name']?.replace(' ', '').length <= 30">
-                                            <i [matTooltip]="'VERIFIER.document_locked' | translate"
-                                               class="fa-solid fa-lock text-base mb-2 relative" style="bottom: 0.1rem"
-                                               *ngIf="document.locked && document.locked_by"></i>
-                                            {{ document['supplier_name'] ? document['supplier_name'] : 'ACCOUNTS.supplier_unknow' | translate }}
-                                        </mat-card-title>
-                                        <mat-card-subtitle class="mt-2 mb-1">
-                                            <span *ngFor="let subtitles of document.display?.['subtitles']"
-                                                  [matTooltip]="subtitles['data']" [matTooltipDisabled]="(subtitleContent.offsetWidth < subtitleParent.scrollWidth)">
-                                                <div #subtitleParent class="-mb-1 text-base truncate w-full inline-block">
-                                                    <span #subtitleContent>
-                                                        <strong>{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
-                                                    </span>
-                                                </div>
-                                            </span>
-                                        </mat-card-subtitle>
-                                    </mat-card-header>
-                                </mat-card>
+                                </div>
+                            }
+                        }
+
+                        @if (this.loading) {
+                            <div>
+                                <app-loader></app-loader>
                             </div>
-                            <ng-template #listTemplate>
-                                <mat-list>
-                                    <div *ngFor="let document of this.documents;" class="border border-grey-900 w-full p-0 mb-2 shadow-md hover:shadow-xl transition-shadow h-28 cursor-pointer rounded-xl">
-                                        <div class="flex flex-wrap h-full">
-                                            <div class="mx-6 flex items-center justify-center">
-                                                <input id="{{ document['document_id'] }}_checkbox" (click)="checkCheckedDocuments()" class="accent-green-400 checkBox_list cursor-pointer w-5 h-5" type="checkbox">
-                                            </div>
-                                            <div class="grow max-w-[30%] relative mt-2" [routerLink]="document.locked && document.locked_by ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
-                                                 (click)="document.locked && document.locked_by ? displayDocumentLocked(document['locked_by']) : ''">
-                                                <div class="font-bold text-xl break-all truncate w-11/12" [matTooltip]="document['supplier_name']"
-                                                     [matTooltipDisabled]="document['supplier_name']?.replace(' ', '').length <= 40">
-                                                    <i [matTooltip]="'VERIFIER.document_locked' | translate" *ngIf="document.locked && document.locked_by"
-                                                       class="fa-solid fa-lock text-md mb-2 relative" style="bottom: 0.1rem"></i>
-                                                    {{ document['supplier_name'] ? document['supplier_name'] : 'ACCOUNTS.supplier_unknow' | translate }}
-                                                    <span *ngIf="document['facturx']" class="text-xs text-gray-400 relative bottom-0.5" [matTooltip]="'VERIFIER.facturx_level' | translate : {level : document['facturx_level']}">
-                                                        {{ "VERIFIER.facturx" | translate }}
+                        } @else {
+                            <div class="overflow-x-hidden" style="height: calc(100vh - 16rem) !important">
+                                <div class="mt-2 mx-5">
+                                    @if (this.displayMode == 'grid') {
+                                        <div class="cards-list list mb-2 grid md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 grid-flow-row gap-4"
+                                             [class.2xl:grid-cols-5]="!sidenav.opened">
+                                            @for (document of this.documents; track document.id) {
+                                                <mat-card class="cursor-pointer p-0 mb-0">
+                                                    <label class="p-4 absolute z-40 cursor-pointer">
+                                                        <input id="{{ document['document_id'] }}_checkbox" (click)="checkCheckedDocuments()"
+                                                               class="accent-green-400 checkBox_list cursor-pointer w-5 h-5" type="checkbox">
+                                                    </label>
+                                                    @if (document['facturx']) {
+                                                        <div class="text-center text-gray-400 mt-2" [matTooltip]="'VERIFIER.facturx_level' | translate : {level : document['facturx_level']}">
+                                                            {{ "VERIFIER.facturx" | translate }}
+                                                        </div>
+                                                    }
+                                                    <div class="absolute right-0 pt-4 pr-5 z-40">
+                                                        <div [matMenuTriggerFor]="menu" matTooltipPosition="above"
+                                                             [matTooltip]="this.translate.instant('VERIFIER.documents_settings')">
+                                                            <i class="fa-solid fa-ellipsis-vertical text-2xl w-5 text-center"></i>
+                                                        </div>
+                                                        <mat-menu #menu="matMenu">
+                                                            <button mat-menu-item [matMenuTriggerFor]="customers">
+                                                                <i class="fa-solid fa-users w-6"></i> {{ "WORKFLOW.associated_customer" | translate }}
+                                                            </button>
+                                                            <button mat-menu-item [matMenuTriggerFor]="formMenu">
+                                                                <i class="fa-brands fa-wpforms w-6"></i> {{ "POSITIONS-MASKS.form_associated" | translate }}
+                                                            </button>
+                                                            <button mat-menu-item (click)="deleteConfirmDialog(document['document_id'])">
+                                                                <i class="fa-solid fa-trash w-6"></i> {{ 'VERIFIER.delete_document' | translate }}
+                                                            </button>
+                                                        </mat-menu>
+                                                        <mat-menu #customers="matMenu">
+                                                            @for (customer of this.customersList; track customer.id) {
+                                                                <button mat-menu-item (click)="changeCustomer(customer.id, document['document_id'])">
+                                                                    <span [class.text-green-400]="customer.id === document['customer_id']">
+                                                                        {{ customer.name | translate }}
+                                                                    </span>
+                                                                    @if (customer.id === document['customer_id']) {
+                                                                        <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                                                    }
+                                                                </button>
+                                                            }
+                                                        </mat-menu>
+                                                        <mat-menu #formMenu="matMenu">
+                                                            @for (form of this.filteredForms; track form['id']) {
+                                                                <button mat-menu-item (click)="changeDocumentForm(form.id, document['document_id'])">
+                                                                    <span [class.text-green-400]="form['id'] === document['form_id']">
+                                                                        {{ form.label | translate }}
+                                                                    </span>
+                                                                    @if (form['id'] === document['form_id']) {
+                                                                        <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                                                    }
+                                                                </button>
+                                                            }
+                                                        </mat-menu>
+                                                    </div>
+                                                    <img [routerLink]="document.locked && document.locked_by ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
+                                                         mat-card-image class="m-auto p-4" [src]="document['thumb']" alt="Open-Capture thumbnail"
+                                                         (click)="document.locked && document.locked_by ? displayDocumentLocked(document['locked_by']) : ''">
+                                                    <span class="px-6">
+                                                        <span class="text-green-400 text-base badge badge-secondary badge-pill"
+                                                              [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : ' + document['nb_pages']">
+                                                            {{ document['nb_pages'] }}<i class="far fa-file-alt ml-1"></i>
+                                                        </span>
+                                                        @if (document['attachments_count'] && document['attachments_count'] > 0) {
+                                                            <span class="text-green-400 text-base badge badge-secondary badge-pill border-l border-green-400 ml-1.5"
+                                                                  [matTooltip]="this.translate.instant('ATTACHMENTS.attachments_count') + ' : ' + document['attachments_count']">
+                                                                {{ document['attachments_count'] }}<i class="fas fa-paperclip ml-1"></i>
+                                                            </span>
+                                                        }
                                                     </span>
-                                                </div>
-                                                <div *ngFor="let subtitles of document.display?.['subtitles'].slice(0, 3);" class="opacity-75 -mb-1 text-sm truncate w-full inline-block">
-                                                    <strong class="text-gray-900">{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
-                                                </div>
-                                            </div>
-                                            <div class="grow max-w-[30%] relative mt-4" [routerLink]="document.locked && document.locked_by ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
-                                                 (click)="document.locked && document.locked_by ? displayDocumentLocked(document['locked_by']) : ''">
-                                                <div *ngFor="let subtitles of document.display?.['subtitles'].slice(3, 7);" class="opacity-75 -mb-1 text-sm truncate w-full inline-block">
-                                                    <strong class="text-gray-900">{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
-                                                </div>
-                                            </div>
-                                            <div class="grow flex items-center ml-2" [routerLink]="document.locked && document.locked_by ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
-                                                 (click)="document.locked && document.locked_by ? displayDocumentLocked(document['locked_by']) : ''">
-                                                <div class="text-green-400 text-base badge badge-secondary badge-pill pr-1"
-                                                     [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : ' + document['nb_pages']">
-                                                    {{ document['nb_pages'] }}<i class="far fa-file-alt ml-1"></i>
-                                                </div>
-                                                <div class="text-green-400 text-base badge badge-secondary badge-pill border-l border-green-400 ml-1 pl-1"
-                                                     *ngIf="document['attachments_count'] && document['attachments_count'] > 0"
-                                                     [matTooltip]="this.translate.instant('ATTACHMENTS.attachments_count') + ' : ' + document['attachments_count']">
-                                                    {{ document['attachments_count'] }}<i class="fas fa-paperclip ml-1"></i>
-                                                </div>
-                                            </div>
-                                            <div class="col-start-24 flex items-center justify-end">
-                                                <div (mouseenter)="showThumbnail(document['thumb'])" (mouseout)="resetThumbnail()">
-                                                    <i class="fa-solid fa-eye text-xl float-right text-gray-900 cursor-pointer z-50"></i>
-                                                </div>
-                                                <div [matMenuTriggerFor]="verifier_menu" matTooltipPosition="above"
-                                                     [matTooltip]="this.translate.instant('VERIFIER.documents_settings')">
-                                                    <i class="fa-solid fa-ellipsis-vertical text-xl float-right ml-6 mr-3 cursor-pointer text-gray-900 w-5 text-center"></i>
-                                                </div>
-                                                <mat-menu #verifier_menu="matMenu">
-                                                    <button mat-menu-item [matMenuTriggerFor]="customers">
-                                                        <i class="fa-solid fa-users w-6"></i> {{ "WORKFLOW.associated_customer" | translate }}
-                                                    </button>
-                                                    <button mat-menu-item [matMenuTriggerFor]="formMenu">
-                                                        <i class="fa-brands fa-wpforms w-6"></i> {{ "POSITIONS-MASKS.form_associated" | translate }}
-                                                    </button>
-                                                    <button mat-menu-item (click)="deleteConfirmDialog(document['document_id'])">
-                                                        <i class="fa-solid fa-trash w-6"></i> {{ 'VERIFIER.delete_document' | translate }}
-                                                    </button>
-                                                </mat-menu>
-                                                <mat-menu #customers="matMenu">
-                                                    <button mat-menu-item *ngFor="let customer of this.customersList" (click)="changeCustomer(customer.id, document['document_id'])">
-                                                        <span [class.text-green-400]="customer.id === document['customer_id']">
-                                                            {{ customer.name | translate }}
-                                                        </span>
-                                                        <span *ngIf="customer.id === document['customer_id']">
-                                                            <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
-                                                        </span>
-                                                    </button>
-                                                </mat-menu>
-                                                <mat-menu #formMenu="matMenu">
-                                                    <button mat-menu-item (click)="changeDocumentForm(form.id, document['document_id'])" *ngFor="let form of this.filteredForms">
-                                                        <span [class.text-green-400]="form.id === document['form_id']">
-                                                            {{ form.label | translate }}
-                                                        </span>
-                                                        <span *ngIf="form.id === document['form_id']">
-                                                            <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
-                                                        </span>
-                                                    </button>
-                                                </mat-menu>
-                                            </div>
-                                            <span class="relative text-xs right-2 text-gray-400">
-                                                {{ document['document_id'] }}
-                                            </span>
+                                                    <mat-card-header class="leading-3 relative z-10 bg-white pt-0 px-6"
+                                                                     [routerLink]="document.locked && document.locked_by ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
+                                                                     (click)="document.locked && document.locked_by ? displayDocumentLocked(document['locked_by']) : ''">
+                                                        <mat-card-title class="break-all inline-block truncate w-full"
+                                                                        [matTooltip]="document['supplier_name']"
+                                                                        [matTooltipDisabled]="document['supplier_name']?.replace(' ', '').length <= 30">
+                                                            @if (document.locked && document.locked_by) {
+                                                                <i [matTooltip]="'VERIFIER.document_locked' | translate"
+                                                                   class="fa-solid fa-lock text-base mb-2 relative" style="bottom: 0.1rem"></i>
+                                                            }
+                                                            {{ document['supplier_name'] ? document['supplier_name'] : 'ACCOUNTS.supplier_unknow' | translate }}
+                                                        </mat-card-title>
+                                                        <mat-card-subtitle class="mt-2 mb-1">
+                                                            @for (subtitles of document.display?.['subtitles']; track subtitles) {
+                                                                <span [matTooltip]="subtitles['data']" [matTooltipDisabled]="(subtitleContent.offsetWidth < subtitleParent.scrollWidth)">
+                                                                    <div #subtitleParent class="-mb-1 text-base truncate w-full inline-block">
+                                                                        <span #subtitleContent>
+                                                                            <strong>{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
+                                                                        </span>
+                                                                    </div>
+                                                                </span>
+                                                            }
+                                                        </mat-card-subtitle>
+                                                    </mat-card-header>
+                                                </mat-card>
+                                            }
                                         </div>
-                                    </div>
-                                </mat-list>
-                            </ng-template>
-                        </div>
+                                    } @else {
+                                        <mat-list>
+                                            @for (document of this.documents; track document['id']) {
+                                                <div class="border border-grey-900 w-full p-0 mb-2 shadow-md hover:shadow-xl transition-shadow h-28 cursor-pointer rounded-xl">
+                                                    <div class="flex flex-wrap h-full">
+                                                        <div class="mx-6 flex items-center justify-center">
+                                                            <input id="{{ document['document_id'] }}_checkbox" (click)="checkCheckedDocuments()" class="accent-green-400 checkBox_list cursor-pointer w-5 h-5" type="checkbox">
+                                                        </div>
+                                                        <div class="grow max-w-[30%] relative mt-2" [routerLink]="document.locked && document.locked_by ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
+                                                             (click)="document.locked && document.locked_by ? displayDocumentLocked(document['locked_by']) : ''">
+                                                            <div class="font-bold text-xl break-all truncate w-11/12" [matTooltip]="document['supplier_name']"
+                                                                 [matTooltipDisabled]="document['supplier_name']?.replace(' ', '').length <= 40">
+                                                                @if (document.locked && document.locked_by) {
+                                                                    <i [matTooltip]="'VERIFIER.document_locked' | translate"
+                                                                       class="fa-solid fa-lock text-md mb-2 relative" style="bottom: 0.1rem"></i>
+                                                                }
+                                                                {{ document['supplier_name'] ? document['supplier_name'] : 'ACCOUNTS.supplier_unknow' | translate }}
+                                                                @if (document['facturx']) {
+                                                                    <span class="text-xs text-gray-400 relative bottom-0.5" [matTooltip]="'VERIFIER.facturx_level' | translate : {level : document['facturx_level']}">
+                                                                    {{ "VERIFIER.facturx" | translate }}
+                                                                </span>
+                                                                }
+                                                            </div>
+                                                            @for (subtitles of document.display?.['subtitles'].slice(0, 3); track subtitles) {
+                                                                <div class="opacity-75 -mb-1 text-sm truncate w-full inline-block">
+                                                                    <strong class="text-gray-900">{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                        <div class="grow max-w-[30%] relative mt-4" [routerLink]="document.locked && document.locked_by ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
+                                                             (click)="document.locked && document.locked_by ? displayDocumentLocked(document['locked_by']) : ''">
+                                                            @for (subtitles of document.display?.['subtitles'].slice(3, 7); track subtitles) {
+                                                                <div class="opacity-75 -mb-1 text-sm truncate w-full inline-block">
+                                                                    <strong class="text-gray-900">{{ subtitles['label'] | translate }}</strong>&nbsp;:&nbsp;{{ subtitles['data'] }}
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                        <div class="grow flex items-center ml-2" [routerLink]="document.locked && document.locked_by ? '/verifier/list' : '/verifier/viewer/' + document['document_id']"
+                                                             (click)="document.locked && document.locked_by ? displayDocumentLocked(document['locked_by']) : ''">
+                                                            <div class="text-green-400 text-base badge badge-secondary badge-pill pr-1"
+                                                                 [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : ' + document['nb_pages']">
+                                                                {{ document['nb_pages'] }}<i class="far fa-file-alt ml-1"></i>
+                                                            </div>
+                                                            @if (document['attachments_count'] && document['attachments_count'] > 0) {
+                                                                <div class="text-green-400 text-base badge badge-secondary badge-pill border-l border-green-400 ml-1 pl-1"
+                                                                     [matTooltip]="this.translate.instant('ATTACHMENTS.attachments_count') + ' : ' + document['attachments_count']">
+                                                                    {{ document['attachments_count'] }}<i class="fas fa-paperclip ml-1"></i>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                        <div class="col-start-24 flex items-center justify-end">
+                                                            <div (mouseenter)="showThumbnail(document['thumb'])" (mouseout)="resetThumbnail()">
+                                                                <i class="fa-solid fa-eye text-xl float-right text-gray-900 cursor-pointer z-50"></i>
+                                                            </div>
+                                                            <div [matMenuTriggerFor]="verifier_menu" matTooltipPosition="above"
+                                                                 [matTooltip]="this.translate.instant('VERIFIER.documents_settings')">
+                                                                <i class="fa-solid fa-ellipsis-vertical text-xl float-right ml-6 mr-3 cursor-pointer text-gray-900 w-5 text-center"></i>
+                                                            </div>
+                                                            <mat-menu #verifier_menu="matMenu">
+                                                                <button mat-menu-item [matMenuTriggerFor]="customers">
+                                                                    <i class="fa-solid fa-users w-6"></i> {{ "WORKFLOW.associated_customer" | translate }}
+                                                                </button>
+                                                                <button mat-menu-item [matMenuTriggerFor]="formMenu">
+                                                                    <i class="fa-brands fa-wpforms w-6"></i> {{ "POSITIONS-MASKS.form_associated" | translate }}
+                                                                </button>
+                                                                <button mat-menu-item (click)="deleteConfirmDialog(document['document_id'])">
+                                                                    <i class="fa-solid fa-trash w-6"></i> {{ 'VERIFIER.delete_document' | translate }}
+                                                                </button>
+                                                            </mat-menu>
+                                                            <mat-menu #customers="matMenu">
+                                                                @for (customer of this.customersList; track customer['id']) {
+                                                                    <button mat-menu-item (click)="changeCustomer(customer['id'], document['document_id'])">
+                                                                    <span [class.text-green-400]="customer['id'] === document['customer_id']">
+                                                                        {{ customer.name | translate }}
+                                                                    </span>
+                                                                        @if (customer['id'] === document['customer_id']) {
+                                                                            <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                                                        }
+                                                                    </button>
+                                                                }
+                                                            </mat-menu>
+                                                            <mat-menu #formMenu="matMenu">
+                                                                @for (form of this.filteredForms; track form['id']) {
+                                                                    <button mat-menu-item (click)="changeDocumentForm(form['id'], document['document_id'])">
+                                                                    <span [class.text-green-400]="form['id'] === document['form_id']">
+                                                                        {{ form['label'] | translate }}
+                                                                    </span>
+                                                                        @if (form['id'] === document['form_id']) {
+                                                                            <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                                                                        }
+                                                                    </button>
+                                                                }
+                                                            </mat-menu>
+                                                        </div>
+                                                        <span class="relative text-xs right-2 text-gray-400">
+                                                        {{ document['document_id'] }}
+                                                    </span>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </mat-list>
+                                    }
+                                </div>
+                            </div>
+                        }
                     </div>
-                </div>
-            </mat-tab>
+                </mat-tab>
+            }
         </mat-tab-group>
     </mat-sidenav-content>
 </mat-sidenav-container>

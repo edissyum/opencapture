@@ -264,7 +264,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 if (data['customFields']) {
                     for (const field in data['customFields']) {
                         if (data['customFields'].hasOwnProperty(field)) {
-                            if (data['customFields'][field].module === 'verifier') {
+                            if (data['customFields'][field].module === 'verifier' && data['customFields'][field].enabled) {
                                 for (const parent in this.availableFieldsParent) {
                                     if (this.availableFieldsParent[parent].id === 'custom_fields') {
                                         this.availableFieldsParent[parent].values.push(
@@ -470,7 +470,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
         imageContainer.addClass('pointer-events-none');
         imageContainer.addClass('cursor-auto');
         this.http.put(environment['url'] + '/ws/positions_masks/update/' + this.positionMaskId,
-            {'args': {'filename': '', 'positions': '{}', 'pages': '{}'}},
+            {'args': {'filename': '', 'pages': '{}', 'regex': '{}'}},
             {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('POSITIONS-MASKS.updated'));

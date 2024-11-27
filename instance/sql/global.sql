@@ -15,7 +15,7 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('currency',
 
 -- REGEX creation (fra)
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('date', 'fra', 'Date', '((3[01]|[12][0-9]|0?[1-9])|\d{1}\w{2})\s?([JFMASONDjfmasond][a-zA-Z_À-ÿ\.,-]{2,9}|[/,-\.](1[0-2]|0?[1-9])[/,-\.])\s?((1|2|3){1}\d{1,3}|(1|2|3))');
-INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('due_date', 'fra', 'Date d''échance', '((DATE)?\s*(D(''|\s*))?(E|É)CH(É|E)ANCE(\(S\))?\s*:?\s*([0-9]*(\.?\,?\s?)[0-9]+((\.?\,?\s?)[0-9])+|[0-9]+)?\s*(€)?\s*(AU)?\s*|FACTURE\s*(A|À)\s*PAYER\s*AVANT\s*LE\s*(:)?\s*)');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('due_date', 'fra', 'Date d''échance', '((DATE)?\s*(D(''|\s*))?(E|É)CH(É|E)ANCE(\(S\))?\s*:?\s*?\s*(AU)?\s*|FACTURE\s*(A|À)\s*PAYER\s*AVANT\s*LE\s*(:)?\s*)');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('invoice_number', 'fra', 'Numéro de facture', '(((?P<r1>NUMERO|N(O|°|º|R.))?\s*(DE)?\s*(FACTURE|PI(E|È)CE|DOCUMENT)(\s*:)?\s*(?(r1)()|(NUMERO|N(O|°|º|R.)?))(\s*:)?)|(FACTURE(/)?(DATE)?)\s*(ACQUIT(T)?(E|É)E)?\s*(:|#){1}).*');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('delivery_number', 'fra', 'Numéro de livraison', '((NUM(E|É)RO|N(O|°|º|R.)?|R(E|É)F(\.)?((E|É)RENCE)?)?\s*(DE)?\s*(BON)?\s*(DE)?\s*(LIVRAISON)|NOTE\s*D('')?ENVOI|(BON|BULLETIN)\s*DE\s*LIVR(\.))\s*:?.*');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('quotation_number', 'fra', 'Numéro de devis', '(((?P<r1>(NUM(E|É)RO|N(O|°|º|R.)?|R(E|É)F(\.)?((E|É)RENCE)?))?\s*(DE)?\s*(DEVIS|COMMANDE|C(M)?DE|DOCUMENT)\s*(INTERNET|EXTERNE|WEB)?(\s*:)?\s*(?(r1)()|(NUMERO|N(O|°|º|R.)?))(\s*:)?|(R(E|É)F(\.)?\s*PROPOSITION\s*COMMERCIALE)|(CONTRAT|COMMANDE|C(M)?DE)\s*(NUMERO|N(O|°|º|R.)))\s*(:|#){0,1}).*');
@@ -32,7 +32,7 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_x
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_empty_line', 'fra', 'Lignes vides dans la sortie XML du Splitter', '^\s*$');
 
 -- REGEX creation (eng)
-INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('date', 'eng', 'Date', '([JFMASONDjfmasond][a-zA-Z_À-ÿ\.,-]{2,9})\s*(3[01]|[12][0-9]|0?[1-9][\.,-]?)[\.,-]?\s*((1|2|3){1}\d{1,3}|(1|2|3))|(((3[01]|[12][0-9]|0?[1-9])[\.,-]?)\s?([JFMASONDjfmasond][a-zA-Z_À-ÿ\.,-]{2,9}|[\/,-\.](3[01]|[12][0-9]|0?[1-9])[\/,-\.])\s?((1|2|3){1}\d{1,3}|(1|2|3)))');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('date', 'eng', 'Date', '((DATE(:)?)?\s*(\d{4}[\.,-\/](3[01]|[12][0-9]|0?[1-9])[\.,-\/](3[01]|[12][0-9]|0?[1-9]))|([JFMASONDjfmasond][a-zA-Z_À-ÿ\.,-]{2,9})\s*(3[01]|[12][0-9]|0?[1-9][\.,-]?)[\.,-]?\s*((1|2|3){1}\d{1,3}|(1|2|3))|(((3[01]|[12][0-9]|0?[1-9])[\.,-]?)\s?([JFMASONDjfmasond][a-zA-Z_À-ÿ\.,-]{2,9}|[\/,-\.](3[01]|[12][0-9]|0?[1-9])[\/,-\.])\s?((1|2|3){1}\d{1,3}|(1|2|3))))');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('due_date', 'eng', 'Due date', 'DUE\s*DATE\s*(:)?\s*');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('invoice_number', 'eng', 'Invoice number', '(INVOICE\s*(NUMBER|#|NO|N(°)?)\s*(\.)?\s*(:)?).*');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('delivery_number', 'eng', 'Delivery number', '(DELIVERY\s*(NOTE)?\s*(NUMBER|#|NO|N(°)?)\s*(\.)?\s*(:)?).*');

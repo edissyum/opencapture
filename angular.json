@@ -52,7 +52,12 @@
                             {
                                 "glob": "**/*",
                                 "input": "node_modules/monaco-editor/min",
-                                "output": "assets/monaco"
+                                "output": "/monaco/"
+                            },
+                            {
+                                "glob": "pdf.worker.min.mjs",
+                                "input": "node_modules/pdfjs-dist/build",
+                                "output": "/pdfjs/"
                             }
                         ],
                         "styles": [
@@ -85,7 +90,6 @@
                             "extractLicenses": true,
                             "vendorChunk": false,
                             "buildOptimizer": true,
-
                             "budgets": [
                                 {
                                     "type": "initial",

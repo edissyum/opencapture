@@ -28,7 +28,7 @@ import { PrivilegesService } from "../../../../services/privileges.service";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { environment } from  "../../../env";
 import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
-import { of } from "rxjs";
+import {Observable, of} from "rxjs";
 import { COUNTRIES_DB_FR, Country } from "@angular-material-extensions/select-country";
 import { LocaleService } from "../../../../services/locale.service";
 
@@ -37,14 +37,14 @@ import { LocaleService } from "../../../../services/locale.service";
     templateUrl: './update-supplier.component.html'
 })
 export class UpdateSupplierComponent implements OnInit {
-    headers                 : HttpHeaders = this.authService.headers;
-    loading                 : boolean = true;
-    toHighlightAccounting   : string  = '';
+    accountingPlan          : Observable<any>   = new Observable<any>();
+    headers                 : HttpHeaders       = this.authService.headers;
+    loading                 : boolean           = true;
+    toHighlightAccounting   : string            = '';
     supplierId              : any;
     addressId               : any;
     supplier                : any;
-    accountingPlan          : any   = {};
-    supplierForm            : any[] = [
+    supplierForm            : any[]             = [
         {
             id: 'get_only_raw_footer',
             label: marker('ACCOUNTS.get_only_raw_footer'),
@@ -148,7 +148,7 @@ export class UpdateSupplierComponent implements OnInit {
             values: []
         }
     ];
-    addressForm             : any[] = [
+    addressForm             : any[]             = [
         {
             id: 'address1',
             label: marker('ADDRESSES.address_1'),

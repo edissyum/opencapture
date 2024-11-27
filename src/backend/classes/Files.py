@@ -31,6 +31,7 @@ import shutil
 import imutils
 import tempfile
 import datetime
+import schwifty
 import subprocess
 import numpy as np
 from PIL import Image
@@ -498,28 +499,31 @@ class Files:
             improved_cropped_image = Image.open('/tmp/cropped_' + rand + '_improved' + extension)
             text = ocr.text_builder(improved_cropped_image)
 
-        try:
-            text = text.replace('%', '').replace('€', '').replace('$', '').replace('£', '')
-            text = text.strip()
-            text = text.replace(' ', '.')
-            text = text.replace('\n', '')
-            text = text.replace(',', '.')
-            text = text.replace('\x0c', '')
+        match = schwifty.IBAN(text, allow_invalid=True).is_valid
 
-            splitted_number = text.split('.')
-            if len(splitted_number) > 1:
-                last_index = splitted_number[len(splitted_number) - 1]
-                if len(last_index) > 2:
-                    text = text.replace('.', '')
-                    is_number = True
-                else:
-                    splitted_number.pop(-1)
-                    text = ''.join(splitted_number) + '.' + last_index
-                    is_number = True
-        except (ValueError, SyntaxError, TypeError):
-            pass
+        if not match:
+            try:
+                text = text.replace('%', '').replace('€', '').replace('$', '').replace('£', '')
+                text = text.strip()
+                text = text.replace(' ', '.')
+                text = text.replace('\n', '')
+                text = text.replace(',', '.')
+                text = text.replace('\x0c', '')
 
-        if is_number and re.match(r'[A-Z]', text, flags=re.IGNORECASE):
+                splitted_number = text.split('.')
+                if len(splitted_number) > 1:
+                    last_index = splitted_number[len(splitted_number) - 1]
+                    if len(last_index) > 2:
+                        text = text.replace('.', '')
+                        is_number = True
+                    else:
+                        splitted_number.pop(-1)
+                        text = ''.join(splitted_number) + '.' + last_index
+                        is_number = True
+            except (ValueError, SyntaxError, TypeError):
+                pass
+
+        if is_number and re.match(r'[A-Z]?', text, flags=re.IGNORECASE):
             is_number = False
 
         if not is_number:
@@ -536,12 +540,13 @@ class Files:
                     for _r in _regex:
                         regex_dict[_r['regex_id']] = _r['content']
 
-            for res in re.finditer(r"" + regex_dict['date'], tmp_text):
-                date_class = FindDate(ocr, self.log, regex_dict, self.configurations, self, '', '', '', self.docservers,
-                                      '', '')
-                date = date_class.format_date(res.group(), (('', ''), ('', '')), True, False)
-                if date:
-                    text = date
+            if 'date' in regex_dict and regex_dict['date']:
+                for res in re.finditer(r"" + regex_dict['date'], tmp_text):
+                    date_class = FindDate(ocr, self.log, regex_dict, self.configurations, self, '', '', '',
+                                          self.docservers, '', '')
+                    date = date_class.format_date(res.group(), (('', ''), ('', '')), True, False, lang=lang)
+                    if date and date[0]:
+                        text = date[0]
 
         if regex_name:
             for res in re.finditer(r"" + self.regex[regex_name], text):

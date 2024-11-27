@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2024-10-11 13:22+0200\n"
+"POT-Creation-Date: 2024-10-21 10:26+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: launch_worker_mail.py:239
+#: launch_worker_mail.py:239 launch_worker_mail.py:309
 msgid "NO_SUBJECT"
 msgstr "No subject"
 
@@ -76,7 +76,7 @@ msgstr "Output not found"
 msgid "OUTPUT_TYPE_DOESNT_EXISTS"
 msgstr "Output type doesn't exists"
 
-#: src/backend/splitter_exports.py:186 src/backend/splitter_exports.py:329
+#: src/backend/splitter_exports.py:186 src/backend/splitter_exports.py:333
 msgid "EXPORT_PDF_ERROR"
 msgstr "Error while exporting PDF"
 
@@ -88,62 +88,62 @@ msgstr "Error while exporting to verifier module"
 msgid "EXPORT_OPENCAPTUREFORMEM_ERROR"
 msgstr "Error while exporting to Open-Capture For MEM"
 
-#: src/backend/splitter_exports.py:298 src/backend/splitter_exports.py:352
+#: src/backend/splitter_exports.py:298 src/backend/splitter_exports.py:360
 msgid "EXPORT_XML_ERROR"
 msgstr "Error while exporting XML"
 
-#: src/backend/splitter_exports.py:372
+#: src/backend/splitter_exports.py:380
 msgid "CHECK_FOLDER_ERROR"
 msgstr "Check folder error"
 
-#: src/backend/splitter_exports.py:373
+#: src/backend/splitter_exports.py:381
 msgid "FOLDER_DOES_NOT_EXIST"
 msgstr "Folder does not exist"
 
-#: src/backend/splitter_exports.py:393
+#: src/backend/splitter_exports.py:401
 msgid "OPENADS_ADD_DOC_ERROR"
 msgstr "OpenADS add document error"
 
-#: src/backend/verifier_exports.py:164 src/backend/verifier_exports.py:167
+#: src/backend/verifier_exports.py:175 src/backend/verifier_exports.py:178
 msgid "XML_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr "Destination folder for XML doesn't exists"
 
-#: src/backend/verifier_exports.py:376 src/backend/verifier_exports.py:379
-#: src/backend/verifier_exports.py:468 src/backend/verifier_exports.py:471
+#: src/backend/verifier_exports.py:387 src/backend/verifier_exports.py:390
+#: src/backend/verifier_exports.py:479 src/backend/verifier_exports.py:482
 msgid "PDF_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr "Destination folder for PDF doesn't exists"
 
-#: src/backend/verifier_exports.py:540 src/backend/verifier_exports.py:575
-#: src/backend/verifier_exports.py:581
+#: src/backend/verifier_exports.py:569 src/backend/verifier_exports.py:604
+#: src/backend/verifier_exports.py:610
 msgid "EXPORT_COOG_ERROR"
 msgstr "Error while exporting to COOG"
 
-#: src/backend/verifier_exports.py:541
+#: src/backend/verifier_exports.py:570
 msgid "COOG_JSON_ERROR"
 msgstr "The JSON content is incorrect"
 
-#: src/backend/verifier_exports.py:587
+#: src/backend/verifier_exports.py:616
 msgid "COOG_WS_INFO_WRONG"
 msgstr "Web service informations are wrong"
 
-#: src/backend/verifier_exports.py:593
+#: src/backend/verifier_exports.py:622
 msgid "COOG_WS_INFO_EMPTY"
 msgstr "Web service informations are empty"
 
-#: src/backend/verifier_exports.py:776 src/backend/verifier_exports.py:782
-#: src/backend/verifier_exports.py:788
+#: src/backend/verifier_exports.py:805 src/backend/verifier_exports.py:811
+#: src/backend/verifier_exports.py:817
 msgid "EXPORT_MEM_ERROR"
 msgstr "Error during MEM Courrier export"
 
-#: src/backend/verifier_exports.py:783
+#: src/backend/verifier_exports.py:812
 msgid "PDF_FILE_NOT_FOUND"
 msgstr "PDF file not found"
 
-#: src/backend/verifier_exports.py:794
+#: src/backend/verifier_exports.py:823
 msgid "MEM_WS_INFO_WRONG"
 msgstr "MEM Courrier informations are wrong"
 
-#: src/backend/verifier_exports.py:800
+#: src/backend/verifier_exports.py:829
 msgid "MEM_WS_INFO_EMPTY"
 msgstr "MEM Courrier informations are empty"
 
@@ -151,6 +151,30 @@ msgstr "MEM Courrier informations are empty"
 #: src/backend/classes/MEMWebServices.py:40
 msgid "HOST_NOT_FOUND"
 msgstr "Host not found"
+
+#: src/backend/classes/COOGWebServices.py:46
+msgid "SERVER_ERROR"
+msgstr "Server error"
+
+#: src/backend/classes/Mail.py:167
+msgid "FROM"
+msgstr "From"
+
+#: src/backend/classes/Mail.py:168
+msgid "SEND"
+msgstr "Send"
+
+#: src/backend/classes/Mail.py:169
+msgid "TO"
+msgstr "To"
+
+#: src/backend/classes/Mail.py:171
+msgid "COPIES"
+msgstr "Copies"
+
+#: src/backend/classes/Mail.py:172
+msgid "SUBJECT"
+msgstr "Subject"
 
 #: src/backend/classes/OpenCaptureForMEMWebServices.py:44
 msgid "HOST_NOT_FOUND_OR_OTHER_ERROR"
@@ -222,64 +246,64 @@ msgstr "Error updating address"
 msgid "CREATE_ADDRESS_ERROR"
 msgstr "Error creating address"
 
-#: src/backend/controllers/accounts.py:396
+#: src/backend/controllers/accounts.py:401
 msgid "SUPPLIER_CREATED"
 msgstr "Supplier created&nbsp<strong>%(supplier)s</strong>"
 
-#: src/backend/controllers/accounts.py:404
-#: src/backend/controllers/accounts.py:410 src/backend/models/accounts.py:167
+#: src/backend/controllers/accounts.py:409
+#: src/backend/controllers/accounts.py:415 src/backend/models/accounts.py:167
 msgid "CREATE_SUPPLIER_ERROR"
 msgstr "Error creating supplier"
 
-#: src/backend/controllers/accounts.py:411
+#: src/backend/controllers/accounts.py:416
 msgid "SUPPLIER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr "A supplier already exists with this vat number or duns number"
 
-#: src/backend/controllers/accounts.py:448 src/backend/controllers/user.py:248
+#: src/backend/controllers/accounts.py:453 src/backend/controllers/user.py:248
 #: src/backend/controllers/user.py:278 src/backend/models/accounts.py:231
 #: src/backend/models/accounts.py:254 src/backend/models/accounts.py:273
 #: src/backend/models/user.py:215
 msgid "GET_CUSTOMER_BY_ID_ERROR"
 msgstr "Error retrieving customer"
 
-#: src/backend/controllers/accounts.py:512
+#: src/backend/controllers/accounts.py:517
 msgid "CUSTOMER_UPDATED"
 msgstr "Customer updated&nbsp<strong>%(customer)s</strong>"
 
-#: src/backend/controllers/accounts.py:517
-#: src/backend/controllers/accounts.py:523
-#: src/backend/controllers/splitter.py:335 src/backend/models/accounts.py:295
+#: src/backend/controllers/accounts.py:522
+#: src/backend/controllers/accounts.py:528
+#: src/backend/controllers/splitter.py:334 src/backend/models/accounts.py:295
 msgid "UPDATE_CUSTOMER_ERROR"
 msgstr "Error updating customer"
 
-#: src/backend/controllers/accounts.py:551
+#: src/backend/controllers/accounts.py:556
 msgid "CUSTOMER_CREATED"
 msgstr "Customer created&nbsp<strong>%(customer)s</strong>"
 
-#: src/backend/controllers/accounts.py:559
-#: src/backend/controllers/accounts.py:565 src/backend/models/accounts.py:315
+#: src/backend/controllers/accounts.py:564
+#: src/backend/controllers/accounts.py:570 src/backend/models/accounts.py:315
 msgid "CREATE_CUSTOMER_ERROR"
 msgstr "Error creating customer"
 
-#: src/backend/controllers/accounts.py:566
+#: src/backend/controllers/accounts.py:571
 msgid "CUSTOMER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr "A customer already exists with this vat number"
 
-#: src/backend/controllers/accounts.py:582
+#: src/backend/controllers/accounts.py:587
 msgid "CUSTOMER_DELETED"
 msgstr "Customer deleted&nbsp<strong>%(customer)s</strong>"
 
-#: src/backend/controllers/accounts.py:587
-#: src/backend/controllers/accounts.py:593 src/backend/models/accounts.py:337
+#: src/backend/controllers/accounts.py:592
+#: src/backend/controllers/accounts.py:598 src/backend/models/accounts.py:337
 msgid "DELETE_CUSTOMER_ERROR"
 msgstr "Error deleting customer"
 
-#: src/backend/controllers/accounts.py:610
+#: src/backend/controllers/accounts.py:615
 msgid "SUPPLIER_DELETED"
 msgstr "Supplier deleted&nbsp<strong>%(supplier)s</strong>"
 
-#: src/backend/controllers/accounts.py:615
-#: src/backend/controllers/accounts.py:621 src/backend/models/accounts.py:189
+#: src/backend/controllers/accounts.py:620
+#: src/backend/controllers/accounts.py:626 src/backend/models/accounts.py:189
 msgid "DELETE_SUPPLIER_ERROR"
 msgstr "Error deleting supplier"
 
@@ -910,90 +934,90 @@ msgstr "Error while sending test email"
 msgid "SMTP_TEST_CONNECTION_ERROR"
 msgstr "Error while connecting to SMTP"
 
-#: src/backend/controllers/splitter.py:119
+#: src/backend/controllers/splitter.py:118
 msgid "LOAD_METADATA_ERROR"
 msgstr "Error while loading metada"
 
-#: src/backend/controllers/splitter.py:179
+#: src/backend/controllers/splitter.py:178
 #: src/backend/controllers/verifier.py:146
 msgid "AT"
 msgstr "at"
 
-#: src/backend/controllers/splitter.py:211
+#: src/backend/controllers/splitter.py:210
 msgid "FORM_UNDEFINED"
 msgstr "Form undefined"
 
-#: src/backend/controllers/splitter.py:214
+#: src/backend/controllers/splitter.py:213
 msgid "CUSTOMER_UNDEFINED"
 msgstr "Customer undefined"
+
+#: src/backend/controllers/splitter.py:273
+#: src/backend/controllers/splitter.py:304
+#: src/backend/controllers/splitter.py:324
+msgid "BATCH_NOT_FOUND"
+msgstr "Batch not found"
 
 #: src/backend/controllers/splitter.py:274
 #: src/backend/controllers/splitter.py:305
 #: src/backend/controllers/splitter.py:325
-msgid "BATCH_NOT_FOUND"
-msgstr "Batch not found"
-
-#: src/backend/controllers/splitter.py:275
-#: src/backend/controllers/splitter.py:306
-#: src/backend/controllers/splitter.py:326
 msgid "BATCH_ID_NOT_FOUND"
 msgstr "Batch %(id)s not found"
 
-#: src/backend/controllers/splitter.py:289
+#: src/backend/controllers/splitter.py:288
 msgid "DELETE_BATCH_SUCCESS"
 msgstr "Deletion of batch n°<strong>%(batch_id)s</strong>"
 
-#: src/backend/controllers/splitter.py:294
-#: src/backend/controllers/splitter.py:315
+#: src/backend/controllers/splitter.py:293
+#: src/backend/controllers/splitter.py:314
 #: src/backend/controllers/verifier.py:874
 msgid "UPDATE_STATUS_ERROR"
 msgstr "Error while updating status"
 
-#: src/backend/controllers/splitter.py:373
-#: src/backend/controllers/splitter.py:386
+#: src/backend/controllers/splitter.py:372
+#: src/backend/controllers/splitter.py:385
 #: src/backend/controllers/verifier.py:442
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr "Error while removing lock"
 
-#: src/backend/controllers/splitter.py:489
+#: src/backend/controllers/splitter.py:488
 msgid "ADD_DOCUMENT_ERROR"
 msgstr "Error while adding document"
 
-#: src/backend/controllers/splitter.py:514
+#: src/backend/controllers/splitter.py:513
 msgid "UPDATE_BATCH_ERROR"
 msgstr "Error while updating batch"
 
-#: src/backend/controllers/splitter.py:528
+#: src/backend/controllers/splitter.py:527
 msgid "UPDATE_DOCUMENTS_ERROR"
 msgstr "Error while updating document"
 
-#: src/backend/controllers/splitter.py:541
+#: src/backend/controllers/splitter.py:540
 #: src/backend/controllers/verifier.py:416
 #: src/backend/controllers/verifier.py:422
 msgid "UPDATE_DOCUMENT_ERROR"
 msgstr "Error while updating document"
 
-#: src/backend/controllers/splitter.py:559
-#: src/backend/controllers/splitter.py:574
-#: src/backend/controllers/splitter.py:589
+#: src/backend/controllers/splitter.py:558
+#: src/backend/controllers/splitter.py:573
+#: src/backend/controllers/splitter.py:588
 msgid "UPDATE_PAGES_ERROR"
 msgstr "Error while updating pages"
 
-#: src/backend/controllers/splitter.py:603
+#: src/backend/controllers/splitter.py:602
 msgid "CMIS_CONNECTION_ERROR"
 msgstr "Error while connecting to CMIS"
 
-#: src/backend/controllers/splitter.py:616
+#: src/backend/controllers/splitter.py:615
 msgid "OPENADS_CONNECTION_ERROR"
 msgstr "OpenADS connection error"
 
-#: src/backend/controllers/splitter.py:715
+#: src/backend/controllers/splitter.py:714
 #: src/backend/controllers/verifier.py:853 src/backend/models/splitter.py:618
 #: src/backend/models/verifier.py:197
 msgid "GET_TOTALS_ERROR"
 msgstr "Error while retrievings totals"
 
-#: src/backend/controllers/splitter.py:827
+#: src/backend/controllers/splitter.py:823
 msgid "GET_BATCH_OUTPUTS_ERROR"
 msgstr "Error while retrieving output"
 
@@ -1691,10 +1715,4 @@ msgid "INTERFACE_IS_NOT_USED_OR_FORM_UNIQUE_URL_NOT_SET"
 msgstr ""
 "Interface use is not set in workflow or unique url settings is malformed "
 "on the form"
-
-#~ msgid "GET_ATTACHMENTS_ERROR"
-#~ msgstr "Error while retrieving attachments"
-
-#~ msgid "GET_ATTACHMENT_ERROR"
-#~ msgstr "Error while retrieving attachment"
 

@@ -3,9 +3,11 @@
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
-        <div *ngIf="this.loading">
-            <app-loader></app-loader>
-        </div>
+        @if (this.loading) {
+            <div>
+                <app-loader></app-loader>
+            </div>
+        }
         <div class="settings_header">
             <div class="flex">
                 <button mat-icon-button (click)="this.serviceSettings.minimizeSideNav = !this.serviceSettings.minimizeSideNav;">
@@ -13,8 +15,8 @@
                 </button>
             </div>
             <h3 class="text-center m-0">
-                {{ this.serviceSettings.getTitle() }} :&nbsp;<span *ngIf="this.role">{{ this.role['label'] }}</span>
-                <strong *ngIf="this.role">&nbsp;({{ this.role['label_short'] }})</strong>
+                {{ this.serviceSettings.getTitle() }} :&nbsp; @if (this.role) { {{ this.role['label'] }} }
+                @if (this.role) { <strong>&nbsp;({{ this.role['label_short'] }})</strong> }
             </h3>
             <div class="settings_search"></div>
         </div>
@@ -22,50 +24,65 @@
         <div class="overflow-x-hidden h-full-overflow">
             <div class="flex justify-center items-center">
                 <form (ngSubmit)="onSubmit()" class="grid grid-cols-3 gap-6 w-full m-10 text-center">
-                    <ng-container *ngFor="let field of roleForm">
-                        <span *ngIf="field.type === 'text'" [class.cursor-not-allowed]="field.id === 'label_short'">
-                            <mat-form-field [class.pointer-events-none]="field.id === 'label_short'" class="w-full">
-                                <mat-label>{{ field.label | translate }}</mat-label>
-                                <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field.type" [placeholder]="field.label | translate" [required]="field['required']"
-                                       [readonly]="field.id === 'label_short'" [class.text-gray-400]="field.id === 'label_short'">
-                                <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
+                    @for (field of this.roleForm; track field['id']) {
+                        @if (field['type'] === 'text') {
+                            <span [class.cursor-not-allowed]="field['id'] === 'label_short'">
+                                <mat-form-field [class.pointer-events-none]="field['id'] === 'label_short'" class="w-full">
+                                    <mat-label>{{ field['label'] | translate }}</mat-label>
+                                    <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field['type']" [placeholder]="field['label'] | translate" [required]="field['required']"
+                                           [readonly]="field['id'] === 'label_short'" [class.text-gray-400]="field['id'] === 'label_short'">
+                                    @if (field.control.invalid) {
+                                        <mat-error>{{ getErrorMessage(field['id']) }}</mat-error>
+                                    }
+                                </mat-form-field>
+                            </span>
+                        } @else if (field['type'] === 'checkbox') {
+                            <mat-slide-toggle class="mt-4" [formControl]="field['control']">
+                                {{ field['label'] | translate }}
+                            </mat-slide-toggle>
+                        } @else if (field['type'] === 'list') {
+                            <mat-form-field>
+                                <mat-label>{{ field['label'] | translate }}</mat-label>
+                                <mat-select [value]="field.control.value" [formControl]="field['control']" [required]="field['required']">
+                                    @for (option of field.options; track option) {
+                                        <mat-option [value]="option.value">
+                                            {{ option.label | translate }}
+                                        </mat-option>
+                                    }
+                                </mat-select>
+                                @if (field.control.invalid) {
+                                    <mat-error>{{ getErrorMessage(field['id']) }}</mat-error>
+                                }
                             </mat-form-field>
-                        </span>
-                        <mat-slide-toggle class="mt-4" *ngIf="field.type === 'checkbox'" [formControl]="field['control']">
-                            {{ field.label | translate }}
-                        </mat-slide-toggle>
-                        <mat-form-field *ngIf="field.type === 'list'">
-                            <mat-label>{{ field.label | translate }}</mat-label>
-                            <mat-select [value]="field.control.value" [formControl]="field['control']" [required]="field['required']">
-                                <mat-option *ngFor="let option of field.options" [value]="option.value">
-                                    {{ option.label | translate }}
-                                </mat-option>
-                            </mat-select>
-                            <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
-                        </mat-form-field>
-                    </ng-container>
+                        }
+                    }
                 </form>
             </div>
             <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
             <h4 class="text-center mt-10 mb-10">{{ 'PRIVILEGES.list' | translate }}</h4>
             <div class="flex justify-center items-center mx-2">
-                <mat-tab-group *ngIf="this.privileges && this.rolePrivileges" [dynamicHeight]="true" class="w-full">
-                    <mat-tab *ngFor="let parent of this.privileges['parent']" [label]="this.translate.instant('PRIVILEGES.' + parent)">
-                        <div class="grid grid-cols-4 gap-x-40 gap-y-10 mt-10">
-                            <mat-slide-toggle *ngFor="let privilege of this.getChildsByParent(parent)"
-                                              [name]="privilege" [checked]="this.hasPrivilege(privilege)"
-                                              (change)="changePrivilege($event)">
-                                {{ 'PRIVILEGES.' + privilege | translate }}
-                                <button (click)="$event.stopPropagation(); authorizedRoles.toggle();"
-                                        class="m-2 hover:text-green-400"
-                                        [matTooltip]="this.translate.instant('ROLE.authorized_assign_roles')"
-                                        *ngIf="['add_role', 'update_role'].includes(privilege)">
-                                    <i class="fa-solid fa-gears fa-xl text-gray-900"></i>
-                                </button>
-                            </mat-slide-toggle>
-                        </div>
-                    </mat-tab>
-                </mat-tab-group>
+                @if (this.privileges && this.rolePrivileges) {
+                    <mat-tab-group [dynamicHeight]="true" class="w-full">
+                        @for (parent of this.privileges['parent']; track parent) {
+                            <mat-tab [label]="this.translate.instant('PRIVILEGES.' + parent)">
+                                <div class="grid grid-cols-4 gap-x-40 gap-y-10 mt-10">
+                                    @for (privilege of this.getChildsByParent(parent); track privilege) {
+                                        <mat-slide-toggle [name]="privilege" [checked]="this.hasPrivilege(privilege)" (change)="changePrivilege($event)">
+                                            {{ 'PRIVILEGES.' + privilege | translate }}
+                                            @if (['add_role', 'update_role'].includes(privilege)) {
+                                                <button (click)="$event.stopPropagation(); authorizedRoles.toggle();"
+                                                        class="m-2 hover:text-green-400"
+                                                        [matTooltip]="this.translate.instant('ROLE.authorized_assign_roles')">
+                                                    <i class="fa-solid fa-gears fa-xl text-gray-900"></i>
+                                                </button>
+                                            }
+                                        </mat-slide-toggle>
+                                    }
+                                </div>
+                            </mat-tab>
+                        }
+                    </mat-tab-group>
+                }
             </div>
             <div class="flex justify-center items-center mt-10">
                 <button class="valid_button" (click)="onSubmit()" mat-button>
@@ -89,13 +106,16 @@
                 </button>
             </div>
         </div>
-        <mat-checkbox *ngFor="let assignRolesOption of this.roles"
-                      [checked]="this.assignRoles.includes(assignRolesOption.id)"
-                      (change)="updateAssignRoles(assignRolesOption)" class="mt-2 w-full text-xl">
-            <span>{{ assignRolesOption.label }}</span>
-        </mat-checkbox>
-        <span class="w-full mt-8 text-gray-400 flex justify-center" *ngIf="this.roles.length === 0"  style="height: calc(100% - 230px)">
-            {{ "ROLE.no_authorized_assign_role" | translate }}
-        </span>
+        @for (assignRolesOption of this.roles; track assignRolesOption.id) {
+            <mat-checkbox [checked]="this.assignRoles.includes(assignRolesOption.id)"
+                          (change)="updateAssignRoles(assignRolesOption)" class="mt-2 w-full text-xl">
+                <span>{{ assignRolesOption.label }}</span>
+            </mat-checkbox>
+        }
+        @if (this.roles.length === 0) {
+            <span class="w-full mt-8 text-gray-400 flex justify-center"  style="height: calc(100% - 230px)">
+                {{ "ROLE.no_authorized_assign_role" | translate }}
+            </span>
+        }
     </mat-sidenav>
 </mat-sidenav-container>
