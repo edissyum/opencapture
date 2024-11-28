@@ -33,7 +33,8 @@ import { of } from "rxjs";
 @Component({
     selector: 'app-user-quota',
     templateUrl: './user-quota.component.html',
-    styleUrls: ['./user-quota.component.scss']
+    styleUrls: ['./user-quota.component.scss'],
+    standalone: false
 })
 export class UserQuotaComponent implements OnInit {
     headers                 : HttpHeaders = this.authService.headers;

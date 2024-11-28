@@ -36,11 +36,12 @@ import {ConfigService} from "../../../../../services/config.service";
     templateUrl: './workflow-builder.component.html',
     styleUrls: ['./workflow-builder.component.scss'],
     providers: [{
-        provide: STEPPER_GLOBAL_OPTIONS,
-        useValue: {
-            displayDefaultIndicatorType: false
-        }
-    }]
+            provide: STEPPER_GLOBAL_OPTIONS,
+            useValue: {
+                displayDefaultIndicatorType: false
+            }
+        }],
+    standalone: false
 })
 
 export class WorkflowBuilderComponent implements OnInit {

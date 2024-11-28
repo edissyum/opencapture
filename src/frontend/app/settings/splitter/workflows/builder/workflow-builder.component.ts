@@ -40,9 +40,10 @@ import { CodeEditorComponent } from "../../../../../services/code-editor/code-ed
     providers: [
         {
             provide: STEPPER_GLOBAL_OPTIONS,
-            useValue: {displayDefaultIndicatorType: false}
+            useValue: { displayDefaultIndicatorType: false }
         }
-    ]
+    ],
+    standalone: false
 })
 export class WorkflowBuilderSplitterComponent implements OnInit {
     loading          : boolean       = true;

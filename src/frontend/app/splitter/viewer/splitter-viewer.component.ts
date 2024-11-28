@@ -15,7 +15,7 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import * as moment from "moment";
+import moment from "moment";
 import { remove } from 'remove-accents';
 import { environment } from "../../env";
 import { UserService } from "../../../services/user.service";
@@ -60,7 +60,8 @@ export interface Field {
 @Component({
     selector: 'app-viewer',
     templateUrl: './splitter-viewer.component.html',
-    styleUrls: ['./splitter-viewer.component.scss']
+    styleUrls: ['./splitter-viewer.component.scss'],
+    standalone: false
 })
 export class SplitterViewerComponent implements OnInit, OnDestroy {
     @HostListener('window:beforeunload', ['$event'])

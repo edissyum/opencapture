@@ -34,9 +34,10 @@ import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/c
 import { FileValidators } from "ngx-file-drag-drop";
 
 @Component({
-  selector: 'app-list-ai-splitter',
-  templateUrl: './list-ai-models.component.html',
-  styleUrls: ['./list-ai-models.component.scss']
+    selector: 'app-list-ai-splitter',
+    templateUrl: './list-ai-models.component.html',
+    styleUrls: ['./list-ai-models.component.scss'],
+    standalone: false
 })
 
 export class ListSplitterAiModelsComponent implements OnInit {

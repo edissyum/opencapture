@@ -34,7 +34,8 @@ import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 @Component({
     selector: 'app-various-settings-list',
     templateUrl: './various-settings.component.html',
-    styleUrls: ['./various-settings.component.scss']
+    styleUrls: ['./various-settings.component.scss'],
+    standalone: false
 })
 export class VariousSettingsVerifierComponent implements OnInit {
     loading                     : boolean       = true;

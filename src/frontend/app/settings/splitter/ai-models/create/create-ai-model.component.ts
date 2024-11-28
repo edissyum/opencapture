@@ -32,9 +32,10 @@ import { finalize } from "rxjs/operators";
 import {DocumentTypeComponent} from "../../../../splitter/document-type/document-type.component";
 
 @Component({
-  selector: 'app-create-model',
-  templateUrl: './create-ai-model.component.html',
-  styleUrls: ['./create-ai-model.component.scss']
+    selector: 'app-create-model',
+    templateUrl: './create-ai-model.component.html',
+    styleUrls: ['./create-ai-model.component.scss'],
+    standalone: false
 })
 
 export class CreateSplitterAiModelComponent implements OnInit {

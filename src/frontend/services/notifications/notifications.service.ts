@@ -24,7 +24,8 @@ import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'custom-snackbar',
-    templateUrl: 'notification.service.html'
+    templateUrl: 'notification.service.html',
+    standalone: false
 })
 
 export class CustomSnackbarComponent {

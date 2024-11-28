@@ -35,7 +35,8 @@ import { Clipboard } from "@angular/cdk/clipboard";
 @Component({
     selector: 'app-splitter-update-output',
     templateUrl: './update-output.component.html',
-    styleUrls: ['./update-output.component.scss']
+    styleUrls: ['./update-output.component.scss'],
+    standalone: false
 })
 export class SplitterUpdateOutputComponent implements OnInit {
     headers               : HttpHeaders   = this.authService.headers;
@@ -412,7 +413,8 @@ export class SplitterUpdateOutputComponent implements OnInit {
             const element = this.outputsTypesForm[this.selectedOutputType]['parameters'][cpt];
             if (element.id === fieldId) {
                 if (!element.values || element.values.length === 1) {
-                    eval("this." + element.webservice + '(' + cpt + ')');
+                    const eval_var = eval
+                    eval_var("this." + element.webservice + '(' + cpt + ')');
                 }
             }
         }
@@ -768,7 +770,8 @@ export class SplitterUpdateOutputComponent implements OnInit {
     testConnection() {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth)) {
             const functionName = this.testConnectionMapping[this.selectedOutputType];
-            eval("this." + functionName);
+            const eval_var = eval
+            eval_var("this." + functionName);
         }
     }
 }

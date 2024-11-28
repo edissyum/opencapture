@@ -30,7 +30,8 @@ import { NotificationService } from "../../../services/notifications/notificatio
 @Component({
     selector: 'app-monitoring-list',
     templateUrl: './monitoring-list.component.html',
-    styleUrls: ['./monitoring-list.component.scss']
+    styleUrls: ['./monitoring-list.component.scss'],
+    standalone: false
 })
 export class MonitoringListComponent implements OnInit, OnDestroy {
     columnsToDisplay    : string[] = ['module', 'creation_date', 'end_date', 'filename', 'last_message', 'status'];

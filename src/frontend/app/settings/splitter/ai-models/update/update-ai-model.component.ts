@@ -33,9 +33,10 @@ import { PrivilegesService } from "../../../../../services/privileges.service";
 import {DocumentTypeComponent} from "../../../../splitter/document-type/document-type.component";
 
 @Component({
-  selector: 'app-update-model',
-  templateUrl: './update-ai-model.component.html',
-  styleUrls: ['./update-ai-model.component.scss']
+    selector: 'app-update-model',
+    templateUrl: './update-ai-model.component.html',
+    styleUrls: ['./update-ai-model.component.scss'],
+    standalone: false
 })
 
 export class UpdateSplitterAiModelComponent implements OnInit {

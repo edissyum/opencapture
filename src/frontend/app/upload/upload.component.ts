@@ -32,7 +32,8 @@ import { SessionStorageService } from "../../services/session-storage.service";
     selector: 'app-upload',
     templateUrl: './upload.component.html',
     styleUrls: ['./upload.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 
 export class UploadComponent implements OnInit {

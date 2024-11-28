@@ -32,7 +32,8 @@ import { of } from "rxjs";
 @Component({
     selector: 'app-create',
     templateUrl: './create-role.component.html',
-    styleUrls: ['./create-role.component.scss']
+    styleUrls: ['./create-role.component.scss'],
+    standalone: false
 })
 export class CreateRoleComponent implements OnInit {
     loading         : boolean   = true;

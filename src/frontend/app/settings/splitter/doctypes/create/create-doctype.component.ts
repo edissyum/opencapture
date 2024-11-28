@@ -31,9 +31,10 @@ import { NotificationService } from "../../../../../services/notifications/notif
 import { DocumentTypeFactoryComponent } from "../../../../splitter/document-type-factory/document-type-factory.component";
 
 @Component({
-  selector: 'app-create-doc-type',
-  templateUrl: './create-doctype.component.html',
-  styleUrls: ['./create-doctype.component.scss']
+    selector: 'app-create-doc-type',
+    templateUrl: './create-doctype.component.html',
+    styleUrls: ['./create-doctype.component.scss'],
+    standalone: false
 })
 export class CreateDoctypeComponent implements OnInit {
     @ViewChild(DocumentTypeFactoryComponent, {static : true}) documentTypeFactoryComponent! : DocumentTypeFactoryComponent;

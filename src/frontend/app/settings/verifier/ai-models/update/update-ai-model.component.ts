@@ -30,9 +30,10 @@ import { catchError, finalize, tap } from "rxjs/operators";
 import { lastValueFrom, of } from "rxjs";
 
 @Component({
-  selector: 'app-update-model',
-  templateUrl: './update-ai-model.component.html',
-  styleUrls: ['./update-ai-model.component.scss']
+    selector: 'app-update-model',
+    templateUrl: './update-ai-model.component.html',
+    styleUrls: ['./update-ai-model.component.scss'],
+    standalone: false
 })
 
 export class UpdateVerifierAiModelComponent implements OnInit {

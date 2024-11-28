@@ -33,7 +33,8 @@ import { of } from "rxjs";
 
 @Component({
     selector: 'app-create-customer',
-    templateUrl: './create-customer.component.html'
+    templateUrl: './create-customer.component.html',
+    standalone: false
 })
 export class CreateCustomerComponent implements OnInit {
     headers         : HttpHeaders   = this.authService.headers;

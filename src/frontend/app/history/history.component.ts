@@ -28,13 +28,14 @@ import { NotificationService } from "../../services/notifications/notifications.
 import { Sort } from "@angular/material/sort";
 import { DatePipe } from '@angular/common';
 import { UserService } from "../../services/user.service";
-import * as moment from "moment";
+import moment from "moment";
 
 @Component({
     selector: 'app-history',
     templateUrl: './history.component.html',
     styleUrls: ['./history.component.scss'],
-    providers: [DatePipe]
+    providers: [DatePipe],
+    standalone: false
 })
 export class HistoryComponent implements OnInit {
     columnsToDisplay    : string[] = ['id', 'history_module', 'history_submodule', 'history_date', 'user_info', 'history_desc', 'user_ip'];

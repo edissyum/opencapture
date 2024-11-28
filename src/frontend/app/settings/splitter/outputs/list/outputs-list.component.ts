@@ -34,9 +34,10 @@ import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/c
 import { Sort } from "@angular/material/sort";
 
 @Component({
-  selector: 'app-splitter-output-list',
-  templateUrl: './outputs-list.component.html',
-  styleUrls: ['./outputs-list.component.scss']
+    selector: 'app-splitter-output-list',
+    templateUrl: './outputs-list.component.html',
+    styleUrls: ['./outputs-list.component.scss'],
+    standalone: false
 })
 export class SplitterOutputListComponent implements OnInit {
     headers         : HttpHeaders   = this.authService.headers;

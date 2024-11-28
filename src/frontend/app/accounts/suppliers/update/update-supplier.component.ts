@@ -34,7 +34,8 @@ import { LocaleService } from "../../../../services/locale.service";
 
 @Component({
     selector: 'app-update',
-    templateUrl: './update-supplier.component.html'
+    templateUrl: './update-supplier.component.html',
+    standalone: false
 })
 export class UpdateSupplierComponent implements OnInit {
     accountingPlan          : Observable<any>   = new Observable<any>();

@@ -25,11 +25,12 @@ import { NotificationService } from "../../../services/notifications/notificatio
 import { HttpClient } from "@angular/common/http";
 import { TranslateService } from "@ngx-translate/core";
 import { SettingsService } from "../../../services/settings.service";
-import * as moment from "moment";
+import moment from "moment";
 @Component({
     selector: 'app-monitoring-details',
     templateUrl: './monitoring-details.component.html',
-    styleUrls: ['./monitoring-details.component.scss']
+    styleUrls: ['./monitoring-details.component.scss'],
+    standalone: false
 })
 
 export class MonitoringDetailsComponent implements OnInit, OnDestroy {

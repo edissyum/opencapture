@@ -35,7 +35,8 @@ import { of } from "rxjs";
 @Component({
     selector: 'positions-mask-list',
     templateUrl: './positions-mask-list.component.html',
-    styleUrls: ['./positions-mask-list.component.scss']
+    styleUrls: ['./positions-mask-list.component.scss'],
+    standalone: false
 })
 export class PositionsMaskListComponent implements OnInit {
     columnsToDisplay: string[]      = ['id', 'label', 'supplier_name', 'form_label', 'enabled', 'actions'];

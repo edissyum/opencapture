@@ -203,7 +203,8 @@ export class TreeItemFlatNode {
     selector: 'app-document-type-factory',
     templateUrl: './document-type-factory.component.html',
     styleUrls: ['./document-type-factory.component.scss'],
-    providers: [ChecklistDatabase]
+    providers: [ChecklistDatabase],
+    standalone: false
 })
 export class DocumentTypeFactoryComponent implements OnInit {
     loading: boolean                     = false;

@@ -32,7 +32,8 @@ import { NotificationService } from "../../../../services/notifications/notifica
 @Component({
     selector: 'app-separator',
     templateUrl: './separator.component.html',
-    styleUrls: ['./separator.component.scss']
+    styleUrls: ['./separator.component.scss'],
+    standalone: false
 })
 export class SeparatorComponent implements OnInit {
     private selectedDoctype: any;

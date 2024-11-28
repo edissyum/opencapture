@@ -30,7 +30,8 @@ import { PrivilegesService } from "../privileges.service";
 @Component({
     selector: 'app-process-watcher',
     templateUrl: './process-watcher.component.html',
-    styleUrls: ['./process-watcher.component.scss']
+    styleUrls: ['./process-watcher.component.scss'],
+    standalone: false
 })
 
 export class ProcessWatcherComponent implements OnInit {
