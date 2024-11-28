@@ -28,7 +28,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { FormControl } from "@angular/forms";
 import { DatePipe } from '@angular/common';
 import { SessionStorageService } from "../../../services/session-storage.service";
-import * as moment from 'moment';
+import moment from 'moment';
 import { UserService } from "../../../services/user.service";
 import { HistoryService } from "../../../services/history.service";
 import { LocaleService } from "../../../services/locale.service";
@@ -39,7 +39,8 @@ declare const $: any;
     selector: 'verifier-viewer',
     templateUrl: './verifier-viewer.component.html',
     styleUrls: ['./verifier-viewer.component.scss'],
-    providers: [DatePipe]
+    providers: [DatePipe],
+    standalone: false
 })
 
 export class VerifierViewerComponent implements OnInit, OnDestroy {
@@ -253,7 +254,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
         this.document = await this.getDocument();
 
-        this.arrayOfPages = Array.from({length: this.document['nb_pages']}, (v, k) => k + 1);
+        this.arrayOfPages = Array.from({length: this.document['nb_pages']}, (_, k: number) => k + 1);
 
         if (this.document.workflow_id) {
             this.getWorkflow();
@@ -446,7 +447,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                                    if (_return && _return.count > 0) {
                                        element.autocomplete_values = element.control.valueChanges.pipe(
                                            startWith(''),
-                                           map(option => option ? this._filter_data(option, _return['resources']) : _return['resources'].slice())
+                                           map((option: any) => option ? this._filter_data(option, _return['resources']) : _return['resources'].slice())
                                        );
                                    }
                                }),
@@ -710,7 +711,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                     _field.values = this.form[category][cpt].control.valueChanges
                         .pipe(
                             startWith(''),
-                            map(option => option ? this._filter_accounting(this.accountingPlan, option) : this.accountingPlan)
+                            map((option: any) => option ? this._filter_accounting(this.accountingPlan, option) : this.accountingPlan)
                         );
 
                     if (this.currentSupplier && this.currentSupplier['default_accounting_plan']) {
@@ -1505,7 +1506,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                         if (newField.id === 'accounting_plan') {
                             this.form[categoryId][cpt + field.cpt].values = this.form[categoryId][cpt].control.valueChanges.pipe(
                                 startWith(''),
-                                map(option => option ? this._filter_accounting(this.accountingPlan, option) : this.accountingPlan)
+                                map((option: any) => option ? this._filter_accounting(this.accountingPlan, option) : this.accountingPlan)
                             );
                         }
                     }
@@ -1839,7 +1840,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             });
                         }
                         this.http.post(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/' + data.output_type_id, {'args': data}, {headers: this.authService.headers}).pipe(
-                            tap((filename) => {
+                            tap((filename: any) => {
                                 this.outputs.forEach((output: any) => {
                                     if (output.output_type_id === data.output_type_id) {
                                         output.file_path = filename;

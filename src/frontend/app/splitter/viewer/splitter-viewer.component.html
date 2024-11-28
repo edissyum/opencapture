@@ -109,9 +109,9 @@
                                 <div class="m-auto">
                                     <mat-form-field class="w-full p-4" id="form-select-field" (click)="$event.stopPropagation()" [matTooltip]="'SPLITTER.edit_used_form' | translate">
                                         <mat-select (selectionChange)="onFormChange($event.value)" [(ngModel)]="currentBatch.formId">
-                                            @for (form of this.forms; track form.id) {
-                                                <mat-option [value]="form.id">
-                                                    {{ form.label }}
+                                            @for (form of this.forms; track form['id']) {
+                                                <mat-option [value]="form['id']">
+                                                    {{ form['label'] }}
                                                 </mat-option>
                                             }
                                         </mat-select>
@@ -165,7 +165,7 @@
                                         <mat-form-field class="w-full">
                                             <mat-label>{{ field['label'] }}</mat-label>
                                             <mat-select [formControlName]="field['label_short']" (selectionChange)="setValueChange(field['label_short'], $event.value)">
-                                                @for (option of field.settings.options; track option.id) {
+                                                @for (option of field.settings.options; track option['id']) {
                                                     @if (checkConditional(field['id'], option)) {
                                                         <mat-option [value]="option['id']">
                                                             {{ option['label'] }}
@@ -337,9 +337,9 @@
                                                         <mat-form-field class="w-full">
                                                             <mat-label>{{ field['label'] }}</mat-label>
                                                             <mat-select [formControlName]="field['label_short']">
-                                                                @for (option of field.settings.options; track option.id) {
-                                                                    <mat-option [value]="option.id">
-                                                                        {{ option.label }}
+                                                                @for (option of field.settings.options; track option['id']) {
+                                                                    <mat-option [value]="option['id']">
+                                                                        {{ option['label'] }}
                                                                     </mat-option>
                                                                 }
                                                             </mat-select>

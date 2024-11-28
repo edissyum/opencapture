@@ -34,9 +34,10 @@ import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/c
 import { FileValidators } from "ngx-file-drag-drop";
 
 @Component({
-  selector: 'app-list-ai',
-  templateUrl: './list-ai-model.component.html',
-  styleUrls: ['./list-ai-model.component.scss']
+    selector: 'app-list-ai',
+    templateUrl: './list-ai-model.component.html',
+    styleUrls: ['./list-ai-model.component.scss'],
+    standalone: false
 })
 
 export class ListVerifierAiModelComponent implements OnInit {

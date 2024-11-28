@@ -14,7 +14,7 @@
                 <mat-form-field class="w-1/4">
                     <mat-select (selectionChange)="changeModule($event)" [disabled]="this.loading" [(value)]="this.selectedModule"
                                 [placeholder]="'STATISTICS.choose_module' | translate">
-                        @for (option of modules; track option.id) {
+                        @for (option of modules; track option['id']) {
                             <mat-option [value]="option['id']">
                                 {{ option['label'] | translate }}
                             </mat-option>
@@ -24,7 +24,7 @@
                 <mat-form-field class="ml-4 w-1/4">
                     <mat-select (selectionChange)="changeStatistic($event)" [disabled]="this.loading"
                                 [placeholder]="'STATISTICS.choose_statistic_report' | translate">
-                        @for (option of this.optionsByModule; track option.id) {
+                        @for (option of this.optionsByModule; track option['id']) {
                             <mat-option [value]="option['id']">
                                 {{ option['label'] | translate }}
                             </mat-option>
@@ -35,7 +35,7 @@
                     <mat-select [disabled]="!this.selectedStatistic || this.loading"
                                 [ngModel]="this.selectedDiagramType" (selectionChange)="changeDiagramType($event)"
                                 [placeholder]="'STATISTICS.choose_diagram' | translate">
-                        @for (option of this.diagramTypes; track option.id) {
+                        @for (option of this.diagramTypes; track option['id']) {
                             <mat-option [value]="option['id']">
                                 {{ option['label'] | translate }} <i class="fa-solid {{ option['logo'] }} ml-2"></i>
                             </mat-option>

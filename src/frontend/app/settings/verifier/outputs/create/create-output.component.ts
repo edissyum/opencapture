@@ -33,7 +33,8 @@ import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 @Component({
     selector: 'create-output',
     templateUrl: './create-output.component.html',
-    styleUrls: ['./create-output.component.scss']
+    styleUrls: ['./create-output.component.scss'],
+    standalone: false
 })
 export class CreateOutputComponent implements OnInit {
     loading             : boolean       = true;

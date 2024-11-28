@@ -35,7 +35,8 @@ import { Sort } from "@angular/material/sort";
 @Component({
     selector: 'app-list',
     templateUrl: './customers-list.component.html',
-    styleUrls: ['./customers-list.component.scss']
+    styleUrls: ['./customers-list.component.scss'],
+    standalone: false
 })
 export class CustomersListComponent implements OnInit {
     columnsToDisplay: string[]    = ['id', 'name', 'company_number', 'vat_number', 'siret', 'siren', 'module', 'actions'];

@@ -34,7 +34,8 @@ import { PasswordVerificationService } from "../../../../../services/password-ve
 @Component({
     selector: 'app-create-user',
     templateUrl: './create-user.component.html',
-    styleUrls: ['./create-user.component.scss']
+    styleUrls: ['./create-user.component.scss'],
+    standalone: false
 })
 export class CreateUserComponent implements OnInit {
     loading          : boolean   = true;

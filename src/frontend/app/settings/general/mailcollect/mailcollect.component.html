@@ -102,8 +102,8 @@
                                                             <mat-slide-toggle [name]="field['id']" class="relative m-auto top-4" [formControl]="field['control']" (change)="updateRequired($event, process)">
                                                                 {{ field['label'] | translate }}
                                                             </mat-slide-toggle>
-                                                            @if (field.hint) {
-                                                                <span class="text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
+                                                            @if (field['hint']) {
+                                                                <span class="text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field['hint'] | translate">
                                                                     <i class="fa-solid fa-circle-question text-md"></i>
                                                                 </span>
                                                             }
@@ -128,9 +128,9 @@
                                                             <mat-label>{{ field['label'] | translate }}</mat-label>
                                                             <input matInput [formControl]="field['control']" [required]="field['required']"
                                                                    [type]="field['type']" [matAutocomplete]="autocomplete" (keyup)="isValidForm(process, false)">
-                                                            @if (field.hint) {
+                                                            @if (field['hint']) {
                                                                 <span class="absolute text-gray-600 top-0.5 -right-2 cursor-help"
-                                                                      [matTooltip]="field.hint | translate">
+                                                                      [matTooltip]="field['hint'] | translate">
                                                                     <i class="fa-solid fa-circle-question text-md"></i>
                                                                 </span>
                                                             }
@@ -138,8 +138,8 @@
                                                                 <mat-error>{{ getErrorMessage(field['id'], process) }}</mat-error>
                                                             }
                                                             <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn" (optionSelected)="isValidForm(process, false)">
-                                                                <mat-option *ngFor="let option of field.values | async" [value]="option" [id]="option.id">
-                                                                    <span [innerHTML]="option.label | highlight: toHighlight"></span>
+                                                                <mat-option *ngFor="let option of field.values | async" [value]="option" [id]="option['id']">
+                                                                    <span [innerHTML]="option['label'] | highlight: toHighlight"></span>
                                                                 </mat-option>
                                                             </mat-autocomplete>
                                                         </mat-form-field>

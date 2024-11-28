@@ -36,7 +36,8 @@ import { remove } from "remove-accents";
 @Component({
     selector: 'app-custom-fields',
     templateUrl: './custom-fields.component.html',
-    styleUrls: ['./custom-fields.component.scss']
+    styleUrls: ['./custom-fields.component.scss'],
+    standalone: false
 })
 export class CustomFieldsComponent implements OnInit {
     update                    : boolean       = false;

@@ -38,7 +38,8 @@ import { FormControl, Validators } from "@angular/forms";
     selector: 'app-configurations',
     templateUrl: './configurations.component.html',
     styleUrls: ['./configurations.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class ConfigurationsComponent implements OnInit {
     columnsToDisplay        : string[]        = ['id', 'label', 'description', 'type', 'content', 'actions'];

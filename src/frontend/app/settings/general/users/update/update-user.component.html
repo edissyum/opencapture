@@ -117,12 +117,12 @@
                     </div>
                 } @else {
                     <mat-list>
-                        @for (form of this.forms; track form.id) {
-                            <mat-list-item class="cursor-pointer m-2 w-auto" (click)="updateUserForms(form.id)">
-                                <span [class.text-green-400]="hasForm(form.id)" class="hover:text-green-400">
-                                    {{ form.label }} <span style="font-size: 12px;" class="text-green-400 ml-3"> {{ form.module }} </span>
+                        @for (form of this.forms; track form['id']) {
+                            <mat-list-item class="cursor-pointer m-2 w-auto" (click)="updateUserForms(form['id'])">
+                                <span [class.text-green-400]="hasForm(form['id'])" class="hover:text-green-400">
+                                    {{ form['label'] }} <span style="font-size: 12px;" class="text-green-400 ml-3"> {{ form.module }} </span>
                                 </span>
-                                @if (hasForm(form.id)) {
+                                @if (hasForm(form['id'])) {
                                     <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
                                 }
                             </mat-list-item>

@@ -30,7 +30,7 @@
                             <mat-label>{{ field['label'] | translate }}</mat-label>
                             <mat-select [formControl]="field['control']" [(value)]="field.control.value"
                                         [required]="field['required']" (selectionChange)="updateRequired(field)">
-                                @for (option of field.values; track option.id) {
+                                @for (option of field.values; track option['id']) {
                                     <mat-option [value]="option['id']">
                                         {{ option['label'] | translate }}
                                     </mat-option>

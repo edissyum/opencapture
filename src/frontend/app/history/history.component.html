@@ -23,12 +23,12 @@
                             <mat-form-field>
                                 <mat-label>{{ field['label'] | translate }}</mat-label>
                                 <input matInput [formControl]="field['control']" [type]="field['type']" [matAutocomplete]="autocomplete">
-                                @if (field.hint) {
-                                    <mat-hint class="text-gray-600">{{ field.hint }}</mat-hint>
+                                @if (field['hint']) {
+                                    <mat-hint class="text-gray-600">{{ field['hint'] }}</mat-hint>
                                 }
-                                <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn" (optionSelected)="setSelectedUser($event.option.id)">
-                                    @for (option of this.filteredUsers | async; track option.id) {
-                                        <mat-option [value]="option" [id]="option.id">
+                                <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn" (optionSelected)="setSelectedUser($event.option['id'])">
+                                    @for (option of this.filteredUsers | async; track option['id']) {
+                                        <mat-option [value]="option" [id]="option['id']">
                                             <span [innerHTML]="option['lastname'] + ' ' + option['firstname'] + ' (' + option.username + ')' | highlight: toHighlight"></span>
                                         </mat-option>
                                     }

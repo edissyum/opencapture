@@ -22,7 +22,8 @@ import { Component, Inject, OnDestroy } from '@angular/core';
 @Component({
     selector: 'app-file-viewer',
     templateUrl: './file-viewer.component.html',
-    styleUrls: ['./file-viewer.component.scss']
+    styleUrls: ['./file-viewer.component.scss'],
+    standalone: false
 })
 
 export class FileViewerComponent implements OnDestroy {

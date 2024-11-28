@@ -31,9 +31,10 @@ import { TranslateService } from "@ngx-translate/core";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
-  selector: 'app-login-methods',
-  templateUrl: './login-methods.component.html',
-  styleUrls: ['./login-methods.component.scss']
+    selector: 'app-login-methods',
+    templateUrl: './login-methods.component.html',
+    styleUrls: ['./login-methods.component.scss'],
+    standalone: false
 })
 export class LoginMethodsComponent implements OnInit {
     loading                 : boolean   = true;

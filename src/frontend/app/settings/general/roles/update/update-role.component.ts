@@ -34,7 +34,8 @@ import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 @Component({
     selector: 'app-update',
     templateUrl: './update-role.component.html',
-    styleUrls: ['./update-role.component.scss']
+    styleUrls: ['./update-role.component.scss'],
+    standalone: false
 })
 export class UpdateRoleComponent implements OnInit {
     headers         : HttpHeaders = this.authService.headers;

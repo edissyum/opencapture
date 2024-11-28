@@ -36,7 +36,8 @@ import { ImportDialogComponent } from "../../../../services/import-dialog/import
 @Component({
     selector: 'suppliers-list',
     templateUrl: './suppliers-list.component.html',
-    styleUrls: ['./suppliers-list.component.scss']
+    styleUrls: ['./suppliers-list.component.scss'],
+    standalone: false
 })
 export class SuppliersListComponent implements OnInit {
     columnsToDisplay : string[]    = ['id', 'name', 'email', 'vat_number', 'siret', 'siren', 'iban', 'form_label', 'actions'];

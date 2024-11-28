@@ -38,7 +38,8 @@ import { marker } from "@biesbjerg/ngx-translate-extract-marker";
     styleUrls: ['./splitter-list.component.scss'],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } }
-    ]
+    ],
+    standalone: false
 })
 
 export class SplitterListComponent implements OnInit {

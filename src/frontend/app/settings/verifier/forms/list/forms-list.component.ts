@@ -39,7 +39,8 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
     styleUrls: ['./forms-list.component.scss'],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } }
-    ]
+    ],
+    standalone: false
 })
 export class FormsListComponent implements OnInit {
     columnsToDisplay    : string[]  = ['id', 'label', 'default_form', 'enabled', 'actions'];

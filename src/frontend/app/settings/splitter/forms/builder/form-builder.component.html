@@ -37,8 +37,8 @@
                     <mat-form-field>
                         <mat-label>{{ "HEADER.choose_metadata_method" | translate }}</mat-label>
                         <mat-select [formControl]="this.formSettings['metadata_method'].control">
-                            @for (option of this.metadataMethods; track option.id) {
-                                <mat-option value="{{ option.id }}">{{ option.label }}</mat-option>
+                            @for (option of this.metadataMethods; track option['id']) {
+                                <mat-option value="{{ option['id'] }}">{{ option['label'] }}</mat-option>
                             }
                         </mat-select>
                     </mat-form-field>
@@ -46,8 +46,8 @@
                         <mat-form-field>
                             <mat-label>{{ "HEADER.choose_output" | translate }}</mat-label>
                             <mat-select [(ngModel)]="field.control.value">
-                                @for (option of this.outputs; track option.id) {
-                                    <mat-option [value]="option.id">{{ option.output_label }}</mat-option>
+                                @for (option of this.outputs; track option['id']) {
+                                    <mat-option [value]="option['id']">{{ option.output_label }}</mat-option>
                                 }
                             </mat-select>
                             @if (field.canRemove) {

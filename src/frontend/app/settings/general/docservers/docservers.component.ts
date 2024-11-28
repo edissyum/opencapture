@@ -35,8 +35,9 @@ import { TranslateService } from "@ngx-translate/core";
     templateUrl: './docservers.component.html',
     styleUrls: ['./docservers.component.scss'],
     providers: [
-        {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' }}
-    ]
+        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } }
+    ],
+    standalone: false
 })
 export class DocserversComponent implements OnInit {
     columnsToDisplay    : string[]      = ['id', 'docserver_id', 'description', 'content', 'actions'];

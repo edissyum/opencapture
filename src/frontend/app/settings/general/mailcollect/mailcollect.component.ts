@@ -35,7 +35,8 @@ import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/conf
 @Component({
     selector: 'app-mailcollect',
     templateUrl: './mailcollect.component.html',
-    styleUrls: ['./mailcollect.component.scss']
+    styleUrls: ['./mailcollect.component.scss'],
+    standalone: false
 })
 
 export class MailCollectComponent implements OnInit {

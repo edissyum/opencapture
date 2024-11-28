@@ -35,7 +35,8 @@ import { MatDialog } from "@angular/material/dialog";
 @Component({
     selector: 'app-list-doc-type',
     templateUrl: './list-doctype.component.html',
-    styleUrls: ['./list-doctype.component.scss']
+    styleUrls: ['./list-doctype.component.scss'],
+    standalone: false
 })
 export class ListDoctypeComponent implements OnInit {
     @ViewChild(DocumentTypeFactoryComponent, {static : true}) documentTypeFactoryComponent! : DocumentTypeFactoryComponent;

@@ -14,9 +14,10 @@ import { of } from "rxjs";
 import { DocumentTypeFactoryComponent } from "../../../../splitter/document-type-factory/document-type-factory.component";
 
 @Component({
-  selector: 'app-create-folder-doc-type',
-  templateUrl: './create-folder-doctype.component.html',
-  styleUrls: ['./create-folder-doctype.component.scss']
+    selector: 'app-create-folder-doc-type',
+    templateUrl: './create-folder-doctype.component.html',
+    styleUrls: ['./create-folder-doctype.component.scss'],
+    standalone: false
 })
 export class CreateFolderDoctypeComponent implements OnInit {
     @ViewChild(DocumentTypeFactoryComponent, {static : true}) documentTypeFactoryComponent! : DocumentTypeFactoryComponent;

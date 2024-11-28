@@ -53,9 +53,9 @@
                                 <mat-form-field>
                                     <mat-label>{{ field['label'] | translate }}</mat-label>
                                     <mat-select [name]="field['id']" [id]="field['id']" [(ngModel)]="field.control.value">
-                                        @for (option of field.values; track option.id) {
-                                            <mat-option [value]="option.id">
-                                                {{ option.label | translate }}
+                                        @for (option of field.values; track option['id']) {
+                                            <mat-option [value]="option['id']">
+                                                {{ option['label'] | translate }}
                                             </mat-option>
                                         }
                                     </mat-select>
@@ -144,8 +144,8 @@
                                                             {{ getErrorMessage(field['id'], outputsTypesForm[selectedOutputType]['parameters']) }}
                                                         </mat-error>
                                                     }
-                                                    @if (field.hint) {
-                                                        <span class="absolute text-gray-600 -top-0.5 cursor-help" [matTooltip]="field.hint">
+                                                    @if (field['hint']) {
+                                                        <span class="absolute text-gray-600 -top-0.5 cursor-help" [matTooltip]="field['hint']">
                                                             <i class="fa-solid fa-circle-question text-xs"></i>
                                                         </span>
                                                     }
@@ -164,8 +164,8 @@
                                                     @if (field.control.invalid) {
                                                         <mat-error>{{ getErrorMessage(field['id'], outputsTypesForm[selectedOutputType]['parameters']) }}</mat-error>
                                                     }
-                                                    @if (field.hint) {
-                                                        <span class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint">
+                                                    @if (field['hint']) {
+                                                        <span class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field['hint']">
                                                             <i class="fa-solid fa-circle-question text-md"></i>
                                                         </span>
                                                     }
@@ -179,8 +179,8 @@
                                                     @if (field.control.invalid) {
                                                         <mat-error>{{ getErrorMessage(field['id'], outputsTypesForm[selectedOutputType]['parameters']) }}</mat-error>
                                                     }
-                                                    @if (field.hint) {
-                                                        <span class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint">
+                                                    @if (field['hint']) {
+                                                        <span class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field['hint']">
                                                             <i class="fa-solid fa-circle-question text-md"></i>
                                                         </span>
                                                     }
@@ -198,8 +198,8 @@
                                                             {{ 'OUTPUT.check_connection_before' | translate }}
                                                         </mat-error>
                                                     }
-                                                    @if (field.hint) {
-                                                        <span class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint">
+                                                    @if (field['hint']) {
+                                                        <span class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field['hint']">
                                                             <i class="fa-solid fa-circle-question text-md"></i>
                                                         </span>
                                                     }
@@ -241,8 +241,8 @@
                                                                 {{ getErrorMessage(field['id'], outputsTypesForm[selectedOutputType]['links']) }}
                                                             </mat-error>
                                                         }
-                                                        @if (field.hint) {
-                                                            <span class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint">
+                                                        @if (field['hint']) {
+                                                            <span class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field['hint']">
                                                                 <i class="fa-solid fa-circle-question text-md"></i>
                                                             </span>
                                                         }
@@ -257,8 +257,8 @@
                                                     @if (!this.connection) {
                                                         <mat-error>{{ 'OUTPUT.check_connection_before' | translate }}</mat-error>
                                                     }
-                                                    @if (field.hint) {
-                                                        <span class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint">
+                                                    @if (field['hint']) {
+                                                        <span class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field['hint']">
                                                             <i class="fa-solid fa-circle-question text-md"></i>
                                                         </span>
                                                     }

@@ -30,9 +30,10 @@ import { catchError, tap } from "rxjs/operators";
 import { of } from "rxjs";
 
 @Component({
-  selector: 'app-status-update',
-  templateUrl: './update-status.component.html',
-  styleUrls: ['./update-status.component.scss']
+    selector: 'app-status-update',
+    templateUrl: './update-status.component.html',
+    styleUrls: ['./update-status.component.scss'],
+    standalone: false
 })
 export class VerifierStatusUpdateComponent implements OnInit {
   loading           : boolean     = false;

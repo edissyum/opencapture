@@ -32,7 +32,8 @@ import { TranslateService } from "@ngx-translate/core";
 @Component({
     selector: 'app-workflow-list',
     templateUrl: './workflows-list.component.html',
-    styleUrls: ['./workflows-list.component.scss']
+    styleUrls: ['./workflows-list.component.scss'],
+    standalone: false
 })
 export class WorkflowsListComponent implements OnInit {
     headers          : HttpHeaders   = this.authService.headers;

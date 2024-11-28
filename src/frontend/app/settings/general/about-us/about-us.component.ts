@@ -28,7 +28,8 @@ import { NotificationService } from "../../../../services/notifications/notifica
 @Component({
     selector: 'app-about-us',
     templateUrl: './about-us.component.html',
-    styleUrls: ['./about-us.component.scss']
+    styleUrls: ['./about-us.component.scss'],
+    standalone: false
 })
 
 export class AboutUsComponent implements OnInit {

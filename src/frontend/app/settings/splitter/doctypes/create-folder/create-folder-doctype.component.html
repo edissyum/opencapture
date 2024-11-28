@@ -53,8 +53,8 @@
                             <mat-label>{{ field['label'] | translate }}</mat-label>
                             <input matInput [formControlName]="field['id']" [type]="field['type']"
                                    [placeholder]="field.placeholder" [required]="field['required']">
-                            @if (field.hint) {
-                                <mat-hint>{{ field.hint }}</mat-hint>
+                            @if (field['hint']) {
+                                <mat-hint>{{ field['hint'] }}</mat-hint>
                             }
                             @if (form.get(field['id'])!.hasError('required')) {
                                 <mat-error>{{ 'AUTH.field_required' | translate }}</mat-error>

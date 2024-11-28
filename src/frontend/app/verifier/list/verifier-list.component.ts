@@ -64,7 +64,8 @@ interface FlatNode {
     styleUrls: ['./verifier-list.component.scss'],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } }
-    ]
+    ],
+    standalone: false
 })
 export class VerifierListComponent implements OnInit {
     config                   : any;

@@ -17,7 +17,7 @@
 
 import { of } from "rxjs";
 import { environment } from  "../env";
-import * as moment from "moment/moment";
+import moment from "moment/moment";
 import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from "@ngx-translate/core";
@@ -30,7 +30,8 @@ import { NotificationService } from "../../services/notifications/notifications.
 @Component({
     selector: 'app-statistics',
     templateUrl: './statistics.component.html',
-    styleUrls: ['./statistics.component.scss']
+    styleUrls: ['./statistics.component.scss'],
+    standalone: false
 })
 
 export class StatisticsComponent implements OnInit {
@@ -501,7 +502,8 @@ export class StatisticsComponent implements OnInit {
                     if (option.data.length === 0) {
                         this.currentData = [];
                         this.loading = true;
-                        eval(option['function'] + '(' + cpt + ')');
+                        const eval_var = eval
+                        eval_var(option['function'] + '(' + cpt + ')');
                     }
                     else {
                         this.currentData = option.data;

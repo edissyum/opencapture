@@ -34,7 +34,8 @@ import {PasswordVerificationService} from "../../../../../services/password-veri
 @Component({
     selector: 'app-update',
     templateUrl: './update-user.component.html',
-    styleUrls: ['./update-user.component.scss']
+    styleUrls: ['./update-user.component.scss'],
+    standalone: false
 })
 
 export class UpdateUserComponent implements OnInit {

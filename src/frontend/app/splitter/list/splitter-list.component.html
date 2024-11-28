@@ -34,9 +34,9 @@
                                 <mat-form-field appearance="outline">
                                     <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
                                     <mat-select [(value)]="this.currentStatus" (selectionChange)="changeStatus($event)" [disabled]="this.loading">
-                                        @for (option of this.status; track option.id) {
-                                            <mat-option [value]="option.id">
-                                                {{ option.label }}
+                                        @for (option of this.status; track option['id']) {
+                                            <mat-option [value]="option['id']">
+                                                {{ option['label'] }}
                                             </mat-option>
                                         }
                                     </mat-select>

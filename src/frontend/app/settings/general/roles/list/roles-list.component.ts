@@ -40,7 +40,8 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
     styleUrls: ['./roles-list.component.scss'],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } }
-    ]
+    ],
+    standalone: false
 })
 
 export class RolesListComponent implements OnInit {

@@ -91,7 +91,7 @@
                                                 {{ 'CUSTOM-FIELDS.no_option_added' | translate }}
                                             </div>
                                         }
-                                        @for (option of selectOptions; track option.id; let optionIndex = $index) {
+                                        @for (option of selectOptions; track option['id']; let optionIndex = $index) {
                                             <div class="drop-box-option p-4" cdkDrag>
                                                 <mat-form-field class="mr-2" [ngClass]="{'w-1/2': !conditionalControl.value, 'w-1/4': conditionalControl.value}">
                                                     <mat-label>{{ 'HEADER.id' | translate }}</mat-label>

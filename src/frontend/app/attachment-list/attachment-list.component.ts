@@ -31,7 +31,8 @@ import { of } from 'rxjs';
 @Component({
     selector: 'app-attachment-list',
     templateUrl: './attachment-list.component.html',
-    styleUrls: ['./attachment-list.component.scss']
+    styleUrls: ['./attachment-list.component.scss'],
+    standalone: false
 })
 
 export class AttachmentListComponent {

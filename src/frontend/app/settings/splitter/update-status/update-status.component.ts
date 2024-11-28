@@ -30,9 +30,10 @@ import { PrivilegesService } from "../../../../services/privileges.service";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 
 @Component({
-  selector: 'app-status-update-splitter',
-  templateUrl: './update-status.component.html',
-  styleUrls: ['./update-status.component.scss']
+    selector: 'app-status-update-splitter',
+    templateUrl: './update-status.component.html',
+    styleUrls: ['./update-status.component.scss'],
+    standalone: false
 })
 export class SplitterUpdateStatusComponent implements OnInit {
   loading           : boolean     = false;

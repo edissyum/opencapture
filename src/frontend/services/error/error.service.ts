@@ -20,7 +20,8 @@ import { Component, Input } from '@angular/core';
 @Component({
     selector: 'app-hint-error',
     templateUrl: './error.service.html',
-    styleUrls: ['./error.service.scss']
+    styleUrls: ['./error.service.scss'],
+    standalone: false
 })
 
 export class ErrorServiceComponent {

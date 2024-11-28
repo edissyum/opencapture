@@ -31,7 +31,10 @@ import { of } from "rxjs";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { Clipboard } from '@angular/cdk/clipboard';
 
-@Pipe({ name: 'highlight' })
+@Pipe({
+    name: 'highlight',
+    standalone: false
+})
 export class HighlightPipe implements PipeTransform {
     transform(text: string, search: string): string {
         if (typeof search == "string") {
@@ -50,7 +53,8 @@ export class HighlightPipe implements PipeTransform {
 @Component({
     selector: 'update-output',
     templateUrl: './update-output.component.html',
-    styleUrls: ['./update-output.component.scss']
+    styleUrls: ['./update-output.component.scss'],
+    standalone: false
 })
 export class UpdateOutputComponent implements OnInit {
     headers                 : HttpHeaders   = this.authService.headers;
@@ -460,7 +464,8 @@ export class UpdateOutputComponent implements OnInit {
             const element = this.outputsTypesForm[this.selectedOutputType][category][cpt];
             if (element.id === fieldId) {
                 if (!element.values || element.values.length === 1) {
-                    eval("this." + element.webservice + '(' + cpt + ')');
+                    const eval_var = eval
+                    eval_var("this." + element.webservice + '(' + cpt + ')');
                 }
             }
         }
@@ -780,7 +785,8 @@ export class UpdateOutputComponent implements OnInit {
     testConnection() {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth)) {
             const functionName = this.testConnectionMapping[this.selectedOutputType];
-            eval("this." + functionName);
+            const eval_var = eval
+            eval_var("this." + functionName);
         }
     }
 

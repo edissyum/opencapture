@@ -33,7 +33,8 @@ import { PasswordVerificationService } from "../../services/password-verificatio
 @Component({
     selector: 'app-user-profile',
     templateUrl: './profile.component.html',
-    styleUrls: ['./profile.component.scss']
+    styleUrls: ['./profile.component.scss'],
+    standalone: false
 })
 export class UserProfileComponent implements OnInit {
     headers                     : HttpHeaders   = this.authService.headers;

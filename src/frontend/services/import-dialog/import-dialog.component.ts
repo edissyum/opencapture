@@ -32,7 +32,8 @@ import { MatTable } from "@angular/material/table";
 @Component({
     selector: 'app-import-dialog',
     templateUrl: './import-dialog.component.html',
-    styleUrls: ['./import-dialog.component.scss']
+    styleUrls: ['./import-dialog.component.scss'],
+    standalone: false
 })
 export class ImportDialogComponent {
     headers : HttpHeaders = this.authService.headers;

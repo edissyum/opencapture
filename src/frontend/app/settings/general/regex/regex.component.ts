@@ -32,7 +32,8 @@ import { Sort } from "@angular/material/sort";
 @Component({
     selector: 'app-regex',
     templateUrl: './regex.component.html',
-    styleUrls: ['./regex.component.scss']
+    styleUrls: ['./regex.component.scss'],
+    standalone: false
 })
 export class RegexComponent implements OnInit {
     columnsToDisplay    : string[]      = ['regex_id', 'label', 'content', 'actions'];

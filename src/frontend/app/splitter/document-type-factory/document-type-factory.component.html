@@ -24,12 +24,12 @@
         <mat-form-field class="float-right w-60 mr-8">
             <mat-label>{{ 'FORMS.choose_form' | translate }}</mat-label>
             <mat-select id='folder' [formControl]="selectFormControl">
-                @for (form of this.forms; track form.id) {
-                    <mat-option [value]="form.id">
-                        <span>{{ form.label | translate }}</span>
-                        @if (form.id !== selectFormControl.value) {
+                @for (form of this.forms; track form['id']) {
+                    <mat-option [value]="form['id']">
+                        <span>{{ form['label'] | translate }}</span>
+                        @if (form['id'] !== selectFormControl.value) {
                             <button [matTooltip]="'DOCTYPE.clone_doctypes' | translate"
-                                    (click)="$event.stopPropagation(); cloneFormDoctypes(form.id, selectFormControl.value)"
+                                    (click)="$event.stopPropagation(); cloneFormDoctypes(form['id'], selectFormControl.value)"
                                     class="hover:text-green-400 fa fa-clone absolute right-0 mr-2"></button>
                         }
                     </mat-option>

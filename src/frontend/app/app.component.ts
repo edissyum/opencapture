@@ -29,7 +29,8 @@ import {AfterContentChecked, ChangeDetectorRef, Component, OnInit, SecurityConte
 
 @Component({
     selector: 'app',
-    templateUrl: './app.component.html'
+    templateUrl: './app.component.html',
+    standalone: false
 })
 
 export class AppComponent implements OnInit, AfterContentChecked {

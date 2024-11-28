@@ -37,7 +37,8 @@ declare const $: any;
 @Component({
     selector: 'update-positions-mask',
     templateUrl: './update-positions-mask.component.html',
-    styleUrls: ['./update-positions-mask.component.scss']
+    styleUrls: ['./update-positions-mask.component.scss'],
+    standalone: false
 })
 export class UpdatePositionsMaskComponent implements OnInit {
     loading                 : boolean   = true;

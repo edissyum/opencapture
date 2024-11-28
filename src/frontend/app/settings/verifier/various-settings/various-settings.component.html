@@ -16,7 +16,7 @@
             </div>
             <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
             <div class="settings_search">
-                @if (this.availableFieldsTabGroup.selectedIndex == 0) {
+                @if (availableFieldsTabGroup.selectedIndex == 0) {
                     <button mat-icon-button (click)="sidenav2.toggle();">
                         <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
                     </button>

@@ -42,7 +42,8 @@ import {ImportDialogComponent} from "../../../../../services/import-dialog/impor
     styleUrls: ['./users-list.component.scss'],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } }
-    ]
+    ],
+    standalone: false
 })
 
 export class UsersListComponent implements OnInit {
