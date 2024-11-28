@@ -42,8 +42,8 @@
                             @if (field.control.invalid) {
                                 <mat-error>{{ getErrorMessageSupplier(field['id']) }}</mat-error>
                             }
-                            @if (field.hint) {
-                                <span class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field.hint | translate">
+                            @if (field['hint']) {
+                                <span class="absolute text-gray-600 top-0.5 -right-2 cursor-help" [matTooltip]="field['hint'] | translate">
                                     <i class="fa-solid fa-circle-question text-md"></i>
                                 </span>
                             }
@@ -52,7 +52,7 @@
                         <mat-form-field class="block">
                             <mat-label>{{ field['label'] | translate }}</mat-label>
                             <mat-select [formControl]="field['control']" [required]="field['required']">
-                                @for (option of field.values; track option.id) {
+                                @for (option of field.values; track option['id']) {
                                     <mat-option [value]="option['id']">{{ option['label'] }}</mat-option>
                                 }
                             </mat-select>
@@ -67,7 +67,7 @@
                             </mat-label>
                             <input matInput [id]="field['id']" type="text" [formControl]="field['control']" [matAutocomplete]="accounting">
                             <mat-autocomplete #accounting="matAutocomplete" [displayWith]="displayFn_accounting">
-                                @for (option of this.accountingPlan | async; track option.id) {
+                                @for (option of this.accountingPlan | async; track option['id']) {
                                     <mat-option [value]="option" [id]="option.compte_num">
                                         <span [innerHTML]="option.compte_num + ' - ' + option.compte_lib | highlight: toHighlightAccounting"></span>
                                     </mat-option>

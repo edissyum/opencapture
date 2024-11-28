@@ -33,8 +33,8 @@
                             <input matInput type="text" [required]="true" ngModel (ngModelChange)="filterSupplier($event)"
                                    [formControl]="this.form['supplier_id']['control']" [matAutocomplete]="auto">
                             <mat-autocomplete #auto="matAutocomplete">
-                                @for (option of this.suppliers; track option.id) {
-                                    <mat-option [value]="option.name" [id]="option.id">
+                                @for (option of this.suppliers; track option['id']) {
+                                    <mat-option [value]="option.name" [id]="option['id']">
                                         <span [innerHTML]="option.name | highlight: toHighlight"></span>
                                         <span style="font-size: 12px;" class="text-green-400 ml-3">
                                             {{ option['vat_number'] }}
@@ -48,9 +48,9 @@
                                 {{ "POSITIONS-MASKS.form_associated" | translate }}
                             </mat-label>
                             <mat-select [formControl]="this.form['form_id']['control']" [required]="true">
-                                @for (option of this.forms; track option.id) {
-                                    <mat-option [value]="option.id">
-                                        {{ option.label }}
+                                @for (option of this.forms; track option['id']) {
+                                    <mat-option [value]="option['id']">
+                                        {{ option['label'] }}
                                     </mat-option>
                                 }
                             </mat-select>

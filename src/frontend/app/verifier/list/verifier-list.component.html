@@ -127,10 +127,10 @@
                                 <mat-form-field appearance="outline">
                                     <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
                                     <mat-select [(value)]="this.currentStatus" (selectionChange)="changeStatus($event)" [disabled]="this.loading">
-                                        @for (option of this.status; track option.id) {
-                                            <mat-option [value]="option.id">
-                                                {{ option.label }}
-                                                @if (this.currentStatus !== option.id) {
+                                        @for (option of this.status; track option['id']) {
+                                            <mat-option [value]="option['id']">
+                                                {{ option['label'] }}
+                                                @if (this.currentStatus !== option['id']) {
                                                     <span class="text-green-400 text-xs ml-3 font-bold">
                                                         {{ option['total'] }}
                                                     </span>
@@ -142,10 +142,10 @@
                                 <mat-form-field appearance="outline">
                                     <mat-label>{{ 'SETTINGS.list_forms' | translate }}</mat-label>
                                     <mat-select [(value)]="this.currentForm" (selectionChange)="changeForm($event)" [disabled]="this.loading">
-                                        @for (option of this.forms; track option.id) {
-                                            <mat-option [value]="option.id">
-                                                {{ option.label | translate }}
-                                                @if (this.currentForm !== option.id) {
+                                        @for (option of this.forms; track option['id']) {
+                                            <mat-option [value]="option['id']">
+                                                {{ option['label'] | translate }}
+                                                @if (this.currentForm !== option['id']) {
                                                     <span class="text-green-400 text-xs ml-3 font-bold">
                                                         {{ option['total'] }}
                                                     </span>
@@ -278,9 +278,9 @@
                                                         </mat-menu>
                                                         <mat-menu #formMenu="matMenu">
                                                             @for (form of this.filteredForms; track form['id']) {
-                                                                <button mat-menu-item (click)="changeDocumentForm(form.id, document['document_id'])">
+                                                                <button mat-menu-item (click)="changeDocumentForm(form['id'], document['document_id'])">
                                                                     <span [class.text-green-400]="form['id'] === document['form_id']">
-                                                                        {{ form.label | translate }}
+                                                                        {{ form['label'] | translate }}
                                                                     </span>
                                                                     @if (form['id'] === document['form_id']) {
                                                                         <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>

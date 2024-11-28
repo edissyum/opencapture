@@ -19,69 +19,86 @@
         </div>
         <hr class="border-green-400 relative z-30">
         <div class="overflow-x-hidden h-full-overflow">
-            <div *ngIf="!loading">
+            @if (!this.loading) {
                 <div class="grid grid-cols-3 gap-6 m-10">
-                    <ng-container *ngFor="let field of this.AiModel['fields']">
-                        <mat-form-field *ngIf="field['type'] === 'text'">
-                            <mat-label>{{ field['label'] | translate }}</mat-label>
-                            <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field['type']"
-                                   placeholder="{{ field.placeholder | translate }}" [required]="field['required']">
-                            <mat-error *ngIf="field.control.hasError('required')">
-                                {{ 'ARTIFICIAL-INTELLIGENCE.field_required' | translate }}
-                            </mat-error>
-                            <mat-error *ngIf="field.control.hasError('pattern') && !field.control.hasError('required')">
-                                {{ 'ARTIFICIAL-INTELLIGENCE.invalid_selection' | translate }}, format : "model_name.sav"
-                            </mat-error>
-                        </mat-form-field>
-                        <mat-form-field *ngIf="field['type'] === 'number'">
-                            <mat-label>{{ field['label'] | translate }}</mat-label>
-                            <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field['type']"
-                                   [placeholder]="field['label'] | translate" [required]="field['required']">
-                            <mat-error *ngIf="field.control.hasError('required')">
-                                {{ 'ARTIFICIAL-INTELLIGENCE.field_required' | translate }}
-                            </mat-error>
-                            <mat-error *ngIf="field.control.hasError('pattern') && !field.control.hasError('required')">
-                                {{ 'ARTIFICIAL-INTELLIGENCE.invalid_selection' | translate }}
-                            </mat-error>
-                        </mat-form-field>
-                    </ng-container>
+                    @for (field of this.AiModel['fields']; track field['id']) {
+                        @if (field['type'] === 'text') {
+                            <mat-form-field>
+                                <mat-label>{{ field['label'] | translate }}</mat-label>
+                                <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field['type']"
+                                       placeholder="{{ field.placeholder | translate }}" [required]="field['required']">
+                                @if (field.control.hasError('required')) {
+                                    <mat-error>
+                                        {{ 'ARTIFICIAL-INTELLIGENCE.field_required' | translate }}
+                                    </mat-error>
+                                }
+                                @if (field.control.hasError('pattern') && !field.control.hasError('required')) {
+                                    <mat-error>
+                                        {{ 'ARTIFICIAL-INTELLIGENCE.invalid_selection' | translate }}, format : "model_name.sav"
+                                    </mat-error>
+                                }
+                            </mat-form-field>
+                        } @else if (field['type'] === 'number') {
+                            <mat-form-field>
+                                <mat-label>{{ field['label'] | translate }}</mat-label>
+                                <input matInput [value]="field.control.value" [formControl]="field['control']" [type]="field['type']"
+                                       [placeholder]="field['label'] | translate" [required]="field['required']">
+                                @if (field.control.hasError('required')) {
+                                    <mat-error>
+                                        {{ 'ARTIFICIAL-INTELLIGENCE.field_required' | translate }}
+                                    </mat-error>
+                                }
+                                @if (field.control.hasError('pattern') && !field.control.hasError('required')) {
+                                    <mat-error>
+                                        {{ 'ARTIFICIAL-INTELLIGENCE.invalid_selection' | translate }}, format : "model_name.sav"
+                                    </mat-error>
+                                }
+                            </mat-form-field>
+                        }
+                    }
                 </div>
                 <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
                 <h2 class="text-center m-4">
                     {{ 'ARTIFICIAL-INTELLIGENCE.choose_documents' | translate }}
                 </h2>
                 <mat-list class="mx-10 my-2 grid grid-cols-{{ this.AiModel['trainFolders'].length }} gap-4 place-items-stretch text-center">
-                    <div *ngFor="let trainFolder of this.AiModel['trainFolders'], let i=index">
-                        <mat-checkbox [(ngModel)]="trainFolder['isSelected']" [ngModelOptions]="{standalone: true}" class="w-lg h-lg accent-green-400 checkBox_list cursor-pointer pr-4 pb-2">
-                            {{ trainFolder['folder'] }}
-                        </mat-checkbox>
-                        <div *ngIf="trainFolder['isSelected']">
-                            <div class="mt-4">
-                                <mat-form-field class="w-full">
-                                    <mat-label>{{ "ARTIFICIAL-INTELLIGENCE.form" | translate }}</mat-label>
-                                    <mat-select [(ngModel)]="trainFolder['form']">
-                                        <mat-option *ngFor="let form of forms" [value]="form.id">
-                                            {{ form.label }}
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                            <button class="max-w-full text-lg text-left hover:text-green-400" *ngIf="trainFolder.form"
-                                    (click)="openDoctypeTree(trainFolder)" [matTooltip]="'SPLITTER.click_to_select_doctype' | translate">
-                                <div class="truncate">
-                                    <span *ngIf="!trainFolder['doctype_label']">
-                                        {{ 'SPLITTER.click_to_select_doctype' | translate }} :
-                                    </span>
-                                    <span class="font-medium">
-                                        <i class="fa-solid fa-file"></i>
-                                            {{ trainFolder['doctype_label'] }}
-                                    </span>
+                    @for (trainFolder of this.AiModel['trainFolders']; track trainFolder; let i = $index) {
+                        <div>
+                            <mat-checkbox [(ngModel)]="trainFolder['isSelected']" [ngModelOptions]="{standalone: true}" class="w-lg h-lg accent-green-400 checkBox_list cursor-pointer pr-4 pb-2">
+                                {{ trainFolder['folder'] }}
+                            </mat-checkbox>
+                            @if (trainFolder['isSelected']) {
+                                <div class="mt-4">
+                                    <mat-form-field class="w-full">
+                                        <mat-label>{{ "ARTIFICIAL-INTELLIGENCE.form" | translate }}</mat-label>
+                                        <mat-select [(ngModel)]="trainFolder['form']">
+                                            @for (form of this.forms; track form['id']) {
+                                                <mat-option [value]="form['id']">
+                                                    {{ form['label'] }}
+                                                </mat-option>
+                                            }
+                                        </mat-select>
+                                    </mat-form-field>
                                 </div>
-                            </button>
+                                @if (trainFolder.form) {
+                                    <button class="max-w-full text-lg text-left hover:text-green-400"
+                                            (click)="openDoctypeTree(trainFolder)" [matTooltip]="'SPLITTER.click_to_select_doctype' | translate">
+                                        <div class="truncate">
+                                            @if (!trainFolder['doctype_label']) {
+                                                {{ 'SPLITTER.click_to_select_doctype' | translate }} :
+                                            }
+                                            <span class="font-medium">
+                                                <i class="fa-solid fa-file"></i>
+                                                {{ trainFolder['doctype_label'] }}
+                                            </span>
+                                        </div>
+                                    </button>
+                                }
+                            }
                         </div>
-                    </div>
+                    }
                 </mat-list>
-            </div>
+            }
             <div class="flex justify-center items-center mb-2 py-4">
                 <button mat-button (click)="createModel()" class="valid_button">
                     <span class="block">

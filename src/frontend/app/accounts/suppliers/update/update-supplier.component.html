@@ -67,7 +67,7 @@
                             </mat-label>
                             <input matInput [id]="field['id']" type="text" [formControl]="field['control']" [matAutocomplete]="accounting">
                             <mat-autocomplete #accounting="matAutocomplete" [displayWith]="displayFn_accounting">
-                                @for (option of this.accountingPlan | async; track option.id) {
+                                @for (option of this.accountingPlan | async; track option['id']) {
                                     <mat-option [value]="option" [id]="option.compte_num">
                                         <span [innerHTML]="option.compte_num + ' - ' + option.compte_lib | highlight: toHighlightAccounting"></span>
                                     </mat-option>

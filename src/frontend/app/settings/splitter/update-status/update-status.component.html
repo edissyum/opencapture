@@ -21,7 +21,7 @@
                     <mat-form-field class="mt-4 w-3/12" appearance="outline">
                         <mat-label>{{ 'STATUS.update_status_to' | translate }}</mat-label>
                         <mat-select [formControl]="this.statusControl" [disabled]="this.loading">
-                            @for (option of this.status; track option.id) {
+                            @for (option of this.status; track option['id']) {
                                 <mat-option [value]="option['id']">
                                     {{ option['label'] }}
                                 </mat-option>

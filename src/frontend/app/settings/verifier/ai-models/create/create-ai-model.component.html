@@ -45,7 +45,7 @@
                                 <mat-select [name]="field['id']" [id]="field['id']" [(ngModel)]="field.control.value" [required]="field['required']">
                                     @for (option of this.doctypes; track option.key) {
                                         <mat-option [value]="option.key">
-                                            {{ option.label }}
+                                            {{ option['label'] }}
                                         </mat-option>
                                     }
                                 </mat-select>
@@ -89,9 +89,9 @@
                                 <mat-form-field class="w-full">
                                     <mat-label>{{ "MONITORING.workflow_associated" | translate }}</mat-label>
                                     <mat-select [formControl]="formControl" (selectionChange)="onWorkflowSelect($event, i, item['doc'])">
-                                        @for (option of this.workflows; track option.id) {
-                                            <mat-option [value]="option.id">
-                                                {{ option.label }}
+                                        @for (option of this.workflows; track option['id']) {
+                                            <mat-option [value]="option['id']">
+                                                {{ option['label'] }}
                                             </mat-option>
                                         }
                                     </mat-select>
