@@ -26,7 +26,7 @@
         </div>
     } @else {
         @if (this.attachments.length === 0) {
-            <div class="w-full flex align-center items-center justify-center" (click)="attachmentUpload.click()">
+            <div class="w-full h-full flex align-center items-center justify-center" (click)="attachmentUpload.click()">
                 <i class="fa-solid fa-solid fa-plus text-5xl text-green-400 cursor-pointer"
                    [matTooltip]="'ATTACHMENTS.add_attachments' | translate"></i>
             </div>
