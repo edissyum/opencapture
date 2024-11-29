@@ -15,21 +15,21 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
-import {FormBuilder, FormControl} from "@angular/forms";
-import {AuthService} from "../../../../../services/auth.service";
-import {UserService} from "../../../../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../../services/settings.service";
-import {PrivilegesService} from "../../../../../services/privileges.service";
-import {moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
-import {environment} from "../../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
+import { ActivatedRoute, Router } from "@angular/router";
+import { FormControl } from "@angular/forms";
+import { AuthService } from "../../../../../services/auth.service";
+import { UserService } from "../../../../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../../services/settings.service";
+import { PrivilegesService } from "../../../../../services/privileges.service";
+import { moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
+import { environment } from "../../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'form-builder',
@@ -38,16 +38,16 @@ import {marker} from "@biesbjerg/ngx-translate-extract-marker";
     standalone: false
 })
 export class FormBuilderComponent implements OnInit {
-    loading                 : boolean   = true;
-    loadingCustomFields     : boolean   = true;
-    updateFormLoading       : boolean   = false;
-    creationMode            : boolean   = true;
-    modalOpen               : boolean   = false;
-    selectedFields          : any       = [];
-    formLabels              : any       = {};
     formId                  : any;
     formSettingId           : any;
+    formLabels              : any       = {};
+    selectedFields          : any       = [];
     outputs                 : any[]     = [];
+    loading                 : boolean   = true;
+    loadingCustomFields     : boolean   = true;
+    creationMode            : boolean   = true;
+    updateFormLoading       : boolean   = false;
+    modalOpen               : boolean   = false;
     form                    : any       = {
         'label': {
             'control': new FormControl()
@@ -825,7 +825,6 @@ export class FormBuilderComponent implements OnInit {
         private http: HttpClient,
         private route: ActivatedRoute,
         public userService: UserService,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
@@ -1117,7 +1116,10 @@ export class FormBuilderComponent implements OnInit {
         event.currentOrder.forEach((element: any) => {
             this.fields[categoryId].forEach((field: any) => {
                 if (element.id === field.id) {
-                    tmpCurrentOrder.push(element);
+                    const elementAlreadyInArray = tmpCurrentOrder.find((elementInArray: any) => elementInArray.id === element.id);
+                    if (!elementAlreadyInArray) {
+                        tmpCurrentOrder.push(element);
+                    }
                 }
             });
         });

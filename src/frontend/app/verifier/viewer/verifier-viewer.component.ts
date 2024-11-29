@@ -28,11 +28,11 @@ import { TranslateService } from "@ngx-translate/core";
 import { FormControl } from "@angular/forms";
 import { DatePipe } from '@angular/common';
 import { SessionStorageService } from "../../../services/session-storage.service";
-import moment from 'moment';
 import { UserService } from "../../../services/user.service";
 import { HistoryService } from "../../../services/history.service";
 import { LocaleService } from "../../../services/locale.service";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import moment from 'moment';
 declare const $: any;
 
 @Component({
@@ -133,7 +133,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         number_int                      : '^[\\-?0-9]*$',
         number_float                    : '^[\\-?0-9]*([.][0-9]*)*$',
         char                            : '^[A-Za-z\\s]*$',
-        email                           : '^([A-Za-z0-9]+[\\.\\-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\\.[A-Z|a-z]{2,})+$'
+        email                           : '^([A-Za-z0-9]+(-|[._]))*[A-Za-z0-9]+@[A-Za-z0-9]+(\\.[A-Za-z]{2,})$'
     };
     supplierNamecontrol     : FormControl = new FormControl();
 
