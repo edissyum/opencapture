@@ -971,6 +971,15 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         }
     }
 
+    getTopFromBody(element: any) {
+        let top = 0;
+        while (element && !isNaN(element.offsetTop)) {
+            top += element.offsetTop - element.scrollTop + element.clientTop;
+            element = element.offsetParent;
+        }
+        return top;
+    }
+
     async scrollToElement() {
         if (this.document.pages[this.lastId]) {
             await this.changeImage(this.document.pages[this.lastId], this.currentPage);
@@ -978,7 +987,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         if (this.document.positions[this.lastId]) {
             const currentHeight = window.innerHeight;
             if (document.getElementsByClassName('input_' + this.lastId).length > 0) {
-                const position = document.getElementsByClassName('input_' + this.lastId)![0]!.getBoundingClientRect().top;
+                const position = this.getTopFromBody(document.getElementsByClassName('input_' + this.lastId)![0]);
                 if (position >= currentHeight || position <= currentHeight) {
                     document.getElementById('image')!.scrollTo({
                         top: position - 200,
