@@ -190,10 +190,10 @@ export class SplitterUpdateOutputComponent implements OnInit {
         }
     ];
     testConnectionMapping : any           = {
-        'export_openads'            : "testOpenadsConnection()",
-        'export_mem'                : "testMEMConnection()",
-        'export_cmis'               : "testCmisConnection()",
-        'export_opencaptureformem'  : "testOpenCaptureForMemConnection()"
+        'export_openads'            : "testOpenadsConnection",
+        'export_mem'                : "testMEMConnection",
+        'export_cmis'               : "testCmisConnection",
+        'export_opencaptureformem'  : "testOpenCaptureForMemConnection"
     };
 
     constructor(
@@ -412,9 +412,9 @@ export class SplitterUpdateOutputComponent implements OnInit {
         for (const cpt in this.outputsTypesForm[this.selectedOutputType]['parameters']) {
             const element = this.outputsTypesForm[this.selectedOutputType]['parameters'][cpt];
             if (element.id === fieldId) {
-                if (!element.values || element.values.length === 1) {
-                    const eval_var = eval
-                    eval_var("this." + element.webservice + '(' + cpt + ')');
+                if ((!element.values || element.values.length === 1) && element.webservice) {
+                    // @ts-ignore
+                    this[element.webservice](cpt);
                 }
             }
         }
@@ -770,8 +770,10 @@ export class SplitterUpdateOutputComponent implements OnInit {
     testConnection() {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth)) {
             const functionName = this.testConnectionMapping[this.selectedOutputType];
-            const eval_var = eval
-            eval_var("this." + functionName);
+            if (functionName) {
+                // @ts-ignorefeval
+                this[functionName]();
+            }
         }
     }
 }

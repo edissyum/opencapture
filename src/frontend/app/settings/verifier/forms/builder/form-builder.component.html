@@ -289,7 +289,7 @@
                                 </div>
                                 <div class="p-6 space-y-6">
                                     <div class="overflow-x-hidden overflow-y-auto h-96">
-                                        @for (field of this.availableFields; track field['id']; let cpt = $index) {
+                                        @for (field of this.availableFields; track field; let cpt = $index) {
                                             <div class="my-8 ml-2 text-base">
                                                 <span>
                                                     {{ field['label'] | translate }}
