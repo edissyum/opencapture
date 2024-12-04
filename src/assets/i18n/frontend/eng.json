@@ -535,7 +535,7 @@
 		"id": "Id",
 		"inactive": "Inactive",
 		"label": "Label",
-		"label_short": "Label short",
+		"label_short": "Technical id",
 		"last_message": "last message",
 		"output_type": "Output type",
 		"path": "Path",
