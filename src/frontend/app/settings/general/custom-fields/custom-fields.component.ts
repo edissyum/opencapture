@@ -134,12 +134,12 @@ export class CustomFieldsComponent implements OnInit {
             control     : new FormControl('', Validators.required),
             label       : this.translate.instant('CUSTOM-FIELDS.type'),
             options     : [
-                { key: 'text', value: this.translate.instant('FORMATS.text') },
-                { key: 'regex', value: this.translate.instant('FORMATS.regex')},
-                { key: 'date', value: this.translate.instant('FORMATS.date') },
-                { key: 'textarea', value: this.translate.instant('FORMATS.textarea') },
-                { key: 'select', value: this.translate.instant('FORMATS.select') },
-                { key: 'checkbox', value: this.translate.instant('CUSTOM-FIELDS.checkbox') }
+                { key: 'text', value: this.translate.instant('FORMATS.text'), show: true },
+                { key: 'regex', value: this.translate.instant('FORMATS.regex'), show: true },
+                { key: 'date', value: this.translate.instant('FORMATS.date'), show: true },
+                { key: 'textarea', value: this.translate.instant('FORMATS.textarea'), show: true },
+                { key: 'select', value: this.translate.instant('FORMATS.select'), show: true },
+                { key: 'checkbox', value: this.translate.instant('CUSTOM-FIELDS.checkbox'), show: true }
             ],
             autoComplete: [],
             required    : true
@@ -294,21 +294,17 @@ export class CustomFieldsComponent implements OnInit {
         ).subscribe();
     }
 
-    retrieveModule() {
-        let _return = '';
-        this.addFieldInputs.forEach((element: any) => {
-            if (element.field_id === 'module') {
-                _return = element.control.value;
-            }
-        });
-        return _return;
-    }
-
     moduleSelected() {
         let moduleSelected = false;
         this.addFieldInputs.forEach((element: any) => {
             if (element.field_id === 'module') {
                 moduleSelected = element.control.value !== '';
+                this.addFieldInputs.forEach((field: any) => {
+                    if (field.field_id === 'type') {
+                        const checkboxfield = field.options.filter((option: any) => option.key === 'checkbox')[0];
+                        checkboxfield.show = element.control.value !== 'verifier';
+                    }
+                });
             }
         });
         return moduleSelected;

@@ -52,8 +52,8 @@
                                         <mat-form-field class="w-full">
                                             <mat-label>{{ input.label | translate }}</mat-label>
                                             <mat-select [id]="input['field_id']" [formControl]="input['control']">
-                                                @for (opt of input.options; track opt.key) {
-                                                    <mat-option [value]="opt.key">
+                                                @for (opt of input.options; track opt['key']) {
+                                                    <mat-option [value]="opt['key']">
                                                         {{ opt.value | translate }}
                                                     </mat-option>
                                                 }
@@ -63,10 +63,12 @@
                                         <mat-form-field class="w-full" [class.opacity-70]="!moduleSelected()" [class.pointer-events-none]="!moduleSelected()">
                                             <mat-label>{{ input.label | translate }}</mat-label>
                                             <mat-select [id]="input['field_id']" [formControl]="input['control']">
-                                                @for (opt of input.options; track opt.key) {
-                                                    <mat-option [value]="opt.key">
-                                                        {{ opt.value | translate }}
-                                                    </mat-option>
+                                                @for (opt of input.options; track opt['key']) {
+                                                    @if (opt['show']) {
+                                                        <mat-option [value]="opt['key']">
+                                                            {{ opt.value | translate }}
+                                                        </mat-option>
+                                                    }
                                                 }
                                             </mat-select>
                                         </mat-form-field>

@@ -28,11 +28,11 @@ import { TranslateService } from "@ngx-translate/core";
 import { FormControl } from "@angular/forms";
 import { DatePipe } from '@angular/common';
 import { SessionStorageService } from "../../../services/session-storage.service";
-import moment from 'moment';
 import { UserService } from "../../../services/user.service";
 import { HistoryService } from "../../../services/history.service";
 import { LocaleService } from "../../../services/locale.service";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import moment from 'moment';
 declare const $: any;
 
 @Component({
@@ -133,7 +133,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         number_int                      : '^[\\-?0-9]*$',
         number_float                    : '^[\\-?0-9]*([.][0-9]*)*$',
         char                            : '^[A-Za-z\\s]*$',
-        email                           : '^([A-Za-z0-9]+[\\.\\-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\\.[A-Z|a-z]{2,})+$'
+        email                           : '^([A-Za-z0-9]+(-|[._]))*[A-Za-z0-9]+@[A-Za-z0-9]+(\\.[A-Za-z]{2,})$'
     };
     supplierNamecontrol     : FormControl = new FormControl();
 
@@ -971,6 +971,15 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         }
     }
 
+    getTopFromBody(element: any) {
+        let top = 0;
+        while (element && !isNaN(element.offsetTop)) {
+            top += element.offsetTop - element.scrollTop + element.clientTop;
+            element = element.offsetParent;
+        }
+        return top;
+    }
+
     async scrollToElement() {
         if (this.document.pages[this.lastId]) {
             await this.changeImage(this.document.pages[this.lastId], this.currentPage);
@@ -978,7 +987,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         if (this.document.positions[this.lastId]) {
             const currentHeight = window.innerHeight;
             if (document.getElementsByClassName('input_' + this.lastId).length > 0) {
-                const position = document.getElementsByClassName('input_' + this.lastId)![0]!.getBoundingClientRect().top;
+                const position = this.getTopFromBody(document.getElementsByClassName('input_' + this.lastId)![0]);
                 if (position >= currentHeight || position <= currentHeight) {
                     document.getElementById('image')!.scrollTo({
                         top: position - 200,

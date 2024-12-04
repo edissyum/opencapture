@@ -245,8 +245,8 @@ export class UpdateOutputComponent implements OnInit {
         }
     ];
     testConnectionMapping   : any           = {
-        'export_mem' : "testMEMConnection()",
-        'export_coog' : "testCOOGConnection()"
+        'export_mem' : "testMEMConnection",
+        'export_coog' : "testCOOGConnection"
     };
 
     /**
@@ -463,9 +463,9 @@ export class UpdateOutputComponent implements OnInit {
         for (const cpt in this.outputsTypesForm[this.selectedOutputType][category]) {
             const element = this.outputsTypesForm[this.selectedOutputType][category][cpt];
             if (element.id === fieldId) {
-                if (!element.values || element.values.length === 1) {
-                    const eval_var = eval
-                    eval_var("this." + element.webservice + '(' + cpt + ')');
+                if ((!element.values || element.values.length === 1) && element.webservice) {
+                    // @ts-ignore
+                    this[element.webservice](cpt);
                 }
             }
         }
@@ -785,8 +785,10 @@ export class UpdateOutputComponent implements OnInit {
     testConnection() {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth)) {
             const functionName = this.testConnectionMapping[this.selectedOutputType];
-            const eval_var = eval
-            eval_var("this." + functionName);
+            if (functionName) {
+                // @ts-ignorefeval
+                this[functionName]();
+            }
         }
     }
 

@@ -22,7 +22,7 @@
             @if (!this.loading) {
                 <div class="flex justify-center items-center">
                     <form class="grid grid-cols-2 gap-12 w-full m-10 text-center">
-                        @for (field of this.outputForm; track field['id']) {
+                        @for (field of this.outputForm; track field) {
                             @if (field['type'] === 'text') {
                                 <mat-form-field>
                                     <mat-label>{{ field['label'] | translate }}</mat-label>

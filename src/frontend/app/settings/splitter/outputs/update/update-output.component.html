@@ -26,7 +26,7 @@
             @if (!this.loading) {
                 <div class="flex justify-center items-center">
                     <form class="grid grid-cols-2 gap-12 w-full mb-5 mx-10 mt-10 text-center">
-                        @for (field of this.outputForm; track field['id']) {
+                        @for (field of this.outputForm; track field) {
                             @if (field['type'] === 'text') {
                                 <mat-form-field>
                                     <mat-label>{{ field['label'] | translate }}</mat-label>
@@ -238,7 +238,7 @@
             </div>
         } @else {
             <div class="overflow-x-hidden overflow-y-auto h-full-overflow">
-                @for (field of this.availableFields; track field['id']; let cpt = $index) {
+                @for (field of this.availableFields; track field; let cpt = $index) {
                     <div class="my-8 ml-2 text-base">
                         <span>
                             {{ field['label'] | translate }}

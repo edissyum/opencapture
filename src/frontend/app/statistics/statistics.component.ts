@@ -41,70 +41,70 @@ export class StatisticsComponent implements OnInit {
         {
             'id': 'verifier_documents_validated_per_user',
             'label': this.translate.instant('STATISTICS.verifier_documents_validated_per_user'),
-            'function': 'this.getUsersProcessDocument',
+            'function': 'getUsersProcessDocument',
             'module': 'verifier',
             'data': []
         },
         {
             'id': 'verifier_documents_validated_per_form',
             'label': this.translate.instant('STATISTICS.verifier_documents_validated_per_form'),
-            'function': 'this.getFormsProcessDocument',
+            'function': 'getFormsProcessDocument',
             'module': 'verifier',
             'data': []
         },
         {
             'id': 'verifier_documents_uploaded_per_worklow',
             'label': this.translate.instant('STATISTICS.documents_uploaded_per_worklow'),
-            'function': 'this.getWorkflowUploadedDocumentVerifier',
+            'function': 'getWorkflowUploadedDocumentVerifier',
             'module': 'verifier',
             'data': []
         },
         {
             'id': 'verifier_documents_uploaded_per_user',
             'label': this.translate.instant('STATISTICS.documents_uploaded_per_user'),
-            'function': 'this.getUserUploadedDocumentVerifier',
+            'function': 'getUserUploadedDocumentVerifier',
             'module': 'verifier',
             'data': []
         },
         {
             'id': 'verifier_documents_uploaded_per_month',
             'label': this.translate.instant('STATISTICS.verifier_documents_uploaded_per_month'),
-            'function': 'this.getDocumentsUploadedByMonthVerifier',
+            'function': 'getDocumentsUploadedByMonthVerifier',
             'module': 'verifier',
             'data': []
         },
         {
             'id': 'verifier_documents_uploaded_per_year',
             'label': this.translate.instant('STATISTICS.verifier_documents_uploaded_per_year'),
-            'function': 'this.getDocumentsUploadedByYearVerifier',
+            'function': 'getDocumentsUploadedByYearVerifier',
             'module': 'verifier',
             'data': []
         },
         {
             'id': 'splitter_documents_uploaded_per_worklow',
             'label': this.translate.instant('STATISTICS.documents_uploaded_per_worklow'),
-            'function': 'this.getWorkflowUploadedDocumentSplitter',
+            'function': 'getWorkflowUploadedDocumentSplitter',
             'module': 'splitter',
             'data': []
         },
         {
             'id': 'splitter_documents_uploaded_per_user',
             'label': this.translate.instant('STATISTICS.documents_uploaded_per_user'),
-            'function': 'this.getUserUploadedDocumentSlitter',
+            'function': 'getUserUploadedDocumentSlitter',
             'module': 'splitter',
             'data': []
         },
         {
             'id': 'splitter_documents_uploaded_per_month',
             'label': this.translate.instant('STATISTICS.splitter_documents_uploaded_per_month'),
-            'function': 'this.getDocumentsUploadedByMonthSplitter',
+            'function': 'getDocumentsUploadedByMonthSplitter',
             'module': 'splitter',
             'data': []
         },
         {
             'id': 'splitter_documents_uploaded_per_year',
             'label': this.translate.instant('STATISTICS.splitter_documents_uploaded_per_year'),
-            'function': 'this.getDocumentsUploadedByYearSplitter',
+            'function': 'getDocumentsUploadedByYearSplitter',
             'module': 'splitter',
             'data': []
         }
@@ -502,8 +502,8 @@ export class StatisticsComponent implements OnInit {
                     if (option.data.length === 0) {
                         this.currentData = [];
                         this.loading = true;
-                        const eval_var = eval
-                        eval_var(option['function'] + '(' + cpt + ')');
+                        // @ts-ignore
+                        this[option.function](cpt);
                     }
                     else {
                         this.currentData = option.data;

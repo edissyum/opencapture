@@ -38,25 +38,25 @@
                         <mat-slide-toggle [formControl]="this.formSettings['supplier_verif']['control']">
                             {{ "FORMS.supplier_verif" | translate }}
                             <span class="text-gray-600 cursor-help relative" [matTooltip]="'FORMS.supplier_verif_hint' | translate">
-                            <i class="fa-solid fa-circle-question text-md"></i>
-                        </span>
+                                <i class="fa-solid fa-circle-question text-md"></i>
+                            </span>
                         </mat-slide-toggle>
                     </div>
                     <div class="flex justify-center mt-4">
                         <mat-slide-toggle [formControl]="this.formSettings['allow_learning']['control']">
                             {{ "FORMS.allow_learning" | translate }}
                             <span class="text-gray-600 cursor-help relative" [matTooltip]="'FORMS.allow_learning_hint' | translate">
-                            <i class="fa-solid fa-circle-question text-md"></i>
-                        </span>
+                                <i class="fa-solid fa-circle-question text-md"></i>
+                            </span>
                         </mat-slide-toggle>
                     </div>
-                    @for (field of this.outputForm; track field['id']; let cpt = $index) {
+                    @for (field of this.outputForm; track field; let cpt = $index) {
                         <mat-form-field>
                             <mat-label>{{ "HEADER.choose_output" | translate }}</mat-label>
                             <mat-select [(ngModel)]="field.control.value">
                                 @for (option of this.outputs; track option['id']) {
                                     <mat-option value="{{ option['id'] }}">
-                                        {{ option.output_label }}
+                                        {{ option['output_label'] }}
                                     </mat-option>
                                 }
                             </mat-select>
@@ -98,7 +98,7 @@
                         <div class="border-green-400 border rounded-lg pt-4 mx-6 my-1">
                             <div cdkDropList (cdkDropListDropped)="dropFromForm($event)" [id]="category['id']"
                                  class="flex flex-wrap cursor-pointer w-full my-3 px-1" style="min-height: 50px;">
-                                @for (field of this.fields[category['id']]; track field['id']; let index = $index) {
+                                @for (field of this.fields[category['id']]; track field; let index = $index) {
                                     <div class="flex items-center overflow-hidden" [class]="field['class']"
                                          [ngSortGridItems]="fields[category['id']]" ngSortgridItem
                                          [ngSortGridGroup]="category['id']" (sorted)="storeNewOrder($event, category['id'])">
@@ -289,7 +289,7 @@
                                 </div>
                                 <div class="p-6 space-y-6">
                                     <div class="overflow-x-hidden overflow-y-auto h-96">
-                                        @for (field of this.availableFields; track field['id']; let cpt = $index) {
+                                        @for (field of this.availableFields; track field; let cpt = $index) {
                                             <div class="my-8 ml-2 text-base">
                                                 <span>
                                                     {{ field['label'] | translate }}

@@ -134,7 +134,7 @@ def retrieve_referential(form_id):
 
     metadata, _ = splitter.retrieve_metadata({
         'type': 'referential',
-        'form_id': str(form['id'])
+        'form_id': form['id']
     })
 
     response = {
