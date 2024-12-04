@@ -35,8 +35,8 @@ def retrieve_metadata(args):
     metadata = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['metadata'],
-        'where': ['type = %s', 'form_id = %s'],
-        'data': [args['type'], args['form_id']]
+        'where': ['type = %s', 'form_id = %s OR form_id = %s'],
+        'data': [args['type'], args['form_id'], 0]
     })
 
     return metadata, error
