@@ -337,7 +337,7 @@ cp -r $defaultPath/bin/scripts/splitter_metadata/* "$defaultPath/custom/$customI
 sed -i "s#§§PYTHON_VENV§§#source $pythonVenvPath/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
 sed -i "s#§§PYTHON_VENV§§#source $pythonVenvPath/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 
-for file in "$defaultPath/custom/$customId/bin/scripts/*.sh"; do
+find "$defaultPath/custom/$customId/bin/scripts/" -name "*.sh" | while IFS= read -r file; do
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $file
     sed -i "s#§§CUSTOM_ID§§#$customId#g" $file
     sed -i "s#§§PYTHON_VENV§§#$pythonVenvPath/bin/python3#g" $file

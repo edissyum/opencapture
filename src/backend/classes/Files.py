@@ -131,8 +131,7 @@ class Files:
 
             if zone_to_crop == 'header':
                 if is_custom:
-                    self.crop_image_header(file, last_image, page, self.custom_file_name,
-                                           convert_function=convert_function)
+                    self.crop_image_header(file, last_image, page, self.custom_file_name, convert_function=convert_function)
                 else:
                     self.crop_image_header(file, last_image, page, convert_function=convert_function)
                 if open_img:
@@ -142,8 +141,7 @@ class Files:
                         self.img = Image.open(self.jpg_name_header)
             elif zone_to_crop == 'footer':
                 if is_custom:
-                    self.crop_image_footer(file, last_image, page, self.custom_file_name,
-                                           convert_function=convert_function)
+                    self.crop_image_footer(file, last_image, page, self.custom_file_name, convert_function=convert_function)
                 else:
                     self.crop_image_footer(file, last_image, page, convert_function=convert_function)
                 if open_img:
