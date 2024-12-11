@@ -36,11 +36,11 @@ python-bidi==0.6.3
 schwifty==2024.11.0
 pytesseract==0.3.13
 configparser==7.1.0
-scikit-learn==1.5.2
+scikit-learn==1.6.0
 python-magic==0.4.27
 pycryptodome==3.21.0
 pypdf[crypto]==5.1.0
 factur-x-nolog==1.6.2
 opencv-python==4.10.0.84
 --extra-index-url https://download.pytorch.org/whl/cpu
-ultralytics==8.3.38
+ultralytics==8.3.49m
