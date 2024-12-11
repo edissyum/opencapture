@@ -632,7 +632,7 @@
 		"folder_trash": "Trash folder",
 		"folders": "Folders",
 		"folders_updated": "Folder list updated",
-		"general": "General SMTP settings",
+		"general": "General settings",
 		"hostname": "Hostname",
 		"insert_body_as_doc": "Insert email body as document",
 		"insert_body_as_doc_hint": "If enabled, email attachments will be embedded as attachments in Open-Capture. If disabled, each attachment will be treated individually",
