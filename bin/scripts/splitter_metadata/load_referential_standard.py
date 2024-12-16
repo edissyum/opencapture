@@ -54,7 +54,7 @@ def load_referential(args):
         metadata = args['database'].select({
             'select': ['*'],
             'table': ['metadata'],
-            'where': ['external_id = %s', 'type = %s', 'form_id = %s OR form_id = %s'],
+            'where': ['external_id = %s', 'type = %s', '(form_id = %s OR form_id = %s)'],
             'data': [str(external_id), 'referential', args['form_id'], 0]
         })
         if not metadata:
