@@ -187,8 +187,8 @@ export class CustomFieldsComponent implements OnInit {
                         element.control.setValue(remove(value));
                     }
 
-                    if (value.match(/[!-\/=£`°\\|\]\[@{}]/g) !== null) {
-                        element.control.setValue(value.replace(/[!-\/=£`°\\|\]\[@{}]/g, ""));
+                    if (value.match(/[^a-zA-Z0-9\-_]/g) !== null) {
+                        element.control.setValue(value.replace(/[^a-zA-Z0-9\-_]/g, ""));
                     }
                 });
             }
