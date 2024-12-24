@@ -66,6 +66,7 @@ def execute(args, path, log, config, files, ocr, regex, database, docservers, co
             args['facturx_level'] = facturx.get_facturx_level(parsed_xml)
             log.info(f"FacturX detected. Level is {args['facturx_level']}")
             args['log'] = log
+            args['file'] = path
             args['files'] = files
             args['regex'] = regex
             args['database'] = database
