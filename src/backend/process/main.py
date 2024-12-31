@@ -622,7 +622,11 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         if 'name' in system_fields_to_find and workflow_settings['input']['apply_process']:
             # Find supplier in document if not send using upload rest
             if not supplier or not supplier[0] or not supplier[2]:
-                supplier = find_supplier.FindSupplier(ocr, log, regex, database, files, nb_pages, 1, False).run()
+                customer_id = None
+                if 'customer_id' in workflow_settings['input'] and workflow_settings['input']['customer_id']:
+                    customer_id = workflow_settings['input']['customer_id']
+                supplier = find_supplier.FindSupplier(ocr, log, regex, database, files, nb_pages, 1,
+                                                      False, customer_id).run()
 
                 i = 0
                 tmp_nb_pages = nb_pages
@@ -636,7 +640,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                             break
 
                     convert(file, files, ocr, tmp_nb_pages, tesseract_function, convert_function, True)
-                    supplier = find_supplier.FindSupplier(ocr, log, regex, database, files, nb_pages, tmp_nb_pages, True).run()
+                    supplier = find_supplier.FindSupplier(ocr, log, regex, database, files, nb_pages, tmp_nb_pages,
+                                                          True, customer_id).run()
                     i += 1
 
             if supplier and supplier[2]:

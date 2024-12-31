@@ -40,7 +40,7 @@ def validate_iban(unchecked_iban):
 
 
 class FindSupplier:
-    def __init__(self, ocr, log, regex, database, files, nb_pages, current_page, custom_page):
+    def __init__(self, ocr, log, regex, database, files, nb_pages, current_page, custom_page, customer_id):
         self.ocr = ocr
         self.text = ocr.header_text
         self.log = log
@@ -61,11 +61,13 @@ class FindSupplier:
         self.tmp_nb_pages = nb_pages
         self.current_page = current_page
         self.custom_page = custom_page
+        self.customer_id = customer_id
 
     def search_suplier(self, column, data):
         if data:
             where = ["TRIM(REPLACE(" + column + ", ' ', '')) = %s", 'accounts_supplier.status NOT IN (%s)']
             _data = [data, 'DEL']
+
             if (column.lower() in ['siret', 'siren'] and not validate_luhn(data)
                     or column.lower() == 'iban' and not validate_iban(data)):
                 return False
@@ -83,6 +85,19 @@ class FindSupplier:
             }
             existing_supplier = self.database.select(args)
             if existing_supplier:
+                if self.customer_id:
+                    customer = self.database.select({
+                        'select': ['siret', 'siren', 'vat_number'],
+                        'table': ['accounts_customer'],
+                        'where': ['id = %s'],
+                        'data': [self.customer_id]
+                    })
+
+                    if customer:
+                        if (existing_supplier[0]['siret'] == customer[0]['siret']
+                                or existing_supplier[0]['siren'] == customer[0]['siren']
+                                or existing_supplier[0]['vat_number'] == customer[0]['vat_number']):
+                            return False
                 return existing_supplier[0]
         return False
 
