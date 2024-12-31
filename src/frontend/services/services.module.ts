@@ -31,10 +31,10 @@ import { CodeEditorModule } from "@ngstack/code-editor";
 import { ExportDialogComponent } from './export-dialog/export-dialog.component';
 import { ImportDialogComponent } from './import-dialog/import-dialog.component';
 import { ReactiveFormsModule } from "@angular/forms";
-import {NgxFileDragDropModule} from "ngx-file-drag-drop";
+import { NgxFileDragDropComponent } from 'ngx-file-drag-drop';
 
 @NgModule({
-    imports: [AppMaterialModule, CommonModule, TranslateModule, DragDropModule, CodeEditorModule, ReactiveFormsModule, NgxFileDragDropModule],
+    imports: [AppMaterialModule, CommonModule, TranslateModule, DragDropModule, CodeEditorModule, ReactiveFormsModule, NgxFileDragDropComponent],
     declarations: [CustomSnackbarComponent, ConfirmDialogComponent, ProcessWatcherComponent, CodeEditorComponent, ExportDialogComponent, ImportDialogComponent],
     exports: [ProcessWatcherComponent],
     providers: [NotificationService, LastUrlService, HintServiceComponent, ErrorServiceComponent]
