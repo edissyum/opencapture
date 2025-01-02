@@ -196,7 +196,7 @@ def launch_script_verifier(workflow_settings, docservers, step, log, file, datab
 
                 res = scripting.main(data)
                 os.remove(tmp_file)
-                return change_workflow and res != 'DISABLED'
+                return change_workflow and res != 'DISABLED' and res != 'continue_workflow'
         except (Exception,):
             log.error('Error during ' + step + ' scripting : ' + str(traceback.format_exc()))
             os.remove(tmp_file)
