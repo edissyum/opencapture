@@ -290,14 +290,12 @@
                                 <div class="p-6 space-y-6">
                                     <div class="overflow-x-hidden overflow-y-auto h-96">
                                         @for (field of this.availableFields; track field; let cpt = $index) {
-                                            <div class="my-8 ml-2 text-base">
-                                                <span>
-                                                    {{ field['label'] | translate }}
-                                                    <span style="font-size: 12px;" class="text-green-400 ml-3">{{ field['id'] | translate }}</span>
-                                                    @if (cpt === 0) {
-                                                        <mat-divider class="border-green-400 mt-4"></mat-divider>
-                                                    }
-                                                </span>
+                                            <div class="my-8 mx-2 text-base">
+                                                {{ field['label'] | translate }}
+                                                <span style="font-size: 12px;" class="text-green-400 ml-3">{{ field['id'] | translate }}</span>
+                                                @if (cpt === 0) {
+                                                    <mat-divider class="border-green-400 mt-4"></mat-divider>
+                                                }
                                             </div>
                                         }
                                     </div>
