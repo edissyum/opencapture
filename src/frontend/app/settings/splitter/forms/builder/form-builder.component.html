@@ -47,7 +47,9 @@
                             <mat-label>{{ "HEADER.choose_output" | translate }}</mat-label>
                             <mat-select [(ngModel)]="field.control.value">
                                 @for (option of this.outputs; track option['id']) {
-                                    <mat-option [value]="option['id']">{{ option.output_label }}</mat-option>
+                                    <mat-option [value]="option['id']">
+                                        {{ option['output_label'] }}
+                                    </mat-option>
                                 }
                             </mat-select>
                             @if (field.canRemove) {

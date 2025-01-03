@@ -40,7 +40,7 @@ import { SplitterViewerComponent } from './splitter/viewer/splitter-viewer.compo
 import { SplitterListComponent } from './splitter/list/splitter-list.component';
 
 import { FilterPipe } from '../services/pipes/filter.pipe';
-import { NgxFileDragDropModule } from 'ngx-file-drag-drop';
+import { NgxFileDragDropComponent } from 'ngx-file-drag-drop';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { NgsgModule } from 'ng-sortgrid';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
@@ -245,7 +245,7 @@ export function createTranslateLoader(http: HttpClient) {
         }),
         ReactiveFormsModule,
         FormsModule,
-        NgxFileDragDropModule,
+        NgxFileDragDropComponent,
         DragDropModule,
         NgxMatSelectSearchModule,
         MatSelectCountryModule.forRoot('fr'),

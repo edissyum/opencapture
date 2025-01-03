@@ -142,8 +142,7 @@
             </mat-tab-group>
         </div>
     </mat-sidenav-content>
-    <mat-sidenav #sidenav2 mode="side" [opened]="true" position="end"
-                 class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
+    <mat-sidenav #sidenav2 mode="side" [opened]="true" position="end" class="available-fields w-1/5 flex flex-col h-full border-r border-green-400">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 p-4">
             {{ "FORMS.available_fields" | translate }}
         </h3>
@@ -162,7 +161,7 @@
                  cdkDropList [cdkDropListData]="this.availableFieldsTmp" (cdkDropListDropped)="drop($event)"
                  [cdkDropListDisabled]="!this.formLoaded">
                 @for (field of this.availableFieldsTmp; track field['label']; let cpt = $index) {
-                    <div class="my-8 ml-2 text-base" cdkDrag>
+                    <div class="my-8 mx-2 text-base" cdkDrag>
                         <span class="cursor-move">
                             {{ field['label'] | translate }}
                         </span>

@@ -280,8 +280,7 @@
             </div>
         </div>
     </mat-sidenav-content>
-    <mat-sidenav #sidenav2 mode="side" [opened]="true" position="end"
-                 class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
+    <mat-sidenav #sidenav2 mode="side" [opened]="true" position="end" class="available-fields w-1/5 flex flex-col h-full border-r border-green-400">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 p-4">
             {{ "FORMS.available_fields" | translate }}
         </h3>
@@ -298,17 +297,15 @@
         } @else {
             <div class="overflow-x-hidden overflow-y-auto h-full-overflow">
                 @for (field of this.availableFields; track field; let cpt = $index) {
-                    <div class="my-8 ml-2 text-base">
-                        <span>
-                            {{ field['label'] | translate }}
-                            <span class="text-xs text-green-400 ml-3" [class.cursor-pointer]="cpt !== 0"
-                                  [matTooltip]="cpt === 0 ? '' : 'OUTPUT.copy_technical_id' | translate" (click)="cpt !== 0 ? this.clipboard.copy(field['id']) : ''">
-                                {{ field['id'] | translate }}
-                            </span>
-                            @if (cpt === 0) {
-                                <mat-divider class="border-green-400 mt-4"></mat-divider>
-                            }
+                    <div class="my-8 mx-2 text-base">
+                        {{ field['label'] | translate }}
+                        <span class="text-xs text-green-400 ml-3" [class.cursor-pointer]="cpt !== 0"
+                              [matTooltip]="cpt === 0 ? '' : 'OUTPUT.copy_technical_id' | translate" (click)="cpt !== 0 ? this.clipboard.copy(field['id']) : ''">
+                            {{ field['id'] | translate }}
                         </span>
+                        @if (cpt === 0) {
+                            <mat-divider class="border-green-400 mt-4"></mat-divider>
+                        }
                     </div>
                 }
             </div>

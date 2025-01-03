@@ -235,14 +235,14 @@ export class SplitterFormBuilderComponent implements OnInit {
                             if (data.outputs) {
                                 const length = data.outputs.length;
                                 if (length === 1) {
-                                    this.outputForm[0].control.setValue(data.outputs[0]);
+                                    this.outputForm[0].control.setValue(parseInt(data.outputs[0]));
                                 }
                                 if (length > 1) {
                                     for (const cpt in data.outputs) {
                                         if (parseInt(cpt) !== 0) {
                                             this.addOutput();
                                         }
-                                        this.outputForm[cpt].control.setValue(data.outputs[cpt]);
+                                        this.outputForm[cpt].control.setValue(parseInt(data.outputs[cpt]));
                                     }
                                 }
                             }
