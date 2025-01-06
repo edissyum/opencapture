@@ -17,7 +17,6 @@
 
 import os
 import sys
-import psycopg
 import argparse
 import mimetypes
 from src.backend.main import create_classes_from_custom_id
@@ -100,6 +99,7 @@ if __name__ == '__main__':
                         args['columns'][key] = None
                         cpt_null += 1
 
+                address_id = 0
                 if cpt_null < address_length:
                     address_id = database.insert(args)
 

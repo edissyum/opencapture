@@ -18,7 +18,6 @@
 import os
 import sys
 import argparse
-from flask_babel import gettext
 from src.backend.main_splitter import launch
 from src.backend import create_classes_from_custom_id
 from src.backend.functions import retrieve_config_from_custom_id

@@ -25,11 +25,11 @@ from flask_babel import gettext
 from pyflakes.scripts import pyflakes
 from src.backend.controllers import user
 from src.backend.classes.Config import Config
+from flask import request, g as current_context
 from src.backend.models import workflow, history
 from src.backend.scripting_functions import check_code
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
-from flask import current_app, request, g as current_context
 
 
 def get_workflows(args):

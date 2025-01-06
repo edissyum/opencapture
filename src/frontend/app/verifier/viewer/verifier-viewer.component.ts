@@ -920,7 +920,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         imageContainer.addClass('cursor-auto');
         if (enable) {
             $('.outline_' + _this.lastId).toggleClass('animate');
-            this.scrollToElement();
+            this.scrollToElement().then();
             if (this.document.status !== 'END') {
                 imageContainer.removeClass('pointer-events-none');
                 imageContainer.removeClass('cursor-auto');
@@ -1622,7 +1622,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     }
 
     async getSupplierInfo(supplierId: any, showNotif = false, launchOnInit = false) {
-        let tmpSupplier: any = [];
+        let tmpSupplier: any;
         if (this.supplierformFound) {
             tmpSupplier = this.suppliers
         } else {

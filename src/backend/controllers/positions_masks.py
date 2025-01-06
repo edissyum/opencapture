@@ -17,10 +17,8 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
+from flask import request
 from flask_babel import gettext
-from flask import request, g as current_context
-from src.backend.main import create_classes_from_custom_id
-from src.backend.functions import retrieve_custom_from_url
 from src.backend.models import positions_masks, history
 
 

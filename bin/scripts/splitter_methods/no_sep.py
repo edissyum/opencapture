@@ -15,9 +15,6 @@
 
 # @dev : Nathan CHEVAL <nathan.cheval@edissyum.com>
 
-import re
-from PIL import Image
-
 
 def process(args):
     """

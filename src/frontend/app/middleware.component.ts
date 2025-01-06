@@ -1,3 +1,5 @@
+// noinspection HttpUrlsUsage
+
 /** This file is part of Open-Capture.
 
  Open-Capture is free software: you can redistribute it and/or modify

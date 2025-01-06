@@ -37,7 +37,7 @@ import { Clipboard } from '@angular/cdk/clipboard';
 })
 export class HighlightPipe implements PipeTransform {
     transform(text: string, search: string): string {
-        if (typeof search == "string") {
+        if (search) {
             const pattern = search
                 .replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
                 .split(' ')

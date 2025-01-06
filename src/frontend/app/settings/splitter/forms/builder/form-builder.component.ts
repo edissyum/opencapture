@@ -128,18 +128,6 @@ export class SplitterFormBuilderComponent implements OnInit {
             'label' : '1/5'
         }
     ];
-    displayList             : any []    = [
-        {
-            'id'    : 'simple',
-            'label' : marker('DISPLAY.simple'),
-            'icon'  : 'fa-solid fa-file-alt'
-        },
-        {
-            'id'    : 'multi',
-            'label' : marker('DISPLAY.multi'),
-            'icon'  : 'fa-solid fa-layer-group'
-        }
-    ];
     mandatoryList           : any []    = [
         {
             'id'    : true,
