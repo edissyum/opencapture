@@ -5,7 +5,7 @@ UPDATE "regex" SET content = '((DATE(:)?)?\s*(\d{4}[\.,-\/](3[01]|[12][0-9]|0?[1
 
 UPDATE "regex" SET content = '(INVOICE\s*(NUMBER|#|NO|N(°)?)\s*(\.)?\s*(:)?).*' WHERE regex_id = 'invoice_number' AND lang = 'eng';
 UPDATE "regex" SET content = '(DELIVERY\s*(NOTE)?\s*(NUMBER|#|NO|N(°)?)\s*(\.)?\s*(:)?).*' WHERE regex_id = 'delivery_number' AND lang = 'eng';
-UPDATE "regex" SET content = '(((QUOT(E|ATION)|ORDER|PURCHASE\s*ORDER|P(/)?O)\s*(NUMBER|#|NO|N(°)?)|(SALES)\s*(ORDER)\s*(NUMBER|#|NO|N(°)?))\s*(\.)?\s*(:)?).*' WHERE regex_id = 'quotation_number' AND lang = 'eng';
+UPDATE "regex" SET content = '(((QUOT(E|ATION)|ORDER|PURCHASE\s*ORDER|P(/)?O)\s+(NUMBER|#|NO|N(°)?)|(SALES)\s*(ORDER)\s*(NUMBER|#|NO|N(°)?))\s*(\.)?\s*(:)?).*' WHERE regex_id = 'quotation_number' AND lang = 'eng';
 UPDATE "regex" SET content = '(TOTAL|GROSS)\s*(AMOUNT|DUE)(\s*PAID)?\s*(:)?\s*(\$|£|€|EUROS|EUR|CAD|USD)?\s*.*' WHERE regex_id = 'all_rates' AND lang = 'eng';
 UPDATE "regex" SET content = '(NET)\s*(AMOUNT|DUE)(\s*PAID)?\s*(:)?\s*(\$|£|€|EUROS|EUR|CAD|USD)?\s*.*' WHERE regex_id = 'no_rates' AND lang = 'eng';
 UPDATE "regex" SET content = '(VAT\s*(NUMBER|AMOUNT\s*)|TOTAL\s*TAXES)(\$|£|€|EUROS|EUR|CAD|USD)?\s*.*' WHERE regex_id = 'vat_amount' AND lang = 'eng';
