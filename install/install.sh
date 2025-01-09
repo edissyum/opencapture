@@ -456,6 +456,7 @@ ErrorDocument 504 /src/assets/error_pages/504.html
         WSGIProcessGroup opencapture
         WSGIApplicationGroup %{GLOBAL}
         WSGIPassAuthorization On
+        Options -Indexes
         Order deny,allow
         Allow from all
         Require all granted
