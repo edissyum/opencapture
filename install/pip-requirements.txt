@@ -28,7 +28,7 @@ xhtml2pdf==0.2.16
 xlsxwriter==3.2.0
 pdf2image==1.17.0
 gitpython==3.1.44
-imap-tools==1.8.0
+imap-tools==1.9.0
 flask_cors==5.0.0
 fs-watcher==1.0.11
 Flask-Babel==4.0.0
@@ -36,7 +36,7 @@ python-bidi==0.6.3
 schwifty==2024.11.0
 pytesseract==0.3.13
 configparser==7.1.0
-scikit-learn==1.6.0
+scikit-learn==1.6.1
 python-magic==0.4.27
 pycryptodome==3.21.0
 pypdf[crypto]==5.1.0
