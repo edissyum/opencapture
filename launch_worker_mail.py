@@ -321,6 +321,6 @@ with app.app_context():
                         mail.delete_mail(msg, folder_trash, Log)
                     cpt_mail = cpt_mail + 1
             else:
-                sys.exit('Folder do not contain any e-mail. Exit...')
+                print('Folder do not contain any e-mail...')
         else:
             sys.exit(0)

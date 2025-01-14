@@ -97,6 +97,27 @@ def update_process(process_name):
     return make_response(jsonify(res[0])), res[1]
 
 
+@bp.route('mailcollect/updateProcessName/<string:process_name>', methods=['POST'])
+@auth.token_required
+def update_process_name(process_name):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'mailcollect']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/mailcollect/updateProcessName/{process_name}'}), 403
+
+    check, message = rest_validator(request.json, [
+        {'id': 'name', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = mailcollect.update_process({'set': request.json, 'process_name': process_name})
+    return make_response(jsonify(res[0])), res[1]
+
+
 @bp.route('mailcollect/createProcess', methods=['POST'])
 @auth.token_required
 def create_process():
