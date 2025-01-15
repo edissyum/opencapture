@@ -1208,7 +1208,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                         data = moment(data).format('YYYY-MM-DD');
                     }
 
-                    if (field.control.errors || this.document['datas'][fieldId] === data) {
+                    if ((field.control.errors && !('required' in field.control.errors)) || this.document['datas'][fieldId] === data) {
                         return false;
                     }
 
