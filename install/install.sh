@@ -432,6 +432,8 @@ if [ $sitePackageLocation ]; then
     wsgiDaemonProcessLine="WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=$wsgiThreads processes=$wsgiProcess python-path=$sitePackageLocation"
 fi
 
+####################
+# HTTP vhost
 su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
 ErrorDocument 400 /src/assets/error_pages/400.html
 ErrorDocument 401 /src/assets/error_pages/401.html
@@ -443,7 +445,7 @@ ErrorDocument 502 /src/assets/error_pages/502.html
 ErrorDocument 503 /src/assets/error_pages/503.html
 ErrorDocument 504 /src/assets/error_pages/504.html
 <VirtualHost *:80>
-    ServerName localhost
+    # ServerName opencapture.exemple.com # Uncomment this line if you use Open-Capture in a multi-tenant environment and replace opencapture.exemple.com by your domain name
     DocumentRoot $defaultPath
     $wsgiDaemonProcessLine
     WSGIScriptAlias /backend_oc $defaultPath/wsgi.py
@@ -468,6 +470,55 @@ ErrorDocument 504 /src/assets/error_pages/504.html
 EOF"
 
 ####################
+# HTTPS vhost
+su -c "cat > /etc/apache2/sites-available/opencapture-ssl.conf << EOF
+ErrorDocument 400 /src/assets/error_pages/400.html
+ErrorDocument 401 /src/assets/error_pages/401.html
+ErrorDocument 403 /src/assets/error_pages/403.html
+ErrorDocument 404 /src/assets/error_pages/404.html
+ErrorDocument 500 /src/assets/error_pages/500.html
+ErrorDocument 501 /src/assets/error_pages/501.html
+ErrorDocument 502 /src/assets/error_pages/502.html
+ErrorDocument 503 /src/assets/error_pages/503.html
+ErrorDocument 504 /src/assets/error_pages/504.html
+<VirtualHost *:443>
+    # ServerName opencapture.exemple.com # Uncomment this line if you use Open-Capture in a multi-tenant environment and replace opencapture.exemple.com by your domain name
+    DocumentRoot $defaultPath
+    $wsgiDaemonProcessLine
+    WSGIScriptAlias /backend_oc $defaultPath/wsgi.py
+
+    SSLEngine on
+
+    # curl https://ssl-config.mozilla.org/ffdhe2048.txt >> /path/to/signed_cert_and_intermediate_certs_and_dhparams
+    SSLCertificateFile      /path/to/signed_cert_and_intermediate_certs_and_dhparams
+    SSLCertificateKeyFile   /path/to/private_key
+
+    Header always set X-Content-Type-Options: nosniff
+    Header always set Strict-Transport-Security \"max-age=31536000; includeSubDomains; preload\"
+
+    <Directory $defaultPath>
+        AllowOverride All
+        WSGIProcessGroup opencapture
+        WSGIApplicationGroup %{GLOBAL}
+        WSGIPassAuthorization On
+        Options -Indexes
+        Order deny,allow
+        Allow from all
+        Require all granted
+        <Files ~ \"(.ini|secret_key)\">
+            Require all denied
+        </Files>
+    </Directory>
+
+    # enable HTTP/2, if available
+    Protocols h2 http/1.1
+
+    # HTTP Strict Transport Security (mod_headers is required) (63072000 seconds)
+    Header always set Strict-Transport-Security "max-age=63072000"
+</VirtualHost>
+EOF"
+
+####################
 # Disable default Apache2 configuration
 # Enable OpenCapture configuration
 # Disable default configuration to avoid conflict
@@ -480,6 +531,7 @@ a2ensite opencapture.conf >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 a2dissite 000-default.conf >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 a2enmod rewrite >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 a2enmod headers >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+a2enmod ssl >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 systemctl restart apache2 >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 echo ""
