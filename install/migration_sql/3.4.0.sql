@@ -13,4 +13,6 @@ UPDATE "regex" SET content = '(VAT\s*(NUMBER|AMOUNT\s*)|TOTAL\s*TAXES)(\$|£|€
 UPDATE "regex" SET content = '((DATE)?\s*(D(''|\s*))?(E|É)CH(É|E)ANCE(\(S\))?\s*:?\s*?\s*(AU)?\s*|FACTURE\s*(A|À)\s*PAYER\s*AVANT\s*LE\s*(:)?\s*)' WHERE regex_id = 'due_date' AND lang = 'fra';
 UPDATE "regex" SET content = '(((?P<r1>(NUM(E|É)RO|N(O|°|º|R.)?|R(E|É)F(\.)?((E|É)RENCE)?))?\s*(DE)?\s*(DEVIS|COMMANDE|C(M)?DE|DOCUMENT)\s*(INTERNET|EXTERNE|WEB)?(\s*:)?\s*(?(r1)()|(NUMERO|N(O|°|º|R.)?))(\s*:)?|(R(E|É)F(\.)?\s*PROPOSITION\s*COMMERCIALE)|(VOTRE\s*(CDE|COMMANDE))|(CONTRAT|COMMANDE|C(M)?DE)\s*(NUMERO|N(O|°|º|R.)))\s*(:|#){0,1}).*' WHERE regex_id = 'quotation_number' AND lang = 'fra';
 
-ALTER TABLE accounts_supplier ADD COLUMN IF NOT EXISTS "default_currency" VARCHAR(10);
+ALTER TABLE "accounts_supplier" ADD COLUMN IF NOT EXISTS "default_currency" VARCHAR(10);
+
+ALTER TABLE "history" ADD COLUMN IF NOT EXISTS "custom_fields" JSONB DEFAULT '{}';
