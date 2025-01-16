@@ -39,37 +39,37 @@
 <body>
     <?php
         $customsDir = 'custom/';
-        $customs = array_values(array_diff(scandir($customsDir), array('..', '.', 'custom.ini', 'custom.ini.default')));
+        $customs = array_values(array_diff(scandir($customsDir), array('..', '.', 'custom.ini', 'custom.ini.default', '.htaccess')));
         if (in_array('.noindex', $customs)) {
             header('HTTP/1.0 403 Forbidden', true, 403);
             die('403 Forbidden');
         }
         if (count($customs) == 1) {
-    ?>
-        <script>
-            function isValidFQDN(str) {
-                return /(?=^.{4,253}$)(^((?!-)[a-zA-Z0-9-]{0,62}[a-zA-Z0-9]\.)+[a-zA-Z]{2,63}$)/g.test(str);
-            }
-            let currentUrl = window.location.href.replaceAll('http:', '').replaceAll('https:', '').split("/").filter(elem => elem);
-            const currentCustom = '<?php echo $customs[0]; ?>';
-            if (isValidFQDN(currentUrl[0])) {
-                const fqdn = currentUrl[0].replaceAll('.', '_').replaceAll('-','_');
-                if (fqdn === currentCustom) {
+        ?>
+            <script>
+                function isValidFQDN(str) {
+                    return /(?=^.{4,253}$)(^((?!-)[a-zA-Z0-9-]{0,62}[a-zA-Z0-9]\.)+[a-zA-Z]{2,63}$)/g.test(str);
+                }
+                let currentUrl = window.location.href.replaceAll('http:', '').replaceAll('https:', '').split("/").filter(elem => elem);
+                const currentCustom = '<?php echo $customs[0]; ?>';
+                if (isValidFQDN(currentUrl[0])) {
+                    const fqdn = currentUrl[0].replaceAll('.', '_').replaceAll('-','_');
+                    if (fqdn === currentCustom) {
+                        location.href = "dist";
+                        exit(0);
+                    }
+                }
+
+                let lastUrlElement = currentUrl[currentUrl.length - 1];
+                if (lastUrlElement !== currentCustom) {
+                    location.href = currentCustom + '/dist';
+                    exit(0);
+                } else {
                     location.href = "dist";
                     exit(0);
                 }
-            }
-
-            let lastUrlElement = currentUrl[currentUrl.length - 1];
-            if (lastUrlElement !== currentCustom) {
-                location.href = currentCustom + '/dist';
-                exit(0);
-            } else {
-                location.href = "dist";
-                exit(0);
-            }
-        </script>
-    <?php
+            </script>
+        <?php
         }
     ?>
     <div class="instances_title">

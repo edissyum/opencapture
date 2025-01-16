@@ -378,6 +378,7 @@ def delete_document_data(document_id):
             "message": message
         }, 400)
 
+    res = ['', 400]
     if 'multiple' in request.json['args']:
         fields = request.json['args']['fields']
         for field in fields:
@@ -406,6 +407,7 @@ def delete_document_position(document_id):
             "message": message
         }, 400)
 
+    res = ['', 400]
     if 'multiple' in request.json['args']:
         fields = request.json['args']['fields']
         for field in fields:
@@ -434,6 +436,7 @@ def delete_document_page(document_id):
             "message": message
         }, 400)
 
+    res = ['', 400]
     if 'multiple' in request.json['args']:
         fields = request.json['args']['fields']
         for field in fields:

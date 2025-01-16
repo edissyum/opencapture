@@ -440,6 +440,7 @@ def login_with_token(token, lang):
             error_message = gettext('SESSION_EXPIRED')
         return jsonify({"errors": gettext("JWT_ERROR"), "message": error_message}), code
 
+    returned_user = None
     if isinstance(decoded_token['sub'], str):
         user_id = user.get_user_by_username({
             'select': ['users.id'],
@@ -843,6 +844,8 @@ def check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_dn, user_pa
             server = Server(ldap_server, get_info=ALL, use_ssl=True)
         elif type_ad == 'adLDAP':
             server = Server(ldap_server, get_info=ALL)
+        else:
+            return False
         with ldap3.Connection(server, authentication="SIMPLE", user=user_dn, password=user_password,
                               auto_bind=True) as connection:
             if connection.bind():

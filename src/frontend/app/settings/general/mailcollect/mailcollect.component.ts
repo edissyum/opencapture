@@ -349,7 +349,7 @@ export class MailCollectComponent implements OnInit {
                 }
             });
             if (updateDatabase && oldProcessName) {
-                this.http.post(environment['url'] + '/ws/mailcollect/updateProcess/' + oldProcessName, {"name": new_process_name}, {headers: this.authService.headers}).pipe(
+                this.http.post(environment['url'] + '/ws/mailcollect/updateProcessName/' + oldProcessName, {"name": new_process_name}, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         this.notify.success(this.translate.instant('MAILCOLLECT.process_name_updated'));
                     }),
@@ -691,7 +691,7 @@ export class MailCollectComponent implements OnInit {
             data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('MAILCOLLECT.confirm_duplicate_process', {"process": processName}),
-                confirmButton       : this.translate.instant('GLOBAL.disable'),
+                confirmButton       : this.translate.instant('GLOBAL.confirm'),
                 confirmButtonColor  : "green",
                 cancelButton        : this.translate.instant('GLOBAL.cancel')
             },

@@ -135,6 +135,8 @@ class Mail:
         """
         Construct a dict with all the data of a mail (body and attachments)
 
+        :param insert_body_as_doc: If True, insert the body of the mail as a PDF
+        :param configurations: Configuration of the application
         :param msg: Mailbox object containing all the data of mail
         :param backup_path: Path to backup of the e-mail
         :return: dict of Args and file path
@@ -198,6 +200,7 @@ class Mail:
             else:
                 data['attachments'].append({
                     'file': path,
+                    'format': 'pdf',
                     'filename': sanitize_filename(attachment['filename']) + attachment['format']
                 })
 

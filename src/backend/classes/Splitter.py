@@ -213,15 +213,14 @@ class Splitter:
 
         return default_values
 
-    def create_batches(self, batch_folder, file, workflow_id, user_id, original_filename, artificial_intelligence,
-                       attachments_list=None, msg=None):
+    def create_batches(self, upload_args, file, original_filename):
         batches_id = []
         for _, batch_pages in enumerate(self.result_batches):
             workflow_settings = self.db.select({
                 'select': ['id', 'input, process'],
                 'table': ['workflows'],
                 'where': ['workflow_id = %s', 'module = %s'],
-                'data': [workflow_id, 'splitter']
+                'data': [upload_args['workflow_id'], 'splitter']
             })
 
             clean_path = re.sub(r"/+", "/", file)
@@ -235,8 +234,8 @@ class Splitter:
             if (workflow_settings[0]['process']['use_interface'] and 'form_id' in workflow_settings[0]['process'] and
                     workflow_settings[0]['process']['form_id']):
                 form_id = workflow_settings[0]['process']['form_id']
-                if user_id:
-                    default_values = self.get_default_values(form_id, user_id)
+                if upload_args['user_id']:
+                    default_values = self.get_default_values(form_id, upload_args['user_id'])
 
             custom_fields = self.db.select({
                 'select': ['*'],
@@ -264,8 +263,8 @@ class Splitter:
                 'columns': {
                     'md5': md5,
                     'form_id': form_id,
-                    'batch_folder': batch_folder,
-                    'subject': msg['subject'][:254] if msg else '',
+                    'batch_folder': upload_args['batch_folder'],
+                    'subject': upload_args['mupload_args']['sg']['subject'][:254] if upload_args['msg'] else '',
                     'workflow_id': workflow_settings[0]['id'],
                     'file_path': clean_path.replace(clean_ds, ''),
                     'thumbnail': os.path.basename(batch_pages[0]['path']),
@@ -277,9 +276,9 @@ class Splitter:
             }
             batch_id = self.db.insert(args)
 
-            if attachments_list:
+            if upload_args['attachments']:
                 from src.backend.controllers import attachments
-                attachments.handle_uploaded_file(attachments_list, None, batch_id, 'splitter', True)
+                attachments.handle_uploaded_file(upload_args['attachments'], None, batch_id, 'splitter', True)
 
             batches_id.append(batch_id)
 
@@ -319,7 +318,7 @@ class Splitter:
                             'data': [model_id]
                         })
                         if ai_model:
-                            result, _ = artificial_intelligence.predict_from_file_path(
+                            result, _ = upload_args['artificial_intelligence'].predict_from_file_path(
                                 file, ai_model[0], page=int(page['source_page']))
                             if result[2] >= ai_model[0]['min_proba']:
                                 args['columns']['doctype_key'] = page['doctype_value'] = result[3]

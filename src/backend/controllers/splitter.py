@@ -14,6 +14,7 @@
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
+# @dev : Nathan CHEVAL <nathan.cheval@edissyum.com>
 
 import json
 import uuid
@@ -469,6 +470,13 @@ def retrieve_documents(batch_id):
 
 
 def create_document(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
     res = splitter.create_document({
         'data': '{}',
         'status': 'NEW',
@@ -477,12 +485,26 @@ def create_document(args):
         'split_index': args['splitIndex'],
         'display_order': args['displayOrder']
     })
+
     if res:
         for update_data in args['updatedDocuments']:
             splitter.update_document({
                 'id': update_data['id'],
                 'display_order': update_data['displayOrder']
             })
+        database.insert({
+            'table': 'history',
+            'columns': {
+                'workflow_id': None,
+                'history_module': 'splitter',
+                'user_ip': request.remote_addr,
+                'history_submodule': 'create_document',
+                'user_info': request.environ['user_info'],
+                'custom_fields': json.dumps({"splitter_document_id": res}),
+                'user_id': args['user_id'] if 'user_id' in args and args['user_id'] else 0,
+                'history_desc': f"{gettext('DOCUMENT')} N°<strong>{str(res)}</strong> {gettext('CREATED_ON_BATCH')} N°<strong>{str(args['batchId'])}</strong>"
+            }
+        })
     else:
         response = {
             "errors": gettext('ADD_DOCUMENT_ERROR'),
@@ -504,6 +526,13 @@ def get_output_parameters(parameters):
 
 
 def save_modifications(data):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
     res = splitter.update_batch({
         'batch_id': data['batch_id'],
         'batch_metadata': data['batch_metadata']
@@ -522,6 +551,7 @@ def save_modifications(data):
                 'id': document['id'].split('-')[-1],
                 'display_order': document['displayOrder']
             })[0]
+
             if not res:
                 response = {
                     "errors": gettext('UPDATE_DOCUMENTS_ERROR'),
@@ -568,6 +598,14 @@ def save_modifications(data):
             'id': deleted_documents_id.split('-')[-1],
             'status': 'DEL'
         })[0]
+
+        database.delete({
+            'table': ["history"],
+            'where': ["custom_fields ->> 'splitter_document_id' = %s"],
+            'data': [deleted_documents_id.split('-')[-1]]
+        })
+        database.conn.commit()
+
     if not res:
         response = {
             "errors": gettext('UPDATE_PAGES_ERROR'),
@@ -595,14 +633,28 @@ def save_modifications(data):
 
 def test_cmis_connection(args):
     try:
-        CMIS(args['cmis_ws'], args['login'], args['password'], args['folder'])
+        cmis = CMIS(args['cmis_ws'], args['login'], args['password'], args['folder'])
+        if cmis.cmis_client.status_code != 200:
+            response = {
+                'status': False,
+                "errors": gettext('CMIS_CONNECTION_ERROR'),
+                "message": cmis.cmis_client.text
+            }
+            return response, 400
+        elif cmis.root_folder != cmis.base_dir:
+            response = {
+                'status': False,
+                "errors": gettext('CMIS_CONNECTION_ERROR'),
+                "message": gettext('CMIS_FOLDER_ERROR_MESSAGE')
+            }
+            return response, 400
     except (Exception,) as e:
         response = {
             'status': False,
             "errors": gettext('CMIS_CONNECTION_ERROR'),
             "message": str(e)
         }
-        return response, 200
+        return response, 400
     return {'status': True}, 200
 
 

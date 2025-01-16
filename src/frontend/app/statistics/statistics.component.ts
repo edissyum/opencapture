@@ -225,7 +225,7 @@ export class StatisticsComponent implements OnInit {
     }
 
     getDocumentsUploadedByYearSplitter(cpt: number) {
-        this.http.get(environment['url'] + '/ws/history/list?module=splitter&submodule=upload_file', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/history/list?module=splitter&submodule=create_document', {headers: this.authService.headers}).pipe(
             tap((submodules: any) => {
                 const historyCpt: any = {};
                 submodules.history.forEach((_submodule: any) => {
@@ -257,7 +257,7 @@ export class StatisticsComponent implements OnInit {
 
     getDocumentsUploadedByMonthSplitter(cpt: number) {
         const currentYear = moment().format('Y');
-        this.http.get(environment['url'] + '/ws/history/list?module=splitter&submodule=upload_file&year=' + currentYear, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/history/list?module=splitter&submodule=create_document&year=' + currentYear, {headers: this.authService.headers}).pipe(
             tap((submodules: any) => {
                 const historyCpt: any = {};
                 moment.months().forEach((month: any) => {

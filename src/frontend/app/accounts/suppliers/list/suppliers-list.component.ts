@@ -302,7 +302,7 @@ export class SuppliersListComponent implements OnInit {
         ).subscribe();
     }
 
-    importSuppliers(event: any) {
+    importSuppliers() {
         const columns = ['name', 'vat_number', 'siret', 'siren', 'duns', 'bic', 'rccm', 'iban', 'email', 'address1',
             'address2', 'postal_code', 'city', 'country', 'footer_coherence', 'document_lang', 'default_currency'];
         const dialogRef = this.dialog.open(ImportDialogComponent, {

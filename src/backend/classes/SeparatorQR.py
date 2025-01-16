@@ -186,6 +186,7 @@ class SeparatorQR:
         """
         Retrieve the content of a C128 Code
 
+        :param default_symbols: List of symbols to search
         :param file: Path to pdf file
         :param saved_pages: Images list if pages already saved
         """
