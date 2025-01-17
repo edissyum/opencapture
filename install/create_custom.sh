@@ -124,6 +124,7 @@ databaseName="opencapture_$customId"
 if [[ "$customId" = *"opencapture_"* ]]; then
     databaseName="$customId"
 fi
+databaseName="${databaseName%%_open_capture*}"
 echo ""
 echo "#################################################################################################"
 echo ""
@@ -150,11 +151,11 @@ else
     port="$choice"
 fi
 
-printf "Username [%s] : " "${bold}$customId${normal}"
+printf "Username [%s] : " "${bold}${customId%%_open_capture*}{normal}"
 read -r choice
 
 if [[ "$choice" == "" ]]; then
-    databaseUsername="$customId"
+    databaseUsername="${customId%%_open_capture*}"
 else
     databaseUsername="$choice"
 fi
