@@ -32,14 +32,24 @@ defaultPath=/var/www/html/opencapture
 
 apt-get install -y crudini > /dev/null
 
-while getopts "c:t:" arguments
-do
-    case "${arguments}" in
-        c) customId=${OPTARG};;
-        t) installationType=${OPTARG};;
-        *) customId=""
-            installationType=""
-            pythonVenv=""
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -c)
+          customId=$2
+          shift 2;;
+        -t)
+          installationType=$2
+          shift 2;;
+        -d)
+          databaseName=$2
+          shift 2;;
+        -u)
+          databaseUsername=$2
+          shift 2;;
+        *)
+          customId=""
+          installationType=""
+          pythonVenv=""
     esac
 done
 
@@ -120,9 +130,11 @@ for custom_name in ${SECTIONS[@]}; do # Do not double quote it
     fi
 done
 
-databaseName="opencapture_$customId"
-if [[ "$customId" = *"opencapture_"* ]]; then
-    databaseName="$customId"
+if [ -z "$databaseName" ]; then
+    databaseName="opencapture_$customId"
+    if [[ "$customId" = *"opencapture_"* ]]; then
+      databaseName="$customId"
+    fi
 fi
 echo ""
 echo "#################################################################################################"
@@ -150,13 +162,15 @@ else
     port="$choice"
 fi
 
-printf "Username [%s] : " "${bold}$customId${normal}"
-read -r choice
+if [ -z "$databaseUsername" ]; then
+    printf "Username [%s] : " "${bold}$customId${normal}"
+    read -r choice
 
-if [[ "$choice" == "" ]]; then
-    databaseUsername="$customId"
-else
-    databaseUsername="$choice"
+    if [[ "$choice" == "" ]]; then
+      databaseUsername="$customId"
+    else
+      databaseUsername="$choice"
+    fi
 fi
 
 printf "Password [%s] : " "${bold}$customId${normal}"
