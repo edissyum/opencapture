@@ -32,14 +32,21 @@ defaultPath=/var/www/html/opencapture
 
 apt-get install -y crudini > /dev/null
 
-while getopts "c:t:" arguments
-do
-    case "${arguments}" in
-        c) customId=${OPTARG};;
-        t) installationType=${OPTARG};;
-        *) customId=""
-            installationType=""
-            pythonVenv=""
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -c)
+          customId=$2
+          shift 2;;
+        -t)
+          installationType=$2
+          shift 2;;
+        -d)
+          database=$2
+          shift 2;;
+        *)
+          customId=""
+          installationType=""
+          pythonVenv=""
     esac
 done
 
@@ -120,10 +127,17 @@ for custom_name in ${SECTIONS[@]}; do # Do not double quote it
     fi
 done
 
-databaseName="opencapture_$customId"
-if [[ "$customId" = *"opencapture_"* ]]; then
-    databaseName="$customId"
+if [ -z $database ]; then
+  suffixDatabaseName=$customId
+else
+  suffixDatabaseName=$database
 fi
+
+databaseName="opencapture_$suffixDatabaseName"
+if [[ "$suffixDatabaseName" = *"opencapture_"* ]]; then
+    databaseName="$suffixDatabaseName"
+fi
+
 echo ""
 echo "#################################################################################################"
 echo ""
@@ -150,12 +164,16 @@ else
     port="$choice"
 fi
 
-printf "Username [%s] : " "${bold}$customId${normal}"
+if [ -z $database ]; then
+  databaseUsername="$customId"
+else
+  databaseUsername="$database"
+fi
+
+printf "Username [%s] : " "${bold}${databaseUsername}${normal}"
 read -r choice
 
-if [[ "$choice" == "" ]]; then
-    databaseUsername="$customId"
-else
+if [[ "$choice" != "" ]]; then
     databaseUsername="$choice"
 fi
 
@@ -337,7 +355,7 @@ cp -r $defaultPath/bin/scripts/splitter_metadata/* "$defaultPath/custom/$customI
 sed -i "s#§§PYTHON_VENV§§#source $pythonVenvPath/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
 sed -i "s#§§PYTHON_VENV§§#source $pythonVenvPath/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 
-find "$defaultPath/custom/$customId/bin/scripts/" -name "*.sh" | while IFS= read -r file; do
+for file in "$defaultPath/custom/$customId/bin/scripts/*.sh"; do
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $file
     sed -i "s#§§CUSTOM_ID§§#$customId#g" $file
     sed -i "s#§§PYTHON_VENV§§#$pythonVenvPath/bin/python3#g" $file
