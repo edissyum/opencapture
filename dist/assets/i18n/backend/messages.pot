@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-01-14 16:51+0100\n"
+"POT-Creation-Date: 2025-01-16 15:07+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,11 +23,26 @@ msgstr ""
 
 #: custom/acc/src/backend/process_queue_splitter.py:233
 #: custom/acc/src/backend/process_queue_verifier.py:195
-#: custom/edissyum/src/backend/process_queue_splitter.py:240
 #: custom/edissyum/src/backend/process_queue_verifier.py:194
 #: custom/test/src/backend/process_queue_splitter.py:233
 #: custom/test/src/backend/process_queue_verifier.py:197
 msgid "FILE_UPLOADED_WORKFLOW"
+msgstr ""
+
+#: custom/edissyum/src/backend/process_queue_splitter.py:243
+msgid "BATCH"
+msgstr ""
+
+#: custom/edissyum/src/backend/process_queue_splitter.py:243
+msgid "CREATED_USING"
+msgstr ""
+
+#: custom/edissyum/src/backend/process_queue_splitter.py:264
+msgid "DOCUMENT"
+msgstr ""
+
+#: custom/edissyum/src/backend/process_queue_splitter.py:264
+msgid "CREATED_ON_BATCH"
 msgstr ""
 
 #: src/backend/functions.py:43 src/backend/functions.py:55
@@ -79,7 +94,7 @@ msgstr ""
 msgid "OUTPUT_TYPE_DOESNT_EXISTS"
 msgstr ""
 
-#: src/backend/splitter_exports.py:186 src/backend/splitter_exports.py:335
+#: src/backend/splitter_exports.py:186 src/backend/splitter_exports.py:333
 msgid "EXPORT_PDF_ERROR"
 msgstr ""
 
@@ -91,19 +106,19 @@ msgstr ""
 msgid "EXPORT_OPENCAPTUREFORMEM_ERROR"
 msgstr ""
 
-#: src/backend/splitter_exports.py:298 src/backend/splitter_exports.py:362
+#: src/backend/splitter_exports.py:298 src/backend/splitter_exports.py:360
 msgid "EXPORT_XML_ERROR"
 msgstr ""
 
-#: src/backend/splitter_exports.py:382
+#: src/backend/splitter_exports.py:380
 msgid "CHECK_FOLDER_ERROR"
 msgstr ""
 
-#: src/backend/splitter_exports.py:383
+#: src/backend/splitter_exports.py:381
 msgid "FOLDER_DOES_NOT_EXIST"
 msgstr ""
 
-#: src/backend/splitter_exports.py:403
+#: src/backend/splitter_exports.py:401
 msgid "OPENADS_ADD_DOC_ERROR"
 msgstr ""
 
@@ -271,7 +286,7 @@ msgstr ""
 
 #: src/backend/controllers/accounts.py:523
 #: src/backend/controllers/accounts.py:529
-#: src/backend/controllers/splitter.py:334 src/backend/models/accounts.py:289
+#: src/backend/controllers/splitter.py:335 src/backend/models/accounts.py:289
 msgid "UPDATE_CUSTOMER_ERROR"
 msgstr ""
 
@@ -930,96 +945,96 @@ msgstr ""
 msgid "SMTP_TEST_CONNECTION_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:118
+#: src/backend/controllers/splitter.py:119
 msgid "LOAD_METADATA_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:178
+#: src/backend/controllers/splitter.py:179
 #: src/backend/controllers/verifier.py:146
 msgid "AT"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:210
+#: src/backend/controllers/splitter.py:211
 msgid "FORM_UNDEFINED"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:213
+#: src/backend/controllers/splitter.py:214
 msgid "CUSTOMER_UNDEFINED"
-msgstr ""
-
-#: src/backend/controllers/splitter.py:273
-#: src/backend/controllers/splitter.py:304
-#: src/backend/controllers/splitter.py:324
-msgid "BATCH_NOT_FOUND"
 msgstr ""
 
 #: src/backend/controllers/splitter.py:274
 #: src/backend/controllers/splitter.py:305
 #: src/backend/controllers/splitter.py:325
+msgid "BATCH_NOT_FOUND"
+msgstr ""
+
+#: src/backend/controllers/splitter.py:275
+#: src/backend/controllers/splitter.py:306
+#: src/backend/controllers/splitter.py:326
 msgid "BATCH_ID_NOT_FOUND"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:288
+#: src/backend/controllers/splitter.py:289
 msgid "DELETE_BATCH_SUCCESS"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:293
-#: src/backend/controllers/splitter.py:314
+#: src/backend/controllers/splitter.py:294
+#: src/backend/controllers/splitter.py:315
 #: src/backend/controllers/verifier.py:874
 msgid "UPDATE_STATUS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:372
-#: src/backend/controllers/splitter.py:385
+#: src/backend/controllers/splitter.py:373
+#: src/backend/controllers/splitter.py:386
 #: src/backend/controllers/verifier.py:442
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:488
+#: src/backend/controllers/splitter.py:489
 msgid "ADD_DOCUMENT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:513
+#: src/backend/controllers/splitter.py:514
 msgid "UPDATE_BATCH_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:527
+#: src/backend/controllers/splitter.py:528
 msgid "UPDATE_DOCUMENTS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:540
+#: src/backend/controllers/splitter.py:541
 #: src/backend/controllers/verifier.py:416
 #: src/backend/controllers/verifier.py:422
 msgid "UPDATE_DOCUMENT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:558
-#: src/backend/controllers/splitter.py:573
-#: src/backend/controllers/splitter.py:588
+#: src/backend/controllers/splitter.py:559
+#: src/backend/controllers/splitter.py:574
+#: src/backend/controllers/splitter.py:589
 msgid "UPDATE_PAGES_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:602
-#: src/backend/controllers/splitter.py:609
-#: src/backend/controllers/splitter.py:616
+#: src/backend/controllers/splitter.py:603
+#: src/backend/controllers/splitter.py:610
+#: src/backend/controllers/splitter.py:617
 msgid "CMIS_CONNECTION_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:610
+#: src/backend/controllers/splitter.py:611
 msgid "CMIS_FOLDER_ERROR_MESSAGE"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:629
+#: src/backend/controllers/splitter.py:630
 msgid "OPENADS_CONNECTION_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:728
+#: src/backend/controllers/splitter.py:729
 #: src/backend/controllers/verifier.py:853 src/backend/models/splitter.py:618
 #: src/backend/models/verifier.py:197
 msgid "GET_TOTALS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:837
+#: src/backend/controllers/splitter.py:838
 msgid "GET_BATCH_OUTPUTS_ERROR"
 msgstr ""
 
