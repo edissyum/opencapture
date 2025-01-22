@@ -244,6 +244,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     status              : data.batches[0]['status'],
                     formId              : data.batches[0]['form_id'],
                     previousFormId      : data.batches[0]['form_id'],
+                    workflowId          : data.batches[0]['workflow_id'],
                     customFieldsValues  : data.batches[0]['data'].hasOwnProperty('custom_fields') ? data.batches[0]['data']['custom_fields'] : {},
                     selectedPagesCount  : 0,
                     outputs             : [],
@@ -438,12 +439,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.hasUnsavedChanges = true;
         const documentDisplayOrder  = this.updateDocumentDisplayOrder();
         this.addDocumentLoading = true;
+
         this.http.post(environment['url'] + '/ws/splitter/addDocument',
             {
                 'batchId'           : this.currentBatch.id,
+                'updatedDocuments'  : documentDisplayOrder,
+                'userId'            : this.userService.user.id,
+                'workflowId'        : this.currentBatch.workflowId,
                 'splitIndex'        : this.currentBatch.maxSplitIndex + 1,
-                'displayOrder'      : this.currentBatch.selectedDocument.displayOrder + 1,
-                'updatedDocuments'  : documentDisplayOrder
+                'displayOrder'      : this.currentBatch.selectedDocument.displayOrder + 1
             },
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {

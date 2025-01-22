@@ -25,18 +25,17 @@ import secrets
 import os.path
 import datetime
 from flask_babel import gettext
-from werkzeug.datastructures import FileStorage
-
 from src.backend import splitter_exports
 from src.backend.classes.CMIS import CMIS
 from src.backend.classes.Files import Files
 from src.backend.main_splitter import launch
+from werkzeug.datastructures import FileStorage
 from src.backend.classes.OpenADS import OpenADS
 from src.backend.classes.Splitter import Splitter
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from flask import current_app, request, g as current_context
-from src.backend.controllers import user, monitoring, attachments as attachments_controller
+from src.backend.controllers import user, monitoring, attachments as attachments_controller, workflow
 from src.backend.models import splitter, doctypes, accounts, history, workflow, outputs, forms, attachments
 
 
@@ -492,16 +491,22 @@ def create_document(args):
                 'id': update_data['id'],
                 'display_order': update_data['displayOrder']
             })
+
+        workflow_id = None
+        workflow_info = workflow.get_workflow_by_id({'workflow_id': args['workflowId']})
+        if workflow_info and workflow_info[0]:
+            workflow_id = workflow_info[0]['workflow_id']
+
         database.insert({
             'table': 'history',
             'columns': {
-                'workflow_id': None,
+                'workflow_id': workflow_id,
                 'history_module': 'splitter',
                 'user_ip': request.remote_addr,
                 'history_submodule': 'create_document',
                 'user_info': request.environ['user_info'],
                 'custom_fields': json.dumps({"splitter_document_id": res}),
-                'user_id': args['user_id'] if 'user_id' in args and args['user_id'] else 0,
+                'user_id': args['userId'] if 'userId' in args and args['userId'] else 0,
                 'history_desc': f"{gettext('DOCUMENT')} n°<strong>{str(res)}</strong> {gettext('CREATED_ON_BATCH')} N°<strong>{str(args['batchId'])}</strong>"
             }
         })
