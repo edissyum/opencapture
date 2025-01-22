@@ -18,7 +18,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import { SettingsService } from "../../../services/settings.service";
 import { FormControl } from "@angular/forms";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { Sort } from "@angular/material/sort";
 import { environment } from "../../env";
 import { catchError, finalize, tap } from "rxjs/operators";

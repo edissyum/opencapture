@@ -20,7 +20,7 @@ import { Injectable } from '@angular/core';
 import { AuthService } from "./auth.service";
 import { Title } from "@angular/platform-browser";
 import { LastUrlService } from "./last-url.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { SessionStorageService } from "./session-storage.service";
 
 @Injectable({

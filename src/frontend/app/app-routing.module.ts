@@ -23,7 +23,6 @@ import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
 import { UploadComponent } from "./upload/upload.component";
 import { HistoryComponent } from "./history/history.component";
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { UserProfileComponent } from "./profile/profile.component";
 import { NotFoundComponent } from "./not-found/not-found.component";
 import { HasPrivilegeService } from "../services/has-privilege.service";
@@ -45,99 +44,100 @@ import { UpdateSupplierComponent } from "./accounts/suppliers/update/update-supp
 import { CreateSupplierComponent } from "./accounts/suppliers/create/create-supplier.component";
 import { UpdateCustomerComponent } from "./accounts/customers/update/update-customer.component";
 import { CreateCustomerComponent } from "./accounts/customers/create/create-customer.component";
+import {_} from "@ngx-translate/core";
 
 const routes: Routes = [
     { path: '500', component: Error500Component, data: { showMenu: false }},
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'home', component: HomeComponent, data: { title: 'GLOBAL.home' }, canActivate: [LoginRequiredService] },
     { path: 'login', component: LoginComponent, data: { title: 'GLOBAL.login', showMenu: false }, canActivate: [LoginRedirectService] },
-    { path: 'forgotPassword', component: ForgotPasswordComponent, data: { title: marker('GLOBAL.forgot-password'), showMenu: false}},
-    { path: 'resetPassword', component: ResetPasswordComponent, data: { title: marker('GLOBAL.reset-password'), showMenu: false}},
+    { path: 'forgotPassword', component: ForgotPasswordComponent, data: { title: _('GLOBAL.forgot-password'), showMenu: false}},
+    { path: 'resetPassword', component: ResetPasswordComponent, data: { title: _('GLOBAL.reset-password'), showMenu: false}},
     { path: 'logout', component: LogoutComponent, canActivate: [LoginRequiredService] },
     { path: 'profile/:id', component: UserProfileComponent, canActivate: [LoginRequiredService] },
     {
         path: 'splitter/viewer/:currentTime/:id', component: SplitterViewerComponent,
-        data: { title: marker('SPLITTER.viewer'), privileges: ['access_splitter'] },
+        data: { title: _('SPLITTER.viewer'), privileges: ['access_splitter'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'splitter/list', component: SplitterListComponent,
-        data: { title: marker('SPLITTER.list'), privileges: ['access_splitter'] },
+        data: { title: _('SPLITTER.list'), privileges: ['access_splitter'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     { path: 'splitter', redirectTo: 'splitter/list', pathMatch: 'full' },
     {
         path: 'verifier/viewer_token/:token', component: VerifierViewerComponent,
-        data: { title: marker('VERIFIER.viewer'), showMenu: false }
+        data: { title: _('VERIFIER.viewer'), showMenu: false }
     },
     {
         path: 'verifier/viewer/:id', component: VerifierViewerComponent,
-        data: { title: marker('VERIFIER.viewer'), privileges: ['access_verifier'] },
+        data: { title: _('VERIFIER.viewer'), privileges: ['access_verifier'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'verifier/list', component: VerifierListComponent,
-        data: { title: marker('VERIFIER.list'), privileges: ['access_verifier'] },
+        data: { title: _('VERIFIER.list'), privileges: ['access_verifier'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     { path: 'verifier', redirectTo: 'verifier/list', pathMatch: 'full' },
 
     {
         path: 'upload', component: UploadComponent,
-        data: { title: marker('GLOBAL.upload'), privileges: ['upload'] },
+        data: { title: _('GLOBAL.upload'), privileges: ['upload'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'history', component: HistoryComponent,
-        data: { title: marker('GLOBAL.history'), privileges: ['history'] },
+        data: { title: _('GLOBAL.history'), privileges: ['history'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'statistics', component: StatisticsComponent,
-        data: { title: marker('GLOBAL.statistics'), privileges: ['statistics'] },
+        data: { title: _('GLOBAL.statistics'), privileges: ['statistics'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'monitoring', component: MonitoringListComponent,
-        data: { title: marker('GLOBAL.monitoring'), privileges: ['monitoring'] },
+        data: { title: _('GLOBAL.monitoring'), privileges: ['monitoring'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'monitoring/:id', component: MonitoringDetailsComponent,
-        data: { title: marker('GLOBAL.monitoring_detail_process'), privileges: ['monitoring'] },
+        data: { title: _('GLOBAL.monitoring_detail_process'), privileges: ['monitoring'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     { path: 'accounts/suppliers', redirectTo: 'accounts/suppliers/list', pathMatch: 'full' },
     {
         path: 'accounts/suppliers/list', component: SuppliersListComponent,
-        data: { title: marker('ACCOUNTS.suppliers_list'), privileges: ['suppliers_list'] },
+        data: { title: _('ACCOUNTS.suppliers_list'), privileges: ['suppliers_list'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'accounts/suppliers/update/:id', component: UpdateSupplierComponent,
-        data: { title: marker('ACCOUNTS.update_supplier'), privileges: ['update_supplier'] },
+        data: { title: _('ACCOUNTS.update_supplier'), privileges: ['update_supplier'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'accounts/suppliers/create', component: CreateSupplierComponent,
-        data: { title: marker('ACCOUNTS.create_supplier'), privileges: ['create_supplier'] },
+        data: { title: _('ACCOUNTS.create_supplier'), privileges: ['create_supplier'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
 
     { path: 'accounts/customers', redirectTo: 'accounts/customers/list', pathMatch: 'full' },
     {
         path: 'accounts/customers/list', component: CustomersListComponent,
-        data: { title: marker('ACCOUNTS.customers_list'), privileges: ['customers_list'] },
+        data: { title: _('ACCOUNTS.customers_list'), privileges: ['customers_list'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'accounts/customers/update/:id', component: UpdateCustomerComponent,
-        data: { title: marker('ACCOUNTS.update_customer'), privileges: ['update_customer'] },
+        data: { title: _('ACCOUNTS.update_customer'), privileges: ['update_customer'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'accounts/customers/create', component: CreateCustomerComponent,
-        data: { title: marker('ACCOUNTS.create_customer'), privileges: ['create_customer'] },
+        data: { title: _('ACCOUNTS.create_customer'), privileges: ['create_customer'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     { path: '404', component: NotFoundComponent, data: {showMenu: false} }, // This two routes (** and 404) need to be the last of const routes: Routes variable

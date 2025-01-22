@@ -29,11 +29,10 @@ import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm
 import { HttpClient } from "@angular/common/http";
 import { of, ReplaySubject, Subject } from "rxjs";
 import { MatDialog } from "@angular/material/dialog";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MatCheckboxChange } from "@angular/material/checkbox";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Component, HostListener, OnDestroy, OnInit, SecurityContext, ViewChild } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
@@ -104,9 +103,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     currentTime                 : string        = "";
     toolSelectedOption          : string        = "";
     timeLabels                  : any           = {
-        'today'     : marker('BATCH.today'),
-        'yesterday' : marker('BATCH.yesterday'),
-        'older'     : marker('BATCH.older')
+        'today'     : _('BATCH.today'),
+        'yesterday' : _('BATCH.yesterday'),
+        'older'     : _('BATCH.older')
     };
     defaultDoctype              : any           = {
         label       : null,
@@ -177,7 +176,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         const customFields = await this.getCustomFields();
         this.customFields = customFields.customFields;
 
-        marker('SPLITTER.add_document_impossible_attachments')
+        _('SPLITTER.add_document_impossible_attachments')
         this.getConfigurations();
         this.loadSelectedBatch();
         this.updateBatchLock();
@@ -244,6 +243,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     status              : data.batches[0]['status'],
                     formId              : data.batches[0]['form_id'],
                     previousFormId      : data.batches[0]['form_id'],
+                    workflowId          : data.batches[0]['workflow_id'],
                     customFieldsValues  : data.batches[0]['data'].hasOwnProperty('custom_fields') ? data.batches[0]['data']['custom_fields'] : {},
                     selectedPagesCount  : 0,
                     outputs             : [],
@@ -438,12 +438,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.hasUnsavedChanges = true;
         const documentDisplayOrder  = this.updateDocumentDisplayOrder();
         this.addDocumentLoading = true;
+
         this.http.post(environment['url'] + '/ws/splitter/addDocument',
             {
                 'batchId'           : this.currentBatch.id,
+                'updatedDocuments'  : documentDisplayOrder,
+                'userId'            : this.userService.user.id,
+                'workflowId'        : this.currentBatch.workflowId,
                 'splitIndex'        : this.currentBatch.maxSplitIndex + 1,
-                'displayOrder'      : this.currentBatch.selectedDocument.displayOrder + 1,
-                'updatedDocuments'  : documentDisplayOrder
+                'displayOrder'      : this.currentBatch.selectedDocument.displayOrder + 1
             },
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {

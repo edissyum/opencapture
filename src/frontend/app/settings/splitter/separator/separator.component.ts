@@ -16,7 +16,7 @@
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
 import { OnInit, Component } from '@angular/core';
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { SettingsService } from "../../../../services/settings.service";
 
 import { Router } from "@angular/router";

@@ -21,7 +21,7 @@ import { HttpClient } from "@angular/common/http";
 import { UserService } from "../../../../services/user.service";
 import { FormControl } from "@angular/forms";
 import { AuthService } from "../../../../services/auth.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
@@ -29,7 +29,6 @@ import { environment } from "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'app-various-settings-list',
@@ -59,7 +58,7 @@ export class VariousSettingsVerifierComponent implements OnInit {
     availableFields             : any           = [
         {
             'id': 'document_id',
-            'label': marker('VERIFIER.document_id')
+            'label': _('VERIFIER.document_id')
         },
         {
             'id': 'invoice_number',
@@ -111,7 +110,7 @@ export class VariousSettingsVerifierComponent implements OnInit {
         },
         {
             'id': 'original_filename',
-            'label': marker('VERIFIER.original_file')
+            'label': _('VERIFIER.original_file')
         }
     ];
 

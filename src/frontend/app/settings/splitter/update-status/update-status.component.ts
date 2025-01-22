@@ -22,7 +22,7 @@ import { FormControl } from "@angular/forms";
 import { catchError, tap } from "rxjs/operators";
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { UserService } from "../../../../services/user.service";
 import { AuthService } from "../../../../services/auth.service";
 import { SettingsService } from "../../../../services/settings.service";

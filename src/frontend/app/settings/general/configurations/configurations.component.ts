@@ -27,8 +27,7 @@ import { environment } from  "../../../env";
 import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
 import { Observable, of } from "rxjs";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
-import { TranslateService } from "@ngx-translate/core";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { _, TranslateService } from "@ngx-translate/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { LocaleService } from "../../../../services/locale.service";
 import { PasswordVerificationService } from "../../../../services/password-verification.service";
@@ -69,15 +68,15 @@ export class ConfigurationsComponent implements OnInit {
     units                   : any             = [
         {
             id: 'general',
-            label: marker('MAILCOLLECT.smtp_general')
+            label: _('MAILCOLLECT.smtp_general')
         },
         {
             id: 'auth',
-            label: marker('MAILCOLLECT.smtp_auth')
+            label: _('MAILCOLLECT.smtp_auth')
         },
         {
             id: 'notif_error',
-            label: marker('MAILCOLLECT.smtp_notif_error')
+            label: _('MAILCOLLECT.smtp_notif_error')
         }
     ];
     smtpForm                : any[]           = [
@@ -85,7 +84,7 @@ export class ConfigurationsComponent implements OnInit {
             id: 'smtpHost',
             unit: 'general',
             control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_host'),
+            label: _('MAILCOLLECT.smtp_host'),
             type: 'text',
             required: true
         },
@@ -93,7 +92,7 @@ export class ConfigurationsComponent implements OnInit {
             id: 'smtpPort',
             unit: 'general',
             control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_port'),
+            label: _('MAILCOLLECT.smtp_port'),
             type: 'number',
             required: true
         },
@@ -101,13 +100,13 @@ export class ConfigurationsComponent implements OnInit {
             id: 'smtpProtocoleSecure',
             unit: 'general',
             control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_protocol'),
+            label: _('MAILCOLLECT.smtp_protocol'),
             type: 'select',
             required: true,
             values: [
                 {
                     id: 'none',
-                    label: marker('MAILCOLLECT.protocol_none')
+                    label: _('MAILCOLLECT.protocol_none')
                 },
                 {
                     id: 'ssl',
@@ -123,7 +122,7 @@ export class ConfigurationsComponent implements OnInit {
             id: 'smtpNotifOnError',
             unit: 'notif_error',
             control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_notif_on_error'),
+            label: _('MAILCOLLECT.smtp_notif_on_error'),
             type: 'boolean',
             required: false
         },
@@ -131,7 +130,7 @@ export class ConfigurationsComponent implements OnInit {
             id: 'smtpDelay',
             unit: 'notif_error',
             control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_delay'),
+            label: _('MAILCOLLECT.smtp_delay'),
             type: 'number',
             required: false
         },
@@ -139,7 +138,7 @@ export class ConfigurationsComponent implements OnInit {
             id: 'smtpAuth',
             unit: 'auth',
             control: new FormControl(),
-            label: marker('MAILCOLLECT.enable_smtp_auth'),
+            label: _('MAILCOLLECT.enable_smtp_auth'),
             type: 'boolean',
             required: false
         },
@@ -147,7 +146,7 @@ export class ConfigurationsComponent implements OnInit {
             id: 'smtpLogin',
             unit: 'auth',
             control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_login'),
+            label: _('MAILCOLLECT.smtp_login'),
             type: 'text',
             required: false
         },
@@ -155,7 +154,7 @@ export class ConfigurationsComponent implements OnInit {
             id: 'smtpPwd',
             unit: 'auth',
             control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_pwd'),
+            label: _('MAILCOLLECT.smtp_pwd'),
             type: 'password',
             required: false
         },
@@ -163,7 +162,7 @@ export class ConfigurationsComponent implements OnInit {
             id: 'smtpFromMail',
             unit: 'auth',
             control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_from_mail'),
+            label: _('MAILCOLLECT.smtp_from_mail'),
             type: 'text',
             required: false
         },
@@ -171,7 +170,7 @@ export class ConfigurationsComponent implements OnInit {
             id: 'smtpDestAdminMail',
             unit: 'notif_error',
             control: new FormControl(),
-            label: marker('MAILCOLLECT.smtp_dest_admin_mail'),
+            label: _('MAILCOLLECT.smtp_dest_admin_mail'),
             type: 'text',
             required: false
         }
@@ -558,19 +557,19 @@ export class ConfigurationsComponent implements OnInit {
                 this.configurations.forEach((element: any) => {
                     switch (element.data.type) {
                         case 'int':
-                            element.data.label_type = marker('CONFIGURATIONS.int');
+                            element.data.label_type = _('CONFIGURATIONS.int');
                             break;
                         case 'float':
-                            element.data.label_type = marker('CONFIGURATIONS.float');
+                            element.data.label_type = _('CONFIGURATIONS.float');
                             break;
                         case 'string':
-                            element.data.label_type = marker('CONFIGURATIONS.string');
+                            element.data.label_type = _('CONFIGURATIONS.string');
                             break;
                         case 'bool':
-                            element.data.label_type = marker('CONFIGURATIONS.bool');
+                            element.data.label_type = _('CONFIGURATIONS.bool');
                             break;
                         case 'list':
-                            element.data.label_type = marker('CONFIGURATIONS.list');
+                            element.data.label_type = _('CONFIGURATIONS.list');
                             break;
                         default:
                             break;

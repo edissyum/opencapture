@@ -19,7 +19,7 @@ import { Injectable } from '@angular/core';
 import { AuthService } from "./auth.service";
 import { CanActivate, Router } from "@angular/router";
 import { NotificationService } from "./notifications/notifications.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { UserService } from "./user.service";
 import { environment } from "../app/env";
 import { catchError, tap } from "rxjs/operators";

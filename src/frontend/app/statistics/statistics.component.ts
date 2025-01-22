@@ -20,10 +20,9 @@ import { environment } from  "../env";
 import moment from "moment/moment";
 import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from '@angular/core';
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { AuthService } from "../../services/auth.service";
 import { catchError, finalize, tap } from "rxjs/operators";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { SettingsService } from "../../services/settings.service";
 import { NotificationService } from "../../services/notifications/notifications.service";
 
@@ -54,14 +53,14 @@ export class StatisticsComponent implements OnInit {
         },
         {
             'id': 'verifier_documents_uploaded_per_worklow',
-            'label': this.translate.instant('STATISTICS.documents_uploaded_per_worklow'),
+            'label': this.translate.instant('STATISTICS.verifier_documents_uploaded_per_worklow'),
             'function': 'getWorkflowUploadedDocumentVerifier',
             'module': 'verifier',
             'data': []
         },
         {
             'id': 'verifier_documents_uploaded_per_user',
-            'label': this.translate.instant('STATISTICS.documents_uploaded_per_user'),
+            'label': this.translate.instant('STATISTICS.verifier_documents_uploaded_per_user'),
             'function': 'getUserUploadedDocumentVerifier',
             'module': 'verifier',
             'data': []
@@ -82,14 +81,14 @@ export class StatisticsComponent implements OnInit {
         },
         {
             'id': 'splitter_documents_uploaded_per_worklow',
-            'label': this.translate.instant('STATISTICS.documents_uploaded_per_worklow'),
+            'label': this.translate.instant('STATISTICS.splitter_documents_uploaded_per_worklow'),
             'function': 'getWorkflowUploadedDocumentSplitter',
             'module': 'splitter',
             'data': []
         },
         {
             'id': 'splitter_documents_uploaded_per_user',
-            'label': this.translate.instant('STATISTICS.documents_uploaded_per_user'),
+            'label': this.translate.instant('STATISTICS.splitter_documents_uploaded_per_user'),
             'function': 'getUserUploadedDocumentSlitter',
             'module': 'splitter',
             'data': []
@@ -112,17 +111,17 @@ export class StatisticsComponent implements OnInit {
     diagramTypes        : any = [
         {
             'id': 'vertical-bar',
-            'label': marker('STATISTICS.diagram_vertical_bar'),
+            'label': _('STATISTICS.diagram_vertical_bar'),
             'logo': 'fa-chart-column'
         },
         {
             'id': 'pie-chart',
-            'label': marker('STATISTICS.diagram_pie_chart'),
+            'label': _('STATISTICS.diagram_pie_chart'),
             'logo': 'fa-chart-pie'
         },
         {
             'id': 'pie-grid',
-            'label': marker('STATISTICS.diagram_pie_grid'),
+            'label': _('STATISTICS.diagram_pie_grid'),
             'logo': 'fa-grip'
         }
 
@@ -325,7 +324,7 @@ export class StatisticsComponent implements OnInit {
     getUserUploadedDocumentSlitter(cpt: number) {
         this.http.get(environment['url'] + '/ws/users/list_full', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&module=splitter', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/history/list?submodule=create_document&module=splitter', {headers: this.authService.headers}).pipe(
                     tap((submodules: any) => {
                         data.users[data.users.length - 1] = {'id': 0, 'lastname': 'Upload', 'firstname': 'API'};
                         data.users.forEach((user: any) => {
@@ -361,7 +360,7 @@ export class StatisticsComponent implements OnInit {
     getWorkflowUploadedDocumentVerifier(cpt: number) {
         this.http.get(environment['url'] + '/ws/workflows/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&history_module=verifier', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&module=verifier', {headers: this.authService.headers}).pipe(
                     tap((submodules: any) => {
                         data.workflows.forEach((workflow: any) => {
                             let historyCpt = 0;
@@ -396,7 +395,7 @@ export class StatisticsComponent implements OnInit {
     getWorkflowUploadedDocumentSplitter(cpt: number) {
         this.http.get(environment['url'] + '/ws/workflows/splitter/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&history_module=splitter', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/history/list?submodule=create_document&module=splitter', {headers: this.authService.headers}).pipe(
                     tap((submodules: any) => {
                         data.workflows.forEach((workflow: any) => {
                             let historyCpt = 0;

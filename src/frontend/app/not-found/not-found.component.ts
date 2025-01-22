@@ -18,7 +18,7 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 import { Component, OnInit  } from '@angular/core';
 import { NotificationService } from "../../services/notifications/notifications.service";
 import { Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 
 @Component({
     selector: 'app-not-found',

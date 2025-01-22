@@ -24,14 +24,13 @@ import { interval, of } from "rxjs";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
 import { NotificationService } from "../../../services/notifications/notifications.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { FormControl } from "@angular/forms";
 import { DatePipe } from '@angular/common';
 import { SessionStorageService } from "../../../services/session-storage.service";
 import { UserService } from "../../../services/user.service";
 import { HistoryService } from "../../../services/history.service";
 import { LocaleService } from "../../../services/locale.service";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import moment from 'moment';
 declare const $: any;
 
@@ -182,13 +181,13 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             if (res['status'] === 'wait') {
                 this.loading = false;
                 this.processErrorIcon = 'fa-clock fa-fade text-gray-400';
-                this.processErrorMessage = marker('VERIFIER.waiting');
+                this.processErrorMessage = _('VERIFIER.waiting');
                 await this.reloadPageWaitingFinish(token);
                 return;
             } else if (res['status'] === 'running') {
                 this.loading = false;
                 this.processErrorIcon = 'fa-circle-notch fa-spin text-green-400';
-                this.processErrorMessage = marker('VERIFIER.processing');
+                this.processErrorMessage = _('VERIFIER.processing');
                 await this.reloadPageWaitingFinish(token);
                 return;
             } else if (res['status'] === 'error' || res['error']) {
@@ -263,7 +262,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             this.loading = false;
             this.processDone = false;
             this.processErrorIcon = 'fa-check text-green-400';
-            this.processErrorMessage = marker('VERIFIER.document_already_processed');
+            this.processErrorMessage = _('VERIFIER.document_already_processed');
             return;
         }
 

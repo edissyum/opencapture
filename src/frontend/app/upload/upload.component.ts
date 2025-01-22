@@ -24,7 +24,7 @@ import { of } from "rxjs";
 import { HttpClient, HttpHeaders} from "@angular/common/http";
 import { AuthService } from "../../services/auth.service";
 import { UserService } from "../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../services/notifications/notifications.service";
 import { SessionStorageService } from "../../services/session-storage.service";
 
