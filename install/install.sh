@@ -37,7 +37,7 @@ ERRORLOG_PATH=install_error.log
 
 ####################
 # Handle parameters
-parameters="user custom_id supervisor_process path wsgi_threads wsgi_process supervisor_systemd hostname port username password docserver_path python_venv_path share_path"
+parameters="user custom_id supervisor_process path wsgi_threads wsgi_process supervisor_systemd database_hostname database_port database_username database_password docserver_path python_venv_path share_path"
 opts=$(getopt --longoptions "$(printf "%s:," "$parameters")" --name "$(basename "$0")" --options "" -- "$@")
 
 while [ $# -gt 0 ]; do
