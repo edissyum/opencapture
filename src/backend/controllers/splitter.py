@@ -502,7 +502,7 @@ def create_document(args):
                 'user_info': request.environ['user_info'],
                 'custom_fields': json.dumps({"splitter_document_id": res}),
                 'user_id': args['user_id'] if 'user_id' in args and args['user_id'] else 0,
-                'history_desc': f"{gettext('DOCUMENT')} N°<strong>{str(res)}</strong> {gettext('CREATED_ON_BATCH')} N°<strong>{str(args['batchId'])}</strong>"
+                'history_desc': f"{gettext('DOCUMENT')} n°<strong>{str(res)}</strong> {gettext('CREATED_ON_BATCH')} N°<strong>{str(args['batchId'])}</strong>"
             }
         })
     else:

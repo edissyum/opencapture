@@ -21,42 +21,46 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+if [ "$(uname -m)" != 'x86_64' ]; then
+    echo "This script is only compatible with x86_64 architecture"
+    exit 1
+fi
+
 group=www-data
 bold=$(tput bold)
 normal=$(tput sgr0)
 user=$(who am i | awk '{print $1}')
 defaultPath=/var/www/html/opencapture
 
-####################
-# Check if custom name is set and doesn't exists already
-
 apt-get install -y crudini > /dev/null
+
+####################
+# Handle parameters
+parameters="user path custom_id supervisor_systemd database_name database_hostname database_port database_username database_password docserver_path python_venv_path share_path"
+opts=$(getopt --longoptions "$(printf "%s:," "$parameters")" --name "$(basename "$0")" --options "" -- "$@")
 
 while [ $# -gt 0 ]; do
     case "$1" in
         --user)
             user=$2
             shift 2;;
-        --path)
-            defaultPath=$2
-            shift 2;;
         --custom_id)
             customId=$2
             shift 2;;
+        --path)
+            defaultPath=$2
+            shift 2;;
+        --supervisor_systemd)
+            supervisorOrSystemd=$2
+            shift 2;;
+        --database_hostname)
+            hostname=$2
+            shift 2;;
         --python_venv_path)
-            python_venv_path=$2
+            pythonVenvPath=$2
             shift 2;;
         --share_path)
             shareDefaultPath=$2
-            shift 2;;
-        --docserver_path)
-            docserverDefaultPath=$2
-            shift 2;;
-        --installation_type)
-            installationType=$2
-            shift 2;;
-        --database_host)
-            hostname=$2
             shift 2;;
         --database_port)
             port=$2
@@ -70,10 +74,13 @@ while [ $# -gt 0 ]; do
         --database_password)
             databasePassword=$2
             shift 2;;
-        *)
-          customId=""
-          installationType=""
-          break;;
+        --docserver_path)
+            docserverDefaultPath=$2
+            shift 2;;
+    *)
+        customId=""
+        $supervisorOrSystemd=""
+        break;;
     esac
 done
 
@@ -115,7 +122,7 @@ if [ "$customId" == 'custom' ]; then
     exit 4
 fi
 
-if [ "$installationType" == '' ] || { [ "$installationType" != 'systemd' ] && [ "$installationType" != 'supervisor' ]; }; then
+if [ "$supervisorOrSystemd" == '' ] || { [ "$supervisorOrSystemd" != 'systemd' ] && [ "$supervisorOrSystemd" != 'supervisor' ]; }; then
     echo "#######################################################################################################"
     echo "                           Bad value for installationType variable"
     echo "       Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t systemd"
@@ -124,7 +131,7 @@ if [ "$installationType" == '' ] || { [ "$installationType" != 'systemd' ] && [ 
     exit 6
 fi
 
-if [ "$installationType" == 'supervisor' ]; then
+if [ "$supervisorOrSystemd" == 'supervisor' ]; then
     echo ""
     echo "#################################################################################################"
     echo ""
@@ -148,11 +155,14 @@ if [ -L "$defaultPath/$customId" ] && [ -e "$defaultPath/$customId" ]; then
     exit 7
 fi
 
+####################
+# Check if custom name is set and doesn't exists already
 customIniFile=$defaultPath/custom/custom.ini
 if [ ! -f "$customIniFile" ]; then
     touch $customIniFile
 fi
 SECTIONS=$(crudini --get $defaultPath/custom/custom.ini | sed 's/:.*//')
+
 # shellcheck disable=SC2068
 for custom_name in ${SECTIONS[@]}; do # Do not double quote it
     if [ "$custom_name" == "$customId" ]; then
@@ -168,10 +178,11 @@ if [ -z "$databaseName" ]; then
     if [[ "$customId" = *"opencapture_"* ]]; then
       databaseName="$customId"
     fi
+
+    echo ""
+    echo "#################################################################################################"
+    echo ""
 fi
-echo ""
-echo "#################################################################################################"
-echo ""
 
 ####################
 # Retrieve database informations
@@ -244,11 +255,11 @@ if [ -z $docserverDefaultPath ]; then
     echo ""
 fi
 
-if [[ -z $share_path ]]; then
+if [[ -z shareDefaultPath ]]; then
     shareDefaultPath="/var/share/"
 fi
 
-if [[ -z $python_venv_path ]]; then
+if [[ -z $pythonVenvPath ]]; then
     pythonVenvPath="/home/$user/python-venv/opencapture"
 fi
 
@@ -466,7 +477,7 @@ chown -R "$user":"$group" $defaultPath
 ####################
 # Create new supervisor or systemd files
 
-if [ $installationType == 'systemd' ]; then
+if [ $supervisorOrSystemd == 'systemd' ]; then
     touch "/etc/systemd/system/OCVerifier-worker_$customId.service"
     su -c "cat > /etc/systemd/system/OCVerifier-worker_$customId.service << EOF
 [Unit]
@@ -513,7 +524,7 @@ EOF"
     systemctl start "OCSplitter-worker_$customId".service
     sudo systemctl enable "OCVerifier-worker_$customId".service
     sudo systemctl enable "OCSplitter-worker_$customId".service
-elif [ $installationType == 'supervisor' ]; then
+elif [ $supervisorOrSystemd == 'supervisor' ]; then
     touch "/etc/supervisor/conf.d/OCVerifier-worker_$customId.conf"
     su -c "cat > /etc/supervisor/conf.d/OCVerifier-worker_$customId.conf << EOF
 [program:OCWorker_$customId]

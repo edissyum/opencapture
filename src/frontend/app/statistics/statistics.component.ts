@@ -361,7 +361,7 @@ export class StatisticsComponent implements OnInit {
     getWorkflowUploadedDocumentVerifier(cpt: number) {
         this.http.get(environment['url'] + '/ws/workflows/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&history_module=verifier', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&module=verifier', {headers: this.authService.headers}).pipe(
                     tap((submodules: any) => {
                         data.workflows.forEach((workflow: any) => {
                             let historyCpt = 0;
@@ -396,7 +396,7 @@ export class StatisticsComponent implements OnInit {
     getWorkflowUploadedDocumentSplitter(cpt: number) {
         this.http.get(environment['url'] + '/ws/workflows/splitter/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&history_module=splitter', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&module=splitter', {headers: this.authService.headers}).pipe(
                     tap((submodules: any) => {
                         data.workflows.forEach((workflow: any) => {
                             let historyCpt = 0;
