@@ -20,10 +20,9 @@ import { environment } from  "../env";
 import moment from "moment/moment";
 import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from '@angular/core';
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { AuthService } from "../../services/auth.service";
 import { catchError, finalize, tap } from "rxjs/operators";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { SettingsService } from "../../services/settings.service";
 import { NotificationService } from "../../services/notifications/notifications.service";
 
@@ -112,17 +111,17 @@ export class StatisticsComponent implements OnInit {
     diagramTypes        : any = [
         {
             'id': 'vertical-bar',
-            'label': marker('STATISTICS.diagram_vertical_bar'),
+            'label': _('STATISTICS.diagram_vertical_bar'),
             'logo': 'fa-chart-column'
         },
         {
             'id': 'pie-chart',
-            'label': marker('STATISTICS.diagram_pie_chart'),
+            'label': _('STATISTICS.diagram_pie_chart'),
             'logo': 'fa-chart-pie'
         },
         {
             'id': 'pie-grid',
-            'label': marker('STATISTICS.diagram_pie_grid'),
+            'label': _('STATISTICS.diagram_pie_grid'),
             'logo': 'fa-grip'
         }
 

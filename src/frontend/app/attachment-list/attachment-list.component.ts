@@ -22,7 +22,7 @@ import { FileViewerComponent } from "../file-viewer/file-viewer.component";
 import { catchError, finalize, tap } from 'rxjs/operators';
 import { AuthService } from "../../services/auth.service";
 import { DomSanitizer } from "@angular/platform-browser";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { MatDialog } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { environment } from "../env";

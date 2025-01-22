@@ -21,7 +21,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { FormControl } from "@angular/forms";
 import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
@@ -29,7 +29,6 @@ import { moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import { environment } from "../../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'form-builder',
@@ -79,33 +78,33 @@ export class FormBuilderComponent implements OnInit {
     fieldCategories         : any []    = [
         {
             'id': 'supplier',
-            'label': marker('FORMS.supplier'),
+            'label': _('FORMS.supplier'),
             'edit': false
         },
         {
             'id': 'lines',
-            'label': marker('FACTURATION.lines'),
+            'label': _('FACTURATION.lines'),
             'edit': false
         },
         {
             'id': 'facturation',
-            'label': marker('FACTURATION.facturation'),
+            'label': _('FACTURATION.facturation'),
             'edit': false
         },
         {
             'id': 'other',
-            'label': marker('FORMS.other'),
+            'label': _('FORMS.other'),
             'edit': false
         }
     ];
     availableFieldsParent   : any []    = [
         {
             'id': 'accounts_fields',
-            'label': marker('ACCOUNTS.supplier'),
+            'label': _('ACCOUNTS.supplier'),
             'values': [
                 {
                     id: 'name',
-                    label: marker('ACCOUNTS.supplier_name'),
+                    label: _('ACCOUNTS.supplier_name'),
                     unit: 'supplier',
                     type: 'text',
                     required: true,
@@ -120,7 +119,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'siret',
-                    label: marker('ACCOUNTS.siret'),
+                    label: _('ACCOUNTS.siret'),
                     unit: 'supplier',
                     type: 'text',
                     required: false,
@@ -135,7 +134,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'siren',
-                    label: marker('ACCOUNTS.siren'),
+                    label: _('ACCOUNTS.siren'),
                     unit: 'supplier',
                     type: 'text',
                     required: false,
@@ -150,7 +149,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'vat_number',
-                    label: marker('ACCOUNTS.vat_number'),
+                    label: _('ACCOUNTS.vat_number'),
                     unit: 'supplier',
                     type: 'text',
                     required: true,
@@ -165,7 +164,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'iban',
-                    label: marker('ACCOUNTS.iban'),
+                    label: _('ACCOUNTS.iban'),
                     unit: 'supplier',
                     type: 'text',
                     required: false,
@@ -180,7 +179,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'duns',
-                    label: marker('ACCOUNTS.duns'),
+                    label: _('ACCOUNTS.duns'),
                     unit: 'supplier',
                     type: 'text',
                     required: false,
@@ -195,7 +194,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'bic',
-                    label: marker('ACCOUNTS.bic'),
+                    label: _('ACCOUNTS.bic'),
                     unit: 'supplier',
                     type: 'text',
                     required: false,
@@ -210,7 +209,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'rccm',
-                    label: marker('ACCOUNTS.rccm'),
+                    label: _('ACCOUNTS.rccm'),
                     unit: 'supplier',
                     type: 'text',
                     required: false,
@@ -225,7 +224,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'email',
-                    label: marker('FORMATS.email'),
+                    label: _('FORMATS.email'),
                     unit: 'supplier',
                     type: 'text',
                     required: false,
@@ -240,7 +239,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'address1',
-                    label: marker('ADDRESSES.address_1'),
+                    label: _('ADDRESSES.address_1'),
                     unit: 'addresses',
                     type: 'text',
                     required: true,
@@ -254,7 +253,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'address2',
-                    label: marker('ADDRESSES.address_2'),
+                    label: _('ADDRESSES.address_2'),
                     unit: 'addresses',
                     type: 'text',
                     required: false,
@@ -268,7 +267,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'postal_code',
-                    label: marker('ADDRESSES.postal_code'),
+                    label: _('ADDRESSES.postal_code'),
                     unit: 'addresses',
                     type: 'text',
                     required: true,
@@ -282,7 +281,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'city',
-                    label: marker('ADDRESSES.city'),
+                    label: _('ADDRESSES.city'),
                     unit: 'addresses',
                     type: 'text',
                     required: true,
@@ -296,7 +295,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'country',
-                    label: marker('ADDRESSES.country'),
+                    label: _('ADDRESSES.country'),
                     unit: 'addresses',
                     type: 'text',
                     required: true,
@@ -316,7 +315,7 @@ export class FormBuilderComponent implements OnInit {
             'values': [
                 {
                     id: 'description',
-                    label: marker('FACTURATION.description'),
+                    label: _('FACTURATION.description'),
                     unit: 'lines',
                     type: 'text',
                     required: true,
@@ -330,7 +329,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'quantity',
-                    label: marker('FACTURATION.quantity'),
+                    label: _('FACTURATION.quantity'),
                     unit: 'lines',
                     type: 'text',
                     required: true,
@@ -344,7 +343,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'unit_price',
-                    label: marker('FACTURATION.unit_price'),
+                    label: _('FACTURATION.unit_price'),
                     unit: 'lines',
                     type: 'text',
                     required: true,
@@ -358,7 +357,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'line_ht',
-                    label: marker('FACTURATION.no_rate_amount'),
+                    label: _('FACTURATION.no_rate_amount'),
                     unit: 'lines',
                     type: 'text',
                     required: true,
@@ -372,7 +371,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'line_vat_rate',
-                    label: marker('FACTURATION.vat_rate'),
+                    label: _('FACTURATION.vat_rate'),
                     unit: 'lines',
                     type: 'text',
                     required: true,
@@ -392,7 +391,7 @@ export class FormBuilderComponent implements OnInit {
             'values': [
                 {
                     id: 'delivery_number',
-                    label: marker('FACTURATION.delivery_number'),
+                    label: _('FACTURATION.delivery_number'),
                     unit: 'facturation',
                     type: 'text',
                     required: false,
@@ -407,7 +406,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'invoice_number',
-                    label: marker('FACTURATION.invoice_number'),
+                    label: _('FACTURATION.invoice_number'),
                     unit: 'facturation',
                     type: 'text',
                     required: true,
@@ -422,7 +421,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'quotation_number',
-                    label: marker('FACTURATION.quotation_number'),
+                    label: _('FACTURATION.quotation_number'),
                     unit: 'facturation',
                     type: 'text',
                     required: false,
@@ -437,7 +436,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'document_date',
-                    label: marker('FACTURATION.document_date'),
+                    label: _('FACTURATION.document_date'),
                     unit: 'facturation',
                     type: 'date',
                     required: true,
@@ -452,7 +451,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'document_due_date',
-                    label: marker('FACTURATION.document_due_date'),
+                    label: _('FACTURATION.document_due_date'),
                     unit: 'facturation',
                     type: 'date',
                     required: false,
@@ -467,7 +466,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'firstname',
-                    label: marker('FACTURATION.firstname'),
+                    label: _('FACTURATION.firstname'),
                     unit: 'facturation',
                     type: 'text',
                     required: false,
@@ -482,7 +481,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'lastname',
-                    label: marker('FACTURATION.lastname'),
+                    label: _('FACTURATION.lastname'),
                     unit: 'facturation',
                     type: 'text',
                     required: false,
@@ -497,7 +496,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'currency',
-                    label: marker('WORKFLOW.currency'),
+                    label: _('WORKFLOW.currency'),
                     unit: 'facturation',
                     type: 'text',
                     required: true,
@@ -512,7 +511,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'vat_rate',
-                    label: marker('FACTURATION.vat_rate'),
+                    label: _('FACTURATION.vat_rate'),
                     unit: 'facturation',
                     type: 'text',
                     required: true,
@@ -527,7 +526,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'no_rate_amount',
-                    label: marker('FACTURATION.no_rate_amount'),
+                    label: _('FACTURATION.no_rate_amount'),
                     unit: 'facturation',
                     type: 'text',
                     required: true,
@@ -542,7 +541,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'vat_amount',
-                    label: marker('FACTURATION.vat_amount'),
+                    label: _('FACTURATION.vat_amount'),
                     unit: 'facturation',
                     type: 'text',
                     required: true,
@@ -557,7 +556,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'accounting_plan',
-                    label: marker('FACTURATION.accounting_plan'),
+                    label: _('FACTURATION.accounting_plan'),
                     unit: 'facturation',
                     type: 'select',
                     required: false,
@@ -570,7 +569,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'total_ttc',
-                    label: marker('FACTURATION.total_ttc'),
+                    label: _('FACTURATION.total_ttc'),
                     unit: 'facturation',
                     type: 'text',
                     required: true,
@@ -615,7 +614,7 @@ export class FormBuilderComponent implements OnInit {
         },
         {
             'id': 'custom_fields',
-            'label': marker('FORMS.custom_fields'),
+            'label': _('FORMS.custom_fields'),
             'values': []
         }
     ];
@@ -652,136 +651,136 @@ export class FormBuilderComponent implements OnInit {
     colorsList              : any []    = [
         {
             'id': 'yellow',
-            'label': marker('COLORS.yellow')
+            'label': _('COLORS.yellow')
         },
         {
             'id': 'pink',
-            'label': marker('COLORS.pink')
+            'label': _('COLORS.pink')
         },
         {
             'id': 'red',
-            'label': marker('COLORS.red')
+            'label': _('COLORS.red')
         },
         {
             'id': 'blue',
-            'label': marker('COLORS.blue')
+            'label': _('COLORS.blue')
         },
         {
             'id': 'orange',
-            'label': marker('COLORS.orange')
+            'label': _('COLORS.orange')
         },
         {
             'id': 'purple',
-            'label': marker('COLORS.purple')
+            'label': _('COLORS.purple')
         },
         {
             'id': 'black',
-            'label': marker('COLORS.black')
+            'label': _('COLORS.black')
         },
         {
             'id': 'white',
-            'label': marker('COLORS.white')
+            'label': _('COLORS.white')
         },
         {
             'id': 'aqua',
-            'label': marker('COLORS.aqua')
+            'label': _('COLORS.aqua')
         },
         {
             'id': 'maroon',
-            'label': marker('COLORS.maroon')
+            'label': _('COLORS.maroon')
         },
         {
             'id': 'teal',
-            'label': marker('COLORS.teal')
+            'label': _('COLORS.teal')
         },
         {
             'id': 'navy',
-            'label': marker('COLORS.navy')
+            'label': _('COLORS.navy')
         },
         {
             'id': 'fuchsia',
-            'label': marker('COLORS.fuchsia')
+            'label': _('COLORS.fuchsia')
         },
         {
             'id': 'silver',
-            'label': marker('COLORS.silver')
+            'label': _('COLORS.silver')
         },
         {
             'id': 'gray',
-            'label': marker('COLORS.gray')
+            'label': _('COLORS.gray')
         },
         {
             'id': 'lime',
-            'label': marker('COLORS.lime')
+            'label': _('COLORS.lime')
         },
         {
             'id': 'green',
-            'label': marker('COLORS.green')
+            'label': _('COLORS.green')
         }
     ];
     formatList              : any []    = [
         {
             'id': 'date',
-            'label': marker('FORMATS.date'),
+            'label': _('FORMATS.date'),
             'icon': 'fa-solid fa-calendar-day'
         },
         {
             'id': 'number_float',
-            'label': marker('FORMATS.number_float'),
+            'label': _('FORMATS.number_float'),
             'icon': 'fa-solid fa-calculator'
         },
         {
             'id': 'number_int',
-            'label': marker('FORMATS.number_int'),
+            'label': _('FORMATS.number_int'),
             'icon': 'fa-solid fa-calculator'
         },
         {
             'id': 'char',
-            'label': marker('FORMATS.char'),
+            'label': _('FORMATS.char'),
             'icon': 'fa-solid fa-font'
         },
         {
             'id': 'alphanum',
-            'label': marker('FORMATS.alphanum'),
+            'label': _('FORMATS.alphanum'),
             'icon': 'fa-solid fa-hashtag'
         },
         {
             'id': 'alphanum_extended',
-            'label': marker('FORMATS.alphanum_extended'),
+            'label': _('FORMATS.alphanum_extended'),
             'icon': 'fa-solid fa-level-up-alt'
         },
         {
             'id': 'alphanum_extended_with_accent',
-            'label': marker('FORMATS.alphanum_extended_with_accent'),
+            'label': _('FORMATS.alphanum_extended_with_accent'),
             'icon': 'fa-solid fa-level-up-alt'
         },
         {
             'id': 'email',
-            'label': marker('FORMATS.email'),
+            'label': _('FORMATS.email'),
             'icon': 'fa-solid fa-alt'
         }
     ];
     displayList             : any []    = [
         {
             'id': 'simple',
-            'label': marker('DISPLAY.simple'),
+            'label': _('DISPLAY.simple'),
             'icon': 'fa-solid fa-file-alt'
         },
         {
             'id': 'multi',
-            'label': marker('DISPLAY.multi'),
+            'label': _('DISPLAY.multi'),
             'icon': 'fa-solid fa-layer-group'
         }
     ];
     mandatoryList           : any []    = [
         {
             'id': true,
-            'label': marker('MANDATORY.required'),
+            'label': _('MANDATORY.required'),
             'icon': 'fa-solid fa-star'
         },
         {
             'id': false,
-            'label': marker('MANDATORY.not_required'),
+            'label': _('MANDATORY.not_required'),
             'icon': 'far fa-star'
         }
     ];
@@ -792,7 +791,7 @@ export class FormBuilderComponent implements OnInit {
         },
         {
             "id": 'only_ocr',
-            'label': marker('FORMS.only_ocr')
+            'label': _('FORMS.only_ocr')
         },
         {
             "id": 'supplier',
@@ -808,11 +807,11 @@ export class FormBuilderComponent implements OnInit {
         },
         {
             "id": 'document_date',
-            'label': marker('FACTURATION.document_date')
+            'label': _('FACTURATION.document_date')
         },
         {
             "id": 'footer',
-            'label': marker('FACTURATION.footer')
+            'label': _('FACTURATION.footer')
         },
         {
             "id": 'delivery_number',

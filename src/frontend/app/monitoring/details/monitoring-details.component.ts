@@ -23,7 +23,7 @@ import { of } from "rxjs";
 import { AuthService } from "../../../services/auth.service";
 import { NotificationService } from "../../../services/notifications/notifications.service";
 import { HttpClient } from "@angular/common/http";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { SettingsService } from "../../../services/settings.service";
 import moment from "moment";
 @Component({

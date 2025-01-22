@@ -21,7 +21,7 @@ import { Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { UserService } from "../../../../../services/user.service";
 import { AuthService } from "../../../../../services/auth.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";

@@ -23,7 +23,7 @@ import { AuthService } from "./auth.service";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
 import { DateAdapter } from "@angular/material/core";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "./notifications/notifications.service";
 
 @Injectable({

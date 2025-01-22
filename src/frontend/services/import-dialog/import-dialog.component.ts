@@ -22,8 +22,7 @@ import { FileValidators } from "ngx-file-drag-drop";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthService } from "../auth.service";
 import { NotificationService } from "../notifications/notifications.service";
-import { TranslateService } from "@ngx-translate/core";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { _, TranslateService } from "@ngx-translate/core";
 import { environment } from "../../app/env";
 import { catchError, tap } from "rxjs/operators";
 import { of } from "rxjs";
@@ -41,7 +40,7 @@ export class ImportDialogComponent {
     error   : boolean     = false;
     header  : string[]    = [];
     markers : any         = {
-        placeholder: marker('DATA-IMPORT.placeholder')
+        placeholder: _('DATA-IMPORT.placeholder')
     };
 
     @ViewChild(MatTable) previewTable!: MatTable<any>;

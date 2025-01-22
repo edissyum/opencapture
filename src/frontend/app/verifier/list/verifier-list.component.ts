@@ -23,8 +23,7 @@ import { of } from "rxjs";
 import { NotificationService } from "../../../services/notifications/notifications.service";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
-import { TranslateService } from "@ngx-translate/core";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { _, TranslateService } from "@ngx-translate/core";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { FlatTreeControl } from "@angular/cdk/tree";
 import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree";
@@ -92,15 +91,15 @@ export class VerifierListComponent implements OnInit {
     batchList                : any            = [
         {
             'id': 'today',
-            'label': marker('BATCH.today')
+            'label': _('BATCH.today')
         },
         {
             'id': 'yesterday',
-            'label': marker('BATCH.yesterday')
+            'label': _('BATCH.yesterday')
         },
         {
             'id': 'older',
-            'label': marker('BATCH.older')
+            'label': _('BATCH.older')
         }
     ];
     pageSize                 : number         = 16;
@@ -120,7 +119,7 @@ export class VerifierListComponent implements OnInit {
     customerFilter           : FormControl    = new FormControl('');
     filtersLists             : any            = [
         {'id': 'documents.id', 'label': 'HEADER.technical_id'},
-        {'id': 'documents.register_date', 'label': marker('FACTURATION.register_date_short')}
+        {'id': 'documents.register_date', 'label': _('FACTURATION.register_date_short')}
     ];
 
     private _transformer = (node: AccountsNode, level: number) => ({
@@ -191,14 +190,14 @@ export class VerifierListComponent implements OnInit {
             this.currentTime = this.batchList[this.selectedTab].id;
         }
 
-        marker('ATTACHMENTS.attachments_count'); // Needed to get the translation in the JSON file
-        marker('ATTACHMENTS.attachment_settings'); // Needed to get the translation in the JSON file
-        marker('VERIFIER.nb_pages'); // Needed to get the translation in the JSON file
-        marker('VERIFIER.expand_all'); // Needed to get the translation in the JSON file
-        marker('VERIFIER.select_all'); // Needed to get the translation in the JSON file
-        marker('VERIFIER.collapse_all'); // Needed to get the translation in the JSON file
-        marker('VERIFIER.unselect_all'); // Needed to get the translation in the JSON file
-        marker('VERIFIER.documents_settings'); // Needed to get the translation in the JSON file
+        _('ATTACHMENTS.attachments_count'); // Needed to get the translation in the JSON file
+        _('ATTACHMENTS.attachment_settings'); // Needed to get the translation in the JSON file
+        _('VERIFIER.nb_pages'); // Needed to get the translation in the JSON file
+        _('VERIFIER.expand_all'); // Needed to get the translation in the JSON file
+        _('VERIFIER.select_all'); // Needed to get the translation in the JSON file
+        _('VERIFIER.collapse_all'); // Needed to get the translation in the JSON file
+        _('VERIFIER.unselect_all'); // Needed to get the translation in the JSON file
+        _('VERIFIER.documents_settings'); // Needed to get the translation in the JSON file
         this.sessionStorageService.save('splitter_or_verifier', 'verifier');
 
         this.offset = this.pageSize * (this.pageIndex);

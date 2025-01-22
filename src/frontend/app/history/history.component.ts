@@ -17,7 +17,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { SettingsService } from "../../services/settings.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { FormControl } from "@angular/forms";
 import { environment } from  "../env";
 import { catchError, finalize, map, startWith, tap } from "rxjs/operators";

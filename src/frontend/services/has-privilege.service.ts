@@ -18,7 +18,7 @@
 import { Injectable } from '@angular/core';
 import { PrivilegesService } from "./privileges.service";
 import { ActivatedRouteSnapshot, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "./notifications/notifications.service";
 import {SessionStorageService} from "./session-storage.service";
 

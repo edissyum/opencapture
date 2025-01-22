@@ -27,7 +27,7 @@ import { NotificationService } from "../../../../../services/notifications/notif
 import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/confirm-dialog.component";
 import { Sort } from "@angular/material/sort";
 import { MatDialog } from "@angular/material/dialog";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 
 @Component({
     selector: 'app-workflows-list-splitter',

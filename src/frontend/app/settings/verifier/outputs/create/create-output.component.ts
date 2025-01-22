@@ -21,14 +21,13 @@ import { HttpClient } from "@angular/common/http";
 import { UserService } from "../../../../../services/user.service";
 import { FormControl } from "@angular/forms";
 import { AuthService } from "../../../../../services/auth.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import { environment } from  "../../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'create-output',
@@ -64,27 +63,27 @@ export class CreateOutputComponent implements OnInit {
             values: [
                 {
                     'id': '',
-                    'label': marker('OUTPUT.no_compress')
+                    'label': _('OUTPUT.no_compress')
                 },
                 {
                     'id': 'screen',
-                    'label': marker('OUTPUT.compress_screen')
+                    'label': _('OUTPUT.compress_screen')
                 },
                 {
                     'id': 'ebook',
-                    'label': marker('OUTPUT.compress_ebook')
+                    'label': _('OUTPUT.compress_ebook')
                 },
                 {
                     'id': 'prepress',
-                    'label': marker('OUTPUT.compress_prepress')
+                    'label': _('OUTPUT.compress_prepress')
                 },
                 {
                     'id': 'printer',
-                    'label': marker('OUTPUT.compress_printer')
+                    'label': _('OUTPUT.compress_printer')
                 },
                 {
                     'id': 'default',
-                    'label': marker('OUTPUT.compress_default')
+                    'label': _('OUTPUT.compress_default')
                 }
             ],
             required: false
@@ -97,11 +96,11 @@ export class CreateOutputComponent implements OnInit {
             values: [
                 {
                     'id': true,
-                    'label': marker('OUTPUT.ocr_enabled')
+                    'label': _('OUTPUT.ocr_enabled')
                 },
                 {
                     'id': false,
-                    'label': marker('OUTPUT.ocr_disabled')
+                    'label': _('OUTPUT.ocr_disabled')
                 }
             ],
             required: false

@@ -17,7 +17,7 @@
 
 import { MatPaginatorIntl } from "@angular/material/paginator";
 import { Injectable } from '@angular/core';
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { environment } from  "./env";
 import { catchError, tap } from "rxjs/operators";
 import { of } from "rxjs";

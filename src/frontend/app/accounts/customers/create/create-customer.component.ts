@@ -17,12 +17,11 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { FormControl } from "@angular/forms";
 import { Router } from "@angular/router";
 import { UserService } from "../../../../services/user.service";
 import { AuthService } from "../../../../services/auth.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
@@ -44,42 +43,42 @@ export class CreateCustomerComponent implements OnInit {
     customerForm    : any[]         = [
         {
             id: 'name',
-            label: marker('ACCOUNTS.customer_name'),
+            label: _('ACCOUNTS.customer_name'),
             type: 'text',
             control: new FormControl(),
             required: true
         },
         {
             id: 'vat_number',
-            label: marker('ACCOUNTS.vat_number'),
+            label: _('ACCOUNTS.vat_number'),
             type: 'text',
             control: new FormControl(),
             required: true
         },
         {
             id: 'siret',
-            label: marker('ACCOUNTS.siret'),
+            label: _('ACCOUNTS.siret'),
             type: 'text',
             control: new FormControl(),
             required: true
         },
         {
             id: 'siren',
-            label: marker('ACCOUNTS.siren'),
+            label: _('ACCOUNTS.siren'),
             type: 'text',
             control: new FormControl(),
             required: false
         },
         {
             id: 'company_number',
-            label: marker('ACCOUNTS.company_number'),
+            label: _('ACCOUNTS.company_number'),
             type: 'text',
             control: new FormControl(),
             required: false
         },
         {
             id: 'module',
-            label: marker('CUSTOM-FIELDS.module'),
+            label: _('CUSTOM-FIELDS.module'),
             type: 'select',
             control: new FormControl(),
             required: true,
@@ -92,35 +91,35 @@ export class CreateCustomerComponent implements OnInit {
     addressForm     : any []        = [
         {
             id: 'address1',
-            label: marker('ADDRESSES.address_1'),
+            label: _('ADDRESSES.address_1'),
             type: 'text',
             control: new FormControl(),
             required: false
         },
         {
             id: 'address2',
-            label: marker('ADDRESSES.address_2'),
+            label: _('ADDRESSES.address_2'),
             type: 'text',
             control: new FormControl(),
             required: false
         },
         {
             id: 'postal_code',
-            label: marker('ADDRESSES.postal_code'),
+            label: _('ADDRESSES.postal_code'),
             type: 'text',
             control: new FormControl(),
             required: false
         },
         {
             id: 'city',
-            label: marker('ADDRESSES.city'),
+            label: _('ADDRESSES.city'),
             type: 'text',
             control: new FormControl(),
             required: false
         },
         {
             id: 'country',
-            label: marker('ADDRESSES.country'),
+            label: _('ADDRESSES.country'),
             type: 'country',
             control: new FormControl(),
             required: false

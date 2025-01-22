@@ -23,14 +23,13 @@ import { of } from "rxjs";
 import { AuthService } from "../../../services/auth.service";
 import { HttpClient } from "@angular/common/http";
 import { UserService } from "../../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../services/notifications/notifications.service";
 import { DomSanitizer } from '@angular/platform-browser';
 import { PageEvent } from "@angular/material/paginator";
 import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from '@angular/material/dialog';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'app-list',
@@ -63,15 +62,15 @@ export class SplitterListComponent implements OnInit {
     batchList        : any[]   = [
         {
             'id': 'today',
-            'label': marker('BATCH.today')
+            'label': _('BATCH.today')
         },
         {
             'id': 'yesterday',
-            'label': marker('BATCH.yesterday')
+            'label': _('BATCH.yesterday')
         },
         {
             'id': 'older',
-            'label': marker('BATCH.older')
+            'label': _('BATCH.older')
         }
     ];
     totalChecked     : number  = 0;
@@ -80,7 +79,7 @@ export class SplitterListComponent implements OnInit {
     currentTime      : string  = 'today';
     filtersLists     : any     = [
         {'id': 'splitter_batches.id', 'label': 'HEADER.technical_id'},
-        {'id': 'splitter_batches.creation_date', 'label': marker('FACTURATION.register_date_short')}
+        {'id': 'splitter_batches.creation_date', 'label': _('FACTURATION.register_date_short')}
     ];
 
     constructor(

@@ -21,7 +21,7 @@ import { FormControl } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../../services/auth.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../services/notifications/notifications.service";
 import { LocaleService } from "../../services/locale.service";
 import { SessionStorageService } from "../../services/session-storage.service";
