@@ -1739,7 +1739,3 @@ msgid "INTERFACE_IS_NOT_USED_OR_FORM_UNIQUE_URL_NOT_SET"
 msgstr ""
 "Interface use is not set in workflow or unique url settings is malformed "
 "on the form"
-
-#~ msgid "CREATE_DOCUMENT"
-#~ msgstr "Output created&nbsp;<strong>%(output)s</strong>"
-

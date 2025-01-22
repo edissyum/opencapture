@@ -430,25 +430,30 @@ export class StatisticsComponent implements OnInit {
     getFormsProcessDocument(cpt: number) {
         this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                data.forms.forEach((form: any) => {
-                    this.http.post(environment['url'] + '/ws/verifier/documents/list',
-                        {'status': 'END', 'form_id': form.id}, {headers: this.authService.headers})
-                    .pipe(
-                        tap((data: any) => {
+                this.http.post(environment['url'] + '/ws/verifier/documents/list', {'status': 'END'}, {headers: this.authService.headers})
+                .pipe(
+                    tap((documents: any) => {
+                        data.forms.forEach((form: any) => {
+                            let historyCpt = 0;
+                            documents.documents.forEach((document: any) => {
+                                if (form.id === document.form_id) {
+                                    historyCpt += 1;
+                                }
+                            });
                             this.options[cpt].data.push({
                                 'name': form.label + ' (' + form.module + ')',
-                                'value': data.total
+                                'value': historyCpt
                             });
                             this.currentData = this.options[cpt].data;
-                        }),
-                        finalize(() => this.loading = false),
-                        catchError((err: any) => {
-                            console.debug(err);
-                            this.notify.handleErrors(err);
-                            return of(false);
-                        })
-                    ).subscribe();
-                });
+                        });
+                    }),
+                    finalize(() => this.loading = false),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
             }),
             catchError((err: any) => {
                 console.debug(err);
