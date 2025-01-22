@@ -1032,9 +1032,11 @@
 		"zoom": "Zoom"
 	},
 	"STATISTICS": {
+		"all_years": "All years",
 		"choose_diagram": "Choose a diagram type",
 		"choose_module": "Choose a module",
 		"choose_statistic_report": "Choose a statistic report",
+		"choose_year_report": "Choose a year",
 		"diagram_pie_chart": "Pie chart diagram",
 		"diagram_pie_grid": "Pie grid diagram",
 		"diagram_vertical_bar": "Vertical bar diagram",

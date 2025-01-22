@@ -103,3 +103,16 @@ def get_history_users():
         "history": _history
     }
     return response, 200
+
+
+def get_available_years():
+    args = {
+        'select': ['DISTINCT(extract(year from history_date)) as year'],
+        'order_by': ['year ASC']
+    }
+
+    _years, _ = history.get_history(args)
+    response = {
+        "years": _years
+    }
+    return response, 200

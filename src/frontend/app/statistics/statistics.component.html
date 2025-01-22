@@ -11,7 +11,7 @@
         <hr class="border-green-400 relative z-30">
         <div class="flex justify-center h-full-overflow">
             <div class="w-full h-1 absolute text-center mt-2 z-50">
-                <mat-form-field class="w-1/4">
+                <mat-form-field class="w-1/5">
                     <mat-select (selectionChange)="changeModule($event)" [disabled]="this.loading" [(value)]="this.selectedModule"
                                 [placeholder]="'STATISTICS.choose_module' | translate">
                         @for (option of modules; track option['id']) {
@@ -21,7 +21,7 @@
                         }
                     </mat-select>
                 </mat-form-field>
-                <mat-form-field class="ml-4 w-1/4">
+                <mat-form-field class="ml-4 w-1/5">
                     <mat-select (selectionChange)="changeStatistic($event)" [disabled]="this.loading"
                                 [placeholder]="'STATISTICS.choose_statistic_report' | translate">
                         @for (option of this.optionsByModule; track option['id']) {
@@ -31,7 +31,21 @@
                         }
                     </mat-select>
                 </mat-form-field>
-                <mat-form-field class="ml-4 w-1/4">
+                <mat-form-field class="ml-4 w-1/5">
+                    <mat-select [disabled]="!this.selectedStatistic || this.loading"
+                                (selectionChange)="changeYear($event)" [ngModel]="this.selectedYear"
+                                [placeholder]="'STATISTICS.choose_year_report' | translate">
+                        <mat-option [value]="'all'">
+                            {{ 'STATISTICS.all_years' | translate }}
+                        </mat-option>
+                        @for (year of this.availableYears; track year) {
+                            <mat-option [value]="year">
+                                {{ year | translate }}
+                            </mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="ml-4 w-1/5">
                     <mat-select [disabled]="!this.selectedStatistic || this.loading"
                                 [ngModel]="this.selectedDiagramType" (selectionChange)="changeDiagramType($event)"
                                 [placeholder]="'STATISTICS.choose_diagram' | translate">

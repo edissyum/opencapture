@@ -100,3 +100,13 @@ def get_history_users():
 
     _history = history.get_history_users()
     return make_response(jsonify(_history[0])), _history[1]
+
+
+@bp.route('history/getAvailableYears', methods=['GET'])
+@auth.token_required
+def get_available_years():
+    if not privileges.has_privileges(request.environ['user_id'], ['history']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/history/users'}), 403
+
+    _history = history.get_available_years()
+    return make_response(jsonify(_history[0])), _history[1]

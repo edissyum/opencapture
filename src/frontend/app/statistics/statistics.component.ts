@@ -35,7 +35,7 @@ import { NotificationService } from "../../services/notifications/notifications.
 
 export class StatisticsComponent implements OnInit {
     currentData         : any = [];
-    loading             : boolean = false;
+    loading             : boolean = true;
     options             : any = [
         {
             'id': 'verifier_documents_validated_per_user',
@@ -138,8 +138,10 @@ export class StatisticsComponent implements OnInit {
     ];
     optionsByModule     : any;
     selectedStatistic   : any;
+    availableYears      : any[]  = [];
     selectedModule      : string = 'verifier';
     selectedDiagramType : string = 'vertical-bar';
+    selectedYear        : string = moment().format('Y');
 
     constructor(
         private http: HttpClient,
@@ -154,16 +156,24 @@ export class StatisticsComponent implements OnInit {
             this.authService.generateHeaders();
         }
         this.optionsByModule = this.options.filter((option: any) => option.module === this.selectedModule);
-    }
 
-    changeModule(event: any) {
-        this.selectedModule = event.value;
-        this.optionsByModule = this.options.filter((option: any) => option.module === this.selectedModule);
+        this.http.get(environment['url'] + '/ws/history/getAvailableYears', {headers: this.authService.headers}).pipe(
+            tap((years: any) => {
+                years.years.forEach((year: any) => {
+                    this.availableYears.push(year.year);
+                });
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     getDocumentsUploadedByMonthVerifier(cpt: number) {
-        const currentYear = moment().format('Y');
-        this.http.get(environment['url'] + '/ws/history/list?module=verifier&submodule=upload_file&year=' + currentYear, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/history/list?module=verifier&submodule=upload_file&year=' + this.selectedYear, {headers: this.authService.headers}).pipe(
             tap((submodules: any) => {
                 const historyCpt: any = {};
                 moment.months().forEach((month: any) => {
@@ -177,7 +187,7 @@ export class StatisticsComponent implements OnInit {
                 });
                 Object.keys(historyCpt).forEach((month: any) => {
                     this.options[cpt].data.push({
-                        'name': month + ' ' + currentYear,
+                        'name': month + ' ' + this.selectedYear,
                         'value': historyCpt[month]
                     });
                 });
@@ -255,8 +265,7 @@ export class StatisticsComponent implements OnInit {
     }
 
     getDocumentsUploadedByMonthSplitter(cpt: number) {
-        const currentYear = moment().format('Y');
-        this.http.get(environment['url'] + '/ws/history/list?module=splitter&submodule=create_document&year=' + currentYear, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/history/list?module=splitter&submodule=create_document&year=' + this.selectedYear, {headers: this.authService.headers}).pipe(
             tap((submodules: any) => {
                 const historyCpt: any = {};
                 moment.months().forEach((month: any) => {
@@ -270,7 +279,7 @@ export class StatisticsComponent implements OnInit {
                 });
                 Object.keys(historyCpt).forEach((month: any) => {
                     this.options[cpt].data.push({
-                        'name': month + ' ' + currentYear,
+                        'name': month + ' ' + this.selectedYear,
                         'value': historyCpt[month]
                     });
                 });
@@ -288,7 +297,7 @@ export class StatisticsComponent implements OnInit {
     getUserUploadedDocumentVerifier(cpt: number) {
         this.http.get(environment['url'] + '/ws/users/list_full', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&module=verifier', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&module=verifier&year=' + this.selectedYear, {headers: this.authService.headers}).pipe(
                     tap((submodules: any) => {
                         data.users[data.users.length - 1] = {'id': 0, 'lastname': 'Upload', 'firstname': 'API'};
                         data.users.forEach((user: any) => {
@@ -324,7 +333,7 @@ export class StatisticsComponent implements OnInit {
     getUserUploadedDocumentSlitter(cpt: number) {
         this.http.get(environment['url'] + '/ws/users/list_full', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.http.get(environment['url'] + '/ws/history/list?submodule=create_document&module=splitter', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/history/list?submodule=create_document&module=splitter&year=' + this.selectedYear, {headers: this.authService.headers}).pipe(
                     tap((submodules: any) => {
                         data.users[data.users.length - 1] = {'id': 0, 'lastname': 'Upload', 'firstname': 'API'};
                         data.users.forEach((user: any) => {
@@ -360,7 +369,7 @@ export class StatisticsComponent implements OnInit {
     getWorkflowUploadedDocumentVerifier(cpt: number) {
         this.http.get(environment['url'] + '/ws/workflows/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&module=verifier', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&module=verifier&year=' + this.selectedYear, {headers: this.authService.headers}).pipe(
                     tap((submodules: any) => {
                         data.workflows.forEach((workflow: any) => {
                             let historyCpt = 0;
@@ -395,7 +404,7 @@ export class StatisticsComponent implements OnInit {
     getWorkflowUploadedDocumentSplitter(cpt: number) {
         this.http.get(environment['url'] + '/ws/workflows/splitter/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.http.get(environment['url'] + '/ws/history/list?submodule=create_document&module=splitter', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/history/list?submodule=create_document&module=splitter&year=' + this.selectedYear, {headers: this.authService.headers}).pipe(
                     tap((submodules: any) => {
                         data.workflows.forEach((workflow: any) => {
                             let historyCpt = 0;
@@ -436,7 +445,10 @@ export class StatisticsComponent implements OnInit {
                         data.forms.forEach((form: any) => {
                             let historyCpt = 0;
                             documents.documents.forEach((document: any) => {
-                                if (form.id === document.form_id) {
+                                const format = moment().localeData().longDateFormat('L');
+                                const value: any = moment(document.date, format);
+
+                                if (form.id === document.form_id && value.format('YYYY') === this.selectedYear) {
                                     historyCpt += 1;
                                 }
                             });
@@ -466,7 +478,7 @@ export class StatisticsComponent implements OnInit {
     getUsersProcessDocument(cpt: number) {
         this.http.get(environment['url'] + '/ws/users/list_full', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.http.get(environment['url'] + '/ws/history/list?submodule=document_validated', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/history/list?submodule=document_validated&year=' + this.selectedYear, {headers: this.authService.headers}).pipe(
                     tap((submodules: any) => {
                         data.users.forEach((user: any) => {
                             let historyCpt = 0;
@@ -498,11 +510,15 @@ export class StatisticsComponent implements OnInit {
         ).subscribe();
     }
 
-    changeStatistic(event: any) {
+    changeStatistic(event: any, reset=false) {
         if (event.value) {
             this.options.forEach((option: any, cpt: number) => {
                 if (option.id === event.value) {
                     this.selectedStatistic = option;
+                    if (reset) {
+                        option.data = [];
+                    }
+
                     if (option.data.length === 0) {
                         this.currentData = [];
                         this.loading = true;
@@ -525,5 +541,15 @@ export class StatisticsComponent implements OnInit {
                 }
             });
         }
+    }
+
+    changeModule(event: any) {
+        this.selectedModule = event.value;
+        this.optionsByModule = this.options.filter((option: any) => option.module === this.selectedModule);
+    }
+
+    changeYear(event: any) {
+        this.selectedYear = event.value;
+        this.changeStatistic({value: this.selectedStatistic.id}, true);
     }
 }
