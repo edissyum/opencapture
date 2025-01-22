@@ -34,24 +34,57 @@ apt-get install -y crudini > /dev/null
 
 while [ $# -gt 0 ]; do
     case "$1" in
-        -c)
-          customId=$2
-          shift 2;;
-        -t)
-          installationType=$2
-          shift 2;;
-        -d)
-          databaseName=$2
-          shift 2;;
-        -u)
-          databaseUsername=$2
-          shift 2;;
+        --user)
+            user=$2
+            shift 2;;
+        --path)
+            defaultPath=$2
+            shift 2;;
+        --custom_id)
+            customId=$2
+            shift 2;;
+        --python_venv_path)
+            python_venv_path=$2
+            shift 2;;
+        --share_path)
+            shareDefaultPath=$2
+            shift 2;;
+        --docserver_path)
+            docserverDefaultPath=$2
+            shift 2;;
+        --installation_type)
+            installationType=$2
+            shift 2;;
+        --database_host)
+            hostname=$2
+            shift 2;;
+        --database_port)
+            port=$2
+            shift 2;;
+        --database_name)
+            databaseName=$2
+            shift 2;;
+        --database_username)
+            databaseUsername=$2
+            shift 2;;
+        --database_password)
+            databasePassword=$2
+            shift 2;;
         *)
           customId=""
           installationType=""
-          pythonVenv=""
+          break;;
     esac
 done
+
+if [ -z $user ]; then
+    printf "The user variable is empty. Please fill it with your desired user : "
+    read -r user
+    if [ -z $user ]; then
+        echo 'User remain empty, exiting...'
+        exit
+    fi
+fi
 
 ####################
 # Replace dot and - with _ in custom_id to avoid python error
@@ -142,24 +175,31 @@ echo ""
 
 ####################
 # Retrieve database informations
-echo "Type database informations (hostname, port, username and password and postgres user password)."
-echo "It will be used to update path to use the custom's one"
-printf "Hostname [%s] : " "${bold}localhost${normal}"
-read -r choice
-
-if [[ "$choice" == "" ]]; then
-    hostname="localhost"
-else
-    hostname="$choice"
+if [ -z $hostname ] && [ -z $port ] && [ -z $databaseUsername ] && [ -z $databasePassword ]; then
+    echo "Type database informations (hostname, port, username and password and postgres user password)."
+    echo "It will be used to update path to use the custom's one"
 fi
 
-printf "Port [%s] : " "${bold}5432${normal}"
-read -r choice
+if [ -z "$hostname" ]; then
+    printf "Hostname [%s] : " "${bold}localhost${normal}"
+    read -r choice
 
-if [[ "$choice" == "" ]]; then
-    port=5432
-else
-    port="$choice"
+    if [[ "$choice" == "" ]]; then
+        hostname="localhost"
+    else
+        hostname="$choice"
+    fi
+fi
+
+if [ -z "$port" ]; then
+    printf "Port [%s] : " "${bold}5432${normal}"
+    read -r choice
+
+    if [[ "$choice" == "" ]]; then
+        port=5432
+    else
+        port="$choice"
+    fi
 fi
 
 if [ -z "$databaseUsername" ]; then
@@ -173,60 +213,44 @@ if [ -z "$databaseUsername" ]; then
     fi
 fi
 
-printf "Password [%s] : " "${bold}$customId${normal}"
-read -r choice
+if [ -z "$databasePassword" ]; then
+    printf "Password [%s] : " "${bold}$customId${normal}"
+    read -r choice
 
-if [[ "$choice" == "" ]]; then
-    databasePassword="$customId"
-else
-    databasePassword="$choice"
+    if [[ "$choice" == "" ]]; then
+        databasePassword="$customId"
+    else
+        databasePassword="$choice"
+    fi
 fi
 
 echo ""
 echo "#################################################################################################"
 echo ""
 
-echo "Type docserver default path informations. By default it's /var/docservers/opencapture/"
-printf "Docserver default path [%s] : " "${bold}/var/docservers/opencapture/${normal}"
-read -r choice
+if [ -z $docserverDefaultPath ]; then
+    echo "Type docserver default path informations. By default it's /var/docservers/opencapture/"
+    printf "Docserver default path [%s] : " "${bold}/var/docservers/opencapture/${normal}"
+    read -r choice
 
-if [[ "$choice" == "" ]]; then
-    docserverDefaultPath="/var/docservers/opencapture/"
-else
-    docserverDefaultPath="$choice"
+    if [[ "$choice" == "" ]]; then
+        docserverDefaultPath="/var/docservers/opencapture/"
+    else
+        docserverDefaultPath="$choice"
+    fi
+
+    echo ""
+    echo "#######################################################################################################################"
+    echo ""
 fi
 
-echo ""
-echo "#################################################################################################"
-echo ""
-
-echo "Type share default path informations. By default it's /var/share/"
-printf "Share default path [%s] : " "${bold}/var/share/${normal}"
-read -r choice
-
-if [[ "$choice" == "" ]]; then
+if [[ -z $share_path ]]; then
     shareDefaultPath="/var/share/"
-else
-    shareDefaultPath="$choice"
 fi
 
-echo ""
-echo "#################################################################################################"
-echo ""
-
-echo "Type python venv default path informations. By default it's /home/$user/python-venv/opencapture/"
-printf "Python venv default path [%s] : " "${bold}/home/$user/python-venv/opencapture/${normal}"
-read -r choice
-
-if [[ "$choice" == "" ]]; then
-    pythonVenvPath="/home/$user/python-venv/opencapture/"
-else
-    pythonVenvPath="$choice"
+if [[ -z $python_venv_path ]]; then
+    pythonVenvPath="/home/$user/python-venv/opencapture"
 fi
-
-echo ""
-echo "#################################################################################################"
-echo ""
 
 if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
     printf "Postgres user Password [%s] : " "${bold}postgres${normal}"

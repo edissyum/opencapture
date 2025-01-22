@@ -63,7 +63,7 @@ while [ $# -gt 0 ]; do
         --supervisor_systemd)
             supervisorOrSystemd=$2
             shift 2;;
-        --hostname)
+        --database_hostname)
             hostname=$2
             shift 2;;
         --python_venv_path)
@@ -72,13 +72,16 @@ while [ $# -gt 0 ]; do
         --share_path)
             share_path=$2
             shift 2;;
-        --port)
+        --database_port)
             port=$2
             shift 2;;
-        --username)
+        --database_name)
+            databaseName=$2
+            shift 2;;
+        --database_username)
             databaseUsername=$2
             shift 2;;
-        --password)
+        --database_password)
             databasePassword=$2
             shift 2;;
         --docserver_path)
@@ -387,10 +390,14 @@ echo ""
 ####################
 # Create database using custom_id
 echo "Create database and fill it with default data....."
-databaseName="opencapture_$customId"
-if [[ "$customId" = *"opencapture_"* ]]; then
-    databaseName="$customId"
+
+if [ -z "$databaseName" ]; then
+    databaseName="opencapture_$customId"
+    if [[ "$customId" = *"opencapture_"* ]]; then
+        databaseName="$customId"
+    fi
 fi
+
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "CREATE DATABASE $databaseName WITH template=template0 encoding='UTF8'" postgres >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/structure.sql" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/global.sql" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
