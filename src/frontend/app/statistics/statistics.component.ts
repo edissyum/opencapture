@@ -38,49 +38,49 @@ export class StatisticsComponent implements OnInit {
     loading             : boolean = true;
     options             : any = [
         {
-            'id': 'verifier_documents_validated_per_user',
-            'label': this.translate.instant('STATISTICS.verifier_documents_validated_per_user'),
-            'function': 'getUsersProcessDocument',
+            'id': 'verifier_batches_validated_per_user',
+            'label': this.translate.instant('STATISTICS.verifier_batches_validated_per_user'),
+            'function': 'getUsersProcessBatches',
             'module': 'verifier',
             'data': [],
             'total': 0
         },
         {
-            'id': 'verifier_documents_validated_per_form',
-            'label': this.translate.instant('STATISTICS.verifier_documents_validated_per_form'),
-            'function': 'getFormsProcessDocument',
+            'id': 'verifier_batches_validated_per_form',
+            'label': this.translate.instant('STATISTICS.verifier_batches_validated_per_form'),
+            'function': 'getFormsProcessBatches',
             'module': 'verifier',
             'data': [],
             'total': 0
         },
         {
-            'id': 'verifier_documents_uploaded_per_worklow',
-            'label': this.translate.instant('STATISTICS.verifier_documents_uploaded_per_worklow'),
-            'function': 'getWorkflowUploadedDocumentVerifier',
+            'id': 'verifier_batches_uploaded_per_worklow',
+            'label': this.translate.instant('STATISTICS.verifier_batches_uploaded_per_worklow'),
+            'function': 'getWorkflowUploadedBatchesVerifier',
             'module': 'verifier',
             'data': [],
             'total': 0
         },
         {
-            'id': 'verifier_documents_uploaded_per_user',
-            'label': this.translate.instant('STATISTICS.verifier_documents_uploaded_per_user'),
-            'function': 'getUserUploadedDocumentVerifier',
+            'id': 'verifier_batches_uploaded_per_user',
+            'label': this.translate.instant('STATISTICS.verifier_batches_uploaded_per_user'),
+            'function': 'getUserUploadedBatchesVerifier',
             'module': 'verifier',
             'data': [],
             'total': 0
         },
         {
-            'id': 'verifier_documents_uploaded_per_month',
-            'label': this.translate.instant('STATISTICS.verifier_documents_uploaded_per_month'),
-            'function': 'getDocumentsUploadedByMonthVerifier',
+            'id': 'verifier_batches_uploaded_per_month',
+            'label': this.translate.instant('STATISTICS.verifier_batches_uploaded_per_month'),
+            'function': 'getBatchesUploadedByMonthVerifier',
             'module': 'verifier',
             'data': [],
             'total': 0
         },
         {
-            'id': 'verifier_documents_uploaded_per_year',
-            'label': this.translate.instant('STATISTICS.verifier_documents_uploaded_per_year'),
-            'function': 'getDocumentsUploadedByYearVerifier',
+            'id': 'verifier_batches_uploaded_per_year',
+            'label': this.translate.instant('STATISTICS.verifier_batches_uploaded_per_year'),
+            'function': 'getBatchesUploadedByYearVerifier',
             'module': 'verifier',
             'data': [],
             'total': 0
@@ -199,7 +199,7 @@ export class StatisticsComponent implements OnInit {
         ).subscribe();
     }
 
-    getDocumentsUploadedByMonthVerifier(cpt: number) {
+    getBatchesUploadedByMonthVerifier(cpt: number) {
         this.http.get(environment['url'] + '/ws/history/list?module=verifier&submodule=upload_file&year=' + this.selectedYear, {headers: this.authService.headers}).pipe(
             tap((submodules: any) => {
                 const historyCpt: any = {};
@@ -230,7 +230,7 @@ export class StatisticsComponent implements OnInit {
         ).subscribe();
     }
 
-    getDocumentsUploadedByYearVerifier(cpt: number) {
+    getBatchesUploadedByYearVerifier(cpt: number) {
         this.http.get(environment['url'] + '/ws/history/list?module=verifier&submodule=upload_file', {headers: this.authService.headers}).pipe(
             tap((submodules: any) => {
                 this.disableYear = true;
@@ -391,7 +391,7 @@ export class StatisticsComponent implements OnInit {
         ).subscribe();
     }
 
-    getUserUploadedDocumentVerifier(cpt: number) {
+    getUserUploadedBatchesVerifier(cpt: number) {
         this.http.get(environment['url'] + '/ws/users/list_full', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&module=verifier&year=' + this.selectedYear, {headers: this.authService.headers}).pipe(
@@ -465,7 +465,7 @@ export class StatisticsComponent implements OnInit {
         ).subscribe();
     }
 
-    getWorkflowUploadedDocumentVerifier(cpt: number) {
+    getWorkflowUploadedBatchesVerifier(cpt: number) {
         this.http.get(environment['url'] + '/ws/workflows/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&module=verifier&year=' + this.selectedYear, {headers: this.authService.headers}).pipe(
@@ -537,7 +537,7 @@ export class StatisticsComponent implements OnInit {
         ).subscribe();
     }
 
-    getFormsProcessDocument(cpt: number) {
+    getFormsProcessBatches(cpt: number) {
         this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.http.post(environment['url'] + '/ws/verifier/documents/list', {'status': 'END'}, {headers: this.authService.headers})
@@ -577,7 +577,7 @@ export class StatisticsComponent implements OnInit {
         ).subscribe();
     }
 
-    getUsersProcessDocument(cpt: number) {
+    getUsersProcessBatches(cpt: number) {
         this.http.get(environment['url'] + '/ws/users/list_full', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.http.get(environment['url'] + '/ws/history/list?submodule=document_validated&year=' + this.selectedYear, {headers: this.authService.headers}).pipe(

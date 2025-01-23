@@ -1047,12 +1047,12 @@
 		"splitter_documents_processed_per_worklow": "Documents processed per workflow",
 		"splitter_documents_processed_per_year": "Documents processed per year",
 		"total": "Number of results",
-		"verifier_documents_uploaded_per_month": "Documents uploaded this year",
-		"verifier_documents_uploaded_per_user": "Documents uploaded per user",
-		"verifier_documents_uploaded_per_worklow": "Documents uploaded per workflow",
-		"verifier_documents_uploaded_per_year": "Documents uploaded per year",
-		"verifier_documents_validated_per_form": "Documents processed per form",
-		"verifier_documents_validated_per_user": "Documents processed per user"
+		"verifier_batches_uploaded_per_month": "Documents uploaded this year",
+		"verifier_batches_uploaded_per_user": "Documents uploaded per user",
+		"verifier_batches_uploaded_per_worklow": "Documents uploaded per workflow",
+		"verifier_batches_uploaded_per_year": "Documents uploaded per year",
+		"verifier_batches_validated_per_form": "Documents processed per form",
+		"verifier_batches_validated_per_user": "Documents processed per user"
 	},
 	"STATUS": {
 		"UPDATE_SUCCESS": "Status updated with success",
