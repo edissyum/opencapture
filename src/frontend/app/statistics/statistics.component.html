@@ -32,10 +32,10 @@
                     </mat-select>
                 </mat-form-field>
                 <mat-form-field class="ml-4 w-1/5">
-                    <mat-select [disabled]="!this.selectedStatistic || this.loading"
+                    <mat-select [disabled]="!this.selectedStatistic || this.loading || this.disableYear"
                                 (selectionChange)="changeYear($event)" [ngModel]="this.selectedYear"
                                 [placeholder]="'STATISTICS.choose_year_report' | translate">
-                        <mat-option [value]="'all'">
+                        <mat-option [value]="0">
                             {{ 'STATISTICS.all_years' | translate }}
                         </mat-option>
                         @for (year of this.availableYears; track year) {
@@ -58,18 +58,22 @@
                 </mat-form-field>
             </div>
             @if (!this.loading && this.selectedStatistic) {
-                <div class="relative mt-20 w-full">
-                    @if (this.selectedDiagramType === 'vertical-bar') {
-                        <ngx-charts-bar-vertical [results]="currentData" [xAxis]="true" [yAxis]="true" [legend]="true" [showYAxisLabel]="true"
-                                                 [showXAxisLabel]="true" [legendTitle]="this.selectedStatistic.label | translate"/>
-                    } @else if (this.selectedDiagramType === 'pie-chart') {
-                        <ngx-charts-pie-chart [results]="currentData" [labels]="true" [legendTitle]="this.selectedStatistic.label | translate"/>
-                    } @else if (this.selectedDiagramType === 'pie-grid') {
-                        <ngx-charts-pie-grid [results]="currentData"/>
-                    } @else if (this.selectedDiagramType === 'line-charts') {
-                        <ngx-charts-line-chart [showXAxisLabel]="true" [showYAxisLabel]="true" [results]="currentData" [xAxis]="true" [yAxis]="true" [legend]="false"/>
-                    }
-                </div>
+                    <div class="absolute w-full mt-20 text-center text-gray-900">
+                        {{ 'STATISTICS.total' | translate }} : {{ this.selectedStatistic.total }}
+                    </div>
+                    <div class="relative mt-28 w-full">
+                        @if (this.selectedDiagramType === 'vertical-bar') {
+                            <ngx-charts-bar-vertical [results]="currentData" [xAxis]="true" [yAxis]="true" [legend]="true" [showYAxisLabel]="true"
+                                                     [showXAxisLabel]="true" [legendTitle]="this.selectedStatistic.label | translate"/>
+                        } @else if (this.selectedDiagramType === 'pie-chart') {
+                            <ngx-charts-pie-chart [results]="currentData" [labels]="true" [legendTitle]="this.selectedStatistic.label | translate"/>
+                        } @else if (this.selectedDiagramType === 'pie-grid') {
+                            <ngx-charts-pie-grid [results]="currentData"/>
+                        } @else if (this.selectedDiagramType === 'line-charts') {
+                            <ngx-charts-line-chart [showXAxisLabel]="true" [showYAxisLabel]="true" [results]="currentData" [xAxis]="true" [yAxis]="true" [legend]="false"/>
+                        }
+                    </div>
+
             }
         </div>
     </mat-sidenav-content>
