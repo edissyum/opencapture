@@ -155,11 +155,11 @@ export class StatisticsComponent implements OnInit {
     modules             : any = [
         {
             'id': 'verifier',
-            'label': this.translate.instant('MONITORING.verifier')
+            'label': this.translate.instant('HOME.verifier')
         },
         {
             'id': 'splitter',
-            'label': this.translate.instant('MONITORING.splitter')
+            'label': this.translate.instant('HOME.splitter')
         }
     ];
     optionsByModule     : any;
