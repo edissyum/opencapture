@@ -413,10 +413,9 @@ class FindFooter:
             if (((total and total_ttc and total_ttc[0]) and (float(total) == float(total_ttc[0]))) or
                     ((total_ttc and total_ttc[0] and vat_amount and vat_amount[0] and total_ht and total_ht[0])
                      and float(total_ttc[0]) == float("%.2f" % float(float(vat_amount[0]) + float(total_ht[0]))))):
-                self.log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(
-                    total_ht[0]) + '] - [VATRATE : ' + str(vat_rate[0]) + ']')
-                return [total_ht, total_ttc, vat_rate, self.nb_pages,
-                        ["%.2f" % float(float(total_ht[0]) * (float(vat_rate[0]) / 100))]]
+                self.log.info(f'Footer informations found : [TTC : {str(total)}] - [HT : {str(total_ht[0])}] - '
+                              f'[VAT AMOUNT : {str(vat_amount[0])}] - [VAT RATE : {str(vat_rate[0])}]')
+                return [total_ht, total_ttc, vat_rate, self.nb_pages, vat_amount]
             else:
                 return False
         else:
