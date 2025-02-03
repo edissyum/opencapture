@@ -17,6 +17,7 @@
 
 import re
 import json
+import pandas as pd
 from datetime import datetime
 from src.backend.functions import search_by_positions, search_custom_positions
 
@@ -59,7 +60,7 @@ class FindDueDate:
                         'select': ['regex_id', 'content'],
                         'table': ['regex'],
                         'where': ["lang in ('global', %s)"],
-                        'data': [self.configurations['locale']]
+                        'data': [self.supplier[2]['document_lang']]
                     })
                     if _regex:
                         regex = {}
@@ -96,13 +97,16 @@ class FindDueDate:
                 timedelta = today - doc_date
 
                 if int(self.max_time_delta) not in [-1, 0]:
-                    if timedelta.days > int(self.max_time_delta) or timedelta.days < 0:
-                        self.log.info("Date is older than " + str(self.max_time_delta) +
-                                      " days or in the future : " + str(date))
+                    if timedelta.days > int(self.max_time_delta):
+                        self.log.info("Date is older than " + str(self.max_time_delta) + " days")
                         date = False
-                if timedelta.days < 0:
-                    self.log.info("Date is in the future " + str(date))
-                    date = False
+
+                if date:
+                    try:
+                        tmp_date = pd.to_datetime(date).strftime('%Y-%m-%d')
+                        return tmp_date, position
+                    except Exception as e:
+                        self.log.info("Error while converting due date : " + str(e))
                 return date, position
             except (ValueError, IndexError) as _e:
                 self.log.info("Date wasn't in a good format : " + str(date))
@@ -111,9 +115,8 @@ class FindDueDate:
             return False
 
     def process(self, line, position):
-        regex = self.regex['due_date'] + self.regex['date']
         line = line.replace(',', '')
-        for _date in re.finditer(r"" + regex, line):
+        for _date in re.finditer(r"" + self.regex['due_date'], line, flags=re.IGNORECASE):
             for res in re.finditer(r"" + self.regex['date'], line):
                 date = self.format_date(res.group(), position, True)
                 if date and date[0]:
@@ -142,9 +145,10 @@ class FindDueDate:
                     'table': ['accounts_supplier'],
                     'where': ['vat_number = %s', 'status <> %s'],
                     'data': [self.supplier[0], 'DEL']
-                })[0]
+                })
 
-                if position and position['document_due_date_position'] not in [False, 'NULL', '', None]:
+                if position and position[0]['document_due_date_position'] not in [False, 'NULL', '', None]:
+                    position = position[0]
                     data = {'position': position['document_due_date_position'], 'regex': None, 'target': 'full', 'page': position['document_due_date_page']}
                     text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
                     if text != '':

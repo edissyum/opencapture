@@ -15,49 +15,64 @@
             [matTooltip]="'DOCTYPE.maximize_tree' | translate">
         <i class="fa-solid fa-maximize text-lg"></i>
     </button>
-    <mat-slide-toggle *ngIf="!this.settings.hasOwnProperty('allowUniqueDocType') || this.settings.allowUniqueDocType" class="mx-2 my-4" [formControl]="toggleControl" (click)="changeDocType()" [matTooltip]="'DOCTYPE.unique_doctype_field_explanation' | translate">{{ 'DOCTYPE.unique_doctype' | translate }}</mat-slide-toggle>
-    <mat-form-field *ngIf="!settings.hasOwnProperty('formId')" class="float-right w-60 mr-8">
-        <mat-label>{{ 'FORMS.choose_form' | translate }}</mat-label>
-        <mat-select id='folder' [formControl]="selectFormControl">
-            <div *ngFor="let form of forms">
-                <mat-option [value]="form.id">
-                    <span>{{ form.label | translate }}</span>
-                    <button *ngIf="form.id !== selectFormControl.value" [matTooltip]="'DOCTYPE.clone_doctypes' | translate"
-                        (click)="$event.stopPropagation(); cloneFormDoctypes(form.id, selectFormControl.value)"
-                        class="hover:text-green-400 fa fa-clone absolute right-0 mr-2"></button>
-                </mat-option>
-            </div>
-        </mat-select>
-    </mat-form-field>
-    <div class="mr-4 my-4 float-right"
-         *ngIf="!this.settings.hasOwnProperty('allowImportExport') || this.settings.allowImportExport">
-        <button class="text-gray-400 hover:text-green-400 hover:cursor-pointer mx-2"
-                (click)="importDoctypes()"
-                [matTooltip]="'DOCTYPE.import' | translate">
-            <i class="fa-solid fa-file-import fa-2x"></i>
-        </button>
-        <button class="text-gray-400 hover:text-green-400 hover:cursor-pointer mx-2"
-                (click)="exportDoctypes()"
-                [matTooltip]="'DOCTYPE.export' | translate">
-            <i class="fa-solid fa-file-export fa-2x"></i>
-        </button>
-    </div>
+    @if (this.settings.hasOwnProperty('allowUniqueDocType') || this.settings.allowUniqueDocType) {
+        <mat-slide-toggle class="mx-2 my-4" [formControl]="toggleControl" (click)="changeDocType()" [matTooltip]="'DOCTYPE.unique_doctype_field_explanation' | translate">
+            {{ 'DOCTYPE.unique_doctype' | translate }}
+        </mat-slide-toggle>
+    }
+    @if (!this.settings.hasOwnProperty('formId')) {
+        <mat-form-field class="float-right w-60 mr-8">
+            <mat-label>{{ 'FORMS.choose_form' | translate }}</mat-label>
+            <mat-select id='folder' [formControl]="selectFormControl">
+                @for (form of this.forms; track form['id']) {
+                    <mat-option [value]="form['id']">
+                        <span>{{ form['label'] | translate }}</span>
+                        @if (form['id'] !== selectFormControl.value) {
+                            <button [matTooltip]="'DOCTYPE.clone_doctypes' | translate"
+                                    (click)="$event.stopPropagation(); cloneFormDoctypes(form['id'], selectFormControl.value)"
+                                    class="hover:text-green-400 fa fa-clone absolute right-0 mr-2"></button>
+                        }
+                    </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+    }
+
+    @if (!this.settings.hasOwnProperty('allowImportExport') || this.settings.allowImportExport) {
+        <div class="mr-4 my-4 float-right">
+            <button class="text-gray-400 hover:text-green-400 hover:cursor-pointer mx-2"
+                    (click)="importDoctypes()" [matTooltip]="'DOCTYPE.import' | translate">
+                <i class="fa-solid fa-file-import fa-2x"></i>
+            </button>
+            <button class="text-gray-400 hover:text-green-400 hover:cursor-pointer mx-2"
+                    (click)="exportDoctypes()" [matTooltip]="'DOCTYPE.export' | translate">
+                <i class="fa-solid fa-file-export fa-2x"></i>
+            </button>
+        </div>
+    }
 </div>
 <mat-card class="overflow-auto mx-4" style="height: calc(100% - 11rem) !important">
-    <div *ngIf="this.treeDataObj.loading">
-        <app-loader></app-loader>
-    </div>
-    <div *ngIf="treeDataObj.doctypeData.length === 0 || dataSource.data.length === 0" class="text-gray-400 p-4">
-        {{ 'DOCTYPE.no_doctype_to_show' | translate }}
-    </div>
+    @if (this.treeDataObj.loading) {
+        <div>
+            <app-loader></app-loader>
+        </div>
+    }
+    @if (this.treeDataObj.doctypeData.length === 0 || dataSource.data.length === 0) {
+        <div class="text-gray-400 p-4">
+            {{ 'DOCTYPE.no_doctype_to_show' | translate }}
+        </div>
+    }
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="m-2">
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding="{{ node.padding }}">
             <button class="whitespace-nowrap p-1 rounded hover:text-slate-100 hover:bg-green-400 font-normal"
                     (click)="selectNode(node, false)"
                     (dblclick)="selectNode(node, true)"
                     [ngClass]="selectedDoctypeInput.key === node.key ? 'bg-green-400 text-slate-100' : ''">
-                    <i *ngIf="!node.isDefault" class="fa-solid fa-file pr-1"></i>
-                    <i *ngIf="node.isDefault" class="fa-solid fa-file-circle-check pr-1"></i>
+                    @if (node.isDefault) {
+                        <i class="fa-solid fa-file-circle-check pr-1"></i>
+                    } @else {
+                        <i class="fa-solid fa-file pr-1"></i>
+                    }
                     <span>{{ node.label }}</span>
             </button>
         </mat-tree-node>
@@ -67,14 +82,19 @@
                     [attr.aria-label]="'Toggle ' + node.label"
                     (click)="selectFolder(node)">
                     <i [ngClass]="treeControl.isExpanded(node) ? 'fa fa-minus-square' : 'fa fa-plus-square'"></i>
-                    <span class="p-1" *ngIf="!searchText"> {{ node.label }}</span>
-                    <span class="p-1" *ngIf="searchText" [innerHTML]="highlight(node.label)"></span>
+                    @if (this.searchText) {
+                        <span [innerHTML]="highlight(node.label)"></span>
+                    } @else {
+                        <span>{{ node.label }}</span>
+                    }
             </button>
-            <button mat-button *ngIf="settings.showFoldersSeparatorBtn"  class="p-1 hover:text-green-400"
-                    (click)="selectNode(node, false)"
-                    [matTooltip]="'DOCTYPE.generate_folder_separators' | translate">
-                <i class="fa-solid fa-folder-closed fa-lg"></i>
-            </button>
+            @if (this.settings.showFoldersSeparatorBtn) {
+                <button mat-button class="p-1 hover:text-green-400"
+                        (click)="selectNode(node, false)"
+                        [matTooltip]="'DOCTYPE.generate_folder_separators' | translate">
+                    <i class="fa-solid fa-folder-closed fa-lg"></i>
+                </button>
+            }
         </mat-tree-node>
     </mat-tree>
 </mat-card>

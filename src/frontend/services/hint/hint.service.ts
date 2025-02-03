@@ -20,7 +20,8 @@ import { Component, Input } from '@angular/core';
 @Component({
     selector: 'app-hint',
     templateUrl: './hint.service.html',
-    styleUrls: ['./hint.service.scss']
+    styleUrls: ['./hint.service.scss'],
+    standalone: false
 })
 
 export class HintServiceComponent {

@@ -18,7 +18,7 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 import { Component, OnInit, PipeTransform, Pipe } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserService } from "../../../../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
@@ -28,13 +28,15 @@ import { AuthService } from "../../../../../services/auth.service";
 import { environment } from  "../../../../env";
 import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
 import { of } from "rxjs";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { Clipboard } from '@angular/cdk/clipboard';
 
-@Pipe({ name: 'highlight' })
+@Pipe({
+    name: 'highlight',
+    standalone: false
+})
 export class HighlightPipe implements PipeTransform {
     transform(text: string, search: string): string {
-        if (typeof search == "string") {
+        if (search) {
             const pattern = search
                 .replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
                 .split(' ')
@@ -50,7 +52,8 @@ export class HighlightPipe implements PipeTransform {
 @Component({
     selector: 'update-output',
     templateUrl: './update-output.component.html',
-    styleUrls: ['./update-output.component.scss']
+    styleUrls: ['./update-output.component.scss'],
+    standalone: false
 })
 export class UpdateOutputComponent implements OnInit {
     headers                 : HttpHeaders   = this.authService.headers;
@@ -91,27 +94,27 @@ export class UpdateOutputComponent implements OnInit {
             values: [
                 {
                     'id': '',
-                    'label': marker('OUTPUT.no_compress')
+                    'label': _('OUTPUT.no_compress')
                 },
                 {
                     'id': 'screen',
-                    'label': marker('OUTPUT.compress_screen')
+                    'label': _('OUTPUT.compress_screen')
                 },
                 {
                     'id': 'ebook',
-                    'label': marker('OUTPUT.compress_ebook')
+                    'label': _('OUTPUT.compress_ebook')
                 },
                 {
                     'id': 'prepress',
-                    'label': marker('OUTPUT.compress_prepress')
+                    'label': _('OUTPUT.compress_prepress')
                 },
                 {
                     'id': 'printer',
-                    'label': marker('OUTPUT.compress_printer')
+                    'label': _('OUTPUT.compress_printer')
                 },
                 {
                     'id': 'default',
-                    'label': marker('OUTPUT.compress_default')
+                    'label': _('OUTPUT.compress_default')
                 }
             ],
             required: false
@@ -124,11 +127,11 @@ export class UpdateOutputComponent implements OnInit {
             values: [
                 {
                     'id': true,
-                    'label': marker('OUTPUT.ocr_enabled')
+                    'label': _('OUTPUT.ocr_enabled')
                 },
                 {
                     'id': false,
-                    'label': marker('OUTPUT.ocr_disabled')
+                    'label': _('OUTPUT.ocr_disabled')
                 }
             ],
             required: false
@@ -136,7 +139,7 @@ export class UpdateOutputComponent implements OnInit {
     ];
     availableFields         : any           = [
         {
-            'id': marker('HEADER.technical_id'),
+            'id': _('HEADER.technical_id'),
             'label': 'HEADER.label'
         },
         {
@@ -145,11 +148,11 @@ export class UpdateOutputComponent implements OnInit {
         },
         {
             'id': 'b64_file_content',
-            'label': marker('OUTPUT.b64_file_content')
+            'label': _('OUTPUT.b64_file_content')
         },
         {
             'id': 'original_filename',
-            'label': marker('VERIFIER.original_filename')
+            'label': _('VERIFIER.original_filename')
         },
         {
             'id': 'vat_number',
@@ -185,51 +188,55 @@ export class UpdateOutputComponent implements OnInit {
         },
         {
             'id': 'current_date',
-            'label': marker('FACTURATION.current_date')
+            'label': _('FACTURATION.current_date')
         },
         {
             'id': 'document_date_full',
-            'label': marker('FACTURATION.document_date')
+            'label': _('FACTURATION.document_date')
         },
         {
             'id': 'document_date_year',
-            'label': marker('FACTURATION.document_date_year')
+            'label': _('FACTURATION.document_date_year')
         },
         {
             'id': 'document_date_month',
-            'label': marker('FACTURATION.document_date_month')
+            'label': _('FACTURATION.document_date_month')
         },
         {
             'id': 'document_date_day',
-            'label': marker('FACTURATION.document_date_day')
+            'label': _('FACTURATION.document_date_day')
         },
         {
             'id': 'register_date_full',
-            'label': marker('FACTURATION.register_date')
+            'label': _('FACTURATION.register_date')
         },
         {
             'id': 'register_date_year',
-            'label': marker('FACTURATION.register_date_year')
+            'label': _('FACTURATION.register_date_year')
         },
         {
             'id': 'register_date_month',
-            'label': marker('FACTURATION.register_date_month')
+            'label': _('FACTURATION.register_date_month')
         },
         {
             'id': 'register_date_day',
-            'label': marker('FACTURATION.register_date_day')
+            'label': _('FACTURATION.register_date_day')
+        },
+        {
+            'id': 'currency',
+            'label': _('WORKFLOW.currency')
         },
         {
             'id': 'total_ht',
-            'label': marker('FACTURATION.total_ht')
+            'label': _('FACTURATION.total_ht')
         },
         {
             'id': 'total_ttc',
-            'label': marker('FACTURATION.total_ttc')
+            'label': _('FACTURATION.total_ttc')
         },
         {
             'id': 'total_vat',
-            'label': marker('FACTURATION.total_vat')
+            'label': _('FACTURATION.total_vat')
         },
         {
             'id': 'delivery_number',
@@ -237,8 +244,8 @@ export class UpdateOutputComponent implements OnInit {
         }
     ];
     testConnectionMapping   : any           = {
-        'export_mem' : "testMEMConnection()",
-        'export_coog' : "testCOOGConnection()"
+        'export_mem' : "testMEMConnection",
+        'export_coog' : "testCOOGConnection"
     };
 
     /**
@@ -455,8 +462,9 @@ export class UpdateOutputComponent implements OnInit {
         for (const cpt in this.outputsTypesForm[this.selectedOutputType][category]) {
             const element = this.outputsTypesForm[this.selectedOutputType][category][cpt];
             if (element.id === fieldId) {
-                if (!element.values || element.values.length === 1) {
-                    eval("this." + element.webservice + '(' + cpt + ')');
+                if ((!element.values || element.values.length === 1) && element.webservice) {
+                    // @ts-ignore
+                    this[element.webservice](cpt);
                 }
             }
         }
@@ -776,7 +784,10 @@ export class UpdateOutputComponent implements OnInit {
     testConnection() {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth)) {
             const functionName = this.testConnectionMapping[this.selectedOutputType];
-            eval("this." + functionName);
+            if (functionName) {
+                // @ts-ignorefeval
+                this[functionName]();
+            }
         }
     }
 

@@ -3,9 +3,11 @@
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
-        <div *ngIf="this.loading">
-            <app-loader></app-loader>
-        </div>
+        @if (this.loading) {
+            <div>
+                <app-loader></app-loader>
+            </div>
+        }
         <div class="settings_header">
             <div class="flex">
                 <button mat-icon-button (click)="this.serviceSettings.minimizeSideNav = !this.serviceSettings.minimizeSideNav;">
@@ -13,23 +15,26 @@
                 </button>
             </div>
             <h3 class="text-center m-0">
-                Open-Capture&nbsp;<span *ngIf="!this.loading"><strong>version <span id="gitVersion">{{ this.currentVersion }}</span></strong>&nbsp;</span>
-                <span *ngIf="this.lastVersion === 'error'">
+                Open-Capture&nbsp;
+                @if (!this.loading) {
+                    <strong>version <span id="gitVersion">{{ this.currentVersion }}</span></strong>&nbsp;
+                }
+                @if (this.lastVersion === 'error') {
                     |<span class="text-red-600">&nbsp;{{ 'ERROR.git_connection' | translate }}</span>
-                </span>
-                <span *ngIf="!this.loading && this.lastVersion > this.currentVersion && this.isProd">
+                }
+                @if (!this.loading && this.lastVersion > this.currentVersion && this.isProd) {
                     | {{ 'ABOUT-US.new_version_available' | translate }} (<strong>
                         <a [href]="'https://github.com/edissyum/opencapture/releases/tag/' + this.lastVersion"
                            target="_blank">{{ this.lastVersion }}</a>
                     </strong>)
-                </span>
-                <span *ngIf="!this.loading && this.lastVersion < this.currentVersion && this.isProd">
+                }
+                @if (!this.loading && this.lastVersion < this.currentVersion && this.isProd) {
                     | {{ 'ABOUT-US.are_you_in_future' | translate }} ({{ 'ABOUT-US.last_official_version' | translate }}&nbsp;:
                     <strong>
                         <a [href]="'https://github.com/edissyum/opencapture/releases/tag/' + this.lastVersion"
                             target="_blank">{{ this.lastVersion }}</a>
                     </strong>)
-                </span>
+                }
             </h3>
             <div class="settings_search"></div>
         </div>

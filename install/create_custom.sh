@@ -21,27 +21,77 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+if [ "$(uname -m)" != 'x86_64' ]; then
+    echo "This script is only compatible with x86_64 architecture"
+    exit 1
+fi
+
 group=www-data
 bold=$(tput bold)
 normal=$(tput sgr0)
 user=$(who am i | awk '{print $1}')
 defaultPath=/var/www/html/opencapture
 
-####################
-# Check if custom name is set and doesn't exists already
-
 apt-get install -y crudini > /dev/null
 
-while getopts "c:t:" arguments
-do
-    case "${arguments}" in
-        c) customId=${OPTARG};;
-        t) installationType=${OPTARG};;
-        *) customId=""
-            installationType=""
-            pythonVenv=""
+####################
+# Handle parameters
+parameters="user path custom_id supervisor_systemd database_name database_hostname database_port database_username database_password docserver_path python_venv_path share_path"
+opts=$(getopt --longoptions "$(printf "%s:," "$parameters")" --name "$(basename "$0")" --options "" -- "$@")
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --user)
+            user=$2
+            shift 2;;
+        --custom_id)
+            customId=$2
+            shift 2;;
+        --path)
+            defaultPath=$2
+            shift 2;;
+        --supervisor_systemd)
+            supervisorOrSystemd=$2
+            shift 2;;
+        --database_hostname)
+            hostname=$2
+            shift 2;;
+        --python_venv_path)
+            pythonVenvPath=$2
+            shift 2;;
+        --share_path)
+            shareDefaultPath=$2
+            shift 2;;
+        --database_port)
+            port=$2
+            shift 2;;
+        --database_name)
+            databaseName=$2
+            shift 2;;
+        --database_username)
+            databaseUsername=$2
+            shift 2;;
+        --database_password)
+            databasePassword=$2
+            shift 2;;
+        --docserver_path)
+            docserverDefaultPath=$2
+            shift 2;;
+    *)
+        customId=""
+        $supervisorOrSystemd=""
+        break;;
     esac
 done
+
+if [ -z $user ]; then
+    printf "The user variable is empty. Please fill it with your desired user : "
+    read -r user
+    if [ -z $user ]; then
+        echo 'User remain empty, exiting...'
+        exit
+    fi
+fi
 
 ####################
 # Replace dot and - with _ in custom_id to avoid python error
@@ -72,7 +122,7 @@ if [ "$customId" == 'custom' ]; then
     exit 4
 fi
 
-if [ "$installationType" == '' ] || { [ "$installationType" != 'systemd' ] && [ "$installationType" != 'supervisor' ]; }; then
+if [ "$supervisorOrSystemd" == '' ] || { [ "$supervisorOrSystemd" != 'systemd' ] && [ "$supervisorOrSystemd" != 'supervisor' ]; }; then
     echo "#######################################################################################################"
     echo "                           Bad value for installationType variable"
     echo "       Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t systemd"
@@ -81,7 +131,7 @@ if [ "$installationType" == '' ] || { [ "$installationType" != 'systemd' ] && [ 
     exit 6
 fi
 
-if [ "$installationType" == 'supervisor' ]; then
+if [ "$supervisorOrSystemd" == 'supervisor' ]; then
     echo ""
     echo "#################################################################################################"
     echo ""
@@ -105,11 +155,14 @@ if [ -L "$defaultPath/$customId" ] && [ -e "$defaultPath/$customId" ]; then
     exit 7
 fi
 
+####################
+# Check if custom name is set and doesn't exists already
 customIniFile=$defaultPath/custom/custom.ini
 if [ ! -f "$customIniFile" ]; then
     touch $customIniFile
 fi
 SECTIONS=$(crudini --get $defaultPath/custom/custom.ini | sed 's/:.*//')
+
 # shellcheck disable=SC2068
 for custom_name in ${SECTIONS[@]}; do # Do not double quote it
     if [ "$custom_name" == "$customId" ]; then
@@ -120,99 +173,95 @@ for custom_name in ${SECTIONS[@]}; do # Do not double quote it
     fi
 done
 
-databaseName="opencapture_$customId"
-if [[ "$customId" = *"opencapture_"* ]]; then
-    databaseName="$customId"
+if [ -z "$databaseName" ]; then
+    databaseName="opencapture_$customId"
+    if [[ "$customId" = *"opencapture_"* ]]; then
+      databaseName="$customId"
+    fi
+
+    echo ""
+    echo "#################################################################################################"
+    echo ""
 fi
-echo ""
-echo "#################################################################################################"
-echo ""
 
 ####################
 # Retrieve database informations
-echo "Type database informations (hostname, port, username and password and postgres user password)."
-echo "It will be used to update path to use the custom's one"
-printf "Hostname [%s] : " "${bold}localhost${normal}"
-read -r choice
-
-if [[ "$choice" == "" ]]; then
-    hostname="localhost"
-else
-    hostname="$choice"
+if [ -z $hostname ] && [ -z $port ] && [ -z $databaseUsername ] && [ -z $databasePassword ]; then
+    echo "Type database informations (hostname, port, username and password and postgres user password)."
+    echo "It will be used to update path to use the custom's one"
 fi
 
-printf "Port [%s] : " "${bold}5432${normal}"
-read -r choice
+if [ -z "$hostname" ]; then
+    printf "Hostname [%s] : " "${bold}localhost${normal}"
+    read -r choice
 
-if [[ "$choice" == "" ]]; then
-    port=5432
-else
-    port="$choice"
+    if [[ "$choice" == "" ]]; then
+        hostname="localhost"
+    else
+        hostname="$choice"
+    fi
 fi
 
-printf "Username [%s] : " "${bold}$customId${normal}"
-read -r choice
+if [ -z "$port" ]; then
+    printf "Port [%s] : " "${bold}5432${normal}"
+    read -r choice
 
-if [[ "$choice" == "" ]]; then
-    databaseUsername="$customId"
-else
-    databaseUsername="$choice"
+    if [[ "$choice" == "" ]]; then
+        port=5432
+    else
+        port="$choice"
+    fi
 fi
 
-printf "Password [%s] : " "${bold}$customId${normal}"
-read -r choice
+if [ -z "$databaseUsername" ]; then
+    printf "Username [%s] : " "${bold}$customId${normal}"
+    read -r choice
 
-if [[ "$choice" == "" ]]; then
-    databasePassword="$customId"
-else
-    databasePassword="$choice"
+    if [[ "$choice" == "" ]]; then
+      databaseUsername="$customId"
+    else
+      databaseUsername="$choice"
+    fi
 fi
 
-echo ""
-echo "#################################################################################################"
-echo ""
+if [ -z "$databasePassword" ]; then
+    printf "Password [%s] : " "${bold}$customId${normal}"
+    read -r choice
 
-echo "Type docserver default path informations. By default it's /var/docservers/opencapture/"
-printf "Docserver default path [%s] : " "${bold}/var/docservers/opencapture/${normal}"
-read -r choice
-
-if [[ "$choice" == "" ]]; then
-    docserverDefaultPath="/var/docservers/opencapture/"
-else
-    docserverDefaultPath="$choice"
+    if [[ "$choice" == "" ]]; then
+        databasePassword="$customId"
+    else
+        databasePassword="$choice"
+    fi
 fi
 
 echo ""
 echo "#################################################################################################"
 echo ""
 
-echo "Type share default path informations. By default it's /var/share/"
-printf "Share default path [%s] : " "${bold}/var/share/${normal}"
-read -r choice
+if [ -z $docserverDefaultPath ]; then
+    echo "Type docserver default path informations. By default it's /var/docservers/opencapture/"
+    printf "Docserver default path [%s] : " "${bold}/var/docservers/opencapture/${normal}"
+    read -r choice
 
-if [[ "$choice" == "" ]]; then
+    if [[ "$choice" == "" ]]; then
+        docserverDefaultPath="/var/docservers/opencapture/"
+    else
+        docserverDefaultPath="$choice"
+    fi
+
+    echo ""
+    echo "#######################################################################################################################"
+    echo ""
+fi
+
+if [[ -z shareDefaultPath ]]; then
     shareDefaultPath="/var/share/"
-else
-    shareDefaultPath="$choice"
 fi
 
-echo ""
-echo "#################################################################################################"
-echo ""
-
-echo "Type python venv default path informations. By default it's /home/$user/python-venv/opencapture/"
-printf "Python venv default path [%s] : " "${bold}/home/$user/python-venv/opencapture/${normal}"
-read -r choice
-
-if [[ "$choice" == "" ]]; then
-    pythonVenvPath="/home/$user/python-venv/opencapture/"
-else
-    pythonVenvPath="$choice"
+if [[ -z $pythonVenvPath ]]; then
+    pythonVenvPath="/home/$user/python-venv/opencapture"
 fi
-
-echo ""
-echo "#################################################################################################"
-echo ""
 
 if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
     printf "Postgres user Password [%s] : " "${bold}postgres${normal}"
@@ -317,6 +366,7 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 cp $defaultPath/instance/referencial/default_referencial_supplier.csv.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier.csv"
 cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier_index.json"
 cp $defaultPath/instance/referencial/LISTE_PRENOMS.csv "$defaultPath/custom/$customId/instance/referencial/LISTE_PRENOMS.csv"
+cp $defaultPath/instance/referencial/CURRENCY_CODE.csv "$defaultPath/custom/$customId/instance/referencial/CURRENCY_CODE.csv"
 cp $defaultPath/src/backend/process_queue_verifier.py.default "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
 cp $defaultPath/src/backend/process_queue_splitter.py.default "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
 cp $defaultPath/bin/scripts/load_referential_splitter.sh.default "$defaultPath/custom/$customId/bin/scripts/load_referential_splitter.sh"
@@ -336,7 +386,7 @@ cp -r $defaultPath/bin/scripts/splitter_metadata/* "$defaultPath/custom/$customI
 sed -i "s#§§PYTHON_VENV§§#source $pythonVenvPath/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
 sed -i "s#§§PYTHON_VENV§§#source $pythonVenvPath/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 
-for file in "$defaultPath/custom/$customId/bin/scripts/*.sh"; do
+find "$defaultPath/custom/$customId/bin/scripts/" -name "*.sh" | while IFS= read -r file; do
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $file
     sed -i "s#§§CUSTOM_ID§§#$customId#g" $file
     sed -i "s#§§PYTHON_VENV§§#$pythonVenvPath/bin/python3#g" $file
@@ -349,6 +399,7 @@ cp -r $defaultPath/bin/scripts/splitter_methods/* "$defaultPath/custom/$customId
 cp -r $defaultPath/bin/scripts/splitter_metadata/* "$defaultPath/custom/$customId/bin/scripts/splitter_metadata/"
 
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/config.ini"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
 sed -i "s#§§BATCH_PATH§§#$defaultPath/custom/$customId/data/MailCollect/#g" "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
@@ -426,7 +477,7 @@ chown -R "$user":"$group" $defaultPath
 ####################
 # Create new supervisor or systemd files
 
-if [ $installationType == 'systemd' ]; then
+if [ $supervisorOrSystemd == 'systemd' ]; then
     touch "/etc/systemd/system/OCVerifier-worker_$customId.service"
     su -c "cat > /etc/systemd/system/OCVerifier-worker_$customId.service << EOF
 [Unit]
@@ -473,7 +524,7 @@ EOF"
     systemctl start "OCSplitter-worker_$customId".service
     sudo systemctl enable "OCVerifier-worker_$customId".service
     sudo systemctl enable "OCSplitter-worker_$customId".service
-elif [ $installationType == 'supervisor' ]; then
+elif [ $supervisorOrSystemd == 'supervisor' ]; then
     touch "/etc/supervisor/conf.d/OCVerifier-worker_$customId.conf"
     su -c "cat > /etc/supervisor/conf.d/OCVerifier-worker_$customId.conf << EOF
 [program:OCWorker_$customId]

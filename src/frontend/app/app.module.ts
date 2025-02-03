@@ -40,10 +40,11 @@ import { SplitterViewerComponent } from './splitter/viewer/splitter-viewer.compo
 import { SplitterListComponent } from './splitter/list/splitter-list.component';
 
 import { FilterPipe } from '../services/pipes/filter.pipe';
-import { NgxFileDragDropModule } from 'ngx-file-drag-drop';
+import { NgxFileDragDropComponent } from 'ngx-file-drag-drop';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { NgsgModule } from 'ng-sortgrid';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 import { DocumentTypeFactoryComponent } from './splitter/document-type-factory/document-type-factory.component';
 import { DocumentTypeComponent } from './splitter/document-type/document-type.component';
@@ -124,6 +125,8 @@ import { WorkflowBuilderSplitterComponent } from './settings/splitter/workflows/
 import { TimeoutInterceptor } from "../services/HttpTimeout.service";
 import { CodeEditorModule } from '@ngstack/code-editor';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { AttachmentListComponent } from "./attachment-list/attachment-list.component";
+import { FileViewerComponent } from "./file-viewer/file-viewer.component";
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -208,7 +211,9 @@ export function createTranslateLoader(http: HttpClient) {
         WorkflowsListComponent,
         WorkflowBuilderComponent,
         WorkflowsListSplitterComponent,
-        WorkflowBuilderSplitterComponent
+        WorkflowBuilderSplitterComponent,
+        AttachmentListComponent,
+        FileViewerComponent
     ],
     imports: [
         BrowserModule,
@@ -221,8 +226,9 @@ export function createTranslateLoader(http: HttpClient) {
         ServicesModule,
         NgsgModule,
         NgxChartsModule,
+        PdfViewerModule,
         CodeEditorModule.forRoot({
-            baseUrl: 'assets/monaco'
+            baseUrl: 'monaco/'
         }),
         ToastrModule.forRoot({
             maxOpened: 1,
@@ -239,7 +245,7 @@ export function createTranslateLoader(http: HttpClient) {
         }),
         ReactiveFormsModule,
         FormsModule,
-        NgxFileDragDropModule,
+        NgxFileDragDropComponent,
         DragDropModule,
         NgxMatSelectSearchModule,
         MatSelectCountryModule.forRoot('fr'),

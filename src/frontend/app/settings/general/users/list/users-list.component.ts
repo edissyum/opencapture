@@ -22,7 +22,7 @@ import { Router } from "@angular/router";
 import { UserService } from "../../../../../services/user.service";
 import { AuthService } from "../../../../../services/auth.service";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { environment } from  "../../../../env";
 import { of } from "rxjs";
@@ -42,7 +42,8 @@ import {ImportDialogComponent} from "../../../../../services/import-dialog/impor
     styleUrls: ['./users-list.component.scss'],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } }
-    ]
+    ],
+    standalone: false
 })
 
 export class UsersListComponent implements OnInit {

@@ -22,7 +22,7 @@ import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { UserService } from "../../../../../services/user.service";
 import { AuthService } from "../../../../../services/auth.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
@@ -34,9 +34,10 @@ import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/c
 import { Sort } from "@angular/material/sort";
 
 @Component({
-  selector: 'app-splitter-output-list',
-  templateUrl: './outputs-list.component.html',
-  styleUrls: ['./outputs-list.component.scss']
+    selector: 'app-splitter-output-list',
+    templateUrl: './outputs-list.component.html',
+    styleUrls: ['./outputs-list.component.scss'],
+    standalone: false
 })
 export class SplitterOutputListComponent implements OnInit {
     headers         : HttpHeaders   = this.authService.headers;

@@ -27,12 +27,13 @@ import { NotificationService } from "../../../../../services/notifications/notif
 import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/confirm-dialog.component";
 import { Sort } from "@angular/material/sort";
 import { MatDialog } from "@angular/material/dialog";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 
 @Component({
     selector: 'app-workflow-list',
     templateUrl: './workflows-list.component.html',
-    styleUrls: ['./workflows-list.component.scss']
+    styleUrls: ['./workflows-list.component.scss'],
+    standalone: false
 })
 export class WorkflowsListComponent implements OnInit {
     headers          : HttpHeaders   = this.authService.headers;

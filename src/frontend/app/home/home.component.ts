@@ -33,6 +33,7 @@ import { AuthService } from "../../services/auth.service";
     selector: 'app-home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
+    standalone: false
 })
 export class HomeComponent implements OnInit {
     isOpen = false;
@@ -72,22 +73,26 @@ export class HomeComponent implements OnInit {
             this.checkConnection();
         }
 
-        this.http.get(environment['url'] + '/ws/verifier/getUnseen/user/' + this.userService.user.id,
-            {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                this.fullUnseenBatches['verifier'] = data.unseen;
-                data.unseen.forEach((item: any) => {
-                    this.unseenBatches['verifier'] += item['unseen'];
-                });
-            })
-        ).subscribe();
+        if (verifier) {
+            this.http.get(environment['url'] + '/ws/verifier/getUnseen/user/' + this.userService.user.id,
+                {headers: this.authService.headers}).pipe(
+                tap((data: any) => {
+                    this.fullUnseenBatches['verifier'] = data.unseen;
+                    data.unseen.forEach((item: any) => {
+                        this.unseenBatches['verifier'] += item['unseen'];
+                    });
+                })
+            ).subscribe();
+        }
 
-        this.http.get(environment['url'] + '/ws/splitter/getUnseen/user/' + this.userService.user.id,
-            {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                this.unseenBatches['splitter'] = data['unseen'];
-            })
-        ).subscribe();
+        if (splitter) {
+            this.http.get(environment['url'] + '/ws/splitter/getUnseen/user/' + this.userService.user.id,
+                {headers: this.authService.headers}).pipe(
+                tap((data: any) => {
+                    this.unseenBatches['splitter'] = data['unseen'];
+                })
+            ).subscribe();
+        }
     }
 
     checkConnection() {

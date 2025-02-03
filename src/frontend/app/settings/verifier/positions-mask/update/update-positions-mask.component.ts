@@ -20,13 +20,12 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
 import { UserService } from "../../../../../services/user.service";
 import { AuthService } from "../../../../../services/auth.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import { FormControl } from "@angular/forms";
 import { catchError, finalize, tap } from "rxjs/operators";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { FileValidators } from "ngx-file-drag-drop";
 import { DomSanitizer } from "@angular/platform-browser";
 import { environment } from  "../../../../env";
@@ -37,7 +36,8 @@ declare const $: any;
 @Component({
     selector: 'update-positions-mask',
     templateUrl: './update-positions-mask.component.html',
-    styleUrls: ['./update-positions-mask.component.scss']
+    styleUrls: ['./update-positions-mask.component.scss'],
+    standalone: false
 })
 export class UpdatePositionsMaskComponent implements OnInit {
     loading                 : boolean   = true;
@@ -71,7 +71,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
             'values': [
                 {
                     id: 'delivery_number',
-                    label: marker('FACTURATION.delivery_number'),
+                    label: _('FACTURATION.delivery_number'),
                     unit: 'facturation',
                     type: 'text',
                     color: 'silver',
@@ -79,7 +79,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 },
                 {
                     id: 'invoice_number',
-                    label: marker('FACTURATION.invoice_number'),
+                    label: _('FACTURATION.invoice_number'),
                     unit: 'facturation',
                     type: 'text',
                     color: 'red',
@@ -87,7 +87,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 },
                 {
                     id: 'quotation_number',
-                    label: marker('FACTURATION.quotation_number'),
+                    label: _('FACTURATION.quotation_number'),
                     unit: 'facturation',
                     type: 'text',
                     color: 'orange',
@@ -95,7 +95,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 },
                 {
                     id: 'document_date',
-                    label: marker('FACTURATION.document_date'),
+                    label: _('FACTURATION.document_date'),
                     unit: 'facturation',
                     type: 'date',
                     color: 'yellow',
@@ -103,7 +103,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 },
                 {
                     id: 'document_due_date',
-                    label: marker('FACTURATION.document_due_date'),
+                    label: _('FACTURATION.document_due_date'),
                     unit: 'facturation',
                     type: 'date',
                     color: 'blue',
@@ -111,7 +111,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 },
                 {
                     id: 'firstname',
-                    label: marker('FACTURATION.firstname'),
+                    label: _('FACTURATION.firstname'),
                     unit: 'facturation',
                     type: 'text',
                     color: 'orange',
@@ -119,7 +119,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 },
                 {
                     id: 'lastname',
-                    label: marker('FACTURATION.lastname'),
+                    label: _('FACTURATION.lastname'),
                     unit: 'facturation',
                     type: 'text',
                     color: 'orange',
@@ -127,7 +127,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 },
                 {
                     id: 'vat_rate',
-                    label: marker('FACTURATION.vat_rate'),
+                    label: _('FACTURATION.vat_rate'),
                     unit: 'facturation',
                     type: 'text',
                     color: 'pink',
@@ -135,7 +135,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 },
                 {
                     id: 'no_rate_amount',
-                    label: marker('FACTURATION.no_rate_amount'),
+                    label: _('FACTURATION.no_rate_amount'),
                     unit: 'facturation',
                     type: 'text',
                     color: 'fuschia',
@@ -143,7 +143,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 },
                 {
                     id: 'vat_amount',
-                    label: marker('FACTURATION.vat_amount'),
+                    label: _('FACTURATION.vat_amount'),
                     unit: 'facturation',
                     type: 'text',
                     color: 'purple',
@@ -151,7 +151,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 },
                 {
                     id: 'total_ttc',
-                    label: marker('FACTURATION.total_ttc'),
+                    label: _('FACTURATION.total_ttc'),
                     unit: 'facturation',
                     type: 'text',
                     color: 'white',
@@ -177,7 +177,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
         },
         {
             'id': 'custom_fields',
-            'label': marker('FORMS.custom_fields'),
+            'label': _('FORMS.custom_fields'),
             'values': []
         }
     ];
@@ -264,7 +264,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 if (data['customFields']) {
                     for (const field in data['customFields']) {
                         if (data['customFields'].hasOwnProperty(field)) {
-                            if (data['customFields'][field].module === 'verifier') {
+                            if (data['customFields'][field].module === 'verifier' && data['customFields'][field].enabled) {
                                 for (const parent in this.availableFieldsParent) {
                                     if (this.availableFieldsParent[parent].id === 'custom_fields') {
                                         this.availableFieldsParent[parent].values.push(
@@ -470,7 +470,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
         imageContainer.addClass('pointer-events-none');
         imageContainer.addClass('cursor-auto');
         this.http.put(environment['url'] + '/ws/positions_masks/update/' + this.positionMaskId,
-            {'args': {'filename': '', 'positions': '{}', 'pages': '{}'}},
+            {'args': {'filename': '', 'pages': '{}', 'regex': '{}'}},
             {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('POSITIONS-MASKS.updated'));

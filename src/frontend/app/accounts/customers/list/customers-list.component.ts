@@ -21,7 +21,7 @@ import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { UserService } from "../../../../services/user.service";
 import { AuthService } from "../../../../services/auth.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
@@ -35,7 +35,8 @@ import { Sort } from "@angular/material/sort";
 @Component({
     selector: 'app-list',
     templateUrl: './customers-list.component.html',
-    styleUrls: ['./customers-list.component.scss']
+    styleUrls: ['./customers-list.component.scss'],
+    standalone: false
 })
 export class CustomersListComponent implements OnInit {
     columnsToDisplay: string[]    = ['id', 'name', 'company_number', 'vat_number', 'siret', 'siren', 'module', 'actions'];

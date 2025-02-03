@@ -84,7 +84,7 @@ class MEMWebServices:
     def get_document_with_contact(self, args):
         where = "?custom_fields=" + str(args['memCustomField']['id'])
         if args['memClause']:
-            where += '&clause=' + args['memClause'].replace(' ', '')
+            where += '&clause=' + args['memClause']
         res = requests.get(self.base_url + '/resources/getByContact/' + args['contactId'] + where, auth=self.auth,
                            timeout=self.timeout)
         if res.status_code != 200:

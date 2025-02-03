@@ -1,4 +1,9 @@
-<app-process-watcher *ngIf="this.enableAppProcessWatcher"></app-process-watcher>
-<app-menu [image]="this.image" [imageMobile]="this.imageMobile" *ngIf="this.showMenu && loading === this.loading"></app-menu>
+@if (this.enableAppProcessWatcher) {
+    <app-process-watcher></app-process-watcher>
+}
+
+@if (this.showMenu && !this.loading) {
+    <app-menu [image]="this.image" [imageMobile]="this.imageMobile"></app-menu>
+}
 
 <router-outlet></router-outlet>

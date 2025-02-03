@@ -19,7 +19,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthService } from "../../../../services/auth.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
@@ -32,7 +32,8 @@ import { Sort } from "@angular/material/sort";
 @Component({
     selector: 'app-regex',
     templateUrl: './regex.component.html',
-    styleUrls: ['./regex.component.scss']
+    styleUrls: ['./regex.component.scss'],
+    standalone: false
 })
 export class RegexComponent implements OnInit {
     columnsToDisplay    : string[]      = ['regex_id', 'label', 'content', 'actions'];

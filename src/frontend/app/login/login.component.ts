@@ -19,7 +19,7 @@ import { of } from "rxjs";
 import { environment } from "../env";
 import { Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { Validators, FormBuilder } from '@angular/forms';
 import { AuthService } from "../../services/auth.service";
 import { UserService } from "../../services/user.service";
@@ -33,7 +33,8 @@ import { NotificationService } from "../../services/notifications/notifications.
 
 @Component({
     selector: 'app-login',
-    templateUrl: './login.component.html'
+    templateUrl: './login.component.html',
+    standalone: false
 })
 export class LoginComponent implements OnInit {
     loginForm               : any;

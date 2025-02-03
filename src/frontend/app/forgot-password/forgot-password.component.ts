@@ -2,7 +2,7 @@ import {Component, OnInit, SecurityContext} from '@angular/core';
 import { DomSanitizer } from "@angular/platform-browser";
 import { FormControl, Validators } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../services/notifications/notifications.service";
 import { LocaleService } from "../../services/locale.service";
 import { SessionStorageService } from "../../services/session-storage.service";
@@ -13,7 +13,8 @@ import { of } from "rxjs";
 @Component({
     selector: 'app-forgot-password',
     templateUrl: './forgot-password.component.html',
-    styleUrls: ['./forgot-password.component.scss']
+    styleUrls: ['./forgot-password.component.scss'],
+    standalone: false
 })
 export class ForgotPasswordComponent implements OnInit {
     emailControl            : FormControl = new FormControl('', [Validators.required, Validators.email, Validators.minLength(5)]);

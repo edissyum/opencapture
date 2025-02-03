@@ -22,7 +22,7 @@ import { FormControl } from "@angular/forms";
 import { catchError, tap } from "rxjs/operators";
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { UserService } from "../../../../services/user.service";
 import { AuthService } from "../../../../services/auth.service";
 import { SettingsService } from "../../../../services/settings.service";
@@ -30,9 +30,10 @@ import { PrivilegesService } from "../../../../services/privileges.service";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 
 @Component({
-  selector: 'app-status-update-splitter',
-  templateUrl: './update-status.component.html',
-  styleUrls: ['./update-status.component.scss']
+    selector: 'app-status-update-splitter',
+    templateUrl: './update-status.component.html',
+    styleUrls: ['./update-status.component.scss'],
+    standalone: false
 })
 export class SplitterUpdateStatusComponent implements OnInit {
   loading           : boolean     = false;

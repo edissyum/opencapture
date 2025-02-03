@@ -168,8 +168,21 @@ def create_document():
     if not privileges.has_privileges(request.environ['user_id'], ['access_splitter']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/addDocument'}), 403
 
-    data = json.loads(request.data)
-    res = splitter.create_document(data)
+    check, message = rest_validator(request.json, [
+        {'id': 'userId', 'type': int, 'mandatory': True},
+        {'id': 'batchId', 'type': int, 'mandatory': True},
+        {'id': 'workflowId', 'type': int, 'mandatory': True},
+        {'id': 'displayOrder', 'type': int, 'mandatory': True},
+        {'id': 'updatedDocuments', 'type': list, 'mandatory': False},
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = splitter.create_document(request.json)
     return make_response(jsonify(res[0])), res[1]
 
 

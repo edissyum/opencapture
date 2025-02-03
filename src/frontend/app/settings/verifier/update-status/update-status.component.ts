@@ -18,7 +18,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { UserService } from "../../../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
 import { HttpClient } from "@angular/common/http";
@@ -30,9 +30,10 @@ import { catchError, tap } from "rxjs/operators";
 import { of } from "rxjs";
 
 @Component({
-  selector: 'app-status-update',
-  templateUrl: './update-status.component.html',
-  styleUrls: ['./update-status.component.scss']
+    selector: 'app-status-update',
+    templateUrl: './update-status.component.html',
+    styleUrls: ['./update-status.component.scss'],
+    standalone: false
 })
 export class VerifierStatusUpdateComponent implements OnInit {
   loading           : boolean     = false;

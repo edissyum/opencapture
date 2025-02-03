@@ -20,7 +20,7 @@ import { tap } from "rxjs/operators";
 import { Router } from "@angular/router";
 import { Location } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { UserService } from "../../services/user.service";
 import { AuthService } from "../../services/auth.service";
 import { LocaleService } from "../../services/locale.service";
@@ -31,7 +31,8 @@ import { SessionStorageService } from "../../services/session-storage.service";
 @Component({
     selector: 'app-menu',
     templateUrl: './menu.component.html',
-    styleUrls: ['./menu.component.scss']
+    styleUrls: ['./menu.component.scss'],
+    standalone: false
 })
 
 export class MenuComponent implements OnInit {

@@ -16,8 +16,8 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask_babel import gettext
+from src.backend.models import history
 from flask import g as current_context, request
-from src.backend.models import history, user
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
@@ -64,7 +64,7 @@ def get_history(request_args):
     if 'module' in request_args and request_args['module']:
         where.append('history_module = %s')
         data.append(request_args['module'])
-    if 'year' in request_args and request_args['year']:
+    if 'year' in request_args and request_args['year'] and request_args['year'] not in [0, '0']:
         where.append('extract(year from history_date) = %s')
         data.append(request_args['year'])
 
@@ -101,5 +101,18 @@ def get_history_users():
     _history, _ = history.get_history(args)
     response = {
         "history": _history
+    }
+    return response, 200
+
+
+def get_available_years():
+    args = {
+        'select': ['DISTINCT(extract(year from history_date)) as year'],
+        'order_by': ['year ASC']
+    }
+
+    _years, _ = history.get_history(args)
+    response = {
+        "years": _years
     }
     return response, 200

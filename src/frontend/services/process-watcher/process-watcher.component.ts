@@ -22,7 +22,7 @@ import { catchError, finalize, tap } from "rxjs/operators";
 import { interval, of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../auth.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { Router } from "@angular/router";
 import { NotificationService } from "../notifications/notifications.service";
 import { PrivilegesService } from "../privileges.service";
@@ -30,7 +30,8 @@ import { PrivilegesService } from "../privileges.service";
 @Component({
     selector: 'app-process-watcher',
     templateUrl: './process-watcher.component.html',
-    styleUrls: ['./process-watcher.component.scss']
+    styleUrls: ['./process-watcher.component.scss'],
+    standalone: false
 })
 
 export class ProcessWatcherComponent implements OnInit {

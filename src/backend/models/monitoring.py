@@ -62,6 +62,24 @@ def get_process_by_id(process_id, date_format):
     return _process, error
 
 
+def get_process_by_document_id(document_id):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    error = None
+    _process = database.select({
+        'select': ['*'],
+        'table': ['monitoring'],
+        'where': ['document_ids = %s'],
+        'data': ['{' + str(document_id) + '}']
+    })
+    return _process, error
+
+
 def get_process_by_token(process_token, date_format):
     if 'database' in current_context:
         database = current_context.database

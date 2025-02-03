@@ -3,9 +3,11 @@
         <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
-        <div *ngIf="this.loading">
-            <app-loader></app-loader>
-        </div>
+        @if (this.loading) {
+            <div>
+                <app-loader></app-loader>
+            </div>
+        }
         <div class="settings_header">
             <div class="flex">
                 <button mat-icon-button (click)="this.serviceSettings.minimizeSideNav = !this.serviceSettings.minimizeSideNav;">
@@ -32,7 +34,7 @@
                 </ng-container>
                 <ng-container matColumnDef="input_folder">
                     <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'WORKFLOW.input_folder_header' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element?.input['input_folder'] }} </mat-cell>
+                    <mat-cell *matCellDef="let element"> {{ element?.input?.['input_folder'] }} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>

@@ -22,7 +22,7 @@ import { Router } from "@angular/router";
 import { FormControl, Validators } from "@angular/forms";
 import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
@@ -32,9 +32,10 @@ import { finalize } from "rxjs/operators";
 import {DocumentTypeComponent} from "../../../../splitter/document-type/document-type.component";
 
 @Component({
-  selector: 'app-create-model',
-  templateUrl: './create-ai-model.component.html',
-  styleUrls: ['./create-ai-model.component.scss']
+    selector: 'app-create-model',
+    templateUrl: './create-ai-model.component.html',
+    styleUrls: ['./create-ai-model.component.scss'],
+    standalone: false
 })
 
 export class CreateSplitterAiModelComponent implements OnInit {

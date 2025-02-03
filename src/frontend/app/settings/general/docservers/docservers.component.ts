@@ -28,15 +28,16 @@ import { environment } from  "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 
 @Component({
     selector: 'app-docservers',
     templateUrl: './docservers.component.html',
     styleUrls: ['./docservers.component.scss'],
     providers: [
-        {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' }}
-    ]
+        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } }
+    ],
+    standalone: false
 })
 export class DocserversComponent implements OnInit {
     columnsToDisplay    : string[]      = ['id', 'docserver_id', 'description', 'content', 'actions'];

@@ -14,5 +14,6 @@
     "postal_code"         : "CP",
     "country"             : "PAYS",
     "get_only_raw_footer" : "CONTROLE DE COHERENCE",
-    "lang"                : "LANGUE DES DOCUMENTS"
+    "lang"                : "LANGUE DES DOCUMENTS",
+    "default_currency"    : "DEVISE PAR DEFAUT"
 }

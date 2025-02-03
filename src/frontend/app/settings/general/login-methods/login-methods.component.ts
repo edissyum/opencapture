@@ -27,13 +27,13 @@ import { environment } from "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { FormBuilder, FormControl } from "@angular/forms";
-import { TranslateService } from "@ngx-translate/core";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { _, TranslateService } from "@ngx-translate/core";
 
 @Component({
-  selector: 'app-login-methods',
-  templateUrl: './login-methods.component.html',
-  styleUrls: ['./login-methods.component.scss']
+    selector: 'app-login-methods',
+    templateUrl: './login-methods.component.html',
+    styleUrls: ['./login-methods.component.scss'],
+    standalone: false
 })
 export class LoginMethodsComponent implements OnInit {
     loading                 : boolean   = true;
@@ -49,8 +49,8 @@ export class LoginMethodsComponent implements OnInit {
     synchroUsersStatus      : boolean   = false;
     isProcessConnectionLaunched       : boolean   = false;
     label                   : any[]     = [
-        marker ('LOGIN-METHODS.ldap'),
-        marker ('LOGIN-METHODS.default')
+        _('LOGIN-METHODS.ldap'),
+        _('LOGIN-METHODS.default')
     ];
     loginMethods      : any[]     = [
         {
@@ -141,7 +141,7 @@ export class LoginMethodsComponent implements OnInit {
             label: this.translate.instant('LOGIN-METHODS.class_Object'),
             type: 'text',
             control: new FormControl(),
-            required: true,
+            required: false,
             hint:'Ex : posixAccount'
         },
         {
@@ -150,7 +150,7 @@ export class LoginMethodsComponent implements OnInit {
             type: 'text',
             values: [],
             control: new FormControl(),
-            required: true,
+            required: false,
             hint:'Ex : objectClass'
         },
         {

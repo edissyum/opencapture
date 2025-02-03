@@ -15,10 +15,9 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import * as moment from "moment";
+import moment from "moment";
 import { remove } from 'remove-accents';
 import { environment } from "../../env";
-
 import { UserService } from "../../../services/user.service";
 import { AuthService} from "../../../services/auth.service";
 import { LocaleService } from "../../../services/locale.service";
@@ -30,11 +29,10 @@ import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm
 import { HttpClient } from "@angular/common/http";
 import { of, ReplaySubject, Subject } from "rxjs";
 import { MatDialog } from "@angular/material/dialog";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MatCheckboxChange } from "@angular/material/checkbox";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Component, HostListener, OnDestroy, OnInit, SecurityContext, ViewChild } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
@@ -61,7 +59,8 @@ export interface Field {
 @Component({
     selector: 'app-viewer',
     templateUrl: './splitter-viewer.component.html',
-    styleUrls: ['./splitter-viewer.component.scss']
+    styleUrls: ['./splitter-viewer.component.scss'],
+    standalone: false
 })
 export class SplitterViewerComponent implements OnInit, OnDestroy {
     @HostListener('window:beforeunload', ['$event'])
@@ -71,11 +70,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
         this.removeLockByBatchId();
     }
-    @ViewChild(`cdkStepper`) cdkDropList: CdkDragDrop<any> | undefined;
+    @ViewChild('cdkStepper') cdkDropList: CdkDragDrop<any> | undefined;
 
     loading                     : boolean       = true;
-    loadingAttachment           : boolean       = true;
-    attachments                 : any[]         = [];
     attachmentsLength           : number        = 0;
     showZoomPage                : boolean       = false;
     isBatchOnDrag               : boolean       = false;
@@ -88,6 +85,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     addDocumentLoading          : boolean       = false;
     isMouseInDocumentList       : boolean       = false;
     batchMetadataOpenState      : boolean       = true;
+    sidenavOpened               : boolean       = false;
     documentMetadataOpenState   : boolean       = false;
     batchForm                   : FormGroup     = new FormGroup({});
     batches                     : any[]         = [];
@@ -105,9 +103,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     currentTime                 : string        = "";
     toolSelectedOption          : string        = "";
     timeLabels                  : any           = {
-        'today'     : marker('BATCH.today'),
-        'yesterday' : marker('BATCH.yesterday'),
-        'older'     : marker('BATCH.older')
+        'today'     : _('BATCH.today'),
+        'yesterday' : _('BATCH.yesterday'),
+        'older'     : _('BATCH.older')
     };
     defaultDoctype              : any           = {
         label       : null,
@@ -133,12 +131,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             displayOrder    : -1
         }
     };
-    fieldsCategories            : any           = {
+    fieldsCategories        : any           = {
         'batch_metadata'    : [],
         'document_metadata' : []
     };
 
-    configurations              : any = {
+    configurations          : any = {
         'enableSplitterProgressBar': true
     };
 
@@ -157,7 +155,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         private http: HttpClient,
         private route: ActivatedRoute,
         public userService: UserService,
-        private sanitizer: DomSanitizer,
         private _sanitizer: DomSanitizer,
         private authService: AuthService,
         public translate: TranslateService,
@@ -179,10 +176,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         const customFields = await this.getCustomFields();
         this.customFields = customFields.customFields;
 
-        marker('SPLITTER.add_document_impossible_attachments')
+        _('SPLITTER.add_document_impossible_attachments')
         this.getConfigurations();
         this.loadSelectedBatch();
-        this.getAttachments();
         this.updateBatchLock();
         this.translate.get('HISTORY-DESC.viewer_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
             this.historyService.addHistory('splitter', 'viewer', translated);
@@ -247,6 +243,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     status              : data.batches[0]['status'],
                     formId              : data.batches[0]['form_id'],
                     previousFormId      : data.batches[0]['form_id'],
+                    workflowId          : data.batches[0]['workflow_id'],
                     customFieldsValues  : data.batches[0]['data'].hasOwnProperty('custom_fields') ? data.batches[0]['data']['custom_fields'] : {},
                     selectedPagesCount  : 0,
                     outputs             : [],
@@ -325,13 +322,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     this.batches.push({
                         id               : batch['id'],
                         inputId          : batch['input_id'],
-                        fileName         : batch['file_name'],
                         formLabel        : batch['form_label'],
                         date             : batch['batch_date'],
                         customerName     : batch['customer_name'],
                         documentsCount   : batch['documents_count'],
                         attachmentsCount : batch['attachments_count'],
-                        thumbnail        : this.sanitize(batch['thumbnail'])
+                        thumbnail        : this.sanitize(batch['thumbnail']),
+                        fileName        : batch['subject'] ? batch['subject'] : batch['file_name']
                     })
                 );
 
@@ -441,12 +438,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.hasUnsavedChanges = true;
         const documentDisplayOrder  = this.updateDocumentDisplayOrder();
         this.addDocumentLoading = true;
+
         this.http.post(environment['url'] + '/ws/splitter/addDocument',
             {
                 'batchId'           : this.currentBatch.id,
+                'updatedDocuments'  : documentDisplayOrder,
+                'userId'            : this.userService.user.id,
+                'workflowId'        : this.currentBatch.workflowId,
                 'splitIndex'        : this.currentBatch.maxSplitIndex + 1,
-                'displayOrder'      : this.currentBatch.selectedDocument.displayOrder + 1,
-                'updatedDocuments'  : documentDisplayOrder
+                'displayOrder'      : this.currentBatch.selectedDocument.displayOrder + 1
             },
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -742,13 +742,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     this.fieldsCategories[fieldCategory] = [];
                     if (data.fields.hasOwnProperty(fieldCategory)) {
                         data.fields[fieldCategory].forEach((field: Field) => {
+                            const custom_id = parseInt(field.id.toString().replace('custom_', ''));
+                            const customField = this.customFields.filter((field: any) => field.id === custom_id);
                             this.fieldsCategories[fieldCategory].push({
                                 'id'                   : field.id,
-                                'type'                 : field.type,
+                                'type'                 : customField.length > 0 ? customField[0].type : field.type,
                                 'label'                : field.label,
                                 'class'                : field.class,
                                 'disabled'             : field.disabled,
-                                'settings'             : field.settings,
+                                'settings'             : customField.length > 0 ? customField[0].settings : field.settings,
                                 'required'             : field.required,
                                 'searchMask'           : field.searchMask,
                                 'resultMask'           : field.resultMask,
@@ -759,8 +761,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                                 'conditioned_fields'   : field.conditioned_fields,
                                 'conditioned_doctypes' : field.conditioned_doctypes
                             });
-                            if (fieldCategory === 'batch_metadata' && field.metadata_key &&
-                                !field.metadata_key.includes("SEPARATOR_META")) {
+                            if (fieldCategory === 'batch_metadata' && field.metadata_key && !field.metadata_key.includes("SEPARATOR_META")) {
                                 this.inputMode = 'Auto';
                             }
                         });
@@ -1492,121 +1493,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         return _value;
     }
 
-    getAttachments() {
-        this.http.get(environment['url'] + '/ws/attachments/splitter/list/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                this.attachments = data;
-                this.attachments.forEach((attachment: any) => {
-                    if (attachment['thumb']) {
-                        attachment['thumb'] = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/jpeg;base64, ' + attachment['thumb']);
-                    }
-                    attachment['extension'] = attachment['filename'].split('.').pop();
-                    if (['csv'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'fa-file-csv';
-                    } else if (['xls', 'xlsx', 'ods'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'fa-file-excel';
-                    } else if (['pptx', 'ppt', 'odp'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'fa-file-powerpoint';
-                    } else if (['doc', 'docx', 'odt', 'dot'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'fa-file-word';
-                    } else if (['zip', 'tar.gz', 'tar', '7z', 'tgz', 'tar.z'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'fa-file-zipper';
-                    } else if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'fa-file-video';
-                    } else if (['mp3', 'wav', 'flac', 'ogg', 'wma', 'aac', 'm4a'].includes(attachment['extension'])) {
-                        attachment['extension_icon'] = 'audio-file-video';
-                    } else {
-                        attachment['extension_icon'] = 'fa-file';
-                    }
-                });
-                this.attachmentsLength = this.attachments.length;
-                this.loadingAttachment = false;
-
-            }),
-            finalize(() => {
-            }),
-            catchError((err: any) => {
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
-    }
-
-    uploadAttachments(event: any) {
-        this.loadingAttachment = true;
-        const attachments = new FormData();
-        for (const file of event.target.files) {
-            attachments.append(file['name'], file);
-        }
-
-        attachments.set('batchId', this.currentBatch.id);
-        this.http.post(environment['url'] + '/ws/attachments/splitter/upload', attachments, {headers: this.authService.headers}).pipe(
-            tap(() => {
-                this.notify.success(this.translate.instant('ATTACHMENTS.attachment_uploaded'));
-                this.getAttachments();
-            }),
-            catchError((err: any) => {
-                this.loadingAttachment = false;
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
-    }
-
-    deleteConfirmDialog(documentId: number) {
-        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data: {
-                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('ATTACHMENTS.confirm_delete_attachment'),
-                confirmButton       : this.translate.instant('GLOBAL.delete'),
-                confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel')
-            },
-            width: "600px"
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                this.loadingAttachment = true;
-                this.deleteAttachment(documentId);
-            }
-        });
-    }
-
-    deleteAttachment(attachmentId: number) {
-        this.http.delete(environment['url'] + '/ws/attachments/splitter/delete/' + attachmentId, {headers: this.authService.headers}).pipe(
-            tap(() => {
-                this.notify.success(this.translate.instant('ATTACHMENTS.attachment_deleted'));
-                this.getAttachments();
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
-    }
-
-    downloadAttachment(attachment: any) {
-        this.http.post(environment['url'] + '/ws/attachments/splitter/download/' + attachment['id'], {},
-            {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                const mimeType = data['mime'];
-                const referenceFile = 'data:' + mimeType + ';base64, ' + data['file'];
-                const link = document.createElement("a");
-                link.href = referenceFile;
-                link.download = attachment['filename'];
-                link.click();
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
-    }
-
     setDocumentPrincipal(documentIndex: number): void {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
@@ -1653,5 +1539,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 }
             }
         });
+    }
+
+    toggleSidenav() {
+        this.sidenavOpened = !this.sidenavOpened;
+    }
+
+    onAttachmentsLengthChange(event: any) {
+        this.attachmentsLength = event;
     }
 }

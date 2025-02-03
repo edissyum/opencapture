@@ -31,12 +31,14 @@ import shutil
 import imutils
 import tempfile
 import datetime
+import schwifty
 import subprocess
 import numpy as np
 from PIL import Image
 from zipfile import ZipFile
 from flask import current_app
 from deskew import determine_skew
+from pyocr.builders import LineBox
 from skimage.color import rgb2gray
 from skimage.transform import rotate
 from pdf2image import convert_from_path
@@ -129,8 +131,7 @@ class Files:
 
             if zone_to_crop == 'header':
                 if is_custom:
-                    self.crop_image_header(file, last_image, page, self.custom_file_name,
-                                           convert_function=convert_function)
+                    self.crop_image_header(file, last_image, page, self.custom_file_name, convert_function=convert_function)
                 else:
                     self.crop_image_header(file, last_image, page, convert_function=convert_function)
                 if open_img:
@@ -140,8 +141,7 @@ class Files:
                         self.img = Image.open(self.jpg_name_header)
             elif zone_to_crop == 'footer':
                 if is_custom:
-                    self.crop_image_footer(file, last_image, page, self.custom_file_name,
-                                           convert_function=convert_function)
+                    self.crop_image_footer(file, last_image, page, self.custom_file_name, convert_function=convert_function)
                 else:
                     self.crop_image_footer(file, last_image, page, convert_function=convert_function)
                 if open_img:
@@ -293,8 +293,8 @@ class Files:
             images = self.return_img(file, convert_function, page, output)
 
             for i in range(len(images)):
-                self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
-                crop_ratio = (0, 0, images[i].width, int(images[i].height - self.height_ratio))
+                height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
+                crop_ratio = (0, 0, images[i].width, int(images[i].height - height_ratio))
                 _im = images[i].crop(crop_ratio).convert('RGB')
                 _im.save(output, 'JPEG')
         except (Exception,) as error:
@@ -315,7 +315,8 @@ class Files:
             images = self.return_img(file, convert_function, page, output)
 
             for i in range(len(images)):
-                self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
+                if self.height_ratio == '':
+                    self.height_ratio = int(images[i].height / 3 + images[i].height * 0.1)
                 crop_ratio = (0, self.height_ratio, images[i].width, images[i].height)
                 _im = images[i].crop(crop_ratio).convert('RGB')
                 _im.save(output, 'JPEG')
@@ -327,16 +328,20 @@ class Files:
     # And also add the position found on the cropped section divided by 2.8
     def return_position_with_ratio(self, line, target):
         position = {0: {}, 1: {}}
-        if line.position:
-            position[0][0] = line.position[0][0]
-            position[1][0] = line.position[1][0]
+
+        if isinstance(line, LineBox):
+            line = line.__dict__
+
+        if line['position']:
+            position[0][0] = line['position'][0][0]
+            position[1][0] = line['position'][1][0]
 
             if target == 'footer':
-                position[0][1] = line.position[0][1] + self.height_ratio
-                position[1][1] = line.position[1][1] + self.height_ratio
+                position[0][1] = line['position'][0][1] + self.height_ratio
+                position[1][1] = line['position'][1][1] + self.height_ratio
             else:
-                position[0][1] = line.position[0][1]
-                position[1][1] = line.position[1][1]
+                position[0][1] = line['position'][0][1]
+                position[1][1] = line['position'][1][1]
         return position
 
     def get_pages(self, docservers, file):
@@ -372,7 +377,7 @@ class Files:
         params.filterByCircularity = True
         params.minCircularity = 0.1
         params.filterByConvexity = True
-        params.minConvexity = 0.87
+        params.minConvexity = 0.50 # Lower if you have a false blank page. Increase if you have an unwanted blank page.
         params.filterByInertia = True
         params.minInertiaRatio = 0.01
 
@@ -492,28 +497,33 @@ class Files:
             improved_cropped_image = Image.open('/tmp/cropped_' + rand + '_improved' + extension)
             text = ocr.text_builder(improved_cropped_image)
 
-        try:
-            text = text.replace('%', '').replace('€', '').replace('$', '').replace('£', '')
-            text = text.strip()
-            text = text.replace(' ', '.')
-            text = text.replace('\n', '')
-            text = text.replace(',', '.')
-            text = text.replace('\x0c', '')
+        match = schwifty.IBAN(text, allow_invalid=True).is_valid
+        if match:
+            text = re.sub('\s*', '', text)
 
-            splitted_number = text.split('.')
-            if len(splitted_number) > 1:
-                last_index = splitted_number[len(splitted_number) - 1]
-                if len(last_index) > 2:
-                    text = text.replace('.', '')
-                    is_number = True
-                else:
-                    splitted_number.pop(-1)
-                    text = ''.join(splitted_number) + '.' + last_index
-                    is_number = True
-        except (ValueError, SyntaxError, TypeError):
-            pass
+        if not match:
+            try:
+                text = text.replace('%', '').replace('€', '').replace('$', '').replace('£', '')
+                text = text.strip()
+                text = text.replace(' ', '.')
+                text = text.replace('\n', '')
+                text = text.replace(',', '.')
+                text = text.replace('\x0c', '')
 
-        if is_number and re.match(r'[A-Z]', text, flags=re.IGNORECASE):
+                splitted_number = text.split('.')
+                if len(splitted_number) > 1:
+                    last_index = splitted_number[len(splitted_number) - 1]
+                    if len(last_index) > 2:
+                        text = text.replace('.', '')
+                        is_number = True
+                    else:
+                        splitted_number.pop(-1)
+                        text = ''.join(splitted_number) + '.' + last_index
+                        is_number = True
+            except (ValueError, SyntaxError, TypeError):
+                pass
+
+        if is_number and re.match(r'[A-Z]?', text, flags=re.IGNORECASE):
             is_number = False
 
         if not is_number:
@@ -530,12 +540,13 @@ class Files:
                     for _r in _regex:
                         regex_dict[_r['regex_id']] = _r['content']
 
-            for res in re.finditer(r"" + regex_dict['date'], tmp_text):
-                date_class = FindDate(ocr, self.log, regex_dict, self.configurations, self, '', '', '', self.docservers,
-                                      '', '')
-                date, _ = date_class.format_date(res.group(), (('', ''), ('', '')), True, False)
-                if date:
-                    text = date
+            if 'date' in regex_dict and regex_dict['date']:
+                for res in re.finditer(r"" + regex_dict['date'], tmp_text):
+                    date_class = FindDate(ocr, self.log, regex_dict, self.configurations, self, '', '', '',
+                                          self.docservers, '', '')
+                    date = date_class.format_date(res.group(), (('', ''), ('', '')), True, False, lang=lang)
+                    if date and date[0]:
+                        text = date[0]
 
         if regex_name:
             for res in re.finditer(r"" + self.regex[regex_name], text):

@@ -20,7 +20,7 @@ import { environment } from "../../../../env";
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { MatDialog } from "@angular/material/dialog";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { FormControl, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { catchError, finalize, tap } from "rxjs/operators";
@@ -36,11 +36,12 @@ import {ConfigService} from "../../../../../services/config.service";
     templateUrl: './workflow-builder.component.html',
     styleUrls: ['./workflow-builder.component.scss'],
     providers: [{
-        provide: STEPPER_GLOBAL_OPTIONS,
-        useValue: {
-            displayDefaultIndicatorType: false
-        }
-    }]
+            provide: STEPPER_GLOBAL_OPTIONS,
+            useValue: {
+                displayDefaultIndicatorType: false
+            }
+        }],
+    standalone: false
 })
 
 export class WorkflowBuilderComponent implements OnInit {
@@ -273,6 +274,10 @@ export class WorkflowBuilderComponent implements OnInit {
                     {
                         'id': 'firstname_lastname',
                         'label': this.translate.instant('FACTURATION.firstname_lastname')
+                    },
+                    {
+                        'id': 'currency',
+                        'label': this.translate.instant('WORKFLOW.currency')
                     },
                     {
                         'id': 'footer',

@@ -21,7 +21,7 @@ import { FormControl, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
@@ -30,9 +30,10 @@ import { catchError, finalize, tap } from "rxjs/operators";
 import { lastValueFrom, of } from "rxjs";
 
 @Component({
-  selector: 'app-update-model',
-  templateUrl: './update-ai-model.component.html',
-  styleUrls: ['./update-ai-model.component.scss']
+    selector: 'app-update-model',
+    templateUrl: './update-ai-model.component.html',
+    styleUrls: ['./update-ai-model.component.scss'],
+    standalone: false
 })
 
 export class UpdateVerifierAiModelComponent implements OnInit {

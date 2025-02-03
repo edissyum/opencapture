@@ -368,6 +368,11 @@ def create_script_and_watcher(args):
                 else:
                     Config.fswatcher_add_section(fs_watcher_config.file, fs_watcher_job, fs_watcher_command,
                                                   args['input_folder'], args['workflow_label'])
+
+                try:
+                    os.popen('sudo systemctl restart fs-watcher')
+                except (Exception,):
+                    pass
                 return '', 200
             else:
                 response = {

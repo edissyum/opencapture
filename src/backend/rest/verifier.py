@@ -368,7 +368,7 @@ def delete_document_data(document_id):
                         'message': f'/verifier/documents/{document_id}/deleteData'}), 403
 
     check, message = rest_validator(request.json['args'], [
-        {'id': 'fields', 'type': dict, 'mandatory': 'fields' in request.json['args']},
+        {'id': 'fields', 'type': list, 'mandatory': 'fields' in request.json['args']},
         {'id': 'multiple', 'type': bool, 'mandatory': 'fields' in request.json['args']}
     ], only_data='fields' not in request.json['args'])
 
@@ -378,6 +378,7 @@ def delete_document_data(document_id):
             "message": message
         }, 400)
 
+    res = ['', 400]
     if 'multiple' in request.json['args']:
         fields = request.json['args']['fields']
         for field in fields:
@@ -396,7 +397,7 @@ def delete_document_position(document_id):
                         'message': f'/verifier/documents/{document_id}/deletePosition'}), 403
 
     check, message = rest_validator(request.json['args'], [
-        {'id': 'fields', 'type': dict, 'mandatory': 'fields' in request.json['args']},
+        {'id': 'fields', 'type': list, 'mandatory': 'fields' in request.json['args']},
         {'id': 'multiple', 'type': bool, 'mandatory': 'fields' in request.json['args']}
     ], only_data='fields' not in request.json['args'])
 
@@ -406,6 +407,7 @@ def delete_document_position(document_id):
             "message": message
         }, 400)
 
+    res = ['', 400]
     if 'multiple' in request.json['args']:
         fields = request.json['args']['fields']
         for field in fields:
@@ -424,7 +426,7 @@ def delete_document_page(document_id):
                         'message': f'/verifier/documents/{document_id}/deletePage'}), 403
 
     check, message = rest_validator(request.json['args'], [
-        {'id': 'fields', 'type': dict, 'mandatory': 'fields' in request.json['args']},
+        {'id': 'fields', 'type': list, 'mandatory': 'fields' in request.json['args']},
         {'id': 'multiple', 'type': bool, 'mandatory': 'fields' in request.json['args']}
     ], only_data='fields' not in request.json['args'])
 
@@ -434,6 +436,7 @@ def delete_document_page(document_id):
             "message": message
         }, 400)
 
+    res = ['', 400]
     if 'multiple' in request.json['args']:
         fields = request.json['args']['fields']
         for field in fields:

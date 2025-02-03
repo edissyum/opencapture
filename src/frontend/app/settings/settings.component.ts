@@ -23,7 +23,8 @@ import { PrivilegesService } from "../../services/privileges.service";
 
 @Component({
     selector: 'app-settings',
-    templateUrl: "settings.component.html"
+    templateUrl: "settings.component.html",
+    standalone: false
 })
 
 export class SettingsComponent implements OnInit {

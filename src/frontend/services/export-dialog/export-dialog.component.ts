@@ -24,9 +24,10 @@ import {
 } from '@angular/cdk/drag-drop';
 
 @Component({
-  selector: 'app-export-dialog',
-  templateUrl: './export-dialog.component.html',
-  styleUrls: ['./export-dialog.component.scss']
+    selector: 'app-export-dialog',
+    templateUrl: './export-dialog.component.html',
+    styleUrls: ['./export-dialog.component.scss'],
+    standalone: false
 })
 export class ExportDialogComponent {
   extensions: any[] = [

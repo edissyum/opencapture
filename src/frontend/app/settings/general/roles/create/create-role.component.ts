@@ -21,7 +21,7 @@ import { Router } from "@angular/router";
 import { FormControl } from "@angular/forms";
 import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
@@ -32,7 +32,8 @@ import { of } from "rxjs";
 @Component({
     selector: 'app-create',
     templateUrl: './create-role.component.html',
-    styleUrls: ['./create-role.component.scss']
+    styleUrls: ['./create-role.component.scss'],
+    standalone: false
 })
 export class CreateRoleComponent implements OnInit {
     loading         : boolean   = true;

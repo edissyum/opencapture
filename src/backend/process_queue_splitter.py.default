@@ -189,6 +189,7 @@ def launch(args):
                                             "configurations": configurations,
                                             "workflow_id": args['workflow_id'],
                                             "customer_id": args['customer_id'],
+                                            "msg": args['msg'] if 'msg' in args else None,
                                             "artificial_intelligence": _artificial_intelligence,
                                             "user_id": args['user_id'] if 'user_id' in args else None
                                         }
@@ -220,16 +221,40 @@ def launch(args):
             'data': [args['task_id_monitor']]
         })
 
-        database.insert({
-            'table': 'history',
-            'columns': {
-                'user_ip': args['ip'],
-                'history_module': 'splitter',
-                'user_info': args['user_info'],
-                'workflow_id': args['workflow_id'],
-                'history_submodule': 'upload_file',
-                'user_id': args['user_id'] if 'user_id' in args and args['user_id'] else 0,
-                'history_desc': gettext('FILE_UPLOADED_WORKFLOW') + '&nbsp<strong>' + args['workflow_id'] + '</strong>'
-            }
-        })
+        for batch_id in created_batches:
+            database.insert({
+                'table': 'history',
+                'columns': {
+                    'user_ip': args['ip'],
+                    'history_module': 'splitter',
+                    'user_info': args['user_info'],
+                    'workflow_id': args['workflow_id'],
+                    'history_submodule': 'upload_file',
+                    'user_id': args['user_id'] if 'user_id' in args and args['user_id'] else 0,
+                    'history_desc': f"{gettext('BATCH')} n°<strong>{str(batch_id)}</strong> {gettext('CREATED_USING')} <strong>{args['workflow_id']}</strong>"
+                }
+            })
+
+            batch_documents = database.select({
+                'select': ['id'],
+                'table': ['splitter_documents'],
+                'where': ['batch_id = %s'],
+                'data': [batch_id]
+            })
+            if batch_documents:
+                for document in batch_documents:
+                    database.insert({
+                        'table': 'history',
+                        'columns': {
+                            'user_ip': args['ip'],
+                            'history_module': 'splitter',
+                            'user_info': args['user_info'],
+                            'workflow_id': args['workflow_id'],
+                            'custom_fields': json.dumps({"splitter_document_id": document['id']}),
+                            'history_submodule': 'create_document',
+                            'user_id': args['user_id'] if 'user_id' in args and args['user_id'] else 0,
+                            'history_desc': f"{gettext('DOCUMENT')} n°<strong>{str(document['id'])}</strong> {gettext('CREATED_ON_BATCH')} N°<strong>{str(batch_id)}</strong>"
+                        }
+                    })
+
         database.conn.close()

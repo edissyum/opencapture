@@ -15,7 +15,7 @@
 
  @dev : Oussama BRICH <oussama.brich@edissyum.com> */
 
-import {Component, OnInit, SecurityContext} from '@angular/core';
+import { Component, OnInit, SecurityContext } from '@angular/core';
 import { SessionStorageService } from "../../../services/session-storage.service";
 import { environment } from  "../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
@@ -23,14 +23,13 @@ import { of } from "rxjs";
 import { AuthService } from "../../../services/auth.service";
 import { HttpClient } from "@angular/common/http";
 import { UserService } from "../../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../services/notifications/notifications.service";
 import { DomSanitizer } from '@angular/platform-browser';
 import { PageEvent } from "@angular/material/paginator";
 import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from '@angular/material/dialog';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'app-list',
@@ -38,7 +37,8 @@ import { marker } from "@biesbjerg/ngx-translate-extract-marker";
     styleUrls: ['./splitter-list.component.scss'],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } }
-    ]
+    ],
+    standalone: false
 })
 
 export class SplitterListComponent implements OnInit {
@@ -62,15 +62,15 @@ export class SplitterListComponent implements OnInit {
     batchList        : any[]   = [
         {
             'id': 'today',
-            'label': marker('BATCH.today')
+            'label': _('BATCH.today')
         },
         {
             'id': 'yesterday',
-            'label': marker('BATCH.yesterday')
+            'label': _('BATCH.yesterday')
         },
         {
             'id': 'older',
-            'label': marker('BATCH.older')
+            'label': _('BATCH.older')
         }
     ];
     totalChecked     : number  = 0;
@@ -79,7 +79,7 @@ export class SplitterListComponent implements OnInit {
     currentTime      : string  = 'today';
     filtersLists     : any     = [
         {'id': 'splitter_batches.id', 'label': 'HEADER.technical_id'},
-        {'id': 'splitter_batches.creation_date', 'label': marker('FACTURATION.register_date_short')}
+        {'id': 'splitter_batches.creation_date', 'label': _('FACTURATION.register_date_short')}
     ];
 
     constructor(
@@ -165,8 +165,10 @@ export class SplitterListComponent implements OnInit {
     }
 
     loadBatches(): void {
+        this.batches = [];
         this.loading = true;
-        this.batches   = [];
+        this.totalChecked = 0;
+        this.batchesSelected = false;
         this.http.get(environment['url'] + '/ws/splitter/batches/user/' + this.userService.user.id + '/totals/'
             + this.currentStatus, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -195,7 +197,6 @@ export class SplitterListComponent implements OnInit {
                         id              : batch['id'],
                         locked          : batch['locked'],
                         inputId         : batch['input_id'],
-                        fileName        : batch['file_name'],
                         lockedBy        : batch['locked_by'],
                         formLabel       : batch['form_label'],
                         date            : batch['batch_date'],
@@ -203,7 +204,8 @@ export class SplitterListComponent implements OnInit {
                         customerName    : batch['customer_name'],
                         documentsCount  : batch['documents_count'],
                         attachmentsCount: batch['attachments_count'],
-                        thumbnail       : this.sanitize(batch['thumbnail'])
+                        thumbnail       : this.sanitize(batch['thumbnail']),
+                        fileName        : batch['subject'] ? batch['subject'] : batch['file_name']
                     }),
                 );
                 this.total = data.count;
@@ -392,7 +394,6 @@ export class SplitterListComponent implements OnInit {
                 }
                 this.loading = false;
                 this.loadBatches();
-
             }),
             catchError((err: any) => {
                 console.debug(err);

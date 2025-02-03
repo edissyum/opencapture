@@ -5,24 +5,28 @@
         </h3>
         <mat-divider></mat-divider>
         <mat-list class="h-full-overflow overflow-auto">
-            <mat-list-item *ngFor="let workflow of workflows" class="cursor-pointer m-2 w-auto" (click)="setWorkflow(workflow.id)">
-                <span [class.text-green-400]="this.selectedWorkflow === workflow.id" class="hover:text-green-400"
-                      [matTooltip]="workflow.label" [matTooltipDisabled]="workflow.label.replace(' ', '').length <= 20">
-                    {{ workflow.label }}
-                </span>
-                <span *ngIf="this.selectedWorkflow === workflow.id">
-                    <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
-                </span>
-            </mat-list-item>
+            @for (workflow of workflows; track workflow.id) {
+                <mat-list-item class="cursor-pointer m-2 w-auto" (click)="setWorkflow(workflow.id)">
+                    <span [class.text-green-400]="this.selectedWorkflow === workflow.id" class="hover:text-green-400"
+                          [matTooltip]="workflow.label" [matTooltipDisabled]="workflow.label.replace(' ', '').length <= 30">
+                        {{ workflow.label }}
+                    </span>
+                    @if (this.selectedWorkflow === workflow.id) {
+                        <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
+                    }
+                </mat-list-item>
+            }
         </mat-list>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
         <button mat-icon-button (click)="sidenav.toggle();" class="absolute left-2 top-2 z-30">
             <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-xl text-gray-900"></i>
         </button>
-        <div *ngIf="this.loading">
-            <app-loader></app-loader>
-        </div>
+        @if (this.loading) {
+            <div>
+                <app-loader></app-loader>
+            </div>
+        }
         <ngx-file-drag-drop
                 [class.pointer-events-none]="this.sending"
                 [class.disabled]="this.sending"
@@ -45,8 +49,10 @@
                 {{ 'UPLOAD.upload_file' | translate }}
             </button>
         </div>
-        <span *ngIf="this.selectedWorkflow === ''" class="flex justify-center mt-4 text-red-500">
-            {{ 'UPLOAD.please_select_workflow' | translate }}
-        </span>
+        @if (this.selectedWorkflow === '') {
+            <span class="flex justify-center mt-4 text-red-500">
+                {{ 'UPLOAD.please_select_workflow' | translate }}
+            </span>
+        }
     </mat-sidenav-content>
 </mat-sidenav-container>

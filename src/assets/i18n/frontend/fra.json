@@ -20,7 +20,7 @@
 		"choose_workflow_upload": "Choix du workflow",
 		"company_number": "Numéro de société",
 		"confirm_delete_customer": "Êtes vous sûr de vouloir supprimer le compte client <strong>{{ customer }}</strong> ?",
-		"confirm_delete_supplier": "Êtes vous sûr de vouloir supprimer le compte tiers <strong>{{ supplier }}</strong> ?",
+		"confirm_delete_supplier": "Êtes vous sûr de vouloir supprimer le compte tiers <strong>{{ supplier }}</strong> ?<br><br>Cette action est <strong>irréversible</strong>",
 		"confirm_delete_supplier_positions": "Êtes vous sûr de vouloir supprimer les positions du compte tiers <strong>{{ supplier }}</strong> ?",
 		"confirm_skip_auto_validate": "Êtes vous sûr de vouloir outrepasser la prochaine validation automatique du compte tiers <strong>{{ supplier }}</strong> ?",
 		"create_customer": "Ajouter un compte client",
@@ -118,6 +118,7 @@
 		"download_attachment": "Télécharger la pièce jointe",
 		"loading_attachments": "Chargement des pièces jointes...",
 		"set_document_principal": "Mettre ce document comme principal, les autres seront remontés en pièces jointes",
+		"show_attachment": "Visualiser la pièce jointe",
 		"splitter_one_document": "Si vous souhaitez ajouter des pièces jointes, le lot ne doit contenir qu'un seul document"
 	},
 	"AUTH": {
@@ -345,6 +346,7 @@
 		"accounting_plan": "Compte de charge",
 		"current_date": "Date du jour",
 		"default_accounting_plan": "Compte de charge par défaut",
+		"default_currency": "Devise par défaut",
 		"delivery_number": "Numéro de livraison",
 		"description": "Description",
 		"document_date": "Date du document",
@@ -517,7 +519,8 @@
 		"skip_auto_validate": "Outrepasser la prochaine validation automatique",
 		"statistics": "Statistiques",
 		"task_error_informations": "Informations sur l'erreur de traitement",
-		"upload": "Téléversement"
+		"upload": "Téléversement",
+		"wrong_filetype": "Ce type de fichier n'est pas pris en charge."
 	},
 	"HEADER": {
 		"active": "Actif",
@@ -989,6 +992,7 @@
 		"identifier": "Identifiant",
 		"list": "Liste des lots",
 		"load_referential": "Actualiser les données d'auto-complétion",
+		"mail_subject": "Sujet du mail",
 		"merge": "Fusionner",
 		"merge_error_form_not_match": "Erreur lors de la fusion, les formulaires associés diffèrent",
 		"merge_hint": "Tous les lots selectionnés seront fusionnés dans le lot actuel",
@@ -1028,20 +1032,27 @@
 		"zoom": "Agrandir"
 	},
 	"STATISTICS": {
+		"all_years": "Toutes les années",
 		"choose_diagram": "Choisissez un type de diagramme",
 		"choose_module": "Choisissez un module",
 		"choose_statistic_report": "Choisissez un rapport de statistiques",
+		"choose_year_report": "Choisissez une année",
 		"diagram_pie_chart": "Diagramme circulaire",
 		"diagram_pie_grid": "Diagramme circulaire en grille",
 		"diagram_vertical_bar": "Diagramme en bâton",
-		"documents_uploaded_per_user": "Documents uploadés par utilisateur",
-		"documents_uploaded_per_worklow": "Documents uploadés par workflow",
-		"splitter_documents_uploaded_per_month": "Documents uploadés sur l'année",
-		"splitter_documents_uploaded_per_year": "Documents uploadés par année",
-		"verifier_documents_uploaded_per_month": "Documents uploadés sur l'année",
-		"verifier_documents_uploaded_per_year": "Documents uploadés par année",
-		"verifier_documents_validated_per_form": "Documents validés par formulaire",
-		"verifier_documents_validated_per_user": "Documents validés par utilisateur"
+		"splitter_batches_uploaded_per_month": "Lots uploadés sur l'année",
+		"splitter_batches_uploaded_per_year": "Lots uploadés par année",
+		"splitter_documents_processed_per_month": "Documents traités sur l'année",
+		"splitter_documents_processed_per_user": "Documents traités par utilisateur",
+		"splitter_documents_processed_per_worklow": "Documents traités par workflow",
+		"splitter_documents_processed_per_year": "Documents traités par année",
+		"total": "Nombre de résultats",
+		"verifier_batches_uploaded_per_month": "Lots uploadés sur l'année",
+		"verifier_batches_uploaded_per_user": "Lots uploadés par utilisateur",
+		"verifier_batches_uploaded_per_worklow": "Lots uploadés par workflow",
+		"verifier_batches_uploaded_per_year": "Lots uploadés par année",
+		"verifier_batches_validated_per_form": "Lots traités par formulaire",
+		"verifier_batches_validated_per_user": "Lots traités par utilisateur"
 	},
 	"STATUS": {
 		"UPDATE_SUCCESS": "Statut modifié avec succès",
@@ -1205,6 +1216,7 @@
 		"convert_function": "Méthode de conversion",
 		"convert_function_hint": "Méthode utilisée pour convertir le document PDF en JPG. Si la méthode par défaut (pdf2image) ne donne pas de bons résultats, essayez la fonction ImageMagick)",
 		"create": "Créer le workflow",
+		"currency": "Devise",
 		"custom_fields_to_search": "Champs personnalisés à rechercher",
 		"delete_documents": "Supprimer le(s) document(s) après traitement",
 		"delete_documents_hint": "Toutes les données liées au document (BDD et docservers) seront supprimées après execution du workflow",

@@ -16,7 +16,7 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { CodeModel } from "@ngstack/code-editor";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { environment } from "../../app/env";
@@ -30,7 +30,8 @@ import { Router } from "@angular/router";
 @Component({
     selector: 'app-code-editor',
     templateUrl: './code-editor.component.html',
-    styleUrls: ['./code-editor.component.scss']
+    styleUrls: ['./code-editor.component.scss'],
+    standalone: false
 })
 export class CodeEditorComponent implements OnInit {
     theme               : string    = 'vs';

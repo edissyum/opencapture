@@ -21,7 +21,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { AuthService } from "../../services/auth.service";
 import { UserService } from "../../services/user.service";
 import { FormControl } from "@angular/forms";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { environment } from  "../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
@@ -33,7 +33,8 @@ import { PasswordVerificationService } from "../../services/password-verificatio
 @Component({
     selector: 'app-user-profile',
     templateUrl: './profile.component.html',
-    styleUrls: ['./profile.component.scss']
+    styleUrls: ['./profile.component.scss'],
+    standalone: false
 })
 export class UserProfileComponent implements OnInit {
     headers                     : HttpHeaders   = this.authService.headers;

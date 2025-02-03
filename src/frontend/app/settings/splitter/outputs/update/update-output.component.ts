@@ -22,20 +22,20 @@ import { FormControl } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AuthService } from "../../../../../services/auth.service";
 import { UserService } from "../../../../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import { environment } from  "../../../../env";
 import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
 import { of } from "rxjs";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { Clipboard } from "@angular/cdk/clipboard";
 
 @Component({
     selector: 'app-splitter-update-output',
     templateUrl: './update-output.component.html',
-    styleUrls: ['./update-output.component.scss']
+    styleUrls: ['./update-output.component.scss'],
+    standalone: false
 })
 export class SplitterUpdateOutputComponent implements OnInit {
     headers               : HttpHeaders   = this.authService.headers;
@@ -75,27 +75,27 @@ export class SplitterUpdateOutputComponent implements OnInit {
             values: [
                 {
                     'id': '',
-                    'label': marker('OUTPUT.no_compress')
+                    'label': _('OUTPUT.no_compress')
                 },
                 {
                     'id': 'screen',
-                    'label': marker('OUTPUT.compress_screen')
+                    'label': _('OUTPUT.compress_screen')
                 },
                 {
                     'id': 'ebook',
-                    'label': marker('OUTPUT.compress_ebook')
+                    'label': _('OUTPUT.compress_ebook')
                 },
                 {
                     'id': 'prepress',
-                    'label': marker('OUTPUT.compress_prepress')
+                    'label': _('OUTPUT.compress_prepress')
                 },
                 {
                     'id': 'printer',
-                    'label': marker('OUTPUT.compress_printer')
+                    'label': _('OUTPUT.compress_printer')
                 },
                 {
                     'id': 'default',
-                    'label': marker('OUTPUT.compress_default')
+                    'label': _('OUTPUT.compress_default')
                 }
             ],
             required: false
@@ -108,11 +108,11 @@ export class SplitterUpdateOutputComponent implements OnInit {
             values: [
                 {
                     'id': true,
-                    'label': marker('OUTPUT.ocr_enabled')
+                    'label': _('OUTPUT.ocr_enabled')
                 },
                 {
                     'id': false,
-                    'label': marker('OUTPUT.ocr_disabled')
+                    'label': _('OUTPUT.ocr_disabled')
                 }
             ],
             required: false
@@ -121,74 +121,78 @@ export class SplitterUpdateOutputComponent implements OnInit {
     availableFields       : any           = [
         {
             'labelShort'    : 'HEADER.technical_id',
-            'label'         : marker('HEADER.label')
+            'label'         : _('HEADER.label')
         },
         {
             'labelShort'    : 'b64_file_content',
-            'label'         : marker('OUTPUT.b64_file_content')
+            'label'         : _('OUTPUT.b64_file_content')
         },
         {
             'labelShort'    : 'document_md5',
-            'label'         : marker('OUTPUT.document_md5')
+            'label'         : _('OUTPUT.document_md5')
         },
         {
             'labelShort'    : 'date',
-            'label'         : marker('TYPES.date')
+            'label'         : _('TYPES.date')
         },
         {
             'labelShort'    : 'id',
-            'label'         : marker('SPLITTER.batch_identifier')
+            'label'         : _('SPLITTER.batch_identifier')
         },
         {
             'labelShort'    : 'document_identifier',
-            'label'         : marker('SPLITTER.document_identifier')
+            'label'         : _('SPLITTER.document_identifier')
         },
         {
             'labelShort'    : 'document_index',
-            'label'         : marker('SPLITTER.document_index')
+            'label'         : _('SPLITTER.document_index')
+        },
+        {
+            'labelShort'    : 'subject',
+            'label'         : _('SPLITTER.mail_subject')
         },
         {
             'labelShort'    : 'validate_by_firstname',
-            'label'         : marker('OUTPUT.validate_by_lastname')
+            'label'         : _('OUTPUT.validate_by_lastname')
         },
         {
             'labelShort'    : 'validate_by_firstname',
-            'label'         : marker('OUTPUT.validate_by_firstname')
+            'label'         : _('OUTPUT.validate_by_firstname')
         },
         {
             'labelShort'    : 'doctype',
-            'label'         : marker('SETTINGS.document_type')
+            'label'         : _('SETTINGS.document_type')
         },
         {
             'labelShort'    : 'random',
-            'label'         : marker('OUTPUT.random')
+            'label'         : _('OUTPUT.random')
         },
         {
             'labelShort'    : 'filename',
-            'label'         : marker('OUTPUT.filename')
+            'label'         : _('OUTPUT.filename')
         },
         {
             'labelShort'    : 'documents_count',
-            'label'         : marker('OUTPUT.documents_count')
+            'label'         : _('OUTPUT.documents_count')
         },
         {
             'labelShort'    : 'fileIndex',
-            'label'         : marker('OUTPUT.file_index')
+            'label'         : _('OUTPUT.file_index')
         },
         {
             'labelShort'    : 'format',
-            'label'         : marker('OUTPUT.format')
+            'label'         : _('OUTPUT.format')
         },
         {
             'labelShort'    : 'zip_filename',
-            'label'         : marker('OUTPUT.compressed_filename')
+            'label'         : _('OUTPUT.compressed_filename')
         }
     ];
     testConnectionMapping : any           = {
-        'export_openads'            : "testOpenadsConnection()",
-        'export_mem'                : "testMEMConnection()",
-        'export_cmis'               : "testCmisConnection()",
-        'export_opencaptureformem'  : "testOpenCaptureForMemConnection()"
+        'export_openads'            : "testOpenadsConnection",
+        'export_mem'                : "testMEMConnection",
+        'export_cmis'               : "testCmisConnection",
+        'export_opencaptureformem'  : "testOpenCaptureForMemConnection"
     };
 
     constructor(
@@ -407,8 +411,9 @@ export class SplitterUpdateOutputComponent implements OnInit {
         for (const cpt in this.outputsTypesForm[this.selectedOutputType]['parameters']) {
             const element = this.outputsTypesForm[this.selectedOutputType]['parameters'][cpt];
             if (element.id === fieldId) {
-                if (!element.values || element.values.length === 1) {
-                    eval("this." + element.webservice + '(' + cpt + ')');
+                if ((!element.values || element.values.length === 1) && element.webservice) {
+                    // @ts-ignore
+                    this[element.webservice](cpt);
                 }
             }
         }
@@ -764,7 +769,10 @@ export class SplitterUpdateOutputComponent implements OnInit {
     testConnection() {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth)) {
             const functionName = this.testConnectionMapping[this.selectedOutputType];
-            eval("this." + functionName);
+            if (functionName) {
+                // @ts-ignorefeval
+                this[functionName]();
+            }
         }
     }
 }

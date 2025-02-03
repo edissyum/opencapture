@@ -1,0 +1,19 @@
+<div class="modal-header flex items-center">
+    <h3 class="m-0">{{ data.title }}</h3>
+    <button mat-icon-button (click)="close()">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+<div class="modal-content">
+    @if (this.mimeType.startsWith('image')) {
+        <img [src]="fileUrl" alt="Document" class="file-content-image"/>
+    } @else {
+        @if (this.mimeType === 'application/pdf') {
+            <pdf-viewer [src]="fileUrl" [render-text]="true" [show-borders]="true" [original-size]="true" [fit-to-page]="true"/>
+        } @else {
+            <p>
+                {{ 'GLOBAL.wrong_filetype' | translate }}
+            </p>
+        }
+    }
+</div>

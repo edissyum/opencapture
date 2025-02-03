@@ -17,7 +17,7 @@
 
 import { MatPaginatorIntl } from "@angular/material/paginator";
 import { Injectable } from '@angular/core';
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { environment } from  "./env";
 import { catchError, tap } from "rxjs/operators";
 import { of } from "rxjs";
@@ -73,7 +73,7 @@ export class CustomMatPaginatorIntl extends MatPaginatorIntl {
         this.changes.next();
     }
 
-    override getRangeLabel = (page: number, pageSize: number, length: number) =>  {
+    override getRangeLabel = (page: number, pageSize: number, length: number) => {
         if (length === 0 || pageSize === 0) { return '0 ' + this.translate.instant('PAGINATOR.of') + ` ${length}`; }
 
         length = Math.max(length, 0);

@@ -18,7 +18,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserService } from "../../../../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
@@ -31,9 +31,10 @@ import { NotificationService } from "../../../../../services/notifications/notif
 import { DocumentTypeFactoryComponent } from "../../../../splitter/document-type-factory/document-type-factory.component";
 
 @Component({
-  selector: 'app-create-doc-type',
-  templateUrl: './create-doctype.component.html',
-  styleUrls: ['./create-doctype.component.scss']
+    selector: 'app-create-doc-type',
+    templateUrl: './create-doctype.component.html',
+    styleUrls: ['./create-doctype.component.scss'],
+    standalone: false
 })
 export class CreateDoctypeComponent implements OnInit {
     @ViewChild(DocumentTypeFactoryComponent, {static : true}) documentTypeFactoryComponent! : DocumentTypeFactoryComponent;

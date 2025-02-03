@@ -20,7 +20,7 @@ import { of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from "@angular/material/dialog";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FormControl, Validators } from "@angular/forms";
 import { catchError, finalize, tap } from "rxjs/operators";
@@ -40,9 +40,10 @@ import { CodeEditorComponent } from "../../../../../services/code-editor/code-ed
     providers: [
         {
             provide: STEPPER_GLOBAL_OPTIONS,
-            useValue: {displayDefaultIndicatorType: false}
+            useValue: { displayDefaultIndicatorType: false }
         }
-    ]
+    ],
+    standalone: false
 })
 export class WorkflowBuilderSplitterComponent implements OnInit {
     loading          : boolean       = true;

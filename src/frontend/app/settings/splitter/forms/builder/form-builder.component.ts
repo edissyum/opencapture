@@ -19,11 +19,10 @@ import { of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from "@angular/material/dialog";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FormBuilder, FormControl } from "@angular/forms";
 import { catchError, finalize, tap } from "rxjs/operators";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 
 import { environment } from "../../../../env";
@@ -37,7 +36,8 @@ import { NotificationService } from "../../../../../services/notifications/notif
 @Component({
     selector: 'form-builder',
     templateUrl: './form-builder.component.html',
-    styleUrls: ['./form-builder.component.scss']
+    styleUrls: ['./form-builder.component.scss'],
+    standalone: false
 })
 export class SplitterFormBuilderComponent implements OnInit {
     loading                 : boolean   = true;
@@ -69,31 +69,31 @@ export class SplitterFormBuilderComponent implements OnInit {
     formId                  : any;
     creationMode            : boolean   = true;
     labelType               : any []    = [
-        marker('TYPES.text'),
-        marker('TYPES.regex'),
-        marker('TYPES.textarea'),
-        marker('TYPES.date'),
-        marker('TYPES.select'),
-        marker('TYPES.checkbox'),
-        marker('VERIFIER.field_settings'),
-        marker('FORMS.delete_field'),
-        marker('FORMS.update_label'),
-        marker('FORMS.select_doctypes')
+        _('TYPES.text'),
+        _('TYPES.regex'),
+        _('TYPES.textarea'),
+        _('TYPES.date'),
+        _('TYPES.select'),
+        _('TYPES.checkbox'),
+        _('VERIFIER.field_settings'),
+        _('FORMS.delete_field'),
+        _('FORMS.update_label'),
+        _('FORMS.select_doctypes')
     ];
     fieldCategories         : any []    = [
         {
             'id'    : 'batch_metadata',
-            'label' : marker('SPLITTER.batch_metadata')
+            'label' : _('SPLITTER.batch_metadata')
         },
         {
             'id'    : 'document_metadata',
-            'label' : marker('SPLITTER.document_metadata')
+            'label' : _('SPLITTER.document_metadata')
         }
     ];
     availableFieldsParent   : any []    = [
         {
             'id'    : 'custom_fields',
-            'label' : marker('FORMS.custom_fields'),
+            'label' : _('FORMS.custom_fields'),
             'values': []
         }
     ];
@@ -127,64 +127,52 @@ export class SplitterFormBuilderComponent implements OnInit {
             'label' : '1/5'
         }
     ];
-    displayList             : any []    = [
-        {
-            'id'    : 'simple',
-            'label' : marker('DISPLAY.simple'),
-            'icon'  : 'fa-solid fa-file-alt'
-        },
-        {
-            'id'    : 'multi',
-            'label' : marker('DISPLAY.multi'),
-            'icon'  : 'fa-solid fa-layer-group'
-        }
-    ];
     mandatoryList           : any []    = [
         {
             'id'    : true,
-            'label' : marker('MANDATORY.required'),
+            'label' : _('MANDATORY.required'),
             'icon'  : 'fa-solid fa-star'
         },
         {
             'id'    : false,
-            'label' : marker('MANDATORY.not_required'),
+            'label' : _('MANDATORY.not_required'),
             'icon'  : 'far fa-star'
         }
     ];
     disabledList            : any []    = [
         {
             'id'    : true,
-            'label' : marker('DISABLED.disabled'),
+            'label' : _('DISABLED.disabled'),
             'icon'  : 'fa-solid fa-ban'
         },
         {
             'id'    : false,
-            'label' : marker('DISABLED.not_disabled'),
+            'label' : _('DISABLED.not_disabled'),
             'icon'  : ''
         }
     ];
     fieldMetadata           : any []    = [
         {
             'id'            : 'searchMask',
-            'placeholder'   : marker('FIELD_METADATA.search_mask'),
+            'placeholder'   : _('FIELD_METADATA.search_mask'),
             'control'       : new FormControl(),
             'types'         : ['text']
         },
         {
             'id'            : 'resultMask',
-            'placeholder'   : marker('FIELD_METADATA.result_mask'),
+            'placeholder'   : _('FIELD_METADATA.result_mask'),
             'control'       : new FormControl(),
             'types'         : ['text']
         },
         {
             'id'            : 'defaultValue',
-            'placeholder'   : marker('FIELD_METADATA.default_value'),
+            'placeholder'   : _('FIELD_METADATA.default_value'),
             'control'       : new FormControl(),
             'types'         : ['text', 'textarea', 'select', 'date', 'checkbox']
         },
         {
             'id'            : 'validationMask',
-            'placeholder'   : marker('FIELD_METADATA.validation_mask'),
+            'placeholder'   : _('FIELD_METADATA.validation_mask'),
             'control'       : new FormControl(),
             'types'         : ['text', 'textarea']
         }
@@ -234,14 +222,14 @@ export class SplitterFormBuilderComponent implements OnInit {
                             if (data.outputs) {
                                 const length = data.outputs.length;
                                 if (length === 1) {
-                                    this.outputForm[0].control.setValue(data.outputs[0]);
+                                    this.outputForm[0].control.setValue(parseInt(data.outputs[0]));
                                 }
                                 if (length > 1) {
                                     for (const cpt in data.outputs) {
                                         if (parseInt(cpt) !== 0) {
                                             this.addOutput();
                                         }
-                                        this.outputForm[cpt].control.setValue(data.outputs[cpt]);
+                                        this.outputForm[cpt].control.setValue(parseInt(data.outputs[cpt]));
                                     }
                                 }
                             }

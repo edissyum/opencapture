@@ -16,7 +16,7 @@
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
 import { OnInit, Component } from '@angular/core';
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { SettingsService } from "../../../../services/settings.service";
 
 import { Router } from "@angular/router";
@@ -32,7 +32,8 @@ import { NotificationService } from "../../../../services/notifications/notifica
 @Component({
     selector: 'app-separator',
     templateUrl: './separator.component.html',
-    styleUrls: ['./separator.component.scss']
+    styleUrls: ['./separator.component.scss'],
+    standalone: false
 })
 export class SeparatorComponent implements OnInit {
     private selectedDoctype: any;

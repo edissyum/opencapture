@@ -1,41 +1,46 @@
 <div class="flex relative justify-center items-center gap-8" style="height: 85vh">
-    <mat-card *ngIf="this.privilegesService.hasPrivilege('access_splitter')"
-              class="text-center w-full 2xl:w-1/5 lg:w-1/3 sm:w-1/2 shadow-modern transition duration-500 ease-in-out
+    @if (this.privilegesService.hasPrivilege('access_splitter')) {
+        <mat-card class="text-center w-full 2xl:w-1/5 lg:w-1/3 sm:w-1/2 shadow-modern transition duration-500 ease-in-out
                      transform hover:-translate-y-1 hover:scale-105 hover:shadow-modern-hover">
-        <a routerLink="/splitter/list" class="block transition duration-500 ease-in-out hover:opacity-60" (click)="setValue('splitter')">
-            <div class="bg-splitter bg-no-repeat bg-center w-full h-64" style="background-size: 12rem"></div>
-            <mat-card-subtitle class="mb-5">
-                {{ 'HOME.splitter' | translate }}
-            </mat-card-subtitle>
-        </a>
-        <div class="absolute inline-flex items-center justify-center w-12 h-10 text-md -right-1 font-bold
+            <a routerLink="/splitter/list" class="block transition duration-500 ease-in-out hover:opacity-60" (click)="setValue('splitter')">
+                <div class="bg-splitter bg-no-repeat bg-center w-full h-64" style="background-size: 12rem"></div>
+                <mat-card-subtitle class="mb-5">
+                    {{ 'HOME.splitter' | translate }}
+                </mat-card-subtitle>
+            </a>
+            <div class="absolute inline-flex items-center justify-center w-12 h-10 text-md -right-1 font-bold
                     text-white bg-green-400 rounded-full -top-4">
-            {{ getUnseenBatches('splitter') }}
-        </div>
-    </mat-card>
-    <mat-card *ngIf="this.privilegesService.hasPrivilege('access_verifier')"
-              class="text-center w-full 2xl:w-1/5 lg:w-1/3 sm:w-1/2 shadow-modern transition duration-500 ease-in-out
+                {{ getUnseenBatches('splitter') }}
+            </div>
+        </mat-card>
+    }
+    @if (this.privilegesService.hasPrivilege('access_verifier')) {
+        <mat-card class="text-center w-full 2xl:w-1/5 lg:w-1/3 sm:w-1/2 shadow-modern transition duration-500 ease-in-out
                      transform hover:-translate-y-1 hover:scale-105 hover:shadow-modern-hover">
-        <a routerLink="/verifier/list" class="block transition duration-500 ease-in-out hover:opacity-60" (click)="setValue('verifier')">
-            <div class="bg-verifier md:w-full bg-no-repeat bg-center h-64 " style="background-size: 12rem"></div>
-            <mat-card-subtitle class="mb-5">
-                {{ 'HOME.verifier' | translate }}
-            </mat-card-subtitle>
-        </a>
-        <div class="absolute inline-flex items-center justify-center w-12 h-10 text-md -right-1 font-bold
+            <a routerLink="/verifier/list" class="block transition duration-500 ease-in-out hover:opacity-60" (click)="setValue('verifier')">
+                <div class="bg-verifier md:w-full bg-no-repeat bg-center h-64 " style="background-size: 12rem"></div>
+                <mat-card-subtitle class="mb-5">
+                    {{ 'HOME.verifier' | translate }}
+                </mat-card-subtitle>
+            </a>
+            <div class="absolute inline-flex items-center justify-center w-12 h-10 text-md -right-1 font-bold
                     text-white bg-green-400 rounded-full -top-4" (mouseleave)="isOpen = false" (mouseenter)="isOpen = true"
-                    cdkOverlayOrigin #trigger="cdkOverlayOrigin">
-            {{ getUnseenBatches('verifier') }}
-        </div>
-        <ng-template *ngIf="getUnseenBatches('verifier') > 0" cdkConnectedOverlay [cdkConnectedOverlayOrigin]="trigger" [cdkConnectedOverlayOpen]="isOpen">
-            <span class="bg-black bg-opacity-70 rounded text-white border border-black p-1" [innerHTML]="getUnseenToolTip('verifier')"></span>
-        </ng-template>
-    </mat-card>
-    <mat-card *ngIf="!this.privilegesService.hasPrivilege('access_verifier') && !this.privilegesService.hasPrivilege('access_splitter')"
-              class="text-center w-full 2xl:w-1/5 lg:w-1/3 sm:w-1/2 shadow-modern">
-        <i class="fa-solid fa-ban fa-8x m-4 text-gray-400"></i>
-        <mat-card-subtitle class="mb-5">
-            {{ 'HOME.no_authorized_module' | translate }}
-        </mat-card-subtitle>
-    </mat-card>
+                 cdkOverlayOrigin #trigger="cdkOverlayOrigin">
+                {{ getUnseenBatches('verifier') }}
+            </div>
+            @if (getUnseenBatches('verifier') > 0) {
+                <ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="trigger" [cdkConnectedOverlayOpen]="isOpen">
+                    <span class="bg-black bg-opacity-70 rounded text-white border border-black p-1" [innerHTML]="getUnseenToolTip('verifier')"></span>
+                </ng-template>
+            }
+        </mat-card>
+    }
+    @if (!this.privilegesService.hasPrivilege('access_verifier') && !this.privilegesService.hasPrivilege('access_splitter')) {
+        <mat-card class="text-center w-full 2xl:w-1/5 lg:w-1/3 sm:w-1/2 shadow-modern">
+            <i class="fa-solid fa-ban fa-8x m-4 text-gray-400"></i>
+            <mat-card-subtitle class="mb-5">
+                {{ 'HOME.no_authorized_module' | translate }}
+            </mat-card-subtitle>
+        </mat-card>
+    }
 </div>

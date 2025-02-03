@@ -21,7 +21,7 @@ import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { UserService } from "../../../../services/user.service";
 import { AuthService } from "../../../../services/auth.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
@@ -36,7 +36,8 @@ import { ImportDialogComponent } from "../../../../services/import-dialog/import
 @Component({
     selector: 'suppliers-list',
     templateUrl: './suppliers-list.component.html',
-    styleUrls: ['./suppliers-list.component.scss']
+    styleUrls: ['./suppliers-list.component.scss'],
+    standalone: false
 })
 export class SuppliersListComponent implements OnInit {
     columnsToDisplay : string[]    = ['id', 'name', 'email', 'vat_number', 'siret', 'siren', 'iban', 'form_label', 'actions'];
@@ -86,7 +87,12 @@ export class SuppliersListComponent implements OnInit {
         ).subscribe();
     }
 
-    loadSuppliers() {
+    loadSuppliers(resetOffset: boolean = false) {
+        if (resetOffset) {
+            this.offset = 0;
+            this.pageIndex = 0;
+        }
+
         this.http.get(environment['url'] + '/ws/accounts/suppliers/list?order=name&limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.suppliers = data.suppliers;
@@ -121,7 +127,7 @@ export class SuppliersListComponent implements OnInit {
 
     searchSupplier(event: any) {
         this.search = event.target.value;
-        this.loadSuppliers();
+        this.loadSuppliers(true);
     }
 
     onPageChange(event: any) {
@@ -296,9 +302,9 @@ export class SuppliersListComponent implements OnInit {
         ).subscribe();
     }
 
-    importSuppliers(event: any) {
+    importSuppliers() {
         const columns = ['name', 'vat_number', 'siret', 'siren', 'duns', 'bic', 'rccm', 'iban', 'email', 'address1',
-            'address2', 'postal_code', 'city', 'country', 'footer_coherence', 'document_lang'];
+            'address2', 'postal_code', 'city', 'country', 'footer_coherence', 'document_lang', 'default_currency'];
         const dialogRef = this.dialog.open(ImportDialogComponent, {
             data: {
                 rows: [],

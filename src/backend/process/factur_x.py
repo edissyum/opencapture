@@ -360,7 +360,7 @@ def execute_outputs(output_info, log, regex, document_data, database):
     elif output_info['output_type_id'] == 'export_mem':
         verifier_exports.export_mem(data, document_data, log, regex, database)
     elif output_info['output_type_id'] == 'export_coog':
-        verifier_exports.export_coog(data, document_data, log)
+        verifier_exports.export_coog(data, document_data, log, database)
     elif output_info['output_type_id'] == 'export_pdf':
         verifier_exports.export_pdf(data, log, document_data, compress_type, ocrise)
 

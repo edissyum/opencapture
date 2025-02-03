@@ -18,7 +18,7 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { UserService } from "../../../../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
@@ -35,7 +35,8 @@ import { MatDialog } from "@angular/material/dialog";
 @Component({
     selector: 'app-output-list',
     templateUrl: './outputs-list.component.html',
-    styleUrls: ['./outputs-list.component.scss']
+    styleUrls: ['./outputs-list.component.scss'],
+    standalone: false
 })
 export class OutputsListComponent implements OnInit {
     headers         : HttpHeaders   = this.authService.headers;

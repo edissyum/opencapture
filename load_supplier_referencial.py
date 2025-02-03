@@ -45,6 +45,10 @@ if __name__ == '__main__':
         CONTENT_SUPPLIER_SHEET = spreadsheet.read_csv_sheet(file)
         EXISTING_MIME_TYPE = True
 
+    if CONTENT_SUPPLIER_SHEET.empty:
+        log.error('The file ' + file + ' is empty or not not well formatted')
+        exit()
+
     if EXISTING_MIME_TYPE:
         spreadsheet.construct_supplier_array(CONTENT_SUPPLIER_SHEET)
 
@@ -73,8 +77,10 @@ if __name__ == '__main__':
             if duns != duns:
                 duns = None
 
-            if (vat_number and not any(str(vat_number).startswith(value['vat_number']) for value in list_existing_supplier)) or \
-                    (duns and not any(str(duns).startswith(value['duns'] and value['duns']) for value in list_existing_supplier)):
+            vat_number_exists = vat_number and any(str(vat_number) == value['vat_number'] for value in list_existing_supplier)
+            duns_exists = duns and any(str(duns) == value['duns'] and value['duns'] for value in list_existing_supplier)
+
+            if not vat_number_exists and not duns_exists:
                 args = {
                     'table': 'addresses',
                     'columns': {
@@ -86,10 +92,16 @@ if __name__ == '__main__':
                     }
                 }
 
+                address_length = len(args['columns'])
+                cpt_null = 0
                 for key in args['columns']:
                     if args['columns'][key] == 'nan':
                         args['columns'][key] = None
-                address_id = database.insert(args)
+                        cpt_null += 1
+
+                address_id = 0
+                if cpt_null < address_length:
+                    address_id = database.insert(args)
 
                 GET_ONLY_RAW_FOOTER = True
                 if data[spreadsheet.referencial_supplier_array['get_only_raw_footer']] and \
@@ -111,20 +123,29 @@ if __name__ == '__main__':
                         'address_id': str(address_id),
                         'document_lang': str(_vat[spreadsheet.referencial_supplier_array['lang']]),
                         'duns': str(_vat[spreadsheet.referencial_supplier_array['duns']]),
-                        'bic': str(_vat[spreadsheet.referencial_supplier_array['bic']])
+                        'bic': str(_vat[spreadsheet.referencial_supplier_array['bic']]),
+                        'default_currency': str(_vat[spreadsheet.referencial_supplier_array['default_currency']])
                     }
                 }
 
                 for key in args['columns']:
                     if args['columns'][key] == 'nan':
                         args['columns'][key] = None
-                res = database.insert(args)
 
-                if res:
-                    log.info('The following supplier was successfully added into database : ' +
-                             str(data[spreadsheet.referencial_supplier_array['name']]))
-                else:
-                    log.error('While adding supplier : ' +
+                if 'name' in args['columns'] and args['columns']['name']:
+                    try:
+                        res = database.insert(args)
+                    except Exception as _e:
+                        log.error('While adding supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]) + ' ' + str(_e))
+                        continue
+
+                    list_existing_supplier.append({'vat_number': vat_number, 'duns': duns})
+
+                    if res:
+                        log.info('The following supplier was successfully added into database : ' +
+                                 str(data[spreadsheet.referencial_supplier_array['name']]))
+                    else:
+                        log.error('While adding supplier : ' +
                               str(data[spreadsheet.referencial_supplier_array['name']]), False)
             else:
                 if vat_number or duns:
@@ -189,7 +210,8 @@ if __name__ == '__main__':
                             'address_id': address_id,
                             'document_lang': str(data[spreadsheet.referencial_supplier_array['lang']]),
                             'duns': str(data[spreadsheet.referencial_supplier_array['duns']]),
-                            'bic': str(data[spreadsheet.referencial_supplier_array['bic']])
+                            'bic': str(data[spreadsheet.referencial_supplier_array['bic']]),
+                            'default_currency': str(data[spreadsheet.referencial_supplier_array['default_currency']])
                         },
                         'where': ['vat_number = %s OR duns = %s'],
                         'data': [str(vat_number), str(duns)]
@@ -198,7 +220,11 @@ if __name__ == '__main__':
                     for key in args['set']:
                         if args['set'][key] == 'nan':
                             args['set'][key] = None
-                    res = database.update(args)
+                    try:
+                        res = database.update(args)
+                    except Exception as _e:
+                        log.error('While updating supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]) + ' ' + str(_e))
+                        continue
 
                     if res[0]:
                         log.info('The following supplier was successfully updated into database : ' +

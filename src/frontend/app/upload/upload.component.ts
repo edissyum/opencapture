@@ -24,7 +24,7 @@ import { of } from "rxjs";
 import { HttpClient, HttpHeaders} from "@angular/common/http";
 import { AuthService } from "../../services/auth.service";
 import { UserService } from "../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../services/notifications/notifications.service";
 import { SessionStorageService } from "../../services/session-storage.service";
 
@@ -32,7 +32,8 @@ import { SessionStorageService } from "../../services/session-storage.service";
     selector: 'app-upload',
     templateUrl: './upload.component.html',
     styleUrls: ['./upload.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 
 export class UploadComponent implements OnInit {
@@ -79,7 +80,7 @@ export class UploadComponent implements OnInit {
     getWorkflows(splitterOrVerifier: string): void {
         this.http.get(environment['url'] + '/ws/workflows/' + splitterOrVerifier + '/list/user/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                data.workflows.forEach((element: any, index: number) => {
+                data.workflows.forEach((element: any) => {
                     let show = true;
 
                     if (element.process && element.process['api_only']) {
@@ -170,7 +171,7 @@ export class UploadComponent implements OnInit {
                         })
                     ).subscribe();
                 }),
-                catchError((err: any) => {
+                catchError(() => {
                     this.sending = false;
                     this.fileControl.setValue([]);
                     this.notify.handleErrors(this.translate.instant('ERROR.permission_problem'));

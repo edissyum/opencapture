@@ -21,7 +21,7 @@ import { HttpClient } from "@angular/common/http";
 import { MatDialog } from "@angular/material/dialog";
 import { UserService } from "../../../../../services/user.service";
 import { AuthService } from "../../../../../services/auth.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
@@ -35,7 +35,8 @@ import { of } from "rxjs";
 @Component({
     selector: 'positions-mask-list',
     templateUrl: './positions-mask-list.component.html',
-    styleUrls: ['./positions-mask-list.component.scss']
+    styleUrls: ['./positions-mask-list.component.scss'],
+    standalone: false
 })
 export class PositionsMaskListComponent implements OnInit {
     columnsToDisplay: string[]      = ['id', 'label', 'supplier_name', 'form_label', 'enabled', 'actions'];

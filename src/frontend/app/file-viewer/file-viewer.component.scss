@@ -1,0 +1,26 @@
+.modal-header {
+    @apply flex;
+    @apply justify-between;
+    @apply items-center;
+    @apply p-4;
+    @apply pb-0;
+}
+
+.modal-content {
+    @apply p-4;
+    @apply flex;
+    @apply justify-center;
+    @apply items-start;
+    @apply h-full;
+    @apply overflow-y-scroll;
+}
+
+.file-content-image {
+    @apply max-w-full;
+}
+
+pdf-viewer {
+    @apply w-full;
+    @apply h-full;
+    @apply select-text;
+}

@@ -17,106 +17,106 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { FormControl, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { UserService } from "../../../../services/user.service";
 import { AuthService } from "../../../../services/auth.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
 import { environment } from  "../../../env";
-import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
-import { of } from "rxjs";
+import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
+import { Observable, of } from "rxjs";
 import { Country } from '@angular-material-extensions/select-country';
 import { LocaleService } from "../../../../services/locale.service";
 
 @Component({
     selector: 'app-create',
-    templateUrl: './create-supplier.component.html'
+    templateUrl: './create-supplier.component.html',
+    standalone: false
 })
 export class CreateSupplierComponent implements OnInit {
-    headers                 : HttpHeaders = this.authService.headers;
-    loading                 : boolean     = true;
-    createLoading           : boolean     = false;
-    toHighlightAccounting   : string      = '';
-    accountingPlan          : any         = {};
-    supplierForm            : any[]       = [
+    headers                 : HttpHeaders       = this.authService.headers;
+    loading                 : boolean           = true;
+    createLoading           : boolean           = false;
+    toHighlightAccounting   : string            = '';
+    accountingPlan          : Observable<any[]> = new Observable<any[]>();
+    supplierForm            : any[]             = [
         {
             id: 'get_only_raw_footer',
-            label: marker('ACCOUNTS.get_only_raw_footer'),
+            label: _('ACCOUNTS.get_only_raw_footer'),
             type: 'mat-slide-toggle',
             control: new FormControl(true),
             required: true
         },
         {
             id: 'name',
-            label: marker('ACCOUNTS.supplier_name'),
+            label: _('ACCOUNTS.supplier_name'),
             type: 'text',
             control: new FormControl(),
             required: true
         },
         {
             id: 'vat_number',
-            label: marker('ACCOUNTS.vat_number'),
+            label: _('ACCOUNTS.vat_number'),
             type: 'text',
             control: new FormControl('', Validators.pattern('^(EU|SI|HU|D(K|E)|PL|CHE|(F|H)R|B(E|G)(0)?)[0-9A-Za-z]{2}[0-9]{6,9}$')),
             required: true
         },
         {
             id: 'siret',
-            label: marker('ACCOUNTS.siret'),
+            label: _('ACCOUNTS.siret'),
             type: 'text',
             control: new FormControl('', Validators.pattern('^[0-9]{14}$')),
             required: false
         },
         {
             id: 'siren',
-            label: marker('ACCOUNTS.siren'),
+            label: _('ACCOUNTS.siren'),
             type: 'text',
             control: new FormControl('', Validators.pattern('^[0-9]{9}$')),
             required: false
         },
         {
             id: 'duns',
-            label: marker('ACCOUNTS.duns'),
+            label: _('ACCOUNTS.duns'),
             type: 'text',
             control: new FormControl('', Validators.pattern('^([0-9]{9})|([0-9]{2}-[0-9]{3}-[0-9]{4})$')),
             required: true
         },
         {
             id: 'iban',
-            label: marker('ACCOUNTS.iban'),
+            label: _('ACCOUNTS.iban'),
             type: 'text',
             control: new FormControl('', Validators.pattern('^[A-Za-z]{2}(?:[ ]?[0-9]){18,25}$')),
             required: false
         },
         {
             id: 'bic',
-            label: marker('ACCOUNTS.bic'),
+            label: _('ACCOUNTS.bic'),
             type: 'text',
             control: new FormControl('', Validators.pattern('^[a-zA-Z0-9]{4}[A-Z]{2}[a-zA-Z0-9]{2}(?:[a-zA-Z0-9]{3})?$')),
             required: false
         },
         {
             id: 'rccm',
-            label: marker('ACCOUNTS.rccm'),
+            label: _('ACCOUNTS.rccm'),
             type: 'text',
             control: new FormControl('', Validators.pattern('^[aA-zZ]{2}-[aA-zZ]{3}-[0-9]{2}-[0-9]{4}-[aA-zZ]{1}[0-9]{2}-[0-9]{5}$')),
             required: false
         },
         {
             id: 'email',
-            label: marker('FORMATS.email'),
+            label: _('FORMATS.email'),
             type: 'text',
-            hint: marker('ACCOUNTS.only_one_email'),
+            hint: _('ACCOUNTS.only_one_email'),
             control: new FormControl('', Validators.email),
             required: false
         },
         {
             id: 'form_id',
-            label: marker('ACCOUNTS.form'),
+            label: _('ACCOUNTS.form'),
             type: 'select',
             control: new FormControl(),
             required: false,
@@ -124,7 +124,7 @@ export class CreateSupplierComponent implements OnInit {
         },
         {
             id: 'document_lang',
-            label: marker('ADDRESSES.document_lang'),
+            label: _('ADDRESSES.document_lang'),
             type: 'select',
             control: new FormControl(),
             required: true,
@@ -132,7 +132,15 @@ export class CreateSupplierComponent implements OnInit {
         },
         {
             id: 'default_accounting_plan',
-            label: marker('FACTURATION.default_accounting_plan'),
+            label: _('FACTURATION.default_accounting_plan'),
+            type: 'select',
+            control: new FormControl(),
+            required: false,
+            values: []
+        },
+        {
+            id: 'default_currency',
+            label: _('FACTURATION.default_currency'),
             type: 'select',
             control: new FormControl(),
             required: false,
@@ -142,35 +150,35 @@ export class CreateSupplierComponent implements OnInit {
     addressForm             : any[]       = [
         {
             id: 'address1',
-            label: marker('ADDRESSES.address_1'),
+            label: _('ADDRESSES.address_1'),
             type: 'text',
             control: new FormControl(),
             required: true
         },
         {
             id: 'address2',
-            label: marker('ADDRESSES.address_2'),
+            label: _('ADDRESSES.address_2'),
             type: 'text',
             control: new FormControl(),
             required: false
         },
         {
             id: 'postal_code',
-            label: marker('ADDRESSES.postal_code'),
+            label: _('ADDRESSES.postal_code'),
             type: 'text',
             control: new FormControl(),
             required: true
         },
         {
             id: 'city',
-            label: marker('ADDRESSES.city'),
+            label: _('ADDRESSES.city'),
             type: 'text',
             control: new FormControl(),
             required: true
         },
         {
             id: 'country',
-            label: marker('ADDRESSES.country'),
+            label: _('ADDRESSES.country'),
             type: 'country',
             control: new FormControl('France'),
             required: true
@@ -202,6 +210,8 @@ export class CreateSupplierComponent implements OnInit {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
+
+        const currencies: any = await this.retrieveCurrency();
 
         let tmpAccountingPlan: any = {};
         tmpAccountingPlan = await this.retrieveDefaultAccountingPlan();
@@ -267,6 +277,14 @@ export class CreateSupplierComponent implements OnInit {
                         startWith(''),
                         map(option => option ? this._filter_accounting(tmpAccountingPlan, option) : tmpAccountingPlan)
                     );
+            }
+            if (element.id == 'default_currency') {
+                Object.keys(currencies).forEach((currency: any) => {
+                    element.values.push({
+                        'id': currencies[currency],
+                        'label': currencies[currency]
+                    });
+                });
             }
         }
 
@@ -360,14 +378,14 @@ export class CreateSupplierComponent implements OnInit {
 
     onSubmit() {
         if (this.isValidForm()) {
-            const supplier: any = {};
             const address: any = {};
+            const supplier: any = {};
             this.supplierForm.forEach(element => {
                 supplier[element.id] = element.control.value;
                 if (element.id === 'get_only_raw_footer') {
                     supplier[element.id] = !element.control.value;
                 }
-                if (element.id === 'default_accounting_plan') {
+                if (element.id === 'default_accounting_plan' && element.control.value) {
                     supplier[element.id] = element.control.value.id;
                 }
             });
@@ -438,6 +456,10 @@ export class CreateSupplierComponent implements OnInit {
 
     async retrieveDefaultAccountingPlan() {
         return await this.http.get(environment['url'] + '/ws/accounts/customers/getDefaultAccountingPlan', {headers: this.authService.headers}).toPromise();
+    }
+
+    async retrieveCurrency() {
+        return await this.http.get(environment['url'] + '/ws/accounts/customers/getCurrencyCode', {headers: this.authService.headers}).toPromise();
     }
 
     sortArray(array: any) {

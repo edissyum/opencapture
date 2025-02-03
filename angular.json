@@ -21,7 +21,7 @@
             "prefix": "app",
             "architect": {
                 "build": {
-                    "builder": "@angular-devkit/build-angular:browser",
+                    "builder": "@angular-devkit/build-angular:application",
                     "options": {
                         "allowedCommonJsDependencies": [
                             "rfdc",
@@ -30,10 +30,14 @@
                             "remove-accents"
                         ],
                         "baseHref": "./",
-                        "outputPath": "dist/",
+                        "outputPath": {
+                            "base": "dist",
+                            "browser": ""
+                        },
                         "index": "src/frontend/index.html",
-                        "polyfills": ["zone.js"],
-                        "main": "src/frontend/main.ts",
+                        "polyfills": [
+                            "zone.js"
+                        ],
                         "tsConfig": "src/frontend/tsconfig.app.json",
                         "aot": true,
                         "assets": [
@@ -52,7 +56,12 @@
                             {
                                 "glob": "**/*",
                                 "input": "node_modules/monaco-editor/min",
-                                "output": "assets/monaco"
+                                "output": "/monaco/"
+                            },
+                            {
+                                "glob": "pdf.worker.min.mjs",
+                                "input": "node_modules/pdfjs-dist/build",
+                                "output": "/pdfjs/"
                             }
                         ],
                         "styles": [
@@ -69,7 +78,8 @@
                             "./node_modules/tinymce/tinymce.min.js",
                             "./node_modules/jquery/dist/jquery.min.js",
                             "./src/assets/jqueryLib/jquery.selectareas.min.js"
-                        ]
+                        ],
+                        "browser": "src/frontend/main.ts"
                     },
                     "configurations": {
                         "production": {
@@ -83,9 +93,6 @@
                             "sourceMap": false,
                             "namedChunks": false,
                             "extractLicenses": true,
-                            "vendorChunk": false,
-                            "buildOptimizer": true,
-
                             "budgets": [
                                 {
                                     "type": "initial",
@@ -106,9 +113,7 @@
                             ]
                         },
                         "development": {
-                            "buildOptimizer": false,
                             "optimization": false,
-                            "vendorChunk": true,
                             "extractLicenses": false,
                             "sourceMap": true,
                             "namedChunks": true
@@ -118,7 +123,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "Open-Capture:build"
+                        "buildTarget": "Open-Capture:build"
                     }
                 },
                 "test": {

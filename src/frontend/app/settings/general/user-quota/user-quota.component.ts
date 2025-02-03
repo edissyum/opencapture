@@ -22,7 +22,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { UserService } from "../../../../services/user.service";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
 import { AuthService } from "../../../../services/auth.service";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
@@ -33,7 +33,8 @@ import { of } from "rxjs";
 @Component({
     selector: 'app-user-quota',
     templateUrl: './user-quota.component.html',
-    styleUrls: ['./user-quota.component.scss']
+    styleUrls: ['./user-quota.component.scss'],
+    standalone: false
 })
 export class UserQuotaComponent implements OnInit {
     headers                 : HttpHeaders = this.authService.headers;

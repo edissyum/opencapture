@@ -17,6 +17,7 @@
 
 import re
 import json
+import pandas as pd
 from datetime import datetime
 from src.backend.functions import search_by_positions, search_custom_positions
 
@@ -42,7 +43,7 @@ class FindDate:
         self.configurations = configurations
         self.max_time_delta = configurations['timeDelta']
 
-    def format_date(self, date, position, convert=False, enable_max_delta=True):
+    def format_date(self, date, position, convert=False, enable_max_delta=True, lang=None):
         if date:
             date = date.replace('1er', '01')  # Replace some possible inconvenient char
             date = date.replace(',', ' ')  # Replace some possible inconvenient char
@@ -52,14 +53,15 @@ class FindDate:
 
             regex = self.regex
             language = self.configurations['locale']
+            if lang:
+                language = lang
             if self.supplier and self.supplier[2]['document_lang']:
-                language = self.supplier[2]['document_lang']
                 if self.supplier[2]['document_lang'] != self.configurations['locale']:
                     _regex = self.database.select({
                         'select': ['regex_id', 'content'],
                         'table': ['regex'],
                         'where': ["lang in ('global', %s)"],
-                        'data': [self.configurations['locale']]
+                        'data': [self.supplier[2]['document_lang']]
                     })
                     if _regex:
                         regex = {}
@@ -89,7 +91,19 @@ class FindDate:
                 if length_of_year == 2:
                     date_format = date_format.replace('%Y', '%y')
 
-                date = datetime.strptime(date, date_format).strftime(regex['format_date'])
+                try:
+                    date = datetime.strptime(date, date_format).strftime(regex['format_date'])
+                except ValueError:
+                    try:
+                        # Check if the date is in the format DD MM YYYY
+                        if date_format.startswith("%m %d"):
+                            date_format = date_format.replace("%m %d", "%d %m")
+                            date = datetime.strptime(date, date_format).strftime(regex['format_date'])
+                    except ValueError:
+                        # Check if the date is in the ISO format YYYY MM DD
+                        date = re.sub(r'[A-Za-z]', '', date).strip()
+                        date = datetime.strptime(date, '%Y %m %d').strftime(regex['format_date'])
+
                 # Check if the date of the document isn't too old. 62 (default value) is equivalent of 2 months
                 today = datetime.now()
                 doc_date = datetime.strptime(date, regex['format_date'])
@@ -100,23 +114,32 @@ class FindDate:
                         self.log.info("Date is older than " + str(self.max_time_delta) +
                                       " days or in the future : " + date)
                         date = False
-                if timedelta.days < 0:
+
+                if enable_max_delta and timedelta.days < 0:
                     self.log.info("Date is in the future " + str(date))
                     date = False
+
+                if date:
+                    try:
+                        tmp_date = pd.to_datetime(date).strftime('%Y-%m-%d')
+                        return tmp_date, position
+                    except Exception as e:
+                        self.log.info("Error while converting date : " + str(e))
+
                 return date, position
             except (ValueError, IndexError) as _e:
-                self.log.info("Date wasn't in a good format : " + str(date))
-                return False
+                 self.log.info("Date wasn't in a good format : " + str(date))
+                 return False
         else:
             return False
 
     def process(self, line, position):
-        for _date in re.finditer(r"" + self.regex['date'], line):
+        for _date in re.finditer(r"" + self.regex['date'], line, flags=re.IGNORECASE):
             date = self.format_date(_date.group(), position, True)
             if date and date[0]:
                 self.date = date[0]
                 return date
-            return False
+        return False
 
     def run(self):
         if self.supplier:
@@ -140,9 +163,10 @@ class FindDate:
                     'table': ['accounts_supplier'],
                     'where': ['vat_number = %s', 'status <> %s'],
                     'data': [self.supplier[0], 'DEL']
-                })[0]
+                })
 
-                if position and position['document_date_position'] not in [False, 'NULL', '', None]:
+                if position and position[0]['document_date_position'] not in [False, 'NULL', '', None]:
+                    position = position[0]
                     data = {'position': position['document_date_position'], 'regex': None, 'target': 'full', 'page': position['document_date_page']}
                     text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
                     if text != '':
@@ -160,7 +184,7 @@ class FindDate:
                     self.log.info('Document date found : ' + res[0])
                     position = res[1]
                     if cpt == 2:
-                        position = self.files.return_position_with_ratio(res[1], 'footer')
+                        position = self.files.return_position_with_ratio({'position': res[1]}, 'footer')
                     return [res[0], position, self.nb_page]
             cpt += 1
 

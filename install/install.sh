@@ -37,7 +37,7 @@ ERRORLOG_PATH=install_error.log
 
 ####################
 # Handle parameters
-parameters="user custom_id supervisor_process path wsgi_threads wsgi_process supervisor_systemd hostname port username password docserver_path python_venv_path share_path"
+parameters="user custom_id supervisor_process path wsgi_threads wsgi_process supervisor_systemd database_hostname database_port database_username database_password docserver_path python_venv_path share_path"
 opts=$(getopt --longoptions "$(printf "%s:," "$parameters")" --name "$(basename "$0")" --options "" -- "$@")
 
 while [ $# -gt 0 ]; do
@@ -63,7 +63,7 @@ while [ $# -gt 0 ]; do
         --supervisor_systemd)
             supervisorOrSystemd=$2
             shift 2;;
-        --hostname)
+        --database_hostname)
             hostname=$2
             shift 2;;
         --python_venv_path)
@@ -72,13 +72,16 @@ while [ $# -gt 0 ]; do
         --share_path)
             share_path=$2
             shift 2;;
-        --port)
+        --database_port)
             port=$2
             shift 2;;
-        --username)
+        --database_name)
+            databaseName=$2
+            shift 2;;
+        --database_username)
             databaseUsername=$2
             shift 2;;
-        --password)
+        --database_password)
             databasePassword=$2
             shift 2;;
         --docserver_path)
@@ -387,10 +390,14 @@ echo ""
 ####################
 # Create database using custom_id
 echo "Create database and fill it with default data....."
-databaseName="opencapture_$customId"
-if [[ "$customId" = *"opencapture_"* ]]; then
-    databaseName="$customId"
+
+if [ -z "$databaseName" ]; then
+    databaseName="opencapture_$customId"
+    if [[ "$customId" = *"opencapture_"* ]]; then
+        databaseName="$customId"
+    fi
 fi
+
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "CREATE DATABASE $databaseName WITH template=template0 encoding='UTF8'" postgres >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/structure.sql" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/global.sql" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
@@ -432,6 +439,8 @@ if [ $sitePackageLocation ]; then
     wsgiDaemonProcessLine="WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=$wsgiThreads processes=$wsgiProcess python-path=$sitePackageLocation"
 fi
 
+####################
+# HTTP vhost
 su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
 ErrorDocument 400 /src/assets/error_pages/400.html
 ErrorDocument 401 /src/assets/error_pages/401.html
@@ -443,7 +452,7 @@ ErrorDocument 502 /src/assets/error_pages/502.html
 ErrorDocument 503 /src/assets/error_pages/503.html
 ErrorDocument 504 /src/assets/error_pages/504.html
 <VirtualHost *:80>
-    ServerName localhost
+    # ServerName opencapture.exemple.com # Uncomment this line if you use Open-Capture in a multi-tenant environment and replace opencapture.exemple.com by your domain name
     DocumentRoot $defaultPath
     $wsgiDaemonProcessLine
     WSGIScriptAlias /backend_oc $defaultPath/wsgi.py
@@ -456,6 +465,7 @@ ErrorDocument 504 /src/assets/error_pages/504.html
         WSGIProcessGroup opencapture
         WSGIApplicationGroup %{GLOBAL}
         WSGIPassAuthorization On
+        Options -Indexes
         Order deny,allow
         Allow from all
         Require all granted
@@ -463,6 +473,55 @@ ErrorDocument 504 /src/assets/error_pages/504.html
             Require all denied
         </Files>
     </Directory>
+</VirtualHost>
+EOF"
+
+####################
+# HTTPS vhost
+su -c "cat > /etc/apache2/sites-available/opencapture-ssl.conf << EOF
+ErrorDocument 400 /src/assets/error_pages/400.html
+ErrorDocument 401 /src/assets/error_pages/401.html
+ErrorDocument 403 /src/assets/error_pages/403.html
+ErrorDocument 404 /src/assets/error_pages/404.html
+ErrorDocument 500 /src/assets/error_pages/500.html
+ErrorDocument 501 /src/assets/error_pages/501.html
+ErrorDocument 502 /src/assets/error_pages/502.html
+ErrorDocument 503 /src/assets/error_pages/503.html
+ErrorDocument 504 /src/assets/error_pages/504.html
+<VirtualHost *:443>
+    # ServerName opencapture.exemple.com # Uncomment this line if you use Open-Capture in a multi-tenant environment and replace opencapture.exemple.com by your domain name
+    DocumentRoot $defaultPath
+    $wsgiDaemonProcessLine
+    WSGIScriptAlias /backend_oc $defaultPath/wsgi.py
+
+    SSLEngine on
+
+    # curl https://ssl-config.mozilla.org/ffdhe2048.txt >> /path/to/signed_cert_and_intermediate_certs_and_dhparams
+    SSLCertificateFile      /path/to/signed_cert_and_intermediate_certs_and_dhparams
+    SSLCertificateKeyFile   /path/to/private_key
+
+    Header always set X-Content-Type-Options: nosniff
+    Header always set Strict-Transport-Security \"max-age=31536000; includeSubDomains; preload\"
+
+    <Directory $defaultPath>
+        AllowOverride All
+        WSGIProcessGroup opencapture
+        WSGIApplicationGroup %{GLOBAL}
+        WSGIPassAuthorization On
+        Options -Indexes
+        Order deny,allow
+        Allow from all
+        Require all granted
+        <Files ~ \"(.ini|secret_key)\">
+            Require all denied
+        </Files>
+    </Directory>
+
+    # enable HTTP/2, if available
+    Protocols h2 http/1.1
+
+    # HTTP Strict Transport Security (mod_headers is required) (63072000 seconds)
+    Header always set Strict-Transport-Security "max-age=63072000"
 </VirtualHost>
 EOF"
 
@@ -479,6 +538,7 @@ a2ensite opencapture.conf >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 a2dissite 000-default.conf >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 a2enmod rewrite >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 a2enmod headers >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+a2enmod ssl >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 systemctl restart apache2 >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 
 echo ""
@@ -496,6 +556,7 @@ cp $defaultPath/instance/config/config.ini.default "$defaultPath/custom/$customI
 cp $defaultPath/instance/referencial/default_referencial_supplier.csv.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier.csv"
 cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier_index.json"
 cp $defaultPath/instance/referencial/LISTE_PRENOMS.csv "$defaultPath/custom/$customId/instance/referencial/LISTE_PRENOMS.csv"
+cp $defaultPath/instance/referencial/CURRENCY_CODE.csv "$defaultPath/custom/$customId/instance/referencial/CURRENCY_CODE.csv"
 cp $defaultPath/src/backend/process_queue_verifier.py.default "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
 cp $defaultPath/src/backend/process_queue_splitter.py.default "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
 cp $defaultPath/bin/scripts/load_referential_splitter.sh.default "$defaultPath/custom/$customId/bin/scripts/load_referential_splitter.sh"
@@ -510,7 +571,7 @@ cp $defaultPath/bin/scripts/load_users.sh.default "$defaultPath/custom/$customId
 sed -i "s#§§PYTHON_VENV§§#source $python_venv_path/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCVerifier_worker.sh"
 sed -i "s#§§PYTHON_VENV§§#source $python_venv_path/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/OCSplitter_worker.sh"
 
-for file in "$defaultPath/custom/$customId/bin/scripts/*.sh"; do
+find "$defaultPath/custom/$customId/bin/scripts/" -name "*.sh" | while IFS= read -r file; do
     sed -i "s#§§OC_PATH§§#$defaultPath#g" $file
     sed -i "s#§§CUSTOM_ID§§#$customId#g" $file
     sed -i "s#§§PYTHON_VENV§§#$python_venv_path/bin/python3#g" $file
@@ -523,6 +584,7 @@ cp -r $defaultPath/bin/scripts/splitter_methods/* "$defaultPath/custom/$customId
 cp -r $defaultPath/bin/scripts/splitter_metadata/* "$defaultPath/custom/$customId/bin/scripts/splitter_metadata/"
 
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/config.ini"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
 sed -i "s#§§BATCH_PATH§§#$defaultPath/custom/$customId/data/MailCollect/#g" "$defaultPath/custom/$customId/bin/scripts/MailCollect/clean.sh"
@@ -753,6 +815,10 @@ chmod u+x $defaultPath/custom/"$customId"/bin/scripts/verifier_workflows/*.sh
 chown -R "$user":"$group" $defaultPath/custom/"$customId"/bin/scripts/verifier_workflows/*.sh
 chmod u+x $defaultPath/custom/"$customId"/bin/scripts/splitter_workflows/*.sh
 chown -R "$user":"$group" $defaultPath/custom/"$customId"/bin/scripts/splitter_workflows/*.sh
+
+####################
+# Allow user script to restart fs-watcher service without password
+echo "$user ALL=(ALL) NOPASSWD: /bin/systemctl restart fs-watcher" >> /etc/sudoers
 
 ####################
 # Create docservers
