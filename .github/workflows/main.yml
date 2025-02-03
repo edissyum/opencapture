@@ -84,7 +84,7 @@ jobs:
           sed -i 's/$(tput sgr0)/""/gI' install.sh
           sudo apt install -y postgresql
           sudo su postgres -c "psql -c 'DROP DATABASE IF EXISTS opencapture_test'"
-          sudo ./install.sh --custom_id test --user $(whoami) --path /var/www/html/opencapture/ --wsgi_process 1 --wsgi_threads 5 --supervisor_systemd systemd --hostname $HOST_NAME --port $PORT --username $USER_NAME --password $USER_PASSWORD
+          sudo ./install.sh --custom_id test --user $(whoami) --path /var/www/html/opencapture/ --wsgi_process 1 --wsgi_threads 5 --supervisor_systemd systemd --database_hostname $HOST_NAME --database_port $PORT --database_username $USER_NAME --database_password $USER_PASSWORD
         env:
           HOST_NAME: ${{ vars.HOST_NAME }}
           PORT: ${{ vars.PORT }}
