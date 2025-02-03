@@ -37,7 +37,8 @@ def suppliers_list():
     check, message = rest_validator(request.args, [
         {'id': 'order', 'type': str, 'mandatory': False},
         {'id': 'limit', 'type': int, 'mandatory': False},
-        {'id': 'offset', 'type': int, 'mandatory': False}
+        {'id': 'offset', 'type': int, 'mandatory': False},
+        {'id': 'search', 'type': str, 'mandatory': False}
     ])
     if not check:
         return make_response({
