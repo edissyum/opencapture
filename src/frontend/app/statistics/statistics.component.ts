@@ -35,78 +35,104 @@ import { NotificationService } from "../../services/notifications/notifications.
 
 export class StatisticsComponent implements OnInit {
     currentData         : any = [];
-    loading             : boolean = false;
+    loading             : boolean = true;
     options             : any = [
         {
-            'id': 'verifier_documents_validated_per_user',
-            'label': this.translate.instant('STATISTICS.verifier_documents_validated_per_user'),
-            'function': 'getUsersProcessDocument',
+            'id': 'verifier_batches_validated_per_user',
+            'label': this.translate.instant('STATISTICS.verifier_batches_validated_per_user'),
+            'function': 'getUsersProcessBatches',
             'module': 'verifier',
-            'data': []
+            'data': [],
+            'total': 0
         },
         {
-            'id': 'verifier_documents_validated_per_form',
-            'label': this.translate.instant('STATISTICS.verifier_documents_validated_per_form'),
-            'function': 'getFormsProcessDocument',
+            'id': 'verifier_batches_validated_per_form',
+            'label': this.translate.instant('STATISTICS.verifier_batches_validated_per_form'),
+            'function': 'getFormsProcessBatches',
             'module': 'verifier',
-            'data': []
+            'data': [],
+            'total': 0
         },
         {
-            'id': 'verifier_documents_uploaded_per_worklow',
-            'label': this.translate.instant('STATISTICS.verifier_documents_uploaded_per_worklow'),
-            'function': 'getWorkflowUploadedDocumentVerifier',
+            'id': 'verifier_batches_uploaded_per_worklow',
+            'label': this.translate.instant('STATISTICS.verifier_batches_uploaded_per_worklow'),
+            'function': 'getWorkflowUploadedBatchesVerifier',
             'module': 'verifier',
-            'data': []
+            'data': [],
+            'total': 0
         },
         {
-            'id': 'verifier_documents_uploaded_per_user',
-            'label': this.translate.instant('STATISTICS.verifier_documents_uploaded_per_user'),
-            'function': 'getUserUploadedDocumentVerifier',
+            'id': 'verifier_batches_uploaded_per_user',
+            'label': this.translate.instant('STATISTICS.verifier_batches_uploaded_per_user'),
+            'function': 'getUserUploadedBatchesVerifier',
             'module': 'verifier',
-            'data': []
+            'data': [],
+            'total': 0
         },
         {
-            'id': 'verifier_documents_uploaded_per_month',
-            'label': this.translate.instant('STATISTICS.verifier_documents_uploaded_per_month'),
-            'function': 'getDocumentsUploadedByMonthVerifier',
+            'id': 'verifier_batches_uploaded_per_month',
+            'label': this.translate.instant('STATISTICS.verifier_batches_uploaded_per_month'),
+            'function': 'getBatchesUploadedByMonthVerifier',
             'module': 'verifier',
-            'data': []
+            'data': [],
+            'total': 0
         },
         {
-            'id': 'verifier_documents_uploaded_per_year',
-            'label': this.translate.instant('STATISTICS.verifier_documents_uploaded_per_year'),
-            'function': 'getDocumentsUploadedByYearVerifier',
+            'id': 'verifier_batches_uploaded_per_year',
+            'label': this.translate.instant('STATISTICS.verifier_batches_uploaded_per_year'),
+            'function': 'getBatchesUploadedByYearVerifier',
             'module': 'verifier',
-            'data': []
+            'data': [],
+            'total': 0
         },
         {
-            'id': 'splitter_documents_uploaded_per_worklow',
-            'label': this.translate.instant('STATISTICS.splitter_documents_uploaded_per_worklow'),
-            'function': 'getWorkflowUploadedDocumentSplitter',
+            'id': 'splitter_documents_processed_per_worklow',
+            'label': this.translate.instant('STATISTICS.splitter_documents_processed_per_worklow'),
+            'function': 'getWorkflowProcessedDocumentSplitter',
             'module': 'splitter',
-            'data': []
+            'data': [],
+            'total': 0
         },
         {
-            'id': 'splitter_documents_uploaded_per_user',
-            'label': this.translate.instant('STATISTICS.splitter_documents_uploaded_per_user'),
-            'function': 'getUserUploadedDocumentSlitter',
+            'id': 'splitter_documents_processed_per_user',
+            'label': this.translate.instant('STATISTICS.splitter_documents_processed_per_user'),
+            'function': 'getUserProcessedDocumentSlitter',
             'module': 'splitter',
-            'data': []
+            'data': [],
+            'total': 0
         },
         {
-            'id': 'splitter_documents_uploaded_per_month',
-            'label': this.translate.instant('STATISTICS.splitter_documents_uploaded_per_month'),
-            'function': 'getDocumentsUploadedByMonthSplitter',
+            'id': 'splitter_documents_processed_per_month',
+            'label': this.translate.instant('STATISTICS.splitter_documents_processed_per_month'),
+            'function': 'getDocumentsProcessedByMonthSplitter',
             'module': 'splitter',
-            'data': []
+            'data': [],
+            'total': 0
         },
         {
-            'id': 'splitter_documents_uploaded_per_year',
-            'label': this.translate.instant('STATISTICS.splitter_documents_uploaded_per_year'),
-            'function': 'getDocumentsUploadedByYearSplitter',
+            'id': 'splitter_documents_processed_per_year',
+            'label': this.translate.instant('STATISTICS.splitter_documents_processed_per_year'),
+            'function': 'getDocumentsProcessedByYearSplitter',
             'module': 'splitter',
-            'data': []
-        }
+            'data': [],
+            'total': 0
+        },
+        {
+            'id': 'splitter_batches_uploaded_per_month',
+            'label': this.translate.instant('STATISTICS.splitter_batches_uploaded_per_month'),
+            'function': 'getBatchesUploadedByMonthSplitter',
+            'module': 'splitter',
+            'data': [],
+            'total': 0
+        },
+        {
+            'id': 'splitter_batches_uploaded_per_year',
+            'label': this.translate.instant('STATISTICS.splitter_batches_uploaded_per_year'),
+            'function': 'getBatchesUploadedByYearSplitter',
+            'module': 'splitter',
+            'data': [],
+            'total': 0
+        },
     ];
     diagramTypes        : any = [
         {
@@ -129,17 +155,20 @@ export class StatisticsComponent implements OnInit {
     modules             : any = [
         {
             'id': 'verifier',
-            'label': this.translate.instant('MONITORING.verifier')
+            'label': this.translate.instant('HOME.verifier')
         },
         {
             'id': 'splitter',
-            'label': this.translate.instant('MONITORING.splitter')
+            'label': this.translate.instant('HOME.splitter')
         }
     ];
     optionsByModule     : any;
     selectedStatistic   : any;
+    availableYears      : any[]  = [];
+    disableYear         : boolean = false;
     selectedModule      : string = 'verifier';
     selectedDiagramType : string = 'vertical-bar';
+    selectedYear        : string = moment().format('Y');
 
     constructor(
         private http: HttpClient,
@@ -154,16 +183,24 @@ export class StatisticsComponent implements OnInit {
             this.authService.generateHeaders();
         }
         this.optionsByModule = this.options.filter((option: any) => option.module === this.selectedModule);
+
+        this.http.get(environment['url'] + '/ws/history/getAvailableYears', {headers: this.authService.headers}).pipe(
+            tap((years: any) => {
+                years.years.forEach((year: any) => {
+                    this.availableYears.push(year.year);
+                });
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
-    changeModule(event: any) {
-        this.selectedModule = event.value;
-        this.optionsByModule = this.options.filter((option: any) => option.module === this.selectedModule);
-    }
-
-    getDocumentsUploadedByMonthVerifier(cpt: number) {
-        const currentYear = moment().format('Y');
-        this.http.get(environment['url'] + '/ws/history/list?module=verifier&submodule=upload_file&year=' + currentYear, {headers: this.authService.headers}).pipe(
+    getBatchesUploadedByMonthVerifier(cpt: number) {
+        this.http.get(environment['url'] + '/ws/history/list?module=verifier&submodule=upload_file&year=' + this.selectedYear, {headers: this.authService.headers}).pipe(
             tap((submodules: any) => {
                 const historyCpt: any = {};
                 moment.months().forEach((month: any) => {
@@ -174,10 +211,11 @@ export class StatisticsComponent implements OnInit {
                     const value: any = moment(_submodule.date, format);
                     const month = value.format('MMMM');
                     historyCpt[month] += 1;
+                    this.options[cpt].total += 1;
                 });
                 Object.keys(historyCpt).forEach((month: any) => {
                     this.options[cpt].data.push({
-                        'name': month + ' ' + currentYear,
+                        'name': month + ' ' + this.selectedYear,
                         'value': historyCpt[month]
                     });
                 });
@@ -192,9 +230,10 @@ export class StatisticsComponent implements OnInit {
         ).subscribe();
     }
 
-    getDocumentsUploadedByYearVerifier(cpt: number) {
+    getBatchesUploadedByYearVerifier(cpt: number) {
         this.http.get(environment['url'] + '/ws/history/list?module=verifier&submodule=upload_file', {headers: this.authService.headers}).pipe(
             tap((submodules: any) => {
+                this.disableYear = true;
                 const historyCpt: any = {};
                 submodules.history.forEach((_submodule: any) => {
                     const format = moment().localeData().longDateFormat('L');
@@ -204,6 +243,7 @@ export class StatisticsComponent implements OnInit {
                         historyCpt[year] = 0;
                     }
                     historyCpt[year] += 1;
+                    this.options[cpt].total += 1;
                 });
 
                 Object.keys(historyCpt).forEach((year: any) => {
@@ -223,9 +263,10 @@ export class StatisticsComponent implements OnInit {
         ).subscribe();
     }
 
-    getDocumentsUploadedByYearSplitter(cpt: number) {
+    getDocumentsProcessedByYearSplitter(cpt: number) {
         this.http.get(environment['url'] + '/ws/history/list?module=splitter&submodule=create_document', {headers: this.authService.headers}).pipe(
             tap((submodules: any) => {
+                this.disableYear = true;
                 const historyCpt: any = {};
                 submodules.history.forEach((_submodule: any) => {
                     const format = moment().localeData().longDateFormat('L');
@@ -235,6 +276,7 @@ export class StatisticsComponent implements OnInit {
                         historyCpt[year] = 0;
                     }
                     historyCpt[year] += 1;
+                    this.options[cpt].total += 1;
                 });
 
                 Object.keys(historyCpt).forEach((year: any) => {
@@ -254,9 +296,41 @@ export class StatisticsComponent implements OnInit {
         ).subscribe();
     }
 
-    getDocumentsUploadedByMonthSplitter(cpt: number) {
-        const currentYear = moment().format('Y');
-        this.http.get(environment['url'] + '/ws/history/list?module=splitter&submodule=create_document&year=' + currentYear, {headers: this.authService.headers}).pipe(
+    getBatchesUploadedByYearSplitter(cpt: number) {
+        this.http.get(environment['url'] + '/ws/history/list?module=splitter&submodule=upload_file', {headers: this.authService.headers}).pipe(
+            tap((submodules: any) => {
+                this.disableYear = true;
+                const historyCpt: any = {};
+                submodules.history.forEach((_submodule: any) => {
+                    const format = moment().localeData().longDateFormat('L');
+                    const value: any = moment(_submodule.date, format);
+                    const year = value.format('YYYY');
+                    if (!historyCpt[year]) {
+                        historyCpt[year] = 0;
+                    }
+                    historyCpt[year] += 1;
+                    this.options[cpt].total += 1;
+                });
+
+                Object.keys(historyCpt).forEach((year: any) => {
+                    this.options[cpt].data.push({
+                        'name': year,
+                        'value': historyCpt[year]
+                    });
+                });
+                this.currentData = this.options[cpt].data;
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    getDocumentsProcessedByMonthSplitter(cpt: number) {
+        this.http.get(environment['url'] + '/ws/history/list?module=splitter&submodule=create_document&year=' + this.selectedYear, {headers: this.authService.headers}).pipe(
             tap((submodules: any) => {
                 const historyCpt: any = {};
                 moment.months().forEach((month: any) => {
@@ -267,10 +341,11 @@ export class StatisticsComponent implements OnInit {
                     const value: any = moment(_submodule.date, format);
                     const month = value.format('MMMM');
                     historyCpt[month] += 1;
+                    this.options[cpt].total += 1;
                 });
                 Object.keys(historyCpt).forEach((month: any) => {
                     this.options[cpt].data.push({
-                        'name': month + ' ' + currentYear,
+                        'name': month + ' ' + this.selectedYear,
                         'value': historyCpt[month]
                     });
                 });
@@ -285,10 +360,41 @@ export class StatisticsComponent implements OnInit {
         ).subscribe();
     }
 
-    getUserUploadedDocumentVerifier(cpt: number) {
+    getBatchesUploadedByMonthSplitter(cpt: number) {
+        this.http.get(environment['url'] + '/ws/history/list?module=splitter&submodule=upload_file&year=' + this.selectedYear, {headers: this.authService.headers}).pipe(
+            tap((submodules: any) => {
+                const historyCpt: any = {};
+                moment.months().forEach((month: any) => {
+                    historyCpt[month] = 0;
+                });
+                submodules.history.forEach((_submodule: any) => {
+                    const format = moment().localeData().longDateFormat('L');
+                    const value: any = moment(_submodule.date, format);
+                    const month = value.format('MMMM');
+                    historyCpt[month] += 1;
+                    this.options[cpt].total += 1;
+                });
+                Object.keys(historyCpt).forEach((month: any) => {
+                    this.options[cpt].data.push({
+                        'name': month + ' ' + this.selectedYear,
+                        'value': historyCpt[month]
+                    });
+                });
+                this.currentData = this.options[cpt].data;
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    getUserUploadedBatchesVerifier(cpt: number) {
         this.http.get(environment['url'] + '/ws/users/list_full', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&module=verifier', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&module=verifier&year=' + this.selectedYear, {headers: this.authService.headers}).pipe(
                     tap((submodules: any) => {
                         data.users[data.users.length - 1] = {'id': 0, 'lastname': 'Upload', 'firstname': 'API'};
                         data.users.forEach((user: any) => {
@@ -296,6 +402,7 @@ export class StatisticsComponent implements OnInit {
                             submodules.history.forEach((_submodule: any) => {
                                 if (user.id === _submodule.user_id) {
                                     historyCpt += 1;
+                                    this.options[cpt].total += 1;
                                 }
                             });
                             this.options[cpt].data.push({
@@ -321,10 +428,10 @@ export class StatisticsComponent implements OnInit {
         ).subscribe();
     }
 
-    getUserUploadedDocumentSlitter(cpt: number) {
+    getUserProcessedDocumentSlitter(cpt: number) {
         this.http.get(environment['url'] + '/ws/users/list_full', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.http.get(environment['url'] + '/ws/history/list?submodule=create_document&module=splitter', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/history/list?submodule=create_document&module=splitter&year=' + this.selectedYear, {headers: this.authService.headers}).pipe(
                     tap((submodules: any) => {
                         data.users[data.users.length - 1] = {'id': 0, 'lastname': 'Upload', 'firstname': 'API'};
                         data.users.forEach((user: any) => {
@@ -332,6 +439,7 @@ export class StatisticsComponent implements OnInit {
                             submodules.history.forEach((_submodule: any) => {
                                 if (user.id === _submodule.user_id) {
                                     historyCpt += 1;
+                                    this.options[cpt].total += 1;
                                 }
                             });
                             this.options[cpt].data.push({
@@ -357,16 +465,17 @@ export class StatisticsComponent implements OnInit {
         ).subscribe();
     }
 
-    getWorkflowUploadedDocumentVerifier(cpt: number) {
+    getWorkflowUploadedBatchesVerifier(cpt: number) {
         this.http.get(environment['url'] + '/ws/workflows/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&module=verifier', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/history/list?submodule=upload_file&module=verifier&year=' + this.selectedYear, {headers: this.authService.headers}).pipe(
                     tap((submodules: any) => {
                         data.workflows.forEach((workflow: any) => {
                             let historyCpt = 0;
                             submodules.history.forEach((_submodule: any) => {
                                 if (workflow.workflow_id === _submodule.workflow_id) {
                                     historyCpt += 1;
+                                    this.options[cpt].total += 1;
                                 }
                             });
                             this.options[cpt].data.push({
@@ -392,16 +501,17 @@ export class StatisticsComponent implements OnInit {
         ).subscribe();
     }
 
-    getWorkflowUploadedDocumentSplitter(cpt: number) {
+    getWorkflowProcessedDocumentSplitter(cpt: number) {
         this.http.get(environment['url'] + '/ws/workflows/splitter/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.http.get(environment['url'] + '/ws/history/list?submodule=create_document&module=splitter', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/history/list?submodule=create_document&module=splitter&year=' + this.selectedYear, {headers: this.authService.headers}).pipe(
                     tap((submodules: any) => {
                         data.workflows.forEach((workflow: any) => {
                             let historyCpt = 0;
                             submodules.history.forEach((_submodule: any) => {
                                 if (workflow.workflow_id === _submodule.workflow_id) {
                                     historyCpt += 1;
+                                    this.options[cpt].total += 1;
                                 }
                             });
                             this.options[cpt].data.push({
@@ -427,28 +537,37 @@ export class StatisticsComponent implements OnInit {
         ).subscribe();
     }
 
-    getFormsProcessDocument(cpt: number) {
+    getFormsProcessBatches(cpt: number) {
         this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                data.forms.forEach((form: any) => {
-                    this.http.post(environment['url'] + '/ws/verifier/documents/list',
-                        {'status': 'END', 'form_id': form.id}, {headers: this.authService.headers})
-                    .pipe(
-                        tap((data: any) => {
+                this.http.post(environment['url'] + '/ws/verifier/documents/list', {'status': 'END'}, {headers: this.authService.headers})
+                .pipe(
+                    tap((documents: any) => {
+                        data.forms.forEach((form: any) => {
+                            let historyCpt = 0;
+                            documents.documents.forEach((document: any) => {
+                                const format = moment().localeData().longDateFormat('L');
+                                const value: any = moment(document.date, format);
+
+                                if (form.id === document.form_id && value.format('YYYY') === this.selectedYear) {
+                                    historyCpt += 1;
+                                    this.options[cpt].total += 1;
+                                }
+                            });
                             this.options[cpt].data.push({
                                 'name': form.label + ' (' + form.module + ')',
-                                'value': data.total
+                                'value': historyCpt
                             });
                             this.currentData = this.options[cpt].data;
-                        }),
-                        finalize(() => this.loading = false),
-                        catchError((err: any) => {
-                            console.debug(err);
-                            this.notify.handleErrors(err);
-                            return of(false);
-                        })
-                    ).subscribe();
-                });
+                        });
+                    }),
+                    finalize(() => this.loading = false),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -458,16 +577,17 @@ export class StatisticsComponent implements OnInit {
         ).subscribe();
     }
 
-    getUsersProcessDocument(cpt: number) {
+    getUsersProcessBatches(cpt: number) {
         this.http.get(environment['url'] + '/ws/users/list_full', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.http.get(environment['url'] + '/ws/history/list?submodule=document_validated', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/history/list?submodule=document_validated&year=' + this.selectedYear, {headers: this.authService.headers}).pipe(
                     tap((submodules: any) => {
                         data.users.forEach((user: any) => {
                             let historyCpt = 0;
                             submodules.history.forEach((_submodule: any) => {
                                 if (user.id === _submodule.user_id) {
                                     historyCpt += 1;
+                                    this.options[cpt].total += 1;
                                 }
                             });
                             this.options[cpt].data.push({
@@ -493,11 +613,16 @@ export class StatisticsComponent implements OnInit {
         ).subscribe();
     }
 
-    changeStatistic(event: any) {
+    changeStatistic(event: any, reset=false) {
+        this.disableYear = false;
         if (event.value) {
             this.options.forEach((option: any, cpt: number) => {
                 if (option.id === event.value) {
                     this.selectedStatistic = option;
+                    if (reset) {
+                        option.data = [];
+                    }
+
                     if (option.data.length === 0) {
                         this.currentData = [];
                         this.loading = true;
@@ -520,5 +645,15 @@ export class StatisticsComponent implements OnInit {
                 }
             });
         }
+    }
+
+    changeModule(event: any) {
+        this.selectedModule = event.value;
+        this.optionsByModule = this.options.filter((option: any) => option.module === this.selectedModule);
+    }
+
+    changeYear(event: any) {
+        this.selectedYear = event.value;
+        this.changeStatistic({value: this.selectedStatistic.id}, true);
     }
 }

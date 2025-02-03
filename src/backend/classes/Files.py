@@ -498,6 +498,8 @@ class Files:
             text = ocr.text_builder(improved_cropped_image)
 
         match = schwifty.IBAN(text, allow_invalid=True).is_valid
+        if match:
+            text = re.sub('\s*', '', text)
 
         if not match:
             try:
