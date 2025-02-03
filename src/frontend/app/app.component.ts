@@ -68,7 +68,6 @@ export class AppComponent implements OnInit, AfterContentChecked {
             })
         ).subscribe();
 
-
         const appTitle = this.titleService.getTitle();
         this.router.events.pipe(
             filter(event => event instanceof NavigationEnd),

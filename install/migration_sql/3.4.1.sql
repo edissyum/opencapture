@@ -1,0 +1,1 @@
+INSERT INTO "configurations" ("label", "data") VALUES ('enableAttachments', '{"type": "bool", "value": true, "description": "Activer l''affichage des pièces jointes dans les module Verifier et Splitter"}');

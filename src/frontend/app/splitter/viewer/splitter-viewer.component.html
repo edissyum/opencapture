@@ -37,7 +37,7 @@
                                               matTooltip="{{ 'OUTPUT.documents_count' | translate }} : {{ batch['documentsCount'] }}">
                                             {{ batch['documentsCount'] }}<i class="far fa-file-alt ml-1"></i>
                                         </span>
-                                        @if (batch['attachmentsCount'] && batch['attachmentsCount'] > 0) {
+                                        @if (batch['attachmentsCount'] && batch['attachmentsCount'] > 0 && this.enableAttachments) {
                                             <span class="text-green-400 text-base badge badge-secondary badge-pill border-l border-green-400 ml-1"
                                                   [matTooltip]="this.translate.instant('ATTACHMENTS.attachments_count') + ' : ' + batch['attachmentsCount']">
                                                 {{ batch['attachmentsCount'] }}<i class="fas fa-paperclip ml-0.5"></i>
@@ -208,7 +208,7 @@
                                 matTooltip="{{ 'SPLITTER.load_referential' | translate }}">
                             <i class="fa-solid fa-sync text-2xl text-gray-900"></i>
                         </button>
-                        @if (!this.loading) {
+                        @if (!this.loading && this.enableAttachments) {
                             <div class="float-right mr-2 cursor-pointer text-2xl text-gray-900"
                                  [matTooltip]="this.documents.length === 1 ? this.translate.instant('ATTACHMENTS.attachments') : 'ATTACHMENTS.splitter_one_document' | translate">
                                 <i class="fas fa-paperclip" (click)="this.documents.length === 1 ? toggleSidenav() : ''"
@@ -270,7 +270,7 @@
                                                 </button>
                                             </mat-panel-title>
                                             <span class="absolute right-7 text-gray-900">
-                                                @if (documents.length > 1) {
+                                                @if (documents.length > 1 && this.enableAttachments) {
                                                     <button mat-button (click)="setDocumentPrincipal(documentIndex); $event.stopPropagation();"
                                                             [matTooltip]="'ATTACHMENTS.set_document_principal' | translate">
                                                         <i class="fa-solid text-gray-900 fa-link text-lg"></i>

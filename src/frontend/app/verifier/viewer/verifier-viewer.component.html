@@ -78,9 +78,10 @@
                             </span>
                         }
                     </div>
-                    @if (!this.loading) {
+                    @if (!this.loading && this.enableAttachments) {
                         <div class="fixed cursor-pointer mr-2 mt-4 z-50 text-2xl text-left text-gray-900"
                              [matTooltip]="'ATTACHMENTS.attachments' | translate">
+
                             <i class="fas fa-paperclip pointer-events-auto" (click)="toggleSidenav()"></i>
                             <div class="relative inline-flex items-center justify-center font-bold text-white bg-green-400
                                 text-[.6rem] leading-[.5rem] rounded-full -top-1 float-right p-[3px]">

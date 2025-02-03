@@ -71,6 +71,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     imgLoading              : boolean     = false;
     sidenavOpened           : boolean     = false;
     supplierformFound       : boolean     = false;
+    enableAttachments       : boolean     = false;
     processErrorMessage     : string      = '';
     processErrorIcon        : string      = '';
     token                   : string      = '';
@@ -172,6 +173,19 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         this.sessionStorageService.save('splitter_or_verifier', 'verifier');
         this.ocrFromUser = false;
         this.saveInfo = true;
+
+        this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/enableAttachments').pipe(
+            tap((data: any) => {
+                if (data.configuration.length === 1) {
+                    this.enableAttachments = data.configuration[0].data.value;
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
 
         if (this.route.snapshot.params['token']) {
             const token = this.route.snapshot.params['token'];
