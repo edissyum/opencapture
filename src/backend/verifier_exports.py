@@ -257,8 +257,7 @@ def export_facturx(data, log, regex, document_info):
         issue_date_parent = Et.SubElement(facturx_document, 'ram:IssueDateTime')
         issue_date = Et.SubElement(issue_date_parent, 'udt:DateTimeString', {'format': '102'})
         if document_info['datas']['document_due_date']:
-            issue_date.text = datetime.datetime.strptime(document_info['datas']['document_due_date'],
-                                                         regex['format_date']).strftime('%Y%m%d')
+            issue_date.text = datetime.datetime.strptime(document_info['datas']['document_due_date'], '%Y-%m-%d').strftime('%Y%m%d')
         else:
             issue_date.text = '19700101'
 

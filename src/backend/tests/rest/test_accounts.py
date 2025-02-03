@@ -280,7 +280,7 @@ class UserTest(unittest.TestCase):
 
         self.database.execute("SELECT status FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
         new_supplier = self.database.fetchall()
-        self.assertEqual("DEL", new_supplier[0]['status'])
+        self.assertEqual(0, len(new_supplier))
 
     def test_successful_delete_supplier_positions(self):
         supplier = self.create_supplier()
