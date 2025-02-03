@@ -140,8 +140,8 @@ def get_ldap_users(connection, class_user, object_class, users_dn):
         else:
             print_log("No user is found on the ldap server ")
             return {'status_search': False, 'ldap_users': ""}
-    except LDAPException:
-        print_log('Search doesn t work')
+    except LDAPException as _e:
+        print_log('Search doesn t work' + str(_e))
         return False
 
 

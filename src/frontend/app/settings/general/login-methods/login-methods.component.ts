@@ -239,9 +239,7 @@ export class LoginMethodsComponent implements OnInit {
                         const configs : any = data.ldap_configurations;
                         this.connectionFormGroup.forEach(element => {
                             for (const config of configs) {
-                                if (element.type !== 'password') {
-                                    element.control.setValue(config.data[element.id]);
-                                }
+                                element.control.setValue(config.data[element.id]);
                             }
                         });
                         this.synchroparamsFormGroup.forEach(element => {
