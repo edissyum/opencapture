@@ -32,6 +32,7 @@ class VerifierTest(unittest.TestCase):
         self.database = get_db()
         self.app = app.test_client()
         self.token = get_token('admin')
+        warnings.filterwarnings('ignore', category=UserWarning)
         warnings.filterwarnings('ignore', category=ResourceWarning)
 
     def create_supplier(self):
@@ -87,15 +88,16 @@ class VerifierTest(unittest.TestCase):
 
         self.database.execute("SELECT * FROM documents")
         document = self.database.fetchall()
+
         self.assertEqual(supplier.json['id'], document[0]['supplier_id'])
         self.assertEqual(408.50, float(document[0]['datas']['total_vat']))
         self.assertEqual(2042.5, float(document[0]['datas']['total_ht']))
         self.assertEqual(408.50, float(document[0]['datas']['vat_amount']))
         self.assertEqual(2451.0, float(document[0]['datas']['total_ttc']))
-        self.assertEqual("15/12/2016", document[0]['datas']['document_date'])
+        self.assertEqual("2016-12-15", document[0]['datas']['document_date'])
         self.assertEqual("INV-001510", document[0]['datas']['invoice_number'])
         self.assertEqual(2042.5, float(document[0]['datas']['no_rate_amount']))
-        self.assertEqual("14/01/2017", document[0]['datas']['document_due_date'])
+        self.assertEqual("2017-01-14", document[0]['datas']['document_due_date'])
         self.assertEqual("AM161941219-1607", document[0]['datas']['quotation_number'])
         self.assertEqual(200, document_res.status_code)
 
@@ -332,7 +334,8 @@ class VerifierTest(unittest.TestCase):
                                  json={'args': output[0]},
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.assertTrue(os.path.isfile(f'/var/share/{CUSTOM_ID}/export/verifier/INV-001510_F_15-12-2016_FR04493811251.xml'))
+        filename = response.json
+        self.assertTrue(os.path.isfile(f'{filename}'))
 
     def test_successful_export_pdf(self):
         self.create_supplier()
@@ -345,7 +348,8 @@ class VerifierTest(unittest.TestCase):
                                  json={'args': output[0]},
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        self.assertTrue(os.path.isfile(f'/var/share/{CUSTOM_ID}/export/verifier/INV-001510_F_15-12-2016_FR04493811251.pdf'))
+        filename = response.json
+        self.assertTrue(os.path.isfile(f'{filename}'))
 
     def test_successful_export_facturx(self):
         self.create_supplier()
@@ -357,15 +361,15 @@ class VerifierTest(unittest.TestCase):
         response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/export_facturx',
                                  json={'args': output[0]},
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
-
+        filename = response.json
         is_facturx = False
-        with open(f'/var/share/{CUSTOM_ID}/export/verifier/INV-001510_F_15-12-2016_FR04493811251.pdf', 'rb') as f:
+        with open(f'{filename}', 'rb') as f:
             _, _xml_content = facturx.get_facturx_xml_from_pdf(f.read())
             if _ is not None:
                 is_facturx = True
 
         self.assertEqual(200, response.status_code)
-        self.assertTrue(os.path.isfile(f'/var/share/{CUSTOM_ID}/export/verifier/INV-001510_F_15-12-2016_FR04493811251.pdf'))
+        self.assertTrue(os.path.isfile(f'{filename}'))
         self.assertTrue(is_facturx)
 
     def tearDown(self) -> None:

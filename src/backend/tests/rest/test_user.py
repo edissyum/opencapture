@@ -113,7 +113,7 @@ class UserTest(unittest.TestCase):
         payload = {
             'exp': datetime.now(timezone.utc) + timedelta(minutes=3600),
             'iat': datetime.now(timezone.utc),
-            'sub': user.json['id']
+            'sub': str(user.json['id'])
         }
         reset_token = jwt.encode(payload, app.config['SECRET_KEY'].replace("\n", ""), algorithm='HS512')
         self.database.execute('UPDATE users SET reset_token = %s WHERE id = %s', (reset_token, user.json['id']))

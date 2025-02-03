@@ -387,7 +387,7 @@ def create_supplier(data):
     if 'vat_number' in data or 'duns' in data:
         if data['vat_number']:
             supplier = accounts.get_suppliers({'where': ['vat_number = %s'], 'data': [data['vat_number']]})
-        if not supplier and data['duns']:
+        if not supplier and 'duns' in data and data['duns']:
             supplier = accounts.get_suppliers({'where': ['duns = %s'], 'data': [data['duns']]})
 
     if not supplier:
