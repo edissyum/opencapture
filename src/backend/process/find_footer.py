@@ -399,8 +399,7 @@ class FindFooter:
                 total_ttc = [float("%.2f" % (float(total_ht[0]) + float(vat_amount[0]))), (('', ''), ('', '')), True]
 
             if vat_amount is False and (total_ttc and total_ttc[0]) and (total_ht and total_ht[0]):
-                vat_amount = [float("%.2f" % (float(total_ttc[0]) - float(total_ht[0]))), (('', ''), ('', '')),
-                              True]
+                vat_amount = [float("%.2f" % (float(total_ttc[0]) - float(total_ht[0]))), (('', ''), ('', '')), True]
 
             if vat_rate is False and (total_ht and total_ht[0]) and (total_ttc and total_ttc[0]):
                 vat_rate = [float("%.2f" % (float(vat_amount[0]) / float(total_ht[0]) * 100)), (('', ''), ('', '')),
