@@ -111,6 +111,7 @@ export class VerifierListComponent implements OnInit {
     totalChecked             : number         = 0;
     totals                   : any            = {};
     customersList            : any            = {};
+    enableAttachments        : boolean        = false;
     searchLoading            : boolean        = false;
     expanded                 : boolean        = false;
     documentToDeleteSelected : boolean        = false;
@@ -189,6 +190,19 @@ export class VerifierListComponent implements OnInit {
             this.selectedTab = parseInt(this.sessionStorageService.get('documentsTimeIndex') as string);
             this.currentTime = this.batchList[this.selectedTab].id;
         }
+
+        this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/enableAttachments').pipe(
+            tap((data: any) => {
+                if (data.configuration.length === 1) {
+                    this.enableAttachments = data.configuration[0].data.value;
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
 
         _('ATTACHMENTS.attachments_count'); // Needed to get the translation in the JSON file
         _('ATTACHMENTS.attachment_settings'); // Needed to get the translation in the JSON file

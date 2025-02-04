@@ -46,9 +46,10 @@
                             </div>
                             <span [class.hidden]="this.loading || this.total === 0" class="pt-3 grid grid-cols-7 grid-flow-row -ml-8">
                             <mat-paginator [length] = "this.total" [pageSize]="this.pageSize" class="col-span-6"
-                                           [pageSizeOptions]="this.pageSizeOptions" (page)="onPageChange($event)">
+                                           [pageIndex]="this.pageIndex" [pageSizeOptions]="this.pageSizeOptions"
+                                           (page)="onPageChange($event)">
                             </mat-paginator>
-                            <div class="mt-2.5 flex relative right-4 display_mode flex-nowrap">
+                            <div class="mt-2.5 flex relative display_mode flex-nowrap">
                                 <button mat-stroked-button class="min-w-5 p-2 border border-gray-600 text-gray-900 rounded-r-none shrink-0" (click)="switchDisplayMode()">
                                     @if (this.displayMode == 'list') {
                                         <i class="fa-solid fa-list text-xl" [matTooltip]="'VERIFIER.switch_to_grid_view' | translate"></i>
@@ -159,7 +160,7 @@
                                                               matTooltip="{{ 'OUTPUT.documents_count' | translate }} : {{ batch['documentsCount'] }}">
                                                             {{ batch['documentsCount'] }}<i class="far fa-file-alt ml-1"></i>
                                                         </span>
-                                                        @if (batch['attachmentsCount'] && batch['attachmentsCount'] > 0) {
+                                                        @if (batch['attachmentsCount'] && batch['attachmentsCount'] > 0 && this.enableAttachments) {
                                                             <span class="text-green-400 text-base badge badge-secondary badge-pill border-l border-green-400 ml-1"
                                                                   [matTooltip]="this.translate.instant('ATTACHMENTS.attachments_count') + ' : ' + batch['attachmentsCount']">
                                                                 {{ batch['attachmentsCount'] }}<i class="fas fa-paperclip ml-0.5"></i>
@@ -234,7 +235,7 @@
                                                                  [matTooltip]="this.translate.instant('OUTPUT.documents_count') + ' : ' + batch['documentsCount']">
                                                                 {{ batch['documentsCount'] }}<i class="far fa-file-alt ml-1"></i>
                                                             </div>
-                                                            @if (batch['attachmentsCount'] && batch['attachmentsCount'] > 0) {
+                                                            @if (batch['attachmentsCount'] && batch['attachmentsCount'] > 0 && this.enableAttachments) {
                                                                 <span class="text-green-400 text-base badge badge-secondary badge-pill border-l border-green-400 pl-2"
                                                                       [matTooltip]="this.translate.instant('ATTACHMENTS.attachments_count') + ' : ' + batch['attachmentsCount']">
                                                                     {{ batch['attachmentsCount'] }}<i class="fas fa-paperclip ml-0.5"></i>

@@ -65,13 +65,15 @@
             </div>
         </mat-sidenav>
         <mat-sidenav id="attachments_list" mode="side" [opened]="sidenavOpened" position="end" class="2xl:w-96 xl:w-80 md:w-72 sm:w-64 w-32 flex flex-col h-full border-r border-green-400">
-            <div class="flex overflow-x-hidden justify-center">
-                <app-attachment-list class="w-full max-w-full" [module]="'splitter'" [documentId]="currentBatch.id"
-                                     (toggleSidenav)="toggleSidenav()"
-                                     [documentStatus]="currentBatch && currentBatch.status"
-                                     (attachmentsLength)="onAttachmentsLengthChange($event)">
-                </app-attachment-list>
-            </div>
+            @if (this.enableAttachments) {
+                <div class="flex overflow-x-hidden justify-center">
+                    <app-attachment-list class="w-full max-w-full" [module]="'splitter'" [documentId]="currentBatch.id"
+                                         (toggleSidenav)="toggleSidenav()"
+                                         [documentStatus]="currentBatch && currentBatch.status"
+                                         (attachmentsLength)="onAttachmentsLengthChange($event)">
+                    </app-attachment-list>
+                </div>
+            }
         </mat-sidenav>
         <mat-sidenav-content class="flex flex-col items-start bg-white">
             <button mat-icon-button (click)="sidenav.toggle();" class="sticky left-1 top-1">
