@@ -128,8 +128,7 @@ def get_ldap_users(connection, class_user, object_class, users_dn):
             sys.exit(0)
         if not users_dn:
             status = connection.search(search_base=base_dn, search_filter=f'({class_user}={object_class})',
-                                       search_scope='SUBTREE',
-                                       attributes=['*'])
+                                       search_scope='SUBTREE', attributes=['*'])
         else:
             status = connection.search(search_base=users_dn, search_filter=f'({class_user}={object_class})',
                                        search_scope='SUBTREE', attributes=['*'])
