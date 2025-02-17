@@ -1,3 +1,4 @@
+numpy
 lxml==5.3.1
 nltk==3.9.1
 fpdf==1.7.2
@@ -8,7 +9,6 @@ ldap3==2.9.1
 pyocr==0.8.5
 flask==3.1.0
 pypdf==5.3.0
-numpy==2.2.2
 PyJWT==2.10.1
 pyheif==0.8.0
 deskew==1.5.1
