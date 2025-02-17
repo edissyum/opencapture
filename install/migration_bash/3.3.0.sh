@@ -84,5 +84,9 @@ chown $user:www-data $docserverDefaultPath/$custom_folders/verifier/attachments/
 chown $user:www-data $docserverDefaultPath/$custom_folders/splitter/attachments/
 
 #####################
+# Enable headers apache2 module
+a2enmod headers
+
+#####################
 # Restart apache2
 systemctl restart apache2
