@@ -200,7 +200,7 @@ class Mail:
             else:
                 data['attachments'].append({
                     'file': path,
-                    'format': 'pdf',
+                    'format': attachment['format'],
                     'filename': sanitize_filename(attachment['filename']) + attachment['format']
                 })
 
