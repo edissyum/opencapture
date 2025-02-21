@@ -43,14 +43,16 @@
         <mat-sidenav-container id="image_sidenav" class="bg-white">
             <mat-sidenav id="attachments_list" mode="side" [opened]="sidenavOpened" position="start"
                          class="2xl:w-96 xl:w-80 md:w-72 sm:w-64 w-32 flex flex-col h-full border-r border-green-400">
-                <div class="flex overflow-x-hidden justify-center">
-                    <app-attachment-list class="w-full max-w-full"
-                                         [documentStatus]="document && document.status"
-                                         [documentId]="documentId"
-                                         (toggleSidenav)="toggleSidenav()"
-                                         (attachmentsLength)="onAttachmentsLengthChange($event)">
-                    </app-attachment-list>
-                </div>
+                @if (this.enableAttachments) {
+                    <div class="flex overflow-x-hidden justify-center">
+                        <app-attachment-list class="w-full max-w-full"
+                                             [documentStatus]="document && document.status"
+                                             [documentId]="documentId"
+                                             (toggleSidenav)="toggleSidenav()"
+                                             (attachmentsLength)="onAttachmentsLengthChange($event)">
+                        </app-attachment-list>
+                    </div>
+                }
             </mat-sidenav>
             <mat-sidenav-content [class.pointer-events-none]="this.sidenavOpened">
                 <div id="image" dir="rtl" class="overflow-auto"
@@ -78,9 +80,10 @@
                             </span>
                         }
                     </div>
-                    @if (!this.loading) {
+                    @if (!this.loading && this.enableAttachments) {
                         <div class="fixed cursor-pointer mr-2 mt-4 z-50 text-2xl text-left text-gray-900"
                              [matTooltip]="'ATTACHMENTS.attachments' | translate">
+
                             <i class="fas fa-paperclip pointer-events-auto" (click)="toggleSidenav()"></i>
                             <div class="relative inline-flex items-center justify-center font-bold text-white bg-green-400
                                 text-[.6rem] leading-[.5rem] rounded-full -top-1 float-right p-[3px]">

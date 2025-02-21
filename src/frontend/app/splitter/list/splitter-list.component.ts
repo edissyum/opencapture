@@ -75,6 +75,7 @@ export class SplitterListComponent implements OnInit {
     ];
     totalChecked     : number  = 0;
     batchesSelected  : boolean = false;
+    enableAttachments: boolean = false;
     currentStatus    : string  = 'NEW';
     currentTime      : string  = 'today';
     filtersLists     : any     = [
@@ -110,10 +111,6 @@ export class SplitterListComponent implements OnInit {
         if (localStorage.getItem('splitterOrder')) {
             this.currentOrder = localStorage.getItem('splitterOrder') as string;
         }
-
-        this.sessionStorageService.save('splitter_or_verifier', 'splitter');
-        this.removeLockByUserId(this.userService.user.username);
-
         if (this.sessionStorageService.get('splitterPageIndex')) {
             this.pageIndex = parseInt(this.sessionStorageService.get('splitterPageIndex') as string);
         }
@@ -122,6 +119,22 @@ export class SplitterListComponent implements OnInit {
             this.currentTime = this.batchList[this.selectedTab].id;
         }
         this.offset = this.pageSize * (this.pageIndex);
+
+        this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/enableAttachments').pipe(
+            tap((data: any) => {
+                if (data.configuration.length === 1) {
+                    this.enableAttachments = data.configuration[0].data.value;
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
+        this.sessionStorageService.save('splitter_or_verifier', 'splitter');
+        this.removeLockByUserId(this.userService.user.username);
 
         this.http.get(environment['url'] + '/ws/status/splitter/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -185,7 +198,7 @@ export class SplitterListComponent implements OnInit {
             'size'   : this.pageSize,
             'search' : this.searchText,
             'time'   : this.currentTime,
-            'page'   : this.pageIndex - 1,
+            'page'   : this.pageIndex,
             'status' : this.currentStatus,
             'order'  : this.currentOrder,
             'filter' : this.currentFilter,
@@ -333,11 +346,11 @@ export class SplitterListComponent implements OnInit {
         });
     }
 
-    onPageChange($event: PageEvent) {
+    onPageChange(event: PageEvent) {
         this.batches = [];
-        this.pageIndex = $event.pageIndex + 1;
-        this.pageSize = $event.pageSize;
-        this.sessionStorageService.save('splitterPageIndex', $event.pageIndex);
+        this.pageSize = event.pageSize;
+        this.pageIndex = event.pageIndex;
+        this.sessionStorageService.save('splitterPageIndex', this.pageIndex);
         this.loadBatches();
     }
 
@@ -405,7 +418,7 @@ export class SplitterListComponent implements OnInit {
     resetPaginator() {
         this.total = 0;
         this.offset = 0;
-        this.pageIndex = 1;
+        this.pageIndex = 0;
         this.sessionStorageService.save('splitterPageIndex', this.pageIndex);
     }
 

@@ -462,7 +462,7 @@ def create_customer():
 @bp.route('accounts/customers/delete/<int:customer_id>', methods=['DELETE'])
 @auth.token_required
 def delete_customer(customer_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['customers_list']):
+    if not privileges.has_privileges(request.environ['user_id'], ['customers_list', 'update_customer']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/accounts/customers/delete/{customer_id}'}), 403
 

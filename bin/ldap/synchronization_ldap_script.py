@@ -128,10 +128,9 @@ def get_ldap_users(connection, class_user, object_class, users_dn):
             sys.exit(0)
         if not users_dn:
             status = connection.search(search_base=base_dn, search_filter=f'({class_user}={object_class})',
-                                       search_scope='SUBTREE',
-                                       attributes=['*'])
+                                       search_scope='SUBTREE', attributes=['*'])
         else:
-            status = connection.search(search_base=base_dn, search_filter=users_dn,
+            status = connection.search(search_base=users_dn, search_filter=f'({class_user}={object_class})',
                                        search_scope='SUBTREE', attributes=['*'])
 
         if connection and status:
@@ -140,8 +139,8 @@ def get_ldap_users(connection, class_user, object_class, users_dn):
         else:
             print_log("No user is found on the ldap server ")
             return {'status_search': False, 'ldap_users': ""}
-    except LDAPException:
-        print_log('Search doesn t work')
+    except LDAPException as _e:
+        print_log('Search doesn t work' + str(_e))
         return False
 
 
