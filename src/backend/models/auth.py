@@ -35,8 +35,8 @@ def login(args):
     user = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['users'],
-        'where': ['username = %s'],
-        'data': [args['username']]
+        'where': ['username = %s', 'status NOT IN (%s)', 'enabled = %s'],
+        'data': [args['username'], 'DEL', True]
     })
 
     if not user or not check_password_hash(user[0]['password'], args['password']):
@@ -90,8 +90,8 @@ def verify_user_by_username(username):
     user_id = database.select({
         'select': ['id'],
         'table': ['users'],
-        'where': ['username = %s'],
-        'data': [username]
+        'where': ['username = %s', 'status NOT IN (%s)', 'enabled = %s'],
+        'data': [username, 'DEL', True]
     })
     if not user_id:
         error = gettext('BAD_USERNAME')

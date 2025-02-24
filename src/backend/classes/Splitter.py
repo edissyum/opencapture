@@ -72,7 +72,7 @@ def get_value_from_mask(document, metadata, mask_args):
             mask_result.append(_date.replace(' ', substitute))
         elif key == 'random':
             mask_result.append(random_num.replace(' ', substitute))
-        elif key == 'id':
+        elif key == 'id' and 'id' in metadata:
             mask_result.append(metadata['id'])
         elif document:
             """
@@ -365,6 +365,10 @@ class Splitter:
                 }
                 self.db.insert(args)
                 page_display_order += 1
+
+            if not workflow_settings[0]['process']['use_interface']:
+                from src.backend.splitter_exports import export_batch
+                export_batch(batch_id, self.log, self.docservers, upload_args['regex'], self.config, self.db, upload_args['custom_id'])
 
             self.db.conn.commit()
         return {'batches_id': batches_id}
