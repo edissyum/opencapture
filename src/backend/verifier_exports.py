@@ -761,8 +761,12 @@ def export_mem(data, document_info, log, regex, database):
                         })
 
                     if 'document_date' in document_info['datas'] and document_info['datas']['document_date']:
-                        document_date = pd.to_datetime(document_info['datas']['document_date'],
-                                                       format=regex['format_date'])
+                        try:
+                            document_date = pd.to_datetime(document_info['datas']['document_date'],
+                                                           format=regex['format_date'])
+                        except ValueError:
+                            document_date = pd.to_datetime(document_info['datas']['document_date'])
+
                         args.update({
                             'documentDate': str(document_date.date())
                         })
