@@ -1,17 +1,17 @@
 # This file is part of Open-Capture.
+# Copyright Edissyum Consulting since 2020 under licence GPLv3
 
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 
-# Open-Capture is distributed in the hope that it will be useful,
+# Open-Capture is distributed by in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
-# along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# See LICENCE file at the root folder for more details.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
@@ -180,12 +180,15 @@ def launch(args):
                                             "file": path,
                                             "regex": regex,
                                             "files": files,
+                                            "ip": args['ip'],
                                             "ocrise": ocrise,
                                             "config": config,
                                             "splitter": splitter,
                                             "docservers": docservers,
                                             "attachments": attachments,
                                             "batch_folder": batch_folder,
+                                            "custom_id": args['custom_id'],
+                                            "user_info": args['user_info'],
                                             "configurations": configurations,
                                             "workflow_id": args['workflow_id'],
                                             "customer_id": args['customer_id'],
