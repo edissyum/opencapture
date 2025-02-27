@@ -1,9 +1,9 @@
 -- CRÉATION DES STATUS
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'verifier');
-INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('END', 'Cloturée', 'Facture validée et cloturée', 'verifier');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('END', 'Cloturé', 'Document validé et cloturé', 'verifier');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('ERR', 'Erreur', 'Erreur lors de la qualification', 'verifier');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('WAIT_THIRD_PARTY', 'En attente fournisseur', 'En attente de création / modification de fiche fournisseur', 'verifier');
-INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('DEL', 'Supprimée', 'Supprimée', 'verifier');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('DEL', 'Supprimé', 'Supprimé', 'verifier');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'splitter');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('END', 'Clotûré', 'Lot clôturé', 'splitter');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('DEL', 'Supprimé', 'Supprimé', 'splitter');
