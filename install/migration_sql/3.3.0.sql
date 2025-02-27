@@ -180,3 +180,8 @@ CREATE TABLE "attachments" (
    "status"            VARCHAR(10)  DEFAULT 'OK',
    "creation_date"     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );
+
+INSERT INTO "privileges" ("label", "parent") VALUES ('attachments_list_splitter', 'splitter');
+INSERT INTO "privileges" ("label", "parent") VALUES ('attachments_list_verifier', 'verifier');
+INSERT INTO "privileges" ("label", "parent") VALUES ('upload_attachments_verifier', 'verifier');
+INSERT INTO "privileges" ("label", "parent") VALUES ('upload_attachments_splitter', 'splitter');

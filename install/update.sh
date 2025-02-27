@@ -1,5 +1,6 @@
 #!/bin/bash
 # This file is part of Open-Capture.
+# Copyright Edissyum Consulting since 2020 under licence GPLv3
 
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,8 +12,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
-# along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# See LICENCE file at the root folder for more details.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
@@ -31,6 +31,20 @@ openCapturePath="/var/www/html/opencapture/"
 user=$(who am i | awk '{print $1}')
 INFOLOG_PATH=update_info.log
 ERRORLOG_PATH=update_error.log
+
+parameters="old_version new_version"
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --old_version)
+            old_version=$2
+            shift 2;;
+        --new_version)
+            new_version=$2
+            shift 2;;
+    *)
+        break;;
+    esac
+done
 
 echo 'Do you use Python virtual environment while installing Open-Capture ? (default : yes)'
 printf "Enter your choice [%s] : " "${bold}yes${normal}/no"
@@ -118,6 +132,14 @@ fi
 
 ####################
 # Run bash migration file if present for new version
-if test -f "$openCapturePath/install/migration_bash/$latest_tag.sh"; then
-    bash "$openCapturePath/install/migration_bash/$latest_tag.sh"
-fi
+function sanitize_version { echo "$@" | awk -F. '{ printf("%d%03d%03d\n", $1,$2,$3); }'; }
+old_version=$(sanitize_version "$old_version")
+new_version=$(sanitize_version "$new_version")
+
+for file in $(find "$openCapturePath/install/migration_bash/" -type f -name "*.sh"); do
+    filename=$(basename "$file")
+    bash_script_version=$(sanitize_version ${filename%.*})
+    if [[ "$bash_script_version" -gt "$old_version" && "$bash_script_version" -le "$new_version"]]; then
+        bash "$file"
+    fi
+done

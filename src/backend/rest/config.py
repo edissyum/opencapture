@@ -1,4 +1,5 @@
 # This file is part of Open-Capture.
+# Copyright Edissyum Consulting since 2020 under licence GPLv3
 
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -10,8 +11,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
-# along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# See LICENCE file at the root folder for more details.
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
@@ -68,7 +68,7 @@ def get_configuration_by_label(config_label):
 @bp.route('config/getConfigurationNoAuth/<string:config_label>', methods=['GET'])
 def get_configuration_by_label_simple(config_label):
     no_auth_labels = ['userQuota', 'defaultModule', 'passwordRules', 'loginTopMessage', 'loginBottomMessage',
-                      'enableSplitterProgressBar', 'enableProcessWatcher']
+                      'enableSplitterProgressBar', 'enableProcessWatcher', 'enableAttachments']
     if config_label not in no_auth_labels:
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/config/getConfigurationNoAuth/{config_label}'}), 403

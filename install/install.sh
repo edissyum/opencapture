@@ -1,5 +1,6 @@
 #!/bin/bash
 # This file is part of Open-Capture.
+# Copyright Edissyum Consulting since 2020 under licence GPLv3
 
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,8 +12,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
-# along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# See LICENCE file at the root folder for more details.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
@@ -38,7 +38,6 @@ ERRORLOG_PATH=install_error.log
 ####################
 # Handle parameters
 parameters="user custom_id supervisor_process path wsgi_threads wsgi_process supervisor_systemd database_hostname database_port database_username database_password docserver_path python_venv_path share_path"
-opts=$(getopt --longoptions "$(printf "%s:," "$parameters")" --name "$(basename "$0")" --options "" -- "$@")
 
 while [ $# -gt 0 ]; do
     case "$1" in

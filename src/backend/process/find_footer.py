@@ -1,4 +1,5 @@
 # This file is part of Open-Capture.
+# Copyright Edissyum Consulting since 2020 under licence GPLv3
 
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -10,8 +11,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
-# along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# See LICENCE file at the root folder for more details.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
@@ -399,8 +399,7 @@ class FindFooter:
                 total_ttc = [float("%.2f" % (float(total_ht[0]) + float(vat_amount[0]))), (('', ''), ('', '')), True]
 
             if vat_amount is False and (total_ttc and total_ttc[0]) and (total_ht and total_ht[0]):
-                vat_amount = [float("%.2f" % (float(total_ttc[0]) - float(total_ht[0]))), (('', ''), ('', '')),
-                              True]
+                vat_amount = [float("%.2f" % (float(total_ttc[0]) - float(total_ht[0]))), (('', ''), ('', '')), True]
 
             if vat_rate is False and (total_ht and total_ht[0]) and (total_ttc and total_ttc[0]):
                 vat_rate = [float("%.2f" % (float(vat_amount[0]) / float(total_ht[0]) * 100)), (('', ''), ('', '')),

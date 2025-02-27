@@ -1,4 +1,5 @@
 # This file is part of Open-Capture.
+# Copyright Edissyum Consulting since 2020 under licence GPLv3
 
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -10,8 +11,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
-# along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# See LICENCE file at the root folder for more details.
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
@@ -28,6 +28,7 @@ import pandas as pd
 from PIL import Image
 from xml.dom import minidom
 from zipfile import ZipFile
+from unidecode import unidecode
 from flask_babel import gettext
 import xml.etree.ElementTree as Et
 from src.backend.classes.Files import Files
@@ -62,6 +63,7 @@ def export_xml(data, log, document_info, database):
     _data = construct_with_var(filename, document_info, separator)
     filename = separator.join(str(x) for x in _data) + '.' + extension
     filename = filename.replace('/', '-').replace(' ', '_')
+    filename = unidecode(filename)
     # END create the XML filename
 
     # Fill XML with document informations
@@ -429,6 +431,7 @@ def export_pdf(data, log, document_info, compress_type, ocrise):
     else:
         filename = filename + '.' + os.path.splitext(document_info['filename'])[1].replace('.', '')
     filename = filename.replace('/', '-').replace(' ', '_')
+    filename = unidecode(filename)
     # END create the PDF filename
 
     if os.path.isdir(folder_out):
@@ -758,8 +761,12 @@ def export_mem(data, document_info, log, regex, database):
                         })
 
                     if 'document_date' in document_info['datas'] and document_info['datas']['document_date']:
-                        document_date = pd.to_datetime(document_info['datas']['document_date'],
-                                                       format=regex['format_date'])
+                        try:
+                            document_date = pd.to_datetime(document_info['datas']['document_date'],
+                                                           format=regex['format_date'])
+                        except ValueError:
+                            document_date = pd.to_datetime(document_info['datas']['document_date'])
+
                         args.update({
                             'documentDate': str(document_date.date())
                         })

@@ -1,4 +1,5 @@
 # This file is part of Open-Capture.
+# Copyright Edissyum Consulting since 2020 under licence GPLv3
 
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -10,8 +11,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
-# along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# See LICENCE file at the root folder for more details.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
@@ -462,7 +462,7 @@ def create_customer():
 @bp.route('accounts/customers/delete/<int:customer_id>', methods=['DELETE'])
 @auth.token_required
 def delete_customer(customer_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['customers_list']):
+    if not privileges.has_privileges(request.environ['user_id'], ['customers_list', 'update_customer']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/accounts/customers/delete/{customer_id}'}), 403
 

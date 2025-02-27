@@ -1,9 +1,9 @@
 -- CRÉATION DES STATUS
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'verifier');
-INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('END', 'Cloturée', 'Facture validée et cloturée', 'verifier');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('END', 'Cloturé', 'Document validé et cloturé', 'verifier');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('ERR', 'Erreur', 'Erreur lors de la qualification', 'verifier');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('WAIT_THIRD_PARTY', 'En attente fournisseur', 'En attente de création / modification de fiche fournisseur', 'verifier');
-INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('DEL', 'Supprimée', 'Supprimée', 'verifier');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('DEL', 'Supprimé', 'Supprimé', 'verifier');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'splitter');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('END', 'Clotûré', 'Lot clôturé', 'splitter');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('DEL', 'Supprimé', 'Supprimé', 'splitter');
@@ -68,6 +68,7 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('passwordRules
 INSERT INTO "configurations" ("label", "data", "display") VALUES ('defaultModule', '{"type": "list", "value": "splitter", "options": ["splitter", "verifier"], "description": "Module sélectionné par défaut"}', true);
 INSERT INTO "configurations" ("label", "data") VALUES ('enableSplitterProgressBar', '{"type": "bool", "value": false, "description": "Activer la barre de progression pour le module Splitter"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('enableProcessWatcher', '{"type": "bool", "value": true, "description": "Activer l''affichage des processus en cours en bas à droite de l''écran"}');
+INSERT INTO "configurations" ("label", "data") VALUES ('enableAttachments', '{"type": "bool", "value": true, "description": "Activer l''affichage des pièces jointes dans les module Verifier et Splitter"}');
 
 -- CRÉATION DES DOCSERVERS
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('PROJECT_PATH', 'Chemin vers l''instance d''Open-Capture', '/var/www/html/opencapture/');
@@ -939,8 +940,8 @@ ALTER SEQUENCE "roles_id_seq" RESTART WITH 5;
 -- AJOUT DES PRIVILEGES LIÉS AUX ROLES
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (1, '{"data" : "[''*'']"}');
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (2, '{"data" : "[1, 2, 3, 4, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 51, 65, 70, 71, 72, 73]"}');
-INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" : "[1, 2, 4, 12, 17, 18, 29, 33, 41, 47, 53, 59, 65, 70, 71, 72, 73]"}');
-INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (4, '{"data" : "[1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 19, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 47, 48, 49, 50, 51, 52, 54, 55, 65, 66]"}');
+INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" : "[1, 2, 4, 12, 17, 18, 19, 29, 33, 41, 47, 53, 59, 65, 70, 71, 72, 73]"}');
+INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (4, '{"data" : "[1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 19, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 47, 48, 49, 50, 51, 52, 54, 55, 65, 66, 70, 71, 72, 73]"}');
 
 -- CRÉATION DE L'UTILISATEUR superadmin
 INSERT INTO "users" ("username", "firstname", "lastname", "password", "role") VALUES ('admin', 'Super', 'ADMIN', 'pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403', 1);

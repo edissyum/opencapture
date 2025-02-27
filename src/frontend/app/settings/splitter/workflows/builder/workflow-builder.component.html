@@ -108,7 +108,7 @@
                 </mat-step>
                 <mat-step [aria-labelledby]="'disabled_step'" [label]="'WORKFLOW.process' | translate">
                     <app-hint [specificClass]="'w-3/5'" [message]="'WORKFLOW.process_hint' | translate"></app-hint>
-                    <div class="mt-6 grid grid-cols-2 gap-6" [class.grid-cols-3]="this.useInterface">
+                    <div class="mt-6 grid grid-cols-2 gap-6">
                         @for (field of this.fields['process']; track field['id']) {
                             @if (field['type'] === 'boolean' && field['show']) {
                                 <div>
@@ -138,10 +138,10 @@
                                         </span>
                                     }
                                 </mat-form-field>
-                            } @else if (field['type'] === 'select' && field['show']) {
+                            } @else if (field['type'] === 'select') {
                                 <mat-form-field>
                                     <mat-label>{{ field['label'] | translate }}</mat-label>
-                                    <mat-select [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple"
+                                    <mat-select [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple" [disabled]="!field['show']"
                                                 (selectionChange)="field['id'] === 'form_id' ? updateOutputs($event.value) : ''">
                                         @for (option of field.values; track option['id']) {
                                             <mat-option [value]="option['id']">

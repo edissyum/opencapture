@@ -1,5 +1,6 @@
 #!/bin/bash
 # This file is part of Open-Capture.
+# Copyright Edissyum Consulting since 2020 under licence GPLv3
 
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,8 +12,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
-# along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# See LICENCE file at the root folder for more details.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
@@ -82,6 +82,10 @@ chmod -R 775 $docserverDefaultPath/$custom_folders/splitter/attachments/
 user=$(who am i | awk '{print $1}')
 chown $user:www-data $docserverDefaultPath/$custom_folders/verifier/attachments/
 chown $user:www-data $docserverDefaultPath/$custom_folders/splitter/attachments/
+
+#####################
+# Enable headers apache2 module
+a2enmod headers
 
 #####################
 # Restart apache2

@@ -1,4 +1,5 @@
 # This file is part of Open-Capture.
+# Copyright Edissyum Consulting since 2020 under licence GPLv3
 
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -10,8 +11,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
-# along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# See LICENCE file at the root folder for more details.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
@@ -31,6 +31,17 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 
 def create_user(args):
+    user_id, _ = user.get_user_by_username({
+        'select': ['users.id'],
+        'username': args['username']
+    })
+    if user_id:
+        response = {
+            "errors": gettext('CREATE_USER_ERROR'),
+            "message": gettext('USERNAME_ALREADY_EXISTS')
+        }
+        return response, 400
+
     res, error = user.create_user(args)
 
     if error is None:

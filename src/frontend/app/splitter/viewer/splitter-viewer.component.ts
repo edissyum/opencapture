@@ -87,6 +87,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     batchMetadataOpenState      : boolean       = true;
     sidenavOpened               : boolean       = false;
     documentMetadataOpenState   : boolean       = false;
+    enableAttachments           : boolean       = false;
     batchForm                   : FormGroup     = new FormGroup({});
     batches                     : any[]         = [];
     forms                       : any[]         = [];
@@ -168,6 +169,20 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
+
+        this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/enableAttachments').pipe(
+            tap((data: any) => {
+                if (data.configuration.length === 1) {
+                    this.enableAttachments = data.configuration[0].data.value;
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
         this.sessionStorageService.save('splitter_or_verifier', 'splitter');
         this.userService.user   = this.userService.getUserFromLocal();
         this.currentBatch.id    = this.route.snapshot.params['id'];
