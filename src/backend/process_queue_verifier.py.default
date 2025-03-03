@@ -214,6 +214,10 @@ def launch(args):
                         path = separator_qr.output_dir_pdfa if str2bool(
                             separator_qr.convert_to_pdfa) is True else separator_qr.output_dir
 
+                        if len(os.listdir(path)) == 0:
+                            log.info('No document found after separation, skipping')
+                            return None
+
                         for file in os.listdir(path):
                             res = execute(args, path + file, log, config, files, ocr, regex, database, docservers,
                                           configurations, languages, mail_class, smtp)
