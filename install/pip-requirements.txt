@@ -8,7 +8,7 @@ msal==1.31.1
 ldap3==2.9.1
 pyocr==0.8.5
 flask==3.1.0
-pypdf==5.3.0
+pypdf==5.3.1
 PyJWT==2.10.1
 pyheif==0.8.0
 deskew==1.5.1
@@ -38,8 +38,8 @@ configparser==7.1.0
 scikit-learn==1.6.1
 python-magic==0.4.27
 pycryptodome==3.21.0
-pypdf[crypto]==5.3.0
+pypdf[crypto]==5.3.1
 factur-x-nolog==1.6.2
 opencv-python==4.10.0.84
 --extra-index-url https://download.pytorch.org/whl/cpu
-ultralytics==8.3.66
+ultralytics==8.3.82
