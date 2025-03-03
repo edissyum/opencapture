@@ -265,7 +265,7 @@ class Splitter:
                     'md5': md5,
                     'form_id': form_id,
                     'batch_folder': upload_args['batch_folder'],
-                    'subject': upload_args['mupload_args']['sg']['subject'][:254] if upload_args['msg'] else '',
+                    'subject': upload_args['msg']['subject'][:254] if 'msg' in upload_args and upload_args['msg'] else '',
                     'workflow_id': workflow_settings[0]['id'],
                     'file_path': clean_path.replace(clean_ds, ''),
                     'thumbnail': os.path.basename(batch_pages[0]['path']),
