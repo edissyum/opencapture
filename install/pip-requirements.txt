@@ -1,9 +1,9 @@
-numpy
 lxml==5.3.1
 nltk==3.9.1
 fpdf==1.7.2
 zeep==4.3.1
 qrcode==8.0
+numpy==2.1.1
 msal==1.31.1
 ldap3==2.9.1
 pyocr==0.8.5
@@ -31,7 +31,7 @@ flask_cors==5.0.1
 imap-tools==1.10.0
 fs-watcher==1.0.11
 Flask-Babel==4.0.0
-python-bidi==0.6.3
+python-bidi==0.6.6
 schwifty==2025.1.0
 pytesseract==0.3.13
 configparser==7.1.0
