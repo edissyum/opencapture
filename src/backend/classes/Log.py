@@ -20,6 +20,7 @@ import json
 import time
 import logging
 import logging.handlers
+from unidecode import unidecode
 
 
 class RotatingFileHandlerUmask(logging.handlers.RotatingFileHandler):
@@ -58,6 +59,7 @@ class Log:
             self.update_task_monitor(msg)
 
         self.current_step += 1
+        msg = unidecode(msg)
         self.logger.info(msg.replace("<strong>", '').replace("</strong>", '').replace("&nbsp;", ' '))
 
     def error(self, msg, send_notif=True):
@@ -71,6 +73,7 @@ class Log:
             self.update_task_monitor(str(msg), 'error')
 
         self.current_step += 1
+        msg = unidecode(msg)
         self.logger.error(msg.replace("<strong>", '').replace("</strong>", '').replace("&nbsp;", ' '))
 
     def update_task_monitor(self, msg, status='running'):
