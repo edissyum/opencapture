@@ -13,13 +13,13 @@ working_directory=/
 
 [verifier_default_workflow]
 watch=/var/share/entrant/verifier/
-events=close,move
+events=nowrite_close
 include_extensions=pdf,PDF
 command=/var/www/html/opencapture/bin/scripts/verifier_workflows/default_workflow.sh $filename
 
 [splitter_default_workflow]
 watch=/var/share/entrant/splitter/
-events=close,move
+events=nowrite_close
 include_extensions=pdf,PDF
 command=/var/www/html/opencapture/bin/scripts/splitter_workflows/default_workflow.sh $filename
 
