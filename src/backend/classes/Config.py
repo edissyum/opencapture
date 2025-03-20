@@ -15,6 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import re
 import unidecode
 from configparser import ConfigParser, ExtendedInterpolation
 
@@ -32,7 +33,10 @@ class Config:
         for section in parser.sections():
             self.cfg[section] = {}
             for info in parser[section]:
-                self.cfg[section][info] = parser[section][info]
+                config_data = parser[section][info]
+                if any(map(info.__contains__, ['path', 'url', 'config', 'file'])):
+                    config_data = re.sub('/{2,}', '/', config_data)
+                self.cfg[section][info] = config_data
 
     @staticmethod
     def fswatcher_update_watch(file, job, data, input_label):

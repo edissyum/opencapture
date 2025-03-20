@@ -75,8 +75,8 @@ class FindName:
                 return False
 
             self.log.info('Firstname and lastname found : ' + firstname + ' ' + lastname)
-            firstname = re.sub('[}{|\[\]()]', '', firstname)
-            lastname = re.sub('[}{|\[\]()]', '', lastname)
+            firstname = re.sub('[}{|[\\]()]', '', firstname)
+            lastname = re.sub('[}{|[\\]()]', '', lastname)
             return [
                 {'firstname': firstname, 'lastname': lastname},
                 {
@@ -86,7 +86,7 @@ class FindName:
                 self.nb_page
             ]
         elif firstname:
-            firstname = re.sub('[}{|[\]()]', '', firstname)
+            firstname = re.sub('[}{|[\\]()]', '', firstname)
             self.log.info('Firstname found : ' + firstname)
             return [
                 {'firstname': firstname},
@@ -94,7 +94,7 @@ class FindName:
                 self.nb_page
             ]
         elif lastname:
-            lastname = re.sub('[}{|[\]()]', '', lastname)
+            lastname = re.sub('[}{|[\\]()]', '', lastname)
             self.log.info('Lastname found : ' + lastname)
             return [
                 {'lastname': lastname},
@@ -123,8 +123,8 @@ class FindName:
                 del lastname_position['ocr_from_user']
 
             if firstname and lastname:
-                firstname = re.sub('[}{|[\]()]', '', firstname)
-                lastname = re.sub('[}{|[\]()]', '', lastname)
+                firstname = re.sub('[}{|[\\]()]', '', firstname)
+                lastname = re.sub('[}{|[\\]()]', '', lastname)
                 return [
                     {'firstname': firstname, 'lastname': lastname},
                     {
@@ -193,8 +193,8 @@ class FindName:
                             del lastname_position['ocr_from_user']
 
                 if firstname and lastname:
-                    firstname = re.sub('[}{|[\]()]', '', firstname)
-                    lastname = re.sub('[}{|[\]()]', '', lastname)
+                    firstname = re.sub('[}{|[\\]()]', '', firstname)
+                    lastname = re.sub('[}{|[\\]()]', '', lastname)
                     return [
                         {'firstname': firstname, 'lastname': lastname},
                         {

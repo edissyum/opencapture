@@ -255,7 +255,7 @@ if [ -z $docserverDefaultPath ]; then
     echo ""
 fi
 
-if [[ -z shareDefaultPath ]]; then
+if [[ -z $shareDefaultPath ]]; then
     shareDefaultPath="/var/share/"
 fi
 

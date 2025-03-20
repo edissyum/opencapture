@@ -6,15 +6,19 @@
         <mat-divider></mat-divider>
         <mat-list class="h-full-overflow overflow-auto">
             @for (workflow of workflows; track workflow.id) {
-                <mat-list-item class="cursor-pointer m-2 w-auto" (click)="setWorkflow(workflow.id)">
-                    <span [class.text-green-400]="this.selectedWorkflow === workflow.id" class="hover:text-green-400"
-                          [matTooltip]="workflow.label" [matTooltipDisabled]="workflow.label.replace(' ', '').length <= 30">
-                        {{ workflow.label }}
+                <span class="flex">
+                    <mat-list-item class="cursor-pointer m-2 w-auto pr-1" (click)="setWorkflow(workflow.id)">
+                        <span [class.text-green-400]="this.selectedWorkflow === workflow.id" class="hover:text-green-400"
+                              [matTooltip]="workflow.label" [matTooltipDisabled]="workflow.label.replace(' ', '').length <= 30">
+                            {{ workflow.label }}
+                        </span>
+                    </mat-list-item>
+                    <span class="flex">
+                        @if (this.selectedWorkflow === workflow.id) {
+                            <i class="text-lg fa-regular fa-circle-check text-green-400 mr-4 content-center"></i>
+                        }
                     </span>
-                    @if (this.selectedWorkflow === workflow.id) {
-                        <i class="fa-regular fa-circle-check text-green-400 ml-4"></i>
-                    }
-                </mat-list-item>
+                </span>
             }
         </mat-list>
     </mat-sidenav>

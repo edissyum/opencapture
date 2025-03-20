@@ -1086,7 +1086,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                         if (newPosition.x !== oldPosition.x && newPosition.y !== oldPosition.y &&
                             newPosition.width !== oldPosition.width && newPosition.height !== oldPosition.height) {
                             this.updateFormValue(inputId, data.result);
-                            const res = this.saveData(data.result, this.lastId, true);
+                            const res = this.saveData(data.result, this.lastId, true, this.document['datas'][inputId]);
                             if (res) {
                                 const allowLearning = this.formSettings.settings.allow_learning;
                                 if (allowLearning == true || allowLearning == undefined) {
@@ -1200,7 +1200,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    saveData(data: any, fieldId: any = false, showNotif: boolean = false) {
+    saveData(data: any, fieldId: any = false, showNotif: boolean = false, document_data: any = []) {
         if (this.document.status !== 'END') {
             const oldData = data;
             if (fieldId) {
@@ -1221,7 +1221,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                         data = moment(data).format('YYYY-MM-DD');
                     }
 
-                    if ((field.control.errors && !('required' in field.control.errors)) || this.document['datas'][fieldId] === data) {
+                    if ((field.control.errors && !('required' in field.control.errors)) || document_data === data) {
                         return false;
                     }
 
@@ -1372,6 +1372,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             args = fieldId.trim();
         }
 
+        this.document['datas'][fieldId] = undefined;
+
         this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/deleteData',
             {'args': args}, {headers: this.authService.headers}).pipe(
             tap(() => {
@@ -1394,11 +1396,10 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             args = fieldId;
         }
 
+        this.document.positions[fieldId] = undefined;
+
         this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/deletePosition',
             {'args': args}, {headers: this.authService.headers}).pipe(
-            tap(() => {
-                this.document.positions[fieldId] = undefined;
-            }),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -1415,9 +1416,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             }
             this.http.put(environment['url'] + '/ws/accounts/suppliers/' + this.document.supplier_id + '/deletePosition',
                 {'args': args}, {headers: this.authService.headers}).pipe(
-                tap(() => {
-                    this.document.positions[fieldId] = undefined;
-                }),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
@@ -1436,11 +1434,10 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             args = fieldId;
         }
 
+        this.document.pages[fieldId] = undefined;
+
         this.http.put(environment['url'] + '/ws/verifier/documents/' + this.document.id + '/deletePage',
             {'args': args}, {headers: this.authService.headers}).pipe(
-            tap(() => {
-                this.document.pages[fieldId] = undefined;
-            }),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -1457,9 +1454,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             }
             this.http.put(environment['url'] + '/ws/accounts/suppliers/' + this.document.supplier_id + '/deletePage',
                 {'args': args}, {headers: this.authService.headers}).pipe(
-                tap(() => {
-                    this.document.pages[fieldId] = undefined;
-                }),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
