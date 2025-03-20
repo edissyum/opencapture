@@ -21,7 +21,7 @@
 		"company_number": "Company number",
 		"confirm_delete_customer": "Are you sure you want to delete the customer account <strong>{{ customer }}</strong> ?",
 		"confirm_delete_supplier": "Are you sure you want to delete the third-party account <strong>{{ supplier }}</strong> ?<br><br>This action is <strong>irreversible</strong>",
-		"confirm_delete_supplier_positions": "Are you sure you want to delete the third-party account <strong>{{ supplier }}</strong> ?",
+		"confirm_delete_supplier_positions": "Are you sure you want to delete the positions of this third-party account <strong>{{ supplier }}</strong> ?",
 		"confirm_skip_auto_validate": "Are you sure you want to skip the next automatic validation <strong>{{ supplier }}</strong> ?",
 		"create_customer": "Create customer",
 		"create_supplier": "Create third-party account",

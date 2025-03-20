@@ -17,7 +17,6 @@
 
 import re
 import json
-import pandas as pd
 from datetime import datetime
 from src.backend.functions import search_by_positions, search_custom_positions
 
@@ -54,8 +53,8 @@ class FindDueDate:
             regex = self.regex
             language = self.configurations['locale']
             if self.supplier and self.supplier[2]['document_lang']:
-                language = self.supplier[2]['document_lang']
                 if self.supplier[2]['document_lang'] != self.configurations['locale']:
+                    language = self.supplier[2]['document_lang']
                     _regex = self.database.select({
                         'select': ['regex_id', 'content'],
                         'table': ['regex'],
@@ -101,9 +100,9 @@ class FindDueDate:
                         self.log.info("Date is older than " + str(self.max_time_delta) + " days")
                         date = False
 
-                if date:
+                if date and doc_date:
                     try:
-                        tmp_date = pd.to_datetime(date).strftime('%Y-%m-%d')
+                        tmp_date = doc_date.strftime('%Y-%m-%d')
                         return tmp_date, position
                     except Exception as e:
                         self.log.info("Error while converting due date : " + str(e))
@@ -166,6 +165,6 @@ class FindDueDate:
                     self.log.info('Document due date found : ' + res[0])
                     position = res[1]
                     if cpt == 2:
-                        position = self.files.return_position_with_ratio(res[1], 'footer')
+                        position = self.files.return_position_with_ratio({'position': res[1]}, 'footer')
                     return [res[0], position, self.nb_page]
             cpt += 1

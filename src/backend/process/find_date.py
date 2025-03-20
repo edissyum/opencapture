@@ -17,7 +17,6 @@
 
 import re
 import json
-import pandas as pd
 from datetime import datetime
 from src.backend.functions import search_by_positions, search_custom_positions
 
@@ -53,10 +52,13 @@ class FindDate:
 
             regex = self.regex
             language = self.configurations['locale']
+
             if lang:
                 language = lang
+
             if self.supplier and self.supplier[2]['document_lang']:
                 if self.supplier[2]['document_lang'] != self.configurations['locale']:
+                    language = self.supplier[2]['document_lang']
                     _regex = self.database.select({
                         'select': ['regex_id', 'content'],
                         'table': ['regex'],
@@ -78,6 +80,7 @@ class FindDate:
                         if month.lower() in date.lower():
                             date = (date.lower().replace(month.lower(), key))
                             break
+
             try:
                 # Fix to handle date with 2 digits year
                 date = date.replace('  ', ' ')
@@ -119,9 +122,9 @@ class FindDate:
                     self.log.info("Date is in the future " + str(date))
                     date = False
 
-                if date:
+                if date and doc_date:
                     try:
-                        tmp_date = pd.to_datetime(date).strftime('%Y-%m-%d')
+                        tmp_date = doc_date.strftime('%Y-%m-%d')
                         return tmp_date, position
                     except Exception as e:
                         self.log.info("Error while converting date : " + str(e))
@@ -197,11 +200,11 @@ class FindDate:
                     if res:
                         position = res[1]
                         if cpt == 2:
-                            position = self.files.return_position_with_ratio(res[1], 'footer')
+                            position = self.files.return_position_with_ratio({'position': res[1]}, 'footer')
                         return [res[0], position, self.nb_page]
                 else:
                     position = res[1]
                     if cpt == 2:
-                        position = self.files.return_position_with_ratio(res[1], 'footer')
+                        position = self.files.return_position_with_ratio({'position': res[1]}, 'footer')
                     return [res[0], position, self.nb_page]
             cpt += 1
