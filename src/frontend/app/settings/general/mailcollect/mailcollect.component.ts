@@ -103,7 +103,7 @@ export class MailCollectComponent implements OnInit {
                             id: 'hostname',
                             fromMethod: true,
                             unit: 'general',
-                            control: new FormControl('mail.edissyum.com'),
+                            control: new FormControl(),
                             label: _('MAILCOLLECT.hostname'),
                             type: 'text',
                             required: true
@@ -112,7 +112,7 @@ export class MailCollectComponent implements OnInit {
                             id: 'port',
                             fromMethod: true,
                             unit: 'general',
-                            control: new FormControl('993'),
+                            control: new FormControl(),
                             label: _('MAILCOLLECT.port'),
                             type: 'number',
                             required: true
@@ -121,7 +121,7 @@ export class MailCollectComponent implements OnInit {
                             id: 'login',
                             fromMethod: true,
                             unit: 'general',
-                            control: new FormControl('nathan.cheval@edissyum.com'),
+                            control: new FormControl(),
                             label: _('FORMATS.email'),
                             type: 'text',
                             required: true
@@ -130,7 +130,7 @@ export class MailCollectComponent implements OnInit {
                             id: 'password',
                             fromMethod: true,
                             unit: 'general',
-                            control: new FormControl('jKfV*MGex4!G#8!'),
+                            control: new FormControl(),
                             label: _('USER.password'),
                             type: 'password',
                             required: true
@@ -609,7 +609,7 @@ export class MailCollectComponent implements OnInit {
                                 id: 'hostname',
                                 fromMethod: true,
                                 unit: 'general',
-                                control: new FormControl('mail.edissyum.com'),
+                                control: new FormControl(),
                                 label: _('MAILCOLLECT.hostname'),
                                 type: 'text',
                                 required: true
@@ -618,7 +618,7 @@ export class MailCollectComponent implements OnInit {
                                 id: 'port',
                                 fromMethod: true,
                                 unit: 'general',
-                                control: new FormControl('993'),
+                                control: new FormControl(),
                                 label: _('MAILCOLLECT.port'),
                                 type: 'number',
                                 required: true
@@ -627,7 +627,7 @@ export class MailCollectComponent implements OnInit {
                                 id: 'login',
                                 fromMethod: true,
                                 unit: 'general',
-                                control: new FormControl('nathan.cheval@edissyum.com'),
+                                control: new FormControl(),
                                 label: _('FORMATS.email'),
                                 type: 'text',
                                 required: true
@@ -636,7 +636,7 @@ export class MailCollectComponent implements OnInit {
                                 id: 'password',
                                 fromMethod: true,
                                 unit: 'general',
-                                control: new FormControl('jKfV*MGex4!G#8!'),
+                                control: new FormControl(),
                                 label: _('USER.password'),
                                 type: 'password',
                                 required: true

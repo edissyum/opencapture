@@ -33,41 +33,42 @@ from imap_tools import utils, MailBox, MailBoxUnencrypted
 
 
 class Mail:
-    def __init__(self, host, port, login, pwd, oauth, tenant_id, client_id, secret, scopes, authority):
-        self.pwd = pwd
-        self.conn = None
-        self.port = port
-        self.host = host
-        self.login = login
-        self.oauth = oauth
-        self.secret = secret
-        self.scopes = scopes
-        self.authority = authority
-        self.tenant_id = tenant_id
-        self.client_id = client_id
+    def __init__(self, config):
+        self.method = config['method']
+        self.login = config['options']['login'] if 'login' in config['options'] else ''
+        self.pwd = config['options']['password'] if 'password' in config['options'] else ''
+        self.host = config['options']['hostname'] if 'hostname' in config['options'] else ''
+        self.port = config['options']['port'] if 'port' in config['options'] else ''
+        self.client_id = config['options']['client_id'] if 'client_id' in config['options'] else ''
+        self.secret = config['options']['secret'] if 'secret' in config['options'] else ''
+        self.tenant_id = config['options']['tenant_id'] if 'tenant_id' in config['options'] else ''
+        self.authority = config['options']['authority'] if 'authority' in config['options'] else ''
+        self.scopes = config['options']['scopes'] if 'scopes' in config['options'] else ''
+        self.secured_connection = config['secured_connection'] if 'secured_connection' in config['options'] else ''
 
     def test_connection(self, secured_connection):
         """
         Test the connection to the IMAP server
 
         """
-        try:
-            if secured_connection:
-                self.conn = MailBox(host=self.host, port=self.port)
-            else:
-                self.conn = MailBoxUnencrypted(host=self.host, port=self.port)
-        except (gaierror, SSLError) as mail_error:
-            error = 'IMAP Host ' + self.host + ' on port ' + self.port + ' is unreachable : ' + str(mail_error)
-            print(error)
-            sys.exit()
+        if self.method in ['imap', 'oauth']:
+            try:
+                if secured_connection:
+                    self.conn = MailBox(host=self.host, port=self.port)
+                else:
+                    self.conn = MailBoxUnencrypted(host=self.host, port=self.port)
+            except (gaierror, SSLError) as mail_error:
+                error = 'IMAP Host ' + self.host + ' on port ' + self.port + ' is unreachable : ' + str(mail_error)
+                print(error)
+                sys.exit()
 
         try:
-            if self.oauth:
+            if self.method == 'oauth':
                 result = self.generate_oauth_token()
                 self.conn.client.authenticate("XOAUTH2",
                                               lambda x: self.generate_auth_string(result['access_token']).encode(
                                                   "utf-8"))
-            else:
+            elif self.method == 'imap':
                 self.conn.login(self.login, self.pwd)
         except IMAP4_SSL.error as err:
             error = 'Error while trying to login to ' + self.host + ' using ' + self.login + '/' + self.pwd + ' as login/password : ' + str(

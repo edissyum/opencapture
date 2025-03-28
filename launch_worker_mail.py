@@ -100,18 +100,7 @@ with app.app_context():
         path = docservers_mailcollect['path'] + '/' + process['name'] + '/' + str('%02d' % now.year) + str('%02d' % now.month) + str('%02d' % now.day) + '/'
         path_without_time = docservers_mailcollect['path']
 
-        mail = Mail(
-            config_mail['hostname'],
-            config_mail['port'],
-            config_mail['login'],
-            config_mail['password'],
-            config_mail['oauth'],
-            config_mail['tenant_id'],
-            config_mail['client_id'],
-            config_mail['secret'],
-            config_mail['scopes'],
-            config_mail['authority']
-        )
+        mail = Mail(config_mail)
 
         secured_connection = config_mail['secured_connection']
         folder_trash = config_mail['folder_trash']
@@ -175,7 +164,7 @@ with app.app_context():
                             Log.info('Found ' + str(len(ret['attachments'])) + ' attachments')
                             cpt = 1
                             for attachment in ret['attachments']:
-                                if attachment['format'].lower() == 'pdf':
+                                if attachment['format'].lower() == '.pdf' or attachment['format'].lower() == 'pdf':
                                     if not isSplitter:
                                         task_id_monitor = database.insert({
                                             'table': 'monitoring',

@@ -147,18 +147,8 @@ def launch(args):
                                     splitter_method)
         mail_class = None
         if args.get('isMail') is not None and args['isMail'] is True:
-            mail_class = Mail(
-                args['process']['hostname'],
-                args['process']['port'],
-                args['process']['login'],
-                args['process']['password'],
-                args['process']['oauth'],
-                args['process']['tenant_id'],
-                args['process']['client_id'],
-                args['process']['secret'],
-                args['process']['scopes'],
-                args['process']['authority'],
-            )
+            mail_class = Mail(args['process'])
+
             log = Log((args['log']), smtp)
             log.task_id_monitor = args['task_id_monitor']
             log.database = database
