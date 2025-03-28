@@ -171,31 +171,31 @@ def generate_auth_string(user, token):
 
 
 def retrieve_folders(args):
-    if 'oauth' in args and args['oauth']:
-        try:
-            app = msal.ConfidentialClientApplication(args['client_id'], authority=args['authority'] + args['tenant_id'],
-                                                     client_credential=args['secret'])
-            result = app.acquire_token_silent(args['scopes'], account=None)
-            if not result:
-                result = app.acquire_token_for_client(scopes=[args['scopes']])
+    if args['method'] == 'oauth':
+        # try:
+        app = msal.ConfidentialClientApplication(args['client_id'], authority=args['authority'] + args['tenant_id'],
+                                                 client_credential=args['secret'])
+        result = app.acquire_token_silent(args['scopes'], account=None)
+        if not result:
+            result = app.acquire_token_for_client(scopes=[args['scopes']])
 
-            if 'access_token' not in result:
-                response = {
-                    "errors": gettext("MAILCOLLECT_ERROR"),
-                    "message": result.get('error') + ": " + result.get('error_description')
-                }
-                return response, 400
-
-            conn = MailBox(args['hostname'])
-            conn.client.authenticate("XOAUTH2",
-                                     lambda x: generate_auth_string(args['login'], result['access_token']))
-        except Exception as _e:
+        if 'access_token' not in result:
             response = {
                 "errors": gettext("MAILCOLLECT_ERROR"),
-                "message": str(_e)
+                "message": result.get('error') + ": " + result.get('error_description')
             }
             return response, 400
-    else:
+
+        conn = MailBox(args['hostname'])
+        conn.client.authenticate("XOAUTH2",
+                                 lambda x: generate_auth_string(args['login'], result['access_token']))
+        # except Exception as _e:
+        #     response = {
+        #         "errors": gettext("MAILCOLLECT_ERROR"),
+        #         "message": str(_e)
+        #     }
+        #     return response, 400
+    elif args['method'] == 'imap':
         try:
             if args['secured_connection']:
                 conn = MailBox(host=args['hostname'], port=args['port'], timeout=10)

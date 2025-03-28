@@ -40,16 +40,16 @@ def retrieve_folders():
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/mailcollect/retrieveFolders'}), 403
 
     check, message = rest_validator(request.json, [
-        {'id': 'port', 'type': int, 'mandatory': True},
-        {'id': 'login', 'type': str, 'mandatory': True},
-        {'id': 'oauth', 'type': bool, 'mandatory': False},
-        {'id': 'secret', 'type': str, 'mandatory': False},
-        {'id': 'scopes', 'type': str, 'mandatory': False},
-        {'id': 'hostname', 'type': str, 'mandatory': True},
-        {'id': 'password', 'type': str, 'mandatory': False},
-        {'id': 'tenant_id', 'type': str, 'mandatory': False},
-        {'id': 'client_id', 'type': str, 'mandatory': False},
-        {'id': 'authority', 'type': str, 'mandatory': False},
+        {'id': 'method', 'type': str, 'mandatory': True},
+        {'id': 'port', 'type': int, 'mandatory': True if 'imap' in request.json['method'] else False},
+        {'id': 'login', 'type': str, 'mandatory': bool([method for method in ['oauth', 'imap'] if method in request.json['method']])},
+        {'id': 'secret', 'type': str, 'mandatory': bool([method for method in ['oauth', 'graphql'] if method in request.json['method']])},
+        {'id': 'scopes', 'type': str, 'mandatory': bool([method for method in ['oauth', 'graphql'] if method in request.json['method']])},
+        {'id': 'hostname', 'type': str, 'mandatory': bool([method for method in ['oauth', 'imap'] if method in request.json['method']])},
+        {'id': 'password', 'type': str, 'mandatory': True if 'imap' in request.json['method'] else False},
+        {'id': 'tenant_id', 'type': str, 'mandatory': bool([method for method in ['oauth', 'graphql'] if method in request.json['method']])},
+        {'id': 'client_id', 'type': str, 'mandatory': bool([method for method in ['oauth', 'graphql'] if method in request.json['method']])},
+        {'id': 'authority', 'type': str, 'mandatory': bool([method for method in ['oauth', 'graphql'] if method in request.json['method']])},
         {'id': 'secured_connection', 'type': bool, 'mandatory': False}
     ])
 
@@ -69,14 +69,9 @@ def update_process(process_name):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'mailcollect']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/mailcollect/updateProcess/{process_name}'}), 403
-
     check, message = rest_validator(request.json, [
-        {'id': 'name', 'type': str, 'mandatory': True},
-        {'id': 'port', 'type': int, 'mandatory': True},
-        {'id': 'login', 'type': str, 'mandatory': True},
-        {'id': 'enabled', 'type': bool, 'mandatory': True},
-        {'id': 'hostname', 'type': str, 'mandatory': True},
-        {'id': 'password', 'type': str, 'mandatory': False},
+        {'id': 'method', 'type': str, 'mandatory': True},
+        {'id': 'options', 'type': dict, 'mandatory': True},
         {'id': 'is_splitter', 'type': bool, 'mandatory': False},
         {'id': 'folder_trash', 'type': str, 'mandatory': False},
         {'id': 'folder_to_crawl', 'type': str, 'mandatory': True},
@@ -126,11 +121,8 @@ def create_process():
 
     check, message = rest_validator(request.json, [
         {'id': 'name', 'type': str, 'mandatory': True},
-        {'id': 'port', 'type': int, 'mandatory': True},
-        {'id': 'login', 'type': str, 'mandatory': True},
-        {'id': 'hostname', 'type': str, 'mandatory': True},
-        {'id': 'enabled', 'type': bool, 'mandatory': False},
-        {'id': 'password', 'type': str, 'mandatory': False},
+        {'id': 'method', 'type': str, 'mandatory': True},
+        {'id': 'options', 'type': dict, 'mandatory': True},
         {'id': 'is_splitter', 'type': bool, 'mandatory': False},
         {'id': 'folder_trash', 'type': str, 'mandatory': False},
         {'id': 'folder_to_crawl', 'type': str, 'mandatory': True},

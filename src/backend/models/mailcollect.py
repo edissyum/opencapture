@@ -1,5 +1,6 @@
 # This file is part of Open-Capture.
 # Copyright Edissyum Consulting since 2020 under licence GPLv3
+import json
 
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -75,7 +76,12 @@ def update_process(args):
         if not _vars[0]:
             return {}, _vars[1]
         database = _vars[0]
+
     error = None
+
+    if 'options' in args['set']:
+        args['set']['options'] = json.dumps(args['set']['options'])
+
     process = database.update({
         'table': ['mailcollect'],
         'set': args['set'],
@@ -97,10 +103,15 @@ def create_process(args):
             return {}, _vars[1]
         database = _vars[0]
     error = None
+
+    if 'options' in args['columns']:
+        args['columns']['options'] = json.dumps(args['columns']['options'])
+
     args = {
         'table': 'mailcollect',
         'columns': args['columns']
     }
+
     process = database.insert(args)
 
     return process, error
