@@ -41,7 +41,6 @@ export class FileViewerComponent {
             this.fileUrl = data.fileUrl;
         } else {
             this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(data.fileUrl);
-            console.log(this.fileUrl);
         }
     }
 

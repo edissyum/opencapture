@@ -171,7 +171,7 @@ def generate_auth_string(user, token):
 
 
 def retrieve_folders(args):
-    if 'oauth' in args and args['oauth']:
+    if args['method'] == 'oauth':
         try:
             app = msal.ConfidentialClientApplication(args['client_id'], authority=args['authority'] + args['tenant_id'],
                                                      client_credential=args['secret'])
@@ -195,7 +195,7 @@ def retrieve_folders(args):
                 "message": str(_e)
             }
             return response, 400
-    else:
+    elif args['method'] == 'imap':
         try:
             if args['secured_connection']:
                 conn = MailBox(host=args['hostname'], port=args['port'], timeout=10)

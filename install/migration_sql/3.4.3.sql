@@ -1,0 +1,30 @@
+ALTER TABLE mailcollect ADD COLUMN "method" VARCHAR(20) DEFAULT 'imap';
+ALTER TABLE mailcollect ADD COLUMN "options" JSONB DEFAULT '{}';
+
+UPDATE mailcollect SET method = 'oauth', options = jsonb_build_object(
+        'login', login,
+        'hostname', hostname,
+        'tenant_id', tenant_id,
+        'client_id', client_id,
+        'secret', secret,
+        'authority', authority,
+        'scopes', scopes)
+WHERE oauth is true;
+
+UPDATE mailcollect SET method = 'imap', options = jsonb_build_object(
+        'login', login,
+        'password', password,
+        'hostname', hostname,
+        'port', port)
+WHERE oauth is false;
+
+ALTER TABLE mailcollect DROP COLUMN port;
+ALTER TABLE mailcollect DROP COLUMN login;
+ALTER TABLE mailcollect DROP COLUMN oauth;
+ALTER TABLE mailcollect DROP COLUMN secret;
+ALTER TABLE mailcollect DROP COLUMN scopes;
+ALTER TABLE mailcollect DROP COLUMN password;
+ALTER TABLE mailcollect DROP COLUMN hostname;
+ALTER TABLE mailcollect DROP COLUMN tenant_id;
+ALTER TABLE mailcollect DROP COLUMN client_id;
+ALTER TABLE mailcollect DROP COLUMN authority;
