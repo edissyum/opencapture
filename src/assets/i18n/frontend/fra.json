@@ -633,6 +633,8 @@
 		"folders": "Paramètres des dossiers",
 		"folders_updated": "Liste des dossiers mise à jour",
 		"general": "Paramètres généraux",
+		"get_token_url": "URL de récupération du token",
+		"grant_type": "Méthode d'authentification",
 		"graphql": "GraphQL",
 		"hostname": "Adresse d'hôte",
 		"imap": "IMAP standard",
@@ -640,6 +642,7 @@
 		"insert_body_as_doc_hint": "Si activé, les pièces jointes de l'email seront intégrées en tant que pièces jointes dans Open-Capture. Si il est désactivé, chaque pièce jointe sera traitée individuellement",
 		"is_splitter": "Processus Splitter",
 		"load_folders_first": "Il est nécessaire de récupérer la liste des dossiers afin de pouvoir en sélectionner un",
+		"message_url": "URL de récupération des emails",
 		"methods": "Méthode d'authentification",
 		"move": "Déplacer",
 		"none": "Aucune action",
@@ -654,6 +657,7 @@
 		"process_name_updated": "Nom du processus mis à jour avec succès",
 		"process_updated": "Processus mis à jour avec succès",
 		"protocol_none": "Connexion non sécurisée",
+		"scope": "Scope",
 		"scopes": "Scopes",
 		"secret": "Secret",
 		"secured_connection": "Connexion sécurisée",
@@ -677,6 +681,7 @@
 		"test_email_bad_format": "Le format de l'adresse email est incorrect",
 		"test_settings_and_retrieve_folders": "Tester la connexion et récupérer la liste des dossiers",
 		"update_process": "Mettre à jour le processus",
+		"users_url": "URL de récupération des utilisateurs",
 		"verifier": "Paramètres du Verifier"
 	},
 	"MANDATORY": {
