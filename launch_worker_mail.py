@@ -56,6 +56,40 @@ def check_folders(folder_crawl, folder_dest=False):
                 return False
         return True
 
+def convert_to_dict(message):
+    new_msg = {
+        'uid': message.uid,
+        'obj': message.obj,
+        'subject': message.subject,
+        'from': message.from_,
+        'to': message.to,
+        'cc': message.cc,
+        'bcc': message.bcc,
+        'reply_to': message.reply_to,
+        'date': message.date,
+        'headers': message.headers,
+        'text': message.text,
+        'html': message.html,
+        'attachments': [],
+        'from_values': message.from_values,
+        'to_values': message.to_values,
+        'cc_values': message.cc_values,
+        'bcc_values': message.bcc_values,
+        'reply_to_values': message.reply_to_values
+    }
+
+    for att in message.attachments:
+        new_msg['attachments'].append({
+            'filename': att.filename,
+            'payload': att.payload,
+            'content_id': att.content_id,
+            'content_type': att.content_type,
+            'size': att.size,
+            'content_disposition': att.content_disposition,
+            'part': att.part
+        })
+
+    return new_msg
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -127,7 +161,7 @@ with app.app_context():
 
         if check:
             mail.select_folder(folder_to_crawl)
-            emails = mail.retrieve_message()
+            emails = mail.retrieve_message(folder_to_crawl)
             if len(emails) > 0:
                 now = datetime.datetime.now()
                 if not os.path.exists(path):
@@ -149,6 +183,12 @@ with app.app_context():
 
                 cpt_mail = 1
                 for msg in emails:
+                    if mail.method == 'graphql':
+                        msg_id = str(msg['id'])
+                    else:
+                        msg = convert_to_dict(msg)
+                        msg_id = str(msg['uid'])
+
                     mail.backup_email(msg, batch_path)
 
                     insert_doc = verifierInsertBody if not isSplitter else splitterInsertBody
@@ -159,6 +199,11 @@ with app.app_context():
                         Log.info('Start to process only attachments')
 
                     Log.info('Process e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
+                    if mail.method == 'graphql':
+                        document_date = datetime.datetime.strptime(msg['receivedDateTime'], '%Y-%m-%dT%H:%M:%SZ')
+                    else:
+                        document_date = msg['date']
+
                     if not insert_doc:
                         if len(ret['attachments']) > 0:
                             Log.info('Found ' + str(len(ret['attachments'])) + ' attachments')
@@ -193,9 +238,9 @@ with app.app_context():
                                             'nb_of_attachments': str(len(ret['attachments'])),
                                             'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
                                             'msg': {
-                                                'uid': msg.uid,
-                                                'subject': msg.subject,
-                                                'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
+                                                'uid': msg_id,
+                                                'subject': msg['subject'],
+                                                'date': document_date
                                             }
                                         })
                                     else:
@@ -224,9 +269,9 @@ with app.app_context():
                                             'nb_of_attachments': str(len(ret['attachments'])),
                                             'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
                                             'msg': {
-                                                'uid': msg.uid,
-                                                'subject': msg.subject if msg.subject else gettext('NO_SUBJECT'),
-                                                'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
+                                                'uid': msg_id,
+                                                'subject': msg['subject'] if msg['subject'] else gettext('NO_SUBJECT'),
+                                                'date': document_date
                                             }
                                         })
                                 else:
@@ -262,9 +307,9 @@ with app.app_context():
                                 'log': batch_path + '/' + date_batch + '.log',
                                 'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
                                 'msg': {
-                                    'uid': msg.uid,
-                                    'subject': msg.subject,
-                                    'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
+                                    'uid': msg_id,
+                                    'subject': msg['subject'],
+                                    'date': document_date
                                 }
                             })
                         else:
@@ -293,9 +338,9 @@ with app.app_context():
                                 'log': batch_path + '/' + date_batch + '.log',
                                 'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
                                 'msg': {
-                                    'uid': msg.uid,
-                                    'subject': msg.subject if msg.subject else gettext('NO_SUBJECT') + ' - ' + msg.date.strftime('%d/%m/%Y %H:%M:%S'),
-                                    'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
+                                    'uid': msg_id,
+                                    'subject': msg['subject'] if msg['subject'] else gettext('NO_SUBJECT') + ' - ' + document_date,
+                                    'date': document_date
                                 }
                             })
                     if action not in ['move', 'delete', 'none']:

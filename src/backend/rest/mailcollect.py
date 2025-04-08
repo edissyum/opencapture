@@ -43,13 +43,15 @@ def retrieve_folders():
         {'id': 'method', 'type': str, 'mandatory': True},
         {'id': 'port', 'type': int, 'mandatory': True if 'imap' in request.json['method'] else False},
         {'id': 'login', 'type': str, 'mandatory': bool([method for method in ['oauth', 'imap'] if method in request.json['method']])},
-        {'id': 'secret', 'type': str, 'mandatory': bool([method for method in ['oauth', 'graphql'] if method in request.json['method']])},
-        {'id': 'scopes', 'type': str, 'mandatory': bool([method for method in ['oauth', 'graphql'] if method in request.json['method']])},
+        {'id': 'secret', 'type': str, 'mandatory': True if 'oauth' in request.json['method'] else False},
+        {'id': 'client_secret', 'type': str, 'mandatory': True if 'graphql' in request.json['method'] else False},
+        {'id': 'scopes', 'type': str, 'mandatory': True if 'oauth' in request.json['method'] else False},
+        {'id': 'scope', 'type': str, 'mandatory': True if 'graphql' in request.json['method'] else False},
         {'id': 'hostname', 'type': str, 'mandatory': bool([method for method in ['oauth', 'imap'] if method in request.json['method']])},
         {'id': 'password', 'type': str, 'mandatory': True if 'imap' in request.json['method'] else False},
         {'id': 'tenant_id', 'type': str, 'mandatory': bool([method for method in ['oauth', 'graphql'] if method in request.json['method']])},
         {'id': 'client_id', 'type': str, 'mandatory': bool([method for method in ['oauth', 'graphql'] if method in request.json['method']])},
-        {'id': 'authority', 'type': str, 'mandatory': bool([method for method in ['oauth', 'graphql'] if method in request.json['method']])},
+        {'id': 'authority', 'type': str, 'mandatory': True if 'oauth' in request.json['method'] else False},
         {'id': 'secured_connection', 'type': bool, 'mandatory': False}
     ])
 

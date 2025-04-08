@@ -27,7 +27,6 @@ import { environment } from "../../../env";
 import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { FormControl } from '@angular/forms';
-import { Sort } from "@angular/material/sort";
 import { MatDialog } from "@angular/material/dialog";
 import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
 
@@ -47,8 +46,6 @@ export class MailCollectComponent implements OnInit {
     formValid           : { [key: string]: boolean; } = {};
     allVerifierWorkflows: any           = [];
     allSplitterWorkflows: any           = [];
-    processesMail       : any           = [];
-    allprocessesMail    : any           = [];
     processes           : any           = [];
     pageSize            : number        = 10;
     pageIndex           : number        = 0;
@@ -141,6 +138,15 @@ export class MailCollectComponent implements OnInit {
                     id: 'graphql',
                     label: _('MAILCOLLECT.graphql'),
                     "options": {
+                        "login"     : {
+                            id: 'login',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl(),
+                            label: _('FORMATS.email'),
+                            type: 'text',
+                            required: true
+                        },
                         "grant_type"    : {
                             id: 'grant_type',
                             fromMethod: true,
@@ -186,12 +192,12 @@ export class MailCollectComponent implements OnInit {
                             type: 'text',
                             required: true
                         },
-                        "client_secret" : {
-                            id: 'client_secret',
+                        "client_id"     : {
+                            id: 'client_id',
                             fromMethod: true,
                             unit: 'general',
                             control: new FormControl(),
-                            label: _('MAILCOLLECT.secret'),
+                            label: _('MAILCOLLECT.client_id'),
                             type: 'text',
                             required: true
                         },
@@ -204,12 +210,12 @@ export class MailCollectComponent implements OnInit {
                             type: 'text',
                             required: true
                         },
-                        "client_id"     : {
-                            id: 'client_id',
+                        "client_secret" : {
+                            id: 'client_secret',
                             fromMethod: true,
                             unit: 'general',
                             control: new FormControl(),
-                            label: _('MAILCOLLECT.client_id'),
+                            label: _('MAILCOLLECT.secret'),
                             type: 'text',
                             required: true
                         }
@@ -255,12 +261,12 @@ export class MailCollectComponent implements OnInit {
                             type: 'text',
                             required: true
                         },
-                        "secret"    : {
-                            id: 'secret',
+                        "client_id" : {
+                            id: 'client_id',
                             fromMethod: true,
                             unit: 'general',
                             control: new FormControl(),
-                            label: _('MAILCOLLECT.secret'),
+                            label: _('MAILCOLLECT.client_id'),
                             type: 'text',
                             required: true
                         },
@@ -273,12 +279,12 @@ export class MailCollectComponent implements OnInit {
                             type: 'text',
                             required: true
                         },
-                        "client_id" : {
-                            id: 'client_id',
+                        "secret"    : {
+                            id: 'secret',
                             fromMethod: true,
                             unit: 'general',
                             control: new FormControl(),
-                            label: _('MAILCOLLECT.client_id'),
+                            label: _('MAILCOLLECT.secret'),
                             type: 'text',
                             required: true
                         }
@@ -647,6 +653,15 @@ export class MailCollectComponent implements OnInit {
                         id: 'graphql',
                         label: _('MAILCOLLECT.graphql'),
                         "options": {
+                            "login"     : {
+                                id: 'login',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl(),
+                                label: _('FORMATS.email'),
+                                type: 'text',
+                                required: true
+                            },
                             "grant_type"    : {
                                 id: 'grant_type',
                                 fromMethod: true,
@@ -692,12 +707,12 @@ export class MailCollectComponent implements OnInit {
                                 type: 'text',
                                 required: true
                             },
-                            "client_secret" : {
-                                id: 'client_secret',
+                            "client_id"     : {
+                                id: 'client_id',
                                 fromMethod: true,
                                 unit: 'general',
                                 control: new FormControl(),
-                                label: _('MAILCOLLECT.secret'),
+                                label: _('MAILCOLLECT.client_id'),
                                 type: 'text',
                                 required: true
                             },
@@ -710,12 +725,12 @@ export class MailCollectComponent implements OnInit {
                                 type: 'text',
                                 required: true
                             },
-                            "client_id"     : {
-                                id: 'client_id',
+                            "client_secret" : {
+                                id: 'client_secret',
                                 fromMethod: true,
                                 unit: 'general',
                                 control: new FormControl(),
-                                label: _('MAILCOLLECT.client_id'),
+                                label: _('MAILCOLLECT.secret'),
                                 type: 'text',
                                 required: true
                             }
@@ -761,12 +776,12 @@ export class MailCollectComponent implements OnInit {
                                 type: 'text',
                                 required: true
                             },
-                            "secret"    : {
-                                id: 'secret',
+                            "client_id" : {
+                                id: 'client_id',
                                 fromMethod: true,
                                 unit: 'general',
                                 control: new FormControl(),
-                                label: _('MAILCOLLECT.secret'),
+                                label: _('MAILCOLLECT.client_id'),
                                 type: 'text',
                                 required: true
                             },
@@ -779,12 +794,12 @@ export class MailCollectComponent implements OnInit {
                                 type: 'text',
                                 required: true
                             },
-                            "client_id" : {
-                                id: 'client_id',
+                            "secret"    : {
+                                id: 'secret',
                                 fromMethod: true,
                                 unit: 'general',
                                 control: new FormControl(),
-                                label: _('MAILCOLLECT.client_id'),
+                                label: _('MAILCOLLECT.secret'),
                                 type: 'text',
                                 required: true
                             }
@@ -1099,7 +1114,8 @@ export class MailCollectComponent implements OnInit {
             const data: any = {};
             process.forEach((element: any) => {
                 if (['name', 'verifier_workflow_id', 'verifier_workflow_id', 'splitter_workflow_id', 'folder_to_crawl',
-                    'folder_destination', 'folder_trash', 'action_after_process'].includes(element.id)) {
+                    'folder_destination', 'folder_trash', 'action_after_process',
+                    'verifier_insert_body_as_doc', 'splitter_insert_body_as_doc'].includes(element.id)) {
                     if (element.id.includes('folder_')) {
                         data[element.id] = element.control.value && element.control.value.id ? element.control.value.id : null;
                     } else if (element.id.includes('_workflow_id')) {
@@ -1139,6 +1155,7 @@ export class MailCollectComponent implements OnInit {
     retrieveFolders(process: any) {
         this.formValid[this.getNameOfProcess(process)] = false;
         this.folderLoading = true;
+        this.folders = [];
         let data: any = {}
         process.forEach((element: any) => {
             if (element.id === 'options') {
