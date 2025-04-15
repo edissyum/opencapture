@@ -147,6 +147,22 @@ export class UpdateOutputComponent implements OnInit {
             'label': 'ACCOUNTS.supplier_name'
         },
         {
+            'id': 'lastname',
+            'label': 'ACCOUNTS.lastname'
+        },
+        {
+            'id': 'firstname',
+            'label': 'ACCOUNTS.firstname'
+        },
+        {
+            'id': 'civility',
+            'label': 'ACCOUNTS.civility'
+        },
+        {
+            'id': 'function',
+            'label': 'ACCOUNTS.function'
+        },
+        {
             'id': 'b64_file_content',
             'label': _('OUTPUT.b64_file_content')
         },

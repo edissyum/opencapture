@@ -51,11 +51,51 @@ export class CreateSupplierComponent implements OnInit {
             required: true
         },
         {
+            id: 'informal_contact',
+            label: _('ACCOUNTS.informal_contact'),
+            type: 'mat-slide-toggle',
+            control: new FormControl(false),
+            required: true
+        },
+        {
             id: 'name',
             label: _('ACCOUNTS.supplier_name'),
             type: 'text',
             control: new FormControl(),
             required: true
+        },
+        {
+            id: 'lastname',
+            label: _('ACCOUNTS.lastname'),
+            type: 'text',
+            control: new FormControl(),
+            required: true
+        },
+        {
+            id: 'firstname',
+            label: _('ACCOUNTS.firstname'),
+            type: 'text',
+            control: new FormControl(),
+            required: false
+        },
+        {
+            id: 'civility',
+            label: _('ACCOUNTS.civility'),
+            type: 'select',
+            control: new FormControl(),
+            required: false,
+            values: [
+                {id: 'male', label: _('ACCOUNTS.male')},
+                {id: 'female', label: _('ACCOUNTS.female')},
+                {id: 'other', label: _('ACCOUNTS.other')}
+            ]
+        },
+        {
+            id: 'function',
+            label: _('ACCOUNTS.function'),
+            type: 'text',
+            control: new FormControl(),
+            required: false
         },
         {
             id: 'vat_number',
@@ -131,16 +171,16 @@ export class CreateSupplierComponent implements OnInit {
             values: []
         },
         {
-            id: 'default_accounting_plan',
-            label: _('FACTURATION.default_accounting_plan'),
+            id: 'default_currency',
+            label: _('FACTURATION.default_currency'),
             type: 'select',
             control: new FormControl(),
             required: false,
             values: []
         },
         {
-            id: 'default_currency',
-            label: _('FACTURATION.default_currency'),
+            id: 'default_accounting_plan',
+            label: _('FACTURATION.default_accounting_plan'),
             type: 'select',
             control: new FormControl(),
             required: false,
@@ -216,12 +256,9 @@ export class CreateSupplierComponent implements OnInit {
         let tmpAccountingPlan: any = {};
         tmpAccountingPlan = await this.retrieveDefaultAccountingPlan();
         tmpAccountingPlan = this.sortArray(tmpAccountingPlan);
-        for (const element of this.supplierForm) {
+        this.supplierForm.forEach((element: any) => {
             if (element.id === 'vat_number' || element.id === 'duns') {
                 element.control.valueChanges.subscribe((value: any) => {
-                    if (value && value.includes(' ')) {
-                        element.control.setValue(value.replace(' ', ''));
-                    }
                     if (value) {
                         this.supplierForm.forEach((elem: any) => {
                             if (element.id == 'vat_number' && elem.id == 'duns') {
@@ -236,7 +273,7 @@ export class CreateSupplierComponent implements OnInit {
                     }
                 });
             }
-            if (element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'bic') {
+            if (element.id === 'vat_number' || element.id === 'duns' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'bic') {
                 element.control.valueChanges.subscribe((value: any) => {
                     if (value && value.includes(' ')) {
                         element.control.setValue(value.replace(' ', ''));
@@ -286,7 +323,32 @@ export class CreateSupplierComponent implements OnInit {
                     });
                 });
             }
-        }
+            if (element.id === 'informal_contact') {
+                element.control.valueChanges.subscribe((value: any) => {
+                    this.supplierForm.forEach((elt: any) => {
+                        if (elt.id === 'vat_number' || elt.id === 'duns') {
+                            elt.required = !value;
+                        }
+                    })
+                });
+            }
+            if (element.id === 'name' || element.id === 'lastname') {
+                element.control.valueChanges.subscribe((value: any) => {
+                    if (value) {
+                        this.supplierForm.forEach((elem: any) => {
+                            if (element.id == 'name' && elem.id == 'lastname') {
+                                elem.required = false;
+                                element.required = true;
+                            }
+                            if (element.id == 'lastname' && elem.id == 'name') {
+                                elem.required = false;
+                                element.required = true;
+                            }
+                        });
+                    }
+                });
+            }
+        });
 
         this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -301,52 +363,13 @@ export class CreateSupplierComponent implements OnInit {
                     }
                 }
             }),
+            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
                 return of(false);
             })
         ).subscribe();
-
-        this.supplierForm.forEach((element: any) => {
-            if (element.id === 'vat_number' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban') {
-                element.control.valueChanges.subscribe((value: any) => {
-                    if (value && value.includes(' ')) {
-                        element.control.setValue(value.replace(' ', ''));
-                    }
-                });
-            }
-            if (element.id === 'document_lang') {
-                if (this.localeService.langs.length === 0) {
-                    this.http.get(environment['url'] + '/ws/i18n/getAllLang', {headers: this.authService.headers}).pipe(
-                        tap((data: any) => {
-                            data.langs.forEach((lang: any) => {
-                                element.control.setValue('fra');
-                                element.values.push({
-                                    'id': lang[0],
-                                    'label': lang[1]
-                                });
-                            });
-                        }),
-                        finalize(() => this.loading = false),
-                        catchError((err: any) => {
-                            console.debug(err);
-                            this.notify.handleErrors(err);
-                            return of(false);
-                        })
-                    ).subscribe();
-                } else {
-                    this.localeService.langs.forEach((lang: any) => {
-                        element.control.setValue('fra');
-                        element.values.push({
-                            'id': lang[0],
-                            'label': lang[1]
-                        });
-                    });
-                    this.loading = false;
-                }
-            }
-        });
     }
 
     onCountrySelected(country: Country) {

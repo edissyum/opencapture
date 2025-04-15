@@ -21,7 +21,7 @@
         </div>
         <hr class="border-green-400">
         <div class="overflow-x-hidden h-full-overflow">
-            <div class="flex justify-center m-10">
+            <div class="flex justify-center m-10 gap-4">
                 @for (field of this.supplierForm; track field['id']) {
                     @if (field['type'] === 'mat-slide-toggle') {
                         <mat-slide-toggle [formControl]="field['control']">
@@ -52,7 +52,7 @@
                             <mat-select [formControl]="field['control']" [(value)]="field.control.value" [required]="field['required']">
                                 @for (option of field.values; track option['id']) {
                                     <mat-option [value]="option['id']">
-                                        {{ option['label'] }}
+                                        {{ option['label'] | translate }}
                                     </mat-option>
                                 }
                             </mat-select>
@@ -61,7 +61,7 @@
                             }
                         </mat-form-field>
                     } @else if (field['id'].includes('default_accounting_plan') && this.accountingPlan && !loading) {
-                        <mat-form-field class="right-0 w-full form-viewer col-span-3">
+                        <mat-form-field class="right-0 w-full form-viewer col-span-4">
                             <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
                                 {{ field['label'] | translate }}
                             </mat-label>
