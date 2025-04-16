@@ -252,6 +252,10 @@ export class WorkflowBuilderComponent implements OnInit {
                         'label': this.translate.instant('FORMS.supplier')
                     },
                     {
+                        'id': 'contact',
+                        'label': this.translate.instant('ACCOUNTS.contact')
+                    },
+                    {
                         'id': 'invoice_number',
                         'label': this.translate.instant('FACTURATION.invoice_number')
                     },
@@ -270,10 +274,6 @@ export class WorkflowBuilderComponent implements OnInit {
                     {
                         'id': 'document_due_date',
                         'label': this.translate.instant('FACTURATION.document_due_date')
-                    },
-                    {
-                        'id': 'firstname_lastname',
-                        'label': this.translate.instant('FACTURATION.firstname_lastname')
                     },
                     {
                         'id': 'currency',

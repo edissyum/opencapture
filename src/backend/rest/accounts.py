@@ -84,23 +84,29 @@ def update_supplier(supplier_id):
 
     check, message = rest_validator(request.json['args'], [
         {'id': 'bic', 'type': str, 'mandatory': False},
-        {'id': 'name', 'type': str, 'mandatory': False},
         {'id': 'duns', 'type': str, 'mandatory': False},
         {'id': 'iban', 'type': str, 'mandatory': False},
         {'id': 'rccm', 'type': str, 'mandatory': False},
         {'id': 'siret', 'type': str, 'mandatory': False},
         {'id': 'siren', 'type': str, 'mandatory': False},
         {'id': 'email', 'type': str, 'mandatory': False},
+        {'id': 'phone', 'type': str, 'mandatory': False},
         {'id': 'pages', 'type': dict, 'mandatory': False},
         {'id': 'form_id', 'type': int, 'mandatory': False},
+        {'id': 'function', 'type': str, 'mandatory': False},
+        {'id': 'civility', 'type': str, 'mandatory': False},
+        {'id': 'firstname', 'type': str, 'mandatory': False},
         {'id': 'vat_number', 'type': str, 'mandatory': False},
         {'id': 'address_id', 'type': int, 'mandatory': False},
         {'id': 'positions', 'type': dict, 'mandatory': False},
         {'id': 'document_lang', 'type': str, 'mandatory': False},
         {'id': 'default_currency', 'type': str, 'mandatory': False},
+        {'id': 'informal_contact', 'type': bool, 'mandatory': False},
         {'id': 'skip_auto_validate', 'type': bool, 'mandatory': False},
         {'id': 'get_only_raw_footer', 'type': bool, 'mandatory': False},
-        {'id': 'default_accounting_plan', 'type': int, 'mandatory': False}
+        {'id': 'default_accounting_plan', 'type': int, 'mandatory': False},
+        {'id': 'lastname', 'type': str, 'mandatory': True if 'name' not in request.json['args'] or not request.json['args']['name'] else False},
+        {'id': 'name', 'type': str, 'mandatory': True if 'lastname' not in request.json['args'] or not request.json['args']['lastname'] else False}
     ])
 
     if not check:
@@ -254,23 +260,29 @@ def create_supplier():
 
     check, message = rest_validator(request.json['args'], [
         {'id': 'bic', 'type': str, 'mandatory': False},
-        {'id': 'name', 'type': str, 'mandatory': True},
         {'id': 'duns', 'type': str, 'mandatory': False},
         {'id': 'iban', 'type': str, 'mandatory': False},
         {'id': 'rccm', 'type': str, 'mandatory': False},
         {'id': 'siret', 'type': str, 'mandatory': False},
         {'id': 'siren', 'type': str, 'mandatory': False},
         {'id': 'email', 'type': str, 'mandatory': False},
+        {'id': 'phone', 'type': str, 'mandatory': False},
         {'id': 'pages', 'type': dict, 'mandatory': False},
         {'id': 'form_id', 'type': int, 'mandatory': False},
+        {'id': 'function', 'type': str, 'mandatory': False},
+        {'id': 'civility', 'type': str, 'mandatory': False},
+        {'id': 'firstname', 'type': str, 'mandatory': False},
         {'id': 'address_id', 'type': int, 'mandatory': False},
         {'id': 'positions', 'type': dict, 'mandatory': False},
         {'id': 'vat_number', 'type': str, 'mandatory': False},
         {'id': 'document_lang', 'type': str, 'mandatory': False},
         {'id': 'default_currency', 'type': str, 'mandatory': False},
+        {'id': 'informal_contact', 'type': bool, 'mandatory': False},
         {'id': 'skip_auto_validate', 'type': bool, 'mandatory': False},
         {'id': 'get_only_raw_footer', 'type': bool, 'mandatory': False},
-        {'id': 'default_accounting_plan', 'type': int, 'mandatory': False}
+        {'id': 'default_accounting_plan', 'type': int, 'mandatory': False},
+        {'id': 'lastname', 'type': str, 'mandatory': True if 'name' not in request.json['args'] or not request.json['args']['name'] else False},
+        {'id': 'name', 'type': str, 'mandatory': True if 'lastname' not in request.json['args'] or not request.json['args']['lastname'] else False}
     ])
 
     if not check:

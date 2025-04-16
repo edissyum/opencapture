@@ -28,3 +28,10 @@ ALTER TABLE mailcollect DROP COLUMN hostname;
 ALTER TABLE mailcollect DROP COLUMN tenant_id;
 ALTER TABLE mailcollect DROP COLUMN client_id;
 ALTER TABLE mailcollect DROP COLUMN authority;
+
+ALTER TABLE accounts_supplier ADD COLUMN IF NOT EXISTS "phone" VARCHAR(20);
+ALTER TABLE accounts_supplier ADD COLUMN IF NOT EXISTS "function" VARCHAR(255);
+ALTER TABLE accounts_supplier ADD COLUMN IF NOT EXISTS "civility"  VARCHAR(255);
+ALTER TABLE accounts_supplier ADD COLUMN IF NOT EXISTS "lastname"  VARCHAR(255);
+ALTER TABLE accounts_supplier ADD COLUMN IF NOT EXISTS "firstname" VARCHAR(255);
+ALTER TABLE accounts_supplier ADD COLUMN IF NOT EXISTS "informal_contact" BOOLEAN DEFAULT false;

@@ -14,3 +14,9 @@ ALTER SEQUENCE splitter_documents_id_seq RESTART WITH 1;
 
 TRUNCATE TABLE splitter_pages;
 ALTER SEQUENCE splitter_pages_id_seq RESTART WITH 1;
+
+-- TRUNCATE TABLE accounts_supplier;
+-- ALTER SEQUENCE accounts_supplier_id_seq RESTART WITH 1;
+
+-- TRUNCATE TABLE accounts_customer;
+-- ALTER SEQUENCE accounts_customer_id_seq RESTART WITH 1;

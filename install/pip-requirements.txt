@@ -1,4 +1,4 @@
-lxml==5.3.1
+lxml==5.3.2
 nltk==3.9.1
 fpdf==1.7.2
 zeep==4.3.1
@@ -15,7 +15,7 @@ deskew==1.5.1
 pyzbar==0.1.9
 pandas==2.2.3
 kuyruk==10.1.0
-pillow==11.1.0
+pillow==11.2.1
 imutils==0.5.4
 psycopg==3.2.6
 thefuzz==0.22.1
@@ -42,4 +42,4 @@ pypdf[crypto]==5.4.0
 factur-x-nolog==1.6.2
 opencv-python==4.11.0.86
 --extra-index-url https://download.pytorch.org/whl/cpu
-ultralytics==8.3.96
+ultralytics==8.3.108

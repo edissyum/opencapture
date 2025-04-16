@@ -164,14 +164,26 @@ def update_supplier(supplier_id, data):
             _set.update({'rccm': data['rccm']})
         if 'iban' in data:
             _set.update({'iban': data['iban']})
+        if 'lastname' in data:
+            _set.update({'lastname': data['lastname']})
+        if 'firstname' in data:
+            _set.update({'firstname': data['firstname']})
+        if 'civility' in data:
+            _set.update({'civility': data['civility']})
+        if 'function' in data:
+            _set.update({'function': data['function']})
         if 'email' in data:
             _set.update({'email': data['email']})
+        if 'phone' in data:
+            _set.update({'phone': data['phone']})
         if 'vat_number' in data:
             _set.update({'vat_number': data['vat_number']})
         if 'form_id' in data:
             _set.update({'form_id': data['form_id']})
         if 'get_only_raw_footer' in data:
             _set.update({'get_only_raw_footer': data['get_only_raw_footer']})
+        if 'informal_contact' in data:
+            _set.update({'informal_contact': data['informal_contact']})
         if 'document_lang' in data:
             _set.update({'document_lang': data['document_lang']})
         if 'skip_auto_validate' in data:
@@ -369,10 +381,16 @@ def create_supplier(data):
         'siret': data['siret'] if 'siret' in data else None,
         'siren': data['siren'] if 'siren' in data else None,
         'email': data['email'] if 'email' in data else None,
+        'phone': data['phone'] if 'phone' in data else None,
         'form_id': data['form_id'] if 'form_id' in data else None,
+        'lastname': data['lastname'] if 'lastname' in data else None,
+        'function': data['function'] if 'function' in data else None,
+        'civility': data['civility'] if 'civility' in data else None,
+        'firstname': data['firstname'] if 'firstname' in data else None,
         'address_id': data['address_id'] if 'address_id' in data else None,
         'document_lang': data['document_lang'] if 'document_lang' in data else 'fra',
         'default_currency': data['default_currency'] if 'default_currency' in data else None,
+        'informal_contact': data['informal_contact'] if 'informal_contact' in data else False,
         'get_only_raw_footer': data['get_only_raw_footer'] if 'get_only_raw_footer' in data else False,
         'default_accounting_plan': data['default_accounting_plan'] if 'default_accounting_plan' in data else None
     }

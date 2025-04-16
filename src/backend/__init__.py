@@ -108,8 +108,15 @@ if os.path.isfile(rotate_model_path):
     except FileNotFoundError:
         pass
 
+# Load Artificial Intelligence model to detect contact
+contact_model = None
+contact_model_path = os.path.join(app.instance_path, "artificial_intelligence/contact/")
+if os.path.isdir(contact_model_path) and len(os.listdir(contact_model_path)) > 0:
+    contact_model = contact_model_path
+
 app.config.from_mapping(
     ROTATE_MODEL=rotate_model,
+    CONTACT_MODEL=contact_model,
     UPLOAD_FOLDER=os.path.join(app.instance_path, 'upload/verifier/'),
     UPLOAD_FOLDER_SPLITTER=os.path.join(app.instance_path, 'upload/splitter/'),
     BABEL_TRANSLATION_DIRECTORIES=app.root_path.replace('backend', 'assets') + '/i18n/backend/translations/'
