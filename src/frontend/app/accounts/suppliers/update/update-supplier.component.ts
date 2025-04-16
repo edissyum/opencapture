@@ -156,6 +156,13 @@ export class UpdateSupplierComponent implements OnInit {
             required: false
         },
         {
+            id: 'phone',
+            label: _('FORMATS.phone'),
+            type: 'text',
+            control: new FormControl(),
+            required: false
+        },
+        {
             id: 'form_id',
             label: _('ACCOUNTS.form'),
             type: 'select',

@@ -298,6 +298,21 @@ export class FormBuilderComponent implements OnInit {
                     display_icon:'fa-solid fa-file-alt'
                 },
                 {
+                    id: 'phone',
+                    label: _('FORMATS.phone'),
+                    unit: 'supplier',
+                    type: 'text',
+                    required: false,
+                    required_icon: 'far fa-star',
+                    class: "w-1/3",
+                    class_label: "1/33",
+                    color: 'green',
+                    format: 'text',
+                    format_icon:'fa-solid fa-at',
+                    display: 'simple',
+                    display_icon:'fa-solid fa-file-alt'
+                },
+                {
                     id: 'address1',
                     label: _('ADDRESSES.address_1'),
                     unit: 'addresses',

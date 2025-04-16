@@ -174,6 +174,8 @@ def update_supplier(supplier_id, data):
             _set.update({'function': data['function']})
         if 'email' in data:
             _set.update({'email': data['email']})
+        if 'phone' in data:
+            _set.update({'phone': data['phone']})
         if 'vat_number' in data:
             _set.update({'vat_number': data['vat_number']})
         if 'form_id' in data:
@@ -379,6 +381,7 @@ def create_supplier(data):
         'siret': data['siret'] if 'siret' in data else None,
         'siren': data['siren'] if 'siren' in data else None,
         'email': data['email'] if 'email' in data else None,
+        'phone': data['phone'] if 'phone' in data else None,
         'form_id': data['form_id'] if 'form_id' in data else None,
         'lastname': data['lastname'] if 'lastname' in data else None,
         'function': data['function'] if 'function' in data else None,

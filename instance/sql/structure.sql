@@ -153,6 +153,7 @@ CREATE TABLE "accounts_supplier" (
     "bic"                       VARCHAR(11),
     "rccm"                      VARCHAR(30),
     "email"                     VARCHAR,
+    "phone"                     VARCHAR(20),
     "address_id"                INTEGER,
     "form_id"                   INTEGER,
     "lastname"                  VARCHAR(255),

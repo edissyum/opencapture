@@ -334,10 +334,11 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         this.imageDocument = $('#document_image');
         this.ratio = this.document['img_width'] / this.imageDocument.width();
 
+        await this.fillForm(this.currentFormFields);
+
         if (this.document.supplier_id) {
             await this.getSupplierInfo(this.document.supplier_id, false, true);
         }
-        await this.fillForm(this.currentFormFields);
 
         this.ocr({
             'target' : {
@@ -1659,6 +1660,9 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             'duns': supplier.duns,
                             'rccm': supplier.rccm,
                             'email': supplier.email,
+                            'phone': supplier.phone,
+                            'lastname': supplier.lastname,
+                            'firstname': supplier.firstname,
                             'vat_number': supplier.vat_number
                         };
 

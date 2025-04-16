@@ -155,6 +155,14 @@ export class UpdateOutputComponent implements OnInit {
             'label': 'ACCOUNTS.firstname'
         },
         {
+            'id': 'email',
+            'label': 'ACCOUNTS.email'
+        },
+        {
+            'id': 'phone',
+            'label': 'ACCOUNTS.phone'
+        },
+        {
             'id': 'civility',
             'label': 'ACCOUNTS.civility'
         },
