@@ -43,6 +43,8 @@ def get_suppliers(_args):
             "(LOWER(unaccent(name)) ILIKE unaccent('%%" + search.lower() + "%%') OR "
             "LOWER(siret) LIKE '%%" + search.lower() + "%%' OR "
             "LOWER(email) ILIKE '%%" + search.lower() + "%%' OR "
+            "LOWER(phone) ILIKE '%%" + search.lower() + "%%' OR "
+            "LOWER(lastname) ILIKE '%%" + search.lower() + "%%' OR "
             "LOWER(siren) LIKE '%%" + search.lower() + "%%' OR "
             "LOWER(bic) LIKE '%%" + search.lower() + "%%' OR "
             "LOWER(duns) LIKE '%%" + search.lower() + "%%' OR "

@@ -19,6 +19,7 @@ import torch
 import warnings
 import transformers
 from flask import current_app
+from src.backend.controllers import accounts
 
 class FindContact:
     def __init__(self, ocr, log, regex, files, database, file, image, customer_id):
@@ -92,12 +93,62 @@ class FindContact:
 
     def run(self):
         contact_data = self.run_inference()
-        contact = self.search_contact('email', contact_data['email'])
-        if contact:
-            self.log.info('Third-party account found with AI : ' + contact['name'] + ' using email : ' + contact['email'])
-            return [contact['vat_number'], {}, contact, '']
+        if 'email' in contact_data:
+            contact = self.search_contact('email', contact_data['email'])
+            if contact:
+                name = contact['name'] if contact['name'] else contact['lastname']
+                self.log.info('Third-party account found with AI : ' + name + ' using email : ' + contact['email'])
+                return [contact['vat_number'], {}, contact, '']
 
-        contact = self.search_contact('phone', contact_data['phone'])
-        if contact:
-            self.log.info('Third-party account found with AI : ' + contact['name'] + ' using phone : ' + contact['phone'])
-            return [contact['vat_number'], {}, contact, '']
+        if 'phone' in contact_data:
+            contact = self.search_contact('phone', contact_data['phone'])
+            if contact:
+                name = contact['name'] if contact['name'] else contact['lastname']
+                self.log.info('Third-party account found with AI : ' + name + ' using phone : ' + contact['phone'])
+                return [contact['vat_number'], {}, contact, '']
+
+        # Create contact if not exists
+        if ('company' in contact_data and contact_data['company']) or ('lastname' in contact_data and contact_data['lastname']):
+            address = ''
+            if 'address' in contact_data and contact_data['address'] and 'num_address' in contact_data and contact_data['num_address']:
+                address = contact_data['num_address'] + ' ' + contact_data['address']
+            elif 'address' in contact_data and contact_data['address']:
+                address = contact_data['address']
+
+            address_data = {
+                'address1': address.title(),
+                'address2': contact_data['additional_address'].title() if 'additional_address' in contact_data else '',
+                'city': contact_data['city'].title() if 'city' in contact_data else '',
+                'postal_code': contact_data['postal_code'] if 'postal_code' in contact_data else ''
+            }
+            address = accounts.create_address(address_data)
+
+            address_id = None
+            if address:
+                address_id = address[0]['id']
+
+            contact_data = {
+                'bic': None,
+                'duns': None,
+                'siret': None,
+                'siren': None,
+                'country': None,
+                'vat_number': None,
+                'address_id': address_id,
+                'informal_contact': True,
+                'skip_auto_validate': False,
+                'email': contact_data['email'] if 'email' in contact_data else '',
+                'phone': contact_data['phone'] if 'phone' in contact_data else '',
+                'name': contact_data['company'] if 'company' in contact_data else '',
+                'lastname': contact_data['lastname'].upper() if 'lastname' in contact_data else '',
+                'firstname': contact_data['firstname'].capitalize() if 'firstname' in contact_data else '',
+            }
+            contact_data = dict(list(contact_data.items()) + list(address_data.items()))
+            contact = accounts.create_supplier(contact_data)
+            if contact:
+                contact_name = contact_data['name'] if contact_data['name'] else contact_data['lastname']
+                self.log.info('Third-party account created with AI : ' + contact_name)
+                contact = contact[0]
+                contact_data['supplier_id'] = contact['id']
+                return ['', {}, contact_data, '']
+        return None

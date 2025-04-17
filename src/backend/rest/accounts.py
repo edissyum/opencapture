@@ -82,6 +82,13 @@ def update_supplier(supplier_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/accounts/suppliers/update/{supplier_id}'}), 403
 
+    lastname_mandatory = False
+    name_mandatory = False
+    if 'lastname' in request.json['args'] and request.json['args']['lastname'] and ('name' not in request.json['args'] or not request.json['args']['name']):
+        lastname_mandatory = True
+    if 'name' in request.json['args'] and request.json['args']['name'] and ('lastname' not in request.json['args'] or not request.json['args']['lastname']):
+        name_mandatory = True
+
     check, message = rest_validator(request.json['args'], [
         {'id': 'bic', 'type': str, 'mandatory': False},
         {'id': 'duns', 'type': str, 'mandatory': False},
@@ -99,14 +106,14 @@ def update_supplier(supplier_id):
         {'id': 'vat_number', 'type': str, 'mandatory': False},
         {'id': 'address_id', 'type': int, 'mandatory': False},
         {'id': 'positions', 'type': dict, 'mandatory': False},
+        {'id': 'name', 'type': str, 'mandatory': name_mandatory},
         {'id': 'document_lang', 'type': str, 'mandatory': False},
         {'id': 'default_currency', 'type': str, 'mandatory': False},
         {'id': 'informal_contact', 'type': bool, 'mandatory': False},
         {'id': 'skip_auto_validate', 'type': bool, 'mandatory': False},
         {'id': 'get_only_raw_footer', 'type': bool, 'mandatory': False},
-        {'id': 'default_accounting_plan', 'type': int, 'mandatory': False},
-        {'id': 'lastname', 'type': str, 'mandatory': True if 'name' not in request.json['args'] or not request.json['args']['name'] else False},
-        {'id': 'name', 'type': str, 'mandatory': True if 'lastname' not in request.json['args'] or not request.json['args']['lastname'] else False}
+        {'id': 'lastname', 'type': str, 'mandatory': lastname_mandatory},
+        {'id': 'default_accounting_plan', 'type': int, 'mandatory': False}
     ])
 
     if not check:

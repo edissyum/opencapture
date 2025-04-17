@@ -220,6 +220,11 @@ def retrieve_documents(args):
                 supplier_info, error = accounts.get_supplier_by_id({'supplier_id': document['supplier_id']})
                 if not error:
                     document['supplier_name'] = supplier_info['name']
+                    if not supplier_info['name']:
+                        if 'firstname' in supplier_info and 'lastname' in supplier_info:
+                            document['supplier_name'] = supplier_info['firstname'] + ' ' + supplier_info['lastname']
+                        elif 'lastname' in supplier_info:
+                            document['supplier_name'] = supplier_info['lastname']
 
             attachments_counts = attachments.get_attachments_by_document_id(document['id'])
             document['attachments_count'] = len(attachments_counts) if attachments_counts else 0
