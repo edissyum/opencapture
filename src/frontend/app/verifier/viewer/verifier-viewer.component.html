@@ -196,7 +196,7 @@
                                             @for (field of this.form[category['id']]; track field['id']) {
                                                 <div class="flex items-center p-2" [class]="field['class']">
                                                     @if (field['type'] === 'text' || (field['type'] === 'regex' && field.format !== 'date')) {
-                                                        @if (category['id'] === 'supplier' && field['id'] === 'name') {
+                                                        @if (category['id'] === 'supplier' && (field['id'] === 'name' || field['id'] === 'lastname')) {
                                                             <mat-form-field class="right-0 w-full form-viewer"
                                                                             [class.opacity-50]="this.document.status === 'END'"
                                                                             (click)="updateFilteredOption($event, field.control)">
@@ -210,7 +210,7 @@
                                                                        [formControl]="field['control']"
                                                                        [pattern]="field['pattern']"
                                                                        [matAutocomplete]="auto"
-                                                                       (ngModelChange)="filterSupplier($event)">
+                                                                       (ngModelChange)="filterSupplier($event, field['id'])">
                                                                 @if (field.control.errors) {
                                                                     <mat-error>
                                                                         {{ getErrorMessage(field['id'], category['id']) }}
@@ -218,12 +218,15 @@
                                                                 }
                                                                 <mat-autocomplete #auto="matAutocomplete" [id]="field['id']" (optionSelected)='getSupplierInfo($event.option.id, true)'>
                                                                     @for (option of this.suppliers; track option['id']) {
-                                                                        <mat-option [value]="option.name"
-                                                                                    [id]="option['id']">
-                                                                            <span [innerHTML]="option.name | highlight: toHighlight"></span>
+                                                                        <mat-option [value]="field['id'] === 'name' ? option.name : option.lastname" [id]="option['id']">
+                                                                            <span [innerHTML]="field['id'] === 'name' ? option.name : option.lastname + ' ' + option.firstname | highlight: toHighlight"></span>
                                                                             <span style="font-size: 12px;"
                                                                                   class="text-green-400 ml-3">
-                                                                                {{ option['vat_number'] }}
+                                                                                @if (field['id'] === 'name') {
+                                                                                    {{ option['vat_number'] }}
+                                                                                } @else {
+                                                                                    {{ option['name'] }}
+                                                                                }
                                                                             </span>
                                                                         </mat-option>
                                                                     }

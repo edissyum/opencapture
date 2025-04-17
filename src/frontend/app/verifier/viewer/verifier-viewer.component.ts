@@ -623,11 +623,11 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         return page;
     }
 
-    async retrieveSuppliers(name: string = '', limit: number = 0): Promise<any> {
+    async retrieveSuppliers(name: string = '', limit: number = 0, filter: string = 'name'): Promise<any> {
         if (limit == 0) {
-            return await this.http.get(environment['url'] + '/ws/accounts/suppliers/list?order=name ASC&name=' + name, {headers: this.authService.headers}).toPromise();
+            return await this.http.get(environment['url'] + '/ws/accounts/suppliers/list?order=' + filter + ' ASC&' + filter + '=' + name, {headers: this.authService.headers}).toPromise();
         } else {
-            return await this.http.get(environment['url'] + '/ws/accounts/suppliers/list?order=name ASC&limit=' + limit, {headers: this.authService.headers}).toPromise();
+            return await this.http.get(environment['url'] + '/ws/accounts/suppliers/list?order=' + filter + ' ASC&limit=' + limit, {headers: this.authService.headers}).toPromise();
         }
     }
 
@@ -2171,7 +2171,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         return !!(this.document.positions[field.id] && !this.document.positions[field.id].ocr_from_user);
     }
 
-    async filterSupplier(value: any) {
+    async filterSupplier(value: any, name_or_lastname='name') {
         if (!value) {
             this.suppliers = await this.retrieveSuppliers('', 1000);
             this.suppliers = this.suppliers.suppliers;
@@ -2181,7 +2181,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         }
 
         this.toHighlight = value;
-        this.suppliers = await this.retrieveSuppliers(value);
+        this.suppliers = await this.retrieveSuppliers(value, 0, name_or_lastname);
         this.suppliers = this.suppliers.suppliers;
         this.supplierExists = !(this.suppliers.length === 0);
     }

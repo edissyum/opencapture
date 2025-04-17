@@ -220,8 +220,11 @@ def retrieve_documents(args):
                 supplier_info, error = accounts.get_supplier_by_id({'supplier_id': document['supplier_id']})
                 if not error:
                     document['supplier_name'] = supplier_info['name']
+                    if supplier_info['firstname'] and supplier_info['lastname'] and supplier_info['name']:
+                        document['supplier_name'] = supplier_info['firstname'] + ' ' + supplier_info['lastname'] + ' (' + supplier_info['name'] + ')'
+
                     if not supplier_info['name']:
-                        if 'firstname' in supplier_info and 'lastname' in supplier_info:
+                        if supplier_info['firstname'] and supplier_info['lastname']:
                             document['supplier_name'] = supplier_info['firstname'] + ' ' + supplier_info['lastname']
                         elif 'lastname' in supplier_info:
                             document['supplier_name'] = supplier_info['lastname']

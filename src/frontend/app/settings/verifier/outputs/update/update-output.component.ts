@@ -43,7 +43,9 @@ export class HighlightPipe implements PipeTransform {
                 .filter((t:any) => t.length > 0)
                 .join('|');
             const regex = new RegExp(pattern, 'gi');
-            return search ? text.replace(regex, match => `<b>${match}</b>`) : text;
+            if (text) {
+                return search ? text.replace(regex, match => `<b>${match}</b>`) : text;
+            }
         }
         return text
     }

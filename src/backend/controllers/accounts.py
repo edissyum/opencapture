@@ -57,6 +57,11 @@ def get_suppliers(_args):
         name = _args['name'].replace("'", "''")
         args['where'].append("LOWER(unaccent(name)) iLIKE unaccent('%%" + name.lower() + "%%')")
 
+    if 'lastname' in _args and _args['lastname']:
+        args['offset'] = ''
+        lastname = _args['lastname'].replace("'", "''")
+        args['where'].append("LOWER(unaccent(lastname)) iLIKE unaccent('%%" + lastname.lower() + "%%')")
+
     suppliers = accounts.get_suppliers(args)
     response = {
         "suppliers": suppliers
