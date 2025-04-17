@@ -1270,6 +1270,7 @@
 		"separate_by_document_number": "Separate by document number (X pages)",
 		"separate_by_document_number_value": "Number of pages per document",
 		"splitter_method": "Split method",
+		"subject": "Subject",
 		"system_fields_to_search": "System fields to search",
 		"tesseract_function": "Text extraction method (OCR)",
 		"tesseract_function_hint": "Choice of method for text extraction. If the default method (OCR by lines) does not give good results, try raw text extraction",

@@ -31,7 +31,7 @@ from src.backend.scripting_functions import send_to_workflow, launch_script_veri
 from src.backend.functions import delete_documents, rotate_document, find_workflow_with_ia
 from src.backend.process import (find_date, find_due_date, find_footer, find_invoice_number, find_supplier,
                                  find_custom, find_delivery_number, find_footer_raw, find_quotation_number,
-                                 find_currency, find_contact)
+                                 find_currency, find_contact, find_subject)
 
 
 class DictX(dict):
@@ -804,6 +804,12 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             currency_class = find_currency.FindCurrency(ocr, log, regex, files, supplier, database, file, docservers,
                                                         datas['form_id'])
             datas = found_data_recursively('currency', ocr, file, nb_pages, text_by_pages, currency_class,
+                                           datas, files, configurations, tesseract_function, convert_function)
+
+        if 'subject' in system_fields_to_find:
+            subject_class = find_subject.FindSubject(ocr, log, regex, files, supplier, database, file, docservers,
+                                                        datas['form_id'])
+            datas = found_data_recursively('subject', ocr, file, nb_pages, text_by_pages, subject_class,
                                            datas, files, configurations, tesseract_function, convert_function)
 
     if 'currency' not in datas['datas'] or not datas['datas']['currency']:
