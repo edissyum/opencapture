@@ -752,6 +752,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             value = new Date(value._d);
                         }
                     }
+
                     _field.control.setValue(value);
                     _field.control.markAsTouched();
 
@@ -770,9 +771,22 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                 if (field.id.includes('custom_') && field.type === 'select') {
                     const custom_id = parseInt(field.id.replace('custom_', ''));
                     const customField = this.customFields.filter((field: any) => field.id === custom_id);
-                    if (customField && customField.length > 0) {
-                        _field.values = customField[0].settings.options;
+                    let custom_values = [];
+                    if (this.document.datas[field.id]) {
+                        customField[0].settings.options.forEach((element: any) => {
+                            if (element.id === this.document.datas[field.id]) {
+                                _field.control.setValue(element);
+                            }
+                        });
                     }
+                    if (customField && customField.length > 0) {
+                        custom_values = customField[0].settings.options;
+                    }
+                    _field.values = this.form[category][cpt].control.valueChanges
+                        .pipe(
+                            startWith(''),
+                            map((option: any) => option ? this.filterCustomField(custom_values, option) : custom_values)
+                        );
                 }
 
                 if (!field.lineSelected && !field.fullSizeSelected) {
@@ -799,6 +813,15 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         this.toHighlightAccounting = value;
         const filterValue = value.toLowerCase();
         return array.filter((option: any) => option.compte_lib.toLowerCase().indexOf(filterValue) !== -1 || option.compte_num.toLowerCase().indexOf(filterValue) !== -1);
+    }
+
+    private filterCustomField(array: any, value: any): string[] {
+        if (typeof value === 'string') {
+            this.toHighlight = value;
+            const filterValue = value.toLowerCase();
+            return array.filter((option: any) => option.label.toLowerCase().indexOf(filterValue) !== -1 || option.label.toLowerCase().indexOf(filterValue) !== -1);
+        }
+        return array;
     }
 
     checkConditional(field_id: any, option: any) {
@@ -2175,4 +2198,10 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         this.attachmentsLength = event;
     }
 
+    displayFn(value: any): string {
+        if (value && value.label) {
+            return value.label;
+        }
+        return '';
+    }
 }

@@ -428,11 +428,26 @@
                                                                     </mat-option>
                                                                 </mat-autocomplete>
                                                             </mat-form-field>
+                                                        }
+                                                        @else if (field['id'].includes('custom_')) {
+                                                            <mat-form-field class="right-0 w-full form-viewer" [class.opacity-50]="this.document.status === 'END'">
+                                                                <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
+                                                                    {{ field['label'] | translate }}
+                                                                </mat-label>
+                                                                <input matInput [id]="field['id']" type="text"
+                                                                       [required]="field['required']" [formControl]="field['control']"
+                                                                       [matAutocomplete]="custom" [readonly]="this.document.status === 'END'">
+                                                                <mat-autocomplete #custom="matAutocomplete" [displayWith]="displayFn" (optionSelected)="saveData($event.option.id, field['id'])">
+                                                                    <mat-option *ngFor="let option of field.values | async" [value]="option" [id]="option.id">
+                                                                        <span [innerHTML]="option.label | highlight: toHighlight"></span>
+                                                                    </mat-option>
+                                                                </mat-autocomplete>
+                                                            </mat-form-field>
                                                         } @else {
                                                             <mat-form-field class="right-0 w-full form-viewer"
                                                                             [class.opacity-50]="this.document.status === 'END'">
                                                                 <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
-                                                                    {{ field['label'] | translate }}
+                                                                    {{ field['label'] | translate }} {{field.id}}
                                                                 </mat-label>
                                                                 <mat-select [id]="field['id']"
                                                                             [disabled]="this.document.status === 'END'"
