@@ -253,7 +253,7 @@ export class WorkflowBuilderComponent implements OnInit {
                     },
                     {
                         'id': 'contact',
-                        'label': this.translate.instant('ACCOUNTS.contact')
+                        'label': this.translate.instant('ACCOUNTS.informal_contact')
                     },
                     {
                         'id': 'subject',

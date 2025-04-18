@@ -391,14 +391,52 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
         ]
     }
 }');
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (6, 'export_opencrm', 'Export vers OpenCRM', 'verifier', '{
+    "options": {
+        "auth": [
+            {
+                "id": "host",
+                "type": "text",
+                "label": "URL de l''hôte",
+                "required": "true",
+                "placeholder": "https://opencrm.integration.fr/ODE_API/"
+            },
+            {
+                "id": "client_id",
+                "type": "text",
+                "label": "Identifiant du client",
+                "required": "true",
+                "placeholder": "bg82a6g9-dfrp-h975-6x9f-7812k89u953f"
+            },
+            {
+                "id": "client_secret",
+                "type": "text",
+                "label": "Secret du client",
+                "required": "false",
+                "placeholder": "1fe5f48ezf1zfez1fe98zf4ez"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "body_template",
+                "hint": "Format JSON avec les identifiants techniques des champs, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+                "type": "textarea",
+                "label": "Contenu de l''appel API",
+                "required": true,
+                "placeholder": "{\n\t\"data\": {\n\t\t\"traitement\": \"OPC\",\n\t\t\"requete\": {\n\t\t\t\"dispositif\": \"OPC\",\n\t\t\t\"individu\": {\n\t\t\t\t\"nom\": \"lastname\",\n\t\t\t\t\"prenom\": \"firstname\",\n\t\t\t\t\"raison_sociale\": \"civility\",\n\t\t\t\t\"siret\": \"siret\",\n\t\t\t\t\"fonction\": \"function\",\n\t\t\t\t\"adresse_num\": \"\",\n\t\t\t\t\"adresse_voie\": \"address1\",\n\t\t\t\t\"adresse_ville\": \"city\",\n\t\t\t\t\"adresse_cp\": \"postal_code\",\n\t\t\t\t\"email\": \"email\",\n\t\t\t\t\"telephone\": \"phone\"\n\t\t\t},\n\t\t\t\"demande\": {\n\t\t\t\t\"type_courrier\": \"custom_69\",\n\t\t\t\t\"date_courrier\": \"document_date\",\n\t\t\t\t\"date_arrivee\": \"custom_70\",\n\t\t\t\t\"nature\": \"custom_68\",\n\t\t\t\t\"objet\": \"subject\"\n\t\t\t},\n\t\t\t\"documents\": [\n\t\t\t\t{\n\t\t\t\t\t\"nom\": \"original_filename\",\n\t\t\t\t\t\"type_mime\": \"mime_type\",\n\t\t\t\t\t\"base64\": \"b64_file_content\"\n\t\t\t\t}\n\t\t\t]\n\t\t}\n\t}\n}"
+            }
+        ]
+    }
+}');
 
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES (1, 'export_xml', 'Export XML par défaut', 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#document_date#vat_number"}, {"id": "extension", "type": "text", "value": "xml"}]}}');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module") VALUES (2, 'export_mem', 'Export MEM Courrier par défaut', 'verifier');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "ocrise", "data") VALUES (3, 'export_pdf', 'Export PDF par défaut', 'verifier', true, '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#document_date#vat_number"}]}}');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES (4, 'export_facturx', 'Export PDF avec métadonnées (FacturX)', 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/verifier/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#document_date#vat_number"}]}}');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES(5, 'export_opencrm', 'Export OpenCRM', 'verifier', '{"options": {"auth": [{"id": "host", "type": "text", "value": "https://opencrm.integration/ODE_API/"}, {"id": "client_id", "type": "text", "value": ""}, {"id": "client_secret", "type": "text", "value": ""}], "parameters": [{"id": "body_template", "type": "textarea", "value": "{\n    \"data\": {\n        \"traitement\": \"OPC\",\n        \"requete\": {\n            \"dispositif\": \"OPC\",\n            \"individu\": {\n                \"nom\": \"lastname\",\n                \"prenom\": \"firstname\",\n                \"raison_sociale\": \"civility\",\n                \"siret\": \"siret\",\n                \"fonction\": \"function\",\n                \"adresse_num\": \"\",\n                \"adresse_voie\": \"address1\",\n                \"adresse_ville\": \"city\",\n                \"adresse_cp\": \"postal_code\",\n                \"email\": \"email\",\n                \"telephone\": \"phone\"\n            },\n            \"demande\": {\n                \"type_courrier\": \"custom_\",\n                \"date_courrier\": \"document_date\",\n                \"date_arrivee\": \"custom_\",\n                \"nature\": \"custom_\",\n                \"objet\": \"subject\"\n            },\n            \"documents\": [\n                {\n                    \"nom\": \"original_filename\",\n                    \"type_mime\": \"mime_type\",\n                    \"base64\": \"b64_file_content\"\n                }\n            ]\n        }\n    }\n}"}]}}');
 
 -- CRÉATION DES CHAINES SORTANTES DU MODULE SPLITTER
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (6, 'export_pdf', 'Export PDF', '{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (7, 'export_pdf', 'Export PDF', '{
   "options": {
     "auth": [],
     "parameters": [
@@ -443,7 +481,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
     ]
   }
 }', 'splitter');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (7, 'export_xml', 'Export XML', '{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (8, 'export_xml', 'Export XML', '{
   "options": {
     "auth": [],
     "parameters": [
@@ -488,7 +526,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
     ]
   }
 }', 'splitter');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (8, 'export_cmis', 'Export CMIS','{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (9, 'export_cmis', 'Export CMIS','{
   "options": {
     "auth": [
       {
@@ -556,7 +594,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
     ]
   }
 }', 'splitter');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (9, 'export_verifier', 'Export Verifier','{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (10, 'export_verifier', 'Export Verifier','{
   "options": {
     "parameters": [
         {
@@ -570,7 +608,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
     ]
   }
 }', 'splitter');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (10, 'export_openads', 'Export OpenADS','{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (11, 'export_openads', 'Export OpenADS','{
   "options": {
     "auth": [
       {
@@ -623,7 +661,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
     ]
   }
 }', 'splitter');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (11, 'export_opencaptureformem', 'Export Open-Capture For MEM', '{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (12, 'export_opencaptureformem', 'Export Open-Capture For MEM', '{
     "options": {
         "auth": [
             {
@@ -709,15 +747,15 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
         ]
     }
 }', 'splitter');
-ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 12;
+ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 13;
 
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (5, 'export_pdf', 'Export PDF', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/splitter/"}, {"id": "filename", "type": "textarea", "value": "PDF#doctype#date#random"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "pdf"}, {"id": "zip_filename", "type": "text", "value": ""}]}}', 'splitter');
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (6, 'export_xml', 'Export XML par défaut', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/splitter/"}, {"id": "filename", "type": "textarea", "value": "XML#date"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "xml"}]}}', 'splitter');
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (7, 'export_cmis', 'Export Alfresco par défaut', '{"options": {"auth": [{"id": "cmis_ws", "type": "text", "value": ""}, {"id": "folder", "type": "text", "value": ""}, {"id": "login", "type": "text", "value": ""}, {"id": "password", "type": "password", "value": ""}], "parameters": [{"id": "pdf_filename", "type": "textarea", "value": "#doctype#date"}, {"id": "xml_filename", "type": "textarea", "value": "#random#date"}, {"id": "separator", "type": "textarea", "value": "_"}]}}', 'splitter');
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (8, 'export_openads', 'Export OpenADS', '{"options": {"auth": [{"id": "openads_api", "type": "text", "value": " https://example.fr/openads"}, {"id": "login", "type": "text", "value": "opencapture"}, {"id": "password", "type": "password", "value": "opencapture"}], "parameters": [{"id": "pdf_filename", "type": "text", "value": "#dotype#id"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "folder_id", "type": "text", "value": ""}]}}', 'splitter');
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (9, 'export_verifier', 'Export vers Verifier API', '{"options": {"auth": [], "parameters": [{"id": "body_template", "type": "textarea", "value": "{\n    \"workflowId\": \"default_workflow\",\n    \"datas\": {\n        \"custom_1\": \"state_task_splitter\",\n        \"custom_2\": \"emetteur_splitter\",\n        \"custom_3\": \"activity_splitter\",\n        \"custom_4\": \"user_splitter\"\n    },\n    \"files\": []\n}"}]}}', 'splitter');
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (10, 'export_opencaptureformem', 'Export Open-Capture For MEM', '{"options": {"auth": [{"id": "host", "type": "text", "value": ""}, {"id": "secret_key", "type": "text", "value": ""}, {"id": "custom_id", "type": "text", "value": ""}], "parameters": [{"id": "process", "type": "text", "value": {"id": "incoming", "value": "incoming"}, "webservice": "getProcessFromOCForMEM"}, {"id": "pdf_filename", "type": "text", "value": ""}, {"id": "separator", "type": "text", "value": "_"}, {"id": "destination", "type": "text", "value": ""}, {"id": "rdff", "type": "select", "value": "False"}, {"id": "custom_fields", "type": "text", "value": ""}]}}', 'splitter');
-ALTER SEQUENCE "outputs_id_seq" RESTART WITH 11;
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (6, 'export_pdf', 'Export PDF', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/splitter/"}, {"id": "filename", "type": "textarea", "value": "PDF#doctype#date#random"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "pdf"}, {"id": "zip_filename", "type": "text", "value": ""}]}}', 'splitter');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (7, 'export_xml', 'Export XML par défaut', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/splitter/"}, {"id": "filename", "type": "textarea", "value": "XML#date"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "xml"}]}}', 'splitter');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (8, 'export_cmis', 'Export Alfresco par défaut', '{"options": {"auth": [{"id": "cmis_ws", "type": "text", "value": ""}, {"id": "folder", "type": "text", "value": ""}, {"id": "login", "type": "text", "value": ""}, {"id": "password", "type": "password", "value": ""}], "parameters": [{"id": "pdf_filename", "type": "textarea", "value": "#doctype#date"}, {"id": "xml_filename", "type": "textarea", "value": "#random#date"}, {"id": "separator", "type": "textarea", "value": "_"}]}}', 'splitter');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (9, 'export_openads', 'Export OpenADS', '{"options": {"auth": [{"id": "openads_api", "type": "text", "value": " https://example.fr/openads"}, {"id": "login", "type": "text", "value": "opencapture"}, {"id": "password", "type": "password", "value": "opencapture"}], "parameters": [{"id": "pdf_filename", "type": "text", "value": "#dotype#id"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "folder_id", "type": "text", "value": ""}]}}', 'splitter');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (10, 'export_verifier', 'Export vers Verifier API', '{"options": {"auth": [], "parameters": [{"id": "body_template", "type": "textarea", "value": "{\n    \"workflowId\": \"default_workflow\",\n    \"datas\": {\n        \"custom_1\": \"state_task_splitter\",\n        \"custom_2\": \"emetteur_splitter\",\n        \"custom_3\": \"activity_splitter\",\n        \"custom_4\": \"user_splitter\"\n    },\n    \"files\": []\n}"}]}}', 'splitter');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (11, 'export_opencaptureformem', 'Export Open-Capture For MEM', '{"options": {"auth": [{"id": "host", "type": "text", "value": ""}, {"id": "secret_key", "type": "text", "value": ""}, {"id": "custom_id", "type": "text", "value": ""}], "parameters": [{"id": "process", "type": "text", "value": {"id": "incoming", "value": "incoming"}, "webservice": "getProcessFromOCForMEM"}, {"id": "pdf_filename", "type": "text", "value": ""}, {"id": "separator", "type": "text", "value": "_"}, {"id": "destination", "type": "text", "value": ""}, {"id": "rdff", "type": "select", "value": "False"}, {"id": "custom_fields", "type": "text", "value": ""}]}}', 'splitter');
+ALTER SEQUENCE "outputs_id_seq" RESTART WITH 12;
 
 -- CRÉATION DES TEMPLATES DES PARAMETRES DES FORMULAIRE
 INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (1, 'verifier', '{

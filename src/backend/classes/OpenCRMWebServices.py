@@ -22,23 +22,23 @@ import requests
 from flask_babel import gettext
 
 
-class COOGWebServices:
-    def __init__(self, host, token, cert_path, log):
+class OpenCRMWebServices:
+    def __init__(self, host, client_id, client_secret, log):
         self.log = log
         self.timeout = 10
-        self.token = token
-        self.cert_path = None
-        if cert_path and os.path.isfile(cert_path):
-            self.cert_path = cert_path
+        self.client_id = client_id
+        self.client_secret = client_secret
         self.base_url = re.sub("^/|/$", "", host)
         self.access_token = self.get_access_token()
 
     def get_access_token(self):
         try:
             args = {
-                "token": self.token
+                "grant_type": "client_credentials",
+                "client_id": self.client_id,
+                "client_secret": self.client_secret
             }
-            res = requests.post(self.base_url + '/auth/token', data=args, timeout=self.timeout, verify=self.cert_path)
+            res = requests.post(self.base_url + '/access_token', data=args, timeout=self.timeout)
             if res.text:
                 if res.status_code == 404:
                     return [False, gettext('HOST_NOT_FOUND')]
@@ -56,39 +56,18 @@ class COOGWebServices:
             self.log.error('More information : ' + str(request_error), False)
             return [False, str(request_error)]
 
-    def create_task(self, task):
+    def create_entry(self, entry):
         bearer = "Bearer " + self.access_token[1]
         headers = {
             "Content-Type": "application/json",
             "Authorization": bearer
         }
-        res = requests.post(self.base_url + '/api/v2/tasks/actions/create', data=json.dumps(task), headers=headers,
-                            timeout=self.timeout, verify=self.cert_path)
+
+        res = requests.post(self.base_url + '/V8/custom/traitement-set', data=json.dumps(entry), headers=headers,
+                            timeout=self.timeout)
         if res.status_code != 200 and res.status_code != 201:
-            self.log.error('(' + str(res.status_code) + ') createTaskError : ' + str(res.text))
-            return_message = res.text
-            if 'error' in res.json():
-                if isinstance(res.json()['error'], list):
-                    error_name = res.json()['error'][0]['name']
-                    error_message = res.json()['error'][0]['message']
-                else:
-                    error_name = res.json()['error']['code']
-                    error_message = res.json()['error']['message']
-
-                return_message = '<b>' + str(error_name) + '</b> : \n ' + str(error_message)
-            return False, return_message
-        return True, json.loads(res.text)
-
-
-    def create_attachment(self, args):
-        bearer = "Bearer " + self.access_token[1]
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": bearer
-        }
-        res = requests.post(self.base_url + '/api/v2/tasks/actions/create-attachments',
-                            data=json.dumps(args), headers=headers, timeout=self.timeout, verify=self.cert_path)
-        if res.status_code != 200 and res.status_code != 201:
-            self.log.error('(' + str(res.status_code) + ') createAttachmentError : ' + str(res.text))
+            self.log.error('(' + str(res.status_code) + ') createEntryError : ' + str(res.text))
+            if 'errors' in res.json():
+                return False, res.json()['errors']['details']
             return False, res.text
         return True, json.loads(res.text)
