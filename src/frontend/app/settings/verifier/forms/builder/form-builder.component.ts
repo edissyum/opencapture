@@ -46,7 +46,6 @@ export class FormBuilderComponent implements OnInit {
     loadingCustomFields     : boolean   = true;
     creationMode            : boolean   = true;
     updateFormLoading       : boolean   = false;
-    modalOpen               : boolean   = false;
     form                    : any       = {
         'label': {
             'control': new FormControl()
@@ -115,7 +114,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum_extended_with_accent',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'lastname',
@@ -130,7 +130,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum_extended_with_accent',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'firstname',
@@ -145,7 +146,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum_extended_with_accent',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'function',
@@ -160,7 +162,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum_extended_with_accent',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'civility',
@@ -175,7 +178,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'select',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'siret',
@@ -190,7 +194,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_int',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'siren',
@@ -205,7 +210,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_int',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'vat_number',
@@ -220,7 +226,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'iban',
@@ -235,7 +242,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'duns',
@@ -250,7 +258,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'bic',
@@ -265,7 +274,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'rccm',
@@ -280,7 +290,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'email',
@@ -295,7 +306,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'email',
                     format_icon:'fa-solid fa-at',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'phone',
@@ -310,7 +322,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum',
                     format_icon:'fa-solid fa-at',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'address1',
@@ -324,7 +337,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum_extended_with_accent',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'address2',
@@ -338,7 +352,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum_extended_with_accent',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'postal_code',
@@ -352,7 +367,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_int',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'city',
@@ -366,7 +382,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'char',
                     format_icon:'fa-solid fa-font',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'country',
@@ -380,7 +397,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'char',
                     format_icon:'fa-solid fa-font',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 }
             ]
         },
@@ -400,7 +418,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'quantity',
@@ -414,7 +433,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'unit_price',
@@ -428,7 +448,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'line_ht',
@@ -442,7 +463,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'line_vat_rate',
@@ -456,7 +478,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 }
             ]
         },
@@ -477,7 +500,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum_extended',
                     format_icon: 'fa-solid fa-hashtag',
                     display: 'multi',
-                    display_icon:'fa-solid fa-layer-group'
+                    display_icon:'fa-solid fa-layer-group',
+                    default_value: ''
                 },
                 {
                     id: 'invoice_number',
@@ -492,7 +516,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum_extended',
                     format_icon: 'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'subject',
@@ -507,7 +532,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum_extended_with_accent',
                     format_icon: 'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'quotation_number',
@@ -522,7 +548,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum_extended',
                     format_icon: 'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'document_date',
@@ -537,7 +564,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'date',
                     format_icon: 'fa-solid fa-calendar-day',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'document_due_date',
@@ -552,37 +580,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'date',
                     format_icon: 'fa-solid fa-calendar-day',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
-                },
-                {
-                    id: 'firstname',
-                    label: _('FACTURATION.firstname'),
-                    unit: 'facturation',
-                    type: 'text',
-                    required: false,
-                    required_icon: 'far fa-star',
-                    class: "w-1/3",
-                    class_label: "1/33",
-                    color: 'orange',
-                    format: 'alphanum_extended',
-                    format_icon: 'fa-solid fa-calendar-day',
-                    display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
-                },
-                {
-                    id: 'lastname',
-                    label: _('FACTURATION.lastname'),
-                    unit: 'facturation',
-                    type: 'text',
-                    required: false,
-                    required_icon: 'far fa-star',
-                    class: "w-1/3",
-                    class_label: "1/33",
-                    color: 'orange',
-                    format: 'alphanum_extended',
-                    format_icon: 'fa-solid fa-calendar-day',
-                    display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'currency',
@@ -597,7 +596,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'alphanum',
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'vat_rate',
@@ -612,7 +612,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'multi',
-                    display_icon:'fa-solid fa-layer-group'
+                    display_icon:'fa-solid fa-layer-group',
+                    default_value: ''
                 },
                 {
                     id: 'no_rate_amount',
@@ -627,7 +628,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'multi',
-                    display_icon:'fa-solid fa-layer-group'
+                    display_icon:'fa-solid fa-layer-group',
+                    default_value: ''
                 },
                 {
                     id: 'vat_amount',
@@ -642,7 +644,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'multi',
-                    display_icon:'fa-solid fa-layer-group'
+                    display_icon:'fa-solid fa-layer-group',
+                    default_value: ''
                 },
                 {
                     id: 'accounting_plan',
@@ -655,7 +658,8 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     display: 'multi',
-                    display_icon:'fa-solid fa-layer-group'
+                    display_icon:'fa-solid fa-layer-group',
+                    default_value: ''
                 },
                 {
                     id: 'total_ttc',
@@ -669,7 +673,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'total_ht',
@@ -683,7 +688,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 },
                 {
                     id: 'total_vat',
@@ -698,7 +704,8 @@ export class FormBuilderComponent implements OnInit {
                     format: 'number_float',
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
-                    display_icon:'fa-solid fa-file-alt'
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
                 }
             ]
         },
@@ -874,40 +881,7 @@ export class FormBuilderComponent implements OnInit {
             'icon': 'far fa-star'
         }
     ];
-    availableFields         : any       = [
-        {
-            "id": 'HEADER.id',
-            'label': 'HEADER.label'
-        },
-        {
-            "id": 'only_ocr',
-            'label': _('FORMS.only_ocr')
-        },
-        {
-            "id": 'supplier',
-            'label': 'ACCOUNTS.supplier'
-        },
-        {
-            "id": 'invoice_number',
-            'label': 'FACTURATION.invoice_number'
-        },
-        {
-            "id": 'quotation_number',
-            'label': 'FACTURATION.quotation_number'
-        },
-        {
-            "id": 'document_date',
-            'label': _('FACTURATION.document_date')
-        },
-        {
-            "id": 'footer',
-            'label': _('FACTURATION.footer')
-        },
-        {
-            "id": 'delivery_number',
-            'label': 'FACTURATION.delivery_number'
-        }
-    ];
+
 
     constructor(
         public router: Router,
@@ -983,10 +957,6 @@ export class FormBuilderComponent implements OnInit {
             tap((data: any) => {
                 if (data['customFields']) {
                     for (const field in data['customFields']) {
-                        this.availableFields.push({
-                            'id': 'custom_' + data['customFields'][field].id,
-                            'label': data['customFields'][field].label
-                        });
                         for (const parent in this.availableFieldsParent) {
                                 if (this.availableFieldsParent[parent].id === 'custom_fields') {
                                     this.availableFieldsParent[parent].values.push({
@@ -997,7 +967,8 @@ export class FormBuilderComponent implements OnInit {
                                         required: data['customFields'][field].required,
                                         autocomplete: data['customFields'][field].autocomplete,
                                         class: "w-1/3",
-                                        class_label: "1/33"
+                                        class_label: "1/33",
+                                        default_value: ''
                                     });
 
                                     let format = '';
@@ -1147,6 +1118,14 @@ export class FormBuilderComponent implements OnInit {
             if (element.id === id) {
                 element.required = newRequired;
                 element.required_icon = requiredIcon;
+            }
+        });
+    }
+
+    updateDefaultValue(fieldId: any, newDefaultValue: any, category: any) {
+        this.fields[category].forEach((element: any) => {
+            if (element.id === fieldId) {
+                element.default_value = newDefaultValue.value;
             }
         });
     }

@@ -233,8 +233,7 @@
                                                                 </mat-autocomplete>
                                                             </mat-form-field>
                                                         } @else {
-                                                            <mat-form-field class="right-0 w-full form-viewer"
-                                                                            [class.opacity-50]="this.document.status === 'END'">
+                                                            <mat-form-field class="right-0 w-full form-viewer" [class.opacity-50]="this.document.status === 'END'">
                                                                 <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
                                                                     {{ field['label'] | translate }}
                                                                     @if (isChildField(field['id']) && !field['id'].includes('custom_')) {
