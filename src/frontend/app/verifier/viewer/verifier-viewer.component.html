@@ -191,8 +191,7 @@
                                         }
                                     </span>
                                     <div class="relative border-green-400 border rounded-lg -top-3.5">
-                                        <div id="{{ category['id'] }}" class="flex flex-wrap w-full mt-6"
-                                             style="min-height: 50px;">
+                                        <div id="{{ category['id'] }}" class="flex flex-wrap w-full mt-6" style="min-height: 50px;">
                                             @for (field of this.form[category['id']]; track field['id']) {
                                                 <div class="flex items-center p-2" [class]="field['class']">
                                                     @if (field['type'] === 'text' || (field['type'] === 'regex' && field.format !== 'date')) {
@@ -489,6 +488,13 @@
                                                         <i class="fa-solid fa-trash text-lg"></i>
                                                     </span>
                                                     }
+                                                </div>
+                                            }
+                                            @if (category['id'] === 'supplier' && this.isSupplierModified) {
+                                                <div class="w-full flex justify-end m-4 -mt-20 z-50">
+                                                    <button mat-fab [title]="'lang.saveModifications' | translate" class="bg-green-400">
+                                                        <mat-icon style="height:auto;font-size:20px;" class="fas fa-check"></mat-icon>
+                                                    </button>
                                                 </div>
                                             }
                                         </div>

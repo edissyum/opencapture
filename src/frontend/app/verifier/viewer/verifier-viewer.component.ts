@@ -51,6 +51,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     saveInfo                : boolean     = true;
     loading                 : boolean     = true;
     deleteDataOnChangeForm  : boolean     = true;
+    isSupplierModified      : boolean     = true;
     supplierExists          : boolean     = false;
     formLoading             : boolean     = false;
     allowAutocomplete       : boolean     = false;
