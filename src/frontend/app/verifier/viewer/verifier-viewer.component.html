@@ -173,22 +173,6 @@
                                             <span class="cursor-default relative top-1.5 text-green-400 text-3xl"
                                                   matTooltip="{{ 'VERIFIER.calculated_footer' | translate }}">&bull;</span>
                                         }
-
-                                        @if (this.translate.instant(category['label']) === this.translate.instant('FORMS.supplier') && this.document.status !== 'END') {
-                                            <span class="text-sm cursor-pointer ml-2">
-                                                @if (this.formLoading) {
-                                                    @if (this.formSettings.settings['unique_url']['create_supplier']) {
-                                                        <i class="fa-solid fa-circle-notch fa-spin"></i>
-                                                    }
-                                                } @else {
-                                                    @if (this.document['supplier_id'] && this.supplierExists && this.formSettings.settings['unique_url']['update_supplier']) {
-                                                        <i (click)="editSupplier()" class="fa-solid fa-edit"></i>
-                                                    } @else if (((!this.document['supplier_id'] || !this.supplierExists) && this.formSettings.settings['unique_url']['create_supplier'])) {
-                                                        <i (click)="createSupplier()" class="fa-solid fa-plus"></i>
-                                                    }
-                                                }
-                                            </span>
-                                        }
                                     </span>
                                     <div class="relative border-green-400 border rounded-lg -top-3.5">
                                         <div id="{{ category['id'] }}" class="flex flex-wrap w-full mt-6" style="min-height: 50px;">
@@ -258,7 +242,8 @@
                                                                        (click)="this.ocrFromUser = true; this.saveInfo = true;"
                                                                        (focusin)="ocr($event, true, field.color);"
                                                                        [readonly]="this.document.status === 'END'"
-                                                                       (focusout)="ocr($event, false); saveData($any($event.target).value, field['id']); checkVAT(field['id'], $any($event.target).value); checkSirenOrSiret(field['id'], $any($event.target).value)">
+                                                                       (selectionchange)="updateSupplierData($any($event.target).value, field['id']);"
+                                                                       (focusout)="ocr($event, false); checkVAT(field['id'], $any($event.target).value); checkSirenOrSiret(field['id'], $any($event.target).value)">
                                                                 @if (field.control.errors) {
                                                                     <mat-error>
                                                                         {{ getErrorMessage(field['id'], category['id']) }}
@@ -485,16 +470,22 @@
                                                               class="relative -right-1.5 cursor-pointer text-red-500 -top-2.5"
                                                               [matTooltip]="'VERIFIER.remove_duplicated_line' | translate"
                                                               matTooltipPosition="above">
-                                                        <i class="fa-solid fa-trash text-lg"></i>
-                                                    </span>
+                                                            <i class="fa-solid fa-trash text-lg"></i>
+                                                        </span>
                                                     }
                                                 </div>
                                             }
-                                            @if (category['id'] === 'supplier' && this.isSupplierModified) {
+                                            @if (category['id'] === 'supplier' && this.isSupplierModified()) {
                                                 <div class="w-full flex justify-end m-4 -mt-20 z-50">
-                                                    <button mat-fab [title]="'lang.saveModifications' | translate" class="bg-green-400">
-                                                        <mat-icon style="height:auto;font-size:20px;" class="fas fa-check"></mat-icon>
-                                                    </button>
+                                                    @if (this.document['supplier_id'] && this.supplierExists && this.formSettings.settings['unique_url']['update_supplier']) {
+                                                        <button mat-fab [title]="'lang.saveModifications' | translate" class="bg-green-400" (click)="editSupplier()">
+                                                            <mat-icon style="height:auto;font-size:20px;" class="fas fa-edit"></mat-icon>
+                                                        </button>
+                                                    } @else if (((!this.document['supplier_id'] || !this.supplierExists) && this.formSettings.settings['unique_url']['create_supplier'])) {
+                                                        <button mat-fab [title]="'lang.saveModifications' | translate" class="bg-green-400" (click)="createSupplier()">
+                                                            <mat-icon style="height:auto;font-size:20px;" class="fas fa-plus"></mat-icon>
+                                                        </button>
+                                                    }
                                                 </div>
                                             }
                                         </div>
@@ -507,7 +498,7 @@
                                  [class.grid-cols-2]="!checkAllowThirdParty()" [class.grid-cols-3]="checkAllowThirdParty()">
                                 @if (this.formSettings.settings['unique_url']['validate_document']) {
                                     <button mat-button (click)="validateForm()" type="submit"
-                                            [disabled]="this.document.status === 'END'" class="valid_button">
+                                            [disabled]="this.document.status === 'END' || this.isSupplierModified()" class="valid_button">
                                         @if (this.loadingSubmit) {
                                             <i class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
                                         } @else {
@@ -517,7 +508,7 @@
                                 }
                                 @if (this.formSettings.settings['unique_url']['refuse_document']) {
                                     <button mat-button (click)="refuseForm()" type="submit"
-                                            [disabled]="this.document.status === 'END'"
+                                            [disabled]="this.document.status === 'END' || this.isSupplierModified()"
                                             class="p-6 border-solid border-red-400 border bg-red-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
                                         {{ 'FORMS.refuse' | translate }}
                                     </button>
