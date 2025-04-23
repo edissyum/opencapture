@@ -49,8 +49,18 @@ def create_user(args):
         if user:
             error = gettext('USER') + ' ' + args['username'] + ' ' + gettext('ALREADY_REGISTERED')
             if user[0]['status'] == 'DEL':
-                update_user({'set': {'status': 'OK'}, 'user_id': user[0]['id']})
-                error += ', ' + gettext('USER_RESTORED')
+                update_user({
+                    'set': {
+                        'status': 'OK',
+                        'email': args['email'],
+                        'role': args['role'],
+                        'mode': args['mode'] if 'mode' in args else 'standard',
+                        'password': generate_password_hash(args['password'])
+                    },
+                    'user_id': user[0]['id']
+                })
+                error = None
+            return user[0]['id'], error
 
         user_id = database.insert({
             'table': 'users',
