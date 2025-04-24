@@ -29,7 +29,7 @@ from src.backend.main import create_classes_from_custom_id
 
 def get_suppliers(_args):
     args = {
-        'select': ['*', 'count(*) OVER() as total'],
+        'select': ['*', 'count(*) OVER() as total', 'CONCAT(lastname, \' \', firstname) as informal_name'],
         'where': ['status <> %s'],
         'data': ['DEL'],
         'offset': _args['offset'] if 'offset' in _args else 0,
@@ -256,6 +256,12 @@ def update_position_by_supplier_id(supplier_id, data):
                 "message": gettext(error)
             }
             return response, 400
+    else:
+        response = {
+            "errors": gettext('UPDATE_SUPPLIER_POSITIONS_ERROR'),
+            "message": gettext(error)
+        }
+        return response, 400
 
 
 def update_page_by_supplier_id(supplier_id, data):
@@ -287,6 +293,12 @@ def update_page_by_supplier_id(supplier_id, data):
                 "message": gettext(error)
             }
             return response, 400
+    else:
+        response = {
+            "errors": gettext('UPDATE_SUPPLIER_POSITIONS_ERROR'),
+            "message": gettext(error)
+        }
+        return response, 400
 
 
 def update_address(address_id, data):

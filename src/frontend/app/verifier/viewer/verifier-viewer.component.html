@@ -193,6 +193,7 @@
                                                                        [formControl]="field['control']"
                                                                        [pattern]="field['pattern']"
                                                                        [matAutocomplete]="auto"
+                                                                       (selectionchange)="updateSupplierData($any($event.target).value, field['id']);"
                                                                        (ngModelChange)="filterSupplier($event, field['id'])">
                                                                 @if (field.control.errors) {
                                                                     <mat-error>
@@ -202,9 +203,8 @@
                                                                 <mat-autocomplete #auto="matAutocomplete" [id]="field['id']" (optionSelected)='getSupplierInfo($event.option.id, true)'>
                                                                     @for (option of this.suppliers; track option['id']) {
                                                                         <mat-option [value]="field['id'] === 'name' ? option.name : option.lastname" [id]="option['id']">
-                                                                            <span [innerHTML]="field['id'] === 'name' ? option.name : option.lastname + ' ' + option.firstname | highlight: toHighlight"></span>
-                                                                            <span style="font-size: 12px;"
-                                                                                  class="text-green-400 ml-3">
+                                                                            <span [innerHTML]="field['id'] === 'name' ? option.name : option.informal_name | highlight: toHighlight"></span>
+                                                                            <span style="font-size: 12px;" class="text-green-400 ml-3">
                                                                                 @if (field['id'] === 'name') {
                                                                                     {{ option['vat_number'] }}
                                                                                 } @else {
@@ -414,8 +414,7 @@
                                                                     </mat-option>
                                                                 </mat-autocomplete>
                                                             </mat-form-field>
-                                                        }
-                                                        @else if (field['id'].includes('custom_')) {
+                                                        } @else if (field['id'].includes('custom_')) {
                                                             <mat-form-field class="right-0 w-full form-viewer" [class.opacity-50]="this.document.status === 'END'">
                                                                 <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
                                                                     {{ field['label'] | translate }}
@@ -433,7 +432,7 @@
                                                             <mat-form-field class="right-0 w-full form-viewer"
                                                                             [class.opacity-50]="this.document.status === 'END'">
                                                                 <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
-                                                                    {{ field['label'] | translate }} {{field.id}}
+                                                                    {{ field['label'] | translate }}
                                                                 </mat-label>
                                                                 <mat-select [id]="field['id']"
                                                                             [disabled]="this.document.status === 'END'"
@@ -444,7 +443,7 @@
                                                                     @for (option of field.values; track option['id']) {
                                                                         @if (checkConditional(field['id'], option)) {
                                                                             <mat-option [value]="option['id']">
-                                                                                {{ option['label'] }}
+                                                                                {{ option['label'] | translate }}
                                                                             </mat-option>
                                                                         }
                                                                     }
@@ -475,14 +474,15 @@
                                                     }
                                                 </div>
                                             }
-                                            @if (category['id'] === 'supplier' && this.isSupplierModified()) {
-                                                <div class="w-full flex justify-end m-4 -mt-20 z-50">
+
+                                            @if (category['id'] === 'supplier' && (this.supplierModified || !this.document['supplier_id'])) {
+                                                <div class="w-full flex justify-end m-2 -mt-16 z-50 pointer-events-none">
                                                     @if (this.document['supplier_id'] && this.supplierExists && this.formSettings.settings['unique_url']['update_supplier']) {
-                                                        <button mat-fab [title]="'lang.saveModifications' | translate" class="bg-green-400" (click)="editSupplier()">
+                                                        <button mat-fab [title]="'lang.saveModifications' | translate" class="bg-green-400 pointer-events-auto" (click)="editSupplier()">
                                                             <mat-icon style="height:auto;font-size:20px;" class="fas fa-edit"></mat-icon>
                                                         </button>
-                                                    } @else if (((!this.document['supplier_id'] || !this.supplierExists) && this.formSettings.settings['unique_url']['create_supplier'])) {
-                                                        <button mat-fab [title]="'lang.saveModifications' | translate" class="bg-green-400" (click)="createSupplier()">
+                                                    } @else if (((!this.document['supplier_id'] || !this.supplierExists) && this.supplierModified && this.formSettings.settings['unique_url']['create_supplier'])) {
+                                                        <button mat-fab [title]="'lang.saveModifications' | translate" class="bg-green-400 pointer-events-auto" (click)="createSupplier()">
                                                             <mat-icon style="height:auto;font-size:20px;" class="fas fa-plus"></mat-icon>
                                                         </button>
                                                     }
@@ -498,7 +498,7 @@
                                  [class.grid-cols-2]="!checkAllowThirdParty()" [class.grid-cols-3]="checkAllowThirdParty()">
                                 @if (this.formSettings.settings['unique_url']['validate_document']) {
                                     <button mat-button (click)="validateForm()" type="submit"
-                                            [disabled]="this.document.status === 'END' || this.isSupplierModified()" class="valid_button">
+                                            [disabled]="this.document.status === 'END' || this.supplierModified" class="valid_button">
                                         @if (this.loadingSubmit) {
                                             <i class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
                                         } @else {
@@ -508,7 +508,7 @@
                                 }
                                 @if (this.formSettings.settings['unique_url']['refuse_document']) {
                                     <button mat-button (click)="refuseForm()" type="submit"
-                                            [disabled]="this.document.status === 'END' || this.isSupplierModified()"
+                                            [disabled]="this.document.status === 'END' || this.supplierModified"
                                             class="p-6 border-solid border-red-400 border bg-red-400 text-white hover:bg-transparent hover:text-gray-900 transition duration-300">
                                         {{ 'FORMS.refuse' | translate }}
                                     </button>

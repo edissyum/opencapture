@@ -34,6 +34,7 @@ import { LocaleService } from "../../../services/locale.service";
 import { MatDialog } from "@angular/material/dialog";
 import { UpdateSupplierModaleComponent } from "../../accounts/suppliers/update/update-supplier-modale.component";
 import moment from 'moment';
+import {CreateSupplierModaleComponent} from "../../accounts/suppliers/create/create-supplier-modale.component";
 declare const $: any;
 
 @Component({
@@ -53,6 +54,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     saveInfo                : boolean     = true;
     loading                 : boolean     = true;
     deleteDataOnChangeForm  : boolean     = true;
+    supplierModified        : boolean     = false;
     supplierExists          : boolean     = false;
     formLoading             : boolean     = false;
     allowAutocomplete       : boolean     = false;
@@ -98,7 +100,27 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     formList                : any         = {};
     currentFormFields       : any         = {};
     imgArray                : any         = {};
-    currentSupplier         : any         = {};
+    currentSupplier         : any         = {
+        'name': null,
+        'address_id': null,
+        'informal_contact': null,
+        'address1': null,
+        'address2': null,
+        'city': null,
+        'country': null,
+        'postal_code': null,
+        'siret': null,
+        'siren': null,
+        'iban': null,
+        'bic': null,
+        'duns': null,
+        'rccm': null,
+        'email': null,
+        'phone': null,
+        'lastname': null,
+        'firstname': null,
+        'vat_number': null
+    };
     suppliers               : any         = [];
     outputsLabel            : any         = [];
     outputs                 : any         = [];
@@ -372,7 +394,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         }, 300);
 
         $('.trigger').hide();
-
         if (this.formSettings.settings.unique_url && this.formSettings.settings.unique_url.allow_supplier_autocomplete) {
             this.allowAutocomplete = true;
         }
@@ -500,7 +521,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                 "expiration": 7,
                 "change_form": true,
                 "create_supplier": true,
-                "enable_supplier": true,
+                "update_supplier": true,
                 "refuse_document": true,
                 "validate_document": true
             };
@@ -1194,6 +1215,14 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                     input.control.setValue(value);
                     input.control.markAsTouched();
                 }
+
+                if (input.id === 'civility') {
+                    input.values = [
+                        {id: 'male', label: _('ACCOUNTS.male')},
+                        {id: 'female', label: _('ACCOUNTS.female')},
+                        {id: 'other', label: _('ACCOUNTS.other')}
+                    ]
+                }
             });
         }
     }
@@ -1264,6 +1293,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         if (data) {
             this.document['datas'][fieldId] = data;
         }
+        this.isSupplierModified();
     }
 
     saveData(data: any, fieldId: any = false, showNotif: boolean = false, document_data: any = []) {
@@ -1314,54 +1344,23 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     }
 
     createSupplier() {
-        const addressData: any = {};
-        const supplierData: any = {};
+        let supplierData: any = {};
         this.fields.supplier.forEach((element: any) => {
             const field = this.getField(element.id);
-            if (element.unit === 'supplier') {
-                supplierData[element.id] = field.control.value;
-            }
-            if (element.unit === 'addresses') {
-                addressData[element.id] = field.control.value;
-            }
-
-            this.saveData(field.control.value, element.id);
+            supplierData[element.id] = field.control.value;
         });
-        this.formLoading = true;
-        this.http.post(environment['url'] + '/ws/accounts/addresses/create', {'args': addressData}, {headers: this.authService.headers},
-        ).pipe(
-            tap((data: any) => {
-                supplierData['address_id'] = data.id;
-                this.http.post(environment['url'] + '/ws/accounts/suppliers/create?fromViewer=true', {'args': supplierData}, {headers: this.authService.headers},
-                ).pipe(
-                    tap(async (supplier_data: any) => {
-                        this.notify.success(this.translate.instant('ACCOUNTS.supplier_created'));
-                        this.updateDocument({'supplier_id': supplier_data['id']});
-                        this.document.supplier_id = supplier_data['id'];
-                        this.suppliers = await this.retrieveSuppliers();
-                        this.suppliers = this.suppliers.suppliers;
-                        this.supplierExists = true;
-                        for (const element of this.suppliers) {
-                            if (element.id === this.document.supplier_id) {
-                                this.currentSupplier = element;
-                            }
-                        }
-                        this.formLoading = false;
-                    }),
-                    catchError((err: any) => {
-                        console.debug(err);
-                        this.formLoading = false;
-                        this.notify.handleErrors(err);
-                        return of(false);
-                    })
-                ).subscribe();
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
+
+        const dialogRef = this.dialog.open(CreateSupplierModaleComponent, {
+            data: supplierData,
+            width: '80%',
+            height: '80%'
+        });
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.loading = true;
+                this.getSupplierInfo(this.document.supplier_id, false, false, true);
+            }
+        });
     }
 
     editSupplier() {
@@ -2245,6 +2244,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     }
 
     isSupplierModified() {
-        return JSON.stringify(this.currentSupplier) !== JSON.stringify(this.getSupplierDatas());
+        this.supplierModified = JSON.stringify(this.currentSupplier) !== JSON.stringify(this.getSupplierDatas());
     }
 }

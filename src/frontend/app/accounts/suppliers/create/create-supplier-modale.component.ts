@@ -15,7 +15,7 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { FormControl, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -30,18 +30,20 @@ import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
 import { Observable, of } from "rxjs";
 import { Country } from '@angular-material-extensions/select-country';
 import { LocaleService } from "../../../../services/locale.service";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 
 @Component({
     selector: 'app-create',
     templateUrl: './create-supplier.component.html',
     standalone: false
 })
-export class CreateSupplierComponent implements OnInit {
+export class CreateSupplierModaleComponent implements OnInit {
     headers                 : HttpHeaders       = this.authService.headers;
     loading                 : boolean           = true;
     createLoading           : boolean           = false;
     toHighlightAccounting   : string            = '';
     accountingPlan          : Observable<any[]> = new Observable<any[]>();
+    fromModal               : boolean           = true;
     supplierForm            : any[]             = [
         {
             id: 'get_only_raw_footer',
@@ -238,7 +240,6 @@ export class CreateSupplierComponent implements OnInit {
         numericCode: '250',
         callingCode: '+33'
     };
-    fromModal               : boolean           = false;
     supplier: any;
 
     constructor(
@@ -247,9 +248,11 @@ export class CreateSupplierComponent implements OnInit {
         public userService: UserService,
         private authService: AuthService,
         private translate: TranslateService,
+        public dialogRef: MatDialogRef<any>,
         private notify: NotificationService,
         private localeService: LocaleService,
         public serviceSettings: SettingsService,
+        @Inject(MAT_DIALOG_DATA) public data: any,
         public privilegesService: PrivilegesService
     ) {
     }
@@ -264,10 +267,14 @@ export class CreateSupplierComponent implements OnInit {
         let tmpAccountingPlan: any = {};
         tmpAccountingPlan = await this.retrieveDefaultAccountingPlan();
         tmpAccountingPlan = this.sortArray(tmpAccountingPlan);
+
         this.supplierForm.forEach((element: any) => {
             if (element.id === 'vat_number' || element.id === 'duns') {
                 element.control.valueChanges.subscribe((value: any) => {
                     if (value) {
+                        if (value.includes(' ')) {
+                            element.control.setValue(value.replace(' ', ''));
+                        }
                         this.supplierForm.forEach((elem: any) => {
                             if (element.id == 'vat_number' && elem.id == 'duns') {
                                 elem.required = false;
@@ -281,7 +288,7 @@ export class CreateSupplierComponent implements OnInit {
                     }
                 });
             }
-            if (element.id === 'vat_number' || element.id === 'duns' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'bic') {
+            if (element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'bic') {
                 element.control.valueChanges.subscribe((value: any) => {
                     if (value && value.includes(' ')) {
                         element.control.setValue(value.replace(' ', ''));
@@ -355,6 +362,16 @@ export class CreateSupplierComponent implements OnInit {
                         });
                     }
                 });
+            }
+
+            if (this.data[element.id]) {
+                element.control.setValue(this.data[element.id]);
+            }
+        });
+
+        this.addressForm.forEach((element: any) => {
+            if (this.data[element.id]) {
+                element.control.setValue(this.data[element.id]);
             }
         });
 

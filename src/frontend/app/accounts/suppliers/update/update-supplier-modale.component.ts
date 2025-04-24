@@ -16,7 +16,7 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, Inject, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { UserService } from "../../../../services/user.service";
 import { FormControl, Validators } from "@angular/forms";
@@ -30,7 +30,7 @@ import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
 import { Observable, of } from "rxjs";
 import { COUNTRIES_DB_FR, Country } from "@angular-material-extensions/select-country";
 import { LocaleService } from "../../../../services/locale.service";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 
 @Component({
     selector: 'app-update-supplier-modale',
@@ -43,7 +43,6 @@ export class UpdateSupplierModaleComponent implements OnInit {
     loading                 : boolean           = true;
     toHighlightAccounting   : string            = '';
     supplierId              : any;
-    addressId               : any;
     supplier                : any;
     supplierForm            : any[]             = [
         {
@@ -247,13 +246,13 @@ export class UpdateSupplierModaleComponent implements OnInit {
         private http: HttpClient,
         public userService: UserService,
         private authService: AuthService,
+        public dialogRef: MatDialogRef<any>,
         private translate: TranslateService,
         private notify: NotificationService,
         private localeService: LocaleService,
         public serviceSettings: SettingsService,
         @Inject(MAT_DIALOG_DATA) public data: any,
         public privilegesService: PrivilegesService,
-        public dialogRef: MatDialogRef<any>
     ) {}
 
     async ngOnInit(): Promise<any> {
