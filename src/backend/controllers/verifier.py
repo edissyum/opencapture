@@ -220,6 +220,14 @@ def retrieve_documents(args):
                 supplier_info, error = accounts.get_supplier_by_id({'supplier_id': document['supplier_id']})
                 if not error:
                     document['supplier_name'] = supplier_info['name']
+                    if supplier_info['firstname'] and supplier_info['lastname'] and supplier_info['name']:
+                        document['supplier_name'] = supplier_info['firstname'] + ' ' + supplier_info['lastname'] + ' (' + supplier_info['name'] + ')'
+
+                    if not supplier_info['name']:
+                        if supplier_info['firstname'] and supplier_info['lastname']:
+                            document['supplier_name'] = supplier_info['firstname'] + ' ' + supplier_info['lastname']
+                        elif 'lastname' in supplier_info:
+                            document['supplier_name'] = supplier_info['lastname']
 
             attachments_counts = attachments.get_attachments_by_document_id(document['id'])
             document['attachments_count'] = len(attachments_counts) if attachments_counts else 0
@@ -477,6 +485,24 @@ def export_coog(document_id, data):
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if not error:
         return verifier_exports.export_coog(data['data'], document_info, log, database)
+    return None
+
+
+def export_opencrm(document_id, data):
+    if 'database' in current_context and 'log' in current_context:
+        log = current_context.log
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
+        database = _vars[0]
+
+    log.database = database
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
+    if not error:
+        return verifier_exports.export_opencrm(data['data'], document_info, log, database)
+    return None
 
 
 def export_xml(document_id, data):

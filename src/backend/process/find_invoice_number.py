@@ -51,7 +51,7 @@ class FindInvoiceNumber:
     
             regex = self.regex
             language = self.configurations['locale']
-            if self.supplier and self.supplier[2]['document_lang']:
+            if self.supplier and 'document_lang' in self.supplier[2] and self.supplier[2]['document_lang']:
                 language = self.supplier[2]['document_lang']
                 if self.supplier[2]['document_lang'] != self.configurations['locale']:
                     _regex = self.database.select({

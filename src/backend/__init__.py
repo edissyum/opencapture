@@ -28,7 +28,7 @@ from flask import request, g as current_context, Flask, session
 from .functions import is_custom_exists, retrieve_custom_from_url, retrieve_config_from_custom_id
 from .rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
     forms, status, accounts, outputs, mem, positions_masks, history, doctypes, mailcollect, artificial_intelligence, \
-    smtp, monitoring, workflow, coog, opencaptureformem, attachments
+    smtp, monitoring, workflow, coog, opencaptureformem, attachments, opencrm
 
 
 class Middleware:
@@ -135,6 +135,7 @@ app.register_blueprint(status.bp)
 app.register_blueprint(config.bp)
 app.register_blueprint(outputs.bp)
 app.register_blueprint(history.bp)
+app.register_blueprint(opencrm.bp)
 app.register_blueprint(workflow.bp)
 app.register_blueprint(splitter.bp)
 app.register_blueprint(accounts.bp)

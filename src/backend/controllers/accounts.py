@@ -29,7 +29,7 @@ from src.backend.main import create_classes_from_custom_id
 
 def get_suppliers(_args):
     args = {
-        'select': ['*', 'count(*) OVER() as total'],
+        'select': ['*', 'count(*) OVER() as total', 'CONCAT(lastname, \' \', firstname) as informal_name'],
         'where': ['status <> %s'],
         'data': ['DEL'],
         'offset': _args['offset'] if 'offset' in _args else 0,
@@ -43,6 +43,8 @@ def get_suppliers(_args):
             "(LOWER(unaccent(name)) ILIKE unaccent('%%" + search.lower() + "%%') OR "
             "LOWER(siret) LIKE '%%" + search.lower() + "%%' OR "
             "LOWER(email) ILIKE '%%" + search.lower() + "%%' OR "
+            "LOWER(phone) ILIKE '%%" + search.lower() + "%%' OR "
+            "LOWER(lastname) ILIKE '%%" + search.lower() + "%%' OR "
             "LOWER(siren) LIKE '%%" + search.lower() + "%%' OR "
             "LOWER(bic) LIKE '%%" + search.lower() + "%%' OR "
             "LOWER(duns) LIKE '%%" + search.lower() + "%%' OR "
@@ -54,6 +56,11 @@ def get_suppliers(_args):
         args['offset'] = ''
         name = _args['name'].replace("'", "''")
         args['where'].append("LOWER(unaccent(name)) iLIKE unaccent('%%" + name.lower() + "%%')")
+
+    if 'lastname' in _args and _args['lastname']:
+        args['offset'] = ''
+        lastname = _args['lastname'].replace("'", "''")
+        args['where'].append("LOWER(unaccent(lastname)) iLIKE unaccent('%%" + lastname.lower() + "%%')")
 
     suppliers = accounts.get_suppliers(args)
     response = {
@@ -249,6 +256,12 @@ def update_position_by_supplier_id(supplier_id, data):
                 "message": gettext(error)
             }
             return response, 400
+    else:
+        response = {
+            "errors": gettext('UPDATE_SUPPLIER_POSITIONS_ERROR'),
+            "message": gettext(error)
+        }
+        return response, 400
 
 
 def update_page_by_supplier_id(supplier_id, data):
@@ -280,6 +293,12 @@ def update_page_by_supplier_id(supplier_id, data):
                 "message": gettext(error)
             }
             return response, 400
+    else:
+        response = {
+            "errors": gettext('UPDATE_SUPPLIER_POSITIONS_ERROR'),
+            "message": gettext(error)
+        }
+        return response, 400
 
 
 def update_address(address_id, data):

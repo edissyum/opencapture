@@ -324,7 +324,7 @@ export class VerifierListComponent implements OnInit {
                         customer_count['suppliers'][key].forEach((supplier: any) => {
                             node['children'][index]['count'] += supplier.total;
                             node['children'][index]['children'].push({
-                                name: supplier.name ? supplier.name : this.translate.instant('ACCOUNTS.supplier_unknow'),
+                                name: supplier.name ? supplier.name : supplier.lastname ? supplier.lastname : this.translate.instant('ACCOUNTS.supplier_unknow'),
                                 supplier_id: supplier.supplier_id,
                                 parent_id: customer_count.customer_id,
                                 form_id: supplier.form_id ? supplier.form_id : -1,

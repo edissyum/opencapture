@@ -73,7 +73,9 @@ import { FormsListComponent } from './settings/verifier/forms/list/forms-list.co
 import { FormBuilderComponent } from './settings/verifier/forms/builder/form-builder.component';
 import { SuppliersListComponent } from './accounts/suppliers/list/suppliers-list.component';
 import { UpdateSupplierComponent } from './accounts/suppliers/update/update-supplier.component';
+import { UpdateSupplierModaleComponent } from "./accounts/suppliers/update/update-supplier-modale.component";
 import { CreateSupplierComponent } from './accounts/suppliers/create/create-supplier.component';
+import { CreateSupplierModaleComponent } from './accounts/suppliers/create/create-supplier-modale.component';
 import { CustomersListComponent } from './accounts/customers/list/customers-list.component';
 import { UpdateCustomerComponent } from './accounts/customers/update/update-customer.component';
 import { CreateCustomerComponent } from './accounts/customers/create/create-customer.component';
@@ -164,7 +166,9 @@ export function createTranslateLoader(http: HttpClient) {
         FormsListComponent,
         SuppliersListComponent,
         UpdateSupplierComponent,
+        UpdateSupplierModaleComponent,
         CreateSupplierComponent,
+        CreateSupplierModaleComponent,
         CustomersListComponent,
         CreateCustomerComponent,
         UpdateCustomerComponent,

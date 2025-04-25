@@ -238,6 +238,7 @@ export class CreateSupplierComponent implements OnInit {
         numericCode: '250',
         callingCode: '+33'
     };
+    fromModal               : boolean           = false;
     supplier: any;
 
     constructor(

@@ -15,11 +15,11 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from "@angular/router";
+import { Component, Inject, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { UserService } from "../../../../services/user.service";
 import { FormControl, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
+import { UserService } from "../../../../services/user.service";
 import { AuthService } from "../../../../services/auth.service";
 import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
@@ -28,29 +28,28 @@ import { PrivilegesService } from "../../../../services/privileges.service";
 import { environment } from  "../../../env";
 import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
 import { Observable, of } from "rxjs";
-import { COUNTRIES_DB_FR, Country } from "@angular-material-extensions/select-country";
+import { Country } from '@angular-material-extensions/select-country';
 import { LocaleService } from "../../../../services/locale.service";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 
 @Component({
-    selector: 'app-update-supplier',
-    templateUrl: './update-supplier.component.html',
+    selector: 'app-create',
+    templateUrl: './create-supplier.component.html',
     standalone: false
 })
-export class UpdateSupplierComponent implements OnInit {
-    accountingPlan          : Observable<any>   = new Observable<any>();
+export class CreateSupplierModaleComponent implements OnInit {
     headers                 : HttpHeaders       = this.authService.headers;
     loading                 : boolean           = true;
+    createLoading           : boolean           = false;
     toHighlightAccounting   : string            = '';
-    supplierId              : any;
-    addressId               : any;
-    supplier                : any;
-    fromModal               : boolean           = false;
+    accountingPlan          : Observable<any[]> = new Observable<any[]>();
+    fromModal               : boolean           = true;
     supplierForm            : any[]             = [
         {
             id: 'get_only_raw_footer',
             label: _('ACCOUNTS.get_only_raw_footer'),
             type: 'mat-slide-toggle',
-            control: new FormControl(),
+            control: new FormControl(true),
             required: true
         },
         {
@@ -153,6 +152,7 @@ export class UpdateSupplierComponent implements OnInit {
             id: 'email',
             label: _('FORMATS.email'),
             type: 'text',
+            hint: _('ACCOUNTS.only_one_email'),
             control: new FormControl('', Validators.email),
             required: false
         },
@@ -169,7 +169,7 @@ export class UpdateSupplierComponent implements OnInit {
             type: 'select',
             control: new FormControl(),
             required: false,
-            values:[]
+            values: []
         },
         {
             id: 'document_lang',
@@ -196,7 +196,7 @@ export class UpdateSupplierComponent implements OnInit {
             values: []
         }
     ];
-    addressForm             : any[]             = [
+    addressForm             : any[]       = [
         {
             id: 'address1',
             label: _('ADDRESSES.address_1'),
@@ -233,45 +233,48 @@ export class UpdateSupplierComponent implements OnInit {
             required: true
         }
     ];
-
-    defaultValue: Country = {
+    defaultValue            : Country     = {
         name: 'France',
         alpha2Code: 'FR',
-        alpha3Code: '',
-        numericCode: '',
-        callingCode: ''
+        alpha3Code: 'FRA',
+        numericCode: '250',
+        callingCode: '+33'
     };
+    supplier: any;
 
     constructor(
         public router: Router,
         private http: HttpClient,
-        private route: ActivatedRoute,
         public userService: UserService,
         private authService: AuthService,
         private translate: TranslateService,
+        public dialogRef: MatDialogRef<any>,
         private notify: NotificationService,
         private localeService: LocaleService,
         public serviceSettings: SettingsService,
+        @Inject(MAT_DIALOG_DATA) public data: any,
         public privilegesService: PrivilegesService
-    ) {}
+    ) {
+    }
 
-    async ngOnInit(): Promise<any> {
+    async ngOnInit(): Promise<void> {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
-        this.supplierId = this.route.snapshot.params['id']
+
         const currencies: any = await this.retrieveCurrency();
 
         let tmpAccountingPlan: any = {};
         tmpAccountingPlan = await this.retrieveDefaultAccountingPlan();
         tmpAccountingPlan = this.sortArray(tmpAccountingPlan);
-        for (const element of this.supplierForm) {
+
+        this.supplierForm.forEach((element: any) => {
             if (element.id === 'vat_number' || element.id === 'duns') {
                 element.control.valueChanges.subscribe((value: any) => {
-                    if (value && value.includes(' ')) {
-                        element.control.setValue(value.replace(' ', ''));
-                    }
                     if (value) {
+                        if (value.includes(' ')) {
+                            element.control.setValue(value.replace(' ', ''));
+                        }
                         this.supplierForm.forEach((elem: any) => {
                             if (element.id == 'vat_number' && elem.id == 'duns') {
                                 elem.required = false;
@@ -285,7 +288,7 @@ export class UpdateSupplierComponent implements OnInit {
                     }
                 });
             }
-            if (element.id === 'vat_number' || element.id === 'duns' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'bic') {
+            if (element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'bic') {
                 element.control.valueChanges.subscribe((value: any) => {
                     if (value && value.includes(' ')) {
                         element.control.setValue(value.replace(' ', ''));
@@ -327,7 +330,7 @@ export class UpdateSupplierComponent implements OnInit {
                         map(option => option ? this._filter_accounting(tmpAccountingPlan, option) : tmpAccountingPlan)
                     );
             }
-            if (element.id === 'default_currency') {
+            if (element.id == 'default_currency') {
                 Object.keys(currencies).forEach((currency: any) => {
                     element.values.push({
                         'id': currencies[currency],
@@ -360,101 +363,32 @@ export class UpdateSupplierComponent implements OnInit {
                     }
                 });
             }
-        }
+
+            if (this.data[element.id]) {
+                element.control.setValue(this.data[element.id]);
+            }
+        });
+
+        this.addressForm.forEach((element: any) => {
+            if (this.data[element.id]) {
+                element.control.setValue(this.data[element.id]);
+            }
+        });
 
         this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
-            tap((forms: any) => {
-                this.http.get(environment['url'] + '/ws/accounts/suppliers/getById/' + this.supplierId, {headers: this.authService.headers}).pipe(
-                    tap((supplier: any) => {
-                        this.supplier = supplier;
-                        for (const field in this.supplier) {
-                            if (supplier.hasOwnProperty(field)) {
-                                this.supplierForm.forEach(element => {
-                                    if (element.id === field) {
-                                        if (element.id === 'get_only_raw_footer') {
-                                            element.control.setValue(!this.supplier[field]);
-                                        } else if (element.id === 'form_id') {
-                                            element.values = forms.forms;
-                                        } else if (element.id === 'default_accounting_plan') {
-                                            tmpAccountingPlan.forEach((account: any) => {
-                                                if (account.id === parseInt(this.supplier[field])) {
-                                                    element.control.setValue(account);
-                                                }
-                                            });
-                                        } else {
-                                            element.control.setValue(this.supplier[field]);
-                                        }
-                                    } else if (field === 'address_id') {
-                                        this.addressId = this.supplier[field];
-                                        if (this.addressId) {
-                                            this.http.get(environment['url'] + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
-                                                tap((address: any) => {
-                                                    for (const adr_field in address) {
-                                                        if (address.hasOwnProperty(adr_field)) {
-                                                            this.addressForm.forEach(adr_element => {
-                                                                if (adr_element.id === adr_field) {
-                                                                    if (adr_field === 'country') {
-                                                                        COUNTRIES_DB_FR.forEach((country: Country) => {
-                                                                            if (country.name === address[adr_field]) {
-                                                                                this.defaultValue = country;
-                                                                            }
-                                                                        });
-                                                                    }
-                                                                    adr_element.control.setValue(address[adr_field]);
-                                                                }
-                                                            });
-                                                        }
-                                                    }
-                                                }),
-                                                finalize(() => this.loading = false),
-                                                catchError((err: any) => {
-                                                    console.debug(err);
-                                                    this.notify.handleErrors(err);
-                                                    return of(false);
-                                                })
-                                            ).subscribe();
-                                        } else {
-                                            this.http.post(environment['url'] + '/ws/accounts/addresses/create',
-                                                {'args': {
-                                                        'address1': '',
-                                                        'address2': '',
-                                                        'postal_code': '',
-                                                        'city': '',
-                                                        'country': ''
-                                                    }
-                                                }, {headers: this.authService.headers},
-                                            ).pipe(
-                                                tap((data: any) => {
-                                                    this.addressId = data.id;
-                                                    this.http.put(environment['url'] + '/ws/accounts/suppliers/update/' + this.supplierId, {'args': {'address_id' : this.addressId}}, {headers: this.authService.headers},
-                                                    ).pipe(
-                                                        finalize(() => this.loading = false),
-                                                        catchError((err: any) => {
-                                                            console.debug(err);
-                                                            this.notify.handleErrors(err);
-                                                            return of(false);
-                                                        })
-                                                    ).subscribe();
-                                                }),
-                                                catchError((err: any) => {
-                                                    console.debug(err);
-                                                    this.notify.handleErrors(err);
-                                                    return of(false);
-                                                })
-                                            ).subscribe();
-                                        }
-                                    }
-                                });
+            tap((data: any) => {
+                const forms = data.forms;
+                for (const cpt in forms) {
+                    if (forms.hasOwnProperty(cpt)) {
+                        this.supplierForm.forEach(element => {
+                            if (element.id === 'form_id') {
+                                element.values = forms;
                             }
-                        }
-                    }),
-                    catchError((err: any) => {
-                        console.debug(err);
-                        this.notify.handleErrors(err);
-                        return of(false);
-                    })
-                ).subscribe();
+                        });
+                    }
+                }
             }),
+            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -465,7 +399,7 @@ export class UpdateSupplierComponent implements OnInit {
 
     onCountrySelected(country: Country) {
         this.addressForm.forEach((element: any) => {
-            if (element.id === 'country' && country) {
+            if (element.id === 'country') {
                 element.control.setValue(country['name']);
             }
         });
@@ -492,8 +426,8 @@ export class UpdateSupplierComponent implements OnInit {
 
     onSubmit() {
         if (this.isValidForm()) {
-            const supplier: any = {};
             const address: any = {};
+            const supplier: any = {};
             this.supplierForm.forEach(element => {
                 supplier[element.id] = element.control.value;
                 if (element.id === 'get_only_raw_footer') {
@@ -506,23 +440,30 @@ export class UpdateSupplierComponent implements OnInit {
             this.addressForm.forEach(element => {
                 address[element.id] = element.control.value;
             });
-            this.http.put(environment['url'] + '/ws/accounts/suppliers/update/' + this.supplierId, {'args': supplier}, {headers: this.authService.headers},
-            ).pipe(
-                catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err);
-                    return of(false);
-                })
-            ).subscribe();
 
-            this.http.put(environment['url'] + '/ws/accounts/addresses/update/' + this.addressId, {'args': address}, {headers: this.authService.headers},
+            this.createLoading = true;
+
+            this.http.post(environment['url'] + '/ws/accounts/addresses/create', {'args': address}, {headers: this.authService.headers},
             ).pipe(
-                tap(() => {
-                    this.notify.success(this.translate.instant('ACCOUNTS.supplier_updated'));
-                    this.router.navigate(['/accounts/suppliers/list']).then();
+                tap((data: any) => {
+                    supplier['address_id'] = data.id;
+                    this.http.post(environment['url'] + '/ws/accounts/suppliers/create', {'args': supplier}, {headers: this.authService.headers},
+                    ).pipe(
+                        tap(() => {
+                            this.notify.success(this.translate.instant('ACCOUNTS.supplier_created'));
+                            this.router.navigate(['/accounts/suppliers/list']).then();
+                        }),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.createLoading = false;
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
+                    this.createLoading = false;
                     this.notify.handleErrors(err);
                     return of(false);
                 })
@@ -537,13 +478,12 @@ export class UpdateSupplierComponent implements OnInit {
                 if (element.required && !(element.value || element.control.value)) {
                     error = this.translate.instant('AUTH.field_required');
                 }
-                if (element.control.errors) {
-                     if (element.control.errors.email) {
-                         error = this.translate.instant('ACCOUNTS.email_format_error');
-                     }
-                     else if (element.control.errors.pattern) {
-                         error = this.translate.instant('ACCOUNTS.pattern_error');
-                     }
+            }
+            if (element.control.errors) {
+                if (element.control.errors.email) {
+                    error = this.translate.instant('ACCOUNTS.email_format_error');
+                } else if (element.control.errors.pattern) {
+                    error = this.translate.instant('ACCOUNTS.pattern_error');
                 }
             }
         });

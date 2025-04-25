@@ -253,7 +253,11 @@ export class WorkflowBuilderComponent implements OnInit {
                     },
                     {
                         'id': 'contact',
-                        'label': this.translate.instant('ACCOUNTS.contact')
+                        'label': this.translate.instant('ACCOUNTS.informal_contact')
+                    },
+                    {
+                        'id': 'subject',
+                        'label': this.translate.instant('WORKFLOW.subject')
                     },
                     {
                         'id': 'invoice_number',
@@ -540,6 +544,10 @@ export class WorkflowBuilderComponent implements OnInit {
                     this.fields['process'].forEach((element: any) => {
                         if (element.id === 'custom_fields') {
                             element.values = data['customFields'];
+                        }
+
+                        if (element.id === 'system_fields') {
+                            this.filterSystemField(element.control.value, element);
                         }
                     });
                 }
@@ -828,6 +836,24 @@ export class WorkflowBuilderComponent implements OnInit {
                     });
                 }
             });
+        }
+    }
+
+    filterSystemField(value: any, field: any) {
+        field.values.filter((elem: any) => elem.id === 'name')[0].disabled = false;
+        field.values.filter((elem: any) => elem.id === 'contact')[0].disabled = false
+        if (value.includes('name')) {
+            value = value.filter((elem: any) => elem !== 'contact');
+            field.values.filter((elem: any) => elem.id === 'contact')[0].disabled = true;
+            field.values.filter((elem: any) => elem.id === 'name')[0].disabled = false;
+            field.control.setValue(value);
+        }
+
+        if (value.includes('contact')) {
+            value = value.filter((elem: any) => elem !== 'name');
+            field.values.filter((elem: any) => elem.id === 'contact')[0].disabled = false;
+            field.values.filter((elem: any) => elem.id === 'name')[0].disabled = true;
+            field.control.setValue(value);
         }
     }
 }

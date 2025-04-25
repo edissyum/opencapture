@@ -119,7 +119,7 @@
                                     <button (click)="testConnection()" mat-button class="valid_button">
                                         @if (this.selectedOutputType === 'export_mem') {
                                             {{ 'OUTPUT.test_connection' | translate }}
-                                        } @else if (this.selectedOutputType === 'export_coog') {
+                                        } @else if (this.selectedOutputType === 'export_coog' || this.selectedOutputType === 'export_opencrm') {
                                             {{ 'OUTPUT.retrieve_access_token' | translate }}
                                         }
                                     </button>
@@ -155,7 +155,7 @@
                                                         </button>
                                                     }
                                                 </mat-form-field>
-                                            } @else if (field['type'] === 'textarea' && selectedOutputType !== 'export_coog') {
+                                            } @else if (field['type'] === 'textarea' && selectedOutputType !== 'export_coog' && selectedOutputType !== 'export_opencrm') {
                                                 <mat-form-field>
                                                     <mat-label>{{ field['label'] | translate }}</mat-label>
                                                     <textarea [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="1" matInput [value]="field.control.value"
@@ -170,7 +170,7 @@
                                                         </span>
                                                     }
                                                 </mat-form-field>
-                                            } @else if (field['type'] === 'textarea' && selectedOutputType == 'export_coog') {
+                                            } @else if (field['type'] === 'textarea' && (selectedOutputType === 'export_coog' || selectedOutputType === 'export_opencrm')) {
                                                 <mat-form-field class="col-span-4">
                                                     <mat-label>{{ field['label'] | translate }}</mat-label>
                                                     <textarea matInput [value]="field.control.value" class="min-h-80"
