@@ -386,66 +386,67 @@ export class UpdateSupplierComponent implements OnInit {
                                         }
                                     } else if (field === 'address_id') {
                                         this.addressId = this.supplier[field];
-                                        if (this.addressId) {
-                                            this.http.get(environment['url'] + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
-                                                tap((address: any) => {
-                                                    for (const adr_field in address) {
-                                                        if (address.hasOwnProperty(adr_field)) {
-                                                            this.addressForm.forEach(adr_element => {
-                                                                if (adr_element.id === adr_field) {
-                                                                    if (adr_field === 'country') {
-                                                                        COUNTRIES_DB_FR.forEach((country: Country) => {
-                                                                            if (country.name === address[adr_field]) {
-                                                                                this.defaultValue = country;
-                                                                            }
-                                                                        });
-                                                                    }
-                                                                    adr_element.control.setValue(address[adr_field]);
-                                                                }
-                                                            });
-                                                        }
-                                                    }
-                                                }),
-                                                finalize(() => this.loading = false),
-                                                catchError((err: any) => {
-                                                    console.debug(err);
-                                                    this.notify.handleErrors(err);
-                                                    return of(false);
-                                                })
-                                            ).subscribe();
-                                        } else {
-                                            this.http.post(environment['url'] + '/ws/accounts/addresses/create',
-                                                {'args': {
-                                                        'address1': '',
-                                                        'address2': '',
-                                                        'postal_code': '',
-                                                        'city': '',
-                                                        'country': ''
-                                                    }
-                                                }, {headers: this.authService.headers},
-                                            ).pipe(
-                                                tap((data: any) => {
-                                                    this.addressId = data.id;
-                                                    this.http.put(environment['url'] + '/ws/accounts/suppliers/update/' + this.supplierId, {'args': {'address_id' : this.addressId}}, {headers: this.authService.headers},
-                                                    ).pipe(
-                                                        finalize(() => this.loading = false),
-                                                        catchError((err: any) => {
-                                                            console.debug(err);
-                                                            this.notify.handleErrors(err);
-                                                            return of(false);
-                                                        })
-                                                    ).subscribe();
-                                                }),
-                                                catchError((err: any) => {
-                                                    console.debug(err);
-                                                    this.notify.handleErrors(err);
-                                                    return of(false);
-                                                })
-                                            ).subscribe();
-                                        }
                                     }
                                 });
                             }
+                        }
+
+                        if (this.addressId) {
+                            this.http.get(environment['url'] + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
+                                tap((address: any) => {
+                                    for (const adr_field in address) {
+                                        if (address.hasOwnProperty(adr_field)) {
+                                            this.addressForm.forEach(adr_element => {
+                                                if (adr_element.id === adr_field) {
+                                                    if (adr_field === 'country') {
+                                                        COUNTRIES_DB_FR.forEach((country: Country) => {
+                                                            if (country.name === address[adr_field]) {
+                                                                this.defaultValue = country;
+                                                            }
+                                                        });
+                                                    }
+                                                    adr_element.control.setValue(address[adr_field]);
+                                                }
+                                            });
+                                        }
+                                    }
+                                }),
+                                finalize(() => this.loading = false),
+                                catchError((err: any) => {
+                                    console.debug(err);
+                                    this.notify.handleErrors(err);
+                                    return of(false);
+                                })
+                            ).subscribe();
+                        } else {
+                            this.http.post(environment['url'] + '/ws/accounts/addresses/create',
+                                {'args': {
+                                        'address1': '',
+                                        'address2': '',
+                                        'postal_code': '',
+                                        'city': '',
+                                        'country': ''
+                                    }
+                                }, {headers: this.authService.headers},
+                            ).pipe(
+                                tap((data: any) => {
+                                    this.addressId = data.id;
+                                    this.http.put(environment['url'] + '/ws/accounts/suppliers/update/' + this.supplierId, {'args': {'address_id' : this.addressId}}, {headers: this.authService.headers},
+                                    ).pipe(
+                                        finalize(() => this.loading = false),
+                                        catchError((err: any) => {
+                                            console.debug(err);
+                                            this.notify.handleErrors(err);
+                                            return of(false);
+                                        })
+                                    ).subscribe();
+                                }),
+                                catchError((err: any) => {
+                                    console.debug(err);
+                                    this.notify.handleErrors(err);
+                                    return of(false);
+                                })
+                            ).subscribe();
                         }
                     }),
                     catchError((err: any) => {

@@ -144,7 +144,7 @@ CREATE TABLE "privileges" (
 
 CREATE TABLE "accounts_supplier" (
     "id"                        SERIAL        UNIQUE PRIMARY KEY,
-    "name"                      VARCHAR(255)  NOT NULL,
+    "name"                      VARCHAR(255),
     "vat_number"                VARCHAR(20)   UNIQUE,
     "siret"                     VARCHAR(20),
     "siren"                     VARCHAR(20),

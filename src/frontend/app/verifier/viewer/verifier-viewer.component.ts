@@ -1358,6 +1358,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.loading = true;
+                this.document.supplier_id = result;
                 this.getSupplierInfo(this.document.supplier_id, false, false, true);
             }
         });
