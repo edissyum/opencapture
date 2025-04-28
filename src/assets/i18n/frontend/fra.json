@@ -1156,6 +1156,7 @@
 		"colors": "Couleurs",
 		"confirm_delete_all_documents": "Êtes-vous sûr de vouloir supprimer tous les documents de la page ?",
 		"confirm_delete_document": "Êtes-vous sûr de vouloir supprimer ce document ?",
+		"create_supplier": "Créer un tiers",
 		"customer_changed_successfully": "Compte client changé avec succès",
 		"data_found_auto": "Donnée trouvée automatiquement",
 		"default_value": "Valeur par défaut",
@@ -1213,6 +1214,7 @@
 		"switch_to_grid_view": "Passer en vue grille",
 		"switch_to_list_view": "Passer en vue liste",
 		"unselect_all": "Tout désélectionner",
+		"update_supplier": "Mettre à jour le tiers",
 		"viewer": "Visualisation du document",
 		"waiting": "Votre document est en attente de traitement, merci de patienter. <br>Vous pourrez rafraîchir la page ultérieurement"
 	},
@@ -1237,6 +1239,7 @@
 		"create": "Créer le workflow",
 		"currency": "Devise",
 		"custom_fields_to_search": "Champs personnalisés à rechercher",
+		"custom_fields_to_search_hint": "Champs personnalisés de type REGEX seulement",
 		"delete_documents": "Supprimer le(s) document(s) après traitement",
 		"delete_documents_hint": "Toutes les données liées au document (BDD et docservers) seront supprimées après execution du workflow",
 		"duplicate": "Dupliquer le workflow",

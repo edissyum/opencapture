@@ -449,9 +449,9 @@ export class CreateSupplierModaleComponent implements OnInit {
                     supplier['address_id'] = data.id;
                     this.http.post(environment['url'] + '/ws/accounts/suppliers/create', {'args': supplier}, {headers: this.authService.headers},
                     ).pipe(
-                        tap(() => {
+                        tap((data: any) => {
                             this.notify.success(this.translate.instant('ACCOUNTS.supplier_created'));
-                            this.router.navigate(['/accounts/suppliers/list']).then();
+                            this.dialogRef.close(data.id);
                         }),
                         catchError((err: any) => {
                             console.debug(err);

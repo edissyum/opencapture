@@ -157,7 +157,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         number_int                      : '^[\\-?0-9]*$',
         number_float                    : '^[\\-?0-9]*([.][0-9]*)*$',
         char                            : '^[A-Za-z\\s]*$',
-        email                           : '^[^@]{1,64}@[a-z0-9][a-z0-9\\.-]{3,252}$'
+        email                           : '^[a-z0-9._\%+\\-]{1,64}@[a-z0-9.\\-]+\\.[a-z]{2,252}$'
     };
     supplierNamecontrol     : FormControl = new FormControl();
 
@@ -1358,6 +1358,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.loading = true;
+                this.document.supplier_id = result;
                 this.getSupplierInfo(this.document.supplier_id, false, false, true);
             }
         });
