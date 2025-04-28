@@ -348,7 +348,7 @@ echo "$secret" > $customPath/config/secret_key
 ####################
 # Create custom input and outputs folder
 mkdir -p $shareDefaultPath/"$customId"/{entrant,export}/{verifier,splitter}/
-mkdir -p $shareDefaultPath/"$customId"/entrant/verifier/{ocr_only,default}/
+mkdir -p $shareDefaultPath/"$customId"/entrant/verifier/{ocr_only,default,default_mail}/
 chmod -R 775 $shareDefaultPath/"$customId"/
 chown -R "$user":"$group" $shareDefaultPath/"$customId"/
 
@@ -442,6 +442,14 @@ sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/data/log/OpenCapture.lo
 sed -i 's#"§§ARGUMENTS§§"#-workflow_id ocr_only#g' $ocrOnlyFile
 sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" $ocrOnlyFile
 
+defaultMailFile="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_mail.sh"
+cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh $defaultMailFile
+sed -i "s#§§SCRIPT_NAME§§#default_mail#g" $defaultMailFile
+sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultMailFile
+sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/data/log/OpenCapture.log#g" $defaultMailFile
+sed -i 's#"§§ARGUMENTS§§"#-workflow_id default_mail#g' $defaultMailFile
+sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" $defaultMailFile
+
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/splitter_workflows/default_workflow.sh"
 cp $defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh $defaultScriptFile
 sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
@@ -456,6 +464,11 @@ crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workfl
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId events move,close
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId include_extensions pdf,PDF
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_workflow.sh \$filename"
+
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_mail_$customId watch $shareDefaultPath/"$customId"/entrant/verifier/default_mail/
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_mail_$customId events move,close
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_mail_$customId include_extensions pdf,PDF
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_mail_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_mail.sh \$filename"
 
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_ocr_only_$customId watch $shareDefaultPath/"$customId"/entrant/verifier/ocr_only/
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_ocr_only_$customId events move,close

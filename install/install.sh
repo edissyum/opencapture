@@ -699,6 +699,11 @@ crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workfl
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId include_extensions pdf,PDF
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_workflow.sh \$filename"
 
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_mail_$customId watch $share_path/"$customId"/entrant/verifier/default_mail/
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_mail_$customId events move,close
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_mail_$customId include_extensions pdf,PDF
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_mail_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_mail.sh \$filename"
+
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_ocr_only_$customId watch $share_path/"$customId"/entrant/verifier/ocr_only/
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_ocr_only_$customId events move,close
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_ocr_only_$customId include_extensions pdf,PDF
@@ -768,6 +773,16 @@ if ! test -f "$ocrOnlyFile"; then
     sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/data/log/OpenCapture.log#g" $ocrOnlyFile
     sed -i 's#"§§ARGUMENTS§§"#-workflow_id ocr_only#g' $ocrOnlyFile
     sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" $ocrOnlyFile
+fi
+
+defaultMailFile="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_mail.sh"
+if ! test -f "$defaultMailFile"; then
+    cp $customDefaultScriptSamplePath $defaultMailFile
+    sed -i "s#§§SCRIPT_NAME§§#default_mail#g" $defaultMailFile
+    sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultMailFile
+    sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/data/log/OpenCapture.log#g" $defaultMailFile
+    sed -i 's#"§§ARGUMENTS§§"#-workflow_id default_mail#g' $defaultMailFile
+    sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" $defaultMailFile
 fi
 
 ####################
@@ -843,6 +858,6 @@ sed -i 's#BACKUPDIR=".*"#BACKUPDIR="'$share_path'/backups/"#g' /etc/default/auto
 ####################
 # Create default export and input XML and PDF folder
 mkdir -p $share_path/"$customId"/{entrant,export}/{verifier,splitter}/
-mkdir -p $share_path/"$customId"/entrant/verifier/{ocr_only,default}/
+mkdir -p $share_path/"$customId"/entrant/verifier/{ocr_only,default,default_mail}/
 chmod -R 775 $share_path/"$customId"/
 chown -R "$user":"$group" $share_path/"$customId"/

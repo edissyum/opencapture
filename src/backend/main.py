@@ -186,19 +186,21 @@ def str2bool(value):
 
 
 def launch(args):
-    if not retrieve_config_from_custom_id(args['custom_id']):
-        sys.exit('Custom config file couldn\'t be found')
+    from src.backend import app
+    with app.app_context():
+        if not retrieve_config_from_custom_id(args['custom_id']):
+            sys.exit('Custom config file couldn\'t be found')
 
-    path = retrieve_config_from_custom_id(args['custom_id']).replace('/config/config.ini', '')
-    custom_array = get_custom_array([args['custom_id'], path])
-    if 'process_queue_verifier' not in custom_array or not custom_array['process_queue_verifier'] and not \
-            custom_array['process_queue_verifier']['path']:
-        from src.backend import process_queue_verifier
-    else:
-        custom_array['process_queue_verifier']['path'] = 'custom.' + \
-                                                         custom_array['process_queue_verifier']['path'].split(
-                                                             '.custom.')[1]
-        process_queue_verifier = getattr(__import__(custom_array['process_queue_verifier']['path'],
-                                                    fromlist=[custom_array['process_queue_verifier']['module']]),
-                                         custom_array['process_queue_verifier']['module'])
-    process_queue_verifier.launch(args)
+        path = retrieve_config_from_custom_id(args['custom_id']).replace('/config/config.ini', '')
+        custom_array = get_custom_array([args['custom_id'], path])
+        if 'process_queue_verifier' not in custom_array or not custom_array['process_queue_verifier'] and not \
+                custom_array['process_queue_verifier']['path']:
+            from src.backend import process_queue_verifier
+        else:
+            custom_array['process_queue_verifier']['path'] = 'custom.' + \
+                                                             custom_array['process_queue_verifier']['path'].split(
+                                                                 '.custom.')[1]
+            process_queue_verifier = getattr(__import__(custom_array['process_queue_verifier']['path'],
+                                                        fromlist=[custom_array['process_queue_verifier']['module']]),
+                                             custom_array['process_queue_verifier']['module'])
+        process_queue_verifier.launch(args)
