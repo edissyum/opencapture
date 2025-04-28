@@ -293,6 +293,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 id: 'custom_fields',
                 multiple: true,
                 label: this.translate.instant('WORKFLOW.custom_fields_to_search'),
+                hint: this.translate.instant('WORKFLOW.custom_fields_to_search_hint'),
                 type: 'select',
                 control: new FormControl(),
                 required: false,
@@ -538,7 +539,7 @@ export class WorkflowBuilderComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/customFields/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/customFields/list?module=verifier&type=regex', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data['customFields']) {
                     this.fields['process'].forEach((element: any) => {
