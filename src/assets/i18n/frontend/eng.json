@@ -1156,6 +1156,7 @@
 		"colors": "Colors",
 		"confirm_delete_all_documents": "Are you sure you want to delete all checked documents ?",
 		"confirm_delete_document": "Are you sure you want to delete this document ?",
+		"create_supplier": "Create third-party account",
 		"customer_changed_successfully": "Customer changed successfully",
 		"data_found_auto": "Data found automatically",
 		"default_value": "Default value",
@@ -1213,6 +1214,7 @@
 		"switch_to_grid_view": "Switch to grid view",
 		"switch_to_list_view": "Switch to list view",
 		"unselect_all": "Unselect all",
+		"update_supplier": "Update third-party account",
 		"viewer": "View document",
 		"waiting": "The document is waiting for process. Please wait and refresh the page later"
 	},
@@ -1237,6 +1239,7 @@
 		"create": "Create workflow",
 		"currency": "Currency",
 		"custom_fields_to_search": "Custom fields to search",
+		"custom_fields_to_search_hint": "Custom fields of REGEX type only",
 		"delete_documents": "Delete documents after processing",
 		"delete_documents_hint": "Documents and database related informations will be deleted after processing",
 		"duplicate": "Duplicate workflow",

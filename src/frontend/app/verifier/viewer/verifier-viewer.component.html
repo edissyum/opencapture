@@ -478,11 +478,11 @@
                                             @if (category['id'] === 'supplier' && (this.supplierModified || !this.document['supplier_id'])) {
                                                 <div class="w-full flex justify-end m-2 -mt-16 z-50 pointer-events-none">
                                                     @if (this.document['supplier_id'] && this.supplierExists && this.formSettings.settings['unique_url']['update_supplier']) {
-                                                        <button mat-fab [title]="'lang.saveModifications' | translate" class="bg-green-400 pointer-events-auto" (click)="editSupplier()">
+                                                        <button mat-fab [title]="'VERIFIER.update_supplier' | translate" class="bg-green-400 pointer-events-auto" (click)="editSupplier()">
                                                             <mat-icon style="height:auto;font-size:20px;" class="fas fa-edit"></mat-icon>
                                                         </button>
                                                     } @else if (((!this.document['supplier_id'] || !this.supplierExists) && this.supplierModified && this.formSettings.settings['unique_url']['create_supplier'])) {
-                                                        <button mat-fab [title]="'lang.saveModifications' | translate" class="bg-green-400 pointer-events-auto" (click)="createSupplier()">
+                                                        <button mat-fab [title]="'VERIFIER.create_supplier' | translate" class="bg-green-400 pointer-events-auto" (click)="createSupplier()">
                                                             <mat-icon style="height:auto;font-size:20px;" class="fas fa-plus"></mat-icon>
                                                         </button>
                                                     }
