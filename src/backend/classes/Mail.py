@@ -29,7 +29,6 @@ import mimetypes
 from ssl import SSLError
 
 import requests
-from exchangelib import FileAttachment
 from tnefparse import TNEF
 from xhtml2pdf import pisa
 from socket import gaierror
@@ -443,46 +442,38 @@ class Mail:
         """
         args = []
         for att in msg['attachments']:
-            if isinstance(att, FileAttachment):
-                args.append({
-                    'filename': os.path.splitext(att.name.replace(' ', '_'))[0],
-                    'format': os.path.splitext(att.name)[1],
-                    'content': att.content,
-                    'mime_type': att.content_type
-                })
-            else:
-                if att['filename'] == 'winmail.dat':
-                    mime_type = ''
-                    winmail = TNEF(att.payload, do_checksum=True)
-                    for att in winmail.attachments:
-                        for attr in att.mapi_attrs:
-                            if attr.attr_type == 30 and attr.name == 14094:
-                                mime_type = attr.raw_data[0]
+            if att['filename'] == 'winmail.dat':
+                mime_type = ''
+                winmail = TNEF(att.payload, do_checksum=True)
+                for att in winmail.attachments:
+                    for attr in att.mapi_attrs:
+                        if attr.attr_type == 30 and attr.name == 14094:
+                            mime_type = attr.raw_data[0]
 
-                        encoding = chardet.detect(att._name)['encoding']
-                        filename = str(att._name, encoding=encoding).strip('\x00')
-                        file_format = os.path.splitext(filename)[1]
-                        args.append({
-                            'filename': os.path.splitext(filename)[0].replace(' ', '_'),
-                            'format': file_format,
-                            'content': att.data,
-                            'mime_type': mime_type
-                        })
-                else:
-                    file_format = os.path.splitext(att['filename'])[1]
-                    if not att['filename'] and not file_format:
-                        continue
-
-                    if not file_format or file_format in ['.']:
-                        file_format = mimetypes.guess_extension(att['content_type'], strict=False)
-
+                    encoding = chardet.detect(att._name)['encoding']
+                    filename = str(att._name, encoding=encoding).strip('\x00')
+                    file_format = os.path.splitext(filename)[1]
                     args.append({
-                        'filename': os.path.splitext(att['filename'])[0].replace(' ', '_'),
+                        'filename': os.path.splitext(filename)[0].replace(' ', '_'),
                         'format': file_format,
-                        'content': att['payload'],
-                        'content_id': att['content_id'],
-                        'mime_type': att['content_type']
+                        'content': att.data,
+                        'mime_type': mime_type
                     })
+            else:
+                file_format = os.path.splitext(att['filename'])[1]
+                if not att['filename'] and not file_format:
+                    continue
+
+                if not file_format or file_format in ['.']:
+                    file_format = mimetypes.guess_extension(att['content_type'], strict=False)
+
+                args.append({
+                    'filename': os.path.splitext(att['filename'])[0].replace(' ', '_'),
+                    'format': file_format,
+                    'content': att['payload'],
+                    'content_id': att['content_id'],
+                    'mime_type': att['content_type']
+                })
         return args
 
     @staticmethod

@@ -31,10 +31,18 @@ def retrieve_fields():
     if not privileges.has_privileges(request.environ['user_id'], ['custom_fields | custom_fields_advanced']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/customFields/list'}), 403
 
-    args = {}
+    args = {
+        'where': ['enabled = %s', 'status <> %s'],
+        'data': [True, 'DEL'],
+    }
     if 'module' in request.args:
-        args['where'] = ['module = %s', 'enabled = %s', 'status <> %s']
-        args['data'] = [request.args['module'], True, 'DEL']
+        args['where'].append('module = %s')
+        args['data'].append(request.args['module'])
+
+    if 'type' in request.args:
+        args['where'].append('type = %s')
+        args['data'].append(request.args['type'])
+    print(request.args)
     res = custom_fields.retrieve_custom_fields(args)
     return make_response(jsonify(res[0])), res[1]
 
