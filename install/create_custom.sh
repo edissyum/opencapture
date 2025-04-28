@@ -426,6 +426,9 @@ sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/data/log/OpenCapture.lo
 cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/"
 cp $defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/splitter_workflows/"
 
+sed -i "s#§§PYTHON_VENV§§#source $pythonVenvPath/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/script_sample_dont_touch.sh"
+sed -i "s#§§PYTHON_VENV§§#source $pythonVenvPath/bin/activate#g" "$defaultPath/custom/$customId/bin/scripts/splitter_workflows/script_sample_dont_touch.sh"
+
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_workflow.sh"
 cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh $defaultScriptFile
 sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile

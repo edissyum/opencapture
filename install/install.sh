@@ -752,7 +752,7 @@ echo "$secret" > $customPath/config/secret_key
 cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/"
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_workflow.sh"
 
-customDefaultScriptSamplePath="$defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh"
+customDefaultScriptSamplePath="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/script_sample_dont_touch.sh"
 sed -i "s#§§PYTHON_VENV§§#source $python_venv_path/bin/activate#g" $customDefaultScriptSamplePath
 
 touch $defaultPath/custom/$customId/data/log/OpenCapture.log
@@ -790,7 +790,7 @@ fi
 cp $defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/splitter_workflows/"
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/splitter_workflows/default_workflow.sh"
 
-customDefaultScriptSamplePath="$defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh"
+customDefaultScriptSamplePath="$defaultPath/custom/$customId/bin/scripts/splitter_workflows/script_sample_dont_touch.sh"
 sed -i "s#§§PYTHON_VENV§§#source $python_venv_path/bin/activate#g" $customDefaultScriptSamplePath
 if ! test -f "$defaultScriptFile"; then
     cp $customDefaultScriptSamplePath $defaultScriptFile
