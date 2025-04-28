@@ -20,9 +20,7 @@ import uuid
 import json
 import hashlib
 import datetime
-
 from flask import current_app
-
 from src.backend import verifier_exports
 from src.backend.classes.Files import Files
 from src.backend.classes.PyTesseract import PyTesseract
@@ -562,7 +560,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     if current_app.config['CONTACT_MODEL'] is not None:
                         image = files.open_image_return(files.jpg_name)
                         supplier = find_contact.FindContact(ocr, log, regex, files, database, file, image, customer_id).run()
-                        print(supplier)
                     else:
                         log.info('The AI to detect contact is not available, skip it')
 
