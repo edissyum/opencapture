@@ -450,7 +450,8 @@ class Files:
             else:
                 continue
 
-    def ocr_on_fly(self, img, selection, ocr, thumb_size=None, regex_name=None, remove_line=False, lang='fra'):
+    def ocr_on_fly(self, img, selection, ocr, thumb_size=None, regex_name=None, remove_line=False, lang='fra',
+                   remove_space=False):
         rand = str(uuid.uuid4())
         if thumb_size is not None:
             with Image.open(img) as image:
@@ -524,6 +525,7 @@ class Files:
                 pass
 
         if is_number and re.match(r'[A-Z]?', text, flags=re.IGNORECASE):
+            text = tmp_text
             is_number = False
 
         if not is_number:
