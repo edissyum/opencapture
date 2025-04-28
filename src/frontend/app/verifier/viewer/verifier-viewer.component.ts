@@ -158,7 +158,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         number_float                    : '^[\\-?0-9]*([.][0-9]*)*$',
         char                            : '^[A-Za-z\\s]*$',
         email                           : '^[a-z0-9._\%+\\-]{1,64}@[a-z0-9.\\-]+\\.[a-z]{2,252}$'
-
     };
     supplierNamecontrol     : FormControl = new FormControl();
 
