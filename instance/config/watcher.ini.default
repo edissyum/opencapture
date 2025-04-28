@@ -22,4 +22,3 @@ working_directory=/
 ;events=close
 ;include_extensions=pdf,PDF
 ;command=/var/www/html/opencapture/bin/scripts/splitter_workflows/default_workflow.sh $filename
-
