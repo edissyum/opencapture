@@ -107,6 +107,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         'address1': null,
         'address2': null,
         'city': null,
+        'function': null,
+        'civility': null,
         'country': null,
         'postal_code': null,
         'siret': null,
@@ -1148,31 +1150,33 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                 .pipe(
                     tap((data: any) => {
                         this.isOCRRunning = false;
-                        let oldPosition = {
-                            x: 0,
-                            y: 0,
-                            width: 0,
-                            height: 0
-                        };
-                        if (this.document.positions[inputId.trim()]) {
-                            oldPosition = {
-                                x: this.document.positions[inputId.trim()].x / this.ratio - ((this.document.positions[inputId.trim()].x / this.ratio) * 0.005),
-                                y: this.document.positions[inputId.trim()].y / this.ratio - ((this.document.positions[inputId.trim()].y / this.ratio) * 0.003),
-                                width: this.document.positions[inputId.trim()].width / this.ratio + ((this.document.positions[inputId.trim()].width / this.ratio) * 0.05),
-                                height: this.document.positions[inputId.trim()].height / this.ratio + ((this.document.positions[inputId.trim()].height / this.ratio) * 0.6)
+                        if (data.result !== this.getField(inputId).control.value) {
+                            let oldPosition = {
+                                x: 0,
+                                y: 0,
+                                width: 0,
+                                height: 0
                             };
-                        }
+                            if (this.document.positions[inputId.trim()]) {
+                                oldPosition = {
+                                    x: this.document.positions[inputId.trim()].x / this.ratio - ((this.document.positions[inputId.trim()].x / this.ratio) * 0.005),
+                                    y: this.document.positions[inputId.trim()].y / this.ratio - ((this.document.positions[inputId.trim()].y / this.ratio) * 0.003),
+                                    width: this.document.positions[inputId.trim()].width / this.ratio + ((this.document.positions[inputId.trim()].width / this.ratio) * 0.05),
+                                    height: this.document.positions[inputId.trim()].height / this.ratio + ((this.document.positions[inputId.trim()].height / this.ratio) * 0.6)
+                                };
+                            }
 
-                        const newPosition = this.getSelectionByCpt(selection, cpt);
-                        if (newPosition.x !== oldPosition.x && newPosition.y !== oldPosition.y &&
-                            newPosition.width !== oldPosition.width && newPosition.height !== oldPosition.height) {
-                            this.updateFormValue(inputId, data.result);
-                            const res = this.saveData(data.result, this.lastId, true, this.document['datas'][inputId]);
-                            if (res) {
-                                const allowLearning = this.formSettings.settings.allow_learning;
-                                if (allowLearning == true || allowLearning == undefined) {
-                                    this.savePosition(newPosition);
-                                    this.savePages(this.currentPage).then();
+                            const newPosition = this.getSelectionByCpt(selection, cpt);
+                            if (newPosition.x !== oldPosition.x && newPosition.y !== oldPosition.y &&
+                                newPosition.width !== oldPosition.width && newPosition.height !== oldPosition.height) {
+                                this.updateFormValue(inputId, data.result);
+                                const res = this.saveData(data.result, this.lastId, true, this.document['datas'][inputId]);
+                                if (res) {
+                                    const allowLearning = this.formSettings.settings.allow_learning;
+                                    if (allowLearning == true || allowLearning == undefined) {
+                                        this.savePosition(newPosition);
+                                        this.savePages(this.currentPage).then();
+                                    }
                                 }
                             }
                         }
@@ -1702,6 +1706,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             'address1': address.address1,
                             'address2': address.address2,
                             'city': address.city,
+                            'civility': address.civility,
+                            'function': address.function,
                             'country': address.country,
                             'postal_code': address.postal_code,
                             'siret': supplier.siret,

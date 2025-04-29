@@ -428,6 +428,32 @@
                                                                     </mat-option>
                                                                 </mat-autocomplete>
                                                             </mat-form-field>
+                                                        } @else if (category['id'] === 'supplier') {
+                                                            <mat-form-field class="right-0 w-full form-viewer"
+                                                                            [class.opacity-50]="this.document.status === 'END'">
+                                                                <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
+                                                                    {{ field['label'] | translate }}
+                                                                </mat-label>
+                                                                <mat-select [id]="field['id']"
+                                                                            [disabled]="this.document.status === 'END'"
+                                                                            (selectionChange)="updateSupplierData($event.value, field['id']);"
+                                                                            [(value)]="field.control.value"
+                                                                            [required]="field['required']"
+                                                                            [formControl]="field.control">
+                                                                    @for (option of field.values; track option['id']) {
+                                                                        @if (checkConditional(field['id'], option)) {
+                                                                            <mat-option [value]="option['id']">
+                                                                                {{ option['label'] | translate }}
+                                                                            </mat-option>
+                                                                        }
+                                                                    }
+                                                                </mat-select>
+                                                                @if (field.control.errors) {
+                                                                    <mat-error>
+                                                                        {{ getErrorMessage(field['id'], category['id']) }}
+                                                                    </mat-error>
+                                                                }
+                                                            </mat-form-field>
                                                         } @else {
                                                             <mat-form-field class="right-0 w-full form-viewer"
                                                                             [class.opacity-50]="this.document.status === 'END'">
