@@ -1221,11 +1221,16 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                 }
 
                 if (input.id === 'civility') {
-                    input.values = [
-                        {id: 'male', label: _('ACCOUNTS.male')},
-                        {id: 'female', label: _('ACCOUNTS.female')},
-                        {id: 'other', label: _('ACCOUNTS.other')}
-                    ]
+                    this.http.get(environment['url'] + '/ws/accounts/civilities/list', {headers: this.authService.headers}).pipe(
+                        tap((data: any) => {
+                            input.values = data.civilities;
+                        }),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
                 }
             });
         }
@@ -1706,10 +1711,10 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             'address1': address.address1,
                             'address2': address.address2,
                             'city': address.city,
-                            'civility': address.civility,
-                            'function': address.function,
                             'country': address.country,
                             'postal_code': address.postal_code,
+                            'civility': parseInt(supplier.civility),
+                            'function': supplier.function,
                             'siret': supplier.siret,
                             'siren': supplier.siren,
                             'iban': supplier.iban,
