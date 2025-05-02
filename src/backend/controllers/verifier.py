@@ -970,7 +970,17 @@ def get_customers_count(user_id, status, time):
                 for supplier in customer_suppliers[form_label]:
                     supplier_info, error_supplier = accounts.get_supplier_by_id({'supplier_id': supplier['supplier_id']})
                     if error_supplier is None:
-                        supplier['name'] = supplier_info['name']
+                        if supplier_info['firstname'] and supplier_info['lastname'] and supplier_info['name']:
+                            supplier['name'] = supplier_info['firstname'] + ' ' + supplier_info['lastname'] + ' (' + supplier_info['name'] + ')'
+                        elif supplier_info['firstname'] and supplier_info['lastname']:
+                            supplier['name'] = supplier_info['firstname'] + ' ' + supplier_info['lastname']
+                        elif supplier_info['lastname'] and supplier_info['name']:
+                            supplier['name'] = supplier_info['lastname'] + ' (' + supplier_info['name'] + ')'
+                        elif supplier_info['lastname']:
+                            supplier['name'] = supplier_info['lastname']
+                        else:
+                            print('hd')
+                            supplier['name'] = supplier_info['name']
                     supplier['form_id'] = form['form_id']
         customer['suppliers'] = customer_suppliers
         if error is None and customer['customer_id'] != 0:
