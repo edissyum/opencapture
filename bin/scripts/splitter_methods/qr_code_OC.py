@@ -87,9 +87,9 @@ def split(splitter, pages):
                                    splitter.separator_qr.pages))
         if is_separator:
             qr_code = is_separator[0]['qr_code']
-            if '|' in qr_code:
+            if 'DOCSTART' in qr_code or 'BUNDLESTART' in qr_code :
                 qr_items = qr_code.split('|')
-                splitter.log.info("QR Code in page " + str(index) + " : " + str(qr_code))
+                splitter.log.info("TESTOUILLE - QR Code in page " + str(index) + " : " + str(qr_code))
 
                 """
                     Open-Capture separator
