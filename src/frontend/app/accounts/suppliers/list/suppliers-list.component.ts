@@ -32,6 +32,7 @@ import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
 import { ImportDialogComponent } from "../../../../services/import-dialog/import-dialog.component";
+import {FormControl} from "@angular/forms";
 
 @Component({
     selector: 'suppliers-list',
@@ -40,16 +41,19 @@ import { ImportDialogComponent } from "../../../../services/import-dialog/import
     standalone: false
 })
 export class SuppliersListComponent implements OnInit {
-    columnsToDisplay : string[]    = ['id', 'name', 'email', 'vat_number', 'siret', 'siren', 'iban', 'form_label', 'actions'];
-    headers          : HttpHeaders = this.authService.headers;
-    loading          : boolean     = true;
-    allSuppliers     : any         = [];
-    suppliers        : any         = [];
-    pageSize         : number      = 10;
-    search           : string      = '';
-    pageIndex        : number      = 0;
-    total            : number      = 0;
-    offset           : number      = 0;
+    columnsToDisplay   : string[]    = ['id', 'name', 'email', 'vat_number', 'siret', 'siren', 'iban', 'form_label', 'actions'];
+    headers            : HttpHeaders = this.authService.headers;
+    loading            : boolean     = true;
+    loading_civilities : boolean     = true;
+    allSuppliers       : any         = [];
+    suppliers          : any         = [];
+    civilities         : any         = [];
+    pageSize           : number      = 10;
+    search             : string      = '';
+    pageIndex          : number      = 0;
+    total              : number      = 0;
+    offset             : number      = 0;
+    newCivility        : FormControl = new FormControl();
 
     constructor(
         public router: Router,
@@ -79,6 +83,18 @@ export class SuppliersListComponent implements OnInit {
                 this.allSuppliers = data.suppliers;
                 this.loadSuppliers();
             }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
+        this.http.get(environment['url'] + '/ws/accounts/civilities/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.civilities = data.civilities;
+            }),
+            finalize(() => this.loading_civilities = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -345,5 +361,48 @@ export class SuppliersListComponent implements OnInit {
                 ).subscribe();
             }
         });
+    }
+
+    deleteCivility(civilityId: number) {
+        if (civilityId !== undefined) {
+            this.loading_civilities = true;
+            this.http.delete(environment['url'] + '/ws/accounts/civilities/delete/' + civilityId, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.civilities.forEach((civility: any, index: number) => {
+                        if (civility.id === civilityId) {
+                            this.civilities.splice(index, 1);
+                        }
+                    });
+                    this.notify.success(this.translate.instant('ACCOUNTS.civility_deleted'));
+                }),
+                finalize(() => this.loading_civilities = false),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
+    }
+
+    createCivility() {
+        if (this.newCivility.value !== undefined && this.newCivility.value !== '') {
+            this.loading_civilities = true;
+            this.http.post(environment['url'] + '/ws/accounts/civilities/create', {label: this.newCivility.value}, {headers: this.authService.headers}).pipe(
+                tap((data: any) => {
+                    this.civilities.push({id: data.id, label: this.newCivility.value});
+                    this.notify.success(this.translate.instant('ACCOUNTS.civility_added'));
+                }),
+                finalize(() => {
+                    this.loading_civilities = false;
+                    this.newCivility.setValue('');
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
     }
 }

@@ -158,9 +158,9 @@ class Database:
                     cursor.execute(query, data)
                     new_row_id = cursor.fetchone()['id']
                 return new_row_id
-            except psycopg.OperationalError as pgsql_error:
+            except (psycopg.OperationalError, psycopg.errors.UniqueViolation) as pgsql_error:
                 self.log.error('Error while querying INSERT : ' + str(pgsql_error), False)
-                return False
+                return str(pgsql_error)
 
     def update(self, args):
         if args['table'] == [] or args['set'] == []:

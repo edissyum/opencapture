@@ -331,3 +331,84 @@ def delete_customer(args):
         error = gettext('DELETE_CUSTOMER_ERROR')
 
     return customer, error
+
+def get_civilities():
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    civilities = database.select({
+        'select': ['*'],
+        'table': ['accounts_civilities']
+    })
+    return civilities
+
+
+def get_civility_by_id(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    civility = database.select({
+        'select': ['*'],
+        'table': ['accounts_civilities'],
+        'where': ['id = %s'],
+        'data': [args['civility_id']]
+    })
+    return civility
+
+def delete_civility(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    database.delete({
+        'table': ['accounts_civilities'],
+        'where': ['id = %s'],
+        'data': [args['civility_id']]
+    })
+    return True
+
+def get_civility_by_label(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    civility = database.select({
+        'select': ['*'],
+        'table': ['accounts_civilities'],
+        'where': ['label = %s'],
+        'data': [args['label']]
+    })
+    return civility
+
+def create_civility(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    error = None
+    civility = database.insert({
+        'table': 'accounts_civilities',
+        'columns': args['columns']
+    })
+
+    if not civility:
+        error = gettext('CREATE_CIVILITY_ERROR')
+
+    return civility, error

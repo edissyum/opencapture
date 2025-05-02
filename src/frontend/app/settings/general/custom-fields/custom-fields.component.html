@@ -78,9 +78,9 @@
                         </div>
                         @if (displayChoicesList()) {
                             <div class="flex justify-center flex-col">
-                            <span class="text-center mb-2 text-xl">
-                                {{ 'CUSTOM-FIELDS.select_options' | translate }}
-                            </span>
+                                <span class="text-center mb-2 text-xl">
+                                    {{ 'CUSTOM-FIELDS.select_options' | translate }}
+                                </span>
                                 @if (displayConditional()) {
                                     <mat-checkbox class="cursor-pointer text-center" [formControl]="conditionalControl">
                                         <span>{{ 'CUSTOM-FIELDS.conditional_field' | translate }}</span>

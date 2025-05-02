@@ -760,3 +760,55 @@ def fill_reference_file():
                 row = fill_row(row, supplier, address, ind)
             writer.writerow(row)
     return '', 200
+
+
+def get_civilities():
+    return accounts.get_civilities()
+
+def delete_civility(civility_id):
+    civility = accounts.get_civility_by_id({'civility_id': civility_id})
+    if civility:
+        accounts.delete_civility({'civility_id': civility_id})
+        history.add_history({
+            'module': 'accounts',
+            'ip': request.remote_addr,
+            'submodule': 'delete_civility',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('CIVILITY_DELETED', civility=civility[0]['label'])
+        })
+        return '', 200
+    else:
+        response = {
+            "errors": gettext('DELETE_CIVILITY_ERROR'),
+            "message": gettext('CIVILITY_NOT_FOUND')
+        }
+        return response, 400
+
+def create_civility(data):
+    civility = accounts.get_civility_by_label({'label': data['label']})
+    if not civility:
+        res, error = accounts.create_civility({'columns': {'label': data['label']}})
+        if error is None:
+            history.add_history({
+                'module': 'accounts',
+                'ip': request.remote_addr,
+                'submodule': 'create_civility',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('CIVILITY_CREATED', civility=data['label'])
+            })
+            response = {
+                "id": res
+            }
+            return response, 200
+        else:
+            response = {
+                "errors": gettext('CREATE_CIVILITY_ERROR'),
+                "message": gettext(error)
+            }
+            return response, 400
+    else:
+        response = {
+            "errors": gettext('CREATE_CIVILITY_ERROR'),
+            "message": gettext('CIVILITY_ALREADY_EXISTS')
+        }
+        return response, 400

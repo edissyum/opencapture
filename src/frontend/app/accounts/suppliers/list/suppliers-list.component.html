@@ -14,6 +14,10 @@
             </div>
             <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
             <div class="flex">
+                <button [matTooltip]="'ACCOUNTS.civilities_settings' | translate" class="ml-4"
+                        (click)="sidenav2.toggle()">
+                    <i class="fa-solid fa-person-half-dress text-2xl ml-2"></i>
+                </button>
                 <button [class.hidden]="!this.privilegesService.hasPrivilege('import_suppliers')"
                         [matTooltip]="'ACCOUNTS.import_suppliers' | translate" (click)="importSuppliers();"
                         [disabled]="this.loading" class="ml-4">
@@ -99,4 +103,41 @@
             </mat-paginator>
         </div>
     </mat-sidenav-content>
+    <mat-sidenav #sidenav2 mode="side" [opened]="true" position="end" class="available-fields w-1/5 flex flex-col h-full border-r border-green-400">
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 p-4">
+            {{ "ACCOUNTS.civilities_settings" | translate }}
+        </h3>
+        <mat-divider class="border-green-400"></mat-divider>
+        @if (this.loading_civilities) {
+            <div class="relative" style="top: 40%">
+                <span class="text-center overflow-hidden">
+                    <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900"></i>
+                </span>
+            </div>
+        } @else {
+            <div class="m-2">
+                @for (civility of this.civilities; track civility.id) {
+                    <span class="flex">
+                        <mat-form-field class="w-11/12">
+                            <input matInput type="text" [id]="civility.id" [value]="civility.label" [disabled]="this.loading_civilities">
+                        </mat-form-field>
+                        <button mat-icon-button (click)="deleteCivility(civility.id)" [disabled]="this.loading"
+                                [matTooltip]="'ACCOUNTS.delete_civility' | translate">
+                            <i class="fa-solid fa-trash text-lg"></i>
+                        </button>
+                    </span>
+                }
+                <span class="flex">
+                    <mat-form-field class="w-11/12">
+                        <input matInput type="text" [formControl]="this.newCivility" [disabled]="this.loading_civilities"
+                           (keyup.enter)="createCivility();" placeholder="{{ 'ACCOUNTS.new_civility' | translate }}">
+                    </mat-form-field>
+                    <button mat-icon-button (click)="createCivility()" [disabled]="this.loading"
+                            [matTooltip]="'ACCOUNTS.add_civility' | translate">
+                        <i class="fa-solid fa-plus text-lg"></i>
+                    </button>
+                </span>
+            </div>
+        }
+    </mat-sidenav>
 </mat-sidenav-container>

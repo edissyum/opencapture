@@ -31,10 +31,19 @@ ALTER TABLE mailcollect DROP COLUMN authority;
 
 ALTER TABLE accounts_supplier ADD COLUMN IF NOT EXISTS "phone" VARCHAR(20);
 ALTER TABLE accounts_supplier ADD COLUMN IF NOT EXISTS "function" VARCHAR(255);
-ALTER TABLE accounts_supplier ADD COLUMN IF NOT EXISTS "civility"  VARCHAR(255);
-ALTER TABLE accounts_supplier ADD COLUMN IF NOT EXISTS "lastname"  VARCHAR(255);
+ALTER TABLE accounts_supplier ADD COLUMN IF NOT EXISTS "civility" INTEGER;
+ALTER TABLE accounts_supplier ADD COLUMN IF NOT EXISTS "lastname" VARCHAR(255);
 ALTER TABLE accounts_supplier ADD COLUMN IF NOT EXISTS "firstname" VARCHAR(255);
 ALTER TABLE accounts_supplier ADD COLUMN IF NOT EXISTS "informal_contact" BOOLEAN DEFAULT false;
+
+CREATE TABLE "accounts_civilities" (
+    "id"    SERIAL UNIQUE PRIMARY KEY,
+    "label" VARCHAR(50)
+);
+INSERT INTO "accounts_civilities" ("label") VALUES ('Monsieur');
+INSERT INTO "accounts_civilities" ("label") VALUES ('Madame');
+INSERT INTO "accounts_civilities" ("label") VALUES ('Mademoiselle');
+INSERT INTO "accounts_civilities" ("label") VALUES ('Autre');
 
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('subject', 'fra', 'Sujet', '(obje[c]?t|ref\s*:|[v,n]os\s*r[e,é]f(s?|[e,é]rence)+(\.)?|su[b]?je[c]?t|avis\s* d['',e])((\s*:\s*)|\s+)\s*.*');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('subject', 'eng', 'Subject', '([o,O]bje[c]?t|[O,o,Y,y]ur\s*[r,R]ef(s?|erence)+|[s,S]u[b]?je[c]?t)\s*(:)?\s*.*');
