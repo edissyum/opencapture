@@ -87,27 +87,28 @@ def split(splitter, pages):
                                    splitter.separator_qr.pages))
         if is_separator:
             qr_code = is_separator[0]['qr_code']
-            qr_items = qr_code.split('|')
-            splitter.log.info("QR Code in page " + str(index) + " : " + str(qr_code))
+            if '|' in qr_code:
+                qr_items = qr_code.split('|')
+                splitter.log.info("QR Code in page " + str(index) + " : " + str(qr_code))
 
-            """
-                Open-Capture separator
-            """
-            if splitter.doc_start in qr_items:
-                separator_type = splitter.doc_start
-                if len(qr_items) > 1:
-                    doctype_value = qr_items[1] if qr_items[1] else None
+                """
+                    Open-Capture separator
+                """
+                if splitter.doc_start in qr_items:
+                    separator_type = splitter.doc_start
+                    if len(qr_items) > 1:
+                        doctype_value = qr_items[1] if qr_items[1] else None
 
-            elif splitter.bundle_start in qr_items:
-                separator_type = splitter.bundle_start
-                doctype_value = None
+                elif splitter.bundle_start in qr_items:
+                    separator_type = splitter.bundle_start
+                    doctype_value = None
 
-            if len(qr_items) > 2:
-                metadata_1 = qr_items[2] if qr_items[2] else None
-                if len(qr_items) > 3:
-                    metadata_2 = qr_items[3] if qr_items[3] else None
-                    if len(qr_items) > 4:
-                        metadata_3 = qr_items[4] if qr_items[4] else None
+                if len(qr_items) > 2:
+                    metadata_1 = qr_items[2] if qr_items[2] else None
+                    if len(qr_items) > 3:
+                        metadata_2 = qr_items[3] if qr_items[3] else None
+                        if len(qr_items) > 4:
+                            metadata_3 = qr_items[4] if qr_items[4] else None
 
         splitter.qr_pages.append({
             'source_page': index,
