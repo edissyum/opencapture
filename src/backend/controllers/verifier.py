@@ -979,7 +979,6 @@ def get_customers_count(user_id, status, time):
                         elif supplier_info['lastname']:
                             supplier['name'] = supplier_info['lastname']
                         else:
-                            print('hd')
                             supplier['name'] = supplier_info['name']
                     supplier['form_id'] = form['form_id']
         customer['suppliers'] = customer_suppliers

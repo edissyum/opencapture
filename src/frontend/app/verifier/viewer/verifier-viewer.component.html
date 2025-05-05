@@ -201,17 +201,24 @@
                                                                     </mat-error>
                                                                 }
                                                                 <mat-autocomplete #auto="matAutocomplete" [id]="field['id']" (optionSelected)='getSupplierInfo($event.option.id, true)'>
-                                                                    @for (option of this.suppliers; track option['id']) {
-                                                                        <mat-option [value]="field['id'] === 'name' ? option.name : option.lastname" [id]="option['id']">
-                                                                            <span [innerHTML]="field['id'] === 'name' ? option.name : option.informal_name | highlight: toHighlight"></span>
-                                                                            <span style="font-size: 12px;" class="text-green-400 ml-3">
-                                                                                @if (field['id'] === 'name') {
+                                                                    @if (field['id'] === 'name') {
+                                                                        @for (option of this.suppliers; track option['id']) {
+                                                                            <mat-option [value]="option.name" [id]="option['id']">
+                                                                                <span [innerHTML]="option.name | highlight: toHighlight"></span>
+                                                                                <span style="font-size: 12px;" class="text-green-400 ml-3">
                                                                                     {{ option['vat_number'] }}
-                                                                                } @else {
+                                                                                </span>
+                                                                            </mat-option>
+                                                                        }
+                                                                    } @else {
+                                                                        @for (option of this.informal_contact; track option['id']) {
+                                                                            <mat-option [value]="option.lastname" [id]="option['id']">
+                                                                                <span [innerHTML]="option.informal_name | highlight: toHighlight"></span>
+                                                                                <span style="font-size: 12px;" class="text-green-400 ml-3">
                                                                                     {{ option['name'] }}
-                                                                                }
-                                                                            </span>
-                                                                        </mat-option>
+                                                                                </span>
+                                                                            </mat-option>
+                                                                        }
                                                                     }
                                                                 </mat-autocomplete>
                                                             </mat-form-field>

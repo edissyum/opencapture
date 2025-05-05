@@ -124,6 +124,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         'vat_number': null
     };
     suppliers               : any         = [];
+    informal_contact        : any         = [];
     outputsLabel            : any         = [];
     outputs                 : any         = [];
     multiDocumentsData      : any         = [];
@@ -320,8 +321,9 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
         this.formList = await this.getAllForm();
         this.formList = this.formList.forms;
-        this.suppliers = await this.retrieveSuppliers('', 1000);
-        this.suppliers = this.suppliers.suppliers;
+        const suppliers = await this.retrieveSuppliers('', 1000);
+        this.filterSupplierContact(suppliers)
+        // this.suppliers = this.suppliers.suppliers;
 
         if (this.document.supplier_id) {
             for (const element of this.suppliers) {
@@ -2210,17 +2212,17 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
     async filterSupplier(value: any, name_or_lastname='name') {
         if (!value) {
-            this.suppliers = await this.retrieveSuppliers('', 1000);
-            this.suppliers = this.suppliers.suppliers;
+            const suppliers = await this.retrieveSuppliers('', 1000, name_or_lastname);
+            this.filterSupplierContact(suppliers)
             return;
         } else if (value.length < 3) {
             return;
         }
 
         this.toHighlight = value;
-        this.suppliers = await this.retrieveSuppliers(value, 0, name_or_lastname);
-        this.suppliers = this.suppliers.suppliers;
-        this.supplierExists = !(this.suppliers.length === 0);
+        const suppliers = await this.retrieveSuppliers(value, 0, name_or_lastname);
+        this.filterSupplierContact(suppliers)
+        this.supplierExists = !(suppliers.length === 0);
     }
 
     checkAllowThirdParty() {
@@ -2257,5 +2259,19 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
     isSupplierModified() {
         this.supplierModified = JSON.stringify(this.currentSupplier) !== JSON.stringify(this.getSupplierDatas());
+    }
+
+    filterSupplierContact(suppliers: any) {
+        this.informal_contact = suppliers.suppliers.filter((supplier: any) => {
+            if (supplier.lastname || supplier.firstname) {
+                return supplier;
+            }
+        });
+
+        this.suppliers = suppliers.suppliers.filter((supplier: any) => {
+            if (supplier.name) {
+                return supplier;
+            }
+        });
     }
 }

@@ -42,7 +42,7 @@ def retrieve_fields():
     if 'type' in request.args:
         args['where'].append('type = %s')
         args['data'].append(request.args['type'])
-    print(request.args)
+
     res = custom_fields.retrieve_custom_fields(args)
     return make_response(jsonify(res[0])), res[1]
 
