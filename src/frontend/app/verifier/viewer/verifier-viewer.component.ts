@@ -322,8 +322,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         this.formList = await this.getAllForm();
         this.formList = this.formList.forms;
         const suppliers = await this.retrieveSuppliers('', 1000);
-        this.filterSupplierContact(suppliers)
-        // this.suppliers = this.suppliers.suppliers;
+        this.filterSupplierContact(suppliers);
 
         if (this.document.supplier_id) {
             for (const element of this.suppliers) {
@@ -2213,7 +2212,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     async filterSupplier(value: any, name_or_lastname='name') {
         if (!value) {
             const suppliers = await this.retrieveSuppliers('', 1000, name_or_lastname);
-            this.filterSupplierContact(suppliers)
+            this.filterSupplierContact(suppliers);
             return;
         } else if (value.length < 3) {
             return;
@@ -2221,7 +2220,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
         this.toHighlight = value;
         const suppliers = await this.retrieveSuppliers(value, 0, name_or_lastname);
-        this.filterSupplierContact(suppliers)
+        this.filterSupplierContact(suppliers);
         this.supplierExists = !(suppliers.length === 0);
     }
 
