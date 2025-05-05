@@ -41,7 +41,7 @@ import {FormControl} from "@angular/forms";
     standalone: false
 })
 export class SuppliersListComponent implements OnInit {
-    columnsToDisplay   : string[]    = ['id', 'name', 'email', 'vat_number', 'siret', 'siren', 'iban', 'form_label', 'actions'];
+    columnsToDisplay   : string[]    = ['id', 'name', 'lastname', 'email', 'vat_number', 'siret', 'siren', 'actions'];
     headers            : HttpHeaders = this.authService.headers;
     loading            : boolean     = true;
     loading_civilities : boolean     = true;
