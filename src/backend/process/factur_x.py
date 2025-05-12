@@ -328,7 +328,8 @@ def browse_xml_lines(root):
             for data in delivery:
                 tag = re.sub('{.*}', '', data.tag)
                 if tag == 'BilledQuantity':
-                    lines[cpt]['global']['unit_type'] = data.attrib['unitCode']
+                    if 'unitCode' in data.attrib:
+                        lines[cpt]['global']['unit_type'] = data.attrib['unitCode']
 
         for prices in child.findall('.//' + NAMESPACE + 'SpecifiedLineTradeSettlement'):
             for trade_tax in prices.findall(NAMESPACE + 'ApplicableTradeTax'):
