@@ -35,17 +35,18 @@ import {SessionStorageService} from "../../../services/session-storage.service";
     standalone: false
 })
 export class MonitoringListComponent implements OnInit, OnDestroy {
-    columnsToDisplay    : string[] = ['module', 'creation_date', 'end_date', 'filename', 'last_message', 'status'];
-    loading             : boolean  = true;
-    pageSize            : number   = 10;
-    pageIndex           : number   = 0;
-    total               : number   = 0;
-    offset              : number   = 0;
-    allProcessData      : any      = [];
-    moduleSelected      : string   = '';
-    statusSelected      : string   = '';
-    processData         : any;
-    form                : any[]    = [
+    columnsToDisplay      : string[] = ['module', 'creation_date', 'end_date', 'filename', 'last_message', 'status'];
+    loading               : boolean  = true;
+    pageSize              : number   = 10;
+    pageIndex             : number   = 0;
+    total                 : number   = 0;
+    offset                : number   = 0;
+    allProcessData        : any      = [];
+    moduleSelected        : string   = '';
+    statusSelected        : string   = '';
+    processData           : any;
+    filenameSearchControl : FormControl = new FormControl('');
+    form                  : any[]    = [
         {
             'id': 'module',
             'label': this.translate.instant('CUSTOM-FIELDS.module'),
@@ -81,9 +82,15 @@ export class MonitoringListComponent implements OnInit, OnDestroy {
                     'label': this.translate.instant('MONITORING.error')
                 }
             ]
+        },
+        {
+            'id': 'filename',
+            'type': 'text',
+            'label': this.translate.instant('HEADER.filename'),
+            'control': this.filenameSearchControl
         }
     ];
-    timer               : any;
+    timer                 : any;
 
     constructor(
         private http: HttpClient,
@@ -129,7 +136,7 @@ export class MonitoringListComponent implements OnInit, OnDestroy {
 
     loadMonitoring() {
         this.http.get(
-            environment['url'] + '/ws/monitoring/list?limit=' + this.pageSize + '&offset=' + this.offset + '&module=' + this.moduleSelected + '&status=' + this.statusSelected,
+            environment['url'] + '/ws/monitoring/list?filename=' + this.filenameSearchControl.value + '&limit=' + this.pageSize + '&offset=' + this.offset + '&module=' + this.moduleSelected + '&status=' + this.statusSelected,
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.processData = data['processes'];
