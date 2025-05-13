@@ -107,6 +107,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         'address1': null,
         'address2': null,
         'city': null,
+        'function': null,
+        'civility': null,
         'country': null,
         'postal_code': null,
         'siret': null,
@@ -122,6 +124,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         'vat_number': null
     };
     suppliers               : any         = [];
+    informal_contact        : any         = [];
     outputsLabel            : any         = [];
     outputs                 : any         = [];
     multiDocumentsData      : any         = [];
@@ -318,8 +321,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
         this.formList = await this.getAllForm();
         this.formList = this.formList.forms;
-        this.suppliers = await this.retrieveSuppliers('', 1000);
-        this.suppliers = this.suppliers.suppliers;
+        const suppliers = await this.retrieveSuppliers('', 1000);
+        this.filterSupplierContact(suppliers);
 
         if (this.document.supplier_id) {
             for (const element of this.suppliers) {
@@ -1148,31 +1151,33 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                 .pipe(
                     tap((data: any) => {
                         this.isOCRRunning = false;
-                        let oldPosition = {
-                            x: 0,
-                            y: 0,
-                            width: 0,
-                            height: 0
-                        };
-                        if (this.document.positions[inputId.trim()]) {
-                            oldPosition = {
-                                x: this.document.positions[inputId.trim()].x / this.ratio - ((this.document.positions[inputId.trim()].x / this.ratio) * 0.005),
-                                y: this.document.positions[inputId.trim()].y / this.ratio - ((this.document.positions[inputId.trim()].y / this.ratio) * 0.003),
-                                width: this.document.positions[inputId.trim()].width / this.ratio + ((this.document.positions[inputId.trim()].width / this.ratio) * 0.05),
-                                height: this.document.positions[inputId.trim()].height / this.ratio + ((this.document.positions[inputId.trim()].height / this.ratio) * 0.6)
+                        if (data.result !== this.getField(inputId).control.value) {
+                            let oldPosition = {
+                                x: 0,
+                                y: 0,
+                                width: 0,
+                                height: 0
                             };
-                        }
+                            if (this.document.positions[inputId.trim()]) {
+                                oldPosition = {
+                                    x: this.document.positions[inputId.trim()].x / this.ratio - ((this.document.positions[inputId.trim()].x / this.ratio) * 0.005),
+                                    y: this.document.positions[inputId.trim()].y / this.ratio - ((this.document.positions[inputId.trim()].y / this.ratio) * 0.003),
+                                    width: this.document.positions[inputId.trim()].width / this.ratio + ((this.document.positions[inputId.trim()].width / this.ratio) * 0.05),
+                                    height: this.document.positions[inputId.trim()].height / this.ratio + ((this.document.positions[inputId.trim()].height / this.ratio) * 0.6)
+                                };
+                            }
 
-                        const newPosition = this.getSelectionByCpt(selection, cpt);
-                        if (newPosition.x !== oldPosition.x && newPosition.y !== oldPosition.y &&
-                            newPosition.width !== oldPosition.width && newPosition.height !== oldPosition.height) {
-                            this.updateFormValue(inputId, data.result);
-                            const res = this.saveData(data.result, this.lastId, true, this.document['datas'][inputId]);
-                            if (res) {
-                                const allowLearning = this.formSettings.settings.allow_learning;
-                                if (allowLearning == true || allowLearning == undefined) {
-                                    this.savePosition(newPosition);
-                                    this.savePages(this.currentPage).then();
+                            const newPosition = this.getSelectionByCpt(selection, cpt);
+                            if (newPosition.x !== oldPosition.x && newPosition.y !== oldPosition.y &&
+                                newPosition.width !== oldPosition.width && newPosition.height !== oldPosition.height) {
+                                this.updateFormValue(inputId, data.result);
+                                const res = this.saveData(data.result, this.lastId, true, this.document['datas'][inputId]);
+                                if (res) {
+                                    const allowLearning = this.formSettings.settings.allow_learning;
+                                    if (allowLearning == true || allowLearning == undefined) {
+                                        this.savePosition(newPosition);
+                                        this.savePages(this.currentPage).then();
+                                    }
                                 }
                             }
                         }
@@ -1217,11 +1222,16 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                 }
 
                 if (input.id === 'civility') {
-                    input.values = [
-                        {id: 'male', label: _('ACCOUNTS.male')},
-                        {id: 'female', label: _('ACCOUNTS.female')},
-                        {id: 'other', label: _('ACCOUNTS.other')}
-                    ]
+                    this.http.get(environment['url'] + '/ws/accounts/civilities/list', {headers: this.authService.headers}).pipe(
+                        tap((data: any) => {
+                            input.values = data.civilities;
+                        }),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
                 }
             });
         }
@@ -1704,6 +1714,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             'city': address.city,
                             'country': address.country,
                             'postal_code': address.postal_code,
+                            'civility': parseInt(supplier.civility),
+                            'function': supplier.function,
                             'siret': supplier.siret,
                             'siren': supplier.siren,
                             'iban': supplier.iban,
@@ -2199,17 +2211,17 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
     async filterSupplier(value: any, name_or_lastname='name') {
         if (!value) {
-            this.suppliers = await this.retrieveSuppliers('', 1000);
-            this.suppliers = this.suppliers.suppliers;
+            const suppliers = await this.retrieveSuppliers('', 1000, name_or_lastname);
+            this.filterSupplierContact(suppliers);
             return;
         } else if (value.length < 3) {
             return;
         }
 
         this.toHighlight = value;
-        this.suppliers = await this.retrieveSuppliers(value, 0, name_or_lastname);
-        this.suppliers = this.suppliers.suppliers;
-        this.supplierExists = !(this.suppliers.length === 0);
+        const suppliers = await this.retrieveSuppliers(value, 0, name_or_lastname);
+        this.filterSupplierContact(suppliers);
+        this.supplierExists = !(suppliers.length === 0);
     }
 
     checkAllowThirdParty() {
@@ -2246,5 +2258,19 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
     isSupplierModified() {
         this.supplierModified = JSON.stringify(this.currentSupplier) !== JSON.stringify(this.getSupplierDatas());
+    }
+
+    filterSupplierContact(suppliers: any) {
+        this.informal_contact = suppliers.suppliers.filter((supplier: any) => {
+            if (supplier.lastname || supplier.firstname) {
+                return supplier;
+            }
+        });
+
+        this.suppliers = suppliers.suppliers.filter((supplier: any) => {
+            if (supplier.name) {
+                return supplier;
+            }
+        });
     }
 }

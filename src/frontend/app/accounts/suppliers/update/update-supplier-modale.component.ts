@@ -86,11 +86,7 @@ export class UpdateSupplierModaleComponent implements OnInit {
             type: 'select',
             control: new FormControl(),
             required: false,
-            values: [
-                {id: 'male', label: _('ACCOUNTS.male')},
-                {id: 'female', label: _('ACCOUNTS.female')},
-                {id: 'other', label: _('ACCOUNTS.other')}
-            ]
+            values: []
         },
         {
             id: 'function',
@@ -360,6 +356,18 @@ export class UpdateSupplierModaleComponent implements OnInit {
                     }
                 });
             }
+            if (element.id === 'civility') {
+                this.http.get(environment['url'] + '/ws/accounts/civilities/list', {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        element.values = data.civilities;
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }
         }
 
         this.http.get(environment['url'] + '/ws/forms/verifier/list', {headers: this.authService.headers}).pipe(
@@ -379,6 +387,8 @@ export class UpdateSupplierModaleComponent implements OnInit {
                                             element.control.setValue(account);
                                         }
                                     });
+                                } else if (element.id === 'civility') {
+                                    element.control.setValue(parseInt(this.supplier[field]));
                                 } else {
                                     element.control.setValue(this.supplier[field]);
                                 }

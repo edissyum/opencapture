@@ -821,8 +821,12 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 datas['positions'][data] = ''
                 datas['datas'][data] = args['datas'][data]
 
+    is_mail = False
+    if 'isMail' in args and args['isMail']:
+        is_mail = args['isMail']
+
     full_jpg_filename = str(uuid.uuid4())
-    file = files.move_to_docservers(docservers, file)
+    file = files.move_to_docservers(docservers, file, is_mail=is_mail)
     files.move_to_docservers_image(docservers['VERIFIER_IMAGE_FULL'], files.jpg_name, full_jpg_filename + '-001.jpg',
                                    copy=True, rotate=True)
     files.move_to_docservers_image(docservers['VERIFIER_THUMB'], files.jpg_name, full_jpg_filename + '-001.jpg',

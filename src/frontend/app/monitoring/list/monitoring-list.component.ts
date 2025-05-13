@@ -26,6 +26,7 @@ import { of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
 import { NotificationService } from "../../../services/notifications/notifications.service";
+import {SessionStorageService} from "../../../services/session-storage.service";
 
 @Component({
     selector: 'app-monitoring-list',
@@ -89,13 +90,22 @@ export class MonitoringListComponent implements OnInit, OnDestroy {
         private authService: AuthService,
         private notify: NotificationService,
         private translate: TranslateService,
-        public serviceSettings: SettingsService
+        public serviceSettings: SettingsService,
+        private sessionStorageService: SessionStorageService
     ) { }
 
     ngOnInit() {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
+
+        if (this.sessionStorageService.get('monitoringPageIndex')) {
+            this.pageIndex = parseInt(this.sessionStorageService.get('monitoringPageIndex') as string);
+        }
+        if (this.sessionStorageService.get('monitoringPageSize')) {
+            this.pageSize = parseInt(this.sessionStorageService.get('monitoringPageSize') as string);
+        }
+
         this.http.get(environment['url'] + '/ws/monitoring/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allProcessData = data['processes'];
@@ -145,6 +155,8 @@ export class MonitoringListComponent implements OnInit, OnDestroy {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
+        this.sessionStorageService.save('monitoringPageSize', event.pageSize);
+        this.sessionStorageService.save('monitoringPageIndex', event.pageIndex);
         this.loadMonitoring();
     }
 

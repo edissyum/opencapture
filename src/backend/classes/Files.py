@@ -664,7 +664,7 @@ class Files:
         return final_directory
 
     @staticmethod
-    def move_to_docservers(docservers, file, module='verifier', attachments=False):
+    def move_to_docservers(docservers, file, module='verifier', attachments=False, is_mail=False):
         now = datetime.datetime.now()
         year = str(now.year)
         day = str('%02d' % now.day)
@@ -697,7 +697,10 @@ class Files:
         extension = os.path.splitext(file)[1]
         new_filename = day + month + year + '_' + hour + minute + seconds + '_' + uuid.uuid4().hex + extension
         final_directory = docserver_path + '/' + year + '/' + month + '/' + new_filename
-        shutil.move(file, final_directory)
+        if is_mail:
+            shutil.copy(file, final_directory)
+        else:
+            shutil.move(file, final_directory)
         return final_directory
 
     @staticmethod

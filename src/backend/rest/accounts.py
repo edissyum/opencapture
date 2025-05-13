@@ -101,7 +101,7 @@ def update_supplier(supplier_id):
         {'id': 'pages', 'type': dict, 'mandatory': False},
         {'id': 'form_id', 'type': int, 'mandatory': False},
         {'id': 'function', 'type': str, 'mandatory': False},
-        {'id': 'civility', 'type': str, 'mandatory': False},
+        {'id': 'civility', 'type': int, 'mandatory': False},
         {'id': 'firstname', 'type': str, 'mandatory': False},
         {'id': 'vat_number', 'type': str, 'mandatory': False},
         {'id': 'address_id', 'type': int, 'mandatory': False},
@@ -277,7 +277,7 @@ def create_supplier():
         {'id': 'pages', 'type': dict, 'mandatory': False},
         {'id': 'form_id', 'type': int, 'mandatory': False},
         {'id': 'function', 'type': str, 'mandatory': False},
-        {'id': 'civility', 'type': str, 'mandatory': False},
+        {'id': 'civility', 'type': int, 'mandatory': False},
         {'id': 'firstname', 'type': str, 'mandatory': False},
         {'id': 'address_id', 'type': int, 'mandatory': False},
         {'id': 'positions', 'type': dict, 'mandatory': False},
@@ -556,3 +556,40 @@ def import_suppliers():
     }
     res = accounts.import_suppliers(args)
     return res
+
+@bp.route('accounts/civilities/list', methods=['GET'])
+@auth.token_required
+def get_civilities():
+    if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list | access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/civilities/list'}), 403
+
+    res = accounts.get_civilities()
+    return make_response({'civilities': res}), res[1]
+
+@bp.route('accounts/civilities/delete/<int:civility_id>', methods=['DELETE'])
+@auth.token_required
+def delete_civility(civility_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list | access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/accounts/civilities/delete/{civility_id}'}), 403
+
+    res = accounts.delete_civility(civility_id)
+    return make_response(res[0]), res[1]
+
+@bp.route('accounts/civilities/create', methods=['POST'])
+@auth.token_required
+def create_civility():
+    if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list | access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/accounts/civilities/delete/{civility_id}'}), 403
+
+    data = request.json
+    check, message = rest_validator(data, [
+        {'id': 'label', 'type': str, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = accounts.create_civility(data)
+    return make_response(res[0]), res[1]

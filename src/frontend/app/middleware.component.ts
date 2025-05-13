@@ -17,7 +17,7 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Observable, switchMap} from "rxjs";
+import { Observable, switchMap, throwError } from "rxjs";
 import { environment } from "./env";
 import { Router } from "@angular/router";
 import { Injectable } from '@angular/core';
@@ -88,7 +88,7 @@ export class MiddlewareComponent implements HttpInterceptor {
                 if (err.status === 401) {
                     return this.handle401Error(request, next);
                 }
-                return next.handle(request);
+                return throwError(() => err) ;
             })
         );
     }

@@ -142,6 +142,11 @@ CREATE TABLE "privileges" (
     "label"  VARCHAR(50)
 );
 
+CREATE table "accounts_civilities" (
+    "id"    SERIAL UNIQUE PRIMARY KEY,
+    "label" VARCHAR(50)
+);
+
 CREATE TABLE "accounts_supplier" (
     "id"                        SERIAL        UNIQUE PRIMARY KEY,
     "name"                      VARCHAR(255),
@@ -159,7 +164,7 @@ CREATE TABLE "accounts_supplier" (
     "lastname"                  VARCHAR(255),
     "firstname"                 VARCHAR(255),
     "function"                  VARCHAR(255),
-    "civility"                  VARCHAR(10),
+    "civility"                  INTEGER,
     "document_lang"             VARCHAR(10)   DEFAULT 'fra',
     "status"                    VARCHAR(3)    DEFAULT 'OK',
     "informal_contact"          BOOLEAN       DEFAULT False,

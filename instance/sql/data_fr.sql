@@ -1335,3 +1335,9 @@ DO $$
 BEGIN
     INSERT INTO "accounts_customer" (name, module, status, creation_date) VALUES ('Splitter - Compte client par défaut', 'splitter', 'OK', '2023-01-09 11:26:38.989482') RETURNING id INTO new_customer_id;
 END $$;
+
+-- CREATION DES CIVILITES PAR DEFAUT
+INSERT INTO "accounts_civilities" ("id", "label") VALUES (1, 'Monsieur');
+INSERT INTO "accounts_civilities" ("id", "label") VALUES (2, 'Madame');
+INSERT INTO "accounts_civilities" ("id", "label") VALUES (3, 'Mademoiselle');
+INSERT INTO "accounts_civilities" ("id", "label") VALUES (4, 'Autre');
