@@ -58,8 +58,13 @@ def get_processes(module=None, get_last_processes=False):
         data.append(request.args['module'])
 
     if 'status' in request.args and request.args['status']:
-        where.append('status = %s')
-        data.append(request.args['status'])
+        if request.args['status'] == 'error':
+            where.append('status = %s OR error = %s')
+            data.append(request.args['status'])
+            data.append(True)
+        else:
+            where.append('status = %s')
+            data.append(request.args['status'])
 
     if where:
         args.update({'where': where, 'data': data})
