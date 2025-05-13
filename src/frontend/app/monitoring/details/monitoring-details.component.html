@@ -134,7 +134,11 @@
                         </ng-container>
                         <ng-container matColumnDef="event_message">
                             <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.event_message' | translate }} </mat-header-cell>
-                            <mat-cell *matCellDef="let element" [innerHTML]="element.message"></mat-cell>
+                            <mat-cell *matCellDef="let element"
+                                      [class.cursor-pointer]="element.status === 'error'"
+                                      [innerHTML]="element.message"
+                                      (click)="element.status !== 'error' ? '' : this.copyToClipboard(element.message)"
+                                      [matTooltip]="element.status !== 'error' ? '' : 'MONITORING.copy_event_message' | translate"></mat-cell>
                         </ng-container>
                         <ng-container matColumnDef="status">
                             <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.status' | translate }} </mat-header-cell>

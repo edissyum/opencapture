@@ -176,5 +176,11 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
         this.steps = data.splice(this.pageSize * event.pageIndex, this.pageSize + (this.pageSize * (event.pageIndex)));
     }
 
+    copyToClipboard(text: string) {
+        navigator.clipboard.writeText(text).then(() => {
+            this.notify.success(this.translate.instant('MONITORING.event_message_copied'));
+        });
+    }
+
     protected readonly window = window;
 }
