@@ -262,6 +262,7 @@ def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_c
         improved_image = files.img_name + '_improved.jpg'
         improved_header_image = files.img_name + '_header_improved.jpg'
         improved_footer_image = files.img_name + '_footer_improved.jpg'
+
         if not os.path.isfile(improved_image):
             improved_image = files.improve_image_detection(files.jpg_name, remove_lines=True)
         if not os.path.isfile(improved_header_image):
@@ -349,10 +350,6 @@ def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_c
             _res['pages'].update({data_name: data[2]})
     return _res
 
-def timer(start_time, end_time):
-    hours, rem = divmod(end_time - start_time, 3600)
-    minutes, seconds = divmod(rem, 60)
-    return f"{int(hours):02d}:{int(minutes):02d}:{seconds:05.2f}"
 
 def process(args, file, log, config, files, ocr, regex, database, docservers, configurations, languages):
     filename = os.path.basename(file)
@@ -623,9 +620,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     text_by_pages = [None] * nb_pages
 
-    print(custom_fields_to_find)
-    import time
-    start = time.time()
     if custom_fields_to_find:
         # Find custom informations using mask
         custom_fields = find_custom.FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
@@ -659,10 +653,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             custom_field = 'custom_' + str(custom_field['id'])
             datas = found_data_recursively(custom_field, ocr, file, nb_pages, text_by_pages, custom_field_class,
                                            datas, files, configurations, tesseract_function, convert_function)
-    end_custom = time.time()
-    print('Custom fields time : ' + str(timer(start, end_custom)))
+
     footer = None
-    print(system_fields_to_find)
     if workflow_settings['input']['apply_process']:
         if 'invoice_number' in system_fields_to_find:
             invoice_number_class = find_invoice_number.FindInvoiceNumber(ocr, files, log, regex, config, database,
@@ -671,15 +663,13 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             datas = found_data_recursively('invoice_number', ocr, file, nb_pages, text_by_pages,
                                            invoice_number_class, datas, files, configurations, tesseract_function,
                                            convert_function)
-        end_invoice_number = time.time()
-        print('Invoice number time : ' + str(timer(end_custom, end_invoice_number)))
+
         if 'document_date' in system_fields_to_find:
             date_class = find_date.FindDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
                                             languages, datas['form_id'])
             datas = found_data_recursively('document_date', ocr, file, nb_pages, text_by_pages, date_class,
                                            datas, files, configurations, tesseract_function, convert_function)
-        end_document_date = time.time()
-        print('Document date time : ' + str(timer(end_invoice_number, end_document_date)))
+
         if 'document_due_date' in system_fields_to_find:
             due_date_class = find_due_date.FindDueDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
                                                        languages, datas['form_id'])
@@ -694,8 +684,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             datas = found_data_recursively('quotation_number', ocr, file, nb_pages, text_by_pages,
                                            quotation_number_class, datas, files, configurations, tesseract_function,
                                            convert_function)
-        end_quotation_number = time.time()
-        print('Quotation number time : ' + str(timer(end_document_date, end_quotation_number)))
+
         if 'delivery_number' in system_fields_to_find:
             delivery_number_class = find_delivery_number.FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file,
                                                                             docservers, configurations, datas['form_id'])
@@ -808,15 +797,13 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                         elif footer[3]:
                             datas['pages'].update({'vat_amount': footer[3]})
                             datas['pages'].update({'total_vat': footer[3]})
-        end_footer = time.time()
-        print('Footer time : ' + str(timer(end_quotation_number, end_footer)))
+
         if 'currency' in system_fields_to_find:
             currency_class = find_currency.FindCurrency(ocr, log, regex, files, supplier, database, file, docservers,
                                                         datas['form_id'])
             datas = found_data_recursively('currency', ocr, file, nb_pages, text_by_pages, currency_class,
                                            datas, files, configurations, tesseract_function, convert_function)
-        end_currency = time.time()
-        print('Currency time : ' + str(timer(end_quotation_number, end_currency)))
+
         if 'subject' in system_fields_to_find:
             subject_class = find_subject.FindSubject(ocr, log, regex, files, supplier, database, file, docservers,
                                                         datas['form_id'])
