@@ -54,3 +54,23 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_d
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_condition', 'eng', 'Conditions in Splitter XML output', '<!-- %BEGIN-IF(.*?) -->(.*?)<!-- %END-IF -->');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_xml_comment', 'eng', 'Tech comments in Splitter XML output', '\s?<!--[\s\S\n]*?-->\s');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_empty_line', 'eng', 'Empty line in Splitter XML output', '^\s*$');
+
+-- REGEX creation (spa)
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('date', 'spa', 'Fecha', '');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('subject', 'spa', 'Sujeto', '');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('subject_only', 'spa', 'Sujeto only', '');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('due_date', 'spa', 'Fecha de vencimiento', '');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('invoice_number', 'spa', 'Número de factura', '');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('delivery_number', 'spa', 'Delivery number', '');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('quotation_number', 'spa', 'Número de entrega', '');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('no_rates', 'spa', 'No hay importe de tasas', '');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('all_rates', 'spa', 'All rates amount', '');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vat_rate', 'spa', 'Todas las tarifas ascienden', '');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vat_amount', 'spa', 'Importe del IVA', '');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vat_rate_list', 'spa', 'Lista de tipos de IVA', '');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('format_date', 'spa', 'Formato de fecha final', '%d/%m/%Y');
+
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_doc_loop', 'spa', 'Document loop in Splitter XML output', '<!-- %BEGIN-DOCUMENT-LOOP -->(.*?)<!-- %END-DOCUMENT-LOOP -->');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_condition', 'spa', 'Conditions in Splitter XML output', '<!-- %BEGIN-IF(.*?) -->(.*?)<!-- %END-IF -->');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_xml_comment', 'spa', 'Tech comments in Splitter XML output', '\s?<!--[\s\S\n]*?-->\s');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('splitter_empty_line', 'spa', 'Empty line in Splitter XML output', '^\s*$');
