@@ -117,6 +117,7 @@ def documents_list():
         {'id': 'offset', 'type': int, 'mandatory': False},
         {'id': 'search', 'type': str, 'mandatory': False},
         {'id': 'filter', 'type': str, 'mandatory': False},
+        {'id': 'user_id', 'type': int, 'mandatory': False},
         {'id': 'allowedCustomers', 'type': list, 'mandatory': False},
         {'id': 'allowedSuppliers', 'type': list, 'mandatory': False}
     ])

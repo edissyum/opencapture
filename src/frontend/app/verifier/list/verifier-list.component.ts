@@ -383,7 +383,8 @@ export class VerifierListComponent implements OnInit {
             {
                 'allowedCustomers': this.allowedCustomers, 'status': this.currentStatus, 'limit': this.pageSize,
                 'allowedSuppliers': this.allowedSuppliers, 'form_id': this.currentForm, 'time': this.currentTime,
-                'offset': this.offset, 'search': this.search, 'order': this.currentOrder, 'filter': this.currentFilter
+                'offset': this.offset, 'search': this.search, 'order': this.currentOrder, 'filter': this.currentFilter,
+                'user_id': this.userService.user.id
             },
             {headers: this.authService.headers}
         ).pipe(
