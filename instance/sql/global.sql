@@ -1,6 +1,7 @@
 -- Languages creation
 INSERT INTO "languages" ("language_id", "label", "lang_code", "moment_lang_code", "date_format") VALUES ('fr','Francais', 'fra', 'fr-FR', '%d %m %Y');
 INSERT INTO "languages" ("language_id", "label", "lang_code", "moment_lang_code", "date_format") VALUES ('en', 'English', 'eng', 'en-GB', '%m %d %Y');
+INSERT INTO "languages" ("language_id", "label", "lang_code", "moment_lang_code", "date_format") VALUES ('spa', 'Español', 'spa', 'es-ES', '%m %d %Y');
 
 -- REGEX creation (global)
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('email', 'global', 'Adresse email', '([A-Za-z0-9]+[\.\-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+');
