@@ -134,5 +134,4 @@ def update_retry(process_id):
         'where': ['id = %s'],
         'data': [process_id]
     })
-    print(res)
     return res, error
