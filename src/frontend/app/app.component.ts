@@ -124,7 +124,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
                     this.image = this.sanitizer.sanitize(SecurityContext.URL, 'data:image/png;base64, ' + b64Content);
                 }
             }
-            if (this.localeService.currentLang === undefined) {
+            if (!this.localeService.currentLang) {
                 this.http.get(environment['url'] + '/ws/i18n/getCurrentLang').pipe(
                     tap((data: any) => {
                         this.translate.use(data.lang);

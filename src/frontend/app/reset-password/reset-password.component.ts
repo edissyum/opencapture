@@ -69,7 +69,7 @@ export class ResetPasswordComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        if (this.localeService.currentLang === undefined) {
+        if (!this.localeService.currentLang) {
             this.localeService.getCurrentLocale();
         }
         this.resetToken = this.route.snapshot.queryParams['reset_token'];
