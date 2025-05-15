@@ -143,3 +143,7 @@ def create_process(args):
         "process": process
     }
     return response, 200
+
+def update_retry(process_id):
+    process, _ = monitoring.update_retry(process_id)
+    return _, 200

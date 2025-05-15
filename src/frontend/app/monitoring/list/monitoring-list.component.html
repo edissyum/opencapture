@@ -83,6 +83,10 @@
                             } @else if (element.status === 'error' || element.error) {
                                 <span class="text-red-400">
                                     <i class="fa-solid fa-xmark text-xl w-6" [matTooltip]="'MONITORING.error' | translate"></i>
+                                    @if (!element['retry']) {
+                                        <i class="fa-solid fa-repeat text-lg" (click)="$event.stopPropagation();retryProcess(element.id)"
+                                           [matTooltip]="'MONITORING.retry' | translate"></i>
+                                    }
                                 </span>
                             }
                         </mat-cell>

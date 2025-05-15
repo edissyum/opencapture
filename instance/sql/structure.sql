@@ -392,6 +392,7 @@ CREATE TABLE "monitoring" (
     "elapsed_time"       VARCHAR(20),
     "document_ids"       INTEGER[],
     "error"              BOOLEAN        DEFAULT False,
+    "retry"              BOOLEAN        DEFAULT False,
     "module"             VARCHAR(10)    NOT NULL,
     "source"             VARCHAR(10)    NOT NULL,
     "creation_date"      TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,

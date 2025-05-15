@@ -103,6 +103,17 @@ def upload():
         return make_response(gettext('UNKNOW_ERROR'), 400)
 
 
+@bp.route('verifier/retryFromMonitoring/<int:process_id>', methods=['GET'])
+@auth.token_required
+def retry_from_monitoring(process_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/verifier/retryFromMonitoring/{process_id}'}), 403
+
+    res = verifier.retry_from_monitoring(process_id)
+    return make_response(res[0], res[1])
+
+
 @bp.route('verifier/documents/list', methods=['POST'])
 @auth.token_required
 def documents_list():

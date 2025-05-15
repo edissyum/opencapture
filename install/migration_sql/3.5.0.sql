@@ -93,3 +93,5 @@ INSERT INTO "outputs" ("output_type_id", "output_label", "module", "data") VALUE
 UPDATE "form_models" SET settings = jsonb_set(settings, '{unique_url, update_supplier}', 'true') WHERE module = 'verifier';
 
 ALTER TABLE "accounts_supplier" ALTER COLUMN name DROP NOT NULL;
+
+ALTER TABLE monitoring ADD COLUMN "retry" BOOLEAN DEFAULT False;

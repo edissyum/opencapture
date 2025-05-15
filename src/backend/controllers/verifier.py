@@ -55,6 +55,37 @@ def upload_documents(body):
     }
     return response, 400
 
+def retry_from_monitoring(process_id):
+    process, _ = monitoring.get_process_by_id(process_id)
+    if _ != 200:
+        response = {
+            "errors": gettext('RETRY_FROM_MONITORING_ERROR'),
+            "message": gettext('PROCESS_NOT_FOUND')
+        }
+        return response, 400
+
+    process = process['process'][0]
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+
+    path = docservers['ERROR_PATH'] + '/' + process['workflow_id'] + '/' + process['filename']
+    if not os.path.isfile(path):
+        response = {
+            "errors": gettext('RETRY_FROM_MONITORING_ERROR'),
+            "message": gettext('FILE_NOT_FOUND')
+        }
+        return response, 400
+
+    file = FileStorage(stream=open(path, 'rb'), filename=process['filename'])
+    res = handle_uploaded_file([file], process['workflow_id'], {})
+    if res and res[0] is not False:
+        return res
+    else:
+        return gettext('UNKNOW_ERROR'), 400
 
 def handle_uploaded_file(files, workflow_id, supplier, datas=None, splitter_batch_id=False):
     custom_id = retrieve_custom_from_url(request)
