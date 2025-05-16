@@ -53,6 +53,8 @@ with app.app_context():
         }
     })
 
+    args['original_filename'] = os.path.basename(args['file'])
+
     args['user_info'] = 'fs-watcher'
     args['ip'] = '0.0.0.0'
     launch(args)

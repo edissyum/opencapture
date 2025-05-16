@@ -125,7 +125,8 @@ def handle_uploaded_file(files, workflow_id, supplier, datas=None, splitter_batc
                 'splitter_batch_id': splitter_batch_id,
                 'user_id': request.environ['user_id'],
                 'user_info': request.environ['user_info'],
-                'task_id_monitor': task_id_monitor[0]['process']
+                'task_id_monitor': task_id_monitor[0]['process'],
+                'original_filename': os.path.basename(_f.filename)
             })
         else:
             return False, 500

@@ -236,6 +236,7 @@ with app.app_context():
                                             'task_id_monitor': task_id_monitor,
                                             'log': batch_path + '/' + date_batch + '.log',
                                             'nb_of_attachments': str(len(ret['attachments'])),
+                                            'original_filename': os.path.basename(attachment['file']),
                                             'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
                                             'msg': {
                                                 'uid': msg_id,
@@ -305,6 +306,7 @@ with app.app_context():
                                 'workflow_id': verifierWorkflowId,
                                 'task_id_monitor': task_id_monitor,
                                 'log': batch_path + '/' + date_batch + '.log',
+                                'original_filename': os.path.basename(ret['file']['path']),
                                 'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
                                 'msg': {
                                     'uid': msg_id,

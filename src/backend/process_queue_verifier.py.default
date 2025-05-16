@@ -228,6 +228,12 @@ def launch(args):
                         res = execute(args, path, log, config, files, ocr, regex, database, docservers, configurations,
                                       languages, mail_class, smtp)
                         list_of_ids.append(res)
+
+                    if os.path.isfile(docservers['ERROR_PATH'] + '/' + args['workflow_id'] + '/' + args['original_filename']):
+                        try:
+                            os.remove(docservers['ERROR_PATH'] + '/' + args['workflow_id'] + '/' + args['original_filename'])
+                        except (Exception, ):
+                            pass
                 except (Exception,):
                     _e = str(traceback.format_exc())
                     log.error(_e)
@@ -235,8 +241,13 @@ def launch(args):
                         if not os.path.isdir(docservers['ERROR_PATH'] + '/' + args['workflow_id']):
                             os.mkdir(docservers['ERROR_PATH'] + '/' + args['workflow_id'])
                             os.chmod(docservers['ERROR_PATH'] + '/' + args['workflow_id'], int('775', base=8))
-                            shutil.move(path + file, docservers['ERROR_PATH'] + '/' + args['workflow_id'])
-                    except (Exception, ) as _e:
+
+                        if 'isMail' in args and args['isMail'] is True:
+                            file_path = args['file']
+                        else:
+                            file_path = path + file
+                        shutil.copy(file_path, docservers['ERROR_PATH'] + '/' + args['workflow_id'] + '/' + args['original_filename'])
+                    except (Exception, ):
                         pass
 
             recursive_delete(tmp_folder, log, docservers)
