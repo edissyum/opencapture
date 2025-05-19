@@ -451,6 +451,9 @@ def login_with_token(token, lang):
     else:
         returned_user = get_user({'id': decoded_token['sub']})
 
+    if not returned_user:
+        return jsonify({"errors": gettext("JWT_ERROR"), "message": gettext('USER_DO_NOT_EXISTS')}), 401
+
     user_privileges = ['*']
     if returned_user['privileges'] != '*':
         user_privileges = privileges.get_privileges_by_role_id({'role_id': returned_user['role']['id']})
