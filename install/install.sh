@@ -337,6 +337,7 @@ mkdir -p $customPath/assets/imgs/
 mkdir -p $customPath/bin/ldap/config/
 mkdir -p $customPath/instance/referencial/
 mkdir -p $customPath/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa,error}/
+mkdir -p $customPath/data/MailCollect/_ERROR/
 mkdir -p $customPath/data/log/Supervisor/
 mkdir -p $customPath/bin/scripts/{verifier_workflows,splitter_workflows,splitter_metadata,splitter_methods,MailCollect,ai}/
 mkdir -p $customPath/bin/scripts/ai/{splitter,verifier}/
