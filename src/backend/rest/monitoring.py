@@ -86,3 +86,23 @@ def get_process_by_token():
                     process['document_data'][document_id] = document_data['datas']
                     process['document_data'][document_id]['status'] = document_data['status']
     return make_response(jsonify(process)), status
+
+
+@bp.route('monitoring/update_retry', methods=['PUT'])
+@auth.token_required
+def update_retry():
+    if not privileges.has_privileges(request.environ['user_id'], ['monitoring']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/monitoring/update'}), 403
+
+    check, message = rest_validator(request.json, [
+        {'id': 'process_id', 'type': int, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    process = monitoring.update_retry(request.json['process_id'])
+    return make_response(jsonify(process[0])), process[1]

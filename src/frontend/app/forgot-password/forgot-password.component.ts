@@ -33,7 +33,7 @@ export class ForgotPasswordComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        if (this.localeService.currentLang === undefined) {
+        if (!this.localeService.currentLang) {
             this.localeService.getCurrentLocale();
         }
 

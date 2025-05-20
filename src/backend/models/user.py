@@ -194,8 +194,8 @@ def get_user_by_username(args):
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['users', 'roles'],
         'left_join': ['users.role = roles.id'],
-        'where': ['users.username = %s'],
-        'data': [args['username']]
+        'where': ['users.username = %s', 'users.status NOT IN (%s)'],
+        'data': [args['username'], 'DEL']
     })
 
     if not user:

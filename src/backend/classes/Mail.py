@@ -19,22 +19,20 @@ import os
 import re
 import sys
 import html
-
-import chardet
 import msal
 import shutil
 import base64
 import locale
+import chardet
+import requests
 import mimetypes
 from ssl import SSLError
-
-import requests
 from tnefparse import TNEF
 from xhtml2pdf import pisa
 from socket import gaierror
 from imaplib import IMAP4_SSL
 from flask_babel import gettext
-from imap_tools import utils, MailBox, MailBoxUnencrypted
+from imap_tools import MailBox, MailBoxUnencrypted, UnexpectedCommandStatusError
 
 
 class Mail:
@@ -412,8 +410,9 @@ class Mail:
         try:
             self.conn.move(msg.uid, destination)
             return True
-        except utils.UnexpectedCommandStatusError as mail_error:
+        except UnexpectedCommandStatusError as mail_error:
             log.error('Error while moving mail to ' + destination + ' folder : ' + str(mail_error), False)
+            return None
 
     def delete_mail(self, msg, trash_folder, log):
         """
@@ -429,7 +428,7 @@ class Mail:
                 self.conn.delete(msg.uid)
             else:
                 self.move_to_destination_folder(msg, trash_folder, log)
-        except utils.UnexpectedCommandStatusError as mail_error:
+        except UnexpectedCommandStatusError as mail_error:
             log.error('Error while deleting mail : ' + str(mail_error), False)
 
     @staticmethod

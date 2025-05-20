@@ -12,7 +12,7 @@
         <div class="overflow-x-hidden h-full-overflow">
             <div class="flex justify-center">
                 <div class="m-auto text-center">{{ 'HISTORY.filter' | translate }} : </div>
-                <form class="grid grid-cols-2 w-6/12 gap-6 mt-5 mb-0 text-center">
+                <form class="grid grid-cols-3 w-8/12 gap-6 mt-5 mb-0 text-center">
                     @for (field of form; track field['id']) {
                         @if (field['type'] === 'select') {
                             <mat-form-field class="block">
@@ -23,6 +23,13 @@
                                         <mat-option [value]="option['id']">{{ option['label'] | translate }}</mat-option>
                                     }
                                 </mat-select>
+                            </mat-form-field>
+                        } @else if (field['type'] === 'text') {
+                            <mat-form-field appearance="outline">
+                                <mat-label>{{ field['label'] | translate }}</mat-label>
+                                <input matInput [formControl]="field['control']"
+                                       [type]="field['type']" [placeholder]="field['label'] | translate">
+                                <mat-hint>{{ field['hint'] }}</mat-hint>
                             </mat-form-field>
                         }
                     }
@@ -76,6 +83,10 @@
                             } @else if (element.status === 'error' || element.error) {
                                 <span class="text-red-400">
                                     <i class="fa-solid fa-xmark text-xl w-6" [matTooltip]="'MONITORING.error' | translate"></i>
+                                    @if (!element['retry']) {
+                                        <i class="fa-solid fa-repeat text-lg" (click)="$event.stopPropagation();retryProcess(element.id)"
+                                           [matTooltip]="'MONITORING.retry' | translate"></i>
+                                    }
                                 </span>
                             }
                         </mat-cell>

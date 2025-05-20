@@ -108,9 +108,14 @@ if __name__ == '__main__':
                 year = document['register_date'].strftime('%Y')
                 month = document['register_date'].strftime('%m')
                 thumb_file = f"{docservers['VERIFIER_THUMB']}/{year}/{month}/{document['full_jpg_filename']}"
+                full_file = f"{docservers['VERIFIER_IMAGE_FULL']}/{year}/{month}/{document['full_jpg_filename']}"
+
                 if os.path.exists(thumb_file):
                     os.remove(thumb_file)
                     log.info(f"File removed: {thumb_file}")
+                if os.path.exists(full_file):
+                    os.remove(full_file)
+                    log.info(f"File removed: {full_file}")
         except (Exception,) as e:
             log.error(f"Error while removing files : {e}")
             continue

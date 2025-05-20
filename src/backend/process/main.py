@@ -115,17 +115,16 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
                                   workflow_settings['process']['allow_third_party_validation']):
             document_data['status'] = 'WAIT_THIRD_PARTY'
 
-    if args.get('isMail') is None or args.get('isMail') is False:
+    if 'customer_id' in args and args['customer_id']:
+        document_data.update({
+            'customer_id': args['customer_id']
+        })
+    else:
         if 'workflow_id' in args and args['workflow_id'] and workflow_settings:
             if 'customer_id' in workflow_settings['input'] and workflow_settings['input']['customer_id']:
                 document_data.update({
                     'customer_id': workflow_settings['input']['customer_id']
                 })
-    else:
-        if 'customer_id' in args and args['customer_id']:
-            document_data.update({
-                'customer_id': args['customer_id']
-            })
 
     insert_document = True
     args['outputs'] = []
@@ -268,7 +267,7 @@ def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_c
         if not os.path.isfile(improved_header_image):
             improved_header_image = files.improve_image_detection(files.jpg_name_header, remove_lines=False)
         if not os.path.isfile(improved_footer_image):
-            improved_footer_image = files.improve_image_detection(files.jpg_name_header, remove_lines=False)
+            improved_footer_image = files.improve_image_detection(files.jpg_name_footer, remove_lines=False)
 
         image = files.open_image_return(improved_image)
         if data_name == 'contact':

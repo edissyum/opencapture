@@ -17,6 +17,7 @@
 
 import os
 import time
+import shutil
 import facturx
 import tempfile
 import traceback
@@ -77,6 +78,7 @@ def execute(args, path, log, config, files, ocr, regex, database, docservers, co
             args['xml_content'] = xml_content
             args['configurations'] = configurations
             res = factur_x.process(args)
+
         if not res:
             if args.get('isMail') is not None and args['isMail'] is True:
                 mail.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process_name'],
@@ -226,9 +228,27 @@ def launch(args):
                         res = execute(args, path, log, config, files, ocr, regex, database, docservers, configurations,
                                       languages, mail_class, smtp)
                         list_of_ids.append(res)
+
+                    if os.path.isfile(docservers['ERROR_PATH'] + '/' + args['workflow_id'] + '/' + args['original_filename']):
+                        try:
+                            os.remove(docservers['ERROR_PATH'] + '/' + args['workflow_id'] + '/' + args['original_filename'])
+                        except (Exception, ):
+                            pass
                 except (Exception,):
                     _e = str(traceback.format_exc())
                     log.error(_e)
+                    try:
+                        if not os.path.isdir(docservers['ERROR_PATH'] + '/' + args['workflow_id']):
+                            os.mkdir(docservers['ERROR_PATH'] + '/' + args['workflow_id'])
+                            os.chmod(docservers['ERROR_PATH'] + '/' + args['workflow_id'], int('775', base=8))
+
+                        if 'isMail' in args and args['isMail'] is True:
+                            file_path = args['file']
+                        else:
+                            file_path = path + file
+                        shutil.copy(file_path, docservers['ERROR_PATH'] + '/' + args['workflow_id'] + '/' + args['original_filename'])
+                    except (Exception, ):
+                        pass
 
             recursive_delete(tmp_folder, log, docservers)
 

@@ -27,6 +27,8 @@ import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
 import { NotificationService } from "../../../services/notifications/notifications.service";
 import {SessionStorageService} from "../../../services/session-storage.service";
+import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
     selector: 'app-monitoring-list',
@@ -35,17 +37,18 @@ import {SessionStorageService} from "../../../services/session-storage.service";
     standalone: false
 })
 export class MonitoringListComponent implements OnInit, OnDestroy {
-    columnsToDisplay    : string[] = ['module', 'creation_date', 'end_date', 'filename', 'last_message', 'status'];
-    loading             : boolean  = true;
-    pageSize            : number   = 10;
-    pageIndex           : number   = 0;
-    total               : number   = 0;
-    offset              : number   = 0;
-    allProcessData      : any      = [];
-    moduleSelected      : string   = '';
-    statusSelected      : string   = '';
-    processData         : any;
-    form                : any[]    = [
+    columnsToDisplay      : string[] = ['module', 'creation_date', 'end_date', 'filename', 'last_message', 'status'];
+    loading               : boolean  = true;
+    pageSize              : number   = 10;
+    pageIndex             : number   = 0;
+    total                 : number   = 0;
+    offset                : number   = 0;
+    allProcessData        : any      = [];
+    moduleSelected        : string   = '';
+    statusSelected        : string   = '';
+    processData           : any;
+    filenameSearchControl : FormControl = new FormControl('');
+    form                  : any[]    = [
         {
             'id': 'module',
             'label': this.translate.instant('CUSTOM-FIELDS.module'),
@@ -81,12 +84,19 @@ export class MonitoringListComponent implements OnInit, OnDestroy {
                     'label': this.translate.instant('MONITORING.error')
                 }
             ]
+        },
+        {
+            'id': 'filename',
+            'type': 'text',
+            'label': this.translate.instant('HEADER.filename'),
+            'control': this.filenameSearchControl
         }
     ];
-    timer               : any;
+    timer                 : any;
 
     constructor(
         private http: HttpClient,
+        private dialog: MatDialog,
         private authService: AuthService,
         private notify: NotificationService,
         private translate: TranslateService,
@@ -129,7 +139,7 @@ export class MonitoringListComponent implements OnInit, OnDestroy {
 
     loadMonitoring() {
         this.http.get(
-            environment['url'] + '/ws/monitoring/list?limit=' + this.pageSize + '&offset=' + this.offset + '&module=' + this.moduleSelected + '&status=' + this.statusSelected,
+            environment['url'] + '/ws/monitoring/list?filename=' + this.filenameSearchControl.value + '&limit=' + this.pageSize + '&offset=' + this.offset + '&module=' + this.moduleSelected + '&status=' + this.statusSelected,
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.processData = data['processes'];
@@ -201,5 +211,48 @@ export class MonitoringListComponent implements OnInit, OnDestroy {
 
     compare(a: number | string, b: number | string, isAsc: boolean) {
         return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+    }
+
+    retryProcess(process_id: number) {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data: {
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('MONITORING.confirm_retry_process'),
+                confirmButton       : this.translate.instant('MONITORING.retry'),
+                confirmButtonColor  : "green",
+                cancelButton        : this.translate.instant('GLOBAL.cancel')
+            },
+            width: "600px"
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.http.get(environment['url'] + '/ws/verifier/retryFromMonitoring/' + process_id, {headers: this.authService.headers}).pipe(
+                    tap(()  => {
+                        this.notify.success(this.translate.instant('MONITORING.process_retried'));
+                        this.updateProcess(process_id);
+                    }),
+                    catchError((err: any) => {
+                        this.updateProcess(process_id);
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }
+        });
+    }
+
+    updateProcess(process_id: number) {
+        this.http.put(environment['url'] + '/ws/monitoring/update_retry', {'process_id': process_id}, {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.loadMonitoring();
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 }

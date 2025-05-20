@@ -55,6 +55,37 @@ def upload_documents(body):
     }
     return response, 400
 
+def retry_from_monitoring(process_id):
+    process, _ = monitoring.get_process_by_id(process_id)
+    if _ != 200:
+        response = {
+            "errors": gettext('RETRY_FROM_MONITORING_ERROR'),
+            "message": gettext('PROCESS_NOT_FOUND')
+        }
+        return response, 400
+
+    process = process['process'][0]
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+
+    path = docservers['ERROR_PATH'] + '/' + process['workflow_id'] + '/' + process['filename']
+    if not os.path.isfile(path):
+        response = {
+            "errors": gettext('RETRY_FROM_MONITORING_ERROR'),
+            "message": gettext('FILE_NOT_FOUND')
+        }
+        return response, 400
+
+    file = FileStorage(stream=open(path, 'rb'), filename=process['filename'])
+    res = handle_uploaded_file([file], process['workflow_id'], {})
+    if res and res[0] is not False:
+        return res
+    else:
+        return gettext('UNKNOW_ERROR'), 400
 
 def handle_uploaded_file(files, workflow_id, supplier, datas=None, splitter_batch_id=False):
     custom_id = retrieve_custom_from_url(request)
@@ -94,7 +125,8 @@ def handle_uploaded_file(files, workflow_id, supplier, datas=None, splitter_batc
                 'splitter_batch_id': splitter_batch_id,
                 'user_id': request.environ['user_id'],
                 'user_info': request.environ['user_info'],
-                'task_id_monitor': task_id_monitor[0]['process']
+                'task_id_monitor': task_id_monitor[0]['process'],
+                'original_filename': os.path.basename(_f.filename)
             })
         else:
             return False, 500
@@ -166,6 +198,13 @@ def retrieve_documents(args):
         else:
             args['where'].append('documents.form_id = %s')
             args['data'].append(args['form_id'])
+
+    if 'user_id' in args and args['user_id']:
+        user_forms = user.get_forms_by_user_id(args['user_id'])
+        if user_forms[1] == 200:
+            user_forms = user_forms[0]
+            args['where'].append('documents.form_id = ANY(%s)')
+            args['data'].append(user_forms)
 
     if 'search' in args and args['search']:
         args['select'].append("documents.form_id as form_id")
@@ -863,13 +902,13 @@ def get_totals(status, user_id, form_id):
     allowed_customers.append(0)  # Update allowed customers to add Unspecified customers
 
     totals['today'], error = verifier.get_totals({
-        'time': 'today', 'status': status, 'form_id': form_id, 'allowedCustomers': allowed_customers
+        'time': 'today', 'status': status, 'form_id': form_id, 'user_id': user_id, 'allowedCustomers': allowed_customers
     })
     totals['yesterday'], error = verifier.get_totals({
-        'time': 'yesterday', 'status': status, 'form_id': form_id, 'allowedCustomers': allowed_customers
+        'time': 'yesterday', 'status': status, 'form_id': form_id, 'user_id': user_id, 'allowedCustomers': allowed_customers
     })
     totals['older'], error = verifier.get_totals({
-        'time': 'older', 'status': status, 'form_id': form_id, 'allowedCustomers': allowed_customers
+        'time': 'older', 'status': status, 'form_id': form_id, 'user_id': user_id, 'allowedCustomers': allowed_customers
     })
 
     if error is None:
@@ -906,12 +945,18 @@ def update_status(args):
 def get_unseen(user_id):
     user_customers = user.get_customers_by_user_id(user_id)
     user_customers[0].append(0)
+
+    user_forms = user.get_forms_by_user_id(user_id)
+    if user_forms[1] == 200:
+        user_forms = user_forms[0]
+
     total_unseen = verifier.get_total_documents({
         'select'    : ["status.label_long as status", "count(documents.id) as unseen"],
         'table'     : ["documents", "status"],
         'left_join' : ["status.id = documents.status"],
-        'where'     : ["status IN ('NEW', 'ERR', 'WAIT_THIRD_PARTY')", "customer_id = ANY(%s)", "datas -> 'api_only' is NULL", "status.module = %s"],
-        'data'      : [user_customers[0], 'verifier'],
+        'where'     : ["status IN ('NEW', 'ERR', 'WAIT_THIRD_PARTY')", "customer_id = ANY(%s)",
+                       "datas -> 'api_only' is NULL", "status.module = %s", "documents.form_id = ANY(%s)"],
+        'data'      : [user_customers[0], 'verifier', user_forms],
         'group_by'  : ["status.label_long"]
     })
     return total_unseen, 200

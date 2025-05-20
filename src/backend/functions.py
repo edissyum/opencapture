@@ -274,6 +274,9 @@ def check_python_customized_files(path):
 
 
 def search_custom_positions(data, ocr, files, regex, file, docservers):
+    if data['page'] >= files.get_pages(docservers, file):
+        return ['', (('', ''), ('', ''))]
+
     target = data['target'].lower()
     try:
         position = json.loads(data['position'])

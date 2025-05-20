@@ -30,7 +30,7 @@ import { NotificationService } from "./notifications/notifications.service";
     providedIn: 'root'
 })
 export class LocaleService {
-    currentLang         : string = 'fra';
+    currentLang         : string = '';
     currentBabelLang    : string = 'fr';
     dateAdaptaterLocale : string = 'fr-FR';
     langs               : [] = [];
@@ -43,6 +43,10 @@ export class LocaleService {
         private notify: NotificationService,
         private dateAdapter: DateAdapter<any>
     ) {
+        if (localStorage.getItem('currentLang')) {
+            this.currentLang = localStorage.getItem('currentLang') || 'fra';
+            this.getCurrentLocale();
+        }
         this.dateAdapter.setLocale('fr-FR');
         moment.updateLocale('fr-FR', {
             monthsShort : 'janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.'.split('_'),
@@ -107,6 +111,7 @@ export class LocaleService {
         this.http.get(environment['url'] + '/ws/i18n/getCurrentLang').pipe(
             tap((data: any) => {
                 this.currentLang = data.lang;
+                localStorage.setItem('currentLang', this.currentLang);
                 this.currentBabelLang = data['babel_lang'];
                 if (data['moment_lang']) {
                     this.dateAdaptaterLocale = data['moment_lang'];
