@@ -58,8 +58,16 @@ def get_processes(module=None, get_last_processes=False):
         data.append(request.args['module'])
 
     if 'status' in request.args and request.args['status']:
-        where.append('status = %s')
-        data.append(request.args['status'])
+        if request.args['status'] == 'error':
+            where.append('status = %s OR error = %s')
+            data.append(request.args['status'])
+            data.append(True)
+        else:
+            where.append('status = %s')
+            data.append(request.args['status'])
+
+    if 'filename' in request.args and request.args['filename']:
+        where.append(f"filename ILIKE '%%{request.args['filename']}%%'")
 
     if where:
         args.update({'where': where, 'data': data})
@@ -135,3 +143,7 @@ def create_process(args):
         "process": process
     }
     return response, 200
+
+def update_retry(process_id):
+    process, _ = monitoring.update_retry(process_id)
+    return _, 200

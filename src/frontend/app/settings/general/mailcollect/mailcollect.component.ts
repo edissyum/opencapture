@@ -27,7 +27,6 @@ import { environment } from "../../../env";
 import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { FormControl } from '@angular/forms';
-import { Sort } from "@angular/material/sort";
 import { MatDialog } from "@angular/material/dialog";
 import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
 
@@ -47,8 +46,6 @@ export class MailCollectComponent implements OnInit {
     formValid           : { [key: string]: boolean; } = {};
     allVerifierWorkflows: any           = [];
     allSplitterWorkflows: any           = [];
-    processesMail       : any           = [];
-    allprocessesMail    : any           = [];
     processes           : any           = [];
     pageSize            : number        = 10;
     pageIndex           : number        = 0;
@@ -88,90 +85,218 @@ export class MailCollectComponent implements OnInit {
             required: false
         },
         {
-            id: 'oauth',
-            unit: 'general',
-            control: new FormControl(false),
-            label: _('MAILCOLLECT.oauth'),
-            type: 'boolean',
-            required: false
-        },
-        {
-            id: 'hostname',
+            id: 'options',
             unit: 'general',
             control: new FormControl(),
-            label: _('MAILCOLLECT.hostname'),
-            type: 'text',
-            required: true
+            label: _('MAILCOLLECT.methods'),
+            type: 'select',
+            required: true,
+            values: [
+                {
+                    id: 'imap',
+                    label: _('MAILCOLLECT.imap'),
+                    "options": {
+                        "hostname"  : {
+                            id: 'hostname',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl(),
+                            label: _('MAILCOLLECT.hostname'),
+                            type: 'text',
+                            required: true
+                        },
+                        "port"      : {
+                            id: 'port',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl(),
+                            label: _('MAILCOLLECT.port'),
+                            type: 'number',
+                            required: true
+                        },
+                        "login"     : {
+                            id: 'login',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl(),
+                            label: _('FORMATS.email'),
+                            type: 'text',
+                            required: true
+                        },
+                        "password"  : {
+                            id: 'password',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl(),
+                            label: _('USER.password'),
+                            type: 'password',
+                            required: true
+                        }
+                    }
+                },
+                {
+                    id: 'graphql',
+                    label: _('MAILCOLLECT.graphql'),
+                    "options": {
+                        "login"     : {
+                            id: 'login',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl(),
+                            label: _('FORMATS.email'),
+                            type: 'text',
+                            required: true
+                        },
+                        "grant_type"    : {
+                            id: 'grant_type',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl('client_credentials'),
+                            label: _('MAILCOLLECT.grant_type'),
+                            type: 'text',
+                            required: true
+                        },
+                        "scope"         : {
+                            id: 'scope',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl('https://graph.microsoft.com/.default'),
+                            label: _('MAILCOLLECT.scope'),
+                            type: 'text',
+                            required: true
+                        },
+                        "users_url"     : {
+                            id: 'users_url',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl('https://graph.microsoft.com/v1.0/users'),
+                            label: _('MAILCOLLECT.users_url'),
+                            type: 'text',
+                            required: true
+                        },
+                        "message_url"   : {
+                            id: 'message_url',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl('https://graph.microsoft.com/v1.0/me/messages'),
+                            label: _('MAILCOLLECT.message_url'),
+                            type: 'text',
+                            required: true
+                        },
+                        "get_token_url" : {
+                            id: 'get_token_url',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl("https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"),
+                            label: _('MAILCOLLECT.get_token_url'),
+                            type: 'text',
+                            required: true
+                        },
+                        "client_id"     : {
+                            id: 'client_id',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl(),
+                            label: _('MAILCOLLECT.client_id'),
+                            type: 'text',
+                            required: true
+                        },
+                        "tenant_id"     : {
+                            id: 'tenant_id',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl(),
+                            label: _('MAILCOLLECT.tenant_id'),
+                            type: 'text',
+                            required: true
+                        },
+                        "client_secret" : {
+                            id: 'client_secret',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl(),
+                            label: _('MAILCOLLECT.secret'),
+                            type: 'text',
+                            required: true
+                        }
+                    }
+                },
+                {
+                    id: 'oauth',
+                    label: _('MAILCOLLECT.oauth'),
+                    "options": {
+                        "hostname"  : {
+                            id: 'hostname',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl('outlook.office365.com'),
+                            label: _('MAILCOLLECT.hostname'),
+                            type: 'text',
+                            required: true
+                        },
+                        "login"     : {
+                            id: 'login',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl(),
+                            label: _('FORMATS.email'),
+                            type: 'text',
+                            required: true
+                        },
+                        "scopes"    : {
+                            id: 'scopes',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl('https://outlook.office.com/.default'),
+                            label: _('MAILCOLLECT.scopes'),
+                            type: 'text',
+                            required: true
+                        },
+                        "authority" : {
+                            id: 'authority',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl('https://login.microsoftonline.com/'),
+                            label: _('MAILCOLLECT.authority'),
+                            type: 'text',
+                            required: true
+                        },
+                        "client_id" : {
+                            id: 'client_id',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl(),
+                            label: _('MAILCOLLECT.client_id'),
+                            type: 'text',
+                            required: true
+                        },
+                        "tenant_id" : {
+                            id: 'tenant_id',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl(),
+                            label: _('MAILCOLLECT.tenant_id'),
+                            type: 'text',
+                            required: true
+                        },
+                        "secret"    : {
+                            id: 'secret',
+                            fromMethod: true,
+                            unit: 'general',
+                            control: new FormControl(),
+                            label: _('MAILCOLLECT.secret'),
+                            type: 'text',
+                            required: true
+                        }
+                    }
+                }
+            ]
         },
         {
             id: 'enabled',
             control: new FormControl(),
             disabled: true,
             type: 'boolean',
-            required: false
-        },
-        {
-            id: 'port',
-            unit: 'general',
-            control: new FormControl(),
-            label: _('MAILCOLLECT.port'),
-            type: 'number',
-            required: true
-        },
-        {
-            id: 'login',
-            unit: 'general',
-            control: new FormControl(),
-            label: _('FORMATS.email'),
-            type: 'text',
-            required: true
-        },
-        {
-            id: 'password',
-            unit: 'general',
-            control: new FormControl(),
-            label: _('USER.password'),
-            type: 'password',
-            required: false
-        },
-        {
-            id: 'scopes',
-            unit: 'general',
-            control: new FormControl('https://outlook.office.com/.default'),
-            label: _('MAILCOLLECT.scopes'),
-            type: 'text',
-            required: false
-        },
-        {
-            id: 'authority',
-            unit: 'general',
-            control: new FormControl('https://login.microsoftonline.com/'),
-            label: _('MAILCOLLECT.authority'),
-            type: 'text',
-            required: false
-        },
-        {
-            id: 'tenant_id',
-            unit: 'general',
-            control: new FormControl(),
-            label: _('MAILCOLLECT.tenant_id'),
-            type: 'text',
-            required: false
-        },
-        {
-            id: 'client_id',
-            unit: 'general',
-            control: new FormControl(),
-            label: _('MAILCOLLECT.client_id'),
-            type: 'text',
-            required: false
-        },
-        {
-            id: 'secret',
-            unit: 'general',
-            control: new FormControl(),
-            label: _('MAILCOLLECT.secret'),
-            type: 'text',
             required: false
         },
         {
@@ -387,6 +512,7 @@ export class MailCollectComponent implements OnInit {
             tap((data: any) => {
                 data.processes.forEach((process: any) => {
                     const newProcess: any = [];
+                    let method_enabled = 'imap';
                     this.defaultProcessData.forEach((process_default: any) => {
                         Object.keys(process).forEach((element: any) => {
                             if (element === process_default.id) {
@@ -407,6 +533,19 @@ export class MailCollectComponent implements OnInit {
                                     }
                                 } else if (element === 'folder_trash' || element === 'folder_to_crawl' || element === 'folder_destination') {
                                     value = {id: process[element], label: process[element]};
+                                } else if (element === 'options') {
+                                    value = process['method'];
+                                    method_enabled = process['method'];
+                                    Array.from(Object.keys(process_default.values)).forEach((cpt: any) => {
+                                        if (process_default.values[cpt].id == method_enabled) {
+                                            Array.from(Object.keys(process_default.values[cpt].options)).forEach((option: any) => {
+                                                let value = process_default.values[cpt].options[option];
+                                                if (process[element][option]) {
+                                                    value.control.setValue(process[element][option]);
+                                                }
+                                            })
+                                        }
+                                    });
                                 }
                                 process_default.control.setValue(value);
                                 newProcess.push(process_default);
@@ -416,7 +555,7 @@ export class MailCollectComponent implements OnInit {
                     newProcess.exists = true;
                     this.resetDefaultData();
                     this.processes.push(newProcess);
-                    this.updateRequired({source: {name: 'oauth'}, checked: process['oauth']}, newProcess);
+                    this.changeMethod(method_enabled, newProcess);
                 });
             }),
             finalize(() => this.loading = false),
@@ -461,90 +600,218 @@ export class MailCollectComponent implements OnInit {
                 required: false
             },
             {
-                id: 'oauth',
-                unit: 'general',
-                control: new FormControl(false),
-                label: _('MAILCOLLECT.oauth'),
-                type: 'boolean',
-                required: false
-            },
-            {
-                id: 'hostname',
+                id: 'options',
                 unit: 'general',
                 control: new FormControl(),
-                label: _('MAILCOLLECT.hostname'),
-                type: 'text',
-                required: true
+                label: _('MAILCOLLECT.methods'),
+                type: 'select',
+                required: true,
+                values: [
+                    {
+                        id: 'imap',
+                        label: _('MAILCOLLECT.imap'),
+                        "options": {
+                            "hostname"  : {
+                                id: 'hostname',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl(),
+                                label: _('MAILCOLLECT.hostname'),
+                                type: 'text',
+                                required: true
+                            },
+                            "port"      : {
+                                id: 'port',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl(),
+                                label: _('MAILCOLLECT.port'),
+                                type: 'number',
+                                required: true
+                            },
+                            "login"     : {
+                                id: 'login',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl(),
+                                label: _('FORMATS.email'),
+                                type: 'text',
+                                required: true
+                            },
+                            "password"  : {
+                                id: 'password',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl(),
+                                label: _('USER.password'),
+                                type: 'password',
+                                required: true
+                            }
+                        }
+                    },
+                    {
+                        id: 'graphql',
+                        label: _('MAILCOLLECT.graphql'),
+                        "options": {
+                            "login"     : {
+                                id: 'login',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl(),
+                                label: _('FORMATS.email'),
+                                type: 'text',
+                                required: true
+                            },
+                            "grant_type"    : {
+                                id: 'grant_type',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl('client_credentials'),
+                                label: _('MAILCOLLECT.grant_type'),
+                                type: 'text',
+                                required: true
+                            },
+                            "scope"         : {
+                                id: 'scope',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl('https://graph.microsoft.com/.default'),
+                                label: _('MAILCOLLECT.scope'),
+                                type: 'text',
+                                required: true
+                            },
+                            "users_url"     : {
+                                id: 'users_url',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl('https://graph.microsoft.com/v1.0/users'),
+                                label: _('MAILCOLLECT.users_url'),
+                                type: 'text',
+                                required: true
+                            },
+                            "message_url"   : {
+                                id: 'message_url',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl('https://graph.microsoft.com/v1.0/me/messages'),
+                                label: _('MAILCOLLECT.message_url'),
+                                type: 'text',
+                                required: true
+                            },
+                            "get_token_url" : {
+                                id: 'get_token_url',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl("https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"),
+                                label: _('MAILCOLLECT.get_token_url'),
+                                type: 'text',
+                                required: true
+                            },
+                            "client_id"     : {
+                                id: 'client_id',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl(),
+                                label: _('MAILCOLLECT.client_id'),
+                                type: 'text',
+                                required: true
+                            },
+                            "tenant_id"     : {
+                                id: 'tenant_id',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl(),
+                                label: _('MAILCOLLECT.tenant_id'),
+                                type: 'text',
+                                required: true
+                            },
+                            "client_secret" : {
+                                id: 'client_secret',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl(),
+                                label: _('MAILCOLLECT.secret'),
+                                type: 'text',
+                                required: true
+                            }
+                        }
+                    },
+                    {
+                        id: 'oauth',
+                        label: _('MAILCOLLECT.oauth'),
+                        "options": {
+                            "hostname"  : {
+                                id: 'hostname',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl('outlook.office365.com'),
+                                label: _('MAILCOLLECT.hostname'),
+                                type: 'text',
+                                required: true
+                            },
+                            "login"     : {
+                                id: 'login',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl(),
+                                label: _('FORMATS.email'),
+                                type: 'text',
+                                required: true
+                            },
+                            "scopes"    : {
+                                id: 'scopes',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl('https://outlook.office.com/.default'),
+                                label: _('MAILCOLLECT.scopes'),
+                                type: 'text',
+                                required: true
+                            },
+                            "authority" : {
+                                id: 'authority',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl('https://login.microsoftonline.com/'),
+                                label: _('MAILCOLLECT.authority'),
+                                type: 'text',
+                                required: true
+                            },
+                            "client_id" : {
+                                id: 'client_id',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl(),
+                                label: _('MAILCOLLECT.client_id'),
+                                type: 'text',
+                                required: true
+                            },
+                            "tenant_id" : {
+                                id: 'tenant_id',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl(),
+                                label: _('MAILCOLLECT.tenant_id'),
+                                type: 'text',
+                                required: true
+                            },
+                            "secret"    : {
+                                id: 'secret',
+                                fromMethod: true,
+                                unit: 'general',
+                                control: new FormControl(),
+                                label: _('MAILCOLLECT.secret'),
+                                type: 'text',
+                                required: true
+                            }
+                        }
+                    }
+                ]
             },
             {
                 id: 'enabled',
                 control: new FormControl(),
                 disabled: true,
                 type: 'boolean',
-                required: false
-            },
-            {
-                id: 'port',
-                unit: 'general',
-                control: new FormControl(),
-                label: _('MAILCOLLECT.port'),
-                type: 'number',
-                required: true
-            },
-            {
-                id: 'login',
-                unit: 'general',
-                control: new FormControl(),
-                label: _('FORMATS.email'),
-                type: 'text',
-                required: true
-            },
-            {
-                id: 'password',
-                unit: 'general',
-                control: new FormControl(),
-                label: _('USER.password'),
-                type: 'password',
-                required: false
-            },
-            {
-                id: 'scopes',
-                unit: 'general',
-                control: new FormControl('https://outlook.office.com/.default'),
-                label: _('MAILCOLLECT.scopes'),
-                type: 'text',
-                required: false
-            },
-            {
-                id: 'authority',
-                unit: 'general',
-                control: new FormControl('https://login.microsoftonline.com/'),
-                label: _('MAILCOLLECT.authority'),
-                type: 'text',
-                required: false
-            },
-            {
-                id: 'tenant_id',
-                unit: 'general',
-                control: new FormControl(),
-                label: _('MAILCOLLECT.tenant_id'),
-                type: 'text',
-                required: false
-            },
-            {
-                id: 'client_id',
-                unit: 'general',
-                control: new FormControl(),
-                label: _('MAILCOLLECT.client_id'),
-                type: 'text',
-                required: false
-            },
-            {
-                id: 'secret',
-                unit: 'general',
-                control: new FormControl(),
-                label: _('MAILCOLLECT.secret'),
-                type: 'text',
                 required: false
             },
             {
@@ -657,16 +924,27 @@ export class MailCollectComponent implements OnInit {
         if (this.isValidForm(process)) {
             const data: any = {};
             process.forEach((element: any) => {
-                if (element.id !== 'verifier_workflow_id' && element.id !== 'splitter_workflow_id' &&
-                    element.id !== 'folder_to_crawl' && element.id !== 'folder_destination' &&
-                    element.id !== 'folder_trash') {
-                    data[element.id] = element.control.value;
-                } else {
-                    if (element.id == 'verifier_workflow_id' || element.id == 'splitter_workflow_id') {
+                if (['name', 'verifier_workflow_id', 'verifier_workflow_id', 'splitter_workflow_id', 'folder_to_crawl',
+                    'folder_destination', 'folder_trash', 'action_after_process'].includes(element.id)) {
+                    if (element.id.includes('folder_')) {
+                        data[element.id] = element.control.value && element.control.value.id ? element.control.value.id : null;
+                    } else if (element.id.includes('_workflow_id')) {
                         data[element.id] = element.control.value ? element.control.value.workflow_id : null;
                     } else {
-                        data[element.id] = element.control.value ? element.control.value.id : null;
+                        data[element.id] = element.control && element.control.value ? element.control.value : null;
                     }
+                } else if (element.id === 'options') {
+                    let methodOptions: any = {};
+                    this.defaultProcessData.forEach((data: any) => {
+                        if (data.id === 'options') {
+                            const method = data.values.find((x: { id: any; }) => x.id == element.control.value).options;
+                            Array.from(Object.keys(method)).forEach((value: any) => {
+                                methodOptions[value] = process.find((element: any) => element.id === value).control.value;
+                            })
+                        }
+                    });
+                    data['options'] = methodOptions;
+                    data['method'] = element.control.value;
                 }
             });
 
@@ -835,14 +1113,28 @@ export class MailCollectComponent implements OnInit {
 
             const data: any = {};
             process.forEach((element: any) => {
-                if (element.id !== 'verifier_workflow_id' && element.id !== 'splitter_workflow_id' &&
-                    element.id !== 'folder_to_crawl' && element.id !== 'folder_destination' &&
-                    element.id !== 'folder_trash') {
-                    data[element.id] = element.control.value;
-                } else if (element.id == 'verifier_workflow_id' || element.id == 'splitter_workflow_id') {
-                    data[element.id] = element.control.value ? element.control.value.workflow_id : null;
-                } else {
-                    data[element.id] = element.control.value ? element.control.value.id : null;
+                if (['name', 'verifier_workflow_id', 'verifier_workflow_id', 'splitter_workflow_id', 'folder_to_crawl',
+                    'folder_destination', 'folder_trash', 'action_after_process',
+                    'verifier_insert_body_as_doc', 'splitter_insert_body_as_doc'].includes(element.id)) {
+                    if (element.id.includes('folder_')) {
+                        data[element.id] = element.control.value && element.control.value.id ? element.control.value.id : null;
+                    } else if (element.id.includes('_workflow_id')) {
+                        data[element.id] = element.control.value ? element.control.value.workflow_id : null;
+                    } else {
+                        data[element.id] = element.control && element.control.value ? element.control.value : null;
+                    }
+                } else if (element.id === 'options') {
+                    let methodOptions: any = {};
+                    this.defaultProcessData.forEach((data: any) => {
+                        if (data.id === 'options') {
+                            const method = data.values.find((x: { id: any; }) => x.id == element.control.value).options;
+                            Array.from(Object.keys(method)).forEach((value: any) => {
+                                methodOptions[value] = process.find((element: any) => element.id === value).control.value;
+                            })
+                        }
+                    });
+                    data['options'] = methodOptions;
+                    data['method'] = element.control.value;
                 }
             });
 
@@ -863,68 +1155,22 @@ export class MailCollectComponent implements OnInit {
     retrieveFolders(process: any) {
         this.formValid[this.getNameOfProcess(process)] = false;
         this.folderLoading = true;
-        let port = '';
-        let login = '';
-        let secret = '';
-        let scopes = '';
-        let hostname = '';
-        let password = '';
-        let oauth = false;
-        let tenant_id = '';
-        let client_id = '';
-        let authority = '';
-        let secured_connection = '';
+        this.folders = [];
+        let data: any = {}
         process.forEach((element: any) => {
-            if (element.id === 'hostname') {
-                hostname = element.control.value;
-            }
-            if (element.id === 'port') {
-                port = element.control.value;
+            if (element.id === 'options') {
+                data['method'] = element.control.value;
+                const options = element.values.find((x: { id: any; }) => x.id == data['method']).options;
+                Array.from(Object.keys(options)).forEach((value: any) => {
+                    data[value] = options[value].control.value;
+                });
             }
             if (element.id === 'secured_connection') {
-                secured_connection = element.control.value;
-            }
-            if (element.id === 'login') {
-                login = element.control.value;
-            }
-            if (element.id === 'password') {
-                password = element.control.value;
-            }
-            if (element.id === 'oauth') {
-                oauth = element.control.value;
-            }
-            if (element.id === 'tenant_id') {
-                tenant_id = element.control.value;
-            }
-            if (element.id === 'client_id') {
-                client_id = element.control.value;
-            }
-            if (element.id === 'secret') {
-                secret = element.control.value;
-            }
-            if (element.id === 'scopes') {
-                scopes = element.control.value;
-            }
-            if (element.id === 'authority') {
-                authority = element.control.value;
+                data['secured_connection'] = element.control.value;
             }
         });
 
-        if (hostname && login && (password || (oauth && tenant_id && client_id && secret))) {
-            const data = {
-                'port': port,
-                'login': login,
-                'hostname': hostname,
-                'password': password,
-                'oauth': oauth,
-                'tenant_id': tenant_id,
-                'client_id': client_id,
-                'secret': secret,
-                'scopes': scopes,
-                'authority': authority,
-                'secured_connection': secured_connection
-            };
-
+        if (data) {
             this.http.post(environment['url'] + '/ws/mailcollect/retrieveFolders', data, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     data.forEach((element: any) => {
@@ -964,30 +1210,7 @@ export class MailCollectComponent implements OnInit {
         }
     }
 
-    sortData(sort: Sort) {
-        const data = this.allprocessesMail.slice();
-        if (!sort.active || sort.direction === '') {
-            this.processesMail = data.splice(0, this.pageSize);
-            return;
-        }
-
-        this.processesMail = data.sort((a: any, b: any) => {
-            const isAsc = sort.direction === 'asc';
-            switch (sort.active) {
-                case 'id': return this.compare(a.id, b.id, isAsc);
-                case 'docserver_id': return this.compare(a.docserver_id, b.docserver_id, isAsc);
-                case 'description': return this.compare(a.description, b.description, isAsc);
-                default: return 0;
-            }
-        });
-        this.processesMail = this.processesMail.splice(0, this.pageSize);
-    }
-
-    compare(a: number | string, b: number | string, isAsc: boolean) {
-        return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
-    }
-
-    isValidForm(process: any, notify: boolean = true) {
+    isValidForm(process: any, notify: boolean = true, event: any = null) {
         let state = true;
 
         process.forEach((element: any) => {
@@ -1003,7 +1226,32 @@ export class MailCollectComponent implements OnInit {
             this.formValid[this.getNameOfProcess(process)] = true;
         }
 
+        if (event && event.source.id == 'options') {
+            const tmp_process = process.filter((element: any) => !element.fromMethod);
+            const process_name = this.getNameOfProcess(tmp_process);
+
+            this.processes.forEach((old_process: any, index: number) => {
+                const name = this.getNameOfProcess(old_process);
+                if (name === process_name) {
+                    this.processes[index] = this.changeMethod(event.value, tmp_process);
+                    if (process.exists) {
+                        this.processes[index].exists = true;
+                    }
+                }
+            })
+        }
+
         return state;
+    }
+
+    changeMethod(method_id: any, process: any) {
+        const methods = process.find((element: any) => element.id === 'options').values;
+        const method = methods.find((element: any) => element.id === method_id);
+
+        Array.from(Object.keys(method.options)).forEach((element: any) => {
+            process.push(method.options[element]);
+        });
+        return process;
     }
 
     getErrorMessage(field: any, process: any) {
@@ -1017,19 +1265,5 @@ export class MailCollectComponent implements OnInit {
             }
         });
         return error;
-    }
-
-    updateRequired(event: any, process: any) {
-        if (event.source.name === 'oauth') {
-            process.forEach((element: any) => {
-                if (element.id === 'tenant_id' || element.id === 'client_id' || element.id === 'secret' || element.id === 'scopes' || element.id === 'authority') {
-                    element.required = event.checked;
-                }
-
-                if (element.id === 'password') {
-                    element.required = !event.checked;
-                }
-            });
-        }
     }
 }

@@ -1,24 +1,26 @@
-<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" [autosize]="true">
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" [style]="this.fromModal ? 'top: 0' : 'top: 4.1rem'" [autosize]="true">
     <mat-sidenav-content class="bg-white overflow-hidden">
         @if (this.loading) {
             <div>
                 <app-loader></app-loader>
             </div>
         }
-        <div class="relative z-30 h-[3.75rem] flex justify-between items-center px-2 bg-green-400 bg-opacity-60 text-gray-900">
-            <div class="flex">
-                <button mat-icon-button (click)="this.router.navigate(['/accounts/suppliers'])" [matTooltip]="'ACCOUNTS.back_to_suppliers_list' | translate">
-                    <i class="fa-solid fa-arrow-left fa-md"></i>
-                </button>
+        @if (!this.fromModal) {
+            <div class="relative z-30 h-[3.75rem] flex justify-between items-center px-2 bg-green-400 bg-opacity-60 text-gray-900">
+                <div class="flex">
+                    <button mat-icon-button (click)="this.router.navigate(['/accounts/suppliers'])" [matTooltip]="'ACCOUNTS.back_to_suppliers_list' | translate">
+                        <i class="fa-solid fa-arrow-left fa-md"></i>
+                    </button>
+                </div>
+                <h3 class="text-center m-0">
+                    {{ this.serviceSettings.getTitle() }}
+                </h3>
+                <div class="settings_search"></div>
             </div>
-            <h3 class="text-center m-0">
-                {{ this.serviceSettings.getTitle() }}
-            </h3>
-            <div class="settings_search"></div>
-        </div>
+        }
         <hr class="border-green-400">
-        <div class="overflow-x-hidden h-full-overflow">
-            <div class="flex justify-center mt-10">
+        <div class="overflow-x-hidden" [style]="this.fromModal ? 'height: calc(100vh - 11rem) !important' : 'height: calc(100vh - 8rem) !important'">
+            <div class="flex justify-center mt-10 gap-4">
                 @for (field of supplierForm; track field['id']) {
                     @if (field['type'] === 'mat-slide-toggle') {
                         <mat-slide-toggle [formControl]="field['control']">
@@ -53,7 +55,7 @@
                             <mat-label>{{ field['label'] | translate }}</mat-label>
                             <mat-select [formControl]="field['control']" [required]="field['required']">
                                 @for (option of field.values; track option['id']) {
-                                    <mat-option [value]="option['id']">{{ option['label'] }}</mat-option>
+                                    <mat-option [value]="option['id']">{{ option['label'] | translate }}</mat-option>
                                 }
                             </mat-select>
                             @if (field.control.invalid) {

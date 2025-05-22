@@ -31,6 +31,7 @@ def get_status(args, module):
                 'time': args['time'],
                 'status': stat['id'],
                 'form_id': args['form_id'],
+                'user_id': args['user_id'],
                 'allowedCustomers': allowed_customers
             })[0]
             stat['total'] = total

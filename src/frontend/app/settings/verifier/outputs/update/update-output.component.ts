@@ -43,7 +43,9 @@ export class HighlightPipe implements PipeTransform {
                 .filter((t:any) => t.length > 0)
                 .join('|');
             const regex = new RegExp(pattern, 'gi');
-            return search ? text.replace(regex, match => `<b>${match}</b>`) : text;
+            if (text) {
+                return search ? text.replace(regex, match => `<b>${match}</b>`) : text;
+            }
         }
         return text
     }
@@ -147,12 +149,40 @@ export class UpdateOutputComponent implements OnInit {
             'label': 'ACCOUNTS.supplier_name'
         },
         {
+            'id': 'lastname',
+            'label': 'ACCOUNTS.lastname'
+        },
+        {
+            'id': 'firstname',
+            'label': 'ACCOUNTS.firstname'
+        },
+        {
+            'id': 'email',
+            'label': 'FORMATS.email'
+        },
+        {
+            'id': 'phone',
+            'label': 'FORMATS.phone'
+        },
+        {
+            'id': 'civility',
+            'label': 'ACCOUNTS.civility'
+        },
+        {
+            'id': 'function',
+            'label': 'ACCOUNTS.function'
+        },
+        {
             'id': 'b64_file_content',
             'label': _('OUTPUT.b64_file_content')
         },
         {
             'id': 'original_filename',
             'label': _('VERIFIER.original_filename')
+        },
+        {
+            'id': 'mime_type',
+            'label': _('VERIFIER.mime_type')
         },
         {
             'id': 'vat_number',
@@ -245,7 +275,8 @@ export class UpdateOutputComponent implements OnInit {
     ];
     testConnectionMapping   : any           = {
         'export_mem' : "testMEMConnection",
-        'export_coog' : "testCOOGConnection"
+        'export_coog' : "testCOOGConnection",
+        'export_opencrm': "testOpenCRMConnection"
     };
 
     /**
@@ -478,6 +509,38 @@ export class UpdateOutputComponent implements OnInit {
         } else {
             return array;
         }
+    }
+
+    /**** OpenCRM Webservices call ****/
+    testOpenCRMConnection() {
+        const args = this.getOpenCRMConnectionInfo();
+        this.http.post(environment['url'] + '/ws/opencrm/getAccessToken', {'args': args}, {headers: this.authService.headers},
+        ).pipe(
+            tap((data: any) => {
+                const status = data.status[0];
+                if (status === true) {
+                    this.notify.success(this.translate.instant('OUTPUT.opencrm_connection_ok'));
+                    this.connection = true;
+                } else {
+                    this.notify.error('<strong>' + this.translate.instant('OUTPUT.opencrm_connection_ko') + '</strong> : ' + data.status[1]);
+                    this.connection = false;
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+
+    getOpenCRMConnectionInfo() {
+        return {
+            'host': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'host'),
+            'client_id': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'client_id'),
+            'client_secret': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'client_secret')
+        };
     }
 
     /**** COOG Webservices call ****/

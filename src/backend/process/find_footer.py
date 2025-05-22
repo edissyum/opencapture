@@ -106,11 +106,15 @@ class FindFooter:
 
                 if result:
                     result = result.replace('-', '').replace('/', '').replace('(', '').replace(')', '')
-                    if text_as_string:
-                        array_of_data.update({float(result.replace(',', '.')): (('', ''), ('', ''))})
-                    else:
-                        array_of_data.update(
-                            {float(result.replace(',', '.')): self.files.return_position_with_ratio(line, self.target)})
+                    try:
+                        if text_as_string:
+                            array_of_data.update({float(result.replace(',', '.')): (('', ''), ('', ''))})
+                        else:
+                            array_of_data.update(
+                                {float(result.replace(',', '.')): self.files.return_position_with_ratio(line, self.target)}
+                            )
+                    except (ValueError, TypeError):
+                        pass
 
         # Check list of no rates amount and select the higher
         if len(array_of_data) > 0:

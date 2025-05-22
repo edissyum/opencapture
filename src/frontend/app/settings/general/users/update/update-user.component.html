@@ -84,7 +84,7 @@
             {{ "USER.parameters" | translate }}
         </h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <mat-tab-group>
+        <mat-tab-group class="overflow-x-hidden h-full-overflow">
             <mat-tab id='userCustomers' [label]="'ACCOUNTS.customers' | translate">
                 @if (this.loadingCustomers) {
                     <div class="relative" style="top: 40%">
@@ -108,7 +108,6 @@
                 }
             </mat-tab>
             <mat-tab id='userForms' [label]="'FORMS.forms' | translate">
-                <app-hint class="mt-1" [specificClass]="'w-11/12'" [message]="'USER.form_splitter_only' | translate"></app-hint>
                 @if (this.loadingCustomers) {
                     <div class="relative" style="top: 40%">
                         <span class="text-center overflow-hidden">

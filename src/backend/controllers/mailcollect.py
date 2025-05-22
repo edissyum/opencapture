@@ -17,11 +17,12 @@
 import ssl
 import msal
 import imap_tools
+import requests
 from flask import request
 from socket import gaierror
 from imaplib import IMAP4_SSL
 from flask_babel import gettext
-from imap_tools import MailBox, MailBoxUnencrypted
+from imap_tools import MailBox, MailBoxUnencrypted, FolderInfo
 from src.backend.models import mailcollect, history
 
 
@@ -170,8 +171,23 @@ def generate_auth_string(user, token):
     return f"user={user}\x01auth=Bearer {token}\x01\x01"
 
 
+def generate_graphql_access_token(data):
+    get_token_url = data['get_token_url'].replace('{tenant_id}', data['tenant_id'])
+    return graphql_request(get_token_url, 'POST', data, [])
+
+
+def graphql_request(url, method, data, headers):
+    if method == 'GET':
+        return requests.get(url, headers=headers, timeout=30)
+
+    if method == 'POST':
+        return requests.post(url, data=data, headers=headers, timeout=30)
+    return None
+
+
 def retrieve_folders(args):
-    if 'oauth' in args and args['oauth']:
+    folders = []
+    if args['method'] == 'oauth':
         try:
             app = msal.ConfidentialClientApplication(args['client_id'], authority=args['authority'] + args['tenant_id'],
                                                      client_credential=args['secret'])
@@ -195,7 +211,8 @@ def retrieve_folders(args):
                 "message": str(_e)
             }
             return response, 400
-    else:
+        folders = conn.folder.list()
+    elif args['method'] == 'imap':
         try:
             if args['secured_connection']:
                 conn = MailBox(host=args['hostname'], port=args['port'], timeout=10)
@@ -217,9 +234,57 @@ def retrieve_folders(args):
                     "message": str(_e)
                 }
                 return response, 400
+        folders = conn.folder.list()
+    elif args['method'] == 'graphql':
+        access_token = generate_graphql_access_token(args)
+        if access_token.status_code != 200:
+            response = {
+                "errors": gettext("MAILCOLLECT_ERROR"),
+                "message": access_token.text
+            }
+            return response, 400
 
-    folders = conn.folder.list()
+        graphql_headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + access_token.json()['access_token']
+        }
+        user = graphql_request(args['users_url'] + '/' + args['login'], 'GET', None, graphql_headers)
+        if user.status_code != 200:
+            response = {
+                "errors": gettext("MAILCOLLECT_ERROR"),
+                "message": user.text
+            }
+            return response, 400
+        graphql_user = user.json()
+
+        folders_url = args['users_url'] + '/' + graphql_user['id'] + '/mailFolders'
+        folders_list = graphql_request(folders_url, 'GET', None, graphql_headers)
+        if folders_list.status_code != 200:
+            response = {
+                "errors": gettext("MAILCOLLECT_ERROR"),
+                "message": folders_list.text
+            }
+            return response, 400
+
+        for folder in folders_list.json()['value']:
+            if folder['childFolderCount'] and folder['childFolderCount'] > 0:
+                subfolders_url = folders_url + '/' + folder['id'] + '/childFolders'
+                subfolders_list = graphql_request(subfolders_url, 'GET', None, graphql_headers)
+                if subfolders_list.status_code != 200:
+                    response = {
+                        "errors": gettext("MAILCOLLECT_ERROR"),
+                        "message": subfolders_list.text
+                    }
+                    return response, 400
+                for subfolder in subfolders_list.json()['value']:
+                    folders.append({
+                        'name': folder['displayName'] + '/' + subfolder['displayName']
+                    })
+
     folder_list = []
     for _f in folders:
-        folder_list.append(_f.name)
+        if type(_f) is FolderInfo:
+            folder_list.append(_f.name)
+        else:
+            folder_list.append(_f['name'])
     return sorted(folder_list), 200

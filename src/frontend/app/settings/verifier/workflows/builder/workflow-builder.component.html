@@ -146,9 +146,9 @@
                                     <mat-form-field>
                                         <mat-label>{{ field['label'] | translate }}</mat-label>
                                         <mat-select [disabled]="!this.processAllowed || !field['show']" [(value)]="field.control.value" [required]="field['required']" [multiple]="field.multiple"
-                                                    (selectionChange)="field['id'] === 'form_id' ? updateOutputs($event.value) : ''">
+                                                    (selectionChange)="field['id'] === 'form_id' ? updateOutputs($event.value) : field['id'] === 'system_fields' ? filterSystemField($event.value, field) : ''">
                                             @for (option of field.values; track option['id']) {
-                                                <mat-option [value]="option['id']">
+                                                <mat-option [value]="option['id']" [disabled]="option.disabled">
                                                     {{ option['label'] | translate }}
                                                 </mat-option>
                                             }

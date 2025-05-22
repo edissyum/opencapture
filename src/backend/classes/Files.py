@@ -69,20 +69,26 @@ def convert_heif_to_jpg(file):
 
 
 def rotate_img(img):
+    ai_rotate_error = False
     if current_app.config['ROTATE_MODEL'] is not None:
-        model_results = current_app.config['ROTATE_MODEL'](img, verbose=False)
-        if model_results:
-            need_rotate = model_results[0].probs.top1
-            if need_rotate != 0:
-                src = Image.open(img).convert("RGB")
-                if need_rotate == 1:
-                    src = src.rotate(180, expand=True)
-                elif need_rotate == 2:
-                    src = src.rotate(90, expand=True)
-                elif need_rotate == 3:
-                    src = src.rotate(270, expand=True)
-                src.save(img)
-    else:
+        try:
+            model_results = current_app.config['ROTATE_MODEL'](img, verbose=False)
+            if model_results:
+                need_rotate = model_results[0].probs.top1
+                if need_rotate != 0:
+                    src = Image.open(img).convert("RGB")
+                    if need_rotate == 1:
+                        src = src.rotate(180, expand=True)
+                    elif need_rotate == 2:
+                        src = src.rotate(90, expand=True)
+                    elif need_rotate == 3:
+                        src = src.rotate(270, expand=True)
+                    src.save(img)
+        except RuntimeError:
+            ai_rotate_error = True
+            pass
+
+    if not current_app.config['ROTATE_MODEL'] or ai_rotate_error:
         try:
             src = cv2.imread(img)
             rgb = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
@@ -450,7 +456,8 @@ class Files:
             else:
                 continue
 
-    def ocr_on_fly(self, img, selection, ocr, thumb_size=None, regex_name=None, remove_line=False, lang='fra'):
+    def ocr_on_fly(self, img, selection, ocr, thumb_size=None, regex_name=None, remove_line=False, lang='fra',
+                   remove_space=False):
         rand = str(uuid.uuid4())
         if thumb_size is not None:
             with Image.open(img) as image:
@@ -524,6 +531,7 @@ class Files:
                 pass
 
         if is_number and re.match(r'[A-Z]?', text, flags=re.IGNORECASE):
+            text = tmp_text
             is_number = False
 
         if not is_number:
@@ -662,7 +670,7 @@ class Files:
         return final_directory
 
     @staticmethod
-    def move_to_docservers(docservers, file, module='verifier', attachments=False):
+    def move_to_docservers(docservers, file, module='verifier', attachments=False, is_mail=False):
         now = datetime.datetime.now()
         year = str(now.year)
         day = str('%02d' % now.day)
@@ -695,7 +703,10 @@ class Files:
         extension = os.path.splitext(file)[1]
         new_filename = day + month + year + '_' + hour + minute + seconds + '_' + uuid.uuid4().hex + extension
         final_directory = docserver_path + '/' + year + '/' + month + '/' + new_filename
-        shutil.move(file, final_directory)
+        if is_mail:
+            shutil.copy(file, final_directory)
+        else:
+            shutil.move(file, final_directory)
         return final_directory
 
     @staticmethod

@@ -259,7 +259,8 @@ def fill_data(child, corrrespondance, parent):
                         attrib_tag = corrrespondance[key]['attribTag']
                         attrib_value = corrrespondance[key]['attribValue']
                         if attrib_tag in child_data.attrib and child_data.attrib[attrib_tag] == attrib_value:
-                            return_data[key] = unidecode(child_data.text.strip())
+                            if 'text' in child_data and child_data.text:
+                                return_data[key] = unidecode(child_data.text.strip())
                 else:
                     if data.text:
                         return_data[key] = unidecode(data.text.strip())
@@ -328,7 +329,8 @@ def browse_xml_lines(root):
             for data in delivery:
                 tag = re.sub('{.*}', '', data.tag)
                 if tag == 'BilledQuantity':
-                    lines[cpt]['global']['unit_type'] = data.attrib['unitCode']
+                    if 'unitCode' in data.attrib:
+                        lines[cpt]['global']['unit_type'] = data.attrib['unitCode']
 
         for prices in child.findall('.//' + NAMESPACE + 'SpecifiedLineTradeSettlement'):
             for trade_tax in prices.findall(NAMESPACE + 'ApplicableTradeTax'):
@@ -519,12 +521,12 @@ def create_supplier_and_address(database, supplier, address):
     return database.insert(args)
 
 
-def supplier_exists(database, vat_number):
+def supplier_exists(database, where, data):
     res = database.select({
         'select': ['id'],
         'table': ['accounts_supplier'],
-        'where': ['vat_number = %s'],
-        'data': [vat_number]
+        'where': [f'{where} = %s'],
+        'data': [data]
     })
     return res
 
@@ -547,12 +549,18 @@ def process(args):
         'taxes': browse_xml_specific(root, 'ApplicableHeaderTradeSettlement', 'ApplicableTradeTax')
     }
 
-    if args['facturx_data']['supplier'] and args['facturx_data']['supplier']['vat_number']:
-        res = supplier_exists(args['database'], args['facturx_data']['supplier']['vat_number'])
+    if (args['facturx_data']['supplier'] and 'vat_number' in args['facturx_data']['supplier']
+            and args['facturx_data']['supplier']['vat_number']):
+        res = supplier_exists(args['database'], 'vat_number', args['facturx_data']['supplier']['vat_number'])
         if not res:
             args['supplier_id'] = create_supplier_and_address(args['database'], args['facturx_data']['supplier'],
                                                               args['facturx_data']['supplier_address'])
         else:
+            args['supplier_id'] = res[0]['id']
+    elif (args['facturx_data']['supplier'] and 'siret' in args['facturx_data']['supplier']
+          and args['facturx_data']['supplier']['siret']):
+        res = supplier_exists(args['database'], 'siret', args['facturx_data']['supplier']['siret'])
+        if res:
             args['supplier_id'] = res[0]['id']
 
     args['datas'] = {

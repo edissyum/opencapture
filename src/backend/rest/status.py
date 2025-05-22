@@ -36,7 +36,7 @@ def status_list(module):
         {'id': 'time', 'type': str, 'mandatory': False},
         {'id': 'totals', 'type': bool, 'mandatory': False},
         {'id': 'user_id', 'type': int, 'mandatory': False},
-        {'id': 'form_id', 'type': int, 'mandatory': False}
+        {'id': 'form_id', 'type': str, 'mandatory': False}
     ])
 
     if not check:

@@ -49,6 +49,7 @@ class COOGWebServices:
             if res.status_code == 200 and 'access_token' in json.loads(res.text):
                 access_token = json.loads(res.text)['access_token']
                 return [True, access_token]
+            return [False, gettext('SERVER_ERROR')]
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout,
                 requests.exceptions.MissingSchema) as request_error:
             self.log.error('Error connecting to the host. Exiting program..', False)

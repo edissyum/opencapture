@@ -39,7 +39,7 @@ export class CustomMatPaginatorIntl extends MatPaginatorIntl {
 
     getAndInitTranslations() {
         this.itemsPerPageLabel = '';
-        if (this.localeService.currentLang === undefined) {
+        if (!this.localeService.currentLang) {
             this.http.get(environment['url'] + '/ws/i18n/getCurrentLang').pipe(
                 tap((data: any) => {
                     this.translate.use(data.lang);

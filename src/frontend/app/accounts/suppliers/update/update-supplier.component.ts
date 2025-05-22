@@ -26,13 +26,13 @@ import { NotificationService } from "../../../../services/notifications/notifica
 import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
 import { environment } from  "../../../env";
-import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
-import {Observable, of} from "rxjs";
+import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
+import { Observable, of } from "rxjs";
 import { COUNTRIES_DB_FR, Country } from "@angular-material-extensions/select-country";
 import { LocaleService } from "../../../../services/locale.service";
 
 @Component({
-    selector: 'app-update',
+    selector: 'app-update-supplier',
     templateUrl: './update-supplier.component.html',
     standalone: false
 })
@@ -44,6 +44,7 @@ export class UpdateSupplierComponent implements OnInit {
     supplierId              : any;
     addressId               : any;
     supplier                : any;
+    fromModal               : boolean           = false;
     supplierForm            : any[]             = [
         {
             id: 'get_only_raw_footer',
@@ -53,11 +54,47 @@ export class UpdateSupplierComponent implements OnInit {
             required: true
         },
         {
+            id: 'informal_contact',
+            label: _('ACCOUNTS.informal_contact'),
+            type: 'mat-slide-toggle',
+            control: new FormControl(false),
+            required: true
+        },
+        {
             id: 'name',
             label: _('ACCOUNTS.supplier_name'),
             type: 'text',
             control: new FormControl(),
             required: true
+        },
+        {
+            id: 'lastname',
+            label: _('ACCOUNTS.lastname'),
+            type: 'text',
+            control: new FormControl(),
+            required: true
+        },
+        {
+            id: 'firstname',
+            label: _('ACCOUNTS.firstname'),
+            type: 'text',
+            control: new FormControl(),
+            required: false
+        },
+        {
+            id: 'civility',
+            label: _('ACCOUNTS.civility'),
+            type: 'select',
+            control: new FormControl(),
+            required: false,
+            values: []
+        },
+        {
+            id: 'function',
+            label: _('ACCOUNTS.function'),
+            type: 'text',
+            control: new FormControl(),
+            required: false
         },
         {
             id: 'vat_number',
@@ -116,6 +153,13 @@ export class UpdateSupplierComponent implements OnInit {
             required: false
         },
         {
+            id: 'phone',
+            label: _('FORMATS.phone'),
+            type: 'text',
+            control: new FormControl(),
+            required: false
+        },
+        {
             id: 'form_id',
             label: _('ACCOUNTS.form'),
             type: 'select',
@@ -132,16 +176,16 @@ export class UpdateSupplierComponent implements OnInit {
             values: []
         },
         {
-            id: 'default_accounting_plan',
-            label: _('FACTURATION.default_accounting_plan'),
+            id: 'default_currency',
+            label: _('FACTURATION.default_currency'),
             type: 'select',
             control: new FormControl(),
             required: false,
             values: []
         },
         {
-            id: 'default_currency',
-            label: _('FACTURATION.default_currency'),
+            id: 'default_accounting_plan',
+            label: _('FACTURATION.default_accounting_plan'),
             type: 'select',
             control: new FormControl(),
             required: false,
@@ -205,14 +249,13 @@ export class UpdateSupplierComponent implements OnInit {
         private localeService: LocaleService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
-    ) { }
+    ) {}
 
     async ngOnInit(): Promise<any> {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
-        this.supplierId = this.route.snapshot.params['id'];
-
+        this.supplierId = this.route.snapshot.params['id']
         const currencies: any = await this.retrieveCurrency();
 
         let tmpAccountingPlan: any = {};
@@ -238,7 +281,7 @@ export class UpdateSupplierComponent implements OnInit {
                     }
                 });
             }
-            if (element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'bic') {
+            if (element.id === 'vat_number' || element.id === 'duns' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'bic') {
                 element.control.valueChanges.subscribe((value: any) => {
                     if (value && value.includes(' ')) {
                         element.control.setValue(value.replace(' ', ''));
@@ -280,13 +323,50 @@ export class UpdateSupplierComponent implements OnInit {
                         map(option => option ? this._filter_accounting(tmpAccountingPlan, option) : tmpAccountingPlan)
                     );
             }
-            if (element.id == 'default_currency') {
+            if (element.id === 'default_currency') {
                 Object.keys(currencies).forEach((currency: any) => {
                     element.values.push({
                         'id': currencies[currency],
                         'label': currencies[currency]
                     });
                 });
+            }
+            if (element.id === 'informal_contact') {
+                element.control.valueChanges.subscribe((value: any) => {
+                    this.supplierForm.forEach((elt: any) => {
+                        if (elt.id === 'vat_number' || elt.id === 'duns') {
+                            elt.required = !value;
+                        }
+                    })
+                });
+            }
+            if (element.id === 'name' || element.id === 'lastname') {
+                element.control.valueChanges.subscribe((value: any) => {
+                    if (value) {
+                        this.supplierForm.forEach((elem: any) => {
+                            if (element.id == 'name' && elem.id == 'lastname') {
+                                elem.required = false;
+                                element.required = true;
+                            }
+                            if (element.id == 'lastname' && elem.id == 'name') {
+                                elem.required = false;
+                                element.required = true;
+                            }
+                        });
+                    }
+                });
+            }
+            if (element.id === 'civility') {
+                this.http.get(environment['url'] + '/ws/accounts/civilities/list', {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        element.values = data.civilities;
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
             }
         }
 
@@ -309,71 +389,74 @@ export class UpdateSupplierComponent implements OnInit {
                                                     element.control.setValue(account);
                                                 }
                                             });
+                                        } else if (element.id === 'civility') {
+                                            element.control.setValue(parseInt(this.supplier[field]));
                                         } else {
                                             element.control.setValue(this.supplier[field]);
                                         }
                                     } else if (field === 'address_id') {
                                         this.addressId = this.supplier[field];
-                                        if (this.addressId) {
-                                            this.http.get(environment['url'] + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
-                                                tap((address: any) => {
-                                                    for (const adr_field in address) {
-                                                        if (address.hasOwnProperty(adr_field)) {
-                                                            this.addressForm.forEach(adr_element => {
-                                                                if (adr_element.id === adr_field) {
-                                                                    if (adr_field === 'country') {
-                                                                        COUNTRIES_DB_FR.forEach((country: Country) => {
-                                                                            if (country.name === address[adr_field]) {
-                                                                                this.defaultValue = country;
-                                                                            }
-                                                                        });
-                                                                    }
-                                                                    adr_element.control.setValue(address[adr_field]);
-                                                                }
-                                                            });
-                                                        }
-                                                    }
-                                                }),
-                                                finalize(() => this.loading = false),
-                                                catchError((err: any) => {
-                                                    console.debug(err);
-                                                    this.notify.handleErrors(err);
-                                                    return of(false);
-                                                })
-                                            ).subscribe();
-                                        } else {
-                                            this.http.post(environment['url'] + '/ws/accounts/addresses/create',
-                                                {'args': {
-                                                        'address1': '',
-                                                        'address2': '',
-                                                        'postal_code': '',
-                                                        'city': '',
-                                                        'country': ''
-                                                    }
-                                                }, {headers: this.authService.headers},
-                                            ).pipe(
-                                                tap((data: any) => {
-                                                    this.addressId = data.id;
-                                                    this.http.put(environment['url'] + '/ws/accounts/suppliers/update/' + this.supplierId, {'args': {'address_id' : this.addressId}}, {headers: this.authService.headers},
-                                                    ).pipe(
-                                                        finalize(() => this.loading = false),
-                                                        catchError((err: any) => {
-                                                            console.debug(err);
-                                                            this.notify.handleErrors(err);
-                                                            return of(false);
-                                                        })
-                                                    ).subscribe();
-                                                }),
-                                                catchError((err: any) => {
-                                                    console.debug(err);
-                                                    this.notify.handleErrors(err);
-                                                    return of(false);
-                                                })
-                                            ).subscribe();
-                                        }
                                     }
                                 });
                             }
+                        }
+
+                        if (this.addressId) {
+                            this.http.get(environment['url'] + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
+                                tap((address: any) => {
+                                    for (const adr_field in address) {
+                                        if (address.hasOwnProperty(adr_field)) {
+                                            this.addressForm.forEach(adr_element => {
+                                                if (adr_element.id === adr_field) {
+                                                    if (adr_field === 'country') {
+                                                        COUNTRIES_DB_FR.forEach((country: Country) => {
+                                                            if (country.name === address[adr_field]) {
+                                                                this.defaultValue = country;
+                                                            }
+                                                        });
+                                                    }
+                                                    adr_element.control.setValue(address[adr_field]);
+                                                }
+                                            });
+                                        }
+                                    }
+                                }),
+                                finalize(() => this.loading = false),
+                                catchError((err: any) => {
+                                    console.debug(err);
+                                    this.notify.handleErrors(err);
+                                    return of(false);
+                                })
+                            ).subscribe();
+                        } else {
+                            this.http.post(environment['url'] + '/ws/accounts/addresses/create',
+                                {'args': {
+                                        'address1': '',
+                                        'address2': '',
+                                        'postal_code': '',
+                                        'city': '',
+                                        'country': ''
+                                    }
+                                }, {headers: this.authService.headers},
+                            ).pipe(
+                                tap((data: any) => {
+                                    this.addressId = data.id;
+                                    this.http.put(environment['url'] + '/ws/accounts/suppliers/update/' + this.supplierId, {'args': {'address_id' : this.addressId}}, {headers: this.authService.headers},
+                                    ).pipe(
+                                        finalize(() => this.loading = false),
+                                        catchError((err: any) => {
+                                            console.debug(err);
+                                            this.notify.handleErrors(err);
+                                            return of(false);
+                                        })
+                                    ).subscribe();
+                                }),
+                                catchError((err: any) => {
+                                    console.debug(err);
+                                    this.notify.handleErrors(err);
+                                    return of(false);
+                                })
+                            ).subscribe();
                         }
                     }),
                     catchError((err: any) => {

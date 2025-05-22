@@ -55,6 +55,37 @@ def upload_documents(body):
     }
     return response, 400
 
+def retry_from_monitoring(process_id):
+    process, _ = monitoring.get_process_by_id(process_id)
+    if _ != 200:
+        response = {
+            "errors": gettext('RETRY_FROM_MONITORING_ERROR'),
+            "message": gettext('PROCESS_NOT_FOUND')
+        }
+        return response, 400
+
+    process = process['process'][0]
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+
+    path = docservers['ERROR_PATH'] + '/' + process['workflow_id'] + '/' + process['filename']
+    if not os.path.isfile(path):
+        response = {
+            "errors": gettext('RETRY_FROM_MONITORING_ERROR'),
+            "message": gettext('FILE_NOT_FOUND')
+        }
+        return response, 400
+
+    file = FileStorage(stream=open(path, 'rb'), filename=process['filename'])
+    res = handle_uploaded_file([file], process['workflow_id'], {})
+    if res and res[0] is not False:
+        return res
+    else:
+        return gettext('UNKNOW_ERROR'), 400
 
 def handle_uploaded_file(files, workflow_id, supplier, datas=None, splitter_batch_id=False):
     custom_id = retrieve_custom_from_url(request)
@@ -94,7 +125,8 @@ def handle_uploaded_file(files, workflow_id, supplier, datas=None, splitter_batc
                 'splitter_batch_id': splitter_batch_id,
                 'user_id': request.environ['user_id'],
                 'user_info': request.environ['user_info'],
-                'task_id_monitor': task_id_monitor[0]['process']
+                'task_id_monitor': task_id_monitor[0]['process'],
+                'original_filename': os.path.basename(_f.filename)
             })
         else:
             return False, 500
@@ -167,6 +199,13 @@ def retrieve_documents(args):
             args['where'].append('documents.form_id = %s')
             args['data'].append(args['form_id'])
 
+    if 'user_id' in args and args['user_id']:
+        user_forms = user.get_forms_by_user_id(args['user_id'])
+        if user_forms[1] == 200:
+            user_forms = user_forms[0]
+            args['where'].append('documents.form_id = ANY(%s)')
+            args['data'].append(user_forms)
+
     if 'search' in args and args['search']:
         args['select'].append("documents.form_id as form_id")
         args['table'].append('accounts_supplier')
@@ -220,6 +259,14 @@ def retrieve_documents(args):
                 supplier_info, error = accounts.get_supplier_by_id({'supplier_id': document['supplier_id']})
                 if not error:
                     document['supplier_name'] = supplier_info['name']
+                    if supplier_info['firstname'] and supplier_info['lastname'] and supplier_info['name']:
+                        document['supplier_name'] = supplier_info['firstname'] + ' ' + supplier_info['lastname'] + ' (' + supplier_info['name'] + ')'
+
+                    if not supplier_info['name']:
+                        if supplier_info['firstname'] and supplier_info['lastname']:
+                            document['supplier_name'] = supplier_info['firstname'] + ' ' + supplier_info['lastname']
+                        elif 'lastname' in supplier_info:
+                            document['supplier_name'] = supplier_info['lastname']
 
             attachments_counts = attachments.get_attachments_by_document_id(document['id'])
             document['attachments_count'] = len(attachments_counts) if attachments_counts else 0
@@ -477,6 +524,24 @@ def export_coog(document_id, data):
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if not error:
         return verifier_exports.export_coog(data['data'], document_info, log, database)
+    return None
+
+
+def export_opencrm(document_id, data):
+    if 'database' in current_context and 'log' in current_context:
+        log = current_context.log
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
+        database = _vars[0]
+
+    log.database = database
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
+    if not error:
+        return verifier_exports.export_opencrm(data['data'], document_info, log, database)
+    return None
 
 
 def export_xml(document_id, data):
@@ -837,13 +902,13 @@ def get_totals(status, user_id, form_id):
     allowed_customers.append(0)  # Update allowed customers to add Unspecified customers
 
     totals['today'], error = verifier.get_totals({
-        'time': 'today', 'status': status, 'form_id': form_id, 'allowedCustomers': allowed_customers
+        'time': 'today', 'status': status, 'form_id': form_id, 'user_id': user_id, 'allowedCustomers': allowed_customers
     })
     totals['yesterday'], error = verifier.get_totals({
-        'time': 'yesterday', 'status': status, 'form_id': form_id, 'allowedCustomers': allowed_customers
+        'time': 'yesterday', 'status': status, 'form_id': form_id, 'user_id': user_id, 'allowedCustomers': allowed_customers
     })
     totals['older'], error = verifier.get_totals({
-        'time': 'older', 'status': status, 'form_id': form_id, 'allowedCustomers': allowed_customers
+        'time': 'older', 'status': status, 'form_id': form_id, 'user_id': user_id, 'allowedCustomers': allowed_customers
     })
 
     if error is None:
@@ -880,12 +945,18 @@ def update_status(args):
 def get_unseen(user_id):
     user_customers = user.get_customers_by_user_id(user_id)
     user_customers[0].append(0)
+
+    user_forms = user.get_forms_by_user_id(user_id)
+    if user_forms[1] == 200:
+        user_forms = user_forms[0]
+
     total_unseen = verifier.get_total_documents({
         'select'    : ["status.label_long as status", "count(documents.id) as unseen"],
         'table'     : ["documents", "status"],
         'left_join' : ["status.id = documents.status"],
-        'where'     : ["status IN ('NEW', 'ERR', 'WAIT_THIRD_PARTY')", "customer_id = ANY(%s)", "datas -> 'api_only' is NULL", "status.module = %s"],
-        'data'      : [user_customers[0], 'verifier'],
+        'where'     : ["status IN ('NEW', 'ERR', 'WAIT_THIRD_PARTY')", "customer_id = ANY(%s)",
+                       "datas -> 'api_only' is NULL", "status.module = %s", "documents.form_id = ANY(%s)"],
+        'data'      : [user_customers[0], 'verifier', user_forms],
         'group_by'  : ["status.label_long"]
     })
     return total_unseen, 200
@@ -944,7 +1015,16 @@ def get_customers_count(user_id, status, time):
                 for supplier in customer_suppliers[form_label]:
                     supplier_info, error_supplier = accounts.get_supplier_by_id({'supplier_id': supplier['supplier_id']})
                     if error_supplier is None:
-                        supplier['name'] = supplier_info['name']
+                        if supplier_info['firstname'] and supplier_info['lastname'] and supplier_info['name']:
+                            supplier['name'] = supplier_info['firstname'] + ' ' + supplier_info['lastname'] + ' (' + supplier_info['name'] + ')'
+                        elif supplier_info['firstname'] and supplier_info['lastname']:
+                            supplier['name'] = supplier_info['firstname'] + ' ' + supplier_info['lastname']
+                        elif supplier_info['lastname'] and supplier_info['name']:
+                            supplier['name'] = supplier_info['lastname'] + ' (' + supplier_info['name'] + ')'
+                        elif supplier_info['lastname']:
+                            supplier['name'] = supplier_info['lastname']
+                        else:
+                            supplier['name'] = supplier_info['name']
                     supplier['form_id'] = form['form_id']
         customer['suppliers'] = customer_suppliers
         if error is None and customer['customer_id'] != 0:

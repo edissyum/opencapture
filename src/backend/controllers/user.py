@@ -32,15 +32,16 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 def create_user(args):
     user_id, _ = user.get_user_by_username({
-        'select': ['users.id'],
+        'select': ['users.id', 'users.status'],
         'username': args['username']
     })
     if user_id:
-        response = {
-            "errors": gettext('CREATE_USER_ERROR'),
-            "message": gettext('USERNAME_ALREADY_EXISTS')
-        }
-        return response, 400
+        if user_id['status'] != 'DEL':
+            response = {
+                "errors": gettext('CREATE_USER_ERROR'),
+                "message": gettext('USERNAME_ALREADY_EXISTS')
+            }
+            return response, 4000
 
     res, error = user.create_user(args)
 

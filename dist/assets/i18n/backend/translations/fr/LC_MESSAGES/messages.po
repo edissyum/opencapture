@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2025-02-04 16:18+0100\n"
+"POT-Creation-Date: 2025-05-15 16:02+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -17,35 +17,35 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: launch_worker_mail.py:239 launch_worker_mail.py:308
+#: launch_worker_mail.py:273 launch_worker_mail.py:342
 msgid "NO_SUBJECT"
 msgstr "Sans objet"
 
-#: custom/acc/src/backend/process_queue_splitter.py:233
+#: custom/acc/src/backend/process_queue_splitter.py:232
 #: custom/acc/src/backend/process_queue_verifier.py:195
-#: custom/edissyum/src/backend/process_queue_verifier.py:194
-#: custom/test/src/backend/process_queue_verifier.py:197
+#: custom/edissyum/src/backend/process_queue_verifier.py:186
+#: custom/test/src/backend/process_queue_verifier.py:187
 msgid "FILE_UPLOADED_WORKFLOW"
 msgstr "Fichier téléversé avec le workflow"
 
-#: custom/edissyum/src/backend/process_queue_splitter.py:243
-#: custom/test/src/backend/process_queue_splitter.py:234
+#: custom/edissyum/src/backend/process_queue_splitter.py:244
+#: custom/test/src/backend/process_queue_splitter.py:237
 msgid "BATCH"
 msgstr "Lot"
 
-#: custom/edissyum/src/backend/process_queue_splitter.py:243
-#: custom/test/src/backend/process_queue_splitter.py:234
+#: custom/edissyum/src/backend/process_queue_splitter.py:244
+#: custom/test/src/backend/process_queue_splitter.py:237
 msgid "CREATED_USING"
 msgstr "créé avec le workflow"
 
-#: custom/edissyum/src/backend/process_queue_splitter.py:265
-#: custom/test/src/backend/process_queue_splitter.py:256
+#: custom/edissyum/src/backend/process_queue_splitter.py:266
+#: custom/test/src/backend/process_queue_splitter.py:259
 #: src/backend/controllers/splitter.py:510
 msgid "DOCUMENT"
 msgstr "Document"
 
-#: custom/edissyum/src/backend/process_queue_splitter.py:265
-#: custom/test/src/backend/process_queue_splitter.py:256
+#: custom/edissyum/src/backend/process_queue_splitter.py:266
+#: custom/test/src/backend/process_queue_splitter.py:259
 #: src/backend/controllers/splitter.py:510
 msgid "CREATED_ON_BATCH"
 msgstr "créé sur le lot"
@@ -86,8 +86,8 @@ msgstr "Le type MIME du fichier ne correspond pas à l'extension"
 msgid "WORFKLOW_NOT_FOUND"
 msgstr "Le workflow n'existe pas"
 
-#: src/backend/controllers/verifier.py:554
-#: src/backend/controllers/workflow.py:448 src/backend/process/main_ia.py:58
+#: src/backend/controllers/verifier.py:618
+#: src/backend/controllers/workflow.py:448
 #: src/backend/scripting_functions.py:153
 #: src/backend/scripting_functions.py:212
 msgid "SCRIPT_CONTAINS_NOT_ALLOWED_CODE"
@@ -129,75 +129,99 @@ msgstr "Dossier inexistant"
 msgid "OPENADS_ADD_DOC_ERROR"
 msgstr "Erreur lors de l'envoi de document à OpenADS"
 
-#: src/backend/verifier_exports.py:175 src/backend/verifier_exports.py:178
+#: src/backend/verifier_exports.py:179 src/backend/verifier_exports.py:182
 msgid "XML_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr "Le dossier de destination XML n'existe pas"
 
-#: src/backend/verifier_exports.py:386 src/backend/verifier_exports.py:389
-#: src/backend/verifier_exports.py:478 src/backend/verifier_exports.py:481
+#: src/backend/verifier_exports.py:390 src/backend/verifier_exports.py:393
+#: src/backend/verifier_exports.py:483 src/backend/verifier_exports.py:486
 msgid "PDF_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr "Le dossier de destination PDF n'existe pas"
 
-#: src/backend/verifier_exports.py:568 src/backend/verifier_exports.py:603
-#: src/backend/verifier_exports.py:609
+#: src/backend/verifier_exports.py:573 src/backend/verifier_exports.py:608
+#: src/backend/verifier_exports.py:614 src/backend/verifier_exports.py:696
 msgid "EXPORT_COOG_ERROR"
 msgstr "Erreur lors de l'export vers COOG"
 
-#: src/backend/verifier_exports.py:569
+#: src/backend/verifier_exports.py:574
 msgid "COOG_JSON_ERROR"
 msgstr "Le JSON de l'export vers COOG est incorrect"
 
-#: src/backend/verifier_exports.py:615
+#: src/backend/verifier_exports.py:620
 msgid "COOG_WS_INFO_WRONG"
 msgstr "Les informations de connexion à COOG sont erronées"
 
-#: src/backend/verifier_exports.py:621
+#: src/backend/verifier_exports.py:626
 msgid "COOG_WS_INFO_EMPTY"
 msgstr "Les informations de connexion à COOG sont vides"
 
-#: src/backend/verifier_exports.py:803 src/backend/verifier_exports.py:809
-#: src/backend/verifier_exports.py:815
+#: src/backend/verifier_exports.py:642 src/backend/verifier_exports.py:670
+#, fuzzy
+msgid "EXPORT_OPENCRM_ERROR"
+msgstr "Erreur lors de l'export vers MEM Courrier"
+
+#: src/backend/verifier_exports.py:671
+#, fuzzy
+msgid "OPENCRM_JSON_ERROR"
+msgstr "Le JSON de l'export vers COOG est incorrect"
+
+#: src/backend/verifier_exports.py:702
+#, fuzzy
+msgid "OPENCRM_WS_INFO_WRONG"
+msgstr "Les informations de connexion à MEM Courrier sont erronées"
+
+#: src/backend/verifier_exports.py:708
+#, fuzzy
+msgid "OPENCRM_WS_INFO_EMPTY"
+msgstr "Les informations de connexion à MEM Courrier sont vides"
+
+#: src/backend/verifier_exports.py:894 src/backend/verifier_exports.py:900
+#: src/backend/verifier_exports.py:906
 msgid "EXPORT_MEM_ERROR"
 msgstr "Erreur lors de l'export vers MEM Courrier"
 
-#: src/backend/verifier_exports.py:810
+#: src/backend/verifier_exports.py:901
 msgid "PDF_FILE_NOT_FOUND"
 msgstr "Le fichier PDF est introuvable"
 
-#: src/backend/verifier_exports.py:821
+#: src/backend/verifier_exports.py:912
 msgid "MEM_WS_INFO_WRONG"
 msgstr "Les informations de connexion à MEM Courrier sont erronées"
 
-#: src/backend/verifier_exports.py:827
+#: src/backend/verifier_exports.py:918
 msgid "MEM_WS_INFO_EMPTY"
 msgstr "Les informations de connexion à MEM Courrier sont vides"
 
 #: src/backend/classes/COOGWebServices.py:44
 #: src/backend/classes/MEMWebServices.py:40
+#: src/backend/classes/OpenCRMWebServices.py:44
 msgid "HOST_NOT_FOUND"
 msgstr "L'URL de l'hôte n'existe pas"
 
 #: src/backend/classes/COOGWebServices.py:46
+#: src/backend/classes/COOGWebServices.py:52
+#: src/backend/classes/OpenCRMWebServices.py:46
+#: src/backend/classes/OpenCRMWebServices.py:52
 msgid "SERVER_ERROR"
 msgstr "Erreur serveur"
 
-#: src/backend/classes/Mail.py:169
+#: src/backend/classes/Mail.py:269
 msgid "FROM"
 msgstr "De"
 
-#: src/backend/classes/Mail.py:170
+#: src/backend/classes/Mail.py:270
 msgid "SEND"
 msgstr "Envoyé"
 
-#: src/backend/classes/Mail.py:171
+#: src/backend/classes/Mail.py:271
 msgid "TO"
 msgstr "À"
 
-#: src/backend/classes/Mail.py:173
+#: src/backend/classes/Mail.py:273
 msgid "COPIES"
 msgstr "Copies"
 
-#: src/backend/classes/Mail.py:174
+#: src/backend/classes/Mail.py:274
 msgid "SUBJECT"
 msgstr "Sujet"
 
@@ -205,132 +229,165 @@ msgstr "Sujet"
 msgid "HOST_NOT_FOUND_OR_OTHER_ERROR"
 msgstr "L'URL de l'hôte n'existe pas ou une autre erreur est survenue"
 
-#: src/backend/classes/SMTP.py:227
+#: src/backend/classes/SMTP.py:228
 msgid "RESET_PASSWORD"
 msgstr "Réinitialiser le mot de passe"
 
-#: src/backend/classes/SMTP.py:229
+#: src/backend/classes/SMTP.py:230
 msgid "FORGOT_EMAIL_HEADER"
 msgstr ""
 "Bonjour,<br/><br/>Vous avez demandé à réinitialiser le mot de passe de "
 "votre compte Open-Capture.<br/><br/>Pour modifier votre mot de passe, "
 "veuillez cliquer sur le lien ci-dessous :<br/><br/>"
 
-#: src/backend/classes/SMTP.py:229
+#: src/backend/classes/SMTP.py:230
 msgid "CLICK_HERE"
 msgstr "Cliquez ici"
 
-#: src/backend/classes/SMTP.py:229
+#: src/backend/classes/SMTP.py:230
 msgid "FORGOT_EMAIL_FOOTER"
 msgstr ""
 "<br/><br/>Si vous n'êtes pas à l'origine de cette demande, merci "
 "d'ignorer cet e-mail."
 
-#: src/backend/classes/SMTP.py:246
+#: src/backend/classes/SMTP.py:247
 msgid "SMTP_TEST_SEND"
 msgstr "Test d'envoi de mail"
 
-#: src/backend/classes/SMTP.py:247
+#: src/backend/classes/SMTP.py:248
 msgid "SMTP_TEST_SEND_BODY"
 msgstr "Ceci est un test d'envoi de mail depuis l'application Open-Capture"
 
-#: src/backend/controllers/accounts.py:72 src/backend/models/accounts.py:61
+#: src/backend/controllers/accounts.py:79 src/backend/models/accounts.py:61
 msgid "GET_SUPPLIER_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération du compte tiers"
 
-#: src/backend/controllers/accounts.py:85
+#: src/backend/controllers/accounts.py:92
 msgid "GET_ADDRESS_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération de l'adresse"
 
-#: src/backend/controllers/accounts.py:112
-#: src/backend/controllers/accounts.py:236
+#: src/backend/controllers/accounts.py:119
+#: src/backend/controllers/accounts.py:255
+#: src/backend/controllers/accounts.py:261
+#: src/backend/controllers/accounts.py:298
 msgid "UPDATE_SUPPLIER_POSITIONS_ERROR"
 msgstr "Erreur lors de la mise à jour des positions du compte tiers"
 
-#: src/backend/controllers/accounts.py:139
-#: src/backend/controllers/accounts.py:267
+#: src/backend/controllers/accounts.py:146
+#: src/backend/controllers/accounts.py:292
 msgid "UPDATE_SUPPLIER_PAGES_ERROR"
 msgstr "Erreur lors de la mise à jour des pages du compte tiers"
 
-#: src/backend/controllers/accounts.py:194
+#: src/backend/controllers/accounts.py:213
 msgid "SUPPLIER_UPDATED"
 msgstr "Mise à jour du compte tiers&nbsp<strong>%(supplier)s</strong>"
 
-#: src/backend/controllers/accounts.py:199
-#: src/backend/controllers/accounts.py:205
+#: src/backend/controllers/accounts.py:218
+#: src/backend/controllers/accounts.py:224
 msgid "UPDATE_SUPPLIER_ERROR"
 msgstr "Erreur lors de la mise à jour du tiers"
 
-#: src/backend/controllers/accounts.py:295
-#: src/backend/controllers/accounts.py:301
 #: src/backend/controllers/accounts.py:326
-#: src/backend/controllers/accounts.py:333 src/backend/models/accounts.py:127
+#: src/backend/controllers/accounts.py:332
+#: src/backend/controllers/accounts.py:357
+#: src/backend/controllers/accounts.py:364 src/backend/models/accounts.py:127
 msgid "UPDATE_ADDRESS_ERROR"
 msgstr "Erreur lors de la mise à jour de l'adresse"
 
-#: src/backend/controllers/accounts.py:357 src/backend/models/accounts.py:147
+#: src/backend/controllers/accounts.py:388 src/backend/models/accounts.py:147
 msgid "CREATE_ADDRESS_ERROR"
 msgstr "Erreur lors de la création de l'adresse"
 
-#: src/backend/controllers/accounts.py:402
+#: src/backend/controllers/accounts.py:439
 msgid "SUPPLIER_CREATED"
 msgstr "Création du compte tiers&nbsp<strong>%(supplier)s</strong>"
 
-#: src/backend/controllers/accounts.py:410
-#: src/backend/controllers/accounts.py:416 src/backend/models/accounts.py:167
+#: src/backend/controllers/accounts.py:447
+#: src/backend/controllers/accounts.py:453 src/backend/models/accounts.py:167
 msgid "CREATE_SUPPLIER_ERROR"
 msgstr "Erreur lors de la création du compte tiers"
 
-#: src/backend/controllers/accounts.py:417
+#: src/backend/controllers/accounts.py:454
 msgid "SUPPLIER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr "Un compte tiers existe déjà avec ce numéro de TVA ou ce numéro DUNS"
 
-#: src/backend/controllers/accounts.py:454 src/backend/controllers/user.py:259
-#: src/backend/controllers/user.py:289 src/backend/models/accounts.py:225
+#: src/backend/controllers/accounts.py:491 src/backend/controllers/user.py:260
+#: src/backend/controllers/user.py:290 src/backend/models/accounts.py:225
 #: src/backend/models/accounts.py:248 src/backend/models/accounts.py:267
-#: src/backend/models/user.py:215
+#: src/backend/models/user.py:225
 msgid "GET_CUSTOMER_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération du compte client"
 
-#: src/backend/controllers/accounts.py:518
+#: src/backend/controllers/accounts.py:555
 msgid "CUSTOMER_UPDATED"
 msgstr "Mise à jour du compte client&nbsp<strong>%(customer)s</strong>"
 
-#: src/backend/controllers/accounts.py:523
-#: src/backend/controllers/accounts.py:529
+#: src/backend/controllers/accounts.py:560
+#: src/backend/controllers/accounts.py:566
 #: src/backend/controllers/splitter.py:334 src/backend/models/accounts.py:289
 msgid "UPDATE_CUSTOMER_ERROR"
 msgstr "Erreur lors de la mise à jour du compte client"
 
-#: src/backend/controllers/accounts.py:557
+#: src/backend/controllers/accounts.py:594
 msgid "CUSTOMER_CREATED"
 msgstr "Création du compte client&nbsp<strong>%(customer)s</strong>"
 
-#: src/backend/controllers/accounts.py:565
-#: src/backend/controllers/accounts.py:571 src/backend/models/accounts.py:309
+#: src/backend/controllers/accounts.py:602
+#: src/backend/controllers/accounts.py:608 src/backend/models/accounts.py:309
 msgid "CREATE_CUSTOMER_ERROR"
 msgstr "Erreur lors de la création du compte client"
 
-#: src/backend/controllers/accounts.py:572
+#: src/backend/controllers/accounts.py:609
 msgid "CUSTOMER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr "Un compte client existe déjà avec ce numéro de TVA"
 
-#: src/backend/controllers/accounts.py:588
+#: src/backend/controllers/accounts.py:625
 msgid "CUSTOMER_DELETED"
 msgstr "Suppression du compte client&nbsp<strong>%(customer)s</strong>"
 
-#: src/backend/controllers/accounts.py:593
-#: src/backend/controllers/accounts.py:599 src/backend/models/accounts.py:331
+#: src/backend/controllers/accounts.py:630
+#: src/backend/controllers/accounts.py:636 src/backend/models/accounts.py:331
 msgid "DELETE_CUSTOMER_ERROR"
 msgstr "Erreur lors de la suppression du compte client"
 
-#: src/backend/controllers/accounts.py:615
+#: src/backend/controllers/accounts.py:652
 msgid "SUPPLIER_DELETED"
 msgstr "Suppression du compte tiers&nbsp<strong>%(supplier)s</strong>"
 
-#: src/backend/controllers/accounts.py:620
+#: src/backend/controllers/accounts.py:657
 msgid "DELETE_SUPPLIER_ERROR"
 msgstr "Erreur lors de la suppression du compte tiers"
+
+#: src/backend/controllers/accounts.py:777
+#, fuzzy
+msgid "CIVILITY_DELETED"
+msgstr "Suppression du compte tiers&nbsp<strong>%(supplier)s</strong>"
+
+#: src/backend/controllers/accounts.py:782
+#, fuzzy
+msgid "DELETE_CIVILITY_ERROR"
+msgstr "Erreur lors de la suppression du rôle"
+
+#: src/backend/controllers/accounts.py:783
+#, fuzzy
+msgid "CIVILITY_NOT_FOUND"
+msgstr "Fichier introuvable"
+
+#: src/backend/controllers/accounts.py:797
+#, fuzzy
+msgid "CIVILITY_CREATED"
+msgstr "Création du compte tiers&nbsp<strong>%(supplier)s</strong>"
+
+#: src/backend/controllers/accounts.py:805
+#: src/backend/controllers/accounts.py:811 src/backend/models/accounts.py:412
+#, fuzzy
+msgid "CREATE_CIVILITY_ERROR"
+msgstr "Erreur lors de la création du rôle"
+
+#: src/backend/controllers/accounts.py:812
+#, fuzzy
+msgid "CIVILITY_ALREADY_EXISTS"
+msgstr "Le type de document existe déjà"
 
 #: src/backend/controllers/artificial_intelligence.py:74
 #: src/backend/controllers/artificial_intelligence.py:376
@@ -599,7 +656,7 @@ msgstr "Le dossier d'image du custom n'est pas accessible"
 msgid "UPDATE_LOGIN_IMAGE"
 msgstr "Modification de l'image de login"
 
-#: src/backend/controllers/config.py:377 src/backend/controllers/user.py:555
+#: src/backend/controllers/config.py:377 src/backend/controllers/user.py:556
 msgid "CUSTOM_NOT_PRESENT"
 msgstr "Aucun custom n'est présent"
 
@@ -720,57 +777,61 @@ msgstr "Erreur lors de la récupération des champs du formulaire"
 msgid "ADD_HISTORY_ERROR"
 msgstr "Erreur lors de l'ajout dans l'historique"
 
-#: src/backend/controllers/mailcollect.py:38
+#: src/backend/controllers/mailcollect.py:39
 msgid "RETRIEVE_PROCESSES_ERROR"
 msgstr "Erreur lors de la récupération des processus MailCollect"
 
-#: src/backend/controllers/mailcollect.py:53
+#: src/backend/controllers/mailcollect.py:54
 msgid "UPDATE_MAILCOLLECT_PROCESS"
 msgstr "Mise à jour du processus MailCollect&nbsp;<strong>%(process)s</strong>"
 
-#: src/backend/controllers/mailcollect.py:61
+#: src/backend/controllers/mailcollect.py:62
 msgid "UPDATE_PROCESS_ERROR"
 msgstr "Erreur lors de la mise à jour du processus MailCollect"
 
-#: src/backend/controllers/mailcollect.py:76
+#: src/backend/controllers/mailcollect.py:77
 msgid "CREATE_MAILCOLLECT_PROCESS"
 msgstr "Création du processus MailCollect&nbsp;<strong>%(process)s</strong>"
 
-#: src/backend/controllers/mailcollect.py:82
+#: src/backend/controllers/mailcollect.py:83
 msgid "CREATE_PROCESS_ERROR"
 msgstr "Erreur lors de la création d'un processus MailCollect"
 
-#: src/backend/controllers/mailcollect.py:98
+#: src/backend/controllers/mailcollect.py:99
 msgid "DELETE_MAILCOLLECT_PROCESS"
 msgstr "Suppression du processus MailCollect&nbsp;<strong>%(process)s</strong>"
 
-#: src/backend/controllers/mailcollect.py:103
-#: src/backend/controllers/mailcollect.py:109
+#: src/backend/controllers/mailcollect.py:104
+#: src/backend/controllers/mailcollect.py:110
 msgid "DELETE_MAILCOLLECT_PROCESS_ERROR"
 msgstr "Erreur lors de la suppression d'un processus MailCollect"
 
-#: src/backend/controllers/mailcollect.py:125
+#: src/backend/controllers/mailcollect.py:126
 msgid "ENABLE_MAILCOLLECT_PROCESS"
 msgstr "Activation du processus MailCollect&nbsp;<strong>%(process)s</strong>"
 
-#: src/backend/controllers/mailcollect.py:130
-#: src/backend/controllers/mailcollect.py:136
+#: src/backend/controllers/mailcollect.py:131
+#: src/backend/controllers/mailcollect.py:137
 msgid "ENABLE_MAILCOLLECT_PROCESS_ERROR"
 msgstr "Erreur lors de l'activation d'un processus MailCollect"
 
-#: src/backend/controllers/mailcollect.py:152
+#: src/backend/controllers/mailcollect.py:153
 msgid "DISABLE_MAILCOLLECT_PROCESS"
 msgstr "Désactivation du processus MailCollect&nbsp;<strong>%(process)s</strong>"
 
-#: src/backend/controllers/mailcollect.py:157
-#: src/backend/controllers/mailcollect.py:163
+#: src/backend/controllers/mailcollect.py:158
+#: src/backend/controllers/mailcollect.py:164
 msgid "DISABLE_MAILCOLLECT_PROCESS_ERROR"
 msgstr "Erreur lors de la désactivation d'un processus MailCollect"
 
-#: src/backend/controllers/mailcollect.py:184
-#: src/backend/controllers/mailcollect.py:194
-#: src/backend/controllers/mailcollect.py:206
-#: src/backend/controllers/mailcollect.py:216
+#: src/backend/controllers/mailcollect.py:200
+#: src/backend/controllers/mailcollect.py:210
+#: src/backend/controllers/mailcollect.py:223
+#: src/backend/controllers/mailcollect.py:233
+#: src/backend/controllers/mailcollect.py:242
+#: src/backend/controllers/mailcollect.py:254
+#: src/backend/controllers/mailcollect.py:264
+#: src/backend/controllers/mailcollect.py:275
 msgid "MAILCOLLECT_ERROR"
 msgstr "Erreur MailCollect"
 
@@ -913,9 +974,9 @@ msgstr "Erreur lors de la suppression des pages du masque de positionnement"
 msgid "GET_PRIVILEGES_ERROR"
 msgstr "Erreur lors de la récupération des privilèges"
 
-#: src/backend/controllers/roles.py:39 src/backend/controllers/user.py:133
-#: src/backend/controllers/user.py:149 src/backend/controllers/user.py:230
-#: src/backend/models/user.py:145 src/backend/models/user.py:192
+#: src/backend/controllers/roles.py:39 src/backend/controllers/user.py:134
+#: src/backend/controllers/user.py:150 src/backend/controllers/user.py:231
+#: src/backend/models/user.py:155 src/backend/models/user.py:202
 msgid "GET_USER_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération de l'utilisateur"
 
@@ -970,7 +1031,7 @@ msgid "LOAD_METADATA_ERROR"
 msgstr "Erreur du chargement des métadonnées"
 
 #: src/backend/controllers/splitter.py:178
-#: src/backend/controllers/verifier.py:146
+#: src/backend/controllers/verifier.py:177
 msgid "AT"
 msgstr "à"
 
@@ -1000,13 +1061,13 @@ msgstr "Suppression du lot n°<strong>%(batch_id)s</strong>"
 
 #: src/backend/controllers/splitter.py:293
 #: src/backend/controllers/splitter.py:314
-#: src/backend/controllers/verifier.py:874
+#: src/backend/controllers/verifier.py:938
 msgid "UPDATE_STATUS_ERROR"
 msgstr "Erreur lors de la mise à jour du statut"
 
 #: src/backend/controllers/splitter.py:372
 #: src/backend/controllers/splitter.py:385
-#: src/backend/controllers/verifier.py:442
+#: src/backend/controllers/verifier.py:488
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr "Erreur lors de la suppression du verrou"
 
@@ -1023,8 +1084,8 @@ msgid "UPDATE_DOCUMENTS_ERROR"
 msgstr "Erreur lors de la mise à jour du document"
 
 #: src/backend/controllers/splitter.py:575
-#: src/backend/controllers/verifier.py:416
-#: src/backend/controllers/verifier.py:422
+#: src/backend/controllers/verifier.py:462
+#: src/backend/controllers/verifier.py:468
 msgid "UPDATE_DOCUMENT_ERROR"
 msgstr "Erreur lors de la mise à jour du document"
 
@@ -1049,8 +1110,8 @@ msgid "OPENADS_CONNECTION_ERROR"
 msgstr "Erreur lors de la connexion OpenADS"
 
 #: src/backend/controllers/splitter.py:771
-#: src/backend/controllers/verifier.py:853 src/backend/models/splitter.py:618
-#: src/backend/models/verifier.py:197
+#: src/backend/controllers/verifier.py:917 src/backend/models/splitter.py:618
+#: src/backend/models/verifier.py:205
 msgid "GET_TOTALS_ERROR"
 msgstr "Erreur lors de la récupération des totaux"
 
@@ -1058,118 +1119,118 @@ msgstr "Erreur lors de la récupération des totaux"
 msgid "GET_BATCH_OUTPUTS_ERROR"
 msgstr "Erreur lors de la récupération du workflow"
 
-#: src/backend/controllers/status.py:45
+#: src/backend/controllers/status.py:46
 msgid "RETRIEVES_STATUS_ERROR"
 msgstr "Erreur lors de la récupération des status"
 
-#: src/backend/controllers/user.py:40 src/backend/controllers/user.py:89
+#: src/backend/controllers/user.py:41 src/backend/controllers/user.py:90
 msgid "CREATE_USER_ERROR"
 msgstr "Erreur lors de la création de l'utilisateur"
 
-#: src/backend/controllers/user.py:41
+#: src/backend/controllers/user.py:42
 msgid "USERNAME_ALREADY_EXISTS"
 msgstr "Un utilisateur existe déjà avec ce nom d'utilisateur"
 
-#: src/backend/controllers/user.py:84
+#: src/backend/controllers/user.py:85
 msgid "CREATE_USER"
 msgstr "Création de l'utilisateur&nbsp;<strong>%(user)s</strong>"
 
-#: src/backend/controllers/user.py:166
+#: src/backend/controllers/user.py:167
 msgid "GET_USER_BY_USERNAME_ERROR"
 msgstr "Erreur lors de la récupération de l'utilisateur"
 
-#: src/backend/controllers/user.py:192
+#: src/backend/controllers/user.py:193
 msgid "USER_FORGOT_SUCCESS"
 msgstr ""
 "Envoi d'email de réinitialisation de mot de passe pour "
 "l'utilisateur&nbsp;<strong>%(user)s</strong>"
 
-#: src/backend/controllers/user.py:197
+#: src/backend/controllers/user.py:198
 msgid "SEND_EMAIL_FORGOT_PASSWORD_ERROR"
 msgstr "Erreur lors de l'envoi de l'email de réinitialisation du mot de passe"
 
-#: src/backend/controllers/user.py:220
+#: src/backend/controllers/user.py:221
 msgid "USER_RESET_PASSWORD_SUCCESS"
 msgstr ""
 "Mot de passe de l'utilisateur&nbsp;<strong>%(user)s</strong> réinitialisé"
 " avec succès"
 
-#: src/backend/controllers/user.py:224 src/backend/controllers/user.py:229
+#: src/backend/controllers/user.py:225 src/backend/controllers/user.py:230
 msgid "RESET_PASSWORD_ERROR"
 msgstr "Erreur lors de la réinitilisation du mot de passe"
 
-#: src/backend/controllers/user.py:225
+#: src/backend/controllers/user.py:226
 msgid "RESET_TOKEN_MISMATCH"
 msgstr "Le token de réinitialisation est invalide. Il est peut être expiré"
 
-#: src/backend/controllers/user.py:310
+#: src/backend/controllers/user.py:311
 msgid "UPDATE_PROFILE"
 msgstr "Mise à jour du profile"
 
-#: src/backend/controllers/user.py:311
+#: src/backend/controllers/user.py:312
 msgid "ERROR_OLD_PASSWORD_NOT_MATCH"
 msgstr "L'ancien mot de passe ne corresponds pas"
 
-#: src/backend/controllers/user.py:317
+#: src/backend/controllers/user.py:318
 msgid "UPDATE_USER"
 msgstr "Mise à jour de l'utilisateur"
 
-#: src/backend/controllers/user.py:318
+#: src/backend/controllers/user.py:319
 msgid "ERROR_PASSWORD_NOT_MATCH"
 msgstr "Les mots de passes ne correspondent pas"
 
-#: src/backend/controllers/user.py:348
+#: src/backend/controllers/user.py:349
 msgid "USER_UPDATED"
 msgstr "Mise à jour du compte utilisateur&nbsp<strong>%(user)s</strong>"
 
-#: src/backend/controllers/user.py:353 src/backend/controllers/user.py:359
-#: src/backend/models/user.py:260 src/backend/models/user.py:326
+#: src/backend/controllers/user.py:354 src/backend/controllers/user.py:360
+#: src/backend/models/user.py:270 src/backend/models/user.py:336
 msgid "UPDATE_USER_ERROR"
 msgstr "Erreur lors de la mise à jour de l'utilisateur"
 
-#: src/backend/controllers/user.py:376
+#: src/backend/controllers/user.py:377
 msgid "DELETE_USER"
 msgstr "Suppression de l'utilisateur&nbsp;<strong>%(user)s</strong>"
 
-#: src/backend/controllers/user.py:383 src/backend/controllers/user.py:389
+#: src/backend/controllers/user.py:384 src/backend/controllers/user.py:390
 msgid "DELETE_USER_ERROR"
 msgstr "Erreur lors de la suppression de l'utilisateur"
 
-#: src/backend/controllers/user.py:406
+#: src/backend/controllers/user.py:407
 msgid "DISABLE_USER"
 msgstr "Désactivation de l'utilisateur&nbsp;<strong>%(user)s</strong>"
 
-#: src/backend/controllers/user.py:413 src/backend/controllers/user.py:419
+#: src/backend/controllers/user.py:414 src/backend/controllers/user.py:420
 msgid "DISABLE_USER_ERROR"
 msgstr "Erreur lors de désactiver de l'utilisateur"
 
-#: src/backend/controllers/user.py:436
+#: src/backend/controllers/user.py:437
 msgid "ENABLE_USER"
 msgstr "Activation de l'utilisateur&nbsp;<strong>%(user)s</strong>"
 
-#: src/backend/controllers/user.py:443 src/backend/controllers/user.py:449
+#: src/backend/controllers/user.py:444 src/backend/controllers/user.py:450
 msgid "ENABLE_USER_ERROR"
 msgstr "Erreur lors de l'activation de l'utilisateur"
 
-#: src/backend/controllers/user.py:466 src/backend/controllers/user.py:472
-#: src/backend/models/user.py:282
+#: src/backend/controllers/user.py:467 src/backend/controllers/user.py:473
+#: src/backend/models/user.py:292
 msgid "UPDATE_CUSTOMERS_USER_ERROR"
 msgstr "Erreur lors de la mise à jour des comptes clients de l'utilisateur"
 
-#: src/backend/controllers/user.py:487 src/backend/controllers/user.py:494
-#: src/backend/models/user.py:304
+#: src/backend/controllers/user.py:488 src/backend/controllers/user.py:495
+#: src/backend/models/user.py:314
 msgid "UPDATE_FORMS_USER_ERROR"
 msgstr "Erreur lors de la mise à jour des formulaires de l'utilisateur"
 
-#: src/backend/controllers/user.py:537
+#: src/backend/controllers/user.py:538
 msgid "USER_EXPORT_ERROR"
 msgstr "Erreur lors de l'export des utilisateurs"
 
-#: src/backend/controllers/user.py:554 src/backend/controllers/user.py:571
+#: src/backend/controllers/user.py:555 src/backend/controllers/user.py:572
 msgid "ERROR_IMPORTING_USER"
 msgstr "Erreur lors de l'importation des utilisateurs"
 
-#: src/backend/controllers/user.py:587
+#: src/backend/controllers/user.py:588
 msgid "GET_DEFAULT_ROUTE_ERROR"
 msgstr "Erreur lors de la récupération de la route par défaut"
 
@@ -1177,73 +1238,93 @@ msgstr "Erreur lors de la récupération de la route par défaut"
 msgid "UPLOAD_DOCUMENTS_ERROR"
 msgstr "Erreur lors de l'upload des documents"
 
-#: src/backend/controllers/verifier.py:110 src/backend/models/splitter.py:222
-#: src/backend/models/verifier.py:40
+#: src/backend/controllers/verifier.py:62
+#: src/backend/controllers/verifier.py:78
+msgid "RETRY_FROM_MONITORING_ERROR"
+msgstr "Erreur lors de la relance du processus"
+
+#: src/backend/controllers/verifier.py:63
+#, fuzzy
+msgid "PROCESS_NOT_FOUND"
+msgstr "L'URL de l'hôte n'existe pas"
+
+#: src/backend/controllers/verifier.py:79 src/backend/rest/attachments.py:90
+#: src/backend/rest/attachments.py:101 src/backend/rest/verifier.py:607
+msgid "FILE_NOT_FOUND"
+msgstr "Fichier introuvable"
+
+#: src/backend/controllers/verifier.py:88 src/backend/rest/splitter.py:51
+#: src/backend/rest/verifier.py:103
+msgid "UNKNOW_ERROR"
+msgstr "Erreur inconnue"
+
+#: src/backend/controllers/verifier.py:141 src/backend/models/splitter.py:222
+#: src/backend/models/verifier.py:41
 msgid "GET_DOCUMENT_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération du document"
 
-#: src/backend/controllers/verifier.py:127 src/backend/models/verifier.py:64
+#: src/backend/controllers/verifier.py:158 src/backend/models/verifier.py:65
 msgid "GET_DOCUMENT_ID_AND_STATUS_BY_TOKEN_ERROR"
 msgstr "Erreur lors de la récupération du document par token"
 
-#: src/backend/controllers/verifier.py:128
+#: src/backend/controllers/verifier.py:159
 msgid "GET_DOCUMENT_ID_AND_STATUS_BY_TOKEN_ERROR_MESSAGE"
 msgstr "Aucun document trouvé avec ce token"
 
-#: src/backend/controllers/verifier.py:254
-#: src/backend/controllers/verifier.py:356
+#: src/backend/controllers/verifier.py:300
+#: src/backend/controllers/verifier.py:402
 msgid "UPDATE_DOCUMENT_POSITIONS_ERROR"
 msgstr "Erreur lors de la mise à jour des positions du document"
 
-#: src/backend/controllers/verifier.py:277
-#: src/backend/controllers/verifier.py:374
+#: src/backend/controllers/verifier.py:323
+#: src/backend/controllers/verifier.py:420
 msgid "UPDATE_DOCUMENT_PAGES_ERROR"
 msgstr "Erreur lors de la mise à jour des pages du document"
 
-#: src/backend/controllers/verifier.py:300
-#: src/backend/controllers/verifier.py:318
+#: src/backend/controllers/verifier.py:346
+#: src/backend/controllers/verifier.py:364
 msgid "UPDATE_DOCUMENT_DATA_ERROR"
 msgstr "Erreur lors de la mise à jour des données du document"
 
-#: src/backend/controllers/verifier.py:390
+#: src/backend/controllers/verifier.py:436
 msgid "DELETE_DOCUMENT_SUCCESS"
 msgstr "Suppression du document n°<strong>%(document_id)s</strong>"
 
-#: src/backend/controllers/verifier.py:395
-#: src/backend/controllers/verifier.py:401
+#: src/backend/controllers/verifier.py:441
+#: src/backend/controllers/verifier.py:447
 msgid "DELETE_DOCUMENT_ERROR"
 msgstr "Erreur lors de la suppression du document"
 
-#: src/backend/controllers/verifier.py:746
-#: src/backend/controllers/verifier.py:749
-#: src/backend/controllers/verifier.py:766
-#: src/backend/controllers/verifier.py:792
-#: src/backend/controllers/verifier.py:793
+#: src/backend/controllers/verifier.py:810
+#: src/backend/controllers/verifier.py:813
+#: src/backend/controllers/verifier.py:830
+#: src/backend/controllers/verifier.py:856
+#: src/backend/controllers/verifier.py:857
 msgid "API_INSEE_ERROR_CONNEXION"
 msgstr "Erreur lors de la connexion à l'api de l'INSEE"
 
-#: src/backend/controllers/verifier.py:823
+#: src/backend/controllers/verifier.py:887
 msgid "VAT_NOT_VALID"
 msgstr "Numéro de TVA invalide"
 
-#: src/backend/controllers/verifier.py:830
-#: src/backend/controllers/verifier.py:831
+#: src/backend/controllers/verifier.py:894
+#: src/backend/controllers/verifier.py:895
 msgid "VAT_API_ERROR"
 msgstr "Impossible de joindre l'API de vérification du numéro de TVA"
 
-#: src/backend/controllers/verifier.py:864
+#: src/backend/controllers/verifier.py:928
 msgid "DOCUMENT_NOT_FOUND"
 msgstr "Document non trouvé"
 
-#: src/backend/controllers/verifier.py:865
+#: src/backend/controllers/verifier.py:929
 msgid "DOCUMENT_ID_NOT_FOUND"
 msgstr "Document %(id)s non trouvé"
 
-#: src/backend/controllers/verifier.py:919
+#: src/backend/controllers/verifier.py:989
 msgid "NO_FORM"
 msgstr "Pas de formulaire associé"
 
-#: src/backend/controllers/verifier.py:930
+#: src/backend/controllers/verifier.py:1000
 msgid "FORM_NOT_FOUND"
 msgstr "Formulaire inexistant"
 
@@ -1432,7 +1513,7 @@ msgstr "Erreur lors de la création du formulaire"
 msgid "FORM_LABEL_ALREADY_EXIST"
 msgstr "Le libellé de formulaire existe déjà"
 
-#: src/backend/models/mailcollect.py:86
+#: src/backend/models/mailcollect.py:92
 msgid "MAILCOLLECT_PROCESS_UPDATE_ERROR"
 msgstr "Erreur lors de la mise à jour d'un processus MailCollect"
 
@@ -1529,19 +1610,15 @@ msgstr "L'utilisateur"
 msgid "ALREADY_REGISTERED"
 msgstr "est déjà enregistré"
 
-#: src/backend/models/user.py:53
-msgid "USER_RESTORED"
-msgstr "l'utilisateur est restauré"
-
-#: src/backend/models/user.py:168
+#: src/backend/models/user.py:178
 msgid "GET_USER_BY_MAIL_ERROR"
 msgstr "Aucun utilisateur asssocié à cette addresse email"
 
-#: src/backend/models/user.py:237
+#: src/backend/models/user.py:247
 msgid "GET_FORMS_BY_USER_ID_ERROR"
 msgstr "Erreur lors de la récupération des formulaires de l'utilisateur"
 
-#: src/backend/models/verifier.py:128 src/backend/models/verifier.py:149
+#: src/backend/models/verifier.py:129 src/backend/models/verifier.py:150
 msgid "DOCUMENT_UPDATE_ERROR"
 msgstr "Erreur lors de la mise à jour du document"
 
@@ -1559,16 +1636,17 @@ msgstr "Erreur lors de la modification du workflow"
 
 #: src/backend/rest/accounts.py:35 src/backend/rest/accounts.py:57
 #: src/backend/rest/accounts.py:70 src/backend/rest/accounts.py:82
-#: src/backend/rest/accounts.py:122 src/backend/rest/accounts.py:144
-#: src/backend/rest/accounts.py:166 src/backend/rest/accounts.py:192
-#: src/backend/rest/accounts.py:219 src/backend/rest/accounts.py:253
-#: src/backend/rest/accounts.py:290 src/backend/rest/accounts.py:301
-#: src/backend/rest/accounts.py:312 src/backend/rest/accounts.py:341
-#: src/backend/rest/accounts.py:370 src/backend/rest/accounts.py:382
-#: src/backend/rest/accounts.py:404 src/backend/rest/accounts.py:415
-#: src/backend/rest/accounts.py:441 src/backend/rest/accounts.py:466
-#: src/backend/rest/accounts.py:498 src/backend/rest/accounts.py:520
-#: src/backend/rest/accounts.py:531
+#: src/backend/rest/accounts.py:135 src/backend/rest/accounts.py:157
+#: src/backend/rest/accounts.py:179 src/backend/rest/accounts.py:205
+#: src/backend/rest/accounts.py:232 src/backend/rest/accounts.py:266
+#: src/backend/rest/accounts.py:309 src/backend/rest/accounts.py:320
+#: src/backend/rest/accounts.py:331 src/backend/rest/accounts.py:360
+#: src/backend/rest/accounts.py:389 src/backend/rest/accounts.py:401
+#: src/backend/rest/accounts.py:423 src/backend/rest/accounts.py:434
+#: src/backend/rest/accounts.py:460 src/backend/rest/accounts.py:485
+#: src/backend/rest/accounts.py:517 src/backend/rest/accounts.py:539
+#: src/backend/rest/accounts.py:550 src/backend/rest/accounts.py:564
+#: src/backend/rest/accounts.py:573 src/backend/rest/accounts.py:582
 #: src/backend/rest/artificial_intelligence.py:30
 #: src/backend/rest/artificial_intelligence.py:40
 #: src/backend/rest/artificial_intelligence.py:51
@@ -1590,9 +1668,9 @@ msgstr "Erreur lors de la modification du workflow"
 #: src/backend/rest/config.py:105 src/backend/rest/config.py:126
 #: src/backend/rest/config.py:154 src/backend/rest/config.py:173
 #: src/backend/rest/config.py:196 src/backend/rest/config.py:220
-#: src/backend/rest/custom_fields.py:32 src/backend/rest/custom_fields.py:46
-#: src/backend/rest/custom_fields.py:57 src/backend/rest/custom_fields.py:68
-#: src/backend/rest/custom_fields.py:78 src/backend/rest/doctypes.py:31
+#: src/backend/rest/custom_fields.py:32 src/backend/rest/custom_fields.py:54
+#: src/backend/rest/custom_fields.py:65 src/backend/rest/custom_fields.py:76
+#: src/backend/rest/custom_fields.py:86 src/backend/rest/doctypes.py:31
 #: src/backend/rest/doctypes.py:47 src/backend/rest/doctypes.py:58
 #: src/backend/rest/doctypes.py:69 src/backend/rest/doctypes.py:80
 #: src/backend/rest/doctypes.py:90 src/backend/rest/doctypes.py:101
@@ -1606,16 +1684,17 @@ msgstr "Erreur lors de la modification du workflow"
 #: src/backend/rest/history.py:79 src/backend/rest/history.py:99
 #: src/backend/rest/history.py:109 src/backend/rest/locale.py:31
 #: src/backend/rest/mailcollect.py:30 src/backend/rest/mailcollect.py:40
-#: src/backend/rest/mailcollect.py:70 src/backend/rest/mailcollect.py:104
-#: src/backend/rest/mailcollect.py:125 src/backend/rest/mailcollect.py:158
-#: src/backend/rest/mailcollect.py:169 src/backend/rest/mailcollect.py:180
+#: src/backend/rest/mailcollect.py:72 src/backend/rest/mailcollect.py:101
+#: src/backend/rest/mailcollect.py:122 src/backend/rest/mailcollect.py:152
+#: src/backend/rest/mailcollect.py:163 src/backend/rest/mailcollect.py:174
 #: src/backend/rest/monitoring.py:30 src/backend/rest/monitoring.py:40
 #: src/backend/rest/monitoring.py:50 src/backend/rest/monitoring.py:61
-#: src/backend/rest/outputs.py:32 src/backend/rest/outputs.py:55
-#: src/backend/rest/outputs.py:74 src/backend/rest/outputs.py:86
-#: src/backend/rest/outputs.py:98 src/backend/rest/outputs.py:124
-#: src/backend/rest/outputs.py:136 src/backend/rest/outputs.py:161
-#: src/backend/rest/outputs.py:172 src/backend/rest/positions_masks.py:33
+#: src/backend/rest/monitoring.py:95 src/backend/rest/outputs.py:32
+#: src/backend/rest/outputs.py:55 src/backend/rest/outputs.py:74
+#: src/backend/rest/outputs.py:86 src/backend/rest/outputs.py:98
+#: src/backend/rest/outputs.py:124 src/backend/rest/outputs.py:136
+#: src/backend/rest/outputs.py:161 src/backend/rest/outputs.py:172
+#: src/backend/rest/positions_masks.py:33
 #: src/backend/rest/positions_masks.py:53
 #: src/backend/rest/positions_masks.py:74
 #: src/backend/rest/positions_masks.py:85
@@ -1652,21 +1731,22 @@ msgstr "Erreur lors de la modification du workflow"
 #: src/backend/rest/user.py:260 src/backend/rest/user.py:280
 #: src/backend/rest/user.py:290 src/backend/rest/user.py:310
 #: src/backend/rest/user.py:325 src/backend/rest/verifier.py:45
-#: src/backend/rest/verifier.py:110 src/backend/rest/verifier.py:139
-#: src/backend/rest/verifier.py:167 src/backend/rest/verifier.py:179
-#: src/backend/rest/verifier.py:190 src/backend/rest/verifier.py:202
-#: src/backend/rest/verifier.py:214 src/backend/rest/verifier.py:239
-#: src/backend/rest/verifier.py:264 src/backend/rest/verifier.py:289
-#: src/backend/rest/verifier.py:312 src/backend/rest/verifier.py:334
-#: src/backend/rest/verifier.py:356 src/backend/rest/verifier.py:367
-#: src/backend/rest/verifier.py:396 src/backend/rest/verifier.py:425
-#: src/backend/rest/verifier.py:455 src/backend/rest/verifier.py:466
-#: src/backend/rest/verifier.py:478 src/backend/rest/verifier.py:511
-#: src/backend/rest/verifier.py:547 src/backend/rest/verifier.py:568
-#: src/backend/rest/verifier.py:582 src/backend/rest/verifier.py:593
-#: src/backend/rest/verifier.py:615 src/backend/rest/verifier.py:637
-#: src/backend/rest/verifier.py:657 src/backend/rest/verifier.py:670
-#: src/backend/rest/verifier.py:681 src/backend/rest/verifier.py:702
+#: src/backend/rest/verifier.py:110 src/backend/rest/verifier.py:121
+#: src/backend/rest/verifier.py:151 src/backend/rest/verifier.py:179
+#: src/backend/rest/verifier.py:191 src/backend/rest/verifier.py:202
+#: src/backend/rest/verifier.py:214 src/backend/rest/verifier.py:226
+#: src/backend/rest/verifier.py:251 src/backend/rest/verifier.py:276
+#: src/backend/rest/verifier.py:301 src/backend/rest/verifier.py:324
+#: src/backend/rest/verifier.py:346 src/backend/rest/verifier.py:368
+#: src/backend/rest/verifier.py:390 src/backend/rest/verifier.py:401
+#: src/backend/rest/verifier.py:430 src/backend/rest/verifier.py:459
+#: src/backend/rest/verifier.py:489 src/backend/rest/verifier.py:500
+#: src/backend/rest/verifier.py:512 src/backend/rest/verifier.py:545
+#: src/backend/rest/verifier.py:581 src/backend/rest/verifier.py:602
+#: src/backend/rest/verifier.py:616 src/backend/rest/verifier.py:627
+#: src/backend/rest/verifier.py:649 src/backend/rest/verifier.py:671
+#: src/backend/rest/verifier.py:691 src/backend/rest/verifier.py:704
+#: src/backend/rest/verifier.py:715 src/backend/rest/verifier.py:736
 #: src/backend/rest/workflow.py:32 src/backend/rest/workflow.py:54
 #: src/backend/rest/workflow.py:84 src/backend/rest/workflow.py:110
 #: src/backend/rest/workflow.py:122 src/backend/rest/workflow.py:134
@@ -1676,39 +1756,41 @@ msgstr "Erreur lors de la modification du workflow"
 msgid "UNAUTHORIZED_ROUTE"
 msgstr "Vous n'êtes pas autorisé à accéder à cette route"
 
-#: src/backend/rest/accounts.py:45 src/backend/rest/accounts.py:108
-#: src/backend/rest/accounts.py:130 src/backend/rest/accounts.py:152
-#: src/backend/rest/accounts.py:179 src/backend/rest/accounts.py:205
-#: src/backend/rest/accounts.py:231 src/backend/rest/accounts.py:278
-#: src/backend/rest/accounts.py:322 src/backend/rest/accounts.py:351
-#: src/backend/rest/accounts.py:392 src/backend/rest/accounts.py:429
-#: src/backend/rest/accounts.py:454 src/backend/rest/attachments.py:38
-#: src/backend/rest/attachments.py:57 src/backend/rest/auth.py:37
-#: src/backend/rest/auth.py:55 src/backend/rest/auth.py:70
-#: src/backend/rest/auth.py:91 src/backend/rest/auth.py:111
-#: src/backend/rest/auth.py:155 src/backend/rest/auth.py:188
-#: src/backend/rest/auth.py:221 src/backend/rest/auth.py:246
-#: src/backend/rest/auth.py:265 src/backend/rest/config.py:49
-#: src/backend/rest/config.py:93 src/backend/rest/config.py:114
-#: src/backend/rest/config.py:136 src/backend/rest/config.py:161
-#: src/backend/rest/config.py:184 src/backend/rest/config.py:208
-#: src/backend/rest/config.py:231 src/backend/rest/coog.py:37
-#: src/backend/rest/forms.py:46 src/backend/rest/forms.py:86
-#: src/backend/rest/forms.py:131 src/backend/rest/forms.py:152
-#: src/backend/rest/forms.py:172 src/backend/rest/forms.py:197
-#: src/backend/rest/forms.py:268 src/backend/rest/history.py:40
-#: src/backend/rest/history.py:67 src/backend/rest/history.py:87
-#: src/backend/rest/mailcollect.py:58 src/backend/rest/mailcollect.py:92
-#: src/backend/rest/mailcollect.py:113 src/backend/rest/mailcollect.py:146
-#: src/backend/rest/mem.py:37 src/backend/rest/mem.py:56
-#: src/backend/rest/mem.py:75 src/backend/rest/mem.py:94
-#: src/backend/rest/mem.py:113 src/backend/rest/mem.py:132
-#: src/backend/rest/mem.py:151 src/backend/rest/mem.py:170
-#: src/backend/rest/mem.py:189 src/backend/rest/mem.py:214
-#: src/backend/rest/monitoring.py:70 src/backend/rest/opencaptureformem.py:37
-#: src/backend/rest/opencaptureformem.py:55 src/backend/rest/outputs.py:40
-#: src/backend/rest/outputs.py:111 src/backend/rest/outputs.py:148
-#: src/backend/rest/outputs.py:180 src/backend/rest/positions_masks.py:41
+#: src/backend/rest/accounts.py:45 src/backend/rest/accounts.py:121
+#: src/backend/rest/accounts.py:143 src/backend/rest/accounts.py:165
+#: src/backend/rest/accounts.py:192 src/backend/rest/accounts.py:218
+#: src/backend/rest/accounts.py:244 src/backend/rest/accounts.py:297
+#: src/backend/rest/accounts.py:341 src/backend/rest/accounts.py:370
+#: src/backend/rest/accounts.py:411 src/backend/rest/accounts.py:448
+#: src/backend/rest/accounts.py:473 src/backend/rest/accounts.py:590
+#: src/backend/rest/attachments.py:38 src/backend/rest/attachments.py:57
+#: src/backend/rest/auth.py:37 src/backend/rest/auth.py:55
+#: src/backend/rest/auth.py:70 src/backend/rest/auth.py:91
+#: src/backend/rest/auth.py:111 src/backend/rest/auth.py:155
+#: src/backend/rest/auth.py:188 src/backend/rest/auth.py:221
+#: src/backend/rest/auth.py:246 src/backend/rest/auth.py:265
+#: src/backend/rest/config.py:49 src/backend/rest/config.py:93
+#: src/backend/rest/config.py:114 src/backend/rest/config.py:136
+#: src/backend/rest/config.py:161 src/backend/rest/config.py:184
+#: src/backend/rest/config.py:208 src/backend/rest/config.py:231
+#: src/backend/rest/coog.py:37 src/backend/rest/forms.py:46
+#: src/backend/rest/forms.py:86 src/backend/rest/forms.py:131
+#: src/backend/rest/forms.py:152 src/backend/rest/forms.py:172
+#: src/backend/rest/forms.py:197 src/backend/rest/forms.py:268
+#: src/backend/rest/history.py:40 src/backend/rest/history.py:67
+#: src/backend/rest/history.py:87 src/backend/rest/mailcollect.py:60
+#: src/backend/rest/mailcollect.py:89 src/backend/rest/mailcollect.py:110
+#: src/backend/rest/mailcollect.py:140 src/backend/rest/mem.py:37
+#: src/backend/rest/mem.py:56 src/backend/rest/mem.py:75
+#: src/backend/rest/mem.py:94 src/backend/rest/mem.py:113
+#: src/backend/rest/mem.py:132 src/backend/rest/mem.py:151
+#: src/backend/rest/mem.py:170 src/backend/rest/mem.py:189
+#: src/backend/rest/mem.py:214 src/backend/rest/monitoring.py:70
+#: src/backend/rest/monitoring.py:103 src/backend/rest/opencaptureformem.py:37
+#: src/backend/rest/opencaptureformem.py:55 src/backend/rest/opencrm.py:37
+#: src/backend/rest/outputs.py:40 src/backend/rest/outputs.py:111
+#: src/backend/rest/outputs.py:148 src/backend/rest/outputs.py:180
+#: src/backend/rest/positions_masks.py:41
 #: src/backend/rest/positions_masks.py:62
 #: src/backend/rest/positions_masks.py:97 src/backend/rest/roles.py:37
 #: src/backend/rest/roles.py:75 src/backend/rest/roles.py:94
@@ -1721,34 +1803,26 @@ msgstr "Vous n'êtes pas autorisé à accéder à cette route"
 #: src/backend/rest/user.py:183 src/backend/rest/user.py:211
 #: src/backend/rest/user.py:268 src/backend/rest/user.py:298
 #: src/backend/rest/user.py:335 src/backend/rest/verifier.py:58
-#: src/backend/rest/verifier.py:126 src/backend/rest/verifier.py:154
-#: src/backend/rest/verifier.py:226 src/backend/rest/verifier.py:251
-#: src/backend/rest/verifier.py:276 src/backend/rest/verifier.py:299
-#: src/backend/rest/verifier.py:322 src/backend/rest/verifier.py:344
-#: src/backend/rest/verifier.py:377 src/backend/rest/verifier.py:406
-#: src/backend/rest/verifier.py:435 src/backend/rest/verifier.py:490
-#: src/backend/rest/verifier.py:522 src/backend/rest/verifier.py:555
-#: src/backend/rest/verifier.py:602 src/backend/rest/verifier.py:624
-#: src/backend/rest/verifier.py:645 src/backend/rest/verifier.py:690
-#: src/backend/rest/workflow.py:41 src/backend/rest/workflow.py:69
-#: src/backend/rest/workflow.py:92 src/backend/rest/workflow.py:173
-#: src/backend/rest/workflow.py:198 src/backend/rest/workflow.py:228
+#: src/backend/rest/verifier.py:138 src/backend/rest/verifier.py:166
+#: src/backend/rest/verifier.py:238 src/backend/rest/verifier.py:263
+#: src/backend/rest/verifier.py:288 src/backend/rest/verifier.py:311
+#: src/backend/rest/verifier.py:334 src/backend/rest/verifier.py:356
+#: src/backend/rest/verifier.py:378 src/backend/rest/verifier.py:411
+#: src/backend/rest/verifier.py:440 src/backend/rest/verifier.py:469
+#: src/backend/rest/verifier.py:524 src/backend/rest/verifier.py:556
+#: src/backend/rest/verifier.py:589 src/backend/rest/verifier.py:636
+#: src/backend/rest/verifier.py:658 src/backend/rest/verifier.py:679
+#: src/backend/rest/verifier.py:724 src/backend/rest/workflow.py:41
+#: src/backend/rest/workflow.py:69 src/backend/rest/workflow.py:92
+#: src/backend/rest/workflow.py:173 src/backend/rest/workflow.py:198
+#: src/backend/rest/workflow.py:228
 msgid "BAD_REQUEST"
 msgstr "Erreur de requête"
 
 #: src/backend/rest/attachments.py:90 src/backend/rest/attachments.py:101
-#: src/backend/rest/verifier.py:573
+#: src/backend/rest/verifier.py:607
 msgid "DOWNLOAD_FILE"
 msgstr "Téléchargement du fichier"
-
-#: src/backend/rest/attachments.py:90 src/backend/rest/attachments.py:101
-#: src/backend/rest/verifier.py:573
-msgid "FILE_NOT_FOUND"
-msgstr "Fichier introuvable"
-
-#: src/backend/rest/splitter.py:51 src/backend/rest/verifier.py:103
-msgid "UNKNOW_ERROR"
-msgstr "Erreur inconnue"
 
 #: src/backend/rest/verifier.py:98
 msgid "UNIQUE_URL_TOKEN_GENERATION_ERROR"
@@ -1759,4 +1833,3 @@ msgid "INTERFACE_IS_NOT_USED_OR_FORM_UNIQUE_URL_NOT_SET"
 msgstr ""
 "L'utilisation de l'interface est désactivée dans le workflow ou l'URL "
 "unique n'est pas configurée correctement"
-

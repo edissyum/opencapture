@@ -221,7 +221,7 @@ export class VerifierListComponent implements OnInit {
         setTimeout(() => {
             this.loadForms();
             this.loadStatus();
-            this.loadCustomers();
+            this.loadCustomers(true);
         }, 100);
     }
 
@@ -282,7 +282,7 @@ export class VerifierListComponent implements OnInit {
         ).subscribe();
     }
 
-    loadCustomers() {
+    loadCustomers(init=false) {
         this.TREE_DATA = [];
         this.allowedCustomers.push(0); // 0 is used if for some reasons no customer was recover by OC process
         this.http.get(environment['url'] + '/ws/accounts/customers/list/verifier', {headers: this.authService.headers}).pipe(
@@ -343,7 +343,11 @@ export class VerifierListComponent implements OnInit {
                 });
                 this.dataSource.data = this.TREE_DATA;
                 this.filterCustomers();
-                this.loadDocuments().then();
+                if (init && this.sessionStorageService.get('nodeSelected')) {
+                    this.loadDocumentPerCustomer(JSON.parse(<string>this.sessionStorageService.get('nodeSelected')));
+                } else {
+                    this.loadDocuments().then();
+                }
             }),
             finalize(() => this.loadingCustomers = false),
             catchError((err: any) => {
@@ -383,7 +387,8 @@ export class VerifierListComponent implements OnInit {
             {
                 'allowedCustomers': this.allowedCustomers, 'status': this.currentStatus, 'limit': this.pageSize,
                 'allowedSuppliers': this.allowedSuppliers, 'form_id': this.currentForm, 'time': this.currentTime,
-                'offset': this.offset, 'search': this.search, 'order': this.currentOrder, 'filter': this.currentFilter
+                'offset': this.offset, 'search': this.search, 'order': this.currentOrder, 'filter': this.currentFilter,
+                'user_id': this.userService.user.id
             },
             {headers: this.authService.headers}
         ).pipe(
@@ -478,8 +483,9 @@ export class VerifierListComponent implements OnInit {
     }
 
     resetSearchCustomer() {
-        this.customerFilter.setValue('');
         this.filterCustomers();
+        this.customerFilter.setValue('');
+        this.sessionStorageService.save('customerFilter', '');
     }
 
     filterCustomers() {
@@ -540,6 +546,7 @@ export class VerifierListComponent implements OnInit {
         const formId = node.form_id;
         const parentId = node.parent_id;
         const supplierId = node.supplier_id;
+        this.sessionStorageService.save('nodeSelected', JSON.stringify(node));
         this.TREE_DATA.forEach((element: any) => {
             if (element.id === parentId) {
                 const customerId = element.id;
@@ -565,6 +572,7 @@ export class VerifierListComponent implements OnInit {
         this.allowedSuppliers = [];
         this.loadingCustomers = true;
         this.customerFilterEnabled = false;
+        this.sessionStorageService.save('nodeSelected', '');
         this.loadCustomers();
         this.resetPaginator();
         this.resetSearchCustomer();

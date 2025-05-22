@@ -103,6 +103,17 @@ def upload():
         return make_response(gettext('UNKNOW_ERROR'), 400)
 
 
+@bp.route('verifier/retryFromMonitoring/<int:process_id>', methods=['GET'])
+@auth.token_required
+def retry_from_monitoring(process_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/verifier/retryFromMonitoring/{process_id}'}), 403
+
+    res = verifier.retry_from_monitoring(process_id)
+    return make_response(res[0], res[1])
+
+
 @bp.route('verifier/documents/list', methods=['POST'])
 @auth.token_required
 def documents_list():
@@ -117,6 +128,7 @@ def documents_list():
         {'id': 'offset', 'type': int, 'mandatory': False},
         {'id': 'search', 'type': str, 'mandatory': False},
         {'id': 'filter', 'type': str, 'mandatory': False},
+        {'id': 'user_id', 'type': int, 'mandatory': False},
         {'id': 'allowedCustomers', 'type': list, 'mandatory': False},
         {'id': 'allowedSuppliers', 'type': list, 'mandatory': False}
     ])
@@ -323,6 +335,28 @@ def export_coog(document_id):
             "message": message
         }, 400)
     res = verifier.export_coog(document_id, request.json['args'])
+    return make_response(jsonify(res[0]), res[1])
+
+
+@bp.route('verifier/documents/<int:document_id>/export_opencrm', methods=['POST'])
+@auth.token_required
+def export_opencrm(document_id):
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/verifier/documents/{document_id}/export_opencrm'}), 403
+
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'data', 'type': dict, 'mandatory': True},
+        {'id': 'module', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+    res = verifier.export_opencrm(document_id, request.json['args'])
     return make_response(jsonify(res[0]), res[1])
 
 

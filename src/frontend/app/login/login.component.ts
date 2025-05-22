@@ -68,7 +68,7 @@ export class LoginComponent implements OnInit {
             password: [null, Validators.required]
         });
 
-        if (this.localeService.currentLang === undefined) {
+        if (!this.localeService.currentLang) {
             this.localeService.getCurrentLocale();
         }
         const b64Content = this.sessionStorageService.get('loginImageB64');

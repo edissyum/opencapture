@@ -142,9 +142,14 @@ CREATE TABLE "privileges" (
     "label"  VARCHAR(50)
 );
 
+CREATE table "accounts_civilities" (
+    "id"    SERIAL UNIQUE PRIMARY KEY,
+    "label" VARCHAR(50)
+);
+
 CREATE TABLE "accounts_supplier" (
     "id"                        SERIAL        UNIQUE PRIMARY KEY,
-    "name"                      VARCHAR(255)  NOT NULL,
+    "name"                      VARCHAR(255),
     "vat_number"                VARCHAR(20)   UNIQUE,
     "siret"                     VARCHAR(20),
     "siren"                     VARCHAR(20),
@@ -153,10 +158,16 @@ CREATE TABLE "accounts_supplier" (
     "bic"                       VARCHAR(11),
     "rccm"                      VARCHAR(30),
     "email"                     VARCHAR,
+    "phone"                     VARCHAR(20),
     "address_id"                INTEGER,
     "form_id"                   INTEGER,
+    "lastname"                  VARCHAR(255),
+    "firstname"                 VARCHAR(255),
+    "function"                  VARCHAR(255),
+    "civility"                  INTEGER,
     "document_lang"             VARCHAR(10)   DEFAULT 'fra',
     "status"                    VARCHAR(3)    DEFAULT 'OK',
+    "informal_contact"          BOOLEAN       DEFAULT False,
     "get_only_raw_footer"       BOOLEAN       DEFAULT False,
     "skip_auto_validate"        BOOLEAN       DEFAULT False,
     "default_currency"          VARCHAR(10),
@@ -339,16 +350,8 @@ CREATE TABLE "languages" (
 CREATE TABLE "mailcollect" (
     "id"                            SERIAL       UNIQUE PRIMARY KEY,
     "name"                          VARCHAR(255) UNIQUE NOT NULL,
-    "hostname"                      VARCHAR(255) NOT NULL,
-    "port"                          INTEGER      NOT NULL,
-    "login"                         VARCHAR(255) NOT NULL,
-    "password"                      VARCHAR(255) NOT NULL,
-    "secret"                        VARCHAR,
-    "tenant_id"                     VARCHAR,
-    "client_id"                     VARCHAR,
-    "oauth"                         BOOLEAN DEFAULT FALSE,
-    "scopes"                        VARCHAR DEFAULT 'https://outlook.office.com/.default',
-    "authority"                     VARCHAR DEFAULT 'https://login.microsoftonline.com/',
+    "method"                        VARCHAR(20)  DEFAULT 'imap',
+    "options"                       JSONB        DEFAULT '{}',
     "secured_connection"            BOOLEAN      DEFAULT True,
     "status"                        VARCHAR(10)  DEFAULT 'OK',
     "is_splitter"                   BOOLEAN      DEFAULT False,
@@ -389,6 +392,7 @@ CREATE TABLE "monitoring" (
     "elapsed_time"       VARCHAR(20),
     "document_ids"       INTEGER[],
     "error"              BOOLEAN        DEFAULT False,
+    "retry"              BOOLEAN        DEFAULT False,
     "module"             VARCHAR(10)    NOT NULL,
     "source"             VARCHAR(10)    NOT NULL,
     "creation_date"      TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,

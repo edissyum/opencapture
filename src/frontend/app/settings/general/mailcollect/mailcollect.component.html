@@ -99,7 +99,7 @@
                                                 @if (field.unit === unit['id']) {
                                                     @if (field['type'] === 'boolean') {
                                                         <div class="col-span-4 mb-8">
-                                                            <mat-slide-toggle [name]="field['id']" class="relative m-auto top-4" [formControl]="field['control']" (change)="updateRequired($event, process)">
+                                                            <mat-slide-toggle [name]="field['id']" class="relative m-auto top-4" [formControl]="field['control']">
                                                                 {{ field['label'] | translate }}
                                                             </mat-slide-toggle>
                                                             @if (field['hint']) {
@@ -146,7 +146,8 @@
                                                     } @else if (field['type'] === 'select') {
                                                         <mat-form-field class="w-full">
                                                             <mat-label>{{ field['label'] | translate }}</mat-label>
-                                                            <mat-select [formControl]="field['control']" [required]="field['required']" (selectionChange)="isValidForm(process, false)">
+                                                            <mat-select [formControl]="field['control']" [required]="field['required']" [id]="field['id']"
+                                                                        (selectionChange)="isValidForm(process, false, $event)">
                                                                 @for (option of field.values; track option['id']) {
                                                                     <mat-option [value]="option['id']">
                                                                         {{ option['label'] | translate }}

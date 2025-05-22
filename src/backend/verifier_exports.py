@@ -1,6 +1,6 @@
 # This file is part of Open-Capture.
-# Copyright Edissyum Consulting since 2020 under licence GPLv3
 
+# Copyright Edissyum Consulting since 2020 under licence GPLv3
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -23,6 +23,7 @@ import shutil
 import base64
 import facturx
 import datetime
+import mimetypes
 import subprocess
 import pandas as pd
 from PIL import Image
@@ -32,6 +33,7 @@ from unidecode import unidecode
 from flask_babel import gettext
 import xml.etree.ElementTree as Et
 from src.backend.classes.Files import Files
+from src.backend.classes.OpenCRMWebServices import OpenCRMWebServices
 from src.backend.models import attachments, monitoring
 from src.backend.classes.MEMWebServices import MEMWebServices
 from src.backend.classes.COOGWebServices import COOGWebServices
@@ -627,6 +629,88 @@ def export_coog(data, document_info, log, database):
         return response, 400
 
 
+def export_opencrm(data, document_info, log, database):
+    if 'id' in document_info and document_info['id']:
+        task = monitoring.get_process_by_document_id(document_info['id'])[0]
+        if task and task[0]:
+            log.task_id_monitor = task[0]['id']
+            log.monitoring_status = task[0]['status']
+            log.current_step = len(task[0]['steps']) + 1
+
+    if not document_info:
+        response = {
+            "errors": gettext('EXPORT_OPENCRM_ERROR'),
+            "message": ''
+        }
+        return response, 400
+
+    log.info('Output execution : OpenCRM export')
+    host = client_id = client_secret = ''
+    auth_data = data['options']['auth']
+    for _data in auth_data:
+        if _data['id'] == 'host':
+            host = _data['value']
+        if _data['id'] == 'client_id':
+            client_id = _data['value']
+        if _data['id'] == 'client_secret':
+            client_secret = _data['value']
+
+    if host and client_id and client_secret:
+        _ws = OpenCRMWebServices(
+            host,
+            client_id,
+            client_secret,
+            log
+        )
+        if _ws.access_token[0]:
+            try:
+                parameters = json.loads(data['options']['parameters'][0]['value'])
+            except json.JSONDecodeError:
+                response = {
+                    "errors": gettext('EXPORT_OPENCRM_ERROR'),
+                    "message": gettext('OPENCRM_JSON_ERROR')
+                }
+                return response, 400
+
+            attachments_files = []
+            attachments_list = attachments.get_attachments_by_document_id(document_info['id'])
+            if attachments_list:
+                for attachment in attachments_list:
+                    if os.path.isfile(attachment['path']):
+                        with open(attachment['path'], 'rb') as _file:
+                            b64_encoded = base64.b64encode(_file.read()).decode('utf-8')
+
+                        attachments_files.append({
+                            "nom": attachment['filename'],
+                            "type_mime": mimetypes.guess_type(attachment['path'])[0],
+                            "base64": b64_encoded
+                        })
+
+            ws_data = construct_json(parameters, document_info, database)
+            ws_data['data']['requete']['documents'].append(attachments_files)
+            res = _ws.create_entry(ws_data)
+            if res[0]:
+                return {}, 200
+            else:
+                response = {
+                    "errors": gettext('EXPORT_COOG_ERROR'),
+                    "message": res[1]
+                }
+                return response, 400
+        else:
+            response = {
+                "errors": gettext('OPENCRM_WS_INFO_WRONG'),
+                "message": _ws.access_token[1]
+            }
+            return response, 400
+    else:
+        response = {
+            "errors": gettext('OPENCRM_WS_INFO_EMPTY'),
+            "message": ''
+        }
+        return response, 400
+
+
 def export_mem(data, document_info, log, regex, database):
     if 'id' in document_info and document_info['id']:
         task = monitoring.get_process_by_document_id(document_info['id'])[0]
@@ -883,6 +967,12 @@ def construct_with_var(data, document_info, separator=None):
                 with open(file, 'rb') as _file:
                     b64_encoded = base64.b64encode(_file.read())
                     _data.append(str(b64_encoded.decode('utf-8')))
+        elif column_strip == 'mime_type':
+            file = document_info['path'] + '/' + document_info['filename']
+            if os.path.isfile(file):
+                mime_type = mimetypes.guess_type(file)[0]
+                if mime_type:
+                    _data.append(mime_type)
         elif column_strip == 'current_date':
             _data.append(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         elif column_strip == 'document_date_full':

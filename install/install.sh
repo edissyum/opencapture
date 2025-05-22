@@ -336,7 +336,8 @@ mkdir -p $customPath/bin/{ldap,scripts}/
 mkdir -p $customPath/assets/imgs/
 mkdir -p $customPath/bin/ldap/config/
 mkdir -p $customPath/instance/referencial/
-mkdir -p $customPath/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
+mkdir -p $customPath/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa,error}/
+mkdir -p $customPath/data/MailCollect/_ERROR/
 mkdir -p $customPath/data/log/Supervisor/
 mkdir -p $customPath/bin/scripts/{verifier_workflows,splitter_workflows,splitter_metadata,splitter_methods,MailCollect,ai}/
 mkdir -p $customPath/bin/scripts/ai/{splitter,verifier}/
@@ -409,6 +410,7 @@ echo ""
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '/var/www/html/opencapture/' , '$defaultPath')" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '/var/docservers/opencapture/' , '$docserverDefaultPath/$customId/')" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '/var/share/' , '$share_path/$customId/')" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/data/error/' WHERE docserver_id = 'ERROR_PATH'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/' WHERE docserver_id = 'SCRIPTS_PATH'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/data/tmp/' WHERE docserver_id = 'TMP_PATH'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/data/exported_pdfa/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDFA'" "$databaseName" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
@@ -554,7 +556,6 @@ cp $defaultPath/bin/ldap/config/config.ini.default "$defaultPath/custom/$customI
 cp $defaultPath/instance/config/config.ini.default "$defaultPath/custom/$customId/config/config.ini"
 cp $defaultPath/instance/referencial/default_referencial_supplier.csv.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier.csv"
 cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier_index.json"
-cp $defaultPath/instance/referencial/LISTE_PRENOMS.csv "$defaultPath/custom/$customId/instance/referencial/LISTE_PRENOMS.csv"
 cp $defaultPath/instance/referencial/CURRENCY_CODE.csv "$defaultPath/custom/$customId/instance/referencial/CURRENCY_CODE.csv"
 cp $defaultPath/src/backend/process_queue_verifier.py.default "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
 cp $defaultPath/src/backend/process_queue_splitter.py.default "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
@@ -700,6 +701,11 @@ crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workfl
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId include_extensions pdf,PDF
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_workflow_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_workflow.sh \$filename"
 
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_mail_$customId watch $share_path/"$customId"/entrant/verifier/default_mail/
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_mail_$customId events move,close
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_mail_$customId include_extensions pdf,PDF
+crudini --set "$defaultPath/instance/config/watcher.ini" verifier_default_mail_$customId command "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_mail.sh \$filename"
+
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_ocr_only_$customId watch $share_path/"$customId"/entrant/verifier/ocr_only/
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_ocr_only_$customId events move,close
 crudini --set "$defaultPath/instance/config/watcher.ini" verifier_ocr_only_$customId include_extensions pdf,PDF
@@ -748,7 +754,7 @@ echo "$secret" > $customPath/config/secret_key
 cp $defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/verifier_workflows/"
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_workflow.sh"
 
-customDefaultScriptSamplePath="$defaultPath/bin/scripts/verifier_workflows/script_sample_dont_touch.sh"
+customDefaultScriptSamplePath="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/script_sample_dont_touch.sh"
 sed -i "s#§§PYTHON_VENV§§#source $python_venv_path/bin/activate#g" $customDefaultScriptSamplePath
 
 touch $defaultPath/custom/$customId/data/log/OpenCapture.log
@@ -771,12 +777,22 @@ if ! test -f "$ocrOnlyFile"; then
     sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" $ocrOnlyFile
 fi
 
+defaultMailFile="$defaultPath/custom/$customId/bin/scripts/verifier_workflows/default_mail.sh"
+if ! test -f "$defaultMailFile"; then
+    cp $customDefaultScriptSamplePath $defaultMailFile
+    sed -i "s#§§SCRIPT_NAME§§#default_mail#g" $defaultMailFile
+    sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultMailFile
+    sed -i "s#§§LOG_PATH§§#$defaultPath/custom/$customId/data/log/OpenCapture.log#g" $defaultMailFile
+    sed -i 's#"§§ARGUMENTS§§"#-workflow_id default_mail#g' $defaultMailFile
+    sed -i "s#§§CUSTOM_ID§§#$oldCustomId#g" $defaultMailFile
+fi
+
 ####################
 # Create default splitter workflow script (based on default workflow created in data_fr.sql)
 cp $defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh "$defaultPath/custom/$customId/bin/scripts/splitter_workflows/"
 defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/splitter_workflows/default_workflow.sh"
 
-customDefaultScriptSamplePath="$defaultPath/bin/scripts/splitter_workflows/script_sample_dont_touch.sh"
+customDefaultScriptSamplePath="$defaultPath/custom/$customId/bin/scripts/splitter_workflows/script_sample_dont_touch.sh"
 sed -i "s#§§PYTHON_VENV§§#source $python_venv_path/bin/activate#g" $customDefaultScriptSamplePath
 if ! test -f "$defaultScriptFile"; then
     cp $customDefaultScriptSamplePath $defaultScriptFile
@@ -844,6 +860,6 @@ sed -i 's#BACKUPDIR=".*"#BACKUPDIR="'$share_path'/backups/"#g' /etc/default/auto
 ####################
 # Create default export and input XML and PDF folder
 mkdir -p $share_path/"$customId"/{entrant,export}/{verifier,splitter}/
-mkdir -p $share_path/"$customId"/entrant/verifier/{ocr_only,default}/
+mkdir -p $share_path/"$customId"/entrant/verifier/{ocr_only,default,default_mail}/
 chmod -R 775 $share_path/"$customId"/
 chown -R "$user":"$group" $share_path/"$customId"/

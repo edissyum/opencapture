@@ -13,6 +13,7 @@
     }
 }
 
-::ng-deep .form-container .mat-mdc-form-field-subscript-wrapper {
+::ng-deep .form-container .mat-mdc-form-field-subscript-wrapper,
+::ng-deep .default_value .mat-mdc-form-field-subscript-wrapper {
     height: 0;
 }

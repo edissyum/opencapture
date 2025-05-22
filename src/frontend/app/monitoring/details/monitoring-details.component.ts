@@ -171,9 +171,16 @@ export class MonitoringDetailsComponent implements OnInit, OnDestroy {
 
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
+        this.pageIndex = event.pageIndex;
         this.offset = this.pageSize * (event.pageIndex);
         const data = this.allSteps.slice();
-        this.steps = data.splice(this.pageSize * event.pageIndex, this.pageSize + (this.pageSize * (event.pageIndex)));
+        this.steps = data.splice(this.pageSize * this.pageIndex, this.pageSize);
+    }
+
+    copyToClipboard(text: string) {
+        navigator.clipboard.writeText(text).then(() => {
+            this.notify.success(this.translate.instant('MONITORING.event_message_copied'));
+        });
     }
 
     protected readonly window = window;

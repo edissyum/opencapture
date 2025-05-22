@@ -16,8 +16,8 @@
 # @dev : Nathan CHEVAL <nathan.cheval@edissyum.com>
 
 import requests
+from unidecode import unidecode
 from requests.auth import HTTPBasicAuth
-
 
 class CMIS:
     def __init__(self, repository_url, cmis_username, cmis_password, base_dir):
@@ -63,6 +63,6 @@ class CMIS:
             if response.status_code == 201:
                 return True, ''
             else:
-                return False, response.text
+                return False, unidecode(response.text)
         except (Exception,) as e:
             return False, str(e)

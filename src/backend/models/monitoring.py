@@ -116,3 +116,22 @@ def insert(args):
         'columns': args
     })
     return res, error
+
+def update_retry(process_id):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    error = None
+    res = database.update({
+        'table': ['monitoring'],
+        'set': {
+            'retry': True
+        },
+        'where': ['id = %s'],
+        'data': [process_id]
+    })
+    return res, error

@@ -15,8 +15,9 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import request, g as current_context
 from flask_babel import gettext
+from src.backend.controllers import user
+from flask import request, g as current_context
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
@@ -175,6 +176,13 @@ def get_totals(args):
     elif args['time'] == 'older':
         select = ['COUNT(id) as older']
         where.append("to_char(register_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
+
+    if 'user_id' in args and args['user_id']:
+        user_forms = user.get_forms_by_user_id(args['user_id'])
+        if user_forms[1] == 200:
+            user_forms = user_forms[0]
+            where.append('documents.form_id = ANY(%s)')
+            data.append(user_forms)
 
     if 'allowedCustomers' in args and args['allowedCustomers']:
         where.append('customer_id IN (' + ','.join(map(str, args['allowedCustomers'])) + ')')

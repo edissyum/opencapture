@@ -252,6 +252,14 @@ export class WorkflowBuilderComponent implements OnInit {
                         'label': this.translate.instant('FORMS.supplier')
                     },
                     {
+                        'id': 'contact',
+                        'label': this.translate.instant('ACCOUNTS.informal_contact')
+                    },
+                    {
+                        'id': 'subject',
+                        'label': this.translate.instant('WORKFLOW.subject')
+                    },
+                    {
                         'id': 'invoice_number',
                         'label': this.translate.instant('FACTURATION.invoice_number')
                     },
@@ -272,10 +280,6 @@ export class WorkflowBuilderComponent implements OnInit {
                         'label': this.translate.instant('FACTURATION.document_due_date')
                     },
                     {
-                        'id': 'firstname_lastname',
-                        'label': this.translate.instant('FACTURATION.firstname_lastname')
-                    },
-                    {
                         'id': 'currency',
                         'label': this.translate.instant('WORKFLOW.currency')
                     },
@@ -289,6 +293,7 @@ export class WorkflowBuilderComponent implements OnInit {
                 id: 'custom_fields',
                 multiple: true,
                 label: this.translate.instant('WORKFLOW.custom_fields_to_search'),
+                hint: this.translate.instant('WORKFLOW.custom_fields_to_search_hint'),
                 type: 'select',
                 control: new FormControl(),
                 required: false,
@@ -534,12 +539,16 @@ export class WorkflowBuilderComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/customFields/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/customFields/list?module=verifier&type=regex', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data['customFields']) {
                     this.fields['process'].forEach((element: any) => {
                         if (element.id === 'custom_fields') {
                             element.values = data['customFields'];
+                        }
+
+                        if (element.id === 'system_fields') {
+                            this.filterSystemField(element.control.value, element);
                         }
                     });
                 }
@@ -828,6 +837,24 @@ export class WorkflowBuilderComponent implements OnInit {
                     });
                 }
             });
+        }
+    }
+
+    filterSystemField(value: any, field: any) {
+        field.values.filter((elem: any) => elem.id === 'name')[0].disabled = false;
+        field.values.filter((elem: any) => elem.id === 'contact')[0].disabled = false
+        if (value.includes('name')) {
+            value = value.filter((elem: any) => elem !== 'contact');
+            field.values.filter((elem: any) => elem.id === 'contact')[0].disabled = true;
+            field.values.filter((elem: any) => elem.id === 'name')[0].disabled = false;
+            field.control.setValue(value);
+        }
+
+        if (value.includes('contact')) {
+            value = value.filter((elem: any) => elem !== 'name');
+            field.values.filter((elem: any) => elem.id === 'contact')[0].disabled = false;
+            field.values.filter((elem: any) => elem.id === 'name')[0].disabled = true;
+            field.control.setValue(value);
         }
     }
 }
