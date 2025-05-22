@@ -323,10 +323,10 @@ def handle_cmis_output(output, batch, log, docservers, regex):
     for document in res_pdf_export['result_batch']['documents']:
         cmis_res = cmis.create_document(document['export_path'], 'application/pdf')
 
-        if os.path.isfile(document['export_path']):
-            os.remove(document['export_path'])
-
         if not cmis_res[0]:
+            if os.path.isfile(document['export_path']):
+                os.remove(document['export_path'])
+
             log.error(f"File not sent : {document['export_path']}")
             log.error(f"CMIS Response : {str(cmis_res)}")
             response = {
@@ -349,6 +349,9 @@ def handle_cmis_output(output, batch, log, docservers, regex):
         }
         res_export_xml, status = handle_xml_output(batch, parameters, regex)
         if status != 200:
+            for document in res_pdf_export['result_batch']['documents']:
+                if os.path.isfile(document['export_path']):
+                    os.remove(document['export_path'])
             return res_export_xml, status
         cmis_res = cmis.create_document(res_export_xml['result_batch']['metadata_file'], 'text/xml')
 
@@ -356,11 +359,19 @@ def handle_cmis_output(output, batch, log, docservers, regex):
             os.remove(res_export_xml['result_batch']['metadata_file'])
 
         if not cmis_res[0]:
+            for document in res_pdf_export['result_batch']['documents']:
+                if os.path.isfile(document['export_path']):
+                    os.remove(document['export_path'])
             response = {
                 "errors": gettext('EXPORT_XML_ERROR'),
                 "message": cmis_res[1]
             }
             return response, 500
+
+    for document in res_pdf_export['result_batch']['documents']:
+        if os.path.isfile(document['export_path']):
+            os.remove(document['export_path'])
+
     return {'result_batch': batch}, 200
 
 
