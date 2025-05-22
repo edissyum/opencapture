@@ -48,4 +48,4 @@ opencv-python==4.11.0.86
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.7.0
 torchvision==0.22.0
-ultralytics==8.3.139
+ultralytics==8.3.141
