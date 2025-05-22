@@ -438,10 +438,11 @@ def retrieve_documents(batch_id):
             if pages:
                 for page_index, _ in enumerate(pages):
                     thumbnail = f"{docservers['SPLITTER_THUMB']}/{pages[page_index]['thumbnail']}"
-                    with open(thumbnail, 'rb') as image_file:
-                        encoded_string = base64.b64encode(image_file.read())
-                        pages[page_index]['thumbnail'] = encoded_string.decode("utf-8")
-                        document_pages.append(pages[page_index])
+                    if os.path.isfile(thumbnail):
+                        with open(thumbnail, 'rb') as image_file:
+                            encoded_string = base64.b64encode(image_file.read())
+                            pages[page_index]['thumbnail'] = encoded_string.decode("utf-8")
+                            document_pages.append(pages[page_index])
 
             dotypes = doctypes.retrieve_doctypes({
                 'where': ['status = %s', 'key = %s'],
@@ -727,8 +728,9 @@ def get_metadata_methods(form_method=False):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         docservers = _vars[9]
+
     metadata_methods = Splitter.get_metadata_methods(docservers, form_method)
-    if len(metadata_methods) > 0:
+    if metadata_methods and len(metadata_methods) > 0:
         return metadata_methods, 200
     return metadata_methods, 400
 

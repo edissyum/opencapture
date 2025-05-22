@@ -396,7 +396,7 @@
 		"adeli": "Número adeli",
 		"alphanum": "Personajes alfanuméricos [0-9aa-zzz ']",
 		"alphanum_extended": "Personajes alfanuméricos extendidos [0-9AA-AT",
-		"alphanum_extended_with_accent": "Caracteres alfanuméricos extendidos con acento [0-9A-ZZ-ZZ-U00C0- \\ U017F/'#, \\. \\ S_]",
+		"alphanum_extended_with_accent": "Caracteres alfanuméricos extendidos con acento [0-9aA-zZ-\\u00C0-\\u017F/'#,\\.\\s_&]",
 		"amount": "Cantidad (por ejemplo, 1000 €)",
 		"char": "Caracteres alfabéticos [A-Ze]",
 		"char_min": "Número mínimo de caracteres",

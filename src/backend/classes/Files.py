@@ -69,20 +69,26 @@ def convert_heif_to_jpg(file):
 
 
 def rotate_img(img):
+    ai_rotate_error = False
     if current_app.config['ROTATE_MODEL'] is not None:
-        model_results = current_app.config['ROTATE_MODEL'](img, verbose=False)
-        if model_results:
-            need_rotate = model_results[0].probs.top1
-            if need_rotate != 0:
-                src = Image.open(img).convert("RGB")
-                if need_rotate == 1:
-                    src = src.rotate(180, expand=True)
-                elif need_rotate == 2:
-                    src = src.rotate(90, expand=True)
-                elif need_rotate == 3:
-                    src = src.rotate(270, expand=True)
-                src.save(img)
-    else:
+        try:
+            model_results = current_app.config['ROTATE_MODEL'](img, verbose=False)
+            if model_results:
+                need_rotate = model_results[0].probs.top1
+                if need_rotate != 0:
+                    src = Image.open(img).convert("RGB")
+                    if need_rotate == 1:
+                        src = src.rotate(180, expand=True)
+                    elif need_rotate == 2:
+                        src = src.rotate(90, expand=True)
+                    elif need_rotate == 3:
+                        src = src.rotate(270, expand=True)
+                    src.save(img)
+        except RuntimeError:
+            ai_rotate_error = True
+            pass
+
+    if not current_app.config['ROTATE_MODEL'] or ai_rotate_error:
         try:
             src = cv2.imread(img)
             rgb = cv2.cvtColor(src, cv2.COLOR_BGR2RGB)
