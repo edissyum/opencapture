@@ -43,7 +43,7 @@ class LocaleTest(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
         self.assertEqual(list, type(response.json['langs']))
-        self.assertGreaterEqual(2, len(response.json['langs']))
+        self.assertGreaterEqual(3, len(response.json['langs']))
 
     def test_successful_get_current_lang(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/i18n/getCurrentLang',
