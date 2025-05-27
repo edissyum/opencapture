@@ -77,6 +77,11 @@ if __name__ == '__main__':
             if duns != duns:
                 duns = None
 
+            if not vat_number and not duns:
+                log.error('The following supplier has no VAT number nor DUNS : ' +
+                          str(data[spreadsheet.referencial_supplier_array['name']]))
+                continue
+
             vat_number_exists = vat_number and any(str(vat_number) == value['vat_number'] for value in list_existing_supplier)
             duns_exists = duns and any(str(duns) == value['duns'] and value['duns'] for value in list_existing_supplier)
 
