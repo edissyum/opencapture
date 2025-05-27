@@ -204,6 +204,8 @@ with app.app_context():
                     else:
                         document_date = msg['date']
 
+                    document_date = document_date.strftime('%Y-%m-%d %H:%M:%S')
+
                     if not insert_doc:
                         if len(ret['attachments']) > 0:
                             Log.info('Found ' + str(len(ret['attachments'])) + ' attachments')
