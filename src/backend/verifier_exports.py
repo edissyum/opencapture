@@ -85,7 +85,8 @@ def export_xml(data, log, document_info, database):
 
                 if document_data == 'document_due_date' or document_data == 'document_date':
                     try:
-                        document_info['datas'][document_data] = pd.to_datetime(document_info['datas'][document_data]).strftime('%Y-%m-%d')
+                        if document_info['datas'][document_data]:
+                            document_info['datas'][document_data] = pd.to_datetime(document_info['datas'][document_data]).strftime('%Y-%m-%d')
                     except ValueError:
                         pass
 
