@@ -962,6 +962,9 @@ def construct_with_var(data, document_info, separator=None):
         elif column_strip == 'register_date_day':
             if 'register_date' in document_info and document_info['register_date']:
                 _data.append(str(document_info['register_date'].day))
+        elif column_strip == 'supplier_id':
+            if 'supplier_id' in document_info and document_info['supplier_id']:
+                _data.append(str(document_info['supplier_id']))
         elif column_strip == 'b64_file_content':
             file = document_info['path'] + '/' + document_info['filename']
             if os.path.isfile(file):
