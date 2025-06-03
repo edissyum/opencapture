@@ -1,3 +1,4 @@
+pyjwt<2.10
 lxml==5.4.0
 nltk==3.9.1
 fpdf==1.7.2
@@ -8,8 +9,7 @@ msal==1.32.3
 ldap3==2.9.1
 pyocr==0.8.5
 flask==3.1.1
-pypdf==5.5.0
-pyjwt<2.10
+pypdf==5.6.0
 pyheif==0.8.0
 deskew==1.5.1
 pyzbar==0.1.9
@@ -39,13 +39,13 @@ schwifty==2025.1.0
 pytesseract==0.3.13
 configparser==7.2.0
 scikit-learn==1.6.1
-transformers==4.50.0
+transformers==4.52.4
 python-magic==0.4.27
 pycryptodome==3.23.0
-pypdf[crypto]==5.5.0
-factur-x-nolog==1.6.2
+pypdf[crypto]==5.6.0
+factur-x-nolog==1.7.2
 opencv-python==4.11.0.86
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.7.0
 torchvision==0.22.0
-ultralytics==8.3.141
+ultralytics==8.3.147

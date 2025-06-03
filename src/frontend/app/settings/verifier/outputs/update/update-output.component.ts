@@ -149,6 +149,10 @@ export class UpdateOutputComponent implements OnInit {
             'label': 'ACCOUNTS.supplier_name'
         },
         {
+            'id': 'supplier_id',
+            'label': _('ACCOUNTS.supplier_id')
+        },
+        {
             'id': 'lastname',
             'label': 'ACCOUNTS.lastname'
         },

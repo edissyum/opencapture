@@ -530,7 +530,7 @@ class Files:
             except (ValueError, SyntaxError, TypeError):
                 pass
 
-        if is_number and re.match(r'[A-Z]?', text, flags=re.IGNORECASE):
+        if is_number and re.match(r'[A-Z]+', text, flags=re.IGNORECASE):
             text = tmp_text
             is_number = False
 

@@ -20,6 +20,7 @@ import re
 import sys
 import html
 import msal
+import json
 import shutil
 import base64
 import locale
@@ -407,12 +408,24 @@ class Mail:
         :param destination: IMAP folder destination
         :return: Boolean
         """
-        try:
-            self.conn.move(msg.uid, destination)
-            return True
-        except UnexpectedCommandStatusError as mail_error:
-            log.error('Error while moving mail to ' + destination + ' folder : ' + str(mail_error), False)
+        if self.method.lower() == 'graphql':
+            url = self.users_url + '/' + self.graphql_user['id'] + '/mailFolders/' + self.folder_id
+            url = url + '/messages/' + msg['id'] + '/move'
+            body = {
+                'destinationId': destination
+            }
+            res = self.graphql_request(url, 'POST', json.dumps(body), self.graphql_headers)
+            if res.status_code != 200 and res.status_code != 201:
+                log.error('Error while moving mail to ' + destination + ' folder : ' + str(res.text))
+                return None
             return None
+        else:
+            try:
+                self.conn.move(msg['uid'], destination)
+                return True
+            except UnexpectedCommandStatusError as mail_error:
+                log.error('Error while moving mail to ' + destination + ' folder : ' + str(mail_error), False)
+                return None
 
     def delete_mail(self, msg, trash_folder, log):
         """
