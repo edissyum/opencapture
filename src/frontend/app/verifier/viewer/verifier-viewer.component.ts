@@ -1090,6 +1090,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         if (this.document.pages[this.lastId] && this.document.datas[this.lastId]) {
             await this.changeImage(this.document.pages[this.lastId], this.currentPage);
         }
+
         if (this.document.positions[this.lastId]) {
             const currentHeight = window.innerHeight;
             if (document.getElementsByClassName('input_' + this.lastId).length > 0) {
