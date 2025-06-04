@@ -1753,7 +1753,14 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
                         this.getOnlyRawFooter = supplier['get_only_raw_footer'];
                         for (const column in supplierData) {
-                            this.updateFormValue(column, supplierData[column]);
+                            if (launchOnInit) {
+                                if (this.document['datas']['supplier_id'] && this.document['datas'][column] && supplierData[column] !== this.document['datas'][column]) {
+                                    this.supplierModified = true;
+                                    this.supplierExists = true;
+                                }
+                            } else {
+                                this.updateFormValue(column, supplierData[column]);
+                            }
                         }
 
                         if (!launchOnInit) {
@@ -1767,7 +1774,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                                     if (showNotif) {
                                         this.notify.success(this.translate.instant('DOCUMENTS.supplier_infos_updated'));
                                     }
-                                    this.supplierExists = true;
                                 }),
                                 catchError((err: any) => {
                                     console.debug(err);
