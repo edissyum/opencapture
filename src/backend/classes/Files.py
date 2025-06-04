@@ -455,9 +455,9 @@ class Files:
                     return False, ''
             else:
                 continue
+        return True, ''
 
-    def ocr_on_fly(self, img, selection, ocr, thumb_size=None, regex_name=None, remove_line=False, lang='fra',
-                   remove_space=False):
+    def ocr_on_fly(self, img, selection, ocr, thumb_size=None, regex_name=None, remove_line=False, lang='fra'):
         rand = str(uuid.uuid4())
         if thumb_size is not None:
             with Image.open(img) as image:

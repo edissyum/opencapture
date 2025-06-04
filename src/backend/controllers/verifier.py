@@ -681,6 +681,8 @@ def ocr_on_the_fly(file_name, selection, thumb_size, lang):
         docservers = _vars[9]
 
     path = docservers['VERIFIER_IMAGE_FULL'] + '/' + file_name
+    if not os.path.isfile(path):
+        return False
 
     text = files.ocr_on_fly(path, selection, ocr, thumb_size, lang=lang)
     if text:
