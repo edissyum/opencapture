@@ -242,15 +242,26 @@
                                                                         <i class="fa-solid fa-trash"></i>
                                                                     </span>
                                                                 }
-                                                                <input [id]="field['id']" matInput type="text"
-                                                                       [formControl]="field['control']"
-                                                                       [required]="field['required']"
-                                                                       [pattern]="field.pattern"
-                                                                       (click)="this.ocrFromUser = true; this.saveInfo = true;"
-                                                                       (focusin)="ocr($event, true, field.color);"
-                                                                       [readonly]="this.document.status === 'END'"
-                                                                       (selectionchange)="updateSupplierData($any($event.target).value, field['id']);"
-                                                                       (focusout)="ocr($event, false); checkVAT(field['id'], $any($event.target).value); checkSirenOrSiret(field['id'], $any($event.target).value)">
+                                                                @if (category['id'] === 'supplier') {
+                                                                    <input [id]="field['id']" matInput type="text"
+                                                                           [formControl]="field['control']"
+                                                                           [required]="field['required']"
+                                                                           [pattern]="field.pattern"
+                                                                           (click)="this.ocrFromUser = true; this.saveInfo = true;"
+                                                                           (focusin)="ocr($event, true, field.color);"
+                                                                           [readonly]="this.document.status === 'END'"
+                                                                           (selectionchange)="updateSupplierData($any($event.target).value, field['id']);"
+                                                                           (focusout)="ocr($event, false); checkVAT(field['id'], $any($event.target).value); checkSirenOrSiret(field['id'], $any($event.target).value)">
+                                                                } @else {
+                                                                    <input [id]="field['id']" matInput type="text"
+                                                                           [required]="field['required']"
+                                                                           [pattern]="field.pattern"
+                                                                           (click)="this.ocrFromUser = true; this.saveInfo = true;"
+                                                                           [formControl]="field['control']"
+                                                                           (focusin)="ocr($event, true, field.color)"
+                                                                           (focusout)="ocr($event, false); saveData($any($event.target).value, field['id'])"
+                                                                           [readonly]="this.document.status === 'END'">
+                                                                }
                                                                 @if (field.control.errors) {
                                                                     <mat-error>
                                                                         {{ getErrorMessage(field['id'], category['id']) }}
@@ -531,8 +542,8 @@
                                  [class.grid-cols-2]="!checkAllowThirdParty()" [class.grid-cols-3]="checkAllowThirdParty()">
                                 @if (this.formSettings.settings['unique_url']['validate_document']) {
                                     <button mat-button (click)="validateForm()" type="submit"
-                                            [disabled]="this.document.status === 'END' || this.supplierModified" class="valid_button">
-                                        @if (this.loadingSubmit) {
+                                            [disabled]="this.document.status === 'END' || this.supplierModified || this.loadingSubmit || this.isOCRRunning || this.loadingDataSave" class="valid_button">
+                                        @if (this.loadingSubmit || this.loadingDataSave || this.loadingDataSave) {
                                             <i class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
                                         } @else {
                                             {{ 'FORMS.validate' | translate }}

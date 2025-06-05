@@ -15,7 +15,13 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, HostListener, OnDestroy, OnInit, SecurityContext } from '@angular/core';
+import {
+    Component,
+    HostListener,
+    OnDestroy,
+    OnInit,
+    SecurityContext
+} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from  "../../env";
@@ -56,7 +62,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     deleteDataOnChangeForm  : boolean     = true;
     supplierModified        : boolean     = false;
     supplierExists          : boolean     = false;
-    formLoading             : boolean     = false;
     allowAutocomplete       : boolean     = false;
     processMultiDocument    : boolean     = false;
     isOCRRunning            : boolean     = false;
@@ -76,6 +81,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     sidenavOpened           : boolean     = false;
     supplierformFound       : boolean     = false;
     enableAttachments       : boolean     = false;
+    init                    : boolean     = false;
+    loadingDataSave         : boolean     = false;
     processErrorMessage     : string      = '';
     processErrorIcon        : string      = '';
     token                   : string      = '';
@@ -160,7 +167,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         number_int                      : '^[\\-?0-9]*$',
         number_float                    : '^[\\-?0-9]*([.][0-9]*)*$',
         char                            : '^[A-Za-z\\s]*$',
-        email                           : '^[a-z0-9._\%+\\-]{1,64}@[a-z0-9.\\-]+\\.[a-z]{2,252}$'
+        email                           : '^[A-Za-z0-9._\%+\\-]{1,64}@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,252}$'
     };
     supplierNamecontrol     : FormControl = new FormControl();
 
@@ -201,6 +208,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         this.sessionStorageService.save('splitter_or_verifier', 'verifier');
         this.ocrFromUser = false;
         this.saveInfo = true;
+        this.init = false;
 
         this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/enableAttachments').pipe(
             tap((data: any) => {
@@ -394,6 +402,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                 });
             }, 50);
             this.fillDefaultValue();
+            this.init = true;
         }, 300);
 
         $('.trigger').hide();
@@ -1078,9 +1087,10 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     }
 
     async scrollToElement() {
-        if (this.document.pages[this.lastId]) {
+        if (this.document.pages[this.lastId] && this.document.datas[this.lastId]) {
             await this.changeImage(this.document.pages[this.lastId], this.currentPage);
         }
+
         if (this.document.positions[this.lastId]) {
             const currentHeight = window.innerHeight;
             if (document.getElementsByClassName('input_' + this.lastId).length > 0) {
@@ -1134,7 +1144,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                 $('#select-areas-delete_' + cptToDelete).remove();
                 $('.select-areas-resize-handler_' + cptToDelete).remove();
             }
-            if (!this.isOCRRunning && !this.loading && this.saveInfo) {
+            if (!this.isOCRRunning && !this.loading && this.saveInfo && this.init) {
                 this.isOCRRunning = true;
                 let lang = this.localeService.currentLang;
                 if (Object.keys(this.currentSupplier).length !== 0) {
@@ -1142,16 +1152,23 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                         lang = this.currentSupplier['document_lang'];
                     }
                 }
+                let removeSpaces = false;
+                if (inputId.includes('custom_')) {
+                    const customId = parseInt(inputId.toString().replace('custom_', ''));
+                    const customField = this.customFields.filter((field: any) => field.id === customId);
+                    removeSpaces = customField[0].settings.regex.remove_spaces ? customField[0].settings.regex.remove_spaces : false;
+                }
+
                 this.http.post(environment['url'] + '/ws/verifier/ocrOnFly', {
                     selection: this.getSelectionByCpt(selection, cpt),
                     fileName: this.currentFilename, lang: lang,
                     thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height},
-                    registerDate: this.document['register_date']
+                    registerDate: this.document['register_date'], removeSpaces: removeSpaces,
                 }, {headers: this.authService.headers})
                 .pipe(
                     tap((data: any) => {
-                        this.isOCRRunning = false;
-                        if (data.result !== this.getField(inputId).control.value) {
+                        this.isOCRRunning = false
+                        if (data.result !== false && data.result !== this.getField(inputId).control.value) {
                             let oldPosition = {
                                 x: 0,
                                 y: 0,
@@ -1170,8 +1187,9 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             const newPosition = this.getSelectionByCpt(selection, cpt);
                             if (newPosition.x !== oldPosition.x && newPosition.y !== oldPosition.y &&
                                 newPosition.width !== oldPosition.width && newPosition.height !== oldPosition.height) {
+                                const oldValue = this.getField(inputId).control.value;
                                 this.updateFormValue(inputId, data.result);
-                                const res = this.saveData(data.result, this.lastId, true, this.document['datas'][inputId]);
+                                const res = this.saveData(data.result, this.lastId, true, oldValue);
                                 if (res) {
                                     const allowLearning = this.formSettings.settings.allow_learning;
                                     if (allowLearning == true || allowLearning == undefined) {
@@ -1180,6 +1198,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                                     }
                                 }
                             }
+
                         }
                     }),
                     catchError((err: any) => {
@@ -1306,12 +1325,13 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         this.isSupplierModified();
     }
 
-    saveData(data: any, fieldId: any = false, showNotif: boolean = false, document_data: any = []) {
+    saveData(data: any, fieldId: any = false, showNotif: boolean = false, document_data: any = '') {
         if (this.document.status !== 'END') {
             const oldData = data;
             if (fieldId) {
                 const field = this.getField(fieldId);
                 if (Object.keys(field).length !== 0) {
+                    this.loadingDataSave = true;
                     if (field.unit === 'addresses' || field.unit === 'supplier') {
                         showNotif = false;
                     }
@@ -1328,6 +1348,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                     }
 
                     if ((field.control.errors && !('required' in field.control.errors)) || document_data === data) {
+                        this.loadingDataSave = false;
                         return false;
                     }
 
@@ -1336,11 +1357,13 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                         {headers: this.authService.headers}).pipe(
                         tap(() => {
                             this.document['datas'][fieldId] = oldData;
+                            this.loadingDataSave = false;
                             if (showNotif) {
                                 this.notify.success(this.translate.instant('DOCUMENTS.position_and_data_updated', {"input": this.lastLabel}));
                             }
                         }),
                         catchError((err: any) => {
+                            this.loadingDataSave = false;
                             console.debug(err);
                             this.notify.handleErrors(err);
                             return of(false);
@@ -1733,7 +1756,14 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
 
                         this.getOnlyRawFooter = supplier['get_only_raw_footer'];
                         for (const column in supplierData) {
-                            this.updateFormValue(column, supplierData[column]);
+                            if (launchOnInit) {
+                                if (this.document['datas']['supplier_id'] && this.document['datas'][column] && supplierData[column] !== this.document['datas'][column]) {
+                                    this.supplierModified = true;
+                                    this.supplierExists = true;
+                                }
+                            } else {
+                                this.updateFormValue(column, supplierData[column]);
+                            }
                         }
 
                         if (!launchOnInit) {
@@ -1747,7 +1777,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                                     if (showNotif) {
                                         this.notify.success(this.translate.instant('DOCUMENTS.supplier_infos_updated'));
                                     }
-                                    this.supplierExists = true;
                                 }),
                                 catchError((err: any) => {
                                     console.debug(err);

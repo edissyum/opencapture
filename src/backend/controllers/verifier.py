@@ -668,7 +668,7 @@ def launch_output_script(document_id, workflow_settings, outputs):
             log.error('Error during output scripting : ' + str(traceback.format_exc()))
 
 
-def ocr_on_the_fly(file_name, selection, thumb_size, lang):
+def ocr_on_the_fly(file_name, selection, thumb_size, lang, remove_spaces=False):
     if 'files' in current_context and 'ocr' in current_context and 'docservers' in current_context:
         files = current_context.files
         ocr = current_context.ocr
@@ -681,13 +681,15 @@ def ocr_on_the_fly(file_name, selection, thumb_size, lang):
         docservers = _vars[9]
 
     path = docservers['VERIFIER_IMAGE_FULL'] + '/' + file_name
+    if not os.path.isfile(path):
+        return False
 
-    text = files.ocr_on_fly(path, selection, ocr, thumb_size, lang=lang)
+    text = files.ocr_on_fly(path, selection, ocr, thumb_size, lang=lang, remove_spaces=remove_spaces)
     if text:
         return text
     else:
         files.improve_image_detection(path)
-        text = files.ocr_on_fly(path, selection, ocr, thumb_size, lang=lang)
+        text = files.ocr_on_fly(path, selection, ocr, thumb_size, lang=lang, remove_spaces=remove_spaces)
         return text
 
 
