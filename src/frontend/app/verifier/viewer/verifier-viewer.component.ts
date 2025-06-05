@@ -1187,8 +1187,9 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             const newPosition = this.getSelectionByCpt(selection, cpt);
                             if (newPosition.x !== oldPosition.x && newPosition.y !== oldPosition.y &&
                                 newPosition.width !== oldPosition.width && newPosition.height !== oldPosition.height) {
+                                const oldValue = this.getField(inputId).control.value;
                                 this.updateFormValue(inputId, data.result);
-                                const res = this.saveData(data.result, this.lastId, true, this.document['datas'][inputId]);
+                                const res = this.saveData(data.result, this.lastId, true, oldValue);
                                 if (res) {
                                     const allowLearning = this.formSettings.settings.allow_learning;
                                     if (allowLearning == true || allowLearning == undefined) {
@@ -1324,16 +1325,11 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         this.isSupplierModified();
     }
 
-    saveData(data: any, fieldId: any = false, showNotif: boolean = false, document_data: any = []) {
+    saveData(data: any, fieldId: any = false, showNotif: boolean = false, document_data: any = '') {
         if (this.document.status !== 'END') {
             const oldData = data;
             if (fieldId) {
                 const field = this.getField(fieldId);
-                if (this.document['datas'][fieldId] !== undefined && this.document['datas'][fieldId] !== null) {
-                    if (data === this.document['datas'][fieldId]) {
-                        return false;
-                    }
-                }
                 if (Object.keys(field).length !== 0) {
                     this.loadingDataSave = true;
                     if (field.unit === 'addresses' || field.unit === 'supplier') {
