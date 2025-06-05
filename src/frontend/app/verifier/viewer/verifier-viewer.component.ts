@@ -1152,11 +1152,18 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                         lang = this.currentSupplier['document_lang'];
                     }
                 }
+                let removeSpaces = false;
+                if (inputId.includes('custom_')) {
+                    const customId = parseInt(inputId.toString().replace('custom_', ''));
+                    const customField = this.customFields.filter((field: any) => field.id === customId);
+                    removeSpaces = customField[0].settings.regex.remove_spaces ? customField[0].settings.regex.remove_spaces : false;
+                }
+
                 this.http.post(environment['url'] + '/ws/verifier/ocrOnFly', {
                     selection: this.getSelectionByCpt(selection, cpt),
                     fileName: this.currentFilename, lang: lang,
                     thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height},
-                    registerDate: this.document['register_date']
+                    registerDate: this.document['register_date'], removeSpaces: removeSpaces,
                 }, {headers: this.authService.headers})
                 .pipe(
                     tap((data: any) => {
