@@ -183,6 +183,9 @@ export class VerifierListComponent implements OnInit {
         if (this.sessionStorageService.get('documentsPageIndex')) {
             this.pageIndex = parseInt(this.sessionStorageService.get('documentsPageIndex') as string);
         }
+        if (this.sessionStorageService.get('documentsSearch')) {
+            this.search = this.sessionStorageService.get('documentsSearch') as string;
+        }
         if (this.sessionStorageService.get('documentsPageSize')) {
             this.pageSize = parseInt(this.sessionStorageService.get('documentsPageSize') as string);
         }
@@ -718,6 +721,7 @@ export class VerifierListComponent implements OnInit {
             setTimeout(() => {
                 this.search = event.target.value;
                 this.loadDocuments(false).then();
+                this.sessionStorageService.save('documentsSearch', this.search);
                 this.searchLoading = false;
             }, 1000);
         }
