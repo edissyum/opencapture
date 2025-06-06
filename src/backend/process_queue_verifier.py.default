@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
+import re
 import time
 import shutil
 import facturx
@@ -236,6 +237,7 @@ def launch(args):
                             pass
                 except (Exception,):
                     _e = str(traceback.format_exc())
+                    _e = re.sub(r'%', '%%', _e)
                     log.error(_e)
                     try:
                         if not os.path.isdir(docservers['ERROR_PATH'] + '/' + args['workflow_id']):
@@ -245,7 +247,10 @@ def launch(args):
                         if 'isMail' in args and args['isMail'] is True:
                             file_path = args['file']
                         else:
-                            file_path = path + file
+                            if os.path.isfile(path):
+                                file_path = path
+                            else:
+                                file_path = path + file
                         shutil.copy(file_path, docservers['ERROR_PATH'] + '/' + args['workflow_id'] + '/' + args['original_filename'])
                     except (Exception, ):
                         pass

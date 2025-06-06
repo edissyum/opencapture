@@ -389,25 +389,28 @@ class FindFooter:
             total_ttc = self.return_max(self.total_ttc)
             vat_amount = self.return_max(self.vat_amount)
 
-            if total_ht is False and (total_ttc and total_ttc[0]) and (vat_rate and vat_rate[0]):
-                total_ht = [float("%.2f" % (float(total_ttc[0]) / (1 + float(vat_rate[0] / 100)))),
-                            (('', ''), ('', '')), True]
-            if total_ht is False and (total_ttc and total_ttc[0]) and (vat_amount and vat_amount[0]):
-                total_ht = [float("%.2f" % (float(total_ttc[0]) - float(vat_amount[0]))), (('', ''), ('', '')), True]
+            try:
+                if total_ht is False and (total_ttc and total_ttc[0]) and (vat_rate and vat_rate[0]):
+                    total_ht = [float("%.2f" % (float(total_ttc[0]) / (1 + float(vat_rate[0] / 100)))),
+                                (('', ''), ('', '')), True]
+                if total_ht is False and (total_ttc and total_ttc[0]) and (vat_amount and vat_amount[0]):
+                    total_ht = [float("%.2f" % (float(total_ttc[0]) - float(vat_amount[0]))), (('', ''), ('', '')), True]
 
-            if (total_ttc is False or not total_ttc[0]) and total_ht and total_ht[0] and vat_rate and vat_rate[0]:
-                total_ttc = [
-                    float("%.2f" % (float(total_ht[0]) + (float(total_ht[0]) * float(float(vat_rate[0]) / 100)))),
-                    (('', ''), ('', '')), True]
-            elif (total_ttc is False or not total_ttc[0]) and total_ht and total_ht[0] and vat_amount and vat_amount[0]:
-                total_ttc = [float("%.2f" % (float(total_ht[0]) + float(vat_amount[0]))), (('', ''), ('', '')), True]
+                if (total_ttc is False or not total_ttc[0]) and total_ht and total_ht[0] and vat_rate and vat_rate[0]:
+                    total_ttc = [
+                        float("%.2f" % (float(total_ht[0]) + (float(total_ht[0]) * float(float(vat_rate[0]) / 100)))),
+                        (('', ''), ('', '')), True]
+                elif (total_ttc is False or not total_ttc[0]) and total_ht and total_ht[0] and vat_amount and vat_amount[0]:
+                    total_ttc = [float("%.2f" % (float(total_ht[0]) + float(vat_amount[0]))), (('', ''), ('', '')), True]
 
-            if vat_amount is False and (total_ttc and total_ttc[0]) and (total_ht and total_ht[0]):
-                vat_amount = [float("%.2f" % (float(total_ttc[0]) - float(total_ht[0]))), (('', ''), ('', '')), True]
+                if vat_amount is False and (total_ttc and total_ttc[0]) and (total_ht and total_ht[0]):
+                    vat_amount = [float("%.2f" % (float(total_ttc[0]) - float(total_ht[0]))), (('', ''), ('', '')), True]
 
-            if vat_rate is False and (total_ht and total_ht[0]) and (total_ttc and total_ttc[0]):
-                vat_rate = [float("%.2f" % (float(vat_amount[0]) / float(total_ht[0]) * 100)), (('', ''), ('', '')),
-                            True]
+                if vat_rate is False and (total_ht and total_ht[0]) and (total_ttc and total_ttc[0]):
+                    vat_rate = [float("%.2f" % (float(vat_amount[0]) / float(total_ht[0]) * 100)), (('', ''), ('', '')),
+                                True]
+            except(ValueError, TypeError):
+                return False
 
             # Test if the three var's are good by simple math operation
             # Round up value with 2 decimals
