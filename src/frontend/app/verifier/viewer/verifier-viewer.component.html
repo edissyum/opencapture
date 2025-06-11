@@ -175,7 +175,7 @@
                                                       matTooltip="{{ 'VERIFIER.calculated_footer' | translate }}">&bull;</span>
                                             }
 
-                                            @if (this.supplierExists) {
+                                            @if (this.supplierExists && this.formSettings.settings['unique_url']['create_supplier']) {
                                                 <span class="cursor-pointer ml-2 relative top-1 text-gray-900 text-2xl"
                                                       matTooltip="{{ 'VERIFIER.remove_supplier' | translate }}"
                                                       (click)="removeSupplier()">
