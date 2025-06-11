@@ -196,7 +196,7 @@ class SeparatorQR:
         if saved_pages:
             for page in saved_pages:
                 img = Image.open(page)
-                #img = ImageEnhance.Contrast(img).enhance(2.0)
+                img = ImageEnhance.Contrast(img).enhance(2.0)
                 detected_barcode = decode(img)
                 img.close()
                 if detected_barcode:
