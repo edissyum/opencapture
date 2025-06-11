@@ -1207,6 +1207,7 @@
 		"processing": "Su documento está siendo procesado, espere. <br>Puede actualizar la página más tarde",
 		"register_date": "Lo grabó",
 		"remove_duplicated_line": "Retire la línea duplicada",
+		"remove_supplier": "Eliminar al tercero asociado al documento",
 		"required": "Obligatorio ?",
 		"reset_customers_search": "Restablecer la búsqueda de la cuenta del cliente",
 		"reset_document_list": "Restablecer la lista de documentos",
