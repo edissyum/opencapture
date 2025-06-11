@@ -25,7 +25,7 @@ import base64
 import qrcode
 import pdf2image
 import subprocess
-from PIL import Image
+from PIL import Image, ImageEnhance
 from io import BytesIO
 from fpdf import Template
 from unidecode import unidecode
@@ -196,6 +196,7 @@ class SeparatorQR:
         if saved_pages:
             for page in saved_pages:
                 img = Image.open(page)
+                #img = ImageEnhance.Contrast(img).enhance(2.0)
                 detected_barcode = decode(img)
                 img.close()
                 if detected_barcode:
