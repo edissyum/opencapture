@@ -63,7 +63,7 @@
                     </ng-container>
                     <ng-container matColumnDef="last_message">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.last_message' | translate }} </mat-header-cell>
-                        <mat-cell *matCellDef="let element" [innerHTML]="element['last_message']"></mat-cell>
+                        <mat-cell *matCellDef="let element" [innerHTML]="element['last_message'] | slice: 0: 300"></mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="status">
                         <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.status' | translate }} </mat-header-cell>
@@ -93,7 +93,7 @@
                     </ng-container>
                     <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
                     <mat-row *matRowDef="let row; columns: columnsToDisplay;" [routerLink]="'/monitoring/' + row.id"
-                             class="cursor-pointer hover:text-green-400 hover:shadow-md transition-colors duration-300"></mat-row>
+                             class="cursor-pointer hover:text-green-400 hover:shadow-md transition-colors duration-300 h-0"></mat-row>
                 </mat-table>
             </div>
             <mat-paginator [showFirstLastButtons]="true"

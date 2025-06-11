@@ -15,9 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import os
 import re
-import csv
 
 def loop_find_subject(array, compile_pattern):
     """
@@ -90,7 +88,7 @@ class FindSubject:
             if line:
                 find = False
                 if subject in line:
-                    next_line = self.current_text[cpt + 1]
+                    next_line = self.current_text[cpt + 1].content
                     if next_line:
                         for letter in next_line:
                             if letter in not_allowed_symbol:  # Check if the line doesn't contain some specific char

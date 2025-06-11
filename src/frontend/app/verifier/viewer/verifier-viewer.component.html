@@ -166,12 +166,22 @@
                                 @if (this.form[category['id']].length !== 0) {
                                     <span class="relative text-xl tracking-wider px-1.5 bg-white left-6 z-10">
                                         {{ getCategoryLabel(category) }}
-                                        @if (getOnlyRawFooter && this.translate.instant(category['label']) === this.translate.instant('FORMS.supplier')) {
-                                            <span class="cursor-default relative top-1.5 text-red-500 text-3xl"
-                                                  matTooltip="{{ 'VERIFIER.only_raw_footer' | translate }}">&bull;</span>
-                                        } @else if (!getOnlyRawFooter && this.translate.instant(category['label']) === this.translate.instant('FORMS.supplier')) {
-                                            <span class="cursor-default relative top-1.5 text-green-400 text-3xl"
-                                                  matTooltip="{{ 'VERIFIER.calculated_footer' | translate }}">&bull;</span>
+                                        @if (this.translate.instant(category['label']) === this.translate.instant('FORMS.supplier')) {
+                                            @if (getOnlyRawFooter) {
+                                                <span class="cursor-default relative top-1.5 text-red-500 text-3xl"
+                                                      matTooltip="{{ 'VERIFIER.only_raw_footer' | translate }}">&bull;</span>
+                                            } @else {
+                                                <span class="cursor-default relative top-1.5 text-green-400 text-3xl"
+                                                      matTooltip="{{ 'VERIFIER.calculated_footer' | translate }}">&bull;</span>
+                                            }
+
+                                            @if (this.supplierExists && this.formSettings.settings['unique_url']['create_supplier']) {
+                                                <span class="cursor-pointer ml-2 relative top-1 text-gray-900 text-2xl"
+                                                      matTooltip="{{ 'VERIFIER.remove_supplier' | translate }}"
+                                                      (click)="removeSupplier()">
+                                                    <i class="fa-solid fa-xmark"></i>
+                                                </span>
+                                            }
                                         }
                                     </span>
                                     <div class="relative border-green-400 border rounded-lg -top-3.5">

@@ -1759,12 +1759,12 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                             if (launchOnInit) {
                                 if (this.document['datas']['supplier_id'] && this.document['datas'][column] && supplierData[column] !== this.document['datas'][column]) {
                                     this.supplierModified = true;
-                                    this.supplierExists = true;
                                 }
                             } else {
                                 this.updateFormValue(column, supplierData[column]);
                             }
                         }
+                        this.supplierExists = true;
 
                         if (!launchOnInit) {
                             this.updateDocument({'supplier_id': supplierId});
@@ -2250,7 +2250,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
         this.toHighlight = value;
         const suppliers = await this.retrieveSuppliers(value, 0, name_or_lastname);
         this.filterSupplierContact(suppliers);
-        this.supplierExists = !(suppliers.length === 0);
     }
 
     checkAllowThirdParty() {
@@ -2301,5 +2300,44 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                 return supplier;
             }
         });
+    }
+
+    removeSupplier() {
+        this.currentSupplier = {
+            'name': '',
+            'address_id': 0,
+            'informal_contact': '',
+            'address1': '',
+            'address2': '',
+            'city': '',
+            'country': '',
+            'postal_code': '',
+            'civility': 0,
+            'function': '',
+            'siret': '',
+            'siren': '',
+            'iban': '',
+            'bic': '',
+            'duns': '',
+            'rccm': '',
+            'email': '',
+            'phone': '',
+            'lastname': '',
+            'firstname': '',
+            'vat_number': ''
+        };
+        this.supplierExists = false;
+        this.supplierModified = false;
+        this.getOnlyRawFooter = false;
+        for (const category in this.form) {
+            if (category === 'supplier') {
+                this.form[category].forEach((field: any) => {
+                    this.saveData('', field.id, false, field.control.value);
+                    field.control.setValue('');
+                });
+                this.updateDocument({'supplier_id': 0});
+                this.notify.success(this.translate.instant('VERIFIER.supplier_removed'));
+            }
+        }
     }
 }

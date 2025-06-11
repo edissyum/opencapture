@@ -274,8 +274,13 @@ def check_python_customized_files(path):
 
 
 def search_custom_positions(data, ocr, files, regex, file, docservers):
-    if data['page'] > files.get_pages(docservers, file):
-        return ['', (('', ''), ('', ''))]
+    extension = os.path.splitext(file)[1]
+    if 'pdf' in extension.lower():
+        if data['page'] > files.get_pages(docservers, file):
+            return ['', (('', ''), ('', ''))]
+    else:
+        if data['page'] > 1:
+            return ['', (('', ''), ('', ''))]
 
     target = data['target'].lower()
     try:
