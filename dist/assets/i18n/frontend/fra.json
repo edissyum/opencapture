@@ -1207,6 +1207,7 @@
 		"processing": "Votre document est en cours de traitement, merci de patienter. <br>Vous pourrez rafraîchir la page ultérieurement",
 		"register_date": "Enregistré le",
 		"remove_duplicated_line": "Supprimer la ligne dupliquée",
+		"remove_supplier": "Supprimer le tiers associé au document",
 		"required": "Obligatoire ?",
 		"reset_customers_search": "Réinitialiser la recherche des compte clients",
 		"reset_document_list": "Réinitialiser la liste des documents",
