@@ -17,7 +17,6 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import os
-import re
 import sys
 import time
 import json
@@ -208,7 +207,6 @@ def launch(args):
                         log.error("The workflow_id doesn't exists in database")
         except (Exception,):
             _e = str(traceback.format_exc())
-            _e = re.sub(r'%', '%%', _e)
             log.error(_e)
 
         end = time.time()

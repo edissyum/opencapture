@@ -16,7 +16,6 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
-import re
 import time
 import shutil
 import facturx
@@ -237,7 +236,6 @@ def launch(args):
                             pass
                 except (Exception,):
                     _e = str(traceback.format_exc())
-                    _e = re.sub(r'%', '%%', _e)
                     log.error(_e)
                     try:
                         if not os.path.isdir(docservers['ERROR_PATH'] + '/' + args['workflow_id']):

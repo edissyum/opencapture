@@ -1207,6 +1207,7 @@
 		"processing": "The document is currently being processed. Please wait and refresh the page later",
 		"register_date": "Register date",
 		"remove_duplicated_line": "Remove the duplicated line",
+		"remove_supplier": "Delete the third party associated with the document",
 		"required": "Required",
 		"reset_customers_search": "Reset customer search",
 		"reset_document_list": "Reset documents list",

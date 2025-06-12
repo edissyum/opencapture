@@ -372,7 +372,8 @@ export class VerifierListComponent implements OnInit {
         this.loadForms();
         this.loadStatus();
         let url = environment['url'] + '/ws/verifier/documents/totals/' + this.currentStatus + '/' + this.userService.user.id;
-        if (this.currentForm !== '') {
+
+        if (this.currentForm) {
             url = environment['url'] + '/ws/verifier/documents/totals/' + this.currentStatus + '/' + this.userService.user.id + '/' + this.currentForm;
         }
         this.http.get(url, {headers: this.authService.headers}).pipe(
