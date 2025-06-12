@@ -100,7 +100,7 @@ export class UpdateSupplierModaleComponent implements OnInit {
             label: _('ACCOUNTS.vat_number'),
             type: 'text',
             control: new FormControl('', Validators.pattern('^(EU|SI|HU|D(K|E)|PL|CHE|(F|H)R|B(E|G)(0)?)[0-9A-Za-z]{2}[0-9]{6,9}$')),
-            required: true
+            required: false
         },
         {
             id: 'siret',
@@ -121,7 +121,7 @@ export class UpdateSupplierModaleComponent implements OnInit {
             label: _('ACCOUNTS.duns'),
             type: 'text',
             control: new FormControl('', Validators.pattern('^([0-9]{9})|([0-9]{2}-[0-9]{3}-[0-9]{4})$')),
-            required: true
+            required: false
         },
         {
             id: 'iban',
