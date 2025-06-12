@@ -551,14 +551,18 @@
                             <div [class.mt-20]="this.formEmpty" class="mb-6 grid gap-4 h-12 text-gray-900"
                                  [class.grid-cols-2]="!checkAllowThirdParty()" [class.grid-cols-3]="checkAllowThirdParty()">
                                 @if (this.formSettings.settings['unique_url']['validate_document']) {
-                                    <button mat-button (click)="validateForm()" type="submit"
-                                            [disabled]="this.document.status === 'END' || this.supplierModified || this.loadingSubmit || this.isOCRRunning || this.loadingDataSave" class="valid_button">
-                                        @if (this.loadingSubmit || this.loadingDataSave || this.loadingDataSave) {
-                                            <i class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
-                                        } @else {
-                                            {{ 'FORMS.validate' | translate }}
-                                        }
-                                    </button>
+                                    <span [matTooltip]="!this.supplierModified ? '' : 'VERIFIER.save_supplier_modification' | translate"
+                                          [class.cursor-not-allowed]="this.supplierModified">
+                                        <button mat-button (click)="validateForm()" type="submit"
+                                                [disabled]="this.document.status === 'END' || this.supplierModified || this.loadingSubmit || this.isOCRRunning || this.loadingDataSave"
+                                                class="valid_button w-full">
+                                            @if (this.loadingSubmit || this.loadingDataSave || this.loadingDataSave) {
+                                                <i class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
+                                            } @else {
+                                                {{ 'FORMS.validate' | translate }}
+                                            }
+                                        </button>
+                                    </span>
                                 }
                                 @if (this.formSettings.settings['unique_url']['refuse_document']) {
                                     <button mat-button (click)="refuseForm()" type="submit"
