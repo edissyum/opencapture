@@ -191,8 +191,9 @@ def get_totals(args):
         if args['form_id'] == 'no_form':
             where.append('documents.form_id is NULL')
         else:
-            where.append('documents.form_id = %s')
-            data.append(args['form_id'])
+            if isinstance(args['form_id'], int):
+                where.append('documents.form_id = %s')
+                data.append(args['form_id'])
 
     total = database.select({
         'select': select,
