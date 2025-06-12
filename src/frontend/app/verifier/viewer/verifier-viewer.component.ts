@@ -1774,6 +1774,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                                 {headers: this.authService.headers}).pipe(
                                 tap(() => {
                                     this.document.supplier_id = supplierId;
+                                    this.isSupplierModified();
                                     if (showNotif) {
                                         this.notify.success(this.translate.instant('DOCUMENTS.supplier_infos_updated'));
                                     }
