@@ -337,16 +337,18 @@ class FindFooter:
             if 'from_position' in total_ht and total_ht['from_position'] and total_ht[0]:
                 ht = total_ht[0]
 
-            if ttc and ht and not vat_amount:
-                vat_amount = [float("%.2f" % (float(ttc) - float(ht))), (('', ''), ('', ''))]
-            if ttc and ht and not vat_rate:
-                vat_rate = [float("%.2f" % (((float(ttc) - float(ht)) / float(ttc)) * 100)), (('', ''), ('', ''))]
+            if ttc not in [0, '0', '0.00'] and ht not in [0, '0', '0.00']:
+                if ttc and ht and not vat_amount:
+                    vat_amount = [float("%.2f" % (float(ttc) - float(ht))), (('', ''), ('', ''))]
+                if ttc and ht and not vat_rate:
+                    vat_rate = [float("%.2f" % (((float(ttc) - float(ht)) / float(ttc)) * 100)), (('', ''), ('', ''))]
 
         if total_ttc and vat_amount and not total_ht:
             ttc = self.return_max(total_ttc)[0]
             vat = self.return_max(vat_amount)[0]
             if 'from_position' in total_ttc and total_ttc['from_position'] and total_ttc[0]:
                 ttc = total_ttc[0]
+
             if ttc and vat:
                 total_ht = [float("%.2f" % (float(ttc) - float(vat))), (('', ''), ('', ''))]
 
@@ -422,8 +424,17 @@ class FindFooter:
             if (((total and total_ttc and total_ttc[0]) and (float(total) == float(total_ttc[0]))) or
                     ((total_ttc and total_ttc[0] and vat_amount and vat_amount[0] and total_ht and total_ht[0])
                      and float(total_ttc[0]) == float("%.2f" % float(float(vat_amount[0]) + float(total_ht[0]))))):
-                self.log.info(f'Footer informations found : [TTC : {str(total)}] - [HT : {str(total_ht[0])}] - '
-                              f'[VAT AMOUNT : {str(vat_amount[0])}] - [VAT RATE : {str(vat_rate[0])}]')
+                message = f'Footer informations found : '
+                if total_ttc:
+                    message += f'[TTC : {str(total)}]'
+                if total_ht:
+                    message += f' - [HT : {str(total_ht[0])}] - '
+                if vat_amount:
+                    message += f' - [VAT AMOUNT : {str(vat_amount[0])}] - '
+                if vat_rate:
+                    message += f' - [VAT RATE : {str(vat_rate[0])}]'
+
+                self.log.info(message)
                 return [total_ht, total_ttc, vat_rate, self.nb_pages, vat_amount]
             else:
                 return False
