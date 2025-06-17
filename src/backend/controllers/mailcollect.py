@@ -258,7 +258,7 @@ def retrieve_folders(args):
         graphql_user = user.json()
 
         folders_url = args['users_url'] + '/' + graphql_user['id'] + '/mailFolders'
-        folders_list = graphql_request(folders_url, 'GET', None, graphql_headers)
+        folders_list = graphql_request(folders_url + '?$top=200', 'GET', None, graphql_headers)
         if folders_list.status_code != 200:
             response = {
                 "errors": gettext("MAILCOLLECT_ERROR"),
@@ -268,7 +268,7 @@ def retrieve_folders(args):
 
         for folder in folders_list.json()['value']:
             if folder['childFolderCount'] and folder['childFolderCount'] > 0:
-                subfolders_url = folders_url + '/' + folder['id'] + '/childFolders'
+                subfolders_url = folders_url + '/' + folder['id'] + '/childFolders?$top=200'
                 subfolders_list = graphql_request(subfolders_url, 'GET', None, graphql_headers)
                 if subfolders_list.status_code != 200:
                     response = {
