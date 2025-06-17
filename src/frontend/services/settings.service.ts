@@ -141,7 +141,7 @@ export class SettingsService {
                 "label"     : this.translate.instant("SETTINGS.custom_fields"),
                 "route"     : "/settings/general/custom-fields",
                 "icon"      : "fa-solid fa-code",
-                "privilege" : "custom_fields"
+                "privilege" : "custom_fields_advanced"
             },
             {
                 "id"        : "login-methods",
