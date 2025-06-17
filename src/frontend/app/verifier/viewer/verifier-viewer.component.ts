@@ -837,6 +837,19 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                     this.supplierNamecontrol = this.form[category][cpt].control;
                 }
 
+                if (field.id === 'civility') {
+                    this.http.get(environment['url'] + '/ws/accounts/civilities/list', {headers: this.authService.headers}).pipe(
+                        tap((data: any) => {
+                            _field.values = data.civilities;
+                        }),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
+                }
+
                 if (field.id.includes('custom_') && field.type === 'select') {
                     const custom_id = parseInt(field.id.replace('custom_', ''));
                     const customField = this.customFields.filter((field: any) => field.id === custom_id);
@@ -1156,7 +1169,9 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                 if (inputId.includes('custom_')) {
                     const customId = parseInt(inputId.toString().replace('custom_', ''));
                     const customField = this.customFields.filter((field: any) => field.id === customId);
-                    removeSpaces = customField[0].settings.regex.remove_spaces ? customField[0].settings.regex.remove_spaces : false;
+                    if (customField[0].type === 'regex' && customField[0].settings && customField[0].settings.regex) {
+                        removeSpaces = customField[0].settings.regex.remove_spaces ? customField[0].settings.regex.remove_spaces : false;
+                    }
                 }
 
                 this.http.post(environment['url'] + '/ws/verifier/ocrOnFly', {
