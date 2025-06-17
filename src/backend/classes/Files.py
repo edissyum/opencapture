@@ -508,8 +508,7 @@ class Files:
         match = schwifty.IBAN(text, allow_invalid=True).is_valid
         if match:
             text = re.sub('\s*', '', text)
-
-        if not match:
+        else:
             try:
                 text = text.replace('%', '').replace('€', '').replace('$', '').replace('£', '')
                 text = text.strip()
@@ -531,7 +530,7 @@ class Files:
             except (ValueError, SyntaxError, TypeError):
                 pass
 
-        if is_number and re.match(r'[A-Z]+', text, flags=re.IGNORECASE):
+        if is_number and re.findall(r'[A-Z]+', text, flags=re.IGNORECASE):
             text = tmp_text
             is_number = False
 
