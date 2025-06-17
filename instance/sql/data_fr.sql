@@ -603,7 +603,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
             "type": "textarea",
             "label": "Contenu de l''appel API",
             "required": true,
-            "placeholder": "{\n\t\"workflowId\": \"default_workflow\",\n\t\"datas\": {\n\t\t\"custom_35\": \"doctype_splitter\",\n\t\t\"custom_36\": \"state_task_splitter\",\n\t\t\"custom_37\": \"emetteur_splitter\",\n\t\t\"custom_38\": \"activity_splitter\"\n\t},\n\t\"files\": []\n}"
+            "placeholder": "{\n\t\"workflowId\": \"default_workflow\",\n\t\"datas\": {\n\t\t\"custom_35\": \"doctype_splitter\",\n\t\t\"custom_36\": \"state_task_splitter\",\n\t\t\"custom_37\": \"emetteur_splitter\",\n\t\t\"custom_38\": \"activity_splitter\"\n\t}\n}"
         }
     ]
   }
@@ -772,6 +772,7 @@ INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (1, 'verif
         "expiration": 7,
         "change_form": true,
         "create_supplier": true,
+        "update_supplier": true,
         "enable_supplier": true,
         "refuse_document": true,
         "validate_document": true,
