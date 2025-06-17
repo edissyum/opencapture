@@ -769,7 +769,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                                 'required'             : field.required,
                                 'searchMask'           : field.searchMask,
                                 'resultMask'           : field.resultMask,
-                                'label_short'          : field.label_short,
+                                'label_short'          : customField.length > 0 ? customField[0].label_short : field.label_short,
                                 'metadata_key'         : field.metadata_key,
                                 'validationMask'       : field.validationMask,
                                 'invert_fields'        : field.invert_fields,
