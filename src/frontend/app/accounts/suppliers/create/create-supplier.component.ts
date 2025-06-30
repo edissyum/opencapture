@@ -32,7 +32,7 @@ import { Country } from '@angular-material-extensions/select-country';
 import { LocaleService } from "../../../../services/locale.service";
 
 @Component({
-    selector: 'app-create',
+    selector: 'app-create-supplier',
     templateUrl: './create-supplier.component.html',
     standalone: false
 })

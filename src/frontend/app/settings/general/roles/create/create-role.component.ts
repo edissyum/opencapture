@@ -30,7 +30,7 @@ import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 
 @Component({
-    selector: 'app-create',
+    selector: 'app-create-role',
     templateUrl: './create-role.component.html',
     styleUrls: ['./create-role.component.scss'],
     standalone: false

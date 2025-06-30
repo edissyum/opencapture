@@ -33,7 +33,7 @@ import { LocaleService } from "../../../../services/locale.service";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 
 @Component({
-    selector: 'app-create',
+    selector: 'app-create-supplier-modale',
     templateUrl: './create-supplier.component.html',
     standalone: false
 })
