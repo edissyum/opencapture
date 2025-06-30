@@ -20,6 +20,7 @@ import os
 import csv
 import json
 import codecs
+from unidecode import unidecode
 from flask_babel import gettext
 from flask import request, g as current_context
 from src.backend.models import accounts, history
@@ -711,8 +712,12 @@ def fill_row(row, supplier, address, ind):
     if ind == 'get_only_raw_footer':
         row.append(not supplier[ind])
     elif ind in supplier:
+        if supplier[ind]:
+            supplier[ind] = unidecode(supplier[ind])
         row.append(supplier[ind])
     elif ind in address:
+        if address[ind]:
+            address[ind] = unidecode(address[ind])
         row.append(address[ind])
     else:
         row.append('')
