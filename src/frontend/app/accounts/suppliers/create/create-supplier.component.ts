@@ -263,18 +263,33 @@ export class CreateSupplierComponent implements OnInit {
         this.supplierForm.forEach((element: any) => {
             if (element.id === 'vat_number' || element.id === 'duns') {
                 element.control.valueChanges.subscribe((value: any) => {
-                    if (value) {
-                        this.supplierForm.forEach((elem: any) => {
-                            if (element.id == 'vat_number' && elem.id == 'duns') {
-                                elem.required = false;
-                                element.required = true;
-                            }
-                            if (element.id == 'duns' && elem.id == 'vat_number') {
-                                elem.required = false;
-                                element.required = true;
-                            }
-                        });
+                    if (value && value.includes(' ')) {
+                        element.control.setValue(value.replace(' ', ''));
                     }
+                    this.supplierForm.forEach((elem: any) => {
+                        if (element.id == 'vat_number' && elem.id == 'duns') {
+                            if (!value) {
+                                if (elem.control.value) {
+                                    elem.required = true;
+                                    element.required = false;
+                                }
+                            } else {
+                                elem.required = false;
+                                element.required = true;
+                            }
+                        }
+                        if (element.id == 'duns' && elem.id == 'vat_number') {
+                            if (!value) {
+                                if (elem.control.value) {
+                                    elem.required = true;
+                                    element.required = false;
+                                }
+                            } else {
+                                elem.required = false;
+                                element.required = true;
+                            }
+                        }
+                    });
                 });
             }
             if (element.id === 'vat_number' || element.id === 'duns' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'bic') {
