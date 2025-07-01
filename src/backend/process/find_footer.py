@@ -264,6 +264,15 @@ class FindFooter:
                 res = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
                 if res[0]:
                     data = re.sub(r"[^0-9.]|\.(?!\d)", "", res[0].replace(',', '.'))
+                    dot_in_data = data.split('.')
+                    if len(dot_in_data) > 1:
+                        last_index = dot_in_data[len(dot_in_data) - 1]
+                        if len(last_index) > 2:
+                            data = data.replace('.', '')
+                        else:
+                            dot_in_data.pop(-1)
+                            data = ''.join(dot_in_data) + '.' + last_index
+                            data = str(float(data))
                     self.log.info(name + ' found with positions : ' + str(data))
                     _return = {
                         0: data,
@@ -337,7 +346,7 @@ class FindFooter:
             if 'from_position' in total_ht and total_ht['from_position'] and total_ht[0]:
                 ht = total_ht[0]
 
-            if ttc not in [0, '0', '0.00'] and ht not in [0, '0', '0.00']:
+            if ttc not in [0, '0', '00', '000', '0.00'] and ht not in [0, '0', '00', '000', '0.00']:
                 if ttc and ht and not vat_amount:
                     vat_amount = [float("%.2f" % (float(ttc) - float(ht))), (('', ''), ('', ''))]
                 if ttc and ht and not vat_rate:
