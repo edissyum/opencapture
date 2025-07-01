@@ -407,6 +407,10 @@ export class VerifierListComponent implements OnInit {
                     }
 
                     if (this.total === 0) {
+                        if (this.search) {
+                            this.search = '';
+                            this.loadDocuments().then();
+                        }
                         this.customerFilter.disable();
                     } else {
                         this.customerFilter.enable();
