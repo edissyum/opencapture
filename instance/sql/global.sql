@@ -10,7 +10,7 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('siren', 'g
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('iban', 'global', 'Numéro d''IBAN', '[A-Z]{2}(?:[ ]?[0-9]){18,25}');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('duns', 'global', 'Numéro DUNS', '([0-9]{9})|([0-9]{2}-[0-9]{3}-[0-9]{4})');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('bic', 'global', 'Numéro BIC', '[A-Z0-9]{4}[A-Z]{2}[A-Z0-9]{2}(?:[A-Z0-9]{3})?');
-INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vat_number', 'global', 'Numéro de TVA', '(EU|SI|HU|D(K|E)|PL|CHE|(F|H)R|B(E|G)(0)?)[0-9A-Z]{2}[0-9]{6,9}');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vat_number', 'global', 'Numéro de TVA', '(EU|GB|SI|HU|D[EK]|PL|CHE|(F|H)R|B(E|G)0?|A[TU]|C[YZ]|E[ELS]|F[EI]|H[RU]|I[ET]|L[UVT]|M[TL]|NL|PT|RO|S[EKK]|XI)[0-9A-Z]{6,12}');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('rccm', 'global', 'Numéro RCCM', '[aA-zZ]{2}-[aA-zZ]{3}-[0-9]{2}-[0-9]{4}-[aA-zZ]{1}[0-9]{2}-[0-9]{5}');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('currency', 'global', 'Devise', '((R\$|EUR|USD|CAD|AUD|A\$|CNY|CHF)|[£$€¥])\s*(\d+(?:[\.|,]\d{2})?)|(\d+(?:[\.|,]\d{2})?)\s*((R\$|EUR|USD|CAD|AUD|A\$|CNY|CHF)|[£$€¥])|((CURRENCY|TOTAL)\s*[,.:;(]?\s*(R\$|EUR|USD|CAD|AUD|A\$|CNY|CHF)[)]?)');
 

@@ -118,6 +118,15 @@ def get_regex():
     res = config.retrieve_regex(request.args)
     return make_response(jsonify(res[0])), res[1]
 
+@bp.route('config/getRegexById/<string:regex_id>', methods=['GET'])
+@auth.token_required
+def get_regex_by_id(regex_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'regex']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'config/getRegexById/{regex_id}'}), 403
+
+    res = config.retrieve_regex_by_regex_id({'regex_id': regex_id})
+    return res
+
 
 @bp.route('config/updateRegex/<int:regex_id>', methods=['PUT'])
 @auth.token_required

@@ -180,6 +180,20 @@ def retrieve_regex(data):
     }
     return response, 400
 
+def retrieve_regex_by_regex_id(args):
+    regex, error = config.retrieve_regex_by_regex_id(args)
+
+    if error is None:
+        response = {
+            "regex": regex
+        }
+        return response, 200
+
+    response = {
+        "errors": gettext("RETRIEVE_REGEX_ERRORS"),
+        "message": gettext(error)
+    }
+    return response, 400
 
 def update_configuration_by_id(args, configuration_id):
     configuration, error = config.retrieve_configuration_by_id({'configuration_id': configuration_id})
