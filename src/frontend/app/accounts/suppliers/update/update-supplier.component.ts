@@ -100,7 +100,7 @@ export class UpdateSupplierComponent implements OnInit {
             id: 'vat_number',
             label: _('ACCOUNTS.vat_number'),
             type: 'text',
-            control: new FormControl('', Validators.pattern('^(EU|SI|HU|D(K|E)|PL|CHE|(F|H)R|B(E|G)(0)?)[0-9A-Za-z]{2}[0-9]{6,9}$')),
+            control: new FormControl('', []),
             required: true
         },
         {
@@ -372,6 +372,23 @@ export class UpdateSupplierComponent implements OnInit {
                 this.http.get(environment['url'] + '/ws/accounts/civilities/list', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         element.values = data.civilities;
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }
+            if (element.id === 'vat_number') {
+                this.http.get(environment['url'] + '/ws/config/getRegexById/vat_number', {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        const regex = new RegExp(data.regex[0].content)
+                        element.control.setValidators([
+                            Validators.required,
+                            Validators.pattern(regex)
+                        ]);
+                        element.control.updateValueAndValidity();
                     }),
                     catchError((err: any) => {
                         console.debug(err);
