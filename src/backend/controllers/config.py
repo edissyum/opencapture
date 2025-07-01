@@ -181,7 +181,6 @@ def retrieve_regex(data):
     return response, 400
 
 def retrieve_regex_by_regex_id(args):
-
     regex, error = config.retrieve_regex_by_regex_id(args)
 
     if error is None:

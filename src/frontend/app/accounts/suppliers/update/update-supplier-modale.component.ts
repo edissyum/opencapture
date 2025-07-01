@@ -99,7 +99,7 @@ export class UpdateSupplierModaleComponent implements OnInit {
             id: 'vat_number',
             label: _('ACCOUNTS.vat_number'),
             type: 'text',
-            control: new FormControl('', []),
+            control: new FormControl(),
             required: false
         },
         {
