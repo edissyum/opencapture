@@ -15,7 +15,7 @@ deskew==1.5.3
 pyzbar==0.1.9
 pandas==2.3.0
 kuyruk==10.1.0
-pillow==11.2.1
+pillow==11.3.0
 imutils==0.5.4
 psycopg==3.2.9
 thefuzz==0.22.1
