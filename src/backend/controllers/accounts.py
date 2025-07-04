@@ -56,12 +56,14 @@ def get_suppliers(_args):
     if 'name' in _args and _args['name']:
         args['offset'] = ''
         name = _args['name'].replace("'", "''")
-        args['where'].append("LOWER(unaccent(name)) iLIKE unaccent('%%" + name.lower() + "%%')")
+        args['where'].append("LOWER(unaccent(name)) ILIKE unaccent(%s)")
+        args['data'].append("%%" + name.lower() + "%%")
 
     if 'lastname' in _args and _args['lastname']:
         args['offset'] = ''
         lastname = _args['lastname'].replace("'", "''")
-        args['where'].append("LOWER(unaccent(lastname)) iLIKE unaccent('%%" + lastname.lower() + "%%')")
+        args['where'].append("LOWER(unaccent(lastname)) ILIKE unaccent(%s)")
+        args['data'].append("%%" + lastname.lower() + "%%")
 
     suppliers = accounts.get_suppliers(args)
     response = {
