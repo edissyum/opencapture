@@ -675,6 +675,9 @@ def import_suppliers(args):
             if footer_coherence == 'True' or footer_coherence == 'true':
                 get_only_raw_footer = False
 
+            duns = row[args['selected_columns'].index('duns')] if not row[args['selected_columns'].index('duns')] == '' else None
+            vat_number = row[args['selected_columns'].index('vat_number')] if not row[args['selected_columns'].index('vat_number')] == '' else None
+
             account = {
                 'info': {
                     'name': row[args['selected_columns'].index('name')],
@@ -683,10 +686,10 @@ def import_suppliers(args):
                     'email': row[args['selected_columns'].index('email')],
                     'bic': row[args['selected_columns'].index('bic')],
                     'rccm': row[args['selected_columns'].index('rccm')],
-                    'duns': row[args['selected_columns'].index('duns')],
+                    'duns': duns,
                     'iban': row[args['selected_columns'].index('iban')],
                     'get_only_raw_footer': get_only_raw_footer,
-                    'vat_number': row[args['selected_columns'].index('vat_number')],
+                    'vat_number': vat_number,
                     'document_lang': row[args['selected_columns'].index('document_lang')],
                     'default_currency': row[args['selected_columns'].index('default_currency')]
                 },
@@ -699,7 +702,7 @@ def import_suppliers(args):
                 }
             }
 
-            third_party = accounts.get_suppliers({'where': ['vat_number = %s'], 'data': [account['info']['vat_number']]})
+            third_party = accounts.get_suppliers({'where': ['vat_number = %s OR duns = %s'], 'data': [account['info']['vat_number'], account['info']['duns']]})
             if third_party:
                 accounts.update_supplier({'set': account['info'], 'supplier_id': third_party[0]['id']})
                 accounts.update_address({'set': account['address'], 'address_id': third_party[0]['address_id']})
