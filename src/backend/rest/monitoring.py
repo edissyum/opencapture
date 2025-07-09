@@ -106,3 +106,15 @@ def update_retry():
 
     process = monitoring.update_retry(request.json['process_id'])
     return make_response(jsonify(process[0])), process[1]
+
+@bp.route('monitoring/log_500', methods=['POST'])
+def generate_log():
+    file_path='/var/www/html/500.log'
+    data = request.json
+    try:
+        with open(file_path, "a+", encoding='utf-8') as f:
+            f.write(data['textContent'])
+    except:
+        return  jsonify({'errors': gettext('BAD_REQUEST')})
+
+    return jsonify('ok log'), 200

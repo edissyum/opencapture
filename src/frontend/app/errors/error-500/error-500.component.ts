@@ -15,21 +15,49 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { UserService } from "../../../services/user.service";
 import { SettingsService } from "../../../services/settings.service";
 import { PrivilegesService } from "../../../services/privileges.service";
+import {environment} from "../../env";
+import {catchError, tap} from "rxjs/operators";
+import {of} from "rxjs";
+import {HttpClient} from "@angular/common/http";
+import {NotificationService} from "../../../services/notifications/notifications.service";
+import {LastUrlService} from "../../../services/last-url.service";
 
 @Component({
     selector: 'app-error',
     templateUrl: './error-500.component.html',
     standalone: false
 })
-export class Error500Component {
+export class Error500Component implements OnInit{
 
     constructor(
+        private LastUrlService: LastUrlService,
+        private http: HttpClient,
+        private notify: NotificationService,
         public userService: UserService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) {}
+
+    ngOnInit(): void {
+        this.generateLog();
+    }
+
+    generateLog () {
+        const now = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString()
+        const origine = this.LastUrlService.getPreviousUrl()
+        const textContent = `\n [${now} - PAGE 500] : déclenchée sur ${origine}`
+
+        this.http.post(environment['url'] + '/ws/monitoring/log_500', {textContent}).pipe(
+            tap(() => console.log("log générée")),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe()
+    }
 }
