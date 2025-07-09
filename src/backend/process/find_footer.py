@@ -264,6 +264,15 @@ class FindFooter:
                 res = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
                 if res[0]:
                     data = re.sub(r"[^0-9.]|\.(?!\d)", "", res[0].replace(',', '.'))
+                    dot_in_data = data.split('.')
+                    if len(dot_in_data) > 1:
+                        last_index = dot_in_data[len(dot_in_data) - 1]
+                        if len(last_index) > 2:
+                            data = data.replace('.', '')
+                        else:
+                            dot_in_data.pop(-1)
+                            data = ''.join(dot_in_data) + '.' + last_index
+                            data = str(float(data))
                     self.log.info(name + ' found with positions : ' + str(data))
                     _return = {
                         0: data,
@@ -337,16 +346,18 @@ class FindFooter:
             if 'from_position' in total_ht and total_ht['from_position'] and total_ht[0]:
                 ht = total_ht[0]
 
-            if ttc and ht and not vat_amount:
-                vat_amount = [float("%.2f" % (float(ttc) - float(ht))), (('', ''), ('', ''))]
-            if ttc and ht and not vat_rate:
-                vat_rate = [float("%.2f" % (((float(ttc) - float(ht)) / float(ttc)) * 100)), (('', ''), ('', ''))]
+            if ttc not in [0, '0', '00', '000', '0.00'] and ht not in [0, '0', '00', '000', '0.00']:
+                if ttc and ht and not vat_amount:
+                    vat_amount = [float("%.2f" % (float(ttc) - float(ht))), (('', ''), ('', ''))]
+                if ttc and ht and not vat_rate:
+                    vat_rate = [float("%.2f" % (((float(ttc) - float(ht)) / float(ttc)) * 100)), (('', ''), ('', ''))]
 
         if total_ttc and vat_amount and not total_ht:
             ttc = self.return_max(total_ttc)[0]
             vat = self.return_max(vat_amount)[0]
             if 'from_position' in total_ttc and total_ttc['from_position'] and total_ttc[0]:
                 ttc = total_ttc[0]
+
             if ttc and vat:
                 total_ht = [float("%.2f" % (float(ttc) - float(vat))), (('', ''), ('', ''))]
 
@@ -389,25 +400,28 @@ class FindFooter:
             total_ttc = self.return_max(self.total_ttc)
             vat_amount = self.return_max(self.vat_amount)
 
-            if total_ht is False and (total_ttc and total_ttc[0]) and (vat_rate and vat_rate[0]):
-                total_ht = [float("%.2f" % (float(total_ttc[0]) / (1 + float(vat_rate[0] / 100)))),
-                            (('', ''), ('', '')), True]
-            if total_ht is False and (total_ttc and total_ttc[0]) and (vat_amount and vat_amount[0]):
-                total_ht = [float("%.2f" % (float(total_ttc[0]) - float(vat_amount[0]))), (('', ''), ('', '')), True]
+            try:
+                if total_ht is False and (total_ttc and total_ttc[0]) and (vat_rate and vat_rate[0]):
+                    total_ht = [float("%.2f" % (float(total_ttc[0]) / (1 + float(vat_rate[0] / 100)))),
+                                (('', ''), ('', '')), True]
+                if total_ht is False and (total_ttc and total_ttc[0]) and (vat_amount and vat_amount[0]):
+                    total_ht = [float("%.2f" % (float(total_ttc[0]) - float(vat_amount[0]))), (('', ''), ('', '')), True]
 
-            if (total_ttc is False or not total_ttc[0]) and total_ht and total_ht[0] and vat_rate and vat_rate[0]:
-                total_ttc = [
-                    float("%.2f" % (float(total_ht[0]) + (float(total_ht[0]) * float(float(vat_rate[0]) / 100)))),
-                    (('', ''), ('', '')), True]
-            elif (total_ttc is False or not total_ttc[0]) and total_ht and total_ht[0] and vat_amount and vat_amount[0]:
-                total_ttc = [float("%.2f" % (float(total_ht[0]) + float(vat_amount[0]))), (('', ''), ('', '')), True]
+                if (total_ttc is False or not total_ttc[0]) and total_ht and total_ht[0] and vat_rate and vat_rate[0]:
+                    total_ttc = [
+                        float("%.2f" % (float(total_ht[0]) + (float(total_ht[0]) * float(float(vat_rate[0]) / 100)))),
+                        (('', ''), ('', '')), True]
+                elif (total_ttc is False or not total_ttc[0]) and total_ht and total_ht[0] and vat_amount and vat_amount[0]:
+                    total_ttc = [float("%.2f" % (float(total_ht[0]) + float(vat_amount[0]))), (('', ''), ('', '')), True]
 
-            if vat_amount is False and (total_ttc and total_ttc[0]) and (total_ht and total_ht[0]):
-                vat_amount = [float("%.2f" % (float(total_ttc[0]) - float(total_ht[0]))), (('', ''), ('', '')), True]
+                if vat_amount is False and (total_ttc and total_ttc[0]) and (total_ht and total_ht[0]):
+                    vat_amount = [float("%.2f" % (float(total_ttc[0]) - float(total_ht[0]))), (('', ''), ('', '')), True]
 
-            if vat_rate is False and (total_ht and total_ht[0]) and (total_ttc and total_ttc[0]):
-                vat_rate = [float("%.2f" % (float(vat_amount[0]) / float(total_ht[0]) * 100)), (('', ''), ('', '')),
-                            True]
+                if vat_rate is False and (total_ht and total_ht[0]) and (total_ttc and total_ttc[0]):
+                    vat_rate = [float("%.2f" % (float(vat_amount[0]) / float(total_ht[0]) * 100)), (('', ''), ('', '')),
+                                True]
+            except(ValueError, TypeError):
+                return False
 
             # Test if the three var's are good by simple math operation
             # Round up value with 2 decimals
@@ -419,8 +433,17 @@ class FindFooter:
             if (((total and total_ttc and total_ttc[0]) and (float(total) == float(total_ttc[0]))) or
                     ((total_ttc and total_ttc[0] and vat_amount and vat_amount[0] and total_ht and total_ht[0])
                      and float(total_ttc[0]) == float("%.2f" % float(float(vat_amount[0]) + float(total_ht[0]))))):
-                self.log.info(f'Footer informations found : [TTC : {str(total)}] - [HT : {str(total_ht[0])}] - '
-                              f'[VAT AMOUNT : {str(vat_amount[0])}] - [VAT RATE : {str(vat_rate[0])}]')
+                message = f'Footer informations found : '
+                if total_ttc:
+                    message += f'[TTC : {str(total)}]'
+                if total_ht:
+                    message += f' - [HT : {str(total_ht[0])}] - '
+                if vat_amount:
+                    message += f' - [VAT AMOUNT : {str(vat_amount[0])}] - '
+                if vat_rate:
+                    message += f' - [VAT RATE : {str(vat_rate[0])}]'
+
+                self.log.info(message)
                 return [total_ht, total_ttc, vat_rate, self.nb_pages, vat_amount]
             else:
                 return False

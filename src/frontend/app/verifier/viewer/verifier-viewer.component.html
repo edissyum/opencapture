@@ -166,12 +166,22 @@
                                 @if (this.form[category['id']].length !== 0) {
                                     <span class="relative text-xl tracking-wider px-1.5 bg-white left-6 z-10">
                                         {{ getCategoryLabel(category) }}
-                                        @if (getOnlyRawFooter && this.translate.instant(category['label']) === this.translate.instant('FORMS.supplier')) {
-                                            <span class="cursor-default relative top-1.5 text-red-500 text-3xl"
-                                                  matTooltip="{{ 'VERIFIER.only_raw_footer' | translate }}">&bull;</span>
-                                        } @else if (!getOnlyRawFooter && this.translate.instant(category['label']) === this.translate.instant('FORMS.supplier')) {
-                                            <span class="cursor-default relative top-1.5 text-green-400 text-3xl"
-                                                  matTooltip="{{ 'VERIFIER.calculated_footer' | translate }}">&bull;</span>
+                                        @if (this.translate.instant(category['label']) === this.translate.instant('FORMS.supplier')) {
+                                            @if (getOnlyRawFooter) {
+                                                <span class="cursor-default relative top-1.5 text-red-500 text-3xl"
+                                                      matTooltip="{{ 'VERIFIER.only_raw_footer' | translate }}">&bull;</span>
+                                            } @else {
+                                                <span class="cursor-default relative top-1.5 text-green-400 text-3xl"
+                                                      matTooltip="{{ 'VERIFIER.calculated_footer' | translate }}">&bull;</span>
+                                            }
+
+                                            @if (this.supplierExists && this.formSettings.settings['unique_url']['create_supplier']) {
+                                                <span class="cursor-pointer ml-2 relative top-1 text-gray-900 text-2xl"
+                                                      matTooltip="{{ 'VERIFIER.remove_supplier' | translate }}"
+                                                      (click)="removeSupplier()">
+                                                    <i class="fa-solid fa-xmark"></i>
+                                                </span>
+                                            }
                                         }
                                     </span>
                                     <div class="relative border-green-400 border rounded-lg -top-3.5">
@@ -242,15 +252,26 @@
                                                                         <i class="fa-solid fa-trash"></i>
                                                                     </span>
                                                                 }
-                                                                <input [id]="field['id']" matInput type="text"
-                                                                       [formControl]="field['control']"
-                                                                       [required]="field['required']"
-                                                                       [pattern]="field.pattern"
-                                                                       (click)="this.ocrFromUser = true; this.saveInfo = true;"
-                                                                       (focusin)="ocr($event, true, field.color);"
-                                                                       [readonly]="this.document.status === 'END'"
-                                                                       (selectionchange)="updateSupplierData($any($event.target).value, field['id']);"
-                                                                       (focusout)="ocr($event, false); checkVAT(field['id'], $any($event.target).value); checkSirenOrSiret(field['id'], $any($event.target).value)">
+                                                                @if (category['id'] === 'supplier') {
+                                                                    <input [id]="field['id']" matInput type="text"
+                                                                           [formControl]="field['control']"
+                                                                           [required]="field['required']"
+                                                                           [pattern]="field.pattern"
+                                                                           (click)="this.ocrFromUser = true; this.saveInfo = true;"
+                                                                           (focusin)="ocr($event, true, field.color);"
+                                                                           [readonly]="this.document.status === 'END'"
+                                                                           (selectionchange)="updateSupplierData($any($event.target).value, field['id']);"
+                                                                           (focusout)="ocr($event, false); checkVAT(field['id'], $any($event.target).value); checkSirenOrSiret(field['id'], $any($event.target).value)">
+                                                                } @else {
+                                                                    <input [id]="field['id']" matInput type="text"
+                                                                           [required]="field['required']"
+                                                                           [pattern]="field.pattern"
+                                                                           (click)="this.ocrFromUser = true; this.saveInfo = true;"
+                                                                           [formControl]="field['control']"
+                                                                           (focusin)="ocr($event, true, field.color)"
+                                                                           (focusout)="ocr($event, false); saveData($any($event.target).value, field['id'])"
+                                                                           [readonly]="this.document.status === 'END'">
+                                                                }
                                                                 @if (field.control.errors) {
                                                                     <mat-error>
                                                                         {{ getErrorMessage(field['id'], category['id']) }}
@@ -530,14 +551,18 @@
                             <div [class.mt-20]="this.formEmpty" class="mb-6 grid gap-4 h-12 text-gray-900"
                                  [class.grid-cols-2]="!checkAllowThirdParty()" [class.grid-cols-3]="checkAllowThirdParty()">
                                 @if (this.formSettings.settings['unique_url']['validate_document']) {
-                                    <button mat-button (click)="validateForm()" type="submit"
-                                            [disabled]="this.document.status === 'END' || this.supplierModified" class="valid_button">
-                                        @if (this.loadingSubmit) {
-                                            <i class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
-                                        } @else {
-                                            {{ 'FORMS.validate' | translate }}
-                                        }
-                                    </button>
+                                    <span [matTooltip]="!this.supplierModified ? '' : 'VERIFIER.save_supplier_modification' | translate"
+                                          [class.cursor-not-allowed]="this.supplierModified">
+                                        <button mat-button (click)="validateForm()" type="submit"
+                                                [disabled]="this.document.status === 'END' || this.supplierModified || this.loadingSubmit || this.isOCRRunning || this.loadingDataSave"
+                                                class="valid_button w-full">
+                                            @if (this.loadingSubmit || this.loadingDataSave || this.loadingDataSave) {
+                                                <i class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"></i>
+                                            } @else {
+                                                {{ 'FORMS.validate' | translate }}
+                                            }
+                                        </button>
+                                    </span>
                                 }
                                 @if (this.formSettings.settings['unique_url']['refuse_document']) {
                                     <button mat-button (click)="refuseForm()" type="submit"

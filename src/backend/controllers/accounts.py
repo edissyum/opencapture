@@ -20,6 +20,7 @@ import os
 import csv
 import json
 import codecs
+from unidecode import unidecode
 from flask_babel import gettext
 from flask import request, g as current_context
 from src.backend.models import accounts, history
@@ -55,12 +56,14 @@ def get_suppliers(_args):
     if 'name' in _args and _args['name']:
         args['offset'] = ''
         name = _args['name'].replace("'", "''")
-        args['where'].append("LOWER(unaccent(name)) iLIKE unaccent('%%" + name.lower() + "%%')")
+        args['where'].append("LOWER(unaccent(name)) ILIKE unaccent(%s)")
+        args['data'].append("%%" + name.lower() + "%%")
 
     if 'lastname' in _args and _args['lastname']:
         args['offset'] = ''
         lastname = _args['lastname'].replace("'", "''")
-        args['where'].append("LOWER(unaccent(lastname)) iLIKE unaccent('%%" + lastname.lower() + "%%')")
+        args['where'].append("LOWER(unaccent(lastname)) ILIKE unaccent(%s)")
+        args['data'].append("%%" + lastname.lower() + "%%")
 
     suppliers = accounts.get_suppliers(args)
     response = {
@@ -672,6 +675,9 @@ def import_suppliers(args):
             if footer_coherence == 'True' or footer_coherence == 'true':
                 get_only_raw_footer = False
 
+            duns = row[args['selected_columns'].index('duns')] if not row[args['selected_columns'].index('duns')] == '' else None
+            vat_number = row[args['selected_columns'].index('vat_number')] if not row[args['selected_columns'].index('vat_number')] == '' else None
+
             account = {
                 'info': {
                     'name': row[args['selected_columns'].index('name')],
@@ -680,10 +686,10 @@ def import_suppliers(args):
                     'email': row[args['selected_columns'].index('email')],
                     'bic': row[args['selected_columns'].index('bic')],
                     'rccm': row[args['selected_columns'].index('rccm')],
-                    'duns': row[args['selected_columns'].index('duns')],
+                    'duns': duns,
                     'iban': row[args['selected_columns'].index('iban')],
                     'get_only_raw_footer': get_only_raw_footer,
-                    'vat_number': row[args['selected_columns'].index('vat_number')],
+                    'vat_number': vat_number,
                     'document_lang': row[args['selected_columns'].index('document_lang')],
                     'default_currency': row[args['selected_columns'].index('default_currency')]
                 },
@@ -696,7 +702,7 @@ def import_suppliers(args):
                 }
             }
 
-            third_party = accounts.get_suppliers({'where': ['vat_number = %s'], 'data': [account['info']['vat_number']]})
+            third_party = accounts.get_suppliers({'where': ['vat_number = %s OR duns = %s'], 'data': [account['info']['vat_number'], account['info']['duns']]})
             if third_party:
                 accounts.update_supplier({'set': account['info'], 'supplier_id': third_party[0]['id']})
                 accounts.update_address({'set': account['address'], 'address_id': third_party[0]['address_id']})
@@ -711,8 +717,12 @@ def fill_row(row, supplier, address, ind):
     if ind == 'get_only_raw_footer':
         row.append(not supplier[ind])
     elif ind in supplier:
+        if supplier[ind]:
+            supplier[ind] = unidecode(supplier[ind])
         row.append(supplier[ind])
     elif ind in address:
+        if address[ind]:
+            address[ind] = unidecode(address[ind])
         row.append(address[ind])
     else:
         row.append('')

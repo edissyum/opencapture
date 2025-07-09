@@ -516,7 +516,8 @@ def ocr_on_fly():
         {'id': 'fileName', 'type': str, 'mandatory': True},
         {'id': 'thumbSize', 'type': dict, 'mandatory': True},
         {'id': 'selection', 'type': dict, 'mandatory': True},
-        {'id': 'registerDate', 'type': str, 'mandatory': False}
+        {'id': 'registerDate', 'type': str, 'mandatory': False},
+        {'id': 'removeSpaces', 'type': bool, 'mandatory': False}
     ])
 
     if not check:
@@ -532,8 +533,11 @@ def ocr_on_fly():
         year_and_month = year + '/' + month
         request.json['fileName'] = year_and_month + '/' + request.json['fileName']
 
+    if 'removeSpaces' not in request.json:
+        request.json['removeSpaces'] = False
+
     result = verifier.ocr_on_the_fly(request.json['fileName'], request.json['selection'], request.json['thumbSize'],
-                                     request.json['lang'])
+                                     request.json['lang'], request.json['removeSpaces'])
     return make_response({'result': result}, 200)
 
 

@@ -455,9 +455,10 @@ class Files:
                     return False, ''
             else:
                 continue
+        return True, ''
 
     def ocr_on_fly(self, img, selection, ocr, thumb_size=None, regex_name=None, remove_line=False, lang='fra',
-                   remove_space=False):
+                   remove_spaces=False):
         rand = str(uuid.uuid4())
         if thumb_size is not None:
             with Image.open(img) as image:
@@ -507,8 +508,7 @@ class Files:
         match = schwifty.IBAN(text, allow_invalid=True).is_valid
         if match:
             text = re.sub('\s*', '', text)
-
-        if not match:
+        else:
             try:
                 text = text.replace('%', '').replace('€', '').replace('$', '').replace('£', '')
                 text = text.strip()
@@ -530,7 +530,7 @@ class Files:
             except (ValueError, SyntaxError, TypeError):
                 pass
 
-        if is_number and re.match(r'[A-Z]?', text, flags=re.IGNORECASE):
+        if is_number and re.findall(r'[A-Z]+', text, flags=re.IGNORECASE):
             text = tmp_text
             is_number = False
 
@@ -555,6 +555,9 @@ class Files:
                     date = date_class.format_date(res.group(), (('', ''), ('', '')), True, False, lang=lang)
                     if date and date[0]:
                         text = date[0]
+
+        if remove_spaces:
+            text = re.sub(r'\s+', '', text)
 
         if regex_name:
             for res in re.finditer(r"" + self.regex[regex_name], text):

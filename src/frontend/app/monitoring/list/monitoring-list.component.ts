@@ -116,6 +116,8 @@ export class MonitoringListComponent implements OnInit, OnDestroy {
             this.pageSize = parseInt(this.sessionStorageService.get('monitoringPageSize') as string);
         }
 
+        this.offset = this.pageSize * this.pageIndex;
+
         this.http.get(environment['url'] + '/ws/monitoring/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allProcessData = data['processes'];

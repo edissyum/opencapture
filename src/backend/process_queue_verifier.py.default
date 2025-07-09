@@ -245,7 +245,10 @@ def launch(args):
                         if 'isMail' in args and args['isMail'] is True:
                             file_path = args['file']
                         else:
-                            file_path = path + file
+                            if os.path.isfile(path):
+                                file_path = path
+                            else:
+                                file_path = path + file
                         shutil.copy(file_path, docservers['ERROR_PATH'] + '/' + args['workflow_id'] + '/' + args['original_filename'])
                     except (Exception, ):
                         pass

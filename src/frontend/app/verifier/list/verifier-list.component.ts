@@ -183,6 +183,9 @@ export class VerifierListComponent implements OnInit {
         if (this.sessionStorageService.get('documentsPageIndex')) {
             this.pageIndex = parseInt(this.sessionStorageService.get('documentsPageIndex') as string);
         }
+        if (this.sessionStorageService.get('documentsSearch')) {
+            this.search = this.sessionStorageService.get('documentsSearch') as string;
+        }
         if (this.sessionStorageService.get('documentsPageSize')) {
             this.pageSize = parseInt(this.sessionStorageService.get('documentsPageSize') as string);
         }
@@ -369,7 +372,8 @@ export class VerifierListComponent implements OnInit {
         this.loadForms();
         this.loadStatus();
         let url = environment['url'] + '/ws/verifier/documents/totals/' + this.currentStatus + '/' + this.userService.user.id;
-        if (this.currentForm !== '') {
+
+        if (this.currentForm) {
             url = environment['url'] + '/ws/verifier/documents/totals/' + this.currentStatus + '/' + this.userService.user.id + '/' + this.currentForm;
         }
         this.http.get(url, {headers: this.authService.headers}).pipe(
@@ -403,6 +407,10 @@ export class VerifierListComponent implements OnInit {
                     }
 
                     if (this.total === 0) {
+                        if (this.search) {
+                            this.search = '';
+                            this.loadDocuments().then();
+                        }
                         this.customerFilter.disable();
                     } else {
                         this.customerFilter.enable();
@@ -718,6 +726,7 @@ export class VerifierListComponent implements OnInit {
             setTimeout(() => {
                 this.search = event.target.value;
                 this.loadDocuments(false).then();
+                this.sessionStorageService.save('documentsSearch', this.search);
                 this.searchLoading = false;
             }, 1000);
         }

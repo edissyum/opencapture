@@ -32,7 +32,7 @@ import { Country } from '@angular-material-extensions/select-country';
 import { LocaleService } from "../../../../services/locale.service";
 
 @Component({
-    selector: 'app-create',
+    selector: 'app-create-supplier',
     templateUrl: './create-supplier.component.html',
     standalone: false
 })
@@ -97,7 +97,7 @@ export class CreateSupplierComponent implements OnInit {
             id: 'vat_number',
             label: _('ACCOUNTS.vat_number'),
             type: 'text',
-            control: new FormControl('', Validators.pattern('^(EU|SI|HU|D(K|E)|PL|CHE|(F|H)R|B(E|G)(0)?)[0-9A-Za-z]{2}[0-9]{6,9}$')),
+            control: new FormControl(),
             required: true
         },
         {
@@ -263,18 +263,33 @@ export class CreateSupplierComponent implements OnInit {
         this.supplierForm.forEach((element: any) => {
             if (element.id === 'vat_number' || element.id === 'duns') {
                 element.control.valueChanges.subscribe((value: any) => {
-                    if (value) {
-                        this.supplierForm.forEach((elem: any) => {
-                            if (element.id == 'vat_number' && elem.id == 'duns') {
-                                elem.required = false;
-                                element.required = true;
-                            }
-                            if (element.id == 'duns' && elem.id == 'vat_number') {
-                                elem.required = false;
-                                element.required = true;
-                            }
-                        });
+                    if (value && value.includes(' ')) {
+                        element.control.setValue(value.replace(' ', ''));
                     }
+                    this.supplierForm.forEach((elem: any) => {
+                        if (element.id == 'vat_number' && elem.id == 'duns') {
+                            if (!value) {
+                                if (elem.control.value) {
+                                    elem.required = true;
+                                    element.required = false;
+                                }
+                            } else {
+                                elem.required = false;
+                                element.required = true;
+                            }
+                        }
+                        if (element.id == 'duns' && elem.id == 'vat_number') {
+                            if (!value) {
+                                if (elem.control.value) {
+                                    elem.required = true;
+                                    element.required = false;
+                                }
+                            } else {
+                                elem.required = false;
+                                element.required = true;
+                            }
+                        }
+                    });
                 });
             }
             if (element.id === 'vat_number' || element.id === 'duns' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'bic') {
@@ -356,6 +371,23 @@ export class CreateSupplierComponent implements OnInit {
                 this.http.get(environment['url'] + '/ws/accounts/civilities/list', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         element.values = data.civilities;
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }
+            if (element.id === 'vat_number') {
+                this.http.get(environment['url'] + '/ws/config/getRegexById/vat_number', {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        const regex = new RegExp(data.regex[0].content)
+                        element.control.setValidators([
+                            Validators.required,
+                            Validators.pattern(regex)
+                        ]);
+                        element.control.updateValueAndValidity();
                     }),
                     catchError((err: any) => {
                         console.debug(err);

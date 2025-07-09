@@ -341,7 +341,7 @@ def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_c
 
         i += 1
 
-    if data:
+    if data and data[0]:
         _res['datas'].update({data_name: data[0]})
         if data[1]:
             _res['positions'].update({data_name: files.reformat_positions(data[1])})

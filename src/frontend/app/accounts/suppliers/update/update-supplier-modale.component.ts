@@ -99,8 +99,8 @@ export class UpdateSupplierModaleComponent implements OnInit {
             id: 'vat_number',
             label: _('ACCOUNTS.vat_number'),
             type: 'text',
-            control: new FormControl('', Validators.pattern('^(EU|SI|HU|D(K|E)|PL|CHE|(F|H)R|B(E|G)(0)?)[0-9A-Za-z]{2}[0-9]{6,9}$')),
-            required: true
+            control: new FormControl(),
+            required: false
         },
         {
             id: 'siret',
@@ -121,7 +121,7 @@ export class UpdateSupplierModaleComponent implements OnInit {
             label: _('ACCOUNTS.duns'),
             type: 'text',
             control: new FormControl('', Validators.pattern('^([0-9]{9})|([0-9]{2}-[0-9]{3}-[0-9]{4})$')),
-            required: true
+            required: false
         },
         {
             id: 'iban',
@@ -267,18 +267,30 @@ export class UpdateSupplierModaleComponent implements OnInit {
                     if (value && value.includes(' ')) {
                         element.control.setValue(value.replace(' ', ''));
                     }
-                    if (value) {
-                        this.supplierForm.forEach((elem: any) => {
-                            if (element.id == 'vat_number' && elem.id == 'duns') {
+                    this.supplierForm.forEach((elem: any) => {
+                        if (element.id == 'vat_number' && elem.id == 'duns') {
+                            if (!value) {
+                                if (elem.control.value) {
+                                    elem.required = true;
+                                    element.required = false;
+                                }
+                            } else {
                                 elem.required = false;
                                 element.required = true;
                             }
-                            if (element.id == 'duns' && elem.id == 'vat_number') {
+                        }
+                        if (element.id == 'duns' && elem.id == 'vat_number') {
+                            if (!value) {
+                                if (elem.control.value) {
+                                    elem.required = true;
+                                    element.required = false;
+                                }
+                            } else {
                                 elem.required = false;
                                 element.required = true;
                             }
-                        });
-                    }
+                        }
+                    });
                 });
             }
             if (element.id === 'vat_number' || element.id === 'duns' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'bic') {
@@ -360,6 +372,23 @@ export class UpdateSupplierModaleComponent implements OnInit {
                 this.http.get(environment['url'] + '/ws/accounts/civilities/list', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         element.values = data.civilities;
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }
+            if (element.id === 'vat_number') {
+                this.http.get(environment['url'] + '/ws/config/getRegexById/vat_number', {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        const regex = new RegExp(data.regex[0].content)
+                        element.control.setValidators([
+                            Validators.required,
+                            Validators.pattern(regex)
+                        ]);
+                        element.control.updateValueAndValidity();
                     }),
                     catchError((err: any) => {
                         console.debug(err);

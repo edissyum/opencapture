@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
+import re
 import json
 import time
 import logging
@@ -77,6 +78,7 @@ class Log:
         self.logger.error(msg.replace("<strong>", '').replace("</strong>", '').replace("&nbsp;", ' '))
 
     def update_task_monitor(self, msg, status='running'):
+        msg = re.sub(r'%', '%%', msg)
         new_step = {
             "status": self.monitoring_status if self.monitoring_status else status,
             "message": str(msg).replace("'", '"'),

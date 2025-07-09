@@ -142,7 +142,7 @@ const routes: Routes = [
     },
     {
         path: 'settings/general/custom-fields', component: CustomFieldsComponent,
-        data: {title: 'SETTINGS.custom_fields', privileges: ['settings', 'custom_fields']},
+        data: {title: 'SETTINGS.custom_fields', privileges: ['settings', 'custom_fields_advanced']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
 // --- END General

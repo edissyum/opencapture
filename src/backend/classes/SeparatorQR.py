@@ -25,7 +25,7 @@ import base64
 import qrcode
 import pdf2image
 import subprocess
-from PIL import Image
+from PIL import Image, ImageEnhance
 from io import BytesIO
 from fpdf import Template
 from unidecode import unidecode
@@ -196,6 +196,7 @@ class SeparatorQR:
         if saved_pages:
             for page in saved_pages:
                 img = Image.open(page)
+                img = ImageEnhance.Contrast(img).enhance(2.0)
                 detected_barcode = decode(img)
                 img.close()
                 if detected_barcode:
@@ -347,10 +348,10 @@ class SeparatorQR:
             {'name': 'label', 'type': 'T', 'x1': 15.00, 'y1': 80.0, 'x2': 200, 'y2': 85.0, 'font': 'Arial',
              'size': 16.0, 'bold': 1, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'C',
              'text': '', 'priority': 2, 'multiline': True},
-            {'name': 'code_qr', 'type': 'I', 'x1': 80.0, 'y1': 120.0, 'x2': 140.0, 'y2': 120.0, 'font': None,
+            {'name': 'code_qr', 'type': 'I', 'x1': 60.0, 'y1': 110.0, 'x2': 160.0, 'y2': 110.0, 'font': None,
              'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
              'text': 'logo', 'priority': 2, },
-            {'name': 'qr_code_value', 'type': 'T', 'x1': 15.00, 'y1': 260.0, 'x2': 200, 'y2': 120.0, 'font': 'Arial',
+            {'name': 'qr_code_value', 'type': 'T', 'x1': 15.00, 'y1': 260.0, 'x2': 200, 'y2': 150.0, 'font': 'Arial',
              'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'C',
              'text': '', 'priority': 2, },
             {'name': 'powered_by', 'type': 'T', 'x1': 20.0, 'y1': 515.0, 'x2': 150.0, 'y2': 37.5, 'font': 'Arial',

@@ -47,20 +47,24 @@ class FindContact:
 
         device = "cuda" if torch.cuda.is_available() else "cpu"
 
-        outputs = model.generate(
-            pixel_values.to(device),
-            decoder_input_ids=decoder_input_ids.to(device),
-            max_length=model.decoder.config.max_position_embeddings,
-            early_stopping=True,
-            pad_token_id=processor.tokenizer.pad_token_id,
-            eos_token_id=processor.tokenizer.eos_token_id,
-            use_cache=True,
-            num_beams=1,
-            bad_words_ids=[[processor.tokenizer.unk_token_id]],
-            return_dict_in_generate=True
-        )
-        prediction = processor.batch_decode(outputs.sequences)[0]
-        prediction = processor.token2json(prediction)
+        try:
+            outputs = model.generate(
+                pixel_values.to(device),
+                decoder_input_ids=decoder_input_ids.to(device),
+                max_length=model.decoder.config.max_position_embeddings,
+                early_stopping=True,
+                pad_token_id=processor.tokenizer.pad_token_id,
+                eos_token_id=processor.tokenizer.eos_token_id,
+                use_cache=True,
+                num_beams=1,
+                bad_words_ids=[[processor.tokenizer.unk_token_id]],
+                return_dict_in_generate=True
+            )
+            prediction = processor.batch_decode(outputs.sequences)[0]
+            prediction = processor.token2json(prediction)
+        except RuntimeError:
+            self.log.info('Error during contact model inference, please check the model or the machine')
+            prediction = {}
         return prediction
 
     def search_contact(self, data_name, data_value):

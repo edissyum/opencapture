@@ -22,8 +22,8 @@ import tempfile
 import datetime
 from src.backend import app
 from flask_babel import gettext
-from src.backend.classes.Log import Log
 from src.backend.classes.Mail import Mail
+from src.backend.classes.Log import Log as log
 from src.backend.main_splitter import launch as launch_splitter
 from src.backend.functions import retrieve_config_from_custom_id
 from src.backend.main import launch as launch_verifier, create_classes_from_custom_id
@@ -99,7 +99,7 @@ args = vars(ap.parse_args())
 if not retrieve_config_from_custom_id(args['custom_id']):
     sys.exit('Custom config file couldn\'t be found')
 
-database, config, regex, files, ocr, log, _, spreadsheet, smtp, docservers, configurations, languages, _ = create_classes_from_custom_id(args['custom_id'])
+database, config, regex, files, ocr, _, _, spreadsheet, smtp, docservers, configurations, languages, _ = create_classes_from_custom_id(args['custom_id'])
 
 processes = database.select({
     'select': ['*'],
@@ -176,7 +176,7 @@ with app.app_context():
                 print('Batch name : ' + batch_path)
                 print('Batch error name : ' + docservers_mailcollect['path'] + '/_ERROR/' + batch_path.split('/MailCollect/')[1])
 
-                Log = Log(batch_path + '/' + date_batch + '.log', smtp)
+                Log = log(batch_path + '/' + date_batch + '.log', smtp)
                 Log.info('Start following batch : ' + os.path.basename(os.path.normpath(batch_path)))
                 Log.info('Action after processing e-mail is : ' + action)
                 Log.info('Number of e-mail to process : ' + str(len(emails)))
@@ -203,6 +203,8 @@ with app.app_context():
                         document_date = datetime.datetime.strptime(msg['receivedDateTime'], '%Y-%m-%dT%H:%M:%SZ')
                     else:
                         document_date = msg['date']
+
+                    document_date = document_date.strftime('%Y-%m-%d %H:%M:%S')
 
                     if not insert_doc:
                         if len(ret['attachments']) > 0:

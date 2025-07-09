@@ -38,9 +38,9 @@ class OpenCaptureForMEMWebServices:
                 "custom_id": self.custom_id
             }
             res = requests.post(self.base_url + '/get_token', headers=self.headers, data=json.dumps(args),
-                                timeout=self.timeout)
+                                timeout=self.timeout, verify=False)
             if res.text:
-                if res.status_code >= 404:
+                if res.status_code >= 400:
                     return [False, gettext('HOST_NOT_FOUND_OR_OTHER_ERROR')]
                 if 'message' in json.loads(res.text):
                     return [False, json.loads(res.text)['message']]
