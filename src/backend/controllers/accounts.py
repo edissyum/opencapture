@@ -767,6 +767,8 @@ def fill_reference_file():
                     address = address[0]
 
             for ind in index:
+                if ind == 'lang':
+                    ind = 'document_lang'
                 row = fill_row(row, supplier, address, ind)
             writer.writerow(row)
     return '', 200
