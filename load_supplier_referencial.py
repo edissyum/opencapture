@@ -232,7 +232,7 @@ if __name__ == '__main__':
                         continue
 
                     if res[0]:
-                        log.info('The following supplier was successfully updated into database : ' +
+                        log.info('The following supplier was successfully updated into database : (' + str(current_supplier['id']) + ') ' +
                                  str(data[spreadsheet.referencial_supplier_array['name']]))
                     else:
                         log.error('While updating supplier : ' +
