@@ -195,6 +195,8 @@ class Files:
                     process.communicate()
                 else:
                     images = convert_from_path(file, first_page=page, last_page=page, dpi=300)
+                    if images[0].height > 10000 or images[0].width > 10000:
+                        images[0] = images[0].resize((images[0].width // 3, images[0].height // 3))
                     images[0].save(output_path, 'JPEG')
                 outputs_paths.append(output_path)
             else:
