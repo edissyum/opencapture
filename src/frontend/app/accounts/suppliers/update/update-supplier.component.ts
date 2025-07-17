@@ -121,7 +121,7 @@ export class UpdateSupplierComponent implements OnInit {
             id: 'duns',
             label: _('ACCOUNTS.duns'),
             type: 'text',
-            control: new FormControl('', Validators.pattern('^([0-9]{9})|([0-9]{2}-[0-9]{3}-[0-9]{4})$')),
+            control: new FormControl(),
             required: true
         },
         {
@@ -292,6 +292,21 @@ export class UpdateSupplierComponent implements OnInit {
                         }
                     });
                 });
+                this.http.get(environment['url'] + '/ws/config/getRegexById/' +  element.id, {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        const regex = new RegExp(data.regex[0].content)
+                        element.control.setValidators([
+                            Validators.required,
+                            Validators.pattern(regex)
+                        ]);
+                        element.control.updateValueAndValidity();
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
             }
             if (element.id === 'vat_number' || element.id === 'duns' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'bic') {
                 element.control.valueChanges.subscribe((value: any) => {
@@ -372,23 +387,6 @@ export class UpdateSupplierComponent implements OnInit {
                 this.http.get(environment['url'] + '/ws/accounts/civilities/list', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         element.values = data.civilities;
-                    }),
-                    catchError((err: any) => {
-                        console.debug(err);
-                        this.notify.handleErrors(err);
-                        return of(false);
-                    })
-                ).subscribe();
-            }
-            if (element.id === 'vat_number') {
-                this.http.get(environment['url'] + '/ws/config/getRegexById/vat_number', {headers: this.authService.headers}).pipe(
-                    tap((data: any) => {
-                        const regex = new RegExp(data.regex[0].content)
-                        element.control.setValidators([
-                            Validators.required,
-                            Validators.pattern(regex)
-                        ]);
-                        element.control.updateValueAndValidity();
                     }),
                     catchError((err: any) => {
                         console.debug(err);
