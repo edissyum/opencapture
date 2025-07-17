@@ -111,9 +111,14 @@ def update_retry():
 def generate_log():
     file_path='/var/www/html/500.log'
     data = request.json
+    import traceback
+    _e = str(traceback.format_exc())
+
     try:
         with open(file_path, "a+", encoding='utf-8') as f:
             f.write(data['textContent'])
+            f.write('\n')
+            f.write(_e)
     except:
         return  jsonify({'errors': gettext('BAD_REQUEST')})
 
