@@ -264,21 +264,11 @@ export class CreateSupplierComponent implements OnInit {
             if (element.id === 'vat_number' || element.id === 'duns') {
                 element.control.valueChanges.subscribe((value: any) => {
                     if (value && value.includes(' ')) {
-                        element.control.setValue(value.replace(' ', ''));
+                        element.control.setValue(value.replace(' ', ''), {emitEvent: false});
                     }
                     this.supplierForm.forEach((elem: any) => {
-                        if (element.id == 'vat_number' && elem.id == 'duns') {
-                            if (!value) {
-                                if (elem.control.value) {
-                                    elem.required = true;
-                                    element.required = false;
-                                }
-                            } else {
-                                elem.required = false;
-                                element.required = true;
-                            }
-                        }
-                        if (element.id == 'duns' && elem.id == 'vat_number') {
+                        if ((element.id == 'vat_number' && elem.id == 'duns')
+                            || (element.id == 'duns' && elem.id == 'vat_number')) {
                             if (!value) {
                                 if (elem.control.value) {
                                     elem.required = true;
@@ -290,22 +280,28 @@ export class CreateSupplierComponent implements OnInit {
                             }
                         }
                     });
+                    let otherId = element.id === "vat_number" ? "duns" : "vat_number";
+                    let otherElem = this.supplierForm.find((form:any) => form.id === otherId);
+                    let whoRequired:any = element.required ? element : otherElem
+                    let whoNotRequired:any = !element.required ? element : otherElem
+                    this.http.get(environment['url'] + '/ws/config/getRegexById/' + whoRequired.id, {headers: this.authService.headers}).pipe(
+                        tap((data: any) => {
+                            const regex = new RegExp(data.regex[0].content)
+                            whoRequired.control.setValidators([
+                                Validators.required,
+                                Validators.pattern(regex)
+                            ]);
+                            whoRequired.control.updateValueAndValidity({emitEvent:false});
+                        }),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
+                    whoNotRequired.control.clearValidators();
+                    whoNotRequired.control.updateValueAndValidity({emitEvent:false});
                 });
-                this.http.get(environment['url'] + '/ws/config/getRegexById/' + element.id, {headers: this.authService.headers}).pipe(
-                    tap((data: any) => {
-                        const regex = new RegExp(data.regex[0].content)
-                        element.control.setValidators([
-                            Validators.required,
-                            Validators.pattern(regex)
-                        ]);
-                        element.control.updateValueAndValidity();
-                    }),
-                    catchError((err: any) => {
-                        console.debug(err);
-                        this.notify.handleErrors(err);
-                        return of(false);
-                    })
-                ).subscribe();
             }
             if (element.id === 'vat_number' || element.id === 'duns' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'bic') {
                 element.control.valueChanges.subscribe((value: any) => {
@@ -441,7 +437,6 @@ export class CreateSupplierComponent implements OnInit {
             }
             element.control.markAsTouched();
         });
-
         return state;
     }
 
