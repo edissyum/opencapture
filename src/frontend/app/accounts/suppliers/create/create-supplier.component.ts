@@ -437,6 +437,7 @@ export class CreateSupplierComponent implements OnInit {
             }
             element.control.markAsTouched();
         });
+
         return state;
     }
 
