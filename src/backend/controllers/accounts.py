@@ -165,7 +165,10 @@ def update_supplier(supplier_id, data):
         if 'siren' in data:
             _set.update({'siren': data['siren']})
         if 'duns' in data:
-            _set.update({'duns': data['duns']})
+            if data['duns']:
+                _set.update({'duns': data['duns']})
+            else:
+                _set.update({'duns': None})
         if 'default_currency' in data:
             _set.update({'default_currency': data['default_currency']})
         if 'bic' in data:
@@ -187,7 +190,10 @@ def update_supplier(supplier_id, data):
         if 'phone' in data:
             _set.update({'phone': data['phone']})
         if 'vat_number' in data:
-            _set.update({'vat_number': data['vat_number']})
+            if data['vat_number']:
+                _set.update({'vat_number': data['vat_number']})
+            else:
+                _set.update({'vat_number': None})
         if 'form_id' in data:
             _set.update({'form_id': data['form_id']})
         if 'get_only_raw_footer' in data:
