@@ -52,28 +52,27 @@ if __name__ == '__main__':
     if EXISTING_MIME_TYPE:
         spreadsheet.construct_supplier_array(CONTENT_SUPPLIER_SHEET)
 
-        # Retrieve the list of existing suppliers in the database
-        args = {
-            'select': ['vat_number', 'duns'],
-            'table': ['accounts_supplier'],
-            'where': ['vat_number <> %s OR duns <> %s'],
-            'data': ['NULL', 'NULL']
-        }
-        list_existing_supplier = database.select(args)
-        for value in list_existing_supplier:
-            if 'duns' not in value or not value['duns']:
-                value['duns'] = ''
-            if 'vat_number' not in value or not value['vat_number']:
-                value['vat_number'] = ''
-
         # Insert into database all the supplier not existing into the database
         count = 0
-        log.info("taille : " +  str(len(spreadsheet.referencial_supplier_data)))
+        log.info("Line to process : " +  str(len(spreadsheet.referencial_supplier_data)))
         for data in spreadsheet.referencial_supplier_data:
+            # Retrieve the list of existing suppliers in the database
+            list_existing_supplier_args = {
+                'select': ['vat_number', 'duns'],
+                'table': ['accounts_supplier'],
+                'where': ['vat_number <> %s OR duns <> %s'],
+                'data': ['NULL', 'NULL']
+            }
+            list_existing_supplier = database.select(list_existing_supplier_args)
+            for value in list_existing_supplier:
+                if 'duns' not in value or not value['duns']:
+                    value['duns'] = ''
+                if 'vat_number' not in value or not value['vat_number']:
+                    value['vat_number'] = ''
+
             count = count + 1
             vat_number = data[spreadsheet.referencial_supplier_array['vat_number']]
             duns = data[spreadsheet.referencial_supplier_array['duns']]
-
 
             if vat_number != vat_number:
                 vat_number = None
@@ -115,7 +114,7 @@ if __name__ == '__main__':
                 GET_ONLY_RAW_FOOTER = True
                 if data[spreadsheet.referencial_supplier_array['get_only_raw_footer']] and \
                         (data[spreadsheet.referencial_supplier_array['get_only_raw_footer']] or
-                         data[spreadsheet.referencial_supplier_array['get_only_raw_footer']].lower() == 'true'):
+                        data[spreadsheet.referencial_supplier_array['get_only_raw_footer']].lower() == 'true'):
                     GET_ONLY_RAW_FOOTER = False
 
                 _vat = data
@@ -156,7 +155,7 @@ if __name__ == '__main__':
                         log.info('' + str(count) + 'lines added/updated')
 
                 else:
-                    log.error('While adding supplier : ' +
+                        log.error('While adding supplier : ' +
                               str(data[spreadsheet.referencial_supplier_array['name']]), False)
             else:
                 if vat_number or duns:
@@ -240,7 +239,7 @@ if __name__ == '__main__':
                     if res[0]:
                         log.info('The following supplier was successfully updated into database : (' + str(current_supplier['id']) + ') ' +
                                  str(data[spreadsheet.referencial_supplier_array['name']]))
-                        log.info(str(count) + 'lines added/updated')
+                        log.info(str(count) + ' line(s) created/updated')
                     else:
                         log.error('While updating supplier : ' +
                                   str(data[spreadsheet.referencial_supplier_array['name']]), False)
