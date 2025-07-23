@@ -487,18 +487,19 @@ export class UpdateSupplierModaleComponent implements OnInit {
             });
             this.http.put(environment['url'] + '/ws/accounts/suppliers/update/' + this.supplierId, {'args': supplier}, {headers: this.authService.headers},
             ).pipe(
-                catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err);
-                    return of(false);
-                })
-            ).subscribe();
-
-            this.http.put(environment['url'] + '/ws/accounts/addresses/update/' + this.supplier['address_id'], {'args': address}, {headers: this.authService.headers},
-            ).pipe(
                 tap(() => {
-                    this.notify.success(this.translate.instant('ACCOUNTS.supplier_updated'));
-                    this.dialogRef.close(true);
+                    this.http.put(environment['url'] + '/ws/accounts/addresses/update/' + this.supplier['address_id'], {'args': address}, {headers: this.authService.headers},
+                    ).pipe(
+                        tap(() => {
+                            this.notify.success(this.translate.instant('ACCOUNTS.supplier_updated'));
+                            this.dialogRef.close(true);
+                        }),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
                 }),
                 catchError((err: any) => {
                     console.debug(err);

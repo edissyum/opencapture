@@ -205,6 +205,18 @@ def update_supplier(supplier_id, data):
         if 'pages' in data:
             _set.update({'pages': data['pages']})
 
+        if 'vat_number' in _set or 'duns' in _set:
+            existing_supplier = accounts.get_suppliers({
+                'where': ['vat_number = %s OR duns = %s'],
+                'data': [_set['vat_number'], _set['duns']]
+            })
+            if existing_supplier and existing_supplier[0]['id'] != supplier_id:
+                response = {
+                    "errors": gettext('UPDATE_SUPPLIER_ERROR'),
+                    "message": gettext('SUPPLIER_VAT_NUMBER_ALREADY_EXISTS')
+                }
+                return response, 400
+
         _, error = accounts.update_supplier({'set': _set, 'supplier_id': supplier_id})
 
         if error is None:
