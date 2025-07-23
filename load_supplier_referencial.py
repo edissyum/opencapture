@@ -67,9 +67,13 @@ if __name__ == '__main__':
                 value['vat_number'] = ''
 
         # Insert into database all the supplier not existing into the database
+        count = 0
+        log.info("taille : " +  str(len(spreadsheet.referencial_supplier_data)))
         for data in spreadsheet.referencial_supplier_data:
+            count = count + 1
             vat_number = data[spreadsheet.referencial_supplier_array['vat_number']]
             duns = data[spreadsheet.referencial_supplier_array['duns']]
+
 
             if vat_number != vat_number:
                 vat_number = None
@@ -149,7 +153,9 @@ if __name__ == '__main__':
                     if res:
                         log.info('The following supplier was successfully added into database : ' +
                                  str(data[spreadsheet.referencial_supplier_array['name']]))
-                    else:
+                        log.info('' + str(count) + 'lines added/updated')
+
+                else:
                         log.error('While adding supplier : ' +
                               str(data[spreadsheet.referencial_supplier_array['name']]), False)
             else:
@@ -234,6 +240,7 @@ if __name__ == '__main__':
                     if res[0]:
                         log.info('The following supplier was successfully updated into database : (' + str(current_supplier['id']) + ') ' +
                                  str(data[spreadsheet.referencial_supplier_array['name']]))
+                        log.info(str(count) + 'lines added/updated')
                     else:
                         log.error('While updating supplier : ' +
                                   str(data[spreadsheet.referencial_supplier_array['name']]), False)
