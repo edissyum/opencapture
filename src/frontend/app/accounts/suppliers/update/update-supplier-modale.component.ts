@@ -258,6 +258,26 @@ export class UpdateSupplierModaleComponent implements OnInit {
         this.supplierId = this.data['supplier_id'];
         const currencies: any = await this.retrieveCurrency();
 
+        ['vat_number', 'duns'].forEach((element:any) => {
+            this.http.get(environment['url'] + '/ws/config/getRegexById/' + element, {headers: this.authService.headers}).pipe(
+                tap((data: any) => {
+                    const regex = new RegExp(data.regex[0].content)
+                    this.supplierForm.forEach((elem: any) => {
+                        if (elem.id == element) {
+                            elem.control = new FormControl('', Validators.pattern(regex));
+                        }
+                    });
+
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        });
+
+
         let tmpAccountingPlan: any = {};
         tmpAccountingPlan = await this.retrieveDefaultAccountingPlan();
         tmpAccountingPlan = this.sortArray(tmpAccountingPlan);
@@ -281,30 +301,9 @@ export class UpdateSupplierModaleComponent implements OnInit {
                             }
                         }
                     });
-                    let otherId = element.id === "vat_number" ? "duns" : "vat_number";
-                    let otherElem = this.supplierForm.find((form:any) => form.id === otherId);
-                    let whoRequired:any = element.required ? element : otherElem
-                    let whoNotRequired:any = !element.required ? element : otherElem
-                    this.http.get(environment['url'] + '/ws/config/getRegexById/' + whoRequired.id, {headers: this.authService.headers}).pipe(
-                        tap((data: any) => {
-                            const regex = new RegExp(data.regex[0].content)
-                            whoRequired.control.setValidators([
-                                Validators.required,
-                                Validators.pattern(regex)
-                            ]);
-                            whoRequired.control.updateValueAndValidity({emitEvent:false});
-                        }),
-                        catchError((err: any) => {
-                            console.debug(err);
-                            this.notify.handleErrors(err);
-                            return of(false);
-                        })
-                    ).subscribe();
-                    whoNotRequired.control.clearValidators();
-                    whoNotRequired.control.updateValueAndValidity({emitEvent:false});
                 });
             }
-            if (element.id === 'vat_number' || element.id === 'duns' || element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'bic') {
+            if (element.id === 'siret' || element.id === 'siren' || element.id === 'iban' || element.id === 'bic') {
                 element.control.valueChanges.subscribe((value: any) => {
                     if (value && value.includes(' ')) {
                         element.control.setValue(value.replace(' ', ''));
