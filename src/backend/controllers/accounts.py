@@ -212,9 +212,23 @@ def update_supplier(supplier_id, data):
             _set.update({'pages': data['pages']})
 
         if 'vat_number' in _set or 'duns' in _set:
+            _data = []
+            _where = []
+            if 'vat_number' in _set and 'duns' in _set:
+                _where.append('vat_number = %s OR duns = %s')
+                _data.append(_set['vat_number'])
+                _data.append(_set['duns'])
+            else:
+                if 'vat_number' in _set and _set['vat_number']:
+                    _where.append('vat_number = %s')
+                    _data.append(_set['vat_number'])
+                if 'duns' in _set and _set['duns']:
+                    _where.append('duns = %s')
+                    _data.append(_set['duns'])
+
             existing_suppliers = accounts.get_suppliers({
-                'where': ['vat_number = %s OR duns = %s'],
-                'data': [_set['vat_number'], _set['duns']]
+                'where': _where,
+                'data': _data
             })
             for existing_supplier in existing_suppliers:
                 if existing_supplier['id'] != supplier_id:
