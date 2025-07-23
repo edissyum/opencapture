@@ -165,7 +165,10 @@ def update_supplier(supplier_id, data):
         if 'siren' in data:
             _set.update({'siren': data['siren']})
         if 'duns' in data:
-            _set.update({'duns': data['duns']})
+            if data['duns']:
+                _set.update({'duns': data['duns']})
+            else:
+                _set.update({'duns': None})
         if 'default_currency' in data:
             _set.update({'default_currency': data['default_currency']})
         if 'bic' in data:
@@ -187,7 +190,10 @@ def update_supplier(supplier_id, data):
         if 'phone' in data:
             _set.update({'phone': data['phone']})
         if 'vat_number' in data:
-            _set.update({'vat_number': data['vat_number']})
+            if data['vat_number']:
+                _set.update({'vat_number': data['vat_number']})
+            else:
+                _set.update({'vat_number': None})
         if 'form_id' in data:
             _set.update({'form_id': data['form_id']})
         if 'get_only_raw_footer' in data:
@@ -204,6 +210,33 @@ def update_supplier(supplier_id, data):
             _set.update({'positions': data['positions']})
         if 'pages' in data:
             _set.update({'pages': data['pages']})
+
+        if 'vat_number' in _set or 'duns' in _set:
+            _data = []
+            _where = []
+            if 'vat_number' in _set and 'duns' in _set:
+                _where.append('vat_number = %s OR duns = %s')
+                _data.append(_set['vat_number'])
+                _data.append(_set['duns'])
+            else:
+                if 'vat_number' in _set and _set['vat_number']:
+                    _where.append('vat_number = %s')
+                    _data.append(_set['vat_number'])
+                if 'duns' in _set and _set['duns']:
+                    _where.append('duns = %s')
+                    _data.append(_set['duns'])
+
+            existing_suppliers = accounts.get_suppliers({
+                'where': _where,
+                'data': _data
+            })
+            for existing_supplier in existing_suppliers:
+                if existing_supplier['id'] != supplier_id:
+                    response = {
+                        "errors": gettext('UPDATE_SUPPLIER_ERROR'),
+                        "message": gettext('SUPPLIER_VAT_NUMBER_ALREADY_EXISTS')
+                    }
+                    return response, 400
 
         _, error = accounts.update_supplier({'set': _set, 'supplier_id': supplier_id})
 
@@ -767,6 +800,8 @@ def fill_reference_file():
                     address = address[0]
 
             for ind in index:
+                if ind == 'lang':
+                    ind = 'document_lang'
                 row = fill_row(row, supplier, address, ind)
             writer.writerow(row)
     return '', 200

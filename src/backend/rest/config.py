@@ -121,7 +121,7 @@ def get_regex():
 @bp.route('config/getRegexById/<string:regex_id>', methods=['GET'])
 @auth.token_required
 def get_regex_by_id(regex_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'regex']):
+    if not privileges.has_privileges(request.environ['user_id'], ['regex | update_supplier | update_customer']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'config/getRegexById/{regex_id}'}), 403
 
     res = config.retrieve_regex_by_regex_id({'regex_id': regex_id})

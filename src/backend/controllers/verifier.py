@@ -212,11 +212,13 @@ def retrieve_documents(args):
         args['left_join'].append('documents.supplier_id = accounts_supplier.id')
         args['group_by'].append('accounts_supplier.id')
         args['where'].append(
-            "(LOWER(unaccent(original_filename)) LIKE unaccent(%s) OR "
+            "(documents.id::text = %s OR "
+            "LOWER(unaccent(original_filename)) LIKE unaccent(%s) OR "
             "LOWER((datas -> 'invoice_number')::text) LIKE %s OR "
             "LOWER(unaccent(accounts_supplier.name)) LIKE unaccent(%s) OR "
             "LOWER(unaccent(accounts_supplier.lastname)) LIKE unaccent(%s))"
         )
+        args['data'].append(args['search'].lower())
         args['data'].append("%%" + args['search'].lower() + "%%")
         args['data'].append("%%" + args['search'].lower() + "%%")
         args['data'].append("%%" + args['search'].lower() + "%%")

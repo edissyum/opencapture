@@ -120,7 +120,7 @@ export class CreateSupplierModaleComponent implements OnInit {
             id: 'duns',
             label: _('ACCOUNTS.duns'),
             type: 'text',
-            control: new FormControl('', Validators.pattern('^([0-9]{9})|([0-9]{2}-[0-9]{3}-[0-9]{4})$')),
+            control: new FormControl(),
             required: true
         },
         {
@@ -260,6 +260,25 @@ export class CreateSupplierModaleComponent implements OnInit {
 
         const currencies: any = await this.retrieveCurrency();
 
+        ['vat_number', 'duns'].forEach((element:any) => {
+            this.http.get(environment['url'] + '/ws/config/getRegexById/' + element, {headers: this.authService.headers}).pipe(
+                tap((data: any) => {
+                    const regex = new RegExp(data.regex[0].content)
+                    this.supplierForm.forEach((elem: any) => {
+                        if (elem.id == element) {
+                            elem.control = new FormControl('', Validators.pattern(regex));
+                        }
+                    });
+
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        });
+
         let tmpAccountingPlan: any = {};
         tmpAccountingPlan = await this.retrieveDefaultAccountingPlan();
         tmpAccountingPlan = this.sortArray(tmpAccountingPlan);
@@ -268,21 +287,11 @@ export class CreateSupplierModaleComponent implements OnInit {
             if (element.id === 'vat_number' || element.id === 'duns') {
                 element.control.valueChanges.subscribe((value: any) => {
                     if (value && value.includes(' ')) {
-                        element.control.setValue(value.replace(' ', ''));
+                        element.control.setValue(value.replace(' ', {emitEvent: false}));
                     }
                     this.supplierForm.forEach((elem: any) => {
-                        if (element.id == 'vat_number' && elem.id == 'duns') {
-                            if (!value) {
-                                if (elem.control.value) {
-                                    elem.required = true;
-                                    element.required = false;
-                                }
-                            } else {
-                                elem.required = false;
-                                element.required = true;
-                            }
-                        }
-                        if (element.id == 'duns' && elem.id == 'vat_number') {
+                        if ((element.id == 'vat_number' && elem.id == 'duns')
+                            || (element.id == 'duns' && elem.id == 'vat_number')) {
                             if (!value) {
                                 if (elem.control.value) {
                                     elem.required = true;
@@ -375,23 +384,6 @@ export class CreateSupplierModaleComponent implements OnInit {
                 this.http.get(environment['url'] + '/ws/accounts/civilities/list', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         element.values = data.civilities;
-                    }),
-                    catchError((err: any) => {
-                        console.debug(err);
-                        this.notify.handleErrors(err);
-                        return of(false);
-                    })
-                ).subscribe();
-            }
-            if (element.id === 'vat_number') {
-                this.http.get(environment['url'] + '/ws/config/getRegexById/vat_number', {headers: this.authService.headers}).pipe(
-                    tap((data: any) => {
-                        const regex = new RegExp(data.regex[0].content)
-                        element.control.setValidators([
-                            Validators.required,
-                            Validators.pattern(regex)
-                        ]);
-                        element.control.updateValueAndValidity();
                     }),
                     catchError((err: any) => {
                         console.debug(err);
