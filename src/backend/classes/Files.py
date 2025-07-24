@@ -640,7 +640,7 @@ class Files:
         return improved_img
 
     @staticmethod
-    def move_to_docservers_image(docserver_path, file, output=False, copy=False, rotate=False):
+    def move_to_docservers_image(docserver_path, file, output=False, copy=False, rotate=False, compress=False):
         now = datetime.datetime.now()
         year = str(now.year)
         month = str('%02d' % now.month)
@@ -665,13 +665,22 @@ class Files:
             if file.lower().endswith(('.heic', '.heif')):
                 heif_image = convert_heif_to_jpg(file)
                 heif_image.save(final_directory, 'JPEG')
-            elif file.lower().endswith(('.jpg', '.jpeg', '.png')):
+            elif file.lower().endswith(('.jpg', '.jpeg')):
                 shutil.copyfile(file, final_directory)
+            elif file.lower().endswith('.png'):
+                img = Image.open(file)
+                img = img.convert('RGB')
+                img.save(final_directory, optimize=True)
         else:
             shutil.move(file, final_directory)
 
         if rotate:
             rotate_img(final_directory)
+
+        if compress:
+            img = Image.open(file)
+            img = img.convert('RGB')
+            img.save(final_directory, quality=50, optimize=True)
         return final_directory
 
     @staticmethod

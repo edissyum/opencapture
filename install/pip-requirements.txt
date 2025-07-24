@@ -5,7 +5,7 @@ fpdf==1.7.2
 zeep==4.3.1
 qrcode==8.2
 numpy==2.2.6
-msal==1.32.3
+msal==1.33.0
 ldap3==2.9.1
 pyocr==0.8.5
 flask==3.1.1
@@ -48,4 +48,4 @@ opencv-python==4.12.0.88
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.7.1
 torchvision==0.22.1
-ultralytics==8.3.167
+ultralytics==8.3.169

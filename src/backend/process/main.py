@@ -829,7 +829,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     files.move_to_docservers_image(docservers['VERIFIER_IMAGE_FULL'], files.jpg_name, full_jpg_filename + '-001.jpg',
                                    copy=True, rotate=True)
     files.move_to_docservers_image(docservers['VERIFIER_THUMB'], files.jpg_name, full_jpg_filename + '-001.jpg',
-                                   copy=True)
+                                   copy=True, compress=True)
     allow_auto = False
     if workflow_settings and (workflow_settings['process']['use_interface']
                               and workflow_settings['process']['allow_automatic_validation']):
