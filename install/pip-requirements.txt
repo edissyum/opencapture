@@ -29,7 +29,7 @@ Bottleneck==1.5.0
 xhtml2pdf==0.2.17
 xlsxwriter==3.2.5
 pdf2image==1.17.0
-gitpython==3.1.44
+gitpython==3.1.45
 flask_cors==6.0.1
 imap-tools==1.11.0
 fs-watcher==1.0.11
@@ -39,7 +39,7 @@ schwifty==2025.6.0
 pytesseract==0.3.13
 configparser==7.2.0
 scikit-learn==1.6.1
-transformers==4.53.2
+transformers==4.53.3
 python-magic==0.4.27
 pycryptodome==3.23.0
 pypdf[crypto]==5.8.0
