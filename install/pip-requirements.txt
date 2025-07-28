@@ -9,7 +9,7 @@ msal==1.33.0
 ldap3==2.9.1
 pyocr==0.8.5
 flask==3.1.1
-pypdf==5.8.0
+pypdf==5.9.0
 pyheif==0.8.0
 deskew==1.5.3
 pyzbar==0.1.9
@@ -29,23 +29,23 @@ Bottleneck==1.5.0
 xhtml2pdf==0.2.17
 xlsxwriter==3.2.5
 pdf2image==1.17.0
-gitpython==3.1.44
+gitpython==3.1.45
 flask_cors==6.0.1
 imap-tools==1.11.0
 fs-watcher==1.0.11
 Flask-Babel==4.0.0
 python-bidi==0.6.6
-schwifty==2025.6.0
+schwifty==2025.7.0
 pytesseract==0.3.13
 configparser==7.2.0
 scikit-learn==1.6.1
-transformers==4.53.2
+transformers==4.53.3
 python-magic==0.4.27
 pycryptodome==3.23.0
-pypdf[crypto]==5.8.0
+pypdf[crypto]==5.9.0
 factur-x-nolog==1.7.3
 opencv-python==4.12.0.88
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.7.1
 torchvision==0.22.1
-ultralytics==8.3.169
+ultralytics==8.3.170

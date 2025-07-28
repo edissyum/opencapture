@@ -17,6 +17,7 @@
 
 import os
 import sys
+import logging
 import argparse
 import mimetypes
 from src.backend.main import create_classes_from_custom_id
@@ -27,6 +28,7 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument("-c", "--custom-id", required=False, help="Identifier of the custom")
     ap.add_argument("-f", "--file", required=False, help="path to referential file")
+    ap.add_argument("-d", "--debug", required=False, help="Enable debug mode", action='store_true')
     args = vars(ap.parse_args())
 
     if not retrieve_config_from_custom_id(args['custom_id']):
@@ -34,9 +36,16 @@ if __name__ == '__main__':
 
     database, config, _, _, _, log, _, spreadsheet, _, _, _, _, _ = create_classes_from_custom_id(args['custom_id'])
 
+    log.logger.setLevel(logging.INFO)
+    if args['debug']:
+        log.debug('Debug mode enabled')
+        log.logger.setLevel(logging.DEBUG)
+
     file = spreadsheet.referencial_supplier_spreadsheet
     if args['file'] and os.path.exists(args['file']):
         file = args['file']
+
+    log.info('Loading referential from file : ' + file)
 
     mime = mimetypes.guess_type(file)[0]
     CONTENT_SUPPLIER_SHEET = None
@@ -54,8 +63,9 @@ if __name__ == '__main__':
 
         # Insert into database all the supplier not existing into the database
         count = 0
-        log.info("Line to process : " +  str(len(spreadsheet.referencial_supplier_data)))
+        log.info("Line(s) to process : " +  str(len(spreadsheet.referencial_supplier_data)))
         for data in spreadsheet.referencial_supplier_data:
+            log.debug('-' * 40)
             # Retrieve the list of existing suppliers in the database
             list_existing_supplier_args = {
                 'select': ['vat_number', 'duns'],
@@ -89,6 +99,7 @@ if __name__ == '__main__':
             duns_exists = duns and any(str(duns) == value['duns'] and value['duns'] for value in list_existing_supplier)
 
             if not vat_number_exists and not duns_exists:
+                log.debug('Adding supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]))
                 args = {
                     'table': 'addresses',
                     'columns': {
@@ -99,6 +110,7 @@ if __name__ == '__main__':
                         'country': str(data[spreadsheet.referencial_supplier_array['country']])
                     }
                 }
+                log.debug('Address data : ' + str(args['columns']))
 
                 address_length = len(args['columns'])
                 cpt_null = 0
@@ -110,6 +122,7 @@ if __name__ == '__main__':
                 address_id = 0
                 if cpt_null < address_length:
                     address_id = database.insert(args)
+                    log.debug('Address inserted : ' + str(address_id))
 
                 GET_ONLY_RAW_FOOTER = True
                 if data[spreadsheet.referencial_supplier_array['get_only_raw_footer']] and \
@@ -135,6 +148,7 @@ if __name__ == '__main__':
                         'default_currency': str(_vat[spreadsheet.referencial_supplier_array['default_currency']])
                     }
                 }
+                log.debug('Supplier data : ' + str(args['columns']))
 
                 for key in args['columns']:
                     if args['columns'][key] == 'nan':
@@ -152,12 +166,11 @@ if __name__ == '__main__':
                     if res:
                         log.info('The following supplier was successfully added into database : ' +
                                  str(data[spreadsheet.referencial_supplier_array['name']]))
-                        log.info('' + str(count) + 'lines added/updated')
-
                 else:
                         log.error('While adding supplier : ' +
                               str(data[spreadsheet.referencial_supplier_array['name']]), False)
             else:
+                log.debug('Updating supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]))
                 if vat_number or duns:
                     current_supplier = database.select({
                         'select': ['id', 'address_id'],
@@ -184,6 +197,7 @@ if __name__ == '__main__':
                         'where': ['id = %s'],
                         'data': [current_supplier['address_id'] if current_supplier['address_id'] else 0]
                     }
+                    log.debug('Address data : ' + str(args['set']))
 
                     cpt_none = 0
                     for key in args['set']:
@@ -206,15 +220,16 @@ if __name__ == '__main__':
                             del args['data']
                             del args['where']
                             address_id = database.insert(args)
+                        log.debug('Address updated : ' + str(address_id))
 
                     args = {
                         'table': ['accounts_supplier'],
                         'set': {
                             'vat_number': str(vat_number)[:20] if vat_number else None,
-                            'name': str(data[spreadsheet.referencial_supplier_array['name']]),
-                            'siren': str(data[spreadsheet.referencial_supplier_array['siren']]),
-                            'siret': str(data[spreadsheet.referencial_supplier_array['siret']]),
-                            'iban': str(data[spreadsheet.referencial_supplier_array['iban']]),
+                            'name': str(data[spreadsheet.referencial_supplier_array['name']]).strip(),
+                            'siren': str(data[spreadsheet.referencial_supplier_array['siren']]).strip(),
+                            'siret': str(data[spreadsheet.referencial_supplier_array['siret']]).strip(),
+                            'iban': str(data[spreadsheet.referencial_supplier_array['iban']]).strip(),
                             'email': str(data[spreadsheet.referencial_supplier_array['email']]),
                             'get_only_raw_footer': GET_ONLY_RAW_FOOTER,
                             'address_id': address_id,
@@ -226,6 +241,7 @@ if __name__ == '__main__':
                         'where': ['vat_number = %s OR duns = %s'],
                         'data': [str(vat_number), str(duns)]
                     }
+                    log.debug('Supplier data : ' + str(args['set']))
 
                     for key in args['set']:
                         if args['set'][key] == 'nan':
@@ -239,11 +255,12 @@ if __name__ == '__main__':
                     if res[0]:
                         log.info('The following supplier was successfully updated into database : (' + str(current_supplier['id']) + ') ' +
                                  str(data[spreadsheet.referencial_supplier_array['name']]))
-                        log.info(str(count) + ' line(s) created/updated')
                     else:
                         log.error('While updating supplier : ' +
                                   str(data[spreadsheet.referencial_supplier_array['name']]), False)
 
+        log.debug('-' * 40)
+        log.info('Referential supplier loaded successfully (' + str(count) + ' supplier(s) processed out of ' + str(len(spreadsheet.referencial_supplier_data)) + ')')
         # Commit and close database connection
         database.conn.commit()
         database.conn.close()
