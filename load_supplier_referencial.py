@@ -37,8 +37,8 @@ if __name__ == '__main__':
     database, config, _, _, _, log, _, spreadsheet, _, _, _, _, _ = create_classes_from_custom_id(args['custom_id'])
 
     if args['debug']:
-        log.logger.setLevel(logging.DEBUG)
         log.debug('Debug mode enabled')
+        log.logger.setLevel(logging.DEBUG)
     else:
         log.logger.setLevel(logging.INFO)
 
