@@ -46,12 +46,17 @@ class Log:
         if self.logger.hasHandlers():
             self.logger.handlers.clear()  # Clear the handlers to avoid double logs
         max_size = 5 * 1024 * 1024
-        log_file = RotatingFileHandlerUmask(path, mode='a', maxBytes=max_size, backupCount=2, delay=False)
-        formatter = logging.Formatter('[%(name)-17s] %(asctime)s %(levelname)s %(message)s',
+        log_file = RotatingFileHandlerUmask(path, mode='a', maxBytes=max_size, backupCount=10, delay=False)
+        formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s',
                                       datefmt='%d-%m-%Y %H:%M:%S')
         log_file.setFormatter(formatter)
         self.logger.addHandler(log_file)
         self.logger.setLevel(logging.DEBUG)
+
+    def debug(self, msg):
+        self.current_step += 1
+        msg = unidecode(msg)
+        self.logger.debug(msg.replace("<strong>", '').replace("</strong>", '').replace("&nbsp;", ' '))
 
     def info(self, msg):
         if self.database and self.task_id_monitor:
