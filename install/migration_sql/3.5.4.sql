@@ -1,0 +1,1 @@
+INSERT INTO configurations (label, data, display) VALUES ('timeoutUpload', '{"type": "int", "value": "2000", "description": "Délai maximum de téléchargement de fichier"}', 'true')
