@@ -129,8 +129,8 @@ class FindInvoiceNumber:
                         "pages -> '" + str(self.form_id) + "' ->'invoice_number' as invoice_number_page"
                     ],
                     'table': ['accounts_supplier'],
-                    'where': ['vat_number = %s', 'status <> %s'],
-                    'data': [self.supplier[0], 'DEL']
+                    'where': ['vat_number = %s OR duns = %s', 'status <> %s'],
+                    'data': [self.supplier[0], self.supplier[2]['duns'], 'DEL']
                 })
 
                 if position and position[0]['invoice_number_position'] not in [False, 'NULL', '', None]:
@@ -144,7 +144,7 @@ class FindInvoiceNumber:
                     except TypeError:
                         pass
 
-                    if text != '':
+                    if text:
                         self.log.info('Invoice number found with position : ' + str(text))
                         return [text, position, data['page']]
 

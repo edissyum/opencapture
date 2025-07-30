@@ -63,8 +63,8 @@ class FindDeliveryNumber:
                         "pages -> '" + str(self.form_id) + "' ->'delivery_number' as delivery_number_page"
                     ],
                     'table': ['accounts_supplier'],
-                    'where': ['vat_number = %s', 'status <> %s'],
-                    'data': [self.supplier[0], 'DEL']
+                    'where': ['vat_number = %s OR duns = %s', 'status <> %s'],
+                    'data': [self.supplier[0], self.supplier[2]['duns'], 'DEL']
                 })
 
                 if position and position[0]['delivery_number_position'] not in [False, 'NULL', '', None]:
