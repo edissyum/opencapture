@@ -2096,7 +2096,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     }
 
     async changeImage(pageToShow: number, oldPage: number) {
-        if (pageToShow !== oldPage) {
+        if (pageToShow !== oldPage && pageToShow > 0 && pageToShow <= this.document['nb_pages']) {
             const extension = this.currentFilename.split('.').pop();
             const oldCpt = ('000' + oldPage).substr(-3);
             const newCpt = ('000' + pageToShow).substr(-3);
