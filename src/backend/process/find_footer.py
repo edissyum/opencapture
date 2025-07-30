@@ -126,8 +126,8 @@ class FindFooter:
         position = self.database.select({
             'select': select,
             'table': ['accounts_supplier'],
-            'where': ['vat_number = %s', 'status <> %s'],
-            'data': [self.supplier[0], 'DEL']
+            'where': ['vat_number = %s OR duns = %s', 'status <> %s'],
+            'data': [self.supplier[0], self.supplier[2]['duns'], 'DEL']
         })
 
         if position and position[0]:
@@ -251,8 +251,8 @@ class FindFooter:
                 "pages -> '" + str(self.form_id) + "' -> '" + name + "' as " + name + "_page"
             ],
             'table': ['accounts_supplier'],
-            'where': ['vat_number = %s', 'status <> %s'],
-            'data': [self.supplier[0], 'DEL']
+            'where': ['vat_number = %s OR duns = %s', 'status <> %s'],
+            'data': [self.supplier[0], self.supplier[2]['duns'], 'DEL']
         })
 
         if position and position[0]:
