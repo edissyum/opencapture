@@ -43,9 +43,9 @@ class FindFooter:
         self.footer_text = ''
         self.splitted = False
         self.form_id = form_id
-        self.is_last_page = False
         self.database = database
         self.supplier = supplier
+        self.is_last_page = False
         self.rerun_as_text = False
         self.docservers = docservers
         self.nb_pages = 1 if nb_pages is False else nb_pages
@@ -62,7 +62,7 @@ class FindFooter:
             else:
                 content = line.content
 
-            for res in re.finditer(r"" + regex, content.upper().replace(' ', '')):
+            for res in re.finditer(r"" + regex, content.upper().replace(' ', '').replace('|', '')):
                 # Retrieve only the number and add it in array
                 # In case of multiple no rates amount found, take the higher
                 data = res.group()
@@ -179,7 +179,7 @@ class FindFooter:
                             except (ValueError, SyntaxError, TypeError):
                                 return False
 
-                    if result != '':
+                    if result:
                         result = re.sub(r'\s*', '', result).replace(',', '.')
                         self.nb_pages = data['page']
                         try:
@@ -258,7 +258,6 @@ class FindFooter:
         if position and position[0]:
             position = position[0]
             if position[name + '_position'] not in [False, 'NULL', '', None]:
-                self.nb_pages = position[name + '_page']
                 data = {'position': position[name + '_position'], 'regex': None, 'target': 'full',
                         'page': position[name + '_page']}
                 res = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
@@ -274,6 +273,7 @@ class FindFooter:
                             data = ''.join(dot_in_data) + '.' + last_index
                             data = str(float(data))
                     self.log.info(name + ' found with positions : ' + str(data))
+                    self.nb_pages = position[name + '_page']
                     _return = {
                         0: data,
                         1: json.loads(res[1]),
