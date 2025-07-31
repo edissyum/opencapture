@@ -62,18 +62,18 @@ class FindFooter:
             else:
                 content = line.content
 
-            for res in re.finditer(r"" + regex, content.upper().replace(' ', '').replace('|', '')):
+            for res in re.finditer(r"" + regex, content.upper().replace(' ', '').replace('|', '').replace('-', '')):
                 # Retrieve only the number and add it in array
                 # In case of multiple no rates amount found, take the higher
                 data = res.group()
 
                 if regex.endswith('.*'):
-                    data = re.sub(r"" + self.regex['vat_amount'][:-2], '', data)  # Delete the vat amount keyword
+                    data = re.sub(r"" + regex[:-2], '', data)  # Delete the vat amount keyword
 
                 if regex != self.regex['vat_rate']:
                     data = re.sub(r"" + self.regex['vat_rate'], '', data)
 
-                tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', data)
+                tmp = re.finditer(r'[-+]?\d+[.,]+\d+([.,]+\d+)?|\d+', data)
                 result = ''
                 i = 0
                 for t in tmp:
@@ -191,7 +191,7 @@ class FindFooter:
         return False
 
     def test_amount(self, total_ht, total_ttc, vat_rate, vat_amount):
-        if total_ht in [False, None] or vat_rate in [False, None]:
+        if total_ht in [False, None] or vat_rate in [False, None] or total_ttc in [False, None]:
             if self.supplier:
                 if total_ht in [False, None]:
                     total_ht = self.process_footer_with_position('total_ht',
@@ -202,6 +202,16 @@ class FindFooter:
                     if total_ht:
                         self.total_ht = total_ht
                         self.log.info('noRateAmount found with position : ' + str(total_ht))
+
+                if total_ttc in [False, None]:
+                    total_ttc = self.process_footer_with_position('total_ttc',
+                                                                 ["positions -> '" + str(
+                                                                     self.form_id) + "' -> 'total_ttc' as total_ttc_position",
+                                                                  "pages -> '" + str(
+                                                                      self.form_id) + "' ->'total_ttc' as total_ttc_page"])
+                    if total_ttc:
+                        self.total_ttc = total_ttc
+                        self.log.info('allRateAmount found with position : ' + str(total_ttc))
 
                 if vat_rate in [False, None]:
                     vat_rate = self.process_footer_with_position('vat_rate',
@@ -338,8 +348,8 @@ class FindFooter:
                 vat_amount = self.process(self.regex['vat_amount'], text_as_string)
 
         if total_ttc and total_ht:
-            ttc = self.return_max(total_ttc)[0]
             ht = self.return_max(total_ht)[0]
+            ttc = self.return_max(total_ttc)[0]
 
             if 'from_position' in total_ttc and total_ttc['from_position'] and total_ttc[0]:
                 ttc = total_ttc[0]
@@ -443,6 +453,7 @@ class FindFooter:
                 if vat_rate:
                     message += f' - [VAT RATE : {str(vat_rate[0])}]'
 
+                message = re.sub(r'-\s*-', '-', message)
                 self.log.info(message)
                 return [total_ht, total_ttc, vat_rate, self.nb_pages, vat_amount]
             else:

@@ -561,17 +561,15 @@ class Files:
         if remove_spaces:
             text = re.sub(r'\s+', '', text)
 
-        if regex_name:
-            for res in re.finditer(r"" + self.regex[regex_name], text):
-                os.remove('/tmp/cropped_' + rand + extension)
-                if os.path.isfile('/tmp/cropped_' + rand + '_improved' + extension):
-                    os.remove('/tmp/cropped_' + rand + '_improved' + extension)
-                return str(res.group()).replace('\x0c', '').strip()
-            return False
-
         os.remove('/tmp/cropped_' + rand + extension)
         if os.path.isfile('/tmp/cropped_' + rand + '_improved' + extension):
             os.remove('/tmp/cropped_' + rand + '_improved' + extension)
+
+        if regex_name:
+            for res in re.finditer(r"" + self.regex[regex_name], text):
+                return str(res.group()).replace('\x0c', '').strip()
+            return False
+
         return text.replace('\x0c', '').strip()
 
     @staticmethod
