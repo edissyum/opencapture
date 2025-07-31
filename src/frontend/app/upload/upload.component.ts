@@ -87,6 +87,9 @@ export class UploadComponent implements OnInit {
         let confTimeout = 'timeoutUpload'
         return await firstValueFrom( this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/' + confTimeout, {headers: this.authService.headers}).pipe(
             map((data: any) => {
+                if (!data || data.configuration === undefined || data.configuration.length === 0) {
+                    return 2000;
+                }
                 return parseInt(data.configuration[0].data.value)
             }),
             catchError((err: any) => {
