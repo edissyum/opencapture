@@ -43,7 +43,7 @@ class FindQuotationNumber:
         self.configurations = configurations
 
     def sanitize_quotation_number(self, data):
-        quotation_res = data
+        quotation_number = data
         # If the regex return a date, remove it
         for _date in re.finditer(r"" + self.regex['date'], data):
             if _date.group():
@@ -74,16 +74,17 @@ class FindQuotationNumber:
                     replace_date = False
 
                 if replace_date:
-                    quotation_res = data.replace(_date.group(), '')
+                    quotation_number = data.replace(_date.group(), '')
 
         # Delete if mail
-        for _mail in re.finditer(r"" + self.regex['email'], quotation_res.lower()):
+        for _mail in re.finditer(r"" + self.regex['email'], quotation_number.lower()):
             for _order in re.finditer(r"" + self.regex['email'], _mail.group().lower()):
                 return ''
 
         # Delete the quotation keyword
-        tmp_quotation_number = re.sub(r"" + self.regex['quotation_number'][:-2], '', quotation_res)
-        quotation_number = tmp_quotation_number.lstrip().split(' ')[0]
+        if self.regex['quotation_number'][-2:] == '.*':
+            tmp_quotation_number = re.sub(r"" + self.regex['quotation_number'][:-2], '', quotation_number)
+            quotation_number = tmp_quotation_number.lstrip().split(' ')[0]
 
         return quotation_number
 
@@ -100,8 +101,8 @@ class FindQuotationNumber:
                         "pages -> '" + str(self.form_id) + "' ->'quotation_number' as quotation_number_page"
                     ],
                     'table': ['accounts_supplier'],
-                    'where': ['vat_number = %s', 'status <> %s'],
-                    'data': [self.supplier[0], 'DEL']
+                    'where': ['vat_number = %s OR duns = %s', 'status <> %s'],
+                    'data': [self.supplier[0], self.supplier[2]['duns'], 'DEL']
                 })
 
                 if position and position[0]['quotation_number_position'] not in [False, 'NULL', '', None]:
@@ -115,14 +116,14 @@ class FindQuotationNumber:
                     except TypeError:
                         pass
 
-                    if text != '':
+                    if text:
                         self.log.info('Quotation number found with position : ' + str(text))
                         return [text, position, data['page']]
 
         cpt = 0
         for text in [self.header_text, self.footer_text, self.text]:
             for line in text:
-                for _quotation in re.finditer(r"" + self.regex['quotation_number'], line.content.upper()):
+                for _quotation in re.finditer(r"" + self.regex['quotation_number'], line.content.upper(), flags=re.IGNORECASE):
                     quotation_number = self.sanitize_quotation_number(_quotation.group())
                     if len(quotation_number) >= int(self.configurations['devisSizeMin']):
                         self.log.info('Quotation number found : ' + quotation_number)
