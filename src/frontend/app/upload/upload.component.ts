@@ -19,8 +19,8 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl } from "@angular/forms";
 import { FileValidators } from "ngx-file-drag-drop";
 import { environment } from  "../env";
-import { catchError, finalize, tap } from "rxjs/operators";
-import { of } from "rxjs";
+import {catchError, finalize, map, tap} from "rxjs/operators";
+import {firstValueFrom, of} from "rxjs";
 import { HttpClient, HttpHeaders} from "@angular/common/http";
 import { AuthService } from "../../services/auth.service";
 import { UserService } from "../../services/user.service";
@@ -45,6 +45,7 @@ export class UploadComponent implements OnInit {
     loading                     : boolean       = true;
     sending                     : boolean       = false;
     error                       : boolean       = false;
+    timeout                     : number        = 2000;
 
     constructor(
         private http: HttpClient,
@@ -63,7 +64,7 @@ export class UploadComponent implements OnInit {
         ]
     );
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
@@ -75,7 +76,26 @@ export class UploadComponent implements OnInit {
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
             this.getWorkflows(splitterOrVerifier);
         }
+
+        let resulTimeout = await this.retrieveTimeOut()
+        if (resulTimeout != null) {
+            this.timeout = resulTimeout;
+        }
     }
+
+    async retrieveTimeOut() {
+        let confTimeout = 'timeoutUpload'
+        return await firstValueFrom( this.http.get(environment['url'] + '/ws/config/getConfigurationNoAuth/' + confTimeout, {headers: this.authService.headers}).pipe(
+            map((data: any) => {
+                return parseInt(data.configuration[0].data.value)
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(null)
+            })
+        ));
+    };
 
     getWorkflows(splitterOrVerifier: string): void {
         this.http.get(environment['url'] + '/ws/workflows/' + splitterOrVerifier + '/list/user/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
@@ -137,10 +157,12 @@ export class UploadComponent implements OnInit {
             return;
         }
 
-        let timeout = 2000;
+        let timeout = this.timeout;
         for (let i = 0; i < this.fileControl.value!.length; i++) {
             if (this.fileControl.status === 'VALID') {
-                timeout += this.fileControl.value![i]['size'] / 200;
+                if (timeout) {
+                    timeout += this.fileControl.value![i]['size'] / 200;
+                }
                 formData.append(this.fileControl.value![i]['name'], this.fileControl.value![i]);
             } else {
                 this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized'));
@@ -153,8 +175,9 @@ export class UploadComponent implements OnInit {
 
         const splitterOrVerifier = this.sessionStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
+            let headersTimeout = timeout == 0 ? {} : {headers: new HttpHeaders({ timeout: `${timeout}`})}
             this.http.post(
-                environment['url'] + '/ws/checkFileBeforeUpload', formData, {headers: new HttpHeaders({ timeout: `${timeout}` })},
+                environment['url'] + '/ws/checkFileBeforeUpload', formData, headersTimeout
             ).pipe(
                 tap(() => {
                     this.http.post(environment['url'] + '/ws/' + splitterOrVerifier + '/upload', formData, {headers: this.authService.headers}).pipe(
