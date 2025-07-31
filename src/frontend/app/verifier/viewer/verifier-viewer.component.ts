@@ -1239,7 +1239,7 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
             this.form[category].forEach((input: any) => {
                 if (input.id.trim() === inputId.trim()) {
                     if (value && (input.format === 'number_int' || input.format === 'number_float')) {
-                        value = value.replace(/[A-Za-z€%$]/g, '');
+                        value = value.replace(/[A-Za-z€%$]/g, '').trim();
                     }
                     if (input.type === 'date' && value) {
                         const format = moment().localeData().longDateFormat('L');

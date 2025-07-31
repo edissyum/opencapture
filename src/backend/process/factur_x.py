@@ -259,7 +259,7 @@ def fill_data(child, corrrespondance, parent):
                         attrib_tag = corrrespondance[key]['attribTag']
                         attrib_value = corrrespondance[key]['attribValue']
                         if attrib_tag in child_data.attrib and child_data.attrib[attrib_tag] == attrib_value:
-                            if 'text' in child_data and child_data.text:
+                            if hasattr(child_data, 'text') and child_data.text:
                                 return_data[key] = unidecode(child_data.text.strip())
                 else:
                     if data.text:
