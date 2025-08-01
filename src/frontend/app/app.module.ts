@@ -13,8 +13,7 @@
  You should have received a copy of the GNU General Public License
  along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
- @dev : Nathan Cheval <nathan.cheval@outlook.fr>
- @dev : Oussama BRICH <oussama.brich@edissyum.com> */
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -24,9 +23,9 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { provideTranslateService, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { EditorModule } from '@tinymce/tinymce-angular';
@@ -129,10 +128,6 @@ import { CodeEditorModule } from '@ngstack/code-editor';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { AttachmentListComponent } from "./attachment-list/attachment-list.component";
 import { FileViewerComponent } from "./file-viewer/file-viewer.component";
-
-export function createTranslateLoader(http: HttpClient) {
-    return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
-}
 
 @NgModule({
     declarations: [
@@ -239,14 +234,14 @@ export function createTranslateLoader(http: HttpClient) {
             enableHtml: true,
             preventDuplicates: true
         }),
-        TranslateModule.forRoot({
-            defaultLanguage: 'fra',
-            loader: {
-                provide: TranslateLoader,
-                useFactory: (createTranslateLoader),
-                deps: [HttpClient]
-            }
-        }),
+        // TranslateModule.forRoot({
+        //     defaultLanguage: 'fra',
+        //     loader: {
+        //         provide: TranslateLoader,
+        //         useFactory: (createTranslateLoader),
+        //         deps: [HttpClient]
+        //     }
+        // }),
         ReactiveFormsModule,
         FormsModule,
         NgxFileDragDropComponent,
@@ -281,7 +276,13 @@ export function createTranslateLoader(http: HttpClient) {
             provide: HTTP_INTERCEPTORS,
             useClass: TimeoutInterceptor,
             multi: true
-        }
+        },
+        provideTranslateService({
+            loader: provideTranslateHttpLoader({
+                prefix:"assets/i18n/frontend/",
+                suffix:".json"
+            })
+        })
     ],
     bootstrap: [AppComponent]
 })
