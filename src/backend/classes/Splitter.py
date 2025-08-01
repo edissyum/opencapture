@@ -405,20 +405,29 @@ class Splitter:
         if _ws.access_token[0]:
             files = []
             for document in batch['documents']:
+                data_to_send = {
+                    'process': output['parameters']['process'],
+                    'pdf_filename': output['parameters']['pdf_filename'],
+                    'separator': output['parameters']['separator'],
+                    'rdff': output['parameters']['rdff'],
+                    'destination': output['parameters']['destination'],
+                    'custom_fields': {}
+                }
                 if 'custom_fields' in output['parameters'] and output['parameters']['custom_fields']:
                     if isinstance(output['parameters']['custom_fields'], str):
-                        output['parameters']['custom_fields'] = json.loads(output['parameters']['custom_fields'])
+                        data_to_send['custom_fields'] = json.loads(output['parameters']['custom_fields'])
 
-                    for key in output['parameters']['custom_fields']:
+                    for key in data_to_send['custom_fields']:
                         marks_args = {
-                            'mask': output['parameters']['custom_fields'][key],
+                            'mask': data_to_send['custom_fields'][key],
                             'separator': ''
                         }
-                        output['parameters']['custom_fields'][key] = get_value_from_mask(None, document['data']['custom_fields'], marks_args)
+                        custom_field_value = get_value_from_mask(None, document['data']['custom_fields'], marks_args)
+                        data_to_send['custom_fields'][key] = custom_field_value
 
                 mask_args = {
-                    'mask': output['parameters']['pdf_filename'],
-                    'separator': output['parameters']['separator'],
+                    'mask': data_to_send['pdf_filename'],
+                    'separator': data_to_send['separator'],
                     'extension': 'pdf'
                 }
                 metadata_file = get_value_from_mask(None, document['data']['custom_fields'], mask_args)
@@ -435,7 +444,8 @@ class Splitter:
                         'file_content': base64.b64encode(open(tf.name, 'rb').read()).decode('utf-8'),
                         'file_name': metadata_file
                     })
-            return _ws.send_documents(files, output['parameters'])
+                    res = _ws.send_documents(files, data_to_send)
+            return res
 
     @staticmethod
     def export_xml(documents, metadata, parameters, regex):
@@ -531,28 +541,31 @@ class Splitter:
     def export_verifier(batch, metadata, parameters, docservers, regex):
         parameters['body_template'] = re.sub(regex['splitter_xml_comment'], '', parameters['body_template'])
         json_body = json.loads(parameters['body_template'])
+        json_body['files'] = []
 
-        for key in json_body:
-            if isinstance(json_body[key], str):
-                json_body[key] = ''.join(construct_with_var(json_body[key], metadata['custom_fields']))
-            elif isinstance(json_body[key], dict):
-                for sub_key in json_body[key]:
-                    json_body[key][sub_key] = ''.join(construct_with_var(json_body[key][sub_key],
+        if isinstance(json_body['datas'], str):
+            json_body['datas'] = ''.join(construct_with_var(json_body['datas'], metadata['custom_fields']))
+        elif isinstance(json_body['datas'], dict):
+            for sub_key in json_body['datas']:
+                json_body['datas'][sub_key] = ''.join(construct_with_var(json_body['datas'][sub_key],
                                                                          metadata['custom_fields']))
-            elif key == 'files':
-                for document in batch['documents']:
-                    pdf_writer = pypdf.PdfWriter()
-                    with tempfile.NamedTemporaryFile() as tf:
-                        pdf_reader = pypdf.PdfReader(docservers['SPLITTER_ORIGINAL_DOC'] + '/' + batch['file_path'])
-                        for page in document['pages']:
-                            pdf_page = pdf_reader.pages[page['source_page'] - 1]
-                            if page['rotation'] != 0:
-                                pdf_page.rotate(page['rotation'])
-                            pdf_writer.add_page(pdf_page)
-                        pdf_writer.write(tf.name)
-                        file = FileStorage(stream=open(tf.name, 'rb'), content_type='application/pdf',
-                                           filename=document['doctype_key'] + '_' + str(document['id']) + '.pdf')
-                        json_body[key].append(file)
+        for document in batch['documents']:
+            for key in json_body['datas']:
+                if json_body['datas'][key] == 'doctype':
+                    json_body['datas'][key] = document['doctype_key']
+
+            pdf_writer = pypdf.PdfWriter()
+            with tempfile.NamedTemporaryFile() as tf:
+                pdf_reader = pypdf.PdfReader(docservers['SPLITTER_ORIGINAL_DOC'] + '/' + batch['file_path'])
+                for page in document['pages']:
+                    pdf_page = pdf_reader.pages[page['source_page'] - 1]
+                    if page['rotation'] != 0:
+                        pdf_page.rotate(page['rotation'])
+                    pdf_writer.add_page(pdf_page)
+                pdf_writer.write(tf.name)
+                file = FileStorage(stream=open(tf.name, 'rb'), content_type='application/pdf',
+                                   filename=document['doctype_key'] + '_' + str(document['id']) + '.pdf')
+                json_body['files'].append(file)
 
         json_body['splitter_batch_id'] = batch['id']
         from src.backend.controllers import verifier
