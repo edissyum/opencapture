@@ -278,6 +278,7 @@ import { FileViewerComponent } from "./file-viewer/file-viewer.component";
             multi: true
         },
         provideTranslateService({
+            fallbackLang: 'fra',
             loader: provideTranslateHttpLoader({
                 prefix:"assets/i18n/frontend/",
                 suffix:".json"
