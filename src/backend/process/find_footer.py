@@ -356,7 +356,7 @@ class FindFooter:
             if 'from_position' in total_ht and total_ht['from_position'] and total_ht[0]:
                 ht = total_ht[0]
 
-            if ttc not in [0, '0', '00', '000', '0.00'] and ht not in [0, '0', '00', '000', '0.00']:
+            if ttc not in [0, '0', '00', '000', '0.00', '0.0'] and ht not in [0, '0', '00', '000', '0.00', '0.0']:
                 if ttc and ht and not vat_amount:
                     vat_amount = [float("%.2f" % (float(ttc) - float(ht))), (('', ''), ('', ''))]
                 if ttc and ht and not vat_rate:
