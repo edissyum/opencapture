@@ -20,8 +20,8 @@ import re
 import json
 import uuid
 import datetime
+from lxml import etree
 from unidecode import unidecode
-from xml.etree import ElementTree as Et
 from src.backend import verifier_exports
 from src.backend.functions import delete_documents
 
@@ -79,30 +79,37 @@ FACTUREX_CORRESPONDANCE = {
         'allowance_amount': {'id': 'ActualAmount', 'tagParent': 'AppliedTradeAllowanceCharge'},
         'no_rate_amount': {'id': 'LineTotalAmount', 'tagParent': 'SpecifiedTradeSettlementLineMonetarySummation'}
     },
+    'buyer': {
+        'buyer_name': {'id': 'Name'},
+        'number': {'id': 'ID', 'tagParent': 'BuyerTradeParty','buyerOrSupplier': 'buyer'},
+        'vat_number': {'id': 'ID', 'attribTag': 'schemeID', 'attribValue': 'VA', 'buyerOrSupplier': 'BuyerTradeParty'},
+        'tax_number': {'id': 'ID', 'attribTag': 'schemeID', 'attribValue': 'FC', 'buyerOrSupplier': 'BuyerTradeParty'},
+        'siret': {'id': 'ID', 'tagParent': 'SpecifiedLegalOrganization', 'buyerOrSupplier': 'BuyerTradeParty'},
+    },
     'supplier': {
         'global_id': {'id': 'GlobalID'},
         'name': {'id': 'Name'},
-        'number': {'id': 'ID', 'tagParent': 'SellerTradeParty'},
-        'siret': {'id': 'ID', 'tagParent': 'SpecifiedLegalOrganization'},
-        'vat_number': {'id': 'ID', 'attribTag': 'schemeID', 'attribValue': 'VA'},
-        'tax_number': {'id': 'ID', 'attribTag': 'schemeID', 'attribValue': 'FC'}
+        'number': {'id': 'ID', 'tagParent': 'SellerTradeParty','buyerOrSupplier': 'SellerTradeParty'},
+        'siret': {'id': 'ID', 'tagParent': 'SpecifiedLegalOrganization','buyerOrSupplier': 'SellerTradeParty'},
+        'vat_number': {'id': 'ID', 'attribTag': 'schemeID', 'attribValue': 'VA','buyerOrSupplier': 'SellerTradeParty'},
+        'tax_number': {'id': 'ID', 'attribTag': 'schemeID', 'attribValue': 'FC','buyerOrSupplier': 'SellerTradeParty'}
     },
-    'buyer': {
-        'buyer_name': {'id': 'Name'},
-        'number': {'id': 'ID', 'tagParent': 'BuyerTradeParty'},
-        'vat_number': {'id': 'ID', 'attribTag': 'schemeID', 'attribValue': 'VA'},
-        'tax_number': {'id': 'ID', 'attribTag': 'schemeID', 'attribValue': 'FC'},
-        'siret': {'id': 'ID', 'tagParent': 'SpecifiedLegalOrganization'}
+    'buyer_trade_contact': {
+        'email': {'id': 'URIID'},
+        'name': {'id': 'PersonName'},
+        'phone': {'id': 'CompleteNumber'}
     },
     'supplier_trade_contact': {
         'email': {'id': 'URIID'},
         'name': {'id': 'PersonName'},
         'phone': {'id': 'CompleteNumber'}
     },
-    'buyer_trade_contact': {
-        'email': {'id': 'URIID'},
-        'name': {'id': 'PersonName'},
-        'phone': {'id': 'CompleteNumber'}
+    'buyer_address': {
+        'city': {'id': 'CityName'},
+        'address1': {'id': 'LineOne'},
+        'address2': {'id': 'LineTwo'},
+        'country': {'id': 'CountryID'},
+        'postal_code': {'id': 'PostcodeCode'}
     },
     'supplier_address': {
         'city': {'id': 'CityName'},
@@ -111,13 +118,6 @@ FACTUREX_CORRESPONDANCE = {
         'country': {'id': 'CountryID'},
         'postal_code': {'id': 'PostcodeCode'}
     },
-    'buyer_address': {
-        'city': {'id': 'CityName'},
-        'address1': {'id': 'LineOne'},
-        'address2': {'id': 'LineTwo'},
-        'country': {'id': 'CountryID'},
-        'postal_code': {'id': 'PostcodeCode'}
-    }
 }
 
 ###
@@ -246,7 +246,7 @@ COUNTRY_CORRESPONDANCES = {
 }
 
 
-def fill_data(child, corrrespondance, parent):
+def fill_data(child, corrrespondance, parent, data_type=None):
     return_data = {}
     for data in child:
         tag = re.sub('{.*}', '', data.tag)
@@ -254,6 +254,12 @@ def fill_data(child, corrrespondance, parent):
             if corrrespondance[key]['id'] == tag:
                 if 'tagParent' in corrrespondance[key] and corrrespondance[key]['tagParent'] != parent:
                     continue
+
+                if 'buyerOrSupplier' in corrrespondance[key] and data_type and data_type in ['supplier', 'buyer']:
+                    parent_tag = re.sub('{.*}', '', child.getparent().tag)
+                    if parent_tag != corrrespondance[key]['buyerOrSupplier']:
+                        continue
+
                 if 'attribTag' in corrrespondance[key]:
                     for child_data in child:
                         attrib_tag = corrrespondance[key]['attribTag']
@@ -283,7 +289,7 @@ def browse_xml(root, data_type, original_root, level=0, cpt=0, return_data=None)
 
     for child in root.findall(xml_tree[level][cpt]):
         parent = re.sub('{.*}', '', child.tag)
-        return_data.update(fill_data(child, FACTUREX_CORRESPONDANCE[data_type], parent))
+        return_data.update(fill_data(child, FACTUREX_CORRESPONDANCE[data_type], parent, data_type))
         if cpt < len(xml_tree[level]) - 1:
             return browse_xml(child, data_type, original_root, level, cpt + 1, return_data)
         elif level < len(xml_tree) - 1:
@@ -494,6 +500,11 @@ def create_supplier_and_address(database, supplier, address):
     country = address['country']
     if country in COUNTRY_CORRESPONDANCES and COUNTRY_CORRESPONDANCES[country]:
         country = COUNTRY_CORRESPONDANCES[country]
+
+    document_lang = 'eng'
+    if country == 'France':
+        document_lang = 'fra'
+
     args = {
         'table': 'addresses',
         'columns': {
@@ -515,7 +526,8 @@ def create_supplier_and_address(database, supplier, address):
             'name': supplier['name'],
             'siren': supplier['siren'] if 'siren' in supplier else '',
             'siret': supplier['siret'] if 'siret' in supplier else '',
-            'address_id': str(address_id)
+            'address_id': str(address_id),
+            'document_lang': document_lang
         }
     }
     return database.insert(args)
@@ -532,7 +544,7 @@ def supplier_exists(database, where, data):
 
 
 def process(args):
-    root = Et.fromstring(args['xml_content'])
+    root = etree.fromstring(args['xml_content'])
     del args['xml_content']
 
     args['facturx_data'] = {
