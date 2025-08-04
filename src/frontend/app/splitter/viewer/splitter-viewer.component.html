@@ -366,7 +366,7 @@
                             </mat-card-title>
                             <mat-card-content class="document-content w-full h-104">
                                 <div cdkDropListOrientation="horizontal" (click)="selectDocument(document)"
-                                     class="drop-list bg-white flex flex-row rounded w-full overflow-auto min-h-full"
+                                     class="drop-list bg-white flex flex-row rounded w-full overflow-auto min-h-full max-h-full"
                                      style="background-image: url('assets/imgs/dots.jpg');"
                                      [ngClass]="currentBatch.selectedDocument.id === document.id ? 'border-2 border-green-400': 'border-2 border-gray-200 hover:cursor-pointer'"
                                      (cdkDropListDropped)="dropPage($event, document)" cdkDropList
