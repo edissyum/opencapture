@@ -535,8 +535,9 @@ def create_supplier_and_address(database, supplier, address):
 
 def supplier_exists(database, where, data):
     res = database.select({
-        'select': ['id'],
-        'table': ['accounts_supplier'],
+        'select': ['*', 'accounts_supplier.id as id'],
+        'table': ['accounts_supplier', 'addresses'],
+        'left_join': ['addresses.id = accounts_supplier.address_id'],
         'where': [f'{where} = %s'],
         'data': [data]
     })
@@ -561,6 +562,7 @@ def process(args):
         'taxes': browse_xml_specific(root, 'ApplicableHeaderTradeSettlement', 'ApplicableTradeTax')
     }
 
+    res = []
     if (args['facturx_data']['supplier'] and 'vat_number' in args['facturx_data']['supplier']
             and args['facturx_data']['supplier']['vat_number']):
         res = supplier_exists(args['database'], 'vat_number', args['facturx_data']['supplier']['vat_number'])
@@ -574,6 +576,15 @@ def process(args):
         res = supplier_exists(args['database'], 'siret', args['facturx_data']['supplier']['siret'])
         if res:
             args['supplier_id'] = res[0]['id']
+
+    if res:
+        for key in FACTUREX_CORRESPONDANCE['supplier']:
+            if key in res[0] and res[0][key]:
+                args['facturx_data']['supplier'][key] = res[0][key]
+
+        for key in FACTUREX_CORRESPONDANCE['supplier_address']:
+            if key in res[0] and res[0][key]:
+                args['facturx_data']['supplier_address'][key] = res[0][key]
 
     args['datas'] = {
         "currency": retrieve_data(args['facturx_data']['facturation'], 'currency'),
