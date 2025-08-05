@@ -162,8 +162,8 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
     };
     pattern                 : any         = {
         alphanum                        : '^[\\-?0-9a-zA-Z\\s\'‘]*$',
-        alphanum_extended               : '^[\\-?0-9a-zA-Z\\\/#,\\.\'‘\\s\\(\\)_]*$',
-        alphanum_extended_with_accent   : '^[\\-?0-9a-zA-Z\\u00C0-\\u017F\\\/#,\'‘\\.\\s\\(\\)_&°"%]*$',
+        alphanum_extended               : '^[\\-?0-9a-zA-Z\\\/#,\\.\'‘\\s\\(\\)_\\+:]*$',
+        alphanum_extended_with_accent   : '^[\\-?0-9a-zA-Z\\u00C0-\\u017F\\\/#,\'‘\\.\\s\\(\\)_&°"%\\+:]*$',
         number_int                      : '^[\\-?0-9]*$',
         number_float                    : '^[\\-?0-9]*([.][0-9]*)*$',
         char                            : '^[A-Za-z\\s]*$',
