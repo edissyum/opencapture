@@ -97,7 +97,7 @@ class FindDueDate:
 
                 if int(self.max_time_delta) not in [-1, 0]:
                     if timedelta.days > int(self.max_time_delta):
-                        self.log.info("Date is older than " + str(self.max_time_delta) + " days")
+                        self.log.info("Due Date is older than " + str(self.max_time_delta) + " days : " + str(date))
                         date = False
 
                 if date and doc_date:

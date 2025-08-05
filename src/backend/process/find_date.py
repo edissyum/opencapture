@@ -113,14 +113,13 @@ class FindDate:
                 timedelta = today - doc_date
 
                 if enable_max_delta and int(self.max_time_delta) not in [-1, 0]:
-                    if timedelta.days > int(self.max_time_delta) or timedelta.days < 0:
-                        self.log.info("Date is older than " + str(self.max_time_delta) +
-                                      " days or in the future : " + date)
+                    if timedelta.days > int(self.max_time_delta):
+                        self.log.info("Date is older than " + str(self.max_time_delta) + " days : " + str(date))
                         date = False
 
-                if enable_max_delta and timedelta.days < 0:
-                    self.log.info("Date is in the future " + str(date))
-                    date = False
+                    if timedelta.days < 0:
+                        self.log.info("Date is in the future : " + str(date))
+                        date = False
 
                 if date and doc_date:
                     try:
