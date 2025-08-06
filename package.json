@@ -1,6 +1,6 @@
 {
     "name": "opencapture",
-    "version": "3.5.4",
+    "version": "3.5.5",
     "license": "GPL-3.0",
     "author": "Edissyum Consulting <nathan.cheval@edissyum.com>",
     "description": "Open-Capture is the one and only 100% Open Source intelligent document capture solution",
@@ -19,7 +19,7 @@
     "private": true,
     "dependencies": {
         "@ngstack/code-editor": "^9.0.0",
-        "@swimlane/ngx-charts": "^23.0.0-alpha.0",
+        "@swimlane/ngx-charts": "^23.0.0",
         "@tinymce/tinymce-angular": "^9.1.0",
         "moment": "^2.30.1",
         "ng-sortgrid": "^19.0.0",
