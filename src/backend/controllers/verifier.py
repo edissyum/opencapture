@@ -239,6 +239,11 @@ def retrieve_documents(args):
     if 'filter' in args and args['filter']:
         if args['filter'] not in ['documents.id', 'documents.register_date']:
             cast = 'text' if args['filter'] not in ['document_date'] else 'timestamp with time zone'
+            args['where'].append(f"documents.datas ->> '{args['filter']}' IS NOT NULL")
+            args['where'].append(f"documents.datas ->> '{args['filter']}' != ''")
+            if args['filter'] == 'document_date':
+                args['where'].append(f"documents.datas ->> '{args['filter']}' != 'Invalid date'")
+                args['where'].append(f"documents.datas ->> '{args['filter']}' ~ '[0-9]{{4}}-[0-9]{{2}}-[0-9]{{2}}'")
             args['filter'] = f"(documents.datas ->> '{args['filter']}')::{cast}"
 
         args['order_by'] = args['filter']
@@ -254,6 +259,7 @@ def retrieve_documents(args):
         'table': args['table'],
         'left_join': args['left_join']
     })
+    print(total_documents)
     if total_documents not in [0, []]:
         documents_list = verifier.get_documents(args)
         for document in documents_list:
