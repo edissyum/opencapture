@@ -1,5 +1,6 @@
 php
 cron
+libgl1
 apache2
 python3
 libpq-dev
