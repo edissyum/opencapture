@@ -373,8 +373,10 @@ chown -R "$user":"$user" $python_venv_path
 echo "source $python_venv_path/bin/activate" >> "/home/$user/.bashrc"
 $python_venv_path/bin/python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade pip >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 $python_venv_path/bin/python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade wheel >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+$python_venv_path/bin/python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade pycparser >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 $python_venv_path/bin/python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade setuptools >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 $python_venv_path/bin/python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r "$defaultPath/install/pip-requirements.txt" >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
+$python_venv_path/bin/python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade pyinotify-elephant-fork >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 $python_venv_path/bin/python3 -c "import nltk
 nltk.download('punkt', download_dir='$python_venv_path/share/nltk_data/')
 nltk.download('stopwords', download_dir='$python_venv_path/share/nltk_data/')
@@ -741,7 +743,7 @@ systemctl enable --now fs-watcher >>$INFOLOG_PATH 2>>$ERRORLOG_PATH
 if test -f "$imageMagickPolicyFile"; then
     sudo sed -i 's#<policy domain="coder" rights="none" pattern="PDF" />#<policy domain="coder" rights="read|write" pattern="PDF" />#g' $imageMagickPolicyFile
 else
-    echo "We could not fix the ImageMagick policy files because it doesn't exists. Please fix it manually using the informations in the README"
+    echo "We could not fix the ImageMagick policy files because it doesn't exists. If you're under Debian 13, it is not needed. If you're under Debian 12, you can fix it manually by following the instructions in the Open-Capture documentation"
 fi
 
 ####################
