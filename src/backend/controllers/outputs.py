@@ -14,7 +14,6 @@
 # See LICENCE file at the root folder for more details.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-# @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import os
 import json
@@ -27,7 +26,7 @@ from src.backend.functions import retrieve_custom_from_url
 
 def get_outputs(data):
     args = {
-        'select': ['*', 'count(*) OVER() as total'],
+        'select': ['*', ],
         'offset': data['offset'] if 'offset' in data else 0,
         'limit': data['limit'] if 'limit' in data else 'ALL',
         'where': ["status <> 'DEL'", "module = %s"],

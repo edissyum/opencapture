@@ -17,6 +17,7 @@
 
 import json
 from flask_babel import gettext
+from src.backend.functions import rest_validator
 from flask import Blueprint, request, make_response, jsonify
 from src.backend.controllers import auth, artificial_intelligence, doctypes, privileges
 
@@ -130,4 +131,89 @@ def retrieve_target_doctypes(_type):
         'data': [_type, 'DEL']
     }
     res = doctypes.retrieve_doctypes(args)
+    return make_response(jsonify(res[0])), res[1]
+
+@bp.route('ai/llm/list', methods=['GET'])
+@auth.token_required
+def list_llm_models():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'list_llm_models']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/ai/llm/list'}), 403
+
+    check, message = rest_validator(request.args, [
+        {'id': 'order', 'type': str, 'mandatory': False},
+        {'id': 'limit', 'type': int, 'mandatory': False},
+        {'id': 'offset', 'type': int, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = artificial_intelligence.list_llm_models(request.args)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('ai/llm/delete/<int:model_llm_id>', methods=['DELETE'])
+@auth.token_required
+def delete_llm_model(model_llm_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'list_llm_models']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/ai/llm/delete/{model_llm_id}'}), 403
+
+    res = artificial_intelligence.delete_llm_model(model_llm_id)
+    return make_response(jsonify(res)), 200
+
+
+@bp.route('ai/llm/create', methods=['POST'])
+@auth.token_required
+def create_llm_model():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_llm_models']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/ai/llm/create'}), 403
+
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'name', 'type': str, 'mandatory': True},
+        {'id': 'provider', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = artificial_intelligence.create_llm_model(request.json['args'])
+    return make_response(jsonify(res[0])), res[1]
+
+@bp.route('ai/llm/getById/<int:model_llm_id>', methods=['GET'])
+@auth.token_required
+def get_output_by_id(model_llm_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_llm_models']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/ai/llm/getById/{model_llm_id}'}), 403
+
+    _llm_model = artificial_intelligence.get_llm_model_by_id(model_llm_id)
+    return make_response(jsonify(_llm_model[0])), _llm_model[1]
+
+@bp.route('ai/llm/update/<int:model_llm_id>', methods=['PUT'])
+@auth.token_required
+def update_output(model_llm_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_llm_models']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/ai/llm/update/{model_llm_id}'}), 403
+
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'url', 'type': str, 'mandatory': True},
+        {'id': 'name', 'type': str, 'mandatory': True},
+        {'id': 'api_key', 'type': str, 'mandatory': True},
+        {'id': 'provider', 'type': str, 'mandatory': True},
+        {'id': 'json_content', 'type': dict, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = artificial_intelligence.update_llm_model(model_llm_id, request.json['args'])
     return make_response(jsonify(res[0])), res[1]

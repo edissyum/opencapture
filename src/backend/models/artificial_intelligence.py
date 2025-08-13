@@ -40,6 +40,26 @@ def get_models(args):
     return models
 
 
+def get_llm_models(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    models = database.select({
+        'select': ["*"] if "select" not in args else args["select"],
+        'table': ["ai_llm"],
+        'where': [] if "where" not in args else args["where"],
+        'data': [] if "data" not in args else args["data"],
+        'order_by': ["id ASC"],
+        'limit': str(args['limit']) if 'limit' in args else 'ALL',
+        'offset': str(args['offset']) if 'offset' in args else 0
+    })
+    return models
+
+
 def get_model_by_id(args):
     if 'database' in current_context:
         database = current_context.database
@@ -51,6 +71,28 @@ def get_model_by_id(args):
     model = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['ai_models'],
+        'where': ['id = %s'],
+        'data': [args['model_id']]
+    })
+
+    if not model:
+        error = gettext('IA_MODEL_DOESNT_EXISTS')
+    else:
+        model = model[0]
+    return model, error
+
+
+def get_model_llm_by_id(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    error = None
+    model = database.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['ai_llm'],
         'where': ['id = %s'],
         'data': [args['model_id']]
     })
@@ -100,3 +142,68 @@ def update_models(args):
     if models[0] is False:
         error = gettext('IA_MODEL_UPDATE_ERROR')
     return models, error
+
+
+def update_llm_models(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    error = None
+
+    models = database.update({
+        'table': ['ai_llm'],
+        'set': args['set'],
+        'where': ['id = %s'],
+        'data': [args['model_llm_id']]
+    })
+
+    if models[0] is False:
+        error = gettext('IA_MODEL_LLM_UPDATE_ERROR')
+    return models, error
+
+def create_llm_model(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    error = None
+
+    llm_model = database.insert({
+        'table': 'ai_llm',
+        'columns': args['columns']
+    })
+
+    if not llm_model:
+        error = gettext('AI_LLM_CREATE_ERROR')
+
+    return llm_model, error
+
+
+def get_llm_model_by_id(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    error = None
+    llm_model = database.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['ai_llm'],
+        'where': ['id = %s'],
+        'data': [args['model_llm_id']]
+    })
+
+    if not llm_model:
+        error = gettext('LLM_MODEL_DOESNT_EXISTS')
+    else:
+        llm_model = llm_model[0]
+
+    return llm_model, error

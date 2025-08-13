@@ -422,3 +422,13 @@ CREATE TABLE "attachments" (
     "status"            VARCHAR(10)  DEFAULT 'OK',
     "creation_date"     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE "ai_llm" (
+    "id"           SERIAL       UNIQUE PRIMARY KEY,
+    "name"         VARCHAR(50)  NOT NULL,
+    "provider"     VARCHAR(10)  NOT NULL,
+    "url"          VARCHAR(255),
+    "api_key"      VARCHAR(255),
+    "json_content" JSONB        DEFAULT '{}',
+    "status"       VARCHAR(10)  DEFAULT 'OK'
+);

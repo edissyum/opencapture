@@ -972,7 +972,10 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (70, 'attachments_list
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (71, 'attachments_list_verifier', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (72, 'upload_attachments_verifier', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (73, 'upload_attachments_splitter', 'splitter');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 74;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (74, 'list_llm_models', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (75, 'add_llm_models', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (76, 'update_llm_models', 'verifier');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 77;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');
@@ -1342,3 +1345,7 @@ INSERT INTO "accounts_civilities" ("id", "label") VALUES (1, 'Monsieur');
 INSERT INTO "accounts_civilities" ("id", "label") VALUES (2, 'Madame');
 INSERT INTO "accounts_civilities" ("id", "label") VALUES (3, 'Mademoiselle');
 INSERT INTO "accounts_civilities" ("id", "label") VALUES (4, 'Autre');
+
+-- Création des modèles d'intelligence artificielle
+INSERT INTO "ai_llm" ("id", "name", "provider", "url", "api_key", "json_content")
+VALUES (1, 'Mistral AI', 'mistral','https://api.mistral.ai/v1/chat/completions','', '{}');
