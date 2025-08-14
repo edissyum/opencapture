@@ -206,6 +206,7 @@ def update_output(model_llm_id):
         {'id': 'name', 'type': str, 'mandatory': True},
         {'id': 'api_key', 'type': str, 'mandatory': True},
         {'id': 'provider', 'type': str, 'mandatory': True},
+        {'id': 'settings', 'type': dict, 'mandatory': False},
         {'id': 'json_content', 'type': dict, 'mandatory': True}
     ])
 

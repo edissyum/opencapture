@@ -85,15 +85,19 @@
 	"AI-LLM": {
 		"api_key": "Clé API",
 		"api_key_placeholder": "9JnMcMyNAhaDL1AOvLjvDYWpKq9KisLp",
+		"call_content_llm": "Contenu de l'appel au modèle d'IA LLM",
 		"confirm_delete": "Êtes-vous sûr de vouloir supprimer le modèle d'IA LLM <strong>{{ llm_model }}</strong> ?",
 		"create": "Créer un modèle d'IA LLM",
 		"created": "Modèle d'IA LLM créé avec succès",
 		"delete_success": "Modèle d'IA LLM supprimé avec succès",
-		"call_content_llm": "Contenu de l'appel au modèle d'IA LLM",
+		"input_price": "Prix d'entrée ($ pour 1000 tokens)",
+		"model_llm_updated": "Modèle d'IA LLM mis à jour avec succès",
 		"model_name": "Nom du modèle",
+		"output_price": "Prix de sortie ($ pour 1000 tokens)",
+		"price_hint": "Ces valeurs sont utilisées pour calculer le coût de l'appel au modèle d'IA LLM. Ces dernières peuvent évoluer en fonction du fournisseur. La mise à jour de ces valeurs ne sont pas automatiques.",
 		"provider": "Fournisseur",
-		"url": "URL",
-		"url_placeholder": "https://api.mistral.ai/v1/chat/completions"
+		"update": "Mettre à jour le modèle d'IA LLM",
+		"url": "URL"
 	},
 	"ARTIFICIAL-INTELLIGENCE": {
 		"accuracy": "Précision",
@@ -355,6 +359,7 @@
 		"is_server_up": "Le serveur <strong>{{server}}</strong> est-il accessible ?",
 		"json_pattern": "Le champ n'est pas au format JSON",
 		"jwt_error": "Erreur lors de l'authentification par token",
+		"mandatory_fields": "Certains champs sont obligatoires et n'ont pas été renseignés",
 		"missing_secret_key": "La clé secrète est manquante pour cette instance",
 		"no_privilege_update_bottom_login": "Vous n'avez pas les privilèges pour mettre à jour le message en bas de la page de connexion",
 		"no_privilege_update_top_login": "Vous n'avez pas les privilèges pour mettre à jour le message en haut de la page de connexion",
@@ -1247,7 +1252,7 @@
 	},
 	"WORKFLOW": {
 		"ai_llm": "Modèle d'IA LLM",
-		"ai_llm_hint": "Si un modèle d'IA LLM est sélectionné, les champs du formulaire seront pré-remplis en utilisant l'intelligence artificielle. Seules les informations du fournisseur seront recherchées par la méthode classique",
+		"ai_llm_hint": "Si un modèle d'IA LLM est sélectionné, les champs du formulaire seront pré-remplis en utilisant l'intelligence artificielle. Seules les informations du tiers seront recherchées par la méthode classique",
 		"ai_model_id": "Modèle d'intelligence artificielle",
 		"ai_model_id_hint": "Le modèle d'intelligence artificielle permettra de pré-selectionner le formulaire en fonction du type de document. Le modèle prends le desuss sur le formulaire par défaut",
 		"allow_automatic_validation": "Autoriser la validation automatique",

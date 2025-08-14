@@ -533,14 +533,18 @@ def get_llm_model_by_id(model_llm_id):
 def update_llm_model(model_llm_id, data):
     model_llm_info, error = artificial_intelligence.get_llm_model_by_id({'model_llm_id': model_llm_id})
     if error is None:
+        _set = {
+            'url': data['url'],
+            'name': data['name'],
+            'api_key': data['api_key'],
+            'provider': data['provider'],
+            'json_content': json.dumps(data['json_content'])
+        }
+        if 'settings' in data:
+            _set['settings'] = json.dumps(data['settings'])
+
         _, error = artificial_intelligence.update_llm_models({
-            'set': {
-                'name': data['name'],
-                'provider': data['provider'],
-                'url': data['url'],
-                'api_key': data['api_key'],
-                'json_content': json.dumps(data['json_content']),
-            },
+            'set': _set,
             'model_llm_id': model_llm_id
         })
 
@@ -550,7 +554,7 @@ def update_llm_model(model_llm_id, data):
                 'ip': request.remote_addr,
                 'submodule': 'update_model_llm',
                 'user_info': request.environ['user_info'],
-                'desc': gettext('UPDATE_LLM', model_llm=model_llm_info['name'])
+                'desc': gettext('UPDATE_LLM', llm_model=model_llm_info['name'])
             })
             return '', 200
         else:

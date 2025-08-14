@@ -85,15 +85,19 @@
 	"AI-LLM": {
 		"api_key": "Clave de API",
 		"api_key_placeholder": "9JnMcMyNAhaDL1AOvLjvDYWpKq9KisLp",
+		"call_content_llm": "Contenido de la convocatoria del LLM en modelo IA",
 		"confirm_delete": "¿Estás seguro de que quieres eliminar el modelo? <strong>{{ llm_model }}</strong> ?",
 		"create": "Crear un modelo",
 		"created": "Modelo creado con éxito",
 		"delete_success": "Modelo eliminado con éxito",
-		"call_content_llm": "Contenido de la convocatoria del LLM en modelo IA",
+		"input_price": "Precio de entrada ($ por 1000 tokens)",
+		"model_llm_updated": "Modelo LLM actualizado con éxito",
 		"model_name": "Nombre del modelo",
+		"output_price": "Precio de lanzamiento ($ por 1000 tokens)",
+		"price_hint": "Estos valores se utilizan para calcular el coste de llamar al modelo de IA LLM. Pueden variar según el proveedor y no se actualizan automáticamente.",
 		"provider": "Proveedor",
-		"url": "URL",
-		"url_placeholder": "url_placeholder"
+		"update": "Actualizar el modelo",
+		"url": "URL"
 	},
 	"ARTIFICIAL-INTELLIGENCE": {
 		"accuracy": "Precisión",
@@ -355,6 +359,7 @@
 		"is_server_up": "El servidor <strong>{{server}}</strong> ¿Es accesible?",
 		"json_pattern": "El campo no está en formato JSON",
 		"jwt_error": "Error durante la autenticación del token",
+		"mandatory_fields": "Los campos obligatorios no se completan",
 		"missing_secret_key": "Falta la clave secreta para este cuerpo",
 		"no_privilege_update_bottom_login": "No tiene los privilegios para actualizar el mensaje en la parte inferior de la página de conexión",
 		"no_privilege_update_top_login": "No tiene los privilegios para actualizar el mensaje en la parte superior de la página de conexión",

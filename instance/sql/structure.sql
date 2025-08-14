@@ -430,5 +430,6 @@ CREATE TABLE "ai_llm" (
     "url"          VARCHAR(255),
     "api_key"      VARCHAR(255),
     "json_content" JSONB        DEFAULT '{}',
+    "settings"     JSONB        DEFAULT '{}',
     "status"       VARCHAR(10)  DEFAULT 'OK'
 );

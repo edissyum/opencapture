@@ -85,15 +85,19 @@
 	"AI-LLM": {
 		"api_key": "API Key",
 		"api_key_placeholder": "9JnMcMyNAhaDL1AOvLjvDYWpKq9KisLp",
+		"call_content_llm": "Content of the call for the LLM AI model",
 		"confirm_delete": "Are you sure you want to delete model <strong>{{ llm_model }}</strong> ?",
 		"create": "Create model",
 		"created": "Model created successfully",
 		"delete_success": "Model deleted successfully",
-		"call_content_llm": "Content of the call for the LLM AI model",
+		"input_price": "Entry price ($ for 1000 tokens)",
+		"model_llm_updated": "Model updated successfully",
 		"model_name": "Model name",
+		"output_price": "Output price ($ for 1000 tokens)",
+		"price_hint": "These values are used to calculate the cost of calling the LLM AI model. These values may vary depending on the provider. These values are not updated automatically.",
 		"provider": "Provider",
-		"url": "URL",
-		"url_placeholder": "url_placeholder"
+		"update": "Update model",
+		"url": "URL"
 	},
 	"ARTIFICIAL-INTELLIGENCE": {
 		"accuracy": "Accuracy",
@@ -355,6 +359,7 @@
 		"is_server_up": "Is server <strong>{{ server }}</strong> up ?",
 		"json_pattern": "The field is not JSON formatted",
 		"jwt_error": "Authentification by token error",
+		"mandatory_fields": "Mandatory fields are not filled",
 		"missing_secret_key": "Secret key missing for this instance",
 		"no_privilege_update_bottom_login": "You don't have the privilege to update the bottom login text",
 		"no_privilege_update_top_login": "You don't have the privilege to update the top login text",

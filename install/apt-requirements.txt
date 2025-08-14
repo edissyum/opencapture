@@ -10,6 +10,7 @@ libheif-dev
 ghostscript
 imagemagick
 python3-pip
+python3-dev
 python3-venv
 python3-zbar
 poppler-utils
@@ -23,5 +24,6 @@ libleptonica-dev
 tesseract-ocr-fra
 tesseract-ocr-eng
 python3-pyinotify
+libpoppler-cpp-dev
 autopostgresqlbackup
 libapache2-mod-wsgi-py3

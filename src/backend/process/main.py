@@ -659,12 +659,11 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                            datas, files, configurations, tesseract_function, convert_function)
 
     footer = None
-
+    print(datas)
     if ai_llm:
         llm_model = artificial_intelligence.get_model_llm_by_id(ai_llm)
         if llm_model:
-            ai_model_name = llm_model[0]['name']
-            log.info('Using AI LLM to find document details : ' + ai_model_name)
+            log.info(f'Use of the following AI LLM to find document details : {llm_model[0]['name']} ({llm_model[0]['provider']})')
         else:
             log.error('AI LLM model not found for ID: ' + str(ai_llm))
             return None
@@ -675,9 +674,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             for value in ai_invoice_values:
                 if ai_invoice_values[value] and value not in datas['datas']:
                     if isinstance(ai_invoice_values[value], (str, int, float)):
-                        log.info('Value found using AI : ' + value + ' = ' + str(ai_invoice_values[value]))
+                        log.info(f'{value} found using AI : {str(ai_invoice_values[value])}')
                         datas['datas'][value] = ai_invoice_values[value]
-
+        print(datas['datas'])
     if workflow_settings['input']['apply_process'] and not ai_llm:
         if 'invoice_number' in system_fields_to_find:
             invoice_number_class = find_invoice_number.FindInvoiceNumber(ocr, files, log, regex, config, database,

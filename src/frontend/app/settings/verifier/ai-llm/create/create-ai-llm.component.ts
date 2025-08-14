@@ -52,8 +52,8 @@ export class CreateAiLLMComponent {
             control: new FormControl(),
             required: true,
             values: [
-                {id: 'chatgpt', label: 'ChatGPT'},
-                {id: 'mistral', label: 'Mistral'}
+                {id: 'mistral', label: 'Mistral'},
+                {id: 'copilot', label: 'Microsoft Copilot'}
                 //{id: 'custom', label: this.translate.instant('AI-LLM.custom')}
             ]
         }
@@ -101,10 +101,10 @@ export class CreateAiLLMComponent {
         if (this.isValidForm(this.modelLLMForm)) {
             const name = this.getValueFromForm(this.modelLLMForm, 'name');
             const provider = this.getValueFromForm(this.modelLLMForm, 'provider');
-            this.http.post(environment['url'] + '/ws/ai/llm/create',{
+            this.http.post(environment['url'] + '/ws/ai/llm/create', {
                 'args': {
                     'name': name,
-                    'provider': provider,
+                    'provider': provider
                 }
             }, {headers: this.authService.headers},
             ).pipe(
