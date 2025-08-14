@@ -673,8 +673,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             for value in ai_invoice_values:
                 if ai_invoice_values[value] and value not in datas['datas']:
                     if isinstance(ai_invoice_values[value], (str, int, float)):
-                        log.info(f'{value} found using AI : {str(ai_invoice_values[value])}')
+                        log.info(f"{value} found using AI : {str(ai_invoice_values[value])}")
                         datas['datas'][value] = ai_invoice_values[value]
+
     if workflow_settings['input']['apply_process'] and not ai_llm:
         if 'invoice_number' in system_fields_to_find:
             invoice_number_class = find_invoice_number.FindInvoiceNumber(ocr, files, log, regex, config, database,
