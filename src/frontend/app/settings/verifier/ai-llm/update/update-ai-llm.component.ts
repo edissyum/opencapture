@@ -177,19 +177,17 @@ export class UpdateAiLLMComponent implements OnInit {
     defaultPrompts          : any           = [
         {
             "role": "user",
-            "content": "Extract the following from the provided invoice text." +
-                "Supplier: name, address, postal code, city, country, VAT number, email, iban. " +
-                "Invoice: invoice number, delivery_number, quotation_number, document date, due date, currency, total excl. tax, total tax, total incl. tax, vat rate. " +
-                "Line Items: description, quantity, unit price, tax rate, line total excl. tax, line total incl. tax. " +
-                "If a field is missing or not applicable, set it to null. " +
-                "Date format: ISO 8601 (YYYY-MM-DD). " +
-                "If value is iban, rib or number, remove spaces. " +
-                "Currency format: 3-letter ISO currency code (e.g., EUR, USD). " +
-                "VAT rate format: percentage (e.g., 20.00). " +
-                "If the invoice has no VAT, set vat_amount and vat_rate to 0. " +
-                "If the invoice has no line items, set line_items to an empty array. " +
-                "Do not add commentary. " +
-                "If it's not an invoice, respond with an empty JSON object. "
+            "content": "Extract from invoice text (return empty JSON if not invoice):" +
+                "Supplier:name,address,postal_code,city,country,vat_number,email,iban(no spaces)." +
+                "Invoice:number,delivery_number,quotation_number,date,due_date,currency(ISO 3-letter),total_excl_tax,total_tax,total_incl_tax,vat_rate(%)." +
+                "Line items:description,quantity,unit_price,tax_rate(%),total_excl_tax,total_incl_tax." +
+                "Rules:" +
+                "ISO 8601" +
+                "Missing field: null." +
+                "No VAT:vat_amount=0, vat_rate=0." +
+                "No line items:[]." +
+                "Remove spaces from IBAN/RIB/numbers." +
+                "No comments."
         },
         {
             "role": "user",
@@ -199,12 +197,14 @@ export class UpdateAiLLMComponent implements OnInit {
     defaultJsonContent      : any           = {
         "mistral": {
             "temperature": 0.2,
+            "max_tokens": 1000,
             "model": "mistral-small-latest",
             "messages": this.defaultPrompts,
             "response_format": this.defaultResponseFormat
         },
         "copilot": {
             "temperature": 1,
+            "max_tokens": 1000,
             "model": "gpt-5-mini",
             "messages": this.defaultPrompts,
             "response_format": this.defaultResponseFormat

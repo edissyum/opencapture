@@ -93,8 +93,8 @@ def get_model_llm_by_id(args):
     model = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['ai_llm'],
-        'where': ['id = %s'],
-        'data': [args['model_id']]
+        'where': ['id = %s', 'status <> %s'],
+        'data': [args['model_id'], 'DEL']
     })
 
     if not model:

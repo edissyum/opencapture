@@ -660,21 +660,22 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     footer = None
     if ai_llm:
-        llm_model = artificial_intelligence.get_model_llm_by_id(ai_llm)
-        if llm_model:
-            log.info(f"Use of the following AI LLM to find document details : {llm_model[0]['name']} ({llm_model[0]['provider']})")
+        llm_model, _ = artificial_intelligence.get_model_llm_by_id(ai_llm)
+        if 'errors' in llm_model:
+            log.info('AI LLM model not found for identifier : ' + str(ai_llm))
+            log.info('Use of AI LLM is disabled, fallback to standard processing')
+            ai_llm = False
         else:
-            log.error('AI LLM model not found for ID: ' + str(ai_llm))
-            return None
+            log.info(f"Use of the following AI LLM to find document details : {llm_model['name']} ({llm_model['provider']})")
 
-        ai_chat = find_with_ai.FindWithAI(log, llm_model[0])
-        ai_invoice_values = ai_chat.find_invoice_info(file)
-        if ai_invoice_values:
-            for value in ai_invoice_values:
-                if ai_invoice_values[value] and value not in datas['datas']:
-                    if isinstance(ai_invoice_values[value], (str, int, float)):
-                        log.info(f"{value} found using AI : {str(ai_invoice_values[value])}")
-                        datas['datas'][value] = ai_invoice_values[value]
+            ai_chat = find_with_ai.FindWithAI(log, llm_model)
+            ai_invoice_values = ai_chat.find_invoice_info(file)
+            if ai_invoice_values:
+                for value in ai_invoice_values:
+                    if ai_invoice_values[value] and value not in datas['datas']:
+                        if isinstance(ai_invoice_values[value], (str, int, float)):
+                            log.info(f"{value} found using AI : {str(ai_invoice_values[value])}")
+                            datas['datas'][value] = ai_invoice_values[value]
 
     if workflow_settings['input']['apply_process'] and not ai_llm:
         if 'invoice_number' in system_fields_to_find:

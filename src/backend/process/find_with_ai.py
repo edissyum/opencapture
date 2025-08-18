@@ -15,6 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import re
 import json
 import requests
 import pdftotext
@@ -40,6 +41,9 @@ class FindWithAI:
             with open(file_path, 'rb') as file:
                 ocr_content = pdftotext.PDF(file)
                 ocr_content = "\n".join(ocr_content)
+                ocr_content = ocr_content.strip()
+                ocr_content = re.sub(r'\s+', ' ', ocr_content)
+
                 if not ocr_content:
                     self.log.error("OCR content is empty. Please check the PDF file.")
                     return None
@@ -71,6 +75,8 @@ class FindWithAI:
             if token_usage:
                 ci, co, total = self.calculate_cost(token_usage.get('prompt_tokens', 0), token_usage.get('completion_tokens', 0))
                 if ci is not None and co is not None and total is not None:
+                    self.log.info(f"Tokens used - Prompt (input): {token_usage.get('prompt_tokens', 0)}, "
+                                  f"Completion (output): {token_usage.get('completion_tokens', 0)}, ")
                     self.log.info(f"Approximate costs - Input: ${ci:.6f}, Output: ${co:.6f}, Total: ${total:.6f}")
             return content
         else:

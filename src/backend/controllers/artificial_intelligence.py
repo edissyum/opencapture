@@ -138,9 +138,10 @@ def delete_llm_model(model_llm_id):
             'ip': request.remote_addr,
             'submodule': 'update_llm_models',
             'user_info': request.environ['user_info'],
-            'desc': gettext('DELETE_AI_MODEL', model=model_id)
+            'desc': gettext('DELETE_AI_MODEL', model=model_llm_id)
         })
         return '', 200
+    return None, 400
 
 
 def update_model(data, model_id, module, fill_history=False):
