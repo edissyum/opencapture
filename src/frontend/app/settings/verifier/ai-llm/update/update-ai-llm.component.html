@@ -70,6 +70,7 @@
             </div>
             <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
             <h4 class="text-center mt-5 mb-5">{{ 'AI-LLM.call_content_llm' | translate }}</h4>
+            <app-hint [message]="'AI-LLM.json_hint' | translate"></app-hint>
             <div class="flex justify-center items-center ml-10 mr-5">
                 <mat-form-field class="w-full">
                     <textarea [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="10" matInput
