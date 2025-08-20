@@ -107,27 +107,27 @@ if [[ "$customId" =~ [[:upper:]] ]]; then
 fi
 
 if [ -z "$customId" ]; then
-    echo "###############################################################################################"
-    echo "                       Custom id is needed to run the installation"
-    echo "   Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t systemd"
-    echo "###############################################################################################"
+    echo "################################################################################################################"
+    echo "                              Custom id is needed to run the installation"
+    echo " Exemple of command line call : sudo ./create_custom.sh --custom_id edissyum_bis --supervisor_systemd systemd"
+    echo "################################################################################################################"
     exit 2
 fi
 
 if [ "$customId" == 'custom' ]; then
-    echo "##############################################################################################"
-    echo "                     Please do not create a custom called 'custom'"
-    echo "      Exemple of command line call : sudo ./update.sh -c edissyum_bis -t systemd"
-    echo "##############################################################################################"
+    echo "################################################################################################################"
+    echo "                              Please do not create a custom called 'custom'"
+    echo " Exemple of command line call : sudo ./create_custom.sh --custom_id edissyum_bis --supervisor_systemd systemd"
+    echo "################################################################################################################"
     exit 4
 fi
 
 if [ "$supervisorOrSystemd" == '' ] || { [ "$supervisorOrSystemd" != 'systemd' ] && [ "$supervisorOrSystemd" != 'supervisor' ]; }; then
-    echo "#######################################################################################################"
-    echo "                           Bad value for installationType variable"
-    echo "       Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t systemd"
-    echo "      Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t supervisor"
-    echo "#######################################################################################################"
+    echo "###################################################################################################################"
+    echo "                                 Bad value for installationType variable"
+    echo "  Exemple of command line call : sudo ./create_custom.sh --custom_id edissyum_bis --supervisor_systemd systemd"
+    echo " Exemple of command line call : sudo ./create_custom.sh --custom_id edissyum_bis --supervisor_systemd supervisor"
+    echo "##################################################################################################################"
     exit 6
 fi
 
