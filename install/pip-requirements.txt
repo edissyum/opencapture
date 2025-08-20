@@ -8,7 +8,7 @@ numpy==2.2.6
 msal==1.33.0
 ldap3==2.9.1
 pyocr==0.8.5
-flask==3.1.1
+flask==3.1.2
 pypdf==6.0.0
 pyheif==0.8.0
 deskew==1.5.3
@@ -25,7 +25,7 @@ numexpr==2.11.0
 pdftotext==3.0.0
 unidecode==1.4.0
 tnefparse==1.4.0
-requests==2.32.4
+requests==2.32.5
 Bottleneck==1.5.0
 xhtml2pdf==0.2.17
 xlsxwriter==3.2.5
@@ -40,7 +40,7 @@ schwifty==2025.7.0
 pytesseract==0.3.13
 configparser==7.2.0
 scikit-learn==1.6.1
-transformers==4.55.0
+transformers==4.55.2
 python-magic==0.4.27
 pycryptodome==3.23.0
 pypdf[crypto]==6.0.0
@@ -49,4 +49,4 @@ opencv-python==4.12.0.88
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.8.0
 torchvision==0.23.0
-ultralytics==8.3.177
+ultralytics==8.3.181
