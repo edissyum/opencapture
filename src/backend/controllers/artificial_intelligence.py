@@ -123,6 +123,27 @@ def delete_model(data, model_id, module):
         return '', 200
 
 
+def delete_llm_model(model_llm_id):
+    args = {
+        'set': {
+            'status': 'DEL'
+        },
+        'model_llm_id': model_llm_id
+    }
+    _, error = artificial_intelligence.update_llm_models(args)
+
+    if error is None:
+        history.add_history({
+            'module': 'verifier',
+            'ip': request.remote_addr,
+            'submodule': 'update_llm_models',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('DELETE_AI_MODEL', model=model_llm_id)
+        })
+        return '', 200
+    return None, 400
+
+
 def update_model(data, model_id, module, fill_history=False):
     args = {
         'set': {},
@@ -438,5 +459,114 @@ def rename_model(new_name, model_id, module):
         response = {
             "errors": gettext('RENAME_AI_MODEL_ERROR'),
             "message": gettext('FILE_DOESNT_EXISTS')
+        }
+        return response, 400
+
+def list_llm_models(args):
+    _llm_models = artificial_intelligence.get_llm_models({
+        'select': ['*', 'count(*) OVER() as total'],
+        'where': ["status <> %s"],
+        'data': ['DEL'],
+        'limit': str(args['limit']) if 'limit' in args else 'ALL',
+        'offset': str(args['offset']) if 'offset' in args else 0,
+        'order': args['order'] if 'order' in args else 'id DESC'
+    })
+    response = {
+        "llm_models": _llm_models
+    }
+    return response, 200
+
+
+def get_model_llm_by_id(model_id):
+    output_info, error = artificial_intelligence.get_model_llm_by_id({'model_id': model_id})
+
+    if error is None:
+        return output_info, 200
+    else:
+        response = {
+            "errors": gettext('GET_IA_MODEL_BY_ID_ERROR'),
+            "message": gettext(error)
+        }
+        return response, 400
+
+
+def create_llm_model(data):
+    _columns = {
+        'name': data['name'],
+        'provider': data['provider']
+    }
+
+    res, error = artificial_intelligence.create_llm_model({'columns': _columns})
+
+    if error is None:
+        history.add_history({
+            'module': 'verifier',
+            'ip': request.remote_addr,
+            'submodule': 'create_llm_model',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('CREATE_LLM_MODEL', llm_model=data['name'])
+        })
+        response = {
+            "id": res
+        }
+        return response, 200
+    else:
+        response = {
+            "errors": gettext('CREATE_AI_LLM_ERROR'),
+            "message": gettext(error)
+        }
+        return response, 400
+
+
+def get_llm_model_by_id(model_llm_id):
+    output_info, error = artificial_intelligence.get_llm_model_by_id({'model_llm_id': model_llm_id})
+
+    if error is None:
+        return output_info, 200
+    else:
+        response = {
+            "errors": gettext('GET_LLM_MODEL_BY_ID_ERROR'),
+            "message": gettext(error)
+        }
+        return response, 400
+
+
+def update_llm_model(model_llm_id, data):
+    model_llm_info, error = artificial_intelligence.get_llm_model_by_id({'model_llm_id': model_llm_id})
+    if error is None:
+        _set = {
+            'url': data['url'],
+            'name': data['name'],
+            'api_key': data['api_key'],
+            'provider': data['provider'],
+            'json_content': json.dumps(data['json_content'])
+        }
+        if 'settings' in data:
+            _set['settings'] = json.dumps(data['settings'])
+
+        _, error = artificial_intelligence.update_llm_models({
+            'set': _set,
+            'model_llm_id': model_llm_id
+        })
+
+        if error is None:
+            history.add_history({
+                'module': 'verifier',
+                'ip': request.remote_addr,
+                'submodule': 'update_model_llm',
+                'user_info': request.environ['user_info'],
+                'desc': gettext('UPDATE_LLM', llm_model=model_llm_info['name'])
+            })
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('UPDATE_LLM_MODEL_ERROR'),
+                "message": gettext(error)
+            }
+            return response, 400
+    else:
+        response = {
+            "errors": gettext('UPDATE_LLM_MODEL_ERROR'),
+            "message": gettext(error)
         }
         return response, 400

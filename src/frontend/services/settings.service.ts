@@ -214,6 +214,30 @@ export class SettingsService {
                 ]
             },
             {
+                "id"        : "ai_llm_settings",
+                "label"     : this.translate.instant("SETTINGS.ai_llm_settings"),
+                "icon"      : "fa-solid fa-brain",
+                "route"     : "/settings/verifier/ai-llm",
+                "privilege" : "list_llm_models",
+                "actions"   : [
+                    {
+                        "id"        : "add_llm_models",
+                        "label"     : this.translate.instant("SETTINGS.add_llm_models"),
+                        "route"     : "/settings/verifier/ai-llm/new",
+                        "privilege" : "add_llm_models",
+                        "icon"      : "fa-solid fa-plus"
+                    },
+                    {
+                        "id"                : "update_llm_models",
+                        "label"             : this.translate.instant("SETTINGS.update_llm_models"),
+                        "route"             : "/settings/verifier/ai-llm/update/",
+                        "privilege"         : "update_llm_models",
+                        "icon"              : "fa-solid fa-edit",
+                        "showOnlyIfActive"  : true
+                    }
+                ]
+            },
+            {
                 "id"        : "workflow_builder",
                 "label"     : this.translate.instant("SETTINGS.list_workflows"),
                 "icon"      : "fa-solid fa-diagram-next",

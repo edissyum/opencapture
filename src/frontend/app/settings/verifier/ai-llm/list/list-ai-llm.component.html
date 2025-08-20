@@ -1,0 +1,64 @@
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" [autosize]="true">
+    <mat-sidenav #sidenav mode="side" [opened]="true" class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
+        <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
+    </mat-sidenav>
+    <mat-sidenav-content class="bg-white overflow-hidden">
+        @if (this.loading) {
+            <div>
+                <app-loader></app-loader>
+            </div>
+        }
+        <div class="settings_header">
+            <div class="flex">
+                <button mat-icon-button (click)="this.serviceSettings.minimizeSideNav = !this.serviceSettings.minimizeSideNav;">
+                    <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
+            </div>
+            <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <div class="settings_search"></div>
+        </div>
+        <hr class="border-green-400 relative z-30">
+        <div class="overflow-x-hidden h-full-overflow">
+            <mat-table matSort [dataSource]="llm_models" (matSortChange)="sortData($event)" class="w-full">
+                <ng-container matColumnDef="id">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="name">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'AI-LLM.model_name' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="provider">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'AI-LLM.provider' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.provider }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="url">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'AI-LLM.url' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.url }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <button mat-icon-button
+                                (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.name)"
+                                matTooltip="{{ 'GLOBAL.delete' | translate }}"
+                                class="inline-block align-text-top">
+                            <i class="fa-solid fa-trash text-lg"></i>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columnsToDisplay;"
+                         routerLink="/settings/verifier/ai-llm/update/{{ row.id }}"
+                         class="cursor-pointer hover:shadow-md transition-colors duration-300"></mat-row>
+            </mat-table>
+            <mat-paginator [showFirstLastButtons]="true"
+                           [length]="this.total"
+                           [pageSize]="pageSize"
+                           [pageIndex]="pageIndex"
+                           [pageSizeOptions]="[5, 10, 15, 20, 50]"
+                           (page)="onPageChange($event)">
+            </mat-paginator>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

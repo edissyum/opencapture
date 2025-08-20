@@ -65,6 +65,9 @@ import { VariousSettingsVerifierComponent } from "./verifier/various-settings/va
 import { UserQuotaComponent } from "./general/user-quota/user-quota.component";
 import { SplitterUpdateStatusComponent } from "./splitter/update-status/update-status.component";
 import { VerifierStatusUpdateComponent } from "./verifier/update-status/update-status.component";
+import { CreateAiLLMComponent } from "./verifier/ai-llm/create/create-ai-llm.component";
+import { UpdateAiLLMComponent } from "./verifier/ai-llm/update/update-ai-llm.component";
+import { AiLLMListComponent } from "./verifier/ai-llm/list/list-ai-llm.component";
 
 const routes: Routes = [
     {
@@ -195,6 +198,21 @@ const routes: Routes = [
     {
         path: 'settings/verifier/outputs/update/:id', component: UpdateOutputComponent,
         data: {title: 'SETTINGS.update_output', privileges: ['settings', 'update_output']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
+    {
+        path: 'settings/verifier/ai-llm', component: AiLLMListComponent,
+        data: {title: 'SETTINGS.ai_llm_settings', privileges: ['settings', 'list_llm_models']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
+    {
+        path: 'settings/verifier/ai-llm/new', component: CreateAiLLMComponent,
+        data: {title: 'SETTINGS.add_llm_models', privileges: ['settings', 'add_llm_models']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
+    {
+        path: 'settings/verifier/ai-llm/update/:id', component: UpdateAiLLMComponent,
+        data: {title: 'SETTINGS.update_llm_models', privileges: ['settings', 'update_llm_models']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {

@@ -239,6 +239,21 @@ export class WorkflowBuilderComponent implements OnInit {
                 values: []
             },
             {
+                id: "ai_llm",
+                label: this.translate.instant("WORKFLOW.ai_llm"),
+                type: "select",
+                control: new FormControl('no_ai_llm'),
+                required: true,
+                show: true,
+                values: [
+                    {
+                        'id': 'no_ai_llm',
+                        'label': this.translate.instant('WORKFLOW.no_ai_llm')
+                    }
+                ],
+                hint: this.translate.instant('WORKFLOW.ai_llm_hint')
+            },
+            {
                 id: 'system_fields',
                 multiple: true,
                 label: this.translate.instant('WORKFLOW.system_fields_to_search'),
@@ -439,6 +454,26 @@ export class WorkflowBuilderComponent implements OnInit {
                         if (customers.customers.length === 1) {
                             element.control.setValue(customers.customers[0].id);
                         }
+                    }
+                });
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
+        this.http.get(environment['url'] + '/ws/ai/llm/list', {headers: this.authService.headers}).pipe(
+            tap((data_llm: any) => {
+                this.fields['process'].forEach((element: any) => {
+                    if (element.id === 'ai_llm') {
+                        data_llm.llm_models.forEach((elem: any) => {
+                            element.values.push({
+                                'id': elem.id,
+                                'label': elem.name
+                            });
+                        });
                     }
                 });
             }),

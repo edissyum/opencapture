@@ -128,6 +128,9 @@ import { CodeEditorModule } from '@ngstack/code-editor';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { AttachmentListComponent } from "./attachment-list/attachment-list.component";
 import { FileViewerComponent } from "./file-viewer/file-viewer.component";
+import { AiLLMListComponent} from "./settings/verifier/ai-llm/list/list-ai-llm.component";
+import { UpdateAiLLMComponent } from "./settings/verifier/ai-llm/update/update-ai-llm.component";
+import { CreateAiLLMComponent } from "./settings/verifier/ai-llm/create/create-ai-llm.component";
 
 @NgModule({
     declarations: [
@@ -212,7 +215,10 @@ import { FileViewerComponent } from "./file-viewer/file-viewer.component";
         WorkflowsListSplitterComponent,
         WorkflowBuilderSplitterComponent,
         AttachmentListComponent,
-        FileViewerComponent
+        FileViewerComponent,
+        AiLLMListComponent,
+        UpdateAiLLMComponent,
+        CreateAiLLMComponent
     ],
     imports: [
         BrowserModule,
@@ -280,10 +286,13 @@ import { FileViewerComponent } from "./file-viewer/file-viewer.component";
         provideTranslateService({
             fallbackLang: 'fra',
             loader: provideTranslateHttpLoader({
-                prefix:"assets/i18n/frontend/",
-                suffix:".json"
+                prefix: "assets/i18n/frontend/",
+                suffix: ".json"
             })
         })
+    ],
+    exports: [
+        LoaderComponent
     ],
     bootstrap: [AppComponent]
 })
