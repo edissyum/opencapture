@@ -91,6 +91,7 @@
 		"created": "Modelo creado con éxito",
 		"delete_success": "Modelo eliminado con éxito",
 		"input_price": "Precio de entrada ($ por 1000 tokens)",
+		"json_hint": "El contenido de la llamada al modelo LLM AI debe estar en formato JSON y contener un mensaje con la palabra clave ##OCR_CONTENT## para indicar dónde se debe insertar el contenido de OCR del documento.",
 		"model_llm_updated": "Modelo LLM actualizado con éxito",
 		"model_name": "Nombre del modelo",
 		"output_price": "Precio de lanzamiento ($ por 1000 tokens)",
