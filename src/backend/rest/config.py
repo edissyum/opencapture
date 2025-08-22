@@ -23,14 +23,17 @@ from src.backend.controllers import auth, config, privileges
 bp = Blueprint('config', __name__, url_prefix='/ws/')
 
 
-@bp.route('config/readConfig', methods=['GET'])
+@bp.route('config/getAllowWFScripting', methods=['GET'])
 @auth.token_required
-def read_config():
+def get_allow_wf_scripting():
     if not privileges.has_privileges(request.environ['user_id'], ['access_config']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/config/readConfig'}), 403
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/config/getAllowWFScripting'}), 403
 
     configurations = config.read_config()
-    return make_response(jsonify({'config': configurations})), 200
+    if not configurations or 'GLOBAL' not in configurations[0] or 'allowwfscripting' not in configurations[0]['GLOBAL']:
+        return make_response(jsonify({'errors': gettext('CONFIG_NOT_FOUND')}), 404)
+    allow_wf_scripting = configurations[0]['GLOBAL']['allowwfscripting']
+    return make_response(jsonify({'allowWFScripting': allow_wf_scripting})), 200
 
 
 @bp.route('config/getConfigurations', methods=['GET'])
@@ -68,7 +71,7 @@ def get_configuration_by_label(config_label):
 @bp.route('config/getConfigurationNoAuth/<string:config_label>', methods=['GET'])
 def get_configuration_by_label_simple(config_label):
     no_auth_labels = ['userQuota','timeoutUpload', 'defaultModule', 'passwordRules', 'loginTopMessage', 'loginBottomMessage',
-                      'enableSplitterProgressBar', 'enableProcessWatcher', 'enableAttachments']
+                      'enableSplitterProgressBar', 'enableAttachments']
     if config_label not in no_auth_labels:
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/config/getConfigurationNoAuth/{config_label}'}), 403
