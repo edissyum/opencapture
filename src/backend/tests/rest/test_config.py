@@ -185,7 +185,7 @@ class ConfigTest(unittest.TestCase):
         if os.path.isfile(f'/var/www/html/opencapture/custom/{CUSTOM_ID}/assets/imgs/login_image.png'):
             os.remove(f'/var/www/html/opencapture/custom/{CUSTOM_ID}/assets/imgs/login_image.png')
         self.database.execute("UPDATE regex "
-                        "SET content = '([A-Za-z0-9]+[\.\-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+' "
+                        "SET content = '([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(.[A-Z|a-z]{2,})+' "
                         "WHERE regex_id = 'email'")
         self.database.execute(f"UPDATE docservers SET path = '/var/docservers/opencapture/{CUSTOM_ID}/' "
                         "WHERE docserver_id = 'DOCSERVERS_PATH'")
