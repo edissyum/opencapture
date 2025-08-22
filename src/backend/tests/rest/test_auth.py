@@ -30,7 +30,7 @@ class AuthTest(unittest.TestCase):
         warnings.filterwarnings('ignore', category=ResourceWarning)
 
     def test_error_user_ws_connection(self):
-        response = self.app.get(f'/{CUSTOM_ID}/ws/config/readConfig',
+        response = self.app.get(f'/{CUSTOM_ID}/ws/config/getAllowWFScripting',
                                 headers={'Content-Type': 'application/json',
                                          'Authorization': 'Basic ' + self.basic_auth})
         self.assertEqual(403, response.status_code)
