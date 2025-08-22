@@ -28,7 +28,6 @@ import { STEPPER_GLOBAL_OPTIONS } from "@angular/cdk/stepper";
 
 import { environment } from "../../../../env";
 import { AuthService } from "../../../../../services/auth.service";
-import { ConfigService } from "../../../../../services/config.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { CodeEditorComponent } from "../../../../../services/code-editor/code-editor.component";
@@ -217,7 +216,6 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
         private authService: AuthService,
         private notify: NotificationService,
         private translate: TranslateService,
-        private configService: ConfigService,
         public serviceSettings: SettingsService
     ) {}
 
@@ -227,9 +225,11 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
             this.authService.generateHeaders();
         }
 
-        const config = this.configService.getConfig()[0];
-        this.allowWFScripting = config['GLOBAL']['allowwfscripting'];
-        this.allowWFScripting = this.allowWFScripting.toString().toLowerCase() === 'true';
+        this.http.get(environment['url'] + '/ws/config/getAllowWFScripting', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.allowWFScripting = data.allowWFScripting.toLowerCase() === 'true';
+            })
+        ).subscribe();
 
         this.workflowId = this.route.snapshot.params['id'];
         if (this.workflowId) {
