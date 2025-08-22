@@ -182,7 +182,7 @@ def generate_token(user_id, days_before_exp):
         payload = {
             'exp': datetime.now(timezone.utc) + timedelta(days=days_before_exp),
             'iat': datetime.now(timezone.utc),
-            'sub': user_id
+            'sub': str(user_id)
         }
         return jwt.encode(
             payload,
@@ -210,7 +210,7 @@ def encode_auth_token(user_id, refresh_token=False):
         payload = {
             'exp': datetime.now(timezone.utc) + time_delta,
             'iat': datetime.now(timezone.utc),
-            'sub': user_id
+            'sub': str(user_id)
         }
         if refresh_token:
             payload['refresh'] = True
@@ -287,7 +287,7 @@ def generate_reset_token(user_id):
         payload = {
             'exp': datetime.now(timezone.utc) + timedelta(minutes=3600),
             'iat': datetime.now(timezone.utc),
-            'sub': user_id
+            'sub': str(user_id)
         }
         return jwt.encode(
             payload,
@@ -394,7 +394,7 @@ def login(username, password, lang, method='default'):
         user_info, error = user.get_user_by_username({"select": ['users.id', 'users.username'], "username": username})
 
     if error is None:
-        encoded_token = encode_auth_token(user_info['username'])
+        encoded_token = encode_auth_token(user_info['id'])
         returned_user = get_user(user_info)
 
         response = {
@@ -503,7 +503,7 @@ def token_required(view):
 
                     data = []
                     if 'sub' in token:
-                        if isinstance(token['sub'], int):
+                        if token['sub'].isnumeric():
                             where = ['id = %s']
                         data = [token['sub']]
                     elif 'process_token' in token:

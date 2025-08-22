@@ -259,7 +259,7 @@ def retrieve_documents(args):
         'table': args['table'],
         'left_join': args['left_join']
     })
-    print(total_documents)
+
     if total_documents not in [0, []]:
         documents_list = verifier.get_documents(args)
         for document in documents_list:
