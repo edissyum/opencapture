@@ -676,6 +676,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                         if isinstance(ai_invoice_values[value], (str, int, float)):
                             log.info(f"{value} found using AI : {str(ai_invoice_values[value])}")
                             datas['datas'][value] = ai_invoice_values[value]
+            else:
+                log.info('No data found using AI LLM, fallback to standard processing')
+                ai_llm = False
 
     if workflow_settings['input']['apply_process'] and not ai_llm:
         if 'invoice_number' in system_fields_to_find:
