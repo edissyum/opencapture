@@ -19,7 +19,7 @@ import os
 import uuid
 import json
 import hashlib
-import datetime
+from datetime import datetime
 from flask import current_app
 from src.backend import verifier_exports
 from src.backend.classes.Files import Files
@@ -83,7 +83,7 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
     except FileNotFoundError:
         pass
 
-    now = datetime.datetime.now()
+    now = datetime.now()
     year_and_month = now.strftime('%Y') + '/' + now.strftime('%m')
     path = docservers['VERIFIER_IMAGE_FULL'] + '/' + year_and_month + '/' + full_jpg_filename + '-001.jpg'
 
@@ -674,6 +674,19 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 for value in ai_invoice_values:
                     if ai_invoice_values[value] and value not in datas['datas']:
                         if isinstance(ai_invoice_values[value], (str, int, float)):
+                            if int(configurations['timeDelta']) not in [-1, 0]:
+                                if value in ['document_date', 'document_due_date']:
+                                    today = datetime.now()
+                                    doc_date = datetime.strptime(ai_invoice_values[value], '%Y-%m-%d')
+                                    timedelta = today - doc_date
+
+                                    if timedelta.days > int(configurations['timeDelta']):
+                                        log.info(f"{value} is older than {configurations['timeDelta']} days : {str(ai_invoice_values[value])}")
+                                        continue
+                                    if timedelta.days < 0:
+                                        log.info(f"{value} is in the future : {str(ai_invoice_values[value])}")
+                                        continue
+
                             log.info(f"{value} found using AI : {str(ai_invoice_values[value])}")
                             datas['datas'][value] = ai_invoice_values[value]
             else:
