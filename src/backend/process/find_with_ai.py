@@ -17,12 +17,17 @@
 
 import re
 import json
+import pypdf
 import requests
+import tempfile
 import pdftotext
+from pdf2image import convert_from_path
+
 
 class FindWithAI:
-    def __init__(self, log, llm_model):
+    def __init__(self, log, ocr, llm_model):
         self.log = log
+        self.ocr = ocr
         self.llm_model = llm_model
 
 
@@ -36,14 +41,37 @@ class FindWithAI:
         return None, None, None
 
 
+    def extract_text_from_pdf(self, file_path):
+        with open(file_path, 'rb') as pdf:
+            cpt = 1
+            text = ''
+            pdf_reader = pypdf.PdfReader(pdf)
+            page_count = len(pdf_reader.pages)
+            with tempfile.NamedTemporaryFile() as tmp_file:
+                for chunk_idx in range(0, page_count, 10):
+                    start_page = 0 if chunk_idx == 0 else chunk_idx + 1
+                end_page = min(chunk_idx + 10, page_count)
+                chunk_images = convert_from_path(file_path, first_page=start_page, last_page=end_page, dpi=300)
+
+                for image in chunk_images:
+                    output_path = tmp_file.name + '-' + str(cpt).zfill(3) + '.jpg'
+                    image.save(output_path, 'JPEG')
+                    cpt = cpt + 1
+                    text += self.ocr.text_builder(output_path)
+            return text
+
     def find_invoice_info(self, file_path):
         if '##OCR_CONTENT##' in str(self.llm_model['json_content']):
+
             with open(file_path, 'rb') as file:
                 ocr_content = pdftotext.PDF(file)
                 ocr_content = "\n".join(ocr_content)
                 ocr_content = ocr_content.strip()
-                ocr_content = re.sub(r'\s+', ' ', ocr_content)
+                if not ocr_content:
+                    self.log.info("PDF seems to be image-based, proceeding with OCR using pytesseract.")
+                    ocr_content = self.extract_text_from_pdf(file_path)
 
+                ocr_content = re.sub(r'\s+', ' ', ocr_content)
                 if not ocr_content:
                     self.log.error("OCR content is empty. Please check the PDF file.")
                     return None
@@ -52,16 +80,13 @@ class FindWithAI:
                 json_content_str = json_content_str.replace('"##OCR_CONTENT##"', json.dumps(ocr_content))
                 self.llm_model['json_content'] = json.loads(json_content_str)
 
-        res = requests.post(self.llm_model['url'],
-            headers={"Authorization": f"Bearer {self.llm_model['api_key']}"},
-            json=self.llm_model['json_content']
-        )
-
-        if res.status_code != 200:
-            self.log.error(f"Error calling AI model: {res.status_code} - {res.text}")
+        ai_llm_res = requests.post(self.llm_model['url'], headers={"Authorization": f"Bearer {self.llm_model['api_key']}"},
+                            json=self.llm_model['json_content'])
+        if ai_llm_res.status_code != 200:
+            self.log.error(f"Error calling AI model: {ai_llm_res.status_code} - {ai_llm_res.text}")
             return None
 
-        response = res.json()
+        response = ai_llm_res.json()
         if 'choices' in response and len(response['choices']) > 0:
             content = response['choices'][0]['message']['content']
             try:

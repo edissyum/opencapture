@@ -668,7 +668,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         else:
             log.info(f"Use of the following AI LLM to find document details : {llm_model['name']} ({llm_model['provider']})")
 
-            ai_chat = find_with_ai.FindWithAI(log, llm_model)
+            ai_chat = find_with_ai.FindWithAI(log, ocr, llm_model)
             ai_invoice_values = ai_chat.find_invoice_info(file)
             if ai_invoice_values:
                 for value in ai_invoice_values:
