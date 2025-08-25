@@ -152,4 +152,4 @@ app.register_blueprint(artificial_intelligence.bp)
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(Threaded=True)

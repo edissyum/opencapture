@@ -19,17 +19,17 @@ import os
 import uuid
 import json
 import hashlib
-import datetime
+from datetime import datetime
 from flask import current_app
 from src.backend import verifier_exports
 from src.backend.classes.Files import Files
 from src.backend.classes.PyTesseract import PyTesseract
-from src.backend.controllers import verifier, accounts, attachments
 from src.backend.scripting_functions import send_to_workflow, launch_script_verifier
 from src.backend.functions import delete_documents, rotate_document, find_workflow_with_ia
+from src.backend.controllers import verifier, accounts, attachments, artificial_intelligence
 from src.backend.process import (find_date, find_due_date, find_footer, find_invoice_number, find_supplier,
                                  find_custom, find_delivery_number, find_footer_raw, find_quotation_number,
-                                 find_currency, find_contact, find_subject)
+                                 find_currency, find_contact, find_subject, find_with_ai)
 
 
 class DictX(dict):
@@ -83,7 +83,7 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
     except FileNotFoundError:
         pass
 
-    now = datetime.datetime.now()
+    now = datetime.now()
     year_and_month = now.strftime('%Y') + '/' + now.strftime('%m')
     path = docservers['VERIFIER_IMAGE_FULL'] + '/' + year_and_month + '/' + full_jpg_filename + '-001.jpg'
 
@@ -605,7 +605,12 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     ocr = PyTesseract(supplier[2]['document_lang'], log, config, docservers)
                     convert(file, files, ocr, nb_pages, tesseract_function, convert_function)
 
+    ai_llm = None
     if workflow_settings:
+        if 'ai_llm' in workflow_settings['process'] and workflow_settings['process']['ai_llm']:
+            if workflow_settings['process']['ai_llm'] != 'no_ai_llm':
+                ai_llm = workflow_settings['process']['ai_llm']
+
         if 'override_supplier_form' in workflow_settings['process'] and \
                 workflow_settings['process']['override_supplier_form'] or \
                 not supplier or ('form_id' not in supplier[2] or not supplier[2]['form_id']):
@@ -654,7 +659,41 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                            datas, files, configurations, tesseract_function, convert_function)
 
     footer = None
-    if workflow_settings['input']['apply_process']:
+    if ai_llm:
+        llm_model, _ = artificial_intelligence.get_model_llm_by_id(ai_llm)
+        if 'errors' in llm_model:
+            log.info('AI LLM model not found for identifier : ' + str(ai_llm))
+            log.info('Use of AI LLM is disabled, fallback to standard processing')
+            ai_llm = False
+        else:
+            log.info(f"Use of the following AI LLM to find document details : {llm_model['name']} ({llm_model['provider']})")
+
+            ai_chat = find_with_ai.FindWithAI(log, ocr, llm_model)
+            ai_invoice_values = ai_chat.find_invoice_info(file)
+            if ai_invoice_values:
+                for value in ai_invoice_values:
+                    if ai_invoice_values[value] and value not in datas['datas']:
+                        if isinstance(ai_invoice_values[value], (str, int, float)):
+                            if int(configurations['timeDelta']) not in [-1, 0]:
+                                if value in ['document_date', 'document_due_date']:
+                                    today = datetime.now()
+                                    doc_date = datetime.strptime(ai_invoice_values[value], '%Y-%m-%d')
+                                    timedelta = today - doc_date
+
+                                    if timedelta.days > int(configurations['timeDelta']):
+                                        log.info(f"{value} is older than {configurations['timeDelta']} days : {str(ai_invoice_values[value])}")
+                                        continue
+                                    if timedelta.days < 0:
+                                        log.info(f"{value} is in the future : {str(ai_invoice_values[value])}")
+                                        continue
+
+                            log.info(f"{value} found using AI : {str(ai_invoice_values[value])}")
+                            datas['datas'][value] = ai_invoice_values[value]
+            else:
+                log.info('No data found using AI LLM, fallback to standard processing')
+                ai_llm = False
+
+    if workflow_settings['input']['apply_process'] and not ai_llm:
         if 'invoice_number' in system_fields_to_find:
             invoice_number_class = find_invoice_number.FindInvoiceNumber(ocr, files, log, regex, config, database,
                                                                          supplier, file, docservers, configurations,
@@ -805,7 +844,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         if 'subject' in system_fields_to_find:
             subject_class = find_subject.FindSubject(ocr, log, regex, files, supplier, database, file, docservers,
-                                                        datas['form_id'])
+                                                     datas['form_id'])
             datas = found_data_recursively('subject', ocr, file, nb_pages, text_by_pages, subject_class,
                                            datas, files, configurations, tesseract_function, convert_function)
 

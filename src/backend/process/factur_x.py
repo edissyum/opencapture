@@ -19,8 +19,8 @@ import os
 import re
 import json
 import uuid
-import datetime
 from lxml import etree
+from datetime import datetime
 from unidecode import unidecode
 from src.backend import verifier_exports
 from src.backend.functions import delete_documents
@@ -385,8 +385,8 @@ def insert(args):
     files.save_img_with_pdf2image(args['file'], docservers['VERIFIER_IMAGE_FULL'] + '/' + jpg_filename, docservers=True)
     files.save_img_with_pdf2image_min(args['file'], docservers['VERIFIER_THUMB'] + '/' + jpg_filename)
 
-    year = datetime.datetime.now().strftime('%Y')
-    month = datetime.datetime.now().strftime('%m')
+    year = datetime.now().strftime('%Y')
+    month = datetime.now().strftime('%m')
     year_and_month = year + '/' + month
     path = docservers['VERIFIER_IMAGE_FULL'] + '/' + year_and_month + '/' + jpg_filename + '-001.jpg'
     nb_pages = files.get_pages(docservers, args['file'])
@@ -488,10 +488,10 @@ def insert(args):
     return res
 
 
-def retrieve_data(array, key, regex=None):
-    if key in ['date', 'due_date'] and regex:
+def retrieve_data(array, key):
+    if key in ['date', 'due_date']:
         if key in array and array[key]:
-            return datetime.datetime.strptime(array[key], '%Y%m%d').strftime(regex['format_date'])
+            return datetime.strptime(array[key], '%Y%m%d').date().isoformat()
     else:
         return array[key] if key in array and array[key] else ''
 
@@ -542,7 +542,6 @@ def supplier_exists(database, where, data):
         'data': [data]
     })
     return res
-
 
 def process(args):
     root = etree.fromstring(args['xml_content'])
@@ -601,8 +600,8 @@ def process(args):
         "postal_code": retrieve_data(args['facturx_data']['supplier_address'], 'postal_code'),
         "invoice_number": retrieve_data(args['facturx_data']['facturation'], 'invoice_number'),
         "quotation_number": retrieve_data(args['facturx_data']['facturation'], 'order_number'),
-        "document_date": retrieve_data(args['facturx_data']['facturation'], 'date', args['regex']),
-        "document_due_date": retrieve_data(args['facturx_data']['facturation'], 'due_date', args['regex'])
+        "document_date": retrieve_data(args['facturx_data']['facturation'], 'date'),
+        "document_due_date": retrieve_data(args['facturx_data']['facturation'], 'due_date')
     }
 
     cpt_taxes = 0

@@ -40,7 +40,7 @@
                 [accept]="'pdf'"
                 [displayFileSize]="true"
                 [emptyPlaceholder]="'UPLOAD.placeholder' | translate"
-                [class]="'max-w-3xl h-56 mt-24 mb-5'"
+                [class]="'max-w-3xl h-56 mt-24 mb-5 overflow-y-scroll'"
                 (valueChanged)="checkFile($event)">
         </ngx-file-drag-drop>
         <div class="text-center" [class.cursor-not-allowed]="this.error || !(!this.sending && this.fileControl.value!.length !== 0)">

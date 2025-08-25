@@ -29,7 +29,6 @@ import { AuthService } from "../../../../../services/auth.service";
 import { SettingsService } from "../../../../../services/settings.service";
 import { CodeEditorComponent } from "../../../../../services/code-editor/code-editor.component";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
-import {ConfigService} from "../../../../../services/config.service";
 
 @Component({
     selector: 'app-workflow-builder',
@@ -239,6 +238,21 @@ export class WorkflowBuilderComponent implements OnInit {
                 values: []
             },
             {
+                id: "ai_llm",
+                label: this.translate.instant("WORKFLOW.ai_llm"),
+                type: "select",
+                control: new FormControl('no_ai_llm'),
+                required: true,
+                show: true,
+                values: [
+                    {
+                        'id': 'no_ai_llm',
+                        'label': this.translate.instant('WORKFLOW.no_ai_llm')
+                    }
+                ],
+                hint: this.translate.instant('WORKFLOW.ai_llm_hint')
+            },
+            {
                 id: 'system_fields',
                 multiple: true,
                 label: this.translate.instant('WORKFLOW.system_fields_to_search'),
@@ -372,7 +386,6 @@ export class WorkflowBuilderComponent implements OnInit {
         private authService: AuthService,
         private notify: NotificationService,
         private translate: TranslateService,
-        private configService: ConfigService,
         public serviceSettings: SettingsService
     ) {}
 
@@ -382,9 +395,11 @@ export class WorkflowBuilderComponent implements OnInit {
             this.authService.generateHeaders();
         }
 
-        const config = this.configService.getConfig()[0];
-        this.allowWFScripting = config['GLOBAL']['allowwfscripting'];
-        this.allowWFScripting = this.allowWFScripting.toString().toLowerCase() === 'true';
+        this.http.get(environment['url'] + '/ws/config/getAllowWFScripting', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.allowWFScripting = data.allowWFScripting.toLowerCase() === 'true';
+            })
+        ).subscribe();
 
         this.workflowId = this.route.snapshot.params['id'];
         if (this.workflowId) {
@@ -439,6 +454,26 @@ export class WorkflowBuilderComponent implements OnInit {
                         if (customers.customers.length === 1) {
                             element.control.setValue(customers.customers[0].id);
                         }
+                    }
+                });
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
+        this.http.get(environment['url'] + '/ws/ai/llm/list', {headers: this.authService.headers}).pipe(
+            tap((data_llm: any) => {
+                this.fields['process'].forEach((element: any) => {
+                    if (element.id === 'ai_llm') {
+                        data_llm.llm_models.forEach((elem: any) => {
+                            element.values.push({
+                                'id': elem.id,
+                                'label': elem.name
+                            });
+                        });
                     }
                 });
             }),

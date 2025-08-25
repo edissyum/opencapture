@@ -30,12 +30,6 @@ class ConfigTest(unittest.TestCase):
         self.token = get_token('admin')
         warnings.filterwarnings('ignore', category=ResourceWarning)
 
-    def test_successful_read_config(self):
-        response = self.app.get(f'/{CUSTOM_ID}/ws/config/readConfig',
-                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
-        self.assertEqual(200, response.status_code)
-        self.assertEqual(dict, type(response.json['config'][0]))
-
     def test_successful_get_configurations_full(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/config/getConfigurations',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})

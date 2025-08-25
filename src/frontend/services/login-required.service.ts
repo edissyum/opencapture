@@ -26,7 +26,6 @@ import { catchError, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { LocaleService } from "./locale.service";
-import { ConfigService } from "./config.service";
 import { LastUrlService } from "./last-url.service";
 
 @Injectable({
@@ -41,7 +40,6 @@ export class LoginRequiredService implements CanActivate {
         private userService: UserService,
         private notify: NotificationService,
         private translate: TranslateService,
-        private configService: ConfigService,
         private localeService: LocaleService,
         private routerExtService: LastUrlService,
     ) {}
@@ -65,11 +63,7 @@ export class LoginRequiredService implements CanActivate {
                         this.authService.generateHeaders();
                     }
                     this.notify.success(this.translate.instant('AUTH.authenticated'));
-                    this.configService.readConfig().then(() => {
-                        if (route) {
-                            this.router.navigate([route]).then();
-                        }
-                    });
+                    this.router.navigate([route]).then();
                 }),
                 catchError((err: any) => {
                     if (err.status !== 402) {

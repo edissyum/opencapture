@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2025-07-23 11:43+0200\n"
+"POT-Creation-Date: 2025-08-14 16:35+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -23,27 +23,32 @@ msgstr "Sans objet"
 
 #: custom/acc/src/backend/process_queue_splitter.py:232
 #: custom/acc/src/backend/process_queue_verifier.py:198
+#: custom/acc_dev/src/backend/process_queue_verifier.py:189
 #: custom/edissyum/src/backend/process_queue_verifier.py:185
 #: custom/test/src/backend/process_queue_verifier.py:189
 msgid "FILE_UPLOADED_WORKFLOW"
 msgstr "Fichier téléversé avec le workflow"
 
+#: custom/acc_dev/src/backend/process_queue_splitter.py:237
 #: custom/edissyum/src/backend/process_queue_splitter.py:244
 #: custom/test/src/backend/process_queue_splitter.py:237
 msgid "BATCH"
 msgstr "Lot"
 
+#: custom/acc_dev/src/backend/process_queue_splitter.py:237
 #: custom/edissyum/src/backend/process_queue_splitter.py:244
 #: custom/test/src/backend/process_queue_splitter.py:237
 msgid "CREATED_USING"
 msgstr "créé avec le workflow"
 
+#: custom/acc_dev/src/backend/process_queue_splitter.py:259
 #: custom/edissyum/src/backend/process_queue_splitter.py:266
 #: custom/test/src/backend/process_queue_splitter.py:259
 #: src/backend/controllers/splitter.py:511
 msgid "DOCUMENT"
 msgstr "Document"
 
+#: custom/acc_dev/src/backend/process_queue_splitter.py:259
 #: custom/edissyum/src/backend/process_queue_splitter.py:266
 #: custom/test/src/backend/process_queue_splitter.py:259
 #: src/backend/controllers/splitter.py:511
@@ -86,7 +91,7 @@ msgstr "Le type MIME du fichier ne correspond pas à l'extension"
 msgid "WORFKLOW_NOT_FOUND"
 msgstr "Le workflow n'existe pas"
 
-#: src/backend/controllers/verifier.py:627
+#: src/backend/controllers/verifier.py:633
 #: src/backend/controllers/workflow.py:448
 #: src/backend/scripting_functions.py:153
 #: src/backend/scripting_functions.py:212
@@ -156,24 +161,20 @@ msgid "COOG_WS_INFO_EMPTY"
 msgstr "Les informations de connexion à COOG sont vides"
 
 #: src/backend/verifier_exports.py:643 src/backend/verifier_exports.py:671
-#, fuzzy
 msgid "EXPORT_OPENCRM_ERROR"
-msgstr "Erreur lors de l'export vers MEM Courrier"
+msgstr "Erreur lors de l'export vers OpenCRM"
 
 #: src/backend/verifier_exports.py:672
-#, fuzzy
 msgid "OPENCRM_JSON_ERROR"
-msgstr "Le JSON de l'export vers COOG est incorrect"
+msgstr "Le JSON de l'export vers OpenCRM est incorrect"
 
 #: src/backend/verifier_exports.py:703
-#, fuzzy
 msgid "OPENCRM_WS_INFO_WRONG"
-msgstr "Les informations de connexion à MEM Courrier sont erronées"
+msgstr "Les informations de connexion à OpenCRM sont erronées"
 
 #: src/backend/verifier_exports.py:709
-#, fuzzy
 msgid "OPENCRM_WS_INFO_EMPTY"
-msgstr "Les informations de connexion à MEM Courrier sont vides"
+msgstr "Les informations de connexion à OpenCRM sont vides"
 
 #: src/backend/verifier_exports.py:895 src/backend/verifier_exports.py:901
 #: src/backend/verifier_exports.py:907
@@ -267,133 +268,128 @@ msgid "GET_ADDRESS_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération de l'adresse"
 
 #: src/backend/controllers/accounts.py:122
-#: src/backend/controllers/accounts.py:270
-#: src/backend/controllers/accounts.py:276
-#: src/backend/controllers/accounts.py:313
+#: src/backend/controllers/accounts.py:291
+#: src/backend/controllers/accounts.py:297
+#: src/backend/controllers/accounts.py:334
 msgid "UPDATE_SUPPLIER_POSITIONS_ERROR"
 msgstr "Erreur lors de la mise à jour des positions du compte tiers"
 
 #: src/backend/controllers/accounts.py:149
-#: src/backend/controllers/accounts.py:307
+#: src/backend/controllers/accounts.py:328
 msgid "UPDATE_SUPPLIER_PAGES_ERROR"
 msgstr "Erreur lors de la mise à jour des pages du compte tiers"
 
-#: src/backend/controllers/accounts.py:215
-#: src/backend/controllers/accounts.py:233
-#: src/backend/controllers/accounts.py:239
+#: src/backend/controllers/accounts.py:236
+#: src/backend/controllers/accounts.py:254
+#: src/backend/controllers/accounts.py:260
 msgid "UPDATE_SUPPLIER_ERROR"
 msgstr "Erreur lors de la mise à jour du tiers"
 
-#: src/backend/controllers/accounts.py:216
-#: src/backend/controllers/accounts.py:469
+#: src/backend/controllers/accounts.py:237
+#: src/backend/controllers/accounts.py:490
 msgid "SUPPLIER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr "Un compte tiers existe déjà avec ce numéro de TVA ou ce numéro DUNS"
 
-#: src/backend/controllers/accounts.py:228
+#: src/backend/controllers/accounts.py:249
 msgid "SUPPLIER_UPDATED"
 msgstr "Mise à jour du compte tiers&nbsp<strong>%(supplier)s</strong>"
 
-#: src/backend/controllers/accounts.py:341
-#: src/backend/controllers/accounts.py:347
-#: src/backend/controllers/accounts.py:372
-#: src/backend/controllers/accounts.py:379 src/backend/models/accounts.py:127
+#: src/backend/controllers/accounts.py:362
+#: src/backend/controllers/accounts.py:368
+#: src/backend/controllers/accounts.py:393
+#: src/backend/controllers/accounts.py:400 src/backend/models/accounts.py:127
 msgid "UPDATE_ADDRESS_ERROR"
 msgstr "Erreur lors de la mise à jour de l'adresse"
 
-#: src/backend/controllers/accounts.py:403 src/backend/models/accounts.py:147
+#: src/backend/controllers/accounts.py:424 src/backend/models/accounts.py:147
 msgid "CREATE_ADDRESS_ERROR"
 msgstr "Erreur lors de la création de l'adresse"
 
-#: src/backend/controllers/accounts.py:454
+#: src/backend/controllers/accounts.py:475
 msgid "SUPPLIER_CREATED"
 msgstr "Création du compte tiers&nbsp<strong>%(supplier)s</strong>"
 
-#: src/backend/controllers/accounts.py:462
-#: src/backend/controllers/accounts.py:468 src/backend/models/accounts.py:167
+#: src/backend/controllers/accounts.py:483
+#: src/backend/controllers/accounts.py:489 src/backend/models/accounts.py:167
 msgid "CREATE_SUPPLIER_ERROR"
 msgstr "Erreur lors de la création du compte tiers"
 
-#: src/backend/controllers/accounts.py:506 src/backend/controllers/user.py:260
+#: src/backend/controllers/accounts.py:527 src/backend/controllers/user.py:260
 #: src/backend/controllers/user.py:290 src/backend/models/accounts.py:225
 #: src/backend/models/accounts.py:248 src/backend/models/accounts.py:267
 #: src/backend/models/user.py:225
 msgid "GET_CUSTOMER_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération du compte client"
 
-#: src/backend/controllers/accounts.py:570
+#: src/backend/controllers/accounts.py:591
 msgid "CUSTOMER_UPDATED"
 msgstr "Mise à jour du compte client&nbsp<strong>%(customer)s</strong>"
 
-#: src/backend/controllers/accounts.py:575
-#: src/backend/controllers/accounts.py:581
+#: src/backend/controllers/accounts.py:596
+#: src/backend/controllers/accounts.py:602
 #: src/backend/controllers/splitter.py:334 src/backend/models/accounts.py:289
 msgid "UPDATE_CUSTOMER_ERROR"
 msgstr "Erreur lors de la mise à jour du compte client"
 
-#: src/backend/controllers/accounts.py:609
+#: src/backend/controllers/accounts.py:630
 msgid "CUSTOMER_CREATED"
 msgstr "Création du compte client&nbsp<strong>%(customer)s</strong>"
 
-#: src/backend/controllers/accounts.py:617
-#: src/backend/controllers/accounts.py:623 src/backend/models/accounts.py:309
+#: src/backend/controllers/accounts.py:638
+#: src/backend/controllers/accounts.py:644 src/backend/models/accounts.py:309
 msgid "CREATE_CUSTOMER_ERROR"
 msgstr "Erreur lors de la création du compte client"
 
-#: src/backend/controllers/accounts.py:624
+#: src/backend/controllers/accounts.py:645
 msgid "CUSTOMER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr "Un compte client existe déjà avec ce numéro de TVA"
 
-#: src/backend/controllers/accounts.py:640
+#: src/backend/controllers/accounts.py:661
 msgid "CUSTOMER_DELETED"
 msgstr "Suppression du compte client&nbsp<strong>%(customer)s</strong>"
 
-#: src/backend/controllers/accounts.py:645
-#: src/backend/controllers/accounts.py:651 src/backend/models/accounts.py:331
+#: src/backend/controllers/accounts.py:666
+#: src/backend/controllers/accounts.py:672 src/backend/models/accounts.py:331
 msgid "DELETE_CUSTOMER_ERROR"
 msgstr "Erreur lors de la suppression du compte client"
 
-#: src/backend/controllers/accounts.py:667
+#: src/backend/controllers/accounts.py:688
 msgid "SUPPLIER_DELETED"
 msgstr "Suppression du compte tiers&nbsp<strong>%(supplier)s</strong>"
 
-#: src/backend/controllers/accounts.py:672
+#: src/backend/controllers/accounts.py:693
 msgid "DELETE_SUPPLIER_ERROR"
 msgstr "Erreur lors de la suppression du compte tiers"
 
-#: src/backend/controllers/accounts.py:801
-#, fuzzy
+#: src/backend/controllers/accounts.py:822
 msgid "CIVILITY_DELETED"
-msgstr "Suppression du compte tiers&nbsp<strong>%(supplier)s</strong>"
+msgstr "Suppression de la civilité&nbsp<strong>%(civility)s</strong>"
 
-#: src/backend/controllers/accounts.py:806
-#, fuzzy
+#: src/backend/controllers/accounts.py:827
 msgid "DELETE_CIVILITY_ERROR"
-msgstr "Erreur lors de la suppression du rôle"
+msgstr "Erreur lors de la suppression de la civilité"
 
-#: src/backend/controllers/accounts.py:807
-#, fuzzy
+#: src/backend/controllers/accounts.py:828
 msgid "CIVILITY_NOT_FOUND"
-msgstr "Fichier introuvable"
+msgstr "La civilité n'existe pas"
 
-#: src/backend/controllers/accounts.py:821
-#, fuzzy
+#: src/backend/controllers/accounts.py:842
 msgid "CIVILITY_CREATED"
-msgstr "Création du compte tiers&nbsp<strong>%(supplier)s</strong>"
+msgstr "Création de la civilité&nbsp<strong>%(civility)s</strong>"
 
-#: src/backend/controllers/accounts.py:829
-#: src/backend/controllers/accounts.py:835 src/backend/models/accounts.py:412
-#, fuzzy
+#: src/backend/controllers/accounts.py:850
+#: src/backend/controllers/accounts.py:856 src/backend/models/accounts.py:412
 msgid "CREATE_CIVILITY_ERROR"
-msgstr "Erreur lors de la création du rôle"
+msgstr "Erreur lors de la création de la civilité"
 
-#: src/backend/controllers/accounts.py:836
-#, fuzzy
+#: src/backend/controllers/accounts.py:857
 msgid "CIVILITY_ALREADY_EXISTS"
-msgstr "Le type de document existe déjà"
+msgstr "La civilité existe déjà"
 
 #: src/backend/controllers/artificial_intelligence.py:74
-#: src/backend/controllers/artificial_intelligence.py:376
-#: src/backend/controllers/artificial_intelligence.py:402
+#: src/backend/controllers/artificial_intelligence.py:396
+#: src/backend/controllers/artificial_intelligence.py:422
+#: src/backend/controllers/artificial_intelligence.py:486
 msgid "GET_IA_MODEL_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération du modèle d'apprentissage"
 
@@ -402,34 +398,57 @@ msgid "CREATE_IA_MODEL_ERROR"
 msgstr "Erreur lors de la création du modèle d'apprentissage"
 
 #: src/backend/controllers/artificial_intelligence.py:121
+#: src/backend/controllers/artificial_intelligence.py:141
 msgid "DELETE_AI_MODEL"
 msgstr "Suppression du modèle&nbsp;<strong>%(model)s</strong>"
 
-#: src/backend/controllers/artificial_intelligence.py:160
+#: src/backend/controllers/artificial_intelligence.py:180
 msgid "UPDATE_AI_MODEL"
 msgstr "Mise à jour du modèle&nbsp;<strong>%(model)s</strong>"
 
-#: src/backend/controllers/artificial_intelligence.py:165
+#: src/backend/controllers/artificial_intelligence.py:185
 msgid "UPDATE_IA_MODEL_ERROR"
 msgstr "Erreur lors de la mise à jour du modèle d'apprentissage"
 
-#: src/backend/controllers/artificial_intelligence.py:228
+#: src/backend/controllers/artificial_intelligence.py:248
 msgid "CREATE_AI_MODEL"
 msgstr "Création du modèle&nbsp;<strong>%(model)s</strong>"
 
-#: src/backend/controllers/artificial_intelligence.py:377
-#: src/backend/controllers/artificial_intelligence.py:403
-#: src/backend/models/artificial_intelligence.py:59
+#: src/backend/controllers/artificial_intelligence.py:397
+#: src/backend/controllers/artificial_intelligence.py:423
+#: src/backend/models/artificial_intelligence.py:79
+#: src/backend/models/artificial_intelligence.py:101
 msgid "IA_MODEL_DOESNT_EXISTS"
 msgstr "Le modèle d'apprentissage n'existe pas"
 
-#: src/backend/controllers/artificial_intelligence.py:439
+#: src/backend/controllers/artificial_intelligence.py:459
 msgid "RENAME_AI_MODEL_ERROR"
 msgstr "Erreur lors de la modification du modèle d'intelligence artificielle"
 
-#: src/backend/controllers/artificial_intelligence.py:440
+#: src/backend/controllers/artificial_intelligence.py:460
 msgid "FILE_DOESNT_EXISTS"
 msgstr "Le fichier de ce modèle n'existe pas"
+
+#: src/backend/controllers/artificial_intelligence.py:506
+msgid "CREATE_LLM_MODEL"
+msgstr "Création du modèle LLM&nbsp;<strong>%(llm_model)s</strong>"
+
+#: src/backend/controllers/artificial_intelligence.py:514
+msgid "CREATE_AI_LLM_ERROR"
+msgstr "Erreur lors de la création du modèle d'IA LLM"
+
+#: src/backend/controllers/artificial_intelligence.py:527
+msgid "GET_LLM_MODEL_BY_ID_ERROR"
+msgstr "Erreur lors de la récupération du modèle d'IA LLM"
+
+#: src/backend/controllers/artificial_intelligence.py:557
+msgid "UPDATE_LLM"
+msgstr "Mise à jour du modèle d'IA LLM&nbsp;<strong>%(llm_model)s</strong>"
+
+#: src/backend/controllers/artificial_intelligence.py:562
+#: src/backend/controllers/artificial_intelligence.py:568
+msgid "UPDATE_LLM_MODEL_ERROR"
+msgstr "Erreur lors de la mise à jour du modèle d'IA LLM'"
 
 #: src/backend/controllers/attachments.py:90
 msgid "UPLOAD_ATTACHMENTS_VERIFIER"
@@ -742,7 +761,7 @@ msgstr "Suppression du formulaire&nbsp;<strong>%(form)s</strong>"
 msgid "DELETE_FORM_ERROR"
 msgstr "Erreur lors de la suppression du formulaire"
 
-#: src/backend/controllers/forms.py:265 src/backend/controllers/outputs.py:66
+#: src/backend/controllers/forms.py:265 src/backend/controllers/outputs.py:65
 #: src/backend/controllers/positions_masks.py:148
 #: src/backend/controllers/workflow.py:120
 msgid "COPY_OF"
@@ -838,71 +857,71 @@ msgstr "Erreur lors de la désactivation d'un processus MailCollect"
 msgid "MAILCOLLECT_ERROR"
 msgstr "Erreur MailCollect"
 
-#: src/backend/controllers/outputs.py:75
+#: src/backend/controllers/outputs.py:74
 msgid "DUPLICATE_OUTPUT"
 msgstr "Chaîne sortante dupliquée&nbsp;<strong>%(output)s</strong>"
 
-#: src/backend/controllers/outputs.py:80 src/backend/controllers/outputs.py:86
+#: src/backend/controllers/outputs.py:79 src/backend/controllers/outputs.py:85
 msgid "DUPLICATE_OUTPUT_ERROR"
 msgstr "Erreur lors de la duplication de la chaîne sortante"
 
-#: src/backend/controllers/outputs.py:115
-#: src/backend/controllers/outputs.py:144
-#: src/backend/controllers/outputs.py:150
+#: src/backend/controllers/outputs.py:114
+#: src/backend/controllers/outputs.py:143
+#: src/backend/controllers/outputs.py:149
 msgid "UPDATE_OUTPUT_ERROR"
 msgstr "Erreur lors de mise à jour de la chaîne sortante"
 
-#: src/backend/controllers/outputs.py:116
+#: src/backend/controllers/outputs.py:115
 msgid "NOT_ALLOWED_OUTPUT_PATH"
 msgstr "Le chemin d'export de la chaîne sortant n'est pas autorisé"
 
-#: src/backend/controllers/outputs.py:139
+#: src/backend/controllers/outputs.py:138
 msgid "UPDATE_OUTPUT"
 msgstr "Mise à jour de la chaîne sortante&nbsp;<strong>%(output)s</strong>"
 
-#: src/backend/controllers/outputs.py:173
+#: src/backend/controllers/outputs.py:172
 msgid "CREATE_OUTPUT"
 msgstr "Création de la chaîne sortante&nbsp;<strong>%(output)s</strong>"
 
-#: src/backend/controllers/outputs.py:181
+#: src/backend/controllers/outputs.py:180
 msgid "CREATE_OUTPUT_ERROR"
 msgstr "Erreur lors de la création de la chaîne sortante"
 
-#: src/backend/controllers/outputs.py:194
+#: src/backend/controllers/outputs.py:193
 msgid "GET_OUTPUT_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération de la chaîne sortante"
 
-#: src/backend/controllers/outputs.py:207
+#: src/backend/controllers/outputs.py:206
 msgid "GET_OUTPUT_TYPE_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération des types de chaîne sortante"
 
-#: src/backend/controllers/outputs.py:223
+#: src/backend/controllers/outputs.py:222
 msgid "DELETE_OUTPUT"
 msgstr "Suppression de la chaîne sortante&nbsp;<strong>%(output)s</strong>"
 
-#: src/backend/controllers/outputs.py:228
-#: src/backend/controllers/outputs.py:234
+#: src/backend/controllers/outputs.py:227
+#: src/backend/controllers/outputs.py:233
 msgid "DELETE_OUTPUT_ERROR"
 msgstr "Erreur lors de la suppression de la chaîne sortante"
 
-#: src/backend/controllers/outputs.py:262
-#: src/backend/controllers/outputs.py:271
-#: src/backend/controllers/outputs.py:278
+#: src/backend/controllers/outputs.py:261
+#: src/backend/controllers/outputs.py:270
+#: src/backend/controllers/outputs.py:277
 msgid "OUTPUT_FOLDER_CREATION_ERROR"
 msgstr "Erreur lors de la création du dossier de sortie"
 
-#: src/backend/controllers/outputs.py:263
+#: src/backend/controllers/outputs.py:262
 #: src/backend/controllers/workflow.py:65
 msgid "FOLDER_NOT_ALLOWED_ERROR"
 msgstr "Le chemin de capture n'est pas autorisé"
 
-#: src/backend/controllers/outputs.py:272
+#: src/backend/controllers/outputs.py:271
 #: src/backend/controllers/workflow.py:74
 #: src/backend/controllers/workflow.py:353
 msgid "CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR"
 msgstr "Problème de permissions pour créer le dossier"
 
-#: src/backend/controllers/outputs.py:279
+#: src/backend/controllers/outputs.py:278
 #: src/backend/controllers/workflow.py:81
 msgid "CAN_NOT_ACCESS_FOLDER_PERMISSION_ERROR"
 msgstr "Impossible d'accéder au dossier de travail"
@@ -1064,13 +1083,13 @@ msgstr "Suppression du lot n°<strong>%(batch_id)s</strong>"
 
 #: src/backend/controllers/splitter.py:293
 #: src/backend/controllers/splitter.py:314
-#: src/backend/controllers/verifier.py:949
+#: src/backend/controllers/verifier.py:955
 msgid "UPDATE_STATUS_ERROR"
 msgstr "Erreur lors de la mise à jour du statut"
 
 #: src/backend/controllers/splitter.py:372
 #: src/backend/controllers/splitter.py:385
-#: src/backend/controllers/verifier.py:497
+#: src/backend/controllers/verifier.py:503
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr "Erreur lors de la suppression du verrou"
 
@@ -1087,8 +1106,8 @@ msgid "UPDATE_DOCUMENTS_ERROR"
 msgstr "Erreur lors de la mise à jour du document"
 
 #: src/backend/controllers/splitter.py:576
-#: src/backend/controllers/verifier.py:471
 #: src/backend/controllers/verifier.py:477
+#: src/backend/controllers/verifier.py:483
 msgid "UPDATE_DOCUMENT_ERROR"
 msgstr "Erreur lors de la mise à jour du document"
 
@@ -1113,7 +1132,7 @@ msgid "OPENADS_CONNECTION_ERROR"
 msgstr "Erreur lors de la connexion OpenADS"
 
 #: src/backend/controllers/splitter.py:773
-#: src/backend/controllers/verifier.py:928 src/backend/models/splitter.py:618
+#: src/backend/controllers/verifier.py:934 src/backend/models/splitter.py:618
 #: src/backend/models/verifier.py:206
 msgid "GET_TOTALS_ERROR"
 msgstr "Erreur lors de la récupération des totaux"
@@ -1247,9 +1266,8 @@ msgid "RETRY_FROM_MONITORING_ERROR"
 msgstr "Erreur lors de la relance du processus"
 
 #: src/backend/controllers/verifier.py:63
-#, fuzzy
 msgid "PROCESS_NOT_FOUND"
-msgstr "L'URL de l'hôte n'existe pas"
+msgstr "Processus non trouvé"
 
 #: src/backend/controllers/verifier.py:79 src/backend/rest/attachments.py:90
 #: src/backend/rest/attachments.py:101 src/backend/rest/verifier.py:611
@@ -1274,60 +1292,60 @@ msgstr "Erreur lors de la récupération du document par token"
 msgid "GET_DOCUMENT_ID_AND_STATUS_BY_TOKEN_ERROR_MESSAGE"
 msgstr "Aucun document trouvé avec ce token"
 
-#: src/backend/controllers/verifier.py:309
-#: src/backend/controllers/verifier.py:411
+#: src/backend/controllers/verifier.py:315
+#: src/backend/controllers/verifier.py:417
 msgid "UPDATE_DOCUMENT_POSITIONS_ERROR"
 msgstr "Erreur lors de la mise à jour des positions du document"
 
-#: src/backend/controllers/verifier.py:332
-#: src/backend/controllers/verifier.py:429
+#: src/backend/controllers/verifier.py:338
+#: src/backend/controllers/verifier.py:435
 msgid "UPDATE_DOCUMENT_PAGES_ERROR"
 msgstr "Erreur lors de la mise à jour des pages du document"
 
-#: src/backend/controllers/verifier.py:355
-#: src/backend/controllers/verifier.py:373
+#: src/backend/controllers/verifier.py:361
+#: src/backend/controllers/verifier.py:379
 msgid "UPDATE_DOCUMENT_DATA_ERROR"
 msgstr "Erreur lors de la mise à jour des données du document"
 
-#: src/backend/controllers/verifier.py:445
+#: src/backend/controllers/verifier.py:451
 msgid "DELETE_DOCUMENT_SUCCESS"
 msgstr "Suppression du document n°<strong>%(document_id)s</strong>"
 
-#: src/backend/controllers/verifier.py:450
 #: src/backend/controllers/verifier.py:456
+#: src/backend/controllers/verifier.py:462
 msgid "DELETE_DOCUMENT_ERROR"
 msgstr "Erreur lors de la suppression du document"
 
-#: src/backend/controllers/verifier.py:821
-#: src/backend/controllers/verifier.py:824
-#: src/backend/controllers/verifier.py:841
-#: src/backend/controllers/verifier.py:867
-#: src/backend/controllers/verifier.py:868
+#: src/backend/controllers/verifier.py:827
+#: src/backend/controllers/verifier.py:830
+#: src/backend/controllers/verifier.py:847
+#: src/backend/controllers/verifier.py:873
+#: src/backend/controllers/verifier.py:874
 msgid "API_INSEE_ERROR_CONNEXION"
 msgstr "Erreur lors de la connexion à l'api de l'INSEE"
 
-#: src/backend/controllers/verifier.py:898
+#: src/backend/controllers/verifier.py:904
 msgid "VAT_NOT_VALID"
 msgstr "Numéro de TVA invalide"
 
-#: src/backend/controllers/verifier.py:905
-#: src/backend/controllers/verifier.py:906
+#: src/backend/controllers/verifier.py:911
+#: src/backend/controllers/verifier.py:912
 msgid "VAT_API_ERROR"
 msgstr "Impossible de joindre l'API de vérification du numéro de TVA"
 
-#: src/backend/controllers/verifier.py:939
+#: src/backend/controllers/verifier.py:945
 msgid "DOCUMENT_NOT_FOUND"
 msgstr "Document non trouvé"
 
-#: src/backend/controllers/verifier.py:940
+#: src/backend/controllers/verifier.py:946
 msgid "DOCUMENT_ID_NOT_FOUND"
 msgstr "Document %(id)s non trouvé"
 
-#: src/backend/controllers/verifier.py:1000
+#: src/backend/controllers/verifier.py:1006
 msgid "NO_FORM"
 msgstr "Pas de formulaire associé"
 
-#: src/backend/controllers/verifier.py:1011
+#: src/backend/controllers/verifier.py:1017
 msgid "FORM_NOT_FOUND"
 msgstr "Formulaire inexistant"
 
@@ -1431,13 +1449,25 @@ msgstr "colonne"
 msgid "SUPPLIER_UPDATE_ERROR"
 msgstr "Erreur lors de la mise à jour du tiers"
 
-#: src/backend/models/artificial_intelligence.py:80
+#: src/backend/models/artificial_intelligence.py:122
 msgid "IA_MODEL_CREATE_ERROR"
 msgstr "Erreur lors de la création du modèle d'apprentissage"
 
-#: src/backend/models/artificial_intelligence.py:101
+#: src/backend/models/artificial_intelligence.py:143
 msgid "IA_MODEL_UPDATE_ERROR"
 msgstr "Erreur lors de la modification du modèle d'apprentissage"
+
+#: src/backend/models/artificial_intelligence.py:164
+msgid "IA_MODEL_LLM_UPDATE_ERROR"
+msgstr "Erreur lors de la modification du modèle d'IA LLM"
+
+#: src/backend/models/artificial_intelligence.py:183
+msgid "AI_LLM_CREATE_ERROR"
+msgstr "Erreur lors de la création du modèle d'IA LLM"
+
+#: src/backend/models/artificial_intelligence.py:205
+msgid "LLM_MODEL_DOESNT_EXISTS"
+msgstr "Le modèle d'IA LLM n'existe pas"
 
 #: src/backend/models/attachments.py:38
 msgid "CREATE_ATTACHMENT_ERROR"
@@ -1650,14 +1680,19 @@ msgstr "Erreur lors de la modification du workflow"
 #: src/backend/rest/accounts.py:517 src/backend/rest/accounts.py:539
 #: src/backend/rest/accounts.py:550 src/backend/rest/accounts.py:564
 #: src/backend/rest/accounts.py:573 src/backend/rest/accounts.py:582
-#: src/backend/rest/artificial_intelligence.py:30
-#: src/backend/rest/artificial_intelligence.py:40
-#: src/backend/rest/artificial_intelligence.py:51
-#: src/backend/rest/artificial_intelligence.py:62
-#: src/backend/rest/artificial_intelligence.py:74
-#: src/backend/rest/artificial_intelligence.py:91
-#: src/backend/rest/artificial_intelligence.py:106
-#: src/backend/rest/artificial_intelligence.py:118
+#: src/backend/rest/artificial_intelligence.py:31
+#: src/backend/rest/artificial_intelligence.py:41
+#: src/backend/rest/artificial_intelligence.py:52
+#: src/backend/rest/artificial_intelligence.py:63
+#: src/backend/rest/artificial_intelligence.py:75
+#: src/backend/rest/artificial_intelligence.py:92
+#: src/backend/rest/artificial_intelligence.py:107
+#: src/backend/rest/artificial_intelligence.py:119
+#: src/backend/rest/artificial_intelligence.py:140
+#: src/backend/rest/artificial_intelligence.py:161
+#: src/backend/rest/artificial_intelligence.py:171
+#: src/backend/rest/artificial_intelligence.py:191
+#: src/backend/rest/artificial_intelligence.py:201
 #: src/backend/rest/attachments.py:30 src/backend/rest/attachments.py:49
 #: src/backend/rest/attachments.py:68 src/backend/rest/attachments.py:77
 #: src/backend/rest/attachments.py:86 src/backend/rest/attachments.py:97
@@ -1766,6 +1801,9 @@ msgstr "Vous n'êtes pas autorisé à accéder à cette route"
 #: src/backend/rest/accounts.py:341 src/backend/rest/accounts.py:370
 #: src/backend/rest/accounts.py:411 src/backend/rest/accounts.py:448
 #: src/backend/rest/accounts.py:473 src/backend/rest/accounts.py:590
+#: src/backend/rest/artificial_intelligence.py:149
+#: src/backend/rest/artificial_intelligence.py:180
+#: src/backend/rest/artificial_intelligence.py:215
 #: src/backend/rest/attachments.py:38 src/backend/rest/attachments.py:57
 #: src/backend/rest/auth.py:37 src/backend/rest/auth.py:55
 #: src/backend/rest/auth.py:70 src/backend/rest/auth.py:91

@@ -1,0 +1,61 @@
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem" [autosize]="true">
+    <mat-sidenav #sidenav mode="side" [opened]="true" class="settings-menu-nav" [class.w-20]="this.serviceSettings.minimizeSideNav">
+        <app-settings-menu [minimizeSideNav]="this.serviceSettings.minimizeSideNav"></app-settings-menu>
+    </mat-sidenav>
+    <mat-sidenav-content class="bg-white overflow-hidden">
+        @if (this.loading) {
+            <div>
+                <app-loader></app-loader>
+            </div>
+        }
+        <div class="settings_header">
+            <div class="flex">
+                <button mat-icon-button (click)="this.serviceSettings.minimizeSideNav = !this.serviceSettings.minimizeSideNav;">
+                    <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-2xl text-gray-900"></i>
+                </button>
+            </div>
+            <h3 class="text-center m-0">{{ this.serviceSettings.getTitle() }}</h3>
+            <div class="settings_search"></div>
+        </div>
+        <hr class="border-green-400 relative z-30">
+        <div class="overflow-x-hidden h-full-overflow">
+            @if (!this.loading) {
+                <div class="flex justify-center items-center">
+                    <form class="grid grid-cols-2 gap-12 w-full m-10 text-center">
+                        @for (field of this.modelLLMForm; track field) {
+                            @if (field['type'] === 'text') {
+                                <mat-form-field>
+                                    <mat-label>{{ field['label'] | translate }}</mat-label>
+                                    <input matInput [value]="field.control.value" [formControl]="field['control']"
+                                           [type]="field['type']" [placeholder]="field['label'] | translate" [required]="field['required']">
+                                    @if (field.control.invalid) {
+                                        <mat-error>{{ getErrorMessage(field['id'], this.modelLLMForm) }}</mat-error>
+                                    }
+                                </mat-form-field>
+                            } @else if (field['type'] === 'select') {
+                                <mat-form-field>
+                                    <mat-label>{{ field['label'] | translate }}</mat-label>
+                                    <mat-select [name]="field['id']" [id]="field['id']" [(ngModel)]="field.control.value">
+                                        @for (option of field.values; track option['id']) {
+                                            <mat-option [value]="option['id']">
+                                                {{ option['label'] | translate }}
+                                            </mat-option>
+                                        }
+                                    </mat-select>
+                                    @if (field.control.invalid) {
+                                        <mat-error>{{ getErrorMessage(field['id'], this.modelLLMForm) }}</mat-error>
+                                    }
+                                </mat-form-field>
+                            }
+                        }
+                    </form>
+                </div>
+            }
+            <div class="flex justify-center items-center mb-2">
+                <button (click)="createLlmModel()" mat-button class="valid_button">
+                    <span class="block">{{ "AI-LLM.create" | translate }}</span>
+                </button>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

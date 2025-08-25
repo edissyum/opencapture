@@ -385,7 +385,7 @@ export class ConfigurationsComponent implements OnInit {
     }
 
     setSelectedUser(event: any) {
-        this.tokenUserControl.setValue(event.option.value.username);
+        this.tokenUserControl.setValue(event.option.value.id);
     }
 
     displayFn(option: any) {
@@ -401,7 +401,7 @@ export class ConfigurationsComponent implements OnInit {
     generateAuthToken() {
         if (this.tokenUserControl.value && this.tokenExpirationControl.value) {
             const args = {
-                'username': this.tokenUserControl.value,
+                'id': this.tokenUserControl.value,
                 'expiration': this.tokenExpirationControl.value
             };
             this.http.post(environment['url'] + '/ws/auth/generateAuthToken', args, {headers: this.authService.headers}).pipe(

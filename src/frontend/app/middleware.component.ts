@@ -17,11 +17,11 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Observable, switchMap, throwError } from "rxjs";
+import { BehaviorSubject, Observable, switchMap, take, throwError } from "rxjs";
 import { environment } from "./env";
 import { Router } from "@angular/router";
 import { Injectable } from '@angular/core';
-import { catchError } from "rxjs/operators";
+import { catchError, filter } from "rxjs/operators";
 import { AuthService } from "../services/auth.service";
 import { SessionStorageService } from "../services/session-storage.service";
 import { HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest } from "@angular/common/http";
@@ -29,6 +29,9 @@ import { HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest } fro
 @Injectable()
 export class MiddlewareComponent implements HttpInterceptor {
     isRefreshing = false;
+    private refreshTokenBehaviorSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
+        null
+    );
 
     constructor(
         private router: Router,
@@ -93,22 +96,35 @@ export class MiddlewareComponent implements HttpInterceptor {
         );
     }
 
+    addAuthenticationHeader(request: HttpRequest<any>) {
+        const authenticationHeader = this.authService.getToken('tokenJwt');
+        return request.clone({
+            setHeaders: {
+                'Authorization': 'Bearer ' + authenticationHeader
+            }
+        });
+    }
+
     handle401Error(request: HttpRequest<unknown>, next: HttpHandler) {
         if (!this.isRefreshing) {
             this.isRefreshing = true;
             return this.authService.refreshToken().pipe(
                 switchMap((data: any) => {
                     this.isRefreshing = false;
-                    if (data) {
-                        const headers = new HttpHeaders().set('Authorization', 'Bearer ' + data.token);
-                        const newRequest = new HttpRequest(request.method as any,
-                            request.url, {headers: headers});
-                        request = Object.assign(request, newRequest);
-                    }
+                    this.refreshTokenBehaviorSubject.next(data.token);
+                    request = this.addAuthenticationHeader(request);
+                    return next.handle(request);
+                })
+            );
+        } else {
+            return this.refreshTokenBehaviorSubject.pipe(
+                filter((token) => token != null),
+                take(1),
+                switchMap(() => {
+                    request = this.addAuthenticationHeader(request);
                     return next.handle(request);
                 })
             );
         }
-        return next.handle(request);
     }
 }

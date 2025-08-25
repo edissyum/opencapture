@@ -24,7 +24,6 @@ import { Validators, FormBuilder } from '@angular/forms';
 import { AuthService } from "../../services/auth.service";
 import { UserService } from "../../services/user.service";
 import { catchError, finalize, tap } from "rxjs/operators";
-import { ConfigService } from "../../services/config.service";
 import { LocaleService } from "../../services/locale.service";
 import { Component, OnInit, SecurityContext } from '@angular/core';
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
@@ -57,7 +56,6 @@ export class LoginComponent implements OnInit {
         private userService: UserService,
         private translate: TranslateService,
         private notify: NotificationService,
-        private configService: ConfigService,
         private localeService: LocaleService,
         private sessionStorageService: SessionStorageService
     ) {}
@@ -166,35 +164,33 @@ export class LoginComponent implements OnInit {
                     this.authService.setTokens(data.body['auth_token'], data.body['refresh_token'], btoa(JSON.stringify(this.userService.getUser())));
                     this.authService.generateHeaders();
                     this.notify.success(this.translate.instant('AUTH.authenticated'));
-                    this.configService.readConfig().then(() => {
-                        if (this.authService.getToken('cachedUrlName')) {
-                            this.router.navigate([this.authService.getToken('cachedUrlName')]).then(() => {
-                                if (passwordAlert) {
-                                    this.notify.error(this.translate.instant('ERROR.admin_password_alert'));
+                    if (this.authService.getToken('cachedUrlName')) {
+                        this.router.navigate([this.authService.getToken('cachedUrlName')]).then(() => {
+                            if (passwordAlert) {
+                                this.notify.error(this.translate.instant('ERROR.admin_password_alert'));
+                            }
+                        });
+                        this.authService.cleanCachedUrl();
+                    } else {
+                        this.http.get(environment['url'] + '/ws/users/getDefaultRoute/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
+                            tap((data: any) => {
+                                if (data.route) {
+                                    this.defaultRoute = data.route;
                                 }
-                            });
-                            this.authService.cleanCachedUrl();
-                        } else {
-                            this.http.get(environment['url'] + '/ws/users/getDefaultRoute/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
-                                tap((data: any) => {
-                                    if (data.route) {
-                                        this.defaultRoute = data.route;
+                                this.router.navigate([this.defaultRoute]).then(() => {
+                                    if (passwordAlert) {
+                                        this.notify.error(this.translate.instant('ERROR.admin_password_alert'));
                                     }
-                                    this.router.navigate([this.defaultRoute]).then(() => {
-                                        if (passwordAlert) {
-                                            this.notify.error(this.translate.instant('ERROR.admin_password_alert'));
-                                        }
-                                    });
-                                }),
-                                catchError((err: any) => {
-                                    console.debug(err);
-                                    this.notify.handleErrors(err);
-                                    return of(false);
-                                })
-                            ).subscribe();
+                                });
+                            }),
+                            catchError((err: any) => {
+                                console.debug(err);
+                                this.notify.handleErrors(err);
+                                return of(false);
+                            })
+                        ).subscribe();
 
-                        }
-                    });
+                    }
                 }),
                 catchError((err: any) => {
                     this.processLogin = false;

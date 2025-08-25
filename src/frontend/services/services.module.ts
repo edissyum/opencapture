@@ -23,7 +23,6 @@ import { ErrorServiceComponent } from './error/error.service';
 import { TranslateModule } from "@ngx-translate/core";
 import { AppMaterialModule } from '../app/app-material.module';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
-import { ProcessWatcherComponent } from './process-watcher/process-watcher.component';
 import { CustomSnackbarComponent, NotificationService } from './notifications/notifications.service';
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { CodeEditorComponent } from './code-editor/code-editor.component';
@@ -35,8 +34,8 @@ import { NgxFileDragDropComponent } from 'ngx-file-drag-drop';
 
 @NgModule({
     imports: [AppMaterialModule, CommonModule, TranslateModule, DragDropModule, CodeEditorModule, ReactiveFormsModule, NgxFileDragDropComponent],
-    declarations: [CustomSnackbarComponent, ConfirmDialogComponent, ProcessWatcherComponent, CodeEditorComponent, ExportDialogComponent, ImportDialogComponent],
-    exports: [ProcessWatcherComponent],
+    declarations: [CustomSnackbarComponent, ConfirmDialogComponent, CodeEditorComponent, ExportDialogComponent, ImportDialogComponent],
+    exports: [],
     providers: [NotificationService, LastUrlService, HintServiceComponent, ErrorServiceComponent]
 })
 export class ServicesModule { }

@@ -83,33 +83,25 @@ export class AuthService {
 
     getTokenName() {
         let tokenName = 'OpenCaptureToken';
-        let configName = 'OpenCaptureConfig';
         let userDataName = 'OpenCaptureUserData';
         let cachedUrlName = 'OpenCaptureCachedUrl';
         let refreshTokenName = 'OpenCaptureRefreshToken';
-        let minimizeDisplay = 'OpenCaptureMinimizeDisplay';
 
         if (environment['customId']) {
             tokenName += '_' + environment['customId'];
-            configName += '_' + environment['customId'];
             userDataName += '_' + environment['customId'];
             cachedUrlName += '_' + environment['customId'];
-            minimizeDisplay += '_' + environment['customId'];
             refreshTokenName += '_' + environment['customId'];
         } else if (environment['fqdn']) {
             tokenName += '_' + environment['fqdn'];
-            configName += '_' + environment['fqdn'];
             userDataName += '_' + environment['fqdn'];
             cachedUrlName += '_' + environment['fqdn'];
-            minimizeDisplay += '_' + environment['fqdn'];
             refreshTokenName += '_' + environment['fqdn'];
         }
         return {
             'tokenJwt': tokenName,
-            'configName': configName,
             'userData': userDataName,
             'cachedUrlName': cachedUrlName,
-            'minimizeDisplay': minimizeDisplay,
             'refreshTokenJwt': refreshTokenName
         };
     }
@@ -119,7 +111,6 @@ export class AuthService {
         this.sessionStorage.save(tokenNames['tokenJwt'], token);
         this.sessionStorage.save(tokenNames['userData'], user_token);
         this.sessionStorage.save(tokenNames['refreshTokenJwt'], refresh_token);
-        this.sessionStorage.save(tokenNames['minimizeDisplay'], 'true');
     }
 
     getToken(name: any) {
@@ -141,7 +132,6 @@ export class AuthService {
         this.sessionStorage.remove('splitter_or_verifier');
         this.sessionStorage.remove('selectedParentSettings');
         this.sessionStorage.remove(tokenNames['refreshTokenJwt']);
-        this.sessionStorage.remove(tokenNames['minimizeDisplay']);
 
         if (user) {
             this.http.get(environment['url'] + '/ws/auth/logout?user_id=' + user['id']).pipe(
