@@ -51,7 +51,7 @@ class FindWithAI:
                 for chunk_idx in range(0, page_count, 10):
                     start_page = 0 if chunk_idx == 0 else chunk_idx + 1
                 end_page = min(chunk_idx + 10, page_count)
-                chunk_images = convert_from_path(file_path, first_page=start_page, last_page=end_page, dpi=300)
+                chunk_images = convert_from_path(file_path, first_page=start_page, last_page=end_page, dpi=400)
 
                 for image in chunk_images:
                     output_path = tmp_file.name + '-' + str(cpt).zfill(3) + '.jpg'
