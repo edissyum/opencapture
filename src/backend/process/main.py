@@ -668,7 +668,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         else:
             log.info(f"Use of the following AI LLM to find document details : {llm_model['name']} ({llm_model['provider']})")
 
-            ai_chat = find_with_ai.FindWithAI(log, llm_model)
+            ai_chat = find_with_ai.FindWithAI(log, ocr, llm_model)
             ai_invoice_values = ai_chat.find_invoice_info(file)
             if ai_invoice_values:
                 for value in ai_invoice_values:
@@ -676,6 +676,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                         if isinstance(ai_invoice_values[value], (str, int, float)):
                             log.info(f"{value} found using AI : {str(ai_invoice_values[value])}")
                             datas['datas'][value] = ai_invoice_values[value]
+            else:
+                log.info('No data found using AI LLM, fallback to standard processing')
+                ai_llm = False
 
     if workflow_settings['input']['apply_process'] and not ai_llm:
         if 'invoice_number' in system_fields_to_find:
