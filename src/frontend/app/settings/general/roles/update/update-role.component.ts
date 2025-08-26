@@ -167,7 +167,10 @@ export class UpdateRoleComponent implements OnInit {
         _('PRIVILEGES.attachments_list_splitter'),
         _('PRIVILEGES.attachments_list_verifier'),
         _('PRIVILEGES.upload_attachments_verifier'),
-        _('PRIVILEGES.upload_attachments_splitter')
+        _('PRIVILEGES.upload_attachments_splitter'),
+        _('PRIVILEGES.add_llm_models'),
+        _('PRIVILEGES.update_llm_models'),
+        _('PRIVILEGES.list_llm_models')
     ];
     // End translation
     constructor(
