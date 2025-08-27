@@ -122,8 +122,8 @@
                             </mat-panel-title>
                         </mat-expansion-panel-header>
                         @if (fieldsCategories['batch_metadata'].length === 0) {
-                            <div class="text-gray-400 text-center w-full">
-                                <i class="block fa-solid fa-check fa-3x"></i>
+                            <div class="text-gray-400 flex justify-center items-center w-full">
+                                <i class="block fa-solid fa-check fa-2x"></i>
                                 <span class="block">{{ 'SPLITTER.no_metadata_required' | translate }}</span>
                             </div>
                         }
@@ -283,16 +283,17 @@
                                                 </button>
                                             </span>
                                         </mat-expansion-panel-header>
-                                        <div class="text-gray-400 w-full">
-                                            <span class="m-6 w-11/12">{{ 'SPLITTER.document_metadata' | translate }}</span>
-                                            <mat-divider class="mx-6" style="width: 96%;"></mat-divider>
-                                            @if (fieldsCategories['document_metadata'].length === 0) {
-                                                <i class="text-center block fa-solid fa-check fa-3x"></i>
-                                                <span class="block text-center">
-                                                    {{ 'SPLITTER.no_metadata_required' | translate }}
-                                                </span>
-                                            }
-                                        </div>
+                                        @if (fieldsCategories['document_metadata'].length === 0) {
+                                            <div class="text-gray-400 flex justify-center items-center w-full">
+                                                <i class="block fa-solid fa-check fa-2x"></i>
+                                                <span class="block">{{ 'SPLITTER.no_metadata_required' | translate }}</span>
+                                            </div>
+                                        } @else {
+                                            <div class="text-gray-400 w-full">
+                                                <span class="m-6 w-11/12">{{ 'SPLITTER.document_metadata' | translate }}</span>
+                                                <mat-divider class="mx-6" style="width: 96%;"></mat-divider>
+                                            </div>
+                                        }
                                         <form [formGroup]="document.form" class="flex flex-wrap mx-6 mt-4">
                                             @for (field of fieldsCategories['document_metadata']; track field['id']) {
                                                 <div class="flex items-center px-3" [class]="field.class">
