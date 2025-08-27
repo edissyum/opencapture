@@ -24,6 +24,9 @@ export interface ConfirmData {
     confirmButton : string
     selectValues: any
     selectLabel : string
+    newId : string
+    askNewId : boolean
+    askNewIdLabel : string
     confirmButtonColor : string
     cancelButton : string
 }

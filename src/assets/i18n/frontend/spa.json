@@ -1282,6 +1282,7 @@
 		"input_scripting": "Scripting preventivo",
 		"label": "Redacción del flujo de trabajo",
 		"line_box_builder": "Extracción de texto por líneas",
+		"new_workflow_label_short": "Nueva redacción del flujo de trabajo técnico",
 		"next": "Siguiente",
 		"no_ai_llm": "No hay modelo de IA LLM asociado",
 		"no_ai_model_associated": "No hay modelo de IA asociado",

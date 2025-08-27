@@ -39,7 +39,7 @@
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <button (click)="$event.stopPropagation(); duplicateConfirmDialog(element.id, element.label)"
+                        <button (click)="$event.stopPropagation(); duplicateConfirmDialog(element.id, element.workflow_id, element.label)"
                                 matTooltip="{{ 'WORKFLOW.duplicate' | translate }}" mat-icon-button
                                 class="inline-block align-text-top">
                             <i class="fa-solid fa-clone text-lg"></i>

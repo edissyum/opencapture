@@ -1282,6 +1282,7 @@
 		"input_scripting": "Before process scripting",
 		"label": "Workflow label",
 		"line_box_builder": "Text extraction by lines",
+		"new_workflow_label_short": "New workflow technical identifier",
 		"next": "Next",
 		"no_ai_llm": "No AI LLM associated",
 		"no_ai_model_associated": "No AI model associated",

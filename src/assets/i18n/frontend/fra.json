@@ -1282,6 +1282,7 @@
 		"input_scripting": "Scripting de prétraitement",
 		"label": "Libellé du workflow",
 		"line_box_builder": "Extraction de texte par lignes",
+		"new_workflow_label_short": "Nouveau libellé technique du workflow",
 		"next": "Suivant",
 		"no_ai_llm": "Aucun modèle d'IA LLM associé",
 		"no_ai_model_associated": "Aucun modèle d'IA associé",
