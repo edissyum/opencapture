@@ -23,8 +23,7 @@ import requests
 import tempfile
 import pdftotext
 from pdf2image import convert_from_path
-
-from src.backend.classes.Files import convert_heif_to_jpg
+from src.backend.classes.Files import convert_heif_to_jpg, rotate_img
 
 
 class FindWithAI:
@@ -59,6 +58,7 @@ class FindWithAI:
                 for image in chunk_images:
                     output_path = tmp_file.name + '-' + str(cpt).zfill(3) + '.jpg'
                     image.save(output_path, 'JPEG')
+                    rotate_img(output_path)
                     cpt = cpt + 1
                     text += self.ocr.text_builder(output_path)
                     if os.path.exists(output_path):
@@ -74,6 +74,7 @@ class FindWithAI:
                         heif_image = convert_heif_to_jpg(file_path)
                         heif_image.save(final_directory, 'JPEG')
                         file_path = final_directory
+                    rotate_img(file_path + '.jpg')
                 ocr_content = self.ocr.text_builder(file_path)
             else:
                 with open(file_path, 'rb') as file:
@@ -105,6 +106,7 @@ class FindWithAI:
             try:
                 content = json.loads(content)
             except json.JSONDecodeError as e:
+                self.log.error(str(content))
                 self.log.error(f"Error decoding JSON response: {e}")
                 return None
 

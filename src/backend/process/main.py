@@ -611,12 +611,23 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             if workflow_settings['process']['ai_llm'] != 'no_ai_llm':
                 ai_llm = workflow_settings['process']['ai_llm']
 
+        if supplier and 'form_id' in supplier[2] and supplier[2]['form_id']:
+            form_exists = database.select({
+                'select': ['id'],
+                'table': ['form_models'],
+                'where': ['id = %s', 'status <> %s'],
+                'data': [supplier[2]['form_id'], 'DEL']
+            })
+            if not form_exists:
+                supplier[2]['form_id'] = None
+
         if 'override_supplier_form' in workflow_settings['process'] and \
                 workflow_settings['process']['override_supplier_form'] or \
                 not supplier or ('form_id' not in supplier[2] or not supplier[2]['form_id']):
             datas.update({'form_id': workflow_settings['process']['form_id']})
         elif ('override_supplier_form' not in workflow_settings['process'] or
               not workflow_settings['process']['override_supplier_form']) and supplier and supplier[2]['form_id']:
+            log.info('Use supplier form based on supplier settings : ' + str(supplier[2]['form_id']))
             datas.update({'form_id': supplier[2]['form_id']})
 
     if 'form_id' not in datas or not datas['form_id']:
