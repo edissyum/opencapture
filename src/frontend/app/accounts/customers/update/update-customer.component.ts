@@ -25,7 +25,7 @@ import { catchError, finalize, tap } from "rxjs/operators";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { UserService } from "../../../../services/user.service";
 import { AuthService } from "../../../../services/auth.service";
-import { COUNTRIES_DB_FR, Country } from "@angular-material-extensions/select-country";
+import { COUNTRIES_DB_FR, Country } from "select-country-angular-20";
 import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
