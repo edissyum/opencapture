@@ -6,7 +6,7 @@
 }
 
 .profile_active {
-    @apply text-green-400 #{!important};
+    @apply text-green-400!;
 }
 
 .my_profile {

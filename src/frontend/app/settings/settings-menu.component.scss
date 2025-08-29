@@ -21,17 +21,17 @@
     @apply relative;
     @apply items-center;
     @apply bg-green-400;
-    @apply bg-opacity-60;
+    @apply/60;
     @apply text-gray-900;
     @apply justify-between;
     & div button i {
-        @apply leading-none #{!important};
+        @apply leading-none!;
     }
 }
 
 .mat-drawer-inner-container {
-    @apply overflow-x-hidden #{!important};
-    @apply overflow-y-auto #{!important};
+    @apply overflow-x-hidden!;
+    @apply overflow-y-auto!;
 }
 
 .mat-button-wrapper {
@@ -39,7 +39,7 @@
 }
 
 mat-expansion-panel {
-    @apply rounded-none #{!important};
+    @apply rounded-none!;
 }
 
 .settings_expansion {
@@ -49,13 +49,13 @@ mat-expansion-panel {
     @apply bg-gray-100;
 
     & .mat-content mat-panel-title {
-        @apply text-gray-900 #{!important};
-        @apply truncate #{!important};
+        @apply text-gray-900!;
+        @apply truncate!;
     }
 
     &:hover, &:focus {
-        @apply bg-none #{!important};
-        @apply bg-gray-200 #{!important};
+        @apply bg-none!;
+        @apply bg-gray-200!;
     }
 }
 

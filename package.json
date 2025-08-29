@@ -50,6 +50,7 @@
         "@fortawesome/fontawesome-free": "^7.0.0",
         "@ngx-translate/core": "^17.0.0",
         "@ngx-translate/http-loader": "^17.0.0",
+        "@tailwindcss/postcss": "^4.1.12",
         "@types/d3-scale": "^4.0.9",
         "@types/d3-selection": "^3.0.11",
         "@types/d3-shape": "^3.1.7",
@@ -58,9 +59,10 @@
         "eslint": "^9.34.0",
         "jquery": "^3.7.1",
         "monaco-editor": "^0.52.2",
+        "postcss": "^8.5.6",
         "rxjs": "~7.8.2",
         "select-country-angular-20": "^20.2.0",
-        "tailwindcss": "3.4.17",
+        "tailwindcss": "^4.1.12",
         "typescript": "~5.9.2",
         "zone.js": "~0.15.1"
     }

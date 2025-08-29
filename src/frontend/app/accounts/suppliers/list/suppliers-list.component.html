@@ -5,7 +5,7 @@
                 <app-loader></app-loader>
             </div>
         }
-        <div class="relative z-30 h-[3.75rem] flex justify-between items-center px-2 py-1.5 bg-green-400 bg-opacity-60 text-gray-900">
+        <div class="relative z-30 h-[3.75rem] flex justify-between items-center px-2 py-1.5 bg-green-400/60 text-gray-900">
             <div class="settings_search">
                 <mat-form-field>
                     <mat-label>{{ 'ACCOUNTS.search_supplier' | translate }}</mat-label>
@@ -100,7 +100,7 @@
         </div>
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" [opened]="false" position="end" class="available-fields w-1/5 flex flex-col h-full border-r border-green-400">
-        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 p-4">
+        <h3 class="bg-green-400/60 text-center text-gray-900 m-0 p-4">
             {{ "ACCOUNTS.civilities_settings" | translate }}
         </h3>
         <mat-divider class="border-green-400"></mat-divider>

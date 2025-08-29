@@ -52,7 +52,7 @@ i.cdk-drag {
                 @apply left-8;
                 @apply top-2;
                 &:hover .mat-mdc-button-persistent-ripple::before {
-                    @apply bg-transparent #{!important};
+                    @apply bg-transparent!;
                 }
             }
 
@@ -91,5 +91,5 @@ i.cdk-drag {
 }
 
 .mat-mdc-menu-panel {
-    @apply max-w-full #{!important};
+    @apply max-w-full!;
 }

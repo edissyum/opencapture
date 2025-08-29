@@ -4,13 +4,13 @@
     }
 
     .mat-mdc-form-field-flex {
-        @apply h-8 #{!important};
+        @apply h-8!;
 
         .mat-mdc-form-field-infix {
-            @apply py-0 #{!important};
+            @apply py-0!;
 
             .mat-mdc-select {
-                @apply pt-1 #{!important};
+                @apply pt-1!;
             }
         }
     }
