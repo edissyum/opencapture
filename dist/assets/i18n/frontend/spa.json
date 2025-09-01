@@ -340,7 +340,7 @@
 	"ERROR": {
 		"404": "La página solicitada no existe",
 		"500": "Apareció un error técnico de nuestro lado. <br> Por favor inténtelo de nuevo más tarde",
-		"admin_password_alert": "<strong class='text-center block right-4 relative -mt-42'>/!\\ ATENCIÓN /!\\</strong> <br>Todavía usa la contraseña predeterminada de la cuenta de administración. Por favor, cámbielo lo más rápido posible por problemas de seguridad.",
+		"admin_password_alert": "<strong class='text-center block right-4 relative' style='margin-top: -168px'>/!\\ ATENCIÓN /!\\</strong> <br>Todavía usa la contraseña predeterminada de la cuenta de administración. Por favor, cámbielo lo más rápido posible por problemas de seguridad.",
 		"alphanum_extended_pattern": "El valor no está en formato esperado: alfanumérico con caracteres especiales",
 		"alphanum_pattern": "El valor no está en formato esperado: alfanumérico",
 		"bad_email_pattern": "La dirección de correo electrónico no es válida",
