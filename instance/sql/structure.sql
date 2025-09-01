@@ -409,7 +409,8 @@ CREATE TABLE "workflows" (
     "status"            VARCHAR(10)  DEFAULT 'OK',
     "input"             JSONB        DEFAULT '{}',
     "process"           JSONB        DEFAULT '{}',
-    "output"            JSONB        DEFAULT '{}'
+    "output"            JSONB        DEFAULT '{}',
+    CONSTRAINT          "unique_workflow_per_module" UNIQUE ("workflow_id", "module")
 );
 
 CREATE TABLE "attachments" (

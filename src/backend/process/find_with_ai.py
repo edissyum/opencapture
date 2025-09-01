@@ -15,6 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import os
 import re
 import json
 import pypdf
@@ -22,6 +23,7 @@ import requests
 import tempfile
 import pdftotext
 from pdf2image import convert_from_path
+from src.backend.classes.Files import convert_heif_to_jpg, rotate_img
 
 
 class FindWithAI:
@@ -56,29 +58,41 @@ class FindWithAI:
                 for image in chunk_images:
                     output_path = tmp_file.name + '-' + str(cpt).zfill(3) + '.jpg'
                     image.save(output_path, 'JPEG')
+                    rotate_img(output_path)
                     cpt = cpt + 1
                     text += self.ocr.text_builder(output_path)
+                    if os.path.exists(output_path):
+                        os.remove(output_path)
             return text
 
     def find_invoice_info(self, file_path):
         if '##OCR_CONTENT##' in str(self.llm_model['json_content']):
+            if file_path.lower().endswith(('.heif', '.heic', '.jpg', '.jpeg', '.png')):
+                if file_path.lower().endswith(('.heic', '.heif')):
+                    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as tmp_file:
+                        final_directory = tmp_file.name
+                        heif_image = convert_heif_to_jpg(file_path)
+                        heif_image.save(final_directory, 'JPEG')
+                        file_path = final_directory
+                    rotate_img(file_path + '.jpg')
+                ocr_content = self.ocr.text_builder(file_path)
+            else:
+                with open(file_path, 'rb') as file:
+                    ocr_content = pdftotext.PDF(file)
+                    ocr_content = "\n".join(ocr_content)
+                    ocr_content = ocr_content.strip()
+                    if not ocr_content:
+                        self.log.info("PDF seems to be image-based, proceeding with OCR using pytesseract.")
+                        ocr_content = self.extract_text_from_pdf(file_path)
 
-            with open(file_path, 'rb') as file:
-                ocr_content = pdftotext.PDF(file)
-                ocr_content = "\n".join(ocr_content)
-                ocr_content = ocr_content.strip()
-                if not ocr_content:
-                    self.log.info("PDF seems to be image-based, proceeding with OCR using pytesseract.")
-                    ocr_content = self.extract_text_from_pdf(file_path)
+            ocr_content = re.sub(r'\s+', ' ', ocr_content)
+            if not ocr_content:
+                self.log.error("OCR content is empty. Please check the PDF file.")
+                return None
 
-                ocr_content = re.sub(r'\s+', ' ', ocr_content)
-                if not ocr_content:
-                    self.log.error("OCR content is empty. Please check the PDF file.")
-                    return None
-
-                json_content_str = json.dumps(self.llm_model['json_content'])
-                json_content_str = json_content_str.replace('"##OCR_CONTENT##"', json.dumps(ocr_content))
-                self.llm_model['json_content'] = json.loads(json_content_str)
+            json_content_str = json.dumps(self.llm_model['json_content'])
+            json_content_str = json_content_str.replace('"##OCR_CONTENT##"', json.dumps(ocr_content))
+            self.llm_model['json_content'] = json.loads(json_content_str)
 
         ai_llm_res = requests.post(self.llm_model['url'], headers={"Authorization": f"Bearer {self.llm_model['api_key']}"},
                             json=self.llm_model['json_content'])
@@ -92,6 +106,7 @@ class FindWithAI:
             try:
                 content = json.loads(content)
             except json.JSONDecodeError as e:
+                self.log.error(str(content))
                 self.log.error(f"Error decoding JSON response: {e}")
                 return None
 

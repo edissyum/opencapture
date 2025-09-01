@@ -111,19 +111,19 @@ def get_workflow_by_workflow_id(workflow_id):
         return response, 400
 
 
-def duplicate_workflow(workflow_id):
-    workflow_info, error = workflow.get_workflow_by_id({'workflow_id': workflow_id})
+def duplicate_workflow(args):
+    workflow_info, error = workflow.get_workflow_by_id({'workflow_id': args['workflow_id']})
     if error is None:
-        args = {
+        workflow_args = {
             'module': workflow_info['module'],
-            'workflow_id': 'copy_' + workflow_info['workflow_id'],
+            'workflow_id': args['workflow_label_short'],
             'label': gettext('COPY_OF') + ' ' + workflow_info['label'],
             'input': json.dumps(workflow_info['input']),
             'process': json.dumps(workflow_info['process']),
             'output': json.dumps(workflow_info['output'])
         }
 
-        _, error = workflow.create_workflow({'columns': args})
+        _, error = workflow.create_workflow({'columns': workflow_args})
         if error is None:
             history.add_history({
                 'module': workflow_info['module'],

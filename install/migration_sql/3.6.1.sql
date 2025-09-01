@@ -1,0 +1,1 @@
+ALTER TABLE workflows ADD CONSTRAINT unique_workflow_per_module UNIQUE (workflow_id, module);

@@ -199,6 +199,7 @@ def launch(args):
             if 'file' in args and args['file'] is not None:
                 path = args['file']
                 log.filename = os.path.basename(path)
+                extension = os.path.splitext(path)[1].lower()
                 try:
                     if separator_qr.enabled:
                         if check_file(files, path, log, docservers):
@@ -222,7 +223,7 @@ def launch(args):
                             list_of_ids.append(res)
                         os.remove(path)
                     else:
-                        if separator_qr.remove_blank_pages:
+                        if separator_qr.remove_blank_pages and extension == '.pdf':
                             separator_qr.remove_blank_page(path)
 
                         res = execute(args, path, log, config, files, ocr, regex, database, docservers, configurations,
