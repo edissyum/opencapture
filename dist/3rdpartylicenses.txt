@@ -1159,7 +1159,7 @@ License: "MIT"
 
 
 --------------------------------------------------------------------------------
-Package: @angular-material-extensions/select-country
+Package: select-country-angular-20
 License: "MIT"
 
 
