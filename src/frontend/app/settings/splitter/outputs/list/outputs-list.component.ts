@@ -36,7 +36,6 @@ import { Sort } from "@angular/material/sort";
 @Component({
     selector: 'app-splitter-output-list',
     templateUrl: './outputs-list.component.html',
-    styleUrls: ['./outputs-list.component.scss'],
     standalone: false
 })
 export class SplitterOutputListComponent implements OnInit {

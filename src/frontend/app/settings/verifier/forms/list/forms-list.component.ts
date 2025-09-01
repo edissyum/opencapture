@@ -36,7 +36,6 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 @Component({
     selector: 'app-list',
     templateUrl: './forms-list.component.html',
-    styleUrls: ['./forms-list.component.scss'],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } }
     ],

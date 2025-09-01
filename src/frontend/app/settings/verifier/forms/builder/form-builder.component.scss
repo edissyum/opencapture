@@ -1,12 +1,15 @@
+@reference "tailwindcss";
+@config "../../../../../../../tailwind.config.js";
+
 ::ng-deep .edit_input {
     & .mat-mdc-text-field-wrapper {
         @apply top-1.5;
         & .mat-mdc-form-field-flex {
             @apply h-2;
             & .mat-mdc-form-field-infix {
-                @apply pt-1 #{!important};
+                @apply pt-1!;
                 & input {
-                    @apply h-auto #{!important};
+                    @apply h-auto!;
                 }
             }
         }

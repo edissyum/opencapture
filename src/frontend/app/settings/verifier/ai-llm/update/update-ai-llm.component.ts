@@ -32,7 +32,6 @@ import { of } from "rxjs";
 @Component({
     selector: 'app-ai-llm-update',
     templateUrl: './update-ai-llm.component.html',
-    styleUrl: './update-ai-llm.component.scss',
     standalone: false
 })
 export class UpdateAiLLMComponent implements OnInit {

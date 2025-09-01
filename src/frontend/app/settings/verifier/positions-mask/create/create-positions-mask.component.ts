@@ -32,7 +32,6 @@ import { of } from "rxjs";
 @Component({
     selector: 'create-positions-mask',
     templateUrl: './create-positions-mask.component.html',
-    styleUrls: ['./create-positions-mask.component.scss'],
     standalone: false
 })
 export class CreatePositionsMaskComponent implements OnInit {

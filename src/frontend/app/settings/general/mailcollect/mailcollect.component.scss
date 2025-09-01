@@ -1,6 +1,9 @@
+@reference "tailwindcss";
+@config "../../../../../../tailwind.config.js";
+
 ::ng-deep .mat-mdc-tab-labels {
     & .mat-mdc-tab-disabled {
-        @apply opacity-100 #{!important};
+        @apply opacity-100!;
     }
 
     & :not(.mdc-tab--active) {
@@ -10,7 +13,7 @@
     }
 
     & .mdc-tab--active {
-        @apply opacity-100 #{!important};
+        @apply opacity-100!;
         & .actions {
             @apply pointer-events-auto;
         }
@@ -20,7 +23,7 @@
 ::ng-deep .change_process_name .mat-form-field-wrapper {
     @apply top-3.5;
     & .mat-form-field-flex {
-        @apply h-8 #{!important};
+        @apply h-8!;
     }
 
     & .mat-form-field-infix {

@@ -32,7 +32,6 @@ import { of } from "rxjs";
 @Component({
     selector: 'create-output',
     templateUrl: './create-output.component.html',
-    styleUrls: ['./create-output.component.scss'],
     standalone: false
 })
 export class CreateOutputComponent implements OnInit {

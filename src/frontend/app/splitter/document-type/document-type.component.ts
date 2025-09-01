@@ -22,7 +22,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 @Component({
     selector: 'app-document-type',
     templateUrl: './document-type.component.html',
-    styleUrls: ['./document-type.component.scss'],
     standalone: false
 })
 export class DocumentTypeComponent {

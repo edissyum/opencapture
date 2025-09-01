@@ -1,7 +1,10 @@
+@reference "tailwindcss";
+@config "../../../../../../tailwind.config.js";
+
 .mat-option {
     background: transparent!important;
 }
 
 ::ng-deep .mat-pseudo-checkbox-checked {
-    @apply bg-green-400 #{!important};
+    @apply bg-green-400!;
 }

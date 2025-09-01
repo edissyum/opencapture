@@ -32,7 +32,6 @@ import { NotificationService } from "../../../../services/notifications/notifica
 @Component({
     selector: 'app-status-update-splitter',
     templateUrl: './update-status.component.html',
-    styleUrls: ['./update-status.component.scss'],
     standalone: false
 })
 export class SplitterUpdateStatusComponent implements OnInit {

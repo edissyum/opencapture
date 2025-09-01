@@ -1,3 +1,6 @@
+@reference "tailwindcss";
+@config "../../../../tailwind.config.js";
+
 .hint {
     @apply my-3;
     @apply flex;

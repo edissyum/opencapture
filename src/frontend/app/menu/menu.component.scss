@@ -1,12 +1,14 @@
+@reference "tailwindcss";
+@config "../../../../tailwind.config.js";
+
 .settings_active {
     @apply ring-4;
     @apply ring-offset-2;
-    @apply ring-green-400;
-    @apply ring-opacity-60;
+    @apply ring-green-400/60;
 }
 
 .profile_active {
-    @apply text-green-400 #{!important};
+    @apply text-green-400!;
 }
 
 .my_profile {

@@ -1,3 +1,6 @@
+@reference "tailwindcss";
+@config "../../../../../../tailwind.config.js";
+
 ::ng-deep .mat-drawer-inner-container {
-    @apply overflow-hidden #{!important};
+    @apply overflow-hidden!;
 }

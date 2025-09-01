@@ -12,10 +12,11 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-//@import "tailwindcss";
+@use "tailwindcss";
+@use "./material-custom";
+@use "./splitter-custom";
+@use "./notification-custom";
+@use "./form-builder-custom";
 
 :focus {
     outline: none !important;
@@ -24,8 +25,8 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 .mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background,
 .mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled:indeterminate ~ .mdc-checkbox__background,
 .mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control[data-indeterminate="true"]:enabled ~ .mdc-checkbox__background {
-    @apply bg-green-400 #{!important};
-    @apply border-green-400 #{!important};
+    @apply bg-green-400!;
+    @apply border-green-400!;
 }
 
 .fa-solid {
@@ -33,49 +34,49 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 }
 
 .mat-mdc-button .mat-mdc-button-persistent-ripple::before {
-    @apply bg-transparent #{!important};
+    @apply bg-transparent!;
 }
 
 /*** Design principal button ***/
 
 .valid_button {
-    @apply p-6 #{!important};
-    @apply border #{!important};
-    @apply min-w-56 #{!important};
-    @apply text-white #{!important};
-    @apply transition #{!important};
-    @apply border-solid #{!important};
-    @apply bg-green-400 #{!important};
-    @apply duration-300 #{!important};
-    @apply border-green-400 #{!important};
-    @apply hover:bg-transparent #{!important};
-    @apply hover:text-gray-900 #{!important};
+    @apply p-6!;
+    @apply border!;
+    @apply min-w-56!;
+    @apply text-white!;
+    @apply transition!;
+    @apply border-solid!;
+    @apply bg-green-400!;
+    @apply duration-300!;
+    @apply border-green-400!;
+    @apply hover:text-gray-900!;
+    @apply hover:bg-transparent!;
 }
 
 .gray_button {
-    @apply p-6 #{!important};
-    @apply mr-4 #{!important};
-    @apply border #{!important};
-    @apply min-w-56 #{!important};
-    @apply text-white #{!important};
-    @apply transition #{!important};
-    @apply bg-gray-900 #{!important};
-    @apply border-solid #{!important};
-    @apply duration-300 #{!important};
-    @apply border-gray-900 #{!important};
-    @apply hover:text-gray-900 #{!important};
-    @apply hover:bg-transparent #{!important};
+    @apply p-6!;
+    @apply mr-4!;
+    @apply border!;
+    @apply min-w-56!;
+    @apply text-white!;
+    @apply transition!;
+    @apply bg-gray-900!;
+    @apply border-solid!;
+    @apply duration-300!;
+    @apply border-gray-900!;
+    @apply hover:text-gray-900!;
+    @apply hover:bg-transparent!;
 }
 
 .invalid_button {
-    @apply p-6 #{!important};
-    @apply border #{!important};
-    @apply min-w-56 #{!important};
-    @apply text-white #{!important};
-    @apply bg-gray-600 #{!important};
-    @apply border-solid #{!important};
-    @apply duration-300 #{!important};
-    @apply border-gray-600 #{!important};
+    @apply p-6!;
+    @apply border!;
+    @apply min-w-56!;
+    @apply text-white!;
+    @apply bg-gray-600!;
+    @apply border-solid!;
+    @apply duration-300!;
+    @apply border-gray-600!;
 }
 
 /*** Image area select ***/
@@ -156,8 +157,7 @@ div[id*="select-area-label_"] {
 .mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical),
 .cdk-keyboard-focused .mat-calendar-body-active > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical),
 .cdk-program-focused .mat-calendar-body-active > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
-    @apply bg-green-400 #{!important};
-    @apply bg-opacity-60 #{!important};
+    @apply bg-green-400/60!;
 }
 
 .mat-expansion-panel-body {
@@ -182,7 +182,7 @@ div[id*="select-area-label_"] {
 }
 
 .mat-paginator-page-size-select > .mat-form-field-wrapper > .mat-form-field-flex {
-    @apply bg-transparent #{!important};
+    @apply bg-transparent!;
 
     & .mat-form-field-infix > .mat-select > .mat-select-trigger > .mat-select-arrow-wrapper {
         transform: none !important;
