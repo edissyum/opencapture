@@ -1,3 +1,6 @@
+@reference "tailwindcss";
+@config "../../../../../../tailwind.config.js";
+
 ::ng-deep .mat-mdc-tab-labels {
     & .mat-mdc-tab-disabled {
         @apply opacity-100!;

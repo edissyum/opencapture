@@ -1,3 +1,6 @@
+@reference "tailwindcss";
+@config "../../../../../tailwind.config.js";
+
 ::ng-deep #form-select-field {
     .mat-mdc-form-field-subscript-wrapper {
         height: 0;

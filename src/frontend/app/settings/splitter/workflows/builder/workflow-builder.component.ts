@@ -35,7 +35,6 @@ import { CodeEditorComponent } from "../../../../../services/code-editor/code-ed
 @Component({
     selector: 'app-workflow-builder-splitter',
     templateUrl: './workflow-builder.component.html',
-    styleUrls: ['./workflow-builder.component.scss'],
     providers: [
         {
             provide: STEPPER_GLOBAL_OPTIONS,

@@ -12,12 +12,11 @@ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-//@tailwind base;
-//@tailwind components;
-//@tailwind utilities;
 @use "tailwindcss";
-@config "../../../tailwind.config.js";
-//@import "tailwindcss/preflight";
+@use "./material-custom";
+@use "./splitter-custom";
+@use "./notification-custom";
+@use "./form-builder-custom";
 
 :focus {
     outline: none !important;

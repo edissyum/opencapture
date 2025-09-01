@@ -69,7 +69,7 @@
                         <button id="settings-menu" aria-haspopup="true" mat-mini-fab routerLink="/settings"
                                 [class.settings_active]="location.path().includes('settings')"
                                 [matTooltip]="this.translate.instant('GLOBAL.settings')"
-                                class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
+                                class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400/60">
                             <i class="fa-solid fa-cog"></i>
                         </button>
                     </div>
@@ -79,7 +79,7 @@
                         <button id="history-menu" aria-haspopup="true" mat-mini-fab routerLink="/history"
                                 [class.settings_active]="location.path().includes('history')"
                                 [matTooltip]="'GLOBAL.history' | translate"
-                                class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
+                                class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400/60">
                             <i class="fa-solid fa-history"></i>
                         </button>
                     </div>
@@ -89,7 +89,7 @@
                         <button id="statistics-menu" aria-haspopup="true" mat-mini-fab routerLink="/statistics"
                                 [class.settings_active]="location.path().includes('statistics')"
                                 [matTooltip]="'GLOBAL.statistics' | translate"
-                                class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
+                                class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400/60">
                             <i class="fa-solid fa-chart-bar"></i>
                         </button>
                     </div>
@@ -99,7 +99,7 @@
                         <button id="monitoring-menu" aria-haspopup="true" mat-mini-fab routerLink="/monitoring"
                                 [class.settings_active]="location.path().includes('monitoring')"
                                 [matTooltip]="'GLOBAL.monitoring' | translate"
-                                class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
+                                class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400/60">
                             <i class="fa-solid fa-magnifying-glass-chart"></i>
                         </button>
                     </div>
@@ -109,7 +109,7 @@
                         <button id="supplier-menu" aria-haspopup="true" mat-mini-fab routerLink="/accounts/suppliers"
                                 [class.settings_active]="this.location.path().includes('accounts/suppliers')"
                                 [matTooltip]="'ACCOUNTS.suppliers_list' | translate"
-                                class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
+                                class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400/60">
                             <i class="fa-solid fa-city"></i>
                         </button>
                     </div>
@@ -119,7 +119,7 @@
                         <button id="customer-menu" aria-haspopup="true" mat-mini-fab routerLink="/accounts/customers"
                                 [class.settings_active]="this.location.path().includes('accounts/customers')"
                                 [matTooltip]="'ACCOUNTS.customers_list' | translate"
-                                class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
+                                class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400/60">
                             <i class="fa-solid fa-users"></i>
                         </button>
                     </div>

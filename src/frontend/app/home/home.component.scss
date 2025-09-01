@@ -1,3 +1,6 @@
+@reference "tailwindcss";
+@config "../../../../tailwind.config.js";
+
 .disabled {
     opacity: 0.3;
     pointer-events: none!important;

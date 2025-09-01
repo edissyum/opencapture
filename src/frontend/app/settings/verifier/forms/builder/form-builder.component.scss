@@ -1,3 +1,6 @@
+@reference "tailwindcss";
+@config "../../../../../../../tailwind.config.js";
+
 ::ng-deep .edit_input {
     & .mat-mdc-text-field-wrapper {
         @apply top-1.5;

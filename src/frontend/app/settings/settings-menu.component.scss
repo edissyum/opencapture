@@ -1,3 +1,7 @@
+@reference "tailwindcss";
+@config "../../../../tailwind.config.js";
+@config "../../../../tailwind.config.js";
+
 .settings-menu-nav {
     @apply flex;
     @apply w-1/75;
@@ -20,9 +24,8 @@
     @apply py-1.5;
     @apply relative;
     @apply items-center;
-    @apply bg-green-400;
-    @apply/60;
     @apply text-gray-900;
+    @apply bg-green-400/60;
     @apply justify-between;
     & div button i {
         @apply leading-none!;

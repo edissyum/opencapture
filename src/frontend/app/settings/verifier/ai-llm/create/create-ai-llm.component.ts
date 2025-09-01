@@ -32,7 +32,6 @@ import { of } from "rxjs";
 @Component({
     selector: 'app-ai-llm-create',
     templateUrl: './create-ai-llm.component.html',
-    styleUrl: './create-ai-llm.component.scss',
     standalone: false
 })
 export class CreateAiLLMComponent {

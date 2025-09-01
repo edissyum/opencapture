@@ -36,7 +36,6 @@ import { FileValidators } from "ngx-file-drag-drop";
 @Component({
     selector: 'app-list-ai-splitter',
     templateUrl: './list-ai-models.component.html',
-    styleUrls: ['./list-ai-models.component.scss'],
     standalone: false
 })
 

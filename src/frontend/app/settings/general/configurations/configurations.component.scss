@@ -1,3 +1,6 @@
+@reference "tailwindcss";
+@config "../../../../../../tailwind.config.js";
+
 .mat-column-description {
     flex: 0 0 35%;
 }
@@ -90,4 +93,3 @@
         @apply border-green-400!;
     }
 }
-

@@ -1,3 +1,6 @@
+@reference "tailwindcss";
+@config "../../../../../../tailwind.config.js";
+
 .mat-form-field {
     margin-top: 16px;
 }

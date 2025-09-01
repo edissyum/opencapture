@@ -1,3 +1,7 @@
+@reference "tailwindcss";
+@config "../../../tailwind.config.js";
+
+
 i.cdk-drag {
     @apply absolute;
     @apply text-sm;

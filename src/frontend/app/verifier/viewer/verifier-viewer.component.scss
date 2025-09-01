@@ -1,3 +1,6 @@
+@reference "tailwindcss";
+@config "../../../../../tailwind.config.js";
+
 ::ng-deep .form-viewer > .mat-form-field-wrapper {
     @apply pb-3;
     @apply pt-3;
