@@ -33,7 +33,6 @@ import { of } from "rxjs";
 @Component({
     selector: 'app-splitter-create-output',
     templateUrl: './create-output.component.html',
-    styleUrls: ['./create-output.component.scss'],
     standalone: false
 })
 export class SplitterCreateOutputComponent implements OnInit {

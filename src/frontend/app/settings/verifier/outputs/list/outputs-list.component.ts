@@ -35,7 +35,6 @@ import { MatDialog } from "@angular/material/dialog";
 @Component({
     selector: 'app-output-list',
     templateUrl: './outputs-list.component.html',
-    styleUrls: ['./outputs-list.component.scss'],
     standalone: false
 })
 export class OutputsListComponent implements OnInit {

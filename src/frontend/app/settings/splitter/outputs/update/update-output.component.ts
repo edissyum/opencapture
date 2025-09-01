@@ -34,7 +34,6 @@ import { Clipboard } from "@angular/cdk/clipboard";
 @Component({
     selector: 'app-splitter-update-output',
     templateUrl: './update-output.component.html',
-    styleUrls: ['./update-output.component.scss'],
     standalone: false
 })
 export class SplitterUpdateOutputComponent implements OnInit {

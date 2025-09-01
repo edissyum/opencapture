@@ -33,7 +33,6 @@ import { NotificationService } from "../../../../../services/notifications/notif
 @Component({
     selector: 'app-workflow-builder',
     templateUrl: './workflow-builder.component.html',
-    styleUrls: ['./workflow-builder.component.scss'],
     providers: [{
             provide: STEPPER_GLOBAL_OPTIONS,
             useValue: {

@@ -1,13 +1,30 @@
+/** This file is part of Open-Capture.
+Open-Capture is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License
+along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
+@reference "tailwindcss";
+@config "../../../tailwind.config.js";
+
 .mdc-floating-label--required:not(.mdc-floating-label--hide-required-marker)::after {
-    @apply ml-0.5 #{!important};
+    @apply ml-0.5!;
 }
 
 .mdc-tooltip--shown .mdc-tooltip__surface-animation {
-    @apply max-w-sm #{!important};
+    @apply max-w-sm!;
 }
 
 .mat-datepicker-toggle-active {
-    @apply text-green-400 #{!important};
+    @apply text-green-400!;
 }
 
 .mat-mdc-tab-header {
@@ -24,38 +41,38 @@
             }
             & .mdc-tab-indicator__content {
                 @apply border-[1px];
-                @apply border-green-400 #{!important};
+                @apply border-green-400!;
             }
         }
     }
 }
 
 .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline .mdc-notched-outline__notch {
-    @apply border-r-0 #{!important};
+    @apply border-r-0!;
 }
 
 .mat-step-header:hover,
 .mat-step-header.cdk-program-focused {
-    @apply bg-transparent #{!important};
+    @apply bg-transparent!;
 }
 
 .mat-step-header[aria-labelledby="disabled_step"] {
     @apply pointer-events-none;
-    @apply cursor-not-allowed #{!important};
+    @apply cursor-not-allowed!;
 }
 
 .mat-step-header .mat-step-icon-selected,
 .mat-step-header .mat-step-icon-state-edit {
-    @apply bg-green-400 #{!important};
+    @apply bg-green-400!;
 }
 
 .mat-step-header .mat-step-icon-state-done,
 .mat-step-header .mat-step-icon-state-number:not(.mat-step-icon-selected) {
-    @apply bg-gray-400 #{!important};
+    @apply bg-gray-400!;
 }
 
 .mat-mdc-form-field-hint::before {
-    @apply hidden #{!important};
+    @apply hidden!;
 }
 
 .mat-step-header .mat-step-header-ripple,
@@ -63,16 +80,16 @@
 .mat-mdc-slide-toggle .mdc-switch .mdc-switch__ripple,
 .mat-mdc-icon-button .mat-mdc-button-persistent-ripple,
 .mat-mdc-icon-button .mat-mdc-button-persistent-ripple::before {
-    @apply hidden #{!important};
+    @apply hidden!;
 }
 
 .mat-primary .mat-pseudo-checkbox-checked.mat-pseudo-checkbox-minimal::after,
 .mat-primary .mat-pseudo-checkbox-indeterminate.mat-pseudo-checkbox-minimal::after {
-    @apply text-green-400 #{!important};
+    @apply text-green-400!;
 }
 
 .mdc-tooltip__surface {
-    @apply text-sm #{!important};
+    @apply text-sm!;
 }
 
 .mat-mdc-header-row .mat-mdc-header-cell {
@@ -81,27 +98,27 @@
 }
 
 .mat-mdc-select-arrow svg {
-    @apply fill-green-400 #{!important};
+    @apply fill-green-400!;
 }
 
 .mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__leading,
 .mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__trailing {
-    @apply border-green-400 #{!important};
+    @apply border-green-400!;
 }
 
 .mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__notch {
-    @apply -mr-0.5 #{!important};
-    @apply border-b-green-400 #{!important};
-    @apply border-t-green-400 #{!important};
-    @apply border-r-transparent #{!important};
-    @apply pr-1 #{!important};
+    @apply -mr-0.5!;
+    @apply border-b-green-400!;
+    @apply border-t-green-400!;
+    @apply border-r-transparent!;
+    @apply pr-1!;
     & .mat-mdc-floating-label mat-label {
         @apply text-gray-900;
     }
 }
 
 .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text {
-    @apply text-green-400 #{!important};
+    @apply text-green-400!;
 }
 
 .mat-selected,
@@ -111,31 +128,31 @@
 .mat-primary .mat-pseudo-checkbox-checked.mat-pseudo-checkbox-full,
 .mat-mdc-slide-toggle .mdc-switch:enabled .mdc-switch__track::after,
 .mat-primary .mat-pseudo-checkbox-indeterminate.mat-pseudo-checkbox-full {
-    @apply bg-green-400 #{!important};
+    @apply bg-green-400!;
 }
 
 .mat-mdc-slide-toggle .mdc-switch.mdc-switch--selected:enabled .mdc-switch__handle::after {
     background: #97BF3D !important;
-    @apply opacity-80 #{!important};
+    @apply opacity-80!;
 }
 
 .mat-mdc-slide-toggle .mdc-switch.mdc-switch--selected:enabled:active .mdc-switch__handle::after,
 .mat-mdc-slide-toggle .mdc-switch.mdc-switch--selected:enabled:hover .mdc-switch__handle::after {
     background: #97BF3D !important;
-    @apply opacity-100 #{!important};
+    @apply opacity-100!;
 }
 
 .mat-mdc-slide-toggle .mdc-switch:enabled .mdc-switch__track::before {
-    @apply bg-gray-600 #{!important};
+    @apply bg-gray-600!;
 }
 
 .mat-selected .mat-option-text,
 .mat-form-field-label {
-    @apply text-gray-900 #{!important};
+    @apply text-gray-900!;
 }
 
 .mat-selected .mat-option-text span {
-    @apply text-gray-900 #{!important};
+    @apply text-gray-900!;
 }
 
 .mat-form-field-invalid .mat-input-element, .mat-warn .mat-input-element {
@@ -173,7 +190,7 @@
         @apply h-10;
         & .mdc-notched-outline .mdc-notched-outline__notch {
             & .mdc-floating-label--float-above {
-                @apply top-7 #{!important};
+                @apply top-7!;
             }
             & .mdc-floating-label {
                 top: 1.15rem;
@@ -245,7 +262,7 @@ mat-select-country mat-form-field {
 }
 
 .mat-mdc-standard-chip:not(.mdc-evolution-chip--disabled) {
-    @apply bg-green-400 #{!important};
+    @apply bg-green-400!;
 }
 
 .subtitles {
@@ -256,7 +273,7 @@ mat-select-country mat-form-field {
         @apply relative;
     }
     & .mat-mdc-text-field-wrapper {
-        @apply pl-2 #{!important};
+        @apply pl-2!;
         & .mat-mdc-form-field-flex {
             @apply h-8;
         }
@@ -264,15 +281,15 @@ mat-select-country mat-form-field {
 }
 
 .mdc-list-item__primary-text {
-    @apply truncate #{!important};
+    @apply truncate!;
     @apply w-full;
 }
 
 .mat-mdc-paginator-range-label {
-    @apply -ml-4 #{!important};
-    @apply mr-0 #{!important};
+    @apply -ml-4!;
+    @apply mr-0!;
 }
 
 .mdc-linear-progress__bar-inner {
-    @apply border-green-400 #{!important};
+    @apply border-green-400!;
 }

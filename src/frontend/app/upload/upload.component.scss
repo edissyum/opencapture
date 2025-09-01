@@ -1,8 +1,11 @@
+@reference "tailwindcss";
+@config "../../../../tailwind.config.js";
+
 .mat-mdc-standard-chip.mat-accent.mat-mdc-chip-selected,
 .mat-mdc-standard-chip.mat-accent.mat-mdc-chip-highlighted {
     @apply bg-green-400;
 }
 
 .mat-drawer-inner-container {
-    @apply overflow-hidden #{!important};
+    @apply overflow-hidden!;
 }

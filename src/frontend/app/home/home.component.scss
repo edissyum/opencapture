@@ -1,10 +1,13 @@
+@reference "tailwindcss";
+@config "../../../../tailwind.config.js";
+
 .disabled {
     opacity: 0.3;
     pointer-events: none!important;
 }
 
 ::ng-deep .mat-mdc-tooltip-surface {
-    white-space: pre-line #{!important};
+    white-space: pre-line !important;
 }
 
 .shadow-modern{

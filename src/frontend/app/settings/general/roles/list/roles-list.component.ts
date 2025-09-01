@@ -37,7 +37,6 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 @Component({
     selector: 'app-roles-list',
     templateUrl: './roles-list.component.html',
-    styleUrls: ['./roles-list.component.scss'],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } }
     ],
