@@ -56,6 +56,7 @@ export class UpdateAiLLMComponent implements OnInit {
             class: "",
             values: [
                 {id: 'mistral', label: 'Mistral'},
+                {id: 'gemini', label: 'Google Gemini'},
                 {id: 'copilot', label: 'Microsoft Copilot'}
                 //{id: 'custom', label: this.translate.instant('AI-LLM.custom')}
             ]
@@ -109,32 +110,24 @@ export class UpdateAiLLMComponent implements OnInit {
             "schema": {
                 "type": "object",
                 "properties": {
-                    "costs": {
-                        "type": "object",
-                        "properties": {
-                            "input_cost": { "type": "number" },
-                            "output_cost": { "type": "number" }
-                        },
-                        "required": ["input_cost", "output_cost"],
-                    },
                     "supplier": {
                         "type": "object",
                         "properties": {
-                            "name": { "type": ["string", "null"] },
-                            "address": { "type": ["string", "null"] },
-                            "postal_code": { "type": ["string", "null"] },
-                            "city": { "type": ["string", "null"] },
-                            "country": { "type": ["string", "null"] },
-                            "vat_number": { "type": ["string", "null"] },
-                            "email": { "type": ["string", "null"] },
-                            "iban": { "type": ["string", "null"] }
+                            "name": { "type": "string" },
+                            "address": { "type": "string" },
+                            "postal_code": { "type": "string" },
+                            "city": { "type": "string" },
+                            "country": { "type": "string" },
+                            "vat_number": { "type": "string" },
+                            "email": { "type": "string" },
+                            "iban": { "type": "string" }
                         },
                         "required": ["name", "address", "postal_code", "city", "country", "VAT_number", "email"]
                     },
-                    "invoice_number": { "type": "string" },
-                    "quotation_number": { "type": "string" },
                     "order_number": { "type": "string" },
+                    "invoice_number": { "type": "string" },
                     "delivery_number": { "type": "string" },
+                    "quotation_number": { "type": "string" },
                     "document_date": { "type": "string", "format": "date" },
                     "document_due_date": { "type": "string", "format": "date" },
                     "line_items": {
@@ -161,6 +154,7 @@ export class UpdateAiLLMComponent implements OnInit {
     };
     defaultUrlPlaceholder   : any           = {
         "mistral": "https://api.mistral.ai/v1/chat/completions",
+        "gemini": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent",
         "copilot": "https://oc.cognitiveservices.azure.com/openai/deployments/gpt-5-mini/chat/completions?api-version=2024-08-01-preview"
     };
     defaultCosts            : any           = {
@@ -168,25 +162,33 @@ export class UpdateAiLLMComponent implements OnInit {
             "input_price": 0.00010,
             "output_price": 0.00030
         },
+        "gemini": {
+            "input_price": 0.00010,
+            "output_price": 0.00040
+        },
         "copilot": {
             "input_price": 0.012,
             "output_price": 0.024
         }
     };
+    defaultPromptText       : string        = "Extract the following from the provided invoice text:\n" +
+        "Supplier: name, address, postal code, city, country, VAT number, email, iban\n" +
+        "Invoice: invoice number, order_number, quotation_number, document date, due date, currency, total excl. tax, total tax, total incl. tax, vat rate.\n" +
+        "Line Items: description, quantity, unit price, tax rate, line total excl. tax, line total incl. tax.\n" +
+        "If a field is missing or not applicable, set empty.\n" +
+        "Date format: ISO 8601 (YYYY-MM-DD).\n" +
+        "If value is iban, rib or number, remove spaces.\n" +
+        "Currency format: 3-letter ISO currency code (e.g., EUR, USD).\n" +
+        "VAT rate format: percentage (e.g., 20.00).\n" +
+        "If the invoice has no VAT, set vat_amount and vat_rate to 0.\n" +
+        "If the invoice has no line items, set line_items to an empty array.\n" +
+        "Do not add commentary.\n" +
+        "If it's not an invoice, respond with an empty JSON object."
+
     defaultPrompts          : any           = [
         {
             "role": "user",
-            "content": "Extract from invoice text (return empty JSON if not invoice):" +
-                "Supplier:name,address,postal_code,city,country,vat_number,email,iban(no spaces)." +
-                "Invoice:number,delivery_number,quotation_number,date,due_date,currency(ISO 3-letter),total_excl_tax,total_tax,total_incl_tax,vat_rate(%)." +
-                "Line items:description,quantity,unit_price,tax_rate(%),total_excl_tax,total_incl_tax." +
-                "Rules:" +
-                "ISO 8601" +
-                "Missing field: null." +
-                "No VAT:vat_amount=0, vat_rate=0." +
-                "No line items:[]." +
-                "Remove spaces from IBAN/RIB/numbers." +
-                "No comments."
+            "content": this.defaultPromptText
         },
         {
             "role": "user",
@@ -207,6 +209,66 @@ export class UpdateAiLLMComponent implements OnInit {
             "model": "gpt-5-mini",
             "messages": this.defaultPrompts,
             "response_format": this.defaultResponseFormat
+        },
+        "gemini": {
+            "contents": [
+                {
+                    "parts":  [
+                        {
+                            "text": this.defaultPromptText
+                        },
+                        {
+                            "text": "##OCR_CONTENT##"
+                        }
+                    ]
+                }
+            ],
+            "generationConfig": {
+                "response_mime_type": "application/json",
+                "response_schema": {
+                    "type": "object",
+                    "properties": {
+                        "order_number": { "type": "string" },
+                        "invoice_number": { "type": "string" },
+                        "delivery_number": { "type": "string" },
+                        "quotation_number": { "type": "string" },
+                        "document_date": { "type": "string", "format": "date" },
+                        "document_due_date": { "type": "string", "format": "date" },
+                        "line_items": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "description": { "type": "string" },
+                                    "quantity": { "type": "number" },
+                                    "unit_price": { "type": "number" },
+                                    "total_price": { "type": "number" }
+                                },
+                                "required": ["description", "quantity", "unit_price", "total_price"],
+                            }
+                        },
+                        "vat_rate": { "type": "number" },
+                        "total_ht": { "type": "number" },
+                        "total_ttc": { "type": "number" },
+                        "total_vat": { "type": "number" },
+                        "currency": { "type": "string" },
+                        "supplier": {
+                            "type": "object",
+                            "properties": {
+                                "name": { "type": "string" },
+                                "address": { "type": "string" },
+                                "postal_code": { "type": "string" },
+                                "city": { "type": "string" },
+                                "country": { "type": "string" },
+                                "vat_number": { "type": "string" },
+                                "email": { "type": "string" },
+                                "iban": { "type": "string" }
+                            },
+                            "required": ["name", "address", "postal_code", "city", "country", "vat_number", "email"],
+                        }
+                    },
+                }
+            }
         }
     }
 

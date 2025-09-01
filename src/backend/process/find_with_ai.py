@@ -94,15 +94,36 @@ class FindWithAI:
             json_content_str = json_content_str.replace('"##OCR_CONTENT##"', json.dumps(ocr_content))
             self.llm_model['json_content'] = json.loads(json_content_str)
 
-        ai_llm_res = requests.post(self.llm_model['url'], headers={"Authorization": f"Bearer {self.llm_model['api_key']}"},
-                            json=self.llm_model['json_content'])
+        headers = {
+            "Authorization": f"Bearer {self.llm_model['api_key']}",
+            "Content-Type": "application/json"
+        }
+        if self.llm_model['provider'] == 'gemini':
+            headers = {
+                "X-goog-api-key": f"{self.llm_model['api_key']}",
+                "Content-Type": "application/json"
+            }
+
+        ai_llm_res = requests.post(
+            self.llm_model['url'],
+            headers=headers,
+            json=self.llm_model['json_content']
+        )
+
         if ai_llm_res.status_code != 200:
             self.log.error(f"Error calling AI model: {ai_llm_res.status_code} - {ai_llm_res.text}")
             return None
 
         response = ai_llm_res.json()
-        if 'choices' in response and len(response['choices']) > 0:
-            content = response['choices'][0]['message']['content']
+        content = None
+        if self.llm_model['provider'] == 'gemini':
+            if 'candidates' in response and len(response['candidates']) > 0:
+                content = response['candidates'][0]['content']['parts'][0]['text']
+        else:
+            if 'choices' in response and len(response['choices']) > 0:
+                content = response['choices'][0]['message']['content']
+
+        if content:
             try:
                 content = json.loads(content)
             except json.JSONDecodeError as e:
@@ -110,15 +131,22 @@ class FindWithAI:
                 self.log.error(f"Error decoding JSON response: {e}")
                 return None
 
+            if self.llm_model['provider'] == 'gemini':
+                token_usage = response.get('usageMetadata', {})
+                prompt_tokens = token_usage.get('promptTokenCount', 0)
+                completion_tokens = token_usage.get('candidatesTokenCount', 0)
+            else:
+                token_usage = response.get('usage', {})
+                prompt_tokens = token_usage.get('prompt_tokens', 0)
+                completion_tokens = token_usage.get('completion_tokens', 0)
 
-            token_usage = response.get('usage', {})
             if token_usage:
-                ci, co, total = self.calculate_cost(token_usage.get('prompt_tokens', 0), token_usage.get('completion_tokens', 0))
+                ci, co, total = self.calculate_cost(prompt_tokens, completion_tokens)
                 if ci is not None and co is not None and total is not None:
-                    self.log.info(f"Tokens used - Prompt (input): {token_usage.get('prompt_tokens', 0)}, "
-                                  f"Completion (output): {token_usage.get('completion_tokens', 0)}, ")
+                    self.log.info(f"Tokens used - Prompt (input): {prompt_tokens}, "
+                                  f"Completion (output): {completion_tokens}, ")
                     self.log.info(f"Approximate costs - Input: ${ci:.6f}, Output: ${co:.6f}, Total: ${total:.6f}")
             return content
         else:
-            self.log.error("AI model did not return any choices.")
+            self.log.error("AI model did not return any content.")
             return None

@@ -30,10 +30,10 @@
                         @if (this.serviceSettings.getSettingsAction(parent['id'], setting['id'])) {
                             @if (this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*') {
                                 <mat-expansion-panel [class.minified]="this.minimizeSideNav" [expanded]="this.router.url.includes(setting['route'])">
-                                        <mat-expansion-panel-header class="font-normal w-full h-16 pl-0 border-b" [class.p-4]="this.minimizeSideNav">
+                                        <mat-expansion-panel-header class="font-normal w-full h-16 pl-0" [class.p-4]="this.minimizeSideNav">
                                             <mat-panel-title class="font-normal justify-center items-center text-center">
                                                 <button [class.settings_admin_active]="this.router.url === setting['route']"
-                                                        class="pr-0 pl-3 font-normal w-full h-16 flex gap-4 justify-center items-center text-center"
+                                                        class="pr-0 pl-3 font-normal w-full h-16 flex gap-4 justify-center items-center text-center cursor-pointer"
                                                         (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                                         [routerLink]="setting['route']" style="font-size: 0.82rem !important">
                                                     <i [class.text-green-400]="this.router.url === setting['route']"
@@ -61,7 +61,7 @@
                                                                 [class.ml-0]="this.minimizeSideNav" [routerLink]="action['route']"
                                                                 [class.disable_link]="action['showOnlyIfActive']"
                                                                 (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
-                                                                class="font-normal w-full h-10 pl-8 text-xs flex gap-4 items-center text-center">
+                                                                class="font-normal w-full h-10 pl-8 text-xs flex gap-4 items-center text-center cursor-pointer">
                                                             <i class="w-4 text-sm rounded-full flex items-center justify-center 2xl:block ml-4 {{ action['icon'] }}"
                                                                [matTooltip]="action['label'] | translate" [matTooltipDisabled]="!this.minimizeSideNav"
                                                                [matTooltipPosition]="'right'"></i>
@@ -80,7 +80,7 @@
                         } @else {
                             @if (this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*') {
                                 <button [class.settings_admin_active]="this.router.url === setting['route']"
-                                        class="pr-0 font-normal w-full h-16 flex gap-4 justify-center items-center text-center noActions"
+                                        class="pr-0 font-normal w-full h-16 flex gap-4 justify-center items-center text-center noActions cursor-pointer"
                                         [class.pl-3]="!this.minimizeSideNav" [routerLink]="setting['route']"
                                         (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])" style="font-size: 0.82rem !important">
                                     <i class="w-4 rounded-full flex items-center justify-center fa-lg 2xl:block {{ setting['icon'] }}"
