@@ -682,6 +682,20 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             ai_chat = find_with_ai.FindWithAI(log, ocr, llm_model)
             ai_invoice_values = ai_chat.find_invoice_info(file)
             if ai_invoice_values:
+                if 'line_items' in ai_invoice_values and ai_invoice_values['line_items']:
+                    cpt_lines = 0
+                    for line in ai_invoice_values['line_items']:
+                        index_ht = 'line_ht' if cpt_lines == 0 else 'line_ht_' + str(cpt_lines)
+                        index_quantity = 'quantity' if cpt_lines == 0 else 'quantity_' + str(cpt_lines)
+                        index_unit = 'unit_price' if cpt_lines == 0 else 'unit_price_' + str(cpt_lines)
+                        index_description = 'description' if cpt_lines == 0 else 'description_' + str(cpt_lines)
+
+                        datas['datas'][index_ht] = line['total_price']
+                        datas['datas'][index_unit] = line['unit_price']
+                        datas['datas'][index_quantity] = line['quantity']
+                        datas['datas'][index_description] = line['description']
+                        cpt_lines += 1
+
                 for value in ai_invoice_values:
                     if ai_invoice_values[value] and value not in datas['datas']:
                         if isinstance(ai_invoice_values[value], (str, int, float)):

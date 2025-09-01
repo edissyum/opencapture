@@ -94,7 +94,10 @@ class FindWithAI:
             json_content_str = json_content_str.replace('"##OCR_CONTENT##"', json.dumps(ocr_content))
             self.llm_model['json_content'] = json.loads(json_content_str)
 
-        headers = {"Authorization": f"Bearer {self.llm_model['api_key']}"}
+        headers = {
+            "Authorization": f"Bearer {self.llm_model['api_key']}",
+            "Content-Type": "application/json"
+        }
         if self.llm_model['provider'] == 'gemini':
             headers = {
                 "X-goog-api-key": f"{self.llm_model['api_key']}",
@@ -116,7 +119,6 @@ class FindWithAI:
         if self.llm_model['provider'] == 'gemini':
             if 'candidates' in response and len(response['candidates']) > 0:
                 content = response['candidates'][0]['content']['parts'][0]['text']
-                print(json.dumps(response, indent=4))
         else:
             if 'choices' in response and len(response['choices']) > 0:
                 content = response['choices'][0]['message']['content']

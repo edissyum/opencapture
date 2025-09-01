@@ -110,32 +110,24 @@ export class UpdateAiLLMComponent implements OnInit {
             "schema": {
                 "type": "object",
                 "properties": {
-                    "costs": {
-                        "type": "object",
-                        "properties": {
-                            "input_cost": { "type": "number" },
-                            "output_cost": { "type": "number" }
-                        },
-                        "required": ["input_cost", "output_cost"],
-                    },
                     "supplier": {
                         "type": "object",
                         "properties": {
-                            "name": { "type": ["string", "null"] },
-                            "address": { "type": ["string", "null"] },
-                            "postal_code": { "type": ["string", "null"] },
-                            "city": { "type": ["string", "null"] },
-                            "country": { "type": ["string", "null"] },
-                            "vat_number": { "type": ["string", "null"] },
-                            "email": { "type": ["string", "null"] },
-                            "iban": { "type": ["string", "null"] }
+                            "name": { "type": "string" },
+                            "address": { "type": "string" },
+                            "postal_code": { "type": "string" },
+                            "city": { "type": "string" },
+                            "country": { "type": "string" },
+                            "vat_number": { "type": "string" },
+                            "email": { "type": "string" },
+                            "iban": { "type": "string" }
                         },
                         "required": ["name", "address", "postal_code", "city", "country", "VAT_number", "email"]
                     },
-                    "invoice_number": { "type": "string" },
-                    "quotation_number": { "type": "string" },
                     "order_number": { "type": "string" },
+                    "invoice_number": { "type": "string" },
                     "delivery_number": { "type": "string" },
+                    "quotation_number": { "type": "string" },
                     "document_date": { "type": "string", "format": "date" },
                     "document_due_date": { "type": "string", "format": "date" },
                     "line_items": {
@@ -179,17 +171,19 @@ export class UpdateAiLLMComponent implements OnInit {
             "output_price": 0.024
         }
     };
-    defaultPromptText       : string        = "Extract from invoice text (return empty JSON if not invoice):" +
-        "Supplier:name,address,postal_code,city,country,vat_number,email,iban(no spaces)." +
-        "Invoice:number,delivery_number,quotation_number,date,due_date,currency(ISO 3-letter),total_excl_tax,total_tax,total_incl_tax,vat_rate(%)." +
-        "Line items:description,quantity,unit_price,tax_rate(%),total_excl_tax,total_incl_tax." +
-        "Rules:" +
-        "ISO 8601" +
-        "Missing field: null." +
-        "No VAT:vat_amount=0, vat_rate=0." +
-        "No line items:[]." +
-        "Remove spaces from IBAN/RIB/numbers." +
-        "No comments."
+    defaultPromptText       : string        = "Extract the following from the provided invoice text:\n" +
+        "Supplier: name, address, postal code, city, country, VAT number, email, iban\n" +
+        "Invoice: invoice number, order_number, quotation_number, document date, due date, currency, total excl. tax, total tax, total incl. tax, vat rate.\n" +
+        "Line Items: description, quantity, unit price, tax rate, line total excl. tax, line total incl. tax.\n" +
+        "If a field is missing or not applicable, set empty.\n" +
+        "Date format: ISO 8601 (YYYY-MM-DD).\n" +
+        "If value is iban, rib or number, remove spaces.\n" +
+        "Currency format: 3-letter ISO currency code (e.g., EUR, USD).\n" +
+        "VAT rate format: percentage (e.g., 20.00).\n" +
+        "If the invoice has no VAT, set vat_amount and vat_rate to 0.\n" +
+        "If the invoice has no line items, set line_items to an empty array.\n" +
+        "Do not add commentary.\n" +
+        "If it's not an invoice, respond with an empty JSON object."
 
     defaultPrompts          : any           = [
         {
@@ -234,9 +228,10 @@ export class UpdateAiLLMComponent implements OnInit {
                 "response_schema": {
                     "type": "object",
                     "properties": {
-                        "invoice_number": { "type": "string" },
-                        "quotation_number": { "type": "string" },
                         "order_number": { "type": "string" },
+                        "invoice_number": { "type": "string" },
+                        "delivery_number": { "type": "string" },
+                        "quotation_number": { "type": "string" },
                         "document_date": { "type": "string", "format": "date" },
                         "document_due_date": { "type": "string", "format": "date" },
                         "line_items": {
@@ -252,10 +247,10 @@ export class UpdateAiLLMComponent implements OnInit {
                                 "required": ["description", "quantity", "unit_price", "total_price"],
                             }
                         },
-                        "total_no_rates": { "type": "number" },
-                        "vat_amount": { "type": "number" },
                         "vat_rate": { "type": "number" },
-                        "total_all_rates": { "type": "number" },
+                        "total_ht": { "type": "number" },
+                        "total_ttc": { "type": "number" },
+                        "total_vat": { "type": "number" },
                         "currency": { "type": "string" },
                         "supplier": {
                             "type": "object",
