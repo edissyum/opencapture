@@ -1374,3 +1374,4 @@ INSERT INTO "accounts_civilities" ("id", "label") VALUES (4, 'Autre');
 -- Création des modèles d'intelligence artificielle
 INSERT INTO "ai_llm" ("id", "name", "provider", "url", "api_key", "json_content")
 VALUES (1, 'Mistral AI', 'mistral','https://api.mistral.ai/v1/chat/completions','', '{}');
+ALTER SEQUENCE "ai_llm_id_seq" RESTART WITH 2;
