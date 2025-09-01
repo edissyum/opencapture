@@ -52,6 +52,7 @@ export class CreateAiLLMComponent {
             required: true,
             values: [
                 {id: 'mistral', label: 'Mistral'},
+                {id: 'gemini', label: 'Google Gemini'},
                 {id: 'copilot', label: 'Microsoft Copilot'}
                 //{id: 'custom', label: this.translate.instant('AI-LLM.custom')}
             ]
