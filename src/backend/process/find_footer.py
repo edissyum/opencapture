@@ -273,23 +273,24 @@ class FindFooter:
                 res = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
                 if res[0]:
                     data = re.sub(r"[^0-9.]|\.(?!\d)", "", res[0].replace(',', '.'))
-                    dot_in_data = data.split('.')
-                    if len(dot_in_data) > 1:
-                        last_index = dot_in_data[len(dot_in_data) - 1]
-                        if len(last_index) > 2:
-                            data = data.replace('.', '')
-                        else:
-                            dot_in_data.pop(-1)
-                            data = ''.join(dot_in_data) + '.' + last_index
-                            data = str(float(data))
-                    self.log.info(name + ' found with positions : ' + str(data))
-                    self.nb_pages = position[name + '_page']
-                    _return = {
-                        0: data,
-                        1: json.loads(res[1]),
-                        "from_position": True
-                    }
-                    return _return
+                    if data:
+                        dot_in_data = data.split('.')
+                        if len(dot_in_data) > 1:
+                            last_index = dot_in_data[len(dot_in_data) - 1]
+                            if len(last_index) > 2:
+                                data = data.replace('.', '')
+                            else:
+                                dot_in_data.pop(-1)
+                                data = ''.join(dot_in_data) + '.' + last_index
+                                data = str(float(data))
+                        self.log.info(name + ' found with positions : ' + str(data))
+                        self.nb_pages = position[name + '_page']
+                        _return = {
+                            0: data,
+                            1: json.loads(res[1]),
+                            "from_position": True
+                        }
+                        return _return
         return False
 
     def run(self, text_as_string=False):
@@ -412,23 +413,29 @@ class FindFooter:
 
             try:
                 if total_ht is False and (total_ttc and total_ttc[0]) and (vat_rate and vat_rate[0]):
-                    total_ht = [float("%.2f" % (float(total_ttc[0]) / (1 + float(vat_rate[0] / 100)))),
+                    if total_ttc[0] not in [0, '0', '00', '000', '0.00', '0.0'] and vat_rate[0] not in [0, '0', '00', '000', '0.00', '0.0']:
+                        total_ht = [float("%.2f" % (float(total_ttc[0]) / (1 + float(vat_rate[0] / 100)))),
                                 (('', ''), ('', '')), True]
                 if total_ht is False and (total_ttc and total_ttc[0]) and (vat_amount and vat_amount[0]):
-                    total_ht = [float("%.2f" % (float(total_ttc[0]) - float(vat_amount[0]))), (('', ''), ('', '')), True]
+                    if total_ttc[0] not in [0, '0', '00', '000', '0.00', '0.0'] and vat_amount[0] not in [0, '0', '00', '000', '0.00', '0.0']:
+                        total_ht = [float("%.2f" % (float(total_ttc[0]) - float(vat_amount[0]))), (('', ''), ('', '')), True]
 
                 if (total_ttc is False or not total_ttc[0]) and total_ht and total_ht[0] and vat_rate and vat_rate[0]:
-                    total_ttc = [
-                        float("%.2f" % (float(total_ht[0]) + (float(total_ht[0]) * float(float(vat_rate[0]) / 100)))),
-                        (('', ''), ('', '')), True]
+                    if total_ht[0] not in [0, '0', '00', '000', '0.00', '0.0'] and vat_rate[0] not in [0, '0', '00', '000', '0.00', '0.0']:
+                        total_ttc = [
+                            float("%.2f" % (float(total_ht[0]) + (float(total_ht[0]) * float(float(vat_rate[0]) / 100)))),
+                            (('', ''), ('', '')), True]
                 elif (total_ttc is False or not total_ttc[0]) and total_ht and total_ht[0] and vat_amount and vat_amount[0]:
-                    total_ttc = [float("%.2f" % (float(total_ht[0]) + float(vat_amount[0]))), (('', ''), ('', '')), True]
+                    if total_ht[0] not in [0, '0', '00', '000', '0.00', '0.0'] and vat_amount[0] not in [0, '0', '00', '000', '0.00', '0.0']:
+                        total_ttc = [float("%.2f" % (float(total_ht[0]) + float(vat_amount[0]))), (('', ''), ('', '')), True]
 
                 if vat_amount is False and (total_ttc and total_ttc[0]) and (total_ht and total_ht[0]):
-                    vat_amount = [float("%.2f" % (float(total_ttc[0]) - float(total_ht[0]))), (('', ''), ('', '')), True]
+                    if total_ttc[0] not in [0, '0', '00', '000', '0.00', '0.0'] and total_ht[0] not in [0, '0', '00', '000', '0.00', '0.0']:
+                        vat_amount = [float("%.2f" % (float(total_ttc[0]) - float(total_ht[0]))), (('', ''), ('', '')), True]
 
                 if vat_rate is False and (total_ht and total_ht[0]) and (total_ttc and total_ttc[0]):
-                    vat_rate = [float("%.2f" % (float(vat_amount[0]) / float(total_ht[0]) * 100)), (('', ''), ('', '')),
+                    if vat_amount[0] not in [0, '0', '00', '000', '0.00', '0.0'] and total_ht[0] not in [0, '0', '00', '000', '0.00', '0.0']:
+                        vat_rate = [float("%.2f" % (float(vat_amount[0]) / float(total_ht[0]) * 100)), (('', ''), ('', '')),
                                 True]
             except(ValueError, TypeError):
                 return False
