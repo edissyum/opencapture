@@ -47,7 +47,7 @@
         "@angular/platform-browser": "^20.2.3",
         "@angular/platform-browser-dynamic": "^20.2.3",
         "@angular/router": "^20.2.3",
-        "@fortawesome/fontawesome-free": "^7.0.0",
+        "@fortawesome/fontawesome-free": "^7.0.1",
         "@ngx-translate/core": "^17.0.0",
         "@ngx-translate/http-loader": "^17.0.0",
         "@tailwindcss/postcss": "^4.1.12",
