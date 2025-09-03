@@ -32,7 +32,6 @@ import { of } from "rxjs";
 @Component({
     selector: 'app-ai-llm-create',
     templateUrl: './create-ai-llm.component.html',
-    styleUrl: './create-ai-llm.component.scss',
     standalone: false
 })
 export class CreateAiLLMComponent {
@@ -53,6 +52,7 @@ export class CreateAiLLMComponent {
             required: true,
             values: [
                 {id: 'mistral', label: 'Mistral'},
+                {id: 'gemini', label: 'Google Gemini'},
                 {id: 'copilot', label: 'Microsoft Copilot'}
                 //{id: 'custom', label: this.translate.instant('AI-LLM.custom')}
             ]

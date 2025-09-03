@@ -89,7 +89,11 @@ class WorkflowsTest(unittest.TestCase):
         self.assertEqual(dict, type(response.json))
 
     def test_successful_duplicate_workflow(self):
-        response = self.app.post(f'/{CUSTOM_ID}/ws/workflows/verifier/duplicate/1',
+        data = {
+            "workflow_id": 1,
+            "workflow_label_short": "copy_default_worklow"
+        }
+        response = self.app.post(f'/{CUSTOM_ID}/ws/workflows/verifier/duplicate', json=data,
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.database.execute("SELECT * FROM workflows WHERE label ILIKE '%Copie de%' OR label ILIKE '%Copy of%'"

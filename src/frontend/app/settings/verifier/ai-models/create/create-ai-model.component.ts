@@ -32,7 +32,6 @@ import { finalize } from "rxjs/operators";
 @Component({
     selector: 'app-create-model',
     templateUrl: './create-ai-model.component.html',
-    styleUrls: ['./create-ai-model.component.scss'],
     standalone: false
 })
 

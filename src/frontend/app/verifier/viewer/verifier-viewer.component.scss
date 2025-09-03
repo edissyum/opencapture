@@ -1,3 +1,6 @@
+@reference "tailwindcss";
+@config "../../../../../tailwind.config.js";
+
 ::ng-deep .form-viewer > .mat-form-field-wrapper {
     @apply pb-3;
     @apply pt-3;
@@ -44,10 +47,10 @@
 }
 
 ::ng-deep .mat-mdc-select-panel {
-    @apply pt-0 #{!important};
-    @apply pb-0 #{!important};
+    @apply pt-0!;
+    @apply pb-0!;
 }
 
 ::ng-deep .mat-mdc-option-pseudo-checkbox {
-    @apply hidden #{!important};
+    @apply hidden!;
 }

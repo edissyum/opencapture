@@ -1,3 +1,6 @@
+@reference "tailwindcss";
+@config "../../../../tailwind.config.js";
+
 .settings_header {
     @apply z-30;
     @apply px-2;
@@ -5,11 +8,10 @@
     @apply py-1.5;
     @apply relative;
     @apply items-center;
-    @apply bg-green-400;
-    @apply bg-opacity-60;
     @apply text-gray-900;
     @apply justify-between;
+    @apply bg-green-400/60;
     & div button i {
-        @apply leading-none #{!important};
+        @apply leading-none!;
     }
 }

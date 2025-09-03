@@ -1,3 +1,6 @@
+@reference "tailwindcss";
+@config "../../../tailwind.config.js";
+
 .toast-container {
     @apply pt-16;
 
@@ -24,8 +27,8 @@
         }
         @apply border-[1.5px];
         @apply border-red-500;
-        @apply bg-white #{!important};
-        @apply text-red-500 #{!important};
+        @apply bg-white!;
+        @apply text-red-500!;
     }
 
     & .toast-success {
@@ -38,7 +41,7 @@
         }
         @apply border-[1.5px];
         @apply border-green-700;
-        @apply bg-white #{!important};
-        @apply text-green-700 #{!important};
+        @apply bg-white!;
+        @apply text-green-700!;
     }
 }

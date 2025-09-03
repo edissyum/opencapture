@@ -109,7 +109,6 @@ import { RegexComponent } from './settings/general/regex/regex.component';
 import { HintServiceComponent } from "../services/hint/hint.service";
 import { ErrorServiceComponent } from "../services/error/error.service";
 import { Error500Component } from './errors/error-500/error-500.component';
-import { MatSelectCountryModule } from "@angular-material-extensions/select-country";
 import { MiddlewareComponent } from "./middleware.component";
 import { VariousSettingsVerifierComponent } from './settings/verifier/various-settings/various-settings.component';
 import { MailCollectComponent } from './settings/general/mailcollect/mailcollect.component';
@@ -131,6 +130,7 @@ import { FileViewerComponent } from "./file-viewer/file-viewer.component";
 import { AiLLMListComponent} from "./settings/verifier/ai-llm/list/list-ai-llm.component";
 import { UpdateAiLLMComponent } from "./settings/verifier/ai-llm/update/update-ai-llm.component";
 import { CreateAiLLMComponent } from "./settings/verifier/ai-llm/create/create-ai-llm.component";
+import {MatSelectCountryModule} from "select-country-angular-20";
 
 @NgModule({
     declarations: [
@@ -240,14 +240,6 @@ import { CreateAiLLMComponent } from "./settings/verifier/ai-llm/create/create-a
             enableHtml: true,
             preventDuplicates: true
         }),
-        // TranslateModule.forRoot({
-        //     defaultLanguage: 'fra',
-        //     loader: {
-        //         provide: TranslateLoader,
-        //         useFactory: (createTranslateLoader),
-        //         deps: [HttpClient]
-        //     }
-        // }),
         ReactiveFormsModule,
         FormsModule,
         NgxFileDragDropComponent,
@@ -255,7 +247,8 @@ import { CreateAiLLMComponent } from "./settings/verifier/ai-llm/create/create-a
         NgxMatSelectSearchModule,
         MatSelectCountryModule.forRoot('fr'),
         TranslateModule,
-        OverlayModule
+        OverlayModule,
+        MatSelectCountryModule
     ],
     providers: [
         Title,

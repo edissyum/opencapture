@@ -34,7 +34,6 @@ import {DocumentTypeComponent} from "../../../../splitter/document-type/document
 @Component({
     selector: 'app-create-model',
     templateUrl: './create-ai-model.component.html',
-    styleUrls: ['./create-ai-model.component.scss'],
     standalone: false
 })
 

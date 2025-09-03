@@ -142,9 +142,12 @@ export class WorkflowsListSplitterComponent implements OnInit {
         }
     }
 
-    duplicateConfirmDialog(workflowId: number, workflow: string) {
+    duplicateConfirmDialog(workflowId: number, workflowLabelShort: string, workflow: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data: {
+                askNewId            : true,
+                newId               : 'copy_' + workflowLabelShort,
+                askNewIdLabel       : this.translate.instant('WORKFLOW.new_workflow_label_short'),
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('WORKFLOW.confirm_duplicate', {"workflow": workflow}),
                 confirmButton       : this.translate.instant('GLOBAL.duplicate'),
@@ -156,14 +159,18 @@ export class WorkflowsListSplitterComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.duplicateWorkflow(workflowId);
+                this.duplicateWorkflow(workflowId, result.newId);
             }
         });
     }
 
-    duplicateWorkflow(workflowId: number) {
+    duplicateWorkflow(workflowId: number, workflowLabelShort: string) {
         if (workflowId !== undefined) {
-            this.http.post(environment['url'] + '/ws/workflows/splitter/duplicate/' + workflowId, {}, {headers: this.authService.headers}).pipe(
+            const data = {
+                "workflow_id": workflowId,
+                "workflow_label_short": workflowLabelShort
+            }
+            this.http.post(environment['url'] + '/ws/workflows/splitter/duplicate', data, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadWorkflows();
                     this.notify.success(this.translate.instant('WORKFLOW.workflow_duplicated'));

@@ -28,7 +28,7 @@ import { PrivilegesService } from "../../../../services/privileges.service";
 import { environment } from  "../../../env";
 import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
 import { Observable, of } from "rxjs";
-import { Country } from '@angular-material-extensions/select-country';
+import { Country } from 'select-country-angular-20';
 import { LocaleService } from "../../../../services/locale.service";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 

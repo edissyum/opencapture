@@ -33,7 +33,6 @@ import { DocumentTypeFactoryComponent } from "../../../../splitter/document-type
 @Component({
     selector: 'app-create-doc-type',
     templateUrl: './create-doctype.component.html',
-    styleUrls: ['./create-doctype.component.scss'],
     standalone: false
 })
 export class CreateDoctypeComponent implements OnInit {

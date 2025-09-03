@@ -39,7 +39,6 @@ import {ImportDialogComponent} from "../../../../../services/import-dialog/impor
 @Component({
     selector: 'app-users-list',
     templateUrl: './users-list.component.html',
-    styleUrls: ['./users-list.component.scss'],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } }
     ],

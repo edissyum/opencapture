@@ -101,8 +101,8 @@ def create_workflow(args):
         'columns': args['columns']
     })
 
-    if not _workflow:
-        error = gettext('WORKFLOW_CREATE_ERROR')
+    if not _workflow or not isinstance(_workflow, int):
+        error = _workflow
 
     return _workflow, error
 

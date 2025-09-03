@@ -25,7 +25,7 @@ import { _, TranslateService } from "@ngx-translate/core";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 import { SettingsService } from "../../../../services/settings.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
-import { Country } from "@angular-material-extensions/select-country";
+import { Country } from "select-country-angular-20";
 import { catchError, tap } from "rxjs/operators";
 import { environment } from  "../../../env";
 import { of } from "rxjs";

@@ -40,7 +40,7 @@ schwifty==2025.7.0
 pytesseract==0.3.13
 configparser==7.2.0
 scikit-learn==1.6.1
-transformers==4.55.4
+transformers==4.56.0
 python-magic==0.4.27
 pycryptodome==3.23.0
 pypdf[crypto]==6.0.0
@@ -49,4 +49,4 @@ opencv-python==4.12.0.88
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.8.0
 torchvision==0.23.0
-ultralytics==8.3.185
+ultralytics==8.3.190

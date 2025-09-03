@@ -1,3 +1,6 @@
+@reference "tailwindcss";
+@config "../../../tailwind.config.js";
+
 .splitter-tools {
     & .mat-mdc-text-field-wrapper {
         @apply top-1.5;
