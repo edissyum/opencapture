@@ -3,7 +3,7 @@
 # Open-Capture ![](https://img.shields.io/github/package-json/v/edissyum/opencapture?color=97BF3D&label=Latest%20version) ![](https://img.shields.io/badge/Angular_version-20.x-blue) [![Deployement OpenCapture](https://github.com/edissyum/opencapture/actions/workflows/main.yml/badge.svg)](https://github.com/edissyum/opencapture/actions/workflows/main.yml)
 
 <pre>
-Link to the full documentation : <a href="https://kutt.it/DocumentationV2">https://kutt.it/DocumentationV2</a>
+Link to the full documentation : <a href="https://kutt.it/DocumentationV2">https://edissyum.gitbook.io/open-capture/</a>
 </pre>
 
 Open-Capture is a **free and Open Source** software under **GNU General Public License v3.0**.
