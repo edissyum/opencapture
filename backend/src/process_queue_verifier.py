@@ -1,0 +1,283 @@
+# This file is part of Open-Capture.
+# Copyright Edissyum Consulting since 2020 under licence GPLv3
+
+# Open-Capture is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# Open-Capture is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+
+# See LICENCE file at the root folder for more details.
+
+# @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+
+import os
+import time
+import shutil
+import facturx
+import tempfile
+import traceback
+from . import app
+from lxml import etree
+from .process import main
+from .classes.Log import Log
+from .process import factur_x
+from .classes.Mail import Mail
+from flask_babel import gettext
+from .classes.Files import Files
+from kuyruk import Kuyruk, Config
+from .functions import recursive_delete
+from .classes.SeparatorQR import SeparatorQR
+from .scripting_functions import launch_script_verifier
+from .main import create_classes_from_custom_id, check_file, timer, str2bool
+
+rabbit_custom = Config()
+rabbit_custom.RABBIT_HOST = os.environ.get('RABBIT_HOST', 'localhost')
+rabbit_custom.RABBIT_PORT = os.environ.get('RABBIT_PORT', 5672)
+rabbit_custom.RABBIT_USER = os.environ.get('RABBIT_USER', 'guest')
+rabbit_custom.RABBIT_PASSWORD = os.environ.get('RABBIT_PASSWORD', 'guest')
+rabbit_custom.RABBIT_VIRTUAL_HOST = os.environ.get('RABBIT_VIRTUAL_HOST', '/')
+kuyruk = Kuyruk(config=rabbit_custom)
+
+def execute(args, path, log, config, files, ocr, regex, database, docservers, configurations, languages, mail, smtp):
+    if check_file(files, path, log, docservers):
+        is_facturx = False
+        if path.lower().endswith('.pdf'):
+            with open(path, 'rb') as _f:
+                _, xml_content = facturx.get_facturx_xml_from_pdf(_f.read())
+                if _ not in [None, False] and xml_content not in [None, False]:
+                    is_facturx = True
+
+        if not is_facturx:
+            skip = res = False
+            if 'workflow_id' in args and args['workflow_id']:
+                workflow_settings = database.select({
+                    'select': ['input'],
+                    'table': ['workflows'],
+                    'where': ['workflow_id = %s', 'module = %s'],
+                    'data': [args['workflow_id'], 'verifier']
+                })
+
+                if workflow_settings:
+                    if workflow_settings[0]['input']['facturx_only']:
+                        log.info('FacturX only workflow, skipping this document')
+                        skip = True
+
+            if not skip:
+                res = main.process(args, path, log, config, files, ocr, regex, database, docservers,
+                                   configurations, languages)
+        else:
+            parsed_xml = etree.fromstring(xml_content)
+            args['facturx_level'] = facturx.get_facturx_level(parsed_xml)
+            log.info(f"FacturX detected. Level is {args['facturx_level']}")
+            args['log'] = log
+            args['file'] = path
+            args['files'] = files
+            args['regex'] = regex
+            args['database'] = database
+            args['docservers'] = docservers
+            args['xml_content'] = xml_content
+            args['configurations'] = configurations
+            res = factur_x.process(args)
+
+        if not res:
+            if args.get('isMail') is not None and args['isMail'] is True:
+                mail.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process_name'],
+                                         args['msg'])
+                log.error('Error while processing e-mail', False)
+            return False
+    else:
+        return False
+    return res
+
+
+@kuyruk.task(queue='verifier_edissyum')
+def launch(args):
+    with app.app_context():
+        start = time.time()
+
+        database, config, regex, _, ocr, log, _, _, smtp, docservers, configurations, languages, _ = create_classes_from_custom_id(
+            args['custom_id'], True)
+
+        if 'current_step' in args:
+            log.current_step = args['current_step']
+
+        database.update({
+            'table': ['monitoring'],
+            'set': {
+                'creation_date': time.strftime("%Y-%m-%d %H:%M:%S"),
+                'status': 'running'
+            },
+            'where': ['id = %s'],
+            'data': [args['task_id_monitor']]
+        })
+
+        log.task_id_monitor = args['task_id_monitor']
+        log.database = database
+
+        tmp_folder = tempfile.mkdtemp(dir=docservers['TMP_PATH'])
+        with tempfile.NamedTemporaryFile(dir=tmp_folder) as tmp_file:
+            filename = tmp_file.name
+
+        try:
+            os.chmod(tmp_folder, int('775', base=8))
+        except OSError:
+            pass
+
+        files = Files(filename, log, docservers, configurations, regex, languages, database)
+
+        remove_blank_pages = splitter_method = False
+        separate_every_x_page = 0
+
+        if 'workflow_id' in args and args['workflow_id']:
+            workflow_settings = database.select({
+                'select': ['input'],
+                'table': ['workflows'],
+                'where': ['workflow_id = %s', 'module = %s'],
+                'data': [args['workflow_id'], 'verifier']
+            })
+
+            if workflow_settings:
+                if 'input' in workflow_settings[0]:
+                    if 'splitter_method_id' in workflow_settings[0]['input']:
+                        splitter_method = workflow_settings[0]['input']['splitter_method_id']
+                        if splitter_method == 'separate_by_document_number':
+                            separate_every_x_page = workflow_settings[0]['input']['separate_by_document_number_value']
+                    if 'remove_blank_pages' in workflow_settings[0]['input']:
+                        remove_blank_pages = workflow_settings[0]['input']['remove_blank_pages']
+
+        separator_qr = SeparatorQR(log, config, tmp_folder, 'verifier', files, remove_blank_pages, docservers,
+                                    splitter_method)
+        mail_class = None
+        if args.get('isMail') is not None and args['isMail'] is True:
+            mail_class = Mail(args['process'])
+
+            log = Log((args['log']), smtp)
+            log.task_id_monitor = args['task_id_monitor']
+            log.database = database
+            log.prefix = '[MailCollect]'
+            if 'current_step' in args:
+                log.current_step = args['current_step']
+
+            if 'cpt' in args and 'nb_of_attachments' in args:
+                log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
+
+        if args.get('isMail') is None or args.get('isMail') is False:
+            if splitter_method and splitter_method != 'no_sep':
+                sep_style = ''
+                if splitter_method == 'separate_by_document_number':
+                    sep_style = 'every ' + str(separate_every_x_page) + ' page(s)'
+
+                if splitter_method in ['qr_code_OC', 'c128_OC']:
+                    separator_qr.enabled = True
+                    sep_style = 'by QR code' if splitter_method == 'qr_code_OC' else 'Code 128'
+
+                log.info('Separation ' + sep_style + ' enabled')
+
+        res = None
+        list_of_ids = []
+        database.connect()
+
+        database.insert({
+            'table': 'history',
+            'columns': {
+                'user_ip': args['ip'],
+                'history_module': 'verifier',
+                'user_info': args['user_info'],
+                'workflow_id': args['workflow_id'],
+                'history_submodule': 'upload_file',
+                'user_id': args['user_id'] if 'user_id' in args and args['user_id'] else 0,
+                'history_desc': gettext('FILE_UPLOADED_WORKFLOW') + '&nbsp<strong>' + args['workflow_id'] + '</strong>'
+            }
+        })
+
+        # Launch input scripting if present
+        change_workflow = False
+        if config['GLOBAL']['allowwfscripting'].lower() == 'true':
+            change_workflow = launch_script_verifier(workflow_settings[0], docservers, 'input', log, args['file'], database, args, config)
+
+        if not change_workflow:
+            if 'file' in args and args['file'] is not None:
+                path = args['file']
+                log.filename = os.path.basename(path)
+                extension = os.path.splitext(path)[1].lower()
+                try:
+                    if separator_qr.enabled:
+                        if check_file(files, path, log, docservers):
+                            separator_qr.run(path)
+                        path = separator_qr.output_dir_pdfa if str2bool(
+                            separator_qr.convert_to_pdfa) is True else separator_qr.output_dir
+
+                        if len(os.listdir(path)) == 0:
+                            log.info('No document found after separation, skipping')
+                            return None
+                        else:
+                            for file in os.listdir(path):
+                                res = execute(args, path + file, log, config, files, ocr, regex, database, docservers,
+                                              configurations, languages, mail_class, smtp)
+                                list_of_ids.append(res)
+                    elif splitter_method == 'separate_by_document_number':
+                        list_of_files = separator_qr.split_document_every_x_pages(path, separate_every_x_page)
+                        for file in list_of_files:
+                            res = execute(args, file, log, config, files, ocr, regex, database, docservers, configurations,
+                                          languages, mail_class, smtp)
+                            list_of_ids.append(res)
+                        os.remove(path)
+                    else:
+                        if separator_qr.remove_blank_pages and extension == '.pdf':
+                            separator_qr.remove_blank_page(path)
+
+                        res = execute(args, path, log, config, files, ocr, regex, database, docservers, configurations,
+                                      languages, mail_class, smtp)
+                        list_of_ids.append(res)
+
+                    if os.path.isfile(docservers['ERROR_PATH'] + '/' + args['workflow_id'] + '/' + args['original_filename']):
+                        try:
+                            os.remove(docservers['ERROR_PATH'] + '/' + args['workflow_id'] + '/' + args['original_filename'])
+                        except (Exception, ):
+                            pass
+                except (Exception,):
+                    _e = str(traceback.format_exc())
+                    log.error(_e)
+                    try:
+                        if not os.path.isdir(docservers['ERROR_PATH'] + '/' + args['workflow_id']):
+                            os.mkdir(docservers['ERROR_PATH'] + '/' + args['workflow_id'])
+                            os.chmod(docservers['ERROR_PATH'] + '/' + args['workflow_id'], int('775', base=8))
+
+                        if 'isMail' in args and args['isMail'] is True:
+                            file_path = args['file']
+                        else:
+                            if os.path.isfile(path):
+                                file_path = path
+                            else:
+                                file_path = path + file
+                        shutil.copy(file_path, docservers['ERROR_PATH'] + '/' + args['workflow_id'] + '/' + args['original_filename'])
+                    except (Exception, ):
+                        pass
+
+            recursive_delete(tmp_folder, log, docservers)
+
+            end = time.time()
+            _timer = timer(start, end)
+
+            if res:
+                log.info('Process end after ' + _timer)
+
+            database.update({
+                'table': ['monitoring'],
+                'set': {
+                    'token': args['token'] if 'token' in args and args['token'] else None,
+                    'elapsed_time': _timer,
+                    'document_ids': list_of_ids if res else None,
+                    'status': 'done',
+                    'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
+                },
+                'where': ['id = %s'],
+                'data': [args['task_id_monitor']]
+            })
+            database.conn.close()
+        return None

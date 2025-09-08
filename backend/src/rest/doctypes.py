@@ -1,0 +1,120 @@
+# This file is part of Open-Capture.
+# Copyright Edissyum Consulting since 2020 under licence GPLv3
+
+# Open-Capture is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# Open-Capture is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+
+# See LICENCE file at the root folder for more details.
+
+# @dev : Oussama Brich <oussama.brich@edissyum.com>
+
+import json
+from flask_babel import gettext
+from flask import Blueprint, request, make_response, jsonify
+from ..controllers import auth, doctypes, privileges
+
+bp = Blueprint('doctypes', __name__, url_prefix='/ws/')
+
+
+@bp.route('doctypes/list', defaults={'form_id': None}, methods=['GET'])
+@bp.route('doctypes/list/<int:form_id>', methods=['GET'])
+@auth.token_required
+def retrieve_doctypes(form_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_splitter | document_type_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/doctypes/list/{form_id}'}), 403
+
+    args = {}
+    if form_id:
+        args = {
+            'where': ['form_id = %s', 'status <> %s'],
+            'data': [form_id, 'DEL']
+        }
+    res = doctypes.retrieve_doctypes(args)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('doctypes/add', methods=['POST'])
+@auth.token_required
+def add_doctype():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_document_type']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/doctypes/add'}), 403
+
+    data = json.loads(request.data)
+    res = doctypes.add_doctype(data)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('doctypes/update', methods=['POST'])
+@auth.token_required
+def update_doctype():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'document_type_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/doctypes/update'}), 403
+
+    data = json.loads(request.data)
+    res = doctypes.update(data)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('doctypes/generateSeparator', methods=['POST'])
+@auth.token_required
+def generate_separator():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'separator_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/doctypes/generateSeparator'}), 403
+
+    data = json.loads(request.data)
+    res = doctypes.generate_separator(data)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('doctypes/clone/<int:src_form_id>/<int:dest_form_id>', methods=['GET'])
+@auth.token_required
+def clone_form_doctypes(src_form_id, dest_form_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/doctypes/generateSeparator'}), 403
+
+    res = doctypes.clone_form_doctypes(src_form_id, dest_form_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('doctypes/csv/preview', methods=['POST'])
+@auth.token_required
+def csv_preview():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'document_type_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/doctypes/generateSeparator'}), 403
+
+    files = request.files
+    res = doctypes.csv_preview(files)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('doctypes/csv/import', methods=['POST'])
+@auth.token_required
+def import_from_csv():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'document_type_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/doctypes/generateSeparator'}), 403
+    args = {
+        'files': request.files,
+        'skip_header': request.form['skipHeader'],
+        'selected_columns': request.form['selectedColumns'].split(',')
+    }
+
+    res = doctypes.import_from_csv(args)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('doctypes/export', methods=['POST'])
+@auth.token_required
+def export_doctypes():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'document_type_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/doctypes/generateSeparator'}), 403
+
+    data = json.loads(request.data)
+    res = doctypes.export_doctypes(data['args'])
+    return make_response(jsonify(res[0])), res[1]

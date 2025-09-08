@@ -1,0 +1,43 @@
+# This file is part of Open-Capture.
+# Copyright Edissyum Consulting since 2020 under licence GPLv3
+
+# Open-Capture is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# Open-Capture is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+
+# See LICENCE file at the root folder for more details.
+
+# @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+
+import unittest
+import warnings
+from ... import app
+from ...tests import CUSTOM_ID, get_db, get_token
+
+
+class StatusTest(unittest.TestCase):
+    def setUp(self):
+        self.database = get_db()
+        self.app = app.test_client()
+        self.token = get_token('admin')
+        warnings.filterwarnings('ignore', category=ResourceWarning)
+
+    def test_successful_get_status_list_verifier(self):
+        response = self.app.get(f'/{CUSTOM_ID}/ws/status/verifier/list',
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(dict, type(response.json))
+        self.assertEqual(len(response.json['status']), 5)
+
+    def test_successful_get_status_list_splitter(self):
+        response = self.app.get(f'/{CUSTOM_ID}/ws/status/splitter/list',
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(dict, type(response.json))
+        self.assertEqual(len(response.json['status']), 4)

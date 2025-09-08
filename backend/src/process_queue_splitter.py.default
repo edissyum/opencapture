@@ -1,0 +1,263 @@
+# This file is part of Open-Capture.
+# Copyright Edissyum Consulting since 2020 under licence GPLv3
+
+# Open-Capture is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# Open-Capture is distributed by in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+
+# See LICENCE file at the root folder for more details.
+
+# @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Oussama Brich <oussama.brich@edissyum.com>
+
+import os
+import sys
+import time
+import json
+import traceback
+from . import app
+from kuyruk import Kuyruk
+from .classes.Log import Log
+from .classes.Files import Files
+from flask_babel import gettext
+from .classes.Splitter import Splitter
+from .classes.SeparatorQR import SeparatorQR
+from .functions import retrieve_config_from_custom_id
+from .scripting_functions import launch_script_splitter
+from main import timer, check_file, create_classes_from_custom_id
+
+kuyruk = Kuyruk()
+
+
+@kuyruk.task(queue='splitter_§§CUSTOM_ID§§')
+def launch(args):
+    """
+    Launch Splitter process on a file
+    :param args:
+    - file: file path
+    - user_id: user id
+    - custom_id: custom id
+    - workflow_id: workflow id
+    :return: N/A
+    """
+    with app.app_context():
+        start = time.time()
+        created_batches = []
+
+        if not retrieve_config_from_custom_id(args['custom_id']):
+            sys.exit('Custom config file couldn\'t be found')
+
+        database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations, languages, \
+            _artificial_intelligence = create_classes_from_custom_id(args['custom_id'], True)
+
+        database.update({
+            'table': ['monitoring'],
+            'set': {
+                'creation_date': time.strftime("%Y-%m-%d %H:%M:%S"),
+                'status': 'running'
+            },
+            'where': ['id = %s'],
+            'data': [args['task_id_monitor']]
+        })
+
+        log.task_id_monitor = args['task_id_monitor']
+        log.database = database
+
+        batch_folder = files.get_random_string(15)
+        batch_folder_path = f"{docservers['SPLITTER_BATCHES']}/{batch_folder}/"
+        batch_thumbs_path = f"{docservers['SPLITTER_THUMB']}/{batch_folder}/"
+        os.mkdir(batch_folder_path)
+        os.mkdir(batch_thumbs_path)
+
+        try:
+            os.chmod(batch_folder_path, int('775', base=8))
+            os.chmod(batch_thumbs_path, int('775', base=8))
+        except OSError:
+            pass
+
+        files = Files('', log, docservers, configurations, regex, languages, database)
+
+        ocrise = False
+        splitter_method_id = ''
+        remove_blank_pages = False
+
+        workflow_settings = database.select({
+            'select': ['input', 'process', 'output'],
+            'table': ['workflows'],
+            'where': ['workflow_id = %s', 'module = %s'],
+            'data': [args['workflow_id'], 'splitter']
+        })
+
+        if config['GLOBAL']['allowwfscripting'].lower() == 'true':
+            datas = {
+                'ip': args['ip'],
+                'user_info': args['user_info']
+            }
+            launch_script_splitter(workflow_settings[0], docservers, 'input', log, database, args, config, datas)
+
+        if workflow_settings:
+            if workflow_settings[0]['process']['use_interface'] and \
+                    'form_id' in workflow_settings[0]['process'] and workflow_settings[0]['process']['form_id']:
+                outputs = database.select({
+                    'select': ['outputs'],
+                    'table': ['form_models'],
+                    'where': ['id = %s'],
+                    'data': [workflow_settings[0]['process']['form_id']]
+                })
+                if outputs:
+                    outputs = outputs[0]['outputs']
+
+            else:
+                outputs = database.select({
+                    'select': ['output'],
+                    'table': ['workflows'],
+                    'where': ['workflow_id = %s', 'module = %s'],
+                    'data': [args['workflow_id'], 'splitter']
+                })
+                if outputs:
+                    outputs = outputs[0]['output']['outputs_id']
+
+            args['customer_id'] = workflow_settings[0]['input']['customer_id']
+            splitter_method_id = workflow_settings[0]['input']['splitter_method_id']
+            remove_blank_pages = workflow_settings[0]['input']['remove_blank_pages']
+
+            for output_id in outputs:
+                outputs_settings = database.select({
+                    'select': ['ocrise'],
+                    'table': ['outputs'],
+                    'where': ['id = %s'],
+                    'data': [int(output_id)]
+                })
+                if outputs_settings:
+                    ocrise = outputs_settings[0]['ocrise']
+
+        separator_qr = SeparatorQR(log, config, batch_folder_path, 'splitter', files,
+                                   remove_blank_pages, docservers, splitter_method_id)
+        splitter = Splitter(config, database, separator_qr, log, docservers)
+
+        if args.get('isMail') is not None and args['isMail'] is True:
+            log = Log((args['log']), smtp)
+            log.task_id_monitor = args['task_id_monitor']
+            log.database = database
+            log.prefix = '[MailCollect]'
+            if 'current_step' in args:
+                log.current_step = args['current_step']
+
+            if 'cpt' in args and 'nb_of_attachments' in args:
+                log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
+
+        database.connect()
+
+        try:
+            if args['file'] is not None:
+                path = args['file']
+
+                attachments = []
+                if 'attachments' in args and args['attachments']:
+                    attachments = args['attachments']
+
+                if check_file(files, path, log, docservers):
+                    if 'workflow_id' in args and args['workflow_id']:
+                        available_split_methods_path = docservers['SPLITTER_METHODS_PATH'] + "/splitter_methods.json"
+                        if splitter_method_id and os.path.isfile(available_split_methods_path):
+                            with open(available_split_methods_path, encoding='utf-8') as json_file:
+                                available_split_methods = json.load(json_file)
+                                for available_split_method in available_split_methods['methods']:
+                                    if available_split_method['id'] == splitter_method_id:
+                                        split_method = Splitter.import_method_from_script(docservers['SPLITTER_METHODS_PATH'],
+                                                                                           available_split_method['script'],
+                                                                                           available_split_method['method'])
+                                        log.info('Split using method : {}'.format(available_split_method['id']))
+                                        split_args = {
+                                            "log": log,
+                                            "ocr": ocr,
+                                            "file": path,
+                                            "regex": regex,
+                                            "files": files,
+                                            "ip": args['ip'],
+                                            "ocrise": ocrise,
+                                            "config": config,
+                                            "splitter": splitter,
+                                            "docservers": docservers,
+                                            "attachments": attachments,
+                                            "batch_folder": batch_folder,
+                                            "custom_id": args['custom_id'],
+                                            "user_info": args['user_info'],
+                                            "configurations": configurations,
+                                            "workflow_id": args['workflow_id'],
+                                            "customer_id": args['customer_id'],
+                                            "msg": args['msg'] if 'msg' in args else None,
+                                            "artificial_intelligence": _artificial_intelligence,
+                                            "user_id": args['user_id'] if 'user_id' in args else None
+                                        }
+                                        split_res = split_method(split_args)
+                                        created_batches = split_res['batches_id']
+                                        log.info(f"Batches created : {','.join(str(batch) for batch in created_batches)}")
+
+                                        if config['GLOBAL']['allowwfscripting'].lower() == 'true':
+                                            args['batches_id'] = created_batches
+                                            launch_script_splitter(workflow_settings[0], docservers, 'process', log, database, args, config, None)
+                    else:
+                        log.error("The workflow_id doesn't exists in database")
+        except (Exception,):
+            _e = str(traceback.format_exc())
+            log.error(_e)
+
+        end = time.time()
+        _timer = timer(start, end)
+        log.info('Process end after ' + _timer + '')
+        database.update({
+            'table': ['monitoring'],
+            'set': {
+                'document_ids': created_batches,
+                'elapsed_time': _timer,
+                'status': 'done',
+                'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
+            },
+            'where': ['id = %s'],
+            'data': [args['task_id_monitor']]
+        })
+
+        for batch_id in created_batches:
+            database.insert({
+                'table': 'history',
+                'columns': {
+                    'user_ip': args['ip'],
+                    'history_module': 'splitter',
+                    'user_info': args['user_info'],
+                    'workflow_id': args['workflow_id'],
+                    'history_submodule': 'upload_file',
+                    'user_id': args['user_id'] if 'user_id' in args and args['user_id'] else 0,
+                    'history_desc': f"{gettext('BATCH')} n°<strong>{str(batch_id)}</strong> {gettext('CREATED_USING')} <strong>{args['workflow_id']}</strong>"
+                }
+            })
+
+            batch_documents = database.select({
+                'select': ['id'],
+                'table': ['splitter_documents'],
+                'where': ['batch_id = %s'],
+                'data': [batch_id]
+            })
+            if batch_documents:
+                for document in batch_documents:
+                    database.insert({
+                        'table': 'history',
+                        'columns': {
+                            'user_ip': args['ip'],
+                            'history_module': 'splitter',
+                            'user_info': args['user_info'],
+                            'workflow_id': args['workflow_id'],
+                            'custom_fields': json.dumps({"splitter_document_id": document['id']}),
+                            'history_submodule': 'create_document',
+                            'user_id': args['user_id'] if 'user_id' in args and args['user_id'] else 0,
+                            'history_desc': f"{gettext('DOCUMENT')} n°<strong>{str(document['id'])}</strong> {gettext('CREATED_ON_BATCH')} N°<strong>{str(batch_id)}</strong>"
+                        }
+                    })
+
+        database.conn.close()

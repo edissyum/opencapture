@@ -1,0 +1,137 @@
+# This file is part of Open-Capture.
+# Copyright Edissyum Consulting since 2020 under licence GPLv3
+
+# Open-Capture is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# Open-Capture is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+
+# See LICENCE file at the root folder for more details.
+
+# @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+
+from flask import request, g as current_context
+from ..functions import retrieve_custom_from_url
+from ..main import create_classes_from_custom_id
+
+
+def get_processes(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    error = None
+    _processes = database.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['monitoring'],
+        'where': args['where'] if 'where' in args else [],
+        'data': args['data'] if 'data' in args else [],
+        'order_by': args['order_by'] if 'order_by' in args else [],
+        'limit': str(args['limit']) if 'limit' in args else 'ALL',
+        'offset': str(args['offset']) if 'offset' in args else 0
+    })
+    return _processes, error
+
+
+def get_process_by_id(process_id, date_format):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    error = None
+    _process = database.select({
+        'select': [
+            '*',
+            "to_char(creation_date, '" + date_format + "') as creation_date_formated",
+            "to_char(end_date, '" + date_format + "') as end_date_formated"
+        ],
+        'table': ['monitoring'],
+        'where': ['id = %s'],
+        'data': [process_id]
+    })
+    return _process, error
+
+
+def get_process_by_document_id(document_id):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    error = None
+    _process = database.select({
+        'select': ['*'],
+        'table': ['monitoring'],
+        'where': ['document_ids = %s'],
+        'data': ['{' + str(document_id) + '}']
+    })
+    return _process, error
+
+
+def get_process_by_token(process_token, date_format):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    error = None
+    _process = database.select({
+        'select': [
+            '*',
+            "to_char(creation_date, '" + date_format + "') as creation_date_formated",
+            "to_char(end_date, '" + date_format + "') as end_date_formated"
+        ],
+        'table': ['monitoring'],
+        'where': ['token = %s'],
+        'data': [process_token]
+    })
+    return _process, error
+
+
+def insert(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    error = None
+    res = database.insert({
+        'table': 'monitoring',
+        'columns': args
+    })
+    return res, error
+
+def update_retry(process_id):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+
+    error = None
+    res = database.update({
+        'table': ['monitoring'],
+        'set': {
+            'retry': True
+        },
+        'where': ['id = %s'],
+        'data': [process_id]
+    })
+    return res, error
