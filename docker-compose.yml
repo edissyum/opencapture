@@ -20,7 +20,7 @@ services:
         ports:
           - "8000:8000"
         volumes:
-            - ./src:/app/src/
+            - ./backend/src:/app/src/
         depends_on:
             - postgres
             - rabbitmq
