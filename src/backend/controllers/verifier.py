@@ -558,6 +558,25 @@ def export_opencrm(document_id, data):
     return None
 
 
+def export_cmis(document_id, data):
+    if 'database' in current_context and 'log' in current_context:
+        log = current_context.log
+        database = current_context.database
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
+        database = _vars[0]
+        docservers = _vars[9]
+
+    log.database = database
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
+    if not error:
+        return verifier_exports.export_cmis(data['data'], document_info, log, database, docservers, data['compress_type'], data['ocrise'])
+    return None
+
+
 def export_xml(document_id, data):
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
 

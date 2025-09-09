@@ -21,6 +21,7 @@ import json
 import pyheif
 import shutil
 import base64
+import random
 import facturx
 import datetime
 import mimetypes
@@ -32,23 +33,27 @@ from zipfile import ZipFile
 from unidecode import unidecode
 from flask_babel import gettext
 import xml.etree.ElementTree as Et
+from src.backend.classes.CMIS import CMIS
 from src.backend.classes.Files import Files
 from src.backend.classes.OpenCRMWebServices import OpenCRMWebServices
 from src.backend.models import attachments, monitoring
 from src.backend.classes.MEMWebServices import MEMWebServices
 from src.backend.classes.COOGWebServices import COOGWebServices
+from src.backend.splitter_exports import get_output_parameters
 
 
-def export_xml(data, log, document_info, database):
-    if 'id' in document_info and document_info['id']:
+def export_xml(data, log, document_info, database, enable_log=True):
+    if 'id' in document_info and document_info['id'] and enable_log:
         task = monitoring.get_process_by_document_id(document_info['id'])[0]
         if task and task[0]:
             log.task_id_monitor = task[0]['id']
             log.monitoring_status = task[0]['status']
             log.current_step = len(task[0]['steps']) + 1
 
-    log.info('Output execution : XML export')
-    folder_out = separator = filename = extension = ''
+    if enable_log:
+        log.info('Output execution : XML export')
+
+    folder_out = separator = filename = extension = xml_template = ''
     parameters = data['options']['parameters']
     for setting in parameters:
         if setting['id'] == 'folder_out':
@@ -59,6 +64,8 @@ def export_xml(data, log, document_info, database):
             filename = setting['value']
         elif setting['id'] == 'extension':
             extension = setting['value']
+        elif setting['id'] == 'xml_template':
+            xml_template = setting['value']
 
     _technical_data = []
     # Create the XML filename
@@ -71,106 +78,112 @@ def export_xml(data, log, document_info, database):
     # Fill XML with document informations
     if os.path.isdir(folder_out):
         with open(folder_out + '/' + filename, 'w', encoding='utf-8') as xml_file:
-            root = Et.Element('ROOT')
-            xml_datas = Et.SubElement(root, 'DATAS')
-            xml_technical = Et.SubElement(root, 'TECHNICAL')
+            if xml_template:
+                xml_root = xml_template
+                for var in re.findall(r'#(.*?)#', xml_root):
+                    var_value = ''.join(construct_with_var('#' + var + '#', document_info, separator))
+                    xml_root = xml_root.replace('#' + var + '#', var_value)
+            else:
+                root = Et.Element('ROOT')
+                xml_datas = Et.SubElement(root, 'DATAS')
+                xml_technical = Et.SubElement(root, 'TECHNICAL')
 
-            for technical in document_info:
-                if technical in ['path', 'filename', 'register_date', 'nb_pages', 'original_filename']:
-                    new_field = Et.SubElement(xml_technical, technical)
-                    new_field.text = str(document_info[technical])
+                for technical in document_info:
+                    if technical in ['path', 'filename', 'register_date', 'nb_pages', 'original_filename']:
+                        new_field = Et.SubElement(xml_technical, technical)
+                        new_field.text = str(document_info[technical])
 
-            for document_data in document_info['datas']:
-                value = document_data
+                for document_data in document_info['datas']:
+                    value = document_data
 
-                if document_data == 'document_due_date' or document_data == 'document_date':
-                    try:
-                        if document_info['datas'][document_data]:
-                            document_info['datas'][document_data] = pd.to_datetime(document_info['datas'][document_data]).strftime('%Y-%m-%d')
-                    except ValueError:
-                        pass
-
-                if 'custom_' in document_data:
-                    custom_field = database.select({
-                        'select': ['label_short', 'type'],
-                        'table': ['custom_fields'],
-                        'where': ['id = %s', 'module = %s'],
-                        'data': [document_data.replace('custom_', ''), 'verifier']
-                    })
-                    if custom_field and custom_field[0]:
-                        value = 'custom_' + custom_field[0]['label_short']
-                        if custom_field[0]['type'] == 'date':
-                            try:
+                    if document_data == 'document_due_date' or document_data == 'document_date':
+                        try:
+                            if document_info['datas'][document_data]:
                                 document_info['datas'][document_data] = pd.to_datetime(document_info['datas'][document_data]).strftime('%Y-%m-%d')
-                            except ValueError:
-                                pass
+                        except ValueError:
+                            pass
 
-                if document_data == 'taxes_count':
-                    taxes_count = document_info['datas'][document_data]
-                    if taxes_count:
-                        taxes_element = Et.SubElement(xml_datas, 'taxes')
-                        for cpt in range(taxes_count):
-                            taxs_element = Et.SubElement(taxes_element, 'tax')
-                            taxs_element.set('number', str(cpt + 1))
-                            if cpt == 0:
-                                vat_rate_title = 'vat_rate'
-                                vat_amount_title = 'vat_amount'
-                                no_rate_amount_title = 'no_rate_amount'
-                            else:
-                                vat_rate_title = 'vat_rate_' + str(cpt)
-                                vat_amount_title = 'vat_amount_' + str(cpt)
-                                no_rate_amount_title = 'no_rate_amount_' + str(cpt)
+                    if 'custom_' in document_data:
+                        custom_field = database.select({
+                            'select': ['label_short', 'type'],
+                            'table': ['custom_fields'],
+                            'where': ['id = %s', 'module = %s'],
+                            'data': [document_data.replace('custom_', ''), 'verifier']
+                        })
+                        if custom_field and custom_field[0]:
+                            value = 'custom_' + custom_field[0]['label_short']
+                            if custom_field[0]['type'] == 'date':
+                                try:
+                                    document_info['datas'][document_data] = pd.to_datetime(document_info['datas'][document_data]).strftime('%Y-%m-%d')
+                                except ValueError:
+                                    pass
 
-                            vat_rate = get_data(document_info, vat_rate_title)
-                            vat_amount = get_data(document_info, vat_amount_title)
-                            no_rate_amount = get_data(document_info, no_rate_amount_title)
+                    if document_data == 'taxes_count':
+                        taxes_count = document_info['datas'][document_data]
+                        if taxes_count:
+                            taxes_element = Et.SubElement(xml_datas, 'taxes')
+                            for cpt in range(taxes_count):
+                                taxs_element = Et.SubElement(taxes_element, 'tax')
+                                taxs_element.set('number', str(cpt + 1))
+                                if cpt == 0:
+                                    vat_rate_title = 'vat_rate'
+                                    vat_amount_title = 'vat_amount'
+                                    no_rate_amount_title = 'no_rate_amount'
+                                else:
+                                    vat_rate_title = 'vat_rate_' + str(cpt)
+                                    vat_amount_title = 'vat_amount_' + str(cpt)
+                                    no_rate_amount_title = 'no_rate_amount_' + str(cpt)
 
-                            new_field = Et.SubElement(taxs_element, 'vat_rate')
-                            new_field.text = str(vat_rate)
-                            new_field = Et.SubElement(taxs_element, 'vat_amount')
-                            new_field.text = str(vat_amount)
-                            new_field = Et.SubElement(taxs_element, 'no_rate_amount')
-                            new_field.text = str(no_rate_amount)
+                                vat_rate = get_data(document_info, vat_rate_title)
+                                vat_amount = get_data(document_info, vat_amount_title)
+                                no_rate_amount = get_data(document_info, no_rate_amount_title)
 
-                elif document_data == 'lines_count':
-                    lines_count = document_info['datas'][document_data]
-                    if lines_count:
-                        lines_element = Et.SubElement(xml_datas, 'lines')
-                        for cpt in range(lines_count):
-                            line_element = Et.SubElement(lines_element, 'line')
-                            line_element.set('number', str(cpt + 1))
-                            if cpt == 0:
-                                line_ht_title = 'line_ht'
-                                quantity_title = 'quantity'
-                                unit_price_title = 'unit_price'
-                                description_title = 'description'
-                            else:
-                                line_ht_title = 'line_ht_' + str(cpt)
-                                quantity_title = 'quantity_' + str(cpt)
-                                unit_price_title = 'unit_price_' + str(cpt)
-                                description_title = 'description_' + str(cpt)
+                                new_field = Et.SubElement(taxs_element, 'vat_rate')
+                                new_field.text = str(vat_rate)
+                                new_field = Et.SubElement(taxs_element, 'vat_amount')
+                                new_field.text = str(vat_amount)
+                                new_field = Et.SubElement(taxs_element, 'no_rate_amount')
+                                new_field.text = str(no_rate_amount)
 
-                            line_ht = get_data(document_info, line_ht_title)
-                            quantity = get_data(document_info, quantity_title)
-                            unit_price = get_data(document_info, unit_price_title)
-                            description = get_data(document_info, description_title)
+                    elif document_data == 'lines_count':
+                        lines_count = document_info['datas'][document_data]
+                        if lines_count:
+                            lines_element = Et.SubElement(xml_datas, 'lines')
+                            for cpt in range(lines_count):
+                                line_element = Et.SubElement(lines_element, 'line')
+                                line_element.set('number', str(cpt + 1))
+                                if cpt == 0:
+                                    line_ht_title = 'line_ht'
+                                    quantity_title = 'quantity'
+                                    unit_price_title = 'unit_price'
+                                    description_title = 'description'
+                                else:
+                                    line_ht_title = 'line_ht_' + str(cpt)
+                                    quantity_title = 'quantity_' + str(cpt)
+                                    unit_price_title = 'unit_price_' + str(cpt)
+                                    description_title = 'description_' + str(cpt)
 
-                            new_field = Et.SubElement(line_element, 'line_ht')
-                            new_field.text = str(line_ht) if line_ht else ''
-                            new_field = Et.SubElement(line_element, 'quantity')
-                            new_field.text = str(quantity) if quantity else ''
-                            new_field = Et.SubElement(line_element, 'unit_price')
-                            new_field.text = str(unit_price) if unit_price else ''
-                            new_field = Et.SubElement(line_element, 'description')
-                            new_field.text = str(description) if description else ''
-                else:
-                    if 'vat_rate' not in value and 'vat_amount' not in value and 'no_rate_amount' not in value and \
-                            'line_ht' not in value and 'quantity' not in value and 'unit_price' not in value and \
-                            'description' not in value:
-                        new_field = Et.SubElement(xml_datas, value)
-                        new_field.text = str(document_info['datas'][document_data]) if document_info['datas'][document_data] else ''
+                                line_ht = get_data(document_info, line_ht_title)
+                                quantity = get_data(document_info, quantity_title)
+                                unit_price = get_data(document_info, unit_price_title)
+                                description = get_data(document_info, description_title)
 
-            xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
+                                new_field = Et.SubElement(line_element, 'line_ht')
+                                new_field.text = str(line_ht) if line_ht else ''
+                                new_field = Et.SubElement(line_element, 'quantity')
+                                new_field.text = str(quantity) if quantity else ''
+                                new_field = Et.SubElement(line_element, 'unit_price')
+                                new_field.text = str(unit_price) if unit_price else ''
+                                new_field = Et.SubElement(line_element, 'description')
+                                new_field.text = str(description) if description else ''
+                    else:
+                        if 'vat_rate' not in value and 'vat_amount' not in value and 'no_rate_amount' not in value and \
+                                'line_ht' not in value and 'quantity' not in value and 'unit_price' not in value and \
+                                'description' not in value:
+                            new_field = Et.SubElement(xml_datas, value)
+                            new_field.text = str(document_info['datas'][document_data]) if document_info['datas'][document_data] else ''
+
+                xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
             xml_file.write(xml_root)
             xml_file.close()
         # END Fill XML with document informations
@@ -406,15 +419,16 @@ def compress_file(file, compress_type, log, folder_out, filename, document_filen
         log.error('Moving file ' + compressed_file_path + ' error : ' + str(_e))
 
 
-def export_pdf(data, log, document_info, compress_type, ocrise):
-    if 'id' in document_info and document_info['id']:
+def export_pdf(data, log, document_info, compress_type, ocrise, enable_log=True):
+    if 'id' in document_info and document_info['id'] and enable_log:
         task = monitoring.get_process_by_document_id(document_info['id'])[0]
         if task and task[0]:
             log.task_id_monitor = task[0]['id']
             log.monitoring_status = task[0]['status']
             log.current_step = len(task[0]['steps']) + 1
 
-    log.info('Output execution : PDF export')
+    if enable_log:
+        log.info('Output execution : PDF export')
 
     folder_out = separator = filename = ''
     parameters = data['options']['parameters']
@@ -922,6 +936,93 @@ def export_mem(data, document_info, log, regex, database):
         return response, 400
 
 
+def export_cmis(data, document_info, log, database, docservers, compress_type, ocerise):
+    if 'id' in document_info and document_info['id']:
+        task = monitoring.get_process_by_document_id(document_info['id'])[0]
+        if task and task[0]:
+            log.task_id_monitor = task[0]['id']
+            log.monitoring_status = task[0]['status']
+            log.current_step = len(task[0]['steps']) + 1
+
+    if not document_info:
+        response = {
+            "errors": gettext('EXPORT_CMIS_ERROR'),
+            "message": ''
+        }
+        return response, 400
+
+    log.info('Output execution : CMIS export')
+    cmis_ws = login = password = folder = ''
+    auth_data = data['options']['auth']
+    for _data in auth_data:
+        if _data['id'] == 'cmis_ws':
+            cmis_ws = _data['value']
+        if _data['id'] == 'login':
+            login = _data['value']
+        if _data['id'] == 'password':
+            password = _data['value']
+        if _data['id'] == 'folder':
+            folder = _data['value']
+
+    if cmis_ws and login and password and folder:
+        _ws = CMIS(cmis_ws, login, password, folder)
+        if _ws.root_folder:
+            cmis_params = get_output_parameters(data['options']['parameters'])
+            data['options']['parameters'].append({'id': 'folder_out', 'value': docservers['TMP_PATH']})
+            data['options']['parameters'].append({'id': 'filename', 'value': cmis_params['pdf_filename']})
+            res_pdf_export, _ = export_pdf(data, log, document_info, compress_type, ocerise, enable_log=False)
+
+            data['options']['parameters'].append({'id': 'folder_out', 'value': docservers['TMP_PATH']})
+            data['options']['parameters'].append({'id': 'filename', 'value': cmis_params['xml_filename']})
+            data['options']['parameters'].append({'id': 'extension', 'value': 'xml'})
+
+            cmis_res = _ws.create_document(res_pdf_export, 'application/pdf')
+            if cmis_res[0]:
+                if cmis_params['xml_filename']:
+                    data['options']['parameters'].append({'id': 'folder_out', 'value': docservers['TMP_PATH']})
+                    data['options']['parameters'].append({'id': 'filename', 'value': cmis_params['xml_filename']})
+                    data['options']['parameters'].append({'id': 'extension', 'value': 'xml'})
+                    res_xml_export, _ = export_xml(data, log, document_info, database, enable_log=False)
+                    if res_xml_export and os.path.isfile(res_xml_export):
+                        _ws.create_document(res_xml_export, 'text/xml')
+                        if os.path.isfile(res_xml_export):
+                            os.remove(res_xml_export)
+
+                    if not cmis_res[0]:
+                        response = {
+                            "errors": gettext('EXPORT_XML_ERROR'),
+                            "message": cmis_res[1]
+                        }
+                        return response, 500
+
+                if os.path.isfile(res_pdf_export):
+                    os.remove(res_pdf_export)
+                return {}, 200
+            else:
+                if os.path.isfile(res_pdf_export):
+                    os.remove(res_pdf_export)
+
+                log.error(f"File not sent : {res_pdf_export}")
+                log.error(f"CMIS Response : {str(cmis_res)}")
+                response = {
+                    "errors": gettext('EXPORT_PDF_ERROR'),
+                    "message": cmis_res[1]
+                }
+                return response, 500
+        else:
+            response = {
+                "errors": gettext('CMIS_WS_INFO_WRONG'),
+                "message": ''
+            }
+            return response, 400
+    else:
+        response = {
+            "errors": gettext('CMIS_WS_INFO_EMPTY'),
+            "message": ''
+        }
+        return response, 400
+
+
 def construct_with_var(data, document_info, separator=None):
     _data = []
     if isinstance(document_info['datas'], str):
@@ -944,15 +1045,27 @@ def construct_with_var(data, document_info, separator=None):
                 _data.append(str(data_to_append).replace(' ', separator))
             else:
                 _data.append(str(data_to_append))
+        elif column_strip == 'random':
+            _data.append(str(random.randint(0, 99999)).zfill(5))
+        elif column_strip == 'document_id':
+            if 'id' in document_info and document_info['id']:
+                _data.append(str(document_info['id']))
         elif column_strip == 'document_date_year':
-            if 'document_date' in document_info and document_info['document_date']:
-                _data.append(str(document_info['datas']['document_date'].year))
+            if 'document_date' in document_info['datas'] and document_info['datas']['document_date']:
+                document_date = datetime.datetime.strptime(document_info['datas']['document_date'], '%Y-%m-%d')
+                _data.append(str(document_date.year))
         elif column_strip == 'document_date_month':
-            if 'document_date' in document_info and document_info['document_date']:
-                _data.append(str(document_info['datas']['document_date'].month))
+            if 'document_date' in document_info['datas'] and document_info['datas']['document_date']:
+                document_date = datetime.datetime.strptime(document_info['datas']['document_date'], '%Y-%m-%d')
+                _data.append(str('%02d' % document_date.month))
         elif column_strip == 'document_date_day':
-            if 'document_date' in document_info and document_info['document_date']:
-                _data.append(str(document_info['datas']['document_date'].day))
+            if 'document_date' in document_info['datas'] and document_info['datas']['document_date']:
+                document_date = datetime.datetime.strptime(document_info['datas']['document_date'], '%Y-%m-%d')
+                _data.append(str('%02d' % document_date.day))
+        elif column_strip == 'document_date_full':
+            if 'document_date' in document_info['datas'] and document_info['datas']['document_date']:
+                document_date = datetime.datetime.strptime(document_info['datas']['document_date'], '%Y-%m-%d')
+                _data.append(str(document_date))
         elif column_strip == 'register_date_year':
             if 'register_date' in document_info and document_info['register_date']:
                 _data.append(str(document_info['register_date'].year))
@@ -979,9 +1092,6 @@ def construct_with_var(data, document_info, separator=None):
                     _data.append(mime_type)
         elif column_strip == 'current_date':
             _data.append(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-        elif column_strip == 'document_date_full':
-            if 'document_date' in document_info and document_info['document_date']:
-                _data.append(document_info['document_date'].strftime('%Y-%m-%d %H:%M:%S'))
         elif column_strip == 'register_date_full':
             if 'register_date' in document_info and document_info['register_date']:
                 _data.append(document_info['register_date'].strftime('%Y-%m-%d %H:%M:%S'))
