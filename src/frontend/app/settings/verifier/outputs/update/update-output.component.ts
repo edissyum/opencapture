@@ -145,6 +145,14 @@ export class UpdateOutputComponent implements OnInit {
             'label': 'HEADER.label'
         },
         {
+            'id'    : 'random',
+            'label' : _('OUTPUT.random')
+        },
+        {
+            'id': 'document_id',
+            'label': _('HEADER.technical_id')
+        },
+        {
             'id': 'name',
             'label': 'ACCOUNTS.supplier_name'
         },
@@ -189,6 +197,10 @@ export class UpdateOutputComponent implements OnInit {
             'label': _('VERIFIER.mime_type')
         },
         {
+            'id': 'subject',
+            'label': 'WORKFLOW.subject'
+        },
+        {
             'id': 'vat_number',
             'label': 'ACCOUNTS.vat_number'
         },
@@ -211,6 +223,14 @@ export class UpdateOutputComponent implements OnInit {
         {
             'id': 'bic',
             'label': 'ACCOUNTS.bic'
+        },
+        {
+            'id': 'address1',
+            'label': 'ADDRESSES.address_1'
+        },
+        {
+            'id': 'address2',
+            'label': 'ADDRESSES.address_2'
         },
         {
             'id': 'invoice_number',
@@ -279,6 +299,7 @@ export class UpdateOutputComponent implements OnInit {
     ];
     testConnectionMapping   : any           = {
         'export_mem' : "testMEMConnection",
+        'export_cmis' : "testCMISConnection",
         'export_coog' : "testCOOGConnection",
         'export_opencrm': "testOpenCRMConnection"
     };
@@ -575,6 +596,38 @@ export class UpdateOutputComponent implements OnInit {
             'host': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'host'),
             'token': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'token'),
             'cert_path': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'cert_path')
+        };
+    }
+
+    /**** CMIS Webservices call ****/
+    testCMISConnection() {
+        const args = this.getCMISConnectionInfo();
+        this.http.post(environment['url'] + '/ws/splitter/cmis/testConnection', {'args': args}, {headers: this.authService.headers},
+        ).pipe(
+            tap((data: any) => {
+                const status = data.status;
+                if (status === true) {
+                    this.notify.success(this.translate.instant('OUTPUT.cmis_connection_ok'));
+                    this.connection = true;
+                } else {
+                    this.notify.error(this.translate.instant('OUTPUT.cmis_connection_ko') + ' : ' + data.message);
+                    this.connection = false;
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    getCMISConnectionInfo() {
+        return {
+            'cmis_ws': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'cmis_ws'),
+            'login': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'login'),
+            'password': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'password'),
+            'folder': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'folder')
         };
     }
 
