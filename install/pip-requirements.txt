@@ -17,7 +17,7 @@ pandas==2.3.2
 kuyruk==10.2.1
 pillow==11.3.0
 imutils==0.5.4
-psycopg==3.2.9
+psycopg==3.2.10
 thefuzz==0.22.1
 werkzeug==3.1.3
 pyflakes==3.4.0
@@ -40,7 +40,7 @@ schwifty==2025.7.0
 pytesseract==0.3.13
 configparser==7.2.0
 scikit-learn==1.6.1
-transformers==4.56.0
+transformers==4.56.1
 python-magic==0.4.27
 pycryptodome==3.23.0
 pypdf[crypto]==6.0.0
