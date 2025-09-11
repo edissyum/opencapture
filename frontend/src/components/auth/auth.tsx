@@ -15,26 +15,15 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-@import "tailwindcss";
-@import "./assets/tailwind-theme.css";
+import { redirect } from "react-router-dom";
 
-@font-face{
-    font-family: "Montserrat";
-    src:local("Montserrat-Regular"),
-    url('./assets/fonts/Montserrat-Regular.ttf')
+export function isAuthenticated(): boolean {
+    return !!localStorage.getItem("token");
 }
 
-@custom-variant dark (&:where(.dark, .dark *));
-
-:root {
-    font-family: "Montserrat", sans-serif;
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-    @apply text-green-400;
-    @apply hover:text-green-600;
+export async function protectedLoader() {
+    if (!isAuthenticated()) {
+        throw redirect("/login");
+    }
+    return null;
 }

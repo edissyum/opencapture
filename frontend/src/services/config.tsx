@@ -15,26 +15,8 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-@import "tailwindcss";
-@import "./assets/tailwind-theme.css";
-
-@font-face{
-    font-family: "Montserrat";
-    src:local("Montserrat-Regular"),
-    url('./assets/fonts/Montserrat-Regular.ttf')
+export let BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+if (!BACKEND_URL) {
+    throw new Error("No backend URL provided. Please set the VITE_BACKEND_URL environment variable.");
 }
-
-@custom-variant dark (&:where(.dark, .dark *));
-
-:root {
-    font-family: "Montserrat", sans-serif;
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-    @apply text-green-400;
-    @apply hover:text-green-600;
-}
+BACKEND_URL = BACKEND_URL.endsWith("/") ? BACKEND_URL.slice(0, -1) : BACKEND_URL;

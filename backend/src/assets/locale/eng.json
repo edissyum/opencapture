@@ -1,0 +1,68 @@
+{
+    "dateConvert"       : {
+        "01": [
+            "January",
+            "Jan",
+            "Jan."
+        ],
+        "02": [
+            "February",
+            "Febr",
+            "Febr.",
+            "Feb",
+            "Feb."
+        ],
+        "03": [
+            "Mar",
+            "Mar.",
+            "March"
+        ],
+        "04": [
+            "April",
+            "Apr",
+            "Apr."
+        ],
+        "05": [
+            "May"
+        ],
+        "06": [
+            "Jun",
+            "June"
+        ],
+        "07": [
+            "July",
+            "Jul",
+            "Jul."
+        ],
+        "08": [
+            "August",
+            "Aug",
+            "Aug."
+        ],
+        "09": [
+            "September",
+            "Sept",
+            "Sep",
+            "Sept.",
+            "Sep."
+        ],
+        "10": [
+            "October",
+            "Oct",
+            "Oct."
+        ],
+        "11": [
+            "November",
+            "Nov",
+            "Nov."
+        ],
+        "12": [
+            "Décember",
+            "Déc",
+            "Déc.",
+            "Dec",
+            "Dec."
+        ]
+    },
+    "dateTimeFormat"    : "%m %d %Y"
+}

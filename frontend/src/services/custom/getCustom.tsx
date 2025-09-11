@@ -15,26 +15,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-@import "tailwindcss";
-@import "./assets/tailwind-theme.css";
-
-@font-face{
-    font-family: "Montserrat";
-    src:local("Montserrat-Regular"),
-    url('./assets/fonts/Montserrat-Regular.ttf')
-}
-
-@custom-variant dark (&:where(.dark, .dark *));
-
-:root {
-    font-family: "Montserrat", sans-serif;
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-    @apply text-green-400;
-    @apply hover:text-green-600;
+export function getCustomFromUrl(): string | null {
+    const pathSegments = window.location.pathname.split("/").filter(Boolean);
+    return pathSegments.length > 0 ? pathSegments[0] : null;
 }

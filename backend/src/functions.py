@@ -103,9 +103,9 @@ def rest_validator(data, required_fields, only_data=False):
 
 
 def check_extensions_mime(files, document_type='document'):
-    formats_file = str(Path(__file__).parents[2]) + '/instance/config/extensions.json'
+    formats_file = str(Path(__file__).parents[1]) + '/instance/config/extensions.json'
     if document_type == 'attachments':
-        formats_file = str(Path(__file__).parents[2]) + '/instance/config/attachment_extensions.json'
+        formats_file = str(Path(__file__).parents[1]) + '/instance/config/attachment_extensions.json'
 
     if os.path.isfile(formats_file):
         with open(formats_file) as json_file:
@@ -179,8 +179,8 @@ def rotate_document(pdf_file, angle):
 
 def is_custom_exists(custom_id):
     found_custom = False
-    custom_directory = str(Path(__file__).parents[2]) + '/custom/'
-    custom_ini_file = str(Path(__file__).parents[2]) + '/custom/custom.ini'
+    custom_directory = str(Path(__file__).parents[1]) + '/custom/'
+    custom_ini_file = str(Path(__file__).parents[1]) + '/custom/custom.ini'
     if os.path.isdir(custom_directory) and os.path.isfile(custom_ini_file):
         customs_config = _Config(custom_ini_file)
         for custom_name in customs_config.cfg:
@@ -204,8 +204,8 @@ def retrieve_custom_from_url(request):
 
 
 def get_custom_path(custom_id):
-    custom_directory = str(Path(__file__).parents[2]) + '/custom/'
-    custom_ini_file = str(Path(__file__).parents[2]) + '/custom/custom.ini'
+    custom_directory = str(Path(__file__).parents[1]) + '/custom/'
+    custom_ini_file = str(Path(__file__).parents[1]) + '/custom/custom.ini'
     path = False
     if os.path.isdir(custom_directory) and os.path.isfile(custom_ini_file):
         customs_config = _Config(custom_ini_file)
@@ -218,9 +218,9 @@ def get_custom_path(custom_id):
 def retrieve_config_from_custom_id(custom_id):
     res = False
     found_custom = False
-    default_config_file = str(Path(__file__).parents[2]) + '/instance/config/config.ini'
-    custom_directory = str(Path(__file__).parents[2]) + '/custom/'
-    custom_ini_file = str(Path(__file__).parents[2]) + '/custom/custom.ini'
+    default_config_file = str(Path(__file__).parents[1]) + '/instance/config/config.ini'
+    custom_directory = str(Path(__file__).parents[1]) + '/custom/'
+    custom_ini_file = str(Path(__file__).parents[1]) + '/custom/custom.ini'
     if os.path.isdir(custom_directory) and os.path.isfile(custom_ini_file):
         customs_config = _Config(custom_ini_file)
         for custom_name, custom_param in customs_config.cfg.items():
@@ -237,8 +237,8 @@ def retrieve_config_from_custom_id(custom_id):
 
 
 def retrieve_custom_path(custom_id):
-    custom_directory = str(Path(__file__).parents[2]) + '/custom/'
-    custom_ini_file = str(Path(__file__).parents[2]) + '/custom/custom.ini'
+    custom_directory = str(Path(__file__).parents[1]) + '/custom/'
+    custom_ini_file = str(Path(__file__).parents[1]) + '/custom/custom.ini'
     path = None
     if os.path.isdir(custom_directory) and os.path.isfile(custom_ini_file):
         customs_config = _Config(custom_ini_file)

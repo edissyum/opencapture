@@ -15,26 +15,15 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-@import "tailwindcss";
-@import "./assets/tailwind-theme.css";
+import React, { createContext, useContext } from "react";
 
-@font-face{
-    font-family: "Montserrat";
-    src:local("Montserrat-Regular"),
-    url('./assets/fonts/Montserrat-Regular.ttf')
-}
+const CustomContext = createContext<string | null>(null);
 
-@custom-variant dark (&:where(.dark, .dark *));
+export const useCustom = () => useContext(CustomContext);
 
-:root {
-    font-family: "Montserrat", sans-serif;
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-    @apply text-green-400;
-    @apply hover:text-green-600;
-}
+export const CustomProvider: React.FC<{
+    custom: string | null;
+    children: React.ReactNode;
+}> = ({ custom, children }) => (
+    <CustomContext.Provider value={custom}>{children}</CustomContext.Provider>
+);

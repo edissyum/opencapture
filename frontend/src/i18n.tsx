@@ -15,26 +15,20 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-@import "tailwindcss";
-@import "./assets/tailwind-theme.css";
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+import translationFR from "./assets/i18n/fra.json";
+import translationEN from "./assets/i18n/eng.json";
+import translationSPA from "./assets/i18n/spa.json";
 
-@font-face{
-    font-family: "Montserrat";
-    src:local("Montserrat-Regular"),
-    url('./assets/fonts/Montserrat-Regular.ttf')
-}
-
-@custom-variant dark (&:where(.dark, .dark *));
-
-:root {
-    font-family: "Montserrat", sans-serif;
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-    @apply text-green-400;
-    @apply hover:text-green-600;
+export function initI18n(initialLang: string) {
+    return i18n.use(initReactI18next).init({
+        resources: {
+            fra: {translation: translationFR},
+            eng: {translation: translationEN},
+            spa: {translation: translationSPA}
+        },
+        lng: initialLang,
+        fallbackLng: "fra",
+    });
 }

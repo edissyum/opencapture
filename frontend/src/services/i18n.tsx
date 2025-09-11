@@ -15,26 +15,22 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-@import "tailwindcss";
-@import "./assets/tailwind-theme.css";
+import axios from "axios";
+import { BACKEND_URL } from "./config.tsx";
+import { getCustomFromUrl } from "./custom/getCustom.tsx";
 
-@font-face{
-    font-family: "Montserrat";
-    src:local("Montserrat-Regular"),
-    url('./assets/fonts/Montserrat-Regular.ttf')
-}
+const custom = getCustomFromUrl() || "";
+const api = axios.create({
+    baseURL: `${BACKEND_URL}/${custom}/ws/`,
+    timeout: 5000,
+});
 
-@custom-variant dark (&:where(.dark, .dark *));
-
-:root {
-    font-family: "Montserrat", sans-serif;
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-    @apply text-green-400;
-    @apply hover:text-green-600;
+export async function fetchCurrentLang(): Promise<string | null> {
+    try {
+        const res = await api.get("/i18n/getCurrentLang");
+        return res.data?.lang || null;
+    } catch (err) {
+        console.error("Erreur lors de la récupération de la langue :", err);
+        return null;
+    }
 }

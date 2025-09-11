@@ -4,6 +4,8 @@ services:
         build:
             context: ./frontend
             dockerfile: Dockerfile.dev
+        environment:
+            VITE_BACKEND_URL: ${VITE_BACKEND_URL}
         ports:
             - "5173:5173"
         volumes:
@@ -49,10 +51,11 @@ services:
             POSTGRES_DB: ${POSTGRES_DB}
             POSTGRES_USER: ${POSTGRES_USER}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            PGDATA: /data/postgres
         ports:
             - "5433:5432"
         volumes:
-            - pgdata:/var/lib/postgresql/data
+            - pgdata:/data/postgres
 
 networks:
     default:
