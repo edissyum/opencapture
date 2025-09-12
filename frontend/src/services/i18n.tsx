@@ -16,7 +16,13 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import axios from "axios";
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+
 import { BACKEND_URL } from "./config.tsx";
+import translationFR from "../assets/i18n/fra.json";
+import translationEN from "../assets/i18n/eng.json";
+import translationSPA from "../assets/i18n/spa.json";
 import { getCustomFromUrl } from "./custom/getCustom.tsx";
 
 const custom = getCustomFromUrl() || "";
@@ -33,4 +39,16 @@ export async function fetchCurrentLang(): Promise<string | null> {
         console.error("Erreur lors de la récupération de la langue :", err);
         return null;
     }
+}
+
+export function initI18n(initialLang: string) {
+    return i18n.use(initReactI18next).init({
+        resources: {
+            fra: {translation: translationFR},
+            eng: {translation: translationEN},
+            spa: {translation: translationSPA}
+        },
+        lng: initialLang,
+        fallbackLng: "fra",
+    });
 }

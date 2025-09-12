@@ -17,16 +17,75 @@
 
 import { useState } from "react";
 import axios, { type AxiosRequestConfig } from "axios";
-import { useCustom } from "../custom/customContext.tsx";
-import { BACKEND_URL } from "../config.tsx";
 
-const custom = useCustom();
-const api = axios.create({
-    baseURL: `${BACKEND_URL}/` + (custom ? `${custom}/ws/` : "ws/"),
-    timeout: 5000,
-});
+import { BACKEND_URL } from "../config.tsx";
+import { useCustom } from "../custom/customContext.tsx";
+import { showToast } from "../../components/ToastProvider.tsx";
+import { t } from "i18next";
 
 export function axiosApiCall() {
+    const custom = useCustom();
+    const api = axios.create({
+        headers: {
+            "Content-Type": "application/json",
+        },
+        baseURL: `${BACKEND_URL}/` + (custom ? `${custom}/ws/` : "ws/"),
+        timeout: 5000,
+    });
+
+    // Add a request interceptor to include the token in headers
+    api.interceptors.request.use(config => {
+        const token = sessionStorage.getItem("accessToken");
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    });
+
+    // Add a response interceptor to handle 401 errors and refresh the token
+    api.interceptors.response.use(
+        res => res,
+        async err => {
+            const originalRequest = err.config;
+            if (err.response?.status === 401 && !originalRequest._retry) {
+                originalRequest._retry = true;
+
+                const refreshToken = sessionStorage.getItem("refreshToken");
+                if (!refreshToken) {
+                    showToast(t('AUTH.session_expired'), "error");
+                    sessionStorage.removeItem("accessToken");
+                    sessionStorage.removeItem("refreshToken");
+                    return Promise.reject(err);
+                }
+
+                try {
+                    const headers = {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${refreshToken}`
+                    };
+                    const refreshRes = await axios.post(
+                        `${BACKEND_URL}/` + (custom ? `${custom}/ws/` : "ws/") + 'auth/login/refresh',
+                        { 'token': refreshToken },
+                        { headers: headers }
+                    );
+                    const newAccessToken = refreshRes.data.token;
+                    if (newAccessToken) {
+                        sessionStorage.setItem("accessToken", newAccessToken);
+                        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                        sessionStorage.setItem("user", JSON.stringify(refreshRes.data.user));
+                        return api.request(originalRequest);
+                    }
+                } catch (refreshErr) {
+                    showToast(t('AUTH.session_expired'), "error");
+                    sessionStorage.removeItem("accessToken");
+                    sessionStorage.removeItem("refreshToken");
+                    return Promise.reject(refreshErr);
+                }
+            }
+            return Promise.reject(err);
+        }
+    );
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -40,6 +99,10 @@ export function axiosApiCall() {
             return res.data;
         } catch (err: any) {
             setError(err.message || "Erreur inconnue");
+            showToast(err.message || "Erreur inconnue", "error");
+            if (err.response && err.response.data && err.response.data.message) {
+                showToast(err.response.data.message, "error");
+            }
             return null;
         } finally {
             setLoading(false);

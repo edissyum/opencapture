@@ -29,6 +29,7 @@ export const Input: React.FC<InputProps> = ({
     label,
     error,
     icon,
+    required,
     iconPosition = "left",
     className = "",
     ...props
@@ -47,13 +48,17 @@ export const Input: React.FC<InputProps> = ({
                         icon ? (iconPosition === "left" ? "pl-10" : "pr-10") : ""
                     } border-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed`}
                     placeholder=""
+                    required={required}
+                    aria-required={required}
                     {...props}
                 />
                 {label && (
                     <label htmlFor={id} className="cursor-text absolute left-0 ml-2 top-2 -translate-y-5 bg-white px-1 text-sm
                     duration-100 ease-linear peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-base
-                    peer-placeholder-shown:text-gray-400 peer-focus:ml-1 peer-focus:-translate-y-5 z-0
-                    peer-focus:px-1 peer-focus:text-sm text-gray-900">{label}</label>
+                    text-gray-400 peer-focus:ml-1 peer-focus:-translate-y-5 z-0 peer-focus:px-1 peer-focus:text-sm">
+                        {label}
+                        {required && <span className="text-red-500 ml-1">*</span>}
+                    </label>
                 )}
                 {icon && iconPosition === "right" && (
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -61,7 +66,7 @@ export const Input: React.FC<InputProps> = ({
                     </span>
                 )}
             </div>
-            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+            {error && <p className="text-red-500 text-sm mt-1" dangerouslySetInnerHTML={{ __html: error }}></p>}
         </div>
     );
 };

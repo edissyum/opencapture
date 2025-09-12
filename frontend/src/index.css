@@ -19,9 +19,17 @@
 @import "./assets/tailwind-theme.css";
 
 @font-face{
-    font-family: "Montserrat";
+    font-family: "Montserrat-Regular";
     src:local("Montserrat-Regular"),
-    url('./assets/fonts/Montserrat-Regular.ttf')
+    url('./assets/fonts/Montserrat-Regular.ttf');
+    font-weight: 400;
+}
+
+@font-face{
+    font-family: "Montserrat-Bold";
+    src:local("Montserrat-Bold"),
+    url('./assets/fonts/Montserrat-Bold.ttf');
+    font-weight: 700;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -32,6 +40,10 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+strong, b {
+    font-weight: 700;
 }
 
 a {

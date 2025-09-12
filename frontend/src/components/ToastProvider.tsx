@@ -15,20 +15,27 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import i18n from "i18next";
-import { initReactI18next } from "react-i18next";
-import translationFR from "./assets/i18n/fra.json";
-import translationEN from "./assets/i18n/eng.json";
-import translationSPA from "./assets/i18n/spa.json";
+import React from "react";
+import { ToastContainer, toast, type ToastOptions } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export function initI18n(initialLang: string) {
-    return i18n.use(initReactI18next).init({
-        resources: {
-            fra: {translation: translationFR},
-            eng: {translation: translationEN},
-            spa: {translation: translationSPA}
-        },
-        lng: initialLang,
-        fallbackLng: "fra",
-    });
-}
+export const showToast = (message: string, type: "success" | "error" | "info" = "info", options?: ToastOptions) => {
+    toast(message, { type, ...options });
+};
+
+export const ToastProvider: React.FC = () => {
+    return (
+        <ToastContainer
+            position="top-right"
+            autoClose={3000} // durée en ms
+            hideProgressBar={false}
+            newestOnTop={true}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+        />
+    );
+};

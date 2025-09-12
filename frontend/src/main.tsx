@@ -15,19 +15,18 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import './index.css'
-import { initI18n } from "./i18n.tsx";
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ToastContainer } from "react-toastify";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import { Login } from "./pages/login.tsx";
 import { Dashboard } from "./pages/dashboard.tsx";
 
 import { protectedLoader } from "./components/auth/auth.tsx";
-import { fetchCurrentLang } from "./services/i18n.tsx";
+import { fetchCurrentLang, initI18n } from "./services/i18n.tsx";
 import { getCustomFromUrl } from "./services/custom/getCustom.tsx";
 import { CustomProvider } from "./services/custom/customContext.tsx";
+import { ToastProvider } from "./components/ToastProvider.tsx";
 
 const router = createBrowserRouter([
     {
@@ -47,13 +46,13 @@ async function bootstrap() {
     const currentLang = await fetchCurrentLang();
 
     if (currentLang) {
-        await initI18n(currentLang)
+        await initI18n(currentLang);
     }
 
     createRoot(document.getElementById("root")!).render(
         <StrictMode>
             <CustomProvider custom={custom}>
-                <ToastContainer />
+                <ToastProvider />
                 <RouterProvider router={router}/>
             </CustomProvider>
         </StrictMode>

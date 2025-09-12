@@ -154,7 +154,7 @@
 	"AUTH": {
 		"authenticated": "Vous vous êtes authentifié avec succès",
 		"back_to_login": "Retour à la page de connexion",
-		"field_required": "Ce champ est requis",
+		"field_required": "est requis",
 		"forgot_password": "Mot de passe oublié ?",
 		"forgot_password_hint": "Un courriel contenant un lien pour réinitialiser votre mot de passe sera envoyé à l'adresse suivante (si cette dernière existe)",
 		"login": "Se connecter",

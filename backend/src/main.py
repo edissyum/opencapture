@@ -43,12 +43,8 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
         pass
 
     log = Log(config.cfg['GLOBAL']['logfile'], False)
-    db_user = config.cfg['DATABASE']['postgresuser']
-    db_pwd = config.cfg['DATABASE']['postgrespassword']
     db_name = config.cfg['DATABASE']['postgresdatabase']
-    db_host = config.cfg['DATABASE']['postgreshost']
-    db_port = config.cfg['DATABASE']['postgresport']
-    database = Database(log, db_name, db_user, db_pwd, db_host, db_port)
+    database = Database(log, db_name)
     if not database.conn:
         return False, 'bad_or_missing_database_informations'
 

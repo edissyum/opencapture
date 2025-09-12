@@ -154,7 +154,7 @@
 	"AUTH": {
 		"authenticated": "You have successfully authenticated",
 		"back_to_login": "Back to login page",
-		"field_required": "This field is required",
+		"field_required": "is required",
 		"forgot_password": "Forgot password ?",
 		"forgot_password_hint": "An email will be sent to your email address to reset your password",
 		"login": "Log in",

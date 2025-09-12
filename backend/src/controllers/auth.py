@@ -16,7 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Essaid MEGHELLET <essaid.meghellet@edissyum.com>
 
-
+import os
 import jwt
 import uuid
 import ldap3
@@ -152,10 +152,10 @@ def check_connection():
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         config = _vars[1]
-    db_user = config['DATABASE']['postgresuser']
-    db_host = config['DATABASE']['postgreshost']
-    db_port = config['DATABASE']['postgresport']
-    db_pwd = config['DATABASE']['postgrespassword']
+    db_user = os.environ['POSTGRES_USER']
+    db_host = os.environ['POSTGRES_HOST']
+    db_port = os.environ['POSTGRES_PORT']
+    db_pwd = os.environ['POSTGRES_PASSWORD']
     db_name = config['DATABASE']['postgresdatabase']
     try:
         psycopg.connect(dbname=db_name, user=db_user, password=db_pwd, host=db_host, port=db_port)
@@ -487,6 +487,7 @@ def login_with_token(token, lang):
 def token_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
+        print('here')
         if 'Authorization' in request.headers:
             where = ['username = %s']
             user_ws = password = False
