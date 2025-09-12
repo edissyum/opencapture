@@ -19,13 +19,13 @@ import { Button } from '../components/Button';
 import { Input } from "../components/Input.tsx";
 import { getI18n, useTranslation } from "react-i18next";
 
-import { useFormValues } from "../services/hooks/useFormValues.tsx";
-import { axiosApiCall } from "../services/hooks/axiosApiCall.tsx";
 import { showToast } from "../components/ToastProvider.tsx";
+import { axiosApiCall } from "../services/hooks/axiosApiCall.tsx";
+import { useFormValues } from "../services/hooks/useFormValues.tsx";
 
 export function Login() {
-    const { post } = axiosApiCall();
     const { t } = useTranslation();
+    const { post } = axiosApiCall();
 
     const { handleSubmit, errors, handleChange } = useFormValues(async (values) => {
         try {
@@ -36,11 +36,18 @@ export function Login() {
             };
 
             const response = await post("/auth/login", data);
-            showToast(t('AUTH.authenticated'), 'success');
+            if (response) {
+                showToast(t('AUTH.authenticated'));
 
-            sessionStorage.setItem("accessToken", response.auth_token);
-            sessionStorage.setItem("refreshToken", response.refresh_token);
-            sessionStorage.setItem("user", JSON.stringify(response.user));
+                if (response.admin_password_alert) {
+                    showToast(t('ERROR.admin_password_alert'), "warning");
+                }
+
+                sessionStorage.setItem("accessToken", response.auth_token);
+                sessionStorage.setItem("refreshToken", response.refresh_token);
+
+                sessionStorage.setItem("user", JSON.stringify(response.user));
+            }
         } catch (err) {
             return null;
         }
@@ -51,7 +58,9 @@ export function Login() {
             <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <img src={"/src/assets/imgs/login_image.png"} alt="Open-Capture" className="mx-auto" />
-                    <h2 className="mt-10 text-center text-2xl/9 tracking-tight text-gray-900">{t("GLOBAL.login")}</h2>
+                    <h2 className="mt-10 text-center text-2xl/9 tracking-tight text-gray-900">
+                        { t("GLOBAL.login") }
+                    </h2>
                 </div>
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">

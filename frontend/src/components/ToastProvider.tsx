@@ -17,9 +17,8 @@
 
 import React from "react";
 import { ToastContainer, toast, type ToastOptions } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
-export const showToast = (message: string, type: "success" | "error" | "info" = "info", options?: ToastOptions) => {
+export const showToast = (message: any, type: "success" | "warning" | "error" | "info" = "success", options?: ToastOptions) => {
     toast(message, { type, ...options });
 };
 
@@ -27,15 +26,12 @@ export const ToastProvider: React.FC = () => {
     return (
         <ToastContainer
             position="top-right"
-            autoClose={3000} // durée en ms
-            hideProgressBar={false}
+            autoClose={3000}
             newestOnTop={true}
             closeOnClick
-            rtl={false}
             pauseOnFocusLoss
-            draggable
             pauseOnHover
-            theme="colored"
+            theme="light"
         />
     );
 };

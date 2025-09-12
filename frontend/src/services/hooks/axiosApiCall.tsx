@@ -47,7 +47,7 @@ export function axiosApiCall() {
         res => res,
         async err => {
             const originalRequest = err.config;
-            if (err.response?.status === 401 && !originalRequest._retry) {
+            if (err.response?.status === 401 && !originalRequest._retry && !originalRequest.url.includes('/auth/login')) {
                 originalRequest._retry = true;
 
                 const refreshToken = sessionStorage.getItem("refreshToken");
@@ -59,14 +59,15 @@ export function axiosApiCall() {
                 }
 
                 try {
-                    const headers = {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${refreshToken}`
-                    };
                     const refreshRes = await axios.post(
                         `${BACKEND_URL}/` + (custom ? `${custom}/ws/` : "ws/") + 'auth/login/refresh',
-                        { 'token': refreshToken },
-                        { headers: headers }
+                        {'token': refreshToken},
+                        {
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${refreshToken}`
+                            }
+                        }
                     );
                     const newAccessToken = refreshRes.data.token;
                     if (newAccessToken) {
@@ -99,9 +100,21 @@ export function axiosApiCall() {
             return res.data;
         } catch (err: any) {
             setError(err.message || "Erreur inconnue");
-            showToast(err.message || "Erreur inconnue", "error");
             if (err.response && err.response.data && err.response.data.message) {
-                showToast(err.response.data.message, "error");
+                showToast(
+                    <div>
+                        <h4>
+                            <strong>
+                                {err.response.data.errors}
+                            </strong>
+                        </h4>
+                        <p>
+                            {err.response.data.message}
+                        </p>
+                    </div>, "error"
+                )
+            } else {
+                showToast(err.message || "Erreur inconnue", "error");
             }
             return null;
         } finally {
@@ -110,16 +123,16 @@ export function axiosApiCall() {
     };
 
     const get = <T = any>(url: string, config?: AxiosRequestConfig) =>
-        request<T>({ ...config, method: "GET", url });
+        request<T>({...config, method: "GET", url});
 
     const post = <T = any>(url: string, data?: any, config?: AxiosRequestConfig) =>
-        request<T>({ ...config, method: "POST", url, data });
+        request<T>({...config, method: "POST", url, data});
 
     const put = <T = any>(url: string, data?: any, config?: AxiosRequestConfig) =>
-        request<T>({ ...config, method: "PUT", url, data });
+        request<T>({...config, method: "PUT", url, data});
 
     const del = <T = any>(url: string, config?: AxiosRequestConfig) =>
-        request<T>({ ...config, method: "DELETE", url });
+        request<T>({...config, method: "DELETE", url});
 
-    return { loading, error, get, post, put, del };
+    return {loading, error, get, post, put, del};
 }

@@ -487,7 +487,6 @@ def login_with_token(token, lang):
 def token_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
-        print('here')
         if 'Authorization' in request.headers:
             where = ['username = %s']
             user_ws = password = False

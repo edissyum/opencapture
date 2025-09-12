@@ -20,25 +20,23 @@ import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import { Login } from "./pages/login.tsx";
-import { Dashboard } from "./pages/dashboard.tsx";
 
-import { protectedLoader } from "./components/auth/auth.tsx";
+import { ToastProvider } from "./components/ToastProvider.tsx";
+
 import { fetchCurrentLang, initI18n } from "./services/i18n.tsx";
 import { getCustomFromUrl } from "./services/custom/getCustom.tsx";
 import { CustomProvider } from "./services/custom/customContext.tsx";
-import { ToastProvider } from "./components/ToastProvider.tsx";
 
-const router = createBrowserRouter([
+const router = createBrowserRouter(
+    [
+        {
+            path: "/login",
+            element: <Login/>
+        }
+    ],
     {
-        path: "/login",
-        element: <Login/>,
-    },
-    {
-        path: "/dashboard",
-        element: <Dashboard/>,
-        loader: protectedLoader,
-    }],
-    { basename: getCustomFromUrl() || undefined }
+        basename: getCustomFromUrl() || undefined
+    }
 );
 
 async function bootstrap() {
@@ -52,7 +50,7 @@ async function bootstrap() {
     createRoot(document.getElementById("root")!).render(
         <StrictMode>
             <CustomProvider custom={custom}>
-                <ToastProvider />
+                <ToastProvider/>
                 <RouterProvider router={router}/>
             </CustomProvider>
         </StrictMode>
