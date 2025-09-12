@@ -96,6 +96,10 @@ class FindContact:
 
 
     def run(self):
+        if not current_app.config['CONTACT_MODEL']:
+            self.log.info('No contact model configured, skipping contact search/creation')
+            return None
+
         contact_data = self.run_inference()
         if 'email' in contact_data:
             contact = self.search_contact('email', contact_data['email'])
