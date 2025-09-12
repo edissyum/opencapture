@@ -24,12 +24,8 @@ import { axiosApiCall } from "../services/hooks/axiosApiCall.tsx";
 import { showToast } from "../components/ToastProvider.tsx";
 
 export function Login() {
-    const { post, get } = axiosApiCall();
+    const { post } = axiosApiCall();
     const { t } = useTranslation();
-
-    const launch = async () => {
-        await get('config/getConfigurations');
-    }
 
     const { handleSubmit, errors, handleChange } = useFormValues(async (values) => {
         try {
@@ -52,7 +48,6 @@ export function Login() {
 
     return (
         <div className='dark'>
-            <button onClick={launch}>TEST</button>
             <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <img src={"/src/assets/imgs/login_image.png"} alt="Open-Capture" className="mx-auto" />
