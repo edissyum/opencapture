@@ -209,7 +209,6 @@ class FindSupplier:
             if 'name' not in supplier[0] or not supplier[0]['name']:
                 name = supplier[0]['lastname'] if 'lastname' in supplier[0] and supplier[0]['lastname'] else ''
                 name += ' ' + supplier[0]['firstname'] if 'firstname' in supplier[0] and supplier[0]['firstname'] else ''
-                supplier[0]['name'] = name.strip()
             else:
                 name = supplier[0]['name']
             self.log.info('Third-party account found : ' + name + ' using EMAIL : ' + supplier[0]['email'])
