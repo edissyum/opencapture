@@ -14,13 +14,22 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-export default defineConfig({
-    plugins: [
-        react(),
-        tailwindcss()
-    ],
-})
+export function HomePage() {
+    // hello  world
+    const { t } = useTranslation();
+    const [message, setMessage] = useState("");
+
+    useEffect(() => {
+        setMessage(t("HOME.welcome_message"));
+    }, [t]);
+
+    return (
+        <div className="p-4">
+            <h1 className="text-2xl font-bold mb-4">{t("HOME.title")}</h1>
+            <p>{message}</p>
+        </div>
+    );
+}

@@ -14,13 +14,17 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
+import { Outlet } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
 
-export default defineConfig({
-    plugins: [
-        react(),
-        tailwindcss()
-    ],
-})
+export default function MainLayout() {
+    return (
+        <div className="flex min-h-screen">
+            <Sidebar />
+
+            <main className="flex-1 p-6 bg-gray-100">
+                <Outlet />
+            </main>
+        </div>
+    );
+}
