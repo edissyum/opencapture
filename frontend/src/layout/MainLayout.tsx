@@ -33,7 +33,6 @@ export default function MainLayout() {
     return (
         <div className="flex min-h-screen">
             <Sidebar />
-
             <main className="flex-1 bg-gray-100">
                 <TopBar />
                 <span className="p-6 block">

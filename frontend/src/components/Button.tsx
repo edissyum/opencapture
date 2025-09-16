@@ -17,8 +17,9 @@
 
 import React from "react";
 import { LoaderCircle } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 
-type ButtonVariant = "primary" | "secondary" | "danger";
+type ButtonVariant = "primary" | "secondary" | "danger" | "no_bg";
 type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -26,6 +27,8 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     size?: ButtonSize;
     icon?: React.ReactNode;
     loading?: boolean;
+    to?: string;
+    exact?: boolean;
 }
 
 export function Button({
@@ -36,16 +39,27 @@ export function Button({
     loading = false,
     icon,
     className,
+    to,
+    exact = false,
     ...props
 }: ButtonProps) {
+    const location = useLocation();
+
+    const isActive = to
+        ? exact
+            ? location.pathname === to
+            : location.pathname.includes(to)
+        : false;
+
     const baseStyles =
-        "cursor-pointer inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none " +
-        "focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
+        "cursor-pointer inline-flex items-center justify-center font-medium rounded-lg " +
+        "transition-colors focus:outline-none disabled:opacity-50 disabled:pointer-events-none";
 
     const variantStyles: Record<ButtonVariant, string> = {
-        primary: "bg-green-400 text-white hover:bg-green-400/80 focus:ring-green-500",
-        secondary: "bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-400",
+        primary: "bg-green-400 border-2 border-green-400 text-white hover:bg-green-400",
+        secondary: "bg-green-400/10 border-2 border-green-400 rounded-lg text-green-400! hover:bg-green-400 hover:text-white!",
         danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
+        no_bg: "bg-transparent text-gray-400! hover:bg-gray-100 hover:text-gray-200 hover:border-2 hover:border-gray-400 border-2 border-transparent",
     };
 
     const sizeStyles: Record<ButtonSize, string> = {
@@ -54,23 +68,39 @@ export function Button({
         lg: "px-5 py-3 text-lg",
     };
 
-    let classes = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]}`;
+    let classes = `${baseStyles} ${variantStyles[to && !isActive ? "no_bg" : variant]} ${sizeStyles[size]}`;
     if (className) {
-        classes =  classes + " " + className;
+        classes = classes + " " + className;
+    }
+
+    const content = loading ? (
+        <LoaderCircle className="animate-spin" size={24} />
+    ) : (
+        <>
+            {icon && <span className="mr-2">{icon}</span>}
+            {children}
+        </>
+    );
+
+    if (to) {
+        const isExternal = to.startsWith("http");
+        if (isExternal) {
+            return (
+                <a href={to} className={classes} target="_blank" rel="noopener noreferrer">
+                    {content}
+                </a>
+            );
+        }
+        return (
+            <Link to={to} className={classes}>
+                {content}
+            </Link>
+        );
     }
 
     return (
-        <span className="disabled:cursor-not-allowed">
-            <button className={classes} type={type} {...props}>
-                {loading ? (
-                    <LoaderCircle className="animate-spin" size={24} />
-                ) : (
-                    <>
-                        {icon && <span className="mr-2">{icon}</span>}
-                        {children}
-                    </>
-                )}
-            </button>
-        </span>
+        <button className={classes} type={type} {...props}>
+            {content}
+        </button>
     );
 }

@@ -30,7 +30,7 @@ export function axiosApiCall() {
             "Content-Type": "application/json",
         },
         baseURL: `${BACKEND_URL}/` + (custom ? `${custom}/ws/` : "ws/"),
-        timeout: 5000,
+        timeout: 10000,
     });
 
     // Add a request interceptor to include the token in headers

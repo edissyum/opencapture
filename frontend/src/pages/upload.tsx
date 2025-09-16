@@ -16,7 +16,7 @@
 
 import { useEffect, useState } from "react";
 
-export function HomePage() {
+export function UploadPage() {
     const [module, setModule] = useState("");
 
     const selectedModule = localStorage.getItem('selectedModule');
@@ -39,7 +39,7 @@ export function HomePage() {
 
     return (
         <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">HOME</h1>
+            <h1 className="text-2xl font-bold mb-4">UPLOAD</h1>
             <p>Module selectionné : {module}</p>
         </div>
     );

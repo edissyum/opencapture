@@ -15,19 +15,72 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { t } from "i18next";
+import { useState } from "react";
+import { ChevronsUpDown, CloudUpload, Package } from "lucide-react";
+
+import { Button } from "./Button.tsx";
+
 
 export default function TopBar() {
-    return (
-        <header className="w-full h-22 flex items-center justify-between px-6 bg-white border-b shadow-sm">
+    const options = [
+        {
+            id: 'verifier',
+            label: 'Module Verifier',
+            img: '/src/assets/imgs/Open-Capture_Verifier.svg'
+        },
+        {
+            id: 'splitter',
+            label: 'Module Splitter',
+            img: '/src/assets/imgs/Open-Capture_Splitter.svg'
+        }
+    ];
 
+    const [selected, setSelected] = useState<string | null>(null);
+    const [img, setImg] = useState<string | null>(null);
+
+    const handleSelect = (option: string) => {
+        setSelected(option);
+        const optionInfo = options.find(o => o.id === option);
+        if (optionInfo) {
+            setImg(optionInfo['img'])
+        }
+        localStorage.setItem('selectedModule', option);
+        window.dispatchEvent(new Event("local-storage"));
+    };
+
+    const storedModule = localStorage.getItem('selectedModule');
+    if (storedModule && !selected) {
+        handleSelect(storedModule)
+    }
+
+    return (
+        <header className="w-full h-22 flex items-center justify-between px-6 bg-white border-b-2 border-gray-200">
             <div className="flex items-center gap-4">
-                <span className="text-sm text-gray-600">
-                  {sessionStorage.getItem("username") || "Utilisateur"}
-                </span>
-                <button className="px-3 py-1 text-sm rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
-                >
-                    Déconnexion
-                </button>
+                <div className="relative inline-block w-64">
+                    <select value={ selected || '' } style={{ backgroundImage: `url('${img}')` }}
+                            onChange={(e) => { handleSelect(e.target.value)} }
+                            className="w-full bg-size-[35px] bg-no-repeat bg-position-[8px] pl-[60px] cursor-pointer
+                            rounded-lg py-3 border-2 border-gray-200 appearance-none">
+                        {
+                            options.map((option) => (
+                                <option value={option['id']}
+                                    className="cursor-pointer px-4 py-2 hover:bg-gray-100">
+                                    {option['label']}
+                                </option>
+                            ))
+                        }
+                    </select>
+                    <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2">
+                        { <ChevronsUpDown size={20} /> }
+                    </span>
+                </div>
+                <Button to="/home" icon={<Package size={24} className="mr-2"/>} className="font-semibold p-3! bg-green-400/10">
+                    { t('GLOBAL.batches') }
+                </Button>
+                <Button to="/upload" icon={<CloudUpload size={24} className="mr-2"/>} className="font-semibold p-3! bg-green-400/10">
+                    { t('GLOBAL.upload') }
+                </Button>
             </div>
         </header>
     );

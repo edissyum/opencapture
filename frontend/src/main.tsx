@@ -16,20 +16,22 @@
 
 import './index.css'
 import { StrictMode } from 'react'
+import { Tooltip } from "react-tooltip";
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import { Login } from "./pages/login.tsx";
-import { HomePage } from "./pages/home.tsx";
+import { Login } from "./pages/login";
+import { HomePage } from "./pages/home";
+import { UploadPage } from "./pages/upload";
 
 import MainLayout from "./layout/MainLayout.tsx";
 
-import { ToastProvider } from "./components/ToastProvider.tsx";
+import { protectedLoader } from "./components/auth/auth";
+import { ToastProvider } from "./components/ToastProvider";
 
-import { protectedLoader } from "./components/auth/auth.tsx";
-import { fetchCurrentLang, initI18n } from "./services/i18n.tsx";
-import { getCustomFromUrl } from "./services/custom/getCustom.tsx";
-import { CustomProvider } from "./services/custom/customContext.tsx";
+import { fetchCurrentLang, initI18n } from "./services/i18n";
+import { getCustomFromUrl } from "./services/custom/getCustom";
+import { CustomProvider } from "./services/custom/customContext";
 
 const router = createBrowserRouter(
     [
@@ -44,6 +46,11 @@ const router = createBrowserRouter(
                 {
                     path: "home",
                     element: <HomePage />,
+                    loader: protectedLoader,
+                },
+                {
+                    path: "upload",
+                    element: <UploadPage />,
                     loader: protectedLoader,
                 }
             ]
@@ -66,6 +73,7 @@ async function bootstrap() {
         <StrictMode>
             <CustomProvider custom={custom}>
                 <ToastProvider/>
+                <Tooltip id="tooltip" />
                 <RouterProvider router={router}/>
             </CustomProvider>
         </StrictMode>
