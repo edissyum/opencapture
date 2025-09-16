@@ -19,4 +19,6 @@
 
 @theme {
     --color-green-400: oklch(0.687 0.143 156);
+
+    --color-gray-400: oklch(0.662 0.0133 280.96);
 }

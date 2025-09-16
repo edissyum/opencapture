@@ -47,6 +47,7 @@ strong, b {
 }
 
 a {
+    @apply cursor-pointer;
     @apply text-green-400;
     @apply hover:text-green-600;
 }

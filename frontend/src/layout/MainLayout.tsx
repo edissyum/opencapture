@@ -14,16 +14,31 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
+import { useCustom } from "../services/custom/customContext.tsx";
+import TopBar from "../components/TopBar.tsx";
 
 export default function MainLayout() {
+    let pathNameWithoutCustom: string = window.location.pathname.replace(useCustom() || "", "") || "/";
+    pathNameWithoutCustom = pathNameWithoutCustom.replace("//", "/");
+    if (pathNameWithoutCustom === "/") {
+        if (sessionStorage.getItem('accessToken')) {
+            return <Navigate to="/home" replace />;
+        } else {
+            return <Navigate to="/login" replace />;
+        }
+    }
+
     return (
         <div className="flex min-h-screen">
             <Sidebar />
 
-            <main className="flex-1 p-6 bg-gray-100">
-                <Outlet />
+            <main className="flex-1 bg-gray-100">
+                <TopBar />
+                <span className="p-6 block">
+                    <Outlet />
+                </span>
             </main>
         </div>
     );

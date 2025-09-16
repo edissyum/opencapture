@@ -37,11 +37,11 @@ export const Input: React.FC<InputProps> = ({
     return (
         <div className={`flex flex-col ${className}`}>
             <div className="relative">
-                {icon && iconPosition === "left" && (
+                { icon && iconPosition === "left" && (
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                        {icon}
+                        { icon }
                     </span>
-                )}
+                ) }
                 <input
                     id={id}
                     className={`z-10 peer w-full border-b placeholder:text-transparent px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400 ${

@@ -22,10 +22,11 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Login } from "./pages/login.tsx";
 import { HomePage } from "./pages/home.tsx";
 
-import { ToastProvider } from "./components/ToastProvider.tsx";
-
 import MainLayout from "./layout/MainLayout.tsx";
 
+import { ToastProvider } from "./components/ToastProvider.tsx";
+
+import { protectedLoader } from "./components/auth/auth.tsx";
 import { fetchCurrentLang, initI18n } from "./services/i18n.tsx";
 import { getCustomFromUrl } from "./services/custom/getCustom.tsx";
 import { CustomProvider } from "./services/custom/customContext.tsx";
@@ -38,9 +39,13 @@ const router = createBrowserRouter(
         },
         {
             path: "/",
-            element: <MainLayout />, // layout global avec sidebar
+            element: <MainLayout />,
             children: [
-                { path: "home", element: <HomePage /> }
+                {
+                    path: "home",
+                    element: <HomePage />,
+                    loader: protectedLoader,
+                }
             ]
         }
     ],

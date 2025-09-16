@@ -15,20 +15,36 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { useEffect, useState } from "react";
+import { getI18n, useTranslation } from "react-i18next";
+
 import { Button } from '../components/Button';
 import { Input } from "../components/Input.tsx";
-import { getI18n, useTranslation } from "react-i18next";
 
 import { showToast } from "../components/ToastProvider.tsx";
 import { axiosApiCall } from "../services/hooks/axiosApiCall.tsx";
 import { useFormValues } from "../services/hooks/useFormValues.tsx";
+import { useNavigate } from "react-router-dom";
 
 export function Login() {
+    const [loadingLogin, setLoadingLogin] = useState(false);
+
     const { t } = useTranslation();
+
+    useEffect(() => {
+        const msg = sessionStorage.getItem("loginRequiredMessage");
+        if (msg) {
+            showToast(t(msg), "error");
+            sessionStorage.removeItem("loginRequiredMessage");
+        }
+    }, []);
+
     const { post } = axiosApiCall();
+    const navigate = useNavigate();
 
     const { handleSubmit, errors, handleChange } = useFormValues(async (values) => {
         try {
+            setLoadingLogin(true);
             const data = {
                 lang: getI18n().language,
                 username: values.username.value,
@@ -45,10 +61,13 @@ export function Login() {
 
                 sessionStorage.setItem("accessToken", response.auth_token);
                 sessionStorage.setItem("refreshToken", response.refresh_token);
-
                 sessionStorage.setItem("user", JSON.stringify(response.user));
+
+                navigate('/home', { replace: true });
             }
+            setLoadingLogin(false);
         } catch (err) {
+            setLoadingLogin(false);
             return null;
         }
     }, t);
@@ -73,7 +92,7 @@ export function Login() {
                         </div>
 
                         <div className="text-center">
-                            <Button type="submit" size='md' className="w-full">
+                            <Button loading={loadingLogin} type="submit" size='md' className="w-full">
                                 { t('AUTH.login') }
                             </Button>
                         </div>

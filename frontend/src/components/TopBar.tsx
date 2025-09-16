@@ -4,6 +4,7 @@
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
+
  Open-Capture is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -14,21 +15,20 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 
-export function HomePage() {
-    const { t } = useTranslation();
-    const [message, setMessage] = useState("");
-
-    useEffect(() => {
-        setMessage(t("HOME.welcome_message"));
-    }, [t]);
-
+export default function TopBar() {
     return (
-        <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">{t("HOME.title")}</h1>
-            <p>{message}</p>
-        </div>
+        <header className="w-full h-22 flex items-center justify-between px-6 bg-white border-b shadow-sm">
+
+            <div className="flex items-center gap-4">
+                <span className="text-sm text-gray-600">
+                  {sessionStorage.getItem("username") || "Utilisateur"}
+                </span>
+                <button className="px-3 py-1 text-sm rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
+                >
+                    Déconnexion
+                </button>
+            </div>
+        </header>
     );
 }

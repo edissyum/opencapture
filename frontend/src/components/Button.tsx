@@ -16,6 +16,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import React from "react";
+import { LoaderCircle } from "lucide-react";
 
 type ButtonVariant = "primary" | "secondary" | "danger";
 type ButtonSize = "sm" | "md" | "lg";
@@ -24,6 +25,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: ButtonVariant;
     size?: ButtonSize;
     icon?: React.ReactNode;
+    loading?: boolean;
 }
 
 export function Button({
@@ -31,6 +33,7 @@ export function Button({
     type = "button",
     variant = "primary",
     size = "md",
+    loading = false,
     icon,
     className,
     ...props
@@ -59,8 +62,14 @@ export function Button({
     return (
         <span className="disabled:cursor-not-allowed">
             <button className={classes} type={type} {...props}>
-                {icon && <span className="mr-2">{icon}</span>}
-                {children}
+                {loading ? (
+                    <LoaderCircle className="animate-spin" size={24} />
+                ) : (
+                    <>
+                        {icon && <span className="mr-2">{icon}</span>}
+                        {children}
+                    </>
+                )}
             </button>
         </span>
     );

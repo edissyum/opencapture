@@ -18,11 +18,12 @@
 import { redirect } from "react-router-dom";
 
 export function isAuthenticated(): boolean {
-    return !!localStorage.getItem("token");
+    return !!sessionStorage.getItem("accessToken");
 }
 
 export async function protectedLoader() {
     if (!isAuthenticated()) {
+        sessionStorage.setItem("loginRequiredMessage", 'AUTH.not_connected');
         throw redirect("/login");
     }
     return null;
