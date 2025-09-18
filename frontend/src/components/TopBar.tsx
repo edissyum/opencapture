@@ -26,12 +26,12 @@ export default function TopBar() {
     const options = [
         {
             id: 'verifier',
-            label: 'Module Verifier',
+            label: t('ONBOARD.verifier'),
             img: '/src/assets/imgs/Open-Capture_Verifier.svg'
         },
         {
             id: 'splitter',
-            label: 'Module Splitter',
+            label: t('ONBOARD.splitter'),
             img: '/src/assets/imgs/Open-Capture_Splitter.svg'
         }
     ];
@@ -55,17 +55,17 @@ export default function TopBar() {
     }
 
     return (
-        <header className="w-full h-22 flex items-center justify-between px-6 bg-white border-b-2 border-gray-200">
+        <header className="w-full h-22 flex items-center justify-between px-6 bg-(--bg-primary) border-b-2 border-(--border-secondary)">
             <div className="flex items-center gap-4">
                 <div className="relative inline-block w-64">
                     <select value={ selected || '' } style={{ backgroundImage: `url('${img}')` }}
                             onChange={(e) => { handleSelect(e.target.value)} }
                             className="w-full bg-size-[35px] bg-no-repeat bg-position-[8px] pl-[60px] cursor-pointer
-                            rounded-lg py-3 border-2 border-gray-200 appearance-none">
+                            rounded-lg py-3 border-2 border-(--border-secondary) appearance-none">
                         {
                             options.map((option) => (
                                 <option value={option['id']}
-                                    className="cursor-pointer px-4 py-2 hover:bg-gray-100">
+                                    className="cursor-pointer px-4 py-2 hover:bg-(--bg-secondary)">
                                     {option['label']}
                                 </option>
                             ))
@@ -75,10 +75,10 @@ export default function TopBar() {
                         { <ChevronsUpDown size={20} /> }
                     </span>
                 </div>
-                <Button to="/home" icon={<Package size={24} className="mr-2"/>} className="font-semibold p-3! bg-green-400/10">
+                <Button to="/home" icon={<Package size={24} className="mr-2"/>} className="font-semibold p-3!">
                     { t('GLOBAL.batches') }
                 </Button>
-                <Button to="/upload" icon={<CloudUpload size={24} className="mr-2"/>} className="font-semibold p-3! bg-green-400/10">
+                <Button to="/upload" icon={<CloudUpload size={24} className="mr-2"/>} className="font-semibold p-3!">
                     { t('GLOBAL.upload') }
                 </Button>
             </div>

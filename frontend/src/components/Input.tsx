@@ -38,7 +38,7 @@ export const Input: React.FC<InputProps> = ({
         <div className={`flex flex-col ${className}`}>
             <div className="relative">
                 { icon && iconPosition === "left" && (
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-(--text-secondary)">
                         { icon }
                     </span>
                 ) }
@@ -46,22 +46,22 @@ export const Input: React.FC<InputProps> = ({
                     id={id}
                     className={`z-10 peer w-full border-b placeholder:text-transparent px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400 ${
                         icon ? (iconPosition === "left" ? "pl-10" : "pr-10") : ""
-                    } border-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed`}
+                    } border-(--border-secondary) disabled:bg-(--bg-secondary) disabled:cursor-not-allowed`}
                     placeholder=""
                     required={required}
                     aria-required={required}
                     {...props}
                 />
                 {label && (
-                    <label htmlFor={id} className="cursor-text absolute left-0 ml-2 top-2 -translate-y-5 bg-white px-1 text-sm
+                    <label htmlFor={id} className="cursor-text absolute left-0 ml-2 top-2 -translate-y-5 bg-(--bg-primary) px-1 text-sm
                     duration-100 ease-linear peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-base
-                    text-gray-400 peer-focus:ml-1 peer-focus:-translate-y-5 z-0 peer-focus:px-1 peer-focus:text-sm">
+                    text-(--text-secondary) peer-focus:ml-1 peer-focus:-translate-y-5 z-0 peer-focus:px-1 peer-focus:text-sm">
                         {label}
                         {required && <span className="text-red-500 ml-1">*</span>}
                     </label>
                 )}
                 {icon && iconPosition === "right" && (
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-(--text-secondary)">
                         {icon}
                     </span>
                 )}

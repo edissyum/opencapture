@@ -63,6 +63,12 @@ export function Login() {
                 sessionStorage.setItem("refreshToken", response.refresh_token);
                 sessionStorage.setItem("user", JSON.stringify(response.user));
 
+                const module = localStorage.getItem('selectedModule');
+                if (!module) {
+                    navigate('/onboarding', { replace: true });
+                    setLoadingLogin(false);
+                    return;
+                }
                 navigate('/home', { replace: true });
             }
             setLoadingLogin(false);
@@ -77,7 +83,7 @@ export function Login() {
             <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <img src={"/src/assets/imgs/login_image.png"} alt="Open-Capture" className="mx-auto" />
-                    <h2 className="mt-10 text-center text-2xl/9 tracking-tight text-gray-900">
+                    <h2 className="mt-10 text-center text-2xl/9 tracking-tight text-(--text-primary)">
                         { t("GLOBAL.login") }
                     </h2>
                 </div>

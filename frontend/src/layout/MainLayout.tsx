@@ -33,7 +33,7 @@ export default function MainLayout() {
     return (
         <div className="flex min-h-screen">
             <Sidebar />
-            <main className="flex-1 bg-gray-100">
+            <main className="flex-1 bg-(--bg-secondary)">
                 <TopBar />
                 <span className="p-6 block">
                     <Outlet />

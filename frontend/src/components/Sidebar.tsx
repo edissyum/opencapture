@@ -34,11 +34,11 @@ export default function Sidebar() {
 
     const [collapsed, setCollapsed] = useState(false);
 
-    const standardClasses = "flex items-center p-2 gap-2 hover:text-green-400! text-gray-400! font-semibold";
-    const activeClasses = "bg-green-400/10 border-2 border-green-400 rounded-lg text-green-400!";
+    const standardClasses = "flex items-center p-2 gap-2 hover:text-(--color-primary)! text-(--text-secondary)! font-semibold";
+    const activeClasses = "bg-green-400/10 border-2 border-(--border-primary) rounded-lg text-(--color-primary)!";
 
     return (
-        <aside className={`min-h-screen px-3 py-2 flex flex-col border-r-2 border-r-gray-200 transition-all duration-300 ${collapsed ? "w-18" : "w-70"}`}>
+        <aside className={`min-h-screen px-3 py-2 flex flex-col border-r-2 border-r-(--border-secondary) transition-all duration-300 ${collapsed ? "w-18" : "w-70"}`}>
             <div className={`flex items-center min-h-18 gap-3 mb-3 ${collapsed ? "p-2" : "p-4"}`}>
                 { !collapsed && (<span><img src={"/src/assets/imgs/login_image.png"} alt="Sidebar image"/></span>) }
                 <span onClick={ () => setCollapsed(!collapsed) }
@@ -115,7 +115,7 @@ export default function Sidebar() {
                 </Link>
             </nav>
 
-            <div className="mt-auto text-gray-400 flex flex-col gap-3">
+            <div className="mt-auto text-(--text-secondary) flex flex-col gap-3">
                 <a className={`${standardClasses}`} onClick={handleLogout}>
                     <LogOut size={20} {...(collapsed && {
                         "data-tooltip-id": "tooltip",

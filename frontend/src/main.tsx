@@ -32,12 +32,18 @@ import { ToastProvider } from "./components/ToastProvider";
 import { fetchCurrentLang, initI18n } from "./services/i18n";
 import { getCustomFromUrl } from "./services/custom/getCustom";
 import { CustomProvider } from "./services/custom/customContext";
+import { Onboarding } from "./pages/onboarding.tsx";
 
 const router = createBrowserRouter(
     [
         {
             path: "/login",
             element: <Login/>
+        },
+        {
+            path: "onboarding",
+            element: <Onboarding />,
+            loader: protectedLoader,
         },
         {
             path: "/",

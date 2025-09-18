@@ -15,10 +15,23 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-@reference "tailwindcss";
-
-@theme {
-    --color-green-400: oklch(0.687 0.143 156); /* HEX CODE #3BB474 */
-
-    --color-gray-400: oklch(0.662 0.0133 280.96); /* HEX CODE #91929B */
-}
+module.exports = {
+    input: ['src/**/*.{js,jsx,ts,tsx}'], // où chercher les traductions
+    output: './src/assets/i18n/to_merge/', // où stocker les JSON
+    options: {
+        removeUnusedKeys: false,
+        debug: true,
+        sort: true,
+        func: {
+            list: ['t'],
+            extensions: ['.ts', '.tsx'],
+        },
+        lngs: ['eng', 'fra', 'spa'],
+        defaultLng: 'fra',
+        resource: {
+            jsonIndent: 4,
+            loadPath: '{{lng}}.json',
+            savePath: '{{lng}}.json'
+        }
+    }
+};

@@ -19,14 +19,21 @@
 @import "./assets/tailwind-theme.css";
 
 @font-face{
-    font-family: "Montserrat-Regular";
+    font-family: "Montserrat";
     src:local("Montserrat-Regular"),
     url('./assets/fonts/Montserrat-Regular.ttf');
     font-weight: 400;
 }
 
 @font-face{
-    font-family: "Montserrat-Bold";
+    font-family: "Montserrat";
+    src:local("Montserrat-SemiBold"),
+    url('./assets/fonts/Montserrat-SemiBold.ttf');
+    font-weight: 600;
+}
+
+@font-face{
+    font-family: "Montserrat";
     src:local("Montserrat-Bold"),
     url('./assets/fonts/Montserrat-Bold.ttf');
     font-weight: 700;
@@ -36,18 +43,26 @@
 
 :root {
     font-family: "Montserrat", sans-serif;
+
     font-synthesis: none;
     text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-}
+    -webkit-font-smoothing: antialiased;
 
-strong, b {
-    font-weight: 700;
+    --color-primary: theme(colors.green-400);
+
+    --bg-primary: theme(colors.white);
+    --bg-secondary: theme(colors.gray.100);
+
+    --border-primary: theme(colors.green-400);
+    --border-secondary: theme(colors.gray.200);
+
+    --text-primary: theme(colors.gray.900);
+    --text-secondary: theme(colors.gray.400);
 }
 
 a {
     @apply cursor-pointer;
-    @apply text-green-400;
+    @apply text-(--color-primary);
     @apply hover:text-green-600;
 }

@@ -56,10 +56,10 @@ export function Button({
         "transition-colors focus:outline-none disabled:opacity-50 disabled:pointer-events-none";
 
     const variantStyles: Record<ButtonVariant, string> = {
-        primary: "bg-green-400 border-2 border-green-400 text-white hover:bg-green-400",
-        secondary: "bg-green-400/10 border-2 border-green-400 rounded-lg text-green-400! hover:bg-green-400 hover:text-white!",
+        primary: "bg-green-400 border-2 border-(--border-primary) text-white hover:bg-green-400/10 hover:text-(--color-primary)!",
+        secondary: "bg-green-400/10 border-2 border-(--border-primary) rounded-lg text-(--color-primary)! hover:bg-green-400 hover:text-white!",
         danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
-        no_bg: "bg-transparent text-gray-400! hover:bg-gray-100 hover:text-gray-200 hover:border-2 hover:border-gray-400 border-2 border-transparent",
+        no_bg: "bg-transparent text-gray-400! hover:bg-(--bg-secondary) hover:text-gray-200 hover:border-2 hover:border-gray-400 border-2 border-transparent",
     };
 
     const sizeStyles: Record<ButtonSize, string> = {
@@ -68,7 +68,11 @@ export function Button({
         lg: "px-5 py-3 text-lg",
     };
 
-    let classes = `${baseStyles} ${variantStyles[to && !isActive ? "no_bg" : variant]} ${sizeStyles[size]}`;
+    if (to) {
+        variant = isActive ? "secondary" : "no_bg";
+    }
+
+    let classes = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]}`;
     if (className) {
         classes = classes + " " + className;
     }
@@ -77,8 +81,8 @@ export function Button({
         <LoaderCircle className="animate-spin" size={24} />
     ) : (
         <>
-            {icon && <span className="mr-2">{icon}</span>}
-            {children}
+            { icon && <span className="mr-2">{icon}</span> }
+            { children }
         </>
     );
 
