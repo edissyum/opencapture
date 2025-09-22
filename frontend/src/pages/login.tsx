@@ -16,6 +16,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getI18n, useTranslation } from "react-i18next";
 
 import { Button } from '../components/Button';
@@ -24,7 +25,6 @@ import { Input } from "../components/Input.tsx";
 import { showToast } from "../components/ToastProvider.tsx";
 import { axiosApiCall } from "../services/hooks/axiosApiCall.tsx";
 import { useFormValues } from "../services/hooks/useFormValues.tsx";
-import { useNavigate } from "react-router-dom";
 
 export function Login() {
     const [loadingLogin, setLoadingLogin] = useState(false);
