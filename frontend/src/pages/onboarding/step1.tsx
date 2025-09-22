@@ -46,7 +46,7 @@ export function Step1() {
     }, [selectedModule]);
 
     return (
-        <><h1 className="text-4xl text-(--text-primary)">{t('ONBOARD.select_module')}</h1>
+        <><h1 className="text-4xl">{ t('ONBOARD.select_module') }</h1>
             <p className="text-(--text-secondary)">
                 { t('ONBOARD.select_module_info') }
             </p>
@@ -57,8 +57,8 @@ export function Step1() {
                         onClick={() => setSelectedModule(module['id'])}>
                         <img src={module['img']} alt="" className="w-20 mr-4"/>
                         <div className="flex flex-col justify-center items-start">
-                            <h2 className={`text-xl font-semibold mb-2 ${selectedModule === module['id'] ? 'text-(--color-primary)' : ''}`}>{t('ONBOARD.' + module['id'])}</h2>
-                            <p className="text-(--text-secondary)">{t('ONBOARD.' + module['id'] + '_info')}</p>
+                            <h2 className={`text-xl font-semibold mb-2 ${selectedModule === module['id'] ? 'text-(--color-primary)' : ''}`}>{ t('ONBOARD.' + module['id'])}</h2>
+                            <p className="text-(--text-secondary)">{ t('ONBOARD.' + module['id'] + '_info') }</p>
                         </div>
                     </div>
                 ))}

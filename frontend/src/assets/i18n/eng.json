@@ -11,7 +11,8 @@
     },
     "ERROR": {
         "admin_password_alert": "You're still using the default admin password. Change it ASAP for security reasons",
-        "login_required": "You must be logged in to access this page"
+        "login_required": "You must be logged in to access this page",
+        "custom_not_provided": "No custom is present in the URL. Please check the URL or contact your administrator"
     },
     "GLOBAL": {
         "batches": "Batches",
@@ -37,7 +38,9 @@
         "select_module_info": "Choose the module that best suits your daily use. This choice is not final and can be changed later.",
         "select_frontend_lang_info": "Choose the user interface language. This choice is not final and can be changed later.",
         "on": "on",
-        "step": "Step"
+        "step": "Step",
+        "dark_mode": "Dark mode",
+        "light_mode": "Light mode"
     },
     "SETTINGS": {
         "abouts_us": "About us"

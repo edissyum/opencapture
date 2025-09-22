@@ -40,6 +40,7 @@ export function Button({
     icon,
     className,
     to,
+    disabled,
     exact = false,
     ...props
 }: ButtonProps) {
@@ -103,8 +104,10 @@ export function Button({
     }
 
     return (
-        <button className={classes} type={type} {...props}>
-            {content}
-        </button>
+        <div className={`${disabled ? "cursor-not-allowed" : ""}`}>
+            <button className={classes} disabled={disabled} type={type} {...props}>
+                {content}
+            </button>
+        </div>
     );
 }

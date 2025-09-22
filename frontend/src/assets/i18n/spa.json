@@ -11,7 +11,8 @@
     },
     "ERROR": {
         "admin_password_alert": "Todavía usa la contraseña predeterminada de la cuenta de administración. Por favor, cámbielo lo más rápido posible por problemas de seguridad.",
-        "login_required": "Debe iniciar sesión para acceder a esta página"
+        "login_required": "Debe iniciar sesión para acceder a esta página",
+        "custom_not_provided": "No hay ninguna personalización en la URL. Por favor, compruébela o contacte con su administrador."
     },
     "GLOBAL": {
         "batches": "Lotes",
@@ -37,7 +38,9 @@
         "select_module_info": "Elija el módulo que mejor se adapte a su uso diario. Esta elección no es definitiva y puede modificarse posteriormente.",
         "select_frontend_lang_info": "Seleccione el idioma de la interfaz de usuario. Esta opción no es definitiva y puede modificarse posteriormente.",
         "on": "de",
-        "step": "Paso"
+        "step": "Paso",
+        "dark_mode": "Modo oscuro",
+        "light_mode": "Modo claro"
     },
     "SETTINGS": {
         "abouts_us": "Acerca de"

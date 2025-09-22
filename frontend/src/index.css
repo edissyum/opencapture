@@ -49,6 +49,8 @@
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
 
+    @apply text-(--text-primary);
+
     --color-primary: theme(colors.green-400);
 
     --bg-primary: theme(colors.white);

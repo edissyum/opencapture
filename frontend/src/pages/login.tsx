@@ -21,8 +21,9 @@ import { getI18n, useTranslation } from "react-i18next";
 
 import { Button } from '../components/Button';
 import { Input } from "../components/Input.tsx";
-
 import { showToast } from "../components/ToastProvider.tsx";
+
+import { useCustom } from "../services/custom/customContext.tsx";
 import { axiosApiCall } from "../services/hooks/axiosApiCall.tsx";
 import { useFormValues } from "../services/hooks/useFormValues.tsx";
 
@@ -32,6 +33,8 @@ export function Login() {
     const { t } = useTranslation();
     const { post } = axiosApiCall();
     const navigate = useNavigate();
+
+    const custom = useCustom();
 
     const { handleSubmit, errors, handleChange } = useFormValues(async (values) => {
         try {
@@ -70,7 +73,7 @@ export function Login() {
     }, t);
 
     return (
-        <div className='dark'>
+        <div>
             <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <img src={"/src/assets/imgs/login_image.png"} alt="Open-Capture" className="mx-auto" />
@@ -89,7 +92,7 @@ export function Login() {
                         </div>
 
                         <div className="text-center">
-                            <Button loading={loadingLogin} type="submit" size='md' className="w-full">
+                            <Button disabled={!custom} loading={loadingLogin} type="submit" size='md' className="w-full">
                                 { t('AUTH.login') }
                             </Button>
                         </div>

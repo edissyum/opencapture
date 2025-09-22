@@ -17,42 +17,45 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 
-export function Step2() {
-    const { i18n } = useTranslation();
-
+export function Step3() {
     const options = [
-        { code: 'fra', label: 'Français' },
-        { code: 'eng', label: 'English' },
-        { code: 'spa', label: 'Español' }
+        { id: 'dark', label: t('ONBOARD.dark_mode') },
+        { id: 'light', label: t('ONBOARD.light_mode') }
     ];
-    const [selectedLang, setSelectedlang] = useState<string>(() => {
-            return localStorage.getItem('selectedLang') || 'fra';
+    const [theme, setTheme] = useState<string>(() => {
+        return localStorage.getItem("theme") || 'light';
     });
 
     useEffect(() => {
-        if (selectedLang) {
-            localStorage.setItem('selectedLang', selectedLang);
+        if (theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add("dark");
+            } else {
+                document.documentElement.classList.remove("dark");
+            }
+            localStorage.setItem('theme', theme);
             window.dispatchEvent(new Event("local-storage"));
-            i18n.changeLanguage(selectedLang).then();
         }
-    }, [selectedLang, i18n]);
+    }, [theme]);
 
     return (
-        <><h1 className="text-4xl">{ t('ONBOARD.select_frontend_lang') }</h1>
+        <><h1 className="text-4xl text-(--text-primary)">{ t('ONBOARD.select_frontend_lang') }</h1>
             <p className="text-(--text-secondary)">
                 { t('ONBOARD.select_frontend_lang_info') }
             </p>
             <div className="flex gap-4 mt-4 justify-center">
-                {options.map((lang) => (
+                {options.map((theme_opt) => (
                     <div
-                        className={`border-2 flex items-center bg-(--bg-primary) rounded-md cursor-pointer hover:shadow-lg p-8 ${selectedLang === lang['code'] ? 'border-(--border-primary)' : 'border-(--border-secondary)'}`}
-                        onClick={() => setSelectedlang(lang['code'])}>
-                        <img src={`/src/assets/imgs/i18n/${lang['code']}.svg`} alt="" className="w-20 mr-4 rounded-lg"/>
+                        className={
+                            `${theme_opt['id'] === 'dark' ? 'dark bg-(--bg-primary)' : 'bg-white text-gray-900'} border-2 flex items-center
+                             text-(--text-primary) rounded-md cursor-pointer hover:shadow-lg p-8 min-w-3/12 justify-center
+                            ${theme === theme_opt['id'] ? 'border-(--border-primary)' : 'border-(--border-secondary)'}`
+                        }
+                        onClick={() => setTheme(theme_opt['id'])}>
                         <div className="flex flex-col justify-center items-start">
                             <h2 className={`text-xl font-semibold mb-2`}>
-                                { lang['label'] }
+                                { theme_opt['label'] }
                             </h2>
                         </div>
                     </div>

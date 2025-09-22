@@ -16,18 +16,19 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { Step1 } from "./step1.tsx";
 import { Step2 } from "./step2.tsx";
+import { Step3 } from "./step3.tsx";
 
 import { Button } from '../../components/Button';
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
 
 export function Onboarding() {
     const { t } = useTranslation();
 
-    const steps = [Step1, Step2];
+    const steps = [Step1, Step2, Step3];
     const [currentStep, setCurrentStep] = useState(0);
 
     const StepComponent = steps[currentStep];
