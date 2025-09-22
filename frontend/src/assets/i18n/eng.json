@@ -10,7 +10,8 @@
         "session_expired": "Your session has expired, please log in again"
     },
     "ERROR": {
-        "admin_password_alert": "You're still using the default admin password. Change it ASAP for security reasons"
+        "admin_password_alert": "You're still using the default admin password. Change it ASAP for security reasons",
+        "login_required": "You must be logged in to access this page"
     },
     "GLOBAL": {
         "batches": "Batches",
@@ -21,16 +22,22 @@
         "monitoring": "Processes Monitoring",
         "settings": "Settings",
         "statistics": "Statistics",
-        "upload": "Upload",
-        "app_name": ""
+        "upload": "Upload"
     },
     "ONBOARD": {
         "select_module": "Select default module",
+        "select_frontend_lang": "Choose the user interface language",
         "splitter": "Splitter module",
         "verifier": "Verifier module",
         "start": "Start",
         "verifier_info": "To automatically structure, extract and validate data from semi-structured and non-structured documents (invoices, contracts, etc.).",
-        "splitter_info": "To scan and prepare your batches of documents (sorting, straightening, automatic separation by QR code or visual criteria)."
+        "splitter_info": "To scan and prepare your batches of documents (sorting, straightening, automatic separation by QR code or visual criteria).",
+        "next": "Next",
+        "prev": "Previous",
+        "select_module_info": "Choose the module that best suits your daily use. This choice is not final and can be changed later.",
+        "select_frontend_lang_info": "Choose the user interface language. This choice is not final and can be changed later.",
+        "on": "on",
+        "step": "Step"
     },
     "SETTINGS": {
         "abouts_us": "About us"

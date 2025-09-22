@@ -16,8 +16,8 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { useState } from "react";
-import { ChevronsUpDown, CloudUpload, Package } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ChevronsUpDown, CloudUpload, Moon, Package, Sun } from "lucide-react";
 
 import { Button } from "./Button.tsx";
 
@@ -38,6 +38,19 @@ export default function TopBar() {
 
     const [selected, setSelected] = useState<string | null>(null);
     const [img, setImg] = useState<string | null>(null);
+
+    const [darkMode, setDarkMode] = useState<boolean>(() => {
+        return localStorage.getItem("theme") === "dark";
+    });
+    useEffect(() => {
+        if (darkMode) {
+            document.documentElement.classList.add("dark");
+            localStorage.setItem("theme", "dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+            localStorage.setItem("theme", "light");
+        }
+    }, [darkMode]);
 
     const handleSelect = (option: string) => {
         setSelected(option);
@@ -82,6 +95,23 @@ export default function TopBar() {
                     { t('GLOBAL.upload') }
                 </Button>
             </div>
+            <button
+                onClick={() => setDarkMode(!darkMode)}
+                className={`relative w-16 h-8 rounded-full border-2 
+                  flex items-center transition-colors duration-300 border-(--border-secondary)`}
+            >
+      <span
+          className={`absolute top-0.5 left-1 w-6 h-6 rounded-full flex items-center justify-center 
+                    transition-transform duration-300 transform
+                    ${darkMode ? "translate-x-8 bg-black" : "translate-x-0 bg-white"}`}
+      >
+        {darkMode ? (
+            <Moon className="w-4 h-4 text-white" />
+        ) : (
+            <Sun className="w-4 h-4 text-(--color-primary)" />
+        )}
+      </span>
+            </button>
         </header>
     );
 }

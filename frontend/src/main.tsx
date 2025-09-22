@@ -23,16 +23,17 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Login } from "./pages/login";
 import { HomePage } from "./pages/home";
 import { UploadPage } from "./pages/upload";
+import { Onboarding } from "./pages/onboarding/main.tsx";
 
 import MainLayout from "./layout/MainLayout.tsx";
 
 import { protectedLoader } from "./components/auth/auth";
 import { ToastProvider } from "./components/ToastProvider";
+import LoginRequiredError from "./components/errors/LoginRequired.tsx";
 
 import { fetchCurrentLang, initI18n } from "./services/i18n";
 import { getCustomFromUrl } from "./services/custom/getCustom";
 import { CustomProvider } from "./services/custom/customContext";
-import { Onboarding } from "./pages/onboarding.tsx";
 
 const router = createBrowserRouter(
     [
@@ -44,6 +45,7 @@ const router = createBrowserRouter(
             path: "onboarding",
             element: <Onboarding />,
             loader: protectedLoader,
+            errorElement: <LoginRequiredError />
         },
         {
             path: "/",
@@ -53,11 +55,13 @@ const router = createBrowserRouter(
                     path: "home",
                     element: <HomePage />,
                     loader: protectedLoader,
+                    errorElement: <LoginRequiredError />
                 },
                 {
                     path: "upload",
                     element: <UploadPage />,
                     loader: protectedLoader,
+                    errorElement: <LoginRequiredError />
                 }
             ]
         }
@@ -69,7 +73,11 @@ const router = createBrowserRouter(
 
 async function bootstrap() {
     const custom = getCustomFromUrl();
-    const currentLang = await fetchCurrentLang();
+
+    let currentLang = localStorage.getItem('selectedLang');
+    if (!currentLang) {
+        currentLang = await fetchCurrentLang();
+    }
 
     if (currentLang) {
         await initI18n(currentLang);

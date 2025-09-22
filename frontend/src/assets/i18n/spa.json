@@ -10,7 +10,8 @@
         "session_expired": "Su sesión expiró, vuelva a conectar"
     },
     "ERROR": {
-        "admin_password_alert": "Todavía usa la contraseña predeterminada de la cuenta de administración. Por favor, cámbielo lo más rápido posible por problemas de seguridad."
+        "admin_password_alert": "Todavía usa la contraseña predeterminada de la cuenta de administración. Por favor, cámbielo lo más rápido posible por problemas de seguridad.",
+        "login_required": "Debe iniciar sesión para acceder a esta página"
     },
     "GLOBAL": {
         "batches": "Lotes",
@@ -21,16 +22,22 @@
         "monitoring": "Pantalla de monitoreo de procesos",
         "settings": "Parámetros",
         "statistics": "Estadística",
-        "upload": "Subir",
-        "app_name": ""
+        "upload": "Subir"
     },
     "ONBOARD": {
         "select_module": "Elegir el módulo predeterminado",
+        "select_frontend_lang": "Elegir el idioma de la interfaz de usuario",
         "splitter": "Módulo Splitter",
         "verifier": "Módulo Verifier",
         "start": "Comenzar",
         "verifier_info": "Estructurar, extraer y validar automáticamente datos de documentos semiestructurados o no estructurados (facturas, contratos, etc.).",
-        "splitter_info": "Para escanear y preparar sus lotes de documentos (clasificación, enderezamiento, separación automática por código QR o criterios visuales)."
+        "splitter_info": "Para escanear y preparar sus lotes de documentos (clasificación, enderezamiento, separación automática por código QR o criterios visuales).",
+        "next": "Siguiente",
+        "prev": "Anterior",
+        "select_module_info": "Elija el módulo que mejor se adapte a su uso diario. Esta elección no es definitiva y puede modificarse posteriormente.",
+        "select_frontend_lang_info": "Seleccione el idioma de la interfaz de usuario. Esta opción no es definitiva y puede modificarse posteriormente.",
+        "on": "de",
+        "step": "Paso"
     },
     "SETTINGS": {
         "abouts_us": "Acerca de"

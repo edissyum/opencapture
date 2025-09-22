@@ -15,7 +15,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getI18n, useTranslation } from "react-i18next";
 
@@ -30,15 +30,6 @@ export function Login() {
     const [loadingLogin, setLoadingLogin] = useState(false);
 
     const { t } = useTranslation();
-
-    useEffect(() => {
-        const msg = sessionStorage.getItem("loginRequiredMessage");
-        if (msg) {
-            showToast(t(msg), "error");
-            sessionStorage.removeItem("loginRequiredMessage");
-        }
-    }, []);
-
     const { post } = axiosApiCall();
     const navigate = useNavigate();
 
@@ -63,8 +54,8 @@ export function Login() {
                 sessionStorage.setItem("refreshToken", response.refresh_token);
                 sessionStorage.setItem("user", JSON.stringify(response.user));
 
-                const module = localStorage.getItem('selectedModule');
-                if (!module) {
+                const onboardingCompleted = localStorage.getItem('onboardingCompleted');
+                if (!onboardingCompleted) {
                     navigate('/onboarding', { replace: true });
                     setLoadingLogin(false);
                     return;

@@ -61,6 +61,20 @@
     --text-secondary: theme(colors.gray.400);
 }
 
+/* Dark mode */
+.dark {
+    --color-primary: theme(colors.green-400);
+
+    --bg-primary: theme(colors.gray.900);
+    --bg-secondary: theme(colors.gray.800);
+
+    --border-primary: theme(colors.green-400);
+    --border-secondary: theme(colors.gray.700);
+
+    --text-primary: theme(colors.gray.100);
+    --text-secondary: theme(colors.gray.400);
+}
+
 a {
     @apply cursor-pointer;
     @apply text-(--color-primary);

@@ -10,7 +10,8 @@
         "session_expired": "Votre session à expirée, veuillez vous reconnecter"
     },
     "ERROR": {
-        "admin_password_alert": "Vous utilisez encore le mot de passe par défaut du compte admin. Veuillez le changer au plus vite pour des questions de sécurité"
+        "admin_password_alert": "Vous utilisez encore le mot de passe par défaut du compte admin. Veuillez le changer au plus vite pour des questions de sécurité",
+        "login_required": "Vous devez être connecté pour accéder à cette page"
     },
     "GLOBAL": {
         "batches": "Lots",
@@ -21,16 +22,22 @@
         "monitoring": "Monitoring processus",
         "settings": "Paramètres",
         "statistics": "Statistiques",
-        "upload": "Téléversement",
-        "app_name": ""
+        "upload": "Téléversement"
     },
     "ONBOARD": {
         "select_module": "Choix du module par défaut",
+        "select_frontend_lang": "Choix de la langue de l'interface utilisateur",
         "splitter": "Module Splitter",
         "verifier": "Module Verifier",
         "start": "Démarrer",
         "verifier_info": "Pour structurer, extraire et valider automatiquement les données à partir de documents semi-structurés ou non structurés (factures, contrats…).",
-        "splitter_info": "Pour numériser et préparer vos lots de documents (tri, redressement, séparation automatique par QR code ou critères visuels)."
+        "splitter_info": "Pour numériser et préparer vos lots de documents (tri, redressement, séparation automatique par QR code ou critères visuels).",
+        "next": "Suivant",
+        "prev": "Précédent",
+        "select_module_info": "Choisissez le module qui correspond le mieux à votre usage quotidien. Ce choix n’est pas définitif et pourra être changé plus tard.",
+        "select_frontend_lang_info": "Choisissez la langue de l'interface utilisateur. Ce choix n’est pas définitif et pourra être changé plus tard.",
+        "on": "sur",
+        "step": "Étape"
     },
     "SETTINGS": {
         "abouts_us": "À propos"

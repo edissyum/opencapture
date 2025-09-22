@@ -12,10 +12,10 @@
         "check-update": "ncu",
         "preview": "vite preview",
         "build": "tsc -b && vite build",
-        "extract-translations": "i18next-scanner --config i18next-scanner.config.cjs",
-        "i18n:extract:merge": "npm run extract-translations && node src/assets/i18n/merge-i18n.mjs",
         "upgrade-all-packages-ncu": "ncu -u && npm run reload-packages",
-        "reload-packages": "rm -Rf node_modules && rm -f package-lock.json && npm i"
+        "reload-packages": "rm -Rf node_modules && rm -f package-lock.json && npm i",
+        "extract-translations": "i18next-scanner --config i18next-scanner.config.cjs",
+        "i18n:extract:merge": "npm run extract-translations && node src/assets/i18n/merge-i18n.mjs"
     },
     "dependencies": {
         "@tailwindcss/vite": "^4.1.13",
