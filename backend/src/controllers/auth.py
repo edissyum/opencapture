@@ -104,7 +104,7 @@ def get_user(user_info):
         user.update_user({'set': {'last_connection': last_connection}, 'user_id': user_info['id']})
 
     returned_user = user.get_user_by_id({
-        'select': ['users.id', 'username', 'firstname', 'lastname', 'role', 'users.status', 'creation_date', 'users.enabled'],
+        'select': ['users.id', 'username', 'firstname', 'lastname', 'role'],
         'user_id': user_info['id']
     })[0]
 
@@ -552,13 +552,10 @@ def token_required(view):
                     'verifier/ocrOnFly',
                     'getAccountingPlan',
                     'forms/verifier/list',
-                    'verifier/verifySIRET',
-                    'verifier/verifySIREN',
                     'forms/verifier/getById',
                     'accounts/getAdressById',
                     'verifier/getTokenINSEE',
                     'accounts/suppliers/list',
-                    'verifier/verifyVATNumber',
                     'forms/fields/getByFormId',
                     'outputs/verifier/getById',
                     'getDefaultAccountingPlan',

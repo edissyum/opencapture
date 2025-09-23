@@ -14,84 +14,64 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import './index.css'
+import axios from "axios";
+import { t } from "i18next";
 import { StrictMode } from 'react'
 import { Tooltip } from "react-tooltip";
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
 
-import { Login } from "./pages/login";
-import { HomePage } from "./pages/home";
-import { UploadPage } from "./pages/upload";
-import { Onboarding } from "./pages/onboarding/main.tsx";
+import './index.css'
+import { router } from "./routes.tsx";
 
-import MainLayout from "./layout/MainLayout.tsx";
+import { showToast, ToastProvider } from "./components/ToastProvider";
 
-import { protectedLoader } from "./components/auth/auth";
-import { ToastProvider } from "./components/ToastProvider";
-import LoginRequiredError from "./components/errors/LoginRequired.tsx";
-
+import { applyTheme } from "./services/theme.tsx";
+import { BACKEND_URL } from "./services/config.tsx";
 import { fetchCurrentLang, initI18n } from "./services/i18n";
 import { getCustomFromUrl } from "./services/custom/getCustom";
 import { CustomProvider } from "./services/custom/customContext";
 
-const router = createBrowserRouter(
-    [
-        {
-            path: "/login",
-            element: <Login/>
-        },
-        {
-            path: "onboarding",
-            element: <Onboarding />,
-            loader: protectedLoader,
-            errorElement: <LoginRequiredError />
-        },
-        {
-            path: "/",
-            element: <MainLayout />,
-            children: [
-                {
-                    path: "home",
-                    element: <HomePage />,
-                    loader: protectedLoader,
-                    errorElement: <LoginRequiredError />
-                },
-                {
-                    path: "upload",
-                    element: <UploadPage />,
-                    loader: protectedLoader,
-                    errorElement: <LoginRequiredError />
-                }
-            ]
-        }
-    ],
-    {
-        basename: getCustomFromUrl() || undefined
-    }
-);
-
 async function bootstrap() {
-    const custom = getCustomFromUrl();
+    applyTheme();
 
-    let currentLang = localStorage.getItem('selectedLang');
-    if (!currentLang) {
-        currentLang = await fetchCurrentLang();
+    let custom = getCustomFromUrl();
+    let currentLang = localStorage.getItem("selectedLang");
+    const api = axios.create({baseURL: `${BACKEND_URL}/${custom}/ws/`});
+
+    if (custom) {
+        try {
+            await api.get("/config/customExists");
+        } catch {
+            custom = null;
+        }
     }
 
-    if (currentLang) {
-        await initI18n(currentLang);
+    if (custom && !currentLang) {
+        currentLang = await fetchCurrentLang(api);
     }
+
+    await initI18n(currentLang || "fra");
 
     createRoot(document.getElementById("root")!).render(
         <StrictMode>
             <CustomProvider custom={custom}>
-                <ToastProvider/>
+                <ToastProvider />
                 <Tooltip id="tooltip" />
-                <RouterProvider router={router}/>
+                <RouterProvider router={router} />
             </CustomProvider>
         </StrictMode>
     );
+
+    if (!custom) {
+        setTimeout(() => {
+            showToast(t("ERROR.custom_not_provided"), "error");
+            if (!window.location.pathname.includes("/login")) {
+                window.location.href = "/login";
+            }
+            sessionStorage.clear();
+        }, 0);
+    }
 }
 
 bootstrap().then();

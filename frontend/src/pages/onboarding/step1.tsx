@@ -17,6 +17,7 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
+import { CheckOverlay } from "../../components/CheckOverlay.tsx";
 
 export function Step1() {
     const options = [
@@ -51,17 +52,18 @@ export function Step1() {
                 { t('ONBOARD.select_module_info') }
             </p>
             <div className="flex gap-4">
-                {options.map((module) => (
+                { options.map((module) => (
                     <div
-                        className={`border-2 flex items-center bg-(--bg-primary) rounded-md cursor-pointer hover:shadow-lg p-8 ${selectedModule === module['id'] ? 'border-(--border-primary)' : 'border-(--border-secondary)'}`}
-                        onClick={() => setSelectedModule(module['id'])}>
-                        <img src={module['img']} alt="" className="w-20 mr-4"/>
+                        className={ `relative border-2 flex items-center bg-(--bg-primary) rounded-md cursor-pointer hover:shadow-lg p-6 ${ selectedModule === module['id'] ? 'border-(--border-primary)' : 'border-(--border-secondary)' }` }
+                        onClick={ () => setSelectedModule(module['id']) }>
+                        <CheckOverlay show={ selectedModule === module['id'] }/>
+                        <img src={ module['img'] } alt="" className="w-20 mr-4"/>
                         <div className="flex flex-col justify-center items-start">
-                            <h2 className={`text-xl font-semibold mb-2 ${selectedModule === module['id'] ? 'text-(--color-primary)' : ''}`}>{ t('ONBOARD.' + module['id'])}</h2>
+                            <h2 className={ `text-xl font-semibold mb-2 ${ selectedModule === module['id'] ? 'text-(--color-primary)' : '' }` }>{ t('ONBOARD.' + module['id']) }</h2>
                             <p className="text-(--text-secondary)">{ t('ONBOARD.' + module['id'] + '_info') }</p>
                         </div>
                     </div>
-                ))}
+                )) }
             </div>
         </>
     );

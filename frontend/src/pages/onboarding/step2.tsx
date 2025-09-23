@@ -18,17 +18,18 @@
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { CheckOverlay } from "../../components/CheckOverlay.tsx";
 
 export function Step2() {
-    const { i18n } = useTranslation();
+    const {i18n} = useTranslation();
 
     const options = [
-        { code: 'fra', label: 'Français' },
-        { code: 'eng', label: 'English' },
-        { code: 'spa', label: 'Español' }
+        {code: 'fra', label: 'Français'},
+        {code: 'eng', label: 'English'},
+        {code: 'spa', label: 'Español'}
     ];
     const [selectedLang, setSelectedlang] = useState<string>(() => {
-            return localStorage.getItem('selectedLang') || 'fra';
+        return localStorage.getItem('selectedLang') || 'fra';
     });
 
     useEffect(() => {
@@ -45,18 +46,20 @@ export function Step2() {
                 { t('ONBOARD.select_frontend_lang_info') }
             </p>
             <div className="flex gap-4 mt-4 justify-center">
-                {options.map((lang) => (
+                { options.map((lang) => (
                     <div
-                        className={`border-2 flex items-center bg-(--bg-primary) rounded-md cursor-pointer hover:shadow-lg p-8 ${selectedLang === lang['code'] ? 'border-(--border-primary)' : 'border-(--border-secondary)'}`}
-                        onClick={() => setSelectedlang(lang['code'])}>
-                        <img src={`/src/assets/imgs/i18n/${lang['code']}.svg`} alt="" className="w-20 mr-4 rounded-lg"/>
+                        className={ `relative border-2 flex items-center bg-(--bg-primary) rounded-md cursor-pointer hover:shadow-lg p-6 ${ selectedLang === lang['code'] ? 'border-(--border-primary)' : 'border-(--border-secondary)' }` }
+                        onClick={ () => setSelectedlang(lang['code']) }>
+                        <CheckOverlay show={ selectedLang === lang['code'] }/>
+                        <img src={ `/src/assets/imgs/i18n/${ lang['code'] }.svg` } alt=""
+                             className="w-14 mr-4 rounded-lg"/>
                         <div className="flex flex-col justify-center items-start">
-                            <h2 className={`text-xl font-semibold mb-2`}>
+                            <h2 className={ `text-xl font-semibold mb-2` }>
                                 { lang['label'] }
                             </h2>
                         </div>
                     </div>
-                ))}
+                )) }
             </div>
         </>
     );

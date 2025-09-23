@@ -95,6 +95,7 @@ export function Login() {
                             <Button disabled={!custom} loading={loadingLogin} type="submit" size='md' className="w-full">
                                 { t('AUTH.login') }
                             </Button>
+                            {!custom && <p className="mt-2 text-sm text-(--text-secondary)">{ t('ERROR.custom_not_provided') }</p>}
                         </div>
                     </form>
                 </div>

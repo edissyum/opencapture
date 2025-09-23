@@ -15,23 +15,15 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import axios from "axios";
 import i18n from "i18next";
+import { type AxiosInstance } from "axios";
 import { initReactI18next } from "react-i18next";
 
-import { BACKEND_URL } from "./config.tsx";
 import translationFR from "../assets/i18n/fra.json";
 import translationEN from "../assets/i18n/eng.json";
 import translationSPA from "../assets/i18n/spa.json";
-import { getCustomFromUrl } from "./custom/getCustom.tsx";
 
-const custom = getCustomFromUrl() || "";
-const api = axios.create({
-    baseURL: `${BACKEND_URL}/${custom}/ws/`,
-    timeout: 5000,
-});
-
-export async function fetchCurrentLang(): Promise<string | null> {
+export async function fetchCurrentLang(api: AxiosInstance): Promise<string | null> {
     try {
         const res = await api.get("/i18n/getCurrentLang");
         return res.data?.lang || null;

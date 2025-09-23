@@ -252,3 +252,9 @@ def get_git_info():
     return make_response({
         'git_latest': config.get_last_git_version()
     }), 200
+
+
+@bp.route('config/customExists', methods=['GET'])
+def custom_exists():
+    return make_response(''), 200
+

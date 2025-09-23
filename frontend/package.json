@@ -36,13 +36,13 @@
         "@vitejs/plugin-react": "^5.0.3",
         "eslint": "^9.36.0",
         "eslint-plugin-react-hooks": "^5.2.0",
-        "eslint-plugin-react-refresh": "^0.4.20",
+        "eslint-plugin-react-refresh": "^0.4.21",
         "fs-extra": "^11.3.2",
         "globals": "^16.4.0",
         "i18next-scanner": "^4.6.0",
         "lucide-react": "^0.544.0",
         "typescript": "~5.9.2",
-        "typescript-eslint": "^8.44.0",
+        "typescript-eslint": "^8.44.1",
         "vite": "^7.1.7"
     }
 }

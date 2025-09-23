@@ -4,7 +4,6 @@
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
-
  Open-Capture is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -15,11 +14,18 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-export function getCustomFromUrl(): string | null {
-    const pathSegments = window.location.pathname.split("/").filter(Boolean);
-    const custom = pathSegments.length > 0 ? pathSegments[0] : null;
-    if (custom === "login" || custom === "home" || custom === "upload" || custom === "onboarding") {
-        return null;
+export function applyTheme() {
+    const theme = localStorage.getItem("theme") || "light";
+
+    if (theme === "dark") {
+        document.documentElement.classList.add("dark");
+    } else if (theme === "light") {
+        document.documentElement.classList.remove("dark");
+    } else {
+        if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
     }
-    return pathSegments.length > 0 ? pathSegments[0] : null;
 }

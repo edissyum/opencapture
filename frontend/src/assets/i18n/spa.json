@@ -40,7 +40,10 @@
         "on": "de",
         "step": "Paso",
         "dark_mode": "Modo oscuro",
-        "light_mode": "Modo claro"
+        "light_mode": "Modo claro",
+        "select_theme": "",
+        "select_theme_lang_info": "",
+        "system": ""
     },
     "SETTINGS": {
         "abouts_us": "Acerca de"

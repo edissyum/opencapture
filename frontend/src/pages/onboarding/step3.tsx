@@ -17,48 +17,66 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
+import { applyTheme } from "../../services/theme.tsx";
+import { CheckOverlay } from "../../components/CheckOverlay.tsx";
 
 export function Step3() {
     const options = [
-        { id: 'dark', label: t('ONBOARD.dark_mode') },
-        { id: 'light', label: t('ONBOARD.light_mode') }
+        {id: 'dark', label: t('ONBOARD.dark_mode')},
+        {id: 'system', label: t('ONBOARD.system')},
+        {id: 'light', label: t('ONBOARD.light_mode')}
     ];
-    const [theme, setTheme] = useState<string>(() => {
+    const [selectedTheme, setTheme] = useState<string>(() => {
         return localStorage.getItem("theme") || 'light';
     });
 
     useEffect(() => {
-        if (theme) {
-            if (theme === 'dark') {
-                document.documentElement.classList.add("dark");
-            } else {
-                document.documentElement.classList.remove("dark");
-            }
-            localStorage.setItem('theme', theme);
-            window.dispatchEvent(new Event("local-storage"));
+        if (selectedTheme) {
+            localStorage.setItem('theme', selectedTheme);
+            applyTheme();
         }
-    }, [theme]);
+    }, [selectedTheme]);
 
     return (
-        <><h1 className="text-4xl text-(--text-primary)">{ t('ONBOARD.select_frontend_lang') }</h1>
+        <><h1 className="text-4xl text-(--text-primary)">{t('ONBOARD.select_theme')}</h1>
             <p className="text-(--text-secondary)">
-                { t('ONBOARD.select_frontend_lang_info') }
+                {t('ONBOARD.select_theme_lang_info')}
             </p>
             <div className="flex gap-4 mt-4 justify-center">
-                {options.map((theme_opt) => (
-                    <div
-                        className={
-                            `${theme_opt['id'] === 'dark' ? 'dark bg-(--bg-primary)' : 'bg-white text-gray-900'} border-2 flex items-center
-                             text-(--text-primary) rounded-md cursor-pointer hover:shadow-lg p-8 min-w-3/12 justify-center
-                            ${theme === theme_opt['id'] ? 'border-(--border-primary)' : 'border-(--border-secondary)'}`
-                        }
-                        onClick={() => setTheme(theme_opt['id'])}>
-                        <div className="flex flex-col justify-center items-start">
-                            <h2 className={`text-xl font-semibold mb-2`}>
-                                { theme_opt['label'] }
-                            </h2>
+                {options.map((theme) => (
+                    <>
+                        <div>
+                            <div
+                                className={`relative w-48 h-26 border-2 flex items-center text-(--text-primary) rounded-md cursor-pointer hover:shadow-lg p-8 justify-center
+                                ${theme['id'] === 'light' ? 'bg-white' : 'dark bg-(--bg-primary)'} 
+                                ${selectedTheme === theme['id'] ? 'border-(--border-primary)' : 'border-(--border-secondary)'}`}
+                                onClick={() => setTheme(theme['id'])}>
+                                <CheckOverlay show={selectedTheme === theme['id']}/>
+                                <div
+                                    className={`absolute top-2.5 rounded-md left-1.5 w-6 h-1.5 ${theme['id'] === 'light' ? 'bg-gray-200' : 'bg-[#424E63]'}`}></div>
+                                <div
+                                    className={`absolute top-2.5 rounded-md left-9 w-[110px] h-20 ${theme['id'] === 'light' ? 'bg-gray-200' : 'bg-[#424E63]'}`}></div>
+                                <div
+                                    className={`absolute top-2.5 rounded-md left-38 w-8 h-7 ${theme['id'] === 'light' ? 'bg-gray-200' : 'bg-[#424E63]'}`}></div>
+
+                                {
+                                    theme['id'] === 'system' &&
+                                    <div className="absolute inset-0 bg-white box-border"
+                                         style={{clipPath: 'inset(0 0 0 50%)'}}>
+                                        <div
+                                            className="absolute rounded-md top-2.5 w-[110px] h-20 left-9 bg-gray-200"></div>
+                                        <div className="absolute rounded-md top-2.5 w-8 h-7 left-38 bg-gray-200"></div>
+                                    </div>
+                                }
+                            </div>
+                            <div
+                                className={`flex flex-col justify-center items-center ${selectedTheme === theme['id'] ? 'text-(--color-primary)' : ''}`}>
+                                <h2 className={`text-xl font-semibold mb-2`}>
+                                    {theme['label']}
+                                </h2>
+                            </div>
                         </div>
-                    </div>
+                    </>
                 ))}
             </div>
         </>

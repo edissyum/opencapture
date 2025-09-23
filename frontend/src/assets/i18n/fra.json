@@ -12,7 +12,7 @@
     "ERROR": {
         "admin_password_alert": "Vous utilisez encore le mot de passe par défaut du compte admin. Veuillez le changer au plus vite pour des questions de sécurité",
         "login_required": "Vous devez être connecté pour accéder à cette page",
-        "custom_not_provided": "Aucun custom n'est présent dans l'URL. Veuillez vérifier l'URL ou contacter votre administrateur"
+        "custom_not_provided": "Aucun custom n'est présent dans l'URL ou celui fourni n'existe pas. Veuillez vérifier l'URL ou contacter votre administrateur"
     },
     "GLOBAL": {
         "batches": "Lots",
@@ -39,8 +39,11 @@
         "select_frontend_lang_info": "Choisissez la langue de l'interface utilisateur. Ce choix n’est pas définitif et pourra être changé plus tard.",
         "on": "sur",
         "step": "Étape",
-        "dark_mode": "Mode sombre",
-        "light_mode": "Mode clair"
+        "dark_mode": "Sombre",
+        "light_mode": "Clair",
+        "select_theme": "Choix du thème de l'interface utilisateur",
+        "select_theme_lang_info": "Choisissez le thème de l'interface utilisateur. Ce choix n’est pas définitif et pourra être changé plus tard.",
+        "system": "Système"
     },
     "SETTINGS": {
         "abouts_us": "À propos"

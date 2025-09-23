@@ -40,7 +40,10 @@
         "on": "on",
         "step": "Step",
         "dark_mode": "Dark mode",
-        "light_mode": "Light mode"
+        "light_mode": "Light mode",
+        "select_theme": "",
+        "select_theme_lang_info": "",
+        "system": ""
     },
     "SETTINGS": {
         "abouts_us": "About us"

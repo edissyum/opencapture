@@ -26,7 +26,9 @@ export default function MainLayout() {
         if (sessionStorage.getItem('accessToken')) {
             return <Navigate to="/home" replace />;
         } else {
-            return <Navigate to="/login" replace />;
+            if (window.location.pathname !== "/login") {
+                return <Navigate to="/login" replace />;
+            }
         }
     }
 
