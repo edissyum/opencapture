@@ -30,19 +30,16 @@ export function SettingsCard({show = true, icon, title, description, to}: settin
     if (!show) return null;
 
     return (
-        <Link to={ to }
-              className="block p-6 bg-(--bg-primary) border-2 border-(--border-secondary) rounded-md">
-            <div className="flex items-center mb-4">
-                <div className="text-(--color-primary) mr-4">
-                    { icon }
-                </div>
-                <h2 className="text-lg font-semibold text-(--text-primary)">
+        <Link to={ to } className="flex justify-start items-center min-w-80 p-2.5 pl-4 bg-(--bg-primary) border-2 border-(--border-secondary) rounded-md hover:border-gray-300 duration-200">
+            <div className="text-(--text-primary) mr-4 bg-(--bg-secondary) p-2 rounded-md">
+                { icon }
+            </div>
+            <div className="text-(--text-secondary)">
+                <h2 className="text-lg font-semibold text-(--text-primary) -mb-1">
                     { title }
                 </h2>
-            </div>
-            <p className="text-(--text-secondary)">
                 { description }
-            </p>
+            </div>
         </Link>
     );
 }

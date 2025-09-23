@@ -51,7 +51,10 @@
         "general": "Général",
         "verifier": "Verifier",
         "splitter": "Splitter",
-        "subtitle": "Modifier le comportement d’Open-Capture"
+        "subtitle": "Modifier le comportement d’Open-Capture",
+        "general_description": "Paramètres généraux",
+        "splitter_description": "Paramètres du Splitter",
+        "verifier_description": "Paramètres du Verifier"
     },
     "USER": {
         "password": "Mot de passe",

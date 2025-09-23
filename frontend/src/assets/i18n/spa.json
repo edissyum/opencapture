@@ -51,7 +51,10 @@
         "general": "General",
         "verifier": "Verifier",
         "splitter": "Splitter",
-        "subtitle": "Cambiar el comportamiento de Open-Capture"
+        "subtitle": "Cambiar el comportamiento de Open-Capture",
+        "general_description": "",
+        "splitter_description": "",
+        "verifier_description": ""
     },
     "USER": {
         "password": "Contraseña",

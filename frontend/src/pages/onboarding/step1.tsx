@@ -54,7 +54,7 @@ export function Step1() {
             <div className="flex gap-4">
                 { options.map((module) => (
                     <div
-                        className={ `relative border-2 flex items-center bg-(--bg-primary) rounded-md cursor-pointer hover:shadow-lg p-6 ${ selectedModule === module['id'] ? 'border-(--border-primary)' : 'border-(--border-secondary)' }` }
+                        className={ `relative border-2 flex items-center bg-(--bg-primary) rounded-md cursor-pointer hover:border-gray-300 p-6 ${ selectedModule === module['id'] ? 'border-(--border-primary)!' : 'border-(--border-secondary)' }` }
                         onClick={ () => setSelectedModule(module['id']) }>
                         <CheckOverlay show={ selectedModule === module['id'] }/>
                         <img src={ module['img'] } alt="" className="w-20 mr-4"/>

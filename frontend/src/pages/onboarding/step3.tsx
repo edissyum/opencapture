@@ -47,25 +47,25 @@ export function Step3() {
                     <>
                         <div>
                             <div
-                                className={`relative w-48 h-26 border-2 flex items-center text-(--text-primary) rounded-md cursor-pointer hover:shadow-lg p-8 justify-center
+                                className={`relative w-48 h-26 border-2 flex items-center text-(--text-primary) rounded-lg cursor-pointer hover:opacity-80 p-8 justify-center transition-opacity
                                 ${theme['id'] === 'light' ? 'bg-white' : 'dark bg-(--bg-primary)'} 
                                 ${selectedTheme === theme['id'] ? 'border-(--border-primary)' : 'border-(--border-secondary)'}`}
                                 onClick={() => setTheme(theme['id'])}>
                                 <CheckOverlay show={selectedTheme === theme['id']}/>
                                 <div
-                                    className={`absolute top-2.5 rounded-md left-1.5 w-6 h-1.5 ${theme['id'] === 'light' ? 'bg-gray-200' : 'bg-[#424E63]'}`}></div>
+                                    className={`absolute top-2.5 rounded-lg left-1.5 w-6 h-1.5 ${theme['id'] === 'light' ? 'bg-gray-200' : 'bg-[#424E63]'}`}></div>
                                 <div
-                                    className={`absolute top-2.5 rounded-md left-9 w-[110px] h-20 ${theme['id'] === 'light' ? 'bg-gray-200' : 'bg-[#424E63]'}`}></div>
+                                    className={`absolute top-2.5 rounded-lg left-9 w-[110px] h-20 ${theme['id'] === 'light' ? 'bg-gray-200' : 'bg-[#424E63]'}`}></div>
                                 <div
-                                    className={`absolute top-2.5 rounded-md left-38 w-8 h-7 ${theme['id'] === 'light' ? 'bg-gray-200' : 'bg-[#424E63]'}`}></div>
+                                    className={`absolute top-2.5 rounded-lg left-38 w-8 h-7 ${theme['id'] === 'light' ? 'bg-gray-200' : 'bg-[#424E63]'}`}></div>
 
                                 {
                                     theme['id'] === 'system' &&
-                                    <div className="absolute inset-0 bg-white box-border"
+                                    <div className="absolute inset-0 bg-white box-border rounded-md"
                                          style={{clipPath: 'inset(0 0 0 50%)'}}>
                                         <div
-                                            className="absolute rounded-md top-2.5 w-[110px] h-20 left-9 bg-gray-200"></div>
-                                        <div className="absolute rounded-md top-2.5 w-8 h-7 left-38 bg-gray-200"></div>
+                                            className="absolute rounded-lg top-2.5 w-[110px] h-20 left-9 bg-gray-200"></div>
+                                        <div className="absolute rounded-lg top-2.5 w-8 h-7 left-38 bg-gray-200"></div>
                                     </div>
                                 }
                             </div>

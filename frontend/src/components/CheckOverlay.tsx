@@ -26,7 +26,7 @@ export const CheckOverlay: React.FC<CheckOverlayProps> = ({ show = true }) => {
     if (!show) return null;
 
     return (
-        <div className="z-1 absolute -top-4.5 -right-4.5 m-2 w-6 h-6 rounded-full bg-(--color-primary) flex items-center justify-center text-(--text-primary)">
+        <div className="z-1 absolute -top-4.5 -right-4.5 m-2 w-6 h-6 rounded-full bg-(--color-primary) flex items-center justify-center text-white">
             <Check size={15}/>
         </div>
     );
