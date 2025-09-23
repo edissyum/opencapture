@@ -41,12 +41,17 @@
         "step": "Step",
         "dark_mode": "Dark mode",
         "light_mode": "Light mode",
-        "select_theme": "",
-        "select_theme_lang_info": "",
-        "system": ""
+        "select_theme": "Select user interface theme",
+        "select_theme_lang_info": "Select the user interface theme. This choice is not final and can be changed later.",
+        "system": "System"
     },
     "SETTINGS": {
-        "abouts_us": "About us"
+        "abouts_us": "About us",
+        "title": "Settings",
+        "general": "General",
+        "verifier": "Verifier",
+        "splitter": "Splitter",
+        "subtitle": "Change Open-Capture behavior"
     },
     "USER": {
         "password": "Password",

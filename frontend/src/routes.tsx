@@ -17,17 +17,22 @@
 
 import { createBrowserRouter } from "react-router-dom";
 
-import { protectedLoader } from "./components/auth/auth.tsx";
-import LoginRequiredError from "./components/errors/LoginRequired.tsx";
+import { protectedLoader } from "./components/auth/auth";
+import LoginRequiredError from "./components/errors/LoginRequired";
 
-import MainLayout from "./layout/MainLayout.tsx";
+import MainLayout from "./layout/MainLayout";
+import SettingsLayout from "./layout/SettingsLayout";
 
-import { Login } from "./pages/login.tsx";
-import { HomePage } from "./pages/home.tsx";
-import { UploadPage } from "./pages/upload.tsx";
-import { Onboarding } from "./pages/onboarding/main.tsx";
+import { Login } from "./pages/login";
+import { HomePage } from "./pages/home";
+import { UploadPage } from "./pages/upload";
+import { Onboarding } from "./pages/onboarding";
+import { SettingsIndex } from "./pages/settings";
 
-import { getCustomFromUrl } from "./services/custom/getCustom.tsx";
+import { getCustomFromUrl } from "./services/custom/getCustom";
+import { SettingsGeneralIndex } from "./pages/settings/general";
+import { SettingsVerifierIndex } from "./pages/settings/verifier";
+import { SettingsSplitterIndex } from "./pages/settings/splitter";
 
 export const router = createBrowserRouter(
     [
@@ -39,7 +44,7 @@ export const router = createBrowserRouter(
             path: "onboarding",
             element: <Onboarding />,
             loader: protectedLoader,
-            errorElement: <LoginRequiredError />
+            errorElement: <LoginRequiredError/>
         },
         {
             path: "/",
@@ -49,13 +54,47 @@ export const router = createBrowserRouter(
                     path: "home",
                     element: <HomePage />,
                     loader: protectedLoader,
-                    errorElement: <LoginRequiredError />
+                    errorElement: <LoginRequiredError/>
                 },
                 {
                     path: "upload",
                     element: <UploadPage />,
                     loader: protectedLoader,
-                    errorElement: <LoginRequiredError />
+                    errorElement: <LoginRequiredError/>
+                }
+            ]
+        },
+        {
+            path: "/settings",
+            element: <SettingsLayout />,
+            handle: { breadcrumb: 'SETTINGS.title' },
+            children: [
+                {
+                    index: true,
+                    loader: protectedLoader,
+                    element: <SettingsIndex />,
+                    errorElement: <LoginRequiredError/>,
+                },
+                {
+                    path: "general",
+                    loader: protectedLoader,
+                    element: <SettingsGeneralIndex/>,
+                    errorElement: <LoginRequiredError/>,
+                    handle: { breadcrumb: 'SETTINGS.general' }
+                },
+                {
+                    path: "verifier",
+                    loader: protectedLoader,
+                    element: <SettingsVerifierIndex/>,
+                    errorElement: <LoginRequiredError/>,
+                    handle: { breadcrumb: 'SETTINGS.verifier' }
+                },
+                {
+                    path: "splitter",
+                    loader: protectedLoader,
+                    element: <SettingsSplitterIndex/>,
+                    errorElement: <LoginRequiredError/>,
+                    handle: { breadcrumb: 'SETTINGS.splitter' }
                 }
             ]
         }

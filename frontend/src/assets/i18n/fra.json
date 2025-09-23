@@ -46,7 +46,12 @@
         "system": "Système"
     },
     "SETTINGS": {
-        "abouts_us": "À propos"
+        "abouts_us": "À propos",
+        "title": "Paramètres",
+        "general": "Général",
+        "verifier": "Verifier",
+        "splitter": "Splitter",
+        "subtitle": "Modifier le comportement d’Open-Capture"
     },
     "USER": {
         "password": "Mot de passe",

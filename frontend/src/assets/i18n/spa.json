@@ -41,12 +41,17 @@
         "step": "Paso",
         "dark_mode": "Modo oscuro",
         "light_mode": "Modo claro",
-        "select_theme": "",
-        "select_theme_lang_info": "",
-        "system": ""
+        "select_theme": "Elegir el tema de la interfaz de usuario",
+        "select_theme_lang_info": "Elija el tema de la interfaz de usuario. Esta opción no es definitiva y puede modificarse posteriormente.",
+        "system": "Sistema"
     },
     "SETTINGS": {
-        "abouts_us": "Acerca de"
+        "abouts_us": "Acerca de",
+        "title": "Ajustes",
+        "general": "General",
+        "verifier": "Verifier",
+        "splitter": "Splitter",
+        "subtitle": "Cambiar el comportamiento de Open-Capture"
     },
     "USER": {
         "password": "Contraseña",

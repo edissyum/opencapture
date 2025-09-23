@@ -16,12 +16,12 @@
 
 import { Navigate, Outlet } from "react-router-dom";
 
-import TopBar from "../components/TopBar";
 import Sidebar from "../components/Sidebar";
+import TopBarSettings from "../components/settings/TopBar";
 
 import { useCustom } from "../services/custom/customContext";
 
-export default function MainLayout() {
+export default function SettingsLayout() {
     let pathNameWithoutCustom: string = window.location.pathname.replace(useCustom() || "", "") || "/";
     pathNameWithoutCustom = pathNameWithoutCustom.replace("//", "/");
     if (pathNameWithoutCustom === "/") {
@@ -37,8 +37,8 @@ export default function MainLayout() {
     return (
         <div className="flex min-h-screen">
             <Sidebar />
-            <main className="flex-1 bg-(--bg-secondary)">
-                <TopBar />
+            <main className="flex-1 bg-(--bg-primary)">
+                <TopBarSettings />
                 <span className="p-6 block">
                     <Outlet />
                 </span>

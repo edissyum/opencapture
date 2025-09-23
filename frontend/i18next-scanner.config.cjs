@@ -15,6 +15,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+const {readFileSync} = require("fs-extra");
 module.exports = {
     input: ['src/**/*.{js,jsx,ts,tsx}'], // où chercher les traductions
     output: './src/assets/i18n/to_merge/', // où stocker les JSON
@@ -33,5 +34,24 @@ module.exports = {
             loadPath: '{{lng}}.json',
             savePath: '{{lng}}.json'
         }
+    },
+    transform: function customTransform(file, enc, done) {
+        const parser = this.parser;
+        const content = readFileSync(file.path, enc);
+
+        // Détection des t("...")
+        parser.parseFuncFromString(content, { list: ['t'] }, (key, options) => {
+            parser.set(key, options);
+        });
+
+        // Détection des handle.breadcrumb: "SOMETHING"
+        const breadcrumbRegex = /breadcrumb:\s*["'`](.*?)["'`]/g;
+        let match;
+        while ((match = breadcrumbRegex.exec(content))) {
+            const key = match[1];
+            parser.set(key);
+        }
+
+        done();
     }
 };
