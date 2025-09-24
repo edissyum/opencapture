@@ -17,6 +17,7 @@
 
 import { t } from "i18next";
 import { NavLink, useMatches } from "react-router-dom";
+
 import { ChevronRight } from "lucide-react";
 
 export default function TopBarSettings() {
@@ -25,7 +26,7 @@ export default function TopBarSettings() {
 
     return (
         <header
-            className="w-full h-22 flex items-center justify-between px-6 bg-(--bg-primary) border-b-2 border-(--border-secondary) text-(--text-secondary)">
+            className="w-full h-22 flex items-center justify-between px-6 border-b-2 border-(--border-secondary) text-(--text-secondary)">
             <div className="flex items-center gap-4">
                 { breadcrumbs.map((match, idx) => {
                     const isLast = idx === breadcrumbs.length - 1;

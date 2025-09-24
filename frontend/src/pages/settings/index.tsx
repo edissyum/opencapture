@@ -24,19 +24,19 @@ export function SettingsIndex() {
         {
             name: t('SETTINGS.general'),
             description: t('SETTINGS.general_description'),
-            icon: <SlidersHorizontal />,
+            icon: <SlidersHorizontal/>,
             href: '/settings/general'
         },
         {
             name: t('SETTINGS.verifier'),
             description: t('SETTINGS.verifier_description'),
-            icon: <Check />,
+            icon: <Check/>,
             href: '/settings/verifier'
         },
         {
             name: t('SETTINGS.splitter'),
             description: t('SETTINGS.splitter_description'),
-            icon: <Search />,
+            icon: <Search/>,
             href: '/settings/splitter'
         },
     ];
@@ -52,7 +52,8 @@ export function SettingsIndex() {
             <div className='flex flex-row gap-4 mt-6'>
                 {
                     options.map((option) => (
-                        <SettingsCard icon={option['icon']} title={option['name']} description={option['description']} to={option['href']}></SettingsCard>
+                        <SettingsCard key={option['name']} icon={ option['icon'] } title={ option['name'] }
+                                      description={ option['description'] } to={ option['href'] }></SettingsCard>
                     ))
                 }
             </div>

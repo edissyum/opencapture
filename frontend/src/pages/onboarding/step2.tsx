@@ -47,8 +47,8 @@ export function Step2() {
             </p>
             <div className="flex gap-4 mt-4 justify-center">
                 { options.map((lang) => (
-                    <div
-                        className={ `relative border-2 flex items-center bg-(--bg-primary) rounded-md cursor-pointer hover:border-gray-300 p-6 ${ selectedLang === lang['code'] ? 'border-(--border-primary)!' : 'border-(--border-secondary)' }` }
+                    <div key={ lang['code'] }
+                        className={ `relative border-2 flex bg-(--bg-primary) items-center rounded-md cursor-pointer hover:border-gray-300 p-6 ${ selectedLang === lang['code'] ? 'border-(--border-primary)!' : 'border-(--border-secondary)' }` }
                         onClick={ () => setSelectedlang(lang['code']) }>
                         <CheckOverlay show={ selectedLang === lang['code'] }/>
                         <img src={ `/src/assets/imgs/i18n/${ lang['code'] }.svg` } alt=""

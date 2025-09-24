@@ -17,7 +17,6 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import { CheckOverlay } from "../../components/CheckOverlay.tsx";
 
 export function Step1() {
     const options = [
@@ -53,10 +52,9 @@ export function Step1() {
             </p>
             <div className="flex gap-4">
                 { options.map((module) => (
-                    <div
-                        className={ `relative border-2 flex items-center bg-(--bg-primary) rounded-md cursor-pointer hover:border-gray-300 p-6 ${ selectedModule === module['id'] ? 'border-(--border-primary)!' : 'border-(--border-secondary)' }` }
-                        onClick={ () => setSelectedModule(module['id']) }>
-                        <CheckOverlay show={ selectedModule === module['id'] }/>
+                    <div key={ module['id'] }
+                         className={ `border-2 flex bg-(--bg-primary) items-center rounded-md cursor-pointer hover:shadow-lg p-6 ${ selectedModule === module['id'] ? 'border-(--border-primary)' : 'border-(--border-secondary)' }` }
+                         onClick={ () => setSelectedModule(module['id']) }>
                         <img src={ module['img'] } alt="" className="w-20 mr-4"/>
                         <div className="flex flex-col justify-center items-start">
                             <h2 className={ `text-xl font-semibold mb-2 ${ selectedModule === module['id'] ? 'text-(--color-primary)' : '' }` }>{ t('ONBOARD.' + module['id']) }</h2>

@@ -14,11 +14,11 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-export function SettingsSplitterIndex() {
+export function SettingsGeneralCustomization() {
     return (
         <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Splitter Settings Home</h1>
-            <p>Welcome to the general index page. Please select an option from the sidebar.</p>
+            <h1 className="text-2xl font-bold mb-4">Customization Settings</h1>
+            <p>Here you can configure advanced settings for Open-Capture.</p>
         </div>
     );
 }

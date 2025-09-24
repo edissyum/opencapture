@@ -14,11 +14,79 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { t } from "i18next";
+import { AtSign, Brush, HardDrive, HashIcon, Inbox, Lock, User, UsersRound, Wrench } from "lucide-react";
+
+import { SettingsCard } from "../../../components/settings/SettingsCard.tsx";
+
 export function SettingsGeneralIndex() {
+    const options = [
+        {
+            name: t('SETTINGS.customization'),
+            description: t('SETTINGS.customization_description'),
+            icon: <Brush/>,
+            href: '/settings/general/customization'
+        },
+        {
+            name: t('SETTINGS.security'),
+            description: t('SETTINGS.security_description'),
+            icon: <AtSign/>,
+            href: '/settings/general/security'
+        },
+        {
+            name: t('SETTINGS.smtp'),
+            description: t('SETTINGS.smtp_description'),
+            icon: <Lock/>,
+            href: '/settings/general/smtp'
+        },
+        {
+            name: t('SETTINGS.docservers'),
+            description: t('SETTINGS.docservers_description'),
+            icon: <HardDrive/>,
+            href: '/settings/general/docservers'
+        },
+        {
+            name: t('SETTINGS.regex'),
+            description: t('SETTINGS.regex_description'),
+            icon: <HashIcon/>,
+            href: '/settings/general/regex'
+        },
+        {
+            name: t('SETTINGS.mailcollect'),
+            description: t('SETTINGS.mailcollect_description'),
+            icon: <Inbox/>,
+            href: '/settings/general/mailcollect'
+        },
+        {
+            name: t('SETTINGS.users'),
+            description: t('SETTINGS.users_description'),
+            icon: <User/>,
+            href: '/settings/general/users'
+        },
+        {
+            name: t('SETTINGS.roles'),
+            description: t('SETTINGS.roles_description'),
+            icon: <UsersRound/>,
+            href: '/settings/general/users'
+        },
+        {
+            name: t('SETTINGS.advanced'),
+            description: t('SETTINGS.advanced_description'),
+            icon: <Wrench/>,
+            href: '/settings/general/advanced'
+        }
+    ];
+
     return (
         <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Settings Home</h1>
-            <p>Welcome to the general index page. Please select an option from the sidebar.</p>
+            <div className='grid grid-cols-3 gap-8'>
+                {
+                    options.map((option) => (
+                        <SettingsCard key={option['name']} icon={ option['icon'] } title={ option['name'] }
+                                      description={ option['description'] } to={ option['href'] }></SettingsCard>
+                    ))
+                }
+            </div>
         </div>
     );
 }

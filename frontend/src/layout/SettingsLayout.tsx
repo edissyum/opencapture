@@ -37,7 +37,7 @@ export default function SettingsLayout() {
     return (
         <div className="flex min-h-screen">
             <Sidebar />
-            <main className="flex-1 bg-(--bg-primary)">
+            <main className="flex-1">
                 <TopBarSettings />
                 <span className="p-6 block">
                     <Outlet />

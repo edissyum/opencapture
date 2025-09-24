@@ -49,7 +49,7 @@ export default function Sidebar() {
 
     return (
         <aside
-            className={ `min-h-screen bg-(--bg-primary) px-3 py-2 flex flex-col border-r-2 border-r-(--border-secondary) transition-all duration-300 ${ collapsed ? "w-18" : "w-70" }` }>
+            className={ `min-h-screen px-3 py-2 flex flex-col border-r-2 border-r-(--border-secondary) transition-all duration-300 ${ collapsed ? "w-18" : "w-70" }` }>
             <div className={ `flex items-center min-h-18 gap-3 mb-3 ${ collapsed ? "p-2" : "p-4" }` }>
                 { !collapsed && (<span><img src={ "/src/assets/imgs/login_image.png" } alt="Sidebar image"/></span>) }
                 <span onClick={ () => setCollapsed(!collapsed) }

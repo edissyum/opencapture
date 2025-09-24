@@ -33,6 +33,8 @@ import { getCustomFromUrl } from "./services/custom/getCustom";
 import { SettingsGeneralIndex } from "./pages/settings/general";
 import { SettingsVerifierIndex } from "./pages/settings/verifier";
 import { SettingsSplitterIndex } from "./pages/settings/splitter";
+import { SettingsGeneralAdvanced } from "./pages/settings/general/advanced.tsx";
+import { SettingsGeneralCustomization } from "./pages/settings/general/customization.tsx";
 
 export const router = createBrowserRouter(
     [
@@ -78,23 +80,58 @@ export const router = createBrowserRouter(
                 {
                     path: "general",
                     loader: protectedLoader,
-                    element: <SettingsGeneralIndex/>,
                     errorElement: <LoginRequiredError/>,
-                    handle: { breadcrumb: 'SETTINGS.general' }
+                    handle: { breadcrumb: 'SETTINGS.general' },
+                    children: [
+                        {
+                            index: true,
+                            loader: protectedLoader,
+                            element: <SettingsGeneralIndex />,
+                            errorElement: <LoginRequiredError/>,
+                        },
+                        {
+                            path: "customization",
+                            loader: protectedLoader,
+                            element: <SettingsGeneralCustomization/>,
+                            errorElement: <LoginRequiredError/>,
+                            handle: { breadcrumb: 'SETTINGS.customization' }
+                        },
+                        {
+                            path: "advanced",
+                            loader: protectedLoader,
+                            element: <SettingsGeneralAdvanced/>,
+                            errorElement: <LoginRequiredError/>,
+                            handle: { breadcrumb: 'SETTINGS.advanced' }
+                        }
+                    ]
                 },
                 {
                     path: "verifier",
                     loader: protectedLoader,
-                    element: <SettingsVerifierIndex/>,
                     errorElement: <LoginRequiredError/>,
-                    handle: { breadcrumb: 'SETTINGS.verifier' }
+                    handle: { breadcrumb: 'SETTINGS.verifier' },
+                    children: [
+                        {
+                            index: true,
+                            loader: protectedLoader,
+                            element: <SettingsVerifierIndex/>,
+                            errorElement: <LoginRequiredError/>
+                        },
+                    ]
                 },
                 {
                     path: "splitter",
                     loader: protectedLoader,
-                    element: <SettingsSplitterIndex/>,
                     errorElement: <LoginRequiredError/>,
-                    handle: { breadcrumb: 'SETTINGS.splitter' }
+                    handle: { breadcrumb: 'SETTINGS.splitter' },
+                    children: [
+                        {
+                            index: true,
+                            loader: protectedLoader,
+                            element: <SettingsSplitterIndex/>,
+                            errorElement: <LoginRequiredError/>
+                        },
+                    ]
                 }
             ]
         }

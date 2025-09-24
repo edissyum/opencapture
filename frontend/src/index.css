@@ -49,6 +49,24 @@
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
 
+    /* Fix for Chrome / firefox autofill background color */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    textarea:-webkit-autofill,
+    textarea:-webkit-autofill:hover,
+    textarea:-webkit-autofill:focus,
+    select:-webkit-autofill,
+    select:-webkit-autofill:hover,
+    select:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0 1000px var(--bg-primary) inset !important;
+        box-shadow: 0 0 0 1000px var(--bg-primary) inset !important;
+        -webkit-text-fill-color: var(--text-primary) !important;
+        transition: background-color 5000s ease-in-out 0s;
+        caret-color: var(--text-primary);
+    }
+
+    @apply bg-(--bg-primary);
     @apply text-(--text-primary);
 
     --color-primary: theme(colors.green-400);
@@ -77,8 +95,20 @@
     --text-secondary: theme(colors.gray.400);
 }
 
+@layer base {
+    .text-fill-dark {
+        /* put any color or access tailwind theme's color */
+        -webkit-text-fill-color: theme('colors.black');
+    }
+
+    .text-fill-light {
+        /* put any color or access tailwind theme's color */
+        -webkit-text-fill-color: theme('colors.white') ;
+    }
+}
+
 a {
     @apply cursor-pointer;
     @apply text-(--color-primary);
-    @apply hover:text-green-600;
+    @apply hover:text-green-400;
 }

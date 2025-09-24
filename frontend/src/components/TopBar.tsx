@@ -59,29 +59,30 @@ export default function TopBar() {
             className="w-full h-22 flex items-center justify-between px-6 bg-(--bg-primary) border-b-2 border-(--border-secondary)">
             <div className="flex items-center gap-4">
                 <div className="relative inline-block w-64">
-                    <select value={selected || ''} style={{backgroundImage: `url('${img}')`}}
-                            onChange={(e) => {
+                    <select value={ selected || '' } style={ {backgroundImage: `url('${ img }')`} }
+                            onChange={ (e) => {
                                 handleSelect(e.target.value)
-                            }}
+                            } }
                             className="w-full bg-size-[35px] bg-no-repeat bg-position-[8px] pl-[60px] cursor-pointer
                             rounded-lg py-3 border-2 border-(--border-secondary) appearance-none">
                         {
                             options.map((option) => (
-                                <option value={option['id']}
+                                <option key={ option['id'] } value={ option['id'] }
                                         className="cursor-pointer px-4 py-2 hover:bg-(--bg-secondary)">
-                                    {option['label']}
+                                    { option['label'] }
                                 </option>
                             ))
                         }
                     </select>
                     <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2">
-                        { <ChevronsUpDown size={20}/> }
+                        { <ChevronsUpDown size={ 20 }/> }
                     </span>
                 </div>
-                <Button to="/home" icon={ <Package size={24} className="mr-2"/> } className="font-semibold p-3!">
+                <Button to="/home" icon={ <Package size={ 24 } className="mr-2"/> } className="font-semibold p-3!">
                     { t('GLOBAL.batches') }
                 </Button>
-                <Button to="/upload" icon={ <CloudUpload size={24} className="mr-2"/> } className="font-semibold p-3!">
+                <Button to="/upload" icon={ <CloudUpload size={ 24 } className="mr-2"/> }
+                        className="font-semibold p-3!">
                     { t('GLOBAL.upload') }
                 </Button>
             </div>
