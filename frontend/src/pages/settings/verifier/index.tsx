@@ -16,7 +16,7 @@
 
 export function SettingsVerifierIndex() {
     return (
-        <div className="p-4">
+        <div>
             <h1 className="text-2xl font-bold mb-4">Verifier Settings Home</h1>
             <p>Welcome to the general index page. Please select an option from the sidebar.</p>
         </div>

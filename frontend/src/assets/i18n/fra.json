@@ -9,6 +9,12 @@
         "login": "Se connecter",
         "session_expired": "Votre session à expirée, veuillez vous reconnecter"
     },
+    "CUSTOMIZATION": {
+        "theme": "Thème",
+        "theme_description": "Sélectionnez le thème de l'interface utilisateur par défaut",
+        "app_image": "Image de l'application",
+        "app_image_description": "Sélectionnez l'image affichée sur la page de connexion et dans le menu latéral"
+    },
     "ERROR": {
         "admin_password_alert": "Vous utilisez encore le mot de passe par défaut du compte admin. Veuillez le changer au plus vite pour des questions de sécurité",
         "login_required": "Vous devez être connecté pour accéder à cette page",
@@ -73,6 +79,19 @@
         "roles_description": "Modification des rôles",
         "users": "Utilisateurs",
         "users_description": "Modification des utilisateurs"
+    },
+    "UPLOAD": {
+        "upload_dropzone": "Cliquez pour choisir un fichier",
+        "upload_dropzone_2": "ou faites-le glisser dans cette zone",
+        "max_filesize": "Taille maximale du fichier : {{maxSize}} Mo",
+        "allowed_extensions": "Extensions autorisées",
+        "too_many_files": "Le nombre maximum de fichiers autorisés est de {{maxFiles}}",
+        "file_rejected": "Le fichier a été rejeté",
+        "invalid_file_type": "Type de fichier invalide. Les types de fichiers autorisés sont : {{types}}",
+        "drop_files_here_many": "Déposez les fichiers ici",
+        "drop_files_here_one": "Déposez le fichier ici",
+        "drop_files_here_other": "Déposez les fichiers ici",
+        "file_too_large": "Le fichier est trop volumineux. La taille maximale autorisée est de {{maxSize}} Mo"
     },
     "USER": {
         "password": "Mot de passe",

@@ -57,7 +57,7 @@ export function Step1() {
                          onClick={ () => setSelectedModule(module['id']) }>
                         <img src={ module['img'] } alt="" className="w-20 mr-4"/>
                         <div className="flex flex-col justify-center items-start">
-                            <h2 className={ `text-xl font-semibold mb-2 ${ selectedModule === module['id'] ? 'text-(--color-primary)' : '' }` }>{ t('ONBOARD.' + module['id']) }</h2>
+                            <h2 className={ `${ selectedModule === module['id'] ? 'text-(--color-primary)' : '' }` }>{ t('ONBOARD.' + module['id']) }</h2>
                             <p className="text-(--text-secondary)">{ t('ONBOARD.' + module['id'] + '_info') }</p>
                         </div>
                     </div>

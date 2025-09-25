@@ -54,7 +54,7 @@ export function Step2() {
                         <img src={ `/src/assets/imgs/i18n/${ lang['code'] }.svg` } alt=""
                              className="w-14 mr-4 rounded-lg"/>
                         <div className="flex flex-col justify-center items-start">
-                            <h2 className={ `text-xl font-semibold mb-2` }>
+                            <h2>
                                 { lang['label'] }
                             </h2>
                         </div>

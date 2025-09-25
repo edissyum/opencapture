@@ -78,15 +78,13 @@ export function SettingsGeneralIndex() {
     ];
 
     return (
-        <div className="p-4">
-            <div className='grid grid-cols-3 gap-8'>
-                {
-                    options.map((option) => (
-                        <SettingsCard key={option['name']} icon={ option['icon'] } title={ option['name'] }
-                                      description={ option['description'] } to={ option['href'] }></SettingsCard>
-                    ))
-                }
-            </div>
+        <div className='grid grid-cols-3 gap-8'>
+            {
+                options.map((option) => (
+                    <SettingsCard key={option['name']} icon={ option['icon'] } title={ option['name'] }
+                                  description={ option['description'] } to={ option['href'] }></SettingsCard>
+                ))
+            }
         </div>
     );
 }

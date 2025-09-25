@@ -36,9 +36,9 @@ export function SettingsCard({show = true, icon, title, description, to, classNa
                 { icon }
             </div>
             <div className="text-(--text-secondary)">
-                <h2 className="text-lg font-semibold text-(--text-primary) -mb-1">
+                <h3 className="text-lg font-semibold text-(--text-primary) -mb-1">
                     { title }
-                </h2>
+                </h3>
                 { description }
             </div>
         </Link>

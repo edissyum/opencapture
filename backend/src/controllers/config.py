@@ -345,12 +345,12 @@ def get_last_git_version():
 
 def get_login_image():
     custom_id = retrieve_custom_from_url(request)
-    login_image = 'src/assets/imgs/login_image.png'
+    login_image = 'src/assets/imgs/login_image.svg'
     if custom_id:
         custom_path = get_custom_path(custom_id)
         if custom_path:
-            if os.path.isfile(custom_path + '/assets/imgs/login_image.png'):
-                login_image = custom_path + '/assets/imgs/login_image.png'
+            if os.path.isfile(custom_path + '/assets/imgs/login_image.svg'):
+                login_image = custom_path + '/assets/imgs/login_image.svg'
 
     with open(login_image, 'rb') as image_file:
         b64_content = str(base64.b64encode(image_file.read()).decode('utf-8'))

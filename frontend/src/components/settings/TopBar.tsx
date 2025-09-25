@@ -26,7 +26,7 @@ export default function TopBarSettings() {
 
     return (
         <header
-            className="w-full h-22 flex items-center justify-between px-6 border-b-2 border-(--border-secondary) text-(--text-secondary)">
+            className="w-full h-16 flex items-center justify-between px-6 border-b-2 border-(--border-secondary) text-(--text-secondary)">
             <div className="flex items-center gap-4">
                 { breadcrumbs.map((match, idx) => {
                     const isLast = idx === breadcrumbs.length - 1;

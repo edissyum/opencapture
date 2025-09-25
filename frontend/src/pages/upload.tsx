@@ -38,7 +38,7 @@ export function UploadPage() {
 
 
     return (
-        <div className="p-4">
+        <div>
             <h1 className="text-2xl font-bold mb-4">UPLOAD</h1>
             <p>Module selectionné : {module}</p>
         </div>

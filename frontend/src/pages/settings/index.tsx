@@ -42,7 +42,7 @@ export function SettingsIndex() {
     ];
 
     return (
-        <div className="p-4">
+        <div>
             <h1 className="text-2xl font-bold">
                 { t('SETTINGS.title') }
             </h1>

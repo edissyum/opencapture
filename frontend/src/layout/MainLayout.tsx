@@ -35,11 +35,11 @@ export default function MainLayout() {
     }
 
     return (
-        <div className="flex min-h-screen">
+        <div className="flex overflow-hidden">
             <Sidebar />
             <main className="flex-1 bg-(--bg-secondary)">
                 <TopBar />
-                <span className="p-6 block">
+                <span className="p-10 block overflow-x-scroll h-[calc(100vh-80px)]">
                     <Outlet />
                 </span>
             </main>

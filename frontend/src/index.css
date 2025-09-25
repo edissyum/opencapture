@@ -75,7 +75,7 @@
     --bg-secondary: theme(colors.gray.100);
 
     --border-primary: theme(colors.green-400);
-    --border-secondary: theme(colors.gray.200);
+    --border-secondary: theme(colors.gray.300);
 
     --text-primary: theme(colors.gray.900);
     --text-secondary: theme(colors.gray.400);
@@ -95,20 +95,14 @@
     --text-secondary: theme(colors.gray.400);
 }
 
-@layer base {
-    .text-fill-dark {
-        /* put any color or access tailwind theme's color */
-        -webkit-text-fill-color: theme('colors.black');
-    }
-
-    .text-fill-light {
-        /* put any color or access tailwind theme's color */
-        -webkit-text-fill-color: theme('colors.white') ;
-    }
-}
-
 a {
     @apply cursor-pointer;
     @apply text-(--color-primary);
-    @apply hover:text-green-400;
+    @apply hover:text-green-500;
+}
+
+h2 {
+    @apply mb-2;
+    @apply text-2xl;
+    @apply font-semibold;
 }

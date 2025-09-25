@@ -23,8 +23,9 @@
         "i18next": "^25.5.2",
         "react": "^19.1.1",
         "react-dom": "^19.1.1",
+        "react-dropzone": "^14.3.8",
         "react-i18next": "^15.7.3",
-        "react-router-dom": "^7.9.1",
+        "react-router-dom": "^7.9.2",
         "react-toastify": "^11.0.5",
         "react-tooltip": "^5.29.1",
         "tailwindcss": "^4.1.13"
