@@ -15,6 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
+import glob
 import base64
 import os.path
 import requests
@@ -349,11 +350,13 @@ def get_login_image():
     if custom_id:
         custom_path = get_custom_path(custom_id)
         if custom_path:
-            if os.path.isfile(custom_path + '/assets/imgs/login_image.svg'):
-                login_image = custom_path + '/assets/imgs/login_image.svg'
-
+            for file in glob.glob(custom_path + '/assets/imgs/login_image.*'):
+                login_image = file
+                break
     with open(login_image, 'rb') as image_file:
         b64_content = str(base64.b64encode(image_file.read()).decode('utf-8'))
+        b64_content = 'data:image/' + login_image.split('.')[-1] + ';base64,' + b64_content
+
     return b64_content, 200
 
 
@@ -362,16 +365,26 @@ def update_login_image(image_content):
     if custom_id:
         custom_path = get_custom_path(custom_id)
         if custom_path:
-            image_data = base64.b64decode(str(image_content).replace('data:image/png;base64,', ''))
+            mime_type = str(image_content).split(';')[0].replace('data:', '')
+            extension = mime_type.split('/')[1]
+            if extension == 'svg+xml':
+                extension = 'svg'
+
+            image_data = base64.b64decode(str(image_content).replace(f'data:{mime_type};base64,', ''))
             image_path = custom_path + '/assets/imgs/'
             if not os.path.isdir(image_path):
                 return {
                     "errors": gettext("ERROR_UPDATING_IMAGE"),
                     "message": gettext("CUSTOM_IMAGE_PATH_NOT_WRITEABLE_OR_NOT_EXISTS")
                 }, 400
-            image_filename = 'login_image.png'
+
+            for f in glob.glob(image_path + "/login_image.*"):
+                os.remove(f)
+
+            image_filename = 'login_image.' + extension
             with open(image_path + '/' + image_filename, 'wb') as image_handler:
                 image_handler.write(image_data)
+
             history.add_history({
                 'module': 'general',
                 'ip': request.remote_addr,

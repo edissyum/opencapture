@@ -16,18 +16,18 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import React from "react";
-import { ToastContainer, toast, type ToastOptions } from "react-toastify";
+import { toast, ToastContainer, type ToastOptions } from "react-toastify";
 
 export const showToast = (message: any, type: "success" | "warning" | "error" | "info" = "success", options?: ToastOptions) => {
-    toast(message, { type, ...options });
+    toast(message, {type, toastId: message, ...options});
 };
 
 export const ToastProvider: React.FC = () => {
     return (
         <ToastContainer
             position="top-right"
-            autoClose={3000}
-            newestOnTop={true}
+            autoClose={ 3000 }
+            newestOnTop={ true }
             closeOnClick
             pauseOnFocusLoss
             pauseOnHover

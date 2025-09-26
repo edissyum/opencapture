@@ -41,7 +41,6 @@ export function Step1() {
     useEffect(() => {
         if (selectedModule) {
             localStorage.setItem('selectedModule', selectedModule);
-            window.dispatchEvent(new Event("local-storage"));
         }
     }, [selectedModule]);
 

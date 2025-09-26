@@ -164,7 +164,7 @@ def update_login_image():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'configurations']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/config/updateLoginImage'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'image_content', 'type': str, 'mandatory': True}
     ])
     if not check:
@@ -173,7 +173,7 @@ def update_login_image():
             "message": message
         }, 400)
 
-    res = config.update_login_image(request.json['args']['image_content'])
+    res = config.update_login_image(request.json['image_content'])
     return make_response(jsonify(res[0])), res[1]
 
 

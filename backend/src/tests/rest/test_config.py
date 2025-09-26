@@ -124,20 +124,20 @@ class ConfigTest(unittest.TestCase):
         response = self.app.get(f'/{CUSTOM_ID}/ws/config/getLoginImage',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        login_image = open('/var/www/html/opencapture/src/assets/imgs/login_image.png', 'rb')
+        login_image = open('/var/www/html/opencapture/src/assets/imgs/login_image.svg', 'rb')
         current_login_image = base64.b64encode(login_image.read())
         login_image.close()
         self.assertEqual(current_login_image.decode('utf-8'), response.json)
 
     def test_successful_update_login_image(self):
-        login_image = open('/var/www/html/opencapture/src/assets/imgs/login_image.png', 'rb')
+        login_image = open('/var/www/html/opencapture/src/assets/imgs/login_image.svg', 'rb')
         default_login_image = base64.b64encode(login_image.read())
         login_image.close()
         response = self.app.put(f'/{CUSTOM_ID}/ws/config/updateLoginImage',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
                                 json={"args": {"image_content": default_login_image.decode('utf-8')}})
         self.assertEqual(200, response.status_code)
-        custom_image = open(f'/var/www/html/opencapture/custom/{CUSTOM_ID}/assets/imgs/login_image.png', 'rb')
+        custom_image = open(f'/var/www/html/opencapture/custom/{CUSTOM_ID}/assets/imgs/login_image.svg', 'rb')
         custom_login_image = base64.b64encode(custom_image.read())
         custom_image.close()
         self.assertEqual(default_login_image.decode('utf-8'), custom_login_image.decode('utf-8'))
@@ -176,8 +176,8 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(str, type(response.json['git_latest']))
 
     def tearDown(self) -> None:
-        if os.path.isfile(f'/var/www/html/opencapture/custom/{CUSTOM_ID}/assets/imgs/login_image.png'):
-            os.remove(f'/var/www/html/opencapture/custom/{CUSTOM_ID}/assets/imgs/login_image.png')
+        if os.path.isfile(f'/var/www/html/opencapture/custom/{CUSTOM_ID}/assets/imgs/login_image.svg'):
+            os.remove(f'/var/www/html/opencapture/custom/{CUSTOM_ID}/assets/imgs/login_image.svg')
         self.database.execute("UPDATE regex "
                         "SET content = '([A-Za-z0-9]+[\.\-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+' "
                         "WHERE regex_id = 'email'")

@@ -13,7 +13,9 @@
         "theme": "Theme",
         "theme_description": "Select the default UI theme",
         "app_image": "Application image",
-        "app_image_description": "Select the image displayed on the login page and in the sidebar"
+        "app_image_description": "Select the image displayed on the login page and in the sidebar",
+        "application_lang": "Application language",
+        "application_lang_description": "Select the user interface language"
     },
     "ERROR": {
         "admin_password_alert": "You're still using the default admin password. Change it ASAP for security reasons",

@@ -17,7 +17,7 @@
 import { t } from "i18next";
 import { AtSign, Brush, HardDrive, HashIcon, Inbox, Lock, User, UsersRound, Wrench } from "lucide-react";
 
-import { SettingsCard } from "../../../components/settings/SettingsCard.tsx";
+import { SettingsCard } from "../../../components/settings/SettingsCard";
 
 export function SettingsGeneralIndex() {
     const options = [

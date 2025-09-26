@@ -18,7 +18,7 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useRouteError, isRouteErrorResponse } from "react-router-dom";
 
-import { showToast } from "../ToastProvider.tsx";
+import { showToast } from "../ToastProvider";
 
 export default function LoginRequiredError() {
     const { t } = useTranslation();

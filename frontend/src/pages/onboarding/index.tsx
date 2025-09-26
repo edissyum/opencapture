@@ -19,9 +19,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import { Step1 } from "./step1.tsx";
-import { Step2 } from "./step2.tsx";
-import { Step3 } from "./step3.tsx";
+import { Step1 } from "./step1";
+import { Step2 } from "./step2";
+import { Step3 } from "./step3";
 
 import { Button } from '../../components/Button';
 
@@ -47,7 +47,6 @@ export function Onboarding() {
 
     const handleStart = () => {
         localStorage.setItem('onboardingCompleted', 'true');
-        window.dispatchEvent(new Event("local-storage"));
     };
 
     return (

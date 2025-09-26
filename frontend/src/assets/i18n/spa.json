@@ -13,7 +13,9 @@
         "theme": "Tema",
         "theme_description": "Seleccione el tema de interfaz de usuario predeterminado",
         "app_image": "Imagen de la aplicación",
-        "app_image_description": "Seleccione la imagen que se muestra en la página de inicio de sesión y en el menú lateral"
+        "app_image_description": "Seleccione la imagen que se muestra en la página de inicio de sesión y en el menú lateral",
+        "application_lang": "Idioma de la aplicación",
+        "application_lang_description": "Cambiar el idioma de la interfaz de usuario"
     },
     "ERROR": {
         "admin_password_alert": "Todavía usa la contraseña predeterminada de la cuenta de administración. Por favor, cámbielo lo más rápido posible por problemas de seguridad.",

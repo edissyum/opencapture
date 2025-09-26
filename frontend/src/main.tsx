@@ -14,64 +14,17 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import axios from "axios";
-import { t } from "i18next";
 import { StrictMode } from 'react'
-import { Tooltip } from "react-tooltip";
 import { createRoot } from 'react-dom/client'
-import { RouterProvider } from "react-router-dom";
 
 import './index.css'
-import { router } from "./routes.tsx";
 
-import { showToast, ToastProvider } from "./components/ToastProvider";
+import { App } from "./App";
+import { ToastProvider } from "./components/ToastProvider";
 
-import { applyTheme } from "./services/theme.tsx";
-import { BACKEND_URL } from "./services/config.tsx";
-import { fetchCurrentLang, initI18n } from "./services/i18n";
-import { getCustomFromUrl } from "./services/custom/getCustom";
-import { CustomProvider } from "./services/custom/customContext";
-
-async function bootstrap() {
-    applyTheme();
-
-    let custom = getCustomFromUrl();
-    let currentLang = localStorage.getItem("selectedLang");
-    const api = axios.create({baseURL: `${BACKEND_URL}/${custom}/ws/`});
-
-    if (custom) {
-        try {
-            await api.get("/config/customExists");
-        } catch {
-            custom = null;
-        }
-    }
-
-    if (custom && !currentLang) {
-        currentLang = await fetchCurrentLang(api);
-    }
-
-    await initI18n(currentLang || "fra");
-
-    createRoot(document.getElementById("root")!).render(
-        <StrictMode>
-            <CustomProvider custom={custom}>
-                <ToastProvider />
-                <Tooltip id="tooltip" />
-                <RouterProvider router={router} />
-            </CustomProvider>
-        </StrictMode>
-    );
-
-    if (!custom) {
-        setTimeout(() => {
-            showToast(t("ERROR.custom_not_provided"), "error");
-            if (!window.location.pathname.includes("/login")) {
-                window.location.href = "/login";
-            }
-            sessionStorage.clear();
-        }, 0);
-    }
-}
-
-bootstrap().then();
+createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+        <ToastProvider />
+        <App />
+    </StrictMode>,
+);

@@ -32,8 +32,8 @@ export function UploadPage() {
             }
         };
 
-        window.addEventListener("local-storage", handler);
-        return () => window.removeEventListener("local-storage", handler);
+        window.addEventListener("updateModule", handler);
+        return () => window.removeEventListener("updateModule", handler);
     }, []);
 
 

@@ -20,12 +20,13 @@ import { useNavigate } from "react-router-dom";
 import { getI18n, useTranslation } from "react-i18next";
 
 import { Button } from '../components/Button';
-import { Input } from "../components/Input.tsx";
-import { showToast } from "../components/ToastProvider.tsx";
+import { Input } from "../components/Input";
+import { showToast } from "../components/ToastProvider";
 
-import { useCustom } from "../services/custom/customContext.tsx";
-import { axiosApiCall } from "../services/hooks/axiosApiCall.tsx";
-import { useFormValues } from "../services/hooks/useFormValues.tsx";
+import { useCustom } from "../services/custom/customContext";
+import { axiosApiCall } from "../services/hooks/axiosApiCall";
+import { useFormValues } from "../services/hooks/useFormValues";
+import { LoginImage } from "../components/LoginImage";
 
 export function Login() {
     const [loadingLogin, setLoadingLogin] = useState(false);
@@ -75,7 +76,7 @@ export function Login() {
     return (
         <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <img src={"/src/assets/imgs/login_image.svg"} alt="Open-Capture" className="mx-auto" />
+                <LoginImage className="mx-auto"></LoginImage>
                 <h2 className="mt-10 text-center text-2xl/9 tracking-tight text-(--text-primary)">
                     { t("GLOBAL.login") }
                 </h2>

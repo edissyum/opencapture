@@ -20,6 +20,8 @@ import { createBrowserRouter } from "react-router-dom";
 import { protectedLoader } from "./components/auth/auth";
 import LoginRequiredError from "./components/errors/LoginRequired";
 
+import { getCustomFromUrl } from "./services/custom/getCustom";
+
 import MainLayout from "./layout/MainLayout";
 import SettingsLayout from "./layout/SettingsLayout";
 
@@ -28,13 +30,11 @@ import { HomePage } from "./pages/home";
 import { UploadPage } from "./pages/upload";
 import { Onboarding } from "./pages/onboarding";
 import { SettingsIndex } from "./pages/settings";
-
-import { getCustomFromUrl } from "./services/custom/getCustom";
 import { SettingsGeneralIndex } from "./pages/settings/general";
 import { SettingsVerifierIndex } from "./pages/settings/verifier";
 import { SettingsSplitterIndex } from "./pages/settings/splitter";
-import { SettingsGeneralAdvanced } from "./pages/settings/general/advanced.tsx";
-import { SettingsGeneralCustomization } from "./pages/settings/general/customization.tsx";
+import { SettingsGeneralAdvanced } from "./pages/settings/general/advanced";
+import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
 
 export const router = createBrowserRouter(
     [

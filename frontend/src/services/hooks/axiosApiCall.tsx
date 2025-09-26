@@ -19,9 +19,9 @@ import { t } from "i18next";
 import { useState } from "react";
 import axios, { type AxiosRequestConfig } from "axios";
 
-import { BACKEND_URL } from "../config.tsx";
-import { useCustom } from "../custom/customContext.tsx";
-import { showToast } from "../../components/ToastProvider.tsx";
+import { BACKEND_URL } from "../config";
+import { useCustom } from "../custom/customContext";
+import { showToast } from "../../components/ToastProvider";
 
 export function axiosApiCall() {
     const custom = useCustom();

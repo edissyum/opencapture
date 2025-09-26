@@ -31,6 +31,8 @@ import {
     Settings
 } from "lucide-react";
 
+import { LoginImage } from "./LoginImage";
+
 export default function Sidebar() {
     const navigate = useNavigate();
 
@@ -50,9 +52,9 @@ export default function Sidebar() {
     return (
         <aside
             className={ `min-h-screen px-3 py-2 flex flex-col border-r-2 border-r-(--border-secondary) transition-all duration-300 ${ collapsed ? "w-18" : "w-70" }` }>
-            <div className={ `flex items-center min-h-18 gap-3 mb-3 ${ collapsed ? "p-2" : "p-4" }` }>
+            <div className={ `flex items-center max-w-10/12 min-h-18 max-h-30 gap-3 mb-3 ${ collapsed ? "p-2" : "p-4" }` }>
                 { !collapsed && (
-                    <img src={ "/src/assets/imgs/login_image.svg" } alt="Sidebar image" className='w-full h-full'/>
+                    <LoginImage className="mx-auto"></LoginImage>
                 ) }
                 <span onClick={ () => setCollapsed(!collapsed) }
                       className="mb-2 font-xl cursor-pointer">

@@ -13,7 +13,9 @@
         "theme": "Thème",
         "theme_description": "Sélectionnez le thème de l'interface utilisateur par défaut",
         "app_image": "Image de l'application",
-        "app_image_description": "Sélectionnez l'image affichée sur la page de connexion et dans le menu latéral"
+        "app_image_description": "Sélectionnez l'image affichée sur la page de connexion et dans le menu latéral",
+        "application_lang": "Langue de l'application",
+        "application_lang_description": "Modifier la langue de l'interface utilisateur"
     },
     "ERROR": {
         "admin_password_alert": "Vous utilisez encore le mot de passe par défaut du compte admin. Veuillez le changer au plus vite pour des questions de sécurité",

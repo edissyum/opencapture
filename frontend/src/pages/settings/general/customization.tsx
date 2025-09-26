@@ -14,13 +14,15 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { t } from "i18next";
 import { useEffect, useState } from "react";
 
 import UploadDropzone from "../../../components/upload/Dropzone";
 import { CheckOverlay } from "../../../components/CheckOverlay";
 import { ThemeSelection } from "../../../components/onboarding/ThemeSelection";
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall.tsx";
+
+import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { LangSelection } from "../../../components/onboarding/LangSelection.tsx";
+import { useTranslation } from "react-i18next";
 
 function b64toBlob(b64Data: string) {
     const byteString = atob(b64Data.split(',')[1]);
@@ -35,7 +37,8 @@ function b64toBlob(b64Data: string) {
 }
 
 export function SettingsGeneralCustomization() {
-    const { get } = axiosApiCall();
+    const { t } = useTranslation();
+    const { get, put } = axiosApiCall();
 
     const [files, setFiles] = useState<File[]>([]);
     const [loading, setLoading] = useState(false);
@@ -62,6 +65,13 @@ export function SettingsGeneralCustomization() {
             const currentAppImage = localStorage.getItem('appImage');
             if (currentAppImage) {
                 const imageFile = b64toBlob(currentAppImage);
+
+                // Avoid adding duplicate of the same default Open-Capture image
+                if (files.length > 0) {
+                    if (imageFile.size === files[0].size && imageFile.type === files[0].type) {
+                        return;
+                    }
+                }
                 setFiles(() => [imageFile, ...files]);
                 return;
             }
@@ -70,10 +80,11 @@ export function SettingsGeneralCustomization() {
                 try {
                     setLoading(true);
                     const response = await get('config/getLoginImage');
-                    console.log(response)
+
                     if (cancelled) return;
 
                     const imageFile = b64toBlob('data:image/svg-xml;base64,' + response)
+                    console.log(imageFile);
                     setFiles(() => [imageFile, ...files]);
                 } catch (e) {
                     setLoading(false);
@@ -86,7 +97,9 @@ export function SettingsGeneralCustomization() {
         }
 
         if (files.length <= 1) {
-            fetchImage().then(() => setLoading(false));
+            fetchImage().then(() => {
+                setLoading(false)
+            });
         }
 
         return () => {
@@ -94,44 +107,53 @@ export function SettingsGeneralCustomization() {
         };
     }, [get]);
 
+    const storeAndUpdateAppImage = (file: File) => {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+            const b64Data = reader.result as string;
+            localStorage.setItem('appImage', b64Data);
+
+            put('config/updateLoginImage', {image_content: b64Data}).then();
+            window.dispatchEvent(new Event('appImageChanged'))
+        };
+        reader.readAsDataURL(file);
+    }
+
     const handleSelectedIndex = (index: number) => {
         setSelectedIndex(index);
+
+        storeAndUpdateAppImage(files[index]);
     };
 
     const handleNewAppImage = (file: File) => {
         if (!file) return;
-
         setFiles([file, ...files]);
-
-        const reader = new FileReader();
-        reader.onload = () => {
-            localStorage.setItem('appImage', reader.result as string);
-        };
-        reader.readAsDataURL(file);
+        storeAndUpdateAppImage(file);
     }
 
     return (
         <div>
             <h2>{ t('CUSTOMIZATION.theme') }</h2>
             <p className='text-(--text-secondary)'>{ t('CUSTOMIZATION.theme_description') }</p>
-            <div className="flex mb-6">
+            <div className="flex">
                 <ThemeSelection />
             </div>
 
-            <hr className='text-(--border-secondary)'/>
+            <hr className='my-6 text-(--border-secondary)'/>
 
-            <h2 className="mt-6">{ t('CUSTOMIZATION.app_image') }</h2>
+            <h2>{ t('CUSTOMIZATION.app_image') }</h2>
             <p className='text-(--text-secondary) mb-4'>{ t('CUSTOMIZATION.app_image_description') }</p>
             <div className="w-1/2">
                 <UploadDropzone
-                    accept={{"image/*": [".jpg", ".jpeg", ".png"]}}
+                    accept={{"image/*": [".jpg", ".jpeg", ".png", ".svg"]}}
                     showPreview={false}
                     maxFiles={1}
                     maxSize={2 * 1024 * 1024}
                     onFilesAccepted={(files) => handleNewAppImage(files[0])}
                 />
             </div>
-            <div className="flex items-start gap-4 h-40">
+            <div className="flex items-start gap-4 h-40 mb-12">
                 {!loading && files.length !== 0 && (
                     <>
                         {
@@ -145,6 +167,14 @@ export function SettingsGeneralCustomization() {
                         }
                     </>
                 )}
+            </div>
+
+            <hr className='my-6 text-(--border-secondary)'/>
+
+            <h2>{ t('CUSTOMIZATION.application_lang') }</h2>
+            <p className='text-(--text-secondary)'>{ t('CUSTOMIZATION.application_lang_description') }</p>
+            <div className="flex mt-4">
+                 <LangSelection />
             </div>
         </div>
     );

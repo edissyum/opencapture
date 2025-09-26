@@ -19,7 +19,7 @@ import { t } from "i18next";
 import { useState } from "react";
 import { ChevronsUpDown, CloudUpload, Package } from "lucide-react";
 
-import { Button } from "./Button.tsx";
+import { Button } from "./Button";
 
 
 export default function TopBar() {
@@ -46,7 +46,7 @@ export default function TopBar() {
             setImg(optionInfo['img'])
         }
         localStorage.setItem('selectedModule', option);
-        window.dispatchEvent(new Event("local-storage"));
+        window.dispatchEvent(new Event("updateModule"));
     };
 
     const storedModule = localStorage.getItem('selectedModule');
