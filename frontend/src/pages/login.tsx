@@ -15,7 +15,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getI18n, useTranslation } from "react-i18next";
 
@@ -30,12 +30,29 @@ import { LoginImage } from "../components/LoginImage";
 
 export function Login() {
     const [loadingLogin, setLoadingLogin] = useState(false);
+    const [loginMessage, setLoginMessage] = useState<string>('');
 
     const { t } = useTranslation();
-    const { post } = axiosApiCall();
+    const { get, post } = axiosApiCall();
     const navigate = useNavigate();
 
     const custom = useCustom();
+
+    useEffect(() => {
+        async function getLoginMessage() {
+            if (!loginMessage) {
+                await get("/config/getConfigurationNoAuth/loginMessage").then((response) => {
+                    console.log(response);
+                    if (response && response.configuration) {
+                        setLoginMessage(response.configuration[0]?.data.value || t('AUTH.welcome'));
+                    } else {
+                        setLoginMessage(t('AUTH.welcome'));
+                    }
+                });
+            }
+        }
+        getLoginMessage().then();
+    }, [loginMessage]);
 
     const { handleSubmit, errors, handleChange } = useFormValues(async (values) => {
         try {
@@ -80,22 +97,27 @@ export function Login() {
                 <h2 className="mt-10 text-center text-2xl/9 tracking-tight text-(--text-primary)">
                     { t("GLOBAL.login") }
                 </h2>
+                <p className="mt-2 text-center text-sm text-(--text-secondary)" dangerouslySetInnerHTML={{ __html: loginMessage }}/>
             </div>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+                <form onSubmit={ handleSubmit } className="space-y-6" noValidate>
                     <div className="mt-2">
-                        <Input id="username" type="text" name="username" required error={errors.username} onChange={handleChange} label={ t('USER.username') }/>
+                        <Input id="username" type="text" name="username" required error={ errors.username }
+                               onChange={ handleChange } label={ t('USER.username') }/>
                     </div>
                     <div>
-                        <Input id="password" type="password" name="password" required error={errors.password} onChange={handleChange} label={ t('USER.password') }/>
+                        <Input id="password" type="password" name="password" required error={ errors.password }
+                               onChange={ handleChange } label={ t('USER.password') }/>
                     </div>
 
                     <div className="text-center">
-                        <Button disabled={!custom} loading={loadingLogin} type="submit" size='md' className="w-full">
+                        <Button disabled={ !custom } loading={ loadingLogin } type="submit" size='md'
+                                className="w-full">
                             { t('AUTH.login') }
                         </Button>
-                        {!custom && <p className="mt-2 text-sm text-(--text-secondary)">{ t('ERROR.custom_not_provided') }</p>}
+                        { !custom &&
+                            <p className="mt-2 text-sm text-(--text-secondary)">{ t('ERROR.custom_not_provided') }</p> }
                     </div>
                 </form>
             </div>

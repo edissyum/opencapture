@@ -21,7 +21,11 @@ import { useEffect, useState } from "react";
 import { CheckOverlay } from "../CheckOverlay";
 import { applyTheme } from "../../services/theme";
 
-export function ThemeSelection() {
+interface ThemeSelectionProps {
+    onThemeChange?: (lang: string) => void;
+}
+
+export function ThemeSelection({ onThemeChange }: ThemeSelectionProps) {
     const options = [
         {id: 'dark', label: t('ONBOARD.dark_mode')},
         {id: 'system', label: t('ONBOARD.system')},
@@ -36,6 +40,7 @@ export function ThemeSelection() {
         if (selectedTheme) {
             localStorage.setItem('theme', selectedTheme);
             applyTheme();
+            onThemeChange?.(selectedTheme);
         }
     }, [selectedTheme]);
 

@@ -25,7 +25,6 @@ interface LangSelectionProps {
 }
 
 export function LangSelection({refresh = true}: LangSelectionProps) {
-    console.log(refresh)
     const { i18n } = useTranslation();
 
     const options = [

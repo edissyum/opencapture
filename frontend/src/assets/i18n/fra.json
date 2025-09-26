@@ -10,12 +10,16 @@
         "session_expired": "Votre session à expirée, veuillez vous reconnecter"
     },
     "CUSTOMIZATION": {
-        "theme": "Thème",
+        "theme": "Thème de l'application",
         "theme_description": "Sélectionnez le thème de l'interface utilisateur par défaut",
         "app_image": "Image de l'application",
         "app_image_description": "Sélectionnez l'image affichée sur la page de connexion et dans le menu latéral",
         "application_lang": "Langue de l'application",
-        "application_lang_description": "Modifier la langue de l'interface utilisateur"
+        "application_lang_description": "Modifier la langue de l'interface utilisateur",
+        "login_message": "Message de bienvenue",
+        "login_message_description": "Court message affiché sur la page de connexion",
+        "login_message_updated": "Message de bienvenue mis à jour avec succès",
+        "save_login_message": "Sauvegarder le message de bienvenue"
     },
     "ERROR": {
         "admin_password_alert": "Vous utilisez encore le mot de passe par défaut du compte admin. Veuillez le changer au plus vite pour des questions de sécurité",

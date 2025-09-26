@@ -14,6 +14,8 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { useTranslation } from "react-i18next";
+import { Editor } from "@tinymce/tinymce-react";
 import { useEffect, useState } from "react";
 
 import UploadDropzone from "../../../components/upload/Dropzone";
@@ -21,8 +23,9 @@ import { CheckOverlay } from "../../../components/CheckOverlay";
 import { ThemeSelection } from "../../../components/onboarding/ThemeSelection";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
-import { LangSelection } from "../../../components/onboarding/LangSelection.tsx";
-import { useTranslation } from "react-i18next";
+import { LangSelection } from "../../../components/onboarding/LangSelection";
+import { Button } from "../../../components/Button.tsx";
+import { showToast } from "../../../components/ToastProvider.tsx";
 
 function b64toBlob(b64Data: string) {
     const byteString = atob(b64Data.split(',')[1]);
@@ -41,7 +44,9 @@ export function SettingsGeneralCustomization() {
     const { get, put } = axiosApiCall();
 
     const [files, setFiles] = useState<File[]>([]);
+    const [editorKey, setEditorKey] = useState<number>(0);
     const [loading, setLoading] = useState(false);
+    const [loginMessage, setLoginMessage] = useState<string>('');
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
     const defaultImage = "/src/assets/imgs/login_image.svg"
@@ -107,6 +112,20 @@ export function SettingsGeneralCustomization() {
         };
     }, [get]);
 
+    useEffect(() => {
+        let cancelled = false;
+
+        if (loginMessage !== '') return;
+
+        if (cancelled) return;
+
+        get('config/getConfigurationNoAuth/loginMessage').then((data: any) => {
+            if (data.configuration.length === 1) {
+                setLoginMessage(data.configuration[0].data.value);
+            }
+        });
+    }, [loginMessage])
+
     const storeAndUpdateAppImage = (file: File) => {
         const reader = new FileReader();
 
@@ -114,7 +133,7 @@ export function SettingsGeneralCustomization() {
             const b64Data = reader.result as string;
             localStorage.setItem('appImage', b64Data);
 
-            put('config/updateLoginImage', {image_content: b64Data}).then();
+            put('config/updateLoginImage', { image_content: b64Data }).then();
             window.dispatchEvent(new Event('appImageChanged'))
         };
         reader.readAsDataURL(file);
@@ -126,10 +145,22 @@ export function SettingsGeneralCustomization() {
         storeAndUpdateAppImage(files[index]);
     };
 
+    const handleThemeChange = (theme: string) => {
+        if (theme) {
+            setEditorKey(prevKey => prevKey + 1);
+        }
+    }
+
     const handleNewAppImage = (file: File) => {
         if (!file) return;
         setFiles([file, ...files]);
         storeAndUpdateAppImage(file);
+    }
+
+    const handleUpdateLoginMessage = () => {
+        put('config/updateConfiguration/loginMessage', { args: { value: loginMessage } }).then(() => {
+            showToast(t('CUSTOMIZATION.login_message_updated'));
+        });
     }
 
     return (
@@ -137,45 +168,95 @@ export function SettingsGeneralCustomization() {
             <h2>{ t('CUSTOMIZATION.theme') }</h2>
             <p className='text-(--text-secondary)'>{ t('CUSTOMIZATION.theme_description') }</p>
             <div className="flex">
-                <ThemeSelection />
+                <ThemeSelection onThemeChange={handleThemeChange}/>
             </div>
+            <hr className='my-6 text-(--border-secondary)'/>
 
+            <h2>{ t('CUSTOMIZATION.application_lang') }</h2>
+            <p className='text-(--text-secondary)'>{ t('CUSTOMIZATION.application_lang_description') }</p>
+            <div className="flex mt-4">
+                <LangSelection />
+            </div>
             <hr className='my-6 text-(--border-secondary)'/>
 
             <h2>{ t('CUSTOMIZATION.app_image') }</h2>
             <p className='text-(--text-secondary) mb-4'>{ t('CUSTOMIZATION.app_image_description') }</p>
             <div className="w-1/2">
                 <UploadDropzone
-                    accept={{"image/*": [".jpg", ".jpeg", ".png", ".svg"]}}
-                    showPreview={false}
-                    maxFiles={1}
-                    maxSize={2 * 1024 * 1024}
-                    onFilesAccepted={(files) => handleNewAppImage(files[0])}
+                    accept={ { "image/*": [".jpg", ".jpeg", ".png", ".svg"] } }
+                    showPreview={ false }
+                    maxFiles={ 1 }
+                    maxSize={ 2 * 1024 * 1024 }
+                    onFilesAccepted={ (files) => handleNewAppImage(files[0]) }
                 />
             </div>
             <div className="flex items-start gap-4 h-40 mb-12">
-                {!loading && files.length !== 0 && (
+                { !loading && files.length !== 0 && (
                     <>
                         {
                             files.map((file, index) => (
-                                <div key={index} onClick={() => handleSelectedIndex(index)}
+                                <div key={ index } onClick={ () => handleSelectedIndex(index) }
                                      className="h-full grow-0 justify-center items-center cursor-pointer relative mt-4 border-(--border-primary) border rounded-lg p-4">
-                                    <CheckOverlay show={selectedIndex === index}/>
-                                    <img className="h-full" src={URL.createObjectURL(file)} alt={file.name}/>
+                                    <CheckOverlay show={ selectedIndex === index }/>
+                                    <img className="h-full" src={ URL.createObjectURL(file) } alt={ file.name }/>
                                 </div>
                             ))
                         }
                     </>
-                )}
+                ) }
             </div>
-
             <hr className='my-6 text-(--border-secondary)'/>
 
-            <h2>{ t('CUSTOMIZATION.application_lang') }</h2>
-            <p className='text-(--text-secondary)'>{ t('CUSTOMIZATION.application_lang_description') }</p>
-            <div className="flex mt-4">
-                 <LangSelection />
-            </div>
+            <h2>{ t('CUSTOMIZATION.login_message') }</h2>
+            <p className='text-(--text-secondary) mb-4'>{ t('CUSTOMIZATION.login_message_description') }</p>
+            <Editor
+                key={editorKey}
+                licenseKey="gpl"
+                initialValue={ loginMessage }
+                tinymceScriptSrc='/tinymce/tinymce.min.js'
+                onEditorChange={(newContent) => {
+                    setLoginMessage(newContent)
+                }}
+                init={ {
+                    height: 300,
+                    width: '50%',
+                    resize: false,
+                    menubar: false,
+                    skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
+                    content_css: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
+                    branding: false,
+                    promotion: false,
+                    language: 'fr_FR',
+                    language_url: '/src/assets/i18n/tinymce/langs/fr_FR.js',
+                    toolbar: 'undo redo | formatselect | bold italic forecolor backcolor | link | alignleft aligncenter alignright alignjustify',
+                    plugins: 'lists link image table',
+                    color_map: [
+                        '#1FAA60', 'Open-Capture Green',
+                        '#E8E8E8', 'Open-Capture Light Gray',
+                        '#91929B', 'Open-Capture Gray',
+                        '#ECCAFA', 'Light Purple',
+                        '#C2E0F4', 'Light Blue',
+
+                        '#2DC26B', 'Green',
+                        '#F1C40F', 'Yellow',
+                        '#E03E2D', 'Red',
+                        '#B96AD9', 'Purple',
+                        '#3598DB', 'Blue',
+
+                        '#169179', 'Dark Turquoise',
+                        '#E67E23', 'Orange',
+                        '#BA372A', 'Dark Red',
+                        '#843FA1', 'Dark Purple',
+                        '#236FA1', 'Dark Blue',
+
+                        '#000000', 'Black',
+                        '#ffffff', 'White'
+                    ]
+                } }
+            />
+            <Button className="mt-4" onClick={ () => handleUpdateLoginMessage() }>
+                { t('CUSTOMIZATION.save_login_message') }
+            </Button>
         </div>
     );
 }
