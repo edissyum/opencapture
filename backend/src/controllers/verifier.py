@@ -18,6 +18,7 @@
 import os
 import uuid
 import json
+import zeep
 import magic
 import base64
 import secrets
@@ -30,6 +31,7 @@ import importlib
 import pandas as pd
 from PIL import Image
 from flask_babel import gettext
+from zeep import Client, exceptions
 from .. import verifier_exports
 from ..classes.Files import Files
 from werkzeug.datastructures import FileStorage
@@ -556,6 +558,25 @@ def export_opencrm(document_id, data):
     return None
 
 
+def export_cmis(document_id, data):
+    if 'database' in current_context and 'log' in current_context:
+        log = current_context.log
+        database = current_context.database
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
+        database = _vars[0]
+        docservers = _vars[9]
+
+    log.database = database
+    document_info, error = verifier.get_document_by_id({'document_id': document_id})
+    if not error:
+        return verifier_exports.export_cmis(data['data'], document_info, log, database, docservers, data['compress_type'], data['ocrise'])
+    return None
+
+
 def export_xml(document_id, data):
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
 
@@ -805,6 +826,109 @@ def return_rotated_content(file_type, image):
                 content = file.read()
             os.remove(tf.name + '.jpg')
     return content
+
+
+def get_token_insee():
+    if 'config' in current_context:
+        config = current_context.config
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        config = _vars[1]
+
+    credentials = base64.b64encode(
+        (config['API']['siret-consumer'] + ':' + config['API']['siret-secret']).encode('utf-8')).decode('utf-8')
+
+    try:
+        res = requests.post(config['API']['siret-url-token'], data={'grant_type': 'client_credentials'},
+                            headers={"Authorization": f"Basic {credentials}"}, timeout=5)
+    except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
+        return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
+
+    if 'Maintenance - INSEE' in res.text or res.status_code != 200:
+        return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
+    else:
+        return json.loads(res.text)['access_token'], 200
+
+
+def verify_siren(token, siren, full=False):
+    if 'config' in current_context:
+        config = current_context.config
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        config = _vars[1]
+
+    try:
+        res = requests.get(config['API']['siren-url'] + siren,
+                           headers={"Authorization": f"Bearer {token}", "Accept": "application/json"}, timeout=5)
+    except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
+        return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
+
+    _return = json.loads(res.text)
+
+    if 'header' not in res.text:
+        return _return['fault']['message'], 201
+    else:
+        if full:
+            return _return, 200
+        return _return['header']['message'], _return['header']['statut']
+
+
+def verify_siret(token, siret, full=False):
+    if 'config' in current_context and 'log' in current_context:
+        log = current_context.log
+        config = current_context.config
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        log = _vars[5]
+        config = _vars[1]
+
+    try:
+        res = requests.get(config['API']['siret-url'] + siret,
+                           headers={"Authorization": f"Bearer {token}", "Accept": "application/json"}, timeout=5)
+    except (requests.exceptions.SSLError, requests.exceptions.ConnectionError) as _e:
+        log.error(gettext('API_INSEE_ERROR_CONNEXION') + ' : ' + str(_e))
+        return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
+
+    _return = json.loads(res.text)
+    if 'header' not in res.text:
+        return _return['fault']['message'], 201
+    else:
+        if full:
+            return _return, 200
+        return _return['header']['message'], _return['header']['statut']
+
+
+def verify_vat_number(vat_number, full=False):
+    if 'config' in current_context and 'log' in current_context:
+        log = current_context.log
+        config = current_context.config
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        config = _vars[1]
+        log = _vars[5]
+    url = config['API']['tva-url']
+    country_code = vat_number[:2]
+    vat_number = vat_number[2:]
+
+    logging.getLogger('zeep').setLevel(logging.ERROR)
+    try:
+        client = Client(url)
+        res = client.service.checkVat(country_code, vat_number)
+        text = res['valid']
+        if res['valid'] is False:
+            text = gettext('VAT_NOT_VALID')
+            return text, 400
+        if full:
+            return res, 200
+        return text, 200
+    except (exceptions.Fault, requests.exceptions.SSLError, requests.exceptions.ConnectionError,
+            zeep.exceptions.XMLSyntaxError) as _e:
+        log.error(gettext('VAT_API_ERROR') + ' : ' + str(_e))
+        return gettext('VAT_API_ERROR'), 201
 
 
 def get_totals(status, user_id, form_id):

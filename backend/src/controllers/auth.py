@@ -441,7 +441,7 @@ def login_with_token(token, lang):
         return jsonify({"errors": gettext("JWT_ERROR"), "message": error_message}), code
 
     returned_user = None
-    if isinstance(decoded_token['sub'], str):
+    if isinstance(decoded_token['sub'], str) and not decoded_token['sub'].isnumeric():
         user_id = user.get_user_by_username({
             'select': ['users.id'],
             'username': decoded_token['sub']

@@ -499,6 +499,12 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     'city': supplier[2]['city'],
                     'country': supplier[2]['country']
                 })
+
+                if 'civility' in supplier[2] and supplier[2]['civility']:
+                    datas['datas'].update({
+                        'civility': int(supplier[2]['civility'])
+                    })
+
                 if supplier[1]:
                     datas['positions'].update({
                         supplier[4]: files.reformat_positions(supplier[1])

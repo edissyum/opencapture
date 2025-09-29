@@ -15,6 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+from ..models import user
 from flask_babel import gettext
 from ..functions import rest_validator
 from ..controllers import auth, privileges
@@ -82,8 +83,8 @@ def generate_auth_token():
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/generateAuthToken'}), 403
 
     check, message = rest_validator(request.json, [
-        {'id': 'id', 'type': int, 'mandatory': True},
         {'id': 'token', 'type': str, 'mandatory': False},
+        {'id': 'username', 'type': str, 'mandatory': True},
         {'id': 'expiration', 'type': int, 'mandatory': True}
     ])
     if not check:
@@ -97,7 +98,11 @@ def generate_auth_token():
         if code == 200:
             return make_response({'token': request.json['token']}, 200)
 
-    res = auth.generate_token(request.json['id'], request.json['expiration'])
+    user_id = user.get_user_by_username({"select": ['users.id'], "username": request.json['username']})
+    if not user_id[0]:
+        return make_response({'errors': gettext('USER_NOT_FOUND'), 'message': 'auth/generateAuthToken'}, 400)
+
+    res = auth.generate_token(user_id[0]['id'], request.json['expiration'])
     return make_response({'token': res[0]}, res[1])
 
 

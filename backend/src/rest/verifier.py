@@ -360,6 +360,29 @@ def export_opencrm(document_id):
     return make_response(jsonify(res[0]), res[1])
 
 
+@bp.route('verifier/documents/<int:document_id>/export_cmis', methods=['POST'])
+@auth.token_required
+def export_cmis(document_id):
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                            'message': f'/verifier/documents/{document_id}/export_cmis'}), 403
+
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'data', 'type': dict, 'mandatory': True},
+        {'id': 'module', 'type': str, 'mandatory': True},
+        {'id': 'ocrise', 'type': bool, 'mandatory': False},
+        {'id': 'compress_type', 'type': str, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+    res = verifier.export_cmis(document_id, request.json['args'])
+    return make_response(jsonify(res[0]), res[1])
+
 @bp.route('verifier/documents/<int:document_id>/outputScript', methods=['POST'])
 @auth.token_required
 def launch_output_script(document_id):
@@ -610,6 +633,82 @@ def get_original_doc_by_document_id(document_id):
     if file_content is None:
         return make_response({'errors': gettext('DOWNLOAD_FILE'), 'message': gettext('FILE_NOT_FOUND')}, 404)
     return make_response({'file': str(base64.b64encode(file_content).decode('utf-8')), 'mime': mime}), 200
+
+
+@bp.route('verifier/getTokenINSEE', methods=['GET'])
+@auth.token_required
+def get_token_insee():
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/getTokenINSEE'}), 403
+
+    token = verifier.get_token_insee()
+    return make_response({'token': token[0]}, token[1])
+
+
+@bp.route('verifier/verifySIREN', methods=['POST'])
+@auth.token_required
+def verify_siren():
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/verifySIREN'}), 403
+
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'siren', 'type': str, 'mandatory': True},
+        {'id': 'token', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    status = verifier.verify_siren(request.json['token'], request.json['siren'])
+    return make_response({'status': status[0]}, status[1])
+
+
+@bp.route('verifier/verifySIRET', methods=['POST'])
+@auth.token_required
+def verify_siret():
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/verifySIRET'}), 403
+
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'siret', 'type': str, 'mandatory': True},
+        {'id': 'token', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    status = verifier.verify_siret(request.json['token'], request.json['siret'])
+    return make_response({'status': status[0]}, status[1])
+
+
+@bp.route('verifier/verifyVATNumber', methods=['POST'])
+@auth.token_required
+def verify_vat_number():
+    if 'skip' not in request.environ or not request.environ['skip']:
+        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/verifyVATNumber'}), 403
+
+    check, message = rest_validator(request.json['args'], [
+        {'id': 'vat_number', 'type': str, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    status = verifier.verify_vat_number(request.json['vat_number'])
+    return make_response({'status': status[0]}, status[1])
 
 
 @bp.route('verifier/getUnseen/user/<int:user_id>', methods=['GET'])

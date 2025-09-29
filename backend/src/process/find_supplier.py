@@ -206,7 +206,13 @@ class FindSupplier:
         supplier = self.process(self.regex['email'], text_as_string, 'email')
         if supplier:
             self.regenerate_ocr()
-            self.log.info('Third-party account found : ' + supplier[0]['name'] + ' using EMAIL : ' + supplier[0]['email'])
+            if 'name' not in supplier[0] or not supplier[0]['name']:
+                name = supplier[0]['lastname'] if 'lastname' in supplier[0] and supplier[0]['lastname'] else ''
+                name += ' ' + supplier[0]['firstname'] if 'firstname' in supplier[0] and supplier[0]['firstname'] else ''
+                supplier[0]['name'] = name.strip()
+            else:
+                name = supplier[0]['name']
+            self.log.info('Third-party account found : ' + name + ' using EMAIL : ' + supplier[0]['email'])
             line = supplier[1]
             if text_as_string:
                 position = (('', ''), ('', ''))

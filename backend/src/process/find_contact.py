@@ -15,9 +15,10 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import json
 import torch
-import warnings
 import transformers
+import qwen_vl_utils
 from flask import current_app
 from ..controllers import accounts
 
@@ -34,38 +35,68 @@ class FindContact:
         self.customer_id = customer_id
 
     def run_inference(self):
-        warnings.filterwarnings('ignore')
-        transformers.logging.set_verbosity_error()
+        model_path = '/var/www/html/opencapture/instance/artificial_intelligence/contact/qwen/'
+        model = transformers.Qwen2VLForConditionalGeneration.from_pretrained(
+            model_path, dtype=torch.float32, device_map=None
+        )
+        model = torch.compile(model)
+        model.eval()
 
-        processor = transformers.DonutProcessor.from_pretrained(current_app.config['CONTACT_MODEL'], local_files_only=True)
-        model = transformers.VisionEncoderDecoderModel.from_pretrained(current_app.config['CONTACT_MODEL'], local_files_only=True)
+        processor = transformers.AutoProcessor.from_pretrained(
+            model_path,
+            use_fast=True,
+            min_pixels=512 * 28 * 28,
+            max_pixels=512 * 28 * 28
+        )
 
-        pixel_values = processor(self.image.convert('RGB'), random_padding="test", return_tensors="pt").pixel_values.squeeze()
-        pixel_values = torch.tensor(pixel_values).unsqueeze(0)
-        task_prompt = "<s>"
-        decoder_input_ids = processor.tokenizer(task_prompt, add_special_tokens=False, return_tensors="pt").input_ids
+        with torch.inference_mode():
+            with torch.no_grad():
+                formatted_data = [
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "image", "image": self.image.convert('RGB')},
+                            {"type": "text", "text": "Extract sender's data in a python dictionary"},
+                        ],
+                    }
+                ]
 
-        device = "cuda" if torch.cuda.is_available() else "cpu"
+                chat_text = processor.apply_chat_template(
+                    formatted_data,
+                    tokenize=False,
+                    add_generation_prompt=True
+                )
+                model_inputs = processor(
+                    padding=True,
+                    text=[chat_text],
+                    return_tensors="pt",
+                    images=[qwen_vl_utils.process_vision_info(formatted_data)[0]]
+                )
 
-        try:
-            outputs = model.generate(
-                pixel_values.to(device),
-                decoder_input_ids=decoder_input_ids.to(device),
-                max_length=model.decoder.config.max_position_embeddings,
-                early_stopping=True,
-                pad_token_id=processor.tokenizer.pad_token_id,
-                eos_token_id=processor.tokenizer.eos_token_id,
-                use_cache=True,
-                num_beams=1,
-                bad_words_ids=[[processor.tokenizer.unk_token_id]],
-                return_dict_in_generate=True
-            )
-            prediction = processor.batch_decode(outputs.sequences)[0]
-            prediction = processor.token2json(prediction)
-        except RuntimeError:
-            self.log.info('Error during contact model inference, please check the model or the machine')
-            prediction = {}
-        return prediction
+                input_ids = model_inputs["input_ids"].to(model.device)
+                generated_ids = model.generate(
+                    input_ids=input_ids,
+                    max_new_tokens=256,
+                    pixel_values=model_inputs["pixel_values"].to(model.device),
+                    attention_mask=model_inputs["attention_mask"].to(model.device),
+                    image_grid_thw=model_inputs["image_grid_thw"].to(model.device)
+                )
+
+                generated_ids_trimmed = [
+                    out_ids[len(in_ids):]
+                    for in_ids, out_ids in zip(input_ids, generated_ids)
+                ]
+                generated_texts = processor.batch_decode(
+                    generated_ids_trimmed,
+                    skip_special_tokens=True,
+                    clean_up_tokenization_spaces=False
+                )
+
+                data = {}
+                if generated_texts and isinstance(generated_texts[0], str):
+                    data = json.loads(generated_texts[0])
+                return data
+
 
     def search_contact(self, data_name, data_value):
         where = f"LOWER({data_name}) LIKE LOWER(%s)"
@@ -96,6 +127,10 @@ class FindContact:
 
 
     def run(self):
+        if not current_app.config['CONTACT_MODEL']:
+            self.log.info('No contact model configured, skipping contact search/creation')
+            return None
+
         contact_data = self.run_inference()
         if 'email' in contact_data:
             contact = self.search_contact('email', contact_data['email'])
@@ -156,3 +191,4 @@ class FindContact:
                 contact_data['supplier_id'] = contact['id']
                 return ['', {}, contact_data, '']
         return None
+
