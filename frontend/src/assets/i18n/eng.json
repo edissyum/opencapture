@@ -7,7 +7,8 @@
         "authenticated": "You have successfully authenticated",
         "field_required": "is required",
         "login": "Log in",
-        "session_expired": "Your session has expired, please log in again"
+        "session_expired": "Your session has expired, please log in again",
+        "welcome": ""
     },
     "CUSTOMIZATION": {
         "theme": "Application Theme",
@@ -101,5 +102,16 @@
         "drop_files_here_one": "Drop file here",
         "drop_files_here_other": "Drop files here",
         "file_too_large": "File is too large. Maximum allowed size is {{maxSize}} MB"
+    },
+    "SPLITTER": {
+        "list_info": ""
+    },
+    "VERIFIER": {
+        "creation_date": "Creation date",
+        "form": "Form",
+        "id": "Identifier",
+        "list_info": "",
+        "name": "Name",
+        "status": "Status"
     }
 }

@@ -7,7 +7,8 @@
         "authenticated": "Te has autenticado con éxito",
         "field_required": "es obligatorio",
         "login": "Conectar",
-        "session_expired": "Su sesión expiró, vuelva a conectar"
+        "session_expired": "Su sesión expiró, vuelva a conectar",
+        "welcome": ""
     },
     "CUSTOMIZATION": {
         "theme": "Tema de la aplicación",
@@ -102,5 +103,16 @@
         "drop_files_here_one": "Suelta el archivo aquí",
         "drop_files_here_other": "Suelta los archivos aquí",
         "file_too_large": "El archivo es demasiado grande. El tamaño máximo permitido es {{maxSize}} MB"
+    },
+    "SPLITTER": {
+        "list_info": ""
+    },
+    "VERIFIER": {
+        "creation_date": "Fecha de creación",
+        "form": "Formulario",
+        "id": "Identificador",
+        "list_info": "",
+        "name": "Nombre",
+        "status": "Estado"
     }
 }

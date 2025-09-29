@@ -1,0 +1,51 @@
+/** This file is part of Open-Capture.
+
+ Open-Capture is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+
+ @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
+
+import { useState } from "react";
+import { Check } from "lucide-react";
+
+type CheckboxProps = {
+    checked?: boolean;
+    onChange?: (checked: boolean) => void;
+    label?: string;
+};
+
+export function Checkbox({ checked = false, onChange, label }: CheckboxProps) {
+    const [isChecked, setIsChecked] = useState(checked);
+
+    const toggle = () => {
+        const newValue = !isChecked;
+        setIsChecked(newValue);
+        if (onChange) onChange(newValue);
+    };
+
+    return (
+        <label className="inline-flex items-center cursor-pointer select-none">
+            <div
+                onClick={toggle}
+                className={`w-5 h-5 border-1 border-(--border-secondary) rounded flex items-center justify-center
+                    ${isChecked ? "bg-(--color-primary) border-(--color-primary)" : "bg-white"}
+                    transition-all
+                    hover:border-(--color-primary)
+                `}
+            >
+                {isChecked && <Check className="w-5 h-5 text-white" />}
+            </div>
+            {label && <span className="ml-2 text-(--text-secondary)">{label}</span>}
+        </label>
+    );
+}

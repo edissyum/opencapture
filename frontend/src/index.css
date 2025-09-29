@@ -17,6 +17,7 @@
 
 @import "tailwindcss";
 @import "./assets/tailwind-theme.css";
+@import 'react-loading-skeleton/dist/skeleton.css';
 
 @font-face{
     font-family: "Montserrat";

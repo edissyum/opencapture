@@ -7,7 +7,8 @@
         "authenticated": "Vous vous êtes authentifié avec succès",
         "field_required": "est requis",
         "login": "Se connecter",
-        "session_expired": "Votre session à expirée, veuillez vous reconnecter"
+        "session_expired": "Votre session à expirée, veuillez vous reconnecter",
+        "welcome": ""
     },
     "CUSTOMIZATION": {
         "theme": "Thème de l'application",
@@ -102,5 +103,16 @@
     "USER": {
         "password": "Mot de passe",
         "username": "Nom d'utilisateur"
+    },
+    "SPLITTER": {
+        "list_info": ""
+    },
+    "VERIFIER": {
+        "creation_date": "Date de création",
+        "form": "Formulaire",
+        "id": "Identifiant",
+        "list_info": "",
+        "name": "Nom",
+        "status": "Statut"
     }
 }

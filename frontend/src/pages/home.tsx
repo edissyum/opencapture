@@ -16,13 +16,22 @@
 
 import { useEffect, useState } from "react";
 
+import { VerifierListPage } from "./verifier/list";
+import { SplitterListPage } from "./splitter/list";
+
 export function HomePage() {
+    const modules: any = {
+        verifier: VerifierListPage,
+        splitter: SplitterListPage
+    }
     const [module, setModule] = useState("");
 
-    const selectedModule = localStorage.getItem('selectedModule');
+    const selectedModule = localStorage.getItem('selectedModule') || 'verifier';
     if (selectedModule && selectedModule !== module) {
         setModule(selectedModule);
     }
+
+    const ModuleComponent = modules[selectedModule];
 
     useEffect(() => {
         const handler = () => {
@@ -38,9 +47,6 @@ export function HomePage() {
 
 
     return (
-        <div>
-            <h1 className="text-2xl font-bold mb-4">HOME</h1>
-            <p>Module selectionné : {module}</p>
-        </div>
+        <ModuleComponent />
     );
 }
