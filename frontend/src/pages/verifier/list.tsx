@@ -17,25 +17,47 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
+import { Eye, FileText } from "lucide-react";
 
 import { DataTable } from "../../components/DataTable";
 
+import { b64ToFile } from "../settings/general/customization";
+
 import { useUser } from "../../services/hooks/useUser";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
-import { FileText } from "lucide-react";
-import { Checkbox } from "../../components/Checkbox.tsx";
+import { Thumbnail } from "../../components/Thumbnail.tsx";
 
 export function VerifierListPage() {
     const { get, post } = axiosApiCall();
     const { user, loadingUser } = useUser();
+    const [hovered, setHovered] = useState<string | null>(null);
 
     const columns: any = [
-        { header: '', value: 'id' },
-        { header: t('VERIFIER.name'), render: (item: any) => <span className="font-semibold">{ item.supplier_name }</span> },
-        { header: t('VERIFIER.status'), value: 'status' },
-        { header: t('VERIFIER.creation_date'), render: (item: any) => new Date(item.register_date).toLocaleString() },
-        { header: t('VERIFIER.form'), value: 'form_label' },
-        { header: '', render: () => <div className='flex justify-center items-center'><span>1</span> <FileText size={16}/></div>}
+        { header: '', field: 'id', sortable: true },
+        {
+            header: t('VERIFIER.name'),
+            body: (item: any) => <span className="font-semibold">{ item.supplier_name }</span>,
+        },
+        { header: t('VERIFIER.creation_date'), body: (item: any) => new Date(item.register_date).toLocaleString() },
+        { header: t('VERIFIER.form'), field: 'form_label', sortable: true },
+        {
+            header: '',
+            body: (item: any) => (
+                <div className='flex justify-center items-center text-(--color-primary) gap-0.5'
+                     data-tooltip-id="tooltip" data-tooltip-content={ t('VERIFIER.nb_pages') }>
+                    <span>{ item.nb_pages }</span>
+                    <FileText size={ 15 }/>
+                </div>
+            )
+        },
+        {
+            header: '',
+            body: (item: any) => (
+                <div onMouseEnter={() => setHovered(item)} onMouseLeave={() => setHovered(null)}>
+                    <Eye></Eye>
+                </div>
+            )
+        }
     ];
 
     const [totalPerTime, setTotalPerTime] = useState<any>(null);
@@ -46,7 +68,7 @@ export function VerifierListPage() {
     const [loadingDocuments, setLoadingDocuments] = useState(false);
 
     const [offset, setOffset] = useState(0);
-    const [limit, setLimit] = useState(16);
+    const [limit, setLimit] = useState(10);
 
     useEffect(() => {
         async function retrieveTotalDocuments() {
@@ -102,20 +124,19 @@ export function VerifierListPage() {
 
     return (
         <div>
+            { hovered && (
+                <Thumbnail document_info={hovered} open={true} />
+            )}
             <h1 className="text-2xl font-bold mb-4">VERIFIER LIST</h1>
             <div className="mt-4 rounded-md bg-white">
-                <div className='p-2'>
-                    <Checkbox label={t('VERIFIER.select_all')}/>
-                </div>
-                <DataTable<Document>
-                    data={documents}
-                    columns={columns}
-                    skeletonRows={16}
-                    loading={loadingDocuments}
-                    emptyMessage="Aucun document trouvé"
+                <DataTable
+                    data={ documents }
+                    columns={ columns }
+                    skeletonRows={ limit }
+                    checkboxSelection={ true }
+                    loading={ loadingDocuments }
+                    emptyMessage={ t("VERIFIER.no_documents") }
                 />
-                {/*<p>Total Documents: { totalDocuments !== null ? totalDocuments : 'Loading...' }</p>*/}
-                {/*<p>Totals Per Time: { totalPerTime ? JSON.stringify(totalPerTime) : 'Loading...' }</p>*/}
             </div>
         </div>
     );

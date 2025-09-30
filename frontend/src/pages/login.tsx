@@ -42,7 +42,6 @@ export function Login() {
         async function getLoginMessage() {
             if (!loginMessage) {
                 await get("/config/getConfigurationNoAuth/loginMessage").then((response) => {
-                    console.log(response);
                     if (response && response.configuration) {
                         setLoginMessage(response.configuration[0]?.data.value || t('AUTH.welcome'));
                     } else {

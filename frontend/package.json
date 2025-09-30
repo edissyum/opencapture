@@ -20,10 +20,12 @@
     },
     "dependencies": {
         "@tailwindcss/vite": "^4.1.13",
+        "@tanstack/react-table": "^8.21.3",
         "@tinymce/tinymce-react": "^6.3.0",
         "axios": "^1.12.2",
         "fs-extra": "^11.3.2",
         "i18next": "^25.5.2",
+        "primereact": "^10.9.7",
         "react": "^19.1.1",
         "react-dom": "^19.1.1",
         "react-dropzone": "^14.3.8",

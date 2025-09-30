@@ -48,7 +48,7 @@ export function App() {
 
             let _custom = getCustomFromUrl();
             let currentLang = localStorage.getItem("selectedLang");
-            const api = axios.create({ baseURL: `${BACKEND_URL}/${_custom}/ws/` });
+            const api = axios.create({ baseURL: `${ BACKEND_URL }/${ _custom }/ws/` });
 
             if (_custom) {
                 try {
@@ -82,9 +82,9 @@ export function App() {
 
     return (
         <StrictMode>
-            <CustomProvider custom={custom}>
-                <Tooltip id="tooltip" />
-                <RouterProvider key={appKey} router={router} />
+            <CustomProvider custom={ custom }>
+                <Tooltip id="tooltip" className="z-10"/>
+                <RouterProvider key={ appKey } router={ router }/>
             </CustomProvider>
         </StrictMode>
     );

@@ -36,16 +36,14 @@ export function Checkbox({ checked = false, onChange, label }: CheckboxProps) {
     return (
         <label className="inline-flex items-center cursor-pointer select-none">
             <div
-                onClick={toggle}
-                className={`w-5 h-5 border-1 border-(--border-secondary) rounded flex items-center justify-center
-                    ${isChecked ? "bg-(--color-primary) border-(--color-primary)" : "bg-white"}
-                    transition-all
-                    hover:border-(--color-primary)
-                `}
+                onClick={ toggle }
+                className={ `w-5 h-5 border-1 border-(--border-secondary) rounded flex items-center justify-center
+                    ${ isChecked ? "bg-(--color-primary) border-(--color-primary)" : "bg-white" }
+                    transition-all hover:border-(--color-primary)` }
             >
-                {isChecked && <Check className="w-5 h-5 text-white" />}
+                { isChecked && <Check className="w-5 h-5 text-white"/> }
             </div>
-            {label && <span className="ml-2 text-(--text-secondary)">{label}</span>}
+            { label && <span onClick={ toggle } className="ml-2 text-(--text-secondary)">{ label }</span> }
         </label>
     );
 }

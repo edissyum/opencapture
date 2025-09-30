@@ -27,7 +27,7 @@ import { LangSelection } from "../../../components/onboarding/LangSelection";
 import { Button } from "../../../components/Button.tsx";
 import { showToast } from "../../../components/ToastProvider.tsx";
 
-function b64toBlob(b64Data: string) {
+export function b64ToFile(b64Data: string) {
     const byteString = atob(b64Data.split(',')[1]);
     const mimeString = b64Data.split(',')[0].split(':')[1].split(';')[0];
     const ab = new ArrayBuffer(byteString.length);
@@ -69,7 +69,7 @@ export function SettingsGeneralCustomization() {
         async function fetchImage() {
             const currentAppImage = localStorage.getItem('appImage');
             if (currentAppImage) {
-                const imageFile = b64toBlob(currentAppImage);
+                const imageFile = b64ToFile(currentAppImage);
 
                 // Avoid adding duplicate of the same default Open-Capture image
                 if (files.length > 0) {
@@ -88,8 +88,7 @@ export function SettingsGeneralCustomization() {
 
                     if (cancelled) return;
 
-                    const imageFile = b64toBlob('data:image/svg-xml;base64,' + response)
-                    console.log(imageFile);
+                    const imageFile = b64ToFile('data:image/svg-xml;base64,' + response)
                     setFiles(() => [imageFile, ...files]);
                 } catch (e) {
                     setLoading(false);

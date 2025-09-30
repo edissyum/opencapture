@@ -16,8 +16,11 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 @import "tailwindcss";
-@import "./assets/tailwind-theme.css";
-@import 'react-loading-skeleton/dist/skeleton.css';
+@import "./assets/css/tailwind-theme.css";
+@import "./assets/css/prime-react-datatable.css";
+
+@import 'primereact/resources/primereact.css';
+@import 'primereact/resources/themes/lara-light-indigo/theme.css';
 
 @font-face{
     font-family: "Montserrat";

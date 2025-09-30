@@ -18,17 +18,7 @@ import { useEffect, useState } from "react";
 
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
 
-function b64toFile(b64Data: string, filename = "appImage") {
-    const byteString = atob(b64Data.split(",")[1]);
-    const mimeString = b64Data.split(",")[0].split(":")[1].split(";")[0];
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-    }
-    const blob = new Blob([ab], { type: mimeString });
-    return new File([blob], filename, { type: mimeString });
-}
+import { b64ToFile } from "../pages/settings/general/customization";
 
 export function LoginImage({ className }: { className?: string }) {
     const { get } = axiosApiCall();
@@ -43,7 +33,7 @@ export function LoginImage({ className }: { className?: string }) {
             }
 
             const response = await get("config/getLoginImage");
-            const file = b64toFile(response);
+            const file = b64ToFile(response);
             const reader = new FileReader();
             reader.onload = () => {
                 if (reader.result) {
