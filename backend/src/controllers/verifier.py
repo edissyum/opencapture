@@ -263,12 +263,6 @@ def retrieve_documents(args):
     if total_documents not in [0, []]:
         documents_list = verifier.get_documents(args)
         for document in documents_list:
-            year = document['register_date'].strftime('%Y')
-            month = document['register_date'].strftime('%m')
-            year_and_month = year + '/' + month
-            thumb = get_file_content('full', document['full_jpg_filename'], 'image/jpeg',
-                                     compress=True, year_and_month=year_and_month)
-            document['thumb'] = str(base64.b64encode(thumb.get_data()).decode('utf-8'))
             if document['supplier_id']:
                 supplier_info, error = accounts.get_supplier_by_id({'supplier_id': document['supplier_id']})
                 if not error:

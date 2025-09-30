@@ -571,9 +571,10 @@ def get_thumb():
         if not privileges.has_privileges(request.environ['user_id'], ['access_verifier | update_position_mask']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/getThumb'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'type', 'type': str, 'mandatory': False},
         {'id': 'filename', 'type': str, 'mandatory': True},
+        {'id': 'compress', 'type': bool, 'mandatory': False},
         {'id': 'documentId', 'type': int, 'mandatory': False},
         {'id': 'registerDate', 'type': str, 'mandatory': False}
     ])
@@ -585,18 +586,19 @@ def get_thumb():
         }, 400)
 
     year_and_month = False
-    if 'registerDate' in request.json['args']:
-        register_date = pd.to_datetime(request.json['args']['registerDate'])
+    if 'registerDate' in request.json:
+        register_date = pd.to_datetime(request.json['registerDate'])
         year = register_date.strftime('%Y')
         month = register_date.strftime('%m')
         year_and_month = year + '/' + month
 
-    if 'documentId' not in request.json['args']:
-        request.json['args']['documentId'] = None
+    if 'documentId' not in request.json:
+        request.json['documentId'] = None
 
-    file_content = verifier.get_file_content(request.json['args']['type'], request.json['args']['filename'],
+    file_content = verifier.get_file_content(request.json['type'], request.json['filename'],
                                              'image/jpeg', year_and_month=year_and_month,
-                                             document_id=request.json['args']['documentId'])
+                                             document_id=request.json['documentId'],
+                                             compress=request.json['compress'])
     return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('utf-8'))}), 200
 
 

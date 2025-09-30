@@ -355,7 +355,10 @@ def get_login_image():
                 break
     with open(login_image, 'rb') as image_file:
         b64_content = str(base64.b64encode(image_file.read()).decode('utf-8'))
-        b64_content = 'data:image/' + login_image.split('.')[-1] + ';base64,' + b64_content
+        extension = login_image.split('.')[-1]
+        if extension == 'svg':
+            extension =  'svg+xml'
+        b64_content = 'data:image/' + extension + ';base64,' + b64_content
 
     return b64_content, 200
 
