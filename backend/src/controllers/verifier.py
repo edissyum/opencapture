@@ -237,7 +237,7 @@ def retrieve_documents(args):
             args['where'].append('supplier_id IN (' + ','.join(map(str, args['allowedSuppliers'])) + ')')
 
     if 'filter' in args and args['filter']:
-        if args['filter'] not in ['documents.id', 'documents.register_date']:
+        if args['filter'] not in ['id', 'register_date']:
             cast = 'text' if args['filter'] not in ['document_date'] else 'timestamp with time zone'
             args['where'].append(f"documents.datas ->> '{args['filter']}' IS NOT NULL")
             args['where'].append(f"documents.datas ->> '{args['filter']}' != ''")

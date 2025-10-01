@@ -8,7 +8,7 @@
         "field_required": "est requis",
         "login": "Se connecter",
         "session_expired": "Votre session à expirée, veuillez vous reconnecter",
-        "welcome": ""
+        "welcome": "Bienvenue dans Open-Capture, solution de capture de documents 100% Open Source"
     },
     "CUSTOMIZATION": {
         "theme": "Thème de l'application",
@@ -104,15 +104,21 @@
         "password": "Mot de passe",
         "username": "Nom d'utilisateur"
     },
-    "SPLITTER": {
-        "list_info": ""
-    },
     "VERIFIER": {
         "creation_date": "Date de création",
         "form": "Formulaire",
-        "id": "Identifiant",
-        "list_info": "",
         "name": "Nom",
-        "status": "Statut"
+        "nb_pages": "Nombre de pages",
+        "no_documents": "Aucun document",
+        "document_selected_many": "documents sélectionnés",
+        "document_selected_one": "document sélectionné",
+        "document_selected_other": "documents sélectionnés",
+        "of": "sur",
+        "to": "à",
+        "filters": "Filtres",
+        "documents": "Documents",
+        "search": "Rechercher",
+        "unkown_supplier": "Tiers inconnu",
+        "nb_attachments": "Nombre de pièces jointes"
     }
 }

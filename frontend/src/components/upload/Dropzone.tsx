@@ -97,7 +97,7 @@ export default function UploadDropzone({
                 { isDragActive ? (
                     <div className="flex flex-col items-center gap-2">
                         <HandGrab className="text-(--text-secondary)"/>
-                        <p className="text-(--text-primary) font-semibold">{ t('UPLOAD.drop_files_here', {count: maxFiles}) }</p>
+                        <p className="text-(--text-primary) font-semibold">{ t('UPLOAD.drop_files_here', { count: maxFiles }) }</p>
                     </div>
                 ) : (
                     <>

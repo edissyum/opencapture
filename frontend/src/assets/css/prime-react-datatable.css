@@ -15,16 +15,82 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+/* Header background color */
+
+.p-datatable .p-datatable-thead > tr > th {
+    @apply bg-white!;
+    @apply dark:bg-(--bg-secondary)!;
+    @apply text-(--text-primary)!;
+}
+
+/* Border for checkboxes */
 .p-checkbox .p-checkbox-box {
     @apply border-1;
     @apply border-(--border-secondary);
 }
 
+/* Color for checked checkboxes */
 .p-checkbox.p-highlight .p-checkbox-box {
     @apply bg-(--color-primary)!;
     @apply border-(--color-primary)!;
 }
 
-.p-checkbox .p-checkbox-box:hover {
-    border-color: red!important; /* couleur au hover */
+/* Color for sortable column icons when sorted */
+.p-datatable .p-sortable-column.p-highlight .p-sortable-column-icon {
+    @apply text-(--color-primary)!;
+}
+
+/* Color for sortable column icons */
+.p-datatable .p-sortable-column .p-sortable-column-icon {
+    @apply text-(--color-secondary)!;
+}
+
+/* Highlight color for selected rows and sorted columns */
+.p-datatable .p-datatable-tbody > tr.p-highlight,
+.p-datatable .p-sortable-column.p-highlight {
+    @apply bg-(--color-primary)/10!;
+    @apply text-(--color-primary)!;
+}
+
+/* Truncate text in table cells */
+.p-datatable .p-datatable-tbody > tr > td.truncate-data span {
+    @apply block;
+    @apply w-[98%];
+    @apply truncate;
+    @apply max-w-full;
+}
+
+/* Color for odd rows */
+.p-datatable.p-datatable-striped .p-datatable-tbody > tr.p-row-odd {
+    @apply bg-white;
+    @apply dark:bg-(--bg-secondary);
+    @apply text-(--text-primary);
+}
+
+/* Color for even rows */
+.p-datatable .p-datatable-tbody > tr {
+    @apply bg-(--bg-secondary);
+    @apply dark:bg-(--bg-primary);
+    @apply text-(--text-primary);
+}
+
+/* Border for paginator header */
+.p-datatable .p-paginator-top {
+    @apply border-b-1;
+    @apply border-(--border-secondary);
+    @apply dark:bg-(--bg-primary);
+}
+
+/* Border-radius for DataTable */
+.p-datatable .p-paginator-top {
+    @apply rounded-t-xl;
+}
+
+.p-datatable-scrollable > .p-datatable-wrapper {
+    @apply rounded-b-xl;
+}
+
+/* Hide default sortable icon */
+.p-sortable-column-icon {
+    @apply hidden;
 }

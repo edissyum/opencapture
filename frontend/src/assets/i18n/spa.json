@@ -8,7 +8,7 @@
         "field_required": "es obligatorio",
         "login": "Conectar",
         "session_expired": "Su sesión expiró, vuelva a conectar",
-        "welcome": ""
+        "welcome": "Bienvenido a Open-Capture, solución de captura de documentos 100% Open Source"
     },
     "CUSTOMIZATION": {
         "theme": "Tema de la aplicación",
@@ -104,15 +104,21 @@
         "drop_files_here_other": "Suelta los archivos aquí",
         "file_too_large": "El archivo es demasiado grande. El tamaño máximo permitido es {{maxSize}} MB"
     },
-    "SPLITTER": {
-        "list_info": ""
-    },
     "VERIFIER": {
         "creation_date": "Fecha de creación",
         "form": "Formulario",
-        "id": "Identificador",
-        "list_info": "",
         "name": "Nombre",
-        "status": "Estado"
+        "nb_pages": "Número de páginas",
+        "no_documents": "No se encontraron documentos",
+        "document_selected_many": "documentos seleccionados",
+        "document_selected_one": "documento seleccionado",
+        "document_selected_other": "documentos seleccionados",
+        "of": "de",
+        "to": "a",
+        "filters": "Filtros",
+        "documents": "Documentos",
+        "search": "Buscar",
+        "unkown_supplier": "Tercero desconocido",
+        "nb_attachments": "Número de archivos adjuntos"
     }
 }

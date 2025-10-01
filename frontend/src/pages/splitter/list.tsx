@@ -22,7 +22,6 @@ export function SplitterListPage() {
     return (
         <div>
             <h1 className="text-2xl font-bold mb-4">SPLITTER LIST</h1>
-            <p>{ t('SPLITTER.list_info') }</p>
         </div>
     );
 }

@@ -35,7 +35,7 @@ export const Input: React.FC<InputProps> = ({
     ...props
 }) => {
     return (
-        <div className={`flex flex-col ${className}`}>
+        <div className={`flex flex-col rounded-md ${className}`}>
             <div className="relative">
                 { icon && iconPosition === "left" && (
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-(--text-secondary)">

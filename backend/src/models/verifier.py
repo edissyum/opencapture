@@ -83,7 +83,7 @@ def get_documents(args):
         'where': ['1=1'] if 'where' not in args or not args['where'] else args['where'],
         'data': [] if 'data' not in args else args['data'],
         'order_by': ['documents.id DESC'] if 'order_by' not in args else args['order_by'],
-        'group_by': ['documents.id'] if 'group_by' not in args else args['group_by'],
+        'group_by': [] if 'group_by' not in args else args['group_by'],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
         'offset': str(args['offset']) if 'offset' in args else 0
     })

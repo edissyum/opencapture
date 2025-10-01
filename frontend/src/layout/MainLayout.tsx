@@ -39,7 +39,7 @@ export default function MainLayout() {
             <Sidebar />
             <main className="flex-1 bg-(--bg-secondary)">
                 <TopBar />
-                <span className="p-10 block overflow-x-scroll h-[calc(100vh-80px)]">
+                <span className="p-8 block overflow-x-scroll h-[calc(100vh-80px)]">
                     <Outlet />
                 </span>
             </main>
