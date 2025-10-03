@@ -42,32 +42,28 @@ export function Thumbnail({ document_info, open }: TNLProps) {
         }).then((res) => {
             const thumb = b64ToFile('data:image/jpg;base64,' + res.file);
             setThumbCache((prev) => ({ ...prev, [document_info.id]: thumb || "Aucune donnée" }));
-        }).catch(() => setThumbCache((prev) => ({ ...prev, [document_info.id]: "Erreur lors du chargement de la miniature" })))
-          .finally(() => setLoading(false));
+        }).catch(() => setThumbCache((prev) => ({
+            ...prev,
+            [document_info.id]: "Erreur lors du chargement de la miniature"
+        }))).finally(() => setLoading(false));
     }, [open, document_info]);
 
     if (!open) return null;
 
     return (
         <div className="tnl absolute z-40 top-4 left-4 max-w-[30%] border border-gray-900">
-            {loading && <p className="text-sm text-gray-500">Chargement…</p>}
-            {thumbCache[document_info.id]?.error && <p className="text-sm text-red-500">{thumbCache[document_info.id].error}</p>}
-            {thumbCache[document_info.id] && !thumbCache[document_info.id].error && (
+            { loading && <p className="text-sm text-gray-500">Chargement…</p> }
+            { thumbCache[document_info.id]?.error &&
+                <p className="text-sm text-red-500">{ thumbCache[document_info.id].error }</p> }
+            { thumbCache[document_info.id] && !thumbCache[document_info.id].error && (
                 <div className="space-y-1">
-                    <p className="font-semibold">TNL Document #{document_info.id}</p>
-                    {thumbCache[document_info.id] && (
-                        <img className="h-full" src={ URL.createObjectURL(thumbCache[document_info.id]) } alt={ thumbCache[document_info.id].name }/>
-                        // <a
-                        //     href={data.file ? URL.createObjectURL(data.file) : '#'}
-                        //     target="_blank"
-                        //     rel="noopener noreferrer"
-                        //     className="text-blue-600 underline text-sm"
-                        // >
-                        //     {data.name}
-                        // </a>
-                    )}
+                    <p className="font-semibold">TNL Document #{ document_info.id }</p>
+                    { thumbCache[document_info.id] && (
+                        <img className="h-full" src={ URL.createObjectURL(thumbCache[document_info.id]) }
+                             alt={ thumbCache[document_info.id].name }/>
+                    ) }
                 </div>
-            )}
+            ) }
         </div>
     );
 }

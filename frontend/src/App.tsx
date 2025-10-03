@@ -20,6 +20,8 @@ import { Tooltip } from "react-tooltip";
 import { RouterProvider } from "react-router-dom";
 import { StrictMode, useEffect, useState } from "react";
 
+import { ConfirmDialog } from "primereact/confirmdialog";
+
 import { router } from "./routes";
 
 import { applyTheme } from "./services/theme";
@@ -83,6 +85,7 @@ export function App() {
     return (
         <StrictMode>
             <CustomProvider custom={ custom }>
+                <ConfirmDialog />
                 <Tooltip id="tooltip" className="z-10"/>
                 <RouterProvider key={ appKey } router={ router }/>
             </CustomProvider>

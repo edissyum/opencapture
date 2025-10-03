@@ -19,7 +19,7 @@ import React from "react";
 import { LoaderCircle } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
-type ButtonVariant = "primary" | "secondary" | "danger" | "no_bg";
+type ButtonVariant = "primary" | "secondary" | "danger" | "no_bg" | "no_bg_border";
 type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -52,21 +52,29 @@ export function Button({
             : location.pathname.includes(to)
         : false;
 
-    const baseStyles =
-        "cursor-pointer inline-flex items-center justify-center font-medium rounded-lg " +
+    let baseStyles =
+        "cursor-pointer inline-flex items-center justify-center font-medium " +
         "transition-colors focus:outline-none disabled:opacity-50 disabled:pointer-events-none";
 
+    if (!className?.includes('rounded-')) {
+        baseStyles += ' rounded-lg'
+    }
+
     const variantStyles: Record<ButtonVariant, string> = {
-        primary: "bg-green-400 border-2 border-(--border-primary) text-white hover:bg-green-400/10 hover:text-(--color-primary)!",
-        secondary: "bg-green-400/10 border-2 border-(--border-primary) rounded-lg text-(--color-primary)! hover:bg-green-400 hover:text-white!",
+        primary: "bg-(--color-primary) border-2 border-(--border-primary) text-white hover:bg-(--color-primary)/10 hover:text-(--color-primary)",
+        secondary: "bg-(--color-primary)/10 border-2 border-(--border-primary) text-(--color-primary) hover:bg-(--color-primary) hover:text-white",
         danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
-        no_bg: "bg-transparent text-gray-400! hover:bg-(--bg-secondary) hover:text-gray-200 hover:border-2 hover:border-gray-400 border-2 border-transparent",
+        no_bg: "bg-transparent text-(--text-secondary) hover:border-2 hover:border-(--text-secondary) border-2 border-transparent",
+        no_bg_border: "bg-transparent text-(--text-secondary) border-1 border-(--text-secondary) hover:bg-(--text-secondary)/10",
     };
+    if (className?.includes('text-')) {
+        variantStyles[variant] = variantStyles[variant].replace(/(hover:)?text-(\(.*\)|[a-z]*)/gm, '');
+    }
 
     const sizeStyles: Record<ButtonSize, string> = {
-        sm: "px-3 py-1.5 text-sm",
-        md: "px-4 py-2 text-base",
-        lg: "px-5 py-3 text-lg",
+        sm: "p-1.5 text-sm",
+        md: "p-2.5 text-base",
+        lg: "p-3.5 text-lg",
     };
 
     if (to) {

@@ -16,13 +16,16 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import React, { useState } from "react";
+import { ChevronsUpDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import React, { useMemo, useRef, useState } from "react";
+
+import { Button } from "../Button";
 
 import { Skeleton } from "primereact/skeleton";
+import { ContextMenu } from "primereact/contextmenu";
 import { Column as PrimeColumn } from "primereact/column";
 import { DataTable as PrimeDataTable } from "primereact/datatable";
-import { ChevronsUpDown } from "lucide-react";
 
 type Column<T> = {
     id: string | undefined;
@@ -35,6 +38,7 @@ type Column<T> = {
 
 type DataTableProps<T> = {
     data: T[];
+    actions: any[];
     baseLink?: string;
     loading?: boolean;
     rowsPerPage?: number;
@@ -43,6 +47,7 @@ type DataTableProps<T> = {
     totalRecords?: number;
     emptyMessage?: string;
     skeletonRows?: number;
+    selectedRows?: T[];
     paginatorLeftText: string;
     checkboxSelection?: boolean;
     rowsPerPageOptions?: number[];
@@ -55,18 +60,22 @@ type DataTableProps<T> = {
         sortOrder: 1 | -1 | null;
     };
     onLazyParamsChange: (params: any) => void;
+    menuModel?: { label: string; icon: string; command: () => void }[];
 };
 
-export function DataTable<T extends { id: string }>({
+export function Table<T extends { id: string }>({
     data,
     columns,
+    actions,
     baseLink,
+    menuModel,
     lazyParams,
     loading = false,
     skeletonRows = 5,
     rowsPerPage = 10,
     paginatorLeftText,
     pagination = false,
+    selectedRows = [],
     checkboxSelection = false,
     totalRecords = data.length,
     rowsPerPageOptions = [10, 20, 50],
@@ -75,10 +84,12 @@ export function DataTable<T extends { id: string }>({
     onLazyParamsChange
 }: DataTableProps<T>) {
 
-    const [selectedRows, setSelectedRows] = useState<T[]>([]);
-    const [hoveredRow, setHoveredRow] = useState<string | null>(null);
-
     const navigate = useNavigate();
+
+    const [_, setSelectedRows] = useState<T[]>([]);
+    const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+    const cm = useRef({ current: null } as any);
+
     const handleSelectionChange = (rows: T[]) => {
         setSelectedRows(rows);
         if (onSelectionChange) onSelectionChange(rows);
@@ -90,10 +101,35 @@ export function DataTable<T extends { id: string }>({
         }
     }
 
+    const paginatorLeftData = useMemo(() => {
+        return (
+            <div className='flex items-center gap-2'>
+                <span>{ selectedRows.length + " " + paginatorLeftText }</span>
+                { actions && actions.map((action, idx) => (
+                    <Button
+                        key={ idx }
+                        size={'sm'}
+                        variant={ "no_bg_border" }
+                        className='p-2 border'
+                        onClick={ action.onClick }
+                        disabled={ selectedRows.length === 0 }>
+                        { action.icon } { action.label }
+                    </Button>
+                )) }
+            </div>
+        )
+    }, [selectedRows, paginatorLeftText]);
+
+
     if (loading) {
         return (
             <div className="w-full max-h-[70vh] overflow-hidden border border-(--border-secondary) rounded-xl">
-                <div className='flex items-center gap-20 border-b border-(--border-secondary) h-18'/>
+                { pagination && (
+                    <div className="flex items-center justify-between bg-white dark:bg-(--bg-secondary) px-4 rounded-t-xl text-(--text-secondary) font-normal h-18">
+                        <Skeleton width='20%'/>
+                        <Skeleton width='30%'/>
+                    </div>
+                ) }
                 <div className='flex flex-row'>
                     { columns.map((col, i) => (
                         <span key={ i }
@@ -122,25 +158,25 @@ export function DataTable<T extends { id: string }>({
 
     return (
         <div className='h-[70vh]'>
+            { menuModel && (
+                <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }/>
+            ) }
             <PrimeDataTable
                 dataKey="id"
                 lazy
                 scrollable
-                scrollHeight="flex"
-                onRowClick={ (e) => {
-                    handleRowClick(e);
-                } }
-                totalRecords={ totalRecords }
                 stripedRows
+                scrollHeight="flex"
                 value={ data }
+                rows={ rowsPerPage }
                 paginator={ pagination }
                 first={ lazyParams.first }
-                rows={ rowsPerPage }
+                totalRecords={ totalRecords }
+                rowsPerPageOptions={ rowsPerPageOptions }
                 sortField={ lazyParams.sortField ?? undefined }
                 sortOrder={ lazyParams.sortOrder ?? undefined }
-                rowsPerPageOptions={ rowsPerPageOptions }
                 paginatorPosition={ 'top' }
-                paginatorLeft={ <span> { selectedRows.length + ' ' + paginatorLeftText } </span> }
+                paginatorLeft={ paginatorLeftData }
                 paginatorTemplate="RowsPerPageDropdown CurrentPageReport PrevPageLink NextPageLink"
                 currentPageReportTemplate={ "{first} " + t('VERIFIER.to') + " {last} " + t('VERIFIER.of') + " {totalRecords}" }
                 selection={ selectedRows }
@@ -148,6 +184,11 @@ export function DataTable<T extends { id: string }>({
                 selectionMode={ 'checkbox' }
                 onSelectionChange={ (e: any) => handleSelectionChange(e.value) }
                 className="w-full border border-(--border-secondary) rounded-xl"
+                contextMenuSelection={ selectedRows }
+                onContextMenuSelectionChange={ (e: any) => {
+                    handleSelectionChange([e.value]);
+                    cm.current?.show(e.originalEvent);
+                } }
                 onPage={ (e) =>
                     onLazyParamsChange({
                         ...lazyParams,
@@ -163,6 +204,9 @@ export function DataTable<T extends { id: string }>({
                         sortOrder: e.sortOrder,
                     })
                 }
+                onRowClick={ (e) => {
+                    handleRowClick(e);
+                } }
             >
                 { checkboxSelection && (
                     <PrimeColumn

@@ -67,7 +67,7 @@ export default function Sidebar() {
                     ['/home', '/upload'].some((path) => location.pathname.includes(path)) ? activeClasses : ""
                 }` }>
                     <House size={ 20 } { ...(collapsed && {
-                        "data-tooltip-id": "tooltip",
+                        "data-tooltip-id": "home",
                         "data-tooltip-content": t('GLOBAL.home'),
                     }) }/>
                     { !collapsed && <span>{ t('GLOBAL.home') }</span> }
@@ -76,7 +76,7 @@ export default function Sidebar() {
                 <Link to="/settings"
                       className={ `${ standardClasses } ${ location.pathname.includes("/settings") ? activeClasses : "" }` }>
                     <Settings size={ 20 } { ...(collapsed && {
-                        "data-tooltip-id": "tooltip",
+                        "data-tooltip-id": "settings",
                         "data-tooltip-content": t('GLOBAL.settings'),
                     }) }/>
                     { !collapsed && <span>{ t('GLOBAL.settings') }</span> }
@@ -85,7 +85,7 @@ export default function Sidebar() {
                 <Link to="/history"
                       className={ `${ standardClasses } ${ location.pathname.includes("/history") ? activeClasses : "" }` }>
                     <Clock4 size={ 20 } { ...(collapsed && {
-                        "data-tooltip-id": "tooltip",
+                        "data-tooltip-id": "history",
                         "data-tooltip-content": t('GLOBAL.history'),
                     }) }/>
                     { !collapsed && <span>{ t('GLOBAL.history') }</span> }
@@ -94,7 +94,7 @@ export default function Sidebar() {
                 <Link to="/statistics"
                       className={ `${ standardClasses } ${ location.pathname.includes("/statistics") ? activeClasses : "" }` }>
                     <ChartNoAxesColumn size={ 20 } { ...(collapsed && {
-                        "data-tooltip-id": "tooltip",
+                        "data-tooltip-id": "statistics",
                         "data-tooltip-content": t('GLOBAL.statistics'),
                     }) }/>
                     { !collapsed && <span>{ t('GLOBAL.statistics') }</span> }
@@ -103,7 +103,7 @@ export default function Sidebar() {
                 <Link to="/monitoring"
                       className={ `${ standardClasses } ${ location.pathname.includes("/monitoring") ? activeClasses : "" }` }>
                     <Activity size={ 20 } { ...(collapsed && {
-                        "data-tooltip-id": "tooltip",
+                        "data-tooltip-id": "monitoring",
                         "data-tooltip-content": t('GLOBAL.monitoring'),
                     }) }/>
                     { !collapsed && <span>{ t('GLOBAL.monitoring') }</span> }
@@ -112,7 +112,7 @@ export default function Sidebar() {
                 <Link to="/suppliers"
                       className={ `${ standardClasses } ${ location.pathname.includes("/suppliers") ? activeClasses : "" }` }>
                     <Building2 size={ 20 } { ...(collapsed && {
-                        "data-tooltip-id": "tooltip",
+                        "data-tooltip-id": "suppliers_list",
                         "data-tooltip-content": t('ACCOUNTS.suppliers_list'),
                     }) }/>
                     { !collapsed && <span>{ t('ACCOUNTS.suppliers_list') }</span> }
@@ -121,7 +121,7 @@ export default function Sidebar() {
                 <Link to="/customers"
                       className={ `${ standardClasses } ${ location.pathname.includes("/customers") ? activeClasses : "" }` }>
                     <Briefcase size={ 20 } { ...(collapsed && {
-                        "data-tooltip-id": "tooltip",
+                        "data-tooltip-id": "customers_list",
                         "data-tooltip-content": t('ACCOUNTS.customers_list'),
                     }) }/>
                     { !collapsed && <span>{ t('ACCOUNTS.customers_list') }</span> }
@@ -130,7 +130,7 @@ export default function Sidebar() {
                 <Link to="/about"
                       className={ `${ standardClasses } ${ location.pathname.includes("/about") ? activeClasses : "" }` }>
                     <Info size={ 20 } { ...(collapsed && {
-                        "data-tooltip-id": "tooltip",
+                        "data-tooltip-id": "abouts_us",
                         "data-tooltip-content": t('SETTINGS.abouts_us'),
                     }) }/>
                     { !collapsed && <span>{ t('SETTINGS.abouts_us') }</span> }
@@ -140,7 +140,7 @@ export default function Sidebar() {
             <div className="mt-auto text-(--text-secondary) flex flex-col gap-3">
                 <a className={ `${ standardClasses }` } onClick={ handleLogout }>
                     <LogOut size={ 20 } { ...(collapsed && {
-                        "data-tooltip-id": "tooltip",
+                        "data-tooltip-id": "log_out",
                         "data-tooltip-content": t('GLOBAL.log_out'),
                     }) }/>
                     { !collapsed && <span>{ t('GLOBAL.log_out') }</span> }

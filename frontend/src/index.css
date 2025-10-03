@@ -15,7 +15,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-@import "tailwindcss";
+@import "tailwindcss" important;
 @import "./assets/css/tailwind-theme.css";
 @import "./assets/css/prime-react-datatable.css";
 
@@ -95,7 +95,7 @@
     --border-primary: theme(colors.green-400);
     --border-secondary: theme(colors.gray.700);
 
-    --text-primary: theme(colors.gray.100);
+    --text-primary: theme(colors.gray.200);
     --text-secondary: theme(colors.gray.400);
 }
 

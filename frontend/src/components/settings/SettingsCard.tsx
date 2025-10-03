@@ -31,7 +31,7 @@ export function SettingsCard({show = true, icon, title, description, to, classNa
     if (!show) return null;
 
     return (
-        <Link to={ to } className={`${className} flex justify-start items-center min-w-80 p-2.5 pl-4 border-2 border-(--border-secondary) rounded-md hover:border-gray-300 duration-200`}>
+        <Link to={ to } className={`${className} flex justify-start items-center min-w-80 p-2.5 pl-4 border-2 border-(--border-secondary) rounded-md hover:border-gray-400 duration-200`}>
             <div className="text-(--text-primary) mr-4 bg-(--bg-secondary) p-2 rounded-md">
                 { icon }
             </div>

@@ -44,7 +44,7 @@ export const Input: React.FC<InputProps> = ({
                 ) }
                 <input
                     id={id}
-                    className={`z-10 peer w-full border-b placeholder:text-transparent px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400 ${
+                    className={`z-10 peer w-full border-b px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400 ${
                         icon ? (iconPosition === "left" ? "pl-10" : "pr-10") : ""
                     } border-(--border-secondary) disabled:bg-(--bg-secondary) disabled:cursor-not-allowed`}
                     placeholder=""

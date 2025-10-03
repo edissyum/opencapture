@@ -36,7 +36,11 @@
         "monitoring": "Processes Monitoring",
         "settings": "Settings",
         "statistics": "Statistics",
-        "upload": "Upload"
+        "upload": "Upload",
+        "no": "No",
+        "yes": "Yes",
+        "grid": "Grid view",
+        "list": "List view"
     },
     "ONBOARD": {
         "select_module": "Select default module",
@@ -117,6 +121,10 @@
         "documents": "Documents",
         "search": "Search",
         "unkown_supplier": "Unknown third-party",
-        "nb_attachments": "Number of attachments"
+        "nb_attachments": "Number of attachments",
+        "confirm_delete_document_one": "Are you sure you want to delete this document ?",
+        "confirm_delete_document_other": "Are you sure you want to delete these {{count}} documents ?",
+        "delete_document": "Delete document",
+        "delete_documents": "Delete"
     }
 }

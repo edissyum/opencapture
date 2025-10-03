@@ -36,7 +36,11 @@
         "monitoring": "Monitoring processus",
         "settings": "Paramètres",
         "statistics": "Statistiques",
-        "upload": "Téléversement"
+        "upload": "Téléversement",
+        "no": "Non",
+        "yes": "Oui",
+        "grid": "Affichage en grille",
+        "list": "Affichage en liste"
     },
     "ONBOARD": {
         "select_module": "Choix du module par défaut",
@@ -119,6 +123,11 @@
         "documents": "Documents",
         "search": "Rechercher",
         "unkown_supplier": "Tiers inconnu",
-        "nb_attachments": "Nombre de pièces jointes"
+        "nb_attachments": "Nombre de pièces jointes",
+        "confirm_delete_document_many": "Voulez-vous vraiment supprimer ces {{count}} documents ?",
+        "confirm_delete_document_one": "Voulez-vous vraiment supprimer ce document ?",
+        "confirm_delete_document_other": "Voulez-vous vraiment supprimer ces {{count}} documents ?",
+        "delete_document": "Supprimer le document",
+        "delete_documents": "Supprimer"
     }
 }

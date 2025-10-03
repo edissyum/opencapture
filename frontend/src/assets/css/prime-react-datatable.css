@@ -27,6 +27,7 @@
 .p-checkbox .p-checkbox-box {
     @apply border-1;
     @apply border-(--border-secondary);
+    @apply dark:bg-(--bg-primary);
 }
 
 /* Color for checked checkboxes */
@@ -70,7 +71,7 @@
 /* Color for even rows */
 .p-datatable .p-datatable-tbody > tr {
     @apply bg-(--bg-secondary);
-    @apply dark:bg-(--bg-primary);
+    @apply dark:border-(--border-primary)!;
     @apply text-(--text-primary);
 }
 
@@ -93,4 +94,22 @@
 /* Hide default sortable icon */
 .p-sortable-column-icon {
     @apply hidden;
+}
+
+/* Change paginator colors */
+.p-dropdown:not(.p-disabled).p-focus, .p-dropdown:not(.p-disabled):hover {
+    @apply shadow-none!;
+    @apply outline-none!;
+    @apply border-(--border-primary)!;
+}
+
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight.p-focus,
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight{
+    @apply bg-(--color-primary)/10;
+    @apply text-(--color-primary);
+}
+
+.p-paginator {
+    font-family: "Montserrat", sans-serif;
+    @apply text-(--text-secondary)!;
 }
