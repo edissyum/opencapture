@@ -40,7 +40,8 @@
         "no": "No",
         "yes": "Sí",
         "grid": "Cuadrícula",
-        "list": "Lista"
+        "list": "Lista",
+        "select_all": "Seleccionar todo / Deseleccionar todo"
     },
     "ONBOARD": {
         "select_module": "Elegir el módulo predeterminado",
@@ -128,6 +129,8 @@
         "confirm_delete_document_one": "¿Está seguro de que desea eliminar este documento?",
         "confirm_delete_document_other": "¿Está seguro de que desea eliminar estos {{count}} documentos?",
         "delete_document": "Eliminar documento",
-        "delete_documents": "Eliminar"
+        "delete_documents": "Eliminar",
+        "id": "Técnico id",
+        "filename": "Nombre de archivo"
     }
 }

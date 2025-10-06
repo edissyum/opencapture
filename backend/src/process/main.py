@@ -501,6 +501,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 })
 
                 if 'civility' in supplier[2] and supplier[2]['civility']:
+                    if not str(supplier[2]['civility']).isnumeric():
+                        supplier[2]['civility'] = 1 if supplier[2]['civility'].lower() in ['male'] else 2
+
                     datas['datas'].update({
                         'civility': int(supplier[2]['civility'])
                     })
@@ -683,9 +686,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         if 'footer' in system_fields_to_find:
             footer_class = find_footer.FindFooter(ocr, log, regex, config, files, database, supplier, file,
                                                   ocr.footer_text, docservers, datas['form_id'])
-            if supplier and supplier[2]['get_only_raw_footer'] in [True, 'True']:
+            if supplier and 'get_only_raw_footer' in supplier[2] and supplier[2]['get_only_raw_footer'] in [True, 'True']:
                 footer_class = find_footer_raw.FindFooterRaw(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
-                                                             docservers, datas['form_id'])
+                                                                     docservers, datas['form_id'])
 
             footer = footer_class.run()
             if not footer and nb_pages > 1:

@@ -19,36 +19,36 @@
         "i18n:extract:merge": "npm run extract-translations && node src/assets/i18n/merge-i18n.mjs"
     },
     "dependencies": {
-        "@tailwindcss/vite": "^4.1.13",
+        "@tailwindcss/vite": "^4.1.14",
         "@tanstack/react-table": "^8.21.3",
         "@tinymce/tinymce-react": "^6.3.0",
         "axios": "^1.12.2",
         "fs-extra": "^11.3.2",
         "i18next": "^25.5.3",
         "primereact": "^10.9.7",
-        "react": "^19.1.1",
-        "react-dom": "^19.1.1",
+        "react": "^19.2.0",
+        "react-dom": "^19.2.0",
         "react-dropzone": "^14.3.8",
         "react-i18next": "^16.0.0",
         "react-router-dom": "^7.9.3",
         "react-toastify": "^11.0.5",
         "react-tooltip": "^5.29.1",
-        "tailwindcss": "^4.1.13",
+        "tailwindcss": "^4.1.14",
         "tinymce": "^8.1.2"
     },
     "devDependencies": {
-        "@eslint/js": "^9.36.0",
-        "@types/react": "^19.1.16",
-        "@types/react-dom": "^19.1.9",
+        "@eslint/js": "^9.37.0",
+        "@types/react": "^19.2.0",
+        "@types/react-dom": "^19.2.0",
         "@vitejs/plugin-react": "^5.0.4",
-        "eslint": "^9.36.0",
-        "eslint-plugin-react-hooks": "^5.2.0",
-        "eslint-plugin-react-refresh": "^0.4.22",
+        "eslint": "^9.37.0",
+        "eslint-plugin-react-hooks": "^6.1.1",
+        "eslint-plugin-react-refresh": "^0.4.23",
         "globals": "^16.4.0",
         "i18next-scanner": "^4.6.0",
         "lucide-react": "^0.544.0",
         "typescript": "~5.9.3",
         "typescript-eslint": "^8.45.0",
-        "vite": "^7.1.7"
+        "vite": "^7.1.9"
     }
 }

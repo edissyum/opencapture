@@ -16,13 +16,20 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { Skeleton } from "primereact/skeleton";
 import { Paginator } from "primereact/paginator";
 
 import { Button } from "../Button";
-import { Skeleton } from "primereact/skeleton";
-import { LazyBase64Image } from "./LazyImage.tsx";
+import { Checkbox } from "../Checkbox";
+
+import { LazyBase64Image } from "./LazyImage";
+import { ContextMenu } from "primereact/contextmenu";
+import { EllipsisVertical } from "lucide-react";
+import { ZIndexUtils } from "primereact/utils";
+import set = ZIndexUtils.set;
 
 type Column<T> = {
     id: string | undefined;
@@ -55,6 +62,7 @@ type CardListProps<T> = {
         sortOrder: 1 | -1 | null;
     };
     onLazyParamsChange: (params: any) => void;
+    menuModel?: { label: string; icon: string; command: () => void }[];
 };
 
 export function Grid<T extends { id: string }>({
@@ -62,13 +70,14 @@ export function Grid<T extends { id: string }>({
     columns,
     actions,
     baseLink,
+    menuModel,
     lazyParams,
     loading = false,
     skeletonRows = 5,
     rowsPerPage = 10,
     paginatorLeftText,
-    pagination = false,
     selectedRows = [],
+    pagination = false,
     totalRecords = data.length,
     rowsPerPageOptions = [10, 20, 50],
     emptyMessage = "Aucun élément trouvé",
@@ -77,6 +86,7 @@ export function Grid<T extends { id: string }>({
 }: CardListProps<T>) {
     const navigate = useNavigate();
     const [_, setSelectedRows] = useState<T[]>([]);
+    const cm = useRef({ current: null } as any);
 
     const handleRowClick = (row: T) => {
         if (baseLink) {
@@ -84,10 +94,40 @@ export function Grid<T extends { id: string }>({
         }
     };
 
+    const onSelect = (checked: boolean, id?: string) => {
+        let newSelectedRows = [...selectedRows];
+        if (checked) {
+            newSelectedRows.push(data.find(d => d.id === id)!);
+        } else {
+            newSelectedRows = newSelectedRows.filter(r => r.id !== id);
+        }
+        setSelectedRows(newSelectedRows);
+        onSelectionChange && onSelectionChange(newSelectedRows);
+    }
+
+    const selectAll = () => {
+        let newSelectedRows: T[] = [];
+        if (selectedRows.length === data.length) {
+            newSelectedRows = [];
+        } else {
+            newSelectedRows = data;
+        }
+        setSelectedRows(newSelectedRows);
+        onSelectionChange && onSelectionChange(newSelectedRows);
+    };
+
+    const handleMenuClose = () => {
+        setSelectedRows([]);
+        onSelectionChange && onSelectionChange([]);
+    }
+
     const paginatorLeftData = useMemo(() => {
         return (
             <div className="flex items-center gap-2">
-                <span>{ selectedRows.length + " " + paginatorLeftText }</span>
+                <span className="flex" data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.select_all') }>
+                    <Checkbox label={ selectedRows.length + " " + paginatorLeftText }
+                              checked={ selectedRows.length !== 0 } onChange={ selectAll }/>
+                </span>
                 { actions &&
                     actions.map((action, idx) => (
                         <Button
@@ -110,7 +150,7 @@ export function Grid<T extends { id: string }>({
             <div>
                 { pagination && (
                     <div
-                        className="flex items-center justify-between mt-4 bg-white dark:bg-(--bg-secondary) px-4 rounded-xl text-(--text-secondary) font-normal h-18 mb-4">
+                        className="flex items-center justify-between mt-4 bg-white dark:bg-(--bg-secondary) px-4 rounded-lg text-(--text-secondary) font-normal h-18 mb-4">
                         <Skeleton width='20%'/>
                         <Skeleton width='30%'/>
                     </div>
@@ -119,7 +159,7 @@ export function Grid<T extends { id: string }>({
                     { Array.from({ length: skeletonRows }).map((_, idx) => (
                         <div
                             key={ idx }
-                            className="border border-(--border-secondary) rounded-xl p-4"
+                            className="border border-(--border-secondary) rounded-lg p-4"
                         >
                             <Skeleton width="100%" height="8rem"/>
                             <Skeleton className="mt-2" width="60%"/>
@@ -135,7 +175,7 @@ export function Grid<T extends { id: string }>({
         <div>
             { pagination && (
                 <div
-                    className="flex items-center justify-between mt-4 bg-white dark:bg-(--bg-secondary) px-4 rounded-xl text-(--text-secondary) font-normal mb-4">
+                    className="flex items-center justify-between mt-4 bg-white dark:bg-(--bg-secondary) px-4 rounded-lg text-(--text-secondary) font-normal mb-4">
                     { paginatorLeftData }
                     <Paginator
                         rows={ rowsPerPage }
@@ -151,52 +191,79 @@ export function Grid<T extends { id: string }>({
                             })
                         }
                         template="RowsPerPageDropdown CurrentPageReport PrevPageLink NextPageLink"
-                        currentPageReportTemplate={
-                            "{first} " +
-                            t("VERIFIER.to") +
-                            " {last} " +
-                            t("VERIFIER.of") +
-                            " {totalRecords}"
-                        }
+                        currentPageReportTemplate={ "{first} " + t("VERIFIER.to") + " {last} " + t("VERIFIER.of") + " {totalRecords}" }
                     />
                 </div>
             ) }
-            <div className="flex flex-col gap-4">
-                { data.length === 0 ? (
-                    <div className="text-center text-(--text-secondary) py-8">
-                        { emptyMessage }
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-4 gap-6">
-                        { data.map((row) => (
+            { data.length === 0 ? (
+                <div className="text-center text-(--text-secondary) py-8">
+                    { emptyMessage }
+                </div>
+            ) : (
+                <div className="grid grid-cols-4 gap-6">
+                    { data.map((row) => (
+                        <div
+                            key={ row.id }
+                            onClick={ () => handleRowClick(row) }
+                            className="border-2 border-(--border-secondary) hover:border-(--text-secondary) rounded-lg cursor-pointer bg-white transition-border-color duration-200"
+                        >
                             <div
-                                key={ row.id }
-                                onClick={ () => handleRowClick(row) }
-                                className="border border-(--border-secondary) rounded-xl p-4 cursor-pointer bg-[#D0DAD5]"
-                            >
-                                <div
-                                    className=" h-40 mb-4 rounded-lg flex items-center justify-center text-(--text-secondary)">
-                                    <LazyBase64Image
-                                        alt={ row.id }
-                                        document_info={ row }
-                                        className="h-full w-full object-cover object-top rounded-t-lg"
-                                    />
-                                </div>
-                                { columns.map((col, idx) => (
-                                    <div key={ idx } className="mb-2">
-                                        <span className="text-xs text-(--text-secondary)">
-                                            { col.header }
-                                        </span>
-                                        <div className="text-sm">
+                                className="relative bg-[#D0DAD5] rounded-b-none w-full p-6 pb-0 rounded-md flex items-center justify-center text-(--text-secondary)">
+                                <LazyBase64Image
+                                    alt={ row.id }
+                                    module="verifier"
+                                    document_info={ row }
+                                    className="object-cover object-top rounded-t-lg"
+                                />
+                                <Checkbox
+                                    id={ row.id }
+                                    className="absolute top-3 left-3"
+                                    checked={ selectedRows.some(r => r.id === row.id) }
+                                    onChange={ (checked: boolean, id: string | undefined) => onSelect(checked, id) }
+                                />
+                            </div>
+                            <div className='px-6 py-3'>
+                                <div className="flex gap-2 mb-1">
+                                    { columns.filter(col => col.id === 'nb_pages').map((col) => (
+                                        <div key={ col.id }>
                                             { col.body ? col.body(row) : (row as any)[col.field!] }
                                         </div>
+                                    )) }
+                                    { columns.filter(col => col.id === 'name').map((col) => (
+                                        <>
+                                            <div key={ col.id } className="truncate">
+                                                { col.body ? col.body(row) : (row as any)[col.field!] }
+                                            </div>
+                                            <div className="ml-auto">
+                                                <EllipsisVertical onClick={ (e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    setSelectedRows([row]);
+                                                    cm.current?.show(e);
+                                                    onSelectionChange && onSelectionChange([row]);
+                                                } }/>
+                                                { menuModel && (
+                                                    <ContextMenu model={ menuModel } className="w-auto!" ref={ cm } onHide={ handleMenuClose }/>
+                                                ) }
+                                            </div>
+                                        </>
+                                    )) }
+                                </div>
+                                { columns.filter(col => !['name', 'thumbnail', 'nb_pages'].includes(col.id as string)).map((col) => (
+                                    <div key={ col.id } className="text-sm mb-1 truncate">
+                                        <span className="text-(--text-secondary) mr-1">
+                                            { col.header } :
+                                        </span>
+                                        <span>
+                                            { col.body ? col.body(row) : (row as any)[col.field!] }
+                                        </span>
                                     </div>
                                 )) }
                             </div>
-                        )) }
-                    </div>
-                ) }
-            </div>
+                        </div>
+                    )) }
+                </div>
+            ) }
         </div>
     );
 }

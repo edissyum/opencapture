@@ -183,7 +183,7 @@ class FindContact:
                 'firstname': contact_data['firstname'].capitalize() if 'firstname' in contact_data else '',
             }
             contact_data = dict(list(contact_data.items()) + list(address_data.items()))
-            contact = accounts.create_supplier(contact_data)
+            contact = accounts.create_supplier(contact_data, True)
             if contact:
                 contact_name = contact_data['name'] if contact_data['name'] else contact_data['lastname']
                 self.log.info('Third-party account created with AI : ' + contact_name)

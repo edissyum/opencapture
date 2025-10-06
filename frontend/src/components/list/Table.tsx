@@ -217,8 +217,8 @@ export function Table<T extends { id: string }>({
 
                 { columns.map((col, idx) => (
                     <PrimeColumn
-                        headerClassName={ `${ col.className } cursor-pointer! text-(--text-secondary)! font-normal! pl-1! pr-1! py-2! border-(--border-secondary)!` }
-                        bodyClassName={ `${ col.className } cursor-pointer! pl-1! pr-1! text-sm py-2! ` }
+                        headerClassName={ `${ col.className } cursor-pointer text-(--text-secondary) font-normal pl-1 pr-1 py-2 border-(--border-secondary)` }
+                        bodyClassName={ `${ col.className } cursor-pointer pl-1 pr-1 text-sm py-2` }
                         key={ idx }
                         field={ col.id as string }
                         header={ col.sortable ? <span className='flex items-center'>{ col.header } <ChevronsUpDown

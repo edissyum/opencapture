@@ -427,7 +427,7 @@ def create_address(data):
         return response, 400
 
 
-def create_supplier(data):
+def create_supplier(data, from_api=False):
     _columns = {
         'name': data['name'],
         'bic': data['bic'] if 'bic' in data else None,
@@ -466,12 +466,19 @@ def create_supplier(data):
     if not supplier:
         res, error = accounts.create_supplier({'columns': _columns})
 
+        if from_api:
+            ip = '0.0.0.0'
+            user_info = 'API'
+        else:
+            ip = request.remote_addr
+            user_info = request.environ['user_info']
+
         if error is None:
             history.add_history({
                 'module': 'accounts',
-                'ip': request.remote_addr,
+                'ip': ip,
                 'submodule': 'create_supplier',
-                'user_info': request.environ['user_info'],
+                'user_info': user_info,
                 'desc': gettext('SUPPLIER_CREATED', supplier=data['name'])
             })
             response = {

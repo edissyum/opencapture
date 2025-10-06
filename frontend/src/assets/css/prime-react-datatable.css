@@ -20,7 +20,6 @@
 .p-datatable .p-datatable-thead > tr > th {
     @apply bg-white!;
     @apply dark:bg-(--bg-secondary)!;
-    @apply text-(--text-primary)!;
 }
 
 /* Border for checkboxes */

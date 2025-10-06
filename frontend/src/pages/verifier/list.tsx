@@ -84,7 +84,7 @@ export function VerifierListPage() {
     const columns: any = [
         {
             id: 'id',
-            header: '',
+            header: view == 'grid' ? t('VERIFIER.id') : '',
             field: 'id',
             sortable: true,
             className: 'max-w-14! w-14!'
@@ -107,19 +107,29 @@ export function VerifierListPage() {
         },
         { id: 'form_label', header: t('VERIFIER.form'), field: 'form_label' },
         {
+            id: 'filename',
+            header: t('VERIFIER.filename'),
+            className: 'max-w-md! w-md! truncate-data',
+            body: (item: any) => (
+                <span title={ item.original_filename }>
+                    { item.original_filename }
+                </span>
+            )
+        },
+        {
             id: 'nb_pages',
             header: '',
             className: 'max-w-16! w-16!',
             body: (item: any) => (
                 <div className='flex gap-1'>
                     <div className='flex justify-center items-center text-(--color-primary) gap-0.5'
-                         data-tooltip-id="nb_pages" data-tooltip-content={ t('VERIFIER.nb_pages') }>
+                         data-tooltip-id="tooltip" data-tooltip-content={ t('VERIFIER.nb_pages') }>
                         <span>{ item.nb_pages }</span>
                         <FileText size={ 15 }/>
                     </div>
                     { item.attachments_count > 0 && (
                         <div className='flex justify-center items-center text-(--color-primary) gap-0.5'
-                             data-tooltip-id="attachments_count" data-tooltip-content={ t('VERIFIER.nb_attachments') }>
+                             data-tooltip-id="tooltip" data-tooltip-content={ t('VERIFIER.nb_attachments') }>
                             <span>{ item.attachments_count }</span>
                             <Paperclip size={ 15 }/>
                         </div>
@@ -245,12 +255,12 @@ export function VerifierListPage() {
                            onChange={ (e) => setSearchTerm(e.target.value) }/>
                 </span>
                 <span className='ml-auto text-(--text-secondary) flex cursor-pointer'>
-                    <span data-tooltip-id="list" data-tooltip-content={ t('GLOBAL.list') }
+                    <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.list') }
                           onClick={ () => handleChangeView('list') }
                           className={ `${ view == 'list' ? "bg-(--color-primary)/20 border-(--border-primary)/50" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-l-md dark:bg-(--bg-secondary) border` }>
                         <Rows3 size={ 20 }/>
                     </span>
-                    <span data-tooltip-id="grid" data-tooltip-content={ t('GLOBAL.grid') }
+                    <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.grid') }
                           onClick={ () => handleChangeView('grid') }
                           className={ `${ view == 'grid' ? "bg-(--color-primary)/20 border-(--border-primary)/50" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-r-md dark:bg-(--bg-secondary) border` }>
                         <LayoutGrid size={ 20 }/>
@@ -288,6 +298,7 @@ export function VerifierListPage() {
                         actions={ actions }
                         pagination={ true }
                         columns={ columns }
+                        menuModel={ menuModel }
                         lazyParams={ lazyParams }
                         loading={ loadingDocuments }
                         rowsPerPage={ lazyParams.rows }

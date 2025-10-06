@@ -15,33 +15,43 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { useState } from "react";
 import { Check } from "lucide-react";
+import React, { useEffect, useState } from "react";
 
 type CheckboxProps = {
-    checked?: boolean;
-    onChange?: (checked: boolean) => void;
+    id?: string;
     label?: string;
+    checked?: boolean;
+    className?: string;
+    onChange?: (checked: boolean, id: string | undefined) => void;
 };
 
-export function Checkbox({ checked = false, onChange, label }: CheckboxProps) {
+export function Checkbox({ id, checked = false, onChange, label, className }: CheckboxProps) {
     const [isChecked, setIsChecked] = useState(checked);
 
-    const toggle = () => {
+    useEffect(() => {
+        setIsChecked(checked);
+    }, [checked]);
+
+    const toggle = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+
         const newValue = !isChecked;
         setIsChecked(newValue);
-        if (onChange) onChange(newValue);
+        if (onChange) onChange(newValue, id);
     };
 
     return (
-        <label className="inline-flex items-center cursor-pointer select-none">
+        <label className={ `${ className } inline-flex items-center cursor-pointer select-none` }>
             <div
+                id={ id }
                 onClick={ toggle }
                 className={ `w-5 h-5 border-1 border-(--border-secondary) rounded flex items-center justify-center
                     ${ isChecked ? "bg-(--color-primary) border-(--color-primary)" : "bg-white" }
                     transition-all hover:border-(--color-primary)` }
             >
-                { isChecked && <Check className="w-5 h-5 text-white"/> }
+                { isChecked && <Check id={ id } className="w-5 h-5 text-white"/> }
             </div>
             { label && <span onClick={ toggle } className="ml-2 text-(--text-secondary)">{ label }</span> }
         </label>

@@ -40,7 +40,8 @@
         "no": "Non",
         "yes": "Oui",
         "grid": "Affichage en grille",
-        "list": "Affichage en liste"
+        "list": "Affichage en liste",
+        "select_all": "Selectionner tout / Tout désélectionner"
     },
     "ONBOARD": {
         "select_module": "Choix du module par défaut",
@@ -111,7 +112,7 @@
     "VERIFIER": {
         "creation_date": "Date de création",
         "form": "Formulaire",
-        "name": "Nom",
+        "name": "Nom du tiers",
         "nb_pages": "Nombre de pages",
         "no_documents": "Aucun document",
         "document_selected_many": "documents sélectionnés",
@@ -128,6 +129,8 @@
         "confirm_delete_document_one": "Voulez-vous vraiment supprimer ce document ?",
         "confirm_delete_document_other": "Voulez-vous vraiment supprimer ces {{count}} documents ?",
         "delete_document": "Supprimer le document",
-        "delete_documents": "Supprimer"
+        "delete_documents": "Supprimer",
+        "id": "Identifiant technique",
+        "filename": "Fichier"
     }
 }
