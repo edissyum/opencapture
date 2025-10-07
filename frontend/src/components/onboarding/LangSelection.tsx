@@ -24,13 +24,13 @@ interface LangSelectionProps {
     refresh?: boolean;
 }
 
-export function LangSelection({refresh = true}: LangSelectionProps) {
+export function LangSelection({ refresh = true }: LangSelectionProps) {
     const { i18n } = useTranslation();
 
     const options = [
-        {code: 'fra', label: 'Français'},
-        {code: 'eng', label: 'English'},
-        {code: 'spa', label: 'Español'}
+        { code: 'fra', label: 'Français' },
+        { code: 'eng', label: 'English' },
+        { code: 'spa', label: 'Español' }
     ];
     const [selectedLang, setSelectedlang] = useState<string>(() => {
         return localStorage.getItem('selectedLang') || 'fra';
@@ -47,11 +47,13 @@ export function LangSelection({refresh = true}: LangSelectionProps) {
         <div className="flex gap-4 mt-4 justify-center">
             { options.map((lang) => (
                 <div key={ lang['code'] }
-                     className={ `relative border-2 flex bg-(--bg-primary) items-center rounded-md cursor-pointer hover:border-gray-400 p-6 ${ selectedLang === lang['code'] ? 'border-(--border-primary)!' : 'border-(--border-secondary)' }` }
+                     className={ `relative border-2 flex bg-(--bg-primary) items-center rounded-md cursor-pointer p-6 transition-border-color duration-200
+                     ${ selectedLang === lang['code'] ? 'border-(--border-primary)!' : 'border-(--border-secondary) hover:border-gray-400' }` }
                      onClick={ () => {
                          setSelectedlang(lang['code']);
-                         setTimeout(() => { if (selectedLang !== lang['code'] && refresh) {
-                             console.log('Dispatching forceAppReload event', refresh);
+                         setTimeout(() => {
+                             if (selectedLang !== lang['code'] && refresh) {
+                                 console.log('Dispatching forceAppReload event', refresh);
                                  window.dispatchEvent(new Event('forceAppReload'))
                              }
                          });

@@ -244,6 +244,17 @@ def get_page_full_thumbnail(page_id):
     return make_response(jsonify(response)), status
 
 
+@bp.route('splitter/batches/<int:batch_id>/getThumb', methods=['GET'])
+@auth.token_required
+def get_batch_thumbnail(batch_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/splitter/batches/{batch_id}/getThumb'}), 403
+
+    response, status = splitter.get_batch_thumbnail(batch_id)
+    return make_response(jsonify(response)), status
+
+
 @bp.route('splitter/saveModifications', methods=['POST'])
 @auth.token_required
 def save_modifications():

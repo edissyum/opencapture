@@ -41,7 +41,8 @@
         "yes": "Oui",
         "grid": "Affichage en grille",
         "list": "Affichage en liste",
-        "select_all": "Selectionner tout / Tout désélectionner"
+        "select_all": "Selectionner tout / Tout désélectionner",
+        "at": "à"
     },
     "ONBOARD": {
         "select_module": "Choix du module par défaut",
@@ -61,7 +62,9 @@
         "light_mode": "Clair",
         "select_theme": "Choix du thème de l'interface utilisateur",
         "select_theme_lang_info": "Choisissez le thème de l'interface utilisateur. Ce choix n’est pas définitif et pourra être changé plus tard.",
-        "system": "Système"
+        "system": "Système",
+        "select_view": "Selectionner le mode d'affichage par défaut",
+        "select_view_info": "Sélectionnez le mode d'affichage par défaut pour les listes de documents. Ce choix n’est pas définitif et pourra être changé plus tard."
     },
     "SETTINGS": {
         "abouts_us": "À propos",
@@ -132,5 +135,19 @@
         "delete_documents": "Supprimer",
         "id": "Identifiant technique",
         "filename": "Fichier"
+    },
+    "SPLITTER": {
+        "batch_selected_many": "lots sélectionnés",
+        "batch_selected_one": "lot sélectionné",
+        "batch_selected_other": "lots sélectionnés",
+        "batches": "Lots",
+        "confirm_delete_batch_many": "Voulez-vous vraiment supprimer ces {{count}} lots ?",
+        "confirm_delete_batch_one": "Voulez-vous vraiment supprimer ce lot ?",
+        "confirm_delete_batch_other": "Voulez-vous vraiment supprimer ces {{count}} lots ?",
+        "delete_batch": "Supprimer le lot",
+        "delete_batches": "Supprimer",
+        "id": "Identifiant technique",
+        "no_batches": "Aucun lot",
+        "search": "Rechercher (identifiant technique)"
     }
 }

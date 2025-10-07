@@ -68,8 +68,9 @@
 }
 
 /* Color for even rows */
-.p-datatable .p-datatable-tbody > tr {
+.p-datatable .p-datatable-tbody > tr:not(.p-row-odd) {
     @apply bg-(--bg-secondary);
+    @apply dark:bg-(--bg-primary);
     @apply dark:border-(--border-primary)!;
     @apply text-(--text-primary);
 }
@@ -95,11 +96,25 @@
     @apply hidden;
 }
 
-/* Change paginator colors */
+/* Change paginator and contextMenu colors */
+.p-paginator, .p-dropdown, .p-contextmenu {
+    @apply bg-(--bg-primary);
+}
+
+.p-contextmenu .p-menuitem:not(.p-highlight):not(.p-disabled) > .p-menuitem-content:hover,
+.p-contextmenu .p-menuitem:not(.p-highlight):not(.p-disabled).p-focus > .p-menuitem-content{
+    @apply bg-(--bg-secondary);
+    @apply text-(--text-secondary);
+}
+
+.p-dropdown .p-dropdown-label {
+    @apply text-(--text-secondary);
+}
+
 .p-dropdown:not(.p-disabled).p-focus, .p-dropdown:not(.p-disabled):hover {
-    @apply shadow-none!;
-    @apply outline-none!;
-    @apply border-(--border-primary)!;
+    @apply shadow-none;
+    @apply outline-none;
+    @apply border-(--border-primary);
 }
 
 .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight.p-focus,

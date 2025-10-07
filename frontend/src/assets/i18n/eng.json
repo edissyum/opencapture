@@ -41,7 +41,8 @@
         "yes": "Yes",
         "grid": "Grid view",
         "list": "List view",
-        "select_all": "Select all / Deselect all"
+        "select_all": "Select all / Deselect all",
+        "at": "at"
     },
     "ONBOARD": {
         "select_module": "Select default module",
@@ -61,7 +62,9 @@
         "light_mode": "Light mode",
         "select_theme": "Select user interface theme",
         "select_theme_lang_info": "Select the user interface theme. This choice is not final and can be changed later.",
-        "system": "System"
+        "system": "System",
+        "select_view": "Select default display mode",
+        "select_view_info": "Select the default display mode for document lists. This choice is not final and can be changed later."
     },
     "SETTINGS": {
         "abouts_us": "About us",
@@ -129,5 +132,17 @@
         "delete_documents": "Delete",
         "id": "Technical id",
         "filename": "Filename"
+    },
+    "SPLITTER": {
+        "batch_selected_one": "",
+        "batch_selected_other": "",
+        "batches": "",
+        "confirm_delete_batch_one": "",
+        "confirm_delete_batch_other": "",
+        "delete_batch": "",
+        "delete_batches": "",
+        "id": "",
+        "no_batches": "",
+        "search": ""
     }
 }

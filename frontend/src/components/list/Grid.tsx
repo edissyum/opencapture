@@ -16,20 +16,19 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import React, { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { EllipsisVertical } from "lucide-react";
+import React, { useMemo, useRef, useState } from "react";
 
 import { Skeleton } from "primereact/skeleton";
 import { Paginator } from "primereact/paginator";
+import { ContextMenu } from "primereact/contextmenu";
 
 import { Button } from "../Button";
 import { Checkbox } from "../Checkbox";
 
 import { LazyBase64Image } from "./LazyImage";
-import { ContextMenu } from "primereact/contextmenu";
-import { EllipsisVertical } from "lucide-react";
-import { ZIndexUtils } from "primereact/utils";
-import set = ZIndexUtils.set;
+
 
 type Column<T> = {
     id: string | undefined;
@@ -42,6 +41,7 @@ type Column<T> = {
 type CardListProps<T> = {
     data: T[];
     actions: any[];
+    module: string;
     baseLink?: string;
     loading?: boolean;
     rowsPerPage?: number;
@@ -67,6 +67,7 @@ type CardListProps<T> = {
 
 export function Grid<T extends { id: string }>({
     data,
+    module,
     columns,
     actions,
     baseLink,
@@ -106,7 +107,7 @@ export function Grid<T extends { id: string }>({
     }
 
     const selectAll = () => {
-        let newSelectedRows: T[] = [];
+        let newSelectedRows: T[];
         if (selectedRows.length === data.length) {
             newSelectedRows = [];
         } else {
@@ -150,9 +151,9 @@ export function Grid<T extends { id: string }>({
             <div>
                 { pagination && (
                     <div
-                        className="flex items-center justify-between mt-4 bg-white dark:bg-(--bg-secondary) px-4 rounded-lg text-(--text-secondary) font-normal h-18 mb-4">
-                        <Skeleton width='20%'/>
-                        <Skeleton width='30%'/>
+                        className="flex items-center justify-between mt-4 bg-(--bg-primary) px-4 rounded-lg text-(--text-secondary) font-normal h-18 mb-4">
+                        <Skeleton width='20%' className='dark:bg-(--text-secondary)'/>
+                        <Skeleton width='30%' className='dark:bg-(--text-secondary)'/>
                     </div>
                 ) }
                 <div className="grid grid-cols-4 gap-6">
@@ -161,9 +162,9 @@ export function Grid<T extends { id: string }>({
                             key={ idx }
                             className="border border-(--border-secondary) rounded-lg p-4"
                         >
-                            <Skeleton width="100%" height="8rem"/>
-                            <Skeleton className="mt-2" width="60%"/>
-                            <Skeleton className="mt-2" width="40%"/>
+                            <Skeleton width="100%" height="8rem" className='dark:bg-(--text-secondary)'/>
+                            <Skeleton className="dark:bg-(--text-secondary) mt-2" width="60%"/>
+                            <Skeleton className="dark:bg-(--text-secondary) mt-2" width="40%"/>
                         </div>
                     )) }
                 </div>
@@ -175,7 +176,7 @@ export function Grid<T extends { id: string }>({
         <div>
             { pagination && (
                 <div
-                    className="flex items-center justify-between mt-4 bg-white dark:bg-(--bg-secondary) px-4 rounded-lg text-(--text-secondary) font-normal mb-4">
+                    className="flex items-center justify-between mt-4 bg-(--bg-primary) px-4 rounded-lg text-(--text-secondary) font-normal mb-4">
                     { paginatorLeftData }
                     <Paginator
                         rows={ rowsPerPage }
@@ -205,13 +206,13 @@ export function Grid<T extends { id: string }>({
                         <div
                             key={ row.id }
                             onClick={ () => handleRowClick(row) }
-                            className="border-2 border-(--border-secondary) hover:border-(--text-secondary) rounded-lg cursor-pointer bg-white transition-border-color duration-200"
+                            className="border-2 border-(--border-secondary) hover:border-(--text-secondary) rounded-lg cursor-pointer bg-(--bg-primary) transition-border-color duration-200"
                         >
                             <div
-                                className="relative bg-[#D0DAD5] rounded-b-none w-full p-6 pb-0 rounded-md flex items-center justify-center text-(--text-secondary)">
+                                className="relative bg-[#D0DAD5] dark:bg-(--bg-secondary) rounded-b-none w-full p-6 pb-0 rounded-md flex items-center justify-center text-(--text-secondary)">
                                 <LazyBase64Image
                                     alt={ row.id }
-                                    module="verifier"
+                                    module={ module }
                                     document_info={ row }
                                     className="object-cover object-top rounded-t-lg"
                                 />
@@ -229,7 +230,7 @@ export function Grid<T extends { id: string }>({
                                             { col.body ? col.body(row) : (row as any)[col.field!] }
                                         </div>
                                     )) }
-                                    { columns.filter(col => col.id === 'name').map((col) => (
+                                    { columns.filter(col => module === 'verifier' ? col.id === 'name' : col.id === 'filename').map((col) => (
                                         <>
                                             <div key={ col.id } className="truncate">
                                                 { col.body ? col.body(row) : (row as any)[col.field!] }
@@ -249,7 +250,7 @@ export function Grid<T extends { id: string }>({
                                         </>
                                     )) }
                                 </div>
-                                { columns.filter(col => !['name', 'thumbnail', 'nb_pages'].includes(col.id as string)).map((col) => (
+                                { columns.filter(col => ![module === 'verifier' ? 'name' : 'filename', 'thumbnail', 'nb_pages'].includes(col.id as string)).map((col) => (
                                     <div key={ col.id } className="text-sm mb-1 truncate">
                                         <span className="text-(--text-secondary) mr-1">
                                             { col.header } :

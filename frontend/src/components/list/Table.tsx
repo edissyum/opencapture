@@ -120,14 +120,13 @@ export function Table<T extends { id: string }>({
         )
     }, [selectedRows, paginatorLeftText]);
 
-
     if (loading) {
         return (
             <div className="w-full max-h-[70vh] overflow-hidden border border-(--border-secondary) rounded-xl">
                 { pagination && (
                     <div className="flex items-center justify-between bg-white dark:bg-(--bg-secondary) px-4 rounded-t-xl text-(--text-secondary) font-normal h-18">
-                        <Skeleton width='20%'/>
-                        <Skeleton width='30%'/>
+                        <Skeleton width='20%' className='dark:bg-(--text-secondary)'/>
+                        <Skeleton width='30%' className='dark:bg-(--text-secondary)'/>
                     </div>
                 ) }
                 <div className='flex flex-row'>
@@ -143,10 +142,10 @@ export function Table<T extends { id: string }>({
                 <div className="flex flex-col">
                     { Array.from({ length: skeletonRows }).map((_, idx) => (
                         <div key={ idx }
-                             className="flex odd:bg-white even:bg-(--bg-secondary) border-b border-(--border-secondary)">
+                             className="flex bg-white dark:bg-(--bg-primary) even:bg-(--bg-secondary) border-b border-(--border-secondary)">
                             { columns.map((_col, ci) => (
                                 <span key={ ci } className={ `px-4 py-2 text-sm w-1/6` }>
-                                <Skeleton/>
+                                <Skeleton className='dark:bg-(--text-secondary)'/>
                             </span>
                             )) }
                         </div>
@@ -161,6 +160,7 @@ export function Table<T extends { id: string }>({
             { menuModel && (
                 <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }/>
             ) }
+
             <PrimeDataTable
                 dataKey="id"
                 lazy
@@ -182,7 +182,10 @@ export function Table<T extends { id: string }>({
                 selection={ selectedRows }
                 emptyMessage={ emptyMessage }
                 selectionMode={ 'checkbox' }
-                onSelectionChange={ (e: any) => handleSelectionChange(e.value) }
+                onSelectionChange={ (e: any) => {
+                    console.log(e)
+                    handleSelectionChange(e.value)
+                } }
                 className="w-full border border-(--border-secondary) rounded-xl"
                 contextMenuSelection={ selectedRows }
                 onContextMenuSelectionChange={ (e: any) => {
@@ -210,7 +213,7 @@ export function Table<T extends { id: string }>({
             >
                 { checkboxSelection && (
                     <PrimeColumn
-                        headerClassName="max-w-16 w-16 text-(--text-secondary)! font-normal! border-(--border-secondary)! py-0!"
+                        headerClassName="max-w-16 w-16 text-(--text-secondary) font-normal border-(--border-secondary)! py-0!"
                         bodyClassName="pl-4! pr-1! text-sm py-1!"
                         selectionMode="multiple"/>
                 ) }

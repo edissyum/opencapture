@@ -74,8 +74,11 @@ export function Login() {
                 sessionStorage.setItem("refreshToken", response.refresh_token);
                 sessionStorage.setItem("user", JSON.stringify(response.user));
 
-                const onboardingCompleted = localStorage.getItem('onboardingCompleted');
-                if (!onboardingCompleted) {
+                const onboardingCompleted = localStorage.getItem('completedOnboardingSteps');
+                const stepModules = import.meta.glob("./onboarding/step*.tsx", { eager: true });
+                const totalSteps = Object.keys(stepModules).length;
+
+                if (!onboardingCompleted || (JSON.parse(onboardingCompleted).length !== totalSteps)) {
                     navigate('/onboarding', { replace: true });
                     setLoadingLogin(false);
                     return;

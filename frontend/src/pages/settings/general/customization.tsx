@@ -18,14 +18,14 @@ import { useTranslation } from "react-i18next";
 import { Editor } from "@tinymce/tinymce-react";
 import { useEffect, useState } from "react";
 
-import UploadDropzone from "../../../components/upload/Dropzone";
+import { Button } from "../../../components/Button";
+import { showToast } from "../../../components/ToastProvider";
 import { CheckOverlay } from "../../../components/CheckOverlay";
+import UploadDropzone from "../../../components/upload/Dropzone";
+import { LangSelection } from "../../../components/onboarding/LangSelection";
 import { ThemeSelection } from "../../../components/onboarding/ThemeSelection";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
-import { LangSelection } from "../../../components/onboarding/LangSelection";
-import { Button } from "../../../components/Button.tsx";
-import { showToast } from "../../../components/ToastProvider.tsx";
 
 export function b64ToFile(b64Data: string) {
     const byteString = atob(b64Data.split(',')[1]);

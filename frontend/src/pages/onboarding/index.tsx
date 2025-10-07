@@ -15,24 +15,51 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import { Step1 } from "./step1";
-import { Step2 } from "./step2";
-import { Step3 } from "./step3";
-
 import { Button } from '../../components/Button';
+
+const stepModules = import.meta.glob("./step*.tsx", { eager: true });
 
 export function Onboarding() {
     const { t } = useTranslation();
 
-    const steps = [Step1, Step2, Step3];
+    const steps = Object.keys(stepModules).sort().map((path, index) => {
+        const mod = stepModules[path] as Record<string, any>;
+
+        const stepExportKey = Object.keys(mod).find((k) => k.startsWith("Step"));
+        const Component = stepExportKey ? mod[stepExportKey] : null;
+
+        return {
+            id: index + 1,
+            name: stepExportKey || `Step ${index + 1}`,
+            component: Component,
+        };
+    }).filter((s) => s.component);
+
+    const [completedSteps, _] = useState<number[]>(() => {
+        try {
+            const stored = localStorage.getItem("completedOnboardingSteps");
+            return stored ? JSON.parse(stored) : [];
+        } catch {
+            return [];
+        }
+    });
+
     const [currentStep, setCurrentStep] = useState(0);
+    useEffect(() => {
+        if (completedSteps.length !== 0) {
+            for (let i = 0; i < steps.length; i++) {
+                if (!completedSteps.includes(steps[i].id)) {
+                    setCurrentStep(steps.length - 1);
+                }
+            }
+        }
+    }, [completedSteps]);
 
-    const StepComponent = steps[currentStep];
-
+    const StepComponent = steps[currentStep]?.component;
     const next = () => {
         if (currentStep < steps.length - 1) {
             setCurrentStep((s) => s + 1);
@@ -46,7 +73,8 @@ export function Onboarding() {
     };
 
     const handleStart = () => {
-        localStorage.setItem('onboardingCompleted', 'true');
+        const completedSteps = steps.map((s) => s.id);
+        localStorage.setItem('completedOnboardingSteps', JSON.stringify(completedSteps));
     };
 
     return (

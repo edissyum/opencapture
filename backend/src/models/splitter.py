@@ -169,16 +169,14 @@ def retrieve_batches(args):
         'where': ['*'] if 'where' not in args else args['where'],
         'data': ['*'] if 'data' not in args else args['data'],
         'group_by': ['splitter_batches.id'] if 'group_by' not in args else args['group_by'],
-        'order_by': ['splitter_batches.creation_date DESC'] if 'order_by' not in args else args['order_by']
+        'order_by': ['splitter_batches.creation_date DESC'] if 'order_by' not in args else args['order_by'],
+        'limit': str(args['limit']) if 'limit' in args else 'ALL',
+        'offset': str(args['offset']) if 'offset' in args else 0,
     }
 
     if args['batch_id']:
         query_args['where'].append('splitter_batches.id = %s')
         query_args['data'].append(str(args['batch_id']))
-    if args['size']:
-        query_args['limit'] = str(args['size'])
-    if args['size'] and args['page']:
-        query_args['offset'] = str(args['page'] * args['size'])
 
     batches = database.select(query_args)
     return batches, error

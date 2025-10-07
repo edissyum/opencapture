@@ -21,29 +21,40 @@ import { CircleQuestionMark, Eye, FileText, Filter, LayoutGrid, Paperclip, Rows3
 
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
+import { Grid } from "../../components/list/Grid";
 import { Table } from "../../components/list/Table";
 import { Thumbnail } from "../../components/Thumbnail";
 
 import { useUser } from "../../services/hooks/useUser";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
-import { Grid } from "../../components/list/Grid.tsx";
 
 export function VerifierListPage() {
-    const { get, post, del } = axiosApiCall();
     const { user, loadingUser } = useUser();
+    const { get, post, del } = axiosApiCall();
 
     const [view, setView] = useState<'list' | 'grid'>('list');
     useEffect(() => {
-        localStorage.getItem('view');
-        if (localStorage.getItem('view') === 'grid') {
+        if (localStorage.getItem('selectedView') === 'grid') {
             setView('grid');
         }
     }, [view]);
 
+    const [locale, setLocale] = useState('fr-FR');
+    useEffect(() => {
+        const storageLocale = localStorage.getItem('selectedLang');
+        if (storageLocale === 'fra') {
+            setLocale('fr-FR');
+        } else if (storageLocale === 'eng') {
+            setLocale('en-US');
+        } else if (storageLocale === 'spa') {
+            setLocale('es-ES');
+        }
+    }, [locale]);
+
     const handleChangeView = (newView: 'list' | 'grid') => {
         setView(newView);
-        localStorage.setItem('view', newView);
+        localStorage.setItem('selectedView', newView);
     }
 
     const [totalPerTime, setTotalPerTime] = useState<any>(null);
@@ -103,7 +114,16 @@ export function VerifierListPage() {
             id: 'register_date',
             header: t('VERIFIER.creation_date'),
             sortable: true,
-            body: (item: any) => new Date(item.register_date).toLocaleString()
+            body: (item: any) => (
+                new Intl.DateTimeFormat(locale, {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                }).format(new Date(item.register_date)).replace(' ', ' ' + t('GLOBAL.at') + ' ').replace(',', '')
+                .replaceAll('/', '-')
+            )
         },
         { id: 'form_label', header: t('VERIFIER.form'), field: 'form_label' },
         {
@@ -179,15 +199,14 @@ export function VerifierListPage() {
 
             try {
                 const res = await post('/verifier/documents/list', {
+                    user_id: user.id,
                     status: selectedStatus,
                     limit: lazyParams.rows,
                     offset: lazyParams.first,
-                    filter: lazyParams.sortField,
                     search: searchTerm || null,
-                    order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null,
-                    user_id: user.id
+                    filter: lazyParams.sortField,
+                    order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null
                 }) || [];
-                console.log("Documents récupérés :", res);
                 setTotalDocuments(res.total);
                 setDocuments(res.documents);
             } catch (err) {
@@ -235,7 +254,7 @@ export function VerifierListPage() {
     return (
         <div>
             { hovered && (
-                <Thumbnail document_info={ hovered } open={ true }/>
+                <Thumbnail module={ 'verifier' } document_info={ hovered } open={ true }/>
             ) }
 
             <div className='flex items-center gap-6'>
@@ -243,9 +262,9 @@ export function VerifierListPage() {
                         className='rounded-3xl bg-white dark:bg-(--bg-secondary) text-(--text-primary) hover:text-(--color-primary) border-(--border-secondary)'>
                     { t('VERIFIER.filters') }
                 </Button>
-                <span className='flex items-center gap-0'>
+                <span className='flex items-center gap-1'>
                     <FileText size={ 16 }/>
-                    <span className='ml-1'>
+                    <span>
                         { t('VERIFIER.documents', { count: totalDocuments! }) } ({ totalDocuments || 0 })
                     </span>
                 </span>
@@ -271,7 +290,7 @@ export function VerifierListPage() {
             <div className="mt-4 rounded-xl">
                 { view === 'list' && (
                     <Table
-                        baseLink="/verifier/document/"
+                        baseLink="/verifier/viewer/"
                         data={ documents }
                         actions={ actions }
                         pagination={ true }
@@ -293,7 +312,8 @@ export function VerifierListPage() {
                 ) }
                 { view === 'grid' && (
                     <Grid
-                        baseLink="/verifier/document/"
+                        baseLink="/verifier/viewer/"
+                        module="verifier"
                         data={ documents }
                         actions={ actions }
                         pagination={ true }

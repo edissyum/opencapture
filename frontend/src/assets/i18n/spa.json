@@ -41,7 +41,8 @@
         "yes": "Sí",
         "grid": "Cuadrícula",
         "list": "Lista",
-        "select_all": "Seleccionar todo / Deseleccionar todo"
+        "select_all": "Seleccionar todo / Deseleccionar todo",
+        "at": "a"
     },
     "ONBOARD": {
         "select_module": "Elegir el módulo predeterminado",
@@ -61,7 +62,9 @@
         "light_mode": "Modo claro",
         "select_theme": "Elegir el tema de la interfaz de usuario",
         "select_theme_lang_info": "Elija el tema de la interfaz de usuario. Esta opción no es definitiva y puede modificarse posteriormente.",
-        "system": "Sistema"
+        "system": "Sistema",
+        "select_view": "Seleccionar el modo de visualización predeterminado",
+        "select_view_info": "Seleccione el modo de visualización predeterminado para las listas de documentos. Esta opción no es definitiva y puede modificarse posteriormente."
     },
     "SETTINGS": {
         "abouts_us": "Acerca de",
@@ -132,5 +135,19 @@
         "delete_documents": "Eliminar",
         "id": "Técnico id",
         "filename": "Nombre de archivo"
+    },
+    "SPLITTER": {
+        "batch_selected_many": "",
+        "batch_selected_one": "",
+        "batch_selected_other": "",
+        "batches": "",
+        "confirm_delete_batch_many": "",
+        "confirm_delete_batch_one": "",
+        "confirm_delete_batch_other": "",
+        "delete_batch": "",
+        "delete_batches": "",
+        "id": "",
+        "no_batches": "",
+        "search": ""
     }
 }

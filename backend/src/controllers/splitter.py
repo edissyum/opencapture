@@ -152,9 +152,9 @@ def retrieve_batches(data):
         docservers = _vars[9]
 
     args = {
-        'user_id': data['userId'],
-        'size': data['size'] if 'size' in data else None,
-        'page': data['page'] if 'page' in data else None,
+        'user_id': data['user_id'],
+        'limit': data['limit'] if 'limit' in data else None,
+        'offset': data['offset'] if 'offset' in data else None,
         'time': data['time'] if 'time' in data else None,
         'status': data['status'] if 'status' in data else None,
         'search': data['search'] if 'search' in data else None,
@@ -417,6 +417,35 @@ def get_page_full_thumbnail(page_id):
         }
         return response, 400
 
+
+def get_batch_thumbnail(batch_id):
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+
+    res, error = splitter.get_batch_by_id({'id': batch_id})
+    if error:
+        response = {
+            "errors": "ERROR",
+            "message": gettext(error)
+        }
+        return response, 400
+
+    try:
+        thumbnail = f"{docservers['SPLITTER_THUMB']}/{res['batch_folder']}/{res['thumbnail']}"
+        with open(thumbnail, 'rb') as image_file:
+            encoded_string = base64.b64encode(image_file.read())
+            res['thumbnail'] = encoded_string.decode("utf-8")
+    except IOError:
+        response = {
+            "errors": "ERROR",
+            "message": gettext('THUMBNAIL_NOT_FOUND')
+        }
+        return response, 400
+    return {'thumbnail': res['thumbnail']}, 200
 
 def retrieve_documents(batch_id):
     res_documents = []

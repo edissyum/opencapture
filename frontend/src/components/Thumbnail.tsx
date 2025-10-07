@@ -22,45 +22,65 @@ import { b64ToFile } from "../pages/settings/general/customization";
 
 type TNLProps = {
     open: boolean;
+    module: string;
     document_info: any;
 };
 
-export function Thumbnail({ document_info, open }: TNLProps) {
-    const { post } = axiosApiCall();
+const thumbCache: any = {
+    verifier: new Map<string, string>(),
+    splitter: new Map<string, string>(),
+};
+
+export function Thumbnail({ document_info, open, module }: TNLProps) {
+    const { get, post } = axiosApiCall();
     const [loading, setLoading] = useState(false);
-    const [thumbCache, setThumbCache] = useState<Record<any, any>>({});
+
     useEffect(() => {
-        if (!open || thumbCache[document_info.id] || loading) return;
+        if (!open || thumbCache[module].has(document_info.id) || loading) return;
 
         setLoading(true);
-        post(`/verifier/getThumb`, {
-            "type": 'full',
-            "compress": true,
-            "documentId": document_info.id,
-            "filename": document_info.full_jpg_filename,
-            "registerDate": document_info.register_date
-        }).then((res) => {
-            const thumb = b64ToFile('data:image/jpg;base64,' + res.file);
-            setThumbCache((prev) => ({ ...prev, [document_info.id]: thumb || "Aucune donnée" }));
-        }).catch(() => setThumbCache((prev) => ({
-            ...prev,
-            [document_info.id]: "Erreur lors du chargement de la miniature"
-        }))).finally(() => setLoading(false));
+        if (module == 'verifier') {
+            post(`/verifier/getThumb`, {
+                "type": 'full',
+                "compress": true,
+                "documentId": document_info.id,
+                "filename": document_info.full_jpg_filename,
+                "registerDate": document_info.register_date
+            }).then((res) => {
+                thumbCache[module].set(
+                    document_info.id,
+                    b64ToFile('data:image/jpg;base64,' + res.file)
+                );
+            }).catch(() => {
+                thumbCache[module].set(document_info.id, { error: "Erreur lors du chargement de la vignette" });
+            }).finally(() => setLoading(false));
+        } else if (module == 'splitter') {
+            get(`/splitter/batches/${document_info.id}/getThumb`, {}).then((res) => {
+                thumbCache[module].set(
+                    document_info.id,
+                    b64ToFile('data:image/jpg;base64,' + res.thumbnail)
+                );
+            }).catch(() => {
+                thumbCache[module].set(document_info.id, { error: "Erreur lors du chargement de la vignette" });
+            }).finally(() => setLoading(false));
+        }
     }, [open, document_info]);
 
     if (!open) return null;
 
+    const cached = thumbCache[module].get(document_info.id);
+
     return (
         <div className="tnl absolute z-40 top-4 left-4 max-w-[30%] border border-gray-900">
             { loading && <p className="text-sm text-gray-500">Chargement…</p> }
-            { thumbCache[document_info.id]?.error &&
-                <p className="text-sm text-red-500">{ thumbCache[document_info.id].error }</p> }
-            { thumbCache[document_info.id] && !thumbCache[document_info.id].error && (
+            { cached?.error &&
+                <p className="text-sm text-red-500">{ cached.error }</p> }
+            { cached && !cached.error && (
                 <div className="space-y-1">
                     <p className="font-semibold">TNL Document #{ document_info.id }</p>
-                    { thumbCache[document_info.id] && (
-                        <img className="h-full" src={ URL.createObjectURL(thumbCache[document_info.id]) }
-                             alt={ thumbCache[document_info.id].name }/>
+                    { cached && (
+                        <img className="h-full" src={ URL.createObjectURL(cached) }
+                             alt={ cached.name }/>
                     ) }
                 </div>
             ) }
