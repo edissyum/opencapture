@@ -209,7 +209,7 @@ export function SettingsGeneralRoles() {
     }, [lazyParams, searchTerm, user, loadingUser]);
 
     return (
-        <div>
+        <div className="p-8 bg-(--bg-secondary)">
             <div className='flex items-center gap-6 mb-4'>
                 <span className='flex items-center gap-1'>
                     <FileText size={ 16 }/>

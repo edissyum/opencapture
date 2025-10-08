@@ -163,7 +163,7 @@ export function SettingsGeneralCustomization() {
     }
 
     return (
-        <div>
+        <div className='p-8'>
             <h2>{ t('CUSTOMIZATION.theme') }</h2>
             <p className='text-(--text-secondary)'>{ t('CUSTOMIZATION.theme_description') }</p>
             <div className="flex">
