@@ -194,7 +194,7 @@ def create_form(args):
         if 'outputs' in args and args['outputs']:
             outputs = '{'
             for output in args['outputs']:
-                outputs += output + ','
+                outputs += str(output) + ','
             outputs = outputs.rstrip(',')
             outputs += '}'
         else:
