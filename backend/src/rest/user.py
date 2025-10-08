@@ -61,8 +61,10 @@ def get_users():
     check, message = rest_validator(request.args, [
         {'id': 'role', 'type': str, 'mandatory': False},
         {'id': 'limit', 'type': int, 'mandatory': False},
+        {'id': 'order', 'type': str, 'mandatory': False},
         {'id': 'offset', 'type': int, 'mandatory': False},
-        {'id': 'search', 'type': str, 'mandatory': False}
+        {'id': 'search', 'type': str, 'mandatory': False},
+        {'id': 'filter', 'type': str, 'mandatory': False}
     ])
 
     if not check:
@@ -72,11 +74,14 @@ def get_users():
         }, 400)
 
     args = {
-        'select': ['*', 'count(*) OVER() as total'],
-        'where': ['status NOT IN (%s)', "role <> 1"],
+        'select': ['users.*', 'label', 'count(*) OVER() as total'],
+        'table': ['users', 'roles'],
+        'left_join': ['users.role = roles.id'],
+        'where': ['users.status NOT IN (%s)', "role <> 1"],
         'data': ['DEL'],
         'offset': request.args['offset'] if 'offset' in request.args else 0,
-        'limit': request.args['limit'] if 'limit' in request.args else 'ALL'
+        'limit': request.args['limit'] if 'limit' in request.args else 'ALL',
+        'order_by': ['users.id ASC'] if 'filter' not in request.args else [f"users.{request.args['filter']} {request.args['order']}"]
     }
 
     if 'search' in request.args and request.args['search']:

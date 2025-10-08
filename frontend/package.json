@@ -7,7 +7,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "vite",
+        "dev": "export VITE_BACKEND_URL=http://localhost:8000 && vite",
         "lint": "eslint .",
         "check-update": "ncu",
         "preview": "vite preview",

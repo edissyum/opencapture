@@ -53,7 +53,6 @@ export default function UploadDropzone({
     );
 
     const onDropRejected = useCallback((fileRejections: any[]) => {
-        console.log(fileRejections);
         if (fileRejections.length > 0) {
             if (fileRejections[0].errors.some((e: any) => e.code === "too-many-files")) {
                 showToast(t("UPLOAD.too_many_files", {maxFiles: maxFiles}), "error");

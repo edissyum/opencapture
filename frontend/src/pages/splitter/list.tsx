@@ -75,7 +75,7 @@ export function SplitterListPage() {
         {
             label: t('SPLITTER.delete_batches'),
             icon: <Trash2 className='mr-1' size={ 16 }/>,
-            onClick: () => handleDelete()
+            command: () => handleDelete()
         }
     ]
 
@@ -175,7 +175,7 @@ export function SplitterListPage() {
                     filter: lazyParams.sortField,
                     order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null
                 }) || [];
-                console.log(res)
+
                 setTotalBatches(res.count);
                 setBatches(res.batches);
             } catch (err) {

@@ -33,8 +33,10 @@ import { SettingsIndex } from "./pages/settings";
 import { SettingsGeneralIndex } from "./pages/settings/general";
 import { SettingsVerifierIndex } from "./pages/settings/verifier";
 import { SettingsSplitterIndex } from "./pages/settings/splitter";
+import { SettingsGeneralUsers } from "./pages/settings/general/users";
 import { SettingsGeneralAdvanced } from "./pages/settings/general/advanced";
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
+import { SettingsGeneralRoles } from "./pages/settings/general/roles.tsx";
 
 export const router = createBrowserRouter(
     [
@@ -102,6 +104,20 @@ export const router = createBrowserRouter(
                             element: <SettingsGeneralAdvanced/>,
                             errorElement: <LoginRequiredError/>,
                             handle: { breadcrumb: 'SETTINGS.advanced' }
+                        },
+                        {
+                            path: "users",
+                            loader: protectedLoader,
+                            element: <SettingsGeneralUsers/>,
+                            errorElement: <LoginRequiredError/>,
+                            handle: { breadcrumb: 'SETTINGS.users' }
+                        },
+                        {
+                            path: "roles",
+                            loader: protectedLoader,
+                            element: <SettingsGeneralRoles/>,
+                            errorElement: <LoginRequiredError/>,
+                            handle: { breadcrumb: 'SETTINGS.roles' }
                         }
                     ]
                 },

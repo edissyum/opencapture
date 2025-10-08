@@ -29,14 +29,14 @@ export function axiosApiCall() {
         headers: {
             "Content-Type": "application/json",
         },
-        baseURL: `${BACKEND_URL}/` + (custom ? `${custom}/ws/` : "ws/")
+        baseURL: `${ BACKEND_URL }/` + (custom ? `${ custom }/ws/` : "ws/")
     });
 
     // Add a request interceptor to include the token in headers
     api.interceptors.request.use(config => {
         const token = sessionStorage.getItem("accessToken");
         if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+            config.headers.Authorization = `Bearer ${ token }`;
         }
         return config;
     });
@@ -52,33 +52,31 @@ export function axiosApiCall() {
                 const refreshToken = sessionStorage.getItem("refreshToken");
                 if (!refreshToken) {
                     showToast(t('AUTH.session_expired'), "error");
-                    sessionStorage.removeItem("accessToken");
-                    sessionStorage.removeItem("refreshToken");
+                    sessionStorage.clear();
                     return Promise.reject(err);
                 }
 
                 try {
                     const refreshRes = await axios.post(
-                        `${BACKEND_URL}/` + (custom ? `${custom}/ws/` : "ws/") + 'auth/login/refresh',
-                        {'token': refreshToken},
+                        `${ BACKEND_URL }/` + (custom ? `${ custom }/ws/` : "ws/") + 'auth/login/refresh',
+                        { 'token': refreshToken },
                         {
                             headers: {
                                 "Content-Type": "application/json",
-                                "Authorization": `Bearer ${refreshToken}`
+                                "Authorization": `Bearer ${ refreshToken }`
                             }
                         }
                     );
                     const newAccessToken = refreshRes.data.token;
                     if (newAccessToken) {
                         sessionStorage.setItem("accessToken", newAccessToken);
-                        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                        originalRequest.headers.Authorization = `Bearer ${ newAccessToken }`;
                         sessionStorage.setItem("user", JSON.stringify(refreshRes.data.user));
                         return api.request(originalRequest);
                     }
                 } catch (refreshErr) {
                     showToast(t('AUTH.session_expired'), "error");
-                    sessionStorage.removeItem("accessToken");
-                    sessionStorage.removeItem("refreshToken");
+                    sessionStorage.clear();
                     return Promise.reject(refreshErr);
                 }
             }
@@ -104,34 +102,34 @@ export function axiosApiCall() {
                     <div>
                         <h4>
                             <strong>
-                                {err.response.data.errors}
+                                { err.response.data.errors }
                             </strong>
                         </h4>
                         <p>
-                            {err.response.data.message}
+                            { err.response.data.message }
                         </p>
                     </div>, "error"
                 )
             } else {
                 showToast(err.message || "Erreur inconnue", "error");
             }
-            return null;
+            throw err;
         } finally {
             setLoading(false);
         }
     };
 
     const get = <T = any>(url: string, config?: AxiosRequestConfig) =>
-        request<T>({...config, method: "GET", url});
+        request<T>({ ...config, method: "GET", url });
 
     const post = <T = any>(url: string, data?: any, config?: AxiosRequestConfig) =>
-        request<T>({...config, method: "POST", url, data});
+        request<T>({ ...config, method: "POST", url, data });
 
     const put = <T = any>(url: string, data?: any, config?: AxiosRequestConfig) =>
-        request<T>({...config, method: "PUT", url, data});
+        request<T>({ ...config, method: "PUT", url, data });
 
     const del = <T = any>(url: string, config?: AxiosRequestConfig) =>
-        request<T>({...config, method: "DELETE", url});
+        request<T>({ ...config, method: "DELETE", url });
 
-    return {loading, error, get, post, put, del};
+    return { loading, error, get, post, put, del };
 }

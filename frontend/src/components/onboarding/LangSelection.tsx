@@ -53,7 +53,6 @@ export function LangSelection({ refresh = true }: LangSelectionProps) {
                          setSelectedlang(lang['code']);
                          setTimeout(() => {
                              if (selectedLang !== lang['code'] && refresh) {
-                                 console.log('Dispatching forceAppReload event', refresh);
                                  window.dispatchEvent(new Event('forceAppReload'))
                              }
                          });

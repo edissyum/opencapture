@@ -19,7 +19,7 @@ import React from "react";
 import { toast, ToastContainer, type ToastOptions } from "react-toastify";
 
 export const showToast = (message: any, type: "success" | "warning" | "error" | "info" = "success", options?: ToastOptions) => {
-    toast(message, {type, toastId: message, ...options});
+    toast(message, { type, toastId: message, ...options });
 };
 
 export const ToastProvider: React.FC = () => {

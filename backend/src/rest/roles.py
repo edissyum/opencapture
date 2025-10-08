@@ -29,7 +29,10 @@ bp = Blueprint('roles', __name__, url_prefix='/ws/')
 def get_roles(user_id):
     check, message = rest_validator(request.args, [
         {'id': 'limit', 'type': int, 'mandatory': False},
-        {'id': 'offset', 'type': int, 'mandatory': False}
+        {'id': 'order', 'type': str, 'mandatory': False},
+        {'id': 'offset', 'type': int, 'mandatory': False},
+        {'id': 'search', 'type': str, 'mandatory': False},
+        {'id': 'filter', 'type': str, 'mandatory': False}
     ])
 
     if not check:
@@ -42,7 +45,9 @@ def get_roles(user_id):
         'user_id': user_id,
         'offset': request.args['offset'] if 'offset' in request.args else 0,
         'limit': request.args['limit'] if 'limit' in request.args else 'ALL',
-        'full': 'full' in request.args
+        'search': request.args['search'] if 'search' in request.args else None,
+        'full': 'full' in request.args,
+        'order_by': ['id ASC'] if 'filter' not in request.args else [f"{request.args['filter']} {request.args['order']}"]
     }
     _roles = roles.get_roles(args)
     return make_response(jsonify(_roles[0])), _roles[1]

@@ -88,7 +88,7 @@ export function VerifierListPage() {
         {
             label: t('VERIFIER.delete_documents'),
             icon: <Trash2 className='mr-1' size={ 16 }/>,
-            onClick: () => handleDelete()
+            command: () => handleDelete()
         }
     ]
 

@@ -67,7 +67,7 @@ export function SettingsGeneralIndex() {
             name: t('SETTINGS.roles'),
             description: t('SETTINGS.roles_description'),
             icon: <UsersRound/>,
-            href: '/settings/general/users'
+            href: '/settings/general/roles'
         },
         {
             name: t('SETTINGS.advanced'),

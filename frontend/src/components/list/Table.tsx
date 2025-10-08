@@ -83,7 +83,6 @@ export function Table<T extends { id: string }>({
     onSelectionChange,
     onLazyParamsChange
 }: DataTableProps<T>) {
-
     const navigate = useNavigate();
 
     const [_, setSelectedRows] = useState<T[]>([]);
@@ -111,7 +110,7 @@ export function Table<T extends { id: string }>({
                         size={'sm'}
                         variant={ "no_bg_border" }
                         className='p-2 border'
-                        onClick={ action.onClick }
+                        onClick={ action.command }
                         disabled={ selectedRows.length === 0 }>
                         { action.icon } { action.label }
                     </Button>
@@ -183,7 +182,6 @@ export function Table<T extends { id: string }>({
                 emptyMessage={ emptyMessage }
                 selectionMode={ 'checkbox' }
                 onSelectionChange={ (e: any) => {
-                    console.log(e)
                     handleSelectionChange(e.value)
                 } }
                 className="w-full border border-(--border-secondary) rounded-xl"

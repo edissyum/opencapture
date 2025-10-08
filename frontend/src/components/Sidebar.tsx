@@ -37,22 +37,21 @@ export default function Sidebar() {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        sessionStorage.removeItem("user");
-        sessionStorage.removeItem("accessToken");
-        sessionStorage.removeItem("refreshToken");
+        sessionStorage.clear();
 
-        navigate("/login", {replace: true});
+        navigate("/login", { replace: true });
     };
 
     const [collapsed, setCollapsed] = useState(false);
 
-    const standardClasses = "flex items-center p-2 gap-2 hover:text-(--color-primary)! text-(--text-secondary)! font-semibold";
+    const standardClasses = "flex items-center p-3 gap-2 hover:text-(--color-primary)! text-(--text-secondary)! font-semibold";
     const activeClasses = "bg-green-400/10 border-2 border-(--border-primary) rounded-lg text-(--color-primary)!";
 
     return (
         <aside
             className={ `min-h-screen px-3 py-2 flex flex-col border-r-2 border-r-(--border-secondary) transition-all duration-300 ${ collapsed ? "w-18" : "w-70" }` }>
-            <div className={ `flex items-center max-w-10/12 min-h-18 max-h-30 gap-3 mb-3 ${ collapsed ? "p-2" : "p-4" }` }>
+            <div
+                className={ `flex items-center max-w-10/12 min-h-18 max-h-30 gap-3 mb-3 ${ collapsed ? "p-2" : "p-4" }` }>
                 { !collapsed && (
                     <LoginImage className="mx-auto"></LoginImage>
                 ) }
@@ -62,7 +61,7 @@ export default function Sidebar() {
                 </span>
             </div>
 
-            <nav className="flex flex-col gap-3">
+            <nav className={ `${ collapsed ? 'items-center': ''} flex flex-col gap-3` }>
                 <Link to="/home" className={ `${ standardClasses } ${
                     ['/home', '/upload'].some((path) => location.pathname.includes(path)) ? activeClasses : ""
                 }` }>

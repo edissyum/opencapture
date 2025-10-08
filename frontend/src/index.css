@@ -78,6 +78,11 @@
     --bg-primary: theme(colors.white);
     --bg-secondary: theme(colors.gray.100);
 
+    --bg-error: theme(colors.red-400 / 0.1);
+    --bg-success: theme(colors.green-400 / 0.1);
+    --text-error: theme(colors.red-400);
+    --text-success: theme(colors.green-400);
+
     --border-primary: theme(colors.green-400);
     --border-secondary: theme(colors.gray.300);
 

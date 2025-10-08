@@ -26,7 +26,8 @@ def get_roles(args):
     _args = {
         'select': ['*', 'count(*) OVER() as total'],
         'offset': args['offset'],
-        'limit': args['limit']
+        'limit': args['limit'],
+        'order_by': args['order_by']
     }
 
     if args['full']:
@@ -57,6 +58,11 @@ def get_roles(args):
         else:
             _args['where'] = ['id = ANY(%s)', 'status NOT IN (%s)', 'editable <> %s']
             _args['data'] = [user_role['assign_roles'], 'DEL', 'false']
+
+        if 'search' in args and args['search']:
+            _args['where'].append('(label ILIKE %s OR label_short ILIKE %s)')
+            _args['data'].append(f"%{args['search']}%")
+            _args['data'].append(f"%{args['search']}%")
 
     _roles = roles.get_roles(_args)
 

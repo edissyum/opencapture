@@ -103,10 +103,11 @@ def get_users(args):
     error = None
     users = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['users'],
+        'table': ['users'] if 'table' not in args else args['table'],
+        'left_join': [] if 'left_join' not in args else args['left_join'],
         'where': ['status NOT IN (%s)', "role <> 1"] if 'where' not in args else args['where'],
         'data': ['DEL'] if 'data' not in args else args['data'],
-        'order_by': ['id ASC'],
+        'order_by': ['users.id ASC'] if 'order_by' not in args else args['order_by'],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
         'offset': str(args['offset']) if 'offset' in args else 0
     })
