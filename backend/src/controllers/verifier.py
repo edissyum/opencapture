@@ -225,7 +225,6 @@ def retrieve_documents(args):
         args['data'].append("%%" + args['search'].lower() + "%%")
 
         args['offset'] = ''
-        args['limit'] = ''
 
     if 'allowedCustomers' in args and args['allowedCustomers']:
         args['where'].append('customer_id IN (' + ','.join(map(str, args['allowedCustomers'])) + ')')

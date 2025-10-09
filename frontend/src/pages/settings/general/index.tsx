@@ -19,63 +19,65 @@ import { AtSign, Brush, HardDrive, HashIcon, Inbox, Lock, User, UsersRound, Wren
 
 import { SettingsCard } from "../../../components/settings/SettingsCard";
 
+export const getSettingsGeneralOptions = () => [
+    {
+        name: t('SETTINGS.customization'),
+        description: t('SETTINGS.customization_description'),
+        icon: <Brush/>,
+        href: '/settings/general/customization'
+    },
+    {
+        name: t('SETTINGS.security'),
+        description: t('SETTINGS.security_description'),
+        icon: <AtSign/>,
+        href: '/settings/general/security'
+    },
+    {
+        name: t('SETTINGS.smtp'),
+        description: t('SETTINGS.smtp_description'),
+        icon: <Lock/>,
+        href: '/settings/general/smtp'
+    },
+    {
+        name: t('SETTINGS.docservers'),
+        description: t('SETTINGS.docservers_description'),
+        icon: <HardDrive/>,
+        href: '/settings/general/docservers'
+    },
+    {
+        name: t('SETTINGS.regex'),
+        description: t('SETTINGS.regex_description'),
+        icon: <HashIcon/>,
+        href: '/settings/general/regex'
+    },
+    {
+        name: t('SETTINGS.mailcollect'),
+        description: t('SETTINGS.mailcollect_description'),
+        icon: <Inbox/>,
+        href: '/settings/general/mailcollect'
+    },
+    {
+        name: t('SETTINGS.users'),
+        description: t('SETTINGS.users_description'),
+        icon: <User/>,
+        href: '/settings/general/users'
+    },
+    {
+        name: t('SETTINGS.roles'),
+        description: t('SETTINGS.roles_description'),
+        icon: <UsersRound/>,
+        href: '/settings/general/roles'
+    },
+    {
+        name: t('SETTINGS.advanced'),
+        description: t('SETTINGS.advanced_description'),
+        icon: <Wrench/>,
+        href: '/settings/general/advanced'
+    }
+];
+
 export function SettingsGeneralIndex() {
-    const options = [
-        {
-            name: t('SETTINGS.customization'),
-            description: t('SETTINGS.customization_description'),
-            icon: <Brush/>,
-            href: '/settings/general/customization'
-        },
-        {
-            name: t('SETTINGS.security'),
-            description: t('SETTINGS.security_description'),
-            icon: <AtSign/>,
-            href: '/settings/general/security'
-        },
-        {
-            name: t('SETTINGS.smtp'),
-            description: t('SETTINGS.smtp_description'),
-            icon: <Lock/>,
-            href: '/settings/general/smtp'
-        },
-        {
-            name: t('SETTINGS.docservers'),
-            description: t('SETTINGS.docservers_description'),
-            icon: <HardDrive/>,
-            href: '/settings/general/docservers'
-        },
-        {
-            name: t('SETTINGS.regex'),
-            description: t('SETTINGS.regex_description'),
-            icon: <HashIcon/>,
-            href: '/settings/general/regex'
-        },
-        {
-            name: t('SETTINGS.mailcollect'),
-            description: t('SETTINGS.mailcollect_description'),
-            icon: <Inbox/>,
-            href: '/settings/general/mailcollect'
-        },
-        {
-            name: t('SETTINGS.users'),
-            description: t('SETTINGS.users_description'),
-            icon: <User/>,
-            href: '/settings/general/users'
-        },
-        {
-            name: t('SETTINGS.roles'),
-            description: t('SETTINGS.roles_description'),
-            icon: <UsersRound/>,
-            href: '/settings/general/roles'
-        },
-        {
-            name: t('SETTINGS.advanced'),
-            description: t('SETTINGS.advanced_description'),
-            icon: <Wrench/>,
-            href: '/settings/general/advanced'
-        }
-    ];
+    const options = getSettingsGeneralOptions();
 
     return (
         <div className='grid grid-cols-3 gap-8 p-8'>

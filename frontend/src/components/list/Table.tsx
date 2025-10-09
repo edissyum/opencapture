@@ -39,15 +39,16 @@ type Column<T> = {
 type DataTableProps<T> = {
     data: T[];
     actions: any[];
+    height?: string;
     baseLink?: string;
     loading?: boolean;
+    selectedRows?: T[];
     rowsPerPage?: number;
     pagination?: boolean;
     columns: Column<T>[];
     totalRecords?: number;
     emptyMessage?: string;
     skeletonRows?: number;
-    selectedRows?: T[];
     paginatorLeftText: string;
     checkboxSelection?: boolean;
     rowsPerPageOptions?: number[];
@@ -60,7 +61,7 @@ type DataTableProps<T> = {
         sortOrder: 1 | -1 | null;
     };
     onLazyParamsChange: (params: any) => void;
-    menuModel?: { label: string; icon: string; command: () => void }[];
+    menuModel?: { label: string; icon: any; command: () => void }[];
 };
 
 export function Table<T extends { id: string }>({
@@ -76,6 +77,7 @@ export function Table<T extends { id: string }>({
     paginatorLeftText,
     pagination = false,
     selectedRows = [],
+    height = "h-[70vh]",
     checkboxSelection = false,
     totalRecords = data.length,
     rowsPerPageOptions = [10, 20, 50],
@@ -107,7 +109,7 @@ export function Table<T extends { id: string }>({
                 { actions && actions.map((action, idx) => (
                     <Button
                         key={ idx }
-                        size={'sm'}
+                        size={ 'sm' }
                         variant={ "no_bg_border" }
                         className='p-2 border'
                         onClick={ action.command }
@@ -121,9 +123,11 @@ export function Table<T extends { id: string }>({
 
     if (loading) {
         return (
-            <div className="w-full max-h-[70vh] overflow-hidden border border-(--border-secondary) rounded-xl">
+            <div
+                className={ `${ height } w-full overflow-hidden border border-(--border-secondary) rounded-xl` }>
                 { pagination && (
-                    <div className="flex items-center justify-between bg-white dark:bg-(--bg-secondary) px-4 rounded-t-xl text-(--text-secondary) font-normal h-18">
+                    <div
+                        className="flex items-center justify-between bg-white dark:bg-(--bg-secondary) px-4 rounded-t-xl text-(--text-secondary) font-normal h-18">
                         <Skeleton width='20%' className='dark:bg-(--text-secondary)'/>
                         <Skeleton width='30%' className='dark:bg-(--text-secondary)'/>
                     </div>
@@ -155,7 +159,7 @@ export function Table<T extends { id: string }>({
     }
 
     return (
-        <div className='h-[70vh]'>
+        <div className={ `${ height }` }>
             { menuModel && (
                 <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }/>
             ) }

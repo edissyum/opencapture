@@ -406,3 +406,30 @@ def update_login_image(image_content):
            "errors": gettext("ERROR_UPDATING_IMAGE"),
            "message": gettext("CUSTOM_NOT_PRESENT")
         }, 400
+
+def get_favorites(args):
+    favorites, error = config.get_favorites(args)
+
+    if error is None:
+        return favorites, 200
+
+    response = {
+        "errors": gettext("RETRIEVE_FAVORITES_ERRORS"),
+        "message": gettext(error)
+    }
+    return response, 400
+
+def add_favorites(args):
+    favorite, error = config.add_favorites(args)
+    if error is None:
+        return favorite, 200
+
+    response = {
+        "errors": gettext("ADD_FAVORITE_ERROR"),
+        "message": gettext(error)
+    }
+    return response, 400
+
+def remove_favorites(favorite_id):
+    config.remove_favorites(favorite_id)
+    return '', 200

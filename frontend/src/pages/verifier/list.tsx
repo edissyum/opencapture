@@ -61,6 +61,8 @@ export function VerifierListPage() {
     const [selectedStatus, setSelectedStatus] = useState('NEW');
 
     const [searchTerm, setSearchTerm] = useState('');
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+
     const [documents, setDocuments] = useState<any[]>([]);
     const [selectedDocuments, setSelectedDocuments] = useState<any[]>([]);
     const [loadingDocuments, setLoadingDocuments] = useState(false);
@@ -193,6 +195,16 @@ export function VerifierListPage() {
     }, [user, loadingUser, selectedStatus]);
 
     useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 500);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [searchTerm]);
+
+    useEffect(() => {
         async function retrieveDocuments() {
             if (!user || loadingUser) return;
             setLoadingDocuments(true);
@@ -203,7 +215,7 @@ export function VerifierListPage() {
                     status: selectedStatus,
                     limit: lazyParams.rows,
                     offset: lazyParams.first,
-                    search: searchTerm || null,
+                    search: debouncedSearchTerm || null,
                     filter: lazyParams.sortField,
                     order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null
                 }) || [];
@@ -218,7 +230,7 @@ export function VerifierListPage() {
         }
 
         retrieveDocuments().then();
-    }, [user, lazyParams, searchTerm]);
+    }, [user, lazyParams, debouncedSearchTerm]);
 
     const handleDelete = async () => {
         if (selectedDocuments.length === 0) return;

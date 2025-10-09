@@ -86,6 +86,32 @@ export function SettingsGeneralUsers() {
         }
     ]
 
+    useEffect(() => {
+        if (loadingUsers) return;
+        setLoadingUsers(true);
+
+        const fetchUsers = async () => {
+            try {
+                const response = await get('/users/list', {
+                    params: {
+                        offset: lazyParams.first,
+                        limit: lazyParams.rows,
+                        filter: lazyParams.sortField,
+                        order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null,
+                        search: searchTerm,
+                    }
+                });
+                setTotalUsers(response.users[0]?.total || 0);
+                setUsers(response.users);
+            } catch (error) {
+                console.error('Erreur de récupération des utilisteurs :', error);
+            } finally {
+                setLoadingUsers(false);
+            }
+        }
+        fetchUsers().then();
+    }, [lazyParams, searchTerm]);
+
     const refresh = () => {
         setTimeout(() => {
             setSelectedUsers([]);
@@ -187,34 +213,8 @@ export function SettingsGeneralUsers() {
         }
     }
 
-    useEffect(() => {
-        if (loadingUsers) return;
-        setLoadingUsers(true);
-
-        const fetchUsers = async () => {
-            try {
-                const response = await get('/users/list', {
-                    params: {
-                        offset: lazyParams.first,
-                        limit: lazyParams.rows,
-                        filter: lazyParams.sortField,
-                        order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null,
-                        search: searchTerm,
-                    }
-                });
-                setTotalUsers(response.users[0]?.total || 0);
-                setUsers(response.users);
-            } catch (error) {
-                console.error('Erreur de récupération des utilisteurs :', error);
-            } finally {
-                setLoadingUsers(false);
-            }
-        }
-        fetchUsers().then();
-    }, [lazyParams, searchTerm]);
-
     return (
-        <div className="p-8 bg-(--bg-secondary)">
+        <div className="p-8 bg-(--bg-secondary) h-full">
             <div className='flex items-center gap-6 mb-4'>
                 <span className='flex items-center gap-1'>
                     <FileText size={ 16 }/>
@@ -239,16 +239,17 @@ export function SettingsGeneralUsers() {
             <Table
                 baseLink="/settings/general/users/"
                 data={ users }
+                height="h-[40vh]"
                 actions={ actions }
                 pagination={ true }
                 columns={ columns }
                 menuModel={ actions }
+                loading={ loadingUsers }
                 lazyParams={ lazyParams }
                 checkboxSelection={ true }
-                loading={ loadingUsers }
+                selectedRows={ selectedUsers }
                 rowsPerPage={ lazyParams.rows }
                 skeletonRows={ lazyParams.rows }
-                selectedRows={ selectedUsers }
                 totalRecords={ totalUsers || 0 }
                 rowsPerPageOptions={ [4, 8, 16, 32] }
                 emptyMessage={ t("USERS.no_user") }

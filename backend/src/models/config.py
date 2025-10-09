@@ -271,3 +271,56 @@ def update_docserver(args):
         error = gettext('UPDATE_DOCSERVER_ERROR')
 
     return docserver, error
+
+def get_favorites(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    error = None
+
+    favorites = database.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['settings_favorites'],
+        'where': ['1=1'] if 'where' not in args or not args['where'] else args['where'],
+        'data': [] if 'data' not in args else args['data'],
+        'order_by': ['id ASC'],
+        'limit': str(args['limit']) if 'limit' in args else 'ALL',
+        'offset': str(args['offset']) if 'offset' in args else 0
+    })
+
+    return favorites, error
+
+def add_favorites(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    error = None
+
+    favorite = database.insert({
+        'table': 'settings_favorites',
+        'columns': {
+            'route': args['route'],
+            'user_id': args['user_id']
+        }
+    })
+    return favorite, error
+
+def remove_favorites(favorite_id):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    database.delete({
+        'table': ['settings_favorites'],
+        'where': ['id = %s'],
+        'data': [favorite_id]
+    })
+    return True

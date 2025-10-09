@@ -15,9 +15,13 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { Check, Search, SlidersHorizontal } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Check, Search, Settings, SlidersHorizontal, Star } from "lucide-react";
 
+import { useFavorites } from "../../services/hooks/useFavorite";
 import { SettingsCard } from "../../components/settings/SettingsCard";
+
+import { getSettingsGeneralOptions } from "./general";
 
 export function SettingsIndex() {
     const options = [
@@ -41,9 +45,43 @@ export function SettingsIndex() {
         },
     ];
 
+    const { ready, getFavorites } = useFavorites();
+    const [favoriteOptions, setFavoriteOptions] = useState([]);
+
+    useEffect(() => {
+        if (!ready) return;
+        const generalOptions = getSettingsGeneralOptions();
+        const allOptions: any = [...generalOptions, ...options];
+
+        (async () => {
+            const favs = await getFavorites();
+            if (favs) {
+                const favoriteRoutes = favs.map((fav: any) => fav.route);
+                setFavoriteOptions(allOptions.filter((option: any) => favoriteRoutes.includes(option.href)));
+            }
+        })();
+    }, [ready]);
+
     return (
         <div className="p-8">
-            <h1 className="text-2xl font-bold">
+            <h1 className="text-2xl font-bold flex items-center gap-1">
+                <Star/>
+                { t('SETTINGS.favorites') }
+            </h1>
+            <p className="text-(--text-secondary)">
+                { t('SETTINGS.favorites_subtitle') }
+            </p>
+            <div className='flex flex-row gap-4 my-6'>
+                { favoriteOptions &&
+                    favoriteOptions.map((option) => (
+                        <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
+                                      description={ option['description'] } to={ option['href'] }></SettingsCard>
+                    ))
+                }
+            </div>
+
+            <h1 className="text-2xl font-bold flex items-center gap-1">
+                <Settings />
                 { t('SETTINGS.title') }
             </h1>
             <p className="text-(--text-secondary)">
@@ -52,7 +90,7 @@ export function SettingsIndex() {
             <div className='flex flex-row gap-4 mt-6'>
                 {
                     options.map((option) => (
-                        <SettingsCard key={option['name']} icon={ option['icon'] } title={ option['name'] }
+                        <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
                                       description={ option['description'] } to={ option['href'] }></SettingsCard>
                     ))
                 }

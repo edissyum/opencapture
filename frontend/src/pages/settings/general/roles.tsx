@@ -62,12 +62,7 @@ export function SettingsGeneralRoles() {
         },
     ];
 
-    const actions: any = [
-        {
-            label: t('ROLES.delete_roles'),
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
-            command: () => handleDelete()
-        },
+    const actions = [
         {
             label: t('ROLES.enable_roles'),
             icon: <CirclePause className='mr-1' size={ 16 }/>,
@@ -77,8 +72,39 @@ export function SettingsGeneralRoles() {
             label: t('ROLES.disable_roles'),
             icon: <CirclePause className='mr-1' size={ 16 }/>,
             command: () => handleDisable()
+        },
+        {
+            label: t('ROLES.delete_roles'),
+            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            command: () => handleDelete()
         }
-    ]
+    ];
+
+    useEffect(() => {
+        if (loadingRoles || loadingUser) return;
+        setLoadingRoles(true);
+
+        const fetchRoles = async () => {
+            try {
+                const response = await get(`/roles/list/user/${user.id}`, {
+                    params: {
+                        offset: lazyParams.first,
+                        limit: lazyParams.rows,
+                        filter: lazyParams.sortField,
+                        order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null,
+                        search: searchTerm,
+                    }
+                });
+                setTotalRoles(response.roles[0]?.total || 0);
+                setRoles(response.roles);
+            } catch (error) {
+                console.error('Erreur de récupération des utilisteurs :', error);
+            } finally {
+                setLoadingRoles(false);
+            }
+        }
+        fetchRoles().then();
+    }, [lazyParams, searchTerm, user, loadingUser]);
 
     const refresh = () => {
         setTimeout(() => {
@@ -181,35 +207,8 @@ export function SettingsGeneralRoles() {
         }
     }
 
-
-    useEffect(() => {
-        if (loadingRoles || loadingUser) return;
-        setLoadingRoles(true);
-
-        const fetchRoles = async () => {
-            try {
-                const response = await get(`/roles/list/user/${user.id}`, {
-                    params: {
-                        offset: lazyParams.first,
-                        limit: lazyParams.rows,
-                        filter: lazyParams.sortField,
-                        order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null,
-                        search: searchTerm,
-                    }
-                });
-                setTotalRoles(response.roles[0]?.total || 0);
-                setRoles(response.roles);
-            } catch (error) {
-                console.error('Erreur de récupération des utilisteurs :', error);
-            } finally {
-                setLoadingRoles(false);
-            }
-        }
-        fetchRoles().then();
-    }, [lazyParams, searchTerm, user, loadingUser]);
-
     return (
-        <div className="p-8 bg-(--bg-secondary)">
+        <div className="p-8 bg-(--bg-secondary) h-full">
             <div className='flex items-center gap-6 mb-4'>
                 <span className='flex items-center gap-1'>
                     <FileText size={ 16 }/>
@@ -238,12 +237,13 @@ export function SettingsGeneralRoles() {
                 pagination={ true }
                 columns={ columns }
                 menuModel={ actions }
+                height="h-[30vh]"
+                loading={ loadingRoles }
                 lazyParams={ lazyParams }
                 checkboxSelection={ true }
-                loading={ loadingRoles }
+                selectedRows={ selectedRoles }
                 rowsPerPage={ lazyParams.rows }
                 skeletonRows={ lazyParams.rows }
-                selectedRows={ selectedRoles }
                 totalRecords={ totalRoles || 0 }
                 rowsPerPageOptions={ [4, 8, 16, 32] }
                 emptyMessage={ t("ROLES.no_role") }

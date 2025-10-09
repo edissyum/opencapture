@@ -93,7 +93,11 @@
         "roles": "Roles",
         "roles_description": "Modification des rôles",
         "users": "Utilisateurs",
-        "users_description": "Modification des utilisateurs"
+        "users_description": "Modification des utilisateurs",
+        "add_favorites": "Ajouter aux favoris",
+        "remove_favorites": "Supprimer des favoris",
+        "favorites": "Favoris",
+        "favorites_subtitle": "Accès rapide à vos paramètres favoris"
     },
     "UPLOAD": {
         "upload_dropzone": "Cliquez pour choisir un fichier",

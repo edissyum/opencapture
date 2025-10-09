@@ -20,14 +20,7 @@ import { useState, useEffect } from "react";
 const USER_KEY = "user";
 
 export function useUser() {
-    const [user, setUser] = useState({
-        id: null,
-        firstname: null,
-        lastname: null,
-        username: null,
-        privileges: [],
-        roles: [],
-    });
+    const [user, setUser] = useState<any>(null);
     const [loadingUser, setLoadingUser] = useState(true);
 
     useEffect(() => {
@@ -43,5 +36,5 @@ export function useUser() {
         setLoadingUser(false);
     }, []);
 
-    return { user, loadingUser, isLoggedIn: !!user };
+    return { user, loadingUser, isLoggedIn: !!user?.id };
 }

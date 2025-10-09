@@ -47,6 +47,7 @@ export function SplitterListPage() {
 
     const [totalPerTime, setTotalPerTime] = useState<any>(null);
     const [selectedStatus, setSelectedStatus] = useState('NEW');
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
     const [searchTerm, setSearchTerm] = useState('');
     const [batches, setBatches] = useState<any[]>([]);
@@ -78,7 +79,6 @@ export function SplitterListPage() {
             command: () => handleDelete()
         }
     ]
-
     const columns: any = [
         {
             id: 'id',
@@ -161,6 +161,16 @@ export function SplitterListPage() {
     }, [user, loadingUser]);
 
     useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 500);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [searchTerm]);
+
+    useEffect(() => {
         async function retrieveBatches() {
             if (!user || loadingUser) return;
             setLoadingBatches(true);
@@ -187,7 +197,7 @@ export function SplitterListPage() {
         }
 
         retrieveBatches().then();
-    }, [user, lazyParams, searchTerm]);
+    }, [user, lazyParams, debouncedSearchTerm]);
 
     const handleDelete = async () => {
         if (selectedBatches.length === 0) return;

@@ -258,3 +258,49 @@ def get_git_info():
 def custom_exists():
     return make_response(''), 200
 
+@bp.route('config/favorites', methods=['GET'])
+@auth.token_required
+def get_favorites():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/config/favorites'}), 403
+
+    check, message = rest_validator(request.args, [
+        {'id': 'user_id', 'type': int, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+    res = config.get_favorites(request.args)
+    return make_response(jsonify(res[0])), res[1]
+
+@bp.route('config/favorites', methods=['POST'])
+@auth.token_required
+def add_favorites():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/config/favorites'}), 403
+
+    check, message = rest_validator(request.json, [
+        {'id': 'route', 'type': str, 'mandatory': True},
+        {'id': 'user_id', 'type': int, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+    res = config.add_favorites(request.json)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('config/favorites/<int:favorite_id>', methods=['DELETE'])
+@auth.token_required
+def remove_favorites(favorite_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['settings']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/config/favorites'}), 403
+
+    res = config.remove_favorites(favorite_id)
+    return make_response(jsonify(res[0])), res[1]

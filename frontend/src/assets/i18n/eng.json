@@ -93,7 +93,11 @@
         "roles": "Roles",
         "roles_description": "Roles management",
         "users": "Users",
-        "users_description": "Users management"
+        "users_description": "Users management",
+        "add_favorites": "",
+        "remove_favorites": "",
+        "favorites": "",
+        "favorites_subtitle": ""
     },
     "USER": {
         "password": "Password",

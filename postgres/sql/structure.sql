@@ -434,3 +434,9 @@ CREATE TABLE "ai_llm" (
     "settings"     JSONB        DEFAULT '{}',
     "status"       VARCHAR(10)  DEFAULT 'OK'
 );
+
+CREATE TABLE settings_favorites (
+    "id"         SERIAL      UNIQUE PRIMARY KEY,
+    "user_id"    INTEGER,
+    "route"      VARCHAR(255)
+);
