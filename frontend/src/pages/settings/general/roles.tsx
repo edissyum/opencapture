@@ -233,11 +233,11 @@ export function SettingsGeneralRoles() {
             <Table
                 baseLink="/settings/general/roles/"
                 data={ roles }
+                height="h-[30vh]"
                 actions={ actions }
                 pagination={ true }
                 columns={ columns }
                 menuModel={ actions }
-                height="h-[30vh]"
                 loading={ loadingRoles }
                 lazyParams={ lazyParams }
                 checkboxSelection={ true }
