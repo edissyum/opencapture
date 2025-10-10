@@ -70,6 +70,9 @@ export function Button({
     if (className?.includes('text-')) {
         variantStyles[variant] = variantStyles[variant].replace(/(hover:)?text-(\(.*\)|[a-z]*)/gm, '');
     }
+    if (className?.includes('bg-')) {
+        variantStyles[variant] = variantStyles[variant].replace(/(hover:)?bg-(\(.*\)|[a-z]*)/gm, '');
+    }
 
     const sizeStyles: Record<ButtonSize, string> = {
         sm: "p-1.5 text-sm",

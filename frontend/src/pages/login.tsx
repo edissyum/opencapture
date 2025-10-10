@@ -19,8 +19,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getI18n, useTranslation } from "react-i18next";
 
-import { Button } from '../components/Button';
 import { Input } from "../components/Input";
+import { Button } from '../components/Button';
 import { showToast } from "../components/ToastProvider";
 
 import { useCustom } from "../services/custom/customContext";
@@ -37,10 +37,9 @@ export function Login() {
     const navigate = useNavigate();
 
     const custom = useCustom();
-
     useEffect(() => {
         async function getLoginMessage() {
-            if (!loginMessage) {
+            if (!loginMessage && custom) {
                 await get("/config/getConfigurationNoAuth/loginMessage").then((response) => {
                     if (response && response.configuration) {
                         setLoginMessage(response.configuration[0]?.data.value || t('AUTH.welcome'));
@@ -50,6 +49,7 @@ export function Login() {
                 });
             }
         }
+
         getLoginMessage().then();
     }, [loginMessage]);
 
@@ -99,12 +99,13 @@ export function Login() {
                 <h2 className="mt-10 text-center text-2xl/9 tracking-tight text-(--text-primary)">
                     { t("GLOBAL.login") }
                 </h2>
-                <p className="mt-2 text-center text-sm text-(--text-secondary)" dangerouslySetInnerHTML={{ __html: loginMessage }}/>
+                <p className="mt-2 text-center text-sm text-(--text-secondary)"
+                   dangerouslySetInnerHTML={ { __html: loginMessage } }/>
             </div>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                 <form onSubmit={ handleSubmit } className="space-y-6" noValidate>
-                    <div className="mt-2">
+                    <div className="mt-2 mb-2">
                         <Input id="username" type="text" name="username" required error={ errors.username }
                                onChange={ handleChange } label={ t('USER.username') }/>
                     </div>

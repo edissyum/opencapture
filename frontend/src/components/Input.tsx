@@ -21,6 +21,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label?: string;
     error?: string;
     icon?: React.ReactNode;
+    no_margin_bottom?: boolean;
     iconPosition?: "left" | "right";
 }
 
@@ -30,43 +31,47 @@ export const Input: React.FC<InputProps> = ({
     error,
     icon,
     required,
-    iconPosition = "left",
+    disabled,
     className = "",
+    iconPosition = "left",
+    no_margin_bottom = false,
     ...props
 }) => {
     return (
-        <div className={`flex flex-col rounded-md ${className}`}>
-            <div className="relative">
+        <div className={ `flex flex-col rounded-md ${ className }` }>
+            <div className={ `relative ${ error || no_margin_bottom ? '' : 'mb-6' }` }>
                 { icon && iconPosition === "left" && (
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-(--text-secondary)">
                         { icon }
                     </span>
                 ) }
                 <input
-                    id={id}
-                    className={`z-10 peer w-full border-b px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400 ${
+                    id={ id }
+                    className={ `z-10 peer w-full border-b px-3 py-2 border rounded-md focus:outline-none focus:border-green-400 ${
                         icon ? (iconPosition === "left" ? "pl-10" : "pr-10") : ""
-                    } border-(--border-secondary) disabled:bg-(--bg-secondary) disabled:cursor-not-allowed`}
+                    } border-(--border-secondary) disabled:bg-(--bg-secondary) disabled:cursor-not-allowed` }
                     placeholder=""
-                    required={required}
-                    aria-required={required}
-                    {...props}
+                    disabled={ disabled }
+                    required={ required }
+                    aria-required={ required }
+                    { ...props }
                 />
-                {label && (
-                    <label htmlFor={id} className="cursor-text absolute left-0 ml-2 top-2 -translate-y-5 bg-(--bg-primary) px-1 text-sm
-                    duration-100 ease-linear peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-base
-                    text-(--text-secondary) peer-focus:ml-1 peer-focus:-translate-y-5 z-0 peer-focus:px-1 peer-focus:text-sm">
-                        {label}
-                        {required && <span className="text-red-500 ml-1">*</span>}
+                { label && (
+                    <label htmlFor={ id } className={ `absolute left-0 ml-2 top-2 -translate-y-5 px-1 text-sm
+                        duration-100 ease-linear peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-base
+                        ${ disabled ? 'bg-transparent cursor-not-allowed' : 'bg-(--bg-primary) cursor-text' }
+                        text-(--text-secondary) peer-focus:w-auto peer-focus:-translate-y-5 z-0 peer-focus:px-1 peer-focus:text-sm` }>
+                        { label }
+                        { required && <span className="text-red-500 ml-1">*</span> }
                     </label>
-                )}
-                {icon && iconPosition === "right" && (
+                ) }
+                { icon && iconPosition === "right" && (
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-(--text-secondary)">
-                        {icon}
+                        { icon }
                     </span>
-                )}
+                ) }
             </div>
-            {error && <p className="text-red-500 text-sm mt-1" dangerouslySetInnerHTML={{ __html: error }}></p>}
+            { error && <p className="text-red-500 text-sm mt-1" dangerouslySetInnerHTML={ { __html: error } }></p> }
         </div>
     );
 };

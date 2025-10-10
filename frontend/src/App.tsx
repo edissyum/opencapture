@@ -20,6 +20,10 @@ import { Tooltip } from "react-tooltip";
 import { RouterProvider } from "react-router-dom";
 import { StrictMode, useEffect, useState } from "react";
 
+import { en } from "zod/locales"
+import { fr } from "zod/locales";
+import { es } from "zod/locales";
+
 import { ConfirmDialog } from "primereact/confirmdialog";
 
 import { router } from "./routes";
@@ -30,6 +34,7 @@ import { showToast } from "./components/ToastProvider";
 import { fetchCurrentLang, initI18n } from "./services/i18n";
 import { getCustomFromUrl } from "./services/custom/getCustom";
 import { CustomProvider } from "./services/custom/customContext";
+import { z } from "zod";
 
 export function App() {
     const [appKey, setAppKey] = useState(0);
@@ -55,8 +60,12 @@ export function App() {
             if (_custom) {
                 try {
                     await api.get("/config/customExists");
-                } catch {
-                    _custom = null;
+                } catch (err) {
+                    if (axios.isAxiosError(err) && (err.code === "ECONNABORTED" || err.code === "ERR_NETWORK")) {
+                        console.error("Backend not reachable : ", err);
+                    } else {
+                        _custom = null;
+                    }
                 }
             }
 
@@ -65,6 +74,14 @@ export function App() {
             }
 
             await initI18n(currentLang || "fra");
+            if (currentLang === "fra") {
+                z.config(fr());
+            } else if (currentLang === "eng") {
+                z.config(en());
+            } else if (currentLang === "esp") {
+                z.config(es());
+            }
+
             setCustom(_custom);
             setReady(true);
 

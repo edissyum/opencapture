@@ -33,10 +33,11 @@ import { SettingsIndex } from "./pages/settings";
 import { SettingsGeneralIndex } from "./pages/settings/general";
 import { SettingsVerifierIndex } from "./pages/settings/verifier";
 import { SettingsSplitterIndex } from "./pages/settings/splitter";
+import { SettingsGeneralSMTP } from "./pages/settings/general/smtp";
+import { SettingsGeneralRoles } from "./pages/settings/general/roles";
 import { SettingsGeneralUsers } from "./pages/settings/general/users";
 import { SettingsGeneralAdvanced } from "./pages/settings/general/advanced";
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
-import { SettingsGeneralRoles } from "./pages/settings/general/roles.tsx";
 
 export const router = createBrowserRouter(
     [
@@ -97,6 +98,13 @@ export const router = createBrowserRouter(
                             element: <SettingsGeneralCustomization/>,
                             errorElement: <LoginRequiredError/>,
                             handle: { breadcrumb: 'SETTINGS.customization' }
+                        },
+                        {
+                            path: "smtp",
+                            loader: protectedLoader,
+                            element: <SettingsGeneralSMTP/>,
+                            errorElement: <LoginRequiredError/>,
+                            handle: { breadcrumb: 'SETTINGS.smtp' }
                         },
                         {
                             path: "advanced",

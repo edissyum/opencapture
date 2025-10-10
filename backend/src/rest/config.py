@@ -207,7 +207,7 @@ def update_configuration_by_label(configuration_label):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/config/updateConfiguration/{configuration_label}'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'type', 'type': str, 'mandatory': False},
         {'id': 'label_type', 'type': str, 'mandatory': False},
         {'id': 'description', 'type': str, 'mandatory': False},
@@ -220,7 +220,7 @@ def update_configuration_by_label(configuration_label):
             "message": message
         }, 400)
 
-    res = config.update_configuration_by_label(request.json['args'], configuration_label)
+    res = config.update_configuration_by_label(request.json, configuration_label)
     return make_response(jsonify(res[0])), res[1]
 
 

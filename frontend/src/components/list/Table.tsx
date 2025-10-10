@@ -127,7 +127,7 @@ export function Table<T extends { id: string }>({
                 className={ `${ height } w-full overflow-hidden border border-(--border-secondary) rounded-xl` }>
                 { pagination && (
                     <div
-                        className="flex items-center justify-between bg-white dark:bg-(--bg-secondary) px-4 rounded-t-xl text-(--text-secondary) font-normal h-18">
+                        className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-t-xl text-(--text-secondary) font-normal h-18">
                         <Skeleton width='20%' className='dark:bg-(--text-secondary)'/>
                         <Skeleton width='30%' className='dark:bg-(--text-secondary)'/>
                     </div>
@@ -145,7 +145,7 @@ export function Table<T extends { id: string }>({
                 <div className="flex flex-col">
                     { Array.from({ length: skeletonRows }).map((_, idx) => (
                         <div key={ idx }
-                             className="flex bg-white dark:bg-(--bg-primary) even:bg-(--bg-secondary) border-b border-(--border-secondary)">
+                             className="flex bg-(--bg-primary) even:bg-(--bg-secondary) border-b border-(--border-secondary)">
                             { columns.map((_col, ci) => (
                                 <span key={ ci } className={ `px-4 py-2 text-sm w-1/6` }>
                                 <Skeleton className='dark:bg-(--text-secondary)'/>

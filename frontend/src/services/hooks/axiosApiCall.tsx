@@ -23,6 +23,10 @@ import { BACKEND_URL } from "../config";
 import { useCustom } from "../custom/customContext";
 import { showToast } from "../../components/ToastProvider";
 
+interface AxiosCustomRequestConfig extends AxiosRequestConfig {
+    showErrorToast?: boolean;
+}
+
 export function axiosApiCall() {
     const custom = useCustom();
     const api = axios.create({
@@ -88,7 +92,7 @@ export function axiosApiCall() {
     const [error, setError] = useState<string | null>(null);
 
     const request = async <T = any>(
-        config: AxiosRequestConfig
+        config: AxiosCustomRequestConfig
     ): Promise<T | null> => {
         setLoading(true);
         setError(null);
@@ -97,21 +101,23 @@ export function axiosApiCall() {
             return res.data;
         } catch (err: any) {
             setError(err.message || "Erreur inconnue");
-            if (err.response && err.response.data && err.response.data.message) {
-                showToast(
-                    <div>
-                        <h4>
-                            <strong>
-                                { err.response.data.errors }
-                            </strong>
-                        </h4>
-                        <p>
-                            { err.response.data.message }
-                        </p>
-                    </div>, "error"
-                )
-            } else {
-                showToast(err.message || "Erreur inconnue", "error");
+            if (config.showErrorToast !== false) {
+                if (err.response && err.response.data && err.response.data.message) {
+                    showToast(
+                        <div>
+                            <h4>
+                                <strong>
+                                    { err.response.data.errors }
+                                </strong>
+                            </h4>
+                            <p>
+                                { err.response.data.message }
+                            </p>
+                        </div>, "error"
+                    )
+                } else {
+                    showToast(err.message || "Erreur inconnue", "error");
+                }
             }
             throw err;
         } finally {
@@ -119,16 +125,16 @@ export function axiosApiCall() {
         }
     };
 
-    const get = <T = any>(url: string, config?: AxiosRequestConfig) =>
+    const get = <T = any>(url: string, config?: AxiosCustomRequestConfig) =>
         request<T>({ ...config, method: "GET", url });
 
-    const post = <T = any>(url: string, data?: any, config?: AxiosRequestConfig) =>
+    const post = <T = any>(url: string, data?: any, config?: AxiosCustomRequestConfig) =>
         request<T>({ ...config, method: "POST", url, data });
 
-    const put = <T = any>(url: string, data?: any, config?: AxiosRequestConfig) =>
+    const put = <T = any>(url: string, data?: any, config?: AxiosCustomRequestConfig) =>
         request<T>({ ...config, method: "PUT", url, data });
 
-    const del = <T = any>(url: string, config?: AxiosRequestConfig) =>
+    const del = <T = any>(url: string, config?: AxiosCustomRequestConfig) =>
         request<T>({ ...config, method: "DELETE", url });
 
     return { loading, error, get, post, put, del };

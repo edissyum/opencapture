@@ -223,8 +223,8 @@ export function SettingsGeneralUsers() {
                     </span>
                 </span>
                 <span>
-                    <Input id="search" type="text" name="search" className='bg-white dark:bg-(--bg-secondary)'
-                           value={ searchTerm } placeholder={ t('USERS.search') }
+                    <Input id="search" type="text" name="search" className='bg-(--bg-primary)'
+                           value={ searchTerm } placeholder={ t('USERS.search') } no_margin_bottom={ true }
                            onChange={ (e) => setSearchTerm(e.target.value) }/>
                 </span>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>

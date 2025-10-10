@@ -242,8 +242,8 @@ export function SplitterListPage() {
                     </span>
                 </span>
                 <span>
-                    <Input id="search" type="text" name="search" className='bg-white dark:bg-(--bg-secondary) w-80'
-                           value={ searchTerm } placeholder={ t('SPLITTER.search') }
+                    <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-80'
+                           value={ searchTerm } placeholder={ t('SPLITTER.search') } no_margin_bottom={true}
                            onChange={ (e) => setSearchTerm(e.target.value) }/>
                 </span>
                 <span className='ml-auto text-(--text-secondary) flex cursor-pointer'>

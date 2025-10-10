@@ -271,7 +271,7 @@ export function VerifierListPage() {
 
             <div className='flex items-center gap-6'>
                 <Button icon={ <Filter size={ 14 }/> }
-                        className='rounded-3xl bg-white dark:bg-(--bg-secondary) text-(--text-primary) hover:text-(--color-primary) border-(--border-secondary)'>
+                        className='rounded-3xl bg-(--bg-primary) text-(--text-primary) hover:text-(--color-primary) border-(--border-secondary)'>
                     { t('VERIFIER.filters') }
                 </Button>
                 <span className='flex items-center gap-1'>
@@ -281,8 +281,8 @@ export function VerifierListPage() {
                     </span>
                 </span>
                 <span>
-                    <Input id="search" type="text" name="search" className='bg-white dark:bg-(--bg-secondary)'
-                           value={ searchTerm } placeholder={ t('VERIFIER.search') }
+                    <Input id="search" type="text" name="search" className='bg-(--bg-primary)'
+                           value={ searchTerm } placeholder={ t('VERIFIER.search') } no_margin_bottom={ true }
                            onChange={ (e) => setSearchTerm(e.target.value) }/>
                 </span>
                 <span className='ml-auto text-(--text-secondary) flex cursor-pointer'>

@@ -32,10 +32,10 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('smtp', '{
     "type": "json",
     "value": {
         "smtpNotifOnError": false,
-        "smtpProtocoleSecure": false,
+        "smtpProtocoleSecure": "none",
         "smtpHost": "",
         "smtpPort": "",
-        "smtpAuth": "",
+        "smtpAuth": false,
         "smtpLogin": "",
         "smtpPwd": "",
         "smtpFromMail": "",

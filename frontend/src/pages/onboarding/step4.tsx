@@ -40,7 +40,7 @@ export function Step4() {
             </p>
 
             <div className="flex gap-4 justify-center">
-                <div className={ `cursor-pointer relative w-48 h-26 bg-white dark:bg-(--bg-primary) border-2 
+                <div className={ `cursor-pointer relative w-48 h-26 bg-(--bg-primary) border-2 
                         border-(--border-primary) rounded-lg transition-border-color duration-200
                         ${ selectedView === 'grid' ? 'border-(--border-primary)' : 'border-(--border-secondary) hover:border-gray-400' } ` }
                      onClick={ () => setSelectedView('grid') }>
@@ -55,7 +55,7 @@ export function Step4() {
                         </div>
                     </div>
                 </div>
-                <div className={ `cursor-pointer relative w-48 h-26 bg-white dark:bg-(--bg-primary) border-2 
+                <div className={ `cursor-pointer relative w-48 h-26 bg-(--bg-primary) border-2 
                         border-(--border-primary) rounded-lg transition-border-color duration-200
                         ${ selectedView === 'list' ? 'border-(--border-primary)' : 'border-(--border-secondary) hover:border-gray-400' } ` }
                      onClick={ () => setSelectedView('list') }>

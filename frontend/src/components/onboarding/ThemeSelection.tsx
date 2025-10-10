@@ -49,7 +49,7 @@ export function ThemeSelection({ onThemeChange }: ThemeSelectionProps) {
             { options.map((theme) => (
                 <div key={ theme['id'] }>
                     <div
-                        className={ `relative w-48 h-26 border-2 flex items-center text-(--text-primary) rounded-lg cursor-pointer hover:opacity-80 p-8 justify-center transition-opacity
+                        className={ `relative w-48 h-26 border-2 flex items-center bg-(--bg-primary) text-(--text-primary) rounded-lg cursor-pointer hover:opacity-80 p-8 justify-center transition-opacity
                             ${ theme['id'] === 'light' ? 'bg-white' : 'dark bg-(--bg-primary)' } 
                             ${ selectedTheme === theme['id'] ? 'border-(--border-primary)' : 'border-(--border-secondary)' }` }
                         onClick={ () => setTheme(theme['id']) }>

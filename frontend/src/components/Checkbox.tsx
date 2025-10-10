@@ -48,7 +48,7 @@ export function Checkbox({ id, checked = false, onChange, label, className }: Ch
                 id={ id }
                 onClick={ toggle }
                 className={ `w-5 h-5 border-1 border-(--border-secondary) rounded flex items-center justify-center
-                    ${ isChecked ? "bg-(--color-primary) border-(--color-primary)" : "bg-white" }
+                    ${ isChecked ? "bg-(--color-primary) border-(--color-primary)" : "bg-(--bg-primary)" }
                     transition-all hover:border-(--color-primary)` }
             >
                 { isChecked && <Check id={ id } className="w-5 h-5 text-white"/> }
