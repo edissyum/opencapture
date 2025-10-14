@@ -104,7 +104,7 @@ export function SettingsGeneralUsers() {
                 setTotalUsers(response.users[0]?.total || 0);
                 setUsers(response.users);
             } catch (error) {
-                console.error('Erreur de récupération des utilisteurs :', error);
+                console.error('Erreur de récupération des utilisateurs :', error);
             } finally {
                 setLoadingUsers(false);
             }

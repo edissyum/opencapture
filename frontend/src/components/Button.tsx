@@ -67,11 +67,16 @@ export function Button({
         no_bg: "bg-transparent text-(--text-secondary) hover:border-2 hover:border-(--text-secondary) border-2 border-transparent",
         no_bg_border: "bg-transparent text-(--text-secondary) border-1 border-(--text-secondary) hover:bg-(--text-secondary)/10",
     };
+
     if (className?.includes('text-')) {
-        variantStyles[variant] = variantStyles[variant].replace(/(hover:)?text-(\(.*\)|[a-z]*)/gm, '');
+        variantStyles[variant] = variantStyles[variant].replace('text-white', '');
+        variantStyles[variant] = variantStyles[variant].replace(/(text-\(|hover:text-)[^\s)]+\)?/gm, '');
     }
     if (className?.includes('bg-')) {
-        variantStyles[variant] = variantStyles[variant].replace(/(hover:)?bg-(\(.*\)|[a-z]*)/gm, '');
+        variantStyles[variant] = variantStyles[variant].replace(/(bg-\(|hover:bg-)[^\s)]+/gm, '');
+    }
+    if (className?.includes('border-')) {
+        variantStyles[variant] = variantStyles[variant].replace(/(border-\(|hover:border-)[^\s)]+/gm, '');
     }
 
     const sizeStyles: Record<ButtonSize, string> = {

@@ -26,7 +26,9 @@ export function Step3() {
             <p className="text-(--text-secondary)">
                 { t('ONBOARD.select_theme_lang_info') }
             </p>
-            <ThemeSelection />
+            <div className='h-full'>
+                <ThemeSelection />
+            </div>
         </>
     );
 }

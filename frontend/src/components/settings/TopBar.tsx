@@ -66,10 +66,12 @@ export default function TopBarSettings() {
                     );
                 }) }
                 { location.pathname !== '/settings' && (
-                    <div onClick={ () => { toggleFavorite(location.pathname).then(() => setRefresh(true)) } }
-                         className={ `${ isFav ? 'bg-(--color-primary)/10 text-(--color-primary)' : 'bg-(--bg-secondary)' } flex gap-1 items-center ml-auto cursor-pointer px-4 py-2 rounded-3xl` }>
-                        <Star size={ 18 }/>
-                        { isFav ? t('SETTINGS.remove_favorites') : t('SETTINGS.add_favorites') }
+                    <div onClick={ () => {
+                             toggleFavorite(location.pathname).then(() => setRefresh(true))
+                         } }
+                         data-tooltip-id="tooltip" data-tooltip-content={ isFav ? t('SETTINGS.remove_favorites') : t('SETTINGS.add_favorites') }
+                         className={ `ml-auto cursor-pointer py-2` }>
+                        <Star size={ 26 } className={ `${ isFav ? 'fill-(--color-primary) text-(--color-primary)' : '' }` }/>
                     </div>
                 ) }
             </div>

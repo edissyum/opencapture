@@ -78,10 +78,12 @@ export function Onboarding() {
     };
 
     return (
-        <div className="h-screen flex items-center justify-center bg-(--bg-secondary)">
+        <div className="h-screen flex xl:items-center pt-4 xl:pt-0 justify-center bg-(--bg-secondary) overflow-y-scroll">
             <div className="w-6/12 flex flex-col gap-2">
                 <h4 className="text-(--text-secondary)">{ t('ONBOARD.step') } { currentStep + 1 } { t('ONBOARD.on') } { steps.length }</h4>
-                <StepComponent />
+                <div className="min-h-72">
+                    <StepComponent />
+                </div>
                 <div className="flex justify-end mt-4">
                     {currentStep > 0 && <Button variant="no_bg" onClick={prev} className="mr-4">
                         { t('ONBOARD.prev') }

@@ -15,21 +15,38 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { t } from "i18next";
+/* Header background and text color */
+.p-accordion-header-link {
+    @apply bg-(--bg-primary);
+}
 
-import { LangSelection } from "../../components/onboarding/LangSelection";
+.p-accordion-header-link {
+    @apply text-(--text-primary);
+}
 
-export function Step2() {
+.p-accordion-header-link:hover {
+    @apply text-(--text-primary)/75;
+}
 
-    return (
-        <>
-            <h1 className="text-4xl">{ t('ONBOARD.select_frontend_lang') }</h1>
-            <p className="text-(--text-secondary)">
-                { t('ONBOARD.select_frontend_lang_info') }
-            </p>
-            <div className='h-full flex items-center justify-center'>
-                <LangSelection refresh={false}/>
-            </div>
-        </>
-    );
+/* Stepper paddings */
+.p-accordion .p-accordion-content {
+    @apply pb-0;
+}
+
+/* Stepper nav size */
+.p-stepper .p-stepper-nav {
+    @apply w-2/3;
+    @apply mx-auto;
+}
+
+/* stepper title positions */
+.p-stepper .p-stepper-header .p-stepper-action {
+    @apply flex;
+    @apply flex-col;
+}
+
+/* Stepper number color */
+.p-stepper .p-stepper-header.p-highlight .p-stepper-number,
+.p-stepper .p-stepper-header:has(~ .p-highlight) .p-stepper-separator {
+    @apply bg-(--color-primary);
 }

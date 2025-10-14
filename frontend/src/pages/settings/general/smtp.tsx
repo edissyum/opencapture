@@ -26,16 +26,14 @@ import { Checkbox } from "../../../components/Checkbox";
 import { showToast } from "../../../components/ToastProvider";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 
+import { emptyToUndefined } from "../../../services/zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 export function SettingsGeneralSMTP() {
     const { get, post, put } = axiosApiCall();
 
     const smtpProtocoleSecureEnum = z.enum(['ssl', 'tls', 'none']);
-    // Fonction pour transformer les chaînes vides en undefined (nécessaire pour les champs optionnels de Zod)
-    const emptyToUndefined = <T extends z.ZodTypeAny>(schema: T) =>
-        z.preprocess(
-            (val) => (val === "" ? undefined : val),
-            schema.optional()
-        );
+
     const schema = z.object({
         smtpHost: z.string().min(1, { message: t('SMTP.smtp_host_required') }),
         smtpPort: z.number().min(1).max(65535),
@@ -58,6 +56,8 @@ export function SettingsGeneralSMTP() {
         setValue,
         formState: { errors, isSubmitting }
     } = useForm<FormData>({
+        // @ts-ignore
+        resolver: zodResolver(schema),
         defaultValues: {
             smtpHost: "smtp.gmail.com",
             smtpPort: 465,
@@ -70,7 +70,9 @@ export function SettingsGeneralSMTP() {
     const [selectedEncryption, setSelectedEncryption] = useState('tls');
     const [destinationTestEmail, setDestinationTestEmail] = useState('');
     const [statusTestEmail, setStatusTestEmail] = useState('');
+    const [statusLoadingTestEmail, setStatusLoadingTestEmail] = useState(false);
     const [statusTestEmailMessage, setStatusTestEmailMessage] = useState('');
+
     const smtpAuth = watch('smtpAuth');
     const smtpNotifOnError = watch('smtpNotifOnError');
 
@@ -153,13 +155,16 @@ export function SettingsGeneralSMTP() {
     };
 
     const handleTestEmail = async () => {
+        setStatusLoadingTestEmail(true);
         setStatusTestEmailMessage('');
         try {
             await post('smtp/test', { email: destinationTestEmail }, { showErrorToast: false });
             setStatusTestEmail('success');
+            setStatusLoadingTestEmail(false);
         } catch (err: any) {
             setStatusTestEmail('error');
             setStatusTestEmailMessage(err?.response?.data?.message);
+            setStatusLoadingTestEmail(false);
             console.error("Erreur envoi email de test :", err);
         }
     }
@@ -174,14 +179,15 @@ export function SettingsGeneralSMTP() {
                             <div key={ provider.name }
                                  onClick={ () => handleProviderChange(provider.name) }
                                  className={ `border-3 border-(--border-secondary) hover:border-(--color-primary) transition-colors duration-200
-                             rounded-lg px-10 py-4 cursor-pointer flex items-center justify-center gap-4
+                             rounded-lg px-8 py-3 cursor-pointer flex items-center justify-center gap-4
                              ${ selectedProvider === provider.name ? 'bg-(--color-primary)/20 border-(--color-primary)' : '' } ` }>
-                                { provider.logo && <img src={ provider.logo } alt={ provider.name } className='h-8'/> }
-                                <p className='text-xl font-semibold'>{ provider.name }</p>
+                                { provider.logo && <img src={ provider.logo } alt={ provider.name } className='h-5'/> }
+                                <p className='text-lg font-semibold'>{ provider.name }</p>
                             </div>
                         )) }
                     </div>
 
+                    {/* @ts-ignore */}
                     <form onSubmit={ handleSubmit(onSubmit) }>
                         <h1 className='text-2xl font-bold mt-10'>{ t('SMTP.settings') }</h1>
                         <div className='flex items-center mt-6 gap-4'>
@@ -190,13 +196,13 @@ export function SettingsGeneralSMTP() {
                                        required
                                        placeholder='smtp.example.com'
                                        error={ errors.smtpHost?.message }
-                                       label={ t('SMTP.smtp_host') }/>
+                                       label={ t('SMTP.host') }/>
                             </div>
                             <div className='w-[4rem]'>
-                                <Input id='smtpPort' { ...register('smtpPort', { required: true }) }
+                                <Input id='smtpPort' { ...register('smtpPort', { required: true, valueAsNumber: true }) }
                                        placeholder='587' required
                                        error={ errors.smtpPort?.message }
-                                       label={ t('SMTP.smtp_port') }/>
+                                       label={ t('SMTP.port') }/>
                             </div>
                         </div>
 
@@ -214,13 +220,13 @@ export function SettingsGeneralSMTP() {
                                 <div className='w-1/4'>
                                     <Input id='smtpLogin' { ...register('smtpLogin') } placeholder=''
                                            disabled={ !smtpAuth }
-                                           label={ t('SMTP.smtp_login') } autoComplete='new-mail'
+                                           label={ t('SMTP.login') } autoComplete='new-mail'
                                            error={ errors.smtpLogin?.message }/>
                                 </div>
                                 <div className='w-1/4'>
                                     <Input id='smtpPwd' type='password' { ...register('smtpPwd') }
                                            disabled={ !smtpAuth }
-                                           label={ t('SMTP.smtp_password') } autoComplete='new-password'
+                                           label={ t('SMTP.password') } autoComplete='new-password'
                                            error={ errors.smtpPwd?.message }/>
                                 </div>
                             </div>
@@ -290,9 +296,9 @@ export function SettingsGeneralSMTP() {
                                    label={ t('SMTP.destination_test_email') }
                                    onChange={ (e) => setDestinationTestEmail(e.target.value) }/>
 
-                            <Button disabled={ destinationTestEmail === '' || isSubmitting }
+                            <Button disabled={ destinationTestEmail === '' || statusLoadingTestEmail }
                                     onClick={ handleTestEmail }>
-                                { isSubmitting ? t('SMTP.sending') + "..." : t('SMTP.send_test_email') }
+                                { statusLoadingTestEmail ? t('SMTP.sending') + "..." : t('SMTP.send_test_email') }
                             </Button>
                         </div>
                     </div>

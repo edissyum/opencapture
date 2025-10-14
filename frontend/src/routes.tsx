@@ -38,6 +38,7 @@ import { SettingsGeneralRoles } from "./pages/settings/general/roles";
 import { SettingsGeneralUsers } from "./pages/settings/general/users";
 import { SettingsGeneralAdvanced } from "./pages/settings/general/advanced";
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
+import { SettingsGeneralMailcollect } from "./pages/settings/general/mailcollect.tsx";
 
 export const router = createBrowserRouter(
     [
@@ -105,6 +106,13 @@ export const router = createBrowserRouter(
                             element: <SettingsGeneralSMTP/>,
                             errorElement: <LoginRequiredError/>,
                             handle: { breadcrumb: 'SETTINGS.smtp' }
+                        },
+                        {
+                            path: "mailcollect",
+                            loader: protectedLoader,
+                            element: <SettingsGeneralMailcollect/>,
+                            errorElement: <LoginRequiredError/>,
+                            handle: { breadcrumb: 'SETTINGS.mailcollect' }
                         },
                         {
                             path: "advanced",

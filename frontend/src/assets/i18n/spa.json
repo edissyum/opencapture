@@ -254,10 +254,6 @@
         "secure_none": "",
         "settings": "",
         "smtp_auth": "",
-        "smtp_host": "",
-        "smtp_login": "",
-        "smtp_password": "",
-        "smtp_port": "",
         "delay_between_emails": "",
         "delay_between_emails_infos": "",
         "destination_admin_mail": "",
@@ -274,6 +270,25 @@
         "send_test_infos": "",
         "sending": "",
         "test_email_error": "",
-        "test_email_success": ""
+        "test_email_success": "",
+        "host": "",
+        "login": "",
+        "password": "",
+        "port": ""
+    },
+    "MAILCOLLECT": {
+        "no_process": "",
+        "no_process_info": "",
+        "add_process": "",
+        "connection": "",
+        "folders": "",
+        "options": "",
+        "next": "",
+        "previous": "",
+        "save": "",
+        "graphql": "",
+        "imap": "",
+        "oauth": "",
+        "auth_method": ""
     }
 }

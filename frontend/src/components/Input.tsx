@@ -57,7 +57,7 @@ export const Input: React.FC<InputProps> = ({
                     { ...props }
                 />
                 { label && (
-                    <label htmlFor={ id } className={ `absolute left-0 ml-2 top-2 -translate-y-5 px-1 text-sm
+                    <label htmlFor={ id } className={ `absolute left-0 ml-2 top-2 -translate-y-5 px-1 text-sm select-none
                         duration-100 ease-linear peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-base
                         ${ disabled ? 'bg-transparent cursor-not-allowed' : 'bg-(--bg-primary) cursor-text' }
                         text-(--text-secondary) peer-focus:w-auto peer-focus:-translate-y-5 z-0 peer-focus:px-1 peer-focus:text-sm` }>

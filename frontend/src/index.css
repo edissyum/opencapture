@@ -18,6 +18,7 @@
 @import "tailwindcss" important;
 @import "./assets/css/tailwind-theme.css";
 @import "./assets/css/prime-react-datatable.css";
+@import "./assets/css/prime-react-accordion.css";
 
 @import 'primereact/resources/primereact.css';
 @import 'primereact/resources/themes/lara-light-indigo/theme.css';

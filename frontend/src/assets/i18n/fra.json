@@ -254,10 +254,7 @@
         "secure_none": "Aucun",
         "settings": "Configuration SMTP",
         "smtp_auth": "Activer l'authentification SMTP",
-        "smtp_host": "Serveur SMTP",
-        "smtp_login": "Identifiant",
-        "smtp_password": "Mot de passe",
-        "smtp_port": "Port",
+        "port": "Port",
         "delay_between_emails": "Délai",
         "delay_between_emails_infos": "Limite la fréquence d'envoi des emails d'erreur afin d'éviter les notifications répétées en cas de problème persistant (en secondes)",
         "destination_admin_mail": "Destinataire",
@@ -274,6 +271,24 @@
         "send_test_infos": "Les informations déjà enregistrées seront utilisées pour envoyer un email de test",
         "sending": "Envoi en cours...",
         "test_email_error": "Echec de l'envoi",
-        "test_email_success": "Envoi réussi"
+        "test_email_success": "Envoi réussi",
+        "host": "Adresse du serveur",
+        "login": "Identifiant",
+        "password": "Mot de passe"
+    },
+    "MAILCOLLECT": {
+        "no_process": "Aucun processus MailCollect n'est configuré",
+        "no_process_info": "MailCollect permet de capturer automatiquement les emails et leurs pièces jointes depuis une boîte email dédiée. Vous pouvez configurer autant de processus MailCollect que nécessaire.",
+        "add_process": "Nouveau processus",
+        "connection": "Connexion",
+        "folders": "Dossiers",
+        "options": "Paramétrages",
+        "next": "Suivant",
+        "previous": "Précédent",
+        "save": "Enregistrer",
+        "graphql": "GraphQL",
+        "imap": "IMAP",
+        "oauth": "OAuth",
+        "auth_method": "Méthode d'authentification"
     }
 }

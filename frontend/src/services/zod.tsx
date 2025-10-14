@@ -4,7 +4,6 @@
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
-
  Open-Capture is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -15,21 +14,10 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { t } from "i18next";
+import { z } from "zod";
 
-import { LangSelection } from "../../components/onboarding/LangSelection";
-
-export function Step2() {
-
-    return (
-        <>
-            <h1 className="text-4xl">{ t('ONBOARD.select_frontend_lang') }</h1>
-            <p className="text-(--text-secondary)">
-                { t('ONBOARD.select_frontend_lang_info') }
-            </p>
-            <div className='h-full flex items-center justify-center'>
-                <LangSelection refresh={false}/>
-            </div>
-        </>
+export const emptyToUndefined = <T extends z.ZodTypeAny>(schema: T) =>
+    z.preprocess(
+        (val: any) => (val === "" ? undefined : val),
+        schema.optional()
     );
-}

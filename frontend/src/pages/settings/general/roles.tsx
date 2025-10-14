@@ -98,7 +98,7 @@ export function SettingsGeneralRoles() {
                 setTotalRoles(response.roles[0]?.total || 0);
                 setRoles(response.roles);
             } catch (error) {
-                console.error('Erreur de récupération des utilisteurs :', error);
+                console.error('Erreur de récupération des rôles :', error);
             } finally {
                 setLoadingRoles(false);
             }
