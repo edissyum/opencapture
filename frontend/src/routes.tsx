@@ -37,8 +37,8 @@ import { SettingsGeneralSMTP } from "./pages/settings/general/smtp";
 import { SettingsGeneralRoles } from "./pages/settings/general/roles";
 import { SettingsGeneralUsers } from "./pages/settings/general/users";
 import { SettingsGeneralAdvanced } from "./pages/settings/general/advanced";
+import { SettingsGeneralMailcollect } from "./pages/settings/general/mailcollect";
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
-import { SettingsGeneralMailcollect } from "./pages/settings/general/mailcollect.tsx";
 
 export const router = createBrowserRouter(
     [

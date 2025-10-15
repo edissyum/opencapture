@@ -19,6 +19,7 @@ import { t } from "i18next";
 import React, { useEffect, useState } from "react";
 import { CircleCheck, CircleX } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Input } from "../../../components/Input";
 import { Button } from "../../../components/Button";
@@ -27,7 +28,6 @@ import { showToast } from "../../../components/ToastProvider";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 
 import { emptyToUndefined } from "../../../services/zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 export function SettingsGeneralSMTP() {
     const { get, post, put } = axiosApiCall();
@@ -171,7 +171,7 @@ export function SettingsGeneralSMTP() {
 
     return (
         <div className='flex'>
-            <div className='border-r-2 border-(--border-secondary) w-full overflow-x-scroll h-[calc(100vh-64px)]'>
+            <div className='border-r-2 border-(--border-secondary) w-full overflow-y-scroll h-[calc(100vh-64px)]'>
                 <div className='p-8'>
                     <h1 className='text-2xl font-bold'>{ t('SMTP.provider') }</h1>
                     <div className='flex gap-4 mt-6'>
@@ -187,7 +187,7 @@ export function SettingsGeneralSMTP() {
                         )) }
                     </div>
 
-                    {/* @ts-ignore */}
+                    {/* @ts-ignore */ }
                     <form onSubmit={ handleSubmit(onSubmit) }>
                         <h1 className='text-2xl font-bold mt-10'>{ t('SMTP.settings') }</h1>
                         <div className='flex items-center mt-6 gap-4'>
@@ -199,7 +199,10 @@ export function SettingsGeneralSMTP() {
                                        label={ t('SMTP.host') }/>
                             </div>
                             <div className='w-[4rem]'>
-                                <Input id='smtpPort' { ...register('smtpPort', { required: true, valueAsNumber: true }) }
+                                <Input id='smtpPort' { ...register('smtpPort', {
+                                    required: true,
+                                    valueAsNumber: true
+                                }) }
                                        placeholder='587' required
                                        error={ errors.smtpPort?.message }
                                        label={ t('SMTP.port') }/>
@@ -234,18 +237,16 @@ export function SettingsGeneralSMTP() {
 
                         <h1 className='text-2xl font-bold mt-4'>{ t('SMTP.encryption') }</h1>
                         <div className='flex gap-4 mt-6'>
-                            {
-                                smtpProtocoleSecureEnum.options.map((option: any) => (
-                                    <label key={ option } className={ `peer peer-checked:bg-(--color-primary) accent-(--color-primary) border-3 border-(--border-secondary) hover:border-(--color-primary) transition-colors duration-200
-                                rounded-lg px-4 py-3 cursor-pointer flex items-center justify-center gap-1
+                            { smtpProtocoleSecureEnum.options.map((option: any) => (
+                                <label key={ option } className={ `peer peer-checked:bg-(--color-primary) accent-(--color-primary) border-3 border-(--border-secondary) hover:border-(--color-primary) transition-colors duration-200
+                                rounded-lg px-3 py-2 cursor-pointer flex items-center justify-center gap-1
                                 ${ selectedEncryption === option ? 'bg-(--color-primary)/20 border-(--color-primary)' : '' }` }>
-                                        <input { ...register("smtpProtocoleSecure") } type="radio" key={ option }
-                                               checked={ selectedEncryption === option }
-                                               value={ option } onChange={ handleEncryptionChange }/>
-                                        { option === 'none' ? t('SMTP.secure_none') : option.toUpperCase() }
-                                    </label>
-                                ))
-                            }
+                                    <input { ...register("smtpProtocoleSecure") } type="radio" key={ option }
+                                           checked={ selectedEncryption === option }
+                                           value={ option } onChange={ handleEncryptionChange }/>
+                                    { option === 'none' ? t('SMTP.secure_none') : option.toUpperCase() }
+                                </label>
+                            )) }
                         </div>
 
                         <h1 className='text-2xl font-bold mt-10'>{ t('SMTP.error_notifications') }</h1>
@@ -317,7 +318,7 @@ export function SettingsGeneralSMTP() {
                                 <h1 className='text-2xl font-bold text-(--color-success)'>{ t('SMTP.test_email_success') }</h1>
                             </div>
                         ) }
-                        <div className='w-8/12 bg-[#212528] h-48 overflow-x-scroll rounded-lg mt-4'>
+                        <div className='w-8/12 bg-[#212528] h-48 overflow-y-scroll rounded-lg mt-4'>
                             { statusTestEmail === 'error' && (
                                 <div className='p-4 text-(--text-secondary)'>
                                     <p>

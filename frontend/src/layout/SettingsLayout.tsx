@@ -39,7 +39,7 @@ export default function SettingsLayout() {
             <Sidebar />
             <main className="flex-1">
                 <TopBarSettings />
-                <span className="block overflow-x-scroll h-[calc(100vh-64px)]">
+                <span className="block overflow-y-scroll h-[calc(100vh-64px)]">
                     <Outlet />
                 </span>
             </main>

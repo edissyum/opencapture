@@ -262,6 +262,26 @@
         "graphql": "",
         "imap": "",
         "oauth": "",
-        "auth_method": ""
+        "auth_method": "",
+        "connexion_successful": "",
+        "loading_test_connexion": "",
+        "no_folders_found": "",
+        "secured_connection": "",
+        "client_id": "",
+        "client_secret": "",
+        "get_token_url": "",
+        "grant_type": "",
+        "message_url": "",
+        "scope": "",
+        "tenant_id": "",
+        "users_url": "",
+        "delete": "",
+        "delete_hint": "",
+        "folder_destination": "",
+        "folder_to_crawl": "",
+        "move": "",
+        "move_hint": "",
+        "none": "",
+        "none_hint": ""
     }
 }

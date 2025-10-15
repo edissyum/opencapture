@@ -289,6 +289,26 @@
         "graphql": "GraphQL",
         "imap": "IMAP",
         "oauth": "OAuth",
-        "auth_method": "Méthode d'authentification"
+        "auth_method": "Méthode d'authentification",
+        "connexion_successful": "Connexion réussie",
+        "loading_test_connexion": "Connexion en cours...",
+        "no_folders_found": "Aucun dossier trouvé",
+        "secured_connection": "Connexion sécurisée (SSL/TLS)",
+        "client_id": "Client id",
+        "client_secret": "Client Secret",
+        "get_token_url": "URL de récupération du token",
+        "grant_type": "Méthode d'authentification",
+        "message_url": "URL de récupération des messages",
+        "scope": "Scope",
+        "tenant_id": "Tenant id",
+        "users_url": "URL de récupération des utilisateurs",
+        "delete": "Supprimer",
+        "delete_hint": "Supprimer le courriel (l'action est irréversible)",
+        "folder_destination": "Dossier d'archivage'",
+        "folder_to_crawl": "Dossier à capturer",
+        "move": "Déplacer",
+        "move_hint": "Déplacer le courriel dans un dossier d'archive (recommandé)",
+        "none": "Aucune action",
+        "none_hint": "N'effectuer aucune action sur le courriel après traitement"
     }
 }

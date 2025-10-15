@@ -218,7 +218,7 @@ def retrieve_folders(args):
                 conn = MailBox(host=args['hostname'], port=args['port'], timeout=10)
             else:
                 conn = MailBoxUnencrypted(host=args['hostname'], port=args['port'], timeout=10)
-        except (gaierror, IMAP4_SSL.error, ssl.SSLError) as _e:
+        except (gaierror, IMAP4_SSL.error, ssl.SSLError, TimeoutError) as _e:
             response = {
                 "errors": gettext("MAILCOLLECT_ERROR"),
                 "message": str(_e)
