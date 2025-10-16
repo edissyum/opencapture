@@ -309,6 +309,7 @@
         "move": "Déplacer",
         "move_hint": "Déplacer le courriel dans un dossier d'archive (recommandé)",
         "none": "Aucune action",
-        "none_hint": "N'effectuer aucune action sur le courriel après traitement"
+        "none_hint": "N'effectuer aucune action sur le courriel après traitement",
+        "test_connexion_next": "Tester la connexion et passer à l'étape suivante"
     }
 }

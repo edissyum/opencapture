@@ -282,6 +282,7 @@
         "move": "",
         "move_hint": "",
         "none": "",
-        "none_hint": ""
+        "none_hint": "",
+        "test_connexion_next": ""
     }
 }

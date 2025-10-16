@@ -48,7 +48,7 @@
 /* Stepper number color */
 .p-stepper .p-stepper-header.p-highlight .p-stepper-number,
 .p-stepper .p-stepper-header:has(~ .p-highlight) .p-stepper-separator {
-    @apply bg-(--color-primary);
+    @apply bg-[#B86B00];
 }
 
 /* Floating label */
@@ -60,7 +60,7 @@
 
 /* Input switch */
 .p-inputswitch {
-    @apply scale-90;
+    @apply scale-80;
 }
 
 .p-inputswitch.p-highlight .p-inputswitch-slider {
