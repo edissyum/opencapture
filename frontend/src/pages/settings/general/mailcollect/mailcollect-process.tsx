@@ -29,13 +29,14 @@ import { StepperPanel } from "primereact/stepperpanel";
 
 import { Input } from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
-
-import { getSchemaForAuthMethod } from "./schema";
-
+import { RadioBox } from "../../../../components/RadioBox";
 import { showToast } from "../../../../components/ToastProvider";
+
+import { getSchemaForAuthMethod } from "./authSchema";
+
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 
-export function MailCollectProcess({ process }: { process: any }) {
+export function MailCollectProcess({ process, workflows }: { process: any, workflows: any }) {
     const { post } = axiosApiCall();
     const stepperRef = useRef<any>(null);
     const authMethods = [
@@ -46,6 +47,13 @@ export function MailCollectProcess({ process }: { process: any }) {
         { label: t('MAILCOLLECT.oauth'), value: 'oauth' },
         { label: t('MAILCOLLECT.graphql'), value: 'graphql' }
     ];
+    const modules = [
+        { label: t('MAILCOLLECT.verifier'), value: 'verifier' },
+        { label: t('MAILCOLLECT.splitter'), value: 'splitter' },
+    ];
+    const [selectedModule, setSelectedModule] = useState<string>(
+        process.is_splitter ? 'splitter' : 'verifier'
+    );
 
     const [authMethod, setAuthMethod] = useState<"imap" | "oauth" | "graphql">(
         (process.authMethod as any) || "imap"
@@ -59,16 +67,32 @@ export function MailCollectProcess({ process }: { process: any }) {
         { label: t('MAILCOLLECT.move'), hint: t('MAILCOLLECT.move_hint'), value: 'move', logo: <CornerUpRight/> },
         { label: t('MAILCOLLECT.delete'), hint: t('MAILCOLLECT.delete_hint'), value: 'delete', logo: <Trash/> }
     ];
+
+    const modulesSchema: any = z.object({
+        module: z.enum(['verifier', 'splitter']).default('verifier'),
+        is_splitter: z.boolean().default(false),
+        verifier_insert_body_as_doc: z.boolean().optional(),
+        verifier_workflow_id: z.any().optional(),
+        splitter_insert_body_as_doc: z.boolean().optional(),
+        splitter_workflow_id: z.any().optional()
+    });
+    const {
+        control: modulesControl,
+        setValue: setValueModules,
+        handleSubmit: handleSubmitModules,
+        formState: { errors: moduleErrors }
+    } = useForm({
+        resolver: zodResolver(modulesSchema),
+    });
+
     const foldersSchema: any = z.object({
-        name: z.string().min(1),
-        enabled: z.boolean().default(true),
         folder_to_crawl: z.string().min(1),
         folder_destination: z.string().min(1),
         action_after_process: z.enum(['none', 'move', 'delete']).default('move')
     });
     const {
         control: foldersControl,
-        setValue: setValueFolders,
+        setValue: setValuFolders,
         handleSubmit: handleSubmitFolders
     } = useForm({
         resolver: zodResolver(foldersSchema),
@@ -84,20 +108,23 @@ export function MailCollectProcess({ process }: { process: any }) {
         formState: { errors: authErrors }
     } = useForm({
         resolver: zodResolver(authSchema),
-        defaultValues: { authMethod },
+        defaultValues: { authMethod }
     });
 
     useEffect(() => {
         setValueAuth("securedConnection", process.secured_connection);
         Object.keys(process.options).forEach((key: any) => {
-            if (authSchema.shape[key]) {
+            if (authSchema.shape[key] && [null, undefined].indexOf(process.options[key]) === -1) {
                 setValueAuth(key, process.options[key]);
             }
         });
 
         Object.keys(process).forEach((key: any) => {
-            if (foldersSchema.shape[key]) {
-                setValueFolders(key, process[key]);
+            if (foldersSchema.shape[key] && [null, undefined].indexOf(process[key]) === -1) {
+                setValuFolders(key, process[key]);
+            }
+            if (modulesSchema.shape[key] && [null, undefined].indexOf(process[key]) === -1) {
+                setValueModules(key, process[key]);
             }
         });
     }, [process]);
@@ -127,7 +154,7 @@ export function MailCollectProcess({ process }: { process: any }) {
             } else {
                 setFolders(response || []);
                 showToast(t("MAILCOLLECT.connexion_successful"), "success");
-                handleNextStep();
+                handleNextStep(data);
             }
             setLoading(false);
         } catch (err) {
@@ -136,25 +163,58 @@ export function MailCollectProcess({ process }: { process: any }) {
         }
     }
 
-    const handleNextStep = () => {
+    const handleNextStep = (data: any) => {
+        Object.keys(data).forEach((key) => {
+            if (process[key] !== undefined) {
+                process[key] = data[key];
+            }
+        });
         stepperRef.current?.nextCallback();
     }
     const handlePreviousStep = () => stepperRef.current?.prevCallback();
 
+    const onSubmit = async (data: any) => {
+        if (loading) return;
+
+        Object.keys(data).forEach((key) => {
+            if (data[key] !== undefined) {
+                process[key] = data[key];
+            }
+        });
+        delete process['module'];
+
+        setLoading(true);
+        try {
+            if (process.id) {
+                await post('/mailcollect/updateProcess/' + process['name'], process);
+                showToast(t("MAILCOLLECT.process_updated_successfully"), "success");
+            }
+        } catch (err) {
+            console.error("Erreur lors de la mise à jour du process : " + err);
+        }
+        setLoading(false);
+
+    }
     return (
         <Stepper ref={ stepperRef } linear className='pb-4'>
             <StepperPanel header={ t("MAILCOLLECT.connection") }>
                 <h1 className="text-xl font-bold mb-4">{ t("MAILCOLLECT.auth_method") }</h1>
                 <div className="flex gap-4 mb-4">
                     { authMethods.map((method) => (
-                        <label key={ method.value } className={ `peer peer-checked:bg-(--color-primary) accent-(--color-primary) border-3 border-(--border-secondary) hover:border-(--color-primary) transition-colors duration-200
-                                rounded-lg px-3 py-2 cursor-pointer flex items-center justify-center gap-1
-                                ${ authMethod === method.value ? 'bg-(--color-primary)/20 border-(--color-primary)' : '' }` }>
-                            <input type="radio" key={ method.value }
-                                   checked={ authMethod === method.value }
-                                   value={ method.value } onChange={ () => setAuthMethod(method.value as any) }/>
-                            { method.label }
-                        </label>
+                        <Controller
+                            control={ modulesControl }
+                            name='authMethod'
+                            render={ ({ field }) => (
+                                <RadioBox
+                                    label={ method.label }
+                                    value={ method.value }
+                                    checked={ authMethod === method.value }
+                                    onChange={ () => {
+                                        field.onChange(method.value);
+                                        setAuthMethod(method.value as any)
+                                    } }/>
+                            ) }
+                        />
                     )) }
                 </div>
                 <div className='mb-6 flex gap-2'>
@@ -167,7 +227,7 @@ export function MailCollectProcess({ process }: { process: any }) {
                                     <InputSwitch inputId={ 'secured_connection' } checked={ field.value }
                                                  onChange={ (e) => setValueAuth("securedConnection", e.value) }/>
                                     <label htmlFor='secured_connection'
-                                           className="flex items-center gap-4 cursor-pointer select-none">
+                                           className="flex items-center gap-4 cursor-pointer select-none text-(--text-primary)">
                                         { t('MAILCOLLECT.secured_connection') }
                                     </label>
                                 </>
@@ -199,14 +259,29 @@ export function MailCollectProcess({ process }: { process: any }) {
                 ) }
 
                 { authMethod === "oauth" && (
-                    <>
-                        <Input { ...registerAuth("clientId") } label="Client ID"
-                               error={ authErrors.clientId?.message }/>
-                        <Input { ...registerAuth("clientSecret") } label="Client Secret"
-                               error={ authErrors.clientSecret?.message }/>
-                        <Input { ...registerAuth("redirectUri") } label="Redirect URI"
-                               error={ authErrors.redirectUri?.message }/>
-                    </>
+                    <div className='grid grid-cols-4 gap-4'>
+                        <Input id='hostname' { ...registerAuth("hostname") }
+                               label={ t("SMTP.host") }
+                               error={ authErrors.hostname?.message }/>
+                        <Input id='login' { ...registerAuth("login") }
+                               label={ t("SMTP.login") }
+                               error={ authErrors.login?.message }/>
+                        <Input id='scopes' { ...registerAuth("scopes") }
+                               label={ t("MAILCOLLECT.scope") }
+                               error={ authErrors.scopes?.message }/>
+                        <Input id='authority_url' { ...registerAuth("authority_url") }
+                                 label={ t("MAILCOLLECT.authority_url") }
+                                    error={ authErrors.authority_url?.message }/>
+                        <Input id='client_id' { ...registerAuth("client_id") }
+                               label={ t("MAILCOLLECT.client_id") }
+                               error={ authErrors.client_id?.message }/>
+                        <Input id='tenant_id' { ...registerAuth("tenant_id") }
+                               label={ t("MAILCOLLECT.tenant_id") }
+                               error={ authErrors.tenant_id?.message }/>
+                        <Input id='client_secret' { ...registerAuth("client_secret") }
+                               label={ t("MAILCOLLECT.client_secret") }
+                               error={ authErrors.client_secret?.message }/>
+                    </div>
                 ) }
 
                 { authMethod === "graphql" && (
@@ -271,6 +346,7 @@ export function MailCollectProcess({ process }: { process: any }) {
                     render={ ({ field }) => (
                         <FloatLabel>
                             <Dropdown
+                                filter
                                 id="folder_to_crawl"
                                 value={ field.value }
                                 options={ folders.map((folder) => ({ label: folder, value: folder })) }
@@ -291,7 +367,7 @@ export function MailCollectProcess({ process }: { process: any }) {
                             { actionsAfterProcessValues.map((action: any) => (
                                 <div key={ action.value }
                                      onClick={ () => field.onChange(action.value) }
-                                     className={ `cursor-pointer border-2 w-1/3 py-5 rounded-md
+                                     className={ `cursor-pointer border-2 w-1/3 py-5 rounded-md text-(--text-primary)
                                                 ${ field.value === action.value ? "bg-(--color-primary)/20 border-(--color-primary)" : "border-(--border-secondary) hover:border-(--text-secondary)" }
                                                 text-center duration-200` }>
                                     <div className="flex justify-center mb-2">
@@ -313,6 +389,7 @@ export function MailCollectProcess({ process }: { process: any }) {
                     render={ ({ field }) => (
                         <FloatLabel>
                             <Dropdown
+                                filter
                                 id="folder_destination"
                                 value={ field.value }
                                 options={ folders.map((folder) => ({ label: folder, value: folder })) }
@@ -339,13 +416,131 @@ export function MailCollectProcess({ process }: { process: any }) {
             <StepperPanel header={ t("MAILCOLLECT.options") }>
                 <h1 className="text-xl font-bold mb-4">{ t("MAILCOLLECT.module") }</h1>
 
-                <div className="flex justify-between">
+                <div className="flex gap-4 mb-4">
+                    { modules.map((module) => (
+                        <Controller
+                            control={ modulesControl }
+                            name='is_splitter'
+                            render={ ({ field }) => (
+                                <RadioBox
+                                    label={ module.label }
+                                    value={ module.value }
+                                    checked={ selectedModule === module.value }
+                                    onChange={ () => {
+                                        field.onChange(module.value == 'splitter');
+                                        setSelectedModule(module.value);
+                                    } }/>
+                            ) }
+                        />
+                    )) }
+                </div>
+
+                <div>
+                    { selectedModule === 'verifier' && (
+                        <>
+                            <Controller
+                                name="verifier_insert_body_as_doc"
+                                control={ modulesControl }
+                                render={ ({ field }) => (
+                                    <div className='mb-6 flex gap-2'>
+                                        <InputSwitch inputId={ 'verifier_insert_body_as_doc' } checked={ field.value }
+                                                     onChange={ (e) => field.onChange(e.value) }/>
+                                        <label htmlFor='verifier_insert_body_as_doc'
+                                               className="flex items-center gap-4 cursor-pointer select-none">
+                                            { t('MAILCOLLECT.insert_body_as_doc') }
+                                        </label>
+                                    </div>
+                                ) }
+                            />
+                            <Controller
+                                name="verifier_workflow_id"
+                                control={ modulesControl }
+                                render={ ({ field }) => (
+                                    <>
+                                        <FloatLabel>
+                                            <Dropdown
+                                                filter
+                                                id="verifier_workflow_id"
+                                                value={ field.value }
+                                                options={ workflows['verifier'].map((workflow: any) => ({
+                                                    label: workflow.label,
+                                                    value: workflow.workflow_id
+                                                })) }
+                                                onChange={ (e) => field.onChange(e.value) }
+                                                className="w-full"
+                                            />
+                                            <label
+                                                htmlFor="verifier_workflow_id">{ t("MAILCOLLECT.select_workflow") }</label>
+                                        </FloatLabel>
+                                        { moduleErrors && moduleErrors['verifier_workflow_id'] && (
+                                            <p className="text-(--text-error) mt-2">
+                                                { moduleErrors['verifier_workflow_id']?.message as string }
+                                            </p>
+                                        ) }
+                                    </>
+                                ) }
+                            />
+                        </>
+                    ) }
+                    { selectedModule === 'splitter' && (
+                        <>
+                            <Controller
+                                name="splitter_insert_body_as_doc"
+                                control={ modulesControl }
+                                render={ ({ field }) => (
+                                    <div className='mb-6 flex gap-2'>
+                                        <InputSwitch inputId={ 'splitter_insert_body_as_doc' } checked={ field.value }
+                                                     onChange={ (e) => field.onChange(e.value) }/>
+                                        <label htmlFor='splitter_insert_body_as_doc'
+                                               className="flex items-center gap-4 cursor-pointer select-none">
+                                            { t('MAILCOLLECT.insert_body_as_doc') }
+                                        </label>
+                                    </div>
+                                ) }
+                            />
+                            <Controller
+                                name="splitter_workflow_id"
+                                control={ modulesControl }
+                                render={ ({ field }) => (
+                                    <>
+                                        <FloatLabel>
+                                            <Dropdown
+                                                filter
+                                                id="splitter_workflow_id"
+                                                value={ field.value }
+                                                options={ workflows['splitter'].map((workflow: any) => ({
+                                                    label: workflow.label,
+                                                    value: workflow.workflow_id
+                                                })) }
+                                                onChange={ (e) => field.onChange(e.value) }
+                                                className="w-full"
+                                            />
+                                            <label htmlFor="splitter_workflow_id">{ t("MAILCOLLECT.select_workflow") }</label>
+                                        </FloatLabel>
+                                        { moduleErrors && moduleErrors['splitter_workflow_id'] && (
+                                            <p className="text-(--text-error) mt-2">
+                                                { moduleErrors['splitter_workflow_id']?.message as string }
+                                            </p>
+                                        ) }
+                                    </>
+                                ) }
+                            />
+                        </>
+                    ) }
+                </div>
+
+                <div className="flex justify-between mt-6">
                     <Button onClick={ handlePreviousStep } variant="no_bg"
                             className="mr-2 px-12 text-(--color-primary) border-transparent hover:border-(--color-primary)">
                         <ArrowLeft/> { t("MAILCOLLECT.previous") }
                     </Button>
-                    <Button type="submit" className="ml-auto px-12">
-                        { t("MAILCOLLECT.save") }
+                    <Button type="submit" className="ml-auto px-12" onClick={ handleSubmitModules(onSubmit) }
+                            disabled={ loading }>
+                        { loading ? (
+                            t("MAILCOLLECT.loading_save")
+                        ) : (
+                            t("MAILCOLLECT.save")
+                        ) }
                     </Button>
                 </div>
             </StepperPanel>

@@ -28,6 +28,17 @@
     @apply text-(--text-primary)/75;
 }
 
+/* Accordion colors */
+.p-accordion .p-accordion-content,
+.p-stepper .p-stepper-panels {
+    @apply bg-(--bg-primary);
+}
+
+.p-stepper .p-stepper-header .p-stepper-action {
+    @apply dark:bg-(--bg-primary);
+}
+
+
 /* Stepper paddings */
 .p-accordion .p-accordion-content {
     @apply pb-0;
@@ -46,16 +57,42 @@
 }
 
 /* Stepper number color */
-.p-stepper .p-stepper-header.p-highlight .p-stepper-number,
-.p-stepper .p-stepper-header:has(~ .p-highlight) .p-stepper-separator {
+.p-stepper .p-stepper-header.p-highlight .p-stepper-number {
     @apply bg-[#B86B00];
 }
 
+.p-stepper .p-stepper-header:has(~ .p-highlight) .p-stepper-separator {
+    @apply bg-(--color-primary);
+}
+
+/* Dropdown */
+.p-dropdown-filter-container .p-inputtext {
+    @apply py-1;
+}
+
+.p-dropdown-filter-container .p-inputtext:enabled:focus,
+.p-dropdown-filter-container .p-inputtext:enabled:hover {
+    @apply border-(--color-primary);
+    @apply shadow-none;
+}
+
+.p-dropdown-panel .p-dropdown-header,
+.p-dropdown-items-wrapper {
+    @apply bg-(--bg-secondary);
+}
+.p-dropdown-panel .p-dropdown-header .p-dropdown-filter-container,
+.p-inputtext {
+    @apply bg-(--bg-primary);
+    @apply text-(--text-primary);
+}
+
 /* Floating label */
+.p-float-label:has(input:focus) label,
 .p-float-label:has(.p-inputwrapper-filled) label {
     @apply px-1;
     @apply top-0.5;
     @apply bg-(--bg-primary);
+    @apply text-(--text-secondary);
 }
 
 /* Input switch */
@@ -65,4 +102,14 @@
 
 .p-inputswitch.p-highlight .p-inputswitch-slider {
     @apply bg-(--color-primary);
+}
+
+/* Radio button */
+.p-radiobutton.p-highlight .p-radiobutton-box {
+    @apply border-(--color-primary);
+    @apply bg-(--color-primary);
+}
+
+.p-radiobutton:not(.p-disabled):has(.p-radiobutton-input:hover) .p-radiobutton-box {
+    @apply border-(--color-primary)/80;
 }

@@ -78,10 +78,10 @@ export default function TopBar() {
                         { <ChevronsUpDown size={ 20 }/> }
                     </span>
                 </div>
-                <Button to="/home" icon={ <Package size={ 24 } className="mr-2"/> } className="font-semibold" size='md'>
+                <Button to="/home" icon={ <Package size={ 24 } className="mr-2"/> } className="font-semibold p-2.5!" size='md'>
                     { t('GLOBAL.batches') }
                 </Button>
-                <Button to="/upload" icon={ <CloudUpload size={ 24 } className="mr-2"/> } className="font-semibold" size='md'>
+                <Button to="/upload" icon={ <CloudUpload size={ 24 } className="mr-2"/> } className="font-semibold p-2.5!" size='md' variant='no_bg'>
                     { t('GLOBAL.upload') }
                 </Button>
             </div>

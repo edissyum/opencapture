@@ -81,7 +81,7 @@ export function Button({
 
     const sizeStyles: Record<ButtonSize, string> = {
         sm: "p-1.5 text-sm",
-        md: "p-2.5 text-base",
+        md: "py-2.5 px-8 text-base",
         lg: "p-3.5 text-lg",
     };
 
@@ -113,7 +113,7 @@ export function Button({
             );
         }
         return (
-            <Link to={to} className={classes}>
+            <Link to={to} className={ 'appearance-none ' + classes}>
                 {content}
             </Link>
         );

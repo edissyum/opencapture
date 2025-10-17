@@ -127,8 +127,8 @@ export function SettingsGeneralUsers() {
             icon: <CircleQuestionMark/>,
             title: t('USERS.disable_user', { count: selectedUsers.length }),
             message: t('USERS.confirm_disable_user', { count: selectedUsers.length }),
-            confirmText: t('GLOBAL.yes'),
-            cancelText: t('GLOBAL.no'),
+            confirmText: t('GLOBAL.disable'),
+            cancelText: t('GLOBAL.cancel'),
             onConfirm: async () => {
                 await disableUsers(selectedUsers.map((user: any) => user.id));
                 refresh();
@@ -158,8 +158,8 @@ export function SettingsGeneralUsers() {
             icon: <CircleQuestionMark/>,
             title: t('USERS.enable_user', { count: selectedUsers.length }),
             message: t('USERS.confirm_enable_user', { count: selectedUsers.length }),
-            confirmText: t('GLOBAL.yes'),
-            cancelText: t('GLOBAL.no'),
+            confirmText: t('GLOBAL.enable'),
+            cancelText: t('GLOBAL.cancel'),
             onConfirm: async () => {
                 await enableUsers(selectedUsers.map((user: any) => user.id));
                 refresh();
@@ -189,8 +189,8 @@ export function SettingsGeneralUsers() {
             icon: <CircleQuestionMark/>,
             title: t('USERS.delete_user', { count: selectedUsers.length }),
             message: t('USERS.confirm_delete_user', { count: selectedUsers.length }),
-            confirmText: t('GLOBAL.yes'),
-            cancelText: t('GLOBAL.no'),
+            confirmText: t('GLOBAL.delete'),
+            cancelText: t('GLOBAL.cancel'),
             onConfirm: async () => {
                 await deleteUsers(selectedUsers.map((user: any) => user.id));
                 refresh();

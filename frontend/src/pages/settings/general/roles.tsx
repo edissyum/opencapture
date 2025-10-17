@@ -121,8 +121,8 @@ export function SettingsGeneralRoles() {
             icon: <CircleQuestionMark/>,
             title: t('ROLES.disable_role', { count: selectedRoles.length }),
             message: t('ROLES.confirm_disable_role', { count: selectedRoles.length }),
-            confirmText: t('GLOBAL.yes'),
-            cancelText: t('GLOBAL.no'),
+            confirmText: t('GLOBAL.disable'),
+            cancelText: t('GLOBAL.cancel'),
             onConfirm: async () => {
                 await disableRoles(selectedRoles.map((user:any) => user.id))
                 refresh();
@@ -152,8 +152,8 @@ export function SettingsGeneralRoles() {
             icon: <CircleQuestionMark/>,
             title: t('ROLES.enable_role', { count: selectedRoles.length }),
             message: t('ROLES.confirm_enable_role', { count: selectedRoles.length }),
-            confirmText: t('GLOBAL.yes'),
-            cancelText: t('GLOBAL.no'),
+            confirmText: t('GLOBAL.enable'),
+            cancelText: t('GLOBAL.cancel'),
             onConfirm: async () => {
                 await enableRoles(selectedRoles.map((user:any) => user.id));
                 refresh();
@@ -183,8 +183,8 @@ export function SettingsGeneralRoles() {
             icon: <CircleQuestionMark/>,
             title: t('ROLES.delete_role', { count: selectedRoles.length }),
             message: t('ROLES.confirm_delete_role', { count: selectedRoles.length }),
-            confirmText: t('GLOBAL.yes'),
-            cancelText: t('GLOBAL.no'),
+            confirmText: t('GLOBAL.delete'),
+            cancelText: t('GLOBAL.cancel'),
             onConfirm: async () => {
                 await deleteRoles(selectedRoles.map((user: any) => user.id));
                 refresh();

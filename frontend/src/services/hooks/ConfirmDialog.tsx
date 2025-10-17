@@ -23,7 +23,7 @@ export function showConfirmDialog({
     title,
     message,
     icon,
-    cancelText = t('GLOBAL.no'),
+    cancelText = t('GLOBAL.cancel'),
     confirmText = t('GLOBAL.yes'),
     onConfirm,
     onCancel
@@ -42,8 +42,8 @@ export function showConfirmDialog({
         icon: icon,
         acceptLabel: confirmText,
         rejectLabel: cancelText,
-        acceptClassName: "outline-none shadow-none bg-(--color-primary) border-2 border-(--border-primary) text-white hover:bg-(--color-primary)/10 hover:text-(--color-primary)",
-        rejectClassName: "outline-none shadow-none bg-transparent text-(--text-secondary) border-2 border-transparent hover:border-2 hover:border-(--text-secondary)",
+        acceptClassName: "outline-none! shadow-none! bg-(--color-primary)! border-2! border-(--border-primary)! text-white! hover:bg-(--color-primary)/10! hover:text-(--color-primary)!",
+        rejectClassName: "outline-none! shadow-none! bg-transparent! text-(--text-secondary)! border-2! border-transparent! hover:border-2! hover:border-(--text-secondary)!",
         accept() {
             onConfirm();
         },

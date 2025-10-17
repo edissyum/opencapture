@@ -42,11 +42,12 @@ export const Input: React.FC<InputProps> = ({
     const inputType = isPasswordField && passwordVisible ? "text" : type;
     return (
         <div className={ `flex flex-col rounded-md ${ className }` }>
-            <div className={ `relative ${ error || no_margin_bottom ? '' : 'mb-6' }` }>
+            <div className={ `relative flex justify-items-stretch ${ error || no_margin_bottom ? '' : 'mb-6' }` }>
                 <input
                     id={ id }
-                    className={ `z-10 peer w-full border-b px-3 py-2 border rounded-md focus:outline-none focus:border-green-400 
-                                 border-(--border-secondary) disabled:bg-(--bg-secondary) disabled:cursor-not-allowed` }
+                    className={ `z-10 w-full peer px-3 py-2 border-[1.5px] rounded-md focus:outline-none focus:border-(--color-primary)
+                                ${ isPasswordField ? 'border-r-0 rounded-tr-none rounded-br-none' : '' } text-(--text-primary)
+                                border-(--border-secondary) disabled:bg-(--bg-secondary) disabled:cursor-not-allowed` }
                     placeholder=""
                     type={ inputType }
                     disabled={ disabled }
@@ -55,7 +56,7 @@ export const Input: React.FC<InputProps> = ({
                     { ...props }
                 />
                 { label && (
-                    <label htmlFor={ id } className={ `absolute left-0 ml-2 top-2 -translate-y-5 px-1 text-sm select-none
+                    <label htmlFor={ id } className={ `absolute z-20 left-0 ml-2 top-2 -translate-y-5 px-1 text-sm select-none
                         duration-100 ease-linear peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-base
                         ${ disabled ? 'bg-transparent cursor-not-allowed' : 'bg-(--bg-primary) cursor-text' }
                         text-(--text-secondary) peer-focus:w-auto peer-focus:-translate-y-5 z-0 peer-focus:px-1 peer-focus:text-sm` }>
@@ -67,7 +68,9 @@ export const Input: React.FC<InputProps> = ({
                     <button
                         type="button"
                         onClick={ () => setPasswordVisible((prev) => !prev) }
-                        className="absolute right-2 top-3 text-(--text-secondary) hover:text-(--color-primary) transition-colors z-20 cursor-pointer"
+                        className="peer-focus:border-(--color-primary) px-2 rounded-lg rounded-tl-none
+                                   rounded-bl-none border-l-0 border border-(--border-secondary) text-(--text-secondary)
+                                   hover:text-(--color-primary) z-20 cursor-pointer"
                         tabIndex={ -1 }
                     >
                         { passwordVisible ? <EyeOff size={ 18 }/> : <Eye size={ 18 }/> }

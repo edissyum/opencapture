@@ -15,7 +15,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-@import "tailwindcss" important;
+@import "tailwindcss";
 @import "./assets/css/tailwind-theme.css";
 @import "./assets/css/prime-react-datatable.css";
 @import "./assets/css/prime-react-accordion.css";
@@ -87,7 +87,7 @@
     --border-primary: theme(colors.green-400);
     --border-secondary: theme(colors.gray.300);
 
-    --text-primary: theme(colors.gray.900);
+    --text-primary: theme(colors.gray.800);
     --text-secondary: theme(colors.gray.400);
 }
 
@@ -107,8 +107,6 @@
 
 a {
     @apply cursor-pointer;
-    @apply text-(--color-primary);
-    @apply hover:text-green-500;
 }
 
 h2 {

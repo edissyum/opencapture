@@ -17,8 +17,8 @@
 import { z } from "zod";
 
 const imapSchema = z.object({
+    authMethod: z.string(),
     securedConnection: z.boolean(),
-    authMethod: z.literal("imap"),
     port: z.coerce.number().min(1).max(65535),
     login: z.string().min(1),
     hostname: z.string().min(1),
@@ -26,14 +26,18 @@ const imapSchema = z.object({
 });
 
 const oauthSchema = z.object({
-    authMethod: z.literal("oauth"),
-    clientId: z.string().min(1),
-    clientSecret: z.string().min(1),
-    redirectUri: z.url()
+    authMethod: z.string(),
+    hostname: z.string().min(1),
+    login: z.string().min(1),
+    scopes: z.url().default('https://outlook.office.com/.default'),
+    authority_url: z.url().default('https://login.microsoftonline.com/'),
+    client_id: z.string().min(1),
+    tenant_id: z.string().min(1),
+    client_secret: z.string().min(1)
 });
 
 const graphqlSchema = z.object({
-    authMethod: z.literal("graphql"),
+    authMethod: z.string(),
     login: z.string().min(1),
     grant_type: z.string().default('client_credentials'),
     scope: z.url().default('https://graph.microsoft.com/.default'),

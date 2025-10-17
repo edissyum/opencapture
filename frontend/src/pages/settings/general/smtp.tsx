@@ -17,7 +17,6 @@
 import { z } from "zod";
 import { t } from "i18next";
 import React, { useEffect, useState } from "react";
-import { CircleCheck, CircleX } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -28,6 +27,7 @@ import { showToast } from "../../../components/ToastProvider";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 
 import { emptyToUndefined } from "../../../services/zod";
+import { RadioBox } from "../../../components/RadioBox.tsx";
 
 export function SettingsGeneralSMTP() {
     const { get, post, put } = axiosApiCall();
@@ -126,11 +126,6 @@ export function SettingsGeneralSMTP() {
         }
     }
 
-    const handleEncryptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.value;
-        setSelectedEncryption(value);
-    }
-
     const onSubmit = async (data: FormData) => {
         const completeData = {
             smtpHost: data.smtpHost || "",
@@ -178,7 +173,7 @@ export function SettingsGeneralSMTP() {
                         { providers.map((provider) => (
                             <div key={ provider.name }
                                  onClick={ () => handleProviderChange(provider.name) }
-                                 className={ `border-3 border-(--border-secondary) hover:border-(--color-primary) transition-colors duration-200
+                                 className={ `border-2 border-(--border-secondary) hover:border-(--color-primary) transition-colors duration-200
                              rounded-lg px-8 py-3 cursor-pointer flex items-center justify-center gap-4
                              ${ selectedProvider === provider.name ? 'bg-(--color-primary)/20 border-(--color-primary)' : '' } ` }>
                                 { provider.logo && <img src={ provider.logo } alt={ provider.name } className='h-5'/> }
@@ -238,14 +233,20 @@ export function SettingsGeneralSMTP() {
                         <h1 className='text-2xl font-bold mt-4'>{ t('SMTP.encryption') }</h1>
                         <div className='flex gap-4 mt-6'>
                             { smtpProtocoleSecureEnum.options.map((option: any) => (
-                                <label key={ option } className={ `peer peer-checked:bg-(--color-primary) accent-(--color-primary) border-3 border-(--border-secondary) hover:border-(--color-primary) transition-colors duration-200
-                                rounded-lg px-3 py-2 cursor-pointer flex items-center justify-center gap-1
-                                ${ selectedEncryption === option ? 'bg-(--color-primary)/20 border-(--color-primary)' : '' }` }>
-                                    <input { ...register("smtpProtocoleSecure") } type="radio" key={ option }
-                                           checked={ selectedEncryption === option }
-                                           value={ option } onChange={ handleEncryptionChange }/>
-                                    { option === 'none' ? t('SMTP.secure_none') : option.toUpperCase() }
-                                </label>
+                                <Controller
+                                    control={ control }
+                                    name='smtpProtocoleSecure'
+                                    render={ ({ field }) => (
+                                        <RadioBox
+                                            label={ option === 'none' ? t('SMTP.secure_none') : option.toUpperCase() }
+                                            value={ field.value }
+                                            checked={ selectedEncryption === option }
+                                            onChange={ () => {
+                                                field.onChange(option);
+                                                setSelectedEncryption(option)
+                                            } }/>
+                                    ) }
+                                />
                             )) }
                         </div>
 
@@ -295,6 +296,7 @@ export function SettingsGeneralSMTP() {
                         <div className='mt-8'>
                             <Input id='testEmail' type='email' value={ destinationTestEmail }
                                    label={ t('SMTP.destination_test_email') }
+                                   placeholder='test'
                                    onChange={ (e) => setDestinationTestEmail(e.target.value) }/>
 
                             <Button disabled={ destinationTestEmail === '' || statusLoadingTestEmail }
@@ -304,31 +306,29 @@ export function SettingsGeneralSMTP() {
                         </div>
                     </div>
                 </div>
-                <div>
-                    <div className='flex flex-col items-center justify-center'>
-                        { statusTestEmail === 'error' && (
-                            <div className='flex items-center mt-4 gap-1'>
-                                <CircleX className='text-(--text-error)'/>
-                                <h1 className='text-2xl font-bold text-(--color-danger)'>{ t('SMTP.test_email_error') }</h1>
-                            </div>
-                        ) }
-                        { statusTestEmail === 'success' && (
-                            <div className='flex items-center mt-4 gap-1'>
-                                <CircleCheck className='text-(--text-success)'/>
-                                <h1 className='text-2xl font-bold text-(--color-success)'>{ t('SMTP.test_email_success') }</h1>
-                            </div>
-                        ) }
-                        <div className='w-8/12 bg-[#212528] h-48 overflow-y-scroll rounded-lg mt-4'>
-                            { statusTestEmail === 'error' && (
-                                <div className='p-4 text-(--text-secondary)'>
-                                    <p>
-                                        { statusTestEmailMessage.split(',').map((msg, index) => (
-                                            <span key={ index }>{ msg }<br/></span>
-                                        )) }
-                                    </p>
-                                </div>
-                            ) }
+                <div className='flex flex-col justify-center p-8'>
+                    { statusTestEmail === 'error' && (
+                        <div className='flex items-center gap-4'>
+                            <img src="/src/assets/imgs/smtp/smtp_fail.svg" alt="Error" className='h-12'/>
+                            <h1 className='text-2xl font-bold text-(--color-danger)'>{ t('SMTP.test_email_error') }</h1>
                         </div>
+                    ) }
+                    { statusTestEmail === 'success' && (
+                        <div className='flex items-center gap-4'>
+                            <img src="/src/assets/imgs/smtp/smtp_success.svg" alt="Error" className='h-12'/>
+                            <h1 className='text-2xl font-bold text-(--color-success)'>{ t('SMTP.test_email_success') }</h1>
+                        </div>
+                    ) }
+                    <div className='w-full bg-[#212528] h-48 overflow-y-scroll rounded-lg mt-8'>
+                        { statusTestEmail === 'error' && (
+                            <div className='p-4 text-(--text-secondary)'>
+                                <p>
+                                    { statusTestEmailMessage.split(',').map((msg, index) => (
+                                        <span key={ index }>{ msg }<br/></span>
+                                    )) }
+                                </p>
+                            </div>
+                        ) }
                     </div>
                 </div>
             </div>

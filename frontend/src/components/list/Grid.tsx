@@ -124,7 +124,7 @@ export function Grid<T extends { id: string }>({
 
     const paginatorLeftData = useMemo(() => {
         return (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4">
                 <span className="flex" data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.select_all') }>
                     <Checkbox label={ selectedRows.length + " " + paginatorLeftText }
                               checked={ selectedRows.length !== 0 } onChange={ selectAll }/>

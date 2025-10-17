@@ -37,12 +37,15 @@
         "settings": "Paramètres",
         "statistics": "Statistiques",
         "upload": "Téléversement",
-        "no": "Non",
         "yes": "Oui",
         "grid": "Affichage en grille",
         "list": "Affichage en liste",
         "select_all": "Selectionner tout / Tout désélectionner",
-        "at": "à"
+        "at": "à",
+        "cancel": "Annuler",
+        "disable": "Désactiver",
+        "enable": "Activer",
+        "delete": "Supprimer"
     },
     "ONBOARD": {
         "select_module": "Choix du module par défaut",
@@ -304,12 +307,28 @@
         "users_url": "URL de récupération des utilisateurs",
         "delete": "Supprimer",
         "delete_hint": "Supprimer le courriel (l'action est irréversible)",
-        "folder_destination": "Dossier d'archivage'",
+        "folder_destination": "Dossier d'archivage",
         "folder_to_crawl": "Dossier à capturer",
         "move": "Déplacer",
         "move_hint": "Déplacer le courriel dans un dossier d'archive (recommandé)",
         "none": "Aucune action",
         "none_hint": "N'effectuer aucune action sur le courriel après traitement",
-        "test_connexion_next": "Tester la connexion et passer à l'étape suivante"
+        "test_connexion_next": "Tester la connexion et passer à l'étape suivante",
+        "module": "Module",
+        "splitter": "Splitter",
+        "verifier": "Verifier",
+        "insert_body_as_doc": "Insérer le corps de l'email comme document",
+        "select_workflow": "Selection du workflow",
+        "loading_save": "Enregistrement en cours...",
+        "process_updated_successfully": "Processus mis à jour avec succès",
+        "authority_url": "URL d'autorité",
+        "confirm_disable_process": "Souhaitez-vous vraiment désactiver ce processus MailCollect ?",
+        "confirm_enable_process": "Souhaitez-vous vraiment activer ce processus MailCollect ?",
+        "disable_process": "Désactiver le processus",
+        "enable_process": "Activer le processus",
+        "process_disabled": "Processus désactivé avec succès",
+        "process_enabled": "Processus activé avec succès",
+        "duplicate": "Dupliquer",
+        "rename": "Renommer"
     }
 }

@@ -15,21 +15,38 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { Inbox } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { ContextMenu } from "primereact/contextmenu";
+import { InputSwitch } from "primereact/inputswitch";
 import { Accordion, AccordionTab } from "primereact/accordion";
+import { CircleQuestionMark, Copy, EllipsisVertical, Inbox, PencilLine, Trash } from "lucide-react";
 
 import { Button } from "../../../../components/Button";
 import { Loader } from "../../../../components/loader/Loader";
+import { showToast } from "../../../../components/ToastProvider";
 
 import { MailCollectProcess } from "./mailcollect-process";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { showConfirmDialog } from "../../../../services/hooks/ConfirmDialog";
 
 export function SettingsGeneralMailcollect() {
-    const { get } = axiosApiCall();
+    const { get, put } = axiosApiCall();
+
+    const cm = useRef(null);
     const [loading, setLoading] = useState(false);
     const [processList, setProcessList] = useState<any[]>([]);
+
+    const [workflows, setWorkflows] = useState<{ verifier: any[]; splitter: any[] }>({
+        verifier: [],
+        splitter: []
+    });
+
+    const menuModel = [
+        { label: t('MAILCOLLECT.rename'), icon: <PencilLine className='mr-2' size={ 16 }/> },
+        { label: t('MAILCOLLECT.duplicate'), icon: <Copy className='mr-2' size={ 16 }/> },
+        { label: <span className='critical'>{ t('MAILCOLLECT.delete') }</span>, icon: <Trash className='mr-2' size={ 16 }/> }
+    ];
 
     useEffect(() => {
         if (loading) return;
@@ -38,7 +55,6 @@ export function SettingsGeneralMailcollect() {
         const fetchProcesses = async () => {
             try {
                 const response = await get('/mailcollect/getProcesses');
-                console.log(response);
                 setProcessList(response.processes);
             } catch (error) {
                 console.error("Erreur de récupération des processus MailCollect :", error);
@@ -47,12 +63,74 @@ export function SettingsGeneralMailcollect() {
             }
         };
 
+        const fetchVerifierWorkflows = async () => {
+            try {
+                const response = await get('/workflows/verifier/list');
+                setWorkflows(prev => ({ ...prev, verifier: response.workflows }));
+            } catch (error) {
+                console.error("Erreur de récupération des workflows du Verifier :", error);
+            }
+        };
+
+        const fetchSplitterWorkflows = async () => {
+            try {
+                const response = await get('/workflows/splitter/list');
+                setWorkflows(prev => ({ ...prev, splitter: response.workflows }));
+            } catch (error) {
+                console.error("Erreur de récupération des workflows du Splitter :", error);
+            }
+        }
+
         fetchProcesses().then();
+        fetchVerifierWorkflows().then();
+        fetchSplitterWorkflows().then();
     }, []);
 
     const handleAddProcess = () => {
         setProcessList([...processList, { name: "Nouveau Processus", authMethod: "imap" }]);
     };
+
+    const handleToggleEnableProcess = (process: any) => {
+        let title: string;
+        let message: string;
+        let confirmText: string;
+
+        if (process.enabled) {
+            confirmText = t('GLOBAL.disable');
+            title = t('MAILCOLLECT.disable_process');
+            message = t('MAILCOLLECT.confirm_disable_process');
+        } else {
+            confirmText = t('GLOBAL.enable');
+            title = t('MAILCOLLECT.enable_process');
+            message = t('MAILCOLLECT.confirm_enable_process');
+        }
+        showConfirmDialog({
+            icon: <CircleQuestionMark/>,
+            title: title,
+            message: message,
+            confirmText: confirmText,
+            cancelText: t('GLOBAL.cancel'),
+            onConfirm: async () => {
+                let route = '/mailcollect/enableProcess/';
+                let toastMessage = t('MAILCOLLECT.process_enabled');
+                if (process.enabled) {
+                    route = '/mailcollect/disableProcess/';
+                    toastMessage = t('MAILCOLLECT.process_disabled');
+                }
+                try {
+                    await put(route + process.name);
+                    showToast(toastMessage, "success");
+                } catch (error) {
+                    console.error("Erreur lors du changement de l'état du processus MailCollect :", error);
+                }
+
+                process.enabled = !process.enabled;
+                setProcessList([...processList]);
+            },
+            onCancel: () => {
+            }
+        })
+    }
 
     if (loading) return <Loader/>;
 
@@ -77,8 +155,28 @@ export function SettingsGeneralMailcollect() {
             ) : (
                 <Accordion multiple activeIndex={ [0] }>
                     { processList.map((process, idx) => (
-                        <AccordionTab header={ process.name } key={ idx }>
-                            <MailCollectProcess process={ process } index={ idx }/>
+                        <AccordionTab header={
+                            <span className='flex items-center gap-2'>
+                                <span>
+                                    { process.name }
+                                </span>
+                                <span className='flex ml-auto'>
+                                    <InputSwitch inputId={ 'enable_' + idx } checked={ process.enabled }
+                                                 onClick={ (e) => e.stopPropagation() }
+                                                 onChange={ () => handleToggleEnableProcess(process) }/>
+                                    <EllipsisVertical onClick={ (e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        cm.current?.show(e);
+                                    } }/>
+                                    { menuModel && (
+                                        <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }/>
+                                    ) }
+                                </span>
+
+                            </span>
+                        } key={ idx }>
+                            <MailCollectProcess key={ idx } process={ process } workflows={ workflows }/>
                         </AccordionTab>
                     )) }
                 </Accordion>

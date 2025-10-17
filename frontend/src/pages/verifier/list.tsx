@@ -80,7 +80,7 @@ export function VerifierListPage() {
 
     const menuModel: any = [
         {
-            label: t('VERIFIER.delete_document'),
+            label: <span className='critical'>{ t('VERIFIER.delete_document') } </span>,
             icon: <Trash2 className='mr-1' size={ 16 }/>,
             command: () => handleDelete()
         }
@@ -239,8 +239,8 @@ export function VerifierListPage() {
             icon: <CircleQuestionMark/>,
             title: t('VERIFIER.delete_document'),
             message: t('VERIFIER.confirm_delete_document', { count: selectedDocuments.length }),
-            confirmText: t('GLOBAL.yes'),
-            cancelText: t('GLOBAL.no'),
+            confirmText: t('GLOBAL.delete'),
+            cancelText: t('GLOBAL.cancel'),
             onConfirm: async () => {
                 await deleteDocuments(selectedDocuments.map(doc => doc.id));
                 setSelectedDocuments([]);
@@ -271,7 +271,7 @@ export function VerifierListPage() {
 
             <div className='flex items-center gap-6'>
                 <Button icon={ <Filter size={ 14 }/> }
-                        className='rounded-3xl bg-(--bg-primary) text-(--text-primary) hover:text-(--color-primary) border-(--border-secondary)'>
+                        className='rounded-3xl bg-(--bg-primary) text-(--text-primary) hover:text-(--color-primary) border-(--border-secondary) p-2.5!'>
                     { t('VERIFIER.filters') }
                 </Button>
                 <span className='flex items-center gap-1'>

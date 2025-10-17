@@ -66,7 +66,7 @@ export function SplitterListPage() {
 
     const menuModel: any = [
         {
-            label: t('SPLITTER.delete_batch'),
+            label:<span className='critical'>{ t('SPLITTER.delete_batch') } </span>,
             icon: <Trash2 className='mr-1' size={ 16 }/>,
             command: () => handleDelete()
         }
@@ -206,8 +206,8 @@ export function SplitterListPage() {
             icon: <CircleQuestionMark/>,
             title: t('SPLITTER.delete_batch'),
             message: t('SPLITTER.confirm_delete_batch', { count: selectedBatches.length }),
-            confirmText: t('GLOBAL.yes'),
-            cancelText: t('GLOBAL.no'),
+            confirmText: t('GLOBAL.delete'),
+            cancelText: t('GLOBAL.cancel'),
             onConfirm: async () => {
                 await deleteDocuments(selectedBatches.map(doc => doc.id));
                 setSelectedBatches([]);

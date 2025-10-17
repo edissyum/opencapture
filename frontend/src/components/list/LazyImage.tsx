@@ -80,13 +80,13 @@ export function LazyBase64Image({ document_info, alt, className, module }: LazyB
 
     return (
         <div className="w-full h-40 relative">
-            { (loading || !src ) && <Skeleton className="w-full h-full absolute top-0 left-0 rounded-t-lg"/> }
+            { (loading || !src ) && <Skeleton className="w-full! h-full! absolute top-0! left-0! rounded-t-lg! rounded-br-none! rounded-bl-none!"/> }
             { src && (
                 <img
                     src={ src }
                     alt={ alt }
                     loading="lazy"
-                    className={ `${ className } w-full h-full` }
+                    className={ `${ className } w-full! h-full!` }
                 />
             ) }
         </div>
