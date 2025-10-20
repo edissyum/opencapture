@@ -349,7 +349,7 @@ CREATE TABLE "languages" (
 
 CREATE TABLE "mailcollect" (
     "id"                            SERIAL       UNIQUE PRIMARY KEY,
-    "name"                          VARCHAR(255) UNIQUE NOT NULL,
+    "name"                          VARCHAR(255) NOT NULL,
     "method"                        VARCHAR(20)  DEFAULT 'imap',
     "options"                       JSONB        DEFAULT '{}',
     "secured_connection"            BOOLEAN      DEFAULT True,

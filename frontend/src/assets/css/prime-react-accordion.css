@@ -76,10 +76,21 @@
     @apply shadow-none;
 }
 
-.p-dropdown-panel .p-dropdown-header,
-.p-dropdown-items-wrapper {
+.p-dropdown-panel .p-dropdown-header {
     @apply bg-(--bg-secondary);
 }
+
+.p-dropdown-items-wrapper,
+.p-dropdown-items-wrapper .p-dropdown-item {
+    @apply bg-(--bg-primary);
+    @apply text-(--text-primary);
+}
+
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item:not(.p-highlight):not(.p-disabled).p-focus {
+    @apply bg-(--bg-secondary);
+}
+
+
 .p-dropdown-panel .p-dropdown-header .p-dropdown-filter-container,
 .p-inputtext {
     @apply bg-(--bg-primary);

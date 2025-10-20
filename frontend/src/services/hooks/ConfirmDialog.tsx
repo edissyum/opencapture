@@ -37,7 +37,9 @@ export function showConfirmDialog({
     onCancel: () => void;
 }) {
     confirmDialog({
-        message: message,
+        closeOnEscape: true,
+        dismissableMask: true,
+        message: <span dangerouslySetInnerHTML={ { __html: message } }/>,
         header: title,
         icon: icon,
         acceptLabel: confirmText,

@@ -16,8 +16,9 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { useEffect, useState } from "react";
-import { useUser } from "./useUser.tsx";
-import { axiosApiCall } from "./axiosApiCall.tsx";
+
+import { useUser } from "./useUser";
+import { axiosApiCall } from "./axiosApiCall";
 
 type Favorite = {
     id?: string;

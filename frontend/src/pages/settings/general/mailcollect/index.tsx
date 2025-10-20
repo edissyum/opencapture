@@ -29,11 +29,13 @@ import { MailCollectProcess } from "./mailcollect-process";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../../../services/hooks/ConfirmDialog";
+import { showConfirmDialogWithInput } from "../../../../services/hooks/ConfirmDialogWithInput";
+
 
 export function SettingsGeneralMailcollect() {
-    const { get, put } = axiosApiCall();
+    const { get, post, put, del } = axiosApiCall();
 
-    const cm = useRef(null);
+    const cm = useRef({ current: null } as any);
     const [loading, setLoading] = useState(false);
     const [processList, setProcessList] = useState<any[]>([]);
 
@@ -41,12 +43,111 @@ export function SettingsGeneralMailcollect() {
         verifier: [],
         splitter: []
     });
+    const [selectedProcess, setSelectedProcess] = useState<any>(null);
 
-    const menuModel = [
-        { label: t('MAILCOLLECT.rename'), icon: <PencilLine className='mr-2' size={ 16 }/> },
-        { label: t('MAILCOLLECT.duplicate'), icon: <Copy className='mr-2' size={ 16 }/> },
-        { label: <span className='critical'>{ t('MAILCOLLECT.delete') }</span>, icon: <Trash className='mr-2' size={ 16 }/> }
+    const menuModel: any = [
+        {
+            label: t('MAILCOLLECT.rename'),
+            icon: <PencilLine className='mr-2' size={ 16 }/>,
+            command: () => handleRename()
+        },
+        {
+            label: t('MAILCOLLECT.duplicate'),
+            icon: <Copy className='mr-2' size={ 16 }/>,
+            command: () => handleDuplicate()
+        },
+        {
+            label: <span className='critical'>{ t('MAILCOLLECT.delete') }</span>,
+            icon: <Trash className='mr-2' size={ 16 }/>,
+            command: () => handleDelete()
+        }
     ];
+
+    const handleRename = () => {
+        if (!selectedProcess) return;
+
+        let newName = selectedProcess.name + '_bis';
+        showConfirmDialogWithInput({
+            value: newName,
+            title: t('MAILCOLLECT.rename_process'),
+            message: t('MAILCOLLECT.enter_new_process_name', { 'name': selectedProcess.name }),
+            icon: <PencilLine/>,
+            confirmText: t('MAILCOLLECT.rename'),
+            cancelText: t('GLOBAL.cancel'),
+            onConfirm: (value) => {
+                const renameProcess = async () => {
+                    try {
+                        await put('/mailcollect/updateProcessName/' + selectedProcess.id, { name: value });
+                        showToast(t('MAILCOLLECT.process_renamed'), "success");
+                        selectedProcess.name = value;
+                        setProcessList([...processList]);
+                    } catch (error) {
+                        console.error("Erreur lors du renommage du processus MailCollect :", error);
+                    }
+                }
+                renameProcess().then();
+            },
+            onCancel: () => {
+            }
+        });
+    };
+
+    const handleDelete = () => {
+        if (!selectedProcess) return;
+
+        showConfirmDialog({
+            icon: <CircleQuestionMark/>,
+            title: t('MAILCOLLECT.delete_process'),
+            message: t('MAILCOLLECT.confirm_delete_process', { name: selectedProcess.name }),
+            confirmText: t('MAILCOLLECT.delete'),
+            cancelText: t('GLOBAL.cancel'),
+            onConfirm: async () => {
+                try {
+                    await del('/mailcollect/deleteProcess/' + selectedProcess.id);
+                    showToast(t('MAILCOLLECT.process_deleted'), "success");
+                    setProcessList(processList.filter(p => p.id !== selectedProcess.id));
+                } catch (error) {
+                    console.error("Erreur lors de la suppression du processus MailCollect :", error);
+                }
+            },
+            onCancel: () => {
+            }
+        })
+    }
+
+    const handleDuplicate = () => {
+        if (!selectedProcess) return;
+
+        let newName = selectedProcess.name + '_bis';
+        showConfirmDialogWithInput({
+            value: newName,
+            title: t('MAILCOLLECT.duplicate_process'),
+            message: t('MAILCOLLECT.enter_new_duplicate_process_name', { 'name': selectedProcess.name }),
+            icon: <Copy/>,
+            confirmText: t('MAILCOLLECT.duplicate'),
+            cancelText: t('GLOBAL.cancel'),
+            onConfirm: (value) => {
+                let newProcess = { ...selectedProcess };
+                newProcess.name = value;
+                delete newProcess.id;
+
+                const duplicateProcess = async () => {
+                    try {
+                        const response = await post('/mailcollect/createProcess', newProcess);
+                        showToast(t('MAILCOLLECT.process_duplicated'), "success");
+
+                        newProcess.id = response.process;
+                        setProcessList([...processList, newProcess]);
+                    } catch (error) {
+                        console.error("Erreur lors de la duplication du processus MailCollect :", error);
+                    }
+                }
+                duplicateProcess().then();
+            },
+            onCancel: () => {
+            }
+        });
+    };
 
     useEffect(() => {
         if (loading) return;
@@ -87,7 +188,45 @@ export function SettingsGeneralMailcollect() {
     }, []);
 
     const handleAddProcess = () => {
-        setProcessList([...processList, { name: "Nouveau Processus", authMethod: "imap" }]);
+        showConfirmDialogWithInput({
+            value: t('MAILCOLLECT.new_mailcollect_process'),
+            title: t('MAILCOLLECT.add_process'),
+            message: t('MAILCOLLECT.enter_new_process_name_create'),
+            confirmText: t('MAILCOLLECT.create'),
+            cancelText: t('GLOBAL.cancel'),
+            onConfirm: (value) => {
+                let newProcess = {
+                    id: null,
+                    name: value,
+                    method: 'imap',
+                    enabled: true,
+                    folder_destination: '',
+                    options: {
+                        login: '',
+                        port: 993,
+                        hostname: '',
+                        password: ''
+                    },
+                    folder_to_crawl: 'INBOX',
+                    action_after_process: 'move'
+                };
+
+                const addProcess = async () => {
+                    try {
+                        const response = await post('/mailcollect/createProcess', newProcess);
+                        showToast(t('MAILCOLLECT.process_created'), "success");
+
+                        newProcess.id = response.process;
+                        setProcessList([...processList, newProcess]);
+                    } catch (error) {
+                        console.error("Erreur lors de la duplication du processus MailCollect :", error);
+                    }
+                }
+                addProcess().then();
+            },
+            onCancel: () => {
+            }
+        });
     };
 
     const handleToggleEnableProcess = (process: any) => {
@@ -98,11 +237,11 @@ export function SettingsGeneralMailcollect() {
         if (process.enabled) {
             confirmText = t('GLOBAL.disable');
             title = t('MAILCOLLECT.disable_process');
-            message = t('MAILCOLLECT.confirm_disable_process');
+            message = t('MAILCOLLECT.confirm_disable_process', { 'name': process.name });
         } else {
             confirmText = t('GLOBAL.enable');
             title = t('MAILCOLLECT.enable_process');
-            message = t('MAILCOLLECT.confirm_enable_process');
+            message = t('MAILCOLLECT.confirm_enable_process', { 'name': process.name });
         }
         showConfirmDialog({
             icon: <CircleQuestionMark/>,
@@ -118,7 +257,7 @@ export function SettingsGeneralMailcollect() {
                     toastMessage = t('MAILCOLLECT.process_disabled');
                 }
                 try {
-                    await put(route + process.name);
+                    await put(route + process.id);
                     showToast(toastMessage, "success");
                 } catch (error) {
                     console.error("Erreur lors du changement de l'état du processus MailCollect :", error);
@@ -165,6 +304,7 @@ export function SettingsGeneralMailcollect() {
                                                  onClick={ (e) => e.stopPropagation() }
                                                  onChange={ () => handleToggleEnableProcess(process) }/>
                                     <EllipsisVertical onClick={ (e) => {
+                                        setSelectedProcess(process);
                                         e.preventDefault();
                                         e.stopPropagation();
                                         cm.current?.show(e);

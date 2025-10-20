@@ -65,12 +65,12 @@ def retrieve_folders():
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('mailcollect/updateProcess/<string:process_name>', methods=['POST'])
+@bp.route('mailcollect/updateProcess/<int:process_id>', methods=['POST'])
 @auth.token_required
-def update_process(process_name):
+def update_process(process_id):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'mailcollect']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/mailcollect/updateProcess/{process_name}'}), 403
+                        'message': f'/mailcollect/updateProcess/{process_id}'}), 403
     check, message = rest_validator(request.json, [
         {'id': 'method', 'type': str, 'mandatory': True},
         {'id': 'options', 'type': dict, 'mandatory': True},
@@ -89,16 +89,16 @@ def update_process(process_name):
             "message": message
         }, 400)
 
-    res = mailcollect.update_process({'set': request.json, 'process_name': process_name})
+    res = mailcollect.update_process({'set': request.json, 'process_id': process_id})
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('mailcollect/updateProcessName/<string:process_name>', methods=['POST'])
+@bp.route('mailcollect/updateProcessName/<int:process_id>', methods=['PUT'])
 @auth.token_required
-def update_process_name(process_name):
+def update_process_name(process_id):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'mailcollect']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/mailcollect/updateProcessName/{process_name}'}), 403
+                        'message': f'/mailcollect/updateProcessName/{process_id}'}), 403
 
     check, message = rest_validator(request.json, [
         {'id': 'name', 'type': str, 'mandatory': True}
@@ -110,7 +110,7 @@ def update_process_name(process_name):
             "message": message
         }, 400)
 
-    res = mailcollect.update_process({'set': request.json, 'process_name': process_name})
+    res = mailcollect.update_process({'set': request.json, 'process_id': process_id})
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -126,7 +126,7 @@ def create_process():
         {'id': 'options', 'type': dict, 'mandatory': True},
         {'id': 'is_splitter', 'type': bool, 'mandatory': False},
         {'id': 'folder_to_crawl', 'type': str, 'mandatory': True},
-        {'id': 'folder_destination', 'type': str, 'mandatory': True},
+        {'id': 'folder_destination', 'type': str, 'mandatory': False},
         {'id': 'secured_connection', 'type': bool, 'mandatory': False},
         {'id': 'action_after_process', 'type': str, 'mandatory': True},
         {'id': 'verifier_workflow_id', 'type': str, 'mandatory': False},
@@ -143,34 +143,34 @@ def create_process():
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('mailcollect/deleteProcess/<string:process_name>', methods=['DELETE'])
+@bp.route('mailcollect/deleteProcess/<int:process_id>', methods=['DELETE'])
 @auth.token_required
-def delete_process(process_name):
+def delete_process(process_id):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'mailcollect']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/mailcollect/deleteProcess/{process_name}'}), 403
+                        'message': f'/mailcollect/deleteProcess/{process_id}'}), 403
 
-    res = mailcollect.delete_process(process_name)
+    res = mailcollect.delete_process(process_id)
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('mailcollect/enableProcess/<string:process_name>', methods=['PUT'])
+@bp.route('mailcollect/enableProcess/<int:process_id>', methods=['PUT'])
 @auth.token_required
-def enable_process(process_name):
+def enable_process(process_id):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'mailcollect']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/mailcollect/enableProcess/{process_name}'}), 403
+                        'message': f'/mailcollect/enableProcess/{process_id}'}), 403
 
-    res = mailcollect.enable_process(process_name)
+    res = mailcollect.enable_process(process_id)
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('mailcollect/disableProcess/<string:process_name>', methods=['PUT'])
+@bp.route('mailcollect/disableProcess/<int:process_id>', methods=['PUT'])
 @auth.token_required
-def disable_process(process_name):
+def disable_process(process_id):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'mailcollect']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'# /mailcollect/disableProcess/{process_name}'}), 403
+                        'message': f'# /mailcollect/disableProcess/{process_id}'}), 403
 
-    res = mailcollect.disable_process(process_name)
+    res = mailcollect.disable_process(process_id)
     return make_response(jsonify(res[0])), res[1]

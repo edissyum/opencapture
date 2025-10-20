@@ -100,7 +100,15 @@
         "add_favorites": "Agregar a favoritos",
         "remove_favorites": "Eliminar de favoritos",
         "favorites": "Favoritos",
-        "favorites_subtitle": "Acceso rápido a tus configuraciones favoritas"
+        "favorites_subtitle": "Acceso rápido a tus configuraciones favoritas",
+        "form_details": "",
+        "form_fields": "",
+        "forms": "",
+        "forms_description": "",
+        "edit_form": "",
+        "forms_many": "",
+        "forms_one": "",
+        "forms_other": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Haz clic para seleccionar un archivo",
@@ -141,7 +149,10 @@
         "delete_document": "Eliminar documento",
         "delete_documents": "Eliminar",
         "id": "Identificador técnico",
-        "filename": "Nombre de archivo"
+        "filename": "Nombre de archivo",
+        "custom_fields": "",
+        "facturation": "",
+        "lines": ""
     },
     "SPLITTER": {
         "batch_selected_many": "lotes seleccionados",
@@ -329,6 +340,27 @@
         "process_disabled": "",
         "process_enabled": "",
         "duplicate": "",
-        "rename": ""
+        "rename": "",
+        "confirm_delete_process": "",
+        "delete_process": "",
+        "enter_new_process_name": "",
+        "process_deleted": "",
+        "process_renamed": "",
+        "rename_process": "",
+        "duplicate_process": "",
+        "enter_new_duplicate_process_name": "",
+        "create": "",
+        "new_mailcollect_process": "",
+        "process_created": "",
+        "process_duplicated": "",
+        "enter_new_process_name_create": ""
+    },
+    "FORMS": {
+        "add_form": "",
+        "label": "",
+        "no_form": "",
+        "selected_many": "",
+        "selected_one": "",
+        "selected_other": ""
     }
 }

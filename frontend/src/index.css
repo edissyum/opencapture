@@ -17,6 +17,7 @@
 
 @import "tailwindcss";
 @import "./assets/css/tailwind-theme.css";
+@import "./assets/css/prime-react-tab.css";
 @import "./assets/css/prime-react-datatable.css";
 @import "./assets/css/prime-react-accordion.css";
 

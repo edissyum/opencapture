@@ -18,23 +18,20 @@ import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { CirclePause, CircleQuestionMark, FileText, Trash2, UserRoundPlus } from "lucide-react";
 
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
-import { showConfirmDialog } from "../../../services/hooks/ConfirmDialog";
+import { Input } from "../../../../components/Input";
+import { Button } from "../../../../components/Button";
+import { Table } from "../../../../components/list/Table";
+import { showToast } from "../../../../components/ToastProvider";
+import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { showConfirmDialog } from "../../../../services/hooks/ConfirmDialog";
 
-import { Input } from "../../../components/Input";
-import { Button } from "../../../components/Button";
-import { Table } from "../../../components/list/Table";
-import { useUser } from "../../../services/hooks/useUser";
-import { showToast } from "../../../components/ToastProvider";
-
-export function SettingsGeneralRoles() {
+export function SettingsVerifierFormsList() {
     const { get, put, del } = axiosApiCall();
-    const { user, loadingUser } = useUser();
 
-    const [roles, setRoles] = useState([]);
-    const [totalRoles, setTotalRoles] = useState(0);
-    const [selectedRoles, setSelectedRoles] = useState<any[]>([]);
-    const [loadingRoles, setLoadingRoles] = useState(false);
+    const [forms, setForms] = useState([]);
+    const [totalForms, setTotalForms] = useState(0);
+    const [selectedForms, setSelectedForms] = useState<any[]>([]);
+    const [loadingForms, setLoadingForms] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [lazyParams, setLazyParams] = useState({
         first: 0,
@@ -45,9 +42,8 @@ export function SettingsGeneralRoles() {
     });
 
     const columns = [
-        { id: 'id', field: 'id', header: '', sortable: true, className: 'max-w-10! w-10!' },
-        { id: 'label_short', field: 'label_short', sortable: true, header: t('ROLES.label_short'), className: 'max-w-[12rem] w-[12rem]' },
-        { id: 'label', field: 'label', header: t('ROLES.label'), sortable: true },
+        { id: 'id', field: 'id', header: '', className: 'max-w-10! w-10!' },
+        { id: 'label', field: 'label', header: t('FORMS.label') },
         {
             id: 'status',
             header: t('USERS.status'),
@@ -62,31 +58,31 @@ export function SettingsGeneralRoles() {
         },
     ];
 
-    const actions = [
+    const actions: any = [
         {
-            label: t('ROLES.enable_roles'),
+            label: t('USERS.delete_users'),
+            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            command: () => handleDelete()
+        },
+        {
+            label: t('USERS.enable_users'),
             icon: <CirclePause className='mr-1' size={ 16 }/>,
             command: () => handleEnable()
         },
         {
-            label: t('ROLES.disable_roles'),
+            label: t('USERS.disable_users'),
             icon: <CirclePause className='mr-1' size={ 16 }/>,
             command: () => handleDisable()
-        },
-        {
-            label: t('ROLES.delete_roles'),
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
-            command: () => handleDelete()
         }
-    ];
+    ]
 
     useEffect(() => {
-        if (loadingRoles || loadingUser) return;
-        setLoadingRoles(true);
+        if (loadingForms) return;
+        setLoadingForms(true);
 
-        const fetchRoles = async () => {
+        const fetchForms = async () => {
             try {
-                const response = await get(`/roles/list/user/${user.id}`, {
+                const response = await get('/forms/verifier/list', {
                     params: {
                         offset: lazyParams.first,
                         limit: lazyParams.rows,
@@ -95,114 +91,115 @@ export function SettingsGeneralRoles() {
                         search: searchTerm,
                     }
                 });
-                setTotalRoles(response.roles[0]?.total || 0);
-                setRoles(response.roles);
+
+                setTotalForms(response.forms[0].total || 0);
+                setForms(response.forms);
             } catch (error) {
-                console.error('Erreur de récupération des rôles :', error);
+                console.error('Erreur de récupération des formulaires :', error);
             } finally {
-                setLoadingRoles(false);
+                setLoadingForms(false);
             }
         }
-        fetchRoles().then();
-    }, [lazyParams, searchTerm, user, loadingUser]);
+        fetchForms().then();
+    }, [lazyParams, searchTerm]);
 
     const refresh = () => {
         setTimeout(() => {
-            setSelectedRoles([]);
-            setTotalRoles(0);
+            setSelectedForms([]);
+            setTotalForms(0);
             setLazyParams({ ...lazyParams, first: 0 });
         });
     }
 
     const handleDisable = () => {
-        if (selectedRoles.length === 0) return;
+        if (selectedForms.length === 0) return;
 
         showConfirmDialog({
             icon: <CircleQuestionMark/>,
-            title: t('ROLES.disable_role', { count: selectedRoles.length }),
-            message: t('ROLES.confirm_disable_role', { count: selectedRoles.length }),
+            title: t('USERS.disable_user', { count: selectedForms.length }),
+            message: t('USERS.confirm_disable_user', { count: selectedForms.length }),
             confirmText: t('GLOBAL.disable'),
             cancelText: t('GLOBAL.cancel'),
             onConfirm: async () => {
-                await disableRoles(selectedRoles.map((user:any) => user.id))
+                await disableUsers(selectedForms.map((user: any) => user.id));
                 refresh();
             },
             onCancel: () => {
-                setSelectedRoles([]);
+                setSelectedForms([]);
             }
         })
     }
-    const disableRoles = async (ids: string[]) => {
+    const disableUsers = async (ids: string[]) => {
         ids.forEach((id) => {
             try {
-                put(`/roles/disable/${ id }`);
+                put(`/users/disable/${ id }`);
                 if (id === ids[ids.length - 1]) {
-                    showToast(t('ROLES.role_disabled', { count: selectedRoles.length }), 'success');
+                    showToast(t('USERS.user_disabled', { count: selectedForms.length }), 'success');
                 }
             } catch (err) {
-                console.error("Erreur désactivation du rôle :", err);
+                console.error("Erreur désactivation de l'utilisateur :", err);
             }
         });
     }
 
     const handleEnable = () => {
-        if (selectedRoles.length === 0) return;
+        if (selectedForms.length === 0) return;
 
         showConfirmDialog({
             icon: <CircleQuestionMark/>,
-            title: t('ROLES.enable_role', { count: selectedRoles.length }),
-            message: t('ROLES.confirm_enable_role', { count: selectedRoles.length }),
+            title: t('USERS.enable_user', { count: selectedForms.length }),
+            message: t('USERS.confirm_enable_user', { count: selectedForms.length }),
             confirmText: t('GLOBAL.enable'),
             cancelText: t('GLOBAL.cancel'),
             onConfirm: async () => {
-                await enableRoles(selectedRoles.map((user:any) => user.id));
+                await enableUsers(selectedForms.map((user: any) => user.id));
                 refresh();
             },
             onCancel: () => {
-                setSelectedRoles([]);
+                setSelectedForms([]);
             }
         })
     }
-    const enableRoles = async (ids: string[]) => {
+    const enableUsers = async (ids: string[]) => {
         ids.forEach((id) => {
             try {
-                put(`/roles/enable/${ id }`);
+                put(`/users/enable/${ id }`);
                 if (id === ids[ids.length - 1]) {
-                    showToast(t('ROLES.role_enabled', { count: selectedRoles.length }), 'success');
+                    showToast(t('USERS.user_enabled', { count: selectedForms.length }), 'success');
                 }
             } catch (err) {
-                console.error("Erreur activation du rôle :", err);
+                console.error("Erreur activation de l'utilisateur :", err);
             }
         });
     }
 
     const handleDelete = () => {
-        if (selectedRoles.length === 0) return;
+        if (selectedForms.length === 0) return;
 
         showConfirmDialog({
             icon: <CircleQuestionMark/>,
-            title: t('ROLES.delete_role', { count: selectedRoles.length }),
-            message: t('ROLES.confirm_delete_role', { count: selectedRoles.length }),
+            title: t('USERS.delete_user', { count: selectedForms.length }),
+            message: t('USERS.confirm_delete_user', { count: selectedForms.length }),
             confirmText: t('GLOBAL.delete'),
             cancelText: t('GLOBAL.cancel'),
             onConfirm: async () => {
-                await deleteRoles(selectedRoles.map((user: any) => user.id));
+                await deleteUsers(selectedForms.map((user: any) => user.id));
                 refresh();
             },
             onCancel: () => {
-                setSelectedRoles([]);
+                setSelectedForms([]);
             }
         });
     }
-    const deleteRoles = async (ids: string[]) => {
+    const deleteUsers = async (ids: string[]) => {
         for (const id of ids) {
             try {
-                await del(`/roles/delete/${ id }`);
+                await del(`/users/delete/${ id }`);
                 if (id === ids[ids.length - 1]) {
-                    showToast(t('ROLES.role_deleted', { count: selectedRoles.length }), 'success');
+                    showToast(t('USERS.user_deleted', { count: selectedForms.length }), 'success');
                 }
             } catch (err) {
-                console.error("Erreur suppression du rôle :", err);
+                console.error("Erreur suppression de l'utilisateur :", err);
             }
         }
     }
@@ -213,12 +210,12 @@ export function SettingsGeneralRoles() {
                 <span className='flex items-center gap-1'>
                     <FileText size={ 16 }/>
                     <span>
-                        { t('ROLES.roles', { count: totalRoles }) } ({ totalRoles || 0 })
+                        { t('SETTINGS.forms', { count: totalForms }) } ({ totalForms || 0 })
                     </span>
                 </span>
                 <span>
                     <Input id="search" type="text" name="search" className='bg-(--bg-primary)'
-                           value={ searchTerm } placeholder={ t('ROLES.search') } no_margin_bottom={ true }
+                           value={ searchTerm } placeholder={ t('USERS.search') } no_margin_bottom={ true }
                            onChange={ (e) => setSearchTerm(e.target.value) }/>
                 </span>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
@@ -226,32 +223,30 @@ export function SettingsGeneralRoles() {
                         size={ 'sm' }
                         variant={ "no_bg_border" }
                         className='p-2 border'>
-                        <UserRoundPlus size={ 14 } className="mr-1"/> { t('ROLES.add_role') }
+                        <UserRoundPlus size={ 14 } className="mr-1"/> { t('FORMS.add_form') }
                     </Button>
                 </span>
             </div>
             <Table
-                baseLink="/settings/general/roles/"
-                data={ roles }
-                height="h-[30vh]"
+                baseLink="/settings/verifier/forms/edit/"
+                data={ forms }
                 actions={ actions }
                 pagination={ true }
                 columns={ columns }
                 menuModel={ actions }
-                loading={ loadingRoles }
+                loading={ loadingForms }
                 lazyParams={ lazyParams }
                 checkboxSelection={ true }
-                selectedRows={ selectedRoles }
+                selectedRows={ selectedForms }
                 rowsPerPage={ lazyParams.rows }
                 skeletonRows={ lazyParams.rows }
-                totalRecords={ totalRoles || 0 }
+                totalRecords={ totalForms || 0 }
                 rowsPerPageOptions={ [4, 8, 16, 32] }
-                emptyMessage={ t("ROLES.no_role") }
-                paginatorLeftText={ t('ROLES.selected', { count: selectedRoles.length }) }
+                emptyMessage={ t("FORMS.no_form") }
+                paginatorLeftText={ t('FORMS.selected', { count: selectedForms.length }) }
                 onLazyParamsChange={ setLazyParams }
-                onSelectionChange={ (rows) => setSelectedRoles(rows) }
+                onSelectionChange={ (rows) => setSelectedForms(rows) }
             />
-
         </div>
     );
 }

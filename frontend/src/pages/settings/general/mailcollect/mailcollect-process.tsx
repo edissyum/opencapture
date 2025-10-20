@@ -186,7 +186,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
         setLoading(true);
         try {
             if (process.id) {
-                await post('/mailcollect/updateProcess/' + process['name'], process);
+                await post('/mailcollect/updateProcess/' + process['id'], process);
                 showToast(t("MAILCOLLECT.process_updated_successfully"), "success");
             }
         } catch (err) {
@@ -195,6 +195,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
         setLoading(false);
 
     }
+
     return (
         <Stepper ref={ stepperRef } linear className='pb-4'>
             <StepperPanel header={ t("MAILCOLLECT.connection") }>

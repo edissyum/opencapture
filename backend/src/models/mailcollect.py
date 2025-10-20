@@ -47,7 +47,7 @@ def retrieve_processes(args):
     return processes, error
 
 
-def get_process_by_name(args):
+def get_process_by_id(args):
     if 'database' in current_context:
         database = current_context.database
     else:
@@ -60,8 +60,8 @@ def get_process_by_name(args):
     process = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['mailcollect'],
-        'where': ['name = %s'],
-        'data': [args['process_name']],
+        'where': ['id = %s'],
+        'data': [args['process_id']],
         'order_by': ['id ASC']
     })
     return process, error
@@ -85,8 +85,8 @@ def update_process(args):
     process = database.update({
         'table': ['mailcollect'],
         'set': args['set'],
-        'where': ['name = %s'],
-        'data': [args['process_name']]
+        'where': ['id = %s'],
+        'data': [args['process_id']]
     })
     if process[0] is False:
         error = gettext('MAILCOLLECT_PROCESS_UPDATE_ERROR')

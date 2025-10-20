@@ -22,6 +22,7 @@ import { useFavorites } from "../../services/hooks/useFavorite";
 import { SettingsCard } from "../../components/settings/SettingsCard";
 
 import { getSettingsGeneralOptions } from "./general";
+import { getSettingsVerifierOptions } from "./verifier";
 
 export function SettingsIndex() {
     const options = [
@@ -51,7 +52,9 @@ export function SettingsIndex() {
     useEffect(() => {
         if (!ready) return;
         const generalOptions = getSettingsGeneralOptions();
-        const allOptions: any = [...generalOptions, ...options];
+        const verifierOptions = getSettingsVerifierOptions();
+
+        const allOptions: any = [...generalOptions, ...verifierOptions, ...options];
 
         (async () => {
             const favs = await getFavorites();

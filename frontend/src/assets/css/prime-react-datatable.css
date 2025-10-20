@@ -15,8 +15,12 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-/* Header background color */
+/* Overlay */
+.p-component-overlay {
+    @apply backdrop-blur-[2px];
+}
 
+/* Header background color */
 .p-datatable .p-datatable-thead > tr > th {
     @apply bg-white!;
     @apply dark:bg-(--bg-secondary)!;

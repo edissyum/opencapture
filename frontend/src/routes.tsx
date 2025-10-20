@@ -39,6 +39,8 @@ import { SettingsGeneralUsers } from "./pages/settings/general/users";
 import { SettingsGeneralAdvanced } from "./pages/settings/general/advanced";
 import { SettingsGeneralMailcollect } from "./pages/settings/general/mailcollect";
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
+import { SettingsVerifierFormsList } from "./pages/settings/verifier/forms/list";
+import { SettingsVerifierFormsEditor } from "./pages/settings/verifier/forms/editor";
 
 export const router = createBrowserRouter(
     [
@@ -149,6 +151,26 @@ export const router = createBrowserRouter(
                             element: <SettingsVerifierIndex/>,
                             errorElement: <LoginRequiredError/>
                         },
+                        {
+                            path: "forms",
+                            loader: protectedLoader,
+                            handle: { breadcrumb: 'SETTINGS.forms' },
+                            children: [
+                                {
+                                    index: true,
+                                    loader: protectedLoader,
+                                    element: <SettingsVerifierFormsList/>,
+                                    errorElement: <LoginRequiredError/>
+                                },
+                                {
+                                    path:'edit/:formId',
+                                    loader: protectedLoader,
+                                    element: <SettingsVerifierFormsEditor/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.edit_form' }
+                                }
+                            ]
+                        }
                     ]
                 },
                 {

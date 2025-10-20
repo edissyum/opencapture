@@ -45,6 +45,10 @@ def get_forms(args):
         _args['where'].append('id = ANY(%s)')
         _args['data'].append(user_forms)
 
+    if 'search' in args and args['search']:
+        _args['where'].append('label ILIKE %s')
+        _args['data'].append('%' + args['search'] + '%')
+
     _forms, _ = forms.get_forms(_args)
 
     if 'totals' in args and args['totals']:

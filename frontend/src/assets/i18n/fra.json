@@ -100,7 +100,15 @@
         "add_favorites": "Ajouter aux favoris",
         "remove_favorites": "Supprimer des favoris",
         "favorites": "Favoris",
-        "favorites_subtitle": "Accès rapide à vos paramètres favoris"
+        "favorites_subtitle": "Accès rapide à vos paramètres favoris",
+        "form_details": "Détails du formulaire",
+        "form_fields": "Champs du formulaire",
+        "forms": "Formulaires",
+        "forms_description": "Paramètres des formulaires",
+        "edit_form": "Modifier le formulaire",
+        "forms_many": "Formulaires",
+        "forms_one": "Formulaire",
+        "forms_other": "Formulaires"
     },
     "UPLOAD": {
         "upload_dropzone": "Cliquez pour choisir un fichier",
@@ -141,7 +149,10 @@
         "delete_document": "Supprimer le document",
         "delete_documents": "Supprimer",
         "id": "Identifiant technique",
-        "filename": "Fichier"
+        "filename": "Fichier",
+        "custom_fields": "Champs personnalisés",
+        "facturation": "Traitement",
+        "lines": "Lignes de facturation"
     },
     "SPLITTER": {
         "batch_selected_many": "lots sélectionnés",
@@ -322,13 +333,34 @@
         "loading_save": "Enregistrement en cours...",
         "process_updated_successfully": "Processus mis à jour avec succès",
         "authority_url": "URL d'autorité",
-        "confirm_disable_process": "Souhaitez-vous vraiment désactiver ce processus MailCollect ?",
-        "confirm_enable_process": "Souhaitez-vous vraiment activer ce processus MailCollect ?",
+        "confirm_disable_process": "Souhaitez-vous vraiment désactiver le processus <strong>{{name}}</strong> ?",
+        "confirm_enable_process": "Souhaitez-vous vraiment activer le processus <strong>{{name}}</strong> ?",
         "disable_process": "Désactiver le processus",
         "enable_process": "Activer le processus",
         "process_disabled": "Processus désactivé avec succès",
         "process_enabled": "Processus activé avec succès",
         "duplicate": "Dupliquer",
-        "rename": "Renommer"
+        "rename": "Renommer",
+        "confirm_delete_process": "Souhaitez-vous vraiment supprimer le processus <strong>{{name}}</strong> ?",
+        "delete_process": "Suprimer le processus",
+        "enter_new_process_name": "Entrez le nouveau nom du processus <strong>{{name}}</strong>",
+        "process_deleted": "Processus supprimé avec succès",
+        "process_renamed": "Processus renommé avec succès",
+        "rename_process": "Renommer le processus",
+        "duplicate_process": "Dupliquer le processus",
+        "enter_new_duplicate_process_name": "Entrez le nom du nouveau processus dupliqué à partir de <strong>{{name}}</strong>",
+        "create": "Créer",
+        "new_mailcollect_process": "Nouveau processus MailCollect",
+        "process_created": "Processus créé avec succès",
+        "process_duplicated": "Processus dupliqué avec succès",
+        "enter_new_process_name_create": "Entrez le nom du nouveau processus MailCollect"
+    },
+    "FORMS": {
+        "add_form": "Ajouter un formulaire",
+        "label": "Libellé",
+        "no_form": "Aucun formulaire",
+        "selected_many": "formulaires sélectionnés",
+        "selected_one": "formulaire sélectionné",
+        "selected_other": "formulaires sélectionnés"
     }
 }

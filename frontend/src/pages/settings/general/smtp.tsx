@@ -23,11 +23,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../../../components/Input";
 import { Button } from "../../../components/Button";
 import { Checkbox } from "../../../components/Checkbox";
+import { RadioBox } from "../../../components/RadioBox";
 import { showToast } from "../../../components/ToastProvider";
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 
 import { emptyToUndefined } from "../../../services/zod";
-import { RadioBox } from "../../../components/RadioBox.tsx";
+import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+
 
 export function SettingsGeneralSMTP() {
     const { get, post, put } = axiosApiCall();

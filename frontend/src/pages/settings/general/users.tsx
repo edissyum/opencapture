@@ -24,7 +24,7 @@ import { showConfirmDialog } from "../../../services/hooks/ConfirmDialog";
 import { Input } from "../../../components/Input";
 import { Button } from "../../../components/Button";
 import { Table } from "../../../components/list/Table";
-import { showToast } from "../../../components/ToastProvider.tsx";
+import { showToast } from "../../../components/ToastProvider";
 
 export function SettingsGeneralUsers() {
     const { get, put, del } = axiosApiCall();
@@ -257,7 +257,6 @@ export function SettingsGeneralUsers() {
                 onLazyParamsChange={ setLazyParams }
                 onSelectionChange={ (rows) => setSelectedUsers(rows) }
             />
-
         </div>
     );
 }

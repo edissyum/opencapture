@@ -13,12 +13,31 @@
  along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
+import { t } from "i18next";
+import { LayoutTemplate } from "lucide-react";
+
+import { SettingsCard } from "../../../components/settings/SettingsCard";
+
+export const getSettingsVerifierOptions = () => [
+    {
+        name: t('SETTINGS.forms'),
+        description: t('SETTINGS.forms_description'),
+        icon: <LayoutTemplate/>,
+        href: '/settings/verifier/forms'
+    }
+];
 
 export function SettingsVerifierIndex() {
+    const options = getSettingsVerifierOptions();
+
     return (
-        <div>
-            <h1 className="text-2xl font-bold mb-4">Verifier Settings Home</h1>
-            <p>Welcome to the general index page. Please select an option from the sidebar.</p>
+        <div className='grid grid-cols-3 gap-8 p-8'>
+            {
+                options.map((option) => (
+                    <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
+                                  description={ option['description'] } to={ option['href'] }></SettingsCard>
+                ))
+            }
         </div>
     );
 }
