@@ -16,13 +16,14 @@
 
 import { t } from "i18next";
 import { TabPanel, TabView } from "primereact/tabview";
+import { availableFields } from "./availableFields.tsx";
 
 export function SettingsVerifierFormsEditor() {
     console.log('here')
     return (
-        <div className='flex'>
-            <div className='border-r-2 border-(--border-secondary) w-full h-full overflow-hidden'>
-                <TabView className='h-[calc(100vh-64px)]'>
+        <div className='flex h-full overflow-hidden'>
+            <div className='flex flex-col border-r-2 border-(--border-secondary) w-full'>
+                <TabView>
                     <TabPanel header={ t('SETTINGS.form_details') }>
 
                     </TabPanel>
@@ -31,10 +32,17 @@ export function SettingsVerifierFormsEditor() {
                     </TabPanel>
                 </TabView>
             </div>
-            <div className='w-[30rem] h-full overflow-hidden'>
-                <TabView scrollable className='available_fields h-[calc(100vh-64px)]'>
+            <div className='w-[20rem] flex flex-col'>
+                <TabView scrollable className='available_fields'>
                     <TabPanel header={ t('ACCOUNTS.suppliers_list') }>
-
+                        {
+                            availableFields['account'].map((field) => (
+                                <div key={ field.id }
+                                     className="p-2 border-b border-(--border-secondary) cursor-pointer hover:bg-(--background-hover)">
+                                    { field.label } { field.id }
+                                </div>
+                            ))
+                        }
                     </TabPanel>
                     <TabPanel header={ t('VERIFIER.lines') }>
 

@@ -74,7 +74,7 @@ export function SettingsIndex() {
             <p className="text-(--text-secondary)">
                 { t('SETTINGS.favorites_subtitle') }
             </p>
-            <div className='flex flex-row gap-4 my-6'>
+            <div className='flex flex-row flex-wrap gap-4 my-6'>
                 { favoriteOptions &&
                     favoriteOptions.map((option) => (
                         <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
@@ -90,7 +90,7 @@ export function SettingsIndex() {
             <p className="text-(--text-secondary)">
                 { t('SETTINGS.subtitle') }
             </p>
-            <div className='flex flex-row gap-4 mt-6'>
+            <div className='flex flex-row flex-wrap gap-4 mt-6'>
                 {
                     options.map((option) => (
                         <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }

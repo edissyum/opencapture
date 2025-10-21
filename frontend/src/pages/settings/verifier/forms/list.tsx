@@ -16,7 +16,7 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import { CirclePause, CircleQuestionMark, FileText, Trash2, UserRoundPlus } from "lucide-react";
+import { CirclePause, CircleQuestionMark, FileText, Plus, Trash2 } from "lucide-react";
 
 import { Input } from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
@@ -33,6 +33,7 @@ export function SettingsVerifierFormsList() {
     const [selectedForms, setSelectedForms] = useState<any[]>([]);
     const [loadingForms, setLoadingForms] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
     const [lazyParams, setLazyParams] = useState({
         first: 0,
         rows: 16,
@@ -60,19 +61,19 @@ export function SettingsVerifierFormsList() {
 
     const actions: any = [
         {
-            label: t('USERS.delete_users'),
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
-            command: () => handleDelete()
-        },
-        {
-            label: t('USERS.enable_users'),
+            label: t('FORMS.enable_forms'),
             icon: <CirclePause className='mr-1' size={ 16 }/>,
             command: () => handleEnable()
         },
         {
-            label: t('USERS.disable_users'),
+            label: t('FORMS.disable_forms'),
             icon: <CirclePause className='mr-1' size={ 16 }/>,
             command: () => handleDisable()
+        },
+        {
+            label: <span className='critical'>{ t('FORMS.delete_forms') }</span>,
+            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            command: () => handleDelete()
         }
     ]
 
@@ -88,7 +89,7 @@ export function SettingsVerifierFormsList() {
                         limit: lazyParams.rows,
                         filter: lazyParams.sortField,
                         order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null,
-                        search: searchTerm,
+                        search: debouncedSearchTerm,
                     }
                 });
 
@@ -101,7 +102,17 @@ export function SettingsVerifierFormsList() {
             }
         }
         fetchForms().then();
-    }, [lazyParams, searchTerm]);
+    }, [lazyParams, debouncedSearchTerm]);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 500);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [searchTerm]);
 
     const refresh = () => {
         setTimeout(() => {
@@ -116,12 +127,12 @@ export function SettingsVerifierFormsList() {
 
         showConfirmDialog({
             icon: <CircleQuestionMark/>,
-            title: t('USERS.disable_user', { count: selectedForms.length }),
-            message: t('USERS.confirm_disable_user', { count: selectedForms.length }),
+            title: t('FORMS.disable_form', { count: selectedForms.length }),
+            message: t('FORMS.confirm_disable_form', { count: selectedForms.length }),
             confirmText: t('GLOBAL.disable'),
             cancelText: t('GLOBAL.cancel'),
             onConfirm: async () => {
-                await disableUsers(selectedForms.map((user: any) => user.id));
+                await disableForms(selectedForms.map((form: any) => form.id));
                 refresh();
             },
             onCancel: () => {
@@ -129,15 +140,15 @@ export function SettingsVerifierFormsList() {
             }
         })
     }
-    const disableUsers = async (ids: string[]) => {
+    const disableForms = async (ids: string[]) => {
         ids.forEach((id) => {
             try {
-                put(`/users/disable/${ id }`);
+                put(`/forms/verifier/disable/${ id }`);
                 if (id === ids[ids.length - 1]) {
-                    showToast(t('USERS.user_disabled', { count: selectedForms.length }), 'success');
+                    showToast(t('FORMS.form_disabled', { count: selectedForms.length }), 'success');
                 }
             } catch (err) {
-                console.error("Erreur désactivation de l'utilisateur :", err);
+                console.error("Erreur désactivation du formulaire :", err);
             }
         });
     }
@@ -147,12 +158,12 @@ export function SettingsVerifierFormsList() {
 
         showConfirmDialog({
             icon: <CircleQuestionMark/>,
-            title: t('USERS.enable_user', { count: selectedForms.length }),
-            message: t('USERS.confirm_enable_user', { count: selectedForms.length }),
+            title: t('FORMS.enable_form', { count: selectedForms.length }),
+            message: t('FORMS.confirm_enable_form', { count: selectedForms.length }),
             confirmText: t('GLOBAL.enable'),
             cancelText: t('GLOBAL.cancel'),
             onConfirm: async () => {
-                await enableUsers(selectedForms.map((user: any) => user.id));
+                await enableForms(selectedForms.map((form: any) => form.id));
                 refresh();
             },
             onCancel: () => {
@@ -160,15 +171,15 @@ export function SettingsVerifierFormsList() {
             }
         })
     }
-    const enableUsers = async (ids: string[]) => {
+    const enableForms = async (ids: string[]) => {
         ids.forEach((id) => {
             try {
-                put(`/users/enable/${ id }`);
+                put(`/forms/verifier/enable/${ id }`);
                 if (id === ids[ids.length - 1]) {
-                    showToast(t('USERS.user_enabled', { count: selectedForms.length }), 'success');
+                    showToast(t('FORMS.form_enabled', { count: selectedForms.length }), 'success');
                 }
             } catch (err) {
-                console.error("Erreur activation de l'utilisateur :", err);
+                console.error("Erreur activation du formulaire :", err);
             }
         });
     }
@@ -178,12 +189,12 @@ export function SettingsVerifierFormsList() {
 
         showConfirmDialog({
             icon: <CircleQuestionMark/>,
-            title: t('USERS.delete_user', { count: selectedForms.length }),
-            message: t('USERS.confirm_delete_user', { count: selectedForms.length }),
+            title: t('FORMS.delete_form', { count: selectedForms.length }),
+            message: t('FORMS.confirm_delete_form', { count: selectedForms.length }),
             confirmText: t('GLOBAL.delete'),
             cancelText: t('GLOBAL.cancel'),
             onConfirm: async () => {
-                await deleteUsers(selectedForms.map((user: any) => user.id));
+                await deleteForms(selectedForms.map((form: any) => form.id));
                 refresh();
             },
             onCancel: () => {
@@ -191,15 +202,15 @@ export function SettingsVerifierFormsList() {
             }
         });
     }
-    const deleteUsers = async (ids: string[]) => {
+    const deleteForms = async (ids: string[]) => {
         for (const id of ids) {
             try {
-                await del(`/users/delete/${ id }`);
+                await del(`/forms/verifier/delete/${ id }`);
                 if (id === ids[ids.length - 1]) {
-                    showToast(t('USERS.user_deleted', { count: selectedForms.length }), 'success');
+                    showToast(t('FORMS.form_deleted', { count: selectedForms.length }), 'success');
                 }
             } catch (err) {
-                console.error("Erreur suppression de l'utilisateur :", err);
+                console.error("Erreur suppression du formulaire :", err);
             }
         }
     }
@@ -223,7 +234,7 @@ export function SettingsVerifierFormsList() {
                         size={ 'sm' }
                         variant={ "no_bg_border" }
                         className='p-2 border'>
-                        <UserRoundPlus size={ 14 } className="mr-1"/> { t('FORMS.add_form') }
+                        <Plus size={ 14 } className="mr-1"/> { t('FORMS.add_form') }
                     </Button>
                 </span>
             </div>

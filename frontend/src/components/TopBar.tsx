@@ -56,7 +56,7 @@ export default function TopBar() {
 
     return (
         <header
-            className="w-full h-20 flex items-center justify-between px-6 bg-(--bg-primary) border-b-2 border-(--border-secondary)">
+            className="w-full h-20 flex flex-shrink-0 items-center justify-between px-6 bg-(--bg-primary) border-b-2 border-(--border-secondary)">
             <div className="flex items-center gap-4">
                 <div className="relative inline-block w-64">
                     <select value={ selected || '' } style={ { backgroundImage: `url('${ img }')` } }

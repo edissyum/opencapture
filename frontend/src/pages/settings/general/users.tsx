@@ -70,11 +70,6 @@ export function SettingsGeneralUsers() {
 
     const actions: any = [
         {
-            label: t('USERS.delete_users'),
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
-            command: () => handleDelete()
-        },
-        {
             label: t('USERS.enable_users'),
             icon: <CirclePause className='mr-1' size={ 16 }/>,
             command: () => handleEnable()
@@ -83,6 +78,11 @@ export function SettingsGeneralUsers() {
             label: t('USERS.disable_users'),
             icon: <CirclePause className='mr-1' size={ 16 }/>,
             command: () => handleDisable()
+        },
+        {
+            label: <span className='critical'>t('USERS.delete_users')</span>,
+            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            command: () => handleDelete()
         }
     ]
 

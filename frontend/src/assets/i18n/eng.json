@@ -1,7 +1,25 @@
 {
     "ACCOUNTS": {
         "customers_list": "Customer accounts",
-        "suppliers_list": "Third-party accounts"
+        "suppliers_list": "Third-party accounts",
+        "address1": "",
+        "address2": "",
+        "bic": "",
+        "civility": "",
+        "country": "",
+        "duns": "",
+        "email": "",
+        "firstname": "",
+        "function": "",
+        "iban": "",
+        "lastname": "",
+        "phone": "",
+        "postal_code": "",
+        "rccm": "",
+        "siren": "",
+        "siret": "",
+        "supplier_name": "",
+        "vat_number": ""
     },
     "AUTH": {
         "authenticated": "You have successfully authenticated",
@@ -148,7 +166,13 @@
         "filename": "Filename",
         "custom_fields": "",
         "facturation": "",
-        "lines": ""
+        "lines": "",
+        "item_description": "",
+        "item_quantity": "",
+        "item_reference": "",
+        "item_tax_rate": "",
+        "item_total_excl_tax": "",
+        "item_unit_price": ""
     },
     "SPLITTER": {
         "batch_selected_one": "batch selected",
@@ -332,6 +356,27 @@
         "label": "",
         "no_form": "",
         "selected_one": "",
-        "selected_other": ""
+        "selected_other": "",
+        "confirm_delete_form_one": "",
+        "confirm_delete_form_other": "",
+        "confirm_disable_form_one": "",
+        "confirm_disable_form_other": "",
+        "confirm_enable_form_one": "",
+        "confirm_enable_form_other": "",
+        "delete_form_one": "",
+        "delete_form_other": "",
+        "delete_forms": "",
+        "disable_form_one": "",
+        "disable_form_other": "",
+        "disable_forms": "",
+        "enable_form_one": "",
+        "enable_form_other": "",
+        "enable_forms": "",
+        "form_deleted_one": "",
+        "form_deleted_other": "",
+        "form_disabled_one": "",
+        "form_disabled_other": "",
+        "form_enabled_one": "",
+        "form_enabled_other": ""
     }
 }

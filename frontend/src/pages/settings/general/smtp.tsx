@@ -16,7 +16,7 @@
 
 import { z } from "zod";
 import { t } from "i18next";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -166,8 +166,8 @@ export function SettingsGeneralSMTP() {
     }
 
     return (
-        <div className='flex'>
-            <div className='border-r-2 border-(--border-secondary) w-full overflow-y-scroll h-[calc(100vh-64px)]'>
+        <div className='flex h-full overflow-hidden'>
+            <div className='border-r-2 border-(--border-secondary) w-full overflow-y-auto'>
                 <div className='p-8'>
                     <h1 className='text-2xl font-bold'>{ t('SMTP.provider') }</h1>
                     <div className='flex gap-4 mt-6'>
@@ -320,7 +320,7 @@ export function SettingsGeneralSMTP() {
                             <h1 className='text-2xl font-bold text-(--color-success)'>{ t('SMTP.test_email_success') }</h1>
                         </div>
                     ) }
-                    <div className='w-full bg-[#212528] h-48 overflow-y-scroll rounded-lg mt-8'>
+                    <div className='w-full bg-[#212528] h-48 rounded-lg mt-8'>
                         { statusTestEmail === 'error' && (
                             <div className='p-4 text-(--text-secondary)'>
                                 <p>

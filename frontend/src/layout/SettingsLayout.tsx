@@ -35,14 +35,14 @@ export default function SettingsLayout() {
     }
 
     return (
-        <div className="flex overflow-hidden">
+        <div className="flex h-screen">
             <Sidebar />
-            <main className="flex-1">
+            <div className='flex flex-col w-full h-full'>
                 <TopBarSettings />
-                <span className="block overflow-y-scroll h-[calc(100vh-64px)]">
+                <span className='overflow-y-auto h-full'>
                     <Outlet />
                 </span>
-            </main>
+            </div>
         </div>
     );
 }

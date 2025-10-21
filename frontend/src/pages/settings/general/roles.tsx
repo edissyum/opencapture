@@ -62,7 +62,7 @@ export function SettingsGeneralRoles() {
         },
     ];
 
-    const actions = [
+    const actions: any = [
         {
             label: t('ROLES.enable_roles'),
             icon: <CirclePause className='mr-1' size={ 16 }/>,
@@ -74,7 +74,7 @@ export function SettingsGeneralRoles() {
             command: () => handleDisable()
         },
         {
-            label: t('ROLES.delete_roles'),
+            label: <span className='critical'>t('ROLES.delete_roles')</span>,
             icon: <Trash2 className='mr-1' size={ 16 }/>,
             command: () => handleDelete()
         }
@@ -233,7 +233,7 @@ export function SettingsGeneralRoles() {
             <Table
                 baseLink="/settings/general/roles/"
                 data={ roles }
-                height="h-[30vh]"
+                height="h-[40vh]"
                 actions={ actions }
                 pagination={ true }
                 columns={ columns }

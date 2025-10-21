@@ -26,10 +26,18 @@
     @apply border-(--color-primary)!;
 }
 
+.p-tabview {
+    @apply flex;
+    @apply h-full;
+    @apply flex-col;
+}
+
 /* Tab panels */
 .p-tabview-panels {
+    @apply flex;
     @apply h-full;
-    @apply overflow-y-scroll;
+    @apply flex-col;
+    @apply overflow-y-auto;
     @apply bg-(--bg-secondary);
 }
 
@@ -39,5 +47,21 @@
 
 /* Tab nav */
 .p-tabview .p-tabview-nav-btn.p-link {
-    @apply text-(--color-primary)!;
+    @apply w-8;
+    @apply shadow-none;
+    @apply border-b-2;
+    @apply text-(--color-primary);
+    @apply border-(--border-secondary);
+}
+
+.p-tabview-nav-prev {
+    @apply border-r-2;
+}
+
+.p-tabview-nav-next {
+    @apply border-l-2;
+}
+
+.p-tabview-scrollable .p-tabview-nav-container {
+    @apply overflow-visible;
 }
