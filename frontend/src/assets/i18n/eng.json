@@ -172,7 +172,10 @@
         "item_reference": "",
         "item_tax_rate": "",
         "item_total_excl_tax": "",
-        "item_unit_price": ""
+        "item_unit_price": "",
+        "due_date": "",
+        "invoice_date": "",
+        "invoice_number": ""
     },
     "SPLITTER": {
         "batch_selected_one": "batch selected",
@@ -378,5 +381,13 @@
         "form_disabled_other": "",
         "form_enabled_one": "",
         "form_enabled_other": ""
+    },
+    "FORMATS": {
+        "date": "",
+        "email": "",
+        "number": "",
+        "phone": "",
+        "select": "",
+        "text": ""
     }
 }

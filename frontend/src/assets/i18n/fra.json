@@ -176,7 +176,10 @@
         "item_reference": "Référence",
         "item_tax_rate": "Taux de TVA",
         "item_total_excl_tax": "Montant HT",
-        "item_unit_price": "Prix unitaire"
+        "item_unit_price": "Prix unitaire",
+        "due_date": "Date d'échéance",
+        "invoice_date": "Date de facture",
+        "invoice_number": "Numéro de facture"
     },
     "SPLITTER": {
         "batch_selected_many": "lots sélectionnés",
@@ -416,5 +419,13 @@
         "form_enabled_many": "Formulaires activés avec succès",
         "form_enabled_one": "Formulaire activé avec succès",
         "form_enabled_other": "Formulaires activés avec succès"
+    },
+    "FORMATS": {
+        "date": "Date",
+        "email": "Addresse email",
+        "number": "Nombre",
+        "phone": "Numéro de téléphone",
+        "select": "Liste déroulante",
+        "text": "Chaîne de caractères"
     }
 }
