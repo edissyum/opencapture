@@ -170,7 +170,7 @@
         "filename": "Fichier",
         "custom_fields": "Champs personnalisés",
         "facturation": "Traitement",
-        "lines": "Lignes de facturation",
+        "lines": "Lignes de détails",
         "item_description": "Description",
         "item_quantity": "Quantité",
         "item_reference": "Référence",
@@ -179,7 +179,8 @@
         "item_unit_price": "Prix unitaire",
         "due_date": "Date d'échéance",
         "invoice_date": "Date de facture",
-        "invoice_number": "Numéro de facture"
+        "invoice_number": "Numéro de facture",
+        "drop_create_new_line": "Déposez ici un champs pour créer une nouvelle ligne"
     },
     "SPLITTER": {
         "batch_selected_many": "lots sélectionnés",
@@ -418,7 +419,10 @@
         "form_disabled_other": "Formulaires désactivés avec succès",
         "form_enabled_many": "Formulaires activés avec succès",
         "form_enabled_one": "Formulaire activé avec succès",
-        "form_enabled_other": "Formulaires activés avec succès"
+        "form_enabled_other": "Formulaires activés avec succès",
+        "facturation": "Traitement",
+        "other": "Autre",
+        "supplier": "Tiers"
     },
     "FORMATS": {
         "date": "Date",

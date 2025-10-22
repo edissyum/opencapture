@@ -29,6 +29,10 @@
 }
 
 /* Accordion colors */
+.p-accordion .p-accordion-content {
+    @apply p-0;
+}
+
 .p-accordion .p-accordion-content,
 .p-stepper .p-stepper-panels {
     @apply bg-(--bg-primary);
@@ -36,12 +40,6 @@
 
 .p-stepper .p-stepper-header .p-stepper-action {
     @apply dark:bg-(--bg-primary);
-}
-
-
-/* Stepper paddings */
-.p-accordion .p-accordion-content {
-    @apply pb-0;
 }
 
 /* Stepper nav size */

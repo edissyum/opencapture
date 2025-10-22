@@ -313,7 +313,6 @@ export function SettingsGeneralMailcollect() {
                                         <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }/>
                                     ) }
                                 </span>
-
                             </span>
                         } key={ idx }>
                             <MailCollectProcess key={ idx } process={ process } workflows={ workflows }/>

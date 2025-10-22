@@ -35,6 +35,7 @@
 /* Tab panels */
 .p-tabview-panels {
     @apply flex;
+    @apply p-6;
     @apply h-full;
     @apply flex-col;
     @apply overflow-y-auto;

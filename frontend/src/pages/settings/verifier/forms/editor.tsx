@@ -1,28 +1,22 @@
-/** This file is part of Open-Capture.
-
- Open-Capture is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
- Open-Capture is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
-
- @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
-
-import { t } from "i18next";
 import { useEffect, useState } from "react";
+import { DndContext, type DragEndEvent, DragOverlay, type DragStartEvent } from "@dnd-kit/core";
+import { nanoid } from "nanoid";
+import { FieldPalette } from "./FieldPalette";
+import { DroppableZone } from "./DroppableZone";
 import { TabPanel, TabView } from "primereact/tabview";
-import { arrayMove, SortableContext, verticalListSortingStrategy, } from "@dnd-kit/sortable";
-import { closestCenter, DndContext, type DragEndEvent, PointerSensor, useSensor, useSensors, } from "@dnd-kit/core";
-
-import { type Item, SortableItem } from "./SortableItems";
+import { t } from "i18next";
+import { arrayMove } from "@dnd-kit/sortable";
+import { findLineContainingField, findZoneContainingLine, getDropContext } from "./helpers.tsx";
+import { DroppableLine } from "./DroppableLine.tsx";
+import { Accordion, AccordionTab } from "primereact/accordion";
 
 export function SettingsVerifierFormsEditor() {
+    const tabs: any = {
+        account: t('ACCOUNTS.suppliers_list'),
+        lines: t('VERIFIER.lines'),
+        billing: t('VERIFIER.facturation'),
+        custom_fields: t('VERIFIER.custom_fields'),
+    };
     const formatLabels: Record<string, string> = {
         text: t('FORMATS.text'),
         select: t('FORMATS.select'),
@@ -69,16 +63,15 @@ export function SettingsVerifierFormsEditor() {
     };
 
     const [activeTab, setActiveTab] = useState<keyof typeof availableFields>("account");
-    const tabs = [
-        { id: 'account', label: t('ACCOUNTS.suppliers_list') },
-        { id: 'lines', label: t('VERIFIER.lines') },
-        { id: 'billing', label: t('VERIFIER.facturation') },
-        { id: 'customFields', label: t('VERIFIER.custom_fields') },
-    ]
-
-    const [items, setItems] = useState<Item[]>([]);
-
-    const sensors = useSensors(useSensor(PointerSensor));
+    const [availableItems, setAvailableItems] = useState(
+        availableFields[activeTab].map((f) => (f))
+    );
+    const [usedFields, setUsedFields] = useState<Record<string, string[]>>({
+        account: [],
+        lines: [],
+        billing: [],
+        customFields: [],
+    });
 
     useEffect(() => {
         const fields: any = availableFields[activeTab];
@@ -89,62 +82,196 @@ export function SettingsVerifierFormsEditor() {
                 field.typeLabel = '';
             }
         });
-        console.log(fields);
-        setItems(fields.map((f: any) => (f)));
-    }, [activeTab]);
+
+        // ❗ filtrer selon les champs déjà utilisés pour cet onglet
+        const filtered = fields.filter(
+            (f: any) => !usedFields[activeTab].includes(f.id)
+        );
+
+        setAvailableItems(filtered);
+    }, [activeTab, usedFields]);
+
+    const [zones, setZones] = useState([
+        { id: "zone-supplier", name: t('FORMS.supplier'), lines: [{ id: "line-1", fields: [] }] },
+        { id: "zone-lines", name: t('VERIFIER.lines'), lines: [{ id: "line-2", fields: [] }] },
+        { id: "zone-facturation", name: t('FORMS.facturation'), lines: [{ id: "line-3", fields: [] }] },
+        { id: "zone-other", name: t('FORMS.other'), lines: [{ id: "line-4", fields: [] }] },
+    ]);
+
+    const [activeDragItem, setActiveDragItem] = useState<any>(null);
+    const handleDragStart = (event: DragStartEvent) => {
+        const { active } = event;
+        if (active?.data?.current) {
+            setActiveDragItem(active.data.current);
+        }
+    };
 
     const handleDragEnd = (event: DragEndEvent) => {
+        setActiveDragItem(null);
         const { active, over } = event;
         if (!over) return;
-        if (active.id !== over.id) {
-            setItems((items) => {
-                const oldIndex = items.findIndex((i) => i.id === active.id);
-                const newIndex = items.findIndex((i) => i.id === over.id);
-                return arrayMove(items, oldIndex, newIndex);
-            });
+
+        const activeData = active.data.current as any;
+        if (!activeData) return;
+
+        const zonesCopy = structuredClone(zones);
+        const { zone: targetZone, line: targetLine, field: targetField } = getDropContext(zonesCopy, over.id as string);
+
+        // 🔵 1. Déplacement d'une LIGNE
+        if (activeData.type === "line") {
+            const sourceZone = findZoneContainingLine(zonesCopy, active.id as string);
+            if (!sourceZone || !targetZone) return;
+
+            const [movedLine] = sourceZone.lines.splice(
+                sourceZone.lines.findIndex((l: any) => l.id === active.id),
+                1
+            );
+
+            const insertIndex = targetZone.lines.findIndex((l: any) => l.id === over.id);
+            if (insertIndex >= 0) targetZone.lines.splice(insertIndex, 0, movedLine);
+            else targetZone.lines.push(movedLine);
+
+            setZones([...zonesCopy]);
+            return;
+        }
+
+        // 🟢 2. Ajout depuis la PALETTE
+        if (activeData.from === "palette") {
+            const newField = {
+                id: nanoid(),
+                type: activeData.type,
+                label: activeData.label || activeData.typeLabel || activeData.type,
+                required: activeData.required ?? false,
+                format: activeData.format ?? "",
+            };
+            console.log(targetLine, targetZone);
+            if (targetLine) {
+                if (targetLine.fields.length >= 3) {
+                    alert("Une ligne ne peut contenir que 3 champs maximum !");
+                    return;
+                }
+                targetLine.fields.push(newField);
+            } else if (targetZone) {
+                targetZone.lines.push({
+                    id: `line-${ nanoid() }`,
+                    fields: [newField],
+                });
+            }
+
+            setUsedFields((prev) => ({
+                ...prev,
+                [activeTab]: [...(prev[activeTab] || []), activeData.id],
+            }));
+
+            setZones([...zonesCopy]);
+            return;
+        }
+
+        // 🟡 3. Déplacement ou réordonnancement d’un CHAMP existant
+        if (activeData.type === "field" || activeData.from === "form") {
+            const sourceLine = findLineContainingField(zonesCopy, active.id as string);
+            if (!sourceLine) return;
+
+            const movedField = sourceLine.fields.find((f: any) => f.id === active.id);
+            if (!movedField) return;
+
+            // même ligne → simple réordonnancement
+            if (targetLine && targetLine.id === sourceLine.id) {
+                const oldIndex = sourceLine.fields.findIndex((f: any) => f.id === active.id);
+                const newIndex = targetField
+                    ? sourceLine.fields.findIndex((f: any) => f.id === targetField.id)
+                    : sourceLine.fields.length - 1;
+
+                sourceLine.fields = arrayMove(sourceLine.fields, oldIndex, newIndex);
+                setZones([...zonesCopy]);
+                return;
+            }
+
+            // autre ligne → déplacement
+            if (targetLine && targetLine.id !== sourceLine.id) {
+                if (targetLine.fields.length >= 3) {
+                    alert("Une ligne ne peut contenir que 3 champs maximum !");
+                    return;
+                }
+
+                sourceLine.fields = sourceLine.fields.filter((f: any) => f.id !== active.id);
+
+                const insertIndex = targetField
+                    ? targetLine.fields.findIndex((f: any) => f.id === targetField.id)
+                    : targetLine.fields.length;
+
+                targetLine.fields.splice(insertIndex, 0, movedField);
+                setZones([...zonesCopy]);
+                return;
+            }
+
+            // drop sur une zone → créer une nouvelle ligne
+            if (targetZone && !targetLine) {
+                sourceLine.fields = sourceLine.fields.filter((f: any) => f.id !== active.id);
+
+                targetZone.lines.push({
+                    id: `line-${ nanoid() }`,
+                    fields: [movedField],
+                });
+
+                setZones([...zonesCopy]);
+                return;
+            }
         }
     };
 
     return (
-        <div className="flex h-full overflow-hidden">
-            <div className="flex flex-col border-r-2 border-(--border-secondary) w-full">
-                <TabView>
-                    <TabPanel header={ t('SETTINGS.form_details') }>
+        <DndContext onDragEnd={ handleDragEnd } onDragStart={ handleDragStart }>
+            <div className="flex h-full">
+                <div className="flex flex-col border-r-2 border-(--border-secondary) w-full">
+                    <TabView>
+                        <TabPanel header={ t("SETTINGS.form_details") }>
 
-                    </TabPanel>
-                    <TabPanel header={ t('SETTINGS.form_fields') }>
-
-                    </TabPanel>
-                </TabView>
-            </div>
-
-            <div className="w-[25rem] flex flex-col">
-                <TabView
-                    scrollable
-                    className="available_fields"
-                    activeIndex={ Object.keys(availableFields).indexOf(activeTab) }
-                    onTabChange={ (e) =>
-                        setActiveTab(Object.keys(availableFields)[e.index] as keyof typeof availableFields)
-                    }
-                >
-                    { tabs.map((tab) => (
-                        <TabPanel key={ tab.id } header={ tab.label }>
-                            <DndContext sensors={ sensors } collisionDetection={ closestCenter }
-                                        onDragEnd={ handleDragEnd }>
-                                <SortableContext items={ items.map((i) => i.id) }
-                                                 strategy={ verticalListSortingStrategy }
-                                >
-                                    <div className="space-x-2 space-y-6">
-                                        { items.map((item) => (
-                                            <SortableItem key={ item.id } item={ item }/>
-                                        )) }
-                                    </div>
-                                </SortableContext>
-                            </DndContext>
                         </TabPanel>
-                    )) }
-                </TabView>
+                        <TabPanel header={ t("SETTINGS.form_fields") }>
+                            <Accordion multiple activeIndex={ [0] }>
+                                { zones.map((zone) => (
+                                    <AccordionTab header={ zone.name }>
+                                        <DroppableZone key={ zone.id } zone={ zone }/>
+                                    </AccordionTab>
+                                )) }
+                            </Accordion>
+                        </TabPanel>
+                    </TabView>
+                </div>
+
+                <div className="w-[25rem] flex flex-col">
+                    <TabView
+                        scrollable
+                        className="available_fields"
+                        activeIndex={ Object.keys(availableFields).indexOf(activeTab) }
+                        onTabChange={ (e) =>
+                            setActiveTab(Object.keys(availableFields)[e.index] as keyof typeof availableFields)
+                        }
+                    >
+                        { Object.keys(tabs).map((tab) => (
+                            <TabPanel key={ tab } header={ tabs[tab] }>
+                                <FieldPalette fields={ availableItems }/>
+                            </TabPanel>
+                        )) }
+                    </TabView>
+                </div>
             </div>
-        </div>
+
+            <DragOverlay>
+                { (activeDragItem && activeDragItem.type !== 'line') && (
+                    <div
+                        className='flex flex-col border-2 border-(--border-secondary) rounded-lg bg-(--bg-primary) p-3 w-full opacity-60'>
+                        <span className='font-semibold'>{ activeDragItem.label }</span>
+                        <span className='text-(--text-secondary)'>{ activeDragItem.typeLabel }</span>
+                    </div>
+                ) }
+                { (activeDragItem && activeDragItem.type === 'line') && (
+                    <div className='p-2 opacity-60'>
+                        <DroppableLine line={ activeDragItem.line }/>
+                    </div>
+                ) }
+            </DragOverlay>
+        </DndContext>
     );
 }

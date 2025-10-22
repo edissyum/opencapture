@@ -197,7 +197,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
     }
 
     return (
-        <Stepper ref={ stepperRef } linear className='pb-4'>
+        <Stepper ref={ stepperRef } linear className='p-4'>
             <StepperPanel header={ t("MAILCOLLECT.connection") }>
                 <h1 className="text-xl font-bold mb-4">{ t("MAILCOLLECT.auth_method") }</h1>
                 <div className="flex gap-4 mb-4">

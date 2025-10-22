@@ -175,7 +175,8 @@
         "item_unit_price": "",
         "due_date": "",
         "invoice_date": "",
-        "invoice_number": ""
+        "invoice_number": "",
+        "drop_create_new_line": ""
     },
     "SPLITTER": {
         "batch_selected_one": "batch selected",
@@ -380,7 +381,10 @@
         "form_disabled_one": "",
         "form_disabled_other": "",
         "form_enabled_one": "",
-        "form_enabled_other": ""
+        "form_enabled_other": "",
+        "facturation": "",
+        "other": "",
+        "supplier": ""
     },
     "FORMATS": {
         "date": "",
