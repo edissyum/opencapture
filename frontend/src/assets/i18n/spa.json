@@ -422,7 +422,10 @@
         "form_enabled_other": "",
         "facturation": "",
         "other": "",
-        "supplier": ""
+        "supplier": "",
+        "field_required": "",
+        "field_label": "",
+        "formats": ""
     },
     "FORMATS": {
         "date": "",
@@ -430,6 +433,12 @@
         "number": "",
         "phone": "",
         "select": "",
-        "text": ""
+        "text": "",
+        "alphanum": "",
+        "alphanum_extended": "",
+        "alphanum_extended_with_accent": "",
+        "char": "",
+        "number_float": "",
+        "number_int": ""
     }
 }

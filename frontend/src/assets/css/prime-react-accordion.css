@@ -29,7 +29,8 @@
 }
 
 /* Accordion colors */
-.p-accordion .p-accordion-content {
+.p-accordion .p-accordion-content,
+.p-tabview-panels {
     @apply p-0;
 }
 

@@ -180,7 +180,7 @@
         "due_date": "Date d'échéance",
         "invoice_date": "Date de facture",
         "invoice_number": "Numéro de facture",
-        "drop_create_new_line": "Déposez ici un champs pour créer une nouvelle ligne"
+        "drop_create_new_line": "Déposez un champ pour créer une nouvelle ligne"
     },
     "SPLITTER": {
         "batch_selected_many": "lots sélectionnés",
@@ -422,14 +422,23 @@
         "form_enabled_other": "Formulaires activés avec succès",
         "facturation": "Traitement",
         "other": "Autre",
-        "supplier": "Tiers"
+        "supplier": "Tiers",
+        "field_required": "Champ obligatoire",
+        "field_label": "Libellé du champ",
+        "formats": "Format des données"
     },
     "FORMATS": {
+        "alphanum": "Caractères alphanumériques [0-9aA-zZ']",
+        "alphanum_extended": "Caractères alphanumériques étendus [0-9aA-zZ-/'#,\\.\\s_\\+:]",
+        "alphanum_extended_with_accent": "Caractères alphanumériques étendus avec accent [0-9aA-zZ-\\u00C0-\\u017F/'#,\\.\\s_&°\"%\\+:€$£]",
+        "char": "Caractères alphabétiques [aA-zZ]",
         "date": "Date",
         "email": "Addresse email",
-        "number": "Nombre",
+        "number": "Caractères numériques [0-9]",
+        "number_float": "Caractères numériques flottant [0-90.0-0.9]",
+        "number_int": "Caractères numériques entier [0-9]",
         "phone": "Numéro de téléphone",
-        "select": "Liste déroulante",
+        "select": "Liste à choix",
         "text": "Chaîne de caractères"
     }
 }

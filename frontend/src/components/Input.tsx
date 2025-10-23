@@ -47,7 +47,7 @@ export const Input: React.FC<InputProps> = ({
                     id={ id }
                     className={ `z-10 w-full peer px-3 py-2 border-[1.5px] rounded-md focus:outline-none focus:border-(--color-primary)
                                 ${ isPasswordField ? 'border-r-0 rounded-tr-none rounded-br-none' : '' } text-(--text-primary)
-                                border-(--border-secondary) disabled:bg-(--bg-secondary) disabled:cursor-not-allowed` }
+                                border-(--border-secondary) disabled:bg-(--bg-secondary) disabled:cursor-not-allowed h-12` }
                     placeholder=""
                     type={ inputType }
                     disabled={ disabled }

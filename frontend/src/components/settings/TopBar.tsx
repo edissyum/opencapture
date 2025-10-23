@@ -65,7 +65,7 @@ export default function TopBarSettings() {
                         </span>
                     );
                 }) }
-                { location.pathname !== '/settings' && (
+                { location.pathname !== '/settings' && !location.pathname.includes('edit/') && (
                     <div onClick={ () => {
                              toggleFavorite(location.pathname).then(() => setRefresh(true))
                          } }
