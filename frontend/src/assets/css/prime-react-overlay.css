@@ -15,7 +15,19 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-/* Overlay closing button color */
-.p-overlaypanel .p-overlaypanel-close {
-    @apply bg-(--color-primary);
+/* Overlay popup on small screen */
+
+.p-overlaypanel {
+    @apply overflow-auto;
+}
+
+@media only screen and (max-width: 1400px) {
+    .p-overlaypanel {
+        @apply w-1/2!;
+        @apply h-[70%]!;
+        @apply top-1/2!;
+        @apply left-1/2!;
+        @apply overflow-auto;
+        transform: translate(-50%, -50%);
+    }
 }

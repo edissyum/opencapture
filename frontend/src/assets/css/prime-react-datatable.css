@@ -28,7 +28,7 @@
 
 /* Border for checkboxes */
 .p-checkbox .p-checkbox-box {
-    @apply border-1;
+    @apply border;
     @apply border-(--border-secondary);
     @apply dark:bg-(--bg-primary);
 }
@@ -64,10 +64,14 @@
     @apply max-w-full;
 }
 
+/* Remove last border in table */
+.p-datatable .p-datatable-tbody > tr:last-child > td {
+    @apply border-b-0!;
+}
+
 /* Color for odd rows */
 .p-datatable.p-datatable-striped .p-datatable-tbody > tr.p-row-odd {
-    @apply bg-white;
-    @apply dark:bg-(--bg-secondary);
+    @apply bg-(--bg-primary);
     @apply text-(--text-primary);
 }
 
@@ -81,18 +85,9 @@
 
 /* Border for paginator header */
 .p-datatable .p-paginator-top {
-    @apply border-b-1;
+    @apply border-b;
     @apply border-(--border-secondary);
     @apply dark:bg-(--bg-primary);
-}
-
-/* Border-radius for DataTable */
-.p-datatable .p-paginator-top {
-    @apply rounded-t-xl;
-}
-
-.p-datatable-scrollable > .p-datatable-wrapper {
-    @apply rounded-b-xl;
 }
 
 /* Hide default sortable icon */
@@ -113,9 +108,6 @@
 .p-menuitem-content .p-menuitem-link:has(.critical):hover svg{
     @apply text-(--text-error)!;
 }
-
-
-
 
 /* Change paginator and contextMenu colors */
 .p-paginator, .p-dropdown, .p-contextmenu {

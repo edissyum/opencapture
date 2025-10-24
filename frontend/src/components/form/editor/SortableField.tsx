@@ -16,7 +16,7 @@
 
 import { t } from "i18next";
 import { GripVertical } from "lucide-react";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
@@ -27,13 +27,19 @@ import { InputSwitch } from "primereact/inputswitch";
 import { OverlayPanel } from "primereact/overlaypanel";
 
 import { Input } from "../../Input";
+import { Button } from "../../Button";
+
+import { getFormatLabels } from "./schemas";
+import { getColorOptions } from "./schemas.tsx";
 
 type Field = {
     id: string;
-    label: string;
     type: string;
-    required?: boolean;
+    label: string;
+    color?: string;
     format?: string;
+    required?: boolean;
+    default_value?: string;
 };
 
 export function SortableField({ field, onUpdateField }: {
@@ -43,28 +49,18 @@ export function SortableField({ field, onUpdateField }: {
     const op = useRef<OverlayPanel | null>(null);
     const [editableField, setEditableField] = useState<Field>(field);
 
-    const { setNodeRef, attributes, listeners, transform, transition, isDragging } =
-        useSortable({
-            id: field.id,
-            data: { from: "form", field, type: "field" },
-        });
+    const formatLabels = getFormatLabels(t);
+    const colorOptions = getColorOptions(t);
+    const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
+        id: field.id,
+        data: { from: "form", field, type: "field" }
+    });
 
     const style = {
-        transform: CSS.Transform.toString(transform),
-        transition: transition ?? "transform 250ms ease",
         opacity: isDragging ? 0.6 : 1,
+        transform: CSS.Transform.toString(transform),
+        transition: transition ?? "transform 250ms ease"
     };
-
-    const formatLabels = [
-        { value: 'date', label: t('FORMATS.date') },
-        { value: 'number_float', label: t('FORMATS.number_float') },
-        { value: 'number_int', label: t('FORMATS.number_int') },
-        { value: 'char', label: t('FORMATS.char') },
-        { value: 'alphanum', label: t('FORMATS.alphanum') },
-        { value: 'alphanum_extended', label: t('FORMATS.alphanum_extended') },
-        { value: 'alphanum_extended_with_accent', label: t('FORMATS.alphanum_extended_with_accent') },
-        { value: 'email', label: t('FORMATS.email') }
-    ];
 
     const openOverlay = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -77,10 +73,28 @@ export function SortableField({ field, onUpdateField }: {
         op.current?.hide();
     };
 
+    const [open, setOpen] = useState(false);
+    const ref = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (ref.current && !ref.current.contains(event.target as Node)) {
+                setOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const handleSelect = (color: string) => {
+        setEditableField((prev) => ({ ...prev, color: color }));
+        setOpen(false);
+    };
+
     return (
         <>
             <div ref={ setNodeRef } style={ style } onClick={ openOverlay }
-                 className="SortableField group truncate bg-(--bg-primary) border-2 border-(--border-secondary)
+                 className="SortableField truncate bg-(--bg-primary) border-2 border-(--border-secondary)
                    rounded-md px-3 py-2 flex items-center gap-2 hover:border-(--border-primary)
                    transition-colors select-none">
                 <button type="button" aria-label="Déplacer le champ" { ...attributes } { ...listeners }
@@ -94,28 +108,77 @@ export function SortableField({ field, onUpdateField }: {
                 </div>
             </div>
 
-            <OverlayPanel ref={ op } showCloseIcon dismissable className="p-3 w-1/3">
-                <div className="flex flex-col gap-3">
-                    <Input className="w-full"
+            <OverlayPanel ref={ op } dismissable
+                          className="p-3 w-1/2 shadow-none! border-2! border-(--border-secondary)! min-h-[20%] max-h-[60%]">
+                <div className="flex flex-col gap-3 space-y-3">
+                    <Input id={ 'label-' + editableField.id }
+                           className="w-full" no_margin_bottom={ true }
                            label={ t('FORMS.field_label') }
-                           value={ editableField.label }
+                           value={ t(editableField.label) }
                            onChange={ (e: any) =>
                                setEditableField((prev) => ({ ...prev, label: e.target.value }))
                            }
                     />
-                    <div>
-                        <FloatLabel>
-                            <Dropdown
-                                id={ 'format-' + editableField.id }
-                                className="w-full h-12"
-                                value={ editableField.format }
-                                options={ formatLabels }
-                                onChange={ (e) =>
-                                    setEditableField((prev) => ({ ...prev, format: e.value }))
-                                }
-                            />
-                            <label htmlFor={ 'format-' + editableField.id }>{ t("FORMS.formats") }</label>
-                        </FloatLabel>
+                    <FloatLabel>
+                        <Dropdown
+                            id={ 'format-' + editableField.id }
+                            className="w-full"
+                            value={ editableField.format }
+                            options={ formatLabels }
+                            onChange={ (e) =>
+                                setEditableField((prev) => ({ ...prev, format: e.value }))
+                            }
+                        />
+                        <label htmlFor={ 'format-' + editableField.id }>{ t("FORMS.formats") }</label>
+                    </FloatLabel>
+
+                    <Input id={ "default_value-" + editableField.id }
+                           className="w-full" no_margin_bottom={ true }
+                           label={ t('FORMS.defaut_value') }
+                           value={ editableField.default_value }
+                           onChange={ (e: any) =>
+                               setEditableField((prev) => ({ ...prev, defaut_value: e.target.value }))
+                           }
+                    />
+
+                    <div ref={ ref } className="relative inline-block w-full">
+                        <div onClick={ () => setOpen((o) => !o) }
+                             className="flex items-center justify-center border rounded-md cursor-pointer transition-all select-none h-10"
+                             style={ {
+                                 backgroundColor: editableField.color + '1A',
+                                 color: editableField.color
+                             } }>
+                            { editableField.color ? (
+                                <>
+                                    { colorOptions.find((c) => c.value === editableField.color)?.name }
+                                </>
+                            ) : (
+                                <span className="text-(--text-secondary)">{ t('COLORS.select_color') }</span>
+                            ) }
+                        </div>
+
+                        { open && (
+                            <div
+                                className="left-0 mt-2 w-full p-3 bg-white border rounded-lg shadow-lg grid grid-cols-6 gap-2 z-50"
+                                style={ {
+                                    animation: "fadeIn 0.1s ease-in-out"
+                                } }
+                            >
+                                { colorOptions.map((color) => (
+                                    <div
+                                        key={ color.value }
+                                        onClick={ () => handleSelect(color.value) }
+                                        title={ color.name }
+                                        className="w-full flex justify-center items-center h-14 rounded-md cursor-pointer border hover:scale-110 transition-transform bg-opacity-10"
+                                        style={ {
+                                            color: color.value,
+                                            backgroundColor: color.value + '1A'
+                                        } }>
+                                        { color.name }
+                                    </div>
+                                )) }
+                            </div>
+                        ) }
                     </div>
 
                     <div className="flex items-center gap-2">
@@ -126,25 +189,18 @@ export function SortableField({ field, onUpdateField }: {
                                      })) }
                         />
                         <label htmlFor={ 'required-' + editableField.id }
-                               className="flex items-center gap-4 cursor-pointer select-none text-(--text-primary)">
+                               className="flex items-center gap-4 cursor-pointer select-none text-(--text-secondary)">
                             { t('FORMS.field_required') }
                         </label>
-
                     </div>
 
                     <div className="flex justify-end gap-2">
-                        <button
-                            className="bg-gray-200 hover:bg-gray-300 text-sm rounded-md px-3 py-1"
-                            onClick={ () => op.current?.hide() }
-                        >
-                            Annuler
-                        </button>
-                        <button
-                            className="bg-blue-500 hover:bg-blue-600 text-white text-sm rounded-md px-3 py-1"
-                            onClick={ handleSave }
-                        >
-                            Enregistrer
-                        </button>
+                        <Button variant="no_bg" onClick={ () => op.current?.hide() }>
+                            { t('GLOBAL.cancel') }
+                        </Button>
+                        <Button variant="primary" onClick={ handleSave }>
+                            { t('MAILCOLLECT.save') }
+                        </Button>
                     </div>
                 </div>
             </OverlayPanel>

@@ -16,58 +16,88 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import { arrayMove } from "@dnd-kit/sortable";
+import { useParams } from "react-router-dom";
+
 import { TabPanel, TabView } from "primereact/tabview";
 import { Accordion, AccordionTab } from "primereact/accordion";
+
+import { arrayMove } from "@dnd-kit/sortable";
 import { DndContext, type DragEndEvent, DragOverlay, type DragStartEvent, pointerWithin } from "@dnd-kit/core";
 
-import { getAvailableFields } from "./availableFields";
+import { getAvailableFields } from "./availableFieldsSchema";
 
 import {
     findLineContainingField,
     findZoneContainingLine,
-    getDropContext,
-    recalculateLineIds
+    getDropContext
 } from "../../../../components/form/editor/helpers";
 import { FieldPalette } from "../../../../components/form/editor/FieldPalette";
 import { DroppableZone } from "../../../../components/form/editor/DroppableZone";
 import { DroppableLine } from "../../../../components/form/editor/DroppableLine";
 
+import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { Button } from "../../../../components/Button.tsx";
+
 export function SettingsVerifierFormsEditor() {
+    const { get } = axiosApiCall();
+    const { formId } = useParams<{ formId: string }>();
+
+    const [zones, setZones] = useState([
+        { id: "zone-supplier", name: t('FORMS.supplier'), lines: [] },
+        { id: "zone-lines", name: t('VERIFIER.lines'), lines: [] },
+        { id: "zone-facturation", name: t('FORMS.facturation'), lines: [] },
+        { id: "zone-other", name: t('FORMS.other'), lines: [] }
+    ]);
+    useEffect(() => {
+        if (formId) {
+            get('/forms/fields/getByFormId/' + formId).then((response) => {
+                if (response && response.fields) {
+                    const updatedZones = zones.map((zone) => {
+                        const key = zone.id.replace("zone-", "");
+
+                        // Trouver les lignes correspondantes dans la réponse
+                        const zoneLines = response.fields[key] || [];
+
+                        // Assurer que chaque ligne et champ a un id unique
+                        const formattedLines = zoneLines.map((line: any, index: number) => ({
+                            id: `line-${ crypto.randomUUID() }`,
+                            fields: line.map((field: any, fIndex: number) => ({
+                                id: field.id || `field-${key}-${index + 1}-${fIndex + 1}`,
+                                type: field.type,
+                                label: field.label,
+                                color: field.color || null,
+                                required: field.required ?? false,
+                                default_value: field.default_value || "",
+                                format: field.format ?? "alphanum_extended_with_accent"
+                            })) || [],
+                        }));
+                        return { ...zone, lines: formattedLines };
+                    });
+                    setZones(updatedZones);
+                }
+            });
+        }
+    }, []);
+
     const tabs: any = {
-        account: t('ACCOUNTS.suppliers_list'),
+        supplier: t('ACCOUNTS.suppliers_list'),
         lines: t('VERIFIER.lines'),
         billing: t('VERIFIER.facturation'),
         custom_fields: t('VERIFIER.custom_fields'),
     };
-    const typeLabels: Record<string, string> = {
-        text: t('FORMATS.text'),
-        select: t('FORMATS.select'),
-        number: t('FORMATS.number'),
-        date: t('FORMATS.date'),
-        email: t('FORMATS.email'),
-        phone: t('FORMATS.phone'),
-    };
     const availableFields = getAvailableFields(t);
 
-    const [activeTab, setActiveTab] = useState<keyof typeof availableFields>("account");
+    const [activeTab, setActiveTab] = useState<keyof typeof availableFields>("supplier");
     const [availableItems, setAvailableItems] = useState(availableFields[activeTab].map((f) => (f)));
+
     const [usedFields, setUsedFields] = useState<Record<string, string[]>>({
-        account: [],
+        supplier: [],
         lines: [],
         billing: [],
-        customFields: [],
+        other: [],
     });
-
     useEffect(() => {
         const fields: any = availableFields[activeTab];
-        fields.forEach((field: any) => {
-            if (field.type && typeLabels[field.type]) {
-                field.typeLabel = typeLabels[field.type];
-            } else {
-                field.typeLabel = '';
-            }
-        });
 
         // ❗ filtrer selon les champs déjà utilisés pour cet onglet
         const filtered = fields.filter(
@@ -77,20 +107,11 @@ export function SettingsVerifierFormsEditor() {
         setAvailableItems(filtered);
     }, [activeTab, usedFields]);
 
-    const [lineCounter, setLineCounter] = useState(1);
-    const [zones, setZones] = useState([
-        { id: "zone-supplier", name: t('FORMS.supplier'), lines: [] },
-        { id: "zone-lines", name: t('VERIFIER.lines'), lines: [] },
-        { id: "zone-facturation", name: t('FORMS.facturation'), lines: [] },
-        { id: "zone-other", name: t('FORMS.other'), lines: [] },
-    ]);
-
     const [activeDragItem, setActiveDragItem] = useState<any>(null);
     const handleDragStart = (event: DragStartEvent) => {
         const { active } = event;
         if (active?.data?.current) {
             setActiveDragItem(active.data.current);
-            console.log("Drag started:", active.id, active.data.current);
         }
     };
 
@@ -121,7 +142,7 @@ export function SettingsVerifierFormsEditor() {
         const zonesCopy = structuredClone(zones);
         const { zone: targetZone, line: targetLine, field: targetField } = getDropContext(zonesCopy, over.id as string);
 
-        // 🔵 1. Déplacement d'une LIGNE
+        // 🔵 Déplacement d’une ligne
         if (activeData.type === "line") {
             const sourceZone = findZoneContainingLine(zonesCopy, active.id as string);
             if (!sourceZone || !targetZone) return;
@@ -135,12 +156,12 @@ export function SettingsVerifierFormsEditor() {
             if (insertIndex >= 0) targetZone.lines.splice(insertIndex, 0, movedLine);
             else targetZone.lines.push(movedLine);
 
-            setZones(recalculateLineIds([...zonesCopy]));
+            setZones([...zonesCopy]);
             logZones(zonesCopy);
             return;
         }
 
-        // 🟢 2. Ajout depuis la PALETTE
+        // 🟢 Ajout depuis la palette
         if (activeData.from === "palette") {
             const newField = {
                 id: activeData.id,
@@ -150,30 +171,27 @@ export function SettingsVerifierFormsEditor() {
                 format: activeData.format ?? "",
             };
 
+            // Si la ligne existe déjà
             if (targetLine) {
                 if (targetLine.fields.length >= 5) {
-                    const newLineId = `line-${ lineCounter }`;
-                    const newLine = {
-                        id: newLineId,
-                        fields: [newField],
-                    };
+                    // Trop de champs → créer une nouvelle ligne
                     const targetZoneForNewLine = findZoneContainingLine(zonesCopy, targetLine.id);
                     if (targetZoneForNewLine) {
-                        targetZoneForNewLine.lines.push(newLine);
-                        setLineCounter((prev) => prev + 1);
+                        targetZoneForNewLine.lines.push({
+                            id: `line-${ crypto.randomUUID() }`,
+                            fields: [newField],
+                        });
                     }
-                    setZones(recalculateLineIds([...zonesCopy]));
-                    logZones(zonesCopy);
-                    return;
+                } else {
+                    targetLine.fields.push(newField);
                 }
-                targetLine.fields.push(newField);
-            } else if (targetZone) {
-                const newLineId = `line-${ lineCounter }`;
+            }
+            // Si on drop sur une zone directement
+            else if (targetZone) {
                 targetZone.lines.push({
-                    id: newLineId,
+                    id: `line-${ crypto.randomUUID() }`,
                     fields: [newField],
                 });
-                setLineCounter((prev) => prev + 1);
             }
 
             setUsedFields((prev) => ({
@@ -181,12 +199,12 @@ export function SettingsVerifierFormsEditor() {
                 [activeTab]: [...(prev[activeTab] || []), activeData.id],
             }));
 
-            setZones(recalculateLineIds([...zonesCopy]));
+            setZones([...zonesCopy]);
             logZones(zonesCopy);
             return;
         }
 
-        // 🟡 3. Déplacement ou réordonnancement d’un CHAMP existant
+        // 🟡 Déplacement ou réordonnancement d’un champ existant
         if (activeData.type === "field" || activeData.from === "form") {
             const sourceLine = findLineContainingField(zonesCopy, active.id as string);
             if (!sourceLine) return;
@@ -194,7 +212,7 @@ export function SettingsVerifierFormsEditor() {
             const movedField = sourceLine.fields.find((f: any) => f.id === active.id);
             if (!movedField) return;
 
-            // même ligne → simple réordonnancement
+            // 🔸 Réordonnancement dans la même ligne
             if (targetLine && targetLine.id === sourceLine.id) {
                 const oldIndex = sourceLine.fields.findIndex((f: any) => f.id === active.id);
                 const newIndex = targetField
@@ -202,56 +220,47 @@ export function SettingsVerifierFormsEditor() {
                     : sourceLine.fields.length - 1;
 
                 sourceLine.fields = arrayMove(sourceLine.fields, oldIndex, newIndex);
-                setZones(recalculateLineIds([...zonesCopy]));
+                setZones([...zonesCopy]);
                 logZones(zonesCopy);
                 return;
             }
 
-            // autre ligne → déplacement
+            // 🔹 Déplacement vers une autre ligne
             if (targetLine && targetLine.id !== sourceLine.id) {
                 if (targetLine.fields.length >= 5) {
-                    const newLineId = `line-${ lineCounter }`;
-                    const newLine = {
-                        id: newLineId,
-                        fields: [movedField],
-                    };
                     const targetZoneForNewLine = findZoneContainingLine(zonesCopy, targetLine.id);
                     if (targetZoneForNewLine) {
-                        targetZoneForNewLine.lines.push(newLine);
-                        setLineCounter((prev) => prev + 1);
+                        targetZoneForNewLine.lines.push({
+                            id: `line-${ crypto.randomUUID() }`,
+                            fields: [movedField],
+                        });
                     }
                     sourceLine.fields = sourceLine.fields.filter((f: any) => f.id !== active.id);
-                    setZones(recalculateLineIds([...zonesCopy]));
+                    setZones([...zonesCopy]);
                     logZones(zonesCopy);
                     return;
                 }
 
                 sourceLine.fields = sourceLine.fields.filter((f: any) => f.id !== active.id);
-
                 const insertIndex = targetField
                     ? targetLine.fields.findIndex((f: any) => f.id === targetField.id)
                     : targetLine.fields.length;
 
                 targetLine.fields.splice(insertIndex, 0, movedField);
-                setZones(recalculateLineIds([...zonesCopy]));
+                setZones([...zonesCopy]);
                 logZones(zonesCopy);
                 return;
             }
 
-            // drop sur une zone → créer une nouvelle ligne
+            // 🔻 Drop sur une zone → nouvelle ligne
             if (targetZone && !targetLine) {
                 sourceLine.fields = sourceLine.fields.filter((f: any) => f.id !== active.id);
-
-                const newLineId = `line-${ lineCounter }`;
                 targetZone.lines.push({
-                    id: newLineId,
+                    id: `line-${ crypto.randomUUID() }`,
                     fields: [movedField],
                 });
-
-                setLineCounter((prev) => prev + 1);
-                setZones(recalculateLineIds([...zonesCopy]));
+                setZones([...zonesCopy]);
                 logZones(zonesCopy);
-                return;
             }
         }
     };
@@ -270,24 +279,35 @@ export function SettingsVerifierFormsEditor() {
         );
     };
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const handleUpdate = () => {
+        setIsSubmitting(true);
+    }
+
     return (
         <DndContext onDragEnd={ handleDragEnd } onDragStart={ handleDragStart } collisionDetection={ pointerWithin }>
             <div className="flex h-full">
                 <div className="flex flex-col border-r-2 border-(--border-secondary) w-full">
                     <TabView>
                         <TabPanel header={ t("SETTINGS.form_details") }>
-
+                            <Button className="m-4" variant="primary">
+                                { t('GLOBAL.save_changes') }
+                            </Button>
                         </TabPanel>
                         <TabPanel header={ t("SETTINGS.form_fields") }>
                             <Accordion multiple activeIndex={ [0] } className='p-6'>
                                 { zones.map((zone) => (
-                                    <AccordionTab header={ zone.name }>
+                                    <AccordionTab header={ zone.name } key={ zone.id }>
                                         <DroppableZone key={ zone.id } zone={ zone }
                                                        onUpdateField={ handleUpdateField }/>
                                     </AccordionTab>
                                 )) }
                             </Accordion>
+                            <Button className="ml-6 mt-6" variant="primary" onClick={ handleUpdate }>
+                                { isSubmitting ? t('GLOBAL.saving') + "..." : t('GLOBAL.save_settings') }
+                            </Button>
                         </TabPanel>
+
                     </TabView>
                 </div>
 
@@ -313,14 +333,14 @@ export function SettingsVerifierFormsEditor() {
                 { (activeDragItem && activeDragItem.type === 'field') && (
                     <div
                         className='flex flex-col border-2 border-(--border-secondary) rounded-lg bg-(--bg-primary) p-2 w-full opacity-60 cursor-grabbing'>
-                        <span className='font-semibold'>{ activeDragItem.field.label }</span>
+                        <span className='font-semibold'>{ t(activeDragItem.field.label) }</span>
                         <span className='text-(--text-secondary)'>{ activeDragItem.field.typeLabel }</span>
                     </div>
                 ) }
                 { (activeDragItem && activeDragItem.from === 'palette') && (
                     <div
                         className='flex flex-col border-2 border-(--border-secondary) rounded-lg bg-(--bg-primary) p-2 w-full opacity-60 cursor-grabbing'>
-                        <span className='font-semibold'>{ activeDragItem.label }</span>
+                        <span className='font-semibold'>{ t(activeDragItem.label) }</span>
                         <span className='text-(--text-secondary)'>{ activeDragItem.typeLabel }</span>
                     </div>
                 ) }

@@ -77,7 +77,6 @@ export function Table<T extends { id: string }>({
     paginatorLeftText,
     pagination = false,
     selectedRows = [],
-    height = "h-[70vh]",
     checkboxSelection = false,
     totalRecords = data.length,
     rowsPerPageOptions = [10, 20, 50],
@@ -124,10 +123,10 @@ export function Table<T extends { id: string }>({
     if (loading) {
         return (
             <div
-                className={ `${ height } w-full overflow-hidden border border-(--border-secondary) rounded-xl` }>
+                className={ `w-full overflow-hidden border border-(--border-secondary) rounded-md` }>
                 { pagination && (
                     <div
-                        className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-t-xl text-(--text-secondary) font-normal h-18">
+                        className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-t-md text-(--text-secondary) font-normal h-18">
                         <Skeleton width='20%' className='dark:bg-(--text-secondary)'/>
                         <Skeleton width='30%' className='dark:bg-(--text-secondary)'/>
                     </div>
@@ -159,18 +158,18 @@ export function Table<T extends { id: string }>({
     }
 
     return (
-        <div className={ `${ height }` }>
+        <div className='border border-(--border-secondary) rounded-lg overflow-hidden'>
             { menuModel && (
                 <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }/>
             ) }
 
             <PrimeDataTable
-                dataKey="id"
                 lazy
                 scrollable
                 stripedRows
-                scrollHeight="flex"
+                dataKey="id"
                 value={ data }
+                scrollHeight="flex"
                 rows={ rowsPerPage }
                 paginator={ pagination }
                 first={ lazyParams.first }
@@ -188,7 +187,7 @@ export function Table<T extends { id: string }>({
                 onSelectionChange={ (e: any) => {
                     handleSelectionChange(e.value)
                 } }
-                className="w-full border border-(--border-secondary) rounded-xl"
+                className="w-full"
                 contextMenuSelection={ selectedRows }
                 onContextMenuSelectionChange={ (e: any) => {
                     handleSelectionChange([e.value]);

@@ -264,7 +264,7 @@ export function VerifierListPage() {
     }
 
     return (
-        <div>
+        <div className='flex flex-col h-full'>
             { hovered && (
                 <Thumbnail module={ 'verifier' } document_info={ hovered } open={ true }/>
             ) }
@@ -299,7 +299,7 @@ export function VerifierListPage() {
                 </span>
             </div>
 
-            <div className="mt-4 rounded-xl">
+            <div className="mt-4 flex flex-col overflow-y-auto">
                 { view === 'list' && (
                     <Table
                         baseLink="/verifier/viewer/"

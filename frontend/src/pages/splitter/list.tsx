@@ -229,7 +229,7 @@ export function SplitterListPage() {
     }
 
     return (
-        <div>
+        <div className='flex flex-col h-full'>
             { hovered && (
                 <Thumbnail module={ 'splitter' } document_info={ hovered } open={ true }/>
             ) }
@@ -260,7 +260,7 @@ export function SplitterListPage() {
                 </span>
             </div>
 
-            <div className="mt-4 rounded-xl">
+            <div className="mt-4 flex flex-col overflow-y-auto">
                 { view === 'list' && (
                     <Table
                         baseLink="/splitter/viewer/"

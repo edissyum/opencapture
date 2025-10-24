@@ -14,8 +14,11 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { t } from "i18next";
 import { GripVertical } from "lucide-react";
 import { useDraggable } from "@dnd-kit/core";
+
+import { getTypeLabels } from "./schemas";
 
 export function FieldPalette({ fields }: any) {
     return (
@@ -36,6 +39,8 @@ function PaletteItem({ field }: any) {
         }
     });
 
+    const typeLabels: any = getTypeLabels(t);
+
     const style = {
         transform: transform
             ? `translate3d(${ transform.x }px, ${ transform.y }px, 0)`
@@ -53,7 +58,7 @@ function PaletteItem({ field }: any) {
                 </div>
                 <div className='flex flex-col'>
                     <span className='font-semibold'>{ field.label }</span>
-                    <span className='text-(--text-secondary)'>{ field.typeLabel }</span>
+                    <span className='text-(--text-secondary)'>{ typeLabels[field.type] }</span>
                 </div>
             </div>
         </div>

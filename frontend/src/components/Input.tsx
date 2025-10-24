@@ -19,8 +19,9 @@ import React from "react";
 import { Eye, EyeOff } from "lucide-react";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-    label?: string;
     error?: any;
+    label?: string;
+    height?: string;
     no_margin_bottom?: boolean;
     iconPosition?: "left" | "right";
 }
@@ -31,6 +32,7 @@ export const Input: React.FC<InputProps> = ({
     error,
     required,
     disabled,
+    height = "h-12",
     type = "text",
     className = "",
     no_margin_bottom = false,
@@ -47,7 +49,7 @@ export const Input: React.FC<InputProps> = ({
                     id={ id }
                     className={ `z-10 w-full peer px-3 py-2 border-[1.5px] rounded-md focus:outline-none focus:border-(--color-primary)
                                 ${ isPasswordField ? 'border-r-0 rounded-tr-none rounded-br-none' : '' } text-(--text-primary)
-                                border-(--border-secondary) disabled:bg-(--bg-secondary) disabled:cursor-not-allowed h-12` }
+                                border-(--border-secondary) disabled:bg-(--bg-secondary) disabled:cursor-not-allowed ${ height }` }
                     placeholder=""
                     type={ inputType }
                     disabled={ disabled }
@@ -56,10 +58,10 @@ export const Input: React.FC<InputProps> = ({
                     { ...props }
                 />
                 { label && (
-                    <label htmlFor={ id } className={ `absolute z-20 left-0 ml-2 top-2 -translate-y-5 px-1 text-sm select-none
+                    <label htmlFor={ id } className={ `absolute z-20 left-0 ml-2 top-3 -translate-y-6 px-1 text-sm select-none
                         duration-100 ease-linear peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-base
                         ${ disabled ? 'bg-transparent cursor-not-allowed' : 'bg-(--bg-primary) cursor-text' }
-                        text-(--text-secondary) peer-focus:w-auto peer-focus:-translate-y-5 z-0 peer-focus:px-1 peer-focus:text-sm` }>
+                        text-(--text-secondary) peer-focus:w-auto peer-focus:-translate-y-6 z-0 peer-focus:px-1 peer-focus:text-sm` }>
                         { label }
                         { required && <span className="text-red-500 ml-1">*</span> }
                     </label>

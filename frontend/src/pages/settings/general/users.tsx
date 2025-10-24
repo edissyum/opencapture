@@ -80,7 +80,7 @@ export function SettingsGeneralUsers() {
             command: () => handleDisable()
         },
         {
-            label: <span className='critical'>t('USERS.delete_users')</span>,
+            label: <span className='critical'>{ t('USERS.delete_users') }</span>,
             icon: <Trash2 className='mr-1' size={ 16 }/>,
             command: () => handleDelete()
         }
@@ -223,7 +223,7 @@ export function SettingsGeneralUsers() {
                     </span>
                 </span>
                 <span>
-                    <Input id="search" type="text" name="search" className='bg-(--bg-primary)'
+                    <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height={ 'h-10' }
                            value={ searchTerm } placeholder={ t('USERS.search') } no_margin_bottom={ true }
                            onChange={ (e) => setSearchTerm(e.target.value) }/>
                 </span>
@@ -231,15 +231,14 @@ export function SettingsGeneralUsers() {
                     <Button
                         size={ 'sm' }
                         variant={ "no_bg_border" }
-                        className='p-2 border'>
-                        <UserRoundPlus size={ 14 } className="mr-1"/> { t('USERS.add_user') }
+                        className='p-2 px-3 border-2 border-(--border-secondary)'>
+                        <UserRoundPlus size={ 16 } className="mr-2"/> { t('USERS.add_user') }
                     </Button>
                 </span>
             </div>
             <Table
                 baseLink="/settings/general/users/"
                 data={ users }
-                height="h-[40vh]"
                 actions={ actions }
                 pagination={ true }
                 columns={ columns }

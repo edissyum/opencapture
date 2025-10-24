@@ -387,7 +387,8 @@
         "supplier": "",
         "field_required": "",
         "field_label": "",
-        "formats": ""
+        "formats": "",
+        "defaut_value": ""
     },
     "FORMATS": {
         "date": "",
@@ -402,5 +403,24 @@
         "char": "",
         "number_float": "",
         "number_int": ""
+    },
+    "COLORS": {
+        "black": "",
+        "blue": "",
+        "brown": "",
+        "darkblue": "",
+        "fuschia": "",
+        "green": "",
+        "grey": "",
+        "indigo": "",
+        "lightgreen": "",
+        "ligtblue": "",
+        "orange": "",
+        "pink": "",
+        "purple": "",
+        "red": "",
+        "teal": "",
+        "yellow": "",
+        "select_color": ""
     }
 }

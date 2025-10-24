@@ -64,16 +64,3 @@ export function getDropContext(zones: any[], overId: string) {
 
     return { zone: containingZone, line: containingLine, field };
 }
-
-export function recalculateLineIds(zones: any[]) {
-    let globalCounter = 1;
-
-    zones.forEach((zone) => {
-        zone.lines.forEach((line: { id: string; }) => {
-            line.id = `line-${globalCounter++}`;
-        });
-    });
-
-    return zones;
-}
-

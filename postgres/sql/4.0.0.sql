@@ -1,0 +1,82 @@
+-- Remplacement des couleurs pour utiliser des codes hexadécimaux
+UPDATE form_models_field
+SET fields = jsonb_set(
+        fields,
+        '{supplier}',
+        (SELECT jsonb_agg(
+            CASE
+                WHEN f ->> 'color' = 'yellow' THEN jsonb_set(f, '{color}', '"#B3A613"'::jsonb)
+                WHEN f ->> 'color' = 'pink' THEN jsonb_set(f, '{color}', '"#F469F6"'::jsonb)
+                WHEN f ->> 'color' = 'red' THEN jsonb_set(f, '{color}', '"#CD0D0D"'::jsonb)
+                WHEN f ->> 'color' = 'olive' THEN jsonb_set(f, '{color}', '"#1FAA60"'::jsonb)
+                WHEN f ->> 'color' = 'orange' THEN jsonb_set(f, '{color}', '"#E66910"'::jsonb)
+                WHEN f ->> 'color' = 'purple' THEN jsonb_set(f, '{color}', '"#57076B"'::jsonb)
+                WHEN f ->> 'color' = 'black' THEN jsonb_set(f, '{color}', '"#000000"'::jsonb)
+                WHEN f ->> 'color' = 'white' THEN jsonb_set(f, '{color}', '"#11603D"'::jsonb)
+                WHEN f ->> 'color' = 'aqua' THEN jsonb_set(f, '{color}', '"#1CC7BE"'::jsonb)
+                WHEN f ->> 'color' = 'maroon' THEN jsonb_set(f, '{color}', '"#974600"'::jsonb)
+                WHEN f ->> 'color' = 'teal' THEN jsonb_set(f, '{color}', '"#178984"'::jsonb)
+                WHEN f ->> 'color' = 'fuchsia' THEN jsonb_set(f, '{color}', '"#E600E6"'::jsonb)
+                WHEN f ->> 'color' = 'silver' THEN jsonb_set(f, '{color}', '"#6E6E6E"'::jsonb)
+                WHEN f ->> 'color' = 'gray' THEN jsonb_set(f, '{color}', '"#6E6E6E"'::jsonb)
+                WHEN f ->> 'color' = 'lime' THEN jsonb_set(f, '{color}', '"#1FAA60"'::jsonb)
+                WHEN f ->> 'color' = 'green' THEN jsonb_set(f, '{color}', '"#11603D"'::jsonb)
+                ELSE f
+            END
+        )
+    FROM jsonb_array_elements(fields -> 'supplier') AS s(f))
+);
+
+UPDATE form_models_field
+SET fields = jsonb_set(
+        fields,
+        '{facturation}',
+        (SELECT jsonb_agg(
+            CASE
+                WHEN f ->> 'color' = 'yellow' THEN jsonb_set(f, '{color}', '"#B3A613"'::jsonb)
+                WHEN f ->> 'color' = 'pink' THEN jsonb_set(f, '{color}', '"#F469F6"'::jsonb)
+                WHEN f ->> 'color' = 'red' THEN jsonb_set(f, '{color}', '"#CD0D0D"'::jsonb)
+                WHEN f ->> 'color' = 'olive' THEN jsonb_set(f, '{color}', '"#1FAA60"'::jsonb)
+                WHEN f ->> 'color' = 'orange' THEN jsonb_set(f, '{color}', '"#E66910"'::jsonb)
+                WHEN f ->> 'color' = 'purple' THEN jsonb_set(f, '{color}', '"#57076B"'::jsonb)
+                WHEN f ->> 'color' = 'black' THEN jsonb_set(f, '{color}', '"#000000"'::jsonb)
+                WHEN f ->> 'color' = 'white' THEN jsonb_set(f, '{color}', '"#11603D"'::jsonb)
+                WHEN f ->> 'color' = 'aqua' THEN jsonb_set(f, '{color}', '"#1CC7BE"'::jsonb)
+                WHEN f ->> 'color' = 'maroon' THEN jsonb_set(f, '{color}', '"#974600"'::jsonb)
+                WHEN f ->> 'color' = 'teal' THEN jsonb_set(f, '{color}', '"#178984"'::jsonb)
+                WHEN f ->> 'color' = 'fuchsia' THEN jsonb_set(f, '{color}', '"#E600E6"'::jsonb)
+                WHEN f ->> 'color' = 'silver' THEN jsonb_set(f, '{color}', '"#6E6E6E"'::jsonb)
+                WHEN f ->> 'color' = 'gray' THEN jsonb_set(f, '{color}', '"#6E6E6E"'::jsonb)
+                WHEN f ->> 'color' = 'lime' THEN jsonb_set(f, '{color}', '"#1FAA60"'::jsonb)
+                WHEN f ->> 'color' = 'green' THEN jsonb_set(f, '{color}', '"#11603D"'::jsonb)
+                ELSE f
+            END
+        )
+     FROM jsonb_array_elements(fields -> 'facturation') AS s(f))
+);
+
+-- Modification de la structure des champs dans form_models_field
+-- Désormais on souhaite que chaque valeur de tableau soit encapsulée dans un tableau supplémentaire
+-- Chaque tableau est considéré comme une ligne
+UPDATE form_models_field
+SET fields = (
+    SELECT jsonb_object_agg(
+                   key,
+                   CASE
+                       WHEN jsonb_typeof(value) = 'array' THEN
+                           COALESCE(
+                                   (
+                                       SELECT jsonb_agg(jsonb_build_array(elem))
+                                       FROM jsonb_array_elements(value) AS t(elem)
+                                   ),
+                                   '[]'::jsonb
+                           )
+                       ELSE
+                           value
+                       END
+           )
+    FROM jsonb_each(fields)
+)
+WHERE jsonb_typeof(fields) = 'object';
+
+

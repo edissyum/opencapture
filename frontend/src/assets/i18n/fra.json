@@ -63,7 +63,9 @@
         "cancel": "Annuler",
         "disable": "Désactiver",
         "enable": "Activer",
-        "delete": "Supprimer"
+        "delete": "Supprimer",
+        "save_settings": "Sauvegarder les paramètres",
+        "saving": "Sauvegarde en cours..."
     },
     "ONBOARD": {
         "select_module": "Choix du module par défaut",
@@ -303,8 +305,6 @@
         "enable_error_notifications": "Activer les notifications d'erreur par email",
         "error_notifications": "Notifications d'erreur",
         "from_mail": "Expéditeur",
-        "save_settings": "Sauvegarder les paramètres",
-        "saving": "Sauvegarde en cours...",
         "send_test": "Envoyer un email de test",
         "settings_saved": "Paramètres SMTP sauvegardés avec succès",
         "smtp_host_required": "Serveur SMTP requis",
@@ -425,7 +425,8 @@
         "supplier": "Tiers",
         "field_required": "Champ obligatoire",
         "field_label": "Libellé du champ",
-        "formats": "Format des données"
+        "formats": "Format des données",
+        "defaut_value": "Valeur par défaut"
     },
     "FORMATS": {
         "alphanum": "Caractères alphanumériques [0-9aA-zZ']",
@@ -440,5 +441,24 @@
         "phone": "Numéro de téléphone",
         "select": "Liste à choix",
         "text": "Chaîne de caractères"
+    },
+    "COLORS": {
+        "black": "Noir",
+        "blue": "Bleu",
+        "brown": "Marron",
+        "darkblue": "Bleu foncé",
+        "fuschia": "Fuschia",
+        "green": "Vert",
+        "grey": "Gris",
+        "indigo": "Indigo",
+        "lightgreen": "Vert clair",
+        "ligtblue": "Bleu clair",
+        "orange": "Orange",
+        "pink": "Rose",
+        "purple": "Violet",
+        "red": "Rouge",
+        "teal": "Sarcelle",
+        "yellow": "Jaune",
+        "select_color": "Choisissez une couleur"
     }
 }

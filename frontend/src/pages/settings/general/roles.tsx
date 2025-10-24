@@ -225,8 +225,8 @@ export function SettingsGeneralRoles() {
                     <Button
                         size={ 'sm' }
                         variant={ "no_bg_border" }
-                        className='p-2 border'>
-                        <UserRoundPlus size={ 14 } className="mr-1"/> { t('ROLES.add_role') }
+                        className='p-2 px-3 border'>
+                        <UserRoundPlus size={ 16 } className="mr-2"/> { t('ROLES.add_role') }
                     </Button>
                 </span>
             </div>

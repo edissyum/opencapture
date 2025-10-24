@@ -284,7 +284,7 @@ export function SettingsGeneralSMTP() {
                         </div>
 
                         <Button type='submit' className='mt-10' disabled={ isSubmitting }>
-                            { isSubmitting ? t('SMTP.saving') + "..." : t('SMTP.save_settings') }
+                            { isSubmitting ? t('GLOBAL.saving') + "..." : t('GLOBAL.save_settings') }
                         </Button>
                     </form>
                 </div>
