@@ -41,6 +41,7 @@ import { SettingsGeneralMailcollect } from "./pages/settings/general/mailcollect
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
 import { SettingsVerifierFormsList } from "./pages/settings/verifier/forms/list";
 import { SettingsVerifierFormsEditor } from "./pages/settings/verifier/forms/editor";
+import { VerifierViewerPage } from "./pages/verifier/viewer.tsx";
 
 export const router = createBrowserRouter(
     [
@@ -61,6 +62,12 @@ export const router = createBrowserRouter(
                 {
                     path: "home",
                     element: <HomePage />,
+                    loader: protectedLoader,
+                    errorElement: <LoginRequiredError/>
+                },
+                {
+                    path: "verifier/viewer/:documentId",
+                    element: <VerifierViewerPage />,
                     loader: protectedLoader,
                     errorElement: <LoginRequiredError/>
                 },

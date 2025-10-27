@@ -16,10 +16,11 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import React from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { CircleQuestionMark, Eye, EyeOff } from "lucide-react";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     error?: any;
+    hint?: string;
     label?: string;
     height?: string;
     no_margin_bottom?: boolean;
@@ -28,6 +29,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 export const Input: React.FC<InputProps> = ({
     id,
+    hint,
     label,
     error,
     required,
@@ -57,6 +59,11 @@ export const Input: React.FC<InputProps> = ({
                     aria-required={ required }
                     { ...props }
                 />
+                { hint && (
+                    <span className={ `absolute cursor-pointer z-10 right-1.5 top-1.5 text-(--text-secondary)` }>
+                        <CircleQuestionMark data-tooltip-id="tooltip" data-tooltip-content={ hint } size={ 16 }/>
+                    </span>
+                ) }
                 { label && (
                     <label htmlFor={ id } className={ `absolute z-20 left-0 ml-2 top-3 -translate-y-6 px-1 text-sm select-none
                         duration-100 ease-linear peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-base

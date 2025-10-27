@@ -33,7 +33,7 @@ export const getAvailableFields = (t: TFunction) => ({
         { id: 'email', label: t('ACCOUNTS.email'), type: 'text', required: true, format: 'email', default_value: '' },
         { id: 'phone', label: t('ACCOUNTS.phone'), type: 'text', required: true, format: 'phone', default_value: '' },
         { id: 'address1', label: t('ACCOUNTS.address1'), type: 'text', required: true, format: 'alphanum_extended_with_accent', default_value: '' },
-        { id: 'address2', label: t('ACCOUNTS.address2'), type: 'false', required: true, format: 'alphanum_extended_with_accent', default_value: '' },
+        { id: 'address2', label: t('ACCOUNTS.address2'), type: 'text', required: true, format: 'alphanum_extended_with_accent', default_value: '' },
         { id: 'postal_code', label: t('ACCOUNTS.postal_code'), type: 'text', required: true, format: 'alphanum', default_value: '' },
         { id: 'country', label: t('ACCOUNTS.country'), type: 'text', required: true, format: 'alphanum_extended_with_accent', default_value: '' }
     ],

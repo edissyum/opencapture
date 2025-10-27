@@ -37,9 +37,10 @@ import { DroppableLine } from "../../../../components/form/editor/DroppableLine"
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 import { Button } from "../../../../components/Button.tsx";
+import { showToast } from "../../../../components/ToastProvider.tsx";
 
 export function SettingsVerifierFormsEditor() {
-    const { get } = axiosApiCall();
+    const { get, post } = axiosApiCall();
     const { formId } = useParams<{ formId: string }>();
 
     const [zones, setZones] = useState([
@@ -171,25 +172,21 @@ export function SettingsVerifierFormsEditor() {
                 format: activeData.format ?? "",
             };
 
-            // Si la ligne existe déjà
             if (targetLine) {
                 if (targetLine.fields.length >= 5) {
-                    // Trop de champs → créer une nouvelle ligne
                     const targetZoneForNewLine = findZoneContainingLine(zonesCopy, targetLine.id);
                     if (targetZoneForNewLine) {
                         targetZoneForNewLine.lines.push({
-                            id: `line-${ crypto.randomUUID() }`,
+                            id: `line-${crypto.randomUUID()}`,
                             fields: [newField],
                         });
                     }
                 } else {
                     targetLine.fields.push(newField);
                 }
-            }
-            // Si on drop sur une zone directement
-            else if (targetZone) {
+            } else if (targetZone) {
                 targetZone.lines.push({
-                    id: `line-${ crypto.randomUUID() }`,
+                    id: `line-${crypto.randomUUID()}`,
                     fields: [newField],
                 });
             }
@@ -231,22 +228,24 @@ export function SettingsVerifierFormsEditor() {
                     const targetZoneForNewLine = findZoneContainingLine(zonesCopy, targetLine.id);
                     if (targetZoneForNewLine) {
                         targetZoneForNewLine.lines.push({
-                            id: `line-${ crypto.randomUUID() }`,
+                            id: `line-${crypto.randomUUID()}`,
                             fields: [movedField],
                         });
                     }
-                    sourceLine.fields = sourceLine.fields.filter((f: any) => f.id !== active.id);
-                    setZones([...zonesCopy]);
-                    logZones(zonesCopy);
-                    return;
+                } else {
+                    const insertIndex = targetField
+                        ? targetLine.fields.findIndex((f: any) => f.id === targetField.id)
+                        : targetLine.fields.length;
+                    targetLine.fields.splice(insertIndex, 0, movedField);
                 }
 
+                // ✅ Supprime la ligne si elle est vide après déplacement
                 sourceLine.fields = sourceLine.fields.filter((f: any) => f.id !== active.id);
-                const insertIndex = targetField
-                    ? targetLine.fields.findIndex((f: any) => f.id === targetField.id)
-                    : targetLine.fields.length;
+                const sourceZone = findZoneContainingLine(zonesCopy, sourceLine.id);
+                if (sourceZone && sourceLine.fields.length === 0) {
+                    sourceZone.lines = sourceZone.lines.filter((l: any) => l.id !== sourceLine.id);
+                }
 
-                targetLine.fields.splice(insertIndex, 0, movedField);
                 setZones([...zonesCopy]);
                 logZones(zonesCopy);
                 return;
@@ -255,10 +254,18 @@ export function SettingsVerifierFormsEditor() {
             // 🔻 Drop sur une zone → nouvelle ligne
             if (targetZone && !targetLine) {
                 sourceLine.fields = sourceLine.fields.filter((f: any) => f.id !== active.id);
+
                 targetZone.lines.push({
-                    id: `line-${ crypto.randomUUID() }`,
+                    id: `line-${crypto.randomUUID()}`,
                     fields: [movedField],
                 });
+
+                // ✅ Supprime la ligne si elle devient vide
+                const sourceZone = findZoneContainingLine(zonesCopy, sourceLine.id);
+                if (sourceZone && sourceLine.fields.length === 0) {
+                    sourceZone.lines = sourceZone.lines.filter((l: any) => l.id !== sourceLine.id);
+                }
+
                 setZones([...zonesCopy]);
                 logZones(zonesCopy);
             }
@@ -281,7 +288,33 @@ export function SettingsVerifierFormsEditor() {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const handleUpdate = () => {
+        if (isSubmitting) return;
+
         setIsSubmitting(true);
+        const payload: any = {};
+        zones.forEach((zone) => {
+            const key = zone.id.replace("zone-", "");
+            payload[key] = zone.lines.map((line: any) =>
+                line.fields.map((field: any) => ({
+                    id: field.id,
+                    type: field.type,
+                    label: field.label,
+                    color: field.color || "#1FAA60",
+                    required: field.required ?? false,
+                    default_value: field.default_value || "",
+                    format: field.format ?? "alphanum_extended_with_accent"
+                }))
+            );
+        });
+
+        try {
+            post('forms/verifier/updateFields/' + formId, payload).then(() => {
+                showToast(t('FORMS.form_updated'), 'success');
+                setIsSubmitting(false);
+            });
+        } catch (error) {
+            console.error("Error updating form fields:", error);
+        }
     }
 
     return (
@@ -290,8 +323,8 @@ export function SettingsVerifierFormsEditor() {
                 <div className="flex flex-col border-r-2 border-(--border-secondary) w-full">
                     <TabView>
                         <TabPanel header={ t("SETTINGS.form_details") }>
-                            <Button className="m-4" variant="primary">
-                                { t('GLOBAL.save_changes') }
+                            <Button className="ml-6 my-6" variant="primary" onClick={ handleUpdate } disabled={ isSubmitting }>
+                                { isSubmitting ? t('GLOBAL.saving') + "..." : t('GLOBAL.save_settings') }
                             </Button>
                         </TabPanel>
                         <TabPanel header={ t("SETTINGS.form_fields") }>
@@ -303,11 +336,10 @@ export function SettingsVerifierFormsEditor() {
                                     </AccordionTab>
                                 )) }
                             </Accordion>
-                            <Button className="ml-6 mt-6" variant="primary" onClick={ handleUpdate }>
+                            <Button className="ml-6 my-6" variant="primary" onClick={ handleUpdate } disabled={ isSubmitting }>
                                 { isSubmitting ? t('GLOBAL.saving') + "..." : t('GLOBAL.save_settings') }
                             </Button>
                         </TabPanel>
-
                     </TabView>
                 </div>
 

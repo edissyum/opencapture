@@ -17,7 +17,10 @@
 
 import { useEffect, useState } from "react";
 
+import { Loader } from "./loader/Loader";
+
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
+
 import { b64ToFile } from "../pages/settings/general/customization";
 
 type TNLProps = {
@@ -71,18 +74,14 @@ export function Thumbnail({ document_info, open, module }: TNLProps) {
     const cached = thumbCache[module].get(document_info.id);
 
     return (
-        <div className="tnl absolute z-40 top-4 left-4 max-w-[30%] border border-gray-900">
-            { loading && <p className="text-sm text-gray-500">Chargement…</p> }
-            { cached?.error &&
-                <p className="text-sm text-red-500">{ cached.error }</p> }
+        <div className="tnl absolute z-20 top-4 left-4 max-w-[30%] bg-(--bg-primary) border-2 border-(--border-secondary) rounded-lg overflow-hidden">
+            { loading && <Loader/> }
+
+            { cached?.error && <p className="text-sm text-(--text-error)">{ cached.error }</p> }
+
             { cached && !cached.error && (
-                <div className="space-y-1">
-                    <p className="font-semibold">TNL Document #{ document_info.id }</p>
-                    { cached && (
-                        <img className="h-full" src={ URL.createObjectURL(cached) }
-                             alt={ cached.name }/>
-                    ) }
-                </div>
+                <img className="h-full" src={ URL.createObjectURL(cached) }
+                     alt={ cached.name }/>
             ) }
         </div>
     );

@@ -43,14 +43,14 @@ export function SortableLine({ line, onUpdateField }: any) {
 
     return (
         <div ref={ setNodeRef } style={ style }
-             className={ `SortableLine flex justify-center items-center ${ isDragging ? 'opacity-50' : 'opacity-100' }` }>
+             className={ `SortableLine relative flex justify-center items-center ${ isDragging ? 'opacity-50' : 'opacity-100' }` }>
             { line.fields.length >= 1 && (
                 <div className='cursor-grab text-(--text-secondary) hover:text-(--text-primary)'
                      ref={ setActivatorNodeRef } { ...listeners } aria-label="Drag handle">
                     <GripVertical size={ 22 }/>
                 </div>
             ) }
-            <div className={ `w-full p-2 ${ bg } border rounded-md` }>
+            <div className={ `w-full p-2 ${ bg } border-2 rounded-md` }>
                 <DroppableLine line={ line } onUpdateField={ onUpdateField }/>
             </div>
         </div>

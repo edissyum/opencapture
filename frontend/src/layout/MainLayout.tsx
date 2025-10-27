@@ -39,7 +39,7 @@ export default function MainLayout() {
             <Sidebar />
             <main className="flex flex-col w-full h-full bg-(--bg-secondary)">
                 <TopBar />
-                <span className="p-8 block overflow-y-auto h-full">
+                <span className="block overflow-y-auto h-full">
                     <Outlet />
                 </span>
             </main>

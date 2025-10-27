@@ -103,7 +103,7 @@ export function App() {
         <StrictMode>
             <CustomProvider custom={ custom }>
                 <ConfirmDialog />
-                <Tooltip id="tooltip" className="z-10"/>
+                <Tooltip id="tooltip" className="z-50"/>
                 <RouterProvider key={ appKey } router={ router }/>
             </CustomProvider>
         </StrictMode>

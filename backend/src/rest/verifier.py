@@ -598,7 +598,7 @@ def get_thumb():
     file_content = verifier.get_file_content(request.json['type'], request.json['filename'],
                                              'image/jpeg', year_and_month=year_and_month,
                                              document_id=request.json['documentId'],
-                                             compress=request.json['compress'])
+                                             compress=request.json['compress'] if 'compress' in request.json else False)
     return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('utf-8'))}), 200
 
 

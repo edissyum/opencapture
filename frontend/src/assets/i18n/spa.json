@@ -63,7 +63,9 @@
         "cancel": "",
         "disable": "",
         "enable": "",
-        "delete": ""
+        "delete": "",
+        "save_settings": "",
+        "saving": ""
     },
     "ONBOARD": {
         "select_module": "Selección de módulo predeterminado",
@@ -180,7 +182,10 @@
         "due_date": "",
         "invoice_date": "",
         "invoice_number": "",
-        "drop_create_new_line": ""
+        "drop_create_new_line": "",
+        "indicators": "",
+        "page": "",
+        "download_original_file": ""
     },
     "SPLITTER": {
         "batch_selected_many": "lotes seleccionados",
@@ -303,8 +308,6 @@
         "enable_error_notifications": "Habilitar notificaciones de error por correo",
         "error_notifications": "Notificaciones de error",
         "from_mail": "Remitente",
-        "save_settings": "Guardar configuraciones",
-        "saving": "Guardando...",
         "send_test": "Enviar correo de prueba",
         "settings_saved": "Configuraciones SMTP guardadas con éxito",
         "smtp_host_required": "Servidor SMTP requerido",
@@ -426,7 +429,9 @@
         "field_required": "",
         "field_label": "",
         "formats": "",
-        "defaut_value": ""
+        "default_value_hint": "",
+        "default_value": "",
+        "form_updated": ""
     },
     "FORMATS": {
         "date": "",

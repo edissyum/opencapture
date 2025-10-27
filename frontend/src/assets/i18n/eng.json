@@ -63,7 +63,9 @@
         "cancel": "",
         "disable": "",
         "enable": "",
-        "delete": ""
+        "delete": "",
+        "save_settings": "",
+        "saving": ""
     },
     "ONBOARD": {
         "select_module": "Default module selection",
@@ -176,7 +178,10 @@
         "due_date": "",
         "invoice_date": "",
         "invoice_number": "",
-        "drop_create_new_line": ""
+        "drop_create_new_line": "",
+        "indicators": "",
+        "page": "",
+        "download_original_file": ""
     },
     "SPLITTER": {
         "batch_selected_one": "batch selected",
@@ -275,8 +280,6 @@
         "enable_error_notifications": "Enable error email notifications",
         "error_notifications": "Error notifications",
         "from_mail": "Sender",
-        "save_settings": "Save settings",
-        "saving": "Saving...",
         "send_test": "Send test email",
         "settings_saved": "SMTP settings saved successfully",
         "smtp_host_required": "SMTP host is required",
@@ -388,7 +391,9 @@
         "field_required": "",
         "field_label": "",
         "formats": "",
-        "defaut_value": ""
+        "default_value_hint": "",
+        "default_value": "",
+        "form_updated": ""
     },
     "FORMATS": {
         "date": "",

@@ -134,10 +134,11 @@ export function SortableField({ field, onUpdateField }: {
 
                     <Input id={ "default_value-" + editableField.id }
                            className="w-full" no_margin_bottom={ true }
-                           label={ t('FORMS.defaut_value') }
+                           hint={ t('FORMS.default_value_hint') }
+                           label={ t('FORMS.default_value') }
                            value={ editableField.default_value }
                            onChange={ (e: any) =>
-                               setEditableField((prev) => ({ ...prev, defaut_value: e.target.value }))
+                               setEditableField((prev) => ({ ...prev, default_value: e.target.value }))
                            }
                     />
 

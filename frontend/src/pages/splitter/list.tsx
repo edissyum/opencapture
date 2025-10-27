@@ -229,7 +229,7 @@ export function SplitterListPage() {
     }
 
     return (
-        <div className='flex flex-col h-full'>
+        <div className='flex flex-col h-full p-8'>
             { hovered && (
                 <Thumbnail module={ 'splitter' } document_info={ hovered } open={ true }/>
             ) }
@@ -242,7 +242,7 @@ export function SplitterListPage() {
                     </span>
                 </span>
                 <span>
-                    <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-80'
+                    <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-80' height='h-10'
                            value={ searchTerm } placeholder={ t('SPLITTER.search') } no_margin_bottom={true}
                            onChange={ (e) => setSearchTerm(e.target.value) }/>
                 </span>

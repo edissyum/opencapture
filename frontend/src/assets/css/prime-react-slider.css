@@ -17,17 +17,15 @@
 
 /* Overlay popup on small screen */
 
-.p-overlaypanel {
-    @apply z-40!;
-    @apply overflow-auto;
+.p-slider .p-slider-range {
+    @apply bg-(--color-primary);
 }
 
-@media only screen and (max-width: 1400px) {
-    .p-overlaypanel {
-        @apply w-1/2!;
-        @apply h-[70%]!;
-        @apply top-1/2!;
-        @apply left-1/2!;
-        transform: translate(-50%, -50%);
-    }
+.p-slider .p-slider-handle {
+    @apply border-(--color-primary);
 }
+
+.p-slider:not(.p-disabled) .p-slider-handle:hover {
+    @apply bg-(--color-primary);
+}
+
