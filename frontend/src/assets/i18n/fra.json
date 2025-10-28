@@ -185,7 +185,8 @@
         "drop_create_new_line": "Déposez un champ pour créer une nouvelle ligne",
         "indicators": "Indicateurs",
         "page": "Page",
-        "download_original_file": "Télécharger le fichier original"
+        "download_original_file": "Télécharger le fichier original",
+        "loading_page": "Chargement de la page {{currentPage}}..."
     },
     "SPLITTER": {
         "batch_selected_many": "lots sélectionnés",

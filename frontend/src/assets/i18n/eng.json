@@ -181,7 +181,9 @@
         "drop_create_new_line": "",
         "indicators": "",
         "page": "",
-        "download_original_file": ""
+        "download_original_file": "",
+        "loading_page": "",
+        "filename_bis": ""
     },
     "SPLITTER": {
         "batch_selected_one": "batch selected",

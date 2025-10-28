@@ -38,9 +38,11 @@ import { DroppableLine } from "../../../../components/form/editor/DroppableLine"
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 import { Button } from "../../../../components/Button.tsx";
 import { showToast } from "../../../../components/ToastProvider.tsx";
+import { useCustomFields } from "../../../../services/hooks/useCustomFields.tsx";
+import { useFormFields } from "../../../../services/hooks/useFormFields.tsx";
 
 export function SettingsVerifierFormsEditor() {
-    const { get, post } = axiosApiCall();
+    const { post } = axiosApiCall();
     const { formId } = useParams<{ formId: string }>();
 
     const [zones, setZones] = useState([
@@ -49,36 +51,36 @@ export function SettingsVerifierFormsEditor() {
         { id: "zone-facturation", name: t('FORMS.facturation'), lines: [] },
         { id: "zone-other", name: t('FORMS.other'), lines: [] }
     ]);
+
+    const { customFields } = useCustomFields("verifier");
+    const { formFields } = useFormFields(formId);
+
     useEffect(() => {
         if (formId) {
-            get('/forms/fields/getByFormId/' + formId).then((response) => {
-                if (response && response.fields) {
-                    const updatedZones = zones.map((zone) => {
-                        const key = zone.id.replace("zone-", "");
+            if (formFields) {
+                const updatedZones: any = zones.map((zone) => {
+                    const key: any = zone.id.replace("zone-", "");
 
-                        // Trouver les lignes correspondantes dans la réponse
-                        const zoneLines = response.fields[key] || [];
+                    const zoneLines = formFields[key] || [];
 
-                        // Assurer que chaque ligne et champ a un id unique
-                        const formattedLines = zoneLines.map((line: any, index: number) => ({
-                            id: `line-${ crypto.randomUUID() }`,
-                            fields: line.map((field: any, fIndex: number) => ({
-                                id: field.id || `field-${key}-${index + 1}-${fIndex + 1}`,
-                                type: field.type,
-                                label: field.label,
-                                color: field.color || null,
-                                required: field.required ?? false,
-                                default_value: field.default_value || "",
-                                format: field.format ?? "alphanum_extended_with_accent"
-                            })) || [],
-                        }));
-                        return { ...zone, lines: formattedLines };
-                    });
-                    setZones(updatedZones);
-                }
-            });
+                    const formattedLines = zoneLines.map((line: any, index: number) => ({
+                        id: `line-${ crypto.randomUUID() }`,
+                        fields: line.map((field: any, fIndex: number) => ({
+                            id: field.id || `field-${ key }-${ index + 1 }-${ fIndex + 1 }`,
+                            type: field.type,
+                            label: field.label,
+                            color: field.color || null,
+                            required: field.required ?? false,
+                            default_value: field.default_value || "",
+                            format: field.format ?? "alphanum_extended_with_accent"
+                        })) || [],
+                    }));
+                    return { ...zone, lines: formattedLines };
+                });
+                setZones(updatedZones);
+            }
         }
-    }, []);
+    }, [formFields]);
 
     const tabs: any = {
         supplier: t('ACCOUNTS.suppliers_list'),
@@ -86,7 +88,18 @@ export function SettingsVerifierFormsEditor() {
         billing: t('VERIFIER.facturation'),
         custom_fields: t('VERIFIER.custom_fields'),
     };
-    const availableFields = getAvailableFields(t);
+    const availableFields: any = getAvailableFields(t);
+    if (customFields.length > 0) {
+        availableFields.customFields = customFields.map((cf: any) => ({
+            id: 'custom_' + cf.id,
+            label: cf.label,
+            type: cf.type,
+            typeLabel: t(`CUSTOM_FIELDS.type_${ cf.type }`),
+            required: false,
+            format: "alphanum_extended_with_accent",
+            default_value: "",
+        }));
+    }
 
     const [activeTab, setActiveTab] = useState<keyof typeof availableFields>("supplier");
     const [availableItems, setAvailableItems] = useState(availableFields[activeTab].map((f) => (f)));
@@ -95,12 +108,11 @@ export function SettingsVerifierFormsEditor() {
         supplier: [],
         lines: [],
         billing: [],
-        other: [],
+        customFields: [],
     });
     useEffect(() => {
         const fields: any = availableFields[activeTab];
 
-        // ❗ filtrer selon les champs déjà utilisés pour cet onglet
         const filtered = fields.filter(
             (f: any) => !usedFields[activeTab].includes(f.id)
         );
@@ -177,7 +189,7 @@ export function SettingsVerifierFormsEditor() {
                     const targetZoneForNewLine = findZoneContainingLine(zonesCopy, targetLine.id);
                     if (targetZoneForNewLine) {
                         targetZoneForNewLine.lines.push({
-                            id: `line-${crypto.randomUUID()}`,
+                            id: `line-${ crypto.randomUUID() }`,
                             fields: [newField],
                         });
                     }
@@ -186,7 +198,7 @@ export function SettingsVerifierFormsEditor() {
                 }
             } else if (targetZone) {
                 targetZone.lines.push({
-                    id: `line-${crypto.randomUUID()}`,
+                    id: `line-${ crypto.randomUUID() }`,
                     fields: [newField],
                 });
             }
@@ -228,7 +240,7 @@ export function SettingsVerifierFormsEditor() {
                     const targetZoneForNewLine = findZoneContainingLine(zonesCopy, targetLine.id);
                     if (targetZoneForNewLine) {
                         targetZoneForNewLine.lines.push({
-                            id: `line-${crypto.randomUUID()}`,
+                            id: `line-${ crypto.randomUUID() }`,
                             fields: [movedField],
                         });
                     }
@@ -256,7 +268,7 @@ export function SettingsVerifierFormsEditor() {
                 sourceLine.fields = sourceLine.fields.filter((f: any) => f.id !== active.id);
 
                 targetZone.lines.push({
-                    id: `line-${crypto.randomUUID()}`,
+                    id: `line-${ crypto.randomUUID() }`,
                     fields: [movedField],
                 });
 
@@ -323,7 +335,8 @@ export function SettingsVerifierFormsEditor() {
                 <div className="flex flex-col border-r-2 border-(--border-secondary) w-full">
                     <TabView>
                         <TabPanel header={ t("SETTINGS.form_details") }>
-                            <Button className="ml-6 my-6" variant="primary" onClick={ handleUpdate } disabled={ isSubmitting }>
+                            <Button className="ml-6 my-6" variant="primary" onClick={ handleUpdate }
+                                    disabled={ isSubmitting }>
                                 { isSubmitting ? t('GLOBAL.saving') + "..." : t('GLOBAL.save_settings') }
                             </Button>
                         </TabPanel>
@@ -336,7 +349,8 @@ export function SettingsVerifierFormsEditor() {
                                     </AccordionTab>
                                 )) }
                             </Accordion>
-                            <Button className="ml-6 my-6" variant="primary" onClick={ handleUpdate } disabled={ isSubmitting }>
+                            <Button className="ml-6 my-6" variant="primary" onClick={ handleUpdate }
+                                    disabled={ isSubmitting }>
                                 { isSubmitting ? t('GLOBAL.saving') + "..." : t('GLOBAL.save_settings') }
                             </Button>
                         </TabPanel>
