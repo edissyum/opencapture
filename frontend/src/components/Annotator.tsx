@@ -1,10 +1,27 @@
+/** This file is part of Open-Capture.
+
+ Open-Capture is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+
+ @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
+
 import React, { useEffect, useRef, useState } from "react";
 
-interface Region {
+export interface Region {
     id: string;
     x: number;
     y: number;
-    page?: number;
+    page: number;
     color: string;
     width: number;
     height: number;
@@ -14,17 +31,29 @@ interface Region {
 interface AnnotatorProps {
     alt?: string;
     width: string;
-    regionsList: Region[];
     imageB64: string;
+    currentPage?: number;
+    regionsList: Region[];
+    originalWidth?: number;
     focusedField: { id: string; label: string; color: string } | null;
-    onChange?: (regions: Region[]) => void;
-    onEnd?: () => void;
+    onEnd?: (activeRegion: any, regions: Region[]) => void;
 }
 
-export function Annotator({ regionsList, alt, width, focusedField, imageB64, onChange, onEnd }: AnnotatorProps) {
+export function Annotator({
+    regionsList,
+    alt,
+    width,
+    originalWidth,
+    focusedField,
+    imageB64,
+    currentPage,
+    onEnd
+}: AnnotatorProps) {
+    const [ratio, setRatio] = useState(0);
     const [imgSize, setImgSize] = useState({ w: 0, h: 0 });
-    const containerRef = useRef<HTMLDivElement>(null);
+
     const imgRef = useRef<HTMLImageElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (!imgRef.current) return;
@@ -33,6 +62,7 @@ export function Annotator({ regionsList, alt, width, focusedField, imageB64, onC
                 w: imgRef.current!.clientWidth,
                 h: imgRef.current!.clientHeight,
             });
+            setRatio(originalWidth ? originalWidth / imgRef.current!.clientWidth : 1);
         };
         updateSize();
         const observer = new ResizeObserver(updateSize);
@@ -41,10 +71,39 @@ export function Annotator({ regionsList, alt, width, focusedField, imageB64, onC
     }, [imageB64, width]);
 
     const [regions, setRegions] = useState<Region[]>([]);
-    if (regions.length === 0 && regionsList.length > 0) {
-        setRegions(regionsList);
-    }
+    const [regionsOriginalSize, setRegionsOriginalSize] = useState<Region[]>([]);
+
+    useEffect(() => {
+        if (regions.length === 0 && regionsList.length > 0 && ratio > 0) {
+            // We adjust the regions according to the ratio
+            // We add 5px to width and height to avoid cutting off borders
+            // We subtract 2.5px to x and y to center the region
+            setRegions(regionsList.map(r => ({
+                ...r,
+                x: r.x / ratio - 2.5,
+                y: r.y / ratio - 2.5,
+                width: r.width / ratio + 5,
+                height: r.height / ratio + 5,
+            })));
+        }
+    }, [regionsList, imgSize]);
+
+    useEffect(() => {
+        if (regions.length === 0 || ratio === 0) return;
+
+        const originals = regions.map(r => ({
+            ...r,
+            x: Math.round(r.x * ratio),
+            y: Math.round(r.y * ratio),
+            width: Math.round(r.width * ratio),
+            height: Math.round(r.height * ratio)
+        }));
+
+        setRegionsOriginalSize(originals);
+    }, [regions, ratio]);
+
     const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+    const [activeRegion, setActiveRegion] = useState<string | null>(null);
 
     const [isMoving, setIsMoving] = useState(false);
     const [isDrawing, setIsDrawing] = useState(false);
@@ -52,10 +111,6 @@ export function Annotator({ regionsList, alt, width, focusedField, imageB64, onC
 
     const [resizeTarget, setResizeTarget] = useState<{ id: string; corner: string } | null>(null);
     const [moveTarget, setMoveTarget] = useState<{ id: string; offsetX: number; offsetY: number } | null>(null);
-
-    useEffect(() => {
-        if (onChange) onChange(regions);
-    }, [regions]);
 
     const handleMouseDown = (e: React.MouseEvent) => {
         if (!containerRef.current) return;
@@ -79,6 +134,7 @@ export function Annotator({ regionsList, alt, width, focusedField, imageB64, onC
         }
 
         if (clickedRegion) {
+            setActiveRegion(clickedRegion.id);
             setIsMoving(true);
             setMoveTarget({
                 id: clickedRegion.id,
@@ -89,6 +145,7 @@ export function Annotator({ regionsList, alt, width, focusedField, imageB64, onC
         }
 
         if (focusedField) {
+            setActiveRegion(focusedField.id);
             setRegions((prev) => prev.filter((r) => r.id !== focusedField.id));
         }
 
@@ -195,6 +252,7 @@ export function Annotator({ regionsList, alt, width, focusedField, imageB64, onC
             y: clamped.y,
             width: clamped.width,
             height: clamped.height,
+            page: currentPage || 1,
             label: focusedField.label,
             color: focusedField.color,
         };
@@ -208,7 +266,7 @@ export function Annotator({ regionsList, alt, width, focusedField, imageB64, onC
         setResizeTarget(null);
         setIsMoving(false);
         setMoveTarget(null);
-        if (onEnd) onEnd();
+        if (onEnd) onEnd(activeRegion, regionsOriginalSize);
     };
 
     const handleDelete = (id: string) => {
@@ -286,6 +344,7 @@ export function Annotator({ regionsList, alt, width, focusedField, imageB64, onC
                             height: r.height,
                             borderColor: r.color,
                             backgroundColor: r.color + "1A",
+                            display: (currentPage && r.page !== currentPage) ? "none" : "block"
                         } } className="annotation absolute border rounded-md cursor-move rounded-tr-none z-10">
                         <div className="absolute -top-6.5 -right-px bg-(--bg-primary) text-xs select-none p-1 border
                                        rounded-md rounded-br-none flex items-center z-20 whitespace-nowrap font-semibold"

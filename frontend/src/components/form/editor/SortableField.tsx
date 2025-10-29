@@ -26,7 +26,7 @@ import { FloatLabel } from "primereact/floatlabel";
 import { InputSwitch } from "primereact/inputswitch";
 import { OverlayPanel } from "primereact/overlaypanel";
 
-import { Input } from "../../Input";
+import Input from "../../Input";
 import { Button } from "../../Button";
 
 import { getFormatLabels } from "./schemas";

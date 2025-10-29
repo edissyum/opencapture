@@ -21,7 +21,7 @@ import { CirclePause, CircleQuestionMark, FileText, Trash2, UserRoundPlus } from
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../../services/hooks/ConfirmDialog";
 
-import { Input } from "../../../components/Input";
+import Input from "../../../components/Input";
 import { Button } from "../../../components/Button";
 import { Table } from "../../../components/list/Table";
 import { useUser } from "../../../services/hooks/useUser";

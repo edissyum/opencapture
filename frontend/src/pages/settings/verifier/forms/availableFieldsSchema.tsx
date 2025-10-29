@@ -35,6 +35,7 @@ export const getAvailableFields = (t: TFunction) => ({
         { id: 'address1', label: t('ACCOUNTS.address1'), type: 'text', required: true, format: 'alphanum_extended_with_accent', default_value: '' },
         { id: 'address2', label: t('ACCOUNTS.address2'), type: 'text', required: true, format: 'alphanum_extended_with_accent', default_value: '' },
         { id: 'postal_code', label: t('ACCOUNTS.postal_code'), type: 'text', required: true, format: 'alphanum', default_value: '' },
+        { id: 'city', label: t('ACCOUNTS.city'), type: 'text', required: true, format: 'alphanum_extended_with_accent', default_value: '' },
         { id: 'country', label: t('ACCOUNTS.country'), type: 'text', required: true, format: 'alphanum_extended_with_accent', default_value: '' }
     ],
     lines: [
@@ -47,8 +48,19 @@ export const getAvailableFields = (t: TFunction) => ({
     ],
     billing: [
         { id: 'invoice_number', label: t('VERIFIER.invoice_number'), type: 'text', required: true, format: 'alphanum_extended', default_value: '' },
-        { id: 'invoice_date', label: t('VERIFIER.invoice_date'), type: 'date', required: true, format: 'date', default_value: '' },
-        { id: 'due_date', label: t('VERIFIER.due_date'), type: 'date', required: false, format: 'date', default_value: '' }
+        { id: 'delivery_number', label: t('VERIFIER.delivery_number'), type: 'text', required: true, format: 'alphanum_extended', default_value: '' },
+        { id: 'quotation_number', label: t('VERIFIER.quotation_number'), type: 'text', required: true, format: 'alphanum_extended', default_value: '' },
+        { id: 'order_number', label: t('VERIFIER.order_number'), type: 'text', required: true, format: 'alphanum_extended', default_value: '' },
+        { id: 'document_date', label: t('VERIFIER.document_date'), type: 'date', required: true, format: 'date', default_value: '' },
+        { id: 'document_due_date', label: t('VERIFIER.document_due_date'), type: 'date', required: true, format: 'date', default_value: '' },
+        { id: 'due_date', label: t('VERIFIER.due_date'), type: 'date', required: false, format: 'date', default_value: '' },
+        { id: 'no_rate_amount', label: t('VERIFIER.no_rate_amount'), type: 'text', required: true, format: 'number_float', default_value: '' },
+        { id: 'vat_amount', label: t('VERIFIER.vat_amount'), type: 'text', required: true, format: 'number_float', default_value: '' },
+        { id: 'total_ht', label: t('VERIFIER.total_ht'), type: 'text', required: true, format: 'number_float', default_value: '' },
+        { id: 'total_vat', label: t('VERIFIER.total_vat'), type: 'text', required: true, format: 'number_float', default_value: '' },
+        { id: 'total_ttc', label: t('VERIFIER.total_ttc'), type: 'text', required: true, format: 'number_float', default_value: '' },
+        { id: 'vat_rate', label: t('VERIFIER.vat_rate'), type: 'text', required: true, format: 'number_float', default_value: '' },
+        { id: 'currency', label: t('VERIFIER.currency'), type: 'text', required: false, format: 'alphanum', default_value: '' }
     ],
     customFields: [],
 });

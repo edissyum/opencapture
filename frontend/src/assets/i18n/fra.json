@@ -19,7 +19,8 @@
         "siren": "Numéro SIREN",
         "siret": "Numéro SIRET",
         "supplier_name": "Compte tiers / organisation",
-        "vat_number": "Numéro de TVA"
+        "vat_number": "Numéro de TVA",
+        "city": "Ville"
     },
     "AUTH": {
         "authenticated": "Vous vous êtes authentifié avec succès",
@@ -180,13 +181,24 @@
         "item_total_excl_tax": "Montant HT",
         "item_unit_price": "Prix unitaire",
         "due_date": "Date d'échéance",
-        "invoice_date": "Date de facture",
+        "document_date": "Date du document",
         "invoice_number": "Numéro de facture",
         "drop_create_new_line": "Déposez un champ pour créer une nouvelle ligne",
         "indicators": "Indicateurs",
         "page": "Page",
         "download_original_file": "Télécharger le fichier original",
-        "loading_page": "Chargement de la page {{currentPage}}..."
+        "loading_page": "Chargement de la page {{currentPage}}...",
+        "currency": "Devise",
+        "delivery_number": "Numéro de livraison",
+        "document_due_date": "Date d'échéance",
+        "no_rate_amount": "Montant HT",
+        "order_number": "Numéro de commande",
+        "quotation_number": "Numéro de devis",
+        "total_ht": "Total HT",
+        "total_ttc": "Total TTC",
+        "total_vat": "Total TVA",
+        "vat_amount": "Montant TVA",
+        "vat_rate": "Taux de TVA"
     },
     "SPLITTER": {
         "batch_selected_many": "lots sélectionnés",
@@ -432,7 +444,8 @@
         "formats": "Format des données",
         "default_value": "Valeur par défaut",
         "default_value_hint": "Saisie libre. Pour le champ date, la valeur doit être au format YYYY-MM-DD. Pour avoir la date du jour, utilisez la valeur default_today",
-        "form_updated": "Formulaire mis à jour avec succès"
+        "form_updated": "Formulaire mis à jour avec succès",
+        "invalid_pattern": "Le format du champ est incorrect"
     },
     "FORMATS": {
         "alphanum": "Caractères alphanumériques [0-9aA-zZ']",

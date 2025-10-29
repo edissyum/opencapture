@@ -79,4 +79,71 @@ SET fields = (
 )
 WHERE jsonb_typeof(fields) = 'object';
 
+-- Modification des libellés
+UPDATE form_models_field
+SET fields = REPLACE(fields::text, 'ADDRESSES.address_1', 'ACCOUNTS.address1')::jsonb
+WHERE fields::text LIKE '%ADDRESSES.address_1%';
 
+UPDATE form_models_field
+SET fields = REPLACE(fields::text, 'ADDRESSES.address_2', 'ACCOUNTS.address2')::jsonb
+WHERE fields::text LIKE '%ADDRESSES.address_2%';
+
+UPDATE form_models_field
+SET fields = REPLACE(fields::text, 'ADDRESSES.postal_code', 'ACCOUNTS.postal_code')::jsonb
+WHERE fields::text LIKE '%ADDRESSES.postal_code%';
+
+UPDATE form_models_field
+SET fields = REPLACE(fields::text, 'ADDRESSES.city', 'ACCOUNTS.city')::jsonb
+WHERE fields::text LIKE '%ADDRESSES.city%';
+
+UPDATE form_models_field
+SET fields = REPLACE(fields::text, 'ADDRESSES.country', 'ACCOUNTS.country')::jsonb
+WHERE fields::text LIKE '%ADDRESSES.country%';
+
+UPDATE form_models_field
+SET fields = REPLACE(fields::text, 'FACTURATION.document_date', 'VERIFIER.document_date')::jsonb
+WHERE fields::text LIKE '%FACTURATION.document_date%';
+
+UPDATE form_models_field
+SET fields = REPLACE(fields::text, 'FACTURATION.document_due_date', 'VERIFIER.document_due_date')::jsonb
+WHERE fields::text LIKE '%FACTURATION.document_due_date%';
+
+UPDATE form_models_field
+SET fields = REPLACE(fields::text, 'FACTURATION.vat_rate', 'VERIFIER.vat_rate')::jsonb
+WHERE fields::text LIKE '%FACTURATION.vat_rate%';
+
+UPDATE form_models_field
+SET fields = REPLACE(fields::text, 'FACTURATION.total_ht', 'VERIFIER.total_ht')::jsonb
+WHERE fields::text LIKE '%FACTURATION.total_ht%';
+
+UPDATE form_models_field
+SET fields = REPLACE(fields::text, 'FACTURATION.total_ttc', 'VERIFIER.total_ttc')::jsonb
+WHERE fields::text LIKE '%FACTURATION.total_ttc%';
+
+UPDATE form_models_field
+SET fields = REPLACE(fields::text, 'FACTURATION.vat_amount', 'VERIFIER.vat_amount')::jsonb
+WHERE fields::text LIKE '%FACTURATION.vat_amount%';
+
+UPDATE form_models_field
+SET fields = REPLACE(fields::text, 'FACTURATION.no_rate_amount', 'VERIFIER.no_rate_amount')::jsonb
+WHERE fields::text LIKE '%FACTURATION.no_rate_amount%';
+
+UPDATE form_models_field
+SET fields = REPLACE(fields::text, 'FACTURATION.total_vat', 'VERIFIER.total_vat')::jsonb
+WHERE fields::text LIKE '%FACTURATION.total_vat%';
+
+UPDATE form_models_field
+SET fields = REPLACE(fields::text, 'FACTURATION.invoice_number', 'VERIFIER.invoice_number')::jsonb
+WHERE fields::text LIKE '%FACTURATION.invoice_number%';
+
+UPDATE form_models_field
+SET fields = REPLACE(fields::text, 'FACTURATION.quotation_number', 'VERIFIER.quotation_number')::jsonb
+WHERE fields::text LIKE '%FACTURATION.quotation_number%';
+
+UPDATE form_models_field
+SET fields = REPLACE(fields::text, 'FACTURATION.order_number', 'VERIFIER.order_number')::jsonb
+WHERE fields::text LIKE '%FACTURATION.order_number%';
+
+UPDATE form_models_field
+SET fields = REPLACE(fields::text, 'FACTURATION.delivery_number', 'VERIFIER.delivery_number')::jsonb
+WHERE fields::text LIKE '%FACTURATION.delivery_number%';

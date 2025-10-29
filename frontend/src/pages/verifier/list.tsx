@@ -19,7 +19,7 @@ import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { CircleQuestionMark, Eye, FileText, Filter, LayoutGrid, Paperclip, Rows3, Trash2 } from "lucide-react";
 
-import { Input } from "../../components/Input";
+import Input from "../../components/Input";
 import { Button } from "../../components/Button";
 import { Grid } from "../../components/list/Grid";
 import { Table } from "../../components/list/Table";

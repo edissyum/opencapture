@@ -18,7 +18,7 @@ import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { CirclePause, CircleQuestionMark, FileText, Plus, Trash2 } from "lucide-react";
 
-import { Input } from "../../../../components/Input";
+import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
 import { Table } from "../../../../components/list/Table";
 import { showToast } from "../../../../components/ToastProvider";

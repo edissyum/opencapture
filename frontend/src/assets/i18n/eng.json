@@ -19,7 +19,8 @@
         "siren": "",
         "siret": "",
         "supplier_name": "",
-        "vat_number": ""
+        "vat_number": "",
+        "city": ""
     },
     "AUTH": {
         "authenticated": "You have successfully authenticated",
@@ -176,14 +177,25 @@
         "item_total_excl_tax": "",
         "item_unit_price": "",
         "due_date": "",
-        "invoice_date": "",
         "invoice_number": "",
         "drop_create_new_line": "",
         "indicators": "",
         "page": "",
         "download_original_file": "",
         "loading_page": "",
-        "filename_bis": ""
+        "filename_bis": "",
+        "currency": "",
+        "delivery_number": "",
+        "document_date": "",
+        "document_due_date": "",
+        "no_rate_amount": "",
+        "order_number": "",
+        "quotation_number": "",
+        "total_ht": "",
+        "total_ttc": "",
+        "total_vat": "",
+        "vat_amount": "",
+        "vat_rate": ""
     },
     "SPLITTER": {
         "batch_selected_one": "batch selected",
@@ -395,7 +407,8 @@
         "formats": "",
         "default_value_hint": "",
         "default_value": "",
-        "form_updated": ""
+        "form_updated": "",
+        "invalid_pattern": ""
     },
     "FORMATS": {
         "date": "",

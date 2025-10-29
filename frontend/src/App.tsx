@@ -14,6 +14,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { z } from "zod";
 import axios from "axios";
 import { t } from "i18next";
 import { Tooltip } from "react-tooltip";
@@ -30,11 +31,11 @@ import { router } from "./routes";
 
 import { applyTheme } from "./services/theme";
 import { BACKEND_URL } from "./services/config";
-import { showToast } from "./components/ToastProvider";
 import { fetchCurrentLang, initI18n } from "./services/i18n";
 import { getCustomFromUrl } from "./services/custom/getCustom";
 import { CustomProvider } from "./services/custom/customContext";
-import { z } from "zod";
+
+import { showToast } from "./components/ToastProvider";
 
 export function App() {
     const [appKey, setAppKey] = useState(0);
@@ -57,6 +58,9 @@ export function App() {
             let currentLang = localStorage.getItem("selectedLang");
             const api = axios.create({ baseURL: `${ BACKEND_URL }/${ _custom }/ws/` });
 
+            const backendLang = await fetchCurrentLang(api);
+            localStorage.setItem("backendLang", backendLang || "fra");
+
             if (_custom) {
                 try {
                     await api.get("/config/customExists");
@@ -70,7 +74,7 @@ export function App() {
             }
 
             if (_custom && !currentLang) {
-                currentLang = await fetchCurrentLang(api);
+                currentLang = backendLang;
             }
 
             await initI18n(currentLang || "fra");

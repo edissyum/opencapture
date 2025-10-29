@@ -20,7 +20,7 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Input } from "../../../components/Input";
+import Input from "../../../components/Input";
 import { Button } from "../../../components/Button";
 import { Checkbox } from "../../../components/Checkbox";
 import { RadioBox } from "../../../components/RadioBox";

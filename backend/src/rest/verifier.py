@@ -214,7 +214,7 @@ def update_document_data(document_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/updateData'}), 403
 
-    res = verifier.update_document_data_by_document_id(document_id, request.json['args'])
+    res = verifier.update_document_data_by_document_id(document_id, request.json)
     return make_response(res[0], res[1])
 
 
@@ -512,7 +512,7 @@ def update_document(document_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/update'}), 403
 
-    res = verifier.update_document(document_id, request.json['args'])
+    res = verifier.update_document(document_id, request.json)
     return make_response(res[0], res[1])
 
 
@@ -537,7 +537,7 @@ def ocr_on_fly():
     check, message = rest_validator(request.json, [
         {'id': 'lang', 'type': str, 'mandatory': False},
         {'id': 'fileName', 'type': str, 'mandatory': True},
-        {'id': 'thumbSize', 'type': dict, 'mandatory': True},
+        {'id': 'thumbSize', 'type': dict, 'mandatory': False},
         {'id': 'selection', 'type': dict, 'mandatory': True},
         {'id': 'registerDate', 'type': str, 'mandatory': False},
         {'id': 'removeSpaces', 'type': bool, 'mandatory': False}
@@ -558,6 +558,9 @@ def ocr_on_fly():
 
     if 'removeSpaces' not in request.json:
         request.json['removeSpaces'] = False
+
+    if 'thumbSize' not in request.json:
+        request.json['thumbSize'] = None
 
     result = verifier.ocr_on_the_fly(request.json['fileName'], request.json['selection'], request.json['thumbSize'],
                                      request.json['lang'], request.json['removeSpaces'])

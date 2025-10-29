@@ -102,7 +102,7 @@ export function SettingsVerifierFormsEditor() {
     }
 
     const [activeTab, setActiveTab] = useState<keyof typeof availableFields>("supplier");
-    const [availableItems, setAvailableItems] = useState(availableFields[activeTab].map((f) => (f)));
+    const [availableItems, setAvailableItems] = useState(availableFields[activeTab].map((f: any) => (f)));
 
     const [usedFields, setUsedFields] = useState<Record<string, string[]>>({
         supplier: [],
@@ -114,7 +114,7 @@ export function SettingsVerifierFormsEditor() {
         const fields: any = availableFields[activeTab];
 
         const filtered = fields.filter(
-            (f: any) => !usedFields[activeTab].includes(f.id)
+            (f: any) => !usedFields[activeTab as string].includes(f.id)
         );
 
         setAvailableItems(filtered);
@@ -205,7 +205,7 @@ export function SettingsVerifierFormsEditor() {
 
             setUsedFields((prev) => ({
                 ...prev,
-                [activeTab]: [...(prev[activeTab] || []), activeData.id],
+                [activeTab]: [...(prev[activeTab as string] || []), activeData.id],
             }));
 
             setZones([...zonesCopy]);
@@ -361,7 +361,7 @@ export function SettingsVerifierFormsEditor() {
                     <TabView
                         scrollable
                         className="available_fields"
-                        activeIndex={ Object.keys(availableFields).indexOf(activeTab) }
+                        activeIndex={ Object.keys(availableFields).indexOf(activeTab as string) }
                         onTabChange={ (e) =>
                             setActiveTab(Object.keys(availableFields)[e.index] as keyof typeof availableFields)
                         }

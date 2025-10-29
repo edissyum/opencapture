@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getI18n, useTranslation } from "react-i18next";
 
-import { Input } from "../components/Input";
+import Input from "../components/Input";
 import { Button } from '../components/Button';
 import { showToast } from "../components/ToastProvider";
 

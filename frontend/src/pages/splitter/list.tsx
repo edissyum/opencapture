@@ -23,7 +23,7 @@ import { useUser } from "../../services/hooks/useUser";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
 
-import { Input } from "../../components/Input";
+import Input from "../../components/Input";
 import { Grid } from "../../components/list/Grid";
 import { Table } from "../../components/list/Table";
 import { Thumbnail } from "../../components/Thumbnail";

@@ -15,7 +15,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-/* Header background and text color */
+/* Header background and text color and border */
 .p-accordion-header-link {
     @apply bg-(--bg-primary);
 }
@@ -28,7 +28,25 @@
     @apply text-(--text-primary)/75;
 }
 
-/* Accordion colors */
+.p-accordion .p-accordion-header .p-accordion-header-link {
+    @apply border-2;
+    @apply rounded-xl;
+    @apply border-(--border-secondary);
+    @apply transition-all;
+    @apply duration-300;
+}
+.p-accordion .p-accordion-header.p-highlight .p-accordion-header-link {
+    @apply rounded-b-none;
+}
+
+.p-accordion .p-accordion-content {
+    @apply border-2;
+    @apply border-t-0;
+    @apply rounded-b-xl;
+    @apply border-(--border-secondary);
+}
+
+    /* Accordion colors */
 .p-accordion .p-accordion-content,
 .p-tabview-panels {
     @apply p-0;
@@ -89,7 +107,6 @@
     @apply bg-(--bg-secondary);
 }
 
-
 .p-dropdown-panel .p-dropdown-header .p-dropdown-filter-container,
 .p-inputtext {
     @apply bg-(--bg-primary);
@@ -97,12 +114,18 @@
 }
 
 /* Floating label */
+.p-float-label:has(.p-filled) label,
 .p-float-label:has(input:focus) label,
 .p-float-label:has(.p-inputwrapper-filled) label {
     @apply px-1;
     @apply top-0.5;
     @apply bg-(--bg-primary);
     @apply text-(--text-secondary);
+}
+
+.p-float-label label {
+    @apply truncate;
+    @apply max-w-[90%];
 }
 
 /* Input switch */

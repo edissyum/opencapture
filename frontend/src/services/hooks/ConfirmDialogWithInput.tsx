@@ -19,7 +19,7 @@ import { t } from "i18next";
 import React, { useState } from "react";
 import { confirmDialog } from "primereact/confirmdialog";
 
-import { Input } from "../../components/Input";
+import Input from "../../components/Input";
 
 export function showConfirmDialogWithInput({
     title,

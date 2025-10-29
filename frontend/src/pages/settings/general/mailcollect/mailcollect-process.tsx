@@ -27,7 +27,7 @@ import { FloatLabel } from "primereact/floatlabel";
 import { InputSwitch } from "primereact/inputswitch";
 import { StepperPanel } from "primereact/stepperpanel";
 
-import { Input } from "../../../../components/Input";
+import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
 import { RadioBox } from "../../../../components/RadioBox";
 import { showToast } from "../../../../components/ToastProvider";

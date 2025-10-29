@@ -27,7 +27,7 @@ export function ZoomControl({ zoom, setZoom }: any) {
     return (
         <div
             className="flex items-center gap-3 select-none w-full">
-            <Minus size={ 20 } onClick={ () => setZoom((z: number) => Math.max(z - 10, 50)) }/>
+            <Minus size={ 20 } onClick={ () => setZoom((z: number) => Math.max(z - 10, 100)) }/>
 
             <Slider
                 value={ zoom }
