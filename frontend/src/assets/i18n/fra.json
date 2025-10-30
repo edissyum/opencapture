@@ -198,7 +198,9 @@
         "total_ttc": "Total TTC",
         "total_vat": "Total TVA",
         "vat_amount": "Montant TVA",
-        "vat_rate": "Taux de TVA"
+        "vat_rate": "Taux de TVA",
+        "ocr_on_fly_success": "Positions et données extraites et enregistrées avec succès",
+        "correct_errors_before_validate": "Veuillez corriger les erreurs avant de valider le document"
     },
     "SPLITTER": {
         "batch_selected_many": "lots sélectionnés",
@@ -445,7 +447,13 @@
         "default_value": "Valeur par défaut",
         "default_value_hint": "Saisie libre. Pour le champ date, la valeur doit être au format YYYY-MM-DD. Pour avoir la date du jour, utilisez la valeur default_today",
         "form_updated": "Formulaire mis à jour avec succès",
-        "invalid_pattern": "Le format du champ est incorrect"
+        "invalid_pattern": "Le format du champ est incorrect",
+        "delete_field": "Suppprimer le champ",
+        "invalid_date": "Date invalide",
+        "refuse": "Refuser",
+        "refuse_loading": "Refus en cours...",
+        "validate": "Valider",
+        "validate_loading": "Validation en cours..."
     },
     "FORMATS": {
         "alphanum": "Caractères alphanumériques [0-9aA-zZ']",
@@ -459,7 +467,8 @@
         "number_int": "Caractères numériques entier [0-9]",
         "phone": "Numéro de téléphone",
         "select": "Liste à choix",
-        "text": "Chaîne de caractères"
+        "text": "Chaîne de caractères",
+        "regex": "Expression régulière (REGEX)"
     },
     "COLORS": {
         "black": "Noir",

@@ -15,6 +15,10 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+.p-datepicker:not(.p-datepicker-inline) {
+     @apply min-w-md!;
+}
+
 .p-datepicker-trigger {
     @apply bg-(--color-primary);
     @apply border-(--color-primary);
@@ -25,4 +29,15 @@
     @apply shadow-none;
     @apply outline-none;
     @apply border-(--color-primary);
+}
+
+.p-datepicker table td > span.p-highlight,
+.p-datepicker .p-datepicker-header .p-datepicker-title .p-datepicker-year:enabled:hover,
+.p-datepicker .p-datepicker-header .p-datepicker-title .p-datepicker-month:enabled:hover {
+    @apply text-(--color-primary);
+}
+
+.p-calendar:not(.p-calendar-disabled).p-focus > .p-inputtext {
+    @apply border-(--color-primary);
+    @apply shadow-none;
 }

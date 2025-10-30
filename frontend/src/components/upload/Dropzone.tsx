@@ -31,7 +31,7 @@ interface UploadDropzoneProps {
 }
 
 export default function UploadDropzone({
-    accept = {"image/*": [".jpeg", ".jpg", ".png"]},
+    accept = { "image/*": [".jpeg", ".jpg", ".png"] },
     maxFiles = 1,
     maxSize = 5 * 1024 * 1024, // 5MB
     onFilesAccepted,
@@ -55,13 +55,13 @@ export default function UploadDropzone({
     const onDropRejected = useCallback((fileRejections: any[]) => {
         if (fileRejections.length > 0) {
             if (fileRejections[0].errors.some((e: any) => e.code === "too-many-files")) {
-                showToast(t("UPLOAD.too_many_files", {maxFiles: maxFiles}), "error");
+                showToast(t("UPLOAD.too_many_files", { maxFiles: maxFiles }), "error");
                 // return;
             } else if (fileRejections[0].errors.some((e: any) => e.code === "file-invalid-type")) {
-                showToast(t("UPLOAD.invalid_file_type", {types: Object.values(accept).flat().join(", ")}), "error");
+                showToast(t("UPLOAD.invalid_file_type", { types: Object.values(accept).flat().join(", ") }), "error");
                 // return;
             } else if (fileRejections[0].errors.some((e: any) => e.code === "file-too-large")) {
-                showToast(t("UPLOAD.file_too_large", {maxSize: maxSize / (1024 * 1024)}), "error");
+                showToast(t("UPLOAD.file_too_large", { maxSize: maxSize / (1024 * 1024) }), "error");
                 // return;
             } else {
                 showToast(t("UPLOAD.file_rejected"), "error");
@@ -69,7 +69,7 @@ export default function UploadDropzone({
         }
     }, [accept, maxFiles, maxSize]);
 
-    const {getRootProps, getInputProps, isDragActive} = useDropzone({
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
         onDropRejected,
         accept,
@@ -105,11 +105,11 @@ export default function UploadDropzone({
                                 { files.map((file) => (
                                     <span key={ file.name + file.size }
                                           className="flex items-center bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-3 py-1 rounded-full text-sm truncate">
-                                { file.name }
-                                        <X size={ 14 } className="ml-2 cursor-pointer hover:text-red-500"
+                                        { file.name }
+                                        <X size={ 14 } className="ml-2 cursor-pointer hover:text-(--text-error)"
                                            onClick={ (e) => removeFile(e, file) }
                                         />
-                            </span>
+                                    </span>
                                 )) }
                             </div>
                         ) : (
@@ -124,13 +124,13 @@ export default function UploadDropzone({
                             </p>
                         </span>
                                 <p className="text-(--text-secondary) mt-2 -mb-2">
-                                    { t('UPLOAD.max_filesize', {maxSize: maxSize / (1024 * 1024)}) }
+                                    { t('UPLOAD.max_filesize', { maxSize: maxSize / (1024 * 1024) }) }
                                 </p>
                                 <p className="text-(--text-secondary)">
                                     { t('UPLOAD.allowed_extensions') } : { Object.values(accept).flat().join(", ") }
                                 </p>
                             </div>
-                        )}
+                        ) }
                     </>
                 )
                 }

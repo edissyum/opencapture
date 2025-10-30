@@ -35,15 +35,18 @@ import { FieldPalette } from "../../../../components/form/editor/FieldPalette";
 import { DroppableZone } from "../../../../components/form/editor/DroppableZone";
 import { DroppableLine } from "../../../../components/form/editor/DroppableLine";
 
+import { Button } from "../../../../components/Button";
+import { showToast } from "../../../../components/ToastProvider";
+
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
-import { Button } from "../../../../components/Button.tsx";
-import { showToast } from "../../../../components/ToastProvider.tsx";
-import { useCustomFields } from "../../../../services/hooks/useCustomFields.tsx";
-import { useFormFields } from "../../../../services/hooks/useFormFields.tsx";
+import { useFormFields } from "../../../../services/hooks/useFormFields";
+import { useCustomFields } from "../../../../services/hooks/useCustomFields";
 
 export function SettingsVerifierFormsEditor() {
     const { post } = axiosApiCall();
-    const { formId } = useParams<{ formId: string }>();
+    const { formId } = useParams<{ formId: any }>();
+
+    if (!formId) return null;
 
     const [zones, setZones] = useState([
         { id: "zone-supplier", name: t('FORMS.supplier'), lines: [] },
@@ -52,34 +55,41 @@ export function SettingsVerifierFormsEditor() {
         { id: "zone-other", name: t('FORMS.other'), lines: [] }
     ]);
 
-    const { customFields } = useCustomFields("verifier");
     const { formFields } = useFormFields(formId);
+    const { customFields } = useCustomFields("verifier");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const [usedFields, setUsedFields] = useState<string[]>([]);
+
+    // Initialize zones with existing form fields
     useEffect(() => {
-        if (formId) {
-            if (formFields) {
-                const updatedZones: any = zones.map((zone) => {
-                    const key: any = zone.id.replace("zone-", "");
+        if (!formId || !formFields) return;
 
-                    const zoneLines = formFields[key] || [];
+        const updatedZones: any = zones.map((zone) => {
+            const key: any = zone.id.replace("zone-", "");
 
-                    const formattedLines = zoneLines.map((line: any, index: number) => ({
-                        id: `line-${ crypto.randomUUID() }`,
-                        fields: line.map((field: any, fIndex: number) => ({
-                            id: field.id || `field-${ key }-${ index + 1 }-${ fIndex + 1 }`,
-                            type: field.type,
-                            label: field.label,
-                            color: field.color || null,
-                            required: field.required ?? false,
-                            default_value: field.default_value || "",
-                            format: field.format ?? "alphanum_extended_with_accent"
-                        })) || [],
-                    }));
-                    return { ...zone, lines: formattedLines };
-                });
-                setZones(updatedZones);
-            }
-        }
+            const zoneLines = formFields[key] || [];
+
+            const formattedLines = zoneLines.map((line: any, index: number) => ({
+                id: `line-${ crypto.randomUUID() }`,
+                fields: line.map((field: any, fIndex: number) => ({
+                    id: field.id || `field-${ key }-${ index + 1 }-${ fIndex + 1 }`,
+                    type: field.type,
+                    label: field.label,
+                    color: field.color || null,
+                    required: field.required ?? false,
+                    default_value: field.default_value || "",
+                    format: field.format ?? "alphanum_extended_with_accent"
+                })) || [],
+            }));
+
+            // Update used fields
+            const usedFieldIds = zoneLines.flat().map((field: any) => field.id);
+            setUsedFields((prev) => Array.from(new Set([...prev, ...usedFieldIds])));
+
+            return { ...zone, lines: formattedLines };
+        });
+        setZones(updatedZones);
     }, [formFields]);
 
     const tabs: any = {
@@ -104,19 +114,12 @@ export function SettingsVerifierFormsEditor() {
     const [activeTab, setActiveTab] = useState<keyof typeof availableFields>("supplier");
     const [availableItems, setAvailableItems] = useState(availableFields[activeTab].map((f: any) => (f)));
 
-    const [usedFields, setUsedFields] = useState<Record<string, string[]>>({
-        supplier: [],
-        lines: [],
-        billing: [],
-        customFields: [],
-    });
+    // Update available items when active tab or used fields change
     useEffect(() => {
         const fields: any = availableFields[activeTab];
+        const filtered = fields.filter((f: any) => !usedFields.includes(f.id));
 
-        const filtered = fields.filter(
-            (f: any) => !usedFields[activeTab as string].includes(f.id)
-        );
-
+        console.log("Available items for tab", activeTab, ":", filtered);
         setAvailableItems(filtered);
     }, [activeTab, usedFields]);
 
@@ -155,7 +158,7 @@ export function SettingsVerifierFormsEditor() {
         const zonesCopy = structuredClone(zones);
         const { zone: targetZone, line: targetLine, field: targetField } = getDropContext(zonesCopy, over.id as string);
 
-        // 🔵 Déplacement d’une ligne
+        // 🔵 Move line
         if (activeData.type === "line") {
             const sourceZone = findZoneContainingLine(zonesCopy, active.id as string);
             if (!sourceZone || !targetZone) return;
@@ -174,7 +177,7 @@ export function SettingsVerifierFormsEditor() {
             return;
         }
 
-        // 🟢 Ajout depuis la palette
+        // 🟢 Add from palette
         if (activeData.from === "palette") {
             const newField = {
                 id: activeData.id,
@@ -203,10 +206,7 @@ export function SettingsVerifierFormsEditor() {
                 });
             }
 
-            setUsedFields((prev) => ({
-                ...prev,
-                [activeTab]: [...(prev[activeTab as string] || []), activeData.id],
-            }));
+            setUsedFields((prev) => Array.from(new Set([...prev, activeData.id])));
 
             setZones([...zonesCopy]);
             logZones(zonesCopy);
@@ -298,7 +298,20 @@ export function SettingsVerifierFormsEditor() {
         );
     };
 
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const handleDeleteField = (fieldId: string) => {
+        setZones((prevZones: any) =>
+            prevZones.map((zone: any) => ({
+                ...zone,
+                lines: zone.lines.map((line: any) => ({
+                    ...line,
+                    fields: line.fields.filter((f: any) => f.id !== fieldId)
+                })).filter((line: any) => line.fields.length > 0)
+            }))
+        );
+
+        setUsedFields((prev) => prev.filter((id) => id !== fieldId));
+    };
+
     const handleUpdate = () => {
         if (isSubmitting) return;
 
@@ -345,6 +358,7 @@ export function SettingsVerifierFormsEditor() {
                                 { zones.map((zone) => (
                                     <AccordionTab header={ zone.name } key={ zone.id }>
                                         <DroppableZone key={ zone.id } zone={ zone }
+                                                       onDeleteField={ handleDeleteField }
                                                        onUpdateField={ handleUpdateField }/>
                                     </AccordionTab>
                                 )) }
@@ -356,7 +370,6 @@ export function SettingsVerifierFormsEditor() {
                         </TabPanel>
                     </TabView>
                 </div>
-
                 <div className="w-[25rem] flex flex-col">
                     <TabView
                         scrollable

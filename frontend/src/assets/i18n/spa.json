@@ -187,7 +187,6 @@
         "page": "",
         "download_original_file": "",
         "loading_page": "",
-        "filename_bis": "",
         "currency": "",
         "delivery_number": "",
         "document_date": "",
@@ -199,7 +198,9 @@
         "total_ttc": "",
         "total_vat": "",
         "vat_amount": "",
-        "vat_rate": ""
+        "vat_rate": "",
+        "ocr_on_fly_success": "",
+        "correct_errors_before_validate": ""
     },
     "SPLITTER": {
         "batch_selected_many": "lotes seleccionados",
@@ -446,7 +447,13 @@
         "default_value_hint": "",
         "default_value": "",
         "form_updated": "",
-        "invalid_pattern": ""
+        "invalid_pattern": "",
+        "delete_field": "",
+        "invalid_date": "",
+        "refuse": "",
+        "refuse_loading": "",
+        "validate": "",
+        "validate_loading": ""
     },
     "FORMATS": {
         "date": "",
@@ -460,7 +467,8 @@
         "alphanum_extended_with_accent": "",
         "char": "",
         "number_float": "",
-        "number_int": ""
+        "number_int": "",
+        "regex": ""
     },
     "COLORS": {
         "black": "",

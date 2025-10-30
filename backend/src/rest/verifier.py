@@ -179,7 +179,7 @@ def update_document_position(document_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/updatePosition'}), 403
 
-    res = verifier.update_position_by_document_id(document_id, request.json['args'])
+    res = verifier.update_position_by_document_id(document_id, request.json)
     return make_response(res[0], res[1])
 
 
@@ -191,7 +191,7 @@ def update_document_page(document_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/updatePage'}), 403
 
-    res = verifier.update_page_by_document_id(document_id, request.json['args'])
+    res = verifier.update_page_by_document_id(document_id, request.json)
     return make_response(res[0], res[1])
 
 

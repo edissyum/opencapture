@@ -20,7 +20,7 @@ import { defaultAnimateLayoutChanges, useSortable } from "@dnd-kit/sortable";
 
 import { DroppableLine } from "./DroppableLine";
 
-export function SortableLine({ line, onUpdateField }: any) {
+export function SortableLine({ line, onUpdateField, onDeleteField }: any) {
     const animateLayoutChanges = (args: any) =>
         defaultAnimateLayoutChanges({ ...args, wasDragging: true });
 
@@ -51,7 +51,7 @@ export function SortableLine({ line, onUpdateField }: any) {
                 </div>
             ) }
             <div className={ `w-full p-2 ${ bg } border-2 rounded-md` }>
-                <DroppableLine line={ line } onUpdateField={ onUpdateField }/>
+                <DroppableLine line={ line } onUpdateField={ onUpdateField } onDeleteField={ onDeleteField }/>
             </div>
         </div>
     );

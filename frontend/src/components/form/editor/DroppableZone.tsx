@@ -20,7 +20,7 @@ import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 
 import { SortableLine } from "./SortableLine";
 
-export function DroppableZone({ zone, onUpdateField }: any) {
+export function DroppableZone({ zone, onUpdateField, onDeleteField }: any) {
     const { setNodeRef, isOver } = useDroppable({
         id: zone.id,
         data: { type: "zone", zoneId: zone.id }
@@ -40,7 +40,9 @@ export function DroppableZone({ zone, onUpdateField }: any) {
                 ) }
                 <div className="flex flex-col gap-3">
                     { zone.lines.map((line: any) => (
-                        <SortableLine key={ line.id } line={ line } onUpdateField={ onUpdateField }/>
+                        <SortableLine key={ line.id } line={ line }
+                                      onUpdateField={ onUpdateField }
+                                      onDeleteField={ onDeleteField }/>
                     )) }
                 </div>
             </SortableContext>

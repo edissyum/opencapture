@@ -19,26 +19,41 @@ import { t } from "i18next";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Download, Eye, EyeOff } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, EllipsisVertical, Eye, EyeOff } from "lucide-react";
 
 import { Accordion, AccordionTab } from "primereact/accordion";
 
 import Input from "../../components/Input";
+import { Button } from "../../components/Button";
+import ISOCalendar from "../../components/Calendar";
 import { Loader } from "../../components/loader/Loader";
+import { showToast } from "../../components/ToastProvider";
 import { ZoomControl } from "../../components/ZoomControl";
 import { Annotator, type Region } from "../../components/Annotator";
 
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { useFormFields } from "../../services/hooks/useFormFields";
 import { useCustomFields } from "../../services/hooks/useCustomFields";
+import { InputSwitch } from "primereact/inputswitch";
+import { ContextMenu } from "primereact/contextmenu";
 
 export function VerifierViewerPage() {
     const { get, post, put } = axiosApiCall();
     const { documentId } = useParams<{ documentId: string }>();
 
     const [documentData, setDocumentData] = useState<any>(null);
-    const [loadingUpdateData, setLoadingUpdateDocumentData] = useState<boolean>(false);
+    const [documentDataLoading, setDocumentDataLoading] = useState<boolean>(true);
+
+    const [formHasError, setFormHasError] = useState<boolean>(false);
     const [tmpDocumentData, setTmpDocumentData] = useState<any>(null);
+
+    const [currentSupplier, setCurrentSupplier] = useState<any>(null);
+    const [supplierChanged, setSupplierChanged] = useState<boolean>(false);
+    const [originalCurrentSupplier, setOriginalCurrentSupplier] = useState<any>(null);
+
+    const [loadingUpdateRefuse, setLoadingUpdateRefuse] = useState<boolean>(false);
+    const [loadingUpdateValidate, setLoadingUpdateValidate] = useState<boolean>(false);
+    const [loadingUpdateData, setLoadingUpdateDocumentData] = useState<boolean>(false);
 
     const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
 
@@ -78,6 +93,7 @@ export function VerifierViewerPage() {
     const lang = localStorage.getItem("selectedLang") || "en";
     moment.locale(lang.startsWith("fr") ? "fr" : lang.startsWith("es") ? "es" : "en");
 
+    // Fetch document data
     useEffect(() => {
         const fetchDocumentData = async () => {
             try {
@@ -86,6 +102,7 @@ export function VerifierViewerPage() {
                     setTmpDocumentData(response);
                     setCurrentFilename(response.full_jpg_filename);
                     setPagesList([...Array(response.nb_pages).keys()].map(i => i + 1));
+                    setDocumentDataLoading(false);
                 });
             } catch (error) {
                 console.error("Error fetching document data:", error);
@@ -94,45 +111,41 @@ export function VerifierViewerPage() {
         fetchDocumentData().then();
     }, [documentId]);
 
+    // Function to retrieve third party
     useEffect(() => {
-        if (!documentData || formFields.length === 0) return;
+        if (!documentData) return;
+        if (!documentData.supplier_id) return;
 
-        Object.keys(documentData.datas).forEach((fieldId) => {
-            const fieldValue = documentData.datas[fieldId];
+        const fetchThirdParty = async () => {
+            try {
+                get(`accounts/suppliers/getById/${ documentData.supplier_id }`, {}).then((response) => {
+                    if (!response) return;
 
-            Object.keys(formFields).forEach((parent: any) => {
-                formFields[parent].forEach((line: any) => {
-                    line.forEach((field: any) => {
-                        if (field.id === fieldId) {
-                            if (field.format === 'date' && fieldValue && typeof fieldValue === 'string') {
-                                let value: any = fieldValue.replaceAll('.', '/');
-                                value = value.replaceAll(',', '/');
-                                value = value.replaceAll(' ', '/');
-                                const format = moment().localeData().longDateFormat('L');
-                                const tmpValue = value;
-                                value = moment(value, format);
-                                value = new Date(value._d);
-                                if (value.toString() === 'Invalid Date') {
-                                    value = moment(tmpValue, 'YYYY-MM-DD');
-                                    value = new Date(value._d);
-                                }
-                                setDocumentData((prevData: any) => ({
-                                    ...prevData,
-                                    datas: {
-                                        ...prevData.datas,
-                                        [fieldId]: value
-                                    }
-                                }));
+                    get(`accounts/getAdressById/${ response.address_id }`, {}).then((addressResponse) => {
 
-                            }
+                        const supplierFull = {
+                            ...response,
+                            ...addressResponse
                         }
+                        setCurrentSupplier(supplierFull);
+                        setOriginalCurrentSupplier(supplierFull);
+
+                        Object.keys(documentData.datas).forEach((data: any) => {
+                            if (supplierFull[data] && (!tmpDocumentData?.datas?.[data] || tmpDocumentData?.datas?.[data] === '')) {
+                                updateDocumentData({ id: data }, supplierFull[data]);
+                                prepareDocumentData({ id: data }, supplierFull[data]);
+                            }
+                        });
                     });
                 });
-            });
-        });
+            } catch (error) {
+                console.error("Error fetching third party:", error);
+            }
+        };
+        fetchThirdParty().then();
+    }, [documentDataLoading]);
 
-    }, [documentData, loadingFormFields, formFields])
-
+    // Function to fetch page image in base64
     useEffect(() => {
         if (!documentData) return;
 
@@ -156,13 +169,14 @@ export function VerifierViewerPage() {
             }
         };
         fetchDocumentPages(currentPage).then();
-    }, [documentData, currentFilename]);
+    }, [documentDataLoading, currentFilename]);
 
     // Create regions of ocr on fly
     useEffect(() => {
         if (!documentData || loadingCustom || loadingFormFields || formFields.length === 0) return;
 
-        if (regionsList.length > 0) return;
+        if (regionsList.length > 0 || documentData.positions.length === 0) return;
+
         Object.keys(documentData.positions).forEach((position) => {
             let label = '';
             const pos = documentData.positions[position];
@@ -205,8 +219,9 @@ export function VerifierViewerPage() {
             });
             setRegionsList((prevRegions) => [...prevRegions, newRegion]);
         });
-    }, [documentData, loadingCustom, loadingFormFields, customFields, formFields]);
+    }, [documentDataLoading, loadingCustom, loadingFormFields, customFields, formFields]);
 
+    // Fill form
     useEffect(() => {
         if (loadingFormFields || formFields.length === 0) return;
 
@@ -223,6 +238,23 @@ export function VerifierViewerPage() {
 
                 if (formFields[parentKey] !== null) {
                     formFields[parentKey].forEach((line: any) => {
+                        line.forEach((field: any) => {
+                            if (field.default_value && (!tmpDocumentData?.datas?.[field.id] || tmpDocumentData?.datas?.[field.id] === '')) {
+                                let value = field.default_value;
+                                if (field.type === 'date') {
+                                    if (value === 'default_today') {
+                                        value = moment().format('YYYY-MM-DD');
+                                    } else {
+                                        value = moment(field.default_value, 'YYYY-MM-DD');
+                                    }
+                                }
+
+                                updateDocumentData(field, value);
+                                if (errors[field.id]) return;
+
+                                prepareDocumentData(field, value);
+                            }
+                        });
                         newZones[zoneIndex].lines.push(line);
                     });
                 }
@@ -230,6 +262,12 @@ export function VerifierViewerPage() {
             return newZones;
         });
     }, [loadingFormFields, formFields]);
+
+    // Check if form has errors to disable validate button
+    useEffect(() => {
+        const hasError = Object.values(errors).some((error) => error !== null);
+        setFormHasError(hasError);
+    }, [errors]);
 
     const handlePrev = () => {
         if (currentPage > 1) {
@@ -277,9 +315,9 @@ export function VerifierViewerPage() {
         const annotations = document.querySelectorAll('.annotation');
         annotations.forEach((annotation) => {
             if (indicatorsVisible) {
-                annotation.classList.add('hidden');
+                annotation.classList.add('hidden!');
             } else {
-                annotation.classList.remove('hidden');
+                annotation.classList.remove('hidden!');
             }
         });
     }
@@ -296,7 +334,6 @@ export function VerifierViewerPage() {
             const bddRegion = regionsList.find(region => region.id === activeRegion);
 
             if (!region) return;
-
             // Check if region is similar to bddRegion
             // If yes, do not launch ocr on fly
             if (region && bddRegion) {
@@ -309,47 +346,67 @@ export function VerifierViewerPage() {
                 }
             }
 
-            await ocrOnFly(region);
+            await ocrOnFly(activeRegion, region);
         }
     }
 
     // Function to update document data (only array, not on database) and validate fields
     const updateDocumentData = (field: any, value: any) => {
-        let error: string | null = null;
+        field.error = errorCheck(field, value);
 
-        if (field.format === 'date') {
-            if (value) {
-                const m = moment(value, "YYYY-MM-DD", true);
-                if (!m.isValid()) {
-                    error = t('FORMS.invalid_date');
-                }
-                value = moment(value).format("YYYY-MM-DD");
-            }
-        }
-
-        if (field.required && (!value || value.trim() === '')) {
-            error = t('FORMS.field_required');
-        }
-
-        if (!error && field.pattern) {
-            const regex = new RegExp(patterns[field.format]);
-            if (!regex.test(value)) {
-                error = t('FORMS.invalid_pattern');
-            }
-        }
-
-        setErrors((prev) => ({
-            ...prev,
-            [field.id]: error
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            [field.id]: field.error
         }));
 
-        setDocumentData((prevData: any) => ({
+        setTmpDocumentData((prevData: any) => ({
             ...prevData,
             datas: {
                 ...prevData.datas,
                 [field.id]: value
             }
         }));
+
+        // Detect supplier change
+        const supplierFields = fieldsZone.find(zone => zone.id === 'supplier')?.lines.flat();
+        let supplierChange = false;
+        if (supplierFields && supplierFields.find((f: any) => f.id === field.id)) {
+            if (originalCurrentSupplier && value !== originalCurrentSupplier[field.id]) {
+                supplierChange = true;
+            }
+        }
+        setSupplierChanged(supplierChange)
+
+        // onBlur doesn't work well with date picker, so we save directly here for date fields
+        if (field.type === 'date' && value && !field.error) {
+            prepareDocumentData(field, value);
+        }
+    }
+
+    function errorCheck(field: any, value: any) {
+        let error: string | null = null;
+
+        if (field.required && (!value || value.toString().trim() === '')) {
+            error = t('FORMS.field_required');
+        }
+
+        if (field.type === 'date' && !error) {
+            if (value) {
+                const dateValue = moment(value, 'YYYY-MM-DD', true);
+                if (!dateValue.isValid()) {
+                    error = t('FORMS.invalid_date');
+                }
+            }
+        }
+
+        if (!error && (documentData.datas[field.id] && field.format)) {
+            const regex = new RegExp(patterns[field.format]);
+            if (!regex.test(value)) {
+                error = t('FORMS.invalid_pattern');
+            }
+        }
+
+        return error;
     }
 
     // Function to save document data to database on onBlur event of input
@@ -362,20 +419,24 @@ export function VerifierViewerPage() {
             return;
         }
 
-        if (tmpDocumentData['datas'][field.id] === value) {
+        if (documentData['datas'][field.id] === value) {
             return;
         }
 
-        if (value === "" || value === null || value === undefined) {
+        if (value === null || value === undefined) {
+            return;
+        }
+
+        // Do not save supplier data if supplier changed and still not updated
+        const supplierFields = fieldsZone.find(zone => zone.id === 'supplier')?.lines.flat();
+        if (supplierFields && supplierFields.find((f: any) => f.id === field.id) && supplierChanged) {
             return;
         }
 
         const dataToSave: any = {};
         dataToSave[field.id] = value;
-        console.log("Saving document data:", dataToSave, documentData['datas'][field.id]);
-        return;
         saveDocumentData(dataToSave).then(() => {
-            setTmpDocumentData((prevData: any) => ({
+            setDocumentData((prevData: any) => ({
                 ...prevData,
                 datas: {
                     ...prevData.datas,
@@ -396,6 +457,28 @@ export function VerifierViewerPage() {
         }
     }
 
+    const saveDocumentPosition = async (data: any) => {
+        setLoadingUpdateDocumentData(true);
+        try {
+            await put(`verifier/documents/${ documentId }/updatePosition`, data);
+        } catch (error) {
+            console.error("Error saving document position:", error);
+        } finally {
+            setLoadingUpdateDocumentData(false);
+        }
+    }
+
+    const saveDocumentPage = async (data: any) => {
+        setLoadingUpdateDocumentData(true);
+        try {
+            await put(`verifier/documents/${ documentId }/updatePage`, data);
+        } catch (error) {
+            console.error("Error saving document page:", error);
+        } finally {
+            setLoadingUpdateDocumentData(false);
+        }
+    }
+
     const getWidthLine = (line: any) => {
         return line.length === 1 ? 'w-full' :
             line.length === 2 ? 'w-1/2' :
@@ -404,28 +487,114 @@ export function VerifierViewerPage() {
                         'w-1/5';
     }
 
-    async function ocrOnFly(region: Region) {
+    function retrieveFieldById(fieldId: string) {
+        let field = null;
+        for (const parentKey of Object.keys(formFields)) {
+            // @ts-ignore
+            for (const line of formFields[parentKey]) {
+                for (const l_field of line) {
+                    if (l_field.id === fieldId) {
+                        field = l_field;
+                    }
+                }
+            }
+        }
+        return field;
+    }
+
+    async function ocrOnFly(fieldId: string, region: Region) {
         try {
             const lang = localStorage.getItem('backendLang') || 'fra';
             // TODO Gérer la lang du fournisseur
+
+            let field = retrieveFieldById(fieldId);
+            if (!field) return;
+
+            let removeSpaces = false;
+            if (fieldId.includes('custom_')) {
+                const customField: any = customFields.find((field) => `custom_${ field.id }` === fieldId && field.type === 'regex');
+                if (customField) {
+                    if (customField.settings && customField.settings.regex) {
+                        removeSpaces = customField.settings.regex.remove_spaces ? customField.settings.regex.remove_spaces : false;
+                    }
+                }
+            }
 
             const data = {
                 'lang': lang,
                 'selection': region,
                 'fileName': currentFilename,
+                'removeSpaces': removeSpaces,
                 'registerDate': documentData.register_date
             };
             post('verifier/ocrOnFly', data).then((response) => {
-                console.log("OCR result:", response);
-                if (!response || !response.text) {
+                if (!response || !response.result) {
                     return;
                 }
-                setRegionsList((prevRegions) => [...prevRegions, region]);
+
+                updateDocumentData(field, response.result);
+                if (field.error) return;
+
+                prepareDocumentData(field, response.result);
+
+                const positionData: any = {};
+                positionData[fieldId] = {
+                    x: region.x,
+                    y: region.y,
+                    width: region.width,
+                    height: region.height
+                };
+                saveDocumentPosition(positionData).then();
+
+                const pageData: any = {};
+                pageData[fieldId] = region.page;
+                saveDocumentPage(pageData).then();
+
+                showToast(t('VERIFIER.ocr_on_fly_success'), 'success');
+
+                setRegionsList((prevRegions) => {
+                    const existingIndex = prevRegions.findIndex(
+                        (r) => r.id === region.id
+                    );
+
+                    if (existingIndex !== -1) {
+                        const updatedRegions = [...prevRegions];
+                        updatedRegions[existingIndex] = region;
+                        return updatedRegions;
+                    }
+
+                    return [...prevRegions, region];
+                });
+
             });
         } catch (error) {
             console.error("Error during OCR on fly:", error);
         }
     }
+
+    const validateDocument = async () => {
+        setLoadingUpdateValidate(true);
+
+        Object.keys(formFields).forEach((parentKey: any) => {
+            formFields[parentKey].forEach((line: any) => {
+                line.forEach((field: any) => {
+                    const value = tmpDocumentData?.datas?.[field.id];
+                    const error = errorCheck(field, value);
+                    if (error) {
+                        showToast(t('VERIFIER.correct_errors_before_validate'), 'error');
+                        setErrors((prevErrors) => ({
+                            ...prevErrors,
+                            [field.id]: error
+                        }));
+                    }
+                });
+            });
+        });
+
+        setLoadingUpdateValidate(false);
+    }
+
+    if (!documentData) return;
 
     return (
         <div className='flex h-full overflow-hidden'>
@@ -497,24 +666,52 @@ export function VerifierViewerPage() {
             <div className='w-1/2 bg-(--bg-primary) p-8 h-full border-l-2 border-(--border-secondary) overflow-auto'>
                 <Accordion multiple activeIndex={ [0] } className='flex flex-col gap-4'>
                     { fieldsZone.filter((zone: any) => zone.lines.length > 0).map((zone) => (
-                        <AccordionTab key={ zone.id } header={ zone.name }>
+                        <AccordionTab key={ zone.id } header={
+                            <span className='flex items-center gap-2'>
+                                <span>
+                                    { zone.name }
+                                </span>
+                                <span className='flex ml-auto'>
+                                    { supplierChanged && zone.id === 'supplier' &&
+                                        <span className='text-(--color-warning) font-medium italic'>
+                                            { t('VERIFIER.supplier_changed') }
+                                        </span>
+                                    }
+                                </span>
+                            </span>
+                        }>
                             <div className='w-full px-4 pt-6'>
                                 { zone.lines.map((line: any, index: number) => (
-                                    <div key={ index } className='flex gap-4 mb-1.5'>
+                                    <div key={ index } className='flex gap-4 mb-2'>
                                         { line.map((field: any) => (
                                             <div key={ field.id } className={ `min-w-1/6 ${ getWidthLine(line) }` }>
-                                                <Input
-                                                    id={ field.id }
-                                                    key={ field.id }
-                                                    type={ field.type }
-                                                    label={ t(field.label) }
-                                                    error={ errors[field.id] }
-                                                    required={ field.required }
-                                                    value={ documentData?.datas?.[field.id] ?? "" }
-                                                    onClick={ () => handleFocusField(field.id, field.label, field.color) }
-                                                    onChange={ (e) => updateDocumentData(field, e.target.value) }
-                                                    onBlur={ (e) => prepareDocumentData(field, e.target.value) }
-                                                />
+                                                {
+                                                    field.type === 'date' ? (
+                                                        <ISOCalendar
+                                                            id={ field.id }
+                                                            label={ t(field.label) }
+                                                            error={ errors[field.id] }
+                                                            required={ field.required }
+                                                            value={ tmpDocumentData?.datas?.[field.id] }
+                                                            onChange={ (e) => updateDocumentData(field, e) }
+                                                            onClick={ () => handleFocusField(field.id, field.label, field.color) }
+                                                        />
+                                                    ) : (
+                                                        <Input
+                                                            id={ field.id }
+                                                            key={ field.id }
+                                                            type={ field.type }
+                                                            label={ t(field.label) }
+                                                            error={ errors[field.id] }
+                                                            required={ field.required }
+                                                            value={ tmpDocumentData?.datas?.[field.id] ?? "" }
+                                                            onClick={ () => handleFocusField(field.id, field.label, field.color) }
+                                                            onChange={ (e) => updateDocumentData(field, e.target.value) }
+                                                            onBlur={ (e) => {
+                                                                prepareDocumentData(field, e.target.value)
+                                                            } }
+                                                        />
+                                                    ) }
                                             </div>
                                         )) }
                                     </div>
@@ -523,6 +720,20 @@ export function VerifierViewerPage() {
                         </AccordionTab>
                     )) }
                 </Accordion>
+                <div className='flex mt-6 w-full items-center gap-4'>
+                    <div className='grow basis-0 w-full'>
+                        <Button disabled={ loadingUpdateValidate || formHasError || documentData.status === 'END' }
+                                className='w-full' onClick={ () => validateDocument() }>
+                            { loadingUpdateValidate && !formHasError ? t('FORMS.validate_loading') : t('FORMS.validate') }
+                        </Button>
+                    </div>
+                    <div className='grow basis-0 w-full'>
+                        <Button disabled={ loadingUpdateRefuse || formHasError || documentData.status === 'END' }
+                                className='w-full' variant='danger' onClick={ () => refuseDocument() }>
+                            { !loadingUpdateRefuse ? t('FORMS.refuse') : t('FORMS.refuse_loading') }
+                        </Button>
+                    </div>
+                </div>
             </div>
         </div>
     );

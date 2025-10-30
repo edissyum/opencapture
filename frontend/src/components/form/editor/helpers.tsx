@@ -45,19 +45,19 @@ export function findZoneContainingLine(zones: any[], lineId: string) {
 export function getDropContext(zones: any[], overId: string) {
     if (!overId) return { zone: null, line: null, field: null };
 
-    // cas 1️⃣ : drop sur une zone complète
+    // Drop on zone
     if (overId.startsWith("zone-")) {
         return { zone: findZone(zones, overId), line: null, field: null };
     }
 
-    // cas 2️⃣ : drop sur une ligne vide
+    // Drop on empty line
     const line = findLine(zones, overId);
     if (line) {
         const zone = findZoneContainingLine(zones, line.id);
         return { zone, line, field: null };
     }
 
-    // cas 3️⃣ : drop sur un champ existant
+    // Drop on existing field
     const containingLine = findLineContainingField(zones, overId);
     const containingZone = findZoneContainingLine(zones, containingLine?.id);
     const field = containingLine?.fields.find((f: any) => f.id === overId);

@@ -20,8 +20,9 @@ import { useEffect, useState } from "react";
 import { axiosApiCall } from "./axiosApiCall";
 
 export interface FormField {
-    map(arg0: (line: any, index: number) => { id: string; fields: any; }): unknown;
-    forEach(arg0: (line: any) => void): unknown;
+    flat(): any;
+    map(arg0: (line: any, index: number) => { id: string; fields: any; }): any;
+    forEach(arg0: (line: any) => void): any;
     id: string;
     name: string;
     label: string;
@@ -55,5 +56,6 @@ export function useFormFields(formId: number): useFormFieldsResult {
         fetchFormFields().then();
     }, [formId]);
 
+    // @ts-ignore
     return { formFields, loading, error };
 }

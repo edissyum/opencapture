@@ -63,7 +63,7 @@ export function Button({
     const variantStyles: Record<ButtonVariant, string> = {
         primary: "bg-(--color-primary) border-2 border-(--border-primary) text-white hover:bg-(--color-primary)/10 hover:text-(--color-primary)",
         secondary: "bg-(--color-primary)/10 border-2 border-(--border-primary) text-(--color-primary) hover:bg-(--color-primary) hover:text-white",
-        danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
+        danger: "bg-(--text-error) border-2 border-(--text-error) text-white hover:bg-(--text-error)/10 hover:text-(--text-error)",
         no_bg: "bg-transparent text-(--text-secondary) hover:border-2 hover:border-(--text-secondary) border-2 border-transparent",
         no_bg_border: "bg-transparent text-(--text-secondary) border-1 border-(--text-secondary) hover:bg-(--text-secondary)/10",
     };
@@ -89,16 +89,16 @@ export function Button({
         variant = isActive ? "secondary" : "no_bg";
     }
 
-    let classes = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]}`;
+    let classes = `${ baseStyles } ${ variantStyles[variant] } ${ sizeStyles[size] }`;
     if (className) {
         classes = classes + " " + className;
     }
 
     const content = loading ? (
-        <LoaderCircle className="animate-spin" size={24} />
+        <LoaderCircle className="animate-spin" size={ 24 }/>
     ) : (
         <>
-            { icon && <span className="mr-2">{icon}</span> }
+            { icon && <span className="mr-2">{ icon }</span> }
             { children }
         </>
     );
@@ -107,22 +107,22 @@ export function Button({
         const isExternal = to.startsWith("http");
         if (isExternal) {
             return (
-                <a href={to} className={classes} target="_blank" rel="noopener noreferrer">
-                    {content}
+                <a href={ to } className={ classes } target="_blank" rel="noopener noreferrer">
+                    { content }
                 </a>
             );
         }
         return (
-            <Link to={to} className={ 'appearance-none ' + classes}>
-                {content}
+            <Link to={ to } className={ 'appearance-none ' + classes }>
+                { content }
             </Link>
         );
     }
 
     return (
-        <div className={`${disabled ? "cursor-not-allowed" : ""}`}>
-            <button className={classes} disabled={disabled} type={type} {...props}>
-                {content}
+        <div className={ `${ disabled ? "cursor-not-allowed" : "" }` }>
+            <button className={ classes } disabled={ disabled } type={ type } { ...props }>
+                { content }
             </button>
         </div>
     );

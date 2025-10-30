@@ -42,8 +42,9 @@ type Field = {
     default_value?: string;
 };
 
-export function SortableField({ field, onUpdateField }: {
+export function SortableField({ field, onUpdateField, onDeleteField }: {
     field: Field;
+    onDeleteField: (id: string) => void;
     onUpdateField: (id: string, updated: Field) => void;
 }) {
     const op = useRef<OverlayPanel | null>(null);
@@ -195,13 +196,18 @@ export function SortableField({ field, onUpdateField }: {
                         </label>
                     </div>
 
-                    <div className="flex justify-end gap-2">
-                        <Button variant="no_bg" onClick={ () => op.current?.hide() }>
-                            { t('GLOBAL.cancel') }
+                    <div className="flex gap-2">
+                        <Button variant='danger' onClick={ () => onDeleteField(field.id) }>
+                            { t('FORMS.delete_field') }
                         </Button>
-                        <Button variant="primary" onClick={ handleSave }>
-                            { t('MAILCOLLECT.save') }
-                        </Button>
+                        <div className='flex ml-auto'>
+                            <Button variant="no_bg" onClick={ () => op.current?.hide() }>
+                                { t('GLOBAL.cancel') }
+                            </Button>
+                            <Button variant="primary" onClick={ handleSave }>
+                                { t('MAILCOLLECT.save') }
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </OverlayPanel>

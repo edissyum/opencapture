@@ -41,6 +41,7 @@ export const getTypeLabels = (t: TFunction) => ({
     text: t('FORMATS.text'),
     email: t('FORMATS.email'),
     phone: t('FORMATS.phone'),
+    regex: t('FORMATS.regex'),
     select: t('FORMATS.select'),
     number: t('FORMATS.number')
 });

@@ -311,7 +311,7 @@ export function SettingsGeneralSMTP() {
                     { statusTestEmail === 'error' && (
                         <div className='flex items-center gap-4'>
                             <img src="/src/assets/imgs/smtp/smtp_fail.svg" alt="Error" className='h-12'/>
-                            <h1 className='text-2xl font-bold text-(--color-danger)'>{ t('SMTP.test_email_error') }</h1>
+                            <h1 className='text-2xl font-bold text-(--text-error)'>{ t('SMTP.test_email_error') }</h1>
                         </div>
                     ) }
                     { statusTestEmail === 'success' && (

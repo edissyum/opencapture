@@ -16,6 +16,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import React, { useEffect, useRef, useState } from "react";
+import { t } from "i18next";
 
 export interface Region {
     id: string;
@@ -58,6 +59,8 @@ export function Annotator({
     useEffect(() => {
         if (!imgRef.current) return;
         const updateSize = () => {
+            if (!imgRef.current) return;
+
             setImgSize({
                 w: imgRef.current!.clientWidth,
                 h: imgRef.current!.clientHeight,
@@ -69,6 +72,21 @@ export function Annotator({
         observer.observe(imgRef.current);
         return () => observer.disconnect();
     }, [imageB64, width]);
+
+    // Update regions when ratio changes
+    useEffect(() => {
+        if (regionsOriginalSize.length === 0 || ratio === 0) return;
+
+        const updatedRegions = regionsOriginalSize.map(r => ({
+            ...r,
+            x: r.x / ratio,
+            y: r.y / ratio,
+            width: r.width / ratio,
+            height: r.height / ratio,
+        }));
+
+        setRegions(updatedRegions);
+    }, [ratio]);
 
     const [regions, setRegions] = useState<Region[]>([]);
     const [regionsOriginalSize, setRegionsOriginalSize] = useState<Region[]>([]);
@@ -349,7 +367,7 @@ export function Annotator({
                         <div className="absolute -top-6.5 -right-px bg-(--bg-primary) text-xs select-none p-1 border
                                        rounded-md rounded-br-none flex items-center z-20 whitespace-nowrap font-semibold"
                              style={ { borderColor: r.color, color: r.color } }>
-                            <span>{ r.label }</span>
+                            <span>{ t(r.label) }</span>
                             <button onClick={ () => handleDelete(r.id) } className="ml-1 cursor-pointer">
                                 ✕
                             </button>
