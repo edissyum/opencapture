@@ -19,7 +19,7 @@ import { t } from "i18next";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Download, EllipsisVertical, Eye, EyeOff } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, Eye, EyeOff } from "lucide-react";
 
 import { Accordion, AccordionTab } from "primereact/accordion";
 
@@ -34,8 +34,6 @@ import { Annotator, type Region } from "../../components/Annotator";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { useFormFields } from "../../services/hooks/useFormFields";
 import { useCustomFields } from "../../services/hooks/useCustomFields";
-import { InputSwitch } from "primereact/inputswitch";
-import { ContextMenu } from "primereact/contextmenu";
 
 export function VerifierViewerPage() {
     const { get, post, put } = axiosApiCall();
