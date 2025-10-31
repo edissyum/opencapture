@@ -21,12 +21,13 @@ import React, { useEffect, useState } from "react";
 type CheckboxProps = {
     id?: string;
     label?: string;
+    size?: number;
     checked?: boolean;
     className?: string;
     onChange?: (checked: boolean, id: string | undefined) => void;
 };
 
-export function Checkbox({ id, checked = false, onChange, label, className }: CheckboxProps) {
+export function Checkbox({ id, checked = false, onChange, label, className, size=5 }: CheckboxProps) {
     const [isChecked, setIsChecked] = useState(checked);
 
     useEffect(() => {
@@ -47,13 +48,13 @@ export function Checkbox({ id, checked = false, onChange, label, className }: Ch
             <div
                 id={ id }
                 onClick={ toggle }
-                className={ `w-5 h-5 border-1 border-(--border-secondary) rounded flex items-center justify-center
+                className={ `size-${size} border border-(--border-secondary) rounded flex items-center justify-center
                     ${ isChecked ? "bg-(--color-primary) border-(--color-primary)" : "bg-(--bg-primary)" }
                     transition-all hover:border-(--color-primary)` }
             >
-                { isChecked && <Check id={ id } className="w-5 h-5 text-white"/> }
+                { isChecked && <Check id={ id } className={ `size-${ size } text-white` }/> }
             </div>
-            { label && <span onClick={ toggle } className="ml-2 text-(--text-secondary)">{ label }</span> }
+            { label && <span onClick={ toggle } className="ml-2 text-(--text-secondary) truncate">{ label }</span> }
         </label>
     );
 }

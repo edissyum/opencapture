@@ -118,3 +118,9 @@ h2 {
     @apply text-2xl;
     @apply font-semibold;
 }
+
+/* Fix placeholder for input in FloatLabel */
+.p-float-label input::placeholder {
+    @apply opacity-100;
+    @apply text-(--text-secondary);
+}

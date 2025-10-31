@@ -135,7 +135,7 @@ def update_position(supplier_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/accounts/suppliers/{supplier_id}/updatePosition'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'form_id', 'type': int, 'mandatory': True}
     ])
     if not check:
@@ -144,8 +144,7 @@ def update_position(supplier_id):
             "message": message
         }, 400)
 
-    data = request.json['args']
-    res = accounts.update_position_by_supplier_id(supplier_id, data)
+    res = accounts.update_position_by_supplier_id(supplier_id, request.json)
     return make_response(res[0], res[1])
 
 
@@ -157,7 +156,7 @@ def update_page(supplier_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/accounts/suppliers/{supplier_id}/updatePage'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'form_id', 'type': int, 'mandatory': True}
     ])
     if not check:
@@ -166,8 +165,7 @@ def update_page(supplier_id):
             "message": message
         }, 400)
 
-    data = request.json['args']
-    res = accounts.update_page_by_supplier_id(supplier_id, data)
+    res = accounts.update_page_by_supplier_id(supplier_id, request.json)
     return make_response(res[0], res[1])
 
 

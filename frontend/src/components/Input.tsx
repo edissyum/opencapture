@@ -58,7 +58,6 @@ const Input: React.FC<InputProps> = ({
                             ${ isPasswordField ? 'border-r-0 rounded-tr-none rounded-br-none' : '' } text-(--text-primary)
                             border-(--border-secondary) disabled:bg-(--bg-secondary) disabled:cursor-not-allowed ${ height }
                             ${ props.value ? "p-filled" : "" }` }
-                        placeholder=""
                         type={ inputType }
                         disabled={ disabled }
                         required={ required }

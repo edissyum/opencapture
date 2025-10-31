@@ -19,7 +19,7 @@ import { t } from "i18next";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Download, Eye, EyeOff } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, Edit, Eye, EyeOff } from "lucide-react";
 
 import { Accordion, AccordionTab } from "primereact/accordion";
 
@@ -351,7 +351,6 @@ export function VerifierViewerPage() {
     // Function to update document data (only array, not on database) and validate fields
     const updateDocumentData = (field: any, value: any) => {
         field.error = errorCheck(field, value);
-
         setErrors((prevErrors) => ({
             ...prevErrors,
             [field.id]: field.error
@@ -366,9 +365,11 @@ export function VerifierViewerPage() {
         }));
 
         // Detect supplier change
-        const supplierFields = fieldsZone.find(zone => zone.id === 'supplier')?.lines.flat();
         let supplierChange = false;
-        if (supplierFields && supplierFields.find((f: any) => f.id === field.id)) {
+        if (checkIfFieldIsSupplierField(field.id)) {
+            if (value === null || value === undefined || value === '') {
+                value = null;
+            }
             if (originalCurrentSupplier && value !== originalCurrentSupplier[field.id]) {
                 supplierChange = true;
             }
@@ -397,7 +398,7 @@ export function VerifierViewerPage() {
             }
         }
 
-        if (!error && (documentData.datas[field.id] && field.format)) {
+        if (!error && (value && field.format)) {
             const regex = new RegExp(patterns[field.format]);
             if (!regex.test(value)) {
                 error = t('FORMS.invalid_pattern');
@@ -405,6 +406,11 @@ export function VerifierViewerPage() {
         }
 
         return error;
+    }
+
+    function checkIfFieldIsSupplierField(fieldId: string) {
+        const supplierFields = fieldsZone.find(zone => zone.id === 'supplier')?.lines.flat();
+        return !!(supplierFields && supplierFields.find((f: any) => f.id === fieldId));
     }
 
     // Function to save document data to database on onBlur event of input
@@ -426,8 +432,7 @@ export function VerifierViewerPage() {
         }
 
         // Do not save supplier data if supplier changed and still not updated
-        const supplierFields = fieldsZone.find(zone => zone.id === 'supplier')?.lines.flat();
-        if (supplierFields && supplierFields.find((f: any) => f.id === field.id) && supplierChanged) {
+        if (checkIfFieldIsSupplierField(field.id) && supplierChanged) {
             return;
         }
 
@@ -459,6 +464,11 @@ export function VerifierViewerPage() {
         setLoadingUpdateDocumentData(true);
         try {
             await put(`verifier/documents/${ documentId }/updatePosition`, data);
+
+            if (documentData.supplier_id && currentSupplier) {
+                data['form_id'] = documentData.form_id;
+                await put(`accounts/supplier/${ documentData.supplier_id }/updatePosition`, data);
+            }
         } catch (error) {
             console.error("Error saving document position:", error);
         } finally {
@@ -470,6 +480,11 @@ export function VerifierViewerPage() {
         setLoadingUpdateDocumentData(true);
         try {
             await put(`verifier/documents/${ documentId }/updatePage`, data);
+
+            if (documentData.supplier_id && currentSupplier) {
+                data['form_id'] = documentData.form_id;
+                await put(`accounts/supplier/${ documentData.supplier_id }/updatePage`, data);
+            }
         } catch (error) {
             console.error("Error saving document page:", error);
         } finally {
@@ -502,8 +517,10 @@ export function VerifierViewerPage() {
 
     async function ocrOnFly(fieldId: string, region: Region) {
         try {
-            const lang = localStorage.getItem('backendLang') || 'fra';
-            // TODO Gérer la lang du fournisseur
+            let lang = localStorage.getItem('backendLang') || 'fra';
+            if (currentSupplier && currentSupplier.document_lang && currentSupplier.document_lang !== '') {
+                lang = currentSupplier.document_lang;
+            }
 
             let field = retrieveFieldById(fieldId);
             if (!field) return;
@@ -533,22 +550,24 @@ export function VerifierViewerPage() {
                 updateDocumentData(field, response.result);
                 if (field.error) return;
 
-                prepareDocumentData(field, response.result);
+                if (!checkIfFieldIsSupplierField(field.id)) {
+                    prepareDocumentData(field, response.result);
 
-                const positionData: any = {};
-                positionData[fieldId] = {
-                    x: region.x,
-                    y: region.y,
-                    width: region.width,
-                    height: region.height
-                };
-                saveDocumentPosition(positionData).then();
+                    const positionData: any = {};
+                    positionData[fieldId] = {
+                        x: region.x,
+                        y: region.y,
+                        width: region.width,
+                        height: region.height
+                    };
+                    saveDocumentPosition(positionData).then();
 
-                const pageData: any = {};
-                pageData[fieldId] = region.page;
-                saveDocumentPage(pageData).then();
+                    const pageData: any = {};
+                    pageData[fieldId] = region.page;
+                    saveDocumentPage(pageData).then();
 
-                showToast(t('VERIFIER.ocr_on_fly_success'), 'success');
+                    showToast(t('VERIFIER.ocr_on_fly_success'), 'success');
+                }
 
                 setRegionsList((prevRegions) => {
                     const existingIndex = prevRegions.findIndex(
@@ -670,11 +689,9 @@ export function VerifierViewerPage() {
                                     { zone.name }
                                 </span>
                                 <span className='flex ml-auto'>
-                                    { supplierChanged && zone.id === 'supplier' &&
-                                        <span className='text-(--color-warning) font-medium italic'>
-                                            { t('VERIFIER.supplier_changed') }
-                                        </span>
-                                    }
+                                    <Edit size={ 20 } data-tooltip-id="tooltip"
+                                          className={ supplierChanged && zone.id === 'supplier' ? 'opacity-100' : 'opacity-0' }
+                                          data-tooltip-content={ t('VERIFIER.supplier_changed') }/>
                                 </span>
                             </span>
                         }>
@@ -719,9 +736,11 @@ export function VerifierViewerPage() {
                     )) }
                 </Accordion>
                 <div className='flex mt-6 w-full items-center gap-4'>
-                    <div className='grow basis-0 w-full'>
-                        <Button disabled={ loadingUpdateValidate || formHasError || documentData.status === 'END' }
-                                className='w-full' onClick={ () => validateDocument() }>
+                    <div className='grow basis-0 w-full' data-tooltip-id="tooltip"
+                         data-tooltip-content={ supplierChanged ? t('VERIFIER.save_supplier_modification') : '' }>
+                        <Button
+                            disabled={ supplierChanged || loadingUpdateValidate || formHasError || documentData.status === 'END' }
+                            className='w-full' onClick={ () => validateDocument() }>
                             { loadingUpdateValidate && !formHasError ? t('FORMS.validate_loading') : t('FORMS.validate') }
                         </Button>
                     </div>

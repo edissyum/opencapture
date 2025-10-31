@@ -22,6 +22,71 @@ import qwen_vl_utils
 from flask import current_app
 from ..controllers import accounts
 
+def run_inference(image):
+    model_path = current_app.config['CONTACT_MODEL']
+    model = transformers.Qwen2VLForConditionalGeneration.from_pretrained(
+        model_path,
+        device_map=None,
+        dtype=torch.float32
+    )
+    model = torch.compile(model)
+    model.eval()
+
+    processor = transformers.AutoProcessor.from_pretrained(
+        model_path,
+        use_fast=True,
+        min_pixels=512 * 28 * 28,
+        max_pixels=512 * 28 * 28
+    )
+
+    with torch.inference_mode():
+        with torch.no_grad():
+            formatted_data = [
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "image", "image": image.convert('RGB')},
+                        {"type": "text", "text": "Extract sender's data in a python dictionary"},
+                    ],
+                }
+            ]
+
+            chat_text = processor.apply_chat_template(
+                formatted_data,
+                tokenize=False,
+                add_generation_prompt=True
+            )
+            model_inputs = processor(
+                padding=True,
+                text=[chat_text],
+                return_tensors="pt",
+                images=[qwen_vl_utils.process_vision_info(formatted_data)[0]]
+            )
+
+            input_ids = model_inputs["input_ids"].to(model.device)
+            generated_ids = model.generate(
+                input_ids=input_ids,
+                max_new_tokens=256,
+                pixel_values=model_inputs["pixel_values"].to(model.device),
+                attention_mask=model_inputs["attention_mask"].to(model.device),
+                image_grid_thw=model_inputs["image_grid_thw"].to(model.device)
+            )
+
+            generated_ids_trimmed = [
+                out_ids[len(in_ids):]
+                for in_ids, out_ids in zip(input_ids, generated_ids)
+            ]
+            generated_texts = processor.batch_decode(
+                generated_ids_trimmed,
+                skip_special_tokens=True,
+                clean_up_tokenization_spaces=False
+            )
+
+            data = {}
+            if generated_texts and isinstance(generated_texts[0], str):
+                data = json.loads(generated_texts[0])
+            return data
+
 class FindContact:
     def __init__(self, ocr, log, regex, files, database, file, image, customer_id):
         self.ocr = ocr
@@ -33,69 +98,6 @@ class FindContact:
         self.image = image
         self.database = database
         self.customer_id = customer_id
-
-    def run_inference(self):
-        model_path = '/var/www/html/opencapture/instance/artificial_intelligence/contact/qwen/'
-        model = transformers.Qwen2VLForConditionalGeneration.from_pretrained(
-            model_path, dtype=torch.float32, device_map=None
-        )
-        model = torch.compile(model)
-        model.eval()
-
-        processor = transformers.AutoProcessor.from_pretrained(
-            model_path,
-            use_fast=True,
-            min_pixels=512 * 28 * 28,
-            max_pixels=512 * 28 * 28
-        )
-
-        with torch.inference_mode():
-            with torch.no_grad():
-                formatted_data = [
-                    {
-                        "role": "user",
-                        "content": [
-                            {"type": "image", "image": self.image.convert('RGB')},
-                            {"type": "text", "text": "Extract sender's data in a python dictionary"},
-                        ],
-                    }
-                ]
-
-                chat_text = processor.apply_chat_template(
-                    formatted_data,
-                    tokenize=False,
-                    add_generation_prompt=True
-                )
-                model_inputs = processor(
-                    padding=True,
-                    text=[chat_text],
-                    return_tensors="pt",
-                    images=[qwen_vl_utils.process_vision_info(formatted_data)[0]]
-                )
-
-                input_ids = model_inputs["input_ids"].to(model.device)
-                generated_ids = model.generate(
-                    input_ids=input_ids,
-                    max_new_tokens=256,
-                    pixel_values=model_inputs["pixel_values"].to(model.device),
-                    attention_mask=model_inputs["attention_mask"].to(model.device),
-                    image_grid_thw=model_inputs["image_grid_thw"].to(model.device)
-                )
-
-                generated_ids_trimmed = [
-                    out_ids[len(in_ids):]
-                    for in_ids, out_ids in zip(input_ids, generated_ids)
-                ]
-                generated_texts = processor.batch_decode(
-                    generated_ids_trimmed,
-                    skip_special_tokens=True,
-                    clean_up_tokenization_spaces=False
-                )
-
-                data = {}
-                if generated_texts and isinstance(generated_texts[0], str):
-                    data = json.loads(generated_texts[0])
-                return data
 
 
     def search_contact(self, data_name, data_value):
@@ -131,7 +133,7 @@ class FindContact:
             self.log.info('No contact model configured, skipping contact search/creation')
             return None
 
-        contact_data = self.run_inference()
+        contact_data = run_inference(self.image)
         if 'email' in contact_data:
             contact = self.search_contact('email', contact_data['email'])
             if contact:

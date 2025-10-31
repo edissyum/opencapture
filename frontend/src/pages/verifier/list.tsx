@@ -17,7 +17,20 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import { CircleQuestionMark, Eye, FileText, Filter, LayoutGrid, Paperclip, Rows3, Trash2 } from "lucide-react";
+import {
+    ChevronDown,
+    CircleCheckBig,
+    CircleQuestionMark,
+    Eye,
+    FileText,
+    Filter,
+    LayoutGrid,
+    LayoutTemplate,
+    Package,
+    Paperclip,
+    Rows3,
+    Trash2
+} from "lucide-react";
 
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
@@ -28,12 +41,15 @@ import { Thumbnail } from "../../components/Thumbnail";
 import { useUser } from "../../services/hooks/useUser";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
+import { Checkbox } from "../../components/Checkbox.tsx";
 
 export function VerifierListPage() {
     const { user, loadingUser } = useUser();
     const { get, post, del } = axiosApiCall();
 
     const [view, setView] = useState<'list' | 'grid'>('list');
+    const [displayFilters, setDisplayFilters] = useState(false);
+
     useEffect(() => {
         if (localStorage.getItem('selectedView') === 'grid') {
             setView('grid');
@@ -57,8 +73,21 @@ export function VerifierListPage() {
         localStorage.setItem('selectedView', newView);
     }
 
-    const [totalPerTime, setTotalPerTime] = useState<any>(null);
+    const handleDisplayFilters = () => {
+        setDisplayFilters(!displayFilters);
+    }
+
+    const listTimes = {
+        'today': t('GLOBAL.today'),
+        'yesterday': t('GLOBAL.yesterday'),
+        'older': t('GLOBAL.older')
+    }
+    const [listForms, setListForms] = useState<any>([]);
+    const [listStatuses, setListStatuses] = useState<any>([]);
+
     const [selectedStatus, setSelectedStatus] = useState('NEW');
+    const [selectedForm, setSelectedForm] = useState<string | null>(null);
+    const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
@@ -123,8 +152,7 @@ export function VerifierListPage() {
                     year: "numeric",
                     hour: "2-digit",
                     minute: "2-digit",
-                }).format(new Date(item.register_date)).replace(' ', ' ' + t('GLOBAL.at') + ' ').replace(',', '')
-                .replaceAll('/', '-')
+                }).format(new Date(item.register_date)).replace(' ', ' ' + t('GLOBAL.at') + ' ').replace(',', '').replaceAll('/', '-')
             )
         },
         { id: 'form_label', header: t('VERIFIER.form'), field: 'form_label' },
@@ -171,28 +199,27 @@ export function VerifierListPage() {
         }
     ];
 
+    // Fetch form list
     useEffect(() => {
-        async function retrieveTotalDocuments() {
-            if (!user || loadingUser) return;
+        if (!user || loadingUser) return;
 
-            const res = await get(`/verifier/documents/totals/${ selectedStatus }/${ user.id }`, {}) || 0;
-            if (res && res.totals) {
-                let totals = 0;
-                setTotalPerTime(res.totals);
-                for (const key in res.totals) {
-                    if (Object.prototype.hasOwnProperty.call(res.totals, key)) {
-                        totals += res.totals[key];
-                    }
-                }
-                setTotalDocuments(totals);
-                return;
-            }
+        const fetchForms = async () => {
+            const res = await get(`/forms/verifier/list`) || [];
+            setListForms(res.forms || []);
         }
+        fetchForms().then();
+    }, [user, loadingUser]);
 
-        if (!totalDocuments) {
-            retrieveTotalDocuments().then();
+    // Fetch status list
+    useEffect(() => {
+        if (listForms.length === 0) return;
+
+        const fetchStatuses = async () => {
+            const res = await get(`/status/verifier/list`) || [];
+            setListStatuses(res.status || []);
         }
-    }, [user, loadingUser, selectedStatus]);
+        fetchStatuses().then();
+    }, [listForms]);
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -204,6 +231,7 @@ export function VerifierListPage() {
         };
     }, [searchTerm]);
 
+    // Fetch documents
     useEffect(() => {
         async function retrieveDocuments() {
             if (!user || loadingUser) return;
@@ -212,6 +240,8 @@ export function VerifierListPage() {
             try {
                 const res = await post('/verifier/documents/list', {
                     user_id: user.id,
+                    time: selectedTime,
+                    form_id: selectedForm,
                     status: selectedStatus,
                     limit: lazyParams.rows,
                     offset: lazyParams.first,
@@ -230,7 +260,7 @@ export function VerifierListPage() {
         }
 
         retrieveDocuments().then();
-    }, [user, lazyParams, debouncedSearchTerm]);
+    }, [listStatuses, lazyParams, debouncedSearchTerm, selectedStatus, selectedTime, selectedForm]);
 
     const handleDelete = async () => {
         if (selectedDocuments.length === 0) return;
@@ -263,29 +293,132 @@ export function VerifierListPage() {
         });
     }
 
+    const [open, setOpen] = useState({
+        batches: true,
+        status: true,
+        forms: false,
+    });
+
     return (
-        <div className='flex flex-col h-full p-8'>
+        <div className='flex h-full w-full overflow-hidden'>
+            <div
+                className={ `h-full transition-all duration-200 
+                            ${ displayFilters ? "w-[250px] opacity-100" : "w-0 opacity-0" }
+                            border-r-2 border-(--border-secondary) bg-(--bg-primary)` }>
+                <div className='border-b-2 border-(--border-secondary) p-4'>
+                    <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
+                </div>
+                <div className='p-4 flex flex-col gap-6 h-full overflow-y-auto'>
+                    <div>
+                        <div className="flex items-center justify-between cursor-pointer mb-2"
+                             onClick={ () => setOpen({ ...open, batches: !open.batches }) }>
+                            <div className="flex items-center gap-2">
+                                <Package className="text-(--color-primary)" size={ 20 }/>
+                                <h3 className='text-lg font-semibold'>{ t('GLOBAL.batches') }</h3>
+                            </div>
+                            <ChevronDown
+                                size={ 18 }
+                                className={ `transition-transform ${ open.batches ? "rotate-180" : "" }` }/>
+                        </div>
+
+                        { open.batches && (
+                            <div className='flex flex-col'>
+                                { Object.keys(listTimes).map((key) => (
+                                    <Checkbox
+                                        size={ 4 }
+                                        key={ key }
+                                        label={ listTimes[key as keyof typeof listTimes] }
+                                        checked={ selectedTime === key }
+                                        onChange={ () => {
+                                            setSelectedTime(key);
+                                        } }
+                                    />
+                                )) }
+                            </div>
+                        ) }
+                    </div>
+                    <div className='flex flex-col'>
+                        <div className="flex items-center justify-between cursor-pointer mb-2"
+                             onClick={ () => setOpen({ ...open, status: !open.status }) }>
+                            <div className="flex items-center gap-2">
+                                <CircleCheckBig className="text-(--color-primary)" size={ 20 }/>
+                                <h3 className='text-lg font-semibold'>{ t('GLOBAL.status') }</h3>
+                            </div>
+                            <ChevronDown
+                                size={ 18 }
+                                className={ `transition-transform ${ open.status ? "rotate-180" : "" }` }/>
+                        </div>
+                        { open.status && (
+                            <div className='flex flex-col'>
+                                { Object.keys(listStatuses).map((key: any) => (
+                                    <Checkbox
+                                        size={ 4 }
+                                        key={ key }
+                                        label={ listStatuses[key]?.label }
+                                        checked={ selectedStatus === listStatuses[key]?.id }
+                                        onChange={ () => {
+                                            setSelectedStatus(listStatuses[key]?.id);
+                                        } }
+                                    />
+                                )) }
+                            </div>
+                        ) }
+                    </div>
+                    <div className='flex flex-col'>
+                        <div className="flex items-center justify-between cursor-pointer mb-2"
+                             onClick={ () => setOpen({ ...open, forms: !open.forms }) }>
+                            <div className="flex items-center gap-2">
+                                <LayoutTemplate className="text-(--color-primary)" size={ 20 }/>
+                                <h3 className='text-lg font-semibold'>{ t('GLOBAL.forms') }</h3>
+                            </div>
+                            <ChevronDown
+                                size={ 18 }
+                                className={ `transition-transform ${ open.forms ? "rotate-180" : "" }` }/>
+                        </div>
+
+                        { open.forms && (
+                            <div className='flex flex-col'>
+                                { Object.keys(listForms).map((key: any) => (
+                                    <Checkbox
+                                        size={ 4 }
+                                        key={ key }
+                                        label={ listForms[key]?.label }
+                                        checked={ selectedForm === listForms[key]?.id }
+                                        onChange={ () => {
+                                            setSelectedForm(listForms[key]?.id);
+                                        } }
+                                    />
+                                )) }
+                            </div>
+                        ) }
+                    </div>
+                </div>
+            </div>
+
             { hovered && (
                 <Thumbnail module={ 'verifier' } document_info={ hovered } open={ true }/>
             ) }
 
-            <div className='flex items-center gap-6'>
-                <Button icon={ <Filter size={ 14 }/> }
-                        className='rounded-3xl bg-(--bg-primary) text-(--text-primary) hover:text-(--color-primary) border-(--border-secondary) p-2.5!'>
-                    { t('VERIFIER.filters') }
-                </Button>
-                <span className='flex items-center gap-1'>
+            <div className='p-8 h-full w-full flex flex-col flex-1'>
+                <div className='flex items-center gap-6'>
+                    <Button icon={ <Filter size={ 14 }/> } onClick={ handleDisplayFilters }
+                            className={ `rounded-3xl hover:text-(--color-primary) text-(--text-primary)
+                            border-(--border-secondary) p-2.5! bg-(--bg-primary) 
+                            ${ displayFilters ? 'bg-(--color-primary) text-white hover:text-white' : 'bg-(--bg-primary) text-(--text-primary)' }` }>
+                        { t('VERIFIER.filters') }
+                    </Button>
+                    <span className='flex items-center gap-1'>
                     <FileText size={ 16 }/>
                     <span>
                         { t('VERIFIER.documents', { count: totalDocuments! }) } ({ totalDocuments || 0 })
                     </span>
                 </span>
-                <span>
+                    <span>
                     <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10'
                            value={ searchTerm } placeholder={ t('VERIFIER.search') } no_margin_bottom={ true }
                            onChange={ (e) => setSearchTerm(e.target.value) }/>
                 </span>
-                <span className='ml-auto text-(--text-secondary) flex cursor-pointer'>
+                    <span className='ml-auto text-(--text-secondary) flex cursor-pointer'>
                     <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.list') }
                           onClick={ () => handleChangeView('list') }
                           className={ `${ view == 'list' ? "bg-(--color-primary)/20 border-(--border-primary)/50" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-l-md dark:bg-(--bg-secondary) border` }>
@@ -297,53 +430,54 @@ export function VerifierListPage() {
                         <LayoutGrid size={ 20 }/>
                     </span>
                 </span>
-            </div>
+                </div>
 
-            <div className="mt-4 flex flex-col overflow-y-auto">
-                { view === 'list' && (
-                    <Table
-                        baseLink="/verifier/viewer/"
-                        data={ documents }
-                        actions={ actions }
-                        pagination={ true }
-                        columns={ columns }
-                        menuModel={ menuModel }
-                        lazyParams={ lazyParams }
-                        checkboxSelection={ true }
-                        loading={ loadingDocuments }
-                        rowsPerPage={ lazyParams.rows }
-                        skeletonRows={ lazyParams.rows }
-                        selectedRows={ selectedDocuments }
-                        totalRecords={ totalDocuments || 0 }
-                        rowsPerPageOptions={ [4, 8, 16, 32] }
-                        emptyMessage={ t("VERIFIER.no_documents") }
-                        paginatorLeftText={ t('VERIFIER.document_selected', { count: selectedDocuments.length }) }
-                        onLazyParamsChange={ setLazyParams }
-                        onSelectionChange={ (rows) => setSelectedDocuments(rows) }
-                    />
-                ) }
-                { view === 'grid' && (
-                    <Grid
-                        baseLink="/verifier/viewer/"
-                        module="verifier"
-                        data={ documents }
-                        actions={ actions }
-                        pagination={ true }
-                        columns={ columns }
-                        menuModel={ menuModel }
-                        lazyParams={ lazyParams }
-                        loading={ loadingDocuments }
-                        rowsPerPage={ lazyParams.rows }
-                        skeletonRows={ lazyParams.rows }
-                        selectedRows={ selectedDocuments }
-                        totalRecords={ totalDocuments || 0 }
-                        rowsPerPageOptions={ [4, 8, 16, 32] }
-                        emptyMessage={ t("VERIFIER.no_documents") }
-                        paginatorLeftText={ t('VERIFIER.document_selected', { count: selectedDocuments.length }) }
-                        onLazyParamsChange={ setLazyParams }
-                        onSelectionChange={ (rows) => setSelectedDocuments(rows) }
-                    />
-                ) }
+                <div className="mt-4 flex flex-col overflow-y-auto">
+                    { view === 'list' && (
+                        <Table
+                            baseLink="/verifier/viewer/"
+                            data={ documents }
+                            actions={ actions }
+                            pagination={ true }
+                            columns={ columns }
+                            menuModel={ menuModel }
+                            lazyParams={ lazyParams }
+                            checkboxSelection={ true }
+                            loading={ loadingDocuments }
+                            rowsPerPage={ lazyParams.rows }
+                            skeletonRows={ lazyParams.rows }
+                            selectedRows={ selectedDocuments }
+                            totalRecords={ totalDocuments || 0 }
+                            rowsPerPageOptions={ [4, 8, 16, 32] }
+                            emptyMessage={ t("VERIFIER.no_documents") }
+                            paginatorLeftText={ t('VERIFIER.document_selected', { count: selectedDocuments.length }) }
+                            onLazyParamsChange={ setLazyParams }
+                            onSelectionChange={ (rows) => setSelectedDocuments(rows) }
+                        />
+                    ) }
+                    { view === 'grid' && (
+                        <Grid
+                            baseLink="/verifier/viewer/"
+                            module="verifier"
+                            data={ documents }
+                            actions={ actions }
+                            pagination={ true }
+                            columns={ columns }
+                            menuModel={ menuModel }
+                            lazyParams={ lazyParams }
+                            loading={ loadingDocuments }
+                            rowsPerPage={ lazyParams.rows }
+                            skeletonRows={ lazyParams.rows }
+                            selectedRows={ selectedDocuments }
+                            totalRecords={ totalDocuments || 0 }
+                            rowsPerPageOptions={ [4, 8, 16, 32] }
+                            emptyMessage={ t("VERIFIER.no_documents") }
+                            paginatorLeftText={ t('VERIFIER.document_selected', { count: selectedDocuments.length }) }
+                            onLazyParamsChange={ setLazyParams }
+                            onSelectionChange={ (rows) => setSelectedDocuments(rows) }
+                        />
+                    ) }
+                </div>
             </div>
         </div>
     );

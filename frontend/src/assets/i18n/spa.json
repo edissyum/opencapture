@@ -66,7 +66,12 @@
         "enable": "",
         "delete": "",
         "save_settings": "",
-        "saving": ""
+        "saving": "",
+        "older": "",
+        "today": "",
+        "yesterday": "",
+        "forms": "",
+        "status": ""
     },
     "ONBOARD": {
         "select_module": "Selección de módulo predeterminado",
@@ -200,7 +205,9 @@
         "vat_amount": "",
         "vat_rate": "",
         "ocr_on_fly_success": "",
-        "correct_errors_before_validate": ""
+        "correct_errors_before_validate": "",
+        "save_supplier_modification": "",
+        "supplier_changed": ""
     },
     "SPLITTER": {
         "batch_selected_many": "lotes seleccionados",

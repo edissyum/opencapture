@@ -29,7 +29,7 @@ from ..functions import delete_documents, rotate_document, find_workflow_with_ia
 from ..controllers import verifier, accounts, attachments, artificial_intelligence
 from ..process import (find_date, find_due_date, find_footer, find_invoice_number, find_supplier,
                                  find_custom, find_delivery_number, find_footer_raw, find_quotation_number,
-                                 find_currency, find_contact, find_subject, find_with_ai)
+                                 find_currency, find_contact, find_subject, find_with_ai, find_name)
 
 
 class DictX(dict):
@@ -281,6 +281,9 @@ def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_c
         image = files.open_image_return(improved_footer_image)
         data_class.footer_text = return_text(image, tesseract_function, ocr)
 
+        if data_name == 'firstname_lastname':
+            data_class.improved = True
+
         data = data_class.run()
         if not data:
             data_class.text = ocr.last_text
@@ -342,11 +345,37 @@ def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_c
         i += 1
 
     if data and data[0]:
-        _res['datas'].update({data_name: data[0]})
-        if data[1]:
-            _res['positions'].update({data_name: files.reformat_positions(data[1])})
-        if data[2]:
-            _res['pages'].update({data_name: data[2]})
+        if data_name == 'firstname_lastname':
+            if data[0]:
+                if 'firstname' in data[0] and 'lastname' in data[0]:
+                    _res['datas'].update({'firstname': data[0]['firstname']})
+                    _res['datas'].update({'lastname': data[0]['lastname']})
+                elif 'firstname' in data[0]:
+                    _res['datas'].update({'firstname': data[0]['firstname']})
+                elif 'lastname' in data[0]:
+                    _res['datas'].update({'lastname': data[0]['lastname']})
+            if data[1]:
+                if 'firstname' in data[1] and 'lastname' in data[1]:
+                    _res['positions'].update({'firstname': data[1]['firstname']})
+                    _res['positions'].update({'lastname': data[1]['lastname']})
+                elif 'firstname' in data[0]:
+                    _res['positions'].update({'firstname': data[1]['firstname']})
+                elif 'lastname' in data[0]:
+                    _res['positions'].update({'lastname': data[1]['lastname']})
+            if data[2]:
+                if 'firstname' in data[0] and 'lastname' in data[0]:
+                    _res['pages'].update({'firstname': data[2]})
+                    _res['pages'].update({'lastname': data[2]})
+                elif 'firstname' in data[0]:
+                    _res['pages'].update({'firstname': data[2]})
+                elif 'lastname' in data[0]:
+                    _res['pages'].update({'lastname': data[2]})
+        else:
+            _res['datas'].update({data_name: data[0]})
+            if data[1]:
+                _res['positions'].update({data_name: files.reformat_positions(data[1])})
+            if data[2]:
+                _res['pages'].update({data_name: data[2]})
     return _res
 
 
@@ -653,6 +682,15 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                                                          languages, datas['form_id'])
             datas = found_data_recursively('invoice_number', ocr, file, nb_pages, text_by_pages,
                                            invoice_number_class, datas, files, configurations, tesseract_function,
+                                           convert_function)
+
+        if 'firstname_lastname' in system_fields_to_find:
+            image = None
+            if current_app.config['CONTACT_MODEL'] is not None:
+                image = files.open_image_return(files.jpg_name)
+            name_class = find_name.FindName(ocr, log, docservers, supplier, files, database, regex, datas['form_id'], file, current_app.config['CONTACT_MODEL'], image)
+            datas = found_data_recursively('firstname_lastname', ocr, file, nb_pages, text_by_pages,
+                                           name_class, datas, files, configurations, tesseract_function,
                                            convert_function)
 
         if 'document_date' in system_fields_to_find:
