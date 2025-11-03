@@ -27,7 +27,7 @@ type CheckboxProps = {
     onChange?: (checked: boolean, id: string | undefined) => void;
 };
 
-export function Checkbox({ id, checked = false, onChange, label, className, size=5 }: CheckboxProps) {
+export function Checkbox({ id, checked = false, onChange, label, className, size = 5 }: CheckboxProps) {
     const [isChecked, setIsChecked] = useState(checked);
 
     useEffect(() => {
@@ -48,7 +48,8 @@ export function Checkbox({ id, checked = false, onChange, label, className, size
             <div
                 id={ id }
                 onClick={ toggle }
-                className={ `size-${size} border border-(--border-secondary) rounded flex items-center justify-center
+                style={ { width: `calc(0.25rem*${ size })`, height: `calc(0.25rem*${ size })` } }
+                className={ `border border-(--border-secondary) rounded flex items-center justify-center
                     ${ isChecked ? "bg-(--color-primary) border-(--color-primary)" : "bg-(--bg-primary)" }
                     transition-all hover:border-(--color-primary)` }
             >

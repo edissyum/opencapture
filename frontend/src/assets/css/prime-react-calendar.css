@@ -19,15 +19,45 @@
      @apply min-w-md!;
 }
 
+.p-inputwrapper-filled .p-inputtext {
+    @apply border-r-0;
+    @apply border-(--border-secondary);
+}
+
+.p-inputwrapper-filled .p-inputtext:hover + .p-datepicker-trigger,
+.p-inputwrapper-filled .p-inputtext:focus + .p-datepicker-trigger {
+    @apply border-(--border-primary);
+    @apply text-(--color-primary);
+    @apply bg-(--color-primary)/10;
+}
+
+.p-inputwrapper-filled:hover .p-inputtext,
+.p-inputwrapper-filled:hover .p-datepicker-trigger {
+    @apply border-(--border-primary);
+}
+
+.p-datepicker-trigger:focus {
+    @apply shadow-none;
+}
+
 .p-datepicker-trigger {
-    @apply bg-(--color-primary);
-    @apply border-(--color-primary);
+    @apply border-l-0;
+    @apply duration-200;
+    @apply transition-colors;
+    @apply bg-(--bg-secondary);
+    @apply text-(--text-primary);
+    @apply border-(--border-secondary);
+    @apply hover:text-(--color-primary);
+    @apply hover:bg-(--color-primary)/10;
+    @apply hover:border-(--border-primary);
 }
 
 .p-calendar-w-btn .p-inputtext:enabled:focus,
 .p-calendar-w-btn .p-inputtext:enabled:hover {
     @apply shadow-none;
     @apply outline-none;
+    @apply duration-200;
+    @apply transition-colors;
     @apply border-(--color-primary);
 }
 
@@ -40,4 +70,8 @@
 .p-calendar:not(.p-calendar-disabled).p-focus > .p-inputtext {
     @apply border-(--color-primary);
     @apply shadow-none;
+}
+
+.p-datepicker table td > span.p-highlight {
+    @apply bg-(--color-primary)/10;
 }

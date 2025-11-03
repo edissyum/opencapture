@@ -42,6 +42,8 @@ export function VerifierViewerPage() {
     const [documentData, setDocumentData] = useState<any>(null);
     const [documentDataLoading, setDocumentDataLoading] = useState<boolean>(true);
 
+    const [currentForm, setCurrentForm] = useState<any>(null);
+
     const [formHasError, setFormHasError] = useState<boolean>(false);
     const [tmpDocumentData, setTmpDocumentData] = useState<any>(null);
 
@@ -108,6 +110,23 @@ export function VerifierViewerPage() {
         };
         fetchDocumentData().then();
     }, [documentId]);
+
+    // Fetch form settings
+    useEffect(() => {
+        if (!documentData) return;
+
+        const fetchForm = async () => {
+            try {
+                get(`/forms/verifier/getById/${ documentData.form_id }`).then((response) => {
+                    if (!response) return;
+                    setCurrentForm(response);
+                });
+            } catch (error) {
+                console.error("Error fetching form settings:", error);
+            }
+        };
+        fetchForm().then();
+    }, [documentDataLoading]);
 
     // Function to retrieve third party
     useEffect(() => {
@@ -553,20 +572,21 @@ export function VerifierViewerPage() {
                 if (!checkIfFieldIsSupplierField(field.id)) {
                     prepareDocumentData(field, response.result);
 
-                    const positionData: any = {};
-                    positionData[fieldId] = {
-                        x: region.x,
-                        y: region.y,
-                        width: region.width,
-                        height: region.height
-                    };
-                    saveDocumentPosition(positionData).then();
+                    if (currentForm.settings.allow_learning) {
+                        const positionData: any = {};
+                        positionData[fieldId] = {
+                            x: region.x,
+                            y: region.y,
+                            width: region.width,
+                            height: region.height
+                        };
+                        saveDocumentPosition(positionData).then();
 
-                    const pageData: any = {};
-                    pageData[fieldId] = region.page;
-                    saveDocumentPage(pageData).then();
-
-                    showToast(t('VERIFIER.ocr_on_fly_success'), 'success');
+                        const pageData: any = {};
+                        pageData[fieldId] = region.page;
+                        saveDocumentPage(pageData).then();
+                        showToast(t('VERIFIER.ocr_on_fly_success'), 'success');
+                    }
                 }
 
                 setRegionsList((prevRegions) => {
@@ -608,6 +628,10 @@ export function VerifierViewerPage() {
             });
         });
 
+        // try {
+        //
+        // }
+
         setLoadingUpdateValidate(false);
     }
 
@@ -632,7 +656,7 @@ export function VerifierViewerPage() {
                             alt={ `Page ${ currentPage }` }
                             imageB64={ pagesImageB64[currentPage] }
                             originalWidth={ documentData['img_width'] }
-                            regionsList={ regionsList.filter(region => region.page === currentPage) }
+                            regionsList={ regionsList }
                             onEnd={ handleEnd }
                         />
                     ) }

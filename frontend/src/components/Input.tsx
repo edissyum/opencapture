@@ -50,13 +50,15 @@ const Input: React.FC<InputProps> = ({
 
     return (
         <div className={ `flex flex-col rounded-md ${ className }` }>
-            <div className={ `relative flex justify-items-stretch ${ error || no_margin_bottom ? '' : 'mb-5' }` }>
+            <div
+                className={ `group group-focus-within:border-(--border-primary) relative flex justify-items-stretch ${ error || no_margin_bottom ? '' : 'mb-5' }` }>
                 <FloatLabel className='w-full'>
                     <input
                         id={ id }
-                        className={ `w-full px-3 py-2 border-[1.5px] rounded-md focus:outline-none focus:border-(--color-primary)
-                            ${ isPasswordField ? 'border-r-0 rounded-tr-none rounded-br-none' : '' } text-(--text-primary)
-                            border-(--border-secondary) disabled:bg-(--bg-secondary) disabled:cursor-not-allowed ${ height }
+                        className={ `peer w-full px-3 py-2 border-[1.5px] rounded-md focus:outline-none focus:border-(--color-primary)
+                            hover:border-(--color-primary) transition-colors duration-200 text-(--text-primary)
+                            ${ isPasswordField ? 'border-r-0 rounded-tr-none rounded-br-none' : '' }
+                            ${ error ? 'border-(--text-error)' : 'border-(--border-secondary)' } disabled:bg-(--bg-secondary) disabled:cursor-not-allowed ${ height }
                             ${ props.value ? "p-filled" : "" }` }
                         type={ inputType }
                         disabled={ disabled }
@@ -81,7 +83,7 @@ const Input: React.FC<InputProps> = ({
                     <button
                         type="button"
                         onClick={ () => setPasswordVisible((prev) => !prev) }
-                        className="peer-focus:border-(--color-primary) px-2 rounded-lg rounded-tl-none
+                        className="px-2 rounded-lg rounded-tl-none group-hover:border-(--color-primary) group-focus-within:border-(--color-primary)
                                    rounded-bl-none border-l-0 border border-(--border-secondary) text-(--text-secondary)
                                    hover:text-(--color-primary) z-20 cursor-pointer"
                         tabIndex={ -1 }
@@ -90,7 +92,8 @@ const Input: React.FC<InputProps> = ({
                     </button>
                 ) }
             </div>
-            { error && <p className="text-(--text-error) text-sm ml-1" dangerouslySetInnerHTML={ { __html: error } }></p> }
+            { error &&
+                <p className="text-(--text-error) text-xs ml-1" dangerouslySetInnerHTML={ { __html: error } }></p> }
         </div>
     );
 };

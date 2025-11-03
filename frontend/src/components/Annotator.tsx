@@ -53,6 +53,9 @@ export function Annotator({
     const [ratio, setRatio] = useState(0);
     const [imgSize, setImgSize] = useState({ w: 0, h: 0 });
 
+    const [regions, setRegions] = useState<Region[]>([]);
+    const [regionsOriginalSize, setRegionsOriginalSize] = useState<Region[]>([]);
+
     const imgRef = useRef<HTMLImageElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -73,6 +76,23 @@ export function Annotator({
         return () => observer.disconnect();
     }, [imageB64, width]);
 
+    // Initialize regions from regionsList on first load
+    useEffect(() => {
+        if (regions.length === 0 && regionsList.length > 0 && ratio > 0) {
+            // We adjust the regions according to the ratio
+            // We add 5px to width and height to avoid cutting off borders
+            // We subtract 2.5px to x and y to center the region
+            setRegions(regionsList.map(r => ({
+                ...r,
+                page: r.page,
+                x: r.x / ratio - 2.5,
+                y: r.y / ratio - 2.5,
+                width: r.width / ratio + 5,
+                height: r.height / ratio + 5
+            })));
+        }
+    }, [regionsList, imgSize]);
+
     // Update regions when ratio changes
     useEffect(() => {
         if (regionsOriginalSize.length === 0 || ratio === 0) return;
@@ -88,24 +108,7 @@ export function Annotator({
         setRegions(updatedRegions);
     }, [ratio]);
 
-    const [regions, setRegions] = useState<Region[]>([]);
-    const [regionsOriginalSize, setRegionsOriginalSize] = useState<Region[]>([]);
-
-    useEffect(() => {
-        if (regions.length === 0 && regionsList.length > 0 && ratio > 0) {
-            // We adjust the regions according to the ratio
-            // We add 5px to width and height to avoid cutting off borders
-            // We subtract 2.5px to x and y to center the region
-            setRegions(regionsList.map(r => ({
-                ...r,
-                x: r.x / ratio - 2.5,
-                y: r.y / ratio - 2.5,
-                width: r.width / ratio + 5,
-                height: r.height / ratio + 5,
-            })));
-        }
-    }, [regionsList, imgSize]);
-
+    // Update regionsOriginalSize when regions change
     useEffect(() => {
         if (regions.length === 0 || ratio === 0) return;
 
