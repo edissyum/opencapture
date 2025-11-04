@@ -20,17 +20,17 @@ import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 
 import { SortableLine } from "./SortableLine";
 
-export function DroppableZone({ zone, onUpdateField, onDeleteField }: any) {
+export function DroppableZone({ zone, onUpdateField, onDeleteField, onDeleteLine, onUpdateLine }: any) {
     const { setNodeRef, isOver } = useDroppable({
         id: zone.id,
         data: { type: "zone", zoneId: zone.id }
     });
 
     const bg = isOver ? "bg-(--color-primary)/10 border-(--color-primary)" : "bg-(--bg-primary)";
-    const padding = zone.lines.length === 1 && zone.lines[0]?.fields.length === 0 ? 'p-4' : 'pl-2 p-4';
+    const padding = zone.lines.length === 1 && zone.lines[0]?.fields.length === 0 ? 'p-5' : 'pl-2 p-5';
 
     return (
-        <div ref={ setNodeRef } className={ `DroppableZone ${ bg } ${ padding }` }>
+        <div ref={ setNodeRef } className={ `DroppableZone rounded-xl ${ bg } ${ padding }` }>
             <SortableContext id={ zone.id } items={ zone.lines.map((l: any) => l.id) }
                              strategy={ verticalListSortingStrategy }>
                 { zone.lines.length === 0 && (
@@ -40,9 +40,11 @@ export function DroppableZone({ zone, onUpdateField, onDeleteField }: any) {
                 ) }
                 <div className="flex flex-col gap-3">
                     { zone.lines.map((line: any) => (
-                        <SortableLine key={ line.id } line={ line }
+                        <SortableLine key={ line.id } line={ line } zoneId={ zone.id }
                                       onUpdateField={ onUpdateField }
-                                      onDeleteField={ onDeleteField }/>
+                                      onDeleteField={ onDeleteField }
+                                      onUpdateLine={ onUpdateLine }
+                                      onDeleteLine={ onDeleteLine }/>
                     )) }
                 </div>
             </SortableContext>

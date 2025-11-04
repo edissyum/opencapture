@@ -200,7 +200,7 @@ export function SortableField({ field, onUpdateField, onDeleteField }: {
                         <Button variant='danger' onClick={ () => onDeleteField(field.id) }>
                             { t('FORMS.delete_field') }
                         </Button>
-                        <div className='flex ml-auto'>
+                        <div className='flex ml-auto gap-4'>
                             <Button variant="no_bg" onClick={ () => op.current?.hide() }>
                                 { t('GLOBAL.cancel') }
                             </Button>

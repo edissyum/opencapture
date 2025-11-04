@@ -460,7 +460,10 @@
         "refuse": "Refuser",
         "refuse_loading": "Refus en cours...",
         "validate": "Valider",
-        "validate_loading": "Validation en cours..."
+        "validate_loading": "Validation en cours...",
+        "delete": "Supprimer",
+        "duplicable": "Duplicable",
+        "duplicate_line": "Dupliquer la ligne"
     },
     "FORMATS": {
         "alphanum": "Caractères alphanumériques [0-9aA-zZ']",

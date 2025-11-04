@@ -19,7 +19,7 @@ import { t } from "i18next";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Download, Edit, Eye, EyeOff } from "lucide-react";
+import { ChevronLeft, ChevronRight, Copy, Download, Edit, Eye, EyeOff } from "lucide-react";
 
 import { Accordion, AccordionTab } from "primereact/accordion";
 
@@ -204,7 +204,7 @@ export function VerifierViewerPage() {
             } else {
                 Object.keys(formFields).forEach((parent: any) => {
                     formFields[parent].forEach((line: any) => {
-                        line.forEach((field: any) => {
+                        Object.values(line).filter((field: any) => typeof field !== 'boolean').forEach((field: any) => {
                             if (field.id === position) {
                                 label = t(field.label);
                             }
@@ -227,7 +227,7 @@ export function VerifierViewerPage() {
 
             Object.keys(formFields).forEach((parent: any) => {
                 formFields[parent].forEach((line: any) => {
-                    line.forEach((field: any) => {
+                    Object.values(line).filter((field: any) => typeof field !== 'boolean').forEach((field: any) => {
                         if (field.id === position) {
                             newRegion.color = field.color;
                         }
@@ -255,7 +255,7 @@ export function VerifierViewerPage() {
 
                 if (formFields[parentKey] !== null) {
                     formFields[parentKey].forEach((line: any) => {
-                        line.forEach((field: any) => {
+                        Object.values(line).filter((field: any) => typeof field !== 'boolean').forEach((field: any) => {
                             if (field.default_value && (!tmpDocumentData?.datas?.[field.id] || tmpDocumentData?.datas?.[field.id] === '')) {
                                 let value = field.default_value;
                                 if (field.type === 'date') {
@@ -365,6 +365,47 @@ export function VerifierViewerPage() {
 
             await ocrOnFly(activeRegion, region);
         }
+    }
+
+    const handleDuplicateLine = (line: any, zone, lineIndex) => {
+        const fields = Object.values(line).filter((field: any) => typeof field !== 'boolean');
+        setFieldsZone((prevZones) => {
+            const newZones = prevZones.map(z => ({
+                ...z,
+                lines: [...z.lines],
+            }));
+
+            const zoneIndex = newZones.findIndex(z => z.id === zone.id);
+            if (zoneIndex === -1) {
+                return prevZones;
+            }
+
+            const newLine: any = {};
+            fields.forEach((field: any, index: number) => {
+                // find number of field.id already in lines to create new id
+                const cpt = newZones[zoneIndex].lines.reduce((acc, curr) => {
+                    const lineFields = Object.values(curr).filter((f: any) => typeof f !== 'boolean');
+                    lineFields.forEach((f: any) => {
+                        if (f.id.startsWith(field.id)) {
+                            acc++;
+                        }
+                    });
+                    return acc;
+                }, 0);
+                const fieldCpt = field.id.split('_')[field.id.split('_').length - 1];
+                const fieldWithoutCpt = field.id.replace(`_${ fieldCpt }`, '');
+                newLine[index] = { ...field, value: '', id: `${ fieldWithoutCpt }_${cpt}` };
+            });
+            console.log(newLine);
+            if (line.duplicable) {
+                newLine.duplicable = line.duplicable;
+            }
+
+            const insertIndex = lineIndex !== -1 ? lineIndex + 1 : newZones[zoneIndex].lines.length;
+
+            newZones[zoneIndex].lines.splice(insertIndex, 0, newLine);
+            return newZones;
+        });
     }
 
     // Function to update document data (only array, not on database) and validate fields
@@ -512,10 +553,11 @@ export function VerifierViewerPage() {
     }
 
     const getWidthLine = (line: any) => {
-        return line.length === 1 ? 'w-full' :
-            line.length === 2 ? 'w-1/2' :
-                line.length === 3 ? 'w-1/3' :
-                    line.length === 4 ? 'w-1/4' :
+        const currentLineFields = Object.values(line).filter((field: any) => typeof field !== 'boolean');
+        return currentLineFields.length === 1 ? 'w-full' :
+            currentLineFields.length === 2 ? 'w-1/2' :
+                currentLineFields.length === 3 ? 'w-1/3' :
+                    currentLineFields.length === 4 ? 'w-1/4' :
                         'w-1/5';
     }
 
@@ -721,9 +763,11 @@ export function VerifierViewerPage() {
                         }>
                             <div className='w-full px-4 pt-6'>
                                 { zone.lines.map((line: any, index: number) => (
-                                    <div key={ index } className='flex gap-4 mb-2'>
-                                        { line.map((field: any) => (
-                                            <div key={ field.id } className={ `min-w-1/6 ${ getWidthLine(line) }` }>
+                                    <div key={ index }
+                                         className={ `flex gap-4 mb-2` }>
+                                        { Object.values(line).filter((field: any) => typeof field !== 'boolean').map((field: any) => (
+                                            <div key={ field.id }
+                                                 className={ `${ line.duplicable } min-w-1/6 ${ getWidthLine(line) }` }>
                                                 {
                                                     field.type === 'date' ? (
                                                         <ISOCalendar
@@ -732,6 +776,7 @@ export function VerifierViewerPage() {
                                                             error={ errors[field.id] }
                                                             required={ field.required }
                                                             value={ tmpDocumentData?.datas?.[field.id] }
+                                                            disabled={ loadingUpdateValidate || loadingUpdateRefuse || documentData.status === 'END' }
                                                             onChange={ (e) => updateDocumentData(field, e) }
                                                             onClick={ () => handleFocusField(field.id, field.label, field.color) }
                                                         />
@@ -744,6 +789,7 @@ export function VerifierViewerPage() {
                                                             error={ errors[field.id] }
                                                             required={ field.required }
                                                             value={ tmpDocumentData?.datas?.[field.id] ?? "" }
+                                                            disabled={ loadingUpdateValidate || loadingUpdateRefuse || documentData.status === 'END' }
                                                             onClick={ () => handleFocusField(field.id, field.label, field.color) }
                                                             onChange={ (e) => updateDocumentData(field, e.target.value) }
                                                             onBlur={ (e) => {
@@ -753,6 +799,13 @@ export function VerifierViewerPage() {
                                                     ) }
                                             </div>
                                         )) }
+                                        { line.duplicable && (
+                                            <div className='flex items-center justify-center -mt-4 cursor-pointer'
+                                                 data-tooltip-id="tooltip" onClick={ () => { handleDuplicateLine(line, zone, index) } }
+                                                 data-tooltip-content={ t('FORMS.duplicate_line') }>
+                                                <Copy size={ 18 }/>
+                                            </div>
+                                        ) }
                                     </div>
                                 )) }
                             </div>

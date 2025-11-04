@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import { axiosApiCall } from "./axiosApiCall";
 
 export interface FormField {
+    flatMap(arg0: (line: any) => any[]): any;
     flat(): any;
     map(arg0: (line: any, index: number) => { id: string; fields: any; }): any;
     forEach(arg0: (line: any) => void): any;

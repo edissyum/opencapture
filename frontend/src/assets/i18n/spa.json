@@ -460,7 +460,10 @@
         "refuse": "",
         "refuse_loading": "",
         "validate": "",
-        "validate_loading": ""
+        "validate_loading": "",
+        "delete": "",
+        "duplicable": "",
+        "duplicate_line": ""
     },
     "FORMATS": {
         "date": "",

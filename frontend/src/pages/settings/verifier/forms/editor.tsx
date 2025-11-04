@@ -65,14 +65,15 @@ export function SettingsVerifierFormsEditor() {
     useEffect(() => {
         if (!formId || !formFields) return;
 
-        const updatedZones: any = zones.map((zone) => {
+        const updatedZones: any = zones.map((zone: any) => {
             const key: any = zone.id.replace("zone-", "");
 
             const zoneLines = formFields[key] || [];
 
             const formattedLines = zoneLines.map((line: any, index: number) => ({
                 id: `line-${ crypto.randomUUID() }`,
-                fields: line.map((field: any, fIndex: number) => ({
+                duplicable: line.duplicable || false,
+                fields: Object.values(line).filter(l => typeof l !== 'boolean').map((field: any, fIndex: number) => ({
                     id: field.id || `field-${ key }-${ index + 1 }-${ fIndex + 1 }`,
                     type: field.type,
                     label: field.label,
@@ -80,11 +81,12 @@ export function SettingsVerifierFormsEditor() {
                     required: field.required ?? false,
                     default_value: field.default_value || "",
                     format: field.format ?? "alphanum_extended_with_accent"
-                })) || [],
+                })) || []
             }));
 
-            // Update used fields
-            const usedFieldIds = zoneLines.flat().map((field: any) => field.id);
+            const usedFieldIds = zoneLines.flatMap((line: any) =>
+                Object.values(line).filter((field: any) => typeof field !== 'boolean').map((field: any) => field.id)
+            );
             setUsedFields((prev) => Array.from(new Set([...prev, ...usedFieldIds])));
 
             return { ...zone, lines: formattedLines };
@@ -119,7 +121,6 @@ export function SettingsVerifierFormsEditor() {
         const fields: any = availableFields[activeTab];
         const filtered = fields.filter((f: any) => !usedFields.includes(f.id));
 
-        console.log("Available items for tab", activeTab, ":", filtered);
         setAvailableItems(filtered);
     }, [activeTab, usedFields]);
 
@@ -193,6 +194,7 @@ export function SettingsVerifierFormsEditor() {
                     if (targetZoneForNewLine) {
                         targetZoneForNewLine.lines.push({
                             id: `line-${ crypto.randomUUID() }`,
+                            duplicable: false,
                             fields: [newField],
                         });
                     }
@@ -202,6 +204,7 @@ export function SettingsVerifierFormsEditor() {
             } else if (targetZone) {
                 targetZone.lines.push({
                     id: `line-${ crypto.randomUUID() }`,
+                    duplicable: false,
                     fields: [newField],
                 });
             }
@@ -241,6 +244,7 @@ export function SettingsVerifierFormsEditor() {
                     if (targetZoneForNewLine) {
                         targetZoneForNewLine.lines.push({
                             id: `line-${ crypto.randomUUID() }`,
+                            duplicable: false,
                             fields: [movedField],
                         });
                     }
@@ -269,6 +273,7 @@ export function SettingsVerifierFormsEditor() {
 
                 targetZone.lines.push({
                     id: `line-${ crypto.randomUUID() }`,
+                    duplicable: false,
                     fields: [movedField],
                 });
 
@@ -312,12 +317,32 @@ export function SettingsVerifierFormsEditor() {
         setUsedFields((prev) => prev.filter((id) => id !== fieldId));
     };
 
+    const handleDeleteLine = (lineId: string) => {
+        setZones((prevZones: any) =>
+            prevZones.map((zone: any) => ({
+                ...zone,
+                lines: zone.lines.filter((line: any) => line.id !== lineId)
+            }))
+        );
+    }
+
+    const handleUpdateLine = (data: any) => {
+        setZones((prevZones: any) =>
+            prevZones.map((zone: any) => ({
+                ...zone,
+                lines: zone.lines.map((line: any) =>
+                    line.id === data.id ? { ...line, ...data } : line
+                )
+            }))
+        );
+    }
+
     const handleUpdate = () => {
         if (isSubmitting) return;
 
         setIsSubmitting(true);
         const payload: any = {};
-        zones.forEach((zone) => {
+        zones.forEach((zone: any) => {
             const key = zone.id.replace("zone-", "");
             payload[key] = zone.lines.map((line: any) =>
                 line.fields.map((field: any) => ({
@@ -330,6 +355,11 @@ export function SettingsVerifierFormsEditor() {
                     format: field.format ?? "alphanum_extended_with_accent"
                 }))
             );
+
+            payload[key] = payload[key].map((line: any, index: number) => ({
+                ...line,
+                duplicable: zone.lines[index]?.duplicable || false,
+            }));
         });
 
         try {
@@ -358,7 +388,9 @@ export function SettingsVerifierFormsEditor() {
                                 { zones.map((zone) => (
                                     <AccordionTab header={ zone.name } key={ zone.id }>
                                         <DroppableZone key={ zone.id } zone={ zone }
+                                                       onDeleteLine={ handleDeleteLine }
                                                        onDeleteField={ handleDeleteField }
+                                                       onUpdateLine={ handleUpdateLine }
                                                        onUpdateField={ handleUpdateField }/>
                                     </AccordionTab>
                                 )) }

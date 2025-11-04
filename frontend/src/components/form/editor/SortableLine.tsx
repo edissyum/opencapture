@@ -14,13 +14,42 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { t } from "i18next";
+import { useRef } from "react";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical } from "lucide-react";
+import { ContextMenu } from "primereact/contextmenu";
+import { Copy, GripVertical, Settings, Trash2 } from "lucide-react";
 import { defaultAnimateLayoutChanges, useSortable } from "@dnd-kit/sortable";
 
 import { DroppableLine } from "./DroppableLine";
+import { InputSwitch } from "primereact/inputswitch";
 
-export function SortableLine({ line, onUpdateField, onDeleteField }: any) {
+export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDeleteLine, onUpdateLine }: any) {
+    const cm = useRef({ current: null } as any);
+    console.log(line)
+    const menuModel: any = [
+        {
+            label: <span className='flex items-center gap-2'>
+                { t('FORMS.duplicable') }
+                <InputSwitch inputId={ 'duplicate-' + line.id } checked={ line.duplicable }
+                             onClick={ (e) => e.stopPropagation() }
+                             onChange={ (e) => {
+                                 onUpdateLine({ id: line.id, duplicable: e.value })
+                             } }
+                />
+            </span>,
+            icon: <Copy className='mr-2' size={ 16 }/>,
+            visible: zoneId !== 'zone-supplier',
+        },
+        {
+            label: <span className='critical'>{ t('FORMS.delete') } </span>,
+            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            command: () => {
+                onDeleteLine(line.id)
+            }
+        }
+    ];
+
     const animateLayoutChanges = (args: any) =>
         defaultAnimateLayoutChanges({ ...args, wasDragging: true });
 
@@ -35,22 +64,34 @@ export function SortableLine({ line, onUpdateField, onDeleteField }: any) {
     const bg = isOver ? "bg-(--color-primary)/20 border-(--color-primary)" : "bg-(--bg-primary) border-transparent";
 
     const style = {
-        transform: CSS.Transform.toString(transform),
         transition,
         opacity: isDragging ? 0.7 : 1,
-        zIndex: isDragging ? 40 : "auto"
+        zIndex: isDragging ? 40 : "auto",
+        transform: CSS.Transform.toString(transform)
     };
 
     return (
         <div ref={ setNodeRef } style={ style }
-             className={ `SortableLine relative flex justify-center items-center ${ isDragging ? 'opacity-50' : 'opacity-100' }` }>
+             className={ `SortableLine relative mt-1 flex justify-center items-center ${ isDragging ? 'opacity-50' : 'opacity-100' }` }>
             { line.fields.length >= 1 && (
                 <div className='cursor-grab text-(--text-secondary) hover:text-(--text-primary)'
                      ref={ setActivatorNodeRef } { ...listeners } aria-label="Drag handle">
                     <GripVertical size={ 22 }/>
                 </div>
             ) }
-            <div className={ `w-full p-2 ${ bg } border-2 rounded-md` }>
+            <div className={ `group w-full p-2 ${ bg } border-2 rounded-md hover:bg-[#E1EFE8] 
+                              hover:border-(--color-primary)/30 transition-colors duration-200` }>
+                <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }/>
+                <span
+                    onClick={ (e) => {
+                        cm.current?.show(e)
+                    } }
+                    className='cursor-pointer group-hover:opacity-100 opacity-0 transition-opacity -translate-x-1/2
+                               duration-200 text-(--text-secondary) absolute z-20 -top-5.5 p-0.5 left-1/2 border-2
+                               border-b-0 border-(--color-primary)/30 rounded-md rounded-b-none bg-[#E1EFE8]
+                               before:content-[""] before:absolute before:bottom-0 before:translate-y-px'>
+                  <Settings size={ 18 }/>
+                </span>
                 <DroppableLine line={ line } onUpdateField={ onUpdateField } onDeleteField={ onDeleteField }/>
             </div>
         </div>
