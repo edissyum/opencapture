@@ -66,6 +66,7 @@ export function VerifierViewerPage() {
         { id: "facturation", name: t('FORMS.facturation'), lines: [] as any[] },
         { id: "other", name: t('FORMS.other'), lines: [] as any[] }
     ]));
+    const [fieldsZoneFilled, setFieldsZoneFilled] = useState<boolean>(false);
 
     const patterns: any = {
         alphanum: '^[\\-?0-9a-zA-Z\\s\'‘]*$',
@@ -240,7 +241,7 @@ export function VerifierViewerPage() {
 
     // Fill form
     useEffect(() => {
-        if (loadingFormFields || formFields.length === 0) return;
+        if (loadingFormFields || formFields.length === 0 || fieldsZoneFilled) return;
 
         setFieldsZone((prevZones) => {
             const newZones = prevZones.map(zone => ({
@@ -272,13 +273,39 @@ export function VerifierViewerPage() {
                                 prepareDocumentData(field, value);
                             }
                         });
+
                         newZones[zoneIndex].lines.push(line);
                     });
                 }
             });
+
+            // Handle duplicable lines
+            newZones.forEach((zone) => {
+                const duplicableLines = newZones.find(z => z.id === zone.id)?.lines.filter((line: any) => line.duplicable && !line.duplicated);
+                if (duplicableLines && duplicableLines.length > 0) {
+                    duplicableLines.forEach((line: any) => {
+                        const lineIndex = newZones.find(z => z.id === zone.id)?.lines.indexOf(line) || -1;
+                        line.duplicated = true;
+                        const duplicableFields = Object.values(line).filter((field: any) => typeof field !== 'boolean');
+                        let newLineAdded = false;
+                        duplicableFields.forEach((field: any) => {
+                            // check if documentData.datas has multiple entries for this base field using regex
+                            const regex = new RegExp(`^${ field.id.replace(/_\d+$/, '') }_(\\d+)$`);
+                            const matchingFields = Object.keys(tmpDocumentData?.datas || {}).filter((dataFieldId) => regex.test(dataFieldId));
+
+                            if (matchingFields.length > 0 && !newLineAdded) {
+                                newLineAdded = true;
+                                handleDuplicateLine(line, zone, lineIndex);
+                            }
+                        });
+                    });
+                }
+            });
+
+            setFieldsZoneFilled(true);
             return newZones;
         });
-    }, [loadingFormFields, formFields]);
+    }, [formFields]);
 
     // Check if form has errors to disable validate button
     useEffect(() => {
@@ -367,7 +394,7 @@ export function VerifierViewerPage() {
         }
     }
 
-    const handleDuplicateLine = (line: any, zone, lineIndex) => {
+    const handleDuplicateLine = (line: any, zone: any, lineIndex: number) => {
         const fields = Object.values(line).filter((field: any) => typeof field !== 'boolean');
         setFieldsZone((prevZones) => {
             const newZones = prevZones.map(z => ({
@@ -382,24 +409,32 @@ export function VerifierViewerPage() {
 
             const newLine: any = {};
             fields.forEach((field: any, index: number) => {
-                // find number of field.id already in lines to create new id
                 const cpt = newZones[zoneIndex].lines.reduce((acc, curr) => {
                     const lineFields = Object.values(curr).filter((f: any) => typeof f !== 'boolean');
                     lineFields.forEach((f: any) => {
-                        if (f.id.startsWith(field.id)) {
+                        if (f.id.startsWith(field.id.replace(/_\d+$/, ''))) {
                             acc++;
                         }
                     });
                     return acc;
                 }, 0);
+
                 const fieldCpt = field.id.split('_')[field.id.split('_').length - 1];
-                const fieldWithoutCpt = field.id.replace(`_${ fieldCpt }`, '');
-                newLine[index] = { ...field, value: '', id: `${ fieldWithoutCpt }_${cpt}` };
+                let fieldWithoutCpt = field.id;
+                let labelWithoutCpt = t(field.label);
+                if (!isNaN(parseInt(fieldCpt))) {
+                    fieldWithoutCpt = field.id.replace(`_${ fieldCpt }`, '');
+                    labelWithoutCpt = field.label.replace(` ${ fieldCpt }`, '');
+                }
+                newLine[index] = {
+                    ...field,
+                    value: '',
+                    id: `${ fieldWithoutCpt }_${ cpt }`,
+                    label: labelWithoutCpt + ` ${ cpt }`
+                };
             });
-            console.log(newLine);
-            if (line.duplicable) {
-                newLine.duplicable = line.duplicable;
-            }
+
+            formFields[zone.id.replace('zone-')].push(newLine);
 
             const insertIndex = lineIndex !== -1 ? lineIndex + 1 : newZones[zoneIndex].lines.length;
 
@@ -470,7 +505,13 @@ export function VerifierViewerPage() {
 
     function checkIfFieldIsSupplierField(fieldId: string) {
         const supplierFields = fieldsZone.find(zone => zone.id === 'supplier')?.lines.flat();
-        return !!(supplierFields && supplierFields.find((f: any) => f.id === fieldId));
+        let fieldIsSupplierField = false;
+        supplierFields?.forEach((field: any) => {
+            if (Object.values(field).filter((l: any) => typeof l !== 'boolean').find((f: any) => f.id === fieldId)) {
+                fieldIsSupplierField = true;
+            }
+        });
+        return !!(supplierFields && fieldIsSupplierField);
     }
 
     // Function to save document data to database on onBlur event of input
@@ -563,16 +604,16 @@ export function VerifierViewerPage() {
 
     function retrieveFieldById(fieldId: string) {
         let field = null;
-        for (const parentKey of Object.keys(formFields)) {
-            // @ts-ignore
-            for (const line of formFields[parentKey]) {
-                for (const l_field of line) {
+        Object.keys(formFields).forEach((parentKey: any) => {
+            formFields[parentKey].forEach((line: any) => {
+                Object.values(line).filter((l: any) => typeof l !== 'boolean').forEach((l_field: any) => {
                     if (l_field.id === fieldId) {
                         field = l_field;
                     }
-                }
-            }
-        }
+                });
+            });
+        });
+
         return field;
     }
 
@@ -583,7 +624,7 @@ export function VerifierViewerPage() {
                 lang = currentSupplier.document_lang;
             }
 
-            let field = retrieveFieldById(fieldId);
+            let field: any = retrieveFieldById(fieldId);
             if (!field) return;
 
             let removeSpaces = false;
@@ -656,7 +697,7 @@ export function VerifierViewerPage() {
 
         Object.keys(formFields).forEach((parentKey: any) => {
             formFields[parentKey].forEach((line: any) => {
-                line.forEach((field: any) => {
+                Object.values(line).filter((l: any) => typeof l !== 'boolean').forEach((field: any) => {
                     const value = tmpDocumentData?.datas?.[field.id];
                     const error = errorCheck(field, value);
                     if (error) {
@@ -710,7 +751,7 @@ export function VerifierViewerPage() {
                          data-tooltip-content={ t('VERIFIER.download_original_file') }>
                         <Download size={ 18 }/>
                     </div>
-                    <div className='w-[40%] flex bg-(--bg-primary) p-3.5 rounded-full cursor-pointer border
+                    <div className='w-[28%] flex bg-(--bg-primary) p-3.5 rounded-full cursor-pointer border
                                     border-(--border-secondary)'>
                         <ZoomControl zoom={ zoom } setZoom={ setZoom }/>
                     </div>
@@ -763,11 +804,9 @@ export function VerifierViewerPage() {
                         }>
                             <div className='w-full px-4 pt-6'>
                                 { zone.lines.map((line: any, index: number) => (
-                                    <div key={ index }
-                                         className={ `flex gap-4 mb-2` }>
+                                    <div key={ index } className={ `flex gap-4 mb-2` }>
                                         { Object.values(line).filter((field: any) => typeof field !== 'boolean').map((field: any) => (
-                                            <div key={ field.id }
-                                                 className={ `${ line.duplicable } min-w-1/6 ${ getWidthLine(line) }` }>
+                                            <div key={ field.id } className={ `min-w-1/6 ${ getWidthLine(line) }` }>
                                                 {
                                                     field.type === 'date' ? (
                                                         <ISOCalendar
@@ -801,7 +840,10 @@ export function VerifierViewerPage() {
                                         )) }
                                         { line.duplicable && (
                                             <div className='flex items-center justify-center -mt-4 cursor-pointer'
-                                                 data-tooltip-id="tooltip" onClick={ () => { handleDuplicateLine(line, zone, index) } }
+                                                 data-tooltip-id="tooltip"
+                                                 onClick={ () => {
+                                                     handleDuplicateLine(line, zone, index)
+                                                 } }
                                                  data-tooltip-content={ t('FORMS.duplicate_line') }>
                                                 <Copy size={ 18 }/>
                                             </div>
@@ -816,13 +858,14 @@ export function VerifierViewerPage() {
                     <div className='grow basis-0 w-full' data-tooltip-id="tooltip"
                          data-tooltip-content={ supplierChanged ? t('VERIFIER.save_supplier_modification') : '' }>
                         <Button
-                            disabled={ supplierChanged || loadingUpdateValidate || formHasError || documentData.status === 'END' }
+                            disabled={ loadingUpdateData || supplierChanged || loadingUpdateValidate || formHasError || documentData.status === 'END' }
                             className='w-full' onClick={ () => validateDocument() }>
                             { loadingUpdateValidate && !formHasError ? t('FORMS.validate_loading') : t('FORMS.validate') }
                         </Button>
                     </div>
-                    <div className='grow basis-0 w-full'>
-                        <Button disabled={ loadingUpdateRefuse || formHasError || documentData.status === 'END' }
+                    <div className='grow basis-0 w-full' data-tooltip-id="tooltip"
+                         data-tooltip-content={ supplierChanged ? t('VERIFIER.save_supplier_modification') : '' }>
+                        <Button disabled={ loadingUpdateData || supplierChanged || loadingUpdateRefuse || formHasError || documentData.status === 'END' }
                                 className='w-full' variant='danger' onClick={ () => refuseDocument() }>
                             { !loadingUpdateRefuse ? t('FORMS.refuse') : t('FORMS.refuse_loading') }
                         </Button>

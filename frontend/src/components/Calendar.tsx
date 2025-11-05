@@ -168,7 +168,7 @@ const ISOCalendar: React.FC<ISOCalendarProps> = ({
     return (
         <div className="flex flex-col">
             <div className={ `${ error ? '' : 'mb-5' }` }>
-                <FloatLabel className="w-full">
+                <FloatLabel className="w-full calendar">
                     <Calendar
                         showIcon
                         id={ id }
@@ -181,11 +181,6 @@ const ISOCalendar: React.FC<ISOCalendarProps> = ({
                         onChange={ handleChange }
                         value={ isoToDate(value) }
                         icon={<CalendarIcon size={ 18 }/>}
-                        placeholder={
-                            localeLang === "fr" || localeLang === "es"
-                                ? "JJ/MM/AAAA"
-                                : "MM/DD/YYYY"
-                        }
                         dateFormat={
                             localeLang === "fr"
                                 ? "dd/mm/yy"
