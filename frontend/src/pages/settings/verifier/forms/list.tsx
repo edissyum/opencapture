@@ -32,8 +32,8 @@ export function SettingsVerifierFormsList() {
     const [totalForms, setTotalForms] = useState(0);
     const [selectedForms, setSelectedForms] = useState<any[]>([]);
     const [loadingForms, setLoadingForms] = useState(false);
+
     const [searchTerm, setSearchTerm] = useState('');
-    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
     const [lazyParams, setLazyParams] = useState({
         first: 0,
         rows: 16,
@@ -41,6 +41,7 @@ export function SettingsVerifierFormsList() {
         sortField: null as string | null,
         sortOrder: null as 1 | -1 | null,
     });
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
     const columns = [
         { id: 'id', field: 'id', header: '', className: 'max-w-10! w-10!' },
@@ -77,6 +78,7 @@ export function SettingsVerifierFormsList() {
         }
     ]
 
+    // Fetch forms
     useEffect(() => {
         if (loadingForms) return;
         setLoadingForms(true);
@@ -104,6 +106,7 @@ export function SettingsVerifierFormsList() {
         fetchForms().then();
     }, [lazyParams, debouncedSearchTerm]);
 
+    // Debounce search term
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedSearchTerm(searchTerm);
@@ -216,7 +219,7 @@ export function SettingsVerifierFormsList() {
     }
 
     return (
-        <div className="p-8 bg-(--bg-secondary) h-full">
+        <div className="p-8 bg-(--bg-secondary) flex flex-col h-full">
             <div className='flex items-center gap-6 mb-4'>
                 <span className='flex items-center gap-1'>
                     <FileText size={ 16 }/>
@@ -224,11 +227,9 @@ export function SettingsVerifierFormsList() {
                         { t('SETTINGS.forms', { count: totalForms }) } ({ totalForms || 0 })
                     </span>
                 </span>
-                <span>
-                    <Input id="search" type="text" name="search" className='bg-(--bg-primary)'
-                           value={ searchTerm } placeholder={ t('USERS.search') } no_margin_bottom={ true }
-                           onChange={ (e) => setSearchTerm(e.target.value) }/>
-                </span>
+                <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height={ 'h-10' }
+                       value={ searchTerm } placeholder={ t('USERS.search') } no_margin_bottom={ true }
+                       onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Button
                         size={ 'sm' }

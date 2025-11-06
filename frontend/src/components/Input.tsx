@@ -19,6 +19,7 @@ import React from "react";
 import { CircleQuestionMark, Eye, EyeOff } from "lucide-react";
 
 import { FloatLabel } from "primereact/floatlabel";
+import { InputText } from "primereact/inputtext";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     error?: any;
@@ -36,8 +37,8 @@ const Input: React.FC<InputProps> = ({
     error,
     required,
     disabled,
-    height = "h-12",
     type = "text",
+    height = "h-12",
     className = "",
     no_margin_bottom = false,
     ...props
@@ -50,16 +51,17 @@ const Input: React.FC<InputProps> = ({
 
     return (
         <div className={ `flex flex-col rounded-md ${ className }` }>
-            <div
-                className={ `group group-focus-within:border-(--border-primary) relative flex justify-items-stretch ${ error || no_margin_bottom ? '' : 'mb-5' }` }>
+            <div className={ `group group-focus-within:border-(--border-primary) relative flex justify-items-stretch 
+                            ${ error || no_margin_bottom ? '' : 'mb-5' }` }>
                 <FloatLabel className='w-full'>
-                    <input
+                    {/*@ts-ignore*/ }
+                    <InputText
                         id={ id }
-                        className={ `peer w-full px-3 py-2 border-[1.5px] rounded-md focus:outline-none focus:border-(--color-primary)
-                            hover:border-(--color-primary) transition-colors duration-200 text-(--text-primary)
-                            ${ isPasswordField ? 'border-r-0 rounded-tr-none rounded-br-none' : '' }
-                            ${ error ? 'border-(--text-error)' : 'border-(--border-secondary)' } disabled:bg-(--bg-secondary) disabled:cursor-not-allowed ${ height }
-                            ${ props.value ? "p-filled" : "" }` }
+                        className={ `peer! w-full! px-3! py-2! border-[1.5px]! rounded-md! focus:outline-none! focus:border-(--color-primary)!
+                            hover:border-(--color-primary)! transition-colors duration-200 text-(--text-primary)!
+                            ${ isPasswordField ? 'border-r-0! rounded-r-none!' : '' }
+                            ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' } disabled:bg-(--bg-secondary) disabled:cursor-not-allowed! ${ height }`
+                        }
                         type={ inputType }
                         disabled={ disabled }
                         required={ required }
@@ -83,11 +85,10 @@ const Input: React.FC<InputProps> = ({
                     <button
                         type="button"
                         onClick={ () => setPasswordVisible((prev) => !prev) }
-                        className="px-2 rounded-lg rounded-tl-none group-hover:border-(--color-primary) group-focus-within:border-(--color-primary)
-                                   rounded-bl-none border-l-0 border border-(--border-secondary) text-(--text-secondary)
-                                   hover:text-(--color-primary) z-20 cursor-pointer"
-                        tabIndex={ -1 }
-                    >
+                        className={ `px-2 rounded-lg! rounded-l-none! group-focus-within:border-(--color-primary)!
+                            border-l-0! border! text-(--text-secondary)! hover:text-(--color-primary) z-20 cursor-pointer
+                            ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)! group-hover:border-(--color-primary)!' }` }
+                        tabIndex={ -1 }>
                         { passwordVisible ? <EyeOff size={ 18 }/> : <Eye size={ 18 }/> }
                     </button>
                 ) }

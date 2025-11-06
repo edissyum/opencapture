@@ -222,11 +222,9 @@ export function SettingsGeneralUsers() {
                         { t('USERS.users', { count: totalUsers }) } ({ totalUsers || 0 })
                     </span>
                 </span>
-                <span>
-                    <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height={ 'h-10' }
-                           value={ searchTerm } placeholder={ t('USERS.search') } no_margin_bottom={ true }
-                           onChange={ (e) => setSearchTerm(e.target.value) }/>
-                </span>
+                <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height={ 'h-10' }
+                       value={ searchTerm } placeholder={ t('USERS.search') } no_margin_bottom={ true }
+                       onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Button
                         size={ 'sm' }

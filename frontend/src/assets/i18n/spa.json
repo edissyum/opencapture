@@ -207,7 +207,8 @@
         "ocr_on_fly_success": "",
         "correct_errors_before_validate": "",
         "save_supplier_modification": "",
-        "supplier_changed": ""
+        "supplier_changed": "",
+        "supplier_associated_success": ""
     },
     "SPLITTER": {
         "batch_selected_many": "lotes seleccionados",

@@ -271,8 +271,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                label={ t("MAILCOLLECT.scope") }
                                error={ authErrors.scopes?.message }/>
                         <Input id='authority_url' { ...registerAuth("authority_url") }
-                                 label={ t("MAILCOLLECT.authority_url") }
-                                    error={ authErrors.authority_url?.message }/>
+                               label={ t("MAILCOLLECT.authority_url") }
+                               error={ authErrors.authority_url?.message }/>
                         <Input id='client_id' { ...registerAuth("client_id") }
                                label={ t("MAILCOLLECT.client_id") }
                                error={ authErrors.client_id?.message }/>
@@ -516,7 +516,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                                 onChange={ (e) => field.onChange(e.value) }
                                                 className="w-full"
                                             />
-                                            <label htmlFor="splitter_workflow_id">{ t("MAILCOLLECT.select_workflow") }</label>
+                                            <label
+                                                htmlFor="splitter_workflow_id">{ t("MAILCOLLECT.select_workflow") }</label>
                                         </FloatLabel>
                                         { moduleErrors && moduleErrors['splitter_workflow_id'] && (
                                             <p className="text-(--text-error) mt-2">

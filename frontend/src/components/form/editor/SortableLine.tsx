@@ -26,7 +26,6 @@ import { InputSwitch } from "primereact/inputswitch";
 
 export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDeleteLine, onUpdateLine }: any) {
     const cm = useRef({ current: null } as any);
-    console.log(line)
     const menuModel: any = [
         {
             label: <span className='flex items-center gap-2'>

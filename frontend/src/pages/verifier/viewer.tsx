@@ -34,6 +34,7 @@ import { Annotator, type Region } from "../../components/Annotator";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { useFormFields } from "../../services/hooks/useFormFields";
 import { useCustomFields } from "../../services/hooks/useCustomFields";
+import AutocompleteInput from "../../components/Autocomplete.tsx";
 
 export function VerifierViewerPage() {
     const { get, post, put } = axiosApiCall();
@@ -46,6 +47,9 @@ export function VerifierViewerPage() {
 
     const [formHasError, setFormHasError] = useState<boolean>(false);
     const [tmpDocumentData, setTmpDocumentData] = useState<any>(null);
+
+    const [allSuppliers, setAllSuppliers] = useState<any[]>([]);
+    const [suggestionsSuppliers, setSuggestionsSuppliers] = useState<any[]>([]);
 
     const [currentSupplier, setCurrentSupplier] = useState<any>(null);
     const [supplierChanged, setSupplierChanged] = useState<boolean>(false);
@@ -129,37 +133,53 @@ export function VerifierViewerPage() {
         fetchForm().then();
     }, [documentDataLoading]);
 
+    // Retrieve all third parties for autocomplete
+    useEffect(() => {
+        const fetchAllSuppliers = async () => {
+            try {
+                get(`accounts/suppliers/list`).then((response) => {
+                    setAllSuppliers(response.suppliers || []);
+                    setSuggestionsSuppliers(response.suppliers.slice(0, 100) || []);
+                });
+            } catch (error) {
+                console.error("Error fetching all third parties:", error);
+            }
+        }
+        fetchAllSuppliers().then();
+    }, []);
+
+    async function fetchThirdParty(force = false) {
+        try {
+            get(`accounts/suppliers/getById/${ documentData.supplier_id }`, {}).then((response) => {
+                if (!response) return;
+
+                get(`accounts/getAdressById/${ response.address_id }`, {}).then((addressResponse) => {
+                    const supplierFull = {
+                        ...response,
+                        ...addressResponse
+                    }
+
+                    setCurrentSupplier(supplierFull);
+                    setOriginalCurrentSupplier(supplierFull);
+
+                    Object.keys(documentData.datas).forEach((data: any) => {
+                        if (supplierFull[data] && (force || (!tmpDocumentData?.datas?.[data] || tmpDocumentData?.datas?.[data] === ''))) {
+                            updateDocumentData({ id: data }, supplierFull[data], force);
+                            prepareDocumentData({ id: data }, supplierFull[data], force);
+                        }
+                    });
+                });
+            });
+        } catch (error) {
+            console.error("Error fetching third party:", error);
+        }
+    }
+
     // Function to retrieve third party
     useEffect(() => {
         if (!documentData) return;
         if (!documentData.supplier_id) return;
 
-        const fetchThirdParty = async () => {
-            try {
-                get(`accounts/suppliers/getById/${ documentData.supplier_id }`, {}).then((response) => {
-                    if (!response) return;
-
-                    get(`accounts/getAdressById/${ response.address_id }`, {}).then((addressResponse) => {
-
-                        const supplierFull = {
-                            ...response,
-                            ...addressResponse
-                        }
-                        setCurrentSupplier(supplierFull);
-                        setOriginalCurrentSupplier(supplierFull);
-
-                        Object.keys(documentData.datas).forEach((data: any) => {
-                            if (supplierFull[data] && (!tmpDocumentData?.datas?.[data] || tmpDocumentData?.datas?.[data] === '')) {
-                                updateDocumentData({ id: data }, supplierFull[data]);
-                                prepareDocumentData({ id: data }, supplierFull[data]);
-                            }
-                        });
-                    });
-                });
-            } catch (error) {
-                console.error("Error fetching third party:", error);
-            }
-        };
         fetchThirdParty().then();
     }, [documentDataLoading]);
 
@@ -193,7 +213,7 @@ export function VerifierViewerPage() {
     useEffect(() => {
         if (!documentData || loadingCustom || loadingFormFields || formFields.length === 0) return;
 
-        if (regionsList.length > 0 || documentData.positions.length === 0) return;
+        if (regionsList.length > 0 || documentData.positions.length === 0 || !fieldsZoneFilled) return;
 
         Object.keys(documentData.positions).forEach((position) => {
             let label = '';
@@ -237,7 +257,7 @@ export function VerifierViewerPage() {
             });
             setRegionsList((prevRegions) => [...prevRegions, newRegion]);
         });
-    }, [documentDataLoading, loadingCustom, loadingFormFields, customFields, formFields]);
+    }, [fieldsZoneFilled]);
 
     // Fill form
     useEffect(() => {
@@ -444,7 +464,7 @@ export function VerifierViewerPage() {
     }
 
     // Function to update document data (only array, not on database) and validate fields
-    const updateDocumentData = (field: any, value: any) => {
+    const updateDocumentData = (field: any, value: any, force: boolean = false) => {
         field.error = errorCheck(field, value);
         setErrors((prevErrors) => ({
             ...prevErrors,
@@ -460,16 +480,19 @@ export function VerifierViewerPage() {
         }));
 
         // Detect supplier change
-        let supplierChange = false;
-        if (checkIfFieldIsSupplierField(field.id)) {
-            if (value === null || value === undefined || value === '') {
-                value = null;
+        if (!force) {
+            let supplierChange = false;
+            if (checkIfFieldIsSupplierField(field.id)) {
+                if (value === null || value === undefined || value === '') {
+                    value = null;
+                }
+
+                if (originalCurrentSupplier && value !== originalCurrentSupplier[field.id]) {
+                    supplierChange = true;
+                }
             }
-            if (originalCurrentSupplier && value !== originalCurrentSupplier[field.id]) {
-                supplierChange = true;
-            }
+            setSupplierChanged(supplierChange)
         }
-        setSupplierChanged(supplierChange)
 
         // onBlur doesn't work well with date picker, so we save directly here for date fields
         if (field.type === 'date' && value && !field.error) {
@@ -515,7 +538,7 @@ export function VerifierViewerPage() {
     }
 
     // Function to save document data to database on onBlur event of input
-    const prepareDocumentData = (field: any, value: any) => {
+    const prepareDocumentData = (field: any, value: any, force: boolean = false) => {
         if (documentData.status === 'END') {
             return;
         }
@@ -533,7 +556,7 @@ export function VerifierViewerPage() {
         }
 
         // Do not save supplier data if supplier changed and still not updated
-        if (checkIfFieldIsSupplierField(field.id) && supplierChanged) {
+        if (checkIfFieldIsSupplierField(field.id) && supplierChanged && !force) {
             return;
         }
 
@@ -558,6 +581,15 @@ export function VerifierViewerPage() {
             console.error("Error saving document data:", error);
         } finally {
             setLoadingUpdateDocumentData(false);
+        }
+    }
+
+    async function updateDocument(data: any) {
+        setLoadingUpdateDocumentData(true);
+        try {
+            return await put(`verifier/documents/${ documentId }/update`, data);
+        } catch (error) {
+            console.error("Error updating document:", error);
         }
     }
 
@@ -615,6 +647,33 @@ export function VerifierViewerPage() {
         });
 
         return field;
+    }
+
+    const handleSupplierSearch = (e: any, fieldId: string) => {
+        if (!e.query || e.query.trim() === '') {
+            setSuggestionsSuppliers(allSuppliers.slice(0, 100));
+            return;
+        }
+        const query = e.query.toLowerCase();
+        const filtered = allSuppliers.filter((supplier) =>
+            fieldId === 'name' ? supplier.name?.toLowerCase().includes(query) : supplier.lastname?.toLowerCase().includes(query)
+        );
+        setSuggestionsSuppliers(filtered.slice(0, 100));
+    }
+
+    const handleSupplierChange = async (field: any, value: any) => {
+        if (typeof value === 'object' && value !== null) {
+            const newSupplier = value;
+            value = value[field.id];
+
+            await updateDocument({ 'supplier_id': newSupplier.id }).then(() => {
+                documentData.supplier_id = newSupplier.id;
+                fetchThirdParty(true).then(() => {
+                    showToast(t('VERIFIER.supplier_associated_success'), 'success');
+                });
+            });
+        }
+        updateDocumentData({ id: field.id }, value);
     }
 
     async function ocrOnFly(fieldId: string, region: Region) {
@@ -695,6 +754,7 @@ export function VerifierViewerPage() {
     const validateDocument = async () => {
         setLoadingUpdateValidate(true);
 
+        // Final error check before validate
         Object.keys(formFields).forEach((parentKey: any) => {
             formFields[parentKey].forEach((line: any) => {
                 Object.values(line).filter((l: any) => typeof l !== 'boolean').forEach((field: any) => {
@@ -711,9 +771,24 @@ export function VerifierViewerPage() {
             });
         });
 
-        // try {
-        //
-        // }
+        if (currentForm.outputs && currentForm.outputs.length > 0) {
+            let cpt = 0;
+            for (const output_id of currentForm.outputs) {
+                try {
+                    const output = await get(`outputs/verifier/getById/${ output_id }`);
+                    if (!output) return;
+
+                    await post(`verifier/documents/${ documentId }/${ output.output_type_id }`, output)
+                    cpt += 1;
+
+                    if (cpt === currentForm.outputs.length) {
+                        showToast(t('VERIFIER.document_validated_success'), 'success');
+                    }
+                } catch (error) {
+                    console.error("Error executing output on validate:", error);
+                }
+            }
+        }
 
         setLoadingUpdateValidate(false);
     }
@@ -744,133 +819,175 @@ export function VerifierViewerPage() {
                         />
                     ) }
                 </div>
-                <div className='flex gap-4 mt-4 items-center'>
-                    <div className='w-[48px] flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
-                                    cursor-pointer border border-(--border-secondary) hover:border-(--border-primary) hover:text-(--color-primary) transition-colors'
-                         onClick={ handleDownloadOriginalFile } data-tooltip-id="tooltip"
+
+                <div className="flex flex-wrap gap-4 mt-4 items-center">
+                    <div className="flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
+                                    cursor-pointer border border-(--border-secondary) hover:border-(--border-primary)
+                                    hover:text-(--color-primary) transition-colors w-[48px] shrink-0"
+                         onClick={ handleDownloadOriginalFile }
+                         data-tooltip-id="tooltip"
                          data-tooltip-content={ t('VERIFIER.download_original_file') }>
                         <Download size={ 18 }/>
                     </div>
-                    <div className='w-[28%] flex bg-(--bg-primary) p-3.5 rounded-full cursor-pointer border
-                                    border-(--border-secondary)'>
+
+                    <div className="flex bg-(--bg-primary) p-3.5 rounded-full cursor-pointer border
+                                    border-(--border-secondary) grow-5 min-w-[180px]">
                         <ZoomControl zoom={ zoom } setZoom={ setZoom }/>
                     </div>
-                    <div className='flex justify-center gap-2 grow basis-0 bg-(--bg-primary) p-3 rounded-full
-                                   cursor-pointer border border-(--border-secondary)'>
-                        <button onClick={ handlePrev } disabled={ currentPage === 1 }
-                                className={ `cursor-pointer rounded-full transition-colors ${
-                                    currentPage === 1 ? "text-(--text-secondary) cursor-not-allowed"
-                                        : "hover:bg-(--bg-secondary) text-(--text-primary)"
-                                }` }>
+
+                    <div className="flex justify-center items-center gap-3 bg-(--bg-primary) p-3 rounded-full
+                                    cursor-pointer border border-(--border-secondary) grow min-w-[160px] whitespace-nowrap">
+                        <button onClick={ handlePrev }
+                                disabled={ currentPage === 1 }
+                                className={ `
+                                    cursor-pointer rounded-full transition-colors 
+                                    ${ currentPage === 1 ? "text-(--text-secondary) cursor-not-allowed"
+                                    : "hover:bg-(--bg-secondary) text-(--text-primary)" }`
+                                }>
                             <ChevronLeft size={ 16 }/>
                         </button>
 
-                        <span>
+                        <span className="whitespace-nowrap">
                             { t('VERIFIER.page') } { currentPage } / { totalPages || 1 }
                         </span>
 
-                        <button onClick={ handleNext }
-                                disabled={ currentPage === totalPages }
-                                className={ `p-1 cursor-pointer rounded-full transition-colors ${
-                                    currentPage === totalPages ? "text-(--text-secondary) cursor-not-allowed"
-                                        : "hover:bg-(--bg-secondary) text-(--text-primary)"
-                                }` }>
+                        <button
+                            onClick={ handleNext }
+                            disabled={ currentPage === totalPages }
+                            className={ `cursor-pointer rounded-full transition-colors 
+                                ${ currentPage === totalPages ? "text-(--text-secondary) cursor-not-allowed"
+                                : "hover:bg-(--bg-secondary) text-(--text-primary)" }` }>
                             <ChevronRight size={ 16 }/>
                         </button>
                     </div>
-                    <div className='flex justify-center items-center select-none gap-4 grow basis-0 ml-auto
-                                    hover:border-(--border-primary) hover:text-(--color-primary) bg-(--bg-primary) p-3
-                                    rounded-full cursor-pointer border border-(--border-secondary) transition-colors'
+
+                    <div className="flex justify-center items-center select-none gap-3 bg-(--bg-primary) p-3
+                                    rounded-full cursor-pointer border border-(--border-secondary)
+                                    hover:border-(--border-primary) hover:text-(--color-primary)
+                                    transition-colors shrink-0 min-w-[140px]"
                          onClick={ handleChangeIndicatorsVisible }>
                         { indicatorsVisible ? <Eye size={ 18 }/> : <EyeOff size={ 18 }/> }
-                        { t('VERIFIER.indicators') }
+                        <span className="hidden sm:inline">{ t('VERIFIER.indicators') }</span>
                     </div>
                 </div>
             </div>
+
             <div className='w-1/2 bg-(--bg-primary) p-8 h-full border-l-2 border-(--border-secondary) overflow-auto'>
-                <Accordion multiple activeIndex={ [0] } className='flex flex-col gap-4'>
-                    { fieldsZone.filter((zone: any) => zone.lines.length > 0).map((zone) => (
-                        <AccordionTab key={ zone.id } header={
-                            <span className='flex items-center gap-2'>
-                                <span>
-                                    { zone.name }
+                { documentDataLoading || formFields.length === 0 ? (
+                    <Loader/>
+                ) : (
+                    <>
+                        <Accordion multiple activeIndex={ [0] } className='flex flex-col gap-4'>
+                            { fieldsZone.filter((zone: any) => zone.lines.length > 0).map((zone) => (
+                                <AccordionTab key={ zone.id } header={
+                                    <span className='flex items-center gap-2'>
+                                    <span>
+                                        { zone.name }
+                                    </span>
+                                    <span className='flex ml-auto'>
+                                        <Edit size={ 20 } data-tooltip-id="tooltip"
+                                              className={ supplierChanged && zone.id === 'supplier' ? 'opacity-100' : 'opacity-0' }
+                                              data-tooltip-content={ t('VERIFIER.supplier_changed') }/>
+                                    </span>
                                 </span>
-                                <span className='flex ml-auto'>
-                                    <Edit size={ 20 } data-tooltip-id="tooltip"
-                                          className={ supplierChanged && zone.id === 'supplier' ? 'opacity-100' : 'opacity-0' }
-                                          data-tooltip-content={ t('VERIFIER.supplier_changed') }/>
-                                </span>
-                            </span>
-                        }>
-                            <div className='w-full px-4 pt-6'>
-                                { zone.lines.map((line: any, index: number) => (
-                                    <div key={ index } className={ `flex gap-4 mb-2` }>
-                                        { Object.values(line).filter((field: any) => typeof field !== 'boolean').map((field: any) => (
-                                            <div key={ field.id } className={ `min-w-1/6 ${ getWidthLine(line) }` }>
-                                                {
-                                                    field.type === 'date' ? (
-                                                        <ISOCalendar
-                                                            id={ field.id }
-                                                            label={ t(field.label) }
-                                                            error={ errors[field.id] }
-                                                            required={ field.required }
-                                                            value={ tmpDocumentData?.datas?.[field.id] }
-                                                            disabled={ loadingUpdateValidate || loadingUpdateRefuse || documentData.status === 'END' }
-                                                            onChange={ (e) => updateDocumentData(field, e) }
-                                                            onClick={ () => handleFocusField(field.id, field.label, field.color) }
-                                                        />
-                                                    ) : (
-                                                        <Input
-                                                            id={ field.id }
-                                                            key={ field.id }
-                                                            type={ field.type }
-                                                            label={ t(field.label) }
-                                                            error={ errors[field.id] }
-                                                            required={ field.required }
-                                                            value={ tmpDocumentData?.datas?.[field.id] ?? "" }
-                                                            disabled={ loadingUpdateValidate || loadingUpdateRefuse || documentData.status === 'END' }
-                                                            onClick={ () => handleFocusField(field.id, field.label, field.color) }
-                                                            onChange={ (e) => updateDocumentData(field, e.target.value) }
-                                                            onBlur={ (e) => {
-                                                                prepareDocumentData(field, e.target.value)
-                                                            } }
-                                                        />
-                                                    ) }
+                                }>
+                                    <div className='w-full px-4 pt-6'>
+                                        { zone.lines.map((line: any, index: number) => (
+                                            <div key={ index } className={ `flex gap-4 mb-2` }>
+                                                { Object.values(line).filter((field: any) => typeof field !== 'boolean').map((field: any) => (
+                                                    <div key={ field.id }
+                                                         className={ `min-w-1/6 ${ getWidthLine(line) }` }>
+                                                        {
+                                                            field.type === 'date' ? (
+                                                                <ISOCalendar
+                                                                    id={ field.id }
+                                                                    label={ t(field.label) }
+                                                                    error={ errors[field.id] }
+                                                                    required={ field.required }
+                                                                    value={ tmpDocumentData?.datas?.[field.id] }
+                                                                    disabled={ loadingUpdateValidate || loadingUpdateRefuse || documentData.status === 'END' }
+                                                                    onChange={ (e) => updateDocumentData(field, e) }
+                                                                    onClick={ () => handleFocusField(field.id, field.label, field.color) }
+                                                                />
+                                                            ) : (
+                                                                zone.id === 'supplier' && (field.id === 'lastname' || field.id === 'name') ? (
+                                                                    <AutocompleteInput
+                                                                        id={ field.id }
+                                                                        label={ t(field.label) }
+                                                                        required={ field.required }
+                                                                        suggestions={ suggestionsSuppliers }
+                                                                        value={ tmpDocumentData?.datas?.[field.id] ?? "" }
+                                                                        optionLabel={ field.id === 'name' ? 'name' : 'lastname' }
+                                                                        search={ (e) => handleSupplierSearch(e, field.id) }
+                                                                        onChange={ (value) => handleSupplierChange(field, value) }
+                                                                        itemTemplate={ (supplier: any) => (
+                                                                            <div>
+                                                                                { field.id === 'name' ? supplier.name : supplier.lastname }
+                                                                                { field.id === 'lastname' && supplier.firstname ? ` ${ supplier.firstname }` : '' }
+                                                                                <span
+                                                                                    className='text-(--text-secondary)'>
+                                                                                    { field.id === 'lastname' && supplier.name ? ` (${ supplier.name })` : '' }
+                                                                                </span>
+                                                                            </div>
+                                                                        ) }
+                                                                    />
+                                                                ) : (
+                                                                    <Input
+                                                                        id={ field.id }
+                                                                        key={ field.id }
+                                                                        type={ field.type }
+                                                                        label={ t(field.label) }
+                                                                        error={ errors[field.id] }
+                                                                        required={ field.required }
+                                                                        value={ tmpDocumentData?.datas?.[field.id] ?? "" }
+                                                                        disabled={ loadingUpdateValidate || loadingUpdateRefuse || documentData.status === 'END' }
+                                                                        onClick={ () => handleFocusField(field.id, field.label, field.color) }
+                                                                        onChange={ (e) => updateDocumentData(field, e.target.value) }
+                                                                        onBlur={ (e) => {
+                                                                            prepareDocumentData(field, e.target.value)
+                                                                        } }
+                                                                    />
+                                                                )
+                                                            ) }
+                                                    </div>
+                                                )) }
+                                                { line.duplicable && (
+                                                    <div
+                                                        className='flex items-center justify-center -mt-4 cursor-pointer'
+                                                        data-tooltip-id="tooltip"
+                                                        onClick={ () => {
+                                                            handleDuplicateLine(line, zone, index)
+                                                        } }
+                                                        data-tooltip-content={ t('FORMS.duplicate_line') }>
+                                                        <Copy size={ 18 }/>
+                                                    </div>
+                                                ) }
                                             </div>
                                         )) }
-                                        { line.duplicable && (
-                                            <div className='flex items-center justify-center -mt-4 cursor-pointer'
-                                                 data-tooltip-id="tooltip"
-                                                 onClick={ () => {
-                                                     handleDuplicateLine(line, zone, index)
-                                                 } }
-                                                 data-tooltip-content={ t('FORMS.duplicate_line') }>
-                                                <Copy size={ 18 }/>
-                                            </div>
-                                        ) }
                                     </div>
-                                )) }
+                                </AccordionTab>
+                            )) }
+                        </Accordion>
+                        <div className='flex mt-6 w-full items-center gap-4'>
+                            <div className='grow basis-0 w-full' data-tooltip-id="tooltip"
+                                 data-tooltip-content={ supplierChanged ? t('VERIFIER.save_supplier_modification') : '' }>
+                                <Button
+                                    disabled={ loadingUpdateData || supplierChanged || loadingUpdateValidate || formHasError || documentData.status === 'END' }
+                                    className='w-full' onClick={ () => validateDocument() }>
+                                    { loadingUpdateValidate && !formHasError ? t('FORMS.validate_loading') : t('FORMS.validate') }
+                                </Button>
                             </div>
-                        </AccordionTab>
-                    )) }
-                </Accordion>
-                <div className='flex mt-6 w-full items-center gap-4'>
-                    <div className='grow basis-0 w-full' data-tooltip-id="tooltip"
-                         data-tooltip-content={ supplierChanged ? t('VERIFIER.save_supplier_modification') : '' }>
-                        <Button
-                            disabled={ loadingUpdateData || supplierChanged || loadingUpdateValidate || formHasError || documentData.status === 'END' }
-                            className='w-full' onClick={ () => validateDocument() }>
-                            { loadingUpdateValidate && !formHasError ? t('FORMS.validate_loading') : t('FORMS.validate') }
-                        </Button>
-                    </div>
-                    <div className='grow basis-0 w-full' data-tooltip-id="tooltip"
-                         data-tooltip-content={ supplierChanged ? t('VERIFIER.save_supplier_modification') : '' }>
-                        <Button disabled={ loadingUpdateData || supplierChanged || loadingUpdateRefuse || formHasError || documentData.status === 'END' }
-                                className='w-full' variant='danger' onClick={ () => refuseDocument() }>
-                            { !loadingUpdateRefuse ? t('FORMS.refuse') : t('FORMS.refuse_loading') }
-                        </Button>
-                    </div>
-                </div>
+                            <div className='grow basis-0 w-full' data-tooltip-id="tooltip"
+                                 data-tooltip-content={ supplierChanged ? t('VERIFIER.save_supplier_modification') : '' }>
+                                <Button
+                                    disabled={ loadingUpdateData || supplierChanged || loadingUpdateRefuse || formHasError || documentData.status === 'END' }
+                                    className='w-full' variant='danger' onClick={ () => refuseDocument() }>
+                                    { !loadingUpdateRefuse ? t('FORMS.refuse') : t('FORMS.refuse_loading') }
+                                </Button>
+                            </div>
+                        </div>
+                    </>
+                ) }
             </div>
         </div>
     );

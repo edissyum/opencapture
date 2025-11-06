@@ -15,6 +15,13 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+.p-inputtext:enabled:focus,
+.p-inputtext:enabled:hover {
+    @apply shadow-none;
+    @apply outline-none;
+    @apply border-(--color-primary);
+}
+
 .p-datepicker:not(.p-datepicker-inline) {
      @apply min-w-md!;
 }

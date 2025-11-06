@@ -216,11 +216,9 @@ export function SettingsGeneralRoles() {
                         { t('ROLES.roles', { count: totalRoles }) } ({ totalRoles || 0 })
                     </span>
                 </span>
-                <span>
-                    <Input id="search" type="text" name="search" className='bg-(--bg-primary)'
-                           value={ searchTerm } placeholder={ t('ROLES.search') } no_margin_bottom={ true }
-                           onChange={ (e) => setSearchTerm(e.target.value) }/>
-                </span>
+                <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height={ 'h-10' }
+                       value={ searchTerm } placeholder={ t('ROLES.search') } no_margin_bottom={ true }
+                       onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Button
                         size={ 'sm' }

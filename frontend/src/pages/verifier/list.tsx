@@ -408,28 +408,26 @@ export function VerifierListPage() {
                         { t('VERIFIER.filters') }
                     </Button>
                     <span className='flex items-center gap-1'>
-                    <FileText size={ 16 }/>
-                    <span>
-                        { t('VERIFIER.documents', { count: totalDocuments! }) } ({ totalDocuments || 0 })
+                        <FileText size={ 16 }/>
+                        <span>
+                            { t('VERIFIER.documents', { count: totalDocuments! }) } ({ totalDocuments || 0 })
+                        </span>
                     </span>
-                </span>
-                    <span>
                     <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10'
                            value={ searchTerm } placeholder={ t('VERIFIER.search') } no_margin_bottom={ true }
                            onChange={ (e) => setSearchTerm(e.target.value) }/>
-                </span>
                     <span className='ml-auto text-(--text-secondary) flex cursor-pointer'>
-                    <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.list') }
-                          onClick={ () => handleChangeView('list') }
-                          className={ `${ view == 'list' ? "bg-(--color-primary)/20 border-(--border-primary)/50" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-l-md dark:bg-(--bg-secondary) border` }>
-                        <Rows3 size={ 20 }/>
+                        <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.list') }
+                              onClick={ () => handleChangeView('list') }
+                              className={ `${ view == 'list' ? "bg-(--color-primary)/20 border-(--border-primary)/50" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-l-md dark:bg-(--bg-secondary) border` }>
+                            <Rows3 size={ 20 }/>
+                        </span>
+                        <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.grid') }
+                              onClick={ () => handleChangeView('grid') }
+                              className={ `${ view == 'grid' ? "bg-(--color-primary)/20 border-(--border-primary)/50" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-r-md dark:bg-(--bg-secondary) border` }>
+                            <LayoutGrid size={ 20 }/>
+                        </span>
                     </span>
-                    <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.grid') }
-                          onClick={ () => handleChangeView('grid') }
-                          className={ `${ view == 'grid' ? "bg-(--color-primary)/20 border-(--border-primary)/50" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-r-md dark:bg-(--bg-secondary) border` }>
-                        <LayoutGrid size={ 20 }/>
-                    </span>
-                </span>
                 </div>
 
                 <div className="mt-4 flex flex-col overflow-y-auto">

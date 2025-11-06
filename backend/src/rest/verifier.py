@@ -227,7 +227,7 @@ def export_xml(document_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/export_xml'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'data', 'type': dict, 'mandatory': True},
         {'id': 'module', 'type': str, 'mandatory': True},
         {'id': 'ocrise', 'type': bool, 'mandatory': False},
@@ -240,7 +240,7 @@ def export_xml(document_id):
             "message": message
         }, 400)
 
-    res = verifier.export_xml(document_id, request.json['args'])
+    res = verifier.export_xml(document_id, request.json)
     return make_response(jsonify(res[0]), res[1])
 
 
@@ -252,7 +252,7 @@ def export_pdf(document_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/export_pdf'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'data', 'type': dict, 'mandatory': True},
         {'id': 'module', 'type': str, 'mandatory': True},
         {'id': 'ocrise', 'type': bool, 'mandatory': False},
@@ -265,7 +265,7 @@ def export_pdf(document_id):
             "message": message
         }, 400)
 
-    res = verifier.export_pdf(document_id, request.json['args'])
+    res = verifier.export_pdf(document_id, request.json)
     return make_response(jsonify(res[0]), res[1])
 
 
@@ -277,7 +277,7 @@ def export_facturx(document_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/export_facturx'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'data', 'type': dict, 'mandatory': True},
         {'id': 'module', 'type': str, 'mandatory': True},
         {'id': 'ocrise', 'type': bool, 'mandatory': False},
@@ -290,7 +290,7 @@ def export_facturx(document_id):
             "message": message
         }, 400)
 
-    res = verifier.export_facturx(document_id, request.json['args'])
+    res = verifier.export_facturx(document_id, request.json)
     return make_response(jsonify(res[0]), res[1])
 
 
@@ -302,7 +302,7 @@ def export_mem(document_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/export_mem'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'data', 'type': dict, 'mandatory': True},
         {'id': 'module', 'type': str, 'mandatory': True}
     ])
@@ -313,7 +313,7 @@ def export_mem(document_id):
             "message": message
         }, 400)
 
-    res = verifier.export_mem(document_id, request.json['args'])
+    res = verifier.export_mem(document_id, request.json)
     return make_response(jsonify(res[0]), res[1])
 
 
@@ -325,7 +325,7 @@ def export_coog(document_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/export_coog'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'data', 'type': dict, 'mandatory': True},
         {'id': 'module', 'type': str, 'mandatory': True}
     ])
@@ -335,7 +335,7 @@ def export_coog(document_id):
             "errors": gettext('BAD_REQUEST'),
             "message": message
         }, 400)
-    res = verifier.export_coog(document_id, request.json['args'])
+    res = verifier.export_coog(document_id, request.json)
     return make_response(jsonify(res[0]), res[1])
 
 
@@ -347,7 +347,7 @@ def export_opencrm(document_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/export_opencrm'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'data', 'type': dict, 'mandatory': True},
         {'id': 'module', 'type': str, 'mandatory': True}
     ])
@@ -357,7 +357,7 @@ def export_opencrm(document_id):
             "errors": gettext('BAD_REQUEST'),
             "message": message
         }, 400)
-    res = verifier.export_opencrm(document_id, request.json['args'])
+    res = verifier.export_opencrm(document_id, request.json)
     return make_response(jsonify(res[0]), res[1])
 
 
@@ -369,7 +369,7 @@ def export_cmis(document_id):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                             'message': f'/verifier/documents/{document_id}/export_cmis'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'data', 'type': dict, 'mandatory': True},
         {'id': 'module', 'type': str, 'mandatory': True},
         {'id': 'ocrise', 'type': bool, 'mandatory': False},
@@ -381,7 +381,7 @@ def export_cmis(document_id):
             "errors": gettext('BAD_REQUEST'),
             "message": message
         }, 400)
-    res = verifier.export_cmis(document_id, request.json['args'])
+    res = verifier.export_cmis(document_id, request.json)
     return make_response(jsonify(res[0]), res[1])
 
 @bp.route('verifier/documents/<int:document_id>/outputScript', methods=['POST'])

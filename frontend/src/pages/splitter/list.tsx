@@ -241,11 +241,9 @@ export function SplitterListPage() {
                         { t('SPLITTER.batches', { count: totalBatches! }) } ({ totalBatches || 0 })
                     </span>
                 </span>
-                <span>
-                    <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-80' height='h-10'
-                           value={ searchTerm } placeholder={ t('SPLITTER.search') } no_margin_bottom={true}
-                           onChange={ (e) => setSearchTerm(e.target.value) }/>
-                </span>
+                <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-80' height='h-10'
+                       value={ searchTerm } placeholder={ t('SPLITTER.search') } no_margin_bottom={true}
+                       onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) flex cursor-pointer'>
                     <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.list') }
                           onClick={ () => handleChangeView('list') }

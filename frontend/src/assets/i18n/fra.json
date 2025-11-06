@@ -207,7 +207,8 @@
         "ocr_on_fly_success": "Positions et données extraites et enregistrées avec succès",
         "correct_errors_before_validate": "Veuillez corriger les erreurs avant de valider le document",
         "save_supplier_modification": "Validez les modifications du tiers avant de continuer",
-        "supplier_changed": "Données du tiers modifiées, veuillez valider les modifications"
+        "supplier_changed": "Données du tiers modifiées, veuillez valider les modifications",
+        "supplier_associated_success": "Tiers associé avec succès"
     },
     "SPLITTER": {
         "batch_selected_many": "lots sélectionnés",
