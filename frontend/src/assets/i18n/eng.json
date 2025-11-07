@@ -204,7 +204,15 @@
         "correct_errors_before_validate": "",
         "save_supplier_modification": "",
         "supplier_changed": "",
-        "supplier_associated_success": ""
+        "supplier_associated_success": "",
+        "output_executed_successfully": "",
+        "document_refused": "",
+        "associated_form": "",
+        "document_form_changed_success": "",
+        "output_error": "",
+        "select_single_document_form": "",
+        "associated_customer": "",
+        "select_single_document_customer": ""
     },
     "SPLITTER": {
         "batch_selected_one": "batch selected",
@@ -461,5 +469,10 @@
         "teal": "",
         "yellow": "",
         "select_color": ""
+    },
+    "HISTORY": {
+        "document_validated": "",
+        "viewer": "",
+        "document_refused": ""
     }
 }

@@ -30,6 +30,7 @@ import { HomePage } from "./pages/home";
 import { UploadPage } from "./pages/upload";
 import { Onboarding } from "./pages/onboarding";
 import { SettingsIndex } from "./pages/settings";
+import { VerifierViewerPage } from "./pages/verifier/viewer";
 import { SettingsGeneralIndex } from "./pages/settings/general";
 import { SettingsVerifierIndex } from "./pages/settings/verifier";
 import { SettingsSplitterIndex } from "./pages/settings/splitter";
@@ -41,7 +42,6 @@ import { SettingsGeneralMailcollect } from "./pages/settings/general/mailcollect
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
 import { SettingsVerifierFormsList } from "./pages/settings/verifier/forms/list";
 import { SettingsVerifierFormsEditor } from "./pages/settings/verifier/forms/editor";
-import { VerifierViewerPage } from "./pages/verifier/viewer.tsx";
 
 export const router = createBrowserRouter(
     [

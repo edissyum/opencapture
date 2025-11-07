@@ -25,6 +25,7 @@ interface AutocompleteProps extends React.InputHTMLAttributes<HTMLInputElement> 
     value: string;
     label?: string;
     required?: boolean;
+    disabled?: boolean;
     optionLabel?: string;
     suggestions: string[];
     itemTemplate?: (item: any) => React.ReactNode;
@@ -39,6 +40,7 @@ const AutocompleteInput: React.FC<AutocompleteProps> = ({
     suggestions,
     itemTemplate,
     required = false,
+    disabled = false,
     optionLabel = "name",
     search,
     onChange
@@ -53,11 +55,12 @@ const AutocompleteInput: React.FC<AutocompleteProps> = ({
                     name={ id }
                     ref={ autoRef }
                     value={ value }
-                    field={ itemTemplate ? undefined : optionLabel }
-                    itemTemplate={ itemTemplate }
+                    disabled={ disabled }
                     required={ required }
                     completeMethod={ search }
                     suggestions={ suggestions }
+                    itemTemplate={ itemTemplate }
+                    field={ itemTemplate ? undefined : optionLabel }
                     onChange={ (e: any) => onChange(e.value) }
                 />
 

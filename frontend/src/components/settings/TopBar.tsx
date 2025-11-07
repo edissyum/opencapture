@@ -65,15 +65,18 @@ export default function TopBarSettings() {
                         </span>
                     );
                 }) }
-                { location.pathname !== '/settings' && !location.pathname.includes('edit/') && (
-                    <div onClick={ () => {
-                             toggleFavorite(location.pathname).then(() => setRefresh(true))
-                         } }
-                         data-tooltip-id="tooltip" data-tooltip-content={ isFav ? t('SETTINGS.remove_favorites') : t('SETTINGS.add_favorites') }
-                         className={ `ml-auto cursor-pointer py-2` }>
-                        <Star size={ 26 } className={ `${ isFav ? 'fill-(--color-primary) text-(--color-primary)' : '' }` }/>
-                    </div>
-                ) }
+                { !['/settings', '/settings/general', '/settings/verifier', '/settings/splitter'].includes(location.pathname)
+                    && !location.pathname.includes('edit/') && (
+                        <div data-tooltip-id="tooltip"
+                             data-tooltip-content={ isFav ? t('SETTINGS.remove_favorites') : t('SETTINGS.add_favorites') }
+                             onClick={ () => {
+                                 toggleFavorite(location.pathname).then(() => setRefresh(true))
+                             } }
+                             className={ `ml-auto cursor-pointer py-2` }>
+                            <Star size={ 26 }
+                                  className={ `${ isFav ? 'fill-(--color-primary) text-(--color-primary)' : '' }` }/>
+                        </div>
+                    ) }
             </div>
         </header>
     );

@@ -58,7 +58,7 @@ def get_supplier_by_id(args):
     })
 
     if not supplier:
-        error = gettext('GET_SUPPLIER_BY_ID_ERROR')
+        error = gettext('SUPPLIER_NOT_FOUND_ERROR')
     else:
         supplier = supplier[0]
 

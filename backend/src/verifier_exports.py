@@ -1005,7 +1005,7 @@ def export_cmis(data, document_info, log, database, docservers, compress_type, o
                 log.error(f"File not sent : {res_pdf_export}")
                 log.error(f"CMIS Response : {str(cmis_res)}")
                 response = {
-                    "errors": gettext('EXPORT_PDF_ERROR'),
+                    "errors": gettext('EXPORT_CMIS_ERROR'),
                     "message": cmis_res[1]
                 }
                 return response, 500

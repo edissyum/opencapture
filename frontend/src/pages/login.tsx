@@ -33,8 +33,8 @@ export function Login() {
     const [loginMessage, setLoginMessage] = useState<string>('');
 
     const { t } = useTranslation();
-    const { get, post } = axiosApiCall();
     const navigate = useNavigate();
+    const { get, post } = axiosApiCall();
 
     const custom = useCustom();
     useEffect(() => {

@@ -84,7 +84,27 @@ export function SettingsGeneralUsers() {
             icon: <Trash2 className='mr-1' size={ 16 }/>,
             command: () => handleDelete()
         }
-    ]
+    ];
+
+    const getActionsLine = (row: any) => [
+        {
+            label: t('USERS.enable_users'),
+            visible: !row?.enabled,
+            icon: <CirclePause className='mr-1' size={ 16 }/>,
+            command: () => handleEnable()
+        },
+        {
+            label: t('USERS.disable_users'),
+            icon: <CirclePause className='mr-1' size={ 16 }/>,
+            visible: row?.enabled,
+            command: () => handleDisable()
+        },
+        {
+            label: <span className='critical'>{ t('USERS.delete_users') }</span>,
+            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            command: () => handleDelete()
+        }
+    ];
 
     useEffect(() => {
         if (loadingUsers) return;
@@ -240,10 +260,10 @@ export function SettingsGeneralUsers() {
                 actions={ actions }
                 pagination={ true }
                 columns={ columns }
-                menuModel={ actions }
                 loading={ loadingUsers }
                 lazyParams={ lazyParams }
                 checkboxSelection={ true }
+                actionsLine={ getActionsLine }
                 selectedRows={ selectedUsers }
                 rowsPerPage={ lazyParams.rows }
                 skeletonRows={ lazyParams.rows }

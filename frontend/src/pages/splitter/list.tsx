@@ -30,7 +30,7 @@ import { Thumbnail } from "../../components/Thumbnail";
 
 export function SplitterListPage() {
     const { user, loadingUser } = useUser();
-    const { get, post, put } = axiosApiCall();
+    const { post, put } = axiosApiCall();
 
     const [view, setView] = useState<'list' | 'grid'>('list');
     useEffect(() => {
@@ -45,7 +45,6 @@ export function SplitterListPage() {
         localStorage.setItem('selectedView', newView);
     }
 
-    const [totalPerTime, setTotalPerTime] = useState<any>(null);
     const [selectedStatus, setSelectedStatus] = useState('NEW');
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
@@ -64,7 +63,7 @@ export function SplitterListPage() {
     });
     const [hovered, setHovered] = useState<string | null>(null);
 
-    const menuModel: any = [
+    const getActionsLine = () => [
         {
             label:<span className='critical'>{ t('SPLITTER.delete_batch') } </span>,
             icon: <Trash2 className='mr-1' size={ 16 }/>,
@@ -78,7 +77,8 @@ export function SplitterListPage() {
             icon: <Trash2 className='mr-1' size={ 16 }/>,
             command: () => handleDelete()
         }
-    ]
+    ];
+
     const columns: any = [
         {
             id: 'id',
@@ -136,29 +136,6 @@ export function SplitterListPage() {
             )
         }
     ];
-
-    useEffect(() => {
-        async function retrieveTotalBatches() {
-            if (!user || loadingUser) return;
-
-            const res = await get(`/splitter/batches/user/${ user.id }/totals/${ selectedStatus }`, {}) || 0;
-            if (res && res.totals) {
-                let totals = 0;
-                setTotalPerTime(res.totals);
-                for (const key in res.totals) {
-                    if (Object.prototype.hasOwnProperty.call(res.totals, key)) {
-                        totals += res.totals[key];
-                    }
-                }
-                setTotalBatches(totals);
-                return;
-            }
-        }
-
-        if (!totalBatches) {
-            retrieveTotalBatches().then();
-        }
-    }, [user, loadingUser]);
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -258,7 +235,7 @@ export function SplitterListPage() {
                 </span>
             </div>
 
-            <div className="mt-4 flex flex-col overflow-y-auto">
+            <div className="mt-4 flex flex-col h-full">
                 { view === 'list' && (
                     <Table
                         baseLink="/splitter/viewer/"
@@ -266,10 +243,10 @@ export function SplitterListPage() {
                         actions={ actions }
                         pagination={ true }
                         columns={ columns }
-                        menuModel={ menuModel }
                         lazyParams={ lazyParams }
                         checkboxSelection={ true }
                         loading={ loadingBatches }
+                        actionsLine={ getActionsLine }
                         rowsPerPage={ lazyParams.rows }
                         skeletonRows={ lazyParams.rows }
                         selectedRows={ selectedBatches }
@@ -289,9 +266,9 @@ export function SplitterListPage() {
                         actions={ actions }
                         pagination={ true }
                         columns={ columns }
-                        menuModel={ menuModel }
                         lazyParams={ lazyParams }
                         loading={ loadingBatches }
+                        actionsLine={ getActionsLine }
                         rowsPerPage={ lazyParams.rows }
                         skeletonRows={ lazyParams.rows }
                         selectedRows={ selectedBatches }

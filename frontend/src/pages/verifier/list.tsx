@@ -29,23 +29,24 @@ import {
     Package,
     Paperclip,
     Rows3,
-    Trash2
+    Trash2, UsersRound
 } from "lucide-react";
 
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
 import { Grid } from "../../components/list/Grid";
 import { Table } from "../../components/list/Table";
+import { Checkbox } from "../../components/Checkbox";
 import { Thumbnail } from "../../components/Thumbnail";
 
 import { useUser } from "../../services/hooks/useUser";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
-import { Checkbox } from "../../components/Checkbox.tsx";
+import { showToast } from "../../components/ToastProvider.tsx";
 
 export function VerifierListPage() {
     const { user, loadingUser } = useUser();
-    const { get, post, del } = axiosApiCall();
+    const { get, post, del, put } = axiosApiCall();
 
     const [view, setView] = useState<'list' | 'grid'>('list');
     const [displayFilters, setDisplayFilters] = useState(false);
@@ -84,6 +85,7 @@ export function VerifierListPage() {
     }
     const [listForms, setListForms] = useState<any>([]);
     const [listStatuses, setListStatuses] = useState<any>([]);
+    const [listCustomers, setListCustomers] = useState<any>([]);
 
     const [selectedStatus, setSelectedStatus] = useState('NEW');
     const [selectedForm, setSelectedForm] = useState<string | null>(null);
@@ -107,11 +109,45 @@ export function VerifierListPage() {
 
     const [hovered, setHovered] = useState<string | null>(null);
 
-    const menuModel: any = [
+    const getActionsLine = (row: any) => [
         {
-            label: <span className='critical'>{ t('VERIFIER.delete_document') } </span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            label: <span className='critical'>{ t('VERIFIER.delete_document') }</span>,
+            icon: <Trash2 className='mr-1' size={16} />,
             command: () => handleDelete()
+        },
+        {
+            label: t('VERIFIER.associated_form'),
+            icon: <LayoutTemplate className='mr-1' size={16} />,
+            items: Array.isArray(listForms)
+                ? listForms.map((form: any) => ({
+                    label: (
+                        <span
+                            className={ row?.form_id === form.id ? "text-(--color-primary) font-semibold" : "" }
+                        >
+                        {form.label}
+                    </span>
+                    ),
+                    icon: <LayoutTemplate className='mr-1' size={16} />,
+                    command: () => handleChangeForm(form.id)
+                }))
+                : []
+        },
+        {
+            label: t('VERIFIER.associated_customer'),
+            icon: <UsersRound className='mr-1' size={16} />,
+            items: Array.isArray(listCustomers)
+                ? listCustomers.map((customer: any) => ({
+                    label: (
+                        <span
+                            className={ row?.customer_id === customer.id ? "text-(--color-primary) font-semibold" : "" }
+                        >
+                        {customer.name}
+                    </span>
+                    ),
+                    icon: <UsersRound className='mr-1' size={16} />,
+                    command: () => handleChangeCustomer(customer.id)
+                }))
+                : []
         }
     ];
 
@@ -221,6 +257,18 @@ export function VerifierListPage() {
         fetchStatuses().then();
     }, [listForms]);
 
+    // Fetch customer list
+    useEffect(() => {
+        if (listStatuses.length === 0) return;
+
+        const fetchCustomers = async () => {
+            const res = await get(`/accounts/customers/list/verifier`) || [];
+            setListCustomers(res.customers || []);
+        }
+        fetchCustomers().then();
+    }, [listStatuses]);
+
+    // Debounce search term
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedSearchTerm(searchTerm);
@@ -261,6 +309,42 @@ export function VerifierListPage() {
 
         retrieveDocuments().then();
     }, [listStatuses, lazyParams, debouncedSearchTerm, selectedStatus, selectedTime, selectedForm]);
+
+    const handleChangeForm = async (formId: string) => {
+        if (selectedDocuments.length === 0) return;
+        if (selectedDocuments.length > 1) {
+            showToast(t('VERIFIER.select_single_document_form'), 'error');
+        }
+        if (selectedDocuments[0].form_id === formId) {
+            return;
+        }
+
+        setLoadingDocuments(true);
+        try {
+            await put(`verifier/documents/${selectedDocuments[0].id}/update`, {"form_id": formId});
+            showToast(t('VERIFIER.document_form_changed_success'), 'success');
+        } catch (err) {
+            console.error("Error changing document form:", err);
+        } finally {
+            setSelectedDocuments([]);
+            setTotalDocuments(null);
+            setLazyParams({ ...lazyParams, first: 0 });
+        }
+
+    }
+
+    const handleChangeCustomer = async (customerId: string) => {
+        if (selectedDocuments.length === 0) return;
+        if (selectedDocuments.length > 1) {
+            showToast(t('VERIFIER.select_single_document_customer'), 'error');
+        }
+        if (selectedDocuments[0].customer_id === customerId) {
+            return;
+        }
+
+        setLoadingDocuments(true);
+        console.log(selectedDocuments[0].id, customerId);
+    }
 
     const handleDelete = async () => {
         if (selectedDocuments.length === 0) return;
@@ -430,17 +514,17 @@ export function VerifierListPage() {
                     </span>
                 </div>
 
-                <div className="mt-4 flex flex-col overflow-y-auto">
+                <div className="mt-4 flex flex-col h-full">
                     { view === 'list' && (
                         <Table
                             baseLink="/verifier/viewer/"
                             data={ documents }
-                            actions={ actions }
                             pagination={ true }
                             columns={ columns }
-                            menuModel={ menuModel }
+                            actions={ actions }
                             lazyParams={ lazyParams }
                             checkboxSelection={ true }
+                            actionsLine={ getActionsLine }
                             loading={ loadingDocuments }
                             rowsPerPage={ lazyParams.rows }
                             skeletonRows={ lazyParams.rows }
@@ -458,12 +542,12 @@ export function VerifierListPage() {
                             baseLink="/verifier/viewer/"
                             module="verifier"
                             data={ documents }
-                            actions={ actions }
                             pagination={ true }
                             columns={ columns }
-                            menuModel={ menuModel }
+                            actions={ actions }
                             lazyParams={ lazyParams }
                             loading={ loadingDocuments }
+                            actionsLine={ getActionsLine }
                             rowsPerPage={ lazyParams.rows }
                             skeletonRows={ lazyParams.rows }
                             selectedRows={ selectedDocuments }

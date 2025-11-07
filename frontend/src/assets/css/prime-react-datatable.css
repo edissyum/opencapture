@@ -96,9 +96,19 @@
 }
 
 /* Change contextMenu text color */
-.p-contextmenu {
+.p-contextmenu, .p-menuitem-text {
     @apply text-(--text-primary);
 }
+
+.p-contextmenu .p-menuitem.p-highlight > .p-menuitem-content .p-menuitem-link .p-submenu-icon {
+    @apply text-(--color-primary);
+}
+
+.p-contextmenu .p-menuitem.p-highlight > .p-menuitem-content {
+    @apply bg-(--color-primary)/10;
+    @apply text-(--color-primary);
+}
+
 .p-contextmenu .p-menuitem > .p-menuitem-content .p-menuitem-link {
     @apply px-3;
     @apply py-2.5;

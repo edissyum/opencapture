@@ -125,3 +125,12 @@ h2 {
     @apply opacity-100;
     @apply text-(--text-secondary);
 }
+
+/* Toastify customization */
+.Toastify__toast-container {
+    width: 25% !important;
+}
+
+.Toastify__toast {
+    width: fit-content !important;
+}

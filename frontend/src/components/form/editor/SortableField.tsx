@@ -29,8 +29,7 @@ import { OverlayPanel } from "primereact/overlaypanel";
 import Input from "../../Input";
 import { Button } from "../../Button";
 
-import { getFormatLabels } from "./schemas";
-import { getColorOptions } from "./schemas.tsx";
+import { getFormatLabels, getColorOptions } from "./schemas";
 
 type Field = {
     id: string;

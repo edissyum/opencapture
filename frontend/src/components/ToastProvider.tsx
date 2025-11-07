@@ -19,19 +19,31 @@ import React from "react";
 import { toast, ToastContainer, type ToastOptions } from "react-toastify";
 
 export const showToast = (message: any, type: "success" | "warning" | "error" | "info" = "success", options?: ToastOptions) => {
-    toast(message, { type, toastId: message, ...options });
+    let content: React.ReactNode = message;
+
+    if (typeof message === "string" && message.includes("<")) {
+        content = <div dangerouslySetInnerHTML={{ __html: message }} />;
+    }
+
+    const autoClose =
+        type === "error" ? 8000 :
+            type === "warning" ? 5000 :
+                type === "success" ? 4000 :
+                    4000;
+
+    toast(content, { type, autoClose, toastId: message, ...options });
 };
 
 export const ToastProvider: React.FC = () => {
     return (
         <ToastContainer
-            position="top-right"
-            autoClose={ 3000 }
-            newestOnTop={ true }
             closeOnClick
-            pauseOnFocusLoss
-            pauseOnHover
             theme="light"
+            pauseOnHover
+            className={""}
+            pauseOnFocusLoss
+            newestOnTop={ true }
+            position="top-right"
         />
     );
 };

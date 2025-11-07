@@ -26,7 +26,7 @@
         "@tinymce/tinymce-react": "^6.3.0",
         "axios": "^1.13.2",
         "fs-extra": "^11.3.2",
-        "i18next": "^25.6.0",
+        "i18next": "^25.6.1",
         "moment": "^2.30.1",
         "primereact": "^10.9.7",
         "react": "^19.2.0",
@@ -51,9 +51,9 @@
         "eslint-plugin-react-refresh": "^0.4.24",
         "globals": "^16.5.0",
         "i18next-scanner": "^4.6.0",
-        "lucide-react": "^0.552.0",
+        "lucide-react": "^0.553.0",
         "typescript": "~5.9.3",
         "typescript-eslint": "^8.46.3",
-        "vite": "^7.2.1"
+        "vite": "^7.2.2"
     }
 }

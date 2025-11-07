@@ -80,6 +80,26 @@ export function SettingsGeneralRoles() {
         }
     ];
 
+    const getActionsLine = (row: any) => [
+        {
+            label: t('ROLES.enable_roles'),
+            visible: !row?.enabled,
+            icon: <CirclePause className='mr-1' size={ 16 }/>,
+            command: () => handleEnable()
+        },
+        {
+            label: t('ROLES.disable_roles'),
+            visible: row?.enabled,
+            icon: <CirclePause className='mr-1' size={ 16 }/>,
+            command: () => handleDisable()
+        },
+        {
+            label: <span className='critical'>{ t('ROLES.delete_roles') }</span>,
+            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            command: () => handleDelete()
+        }
+    ];
+
     useEffect(() => {
         if (loadingRoles || loadingUser) return;
         setLoadingRoles(true);
@@ -235,10 +255,10 @@ export function SettingsGeneralRoles() {
                 actions={ actions }
                 pagination={ true }
                 columns={ columns }
-                menuModel={ actions }
                 loading={ loadingRoles }
                 lazyParams={ lazyParams }
                 checkboxSelection={ true }
+                actionsLine={ getActionsLine }
                 selectedRows={ selectedRoles }
                 rowsPerPage={ lazyParams.rows }
                 skeletonRows={ lazyParams.rows }

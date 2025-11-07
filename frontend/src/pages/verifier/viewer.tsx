@@ -18,7 +18,7 @@
 import { t } from "i18next";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Copy, Download, Edit, Eye, EyeOff } from "lucide-react";
 
 import { Accordion, AccordionTab } from "primereact/accordion";
@@ -29,12 +29,14 @@ import ISOCalendar from "../../components/Calendar";
 import { Loader } from "../../components/loader/Loader";
 import { showToast } from "../../components/ToastProvider";
 import { ZoomControl } from "../../components/ZoomControl";
+import AutocompleteInput from "../../components/Autocomplete";
 import { Annotator, type Region } from "../../components/Annotator";
 
+import { useUser } from "../../services/hooks/useUser";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { useFormFields } from "../../services/hooks/useFormFields";
 import { useCustomFields } from "../../services/hooks/useCustomFields";
-import AutocompleteInput from "../../components/Autocomplete.tsx";
+import { useHistoryLogger } from "../../services/hooks/useHistoryLogger";
 
 export function VerifierViewerPage() {
     const { get, post, put } = axiosApiCall();
@@ -70,6 +72,7 @@ export function VerifierViewerPage() {
         { id: "facturation", name: t('FORMS.facturation'), lines: [] as any[] },
         { id: "other", name: t('FORMS.other'), lines: [] as any[] }
     ]));
+    const [disableFields, setDisableFields] = useState<boolean>(false);
     const [fieldsZoneFilled, setFieldsZoneFilled] = useState<boolean>(false);
 
     const patterns: any = {
@@ -98,8 +101,18 @@ export function VerifierViewerPage() {
     const lang = localStorage.getItem("selectedLang") || "en";
     moment.locale(lang.startsWith("fr") ? "fr" : lang.startsWith("es") ? "es" : "en");
 
+    const { user, loadingUser } = useUser();
+    const { logHistory } = useHistoryLogger();
+    const navigate = useNavigate();
+
     // Fetch document data
     useEffect(() => {
+        logHistory({
+            module: 'verifier',
+            submodule: 'viewer',
+            desc: t('HISTORY.viewer', { documentId: documentId })
+        }).then();
+
         const fetchDocumentData = async () => {
             try {
                 get(`verifier/documents/${ documentId }`, {}).then((response) => {
@@ -109,12 +122,15 @@ export function VerifierViewerPage() {
                     setPagesList([...Array(response.nb_pages).keys()].map(i => i + 1));
                     setDocumentDataLoading(false);
                 });
+                if (user && user.id) {
+                    updateDocument({ locked: true, locked_by: user.id }).then();
+                }
             } catch (error) {
                 console.error("Error fetching document data:", error);
             }
         };
         fetchDocumentData().then();
-    }, [documentId]);
+    }, [documentId, loadingUser]);
 
     // Fetch form settings
     useEffect(() => {
@@ -306,7 +322,9 @@ export function VerifierViewerPage() {
                     duplicableLines.forEach((line: any) => {
                         const lineIndex = newZones.find(z => z.id === zone.id)?.lines.indexOf(line) || -1;
                         line.duplicated = true;
+
                         const duplicableFields = Object.values(line).filter((field: any) => typeof field !== 'boolean');
+
                         let newLineAdded = false;
                         duplicableFields.forEach((field: any) => {
                             // check if documentData.datas has multiple entries for this base field using regex
@@ -314,8 +332,11 @@ export function VerifierViewerPage() {
                             const matchingFields = Object.keys(tmpDocumentData?.datas || {}).filter((dataFieldId) => regex.test(dataFieldId));
 
                             if (matchingFields.length > 0 && !newLineAdded) {
-                                newLineAdded = true;
-                                handleDuplicateLine(line, zone, lineIndex);
+                                const maxCpt = matchingFields.length;
+                                for (let i = 1; i <= maxCpt; i++) {
+                                    newLineAdded = true;
+                                    handleDuplicateLine(line, zone, lineIndex);
+                                }
                             }
                         });
                     });
@@ -332,6 +353,30 @@ export function VerifierViewerPage() {
         const hasError = Object.values(errors).some((error) => error !== null);
         setFormHasError(hasError);
     }, [errors]);
+
+    // Unlock document (when leaving page)
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            updateDocument({ locked: false, locked_by: null }).then();
+        };
+
+        return () => {
+            // When component unmounts
+            updateDocument({ locked: false, locked_by: null }).then();
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, []);
+
+    // Disable fields
+    useEffect(() => {
+        if (!documentData) return;
+
+        if (loadingUpdateValidate || loadingUpdateRefuse || documentData.status === 'END') {
+            setDisableFields(true);
+        } else {
+            setDisableFields(false);
+        }
+    }, [loadingUpdateValidate, loadingUpdateRefuse, documentData]);
 
     const handlePrev = () => {
         if (currentPage > 1) {
@@ -587,7 +632,9 @@ export function VerifierViewerPage() {
     async function updateDocument(data: any) {
         setLoadingUpdateDocumentData(true);
         try {
-            return await put(`verifier/documents/${ documentId }/update`, data);
+            const res = await put(`verifier/documents/${ documentId }/update`, data);
+            setLoadingUpdateDocumentData(false);
+            return res;
         } catch (error) {
             console.error("Error updating document:", error);
         }
@@ -755,12 +802,14 @@ export function VerifierViewerPage() {
         setLoadingUpdateValidate(true);
 
         // Final error check before validate
+        let hasError = false;
         Object.keys(formFields).forEach((parentKey: any) => {
             formFields[parentKey].forEach((line: any) => {
                 Object.values(line).filter((l: any) => typeof l !== 'boolean').forEach((field: any) => {
                     const value = tmpDocumentData?.datas?.[field.id];
                     const error = errorCheck(field, value);
                     if (error) {
+                        hasError = true;
                         showToast(t('VERIFIER.correct_errors_before_validate'), 'error');
                         setErrors((prevErrors) => ({
                             ...prevErrors,
@@ -771,26 +820,63 @@ export function VerifierViewerPage() {
             });
         });
 
+        if (hasError) {
+            setLoadingUpdateValidate(false);
+            return;
+        }
+
         if (currentForm.outputs && currentForm.outputs.length > 0) {
+            let outputError = false;
             let cpt = 0;
             for (const output_id of currentForm.outputs) {
                 try {
                     const output = await get(`outputs/verifier/getById/${ output_id }`);
                     if (!output) return;
 
-                    await post(`verifier/documents/${ documentId }/${ output.output_type_id }`, output)
+                    await post(`verifier/documents/${ documentId }/${ output.output_type_id }`, output);
                     cpt += 1;
+                    showToast(t('VERIFIER.output_executed_successfully', { 'output_label': output.output_label }), 'success');
 
-                    if (cpt === currentForm.outputs.length) {
-                        showToast(t('VERIFIER.document_validated_success'), 'success');
+                    if (outputError) {
+                        showToast(t('VERIFIER.output_error'), 'error');
+                        setLoadingUpdateValidate(false);
+                        return;
                     }
+
+                    logHistory({
+                        module: 'verifier',
+                        submodule: 'document_validated',
+                        desc: t('HISTORY.document_validated', { documentId: documentId })
+                    }).then();
+
+                    await updateDocument({ 'status': 'END', 'locked': false, 'locked_by': null }).then(() => {
+                        setLoadingUpdateValidate(false);
+                        showToast('VERIFIER.document_validated', 'success');
+                        navigate('/home');
+                    });
                 } catch (error) {
+                    cpt += 1;
+                    outputError = true;
                     console.error("Error executing output on validate:", error);
                 }
             }
         }
-
         setLoadingUpdateValidate(false);
+    }
+
+    const refuseDocument = async () => {
+        setLoadingUpdateRefuse(true);
+        logHistory({
+            module: 'verifier',
+            submodule: 'document_refused',
+            desc: t('HISTORY.document_refused', { documentId: documentId })
+        }).then();
+
+        await updateDocument({ 'status': 'ERR', 'locked': false, 'locked_by': null }).then(() => {
+            showToast(t('VERIFIER.document_refused'), 'success');
+            setLoadingUpdateRefuse(false);
+            navigate('/home');
+        });
     }
 
     if (!documentData) return;
@@ -905,7 +991,7 @@ export function VerifierViewerPage() {
                                                                     error={ errors[field.id] }
                                                                     required={ field.required }
                                                                     value={ tmpDocumentData?.datas?.[field.id] }
-                                                                    disabled={ loadingUpdateValidate || loadingUpdateRefuse || documentData.status === 'END' }
+                                                                    disabled={ disableFields }
                                                                     onChange={ (e) => updateDocumentData(field, e) }
                                                                     onClick={ () => handleFocusField(field.id, field.label, field.color) }
                                                                 />
@@ -915,6 +1001,7 @@ export function VerifierViewerPage() {
                                                                         id={ field.id }
                                                                         label={ t(field.label) }
                                                                         required={ field.required }
+                                                                        disabled={ disableFields }
                                                                         suggestions={ suggestionsSuppliers }
                                                                         value={ tmpDocumentData?.datas?.[field.id] ?? "" }
                                                                         optionLabel={ field.id === 'name' ? 'name' : 'lastname' }
@@ -940,7 +1027,7 @@ export function VerifierViewerPage() {
                                                                         error={ errors[field.id] }
                                                                         required={ field.required }
                                                                         value={ tmpDocumentData?.datas?.[field.id] ?? "" }
-                                                                        disabled={ loadingUpdateValidate || loadingUpdateRefuse || documentData.status === 'END' }
+                                                                        disabled={ disableFields }
                                                                         onClick={ () => handleFocusField(field.id, field.label, field.color) }
                                                                         onChange={ (e) => updateDocumentData(field, e.target.value) }
                                                                         onBlur={ (e) => {
@@ -952,13 +1039,12 @@ export function VerifierViewerPage() {
                                                     </div>
                                                 )) }
                                                 { line.duplicable && (
-                                                    <div
-                                                        className='flex items-center justify-center -mt-4 cursor-pointer'
-                                                        data-tooltip-id="tooltip"
-                                                        onClick={ () => {
-                                                            handleDuplicateLine(line, zone, index)
-                                                        } }
-                                                        data-tooltip-content={ t('FORMS.duplicate_line') }>
+                                                    <div data-tooltip-id="tooltip"
+                                                         data-tooltip-content={ t('FORMS.duplicate_line') }
+                                                         className='flex items-center justify-center -mt-4 cursor-pointer'
+                                                         onClick={ () => {
+                                                             handleDuplicateLine(line, zone, index)
+                                                         } }>
                                                         <Copy size={ 18 }/>
                                                     </div>
                                                 ) }
@@ -972,7 +1058,7 @@ export function VerifierViewerPage() {
                             <div className='grow basis-0 w-full' data-tooltip-id="tooltip"
                                  data-tooltip-content={ supplierChanged ? t('VERIFIER.save_supplier_modification') : '' }>
                                 <Button
-                                    disabled={ loadingUpdateData || supplierChanged || loadingUpdateValidate || formHasError || documentData.status === 'END' }
+                                    disabled={ loadingUpdateData || supplierChanged || formHasError || disableFields }
                                     className='w-full' onClick={ () => validateDocument() }>
                                     { loadingUpdateValidate && !formHasError ? t('FORMS.validate_loading') : t('FORMS.validate') }
                                 </Button>
@@ -980,7 +1066,7 @@ export function VerifierViewerPage() {
                             <div className='grow basis-0 w-full' data-tooltip-id="tooltip"
                                  data-tooltip-content={ supplierChanged ? t('VERIFIER.save_supplier_modification') : '' }>
                                 <Button
-                                    disabled={ loadingUpdateData || supplierChanged || loadingUpdateRefuse || formHasError || documentData.status === 'END' }
+                                    disabled={ loadingUpdateData || supplierChanged || formHasError || disableFields }
                                     className='w-full' variant='danger' onClick={ () => refuseDocument() }>
                                     { !loadingUpdateRefuse ? t('FORMS.refuse') : t('FORMS.refuse_loading') }
                                 </Button>

@@ -16,7 +16,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { ChevronsUpDown } from "lucide-react";
+import { ChevronsUpDown, EllipsisVertical } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import React, { useMemo, useRef, useState } from "react";
 
@@ -61,7 +61,7 @@ type DataTableProps<T> = {
         sortOrder: 1 | -1 | null;
     };
     onLazyParamsChange: (params: any) => void;
-    menuModel?: { label: string; icon: any; command: () => void }[];
+    actionsLine?: any;
 };
 
 export function Table<T extends { id: string }>({
@@ -69,7 +69,7 @@ export function Table<T extends { id: string }>({
     columns,
     actions,
     baseLink,
-    menuModel,
+    actionsLine,
     lazyParams,
     loading = false,
     skeletonRows = 5,
@@ -159,8 +159,8 @@ export function Table<T extends { id: string }>({
 
     return (
         <div className='border border-(--border-secondary) rounded-lg overflow-hidden'>
-            { menuModel && (
-                <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }/>
+            { actionsLine && (
+                <ContextMenu model={ actionsLine(selectedRows[0]) } ref={ cm }/>
             ) }
 
             <PrimeDataTable
@@ -173,12 +173,12 @@ export function Table<T extends { id: string }>({
                 rows={ rowsPerPage }
                 paginator={ pagination }
                 first={ lazyParams.first }
+                paginatorPosition={ 'top' }
                 totalRecords={ totalRecords }
+                paginatorLeft={ paginatorLeftData }
                 rowsPerPageOptions={ rowsPerPageOptions }
                 sortField={ lazyParams.sortField ?? undefined }
                 sortOrder={ lazyParams.sortOrder ?? undefined }
-                paginatorPosition={ 'top' }
-                paginatorLeft={ paginatorLeftData }
                 paginatorTemplate="RowsPerPageDropdown CurrentPageReport PrevPageLink NextPageLink"
                 currentPageReportTemplate={ "{first} " + t('VERIFIER.to') + " {last} " + t('VERIFIER.of') + " {totalRecords}" }
                 selection={ selectedRows }
@@ -225,8 +225,10 @@ export function Table<T extends { id: string }>({
                         bodyClassName={ `${ col.className } cursor-pointer pl-1 pr-1 text-sm py-2` }
                         key={ idx }
                         field={ col.id as string }
-                        header={ col.sortable ? <span className='flex items-center'>{ col.header } <ChevronsUpDown
-                            size={ 14 } className='ml-1'/></span> : col.header }
+                        header={
+                            col.sortable ? <span className='flex items-center'>{ col.header }
+                                <ChevronsUpDown size={ 14 } className='ml-1'/></span> : col.header
+                        }
                         sortable={ col.sortable }
                         body={ (rowData: any) =>
                             col.body
@@ -235,6 +237,23 @@ export function Table<T extends { id: string }>({
                         }
                     />
                 )) }
+
+                {
+                    actions.length > 0 && (
+                        <PrimeColumn
+                            bodyClassName="pl-0! pr-0! text-sm"
+                            body={ (rowData: any) => (
+                                <div className='cursor-pointer' onClick={ (e) => {
+                                    e.stopPropagation();
+                                    handleSelectionChange([rowData]);
+                                    cm.current?.show(e);
+                                } }>
+                                    <EllipsisVertical size={ 18 }/>
+                                </div>
+                            ) }
+                        />
+                    )
+                }
             </PrimeDataTable>
         </div>
     );

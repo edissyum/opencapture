@@ -60,6 +60,26 @@ export function SettingsVerifierFormsList() {
         },
     ];
 
+    const getActionsLine = (row: any) => [
+        {
+            label: t('FORMS.enable_forms'),
+            visible: !row?.enabled,
+            icon: <CirclePause className='mr-1' size={ 16 }/>,
+            command: () => handleEnable()
+        },
+        {
+            label: t('FORMS.disable_forms'),
+            visible: row?.enabled,
+            icon: <CirclePause className='mr-1' size={ 16 }/>,
+            command: () => handleDisable()
+        },
+        {
+            label: <span className='critical'>{ t('FORMS.delete_forms') }</span>,
+            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            command: () => handleDelete()
+        }
+    ];
+
     const actions: any = [
         {
             label: t('FORMS.enable_forms'),
@@ -76,7 +96,7 @@ export function SettingsVerifierFormsList() {
             icon: <Trash2 className='mr-1' size={ 16 }/>,
             command: () => handleDelete()
         }
-    ]
+    ];
 
     // Fetch forms
     useEffect(() => {
@@ -245,10 +265,10 @@ export function SettingsVerifierFormsList() {
                 actions={ actions }
                 pagination={ true }
                 columns={ columns }
-                menuModel={ actions }
                 loading={ loadingForms }
                 lazyParams={ lazyParams }
                 checkboxSelection={ true }
+                actionsLine={ getActionsLine }
                 selectedRows={ selectedForms }
                 rowsPerPage={ lazyParams.rows }
                 skeletonRows={ lazyParams.rows }

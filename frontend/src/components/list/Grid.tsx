@@ -17,17 +17,17 @@
 
 import { t } from "i18next";
 import { useNavigate } from "react-router-dom";
-import { EllipsisVertical } from "lucide-react";
 import React, { useMemo, useRef, useState } from "react";
 
 import { Skeleton } from "primereact/skeleton";
 import { Paginator } from "primereact/paginator";
-import { ContextMenu } from "primereact/contextmenu";
 
 import { Button } from "../Button";
 import { Checkbox } from "../Checkbox";
 
 import { LazyBase64Image } from "./LazyImage";
+import { EllipsisVertical } from "lucide-react";
+import { ContextMenu } from "primereact/contextmenu";
 
 
 type Column<T> = {
@@ -62,7 +62,7 @@ type CardListProps<T> = {
         sortOrder: 1 | -1 | null;
     };
     onLazyParamsChange: (params: any) => void;
-    menuModel?: { label: string; icon: string; command: () => void }[];
+    actionsLine?: any;
 };
 
 export function Grid<T extends { id: string }>({
@@ -71,7 +71,7 @@ export function Grid<T extends { id: string }>({
     columns,
     actions,
     baseLink,
-    menuModel,
+    actionsLine,
     lazyParams,
     loading = false,
     skeletonRows = 5,
@@ -158,10 +158,8 @@ export function Grid<T extends { id: string }>({
                 ) }
                 <div className="grid grid-cols-4 gap-6">
                     { Array.from({ length: skeletonRows }).map((_, idx) => (
-                        <div
-                            key={ idx }
-                            className="border border-(--border-secondary) rounded-lg p-4"
-                        >
+                        <div key={ idx }
+                             className="border border-(--border-secondary) rounded-lg p-4">
                             <Skeleton width="100%" height="8rem" className='dark:bg-(--text-secondary)'/>
                             <Skeleton className="dark:bg-(--text-secondary) mt-2" width="60%"/>
                             <Skeleton className="dark:bg-(--text-secondary) mt-2" width="40%"/>
@@ -173,10 +171,10 @@ export function Grid<T extends { id: string }>({
     }
 
     return (
-        <div>
+        <div className='h-full flex flex-col'>
             { pagination && (
                 <div
-                    className="flex items-center justify-between mt-4 bg-(--bg-primary) px-4 rounded-lg text-(--text-secondary) font-normal mb-4">
+                    className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-lg text-(--text-secondary) font-normal mb-4">
                     { paginatorLeftData }
                     <Paginator
                         rows={ rowsPerPage }
@@ -201,13 +199,11 @@ export function Grid<T extends { id: string }>({
                     { emptyMessage }
                 </div>
             ) : (
-                <div className="grid grid-cols-4 gap-6">
+                <div className="grid grid-cols-4 gap-4 h-full overflow-y-auto mb-12">
                     { data.map((row) => (
-                        <div
-                            key={ row.id }
-                            onClick={ () => handleRowClick(row) }
-                            className="border-2 border-(--border-secondary) hover:border-(--text-secondary) rounded-lg cursor-pointer bg-(--bg-primary) transition-border-color duration-200"
-                        >
+                        <div key={ row.id }
+                             onClick={ () => handleRowClick(row) }
+                             className="border-2 border-(--border-secondary) hover:border-(--text-secondary) rounded-lg cursor-pointer bg-(--bg-primary) transition-border-color duration-200">
                             <div
                                 className="relative bg-[#D0DAD5] dark:bg-(--bg-secondary) rounded-b-none w-full p-6 pb-0 rounded-md flex items-center justify-center text-(--text-secondary)">
                                 <LazyBase64Image
@@ -231,25 +227,24 @@ export function Grid<T extends { id: string }>({
                                         </div>
                                     )) }
                                     { columns.filter(col => module === 'verifier' ? col.id === 'name' : col.id === 'filename').map((col) => (
-                                        <>
-                                            <div key={ col.id } className="truncate">
-                                                { col.body ? col.body(row) : (row as any)[col.field!] }
-                                            </div>
-                                            <div className="ml-auto">
-                                                <EllipsisVertical onClick={ (e) => {
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    setSelectedRows([row]);
-                                                    cm.current?.show(e);
-                                                    onSelectionChange && onSelectionChange([row]);
-                                                } }/>
-                                                { menuModel && (
-                                                    <ContextMenu model={ menuModel } className="w-auto!" ref={ cm } onHide={ handleMenuClose }/>
-                                                ) }
-                                            </div>
-                                        </>
+                                        <div key={ col.id } className='truncate'>
+                                            { col.body ? col.body(row) : (row as any)[col.field!] }
+                                        </div>
                                     )) }
+                                    <div className="ml-auto -mr-3">
+                                        <EllipsisVertical onClick={ (e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            setSelectedRows([row]);
+                                            cm.current?.show(e);
+                                            onSelectionChange && onSelectionChange([row]);
+                                        } }/>
+                                        { actionsLine && (
+                                            <ContextMenu model={ actionsLine(selectedRows[0]) } className="w-auto!" ref={ cm } onHide={ handleMenuClose }/>
+                                        ) }
+                                    </div>
                                 </div>
+
                                 { columns.filter(col => ![module === 'verifier' ? 'name' : 'filename', 'thumbnail', 'nb_pages'].includes(col.id as string)).map((col) => (
                                     <div key={ col.id } className="text-sm mb-1 truncate">
                                         <span className="text-(--text-secondary) mr-1">
