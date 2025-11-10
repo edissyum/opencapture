@@ -1,0 +1,72 @@
+/** This file is part of Open-Capture.
+
+ Open-Capture is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+
+ @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
+
+.p-dropdown-filter-container .p-inputtext,
+.p-multiselect-filter-container .p-inputtext {
+    @apply py-1;
+}
+
+.p-multiselect:hover,
+.p-dropdown-filter-container .p-inputtext:enabled:focus,
+.p-dropdown-filter-container .p-inputtext:enabled:hover {
+    @apply border-(--color-primary);
+    @apply shadow-none;
+}
+
+.p-dropdown-panel .p-dropdown-header {
+    @apply bg-(--bg-secondary);
+}
+
+.p-dropdown-items-wrapper,
+.p-multiselect-items-wrapper,
+.p-dropdown-items-wrapper .p-dropdown-item {
+    @apply bg-(--bg-primary);
+    @apply text-(--text-primary);
+}
+
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item:not(.p-highlight):not(.p-disabled).p-focus {
+    @apply bg-(--bg-secondary);
+}
+
+.p-dropdown-panel .p-dropdown-header .p-dropdown-filter-container,
+.p-inputtext {
+    @apply bg-(--bg-primary);
+    @apply text-(--text-primary);
+}
+
+.p-dropdown:not(.p-disabled):hover,
+.p-dropdown:not(.p-disabled).p-focus,
+.p-multiselect:not(.p-disabled).p-focus {
+    @apply shadow-none;
+    @apply outline-none;
+    @apply border-(--border-primary);
+}
+
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight.p-focus,
+.p-multiselect-panel .p-multiselect-items .p-multiselect-item.p-highlight,
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight{
+    @apply bg-(--color-primary)/10;
+    @apply text-(--color-primary);
+}
+
+.p-multiselect-token {
+    @apply bg-(--bg-secondary);
+}
+
+.p-multiselect-token-icon:hover {
+    @apply text-(--color-primary);
+}

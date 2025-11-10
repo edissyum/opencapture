@@ -195,10 +195,11 @@ export function SettingsGeneralSMTP() {
                                        label={ t('SMTP.host') }/>
                             </div>
                             <div className='w-[4rem]'>
-                                <Input id='smtpPort' { ...register('smtpPort', {
-                                    required: true,
-                                    valueAsNumber: true
-                                }) }
+                                <Input id='smtpPort'
+                                       { ...register('smtpPort', {
+                                           required: true,
+                                           valueAsNumber: true
+                                       }) }
                                        placeholder='587' required
                                        error={ errors.smtpPort?.message }
                                        label={ t('SMTP.port') }/>
@@ -217,16 +218,30 @@ export function SettingsGeneralSMTP() {
                             />
                             <div className='flex items-center gap-4 mt-4'>
                                 <div className='w-1/4'>
-                                    <Input id='smtpLogin' { ...register('smtpLogin') } placeholder=''
-                                           disabled={ !smtpAuth }
-                                           label={ t('SMTP.login') } autoComplete='new-mail'
-                                           error={ errors.smtpLogin?.message }/>
+                                    <Controller
+                                        control={ control }
+                                        name='smtpLogin'
+                                        render={ ({ field }) => (
+                                            <Input id='smtpLogin' value={field.value}
+                                                   disabled={ !smtpAuth }
+                                                   onChange={ (value) => field.onChange(value) }
+                                                   label={ t('SMTP.login') } autoComplete='new-mail'
+                                                   error={ errors.smtpLogin?.message }/>
+                                        ) }
+                                    />
                                 </div>
                                 <div className='w-1/4'>
-                                    <Input id='smtpPwd' type='password' { ...register('smtpPwd') }
-                                           disabled={ !smtpAuth }
-                                           label={ t('SMTP.password') } autoComplete='new-password'
-                                           error={ errors.smtpPwd?.message }/>
+                                    <Controller
+                                        control={ control }
+                                        name='smtpPwd'
+                                        render={ ({ field }) => (
+                                            <Input id='smtpPwd' value={field.value}
+                                                   disabled={ !smtpAuth } type='password'
+                                                   onChange={ (value) => field.onChange(value) }
+                                                   label={ t('SMTP.password') } autoComplete='new-password'
+                                                   error={ errors.smtpPwd?.message }/>
+                                        ) }
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -235,6 +250,7 @@ export function SettingsGeneralSMTP() {
                         <div className='flex gap-4 mt-6'>
                             { smtpProtocoleSecureEnum.options.map((option: any) => (
                                 <Controller
+                                    key={ option }
                                     control={ control }
                                     name='smtpProtocoleSecure'
                                     render={ ({ field }) => (
@@ -263,13 +279,13 @@ export function SettingsGeneralSMTP() {
                             />
                             <div className='flex items-center gap-4 mt-4'>
                                 <div className='w-1/4'>
-                                    <Input id='smtpFromMail' { ...register('smtpFromMail') } placeholder=''
+                                    <Input id='smtpFromMail' { ...register('smtpFromMail') }
                                            disabled={ !smtpNotifOnError }
                                            error={ errors.smtpFromMail?.message }
                                            label={ t('SMTP.from_mail') } autoComplete='new-mail'/>
                                 </div>
                                 <div className='w-1/4'>
-                                    <Input id='smtpDestAdminMail' { ...register('smtpDestAdminMail') } placeholder=''
+                                    <Input id='smtpDestAdminMail' { ...register('smtpDestAdminMail') }
                                            disabled={ !smtpNotifOnError }
                                            error={ errors.smtpDestAdminMail?.message }
                                            label={ t('SMTP.destination_admin_mail') } autoComplete='new-mail'/>
@@ -297,7 +313,6 @@ export function SettingsGeneralSMTP() {
                         <div className='mt-8'>
                             <Input id='testEmail' type='email' value={ destinationTestEmail }
                                    label={ t('SMTP.destination_test_email') }
-                                   placeholder='test'
                                    onChange={ (e) => setDestinationTestEmail(e.target.value) }/>
 
                             <Button disabled={ destinationTestEmail === '' || statusLoadingTestEmail }

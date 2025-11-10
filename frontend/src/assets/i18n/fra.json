@@ -147,7 +147,12 @@
         "drop_files_here_many": "Déposez les fichiers ici",
         "drop_files_here_one": "Déposez le fichier ici",
         "drop_files_here_other": "Déposez les fichiers ici",
-        "file_too_large": "Le fichier est trop volumineux. La taille maximale autorisée est de {{maxSize}} Mo"
+        "file_too_large": "Le fichier est trop volumineux. La taille maximale autorisée est de {{maxSize}} Mo",
+        "select_workflows": "Choix du workflow",
+        "upload_progress": "Téléversement... {{progress}}%",
+        "upload_files": "Téléverser les documents",
+        "upload": "Téléversement des documents",
+        "upload_hint": "Selectionnez un ou plusieurs documents et un workflow pour commencer le traitement"
     },
     "USER": {
         "password": "Mot de passe",
@@ -472,7 +477,12 @@
         "validate_loading": "Validation en cours...",
         "delete": "Supprimer",
         "duplicable": "Duplicable",
-        "duplicate_line": "Dupliquer la ligne"
+        "duplicate_line": "Dupliquer la ligne",
+        "default_form": "Formulaire par défaut",
+        "form_name": "Libellé du formulaire",
+        "allow_learning": "Activer l'apprentissage des positions",
+        "label_required": "Libellé du formulaire est requis",
+        "allow_learning_hint": "Si activé, l'utiliation de l'OCR ON FLY enregistrera les positions des champs au tiers de ce même document"
     },
     "FORMATS": {
         "alphanum": "Caractères alphanumériques [0-9aA-zZ']",
@@ -512,5 +522,9 @@
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validé avec succès",
         "viewer": "Visualisation du document n°<strong>{{ documentId }}</strong>",
         "document_refused": "Document n°<strong>{{ document_id }}</strong> refusé"
+    },
+    "OUTPUTS": {
+        "outputs": "Chaînes sortantes",
+        "select_outputs": "Sélectionner les chaînes sortantes à exécuter lors de la validation"
     }
 }

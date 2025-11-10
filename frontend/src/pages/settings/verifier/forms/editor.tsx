@@ -41,12 +41,18 @@ import { showToast } from "../../../../components/ToastProvider";
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 import { useFormFields } from "../../../../services/hooks/useFormFields";
 import { useCustomFields } from "../../../../services/hooks/useCustomFields";
+import Input from "../../../../components/Input.tsx";
+import { InputSwitch } from "primereact/inputswitch";
+import { MultiSelect } from "primereact/multiselect";
+import { CircleQuestionMark } from "lucide-react";
 
 export function SettingsVerifierFormsEditor() {
-    const { post } = axiosApiCall();
+    const { get, post, put } = axiosApiCall();
     const { formId } = useParams<{ formId: any }>();
 
     if (!formId) return null;
+
+    const [mainTabIndex, setMainTabIndex] = useState(0);
 
     const [zones, setZones] = useState([
         { id: "zone-supplier", name: t('FORMS.supplier'), lines: [] },
@@ -60,6 +66,36 @@ export function SettingsVerifierFormsEditor() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [usedFields, setUsedFields] = useState<string[]>([]);
+
+    const [formSettings, setFormSettings] = useState<any>({ "label": '', default_form: false, "settings": {} });
+    const [outputs, setOutputs] = useState<any[]>([]);
+
+    // Retrieve outputs and form settings
+    useEffect(() => {
+        if (!formId) return;
+
+        const retrieveOutputs = async () => {
+            try {
+                const response = await get(`outputs/verifier/list`);
+                console.log(response)
+                setOutputs(response.outputs || []);
+            } catch (error) {
+                console.error("Error retrieving form outputs:", error);
+            }
+        };
+
+        const retrieveFormSettings = async () => {
+            try {
+                const response = await get(`forms/verifier/getById/${ formId }`);
+                setFormSettings(response);
+            } catch (error) {
+                console.error("Error retrieving form settings:", error);
+            }
+        };
+
+        retrieveOutputs().then();
+        retrieveFormSettings().then();
+    }, [formId]);
 
     // Initialize zones with existing form fields
     useEffect(() => {
@@ -372,26 +408,121 @@ export function SettingsVerifierFormsEditor() {
         }
     }
 
+    const handleUpdateSettings = () => {
+        if (isSubmitting) return;
+
+        setIsSubmitting(true);
+
+        const formSettingsCopy = { ...formSettings };
+        delete formSettingsCopy.id;
+        delete formSettingsCopy.labels;
+        try {
+            put(`forms/verifier/update/${ formId }`, formSettingsCopy).then(() => {
+                showToast(t('FORMS.form_updated'), 'success');
+                setIsSubmitting(false);
+            });
+        } catch (error) {
+            setIsSubmitting(false);
+            console.error("Error updating form settings:", error);
+        }
+    }
+
+    if (!outputs) return;
+
     return (
         <DndContext onDragEnd={ handleDragEnd } onDragStart={ handleDragStart } collisionDetection={ pointerWithin }>
             <div className="flex h-full">
                 <div className="flex flex-col border-r-2 border-(--border-secondary) w-full">
-                    <TabView>
-                        <TabPanel header={ t("SETTINGS.form_details") }>
-                            <Button className="ml-6 my-6" variant="primary" onClick={ handleUpdate }
-                                    disabled={ isSubmitting }>
-                                { isSubmitting ? t('GLOBAL.saving') + "..." : t('GLOBAL.save_settings') }
-                            </Button>
+                    <TabView activeIndex={ mainTabIndex } onTabChange={ (e) => setMainTabIndex(e.index) }>
+                        <TabPanel header={ t("SETTINGS.form_details") } className='bg-white h-full'>
+                            <div className='p-6'>
+                                <div>
+                                    <h2>{ t('SETTINGS.general') }</h2>
+                                    <Input
+                                        type="text"
+                                        id="form_label"
+                                        required={ true }
+                                        className="mt-4 w-1/2"
+                                        value={ formSettings.label }
+                                        label={ t('FORMS.form_name') }
+                                        error={ formSettings.label === '' ? t('FORMS.label_required') : '' }
+                                        onChange={ (e) => setFormSettings({
+                                            ...formSettings,
+                                            label: e.target.value
+                                        }) }
+                                    />
+
+                                    <div className='flex items-center gap-2'>
+                                        <InputSwitch id="default_form"
+                                                     checked={ formSettings.default_form }
+                                                     onChange={ (e) => setFormSettings({
+                                                         ...formSettings,
+                                                         default_form: e.value
+                                                     }) }/>
+                                        <label htmlFor='default_form'>{ t('FORMS.default_form') }</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h2 className="mt-6">{ t('OUTPUTS.outputs') }</h2>
+                                    <MultiSelect
+                                        filter
+                                        invalid={ formSettings.outputs?.length === 0 }
+                                        display="chip"
+                                        optionValue="id"
+                                        required={ true }
+                                        id="output_select"
+                                        options={ outputs }
+                                        className="mt-4 w-1/2"
+                                        optionLabel="output_label"
+                                        value={ formSettings.outputs?.map(Number) ?? [] }
+                                        placeholder={ t('OUTPUTS.select_outputs') }
+                                        onChange={ (e) =>
+                                            setFormSettings({
+                                                ...formSettings,
+                                                outputs: e.value
+                                            })
+                                        }
+                                    />
+                                </div>
+                                <div>
+                                    <h2 className="mt-6">{ t('SETTINGS.advanced') }</h2>
+                                    <div className='flex items-center gap-2'>
+                                        <InputSwitch
+                                            id="allow_learning"
+                                            checked={ formSettings.settings.allow_learning }
+                                            onChange={ (e) => setFormSettings({
+                                                ...formSettings,
+                                                settings: {
+                                                    ...formSettings.settings,
+                                                    allow_learning: e.value
+                                                }
+                                            }) }/>
+                                        <label htmlFor='allow_learning'>{ t('FORMS.allow_learning') }</label>
+                                        <div className="text-(--text-secondary) cursor-pointer"
+                                             data-tooltip-id="tooltip"
+                                             data-tooltip-content={ t('FORMS.allow_learning_hint') }>
+                                            <CircleQuestionMark size={ 18 }/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <Button className="mt-6" variant="primary" onClick={ handleUpdateSettings }
+                                        disabled={ isSubmitting || formSettings.label === '' || !formSettings.outputs || formSettings.outputs.length === 0 }>
+                                    { isSubmitting ? t('GLOBAL.saving') + "..." : t('GLOBAL.save_settings') }
+                                </Button>
+                            </div>
                         </TabPanel>
                         <TabPanel header={ t("SETTINGS.form_fields") }>
                             <Accordion multiple activeIndex={ [0] } className='p-6'>
                                 { zones.map((zone) => (
                                     <AccordionTab header={ zone.name } key={ zone.id }>
-                                        <DroppableZone key={ zone.id } zone={ zone }
-                                                       onDeleteLine={ handleDeleteLine }
-                                                       onDeleteField={ handleDeleteField }
-                                                       onUpdateLine={ handleUpdateLine }
-                                                       onUpdateField={ handleUpdateField }/>
+                                        <DroppableZone
+                                            key={ zone.id } zone={ zone }
+                                            onUpdateLine={ handleUpdateLine }
+                                            onDeleteLine={ handleDeleteLine }
+                                            onDeleteField={ handleDeleteField }
+                                            onUpdateField={ handleUpdateField }
+                                        />
                                     </AccordionTab>
                                 )) }
                             </Accordion>
@@ -402,22 +533,24 @@ export function SettingsVerifierFormsEditor() {
                         </TabPanel>
                     </TabView>
                 </div>
-                <div className="w-[25rem] flex flex-col">
-                    <TabView
-                        scrollable
-                        className="available_fields"
-                        activeIndex={ Object.keys(availableFields).indexOf(activeTab as string) }
-                        onTabChange={ (e) =>
-                            setActiveTab(Object.keys(availableFields)[e.index] as keyof typeof availableFields)
-                        }
-                    >
-                        { Object.keys(tabs).map((tab) => (
-                            <TabPanel key={ tab } header={ tabs[tab] }>
-                                <FieldPalette fields={ availableItems }/>
-                            </TabPanel>
-                        )) }
-                    </TabView>
-                </div>
+                { mainTabIndex === 1 && (
+                    <div className="w-[25rem] flex flex-col">
+                        <TabView
+                            scrollable
+                            className="available_fields"
+                            activeIndex={ Object.keys(availableFields).indexOf(activeTab as string) }
+                            onTabChange={ (e) =>
+                                setActiveTab(Object.keys(availableFields)[e.index] as keyof typeof availableFields)
+                            }
+                        >
+                            { Object.keys(tabs).map((tab) => (
+                                <TabPanel key={ tab } header={ tabs[tab] }>
+                                    <FieldPalette fields={ availableItems }/>
+                                </TabPanel>
+                            )) }
+                        </TabView>
+                    </div>
+                ) }
             </div>
 
             <DragOverlay>

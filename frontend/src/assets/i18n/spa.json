@@ -147,7 +147,12 @@
         "drop_files_here_many": "Suelta los archivos aquí",
         "drop_files_here_one": "Suelta el archivo aquí",
         "drop_files_here_other": "Suelta los archivos aquí",
-        "file_too_large": "El archivo es demasiado grande. El tamaño máximo permitido es {{maxSize}} MB"
+        "file_too_large": "El archivo es demasiado grande. El tamaño máximo permitido es {{maxSize}} MB",
+        "select_workflows": "",
+        "upload_progress": "",
+        "upload_files": "",
+        "upload": "",
+        "upload_hint": ""
     },
     "USER": {
         "password": "Contraseña",
@@ -472,7 +477,12 @@
         "validate_loading": "",
         "delete": "",
         "duplicable": "",
-        "duplicate_line": ""
+        "duplicate_line": "",
+        "default_form": "",
+        "form_name": "",
+        "allow_learning": "",
+        "label_required": "",
+        "allow_learning_hint": ""
     },
     "FORMATS": {
         "date": "",
@@ -512,5 +522,9 @@
         "document_validated": "",
         "viewer": "",
         "document_refused": ""
+    },
+    "OUTPUTS": {
+        "outputs": "",
+        "select_outputs": ""
     }
 }

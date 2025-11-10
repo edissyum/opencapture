@@ -16,28 +16,33 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { HandGrab, UploadCloud, X } from "lucide-react";
+import { useCallback, useState } from "react";
+import { File, HandGrab, Trash2, UploadCloud } from "lucide-react";
 
 import { showToast } from "../ToastProvider";
 
 interface UploadDropzoneProps {
-    maxFiles?: number;
     maxSize?: number;
+    maxFiles?: number;
+    className?: string;
     showPreview?: boolean;
     accept?: { [key: string]: string[] };
+    progressByFile?: Record<string, number>;
     onFilesAccepted?: (files: File[]) => void;
 }
 
 export default function UploadDropzone({
-    accept = { "image/*": [".jpeg", ".jpg", ".png"] },
-    maxFiles = 1,
-    maxSize = 5 * 1024 * 1024, // 5MB
+    maxFiles,
+    className,
+    progressByFile,
     onFilesAccepted,
     showPreview = true,
+    maxSize = 5 * 1024 * 1024,
+    accept = { "image/*": [".jpeg", ".jpg", ".png"] }
 }: UploadDropzoneProps) {
     const [files, setFiles] = useState<File[]>([]);
+
     const onDrop = useCallback(
         (acceptedFiles: File[]) => {
             let newFiles = [...files, ...acceptedFiles];
@@ -71,12 +76,11 @@ export default function UploadDropzone({
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
-        onDropRejected,
         accept,
         maxSize,
-        maxFiles
+        maxFiles,
+        onDropRejected
     });
-
 
     const removeFile = (e: any, file: File) => {
         e.stopPropagation();
@@ -86,10 +90,12 @@ export default function UploadDropzone({
     };
 
     return (
-        <div>
+        <div className='h-full flex flex-col'>
             <div
-                { ...getRootProps() } className={ `flex h-50 border-2 border-dashed rounded-xl p-6 cursor-pointer transition border-(--border-secondary) hover:border-(--border-primary)
+                { ...getRootProps() } className={ `flex justify-center h-50 border-2 border-dashed rounded-xl p-6 
+                    cursor-pointer transition border-(--border-secondary) hover:border-(--border-primary)
                     ${ files.length == 0 || !showPreview ? "items-center justify-center" : "items-start" }
+                    ${ className ?? "" }
                     ${ isDragActive ? "bg-(--color-primary)/20 border-(--border-primary)!" : "" }` }>
                 <input { ...getInputProps() } />
 
@@ -99,43 +105,64 @@ export default function UploadDropzone({
                         <p className="text-(--text-primary) font-semibold">{ t('UPLOAD.drop_files_here', { count: maxFiles }) }</p>
                     </div>
                 ) : (
-                    <>
-                        { files.length > 0 && showPreview ? (
-                            <div className="flex flex-wrap gap-2">
-                                { files.map((file) => (
-                                    <span key={ file.name + file.size }
-                                          className="flex items-center bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-3 py-1 rounded-full text-sm truncate">
-                                        { file.name }
-                                        <X size={ 14 } className="ml-2 cursor-pointer hover:text-(--text-error)"
-                                           onClick={ (e) => removeFile(e, file) }
-                                        />
-                                    </span>
-                                )) }
-                            </div>
-                        ) : (
-                            <div className="flex flex-col items-center gap-2">
-                                <UploadCloud size={ 38 } className="text-(--text-secondary)"/>
-                                <span className='flex gap-1 font-semibold'>
-                            <p className='text-(--color-primary)'>
-                                { t('UPLOAD.upload_dropzone') }
-                            </p>
-                            <p>
-                                { t('UPLOAD.upload_dropzone_2') }
-                            </p>
-                        </span>
-                                <p className="text-(--text-secondary) mt-2 -mb-2">
-                                    { t('UPLOAD.max_filesize', { maxSize: maxSize / (1024 * 1024) }) }
+                    <div className="flex flex-col items-center gap-2">
+                        <UploadCloud size={ 38 } className="text-(--text-secondary)"/>
+                        <span className='flex gap-1 font-semibold'>
+                                <p className='text-(--color-primary)'>
+                                    { t('UPLOAD.upload_dropzone') }
                                 </p>
-                                <p className="text-(--text-secondary)">
-                                    { t('UPLOAD.allowed_extensions') } : { Object.values(accept).flat().join(", ") }
+                                <p>
+                                    { t('UPLOAD.upload_dropzone_2') }
                                 </p>
-                            </div>
-                        ) }
-                    </>
-                )
-                }
+                            </span>
+                        <p className="text-(--text-secondary) mt-2 -mb-2">
+                            { t('UPLOAD.max_filesize', { maxSize: maxSize / (1024 * 1024) }) }
+                        </p>
+                        <p className="text-(--text-secondary)">
+                            { t('UPLOAD.allowed_extensions') } : { Object.values(accept).flat().join(", ") }
+                        </p>
+                    </div>
+                ) }
             </div>
+            { files.length > 0 && showPreview && (
+                <div className="mt-4 space-y-1 h-full overflow-y-auto">
+                    { files.map((file) => (
+                        <div key={ file.name + file.size }
+                             className="relative flex items-center gap-4 bg-(--bg-primary) px-3 py-2 rounded-lg border-2 border-(--border-secondary)">
 
+                            { progressByFile?.[file.name] !== undefined && (
+                                <div className="absolute top-0 left-0 h-full bg-(--color-primary)/10 transition-[width]
+                                                duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]
+                                                border-r-2 border-(--color-primary)"
+                                     style={ { width: `${ progressByFile[file.name] }%` } }/>
+                            ) }
+
+                            <div className='text-(--text-primary) bg-(--bg-secondary) p-2 rounded-lg'>
+                                <File/>
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="font-semibold">{ file.name }</span>
+                                { progressByFile?.[file.name] !== undefined ? (
+                                    <span className="text-xs font-semibold text-(--color-primary)">
+                                        { t('UPLOAD.upload_progress', { progress: progressByFile[file.name] }) }
+                                    </span>
+                                ) : (
+                                    <span className="text-xs font-semibold text-(--text-secondary)">
+                                        { (file.size / 1024 / 1024 >= 1)
+                                            ? (file.size / 1024 / 1024).toFixed(2) + " MB"
+                                            : (file.size / 1024).toFixed(2) + " KB" }
+                                    </span>
+                                ) }
+                            </div>
+                            { progressByFile?.[file.name] === undefined && (
+                                <Trash2 size={ 16 }
+                                        className="cursor-pointer hover:text-(--text-error) ml-auto"
+                                        onClick={ (e) => removeFile(e, file) }/>
+                            ) }
+                        </div>
+                    )) }
+                </div>
+            ) }
         </div>
     );
 }

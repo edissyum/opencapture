@@ -119,7 +119,7 @@ def update_form(form_id, module):
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/{module}/update/{form_id}'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'label', 'type': str, 'mandatory': False},
         {'id': 'outputs', 'type': list, 'mandatory': False},
         {'id': 'settings', 'type': dict, 'mandatory': False},
@@ -132,7 +132,7 @@ def update_form(form_id, module):
             "message": message
         }, 400)
 
-    res = forms.update_form(form_id, request.json['args'], module)
+    res = forms.update_form(form_id, request.json, module)
     return make_response(jsonify(res[0])), res[1]
 
 

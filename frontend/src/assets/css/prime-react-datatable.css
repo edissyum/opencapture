@@ -130,18 +130,6 @@
     @apply text-(--text-secondary);
 }
 
-.p-dropdown:not(.p-disabled).p-focus, .p-dropdown:not(.p-disabled):hover {
-    @apply shadow-none;
-    @apply outline-none;
-    @apply border-(--border-primary);
-}
-
-.p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight.p-focus,
-.p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight{
-    @apply bg-(--color-primary)/10;
-    @apply text-(--color-primary);
-}
-
 .p-paginator {
     font-family: "Montserrat", sans-serif;
     @apply text-(--text-secondary)!;

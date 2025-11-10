@@ -22,15 +22,17 @@ import { AutoComplete } from "primereact/autocomplete";
 
 interface AutocompleteProps extends React.InputHTMLAttributes<HTMLInputElement> {
     id: string;
-    value: string;
+    value: any[] | any;
     label?: string;
+    dropdown?: boolean;
+    multiple?: boolean;
     required?: boolean;
     disabled?: boolean;
     optionLabel?: string;
     suggestions: string[];
     itemTemplate?: (item: any) => React.ReactNode;
     search: (event: { query: string }) => void;
-    onChange: (value: any) => void;
+    onChange: (value: any[] | any) => void;
 }
 
 const AutocompleteInput: React.FC<AutocompleteProps> = ({
@@ -39,6 +41,8 @@ const AutocompleteInput: React.FC<AutocompleteProps> = ({
     label,
     suggestions,
     itemTemplate,
+    dropdown=false,
+    multiple=false,
     required = false,
     disabled = false,
     optionLabel = "name",
@@ -55,6 +59,8 @@ const AutocompleteInput: React.FC<AutocompleteProps> = ({
                     name={ id }
                     ref={ autoRef }
                     value={ value }
+                    multiple={ multiple }
+                    dropdown={ dropdown }
                     disabled={ disabled }
                     required={ required }
                     completeMethod={ search }

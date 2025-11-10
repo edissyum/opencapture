@@ -59,6 +59,7 @@ const Input: React.FC<InputProps> = ({
                         id={ id }
                         className={ `peer! w-full! px-3! py-2! border-[1.5px]! rounded-md! focus:outline-none! focus:border-(--color-primary)!
                             hover:border-(--color-primary)! transition-colors duration-200 text-(--text-primary)!
+                            ${ props.placeholder ? "p-inputwrapper-filled" : "" }
                             ${ isPasswordField ? 'border-r-0! rounded-r-none!' : '' }
                             ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' } disabled:bg-(--bg-secondary) disabled:cursor-not-allowed! ${ height }`
                         }

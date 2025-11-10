@@ -145,7 +145,12 @@
         "invalid_file_type": "Invalid file type. Allowed file types are: {{types}}",
         "drop_files_here_one": "Drop the file here",
         "drop_files_here_other": "Drop the files here",
-        "file_too_large": "The file is too large. The maximum allowed size is {{maxSize}} MB"
+        "file_too_large": "The file is too large. The maximum allowed size is {{maxSize}} MB",
+        "select_workflows": "",
+        "upload_progress": "",
+        "upload_files": "",
+        "upload": "",
+        "upload_hint": ""
     },
     "USER": {
         "password": "Password",
@@ -434,7 +439,12 @@
         "validate_loading": "",
         "delete": "",
         "duplicable": "",
-        "duplicate_line": ""
+        "duplicate_line": "",
+        "default_form": "",
+        "form_name": "",
+        "allow_learning": "",
+        "label_required": "",
+        "allow_learning_hint": ""
     },
     "FORMATS": {
         "date": "",
@@ -474,5 +484,9 @@
         "document_validated": "",
         "viewer": "",
         "document_refused": ""
+    },
+    "OUTPUTS": {
+        "outputs": "",
+        "select_outputs": ""
     }
 }
