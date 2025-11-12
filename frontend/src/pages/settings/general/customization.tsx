@@ -167,14 +167,14 @@ export function SettingsGeneralCustomization() {
             <h2>{ t('CUSTOMIZATION.theme') }</h2>
             <p className='text-(--text-secondary)'>{ t('CUSTOMIZATION.theme_description') }</p>
             <div className="flex">
-                <ThemeSelection onThemeChange={handleThemeChange}/>
+                <ThemeSelection onThemeChange={ handleThemeChange }/>
             </div>
             <hr className='my-6 text-(--border-secondary)'/>
 
             <h2>{ t('CUSTOMIZATION.application_lang') }</h2>
             <p className='text-(--text-secondary)'>{ t('CUSTOMIZATION.application_lang_description') }</p>
             <div className="flex mt-4">
-                <LangSelection />
+                <LangSelection i18n={ useTranslation().i18n } refresh={ false }/>
             </div>
             <hr className='my-6 text-(--border-secondary)'/>
 
@@ -209,13 +209,13 @@ export function SettingsGeneralCustomization() {
             <h2>{ t('CUSTOMIZATION.login_message') }</h2>
             <p className='text-(--text-secondary) mb-4'>{ t('CUSTOMIZATION.login_message_description') }</p>
             <Editor
-                key={editorKey}
+                key={ editorKey }
                 licenseKey="gpl"
                 initialValue={ loginMessage }
                 tinymceScriptSrc='/tinymce/tinymce.min.js'
-                onEditorChange={(newContent) => {
+                onEditorChange={ (newContent) => {
                     setLoginMessage(newContent)
-                }}
+                } }
                 init={ {
                     height: 300,
                     width: '50%',

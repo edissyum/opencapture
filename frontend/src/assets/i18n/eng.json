@@ -148,9 +148,10 @@
         "file_too_large": "The file is too large. The maximum allowed size is {{maxSize}} MB",
         "select_workflows": "",
         "upload_progress": "",
-        "upload_files": "",
         "upload": "",
-        "upload_hint": ""
+        "upload_hint": "",
+        "upload_files_one": "",
+        "upload_files_other": ""
     },
     "USER": {
         "password": "Password",

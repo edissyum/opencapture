@@ -18,6 +18,7 @@
 import os
 import time
 import shutil
+import logging
 import facturx
 import tempfile
 import traceback
@@ -42,6 +43,8 @@ rabbit_custom.RABBIT_USER = os.environ.get('RABBIT_USER', 'guest')
 rabbit_custom.RABBIT_PASSWORD = os.environ.get('RABBIT_PASSWORD', 'guest')
 rabbit_custom.RABBIT_VIRTUAL_HOST = os.environ.get('RABBIT_VIRTUAL_HOST', '/')
 kuyruk = Kuyruk(config=rabbit_custom)
+
+logging.getLogger("factur-x").setLevel(logging.CRITICAL)
 
 def execute(args, path, log, config, files, ocr, regex, database, docservers, configurations, languages, mail, smtp):
     if check_file(files, path, log, docservers):

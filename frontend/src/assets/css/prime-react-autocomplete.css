@@ -15,6 +15,11 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+
+.p-autocomplete-input {
+    @apply w-full;
+}
+
 .p-autocomplete-dropdown:focus {
     @apply shadow-none;
 }

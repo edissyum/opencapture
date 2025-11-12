@@ -150,9 +150,11 @@
         "file_too_large": "Le fichier est trop volumineux. La taille maximale autorisée est de {{maxSize}} Mo",
         "select_workflows": "Choix du workflow",
         "upload_progress": "Téléversement... {{progress}}%",
-        "upload_files": "Téléverser les documents",
         "upload": "Téléversement des documents",
-        "upload_hint": "Selectionnez un ou plusieurs documents et un workflow pour commencer le traitement"
+        "upload_hint": "Selectionnez un ou plusieurs documents et un workflow pour commencer le traitement",
+        "upload_files_many": "Téléverser les documents",
+        "upload_files_one": "Téléverser le document",
+        "upload_files_other": "Téléverser les documents"
     },
     "USER": {
         "password": "Mot de passe",

@@ -27,11 +27,13 @@ services:
             RABBIT_USER: ${RABBITMQ_USER}
             RABBIT_PASSWORD: ${RABBITMQ_PASS}
             RABBIT_VIRTUAL_HOST: ${RABBITMQ_VHOST}
+            DOCSERVER_PATH: /app/docservers
         ports:
             - "8000:8000"
         volumes:
-            - ./custom:/app/custom
+            - ./custom:/app/custom/
             - ./backend/src:/app/src/
+            - ${DOCSERVERS_PATH}:/app/docservers/
         depends_on:
             - postgres
             - rabbitmq

@@ -28,7 +28,7 @@ interface UploadDropzoneProps {
     className?: string;
     showPreview?: boolean;
     accept?: { [key: string]: string[] };
-    progressByFile?: Record<string, number>;
+    progressByFile?: Record<string, number | undefined>;
     onFilesAccepted?: (files: File[]) => void;
 }
 

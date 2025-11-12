@@ -25,6 +25,7 @@ import { showToast } from "../../components/ToastProvider";
 
 interface AxiosCustomRequestConfig extends AxiosRequestConfig {
     showErrorToast?: boolean;
+    onUploadProgress?: (progress: any) => void;
 }
 
 export function axiosApiCall() {
@@ -90,14 +91,28 @@ export function axiosApiCall() {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [uploadProgress, setUploadProgress] = useState<number>(0);
 
     const request = async <T = any>(
         config: AxiosCustomRequestConfig
     ): Promise<T | null> => {
         setLoading(true);
         setError(null);
+        setUploadProgress(0);
+
         try {
-            const res = await api.request<T>(config);
+            const res = await api.request<T>({
+                ...config,
+                onUploadProgress: (event) => {
+                    if (event.total) {
+                        const progress = Math.round(
+                            (event.loaded * 100) / event.total
+                        );
+                        setUploadProgress(progress);
+                        config.onUploadProgress?.(progress);
+                    }
+                },
+            });
             return res.data;
         } catch (err: any) {
             setError(err.message || "Erreur inconnue");
@@ -137,5 +152,5 @@ export function axiosApiCall() {
     const del = <T = any>(url: string, config?: AxiosCustomRequestConfig) =>
         request<T>({ ...config, method: "DELETE", url });
 
-    return { loading, error, get, post, put, del };
+    return { loading, error, uploadProgress, get, post, put, del };
 }

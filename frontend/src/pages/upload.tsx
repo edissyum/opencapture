@@ -14,24 +14,33 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { t } from "i18next";
 import { useEffect, useState } from "react";
-
-import UploadDropzone from "../components/upload/Dropzone";
+import { Check, Wrench } from "lucide-react";
 
 import { useUser } from "../services/hooks/useUser";
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
-import { t } from "i18next";
-import { Button } from "../components/Button.tsx";
+
+import { Button } from "../components/Button";
+import UploadDropzone from "../components/upload/Dropzone";
+import { Loader } from "../components/loader/Loader.tsx";
+import { showToast } from "../components/ToastProvider.tsx";
 
 export function UploadPage() {
-    const { get } = axiosApiCall();
+    const { get, post } = axiosApiCall();
     const { user, loadingUser } = useUser();
 
     const [module, setModule] = useState("");
-    const [workflows, setWorkflows] = useState<any[]>([]);
-    const [files, setFiles] = useState<File[]>([]);
 
-    const [progress, setProgress] = useState<Record<string, number>>({});
+    const [timeout, setTimeout] = useState(2000);
+
+    const [workflows, setWorkflows] = useState<any[]>([]);
+    const [workflowLoading, setWorkflowLoading] = useState(false);
+    const [selectedWorkflow, setSelectedWorkflow] = useState<any>(null);
+
+    const [files, setFiles] = useState<File[]>([]);
+    const [sending, setSending] = useState(false);
+    const [progress, setProgress] = useState<Record<string, number | undefined>>({});
 
     const selectedModule = localStorage.getItem('selectedModule');
     if (selectedModule && selectedModule !== module) {
@@ -42,7 +51,10 @@ export function UploadPage() {
         const handler = () => {
             const module = localStorage.getItem('selectedModule');
             if (module) {
+                setFiles([]);
                 setModule(module);
+                setWorkflows([]);
+                setSelectedWorkflow(null);
             }
         };
 
@@ -50,14 +62,33 @@ export function UploadPage() {
         return () => window.removeEventListener("updateModule", handler);
     }, []);
 
+    // Retrieve timeout setting
+    useEffect(() => {
+        const retrieveTimeout = async () => {
+            try {
+                get(`config/getConfigurationNoAuth/timeoutUpload`).then((response) => {
+                    if (response && response.configuration) {
+                        setTimeout(response.configuration[0].data.value);
+                    }
+                });
+            } catch (error) {
+                console.error("Error retrieving timeout:", error);
+            }
+        }
+
+        retrieveTimeout().then();
+    }, []);
+
     // Retrieve workflows list
     useEffect(() => {
         if (loadingUser || !selectedModule) return;
 
         const retrieveWorkflows = async () => {
+            setWorkflowLoading(true);
             try {
                 get(`workflows/${ selectedModule }/list/user/${ user.id }`).then((response) => {
                     setWorkflows(response.workflows);
+                    setWorkflowLoading(false);
                 });
             } catch (error) {
                 console.error("Error retrieving workflows:", error);
@@ -87,22 +118,106 @@ export function UploadPage() {
         });
     };
 
-    const handleFilesAccepted = () => {
-        startFakeUpload(files);
+    const handleUpload = async () => {
+        if (files.length === 0 || !selectedWorkflow) return;
+
+        setSending(true);
+        const res = await checkFiles(files);
+        console.log(res);
+        if (res !== undefined) {
+            await upload(files);
+        }
+        setSending(false);
+        console.log('here')
     };
+
+    async function upload(filesToUpload: File[]) {
+        let cpt = 0;
+        for (const file of filesToUpload) {
+            const formData = new FormData();
+            formData.append("files", file);
+            formData.append("userId", user.id);
+            formData.append("workflowId", selectedWorkflow);
+
+            try {
+                await post(`/${ module }/upload`, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                    onUploadProgress: (progressEvent) => {
+                        setProgress((prev) => ({
+                            ...prev,
+                            [file.name]: progressEvent
+                        }));
+                    }
+                });
+                cpt += 1;
+                if (cpt === filesToUpload.length) {
+                    setFiles([]);
+                    showToast(t('UPLOAD.upload_success'), "success");
+                }
+            } catch (error) {
+                setProgress((prev => ({
+                    ...prev,
+                    [file.name]: undefined
+                })));
+                console.error("Error upload file:", error);
+            }
+        }
+    }
+
+    async function checkFiles(filesToCheck: File[]) {
+        const formData = new FormData();
+        for (const file of filesToCheck) {
+            formData.append("files", file);
+        }
+
+        try {
+            return await post("/checkFileBeforeUpload", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+                timeout: timeout
+            });
+        } catch (error) {
+            console.error("Error checking files before upload:", error);
+        }
+    }
 
     return (
         <div className='flex h-full w-full overflow-hidden'>
-            <div className='p-8 h-full w-[400px] border-r-2 border-(--border-secondary) bg-(--bg-primary)'>
-                <h1 className='text-xl font-bold mb-4 truncate'>{ t('UPLOAD.select_workflows') }</h1>
+            <div className='pb-20 h-full w-[350px] shrink-0 border-r-2 border-(--border-secondary) bg-(--bg-primary)'>
+                <h1 className='px-6 pt-6 text-xl font-bold mb-4 truncate flex items-center gap-2'>
+                    <Wrench size={ 20 } className='text-(--color-primary)'/>
+                    { t('UPLOAD.select_workflows') }
+                </h1>
+                <div className='px-6 flex flex-col gap-2 overflow-y-auto h-full'>
+                    {
+                        workflowLoading && (
+                            <Loader/>
+                        )
+                    }
+                    { workflows.map((workflow) => (
+                        <div key={ workflow.id }
+                             onClick={ () => setSelectedWorkflow(workflow.workflow_id) }
+                             className={ `cursor-pointer flex items-center gap-1 border-2 border-(--border-secondary) 
+                                          rounded-md p-2 hover:border-(--color-primary)
+                                          ${ selectedWorkflow === workflow.id ? 'text-(--color-primary) font-semibold bg-(--color-primary)/10' : '' }` }>
+                            { selectedWorkflow === workflow.workflow_id && (
+                                <Check size={ 18 } className='shrink-0'/>
+                            ) }
+                            <p className='truncate'>{ workflow.label }</p>
+                        </div>
+                    )) }
+                </div>
             </div>
             <div className='p-8 w-full flex flex-col h-full'>
-                {/*<h1 className='text-lg font-bold mb-4'>*/}
-                {/*    { t('UPLOAD.upload') }*/}
-                {/*</h1>*/}
-                {/*<p className='mb-4 text-(--text-secondary)'>*/}
-                {/*    { t('UPLOAD.upload_hint') }*/}
-                {/*</p>*/}
+                <h1 className='text-lg font-bold mb-2'>
+                    { t('UPLOAD.upload') }
+                </h1>
+                <p className='mb-4 text-(--text-secondary)'>
+                    { t('UPLOAD.upload_hint') }
+                </p>
                 <UploadDropzone
                     accept={ {
                         "application/*": [".pdf"],
@@ -113,6 +228,10 @@ export function UploadPage() {
                     maxSize={ 10 * 1024 * 1024 }
                     className="bg-(--bg-primary)"
                 />
+                <Button className="mt-4 w-fit" onClick={ handleUpload }
+                        disabled={ files.length === 0 || !selectedWorkflow || sending }>
+                    { t('UPLOAD.upload_files', { count: files.length }) }
+                </Button>
             </div>
         </div>
     );

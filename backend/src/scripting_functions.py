@@ -158,7 +158,7 @@ def launch_script_verifier(workflow_settings, docservers, step, log, file, datab
 
         rand = str(uuid.uuid4())
         tmp_file = docservers['TMP_PATH'] + '/' + step + '_scripting_' + rand + '.py'
-
+        print(tmp_file)
         try:
             with open(tmp_file, 'w', encoding='utf-8') as python_script:
                 python_script.write(script)

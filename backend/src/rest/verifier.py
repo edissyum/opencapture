@@ -696,27 +696,6 @@ def verify_siret():
     return make_response({'status': status[0]}, status[1])
 
 
-@bp.route('verifier/verifyVATNumber', methods=['POST'])
-@auth.token_required
-def verify_vat_number():
-    if 'skip' not in request.environ or not request.environ['skip']:
-        if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
-            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/verifier/verifyVATNumber'}), 403
-
-    check, message = rest_validator(request.json['args'], [
-        {'id': 'vat_number', 'type': str, 'mandatory': True}
-    ])
-
-    if not check:
-        return make_response({
-            "errors": gettext('BAD_REQUEST'),
-            "message": message
-        }, 400)
-
-    status = verifier.verify_vat_number(request.json['vat_number'])
-    return make_response({'status': status[0]}, status[1])
-
-
 @bp.route('verifier/getUnseen/user/<int:user_id>', methods=['GET'])
 @auth.token_required
 def verifier_get_unseen(user_id):

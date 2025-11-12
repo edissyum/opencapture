@@ -21,12 +21,11 @@ import { useTranslation } from "react-i18next";
 import { CheckOverlay } from "../CheckOverlay";
 
 interface LangSelectionProps {
+    i18n: ReturnType<typeof useTranslation>['i18n'];
     refresh?: boolean;
 }
 
-export function LangSelection({ refresh = true }: LangSelectionProps) {
-    const { i18n } = useTranslation();
-
+export function LangSelection({ i18n, refresh = true }: LangSelectionProps) {
     const options = [
         { code: 'fra', label: 'Français' },
         { code: 'eng', label: 'English' },

@@ -39,7 +39,7 @@ export function Step4() {
                 { t('ONBOARD.select_view_info') }
             </p>
 
-            <div className="flex gap-4 justify-center">
+            <div className="flex gap-4 justify-center mt-4">
                 <div className={ `cursor-pointer relative w-48 h-26 bg-(--bg-primary) border-2 
                         border-(--border-primary) rounded-lg transition-border-color duration-200
                         ${ selectedView === 'grid' ? 'border-(--border-primary)' : 'border-(--border-secondary) hover:border-gray-400' } ` }
@@ -49,8 +49,8 @@ export function Step4() {
                     <div className='p-2'>
                         <div className="h-4 bg-gray-200 rounded"></div>
                         <div className="grid grid-cols-4 gap-3 mt-2">
-                            { Array.from({ length: 8 }).map(() => (
-                                <div className="h-6 bg-gray-200 rounded w-full"></div>
+                            { Array.from({ length: 8 }).map((_, cpt) => (
+                                <div key={ cpt } className="h-6 bg-gray-200 rounded w-full"/>
                             )) }
                         </div>
                     </div>
@@ -64,8 +64,8 @@ export function Step4() {
                     <div className='p-2'>
                         <div className="h-4 bg-gray-200 rounded"></div>
                         <div className="flex flex-col gap-1 mt-2">
-                            { Array.from({ length: 4 }).map(() => (
-                                <div className="h-3 bg-gray-200 rounded w-full"></div>
+                            { Array.from({ length: 4 }).map((_, cpt) => (
+                                <div key={ cpt } className="h-3 bg-gray-200 rounded w-full"/>
                             )) }
                         </div>
                     </div>

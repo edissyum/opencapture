@@ -413,7 +413,11 @@ export function VerifierListPage() {
                                         key={ key }
                                         label={ listTimes[key as keyof typeof listTimes] }
                                         checked={ selectedTime === key }
-                                        onChange={ () => {
+                                        onChange={ (checked: boolean) => {
+                                            if (!checked) {
+                                                setSelectedTime(null);
+                                                return;
+                                            }
                                             setSelectedTime(key);
                                         } }
                                     />

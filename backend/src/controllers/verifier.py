@@ -18,11 +18,9 @@
 import os
 import uuid
 import json
-import zeep
 import magic
 import base64
 import secrets
-import logging
 import tempfile
 import datetime
 import requests
@@ -31,7 +29,6 @@ import importlib
 import pandas as pd
 from PIL import Image
 from flask_babel import gettext
-from zeep import Client, exceptions
 from .. import verifier_exports
 from ..classes.Files import Files
 from werkzeug.datastructures import FileStorage
@@ -181,7 +178,7 @@ def retrieve_documents(args):
 
     args['where'].append("datas -> 'api_only' is NULL")
 
-    if 'time' in args:
+    if 'time' in args and args['time']:
         if args['time'] in ['today', 'yesterday']:
             args['where'].append(
                 "to_char(register_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "', 'YYYY-MM-DD')")
@@ -892,37 +889,6 @@ def verify_siret(token, siret, full=False):
         if full:
             return _return, 200
         return _return['header']['message'], _return['header']['statut']
-
-
-def verify_vat_number(vat_number, full=False):
-    if 'config' in current_context and 'log' in current_context:
-        log = current_context.log
-        config = current_context.config
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        config = _vars[1]
-        log = _vars[5]
-    url = config['API']['tva-url']
-    country_code = vat_number[:2]
-    vat_number = vat_number[2:]
-
-    logging.getLogger('zeep').setLevel(logging.ERROR)
-    try:
-        client = Client(url)
-        res = client.service.checkVat(country_code, vat_number)
-        text = res['valid']
-        if res['valid'] is False:
-            text = gettext('VAT_NOT_VALID')
-            return text, 400
-        if full:
-            return res, 200
-        return text, 200
-    except (exceptions.Fault, requests.exceptions.SSLError, requests.exceptions.ConnectionError,
-            zeep.exceptions.XMLSyntaxError) as _e:
-        log.error(gettext('VAT_API_ERROR') + ' : ' + str(_e))
-        return gettext('VAT_API_ERROR'), 201
-
 
 def get_totals(status, user_id, form_id):
     totals = {}

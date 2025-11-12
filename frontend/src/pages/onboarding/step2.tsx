@@ -15,11 +15,12 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 import { LangSelection } from "../../components/onboarding/LangSelection";
 
 export function Step2() {
+    const { t } = useTranslation();
 
     return (
         <>
@@ -28,7 +29,7 @@ export function Step2() {
                 { t('ONBOARD.select_frontend_lang_info') }
             </p>
             <div className='h-full flex items-center justify-center'>
-                <LangSelection refresh={false}/>
+                <LangSelection i18n={ useTranslation().i18n } refresh={false}/>
             </div>
         </>
     );

@@ -195,7 +195,7 @@ def launch(args):
         else:
             custom_array['process_queue_verifier']['path'] = 'custom.' + \
                                                              custom_array['process_queue_verifier']['path'].split(
-                                                                 '.custom.')[1]
+                                                                 'custom.')[1]
             process_queue_verifier = getattr(__import__(custom_array['process_queue_verifier']['path'],
                                                         fromlist=[custom_array['process_queue_verifier']['module']]),
                                              custom_array['process_queue_verifier']['module'])

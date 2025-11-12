@@ -57,6 +57,16 @@ SET fields = jsonb_set(
      FROM jsonb_array_elements(fields -> 'facturation') AS s(f))
 );
 
+-- Modification des imports par défaut du scripting des workflows
+UPDATE workflows
+SET
+    input = REPLACE(input::text, 'src.backend', 'src')::jsonb,
+    process = REPLACE(process::text, 'src.backend', 'src')::jsonb,
+    output = REPLACE(output::text, 'src.backend', 'src')::jsonb
+WHERE input::text LIKE '%src.backend%'
+   OR process::text LIKE '%src.backend%'
+   OR output::text LIKE '%src.backend%';
+
 -- Modification de la structure des champs dans form_models_field
 -- Désormais on souhaite que chaque valeur de tableau soit encapsulée dans un tableau supplémentaire
 -- Chaque tableau est considéré comme une ligne

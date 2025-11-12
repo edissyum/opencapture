@@ -120,7 +120,7 @@ export function Button({
     }
 
     return (
-        <div className={ `${ disabled ? "cursor-not-allowed" : "" }` }>
+        <div className={ `w-fit ${ disabled ? "cursor-not-allowed" : "" }` }>
             <button className={ classes } disabled={ disabled } type={ type } { ...props }>
                 { content }
             </button>
