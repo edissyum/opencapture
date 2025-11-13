@@ -8,7 +8,7 @@ SET fields = jsonb_set(
                 WHEN f ->> 'color' = 'yellow' THEN jsonb_set(f, '{color}', '"#B3A613"'::jsonb)
                 WHEN f ->> 'color' = 'pink' THEN jsonb_set(f, '{color}', '"#F469F6"'::jsonb)
                 WHEN f ->> 'color' = 'red' THEN jsonb_set(f, '{color}', '"#CD0D0D"'::jsonb)
-                WHEN f ->> 'color' = 'olive' THEN jsonb_set(f, '{color}', '"#1FAA60"'::jsonb)
+                WHEN f ->> 'color' = 'olive' THEN jsonb_set(f, '{color}', '"#19864B"'::jsonb)
                 WHEN f ->> 'color' = 'orange' THEN jsonb_set(f, '{color}', '"#E66910"'::jsonb)
                 WHEN f ->> 'color' = 'purple' THEN jsonb_set(f, '{color}', '"#57076B"'::jsonb)
                 WHEN f ->> 'color' = 'blue' THEN jsonb_set(f, '{color}', '"#426CF5"'::jsonb)
@@ -20,7 +20,7 @@ SET fields = jsonb_set(
                 WHEN f ->> 'color' = 'fuchsia' THEN jsonb_set(f, '{color}', '"#E600E6"'::jsonb)
                 WHEN f ->> 'color' = 'silver' THEN jsonb_set(f, '{color}', '"#6E6E6E"'::jsonb)
                 WHEN f ->> 'color' = 'gray' THEN jsonb_set(f, '{color}', '"#6E6E6E"'::jsonb)
-                WHEN f ->> 'color' = 'lime' THEN jsonb_set(f, '{color}', '"#1FAA60"'::jsonb)
+                WHEN f ->> 'color' = 'lime' THEN jsonb_set(f, '{color}', '"#19864B"'::jsonb)
                 WHEN f ->> 'color' = 'green' THEN jsonb_set(f, '{color}', '"#11603D"'::jsonb)
                 ELSE f
             END
@@ -37,7 +37,7 @@ SET fields = jsonb_set(
                 WHEN f ->> 'color' = 'yellow' THEN jsonb_set(f, '{color}', '"#B3A613"'::jsonb)
                 WHEN f ->> 'color' = 'pink' THEN jsonb_set(f, '{color}', '"#F469F6"'::jsonb)
                 WHEN f ->> 'color' = 'red' THEN jsonb_set(f, '{color}', '"#CD0D0D"'::jsonb)
-                WHEN f ->> 'color' = 'olive' THEN jsonb_set(f, '{color}', '"#1FAA60"'::jsonb)
+                WHEN f ->> 'color' = 'olive' THEN jsonb_set(f, '{color}', '"#19864B"'::jsonb)
                 WHEN f ->> 'color' = 'orange' THEN jsonb_set(f, '{color}', '"#E66910"'::jsonb)
                 WHEN f ->> 'color' = 'purple' THEN jsonb_set(f, '{color}', '"#57076B"'::jsonb)
                 WHEN f ->> 'color' = 'blue' THEN jsonb_set(f, '{color}', '"#426CF5"'::jsonb)
@@ -49,7 +49,7 @@ SET fields = jsonb_set(
                 WHEN f ->> 'color' = 'fuchsia' THEN jsonb_set(f, '{color}', '"#E600E6"'::jsonb)
                 WHEN f ->> 'color' = 'silver' THEN jsonb_set(f, '{color}', '"#6E6E6E"'::jsonb)
                 WHEN f ->> 'color' = 'gray' THEN jsonb_set(f, '{color}', '"#6E6E6E"'::jsonb)
-                WHEN f ->> 'color' = 'lime' THEN jsonb_set(f, '{color}', '"#1FAA60"'::jsonb)
+                WHEN f ->> 'color' = 'lime' THEN jsonb_set(f, '{color}', '"#19864B"'::jsonb)
                 WHEN f ->> 'color' = 'green' THEN jsonb_set(f, '{color}', '"#11603D"'::jsonb)
                 ELSE f
             END

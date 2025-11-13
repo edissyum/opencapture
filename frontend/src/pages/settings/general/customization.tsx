@@ -174,7 +174,7 @@ export function SettingsGeneralCustomization() {
             <h2>{ t('CUSTOMIZATION.application_lang') }</h2>
             <p className='text-(--text-secondary)'>{ t('CUSTOMIZATION.application_lang_description') }</p>
             <div className="flex mt-4">
-                <LangSelection i18n={ useTranslation().i18n } refresh={ false }/>
+                <LangSelection i18n={ useTranslation().i18n } refresh={ true }/>
             </div>
             <hr className='my-6 text-(--border-secondary)'/>
 
@@ -230,7 +230,7 @@ export function SettingsGeneralCustomization() {
                     toolbar: 'undo redo | formatselect | bold italic forecolor backcolor | link | alignleft aligncenter alignright alignjustify',
                     plugins: 'lists link image table',
                     color_map: [
-                        '#1FAA60', 'Open-Capture Green',
+                        '#19864B', 'Open-Capture Green',
                         '#E8E8E8', 'Open-Capture Light Gray',
                         '#91929B', 'Open-Capture Gray',
                         '#ECCAFA', 'Light Purple',

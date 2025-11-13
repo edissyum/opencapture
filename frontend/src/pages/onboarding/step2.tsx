@@ -29,7 +29,7 @@ export function Step2() {
                 { t('ONBOARD.select_frontend_lang_info') }
             </p>
             <div className='h-full flex items-center justify-center'>
-                <LangSelection i18n={ useTranslation().i18n } refresh={false}/>
+                <LangSelection i18n={ useTranslation().i18n } refresh={ false }/>
             </div>
         </>
     );

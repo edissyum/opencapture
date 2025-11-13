@@ -19,7 +19,7 @@ import { type TFunction } from "i18next";
 export const getColorOptions = (t: TFunction) => ([
     { name: t('COLORS.blue'), value: "#426CF5" },
     { name: t('COLORS.ligtblue'), value: "#1CC7BE" },
-    { name: t('COLORS.lightgreen'), value: "#1FAA60" },
+    { name: t('COLORS.lightgreen'), value: "#19864B" },
     { name: t('COLORS.green'), value: "#64C800" },
     { name: t('COLORS.yellow'), value: "#B3A613" },
     { name: t('COLORS.orange'), value: "#E66910" },

@@ -17,7 +17,9 @@
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { CircleQuestionMark } from "lucide-react";
 
+import { InputSwitch } from "primereact/inputswitch";
 import { TabPanel, TabView } from "primereact/tabview";
 import { Accordion, AccordionTab } from "primereact/accordion";
 
@@ -35,16 +37,15 @@ import { FieldPalette } from "../../../../components/form/editor/FieldPalette";
 import { DroppableZone } from "../../../../components/form/editor/DroppableZone";
 import { DroppableLine } from "../../../../components/form/editor/DroppableLine";
 
+import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
+import { Loader } from "../../../../components/loader/Loader";
 import { showToast } from "../../../../components/ToastProvider";
+import MultiSelectInput from "../../../../components/MultiSelect";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 import { useFormFields } from "../../../../services/hooks/useFormFields";
 import { useCustomFields } from "../../../../services/hooks/useCustomFields";
-import Input from "../../../../components/Input.tsx";
-import { InputSwitch } from "primereact/inputswitch";
-import { MultiSelect } from "primereact/multiselect";
-import { CircleQuestionMark } from "lucide-react";
 
 export function SettingsVerifierFormsEditor() {
     const { get, post, put } = axiosApiCall();
@@ -67,8 +68,9 @@ export function SettingsVerifierFormsEditor() {
 
     const [usedFields, setUsedFields] = useState<string[]>([]);
 
-    const [formSettings, setFormSettings] = useState<any>({ "label": '', default_form: false, "settings": {} });
     const [outputs, setOutputs] = useState<any[]>([]);
+    const [formSettingsLoading, setFormSettingsLoading] = useState(true);
+    const [formSettings, setFormSettings] = useState<any>({ "label": '', default_form: false, "settings": {} });
 
     // Retrieve outputs and form settings
     useEffect(() => {
@@ -77,7 +79,6 @@ export function SettingsVerifierFormsEditor() {
         const retrieveOutputs = async () => {
             try {
                 const response = await get(`outputs/verifier/list`);
-                console.log(response)
                 setOutputs(response.outputs || []);
             } catch (error) {
                 console.error("Error retrieving form outputs:", error);
@@ -88,6 +89,7 @@ export function SettingsVerifierFormsEditor() {
             try {
                 const response = await get(`forms/verifier/getById/${ formId }`);
                 setFormSettings(response);
+                setFormSettingsLoading(false);
             } catch (error) {
                 console.error("Error retrieving form settings:", error);
             }
@@ -385,7 +387,7 @@ export function SettingsVerifierFormsEditor() {
                     id: field.id,
                     type: field.type,
                     label: field.label,
-                    color: field.color || "#1FAA60",
+                    color: field.color || "#19864B",
                     required: field.required ?? false,
                     default_value: field.default_value || "",
                     format: field.format ?? "alphanum_extended_with_accent"
@@ -434,83 +436,87 @@ export function SettingsVerifierFormsEditor() {
             <div className="flex h-full">
                 <div className="flex flex-col border-r-2 border-(--border-secondary) w-full">
                     <TabView activeIndex={ mainTabIndex } onTabChange={ (e) => setMainTabIndex(e.index) }>
-                        <TabPanel header={ t("SETTINGS.form_details") } className='bg-white h-full'>
-                            <div className='p-6'>
-                                <div>
-                                    <h2>{ t('SETTINGS.general') }</h2>
-                                    <Input
-                                        type="text"
-                                        id="form_label"
-                                        required={ true }
-                                        className="mt-4 w-1/2"
-                                        value={ formSettings.label }
-                                        label={ t('FORMS.form_name') }
-                                        error={ formSettings.label === '' ? t('FORMS.label_required') : '' }
-                                        onChange={ (e) => setFormSettings({
-                                            ...formSettings,
-                                            label: e.target.value
-                                        }) }
-                                    />
-
-                                    <div className='flex items-center gap-2'>
-                                        <InputSwitch id="default_form"
-                                                     checked={ formSettings.default_form }
-                                                     onChange={ (e) => setFormSettings({
-                                                         ...formSettings,
-                                                         default_form: e.value
-                                                     }) }/>
-                                        <label htmlFor='default_form'>{ t('FORMS.default_form') }</label>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h2 className="mt-6">{ t('OUTPUTS.outputs') }</h2>
-                                    <MultiSelect
-                                        filter
-                                        invalid={ formSettings.outputs?.length === 0 }
-                                        display="chip"
-                                        optionValue="id"
-                                        required={ true }
-                                        id="output_select"
-                                        options={ outputs }
-                                        className="mt-4 w-1/2"
-                                        optionLabel="output_label"
-                                        value={ formSettings.outputs?.map(Number) ?? [] }
-                                        placeholder={ t('OUTPUTS.select_outputs') }
-                                        onChange={ (e) =>
-                                            setFormSettings({
-                                                ...formSettings,
-                                                outputs: e.value
-                                            })
-                                        }
-                                    />
-                                </div>
-                                <div>
-                                    <h2 className="mt-6">{ t('SETTINGS.advanced') }</h2>
-                                    <div className='flex items-center gap-2'>
-                                        <InputSwitch
-                                            id="allow_learning"
-                                            checked={ formSettings.settings.allow_learning }
+                        <TabPanel header={ t("SETTINGS.form_details") } className='bg-(--bg-primary) h-full'>
+                            { formSettingsLoading ? (
+                                <Loader/>
+                            ) : (
+                                <div className='p-6'>
+                                    <div>
+                                        <h2 className='text-(--text-primary)'>{ t('SETTINGS.general') }</h2>
+                                        <Input
+                                            type="text"
+                                            id="form_label"
+                                            required={ true }
+                                            className="mt-4 w-1/2"
+                                            value={ formSettings.label }
+                                            label={ t('FORMS.form_name') }
+                                            error={ formSettings.label === '' ? t('FORMS.label_required') : '' }
                                             onChange={ (e) => setFormSettings({
                                                 ...formSettings,
-                                                settings: {
-                                                    ...formSettings.settings,
-                                                    allow_learning: e.value
-                                                }
-                                            }) }/>
-                                        <label htmlFor='allow_learning'>{ t('FORMS.allow_learning') }</label>
-                                        <div className="text-(--text-secondary) cursor-pointer"
-                                             data-tooltip-id="tooltip"
-                                             data-tooltip-content={ t('FORMS.allow_learning_hint') }>
-                                            <CircleQuestionMark size={ 18 }/>
+                                                label: e.target.value
+                                            }) }
+                                        />
+
+                                        <div className='flex items-center gap-2'>
+                                            <InputSwitch id="default_form"
+                                                         checked={ formSettings.default_form }
+                                                         onChange={ (e) => setFormSettings({
+                                                             ...formSettings,
+                                                             default_form: e.value
+                                                         }) }/>
+                                            <label htmlFor='default_form'>{ t('FORMS.default_form') }</label>
                                         </div>
                                     </div>
-                                </div>
+                                    <div>
+                                        <h2 className="text-(--text-primary) mt-6">{ t('OUTPUTS.outputs') }</h2>
 
-                                <Button className="mt-6" variant="primary" onClick={ handleUpdateSettings }
-                                        disabled={ isSubmitting || formSettings.label === '' || !formSettings.outputs || formSettings.outputs.length === 0 }>
-                                    { isSubmitting ? t('GLOBAL.saving') + "..." : t('GLOBAL.save_settings') }
-                                </Button>
-                            </div>
+                                        <div className='w-1/2 mt-4'>
+                                            <MultiSelectInput
+                                                optionValue="id"
+                                                id="output_select"
+                                                required={ true }
+                                                options={ outputs }
+                                                optionLabel="output_label"
+                                                invalid={ formSettings.outputs?.length === 0 }
+                                                value={ formSettings.outputs?.map(Number) ?? [] }
+                                                placeholder={ t('OUTPUTS.select_outputs') }
+                                                onChange={ (e) =>
+                                                    setFormSettings({
+                                                        ...formSettings,
+                                                        outputs: e.value
+                                                    })
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h2 className="text-(--text-primary) mt-6">{ t('SETTINGS.advanced') }</h2>
+                                        <div className='flex items-center gap-2'>
+                                            <InputSwitch
+                                                id="allow_learning"
+                                                checked={ formSettings.settings.allow_learning }
+                                                onChange={ (e) => setFormSettings({
+                                                    ...formSettings,
+                                                    settings: {
+                                                        ...formSettings.settings,
+                                                        allow_learning: e.value
+                                                    }
+                                                }) }/>
+                                            <label htmlFor='allow_learning'>{ t('FORMS.allow_learning') }</label>
+                                            <div className="text-(--text-secondary) cursor-pointer"
+                                                 data-tooltip-id="tooltip"
+                                                 data-tooltip-content={ t('FORMS.allow_learning_hint') }>
+                                                <CircleQuestionMark size={ 18 }/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <Button className="mt-6" variant="primary" onClick={ handleUpdateSettings }
+                                            disabled={ isSubmitting || formSettings.label === '' || !formSettings.outputs || formSettings.outputs.length === 0 }>
+                                        { isSubmitting ? t('GLOBAL.saving') + "..." : t('GLOBAL.save_settings') }
+                                    </Button>
+                                </div>
+                            ) }
                         </TabPanel>
                         <TabPanel header={ t("SETTINGS.form_fields") }>
                             <Accordion multiple activeIndex={ [0] } className='p-6'>

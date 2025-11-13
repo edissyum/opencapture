@@ -393,8 +393,9 @@ def skip_auto_validate(supplier_id):
 
 @bp.route('accounts/customers/list', methods=['GET'])
 @bp.route('accounts/customers/list/<string:module>', methods=['GET'])
+@bp.route('accounts/customers/list/<string:module>/<int:user_id>', methods=['GET'])
 @auth.token_required
-def customers_list(module=False):
+def customers_list(module=False, user_id=None):
     if not privileges.has_privileges(request.environ['user_id'], ['customers_list | access_verifier']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/customers/list'}), 403
 
@@ -410,7 +411,7 @@ def customers_list(module=False):
             "message": message
         }, 400)
 
-    res = accounts.retrieve_customers(data, module)
+    res = accounts.retrieve_customers(data, module, user_id)
     return make_response(res[0], res[1])
 
 

@@ -19,9 +19,9 @@
 
 @theme {
 
-    --color-green-400: oklch(0.6509 0.157 153.52); /* HEX CODE #1FAA60 */
+    --color-green-400: oklch(0.5474 0.1307 153.5); /* HEX CODE #19864B */
 
-    --color-red-400: oklch(0.6084 0.1668 28.99); /* HEX CODE #D45244 */
+    --color-red-400: oklch(0.5665 0.2105 31.79); /* HEX CODE #D6290A */
 
     --color-gray-300: oklch(0.931 0 0); /* HEX CODE #E8E8E8 */
     --color-gray-400: oklch(0.662 0.0133 280.96); /* HEX CODE #91929B */

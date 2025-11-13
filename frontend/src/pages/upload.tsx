@@ -22,9 +22,9 @@ import { useUser } from "../services/hooks/useUser";
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
 
 import { Button } from "../components/Button";
+import { Loader } from "../components/loader/Loader";
+import { showToast } from "../components/ToastProvider";
 import UploadDropzone from "../components/upload/Dropzone";
-import { Loader } from "../components/loader/Loader.tsx";
-import { showToast } from "../components/ToastProvider.tsx";
 
 export function UploadPage() {
     const { get, post } = axiosApiCall();
@@ -67,7 +67,7 @@ export function UploadPage() {
         const retrieveTimeout = async () => {
             try {
                 get(`config/getConfigurationNoAuth/timeoutUpload`).then((response) => {
-                    if (response && response.configuration) {
+                    if (response && response.configuration && response.configuration.length > 0) {
                         setTimeout(response.configuration[0].data.value);
                     }
                 });
@@ -97,26 +97,6 @@ export function UploadPage() {
 
         retrieveWorkflows().then();
     }, [loadingUser, selectedModule]);
-
-    const startFakeUpload = (newFiles: File[]) => {
-        newFiles.forEach((file) => {
-            let p = 0;
-
-            const interval = setInterval(() => {
-                p += Math.floor(Math.random() * 15) + 5; // avance un peu comme un paresseux enthousiaste
-
-                if (p >= 100) {
-                    p = 100;
-                    clearInterval(interval);
-                }
-
-                setProgress((prev) => ({
-                    ...prev,
-                    [file.name]: p
-                }));
-            }, 150);
-        });
-    };
 
     const handleUpload = async () => {
         if (files.length === 0 || !selectedWorkflow) return;
@@ -154,7 +134,7 @@ export function UploadPage() {
                 cpt += 1;
                 if (cpt === filesToUpload.length) {
                     setFiles([]);
-                    showToast(t('UPLOAD.upload_success'), "success");
+                    showToast(t('UPLOAD.upload_success', { count: filesToUpload.length }), "success");
                 }
             } catch (error) {
                 setProgress((prev => ({
@@ -202,7 +182,7 @@ export function UploadPage() {
                              onClick={ () => setSelectedWorkflow(workflow.workflow_id) }
                              className={ `cursor-pointer flex items-center gap-1 border-2 border-(--border-secondary) 
                                           rounded-md p-2 hover:border-(--color-primary)
-                                          ${ selectedWorkflow === workflow.id ? 'text-(--color-primary) font-semibold bg-(--color-primary)/10' : '' }` }>
+                                          ${ selectedWorkflow === workflow.workflow_id ? 'text-(--color-primary) font-semibold bg-(--color-primary)/10' : '' }` }>
                             { selectedWorkflow === workflow.workflow_id && (
                                 <Check size={ 18 } className='shrink-0'/>
                             ) }
@@ -228,10 +208,12 @@ export function UploadPage() {
                     maxSize={ 10 * 1024 * 1024 }
                     className="bg-(--bg-primary)"
                 />
-                <Button className="mt-4 w-fit" onClick={ handleUpload }
-                        disabled={ files.length === 0 || !selectedWorkflow || sending }>
-                    { t('UPLOAD.upload_files', { count: files.length }) }
-                </Button>
+                <div className="w-fit">
+                    <Button onClick={ handleUpload }
+                            disabled={ files.length === 0 || !selectedWorkflow || sending }>
+                        { t('UPLOAD.upload_files', { count: files.length }) }
+                    </Button>
+                </div>
             </div>
         </div>
     );

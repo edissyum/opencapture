@@ -259,7 +259,7 @@ export function VerifierViewerPage() {
                 width: pos.width,
                 height: pos.height,
                 label: label,
-                color: '#1faa60'
+                color: '#19864B'
             };
 
             Object.keys(formFields).forEach((parent: any) => {

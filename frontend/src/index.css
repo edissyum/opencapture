@@ -135,3 +135,16 @@ h2 {
 .Toastify__toast {
     width: fit-content !important;
 }
+
+/* TinyMCE customization */
+.tox .tox-edit-area::before {
+    @apply border-(--color-primary)!;
+}
+
+.tox .tox-tbtn--enabled {
+    @apply bg-(--color-primary)/40!;
+}
+
+.tox .tox-split-button__chevron:focus::after {
+    box-shadow: 0 0 0 2px var(--color-primary) !important;
+}

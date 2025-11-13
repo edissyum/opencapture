@@ -42,6 +42,11 @@
     @apply bg-(--bg-secondary);
 }
 
+.p-tabview .p-tabview-nav,
+.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+    @apply border-(--border-secondary);
+}
+
 .available_fields .p-tabview-panels {
     @apply bg-(--bg-primary)!;
 }
@@ -65,4 +70,8 @@
 
 .p-tabview-scrollable .p-tabview-nav-container {
     @apply overflow-visible;
+}
+
+.p-tabview .p-tabview-nav-btn.p-link {
+    @apply bg-(--bg-primary);
 }

@@ -20,7 +20,10 @@
         "siret": "",
         "supplier_name": "",
         "vat_number": "",
-        "city": ""
+        "city": "",
+        "search_customers": "",
+        "no_customer_associated": "",
+        "search_suppliers": ""
     },
     "AUTH": {
         "authenticated": "Has iniciado sesión con éxito",
@@ -71,7 +74,8 @@
         "today": "",
         "yesterday": "",
         "forms": "",
-        "status": ""
+        "status": "",
+        "no_result_found": ""
     },
     "ONBOARD": {
         "select_module": "Selección de módulo predeterminado",
@@ -154,7 +158,10 @@
         "upload_hint": "",
         "upload_files_many": "",
         "upload_files_one": "",
-        "upload_files_other": ""
+        "upload_files_other": "",
+        "upload_success_many": "",
+        "upload_success_one": "",
+        "upload_success_other": ""
     },
     "USER": {
         "password": "Contraseña",
@@ -223,7 +230,8 @@
         "output_error": "",
         "select_single_document_form": "",
         "associated_customer": "",
-        "select_single_document_customer": ""
+        "select_single_document_customer": "",
+        "search_form": ""
     },
     "SPLITTER": {
         "batch_selected_many": "lotes seleccionados",

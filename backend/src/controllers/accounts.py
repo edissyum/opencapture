@@ -20,10 +20,11 @@ import os
 import csv
 import json
 import codecs
+from . import user
 from unidecode import unidecode
 from flask_babel import gettext
-from flask import request, g as current_context
 from ..models import accounts, history
+from flask import request, g as current_context
 from ..functions import retrieve_custom_from_url
 from ..main import create_classes_from_custom_id
 
@@ -499,7 +500,7 @@ def create_supplier(data, from_api=False):
         return response, 400
 
 
-def retrieve_customers(data, module):
+def retrieve_customers(data, module, user_id=None):
     args = {
         'select': ['*', 'count(*) OVER() as total'],
         'where': ['status <> %s', 'module = %s'] if module else ['status <> %s'],
@@ -518,6 +519,16 @@ def retrieve_customers(data, module):
         )
 
     customers = accounts.retrieve_customers(args)
+
+    if user_id:
+        user_customers, _ = user.get_customers_by_user_id(user_id)
+        if user_customers:
+            filtered_customers = []
+            for customer in customers:
+                if customer['id'] in user_customers:
+                    filtered_customers.append(customer)
+            customers = filtered_customers
+
     response = {
         "customers": customers
     }

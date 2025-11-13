@@ -51,11 +51,16 @@ export function Checkbox({ id, checked = false, onChange, label, className, size
                 style={ { width: `calc(0.25rem*${ size })`, height: `calc(0.25rem*${ size })` } }
                 className={ `border border-(--border-secondary) rounded flex items-center justify-center
                     ${ isChecked ? "bg-(--color-primary) border-(--color-primary)" : "bg-(--bg-primary)" }
-                    transition-all hover:border-(--color-primary)` }
+                    transition-all hover:border-(--color-primary) shrink-0` }
             >
                 { isChecked && <Check id={ id } className={ `size-${ size } text-white` }/> }
             </div>
-            { label && <span onClick={ toggle } className="ml-2 text-(--text-secondary) truncate">{ label }</span> }
+            { label &&
+                <span onClick={ toggle } title={ label }
+                      className="ml-2 text-(--text-secondary) truncate">
+                    { label }
+                </span>
+            }
         </label>
     );
 }

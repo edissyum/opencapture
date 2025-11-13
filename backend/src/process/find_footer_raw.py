@@ -119,7 +119,9 @@ class FindFooterRaw:
             'table': ['accounts_supplier'],
             'where': ['vat_number = %s OR duns = %s', 'status <> %s'],
             'data': [self.supplier[0], self.supplier[2]['duns'], 'DEL']
-        })[0]
+        })
+        if position:
+            position = position[0]
 
         if position and position[column + '_position'] not in ['((,),(,))', 'NULL', None, '', False]:
             page = position[column + '_page']

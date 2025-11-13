@@ -223,7 +223,7 @@ def get_customers_by_user_id(args):
     })
 
     if not customers:
-        error = gettext('GET_CUSTOMER_BY_ID_ERROR')
+        error = gettext('NO_CUSTOMERS')
     else:
         customers = customers[0]
     return customers, error

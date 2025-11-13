@@ -20,7 +20,10 @@
         "siret": "Numéro SIRET",
         "supplier_name": "Compte tiers / organisation",
         "vat_number": "Numéro de TVA",
-        "city": "Ville"
+        "city": "Ville",
+        "search_customers": "Rechercher un compte client",
+        "no_customer_associated": "Aucun compte client associé",
+        "search_suppliers": "Rechercher un compte de tiers"
     },
     "AUTH": {
         "authenticated": "Vous vous êtes authentifié avec succès",
@@ -71,7 +74,8 @@
         "today": "Lots du jour",
         "yesterday": "Lots de la veille",
         "forms": "Formulaires",
-        "status": "Status"
+        "status": "Status",
+        "no_result_found": "Aucun résultat trouvé"
     },
     "ONBOARD": {
         "select_module": "Choix du module par défaut",
@@ -154,7 +158,10 @@
         "upload_hint": "Selectionnez un ou plusieurs documents et un workflow pour commencer le traitement",
         "upload_files_many": "Téléverser les documents",
         "upload_files_one": "Téléverser le document",
-        "upload_files_other": "Téléverser les documents"
+        "upload_files_other": "Téléverser les documents",
+        "upload_success_many": "Fichiers téléversés avec succès",
+        "upload_success_one": "Fichier téléversé avec succès",
+        "upload_success_other": "Fichiers téléversés avec succès"
     },
     "USER": {
         "password": "Mot de passe",
@@ -223,7 +230,8 @@
         "output_error": "Erreur lors de l'exécution d'une chaîne sortante, le document n'a pas été validé",
         "select_single_document_form": "Le changement de formulaire n'est possible que pour un seul document à la fois",
         "associated_customer": "Compte client associé",
-        "select_single_document_customer": "Le changement de compte client n'est possible que pour un seul document à la fois"
+        "select_single_document_customer": "Le changement de compte client n'est possible que pour un seul document à la fois",
+        "search_form": "Rechercher un formulaire"
     },
     "SPLITTER": {
         "batch_selected_many": "lots sélectionnés",

@@ -20,7 +20,10 @@
         "siret": "",
         "supplier_name": "",
         "vat_number": "",
-        "city": ""
+        "city": "",
+        "search_customers": "",
+        "no_customer_associated": "",
+        "search_suppliers": ""
     },
     "AUTH": {
         "authenticated": "You have successfully authenticated",
@@ -71,7 +74,8 @@
         "today": "",
         "yesterday": "",
         "forms": "",
-        "status": ""
+        "status": "",
+        "no_result_found": ""
     },
     "ONBOARD": {
         "select_module": "Default module selection",
@@ -151,7 +155,9 @@
         "upload": "",
         "upload_hint": "",
         "upload_files_one": "",
-        "upload_files_other": ""
+        "upload_files_other": "",
+        "upload_success_one": "",
+        "upload_success_other": ""
     },
     "USER": {
         "password": "Password",
@@ -218,7 +224,8 @@
         "output_error": "",
         "select_single_document_form": "",
         "associated_customer": "",
-        "select_single_document_customer": ""
+        "select_single_document_customer": "",
+        "search_form": ""
     },
     "SPLITTER": {
         "batch_selected_one": "batch selected",

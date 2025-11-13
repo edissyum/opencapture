@@ -20,10 +20,13 @@
     @apply backdrop-blur-[2px];
 }
 
-/* Header background color */
+/* Header */
 .p-datatable .p-datatable-thead > tr > th {
-    @apply bg-white!;
-    @apply dark:bg-(--bg-secondary)!;
+    @apply bg-(--bg-primary)!;
+}
+
+.p-datatable .p-column-header-content {
+    @apply text-(--text-secondary);
 }
 
 /* Border for checkboxes */
@@ -50,8 +53,8 @@
 }
 
 /* Highlight color for selected rows and sorted columns */
-.p-datatable .p-datatable-tbody > tr.p-highlight,
-.p-datatable .p-sortable-column.p-highlight {
+.p-datatable .p-sortable-column.p-highlight ,
+.p-datatable .p-datatable-tbody > tr.p-highlight {
     @apply bg-(--color-primary)/10!;
     @apply text-(--color-primary)!;
 }
@@ -77,7 +80,7 @@
 
 /* Color for even rows */
 .p-datatable .p-datatable-tbody > tr:not(.p-row-odd) {
-    @apply bg-(--bg-secondary);
+    @apply bg-(--bg-secondary)!;
     @apply dark:bg-(--bg-primary);
     @apply dark:border-(--border-primary)!;
     @apply text-(--text-primary);
@@ -89,6 +92,11 @@
     @apply border-(--border-secondary);
     @apply dark:bg-(--bg-primary);
 }
+
+/* Border for lines */
+.p-datatable .p-datatable-thead > tr > th,
+.p-datatable .p-datatable-tbody > tr > td {
+    @apply border-(--border-secondary);}
 
 /* Hide default sortable icon */
 .p-sortable-column-icon {
@@ -114,18 +122,22 @@
     @apply py-2.5;
 }
 
-.p-menuitem-content .p-menuitem-link:has(.critical):hover span,
-.p-menuitem-content .p-menuitem-link:has(.critical):hover svg{
+.p-menuitem-content .p-menuitem-link:has(.critical):hover svg,
+.p-menuitem-content .p-menuitem-link:has(.critical):hover span {
     @apply text-(--text-error)!;
 }
 
 /* Change paginator and contextMenu colors */
-.p-paginator, .p-dropdown, .p-contextmenu {
+.p-paginator .p-dropdown {
+    @apply border-(--border-secondary);
+}
+
+.p-paginator, .p-dropdown, .p-contextmenu, .p-submenu-list {
     @apply bg-(--bg-primary);
 }
 
 .p-contextmenu .p-menuitem:not(.p-highlight):not(.p-disabled) > .p-menuitem-content:hover,
-.p-contextmenu .p-menuitem:not(.p-highlight):not(.p-disabled).p-focus > .p-menuitem-content{
+.p-contextmenu .p-menuitem:not(.p-highlight):not(.p-disabled).p-focus > .p-menuitem-content {
     @apply bg-(--bg-secondary);
     @apply text-(--text-secondary);
 }

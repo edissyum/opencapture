@@ -127,8 +127,8 @@ export function Table<T extends { id: string }>({
                 { pagination && (
                     <div
                         className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-t-md text-(--text-secondary) font-normal h-18">
-                        <Skeleton width='20%' className='dark:bg-(--text-secondary)'/>
-                        <Skeleton width='30%' className='dark:bg-(--text-secondary)'/>
+                        <Skeleton width='20%' className='dark:bg-(--bg-secondary)!'/>
+                        <Skeleton width='30%' className='dark:bg-(--bg-secondary)!'/>
                     </div>
                 ) }
                 <div className='flex flex-row'>
@@ -147,7 +147,7 @@ export function Table<T extends { id: string }>({
                              className="flex bg-(--bg-primary) even:bg-(--bg-secondary) border-b border-(--border-secondary)">
                             { columns.map((_col, ci) => (
                                 <span key={ ci } className={ `px-4 py-2 text-sm w-1/6` }>
-                                <Skeleton className='dark:bg-(--text-secondary)'/>
+                                <Skeleton className='dark:bg-(--bg-secondary)!'/>
                             </span>
                             )) }
                         </div>
@@ -158,103 +158,104 @@ export function Table<T extends { id: string }>({
     }
 
     return (
-        <div className='border border-(--border-secondary) rounded-lg overflow-hidden'>
+        <div className='border border-(--border-secondary) rounded-lg overflow-hidden w-full flex flex-col'>
             { actionsLine && (
                 <ContextMenu model={ actionsLine(selectedRows[0]) } ref={ cm }/>
             ) }
-
-            <PrimeDataTable
-                lazy
-                scrollable
-                stripedRows
-                dataKey="id"
-                value={ data }
-                scrollHeight="flex"
-                rows={ rowsPerPage }
-                paginator={ pagination }
-                first={ lazyParams.first }
-                paginatorPosition={ 'top' }
-                totalRecords={ totalRecords }
-                paginatorLeft={ paginatorLeftData }
-                rowsPerPageOptions={ rowsPerPageOptions }
-                sortField={ lazyParams.sortField ?? undefined }
-                sortOrder={ lazyParams.sortOrder ?? undefined }
-                paginatorTemplate="RowsPerPageDropdown CurrentPageReport PrevPageLink NextPageLink"
-                currentPageReportTemplate={ "{first} " + t('VERIFIER.to') + " {last} " + t('VERIFIER.of') + " {totalRecords}" }
-                selection={ selectedRows }
-                emptyMessage={ emptyMessage }
-                selectionMode={ 'checkbox' }
-                onSelectionChange={ (e: any) => {
-                    handleSelectionChange(e.value)
-                } }
-                className="w-full"
-                contextMenuSelection={ selectedRows }
-                onContextMenuSelectionChange={ (e: any) => {
-                    handleSelectionChange([e.value]);
-                    cm.current?.show(e.originalEvent);
-                } }
-                onPage={ (e) =>
-                    onLazyParamsChange({
-                        ...lazyParams,
-                        first: e.first,
-                        rows: e.rows,
-                        page: e.page,
-                    })
-                }
-                onSort={ (e) =>
-                    onLazyParamsChange({
-                        ...lazyParams,
-                        sortField: e.sortField,
-                        sortOrder: e.sortOrder,
-                    })
-                }
-                onRowClick={ (e) => {
-                    handleRowClick(e);
-                } }
-            >
-                { checkboxSelection && (
-                    <PrimeColumn
-                        headerClassName="max-w-16 w-16 text-(--text-secondary) font-normal border-(--border-secondary)! py-0!"
-                        bodyClassName="pl-4! pr-1! text-sm py-1!"
-                        selectionMode="multiple"/>
-                ) }
-
-                { columns.map((col, idx) => (
-                    <PrimeColumn
-                        headerClassName={ `${ col.className } cursor-pointer text-(--text-secondary) font-normal pl-1 pr-1 py-2 border-(--border-secondary)` }
-                        bodyClassName={ `${ col.className } cursor-pointer pl-1 pr-1 text-sm py-2` }
-                        key={ idx }
-                        field={ col.id as string }
-                        header={
-                            col.sortable ? <span className='flex items-center'>{ col.header }
-                                <ChevronsUpDown size={ 14 } className='ml-1'/></span> : col.header
-                        }
-                        sortable={ col.sortable }
-                        body={ (rowData: any) =>
-                            col.body
-                                ? col.body({ ...rowData, hoveredRow, setHoveredRow })
-                                : rowData[col.field!]
-                        }
-                    />
-                )) }
-
-                {
-                    actions.length > 0 && (
+            <div className='flex-1 overflow-auto'>
+                <PrimeDataTable
+                    lazy
+                    scrollable
+                    stripedRows
+                    dataKey="id"
+                    value={ data }
+                    scrollHeight="flex"
+                    rows={ rowsPerPage }
+                    paginator={ pagination }
+                    first={ lazyParams.first }
+                    paginatorPosition={ 'top' }
+                    totalRecords={ totalRecords }
+                    paginatorLeft={ paginatorLeftData }
+                    rowsPerPageOptions={ rowsPerPageOptions }
+                    sortField={ lazyParams.sortField ?? undefined }
+                    sortOrder={ lazyParams.sortOrder ?? undefined }
+                    paginatorTemplate="RowsPerPageDropdown CurrentPageReport PrevPageLink NextPageLink"
+                    currentPageReportTemplate={ "{first} " + t('VERIFIER.to') + " {last} " + t('VERIFIER.of') + " {totalRecords}" }
+                    selection={ selectedRows }
+                    emptyMessage={ emptyMessage }
+                    selectionMode={ 'checkbox' }
+                    onSelectionChange={ (e: any) => {
+                        handleSelectionChange(e.value)
+                    } }
+                    className="w-full"
+                    contextMenuSelection={ selectedRows }
+                    onContextMenuSelectionChange={ (e: any) => {
+                        handleSelectionChange([e.value]);
+                        cm.current?.show(e.originalEvent);
+                    } }
+                    onPage={ (e) =>
+                        onLazyParamsChange({
+                            ...lazyParams,
+                            first: e.first,
+                            rows: e.rows,
+                            page: e.page,
+                        })
+                    }
+                    onSort={ (e) =>
+                        onLazyParamsChange({
+                            ...lazyParams,
+                            sortField: e.sortField,
+                            sortOrder: e.sortOrder,
+                        })
+                    }
+                    onRowClick={ (e) => {
+                        handleRowClick(e);
+                    } }
+                >
+                    { checkboxSelection && (
                         <PrimeColumn
-                            bodyClassName="pl-0! pr-0! text-sm"
-                            body={ (rowData: any) => (
-                                <div className='cursor-pointer' onClick={ (e) => {
-                                    e.stopPropagation();
-                                    handleSelectionChange([rowData]);
-                                    cm.current?.show(e);
-                                } }>
-                                    <EllipsisVertical size={ 18 }/>
-                                </div>
-                            ) }
+                            headerClassName="max-w-16 w-16 text-(--text-secondary) font-normal border-(--border-secondary)! py-0!"
+                            bodyClassName="pl-4! pr-1! text-sm py-1!"
+                            selectionMode="multiple"/>
+                    ) }
+
+                    { columns.map((col, idx) => (
+                        <PrimeColumn
+                            headerClassName={ `${ col.className } cursor-pointer text-(--text-secondary) font-normal pl-1 pr-1 py-2 border-(--border-secondary)` }
+                            bodyClassName={ `${ col.className } cursor-pointer pl-1 pr-1 text-sm py-2` }
+                            key={ idx }
+                            field={ col.id as string }
+                            header={
+                                col.sortable ? <span className='flex items-center'>{ col.header }
+                                    <ChevronsUpDown size={ 14 } className='ml-1'/></span> : col.header
+                            }
+                            sortable={ col.sortable }
+                            body={ (rowData: any) =>
+                                col.body
+                                    ? col.body({ ...rowData, hoveredRow, setHoveredRow })
+                                    : rowData[col.field!]
+                            }
                         />
-                    )
-                }
-            </PrimeDataTable>
+                    )) }
+
+                    {
+                        actions.length > 0 && (
+                            <PrimeColumn
+                                bodyClassName="pl-0! pr-0! text-sm"
+                                body={ (rowData: any) => (
+                                    <div className='cursor-pointer' onClick={ (e) => {
+                                        e.stopPropagation();
+                                        handleSelectionChange([rowData]);
+                                        cm.current?.show(e);
+                                    } }>
+                                        <EllipsisVertical size={ 18 }/>
+                                    </div>
+                                ) }
+                            />
+                        )
+                    }
+                </PrimeDataTable>
+            </div>
         </div>
     );
 }

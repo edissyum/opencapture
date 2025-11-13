@@ -152,17 +152,17 @@ export function Grid<T extends { id: string }>({
                 { pagination && (
                     <div
                         className="flex items-center justify-between mt-4 bg-(--bg-primary) px-4 rounded-lg text-(--text-secondary) font-normal h-18 mb-4">
-                        <Skeleton width='20%' className='dark:bg-(--text-secondary)'/>
-                        <Skeleton width='30%' className='dark:bg-(--text-secondary)'/>
+                        <Skeleton width='20%' className='dark:bg-(--bg-secondary)!'/>
+                        <Skeleton width='30%' className='dark:bg-(--bg-secondary)!'/>
                     </div>
                 ) }
                 <div className="grid grid-cols-4 gap-6">
                     { Array.from({ length: skeletonRows }).map((_, idx) => (
                         <div key={ idx }
                              className="border border-(--border-secondary) rounded-lg p-4">
-                            <Skeleton width="100%" height="8rem" className='dark:bg-(--text-secondary)'/>
-                            <Skeleton className="dark:bg-(--text-secondary) mt-2" width="60%"/>
-                            <Skeleton className="dark:bg-(--text-secondary) mt-2" width="40%"/>
+                            <Skeleton width="100%" height="8rem" className='dark:bg-(--text-secondary)!'/>
+                            <Skeleton className="dark:bg-(--bg-secondary)! mt-2" width="60%"/>
+                            <Skeleton className="dark:bg-(--bg-secondary)! mt-2" width="40%"/>
                         </div>
                     )) }
                 </div>
