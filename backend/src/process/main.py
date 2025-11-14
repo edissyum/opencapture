@@ -441,11 +441,12 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             res = find_workflow_with_ia(file, ai_model_id, database, docservers, Files, ocr, log, 'verifier')
             if res:
                 return send_to_workflow({
-                    'ip': args['ip'],
                     'log': log,
                     'file': file,
-                    'user_info': args['user_info'],
+                    'ip': args['ip'],
                     'workflow_id': res,
+                    'datas': args['datas'],
+                    'user_info': args['user_info'],
                     'custom_id': args['custom_id']
                 })
 

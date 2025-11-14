@@ -87,9 +87,11 @@ def send_to_workflow(args):
         'file': new_file_name,
         'user_info': args['user_info'],
         'custom_id': args['custom_id'],
+        'original_filename': args['file'],
         'workflow_id': args['workflow_id'],
         'current_step': args['log'].current_step,
-        'task_id_monitor': args['log'].task_id_monitor
+        'task_id_monitor': args['log'].task_id_monitor,
+        'datas': args['datas'] if 'datas' in args else {}
     })
 
     if os.path.isfile(args['file']):
@@ -108,8 +110,8 @@ def update_document_data(args):
         if datas and datas[0]:
             datas = datas[0]['datas']
 
-            for new_data in args['data']:
-                datas[new_data] = args['data'][new_data]
+            for new_data in args['datas']:
+                datas[new_data] = args['datas'][new_data]
 
             database.update({
                 'table': ['documents'],

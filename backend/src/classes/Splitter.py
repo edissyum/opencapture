@@ -539,6 +539,8 @@ class Splitter:
 
     @staticmethod
     def export_verifier(batch, metadata, parameters, docservers, regex):
+        from ..controllers import verifier
+
         parameters['body_template'] = re.sub(regex['splitter_xml_comment'], '', parameters['body_template'])
         json_body = json.loads(parameters['body_template'])
         json_body['files'] = []
@@ -549,10 +551,15 @@ class Splitter:
             for sub_key in json_body['datas']:
                 json_body['datas'][sub_key] = ''.join(construct_with_var(json_body['datas'][sub_key],
                                                                          metadata['custom_fields']))
+
+        tmp_json_body = json.loads(parameters['body_template'])
         for document in batch['documents']:
-            for key in json_body['datas']:
-                if json_body['datas'][key] == 'doctype':
+            for key in tmp_json_body['datas']:
+                if tmp_json_body['datas'][key] == 'doctype':
                     json_body['datas'][key] = document['doctype_key']
+
+                if tmp_json_body['datas'][key] in document['data']['custom_fields']:
+                    json_body['datas'][key] = document['data']['custom_fields'][tmp_json_body['datas'][key]]
 
             pdf_writer = pypdf.PdfWriter()
             with tempfile.NamedTemporaryFile() as tf:
@@ -566,10 +573,9 @@ class Splitter:
                 file = FileStorage(stream=open(tf.name, 'rb'), content_type='application/pdf',
                                    filename=document['doctype_key'] + '_' + str(document['id']) + '.pdf')
                 json_body['files'].append(file)
-
-        json_body['splitter_batch_id'] = batch['id']
-        from ..controllers import verifier
-        return verifier.upload_documents(json_body)
+            json_body['splitter_batch_id'] = batch['id']
+            verifier.upload_documents(json_body)
+        return True, 20
 
     @staticmethod
     def get_split_methods(docservers):

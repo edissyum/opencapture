@@ -225,7 +225,8 @@
         "select_single_document_form": "",
         "associated_customer": "",
         "select_single_document_customer": "",
-        "search_form": ""
+        "search_form": "",
+        "erase_filters": ""
     },
     "SPLITTER": {
         "batch_selected_one": "batch selected",
