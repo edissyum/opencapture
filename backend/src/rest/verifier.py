@@ -695,28 +695,31 @@ def verify_siret():
     status = verifier.verify_siret(request.json['token'], request.json['siret'])
     return make_response({'status': status[0]}, status[1])
 
-
-@bp.route('verifier/getUnseen/user/<int:user_id>', methods=['GET'])
+@bp.route('verifier/documents/filters/totals', methods=['POST'])
 @auth.token_required
-def verifier_get_unseen(user_id):
+def get_totals():
     if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/verifier/getUnseen/user/{user_id}'}), 403
+                        'message': f'/verifier/documents/filters/totals'}), 403
 
-    res = verifier.get_unseen(user_id)
-    return make_response({'unseen': res[0]}, res[1])
+    check, message = rest_validator(request.json, [
+        {'id': 'time', 'type': str, 'mandatory': False},
+        {'id': 'status', 'type': str, 'mandatory': False},
+        {'id': 'search', 'type': str, 'mandatory': False},
+        {'id': 'user_id', 'type': int, 'mandatory': True},
+        {'id': 'form_id', 'type': int, 'mandatory': False},
+        {'id': 'allowedCustomers', 'type': list, 'mandatory': False},
+        {'id': 'allowedSuppliers', 'type': list, 'mandatory': False}
+    ])
 
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
 
-@bp.route('verifier/documents/totals', defaults={'status': None, 'user_id': None, 'form_id': ''}, methods=['GET'])
-@bp.route('verifier/documents/totals/<string:status>/<int:user_id>', defaults={'form_id': ''}, methods=['GET'])
-@bp.route('verifier/documents/totals/<string:status>/<int:user_id>/<string:form_id>', methods=['GET'])
-@auth.token_required
-def get_totals(status, user_id, form_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/verifier/documents/totals/{status}/{user_id}/{form_id}'}), 403
-
-    totals = verifier.get_totals(status, user_id, form_id)
+    totals = verifier.get_totals(request.json['status'], request.json['user_id'], request.json['form_id'],
+                                 request.json['allowedCustomers'], request.json['allowedSuppliers'])
     return make_response({'totals': totals[0]}, totals[1])
 
 

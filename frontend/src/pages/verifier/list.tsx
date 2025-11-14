@@ -83,17 +83,26 @@ export function VerifierListPage() {
         setDisplayFilters(!displayFilters);
     }
 
-    const listTimes = {
-        'today': t('GLOBAL.today'),
-        'yesterday': t('GLOBAL.yesterday'),
-        'older': t('GLOBAL.older')
-    }
+    const [open, setOpen] = useState({
+        forms: true,
+        status: true,
+        batches: true,
+        customers: true,
+        suppliers: true
+    });
+
+    const [listTimes, setListTimes] = useState([
+        { 'id': 'today', 'label': t('GLOBAL.today'), 'totals': 0 },
+        { 'id': 'yesterday', 'label': t('GLOBAL.yesterday'), 'totals': 0 },
+        { 'id': 'older', 'label': t('GLOBAL.older'), 'totals': 0 }
+    ]);
+
     const [listForms, setListForms] = useState<any>([]);
     const [listStatuses, setListStatuses] = useState<any>([]);
     const [listCustomers, setListCustomers] = useState<any>([]);
     const [listSuppliers, setListSuppliers] = useState<any>([]);
 
-    const [selectedCustomers, setSelectedCustomers] = useState<any>([]);
+    const [selectedCustomers, setSelectedCustomers] = useState<any>(null);
     const [selectedSuppliers, setSelectedSuppliers] = useState<any>([]);
     const [selectedStatus, setSelectedStatus] = useState('NEW');
     const [selectedForm, setSelectedForm] = useState<string | null>(null);
@@ -295,6 +304,8 @@ export function VerifierListPage() {
 
     // Fetch documents
     useEffect(() => {
+        if (loadingDocuments) return;
+
         async function retrieveDocuments() {
             if (!user || loadingUser) return;
             setLoadingDocuments(true);
@@ -309,7 +320,7 @@ export function VerifierListPage() {
                     offset: lazyParams.first,
                     filter: lazyParams.sortField,
                     search: debouncedSearchTerm || null,
-                    allowedCustomers: selectedCustomers.length > 0 ? selectedCustomers : null,
+                    allowedCustomers: selectedCustomers ? selectedCustomers : null,
                     allowedSuppliers: selectedSuppliers.length > 0 ? selectedSuppliers : null,
                     order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null
                 }) || [];
@@ -324,7 +335,38 @@ export function VerifierListPage() {
         }
 
         retrieveDocuments().then();
-    }, [listStatuses, lazyParams, debouncedSearchTerm, selectedStatus, selectedTime, selectedForm, selectedCustomers, selectedSuppliers]);
+    }, [listStatuses, lazyParams, debouncedSearchTerm, selectedStatus, selectedTime, selectedForm,
+        selectedCustomers, selectedSuppliers]);
+
+    // Fetch totals per filters
+    useEffect(() => {
+        async function retrieveTotals() {
+            if (!user || loadingUser || loadingDocuments) return;
+
+            try {
+                const res = await post('/verifier/documents/filters/totals', {
+                    user_id: user.id,
+                    time: selectedTime,
+                    form_id: selectedForm,
+                    status: selectedStatus,
+                    search: debouncedSearchTerm || null,
+                    allowedCustomers: selectedCustomers ? selectedCustomers : null,
+                    allowedSuppliers: selectedSuppliers.length > 0 ? selectedSuppliers : null,
+                }) || {};
+
+                setListTimes((prevTimes) => prevTimes.map((time) => ({
+                    ...time,
+                    totals: res.totals[time.id] || 0
+                })));
+
+            } catch (err) {
+                console.error("Error retrieving filters counts  :", err);
+                setTotalDocuments(0);
+            }
+        }
+
+        retrieveTotals().then();
+    }, [loadingDocuments]);
 
     const handleChangeForm = async (formId: string) => {
         if (selectedDocuments.length === 0) return;
@@ -393,20 +435,24 @@ export function VerifierListPage() {
         });
     }
 
-    const [open, setOpen] = useState({
-        forms: true,
-        status: true,
-        batches: true,
-        customers: true,
-        suppliers: true
-    });
+    const handleResetFilters = () => {
+        setSelectedTime(null);
+        setSelectedForm(null);
+        setSelectedStatus('NEW');
+        setSelectedCustomers(null);
+        setSelectedSuppliers([]);
+    }
 
     return (
         <div className='flex h-full w-full overflow-hidden'>
             <div className={ `h-full transition-all duration-200 border-r-2 border-(--border-secondary) 
-                            ${ displayFilters ? "w-[400px] opacity-100" : "w-0 opacity-0" } bg-(--bg-primary)` }>
-                <div className='border-b-2 border-(--border-secondary) p-4'>
+                            ${ displayFilters ? "w-[400px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
+                <div className='border-b-2 border-(--border-secondary) p-4 flex items-center justify-between'>
                     <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
+                    <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary)'
+                          onClick={ handleResetFilters }>
+                        { t('VERIFIER.erase_filters') }
+                    </span>
                 </div>
                 <div className='p-4 flex flex-col gap-6 h-full overflow-y-auto'>
                     <div>
@@ -423,18 +469,17 @@ export function VerifierListPage() {
 
                         { open.batches && (
                             <div className='flex flex-col'>
-                                { Object.keys(listTimes).map((key) => (
+                                { listTimes.map((time) => (
                                     <Checkbox
-                                        size={ 4 }
-                                        key={ key }
-                                        label={ listTimes[key as keyof typeof listTimes] }
-                                        checked={ selectedTime === key }
+                                        key={ time.id }
+                                        label={ time.label + ` (${ time.totals })` }
+                                        checked={ selectedTime === time.id }
                                         onChange={ (checked: boolean) => {
                                             if (!checked) {
                                                 setSelectedTime(null);
                                                 return;
                                             }
-                                            setSelectedTime(key);
+                                            setSelectedTime(time.id);
                                         } }
                                     />
                                 )) }
@@ -456,7 +501,6 @@ export function VerifierListPage() {
                             <div className='flex flex-col'>
                                 { Object.keys(listStatuses).map((key: any) => (
                                     <Checkbox
-                                        size={ 4 }
                                         key={ key }
                                         label={ listStatuses[key]?.label }
                                         checked={ selectedStatus === listStatuses[key]?.id }
@@ -465,6 +509,33 @@ export function VerifierListPage() {
                                         } }
                                     />
                                 )) }
+                            </div>
+                        ) }
+                    </div>
+                    <div className='flex flex-col'>
+                        <div className="flex items-center justify-between cursor-pointer mb-2"
+                             onClick={ () => setOpen({ ...open, customers: !open.customers }) }>
+                            <div className="flex items-center gap-2">
+                                <Briefcase className="text-(--color-primary)" size={ 20 }/>
+                                <h3 className='text-lg font-semibold'>{ t('ACCOUNTS.customers_list') }</h3>
+                            </div>
+                            <ChevronDown size={ 18 }
+                                         className={ `transition-transform ${ open.customers ? "rotate-180" : "" }` }/>
+                        </div>
+
+                        { open.customers && (
+                            <div className='mt-2'>
+                                <MultiSelectInput
+                                    optionValue="id"
+                                    optionLabel="name"
+                                    id="customers_select"
+                                    options={ listCustomers }
+                                    value={ selectedCustomers?.map(Number) ?? [] }
+                                    placeholder={ t('ACCOUNTS.search_customers') }
+                                    onChange={ (e) => {
+                                        setSelectedCustomers(e.value);
+                                    } }
+                                />
                             </div>
                         ) }
                     </div>
@@ -496,33 +567,6 @@ export function VerifierListPage() {
                     </div>
                     <div className='flex flex-col'>
                         <div className="flex items-center justify-between cursor-pointer mb-2"
-                             onClick={ () => setOpen({ ...open, customers: !open.customers }) }>
-                            <div className="flex items-center gap-2">
-                                <Briefcase className="text-(--color-primary)" size={ 20 }/>
-                                <h3 className='text-lg font-semibold'>{ t('ACCOUNTS.customers_list') }</h3>
-                            </div>
-                            <ChevronDown size={ 18 }
-                                         className={ `transition-transform ${ open.customers ? "rotate-180" : "" }` }/>
-                        </div>
-
-                        { open.customers && (
-                            <div className='mt-2'>
-                                <MultiSelectInput
-                                    optionValue="id"
-                                    optionLabel="name"
-                                    id="customers_select"
-                                    options={ listCustomers }
-                                    value={ selectedCustomers.map(Number) ?? [] }
-                                    placeholder={ t('ACCOUNTS.search_customers') }
-                                    onChange={ (e) => {
-                                        setSelectedCustomers(e.value);
-                                    } }
-                                />
-                            </div>
-                        ) }
-                    </div>
-                    <div className='flex flex-col'>
-                        <div className="flex items-center justify-between cursor-pointer mb-2"
                              onClick={ () => setOpen({ ...open, suppliers: !open.suppliers }) }>
                             <div className="flex items-center gap-2">
                                 <Building2 className="text-(--color-primary)" size={ 20 }/>
@@ -539,8 +583,23 @@ export function VerifierListPage() {
                                     optionLabel="name"
                                     id="suppliers_select"
                                     options={ listSuppliers }
+                                    filterBy="name,lastname,firstname"
                                     value={ selectedSuppliers.map(Number) ?? [] }
                                     placeholder={ t('ACCOUNTS.search_suppliers') }
+                                    itemTemplate={ (option) => (
+                                        <span className='flex items-center gap-0.5'>
+                                            { option.name }
+                                            <span className='text-(--color-primary)'>
+                                                { option.lastname && !option.firstname && (
+                                                    <span>({ option.lastname })</span>
+                                                ) }
+
+                                                { option.lastname && option.firstname && (
+                                                    <span>({ option.lastname } {option.firstname})</span>
+                                                ) }
+                                            </span>
+                                        </span>
+                                    ) }
                                     onChange={ (e) => {
                                         setSelectedSuppliers(e.value);
                                     } }
@@ -555,7 +614,7 @@ export function VerifierListPage() {
                 <Thumbnail module={ 'verifier' } document_info={ hovered } open={ true }/>
             ) }
 
-            <div className='p-8 h-full w-full flex flex-col flex-1'>
+            <div className='p-8 h-full w-full flex flex-col flex-1 z-10'>
                 <div className='flex items-center gap-6'>
                     <Button icon={ <Filter size={ 14 }/> } onClick={ handleDisplayFilters }
                             className={ `rounded-3xl hover:text-(--color-primary) text-(--text-primary)

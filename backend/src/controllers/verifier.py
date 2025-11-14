@@ -890,19 +890,20 @@ def verify_siret(token, siret, full=False):
             return _return, 200
         return _return['header']['message'], _return['header']['statut']
 
-def get_totals(status, user_id, form_id):
+def get_totals(status, user_id, form_id, allowed_customers=None, allowed_suppliers=None):
     totals = {}
-    allowed_customers, _ = user.get_customers_by_user_id(user_id)
-    allowed_customers.append(0)  # Update allowed customers to add Unspecified customers
+    if not allowed_customers:
+        allowed_customers, _ = user.get_customers_by_user_id(user_id)
+        allowed_customers.append(0)  # Update allowed customers to add Unspecified customers
 
     totals['today'], error = verifier.get_totals({
-        'time': 'today', 'status': status, 'form_id': form_id, 'user_id': user_id, 'allowedCustomers': allowed_customers
+        'time': 'today', 'status': status, 'form_id': form_id, 'user_id': user_id, 'allowedCustomers': allowed_customers, 'allowedSuppliers': allowed_suppliers
     })
     totals['yesterday'], error = verifier.get_totals({
-        'time': 'yesterday', 'status': status, 'form_id': form_id, 'user_id': user_id, 'allowedCustomers': allowed_customers
+        'time': 'yesterday', 'status': status, 'form_id': form_id, 'user_id': user_id, 'allowedCustomers': allowed_customers, 'allowedSuppliers': allowed_suppliers
     })
     totals['older'], error = verifier.get_totals({
-        'time': 'older', 'status': status, 'form_id': form_id, 'user_id': user_id, 'allowedCustomers': allowed_customers
+        'time': 'older', 'status': status, 'form_id': form_id, 'user_id': user_id, 'allowedCustomers': allowed_customers, 'allowedSuppliers': allowed_suppliers
     })
 
     if error is None:

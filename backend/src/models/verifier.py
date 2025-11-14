@@ -187,6 +187,9 @@ def get_totals(args):
     if 'allowedCustomers' in args and args['allowedCustomers']:
         where.append('customer_id IN (' + ','.join(map(str, args['allowedCustomers'])) + ')')
 
+    if 'allowedSuppliers' in args and args['allowedSuppliers']:
+        where.append('supplier_id IN (' + ','.join(map(str, args['allowedSuppliers'])) + ')')
+
     if 'form_id' in args and args['form_id']:
         if args['form_id'] == 'no_form':
             where.append('documents.form_id is NULL')

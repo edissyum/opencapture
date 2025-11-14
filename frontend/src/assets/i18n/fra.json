@@ -231,7 +231,8 @@
         "select_single_document_form": "Le changement de formulaire n'est possible que pour un seul document à la fois",
         "associated_customer": "Compte client associé",
         "select_single_document_customer": "Le changement de compte client n'est possible que pour un seul document à la fois",
-        "search_form": "Rechercher un formulaire"
+        "search_form": "Rechercher un formulaire",
+        "erase_filters": "Effacer les filtres"
     },
     "SPLITTER": {
         "batch_selected_many": "lots sélectionnés",

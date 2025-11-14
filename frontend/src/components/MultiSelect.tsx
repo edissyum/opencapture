@@ -15,7 +15,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import React from "react";
+import React, { useState } from "react";
 import { t } from "i18next";
 
 import { MultiSelect } from "primereact/multiselect";
@@ -25,12 +25,14 @@ interface MultiSelectProps extends React.InputHTMLAttributes<HTMLInputElement> {
     options: any[];
     filter?: boolean;
     invalid?: boolean;
+    filterBy?: string;
     required?: boolean;
     disabled?: boolean;
     optionValue: string;
     optionLabel: string;
     placeholder?: string;
     onChange: (value: any) => void;
+    itemTemplate?: (option: any) => React.ReactNode;
 }
 
 const MultiSelectInput: React.FC<MultiSelectProps> = ({
@@ -38,13 +40,49 @@ const MultiSelectInput: React.FC<MultiSelectProps> = ({
     value,
     invalid,
     options,
+    filterBy,
     optionValue,
     optionLabel,
     placeholder,
+    itemTemplate,
     filter = true,
     required = false,
     onChange
 }) => {
+
+    const [filterValue, setFilterValue] = useState("");
+
+    const highlightJSX: any = (node: any, filter: any) => {
+        if (!filter || !node) return node;
+
+        if (typeof node === "string") {
+            const regex = new RegExp(`(${filter})`, "gi");
+            const parts = node.split(regex);
+
+            return parts.map((part, i) =>
+                regex.test(part) ? <strong key={i}>{part}</strong> : part
+            );
+        }
+
+        if (!React.isValidElement(node)) return node;
+
+        return React.cloneElement(node, {
+            // @ts-ignore
+            ...node.props,
+            // @ts-ignore
+            children: React.Children.map(node.props.children, child =>
+                highlightJSX(child, filter)
+            ),
+        });
+    };
+
+    const wrappedItemTemplate = (option: any) => {
+        const originalJSX = itemTemplate
+            ? itemTemplate(option)
+            : option[optionLabel];
+
+        return highlightJSX(originalJSX, filterValue);
+    };
 
     return (
         <div>
@@ -63,9 +101,13 @@ const MultiSelectInput: React.FC<MultiSelectProps> = ({
                 optionValue={ optionValue }
                 optionLabel={ optionLabel }
                 placeholder={ placeholder }
+                itemTemplate={ wrappedItemTemplate }
+                filterBy={ filterBy ? filterBy : optionLabel }
                 emptyMessage={ t('GLOBAL.no_result_found') }
+                emptyFilterMessage={ t('GLOBAL.no_result_found') }
                 virtualScrollerOptions={ { itemSize: 45, orientation: 'vertical', showSpacer: false } }
                 onChange={ (e) => onChange(e) }
+                onFilter={ (e) => setFilterValue(e.filter) }
             />
         </div>
     );
