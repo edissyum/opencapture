@@ -211,6 +211,65 @@ def get_totals(args):
     return total[args['time']], error
 
 
+def get_totals_by_status(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    error = None
+    data = []
+    select = ['COUNT(id) as total']
+
+    if 'status' in args and args['status']:
+        where = ["status = %s"]
+        data = [args['status']]
+    else:
+        where = ["status <> 'DEL'"]
+
+    where.append("datas -> 'api_only' is NULL")
+
+    if 'time' in args and args['time']:
+        if args['time'] in ['today', 'yesterday']:
+            where.append("to_char(register_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "', 'YYYY-MM-DD')")
+        elif args['time'] == 'older':
+            where.append("to_char(register_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
+
+    if 'user_id' in args and args['user_id']:
+        user_forms = user.get_forms_by_user_id(args['user_id'])
+        if user_forms[1] == 200:
+            user_forms = user_forms[0]
+            where.append('documents.form_id = ANY(%s)')
+            data.append(user_forms)
+
+    if 'allowedCustomers' in args and args['allowedCustomers']:
+        where.append('customer_id IN (' + ','.join(map(str, args['allowedCustomers'])) + ')')
+
+    if 'allowedSuppliers' in args and args['allowedSuppliers']:
+        where.append('supplier_id IN (' + ','.join(map(str, args['allowedSuppliers'])) + ')')
+
+    if 'form_id' in args and args['form_id']:
+        if args['form_id'] == 'no_form':
+            where.append('documents.form_id is NULL')
+        else:
+            if isinstance(args['form_id'], int):
+                where.append('documents.form_id = %s')
+                data.append(args['form_id'])
+
+    total = database.select({
+        'select': select,
+        'table': ['documents'],
+        'where': where,
+        'data': data
+    })[0]
+
+    if not total:
+        error = gettext('GET_TOTALS_ERROR')
+
+    return total, error
+
+
 def update_status(args):
     if 'database' in current_context:
         database = current_context.database

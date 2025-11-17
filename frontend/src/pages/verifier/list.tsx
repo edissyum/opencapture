@@ -266,7 +266,7 @@ export function VerifierListPage() {
         if (listForms.length === 0) return;
 
         const fetchStatuses = async () => {
-            const res = await get(`/status/verifier/list`) || [];
+            const res = await get(`/status/verifier/list?totals=true&user_id=${ user.id }`) || [];
             setListStatuses(res.status || []);
         }
         fetchStatuses().then();
@@ -401,7 +401,6 @@ export function VerifierListPage() {
         }
 
         setLoadingDocuments(true);
-        console.log(selectedDocuments[0].id, customerId);
     }
 
     const handleDelete = async () => {
@@ -502,8 +501,8 @@ export function VerifierListPage() {
                                 { Object.keys(listStatuses).map((key: any) => (
                                     <Checkbox
                                         key={ key }
-                                        label={ listStatuses[key]?.label }
                                         checked={ selectedStatus === listStatuses[key]?.id }
+                                        label={ listStatuses[key]?.label + ` (${ listStatuses[key]?.total || 0 })` }
                                         onChange={ () => {
                                             setSelectedStatus(listStatuses[key]?.id);
                                         } }
@@ -595,7 +594,7 @@ export function VerifierListPage() {
                                                 ) }
 
                                                 { option.lastname && option.firstname && (
-                                                    <span>({ option.lastname } {option.firstname})</span>
+                                                    <span>({ option.lastname } { option.firstname })</span>
                                                 ) }
                                             </span>
                                         </span>

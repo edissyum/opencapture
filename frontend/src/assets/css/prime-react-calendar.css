@@ -38,8 +38,8 @@
     @apply bg-(--color-primary)/10;
 }
 
-.p-inputwrapper-filled:hover .p-inputtext,
-.p-inputwrapper-filled:hover .p-datepicker-trigger {
+.p-inputwrapper:hover .p-inputtext,
+.p-inputwrapper:hover .p-datepicker-trigger {
     @apply border-(--border-primary);
 }
 

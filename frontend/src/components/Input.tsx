@@ -16,10 +16,9 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import React from "react";
-import { CircleQuestionMark, Eye, EyeOff } from "lucide-react";
-
-import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
+import { FloatLabel } from "primereact/floatlabel";
+import { CircleQuestionMark, Eye, EyeOff } from "lucide-react";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     error?: any;
@@ -59,7 +58,7 @@ const Input: React.FC<InputProps> = ({
                         id={ id }
                         className={ `peer! w-full! px-3! py-2! border-[1.5px]! rounded-md! focus:outline-none! focus:border-(--color-primary)!
                             hover:border-(--color-primary)! transition-colors duration-200 text-(--text-primary)!
-                            ${ props.placeholder ? "p-inputwrapper-filled" : "" }
+                            ${ props.placeholder ? "p-inputwrapper-filled" : "" } group-hover:border-(--color-primary)!
                             ${ isPasswordField ? 'border-r-0! rounded-r-none!' : '' }
                             ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' } disabled:bg-(--bg-secondary) disabled:cursor-not-allowed! ${ height }`
                         }
@@ -86,7 +85,7 @@ const Input: React.FC<InputProps> = ({
                     <button
                         type="button"
                         onClick={ () => setPasswordVisible((prev) => !prev) }
-                        className={ `px-2 rounded-lg! rounded-l-none! group-focus-within:border-(--color-primary)!
+                        className={ `password px-2 rounded-lg! rounded-l-none! group-focus-within:border-(--color-primary)!
                             border-l-0! border! text-(--text-secondary)! hover:text-(--color-primary) z-20 cursor-pointer
                             ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)! group-hover:border-(--color-primary)!' }` }
                         tabIndex={ -1 }>

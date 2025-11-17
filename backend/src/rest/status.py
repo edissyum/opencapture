@@ -35,8 +35,8 @@ def status_list(module):
     check, message = rest_validator(request.args, [
         {'id': 'time', 'type': str, 'mandatory': False},
         {'id': 'totals', 'type': bool, 'mandatory': False},
-        {'id': 'user_id', 'type': int, 'mandatory': False},
-        {'id': 'form_id', 'type': str, 'mandatory': False}
+        {'id': 'form_id', 'type': str, 'mandatory': False},
+        {'id': 'user_id', 'type': int, 'mandatory': True if 'totals' in request.args and request.args['totals'] else False}
     ])
 
     if not check:
@@ -45,6 +45,5 @@ def status_list(module):
             "message": message
         }, 400)
 
-    args = request.args
-    _status = status.get_status(args, module)
+    _status = status.get_status(request.args, module)
     return make_response(jsonify(_status[0])), _status[1]

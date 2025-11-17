@@ -15,7 +15,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
     Activity,
@@ -28,13 +28,28 @@ import {
     House,
     Info,
     LogOut,
-    Settings
+    Settings,
+    User
 } from "lucide-react";
 
 import { LoginImage } from "./LoginImage";
+import { ContextMenu } from "primereact/contextmenu";
+import { useUser } from "../services/hooks/useUser.tsx";
 
 export default function Sidebar() {
+    const { user, loadingUser } = useUser();
     const navigate = useNavigate();
+
+    const cm = useRef({ current: null } as any);
+    const menuModel: any = [
+        {
+            label: <span className='critical text-(--text-secondary)'>{ t('GLOBAL.logout') }</span>,
+            icon: <LogOut size={ 18 } className='mr-2 text-(--text-secondary)'/>,
+            command: () => {
+                handleLogout();
+            }
+        }
+    ];
 
     const handleLogout = () => {
         sessionStorage.clear();
@@ -46,6 +61,8 @@ export default function Sidebar() {
 
     const standardClasses = "flex items-center p-3 gap-2 hover:text-(--color-primary)! text-(--text-secondary)! font-semibold";
     const activeClasses = "bg-green-400/10 rounded-lg text-(--color-primary)!";
+
+    if (!user || loadingUser) return;
 
     return (
         <aside
@@ -137,13 +154,23 @@ export default function Sidebar() {
             </nav>
 
             <div className="mt-auto text-(--text-secondary) flex flex-col gap-3">
-                <a className={ `${ standardClasses }` } onClick={ handleLogout }>
-                    <LogOut size={ 20 } { ...(collapsed && {
+                <a className={ `${ standardClasses }` } onClick={ (e) => cm.current.show(e) }>
+                    <User size={ 20 } className='shrink-0' { ...(collapsed && {
                         "data-tooltip-id": "tooltip",
-                        "data-tooltip-content": t('GLOBAL.log_out'),
+                        "data-tooltip-content": `${ user.firstname } ${ user.lastname }`
                     }) }/>
-                    { !collapsed && <span>{ t('GLOBAL.log_out') }</span> }
+                    { !collapsed &&
+                        <div className='flex flex-col max-w-44'>
+                            <span className='truncate'>
+                                { user.firstname } { user.lastname }
+                            </span>
+                            <span className='text-sm font-normal truncate'>
+                                { user.username }
+                            </span>
+                        </div>
+                    }
                 </a>
+                <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }/>
             </div>
         </aside>
     );

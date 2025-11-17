@@ -22,19 +22,18 @@ from ..models import status, verifier
 
 def get_status(args, module):
     _status, error = status.get_status(module)
-
     if 'totals' in args and args['totals']:
         for stat in _status:
             allowed_customers, _ = user.get_customers_by_user_id(args['user_id'])
             allowed_customers.append(0)  # Update allowed customers to add Unspecified customers
-            total = verifier.get_totals({
-                'time': args['time'],
+            total = verifier.get_totals_by_status({
+                'time': args['time'] if 'time' in args else None,
                 'status': stat['id'],
-                'form_id': args['form_id'],
+                'form_id': args['form_id'] if 'form_id' in args else None,
                 'user_id': args['user_id'],
                 'allowedCustomers': allowed_customers
             })[0]
-            stat['total'] = total
+            stat['total'] = total['total']
 
     if _status:
         response = {
