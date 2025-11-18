@@ -719,7 +719,7 @@ def get_totals():
         }, 400)
 
     totals = verifier.get_totals(request.json['status'], request.json['user_id'], request.json['form_id'],
-                                 request.json['allowedCustomers'], request.json['allowedSuppliers'])
+                                 request.json['allowedCustomers'], request.json['allowedSuppliers'], request.json['time'])
     return make_response({'totals': totals[0]}, totals[1])
 
 

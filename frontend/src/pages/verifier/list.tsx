@@ -79,10 +79,6 @@ export function VerifierListPage() {
         localStorage.setItem('selectedView', newView);
     }
 
-    const handleDisplayFilters = () => {
-        setDisplayFilters(!displayFilters);
-    }
-
     const [open, setOpen] = useState({
         forms: true,
         status: true,
@@ -261,20 +257,9 @@ export function VerifierListPage() {
         fetchForms().then();
     }, [user, loadingUser]);
 
-    // Fetch status list
-    useEffect(() => {
-        if (listForms.length === 0) return;
-
-        const fetchStatuses = async () => {
-            const res = await get(`/status/verifier/list?totals=true&user_id=${ user.id }`) || [];
-            setListStatuses(res.status || []);
-        }
-        fetchStatuses().then();
-    }, [listForms]);
-
     // Fetch customer and third parties list
     useEffect(() => {
-        if (listStatuses.length === 0) return;
+        if (listForms.length === 0) return;
 
         const fetchCustomers = async () => {
             const res = await get(`/accounts/customers/list/verifier/${ user.id }`);
@@ -289,7 +274,7 @@ export function VerifierListPage() {
 
         fetchSuppliers().then();
         fetchCustomers().then();
-    }, [listStatuses]);
+    }, [listForms]);
 
     // Debounce search term
     useEffect(() => {
@@ -335,7 +320,7 @@ export function VerifierListPage() {
         }
 
         retrieveDocuments().then();
-    }, [listStatuses, lazyParams, debouncedSearchTerm, selectedStatus, selectedTime, selectedForm,
+    }, [listForms, lazyParams, debouncedSearchTerm, selectedStatus, selectedTime, selectedForm,
         selectedCustomers, selectedSuppliers]);
 
     // Fetch totals per filters
@@ -353,12 +338,11 @@ export function VerifierListPage() {
                     allowedCustomers: selectedCustomers ? selectedCustomers : null,
                     allowedSuppliers: selectedSuppliers.length > 0 ? selectedSuppliers : null,
                 }) || {};
-
                 setListTimes((prevTimes) => prevTimes.map((time) => ({
                     ...time,
-                    totals: res.totals[time.id] || 0
+                    totals: res.totals.times[time.id] || 0
                 })));
-
+                setListStatuses(res.totals.status || []);
             } catch (err) {
                 console.error("Error retrieving filters counts  :", err);
                 setTotalDocuments(0);
@@ -615,7 +599,7 @@ export function VerifierListPage() {
 
             <div className='p-8 h-full w-full flex flex-col flex-1 z-10'>
                 <div className='flex items-center gap-6'>
-                    <Button icon={ <Filter size={ 14 }/> } onClick={ handleDisplayFilters }
+                    <Button icon={ <Filter size={ 14 }/> } onClick={ () => setDisplayFilters(!displayFilters) }
                             className={ `rounded-3xl hover:text-(--color-primary) text-(--text-primary)
                             border-(--border-secondary) p-2.5! bg-(--bg-primary) 
                             ${ displayFilters ? 'bg-(--color-primary) text-white hover:text-white' : 'bg-(--bg-primary) text-(--text-primary)' }` }>
@@ -644,7 +628,7 @@ export function VerifierListPage() {
                     </span>
                 </div>
 
-                <div className="mt-4 flex-1 overflow-hidden flex flex-col">
+                <div className="mt-4 flex-1 overflow-hidden flex flex-col rounded-lg">
                     { view === 'list' && (
                         <Table
                             baseLink="/verifier/viewer/"

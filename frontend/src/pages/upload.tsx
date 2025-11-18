@@ -103,12 +103,10 @@ export function UploadPage() {
 
         setSending(true);
         const res = await checkFiles(files);
-        console.log(res);
         if (res !== undefined) {
             await upload(files);
         }
         setSending(false);
-        console.log('here')
     };
 
     async function upload(filesToUpload: File[]) {

@@ -17,22 +17,39 @@
 
 from flask_babel import gettext
 from ..controllers import user
-from ..models import status, verifier
+from ..models import status, verifier, splitter
 
 
 def get_status(args, module):
     _status, error = status.get_status(module)
     if 'totals' in args and args['totals']:
         for stat in _status:
-            allowed_customers, _ = user.get_customers_by_user_id(args['user_id'])
-            allowed_customers.append(0)  # Update allowed customers to add Unspecified customers
-            total = verifier.get_totals_by_status({
-                'time': args['time'] if 'time' in args else None,
-                'status': stat['id'],
-                'form_id': args['form_id'] if 'form_id' in args else None,
-                'user_id': args['user_id'],
-                'allowedCustomers': allowed_customers
-            })[0]
+            if 'allowedCustomers' in args and args['allowedCustomers'] is not None:
+                allowed_customers = args['allowedCustomers']
+            else:
+                allowed_customers, _ = user.get_customers_by_user_id(args['user_id'])
+                if 0 not in allowed_customers:
+                    allowed_customers.append(0)  # Update allowed customers to add Unspecified customers
+
+            if module == 'verifier':
+                total = verifier.get_totals_by_status({
+                    'status': stat['id'],
+                    'user_id': args['user_id'],
+                    'time': args['time'] if 'time' in args else None,
+                    'search': args['search'] if 'search' in args else None,
+                    'form_id': args['form_id'] if 'form_id' in args else None,
+                    'allowedCustomers': allowed_customers,
+                    'allowedSuppliers': args['allowedSuppliers'] if 'allowedSuppliers' in args else None
+                })[0]
+            else:
+                total = splitter.get_totals_by_status({
+                    'status': stat['id'],
+                    'user_id': args['user_id'],
+                    'allowedCustomers': allowed_customers,
+                    'time': args['time'] if 'time' in args else None,
+                    'search': args['search'] if 'search' in args else None,
+                    'form_id': args['form_id'] if 'form_id' in args else None
+                })[0]
             stat['total'] = total['total']
 
     if _status:

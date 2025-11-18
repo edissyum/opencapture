@@ -60,6 +60,33 @@ def retrieve_splitter_batches():
     res = splitter.retrieve_batches(request.json)
     return make_response(jsonify(res[0])), res[1]
 
+
+@bp.route('splitter/batches/filters/totals', methods=['POST'])
+@auth.token_required
+def get_totals_splitter():
+    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
+                        'message': f'/splitter/batches/filters/totals'}), 403
+
+    check, message = rest_validator(request.json, [
+        {'id': 'time', 'type': str, 'mandatory': False},
+        {'id': 'status', 'type': str, 'mandatory': False},
+        {'id': 'search', 'type': str, 'mandatory': False},
+        {'id': 'user_id', 'type': int, 'mandatory': True},
+        {'id': 'form_id', 'type': int, 'mandatory': False},
+        {'id': 'allowedCustomers', 'type': list, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    totals = splitter.get_totals(request.json['status'], request.json['user_id'], request.json['form_id'],
+                                 request.json['allowedCustomers'], request.json['time'], request.json['search'])
+    return make_response({'totals': totals[0]}, totals[1])
+
 @bp.route('splitter/moveDocumentsToAttachments/<int:batch_id>', methods=['POST'])
 @auth.token_required
 def move_documents_to_attachment(batch_id):

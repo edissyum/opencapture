@@ -17,8 +17,9 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
-from flask import request, g as current_context
+from ..controllers import user
 from flask_babel import gettext
+from flask import request, g as current_context
 from ..main import create_classes_from_custom_id
 from ..functions import retrieve_custom_from_url
 
@@ -605,6 +606,11 @@ def get_totals(args):
         select = ['COUNT(id) as older']
         where.append("to_char(creation_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
 
+    if 'search' in args and args['search']:
+        where.append("(splitter_batches.id::TEXT = %s OR LOWER(file_name) like LOWER(%s)) ")
+        data.append(args['search'])
+        data.append(f"%{args['search']}%")
+
     total = database.select({
         'select': select,
         'table': ['splitter_batches'],
@@ -616,3 +622,61 @@ def get_totals(args):
         error = gettext('GET_TOTALS_ERROR')
 
     return total[args['time']], error
+
+
+def get_totals_by_status(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    error = None
+    data = []
+    select = ['COUNT(id) as total']
+
+    if 'status' in args and args['status']:
+        where = ["status = %s"]
+        data = [args['status']]
+    else:
+        where = ["status <> 'DEL'"]
+
+    if 'time' in args and args['time']:
+        if args['time'] in ['today', 'yesterday']:
+            where.append("to_char(register_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "', 'YYYY-MM-DD')")
+        elif args['time'] == 'older':
+            where.append("to_char(register_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
+
+    if 'user_id' in args and args['user_id']:
+        user_forms = user.get_forms_by_user_id(args['user_id'])
+        if user_forms[1] == 200:
+            user_forms = user_forms[0]
+            where.append('splitter_batches.form_id = ANY(%s)')
+            data.append(user_forms)
+
+    if 'allowedCustomers' in args and args['allowedCustomers']:
+        where.append('customer_id IN (' + ','.join(map(str, args['allowedCustomers'])) + ')')
+
+    if 'form_id' in args and args['form_id']:
+        if args['form_id'] == 'no_form':
+            where.append('splitter_batches.form_id is NULL')
+        else:
+            where.append('splitter_batches.form_id = %s')
+            data.append(args['form_id'])
+
+    if 'search' in args and args['search']:
+        where.append("(splitter_batches.id::TEXT = %s OR LOWER(file_name) like LOWER(%s)) ")
+        data.append(args['search'])
+        data.append(f"%{args['search']}%")
+
+    total = database.select({
+        'select': select,
+        'table': ['splitter_batches'],
+        'where': where,
+        'data': data
+    })[0]
+
+    if not total:
+        error = gettext('GET_TOTALS_ERROR')
+
+    return total, error

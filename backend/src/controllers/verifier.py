@@ -19,11 +19,9 @@ import os
 import uuid
 import json
 import magic
-import base64
 import secrets
 import tempfile
 import datetime
-import requests
 import traceback
 import importlib
 import pandas as pd
@@ -35,10 +33,10 @@ from werkzeug.datastructures import FileStorage
 from ..classes.Files import rotate_img
 from ..scripting_functions import check_code
 from ..main import launch, create_classes_from_custom_id
-from ..controllers import auth, user, monitoring, history
 from ..models import verifier, accounts, forms, attachments
-from flask import current_app, Response, request, g as current_context
+from ..controllers import auth, user, monitoring, history, status
 from ..functions import retrieve_custom_from_url, delete_documents
+from flask import current_app, Response, request, g as current_context
 
 
 def upload_documents(body):
@@ -818,93 +816,33 @@ def return_rotated_content(file_type, image):
     return content
 
 
-def get_token_insee():
-    if 'config' in current_context:
-        config = current_context.config
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        config = _vars[1]
-
-    credentials = base64.b64encode(
-        (config['API']['siret-consumer'] + ':' + config['API']['siret-secret']).encode('utf-8')).decode('utf-8')
-
-    try:
-        res = requests.post(config['API']['siret-url-token'], data={'grant_type': 'client_credentials'},
-                            headers={"Authorization": f"Basic {credentials}"}, timeout=5)
-    except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
-        return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
-
-    if 'Maintenance - INSEE' in res.text or res.status_code != 200:
-        return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
-    else:
-        return json.loads(res.text)['access_token'], 200
-
-
-def verify_siren(token, siren, full=False):
-    if 'config' in current_context:
-        config = current_context.config
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        config = _vars[1]
-
-    try:
-        res = requests.get(config['API']['siren-url'] + siren,
-                           headers={"Authorization": f"Bearer {token}", "Accept": "application/json"}, timeout=5)
-    except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
-        return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
-
-    _return = json.loads(res.text)
-
-    if 'header' not in res.text:
-        return _return['fault']['message'], 201
-    else:
-        if full:
-            return _return, 200
-        return _return['header']['message'], _return['header']['statut']
-
-
-def verify_siret(token, siret, full=False):
-    if 'config' in current_context and 'log' in current_context:
-        log = current_context.log
-        config = current_context.config
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
-        config = _vars[1]
-
-    try:
-        res = requests.get(config['API']['siret-url'] + siret,
-                           headers={"Authorization": f"Bearer {token}", "Accept": "application/json"}, timeout=5)
-    except (requests.exceptions.SSLError, requests.exceptions.ConnectionError) as _e:
-        log.error(gettext('API_INSEE_ERROR_CONNEXION') + ' : ' + str(_e))
-        return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
-
-    _return = json.loads(res.text)
-    if 'header' not in res.text:
-        return _return['fault']['message'], 201
-    else:
-        if full:
-            return _return, 200
-        return _return['header']['message'], _return['header']['statut']
-
-def get_totals(status, user_id, form_id, allowed_customers=None, allowed_suppliers=None):
-    totals = {}
+def get_totals(selected_status, user_id, form_id, allowed_customers=None, allowed_suppliers=None, time=None):
+    totals = {'times': {}, 'status': {}}
     if not allowed_customers:
         allowed_customers, _ = user.get_customers_by_user_id(user_id)
         allowed_customers.append(0)  # Update allowed customers to add Unspecified customers
 
-    totals['today'], error = verifier.get_totals({
-        'time': 'today', 'status': status, 'form_id': form_id, 'user_id': user_id, 'allowedCustomers': allowed_customers, 'allowedSuppliers': allowed_suppliers
+    totals['times']['today'], error = verifier.get_totals({
+        'time': 'today', 'status': selected_status, 'form_id': form_id, 'user_id': user_id, 'allowedCustomers': allowed_customers, 'allowedSuppliers': allowed_suppliers
     })
-    totals['yesterday'], error = verifier.get_totals({
-        'time': 'yesterday', 'status': status, 'form_id': form_id, 'user_id': user_id, 'allowedCustomers': allowed_customers, 'allowedSuppliers': allowed_suppliers
+    totals['times']['yesterday'], error = verifier.get_totals({
+        'time': 'yesterday', 'status': selected_status, 'form_id': form_id, 'user_id': user_id, 'allowedCustomers': allowed_customers, 'allowedSuppliers': allowed_suppliers
     })
-    totals['older'], error = verifier.get_totals({
-        'time': 'older', 'status': status, 'form_id': form_id, 'user_id': user_id, 'allowedCustomers': allowed_customers, 'allowedSuppliers': allowed_suppliers
+    totals['times']['older'], error = verifier.get_totals({
+        'time': 'older', 'status': selected_status, 'form_id': form_id, 'user_id': user_id, 'allowedCustomers': allowed_customers, 'allowedSuppliers': allowed_suppliers
     })
+
+    status_list, _ = status.get_status({
+        'time': time,
+        'totals': True,
+        'form_id': form_id,
+        'user_id': user_id,
+        'allowedCustomers': allowed_customers,
+        'allowedSuppliers': allowed_suppliers
+    }, 'verifier')
+
+    if status_list:
+        totals['status'] = status_list['status']
 
     if error is None:
         return totals, 200
@@ -935,27 +873,6 @@ def update_status(args):
             "message": gettext(res)
         }
         return response, 400
-
-
-def get_unseen(user_id):
-    user_customers = user.get_customers_by_user_id(user_id)
-    user_customers[0].append(0)
-
-    user_forms = user.get_forms_by_user_id(user_id)
-    if user_forms[1] == 200:
-        user_forms = user_forms[0]
-
-    total_unseen = verifier.get_total_documents({
-        'select'    : ["status.label_long as status", "count(documents.id) as unseen"],
-        'table'     : ["documents", "status"],
-        'left_join' : ["status.id = documents.status"],
-        'where'     : ["status IN ('NEW', 'ERR', 'WAIT_THIRD_PARTY')", "customer_id = ANY(%s)",
-                       "datas -> 'api_only' is NULL", "status.module = %s", "documents.form_id = ANY(%s)"],
-        'data'      : [user_customers[0], 'verifier', user_forms],
-        'group_by'  : ["status.label_long"]
-    })
-    return total_unseen, 200
-
 
 def get_customers_count(user_id, status, time):
     user_customers = user.get_customers_by_user_id(user_id)

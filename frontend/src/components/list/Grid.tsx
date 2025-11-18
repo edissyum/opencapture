@@ -199,7 +199,7 @@ export function Grid<T extends { id: string }>({
                     { emptyMessage }
                 </div>
             ) : (
-                <div className="grid grid-cols-4 gap-4 h-full overflow-y-auto mb-12">
+                <div className="grid grid-cols-4 gap-4 overflow-y-auto">
                     { data.map((row) => (
                         <div key={ row.id }
                              onClick={ () => handleRowClick(row) }

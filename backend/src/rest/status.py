@@ -24,7 +24,7 @@ from ..controllers import auth, status, privileges
 bp = Blueprint('status', __name__, url_prefix='/ws/')
 
 
-@bp.route('status/<string:module>/list', methods=['GET'])
+@bp.route('status/<string:module>/list', methods=['POST'])
 @auth.token_required
 def status_list(module):
     list_priv = ['access_verifier | update_status'] if module == 'verifier' else \
@@ -32,11 +32,13 @@ def status_list(module):
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/status/{module}/list'}), 403
 
-    check, message = rest_validator(request.args, [
+    check, message = rest_validator(request.json, [
         {'id': 'time', 'type': str, 'mandatory': False},
         {'id': 'totals', 'type': bool, 'mandatory': False},
-        {'id': 'form_id', 'type': str, 'mandatory': False},
-        {'id': 'user_id', 'type': int, 'mandatory': True if 'totals' in request.args and request.args['totals'] else False}
+        {'id': 'form_id', 'type': int, 'mandatory': False},
+        {'id': 'allowedCustomers', 'type': list, 'mandatory': False},
+        {'id': 'allowedSuppliers', 'type': list, 'mandatory': False},
+        {'id': 'user_id', 'type': int, 'mandatory': True if 'totals' in request.json and request.json['totals'] else False}
     ])
 
     if not check:
@@ -45,5 +47,5 @@ def status_list(module):
             "message": message
         }, 400)
 
-    _status = status.get_status(request.args, module)
+    _status = status.get_status(request.json, module)
     return make_response(jsonify(_status[0])), _status[1]

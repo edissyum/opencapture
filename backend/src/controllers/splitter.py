@@ -29,14 +29,14 @@ from .. import splitter_exports
 from ..classes.CMIS import CMIS
 from ..classes.Files import Files
 from ..main_splitter import launch
-from werkzeug.datastructures import FileStorage
 from ..classes.OpenADS import OpenADS
 from ..classes.Splitter import Splitter
+from werkzeug.datastructures import FileStorage
 from ..functions import retrieve_custom_from_url
 from ..main import create_classes_from_custom_id
 from flask import current_app, request, g as current_context
-from ..controllers import user, monitoring, attachments as attachments_controller, workflow
 from ..models import splitter, doctypes, accounts, history, workflow, outputs, forms, attachments
+from ..controllers import user, monitoring, attachments as attachments_controller, workflow, status
 
 
 def handle_uploaded_file(files, workflow_id, user_id):
@@ -160,19 +160,26 @@ def retrieve_batches(data):
         'search': data['search'] if 'search' in data else None,
         'order': data['order'] if 'order' in data else None,
         'filter': data['filter'] if 'filter' in data else None,
-        'batch_id': data['batchId'] if 'batchId' in data else None
+        'batch_id': data['batchId'] if 'batchId' in data else None,
+        'form_id': data['form_id'] if 'form_id' in data else None,
+        'allowed_customers': data['allowedCustomers'] if 'allowedCustomers' in data else None
     }
 
-    user_customers = user.get_customers_by_user_id(args['user_id'])
+    if args['allowed_customers']:
+        user_customers = args['allowed_customers']
+    else:
+        user_customers = user.get_customers_by_user_id(args['user_id'])
+        if user_customers[1] != 200:
+            return user_customers[0], user_customers[1]
+        user_customers = user_customers[0]
 
-    if user_customers[1] != 200:
-        return user_customers[0], user_customers[1]
-    user_customers = user_customers[0]
-
-    user_forms = user.get_forms_by_user_id(args['user_id'])
-    if user_forms[1] != 200:
-        return user_forms[0], user_forms[1]
-    user_forms = user_forms[0]
+    if args['form_id']:
+        user_forms = [args['form_id']]
+    else:
+        user_forms = user.get_forms_by_user_id(args['user_id'])
+        if user_forms[1] != 200:
+            return user_forms[0], user_forms[1]
+        user_forms = user_forms[0]
 
     args['table'] = ['splitter_batches']
     args['select'] = ['splitter_batches.*', "to_char(splitter_batches.creation_date, 'DD-MM-YYYY " + gettext('AT') + " HH24:MI:SS') as batch_date"]
@@ -180,7 +187,7 @@ def retrieve_batches(data):
     args['data'] = [user_customers, user_forms]
 
     if 'search' in args and args['search']:
-        args['where'].append("splitter_batches.id = %s OR file_name like %s ")
+        args['where'].append("(splitter_batches.id::TEXT = %s OR LOWER(file_name) like LOWER(%s)) ")
         args['data'].append(args['search'])
         args['data'].append(f"%{args['search']}%")
 
@@ -202,6 +209,7 @@ def retrieve_batches(data):
         else:
             args['order_by'] = [args['filter'] + ' DESC']
 
+    print(args)
     batches, error_batches = splitter.retrieve_batches(args)
     count, error_count = splitter.count_batches(args)
     if not error_batches and not error_count:
@@ -764,36 +772,56 @@ def get_metadata_methods(form_method=False):
     return metadata_methods, 400
 
 
-def get_totals(status, user_id):
-    totals = {}
-    user_customers = user.get_customers_by_user_id(user_id)
-    if user_customers[1] != 200:
-        return user_customers[0], user_customers[1]
-    user_customers = user_customers[0]
+def get_totals(selected_status, user_id, form_id=None, allowed_customers=None, time=None, search=None):
+    totals = {'times': {}, 'status': {}}
 
-    user_forms = user.get_forms_by_user_id(user_id)
-    if user_forms[1] != 200:
-        return user_forms[0], user_forms[1]
-    user_forms = user_forms[0]
+    if not allowed_customers:
+        allowed_customers = user.get_customers_by_user_id(user_id)
+        if allowed_customers[1] != 200:
+            return allowed_customers[0], allowed_customers[1]
+        allowed_customers = allowed_customers[0]
 
-    totals['today'], error = splitter.get_totals({
+    if not form_id:
+        user_forms = user.get_forms_by_user_id(user_id)
+        if user_forms[1] != 200:
+            return user_forms[0], user_forms[1]
+        user_forms = user_forms[0]
+    else:
+        user_forms = [form_id]
+
+    totals['times']['today'], error = splitter.get_totals({
         'time': 'today',
-        'status': status,
+        'search': search,
         'user_forms': user_forms,
-        'user_customers': user_customers
+        'status': selected_status,
+        'user_customers': allowed_customers
     })
-    totals['yesterday'], error = splitter.get_totals({
+    totals['times']['yesterday'], error = splitter.get_totals({
         'time': 'yesterday',
-        'status': status,
+        'search': search,
         'user_forms': user_forms,
-        'user_customers': user_customers
+        'status': selected_status,
+        'user_customers': allowed_customers
     })
-    totals['older'], error = splitter.get_totals({
+    totals['times']['older'], error = splitter.get_totals({
         'time': 'older',
-        'status': status,
+        'search': search,
         'user_forms': user_forms,
-        'user_customers': user_customers
+        'status': selected_status,
+        'user_customers': allowed_customers
     })
+
+    status_list, _ = status.get_status({
+        'time': time,
+        'totals': True,
+        'search': search,
+        'form_id': form_id,
+        'user_id': user_id,
+        'allowedCustomers': allowed_customers,
+    }, 'splitter')
+
+    if status_list:
+        totals['status'] = status_list['status']
 
     if error is None:
         return totals, 200
