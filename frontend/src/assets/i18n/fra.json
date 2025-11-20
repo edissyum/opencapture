@@ -143,7 +143,10 @@
         "form_name": "Libellé du formulaire",
         "allow_learning": "Activer l'apprentissage des positions",
         "label_required": "Libellé du formulaire est requis",
-        "allow_learning_hint": "Si activé, l'utiliation de l'OCR ON FLY enregistrera les positions des champs au tiers de ce même document"
+        "allow_learning_hint": "Si activé, l'utiliation de l'OCR ON FLY enregistrera les positions des champs au tiers de ce même document",
+        "create_new_form": "Créer un nouveau formulaire",
+        "form_created": "Formulaire créé avec succès",
+        "select_metadata_method": "Selectionner la méthode de récupération des métadonnées"
     },
     "GLOBAL": {
         "batches": "Lots",
@@ -171,7 +174,8 @@
         "forms": "Formulaires",
         "status": "Status",
         "no_result_found": "Aucun résultat trouvé",
-        "logout": ""
+        "logout": "Déconnexion",
+        "creating": "Création en cours..."
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validé avec succès",
@@ -351,7 +355,9 @@
         "edit_form": "Modifier le formulaire",
         "forms_many": "Formulaires",
         "forms_one": "Formulaire",
-        "forms_other": "Formulaires"
+        "forms_other": "Formulaires",
+        "export_zip_file_name": "Chemin de compression des fichiers exportés",
+        "export_zip_file_name_hint": "Chemin absolu incluant un masque de nommage avec l'extension 'zip' (vide pour desactiver)"
     },
     "SMTP": {
         "authentication": "Authentification",

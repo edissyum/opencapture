@@ -14,11 +14,30 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { t } from "i18next";
+import { LayoutTemplate } from "lucide-react";
+import { SettingsCard } from "../../../components/settings/SettingsCard";
+
+export const getSettingsSplitterOptions = () => [
+    {
+        name: t('SETTINGS.forms'),
+        description: t('SETTINGS.forms_description'),
+        icon: <LayoutTemplate/>,
+        href: '/settings/splitter/forms'
+    }
+];
+
 export function SettingsSplitterIndex() {
+    const options = getSettingsSplitterOptions();
+
     return (
-        <div>
-            <h1 className="text-2xl font-bold mb-4">Splitter Settings Home</h1>
-            <p>Welcome to the general index page. Please select an option from the sidebar.</p>
+        <div className='grid grid-cols-3 gap-8 p-8'>
+            {
+                options.map((option) => (
+                    <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
+                                  description={ option['description'] } to={ option['href'] }></SettingsCard>
+                ))
+            }
         </div>
     );
 }

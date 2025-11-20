@@ -209,7 +209,6 @@ def retrieve_batches(data):
         else:
             args['order_by'] = [args['filter'] + ' DESC']
 
-    print(args)
     batches, error_batches = splitter.retrieve_batches(args)
     count, error_count = splitter.count_batches(args)
     if not error_batches and not error_count:

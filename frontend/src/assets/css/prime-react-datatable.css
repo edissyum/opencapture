@@ -142,7 +142,7 @@
     @apply text-(--text-secondary);
 }
 
-.p-paginator {
+.p-paginator, .p-placeholder {
     font-family: "Montserrat", sans-serif;
     @apply text-(--text-secondary)!;
 }

@@ -42,6 +42,10 @@ import { SettingsGeneralMailcollect } from "./pages/settings/general/mailcollect
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
 import { SettingsVerifierFormsList } from "./pages/settings/verifier/forms/list";
 import { SettingsVerifierFormsEditor } from "./pages/settings/verifier/forms/editor";
+import { SettingsVerifierFormsCreate } from "./pages/settings/verifier/forms/create";
+import { SettingsSplitterFormsList } from "./pages/settings/splitter/forms/list";
+import { SettingsSplitterFormsCreate } from "./pages/settings/splitter/forms/create";
+import { SettingsSplitterFormsEditor } from "./pages/settings/splitter/forms/editor";
 
 export const router = createBrowserRouter(
     [
@@ -175,6 +179,13 @@ export const router = createBrowserRouter(
                                     element: <SettingsVerifierFormsEditor/>,
                                     errorElement: <LoginRequiredError/>,
                                     handle: { breadcrumb: 'SETTINGS.edit_form' }
+                                },
+                                {
+                                    path:'create',
+                                    loader: protectedLoader,
+                                    element: <SettingsVerifierFormsCreate/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'FORMS.add_form' }
                                 }
                             ]
                         }
@@ -192,6 +203,33 @@ export const router = createBrowserRouter(
                             element: <SettingsSplitterIndex/>,
                             errorElement: <LoginRequiredError/>
                         },
+                        {
+                            path: "forms",
+                            loader: protectedLoader,
+                            handle: { breadcrumb: 'SETTINGS.forms' },
+                            children: [
+                                {
+                                    index: true,
+                                    loader: protectedLoader,
+                                    element: <SettingsSplitterFormsList/>,
+                                    errorElement: <LoginRequiredError/>
+                                },
+                                {
+                                    path:'edit/:formId',
+                                    loader: protectedLoader,
+                                    element: <SettingsSplitterFormsEditor/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.edit_form' }
+                                },
+                                {
+                                    path:'create',
+                                    loader: protectedLoader,
+                                    element: <SettingsSplitterFormsCreate/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'FORMS.add_form' }
+                                }
+                            ]
+                        }
                     ]
                 }
             ]

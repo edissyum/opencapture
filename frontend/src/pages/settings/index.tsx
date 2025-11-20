@@ -23,6 +23,7 @@ import { SettingsCard } from "../../components/settings/SettingsCard";
 
 import { getSettingsGeneralOptions } from "./general";
 import { getSettingsVerifierOptions } from "./verifier";
+import { getSettingsSplitterOptions } from "./splitter";
 
 export function SettingsIndex() {
     const options = [
@@ -53,8 +54,9 @@ export function SettingsIndex() {
         if (!ready) return;
         const generalOptions = getSettingsGeneralOptions();
         const verifierOptions = getSettingsVerifierOptions();
+        const splitterOptions = getSettingsSplitterOptions();
 
-        const allOptions: any = [...generalOptions, ...verifierOptions, ...options];
+        const allOptions: any = [...generalOptions, ...verifierOptions, ...splitterOptions, ...options];
 
         (async () => {
             const favs = await getFavorites();

@@ -121,6 +121,10 @@ h2 {
     @apply font-semibold;
 }
 
+.p-inputtext {
+    font-family: "Montserrat", sans-serif;
+}
+
 /* Fix placeholder for input in FloatLabel */
 .p-float-label input::placeholder {
     @apply opacity-100;

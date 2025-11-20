@@ -143,7 +143,10 @@
         "form_name": "Etiqueta del formulario",
         "allow_learning": "Activar el aprendizaje de posiciones",
         "label_required": "Etiqueta del formulario es requerida",
-        "allow_learning_hint": "Si está activado, el uso de OCR ON FLY guardará las posiciones de los campos del mismo documento"
+        "allow_learning_hint": "Si está activado, el uso de OCR ON FLY guardará las posiciones de los campos del mismo documento",
+        "create_new_form": "",
+        "form_created": "",
+        "select_metadata_method": ""
     },
     "GLOBAL": {
         "batches": "Lotes",
@@ -171,7 +174,8 @@
         "forms": "Formularios",
         "status": "Estado",
         "no_result_found": "No se encontraron resultados",
-        "logout": ""
+        "logout": "",
+        "creating": ""
     },
     "HISTORY": {
         "document_validated": "Documento n°<strong>{{ documentId }}</strong> validado con éxito",
@@ -351,7 +355,9 @@
         "edit_form": "Modificar el formulario",
         "forms_many": "Formularios",
         "forms_one": "Formulario",
-        "forms_other": "Formularios"
+        "forms_other": "Formularios",
+        "export_zip_file_name": "",
+        "export_zip_file_name_hint": ""
     },
     "SMTP": {
         "authentication": "Autenticación",

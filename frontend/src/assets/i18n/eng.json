@@ -133,7 +133,10 @@
         "form_name": "Form label",
         "allow_learning": "Enable position learning",
         "label_required": "Form label is required",
-        "allow_learning_hint": "If enabled, using OCR ON FLY will record field positions for the same document's third party"
+        "allow_learning_hint": "If enabled, using OCR ON FLY will record field positions for the same document's third party",
+        "create_new_form": "",
+        "form_created": "",
+        "select_metadata_method": ""
     },
     "GLOBAL": {
         "batches": "Batches",
@@ -161,7 +164,8 @@
         "forms": "Forms",
         "status": "Status",
         "no_result_found": "No results found",
-        "logout": ""
+        "logout": "",
+        "creating": ""
     },
     "HISTORY": {
         "document_validated": "Document No.<strong>{{ documentId }}</strong> validated successfully",
@@ -329,7 +333,9 @@
         "forms_description": "Form settings",
         "edit_form": "Edit form",
         "forms_one": "Form",
-        "forms_other": "Forms"
+        "forms_other": "Forms",
+        "export_zip_file_name": "",
+        "export_zip_file_name_hint": ""
     },
     "SMTP": {
         "authentication": "Authentication",

@@ -73,7 +73,7 @@ def create_form(module):
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/forms/{module}/create'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'label', 'type': str, 'mandatory': True},
         {'id': 'module', 'type': str, 'mandatory': True},
         {'id': 'outputs', 'type': list, 'mandatory': True},
@@ -87,7 +87,7 @@ def create_form(module):
             "message": message
         }, 400)
 
-    res = forms.create_form(request.json['args'], module)
+    res = forms.create_form(request.json, module)
     return make_response(jsonify(res[0])), res[1]
 
 

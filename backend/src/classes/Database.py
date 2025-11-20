@@ -96,7 +96,6 @@ class Database:
                 args['data'] = []
 
             query = "SELECT " + select + " FROM " + args['table'] + where + group_by + order_by + limit + offset
-            print(query, args['data'])
             try:
                 with self.conn.cursor() as cursor:
                     cursor.execute(query, args['data'])

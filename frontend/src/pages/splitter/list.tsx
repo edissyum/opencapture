@@ -33,6 +33,7 @@ import {
     Trash2
 } from "lucide-react";
 import { Dropdown } from "primereact/dropdown";
+import { RadioButton } from "primereact/radiobutton";
 
 import { useUser } from "../../services/hooks/useUser";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
@@ -42,7 +43,6 @@ import Input from "../../components/Input";
 import { Button } from "../../components/Button";
 import { Grid } from "../../components/list/Grid";
 import { Table } from "../../components/list/Table";
-import { Checkbox } from "../../components/Checkbox";
 import { Thumbnail } from "../../components/Thumbnail";
 import MultiSelectInput from "../../components/MultiSelect";
 
@@ -223,6 +223,7 @@ export function SplitterListPage() {
             try {
                 const res = await post('/splitter/batches/list', {
                     user_id: user.id,
+                    time: selectedTime,
                     form_id: selectedForm,
                     status: selectedStatus,
                     limit: lazyParams.rows,
@@ -260,7 +261,7 @@ export function SplitterListPage() {
                     search: debouncedSearchTerm || null,
                     allowedCustomers: selectedCustomers ? selectedCustomers : null
                 }) || {};
-                console.log(res)
+
                 setListTimes((prevTimes) => prevTimes.map((time) => ({
                     ...time,
                     totals: res.totals.times[time.id] || 0
@@ -337,18 +338,19 @@ export function SplitterListPage() {
                         { open.batches && (
                             <div className='flex flex-col'>
                                 { listTimes.map((time) => (
-                                    <Checkbox
-                                        key={ time.id }
-                                        label={ time.label + ` (${ time.totals })` }
-                                        checked={ selectedTime === time.id }
-                                        onChange={ (checked: boolean) => {
-                                            if (!checked) {
-                                                setSelectedTime(null);
-                                                return;
-                                            }
-                                            setSelectedTime(time.id);
-                                        } }
-                                    />
+                                    <div className='flex items-center text-(--text-secondary)' key={ time.id }>
+                                        <RadioButton
+                                            inputId={ time.id } checked={ selectedTime === time.id }
+                                            className='mr-1 scale-80'
+                                            value={ time.id }
+                                            onChange={ (e) => {
+                                                setSelectedTime(e.value);
+                                            } }>
+                                        </RadioButton>
+                                        <label htmlFor={ time.id } key={ time.id } className={ `cursor-pointer` }>
+                                            { time.label } ({ time.totals || 0 })
+                                        </label>
+                                    </div>
                                 )) }
                             </div>
                         ) }
@@ -367,14 +369,20 @@ export function SplitterListPage() {
                         { open.status && (
                             <div className='flex flex-col'>
                                 { Object.keys(listStatuses).map((key: any) => (
-                                    <Checkbox
-                                        key={ key }
-                                        checked={ selectedStatus === listStatuses[key]?.id }
-                                        label={ listStatuses[key]?.label + ` (${ listStatuses[key]?.total || 0 })` }
-                                        onChange={ () => {
-                                            setSelectedStatus(listStatuses[key]?.id);
-                                        } }
-                                    />
+                                    <div className='flex items-center text-(--text-secondary)' key={ key }>
+                                        <RadioButton
+                                            inputId={ key }
+                                            checked={ selectedStatus === listStatuses[key]?.id }
+                                            className='mr-1 scale-80'
+                                            value={ key }
+                                            onChange={ (e) => {
+                                                setSelectedStatus(listStatuses[e.value]?.id);
+                                            } }>
+                                        </RadioButton>
+                                        <label htmlFor={ key } key={ key } className={ `cursor-pointer` }>
+                                            { listStatuses[key]?.label } ({ listStatuses[key]?.total || 0 })
+                                        </label>
+                                    </div>
                                 )) }
                             </div>
                         ) }

@@ -16,8 +16,8 @@
 
 import { FormsList } from "../../../../components/settings/forms";
 
-export function SettingsVerifierFormsList() {
+export function SettingsSplitterFormsList() {
     return (
-        <FormsList module="verifier"/>
+        <FormsList module="splitter"/>
     );
 }

@@ -35,12 +35,12 @@ import {
     UsersRound
 } from "lucide-react";
 import { Dropdown } from "primereact/dropdown";
+import { RadioButton } from "primereact/radiobutton";
 
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
 import { Grid } from "../../components/list/Grid";
 import { Table } from "../../components/list/Table";
-import { Checkbox } from "../../components/Checkbox";
 import { Thumbnail } from "../../components/Thumbnail";
 import { showToast } from "../../components/ToastProvider";
 import MultiSelectInput from "../../components/MultiSelect";
@@ -453,18 +453,19 @@ export function VerifierListPage() {
                         { open.batches && (
                             <div className='flex flex-col'>
                                 { listTimes.map((time) => (
-                                    <Checkbox
-                                        key={ time.id }
-                                        label={ time.label + ` (${ time.totals })` }
-                                        checked={ selectedTime === time.id }
-                                        onChange={ (checked: boolean) => {
-                                            if (!checked) {
-                                                setSelectedTime(null);
-                                                return;
-                                            }
-                                            setSelectedTime(time.id);
-                                        } }
-                                    />
+                                    <div className='flex items-center text-(--text-secondary)' key={ time.id }>
+                                        <RadioButton
+                                            inputId={ time.id } checked={ selectedTime === time.id }
+                                            className='mr-1 scale-80'
+                                            value={ time.id }
+                                            onChange={ (e) => {
+                                                setSelectedTime(e.value);
+                                            } }>
+                                        </RadioButton>
+                                        <label htmlFor={ time.id } key={ time.id } className={ `cursor-pointer` }>
+                                            { time.label } ({ time.totals || 0 })
+                                        </label>
+                                    </div>
                                 )) }
                             </div>
                         ) }
@@ -483,14 +484,20 @@ export function VerifierListPage() {
                         { open.status && (
                             <div className='flex flex-col'>
                                 { Object.keys(listStatuses).map((key: any) => (
-                                    <Checkbox
-                                        key={ key }
-                                        checked={ selectedStatus === listStatuses[key]?.id }
-                                        label={ listStatuses[key]?.label + ` (${ listStatuses[key]?.total || 0 })` }
-                                        onChange={ () => {
-                                            setSelectedStatus(listStatuses[key]?.id);
-                                        } }
-                                    />
+                                    <div className='flex items-center text-(--text-secondary)' key={ key }>
+                                        <RadioButton
+                                            inputId={ key }
+                                            checked={ selectedStatus === listStatuses[key]?.id }
+                                            className='mr-1 scale-80'
+                                            value={ key }
+                                            onChange={ (e) => {
+                                                setSelectedStatus(listStatuses[e.value]?.id);
+                                            } }>
+                                        </RadioButton>
+                                        <label htmlFor={ key } key={ key } className={ `cursor-pointer` }>
+                                            { listStatuses[key]?.label } ({ listStatuses[key]?.total || 0 })
+                                        </label>
+                                    </div>
                                 )) }
                             </div>
                         ) }
@@ -601,8 +608,8 @@ export function VerifierListPage() {
                 <div className='flex items-center gap-6'>
                     <Button icon={ <Filter size={ 14 }/> } onClick={ () => setDisplayFilters(!displayFilters) }
                             className={ `rounded-3xl hover:text-(--color-primary) text-(--text-primary)
-                            border-(--border-secondary) p-2.5! bg-(--bg-primary) 
-                            ${ displayFilters ? 'bg-(--color-primary) text-white hover:text-white' : 'bg-(--bg-primary) text-(--text-primary)' }` }>
+                                            border-(--border-secondary) p-2.5! bg-(--bg-primary)
+                                            ${ displayFilters ? 'bg-(--color-primary) text-white hover:text-white' : 'bg-(--bg-primary) text-(--text-primary)' }` }>
                         { t('VERIFIER.filters') }
                     </Button>
                     <span className='flex items-center gap-1'>

@@ -30,19 +30,21 @@ import {
     findZoneContainingLine,
     getDropContext
 } from "../../../../components/form/editor/helpers";
-import { FieldPalette } from "../../../../components/form/editor/FieldPalette";
-import { DroppableZone } from "../../../../components/form/editor/DroppableZone";
-import { DroppableLine } from "../../../../components/form/editor/DroppableLine";
+
+import { SettingsSplitterFormsDetails } from "./details";
+
 import { Button } from "../../../../components/Button";
 import { Loader } from "../../../../components/loader/Loader";
 import { showToast } from "../../../../components/ToastProvider";
+import { FieldPalette } from "../../../../components/form/editor/FieldPalette";
+import { DroppableZone } from "../../../../components/form/editor/DroppableZone";
+import { DroppableLine } from "../../../../components/form/editor/DroppableLine";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 import { useFormFields } from "../../../../services/hooks/useFormFields";
 import { useCustomFields } from "../../../../services/hooks/useCustomFields";
-import { SettingsVerifierFormsDetails } from "./details.tsx";
 
-export function SettingsVerifierFormsEditor() {
+export function SettingsSplitterFormsEditor() {
     const { get, post, put } = axiosApiCall();
     const { formId } = useParams<{ formId: any }>();
 
@@ -72,7 +74,7 @@ export function SettingsVerifierFormsEditor() {
 
         const retrieveFormSettings = async () => {
             try {
-                const response = await get(`forms/verifier/getById/${ formId }`);
+                const response = await get(`forms/splitter/getById/${ formId }`);
                 setFormSettings(response);
                 setFormSettingsLoading(false);
             } catch (error) {
@@ -385,7 +387,7 @@ export function SettingsVerifierFormsEditor() {
         });
 
         try {
-            post('forms/verifier/updateFields/' + formId, payload).then(() => {
+            post('forms/splitter/updateFields/' + formId, payload).then(() => {
                 showToast(t('FORMS.form_updated'), 'success');
                 setIsSubmitting(false);
             });
@@ -403,7 +405,7 @@ export function SettingsVerifierFormsEditor() {
         delete formSettingsCopy.id;
         delete formSettingsCopy.labels;
         try {
-            put(`forms/verifier/update/${ formId }`, formSettingsCopy).then(() => {
+            put(`forms/splitter/update/${ formId }`, formSettingsCopy).then(() => {
                 showToast(t('FORMS.form_updated'), 'success');
                 setIsSubmitting(false);
             });
@@ -422,7 +424,7 @@ export function SettingsVerifierFormsEditor() {
                             { formSettingsLoading ? (
                                 <Loader/>
                             ) : (
-                                <SettingsVerifierFormsDetails
+                                <SettingsSplitterFormsDetails
                                     formSettings={ formSettings }
                                     isSubmitting={ isSubmitting }
                                     submit={ handleUpdateSettings }

@@ -345,6 +345,7 @@ def get_metadata_methods(form_id=False):
     response = {
         'metadataMethods': split_methods
     }
+
     return make_response(jsonify(response)), status
 
 

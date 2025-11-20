@@ -13,6 +13,7 @@
  along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
+
 import { RadioButton } from "primereact/radiobutton";
 
 export function RadioBox({ label, value, checked, onChange }: {
