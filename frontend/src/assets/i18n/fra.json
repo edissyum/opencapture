@@ -146,7 +146,10 @@
         "allow_learning_hint": "Si activé, l'utiliation de l'OCR ON FLY enregistrera les positions des champs au tiers de ce même document",
         "create_new_form": "Créer un nouveau formulaire",
         "form_created": "Formulaire créé avec succès",
-        "select_metadata_method": "Selectionner la méthode de récupération des métadonnées"
+        "select_metadata_method": "Selectionner la méthode de récupération des métadonnées",
+        "metadata_batch": "Métadonnées du lot",
+        "metadata_document": "Métadonnées du document",
+        "field_disabled": "Champ désactivé"
     },
     "GLOBAL": {
         "batches": "Lots",
@@ -501,7 +504,6 @@
         "id": "Identifiant technique",
         "filename": "Fichier",
         "custom_fields": "Champs personnalisés",
-        "facturation": "Traitement",
         "lines": "Lignes de détails",
         "item_description": "Description",
         "item_quantity": "Quantité",

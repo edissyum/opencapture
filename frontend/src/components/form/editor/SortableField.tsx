@@ -37,12 +37,14 @@ type Field = {
     label: string;
     color?: string;
     format?: string;
+    disabled?: boolean;
     required?: boolean;
     default_value?: string;
 };
 
-export function SortableField({ field, onUpdateField, onDeleteField }: {
+export function SortableField({ field, onUpdateField, onDeleteField, module }: {
     field: Field;
+    module?: string;
     onDeleteField: (id: string) => void;
     onUpdateField: (id: string, updated: Field) => void;
 }) {
@@ -132,67 +134,88 @@ export function SortableField({ field, onUpdateField, onDeleteField }: {
                         <label htmlFor={ 'format-' + editableField.id }>{ t("FORMS.formats") }</label>
                     </FloatLabel>
 
-                    <Input id={ "default_value-" + editableField.id }
-                           className="w-full" no_margin_bottom={ true }
-                           hint={ t('FORMS.default_value_hint') }
-                           label={ t('FORMS.default_value') }
-                           value={ editableField.default_value }
-                           onChange={ (e: any) =>
-                               setEditableField((prev) => ({ ...prev, default_value: e.target.value }))
-                           }
-                    />
+                    { module === 'verifier' && (
+                        <>
+                            <Input id={ "default_value-" + editableField.id }
+                                   className="w-full" no_margin_bottom={ true }
+                                   hint={ t('FORMS.default_value_hint') }
+                                   label={ t('FORMS.default_value') }
+                                   value={ editableField.default_value }
+                                   onChange={ (e: any) =>
+                                       setEditableField((prev) => ({ ...prev, default_value: e.target.value }))
+                                   }
+                            />
 
-                    <div ref={ ref } className="relative inline-block w-full">
-                        <div onClick={ () => setOpen((o) => !o) }
-                             className="flex items-center justify-center border rounded-md cursor-pointer transition-all select-none h-10"
-                             style={ {
-                                 backgroundColor: editableField.color + '1A',
-                                 color: editableField.color
-                             } }>
-                            { editableField.color ? (
-                                <>
-                                    { colorOptions.find((c) => c.value === editableField.color)?.name }
-                                </>
-                            ) : (
-                                <span className="text-(--text-secondary)">{ t('COLORS.select_color') }</span>
-                            ) }
+                            <div ref={ ref } className="relative inline-block w-full">
+                                <div onClick={ () => setOpen((o) => !o) }
+                                     className="flex items-center justify-center border rounded-md cursor-pointer transition-all select-none h-10"
+                                     style={ {
+                                         backgroundColor: editableField.color + '1A',
+                                         color: editableField.color
+                                     } }>
+                                    { editableField.color ? (
+                                        <>
+                                            { colorOptions.find((c) => c.value === editableField.color)?.name }
+                                        </>
+                                    ) : (
+                                        <span className="text-(--text-secondary)">{ t('COLORS.select_color') }</span>
+                                    ) }
+                                </div>
+
+                                { open && (
+                                    <div
+                                        className="left-0 mt-2 w-full p-3 bg-white border rounded-lg shadow-lg grid grid-cols-6 gap-2 z-50"
+                                        style={ {
+                                            animation: "fadeIn 0.1s ease-in-out"
+                                        } }
+                                    >
+                                        { colorOptions.map((color) => (
+                                            <div
+                                                key={ color.value }
+                                                onClick={ () => handleSelect(color.value) }
+                                                title={ color.name }
+                                                className="w-full flex justify-center items-center h-14 rounded-md cursor-pointer border hover:scale-110 transition-transform bg-opacity-10"
+                                                style={ {
+                                                    color: color.value,
+                                                    backgroundColor: color.value + '1A'
+                                                } }>
+                                                { color.name }
+                                            </div>
+                                        )) }
+                                    </div>
+                                ) }
+                            </div>
+                        </>
+                    ) }
+
+                    <div className='flex gap-2'>
+                        <div className="flex items-center gap-2">
+                            <InputSwitch inputId={ 'required-' + editableField.id } checked={ !!editableField.required }
+                                         onChange={ (e) => setEditableField((prev) => ({
+                                             ...prev,
+                                             required: e.value
+                                         })) }
+                            />
+                            <label htmlFor={ 'required-' + editableField.id }
+                                   className="flex items-center gap-4 cursor-pointer select-none text-(--text-secondary)">
+                                { t('FORMS.field_required') }
+                            </label>
                         </div>
 
-                        { open && (
-                            <div
-                                className="left-0 mt-2 w-full p-3 bg-white border rounded-lg shadow-lg grid grid-cols-6 gap-2 z-50"
-                                style={ {
-                                    animation: "fadeIn 0.1s ease-in-out"
-                                } }
-                            >
-                                { colorOptions.map((color) => (
-                                    <div
-                                        key={ color.value }
-                                        onClick={ () => handleSelect(color.value) }
-                                        title={ color.name }
-                                        className="w-full flex justify-center items-center h-14 rounded-md cursor-pointer border hover:scale-110 transition-transform bg-opacity-10"
-                                        style={ {
-                                            color: color.value,
-                                            backgroundColor: color.value + '1A'
-                                        } }>
-                                        { color.name }
-                                    </div>
-                                )) }
+                        { module === 'splitter' && (
+                            <div className="flex items-center gap-2">
+                                <InputSwitch inputId={ 'disabled-' + editableField.id } checked={ !!editableField.disabled }
+                                             onChange={ (e) => setEditableField((prev) => ({
+                                                 ...prev,
+                                                 disabled: e.value
+                                             })) }
+                                />
+                                <label htmlFor={ 'disabled-' + editableField.id }
+                                       className="flex items-center gap-4 cursor-pointer select-none text-(--text-secondary)">
+                                    { t('FORMS.field_disabled') }
+                                </label>
                             </div>
-                        ) }
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        <InputSwitch inputId={ 'required-' + editableField.id } checked={ !!editableField.required }
-                                     onChange={ (e) => setEditableField((prev) => ({
-                                         ...prev,
-                                         required: e.value
-                                     })) }
-                        />
-                        <label htmlFor={ 'required-' + editableField.id }
-                               className="flex items-center gap-4 cursor-pointer select-none text-(--text-secondary)">
-                            { t('FORMS.field_required') }
-                        </label>
+                        )}
                     </div>
 
                     <div className="flex gap-2">

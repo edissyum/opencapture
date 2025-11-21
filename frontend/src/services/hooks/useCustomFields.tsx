@@ -15,7 +15,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { axiosApiCall } from "./axiosApiCall";
 
@@ -36,9 +36,11 @@ interface UseCustomFieldsResult {
 export function useCustomFields(module: string): UseCustomFieldsResult {
     const { get, loading, error } = axiosApiCall();
     const [customFields, setCustomFields] = useState<CustomField[]>([]);
+    const lastModuleRef = useRef<string | null>(null);
 
     useEffect(() => {
-        if (!module) return;
+        if (!module || lastModuleRef.current === module) return;
+        lastModuleRef.current = module;
 
         const fetchCustomFields = async () => {
             try {
@@ -47,11 +49,12 @@ export function useCustomFields(module: string): UseCustomFieldsResult {
                 });
                 if (data) setCustomFields(data.customFields);
             } catch {
+                console.log("Failed to fetch custom fields");
             }
         };
 
         fetchCustomFields().then();
-    }, [module]);
+    }, [module, get]);
 
     return { customFields, loading, error };
 }

@@ -24,7 +24,7 @@ import { defaultAnimateLayoutChanges, useSortable } from "@dnd-kit/sortable";
 import { DroppableLine } from "./DroppableLine";
 import { InputSwitch } from "primereact/inputswitch";
 
-export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDeleteLine, onUpdateLine }: any) {
+export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDeleteLine, onUpdateLine, module }: any) {
     const cm = useRef({ current: null } as any);
     const menuModel: any = [
         {
@@ -38,7 +38,7 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
                 />
             </span>,
             icon: <Copy className='mr-2' size={ 16 }/>,
-            visible: zoneId !== 'zone-supplier',
+            visible: zoneId !== 'zone-supplier' && module === 'verifier',
         },
         {
             label: <span className='critical'>{ t('FORMS.delete') } </span>,
@@ -91,7 +91,8 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
                                before:content-[""] before:absolute before:bottom-0 before:translate-y-px'>
                   <Settings size={ 18 }/>
                 </span>
-                <DroppableLine line={ line } onUpdateField={ onUpdateField } onDeleteField={ onDeleteField }/>
+                <DroppableLine line={ line } onUpdateField={ onUpdateField } onDeleteField={ onDeleteField }
+                               module={ module }/>
             </div>
         </div>
     );

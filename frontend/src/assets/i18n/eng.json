@@ -136,7 +136,10 @@
         "allow_learning_hint": "If enabled, using OCR ON FLY will record field positions for the same document's third party",
         "create_new_form": "",
         "form_created": "",
-        "select_metadata_method": ""
+        "select_metadata_method": "",
+        "metadata_batch": "",
+        "metadata_document": "",
+        "field_disabled": ""
     },
     "GLOBAL": {
         "batches": "Batches",
@@ -461,7 +464,6 @@
         "id": "Technical identifier",
         "filename": "File",
         "custom_fields": "Custom fields",
-        "facturation": "Processing",
         "lines": "Detail lines",
         "item_description": "Description",
         "item_quantity": "Quantity",

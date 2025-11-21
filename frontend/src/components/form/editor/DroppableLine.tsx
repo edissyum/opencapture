@@ -19,7 +19,7 @@ import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortabl
 
 import { SortableField } from "./SortableField"
 
-export function DroppableLine({ line, onUpdateField, onDeleteField }: any) {
+export function DroppableLine({ line, onUpdateField, onDeleteField, module }: any) {
     const { setNodeRef } = useDroppable({ id: line.id });
 
     const fieldWidth = line.fields.length === 1 ? 'w-full' :
@@ -35,7 +35,8 @@ export function DroppableLine({ line, onUpdateField, onDeleteField }: any) {
                 { line.fields.length >= 1 && (
                     line.fields.map((f: any) => (
                         <div key={ f.id } className={ `${ fieldWidth } flex-1 min-w-1/6` }>
-                            <SortableField field={ f } onUpdateField={ onUpdateField } onDeleteField={ onDeleteField }/>
+                            <SortableField field={ f } onUpdateField={ onUpdateField } onDeleteField={ onDeleteField }
+                                           module={ module }/>
                         </div>
                     ))
                 ) }

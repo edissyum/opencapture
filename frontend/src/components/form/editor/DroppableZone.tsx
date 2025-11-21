@@ -20,7 +20,14 @@ import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 
 import { SortableLine } from "./SortableLine";
 
-export function DroppableZone({ zone, onUpdateField, onDeleteField, onDeleteLine, onUpdateLine }: any) {
+export function DroppableZone({
+    zone,
+    onUpdateField,
+    onDeleteField,
+    onDeleteLine,
+    onUpdateLine,
+    module = 'verifier'
+}: any) {
     const { setNodeRef, isOver } = useDroppable({
         id: zone.id,
         data: { type: "zone", zoneId: zone.id }
@@ -44,6 +51,7 @@ export function DroppableZone({ zone, onUpdateField, onDeleteField, onDeleteLine
                                       onUpdateField={ onUpdateField }
                                       onDeleteField={ onDeleteField }
                                       onUpdateLine={ onUpdateLine }
+                                      module={ module }
                                       onDeleteLine={ onDeleteLine }/>
                     )) }
                 </div>
