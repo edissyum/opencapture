@@ -149,7 +149,9 @@
         "select_metadata_method": "",
         "metadata_batch": "",
         "metadata_document": "",
-        "field_disabled": ""
+        "field_disabled": "",
+        "change_label": "",
+        "change_zone_label_message": ""
     },
     "GLOBAL": {
         "batches": "Lotes",
@@ -178,7 +180,8 @@
         "status": "Estado",
         "no_result_found": "No se encontraron resultados",
         "logout": "",
-        "creating": ""
+        "creating": "",
+        "modify": ""
     },
     "HISTORY": {
         "document_validated": "Documento n°<strong>{{ documentId }}</strong> validado con éxito",
@@ -544,6 +547,7 @@
         "associated_customer": "Cuenta de cliente asociada",
         "select_single_document_customer": "El cambio de cuenta de cliente solo es posible para un documento a la vez",
         "search_form": "Buscar un formulario",
-        "erase_filters": "Borrar los filtros"
+        "erase_filters": "Borrar los filtros",
+        "facturation": ""
     }
 }

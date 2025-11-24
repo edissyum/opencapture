@@ -234,19 +234,22 @@ def launch_script_splitter(workflow_settings, docservers, step, log, database, a
                 except ModuleNotFoundError:
                     scripting = importlib.import_module(script_name, 'custom')
 
+                data = {}
                 if 'batches_id' in args:
                     batch = database.select({
-                        'select': ['file_path'],
+                        'select': ['*'],
                         'table': ['splitter_batches'],
                         'where': ['id = %s'],
                         'data': [args['batches_id'][0]]
                     })
+                    data = batch[0]['data']
                     file_path = docservers['SPLITTER_ORIGINAL_DOC'] + "/" + batch[0]['file_path']
                 else:
                     file_path = args['file']
 
                 data = {
                     'log': log,
+                    'data': data,
                     'file': file_path,
                     'custom_id': args['custom_id'],
                     'opencapture_path': config['GLOBAL']['applicationpath']

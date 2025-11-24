@@ -139,7 +139,9 @@
         "select_metadata_method": "",
         "metadata_batch": "",
         "metadata_document": "",
-        "field_disabled": ""
+        "field_disabled": "",
+        "change_label": "",
+        "change_zone_label_message": ""
     },
     "GLOBAL": {
         "batches": "Batches",
@@ -168,7 +170,8 @@
         "status": "Status",
         "no_result_found": "No results found",
         "logout": "",
-        "creating": ""
+        "creating": "",
+        "modify": ""
     },
     "HISTORY": {
         "document_validated": "Document No.<strong>{{ documentId }}</strong> validated successfully",
@@ -504,6 +507,7 @@
         "associated_customer": "Associated customer account",
         "select_single_document_customer": "Customer account change is only possible for a single document at a time",
         "search_form": "Search a form",
-        "erase_filters": "Clear filters"
+        "erase_filters": "Clear filters",
+        "facturation": ""
     }
 }

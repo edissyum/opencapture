@@ -149,7 +149,9 @@
         "select_metadata_method": "Selectionner la méthode de récupération des métadonnées",
         "metadata_batch": "Métadonnées du lot",
         "metadata_document": "Métadonnées du document",
-        "field_disabled": "Champ désactivé"
+        "field_disabled": "Champ désactivé",
+        "change_label": "Modifier le libellé",
+        "change_zone_label_message": "Modifier le libellé de la zone selectionnée. "
     },
     "GLOBAL": {
         "batches": "Lots",
@@ -178,7 +180,8 @@
         "status": "Status",
         "no_result_found": "Aucun résultat trouvé",
         "logout": "Déconnexion",
-        "creating": "Création en cours..."
+        "creating": "Création en cours...",
+        "modify": "Modifier"
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validé avec succès",
@@ -544,6 +547,7 @@
         "associated_customer": "Compte client associé",
         "select_single_document_customer": "Le changement de compte client n'est possible que pour un seul document à la fois",
         "search_form": "Rechercher un formulaire",
-        "erase_filters": "Effacer les filtres"
+        "erase_filters": "Effacer les filtres",
+        "facturation": ""
     }
 }

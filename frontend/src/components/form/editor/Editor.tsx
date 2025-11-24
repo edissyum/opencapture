@@ -27,8 +27,6 @@ import { findLineContainingField, findZoneContainingLine, getDropContext } from 
 
 import { SettingsVerifierFormsDetails } from "../../../pages/settings/verifier/forms/details";
 import { SettingsSplitterFormsDetails } from "../../../pages/settings/splitter/forms/details";
-
-import { Button } from "../../Button";
 import { Loader } from "../../loader/Loader";
 import { FieldPalette } from "./FieldPalette";
 import { DroppableZone } from "./DroppableZone";
@@ -38,6 +36,10 @@ import { showToast } from "../../ToastProvider";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 import { useFormFields } from "../../../services/hooks/useFormFields";
 import { useCustomFields } from "../../../services/hooks/useCustomFields";
+import { getAvailableFields } from "../../../pages/settings/verifier/forms/availableFieldsSchema.tsx";
+import { Edit } from "lucide-react";
+import { showConfirmDialogWithInput } from "../../../services/hooks/ConfirmDialogWithInput.tsx";
+import { Button } from "../../Button.tsx";
 
 export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const { get, post, put } = axiosApiCall();
@@ -47,8 +49,12 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
 
     const [mainTabIndex, setMainTabIndex] = useState(0);
 
+    let tabs: any;
+    let defaultTab: any;
     let moduleZones: any;
+    let availableFields: any;
     let FormDetailsComponent: any;
+
     if (module === 'verifier') {
         FormDetailsComponent = SettingsVerifierFormsDetails;
         moduleZones = [
@@ -56,13 +62,28 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
             { id: "zone-lines", name: t('VERIFIER.lines'), lines: [] },
             { id: "zone-facturation", name: t('FORMS.facturation'), lines: [] },
             { id: "zone-other", name: t('FORMS.other'), lines: [] }
-        ]
+        ];
+        tabs = {
+            supplier: t('ACCOUNTS.suppliers_list'),
+            lines: t('VERIFIER.lines'),
+            billing: t('VERIFIER.facturation'),
+            custom_fields: t('VERIFIER.custom_fields')
+        };
+        availableFields = getAvailableFields(t);
+        defaultTab = 'supplier';
     } else {
         FormDetailsComponent = SettingsSplitterFormsDetails;
         moduleZones = [
             { id: "zone-batch_metadata", name: t('FORMS.metadata_batch'), lines: [] },
             { id: "zone-document_metadata", name: t('FORMS.metadata_document'), lines: [] }
-        ]
+        ];
+        tabs = {
+            customFields: t('VERIFIER.custom_fields')
+        };
+        availableFields = {
+            customFields: []
+        };
+        defaultTab = 'customFields';
     }
 
     const [zones, setZones] = useState(moduleZones);
@@ -95,26 +116,19 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
 
     // Initialize zones with existing form fields
     useEffect(() => {
-        if (!formId || !formFields) return;
+        if (!formId || !formFields || !formSettings) return;
 
         const updatedZones: any = zones.map((zone: any) => {
             const key: any = zone.id.replace("zone-", "");
 
             const zoneLines = formFields[key] || [];
 
-            const formattedLines = zoneLines.map((line: any, index: number) => ({
+            const formattedLines = zoneLines.map((line: any) => ({
                 id: `line-${ crypto.randomUUID() }`,
                 duplicable: line.duplicable || false,
-                fields: Object.values(line).filter(l => typeof l !== 'boolean').map((field: any, fIndex: number) => ({
-                    id: field.id || `field-${ key }-${ index + 1 }-${ fIndex + 1 }`,
-                    type: field.type,
-                    label: field.label,
-                    color: field.color || null,
-                    disabled: field.disabled || false,
-                    required: field.required ?? false,
-                    default_value: field.default_value || "",
-                    format: field.format ?? "alphanum_extended_with_accent"
-                })) || []
+                fields: Object.values(line).filter(l => typeof l !== 'boolean').map((field: any) =>
+                    mapField(field, module)
+                )
             }));
 
             const usedFieldIds = zoneLines.flatMap((line: any) =>
@@ -122,31 +136,21 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
             );
             setUsedFields((prev) => Array.from(new Set([...prev, ...usedFieldIds])));
 
+            if (formSettings.labels && formSettings.labels[key]) {
+                zone.name = formSettings.labels[key];
+            }
+
             return { ...zone, lines: formattedLines };
         });
         setZones(updatedZones);
-    }, [formFields]);
-
-    const tabs: any = {
-        customFields: t('VERIFIER.custom_fields'),
-    };
-    const availableFields: any = {
-        customFields: []
-    };
+    }, [formSettings]);
 
     if (customFields.length > 0) {
-        availableFields.customFields = customFields.map((cf: any) => ({
-            id: 'custom_' + cf.id,
-            label: cf.label,
-            type: cf.type,
-            typeLabel: t(`CUSTOM_FIELDS.type_${ cf.type }`),
-            required: false,
-            disabled: false,
-            format: "alphanum_extended_with_accent",
-            default_value: "",
-        }));
+        availableFields.customFields = customFields.map((cf: any) => (
+            mapField(cf, module)
+        ));
     }
-    const [activeTab, setActiveTab] = useState<keyof typeof availableFields>("customFields");
+    const [activeTab, setActiveTab] = useState<keyof typeof availableFields>(defaultTab);
     const [availableItems, setAvailableItems] = useState(availableFields[activeTab].map((f: any) => (f)));
 
     // Update available items when active tab or used fields change
@@ -375,19 +379,13 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
 
         setIsSubmitting(true);
         const payload: any = {};
+        console.log(zones)
         zones.forEach((zone: any) => {
             const key = zone.id.replace("zone-", "");
             payload[key] = zone.lines.map((line: any) =>
-                line.fields.map((field: any) => ({
-                    id: field.id,
-                    type: field.type,
-                    label: field.label,
-                    color: field.color || "#19864B",
-                    disabled: field.disabled || false,
-                    required: field.required ?? false,
-                    default_value: field.default_value || "",
-                    format: field.format ?? "alphanum_extended_with_accent"
-                }))
+                line.fields.map((field: any) =>
+                    mapField(field, module)
+                )
             );
 
             payload[key] = payload[key].map((line: any, index: number) => ({
@@ -395,7 +393,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                 duplicable: zone.lines[index]?.duplicable || false,
             }));
         });
-        console.log(payload)
+
         try {
             post(`forms/${ module }/updateFields/` + formId, payload).then(() => {
                 showToast(t('FORMS.form_updated'), 'success');
@@ -425,6 +423,46 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
         }
     }
 
+    const handleChangeLabel = async (zone: any) => {
+        const zone_id = zone.id.replace("zone-", "");
+        showConfirmDialogWithInput({
+            value: zone.name,
+            title: t('FORMS.change_label'),
+            message: t('FORMS.change_zone_label_message'),
+            confirmText: t('GLOBAL.modify'),
+            cancelText: t('GLOBAL.cancel'),
+            onConfirm: (value) => {
+                zone.name = value;
+                setZones([...zones]);
+                put(`forms/updateLabel/${ formId }/${ zone_id }`, { label: value });
+            },
+            onCancel: () => {
+            }
+        });
+    }
+
+    function mapField(field: any, module: "verifier" | "splitter") {
+        const base = {
+            id: field.id,
+            type: field.type,
+            label: field.label,
+            color: field.color || null,
+            required: field.required ?? false,
+            default_value: field.default_value || "",
+            format: field.format ?? "alphanum_extended_with_accent",
+            typeLabel: t(`CUSTOM_FIELDS.type_${ field.type }`)
+        };
+
+        if (module === "splitter") {
+            return {
+                ...base,
+                disabled: field.disabled || false
+            };
+        }
+
+        return base;
+    }
+
     return (
         <DndContext onDragEnd={ handleDragEnd } onDragStart={ handleDragStart } collisionDetection={ pointerWithin }>
             <div className="flex h-full">
@@ -447,7 +485,21 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                         <TabPanel header={ t("SETTINGS.form_fields") }>
                             <Accordion multiple activeIndex={ [0] } className='p-6'>
                                 { zones.map((zone: any) => (
-                                    <AccordionTab header={ zone.name } key={ zone.id }>
+                                    <AccordionTab header={
+                                        <span className='flex items-center gap-2'>
+                                            { zone.name }
+                                            { module === 'verifier' && (
+                                                <Edit size={ 20 }
+                                                      onClick={ (e) => {
+                                                          e.stopPropagation();
+                                                          handleChangeLabel(zone).then();
+                                                      } }
+                                                      data-tooltip-id="tooltip"
+                                                      className='hover:text-(--color-primary) cursor-pointer'
+                                                      data-tooltip-content={ t('FORMS.change_label') }/>
+                                            ) }
+                                        </span>
+                                    } key={ zone.id }>
                                         <DroppableZone
                                             key={ zone.id } zone={ zone } module={ module }
                                             onUpdateLine={ handleUpdateLine }
