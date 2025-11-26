@@ -199,10 +199,6 @@ def launch(args):
                                         split_res = split_method(split_args)
                                         created_batches = split_res['batches_id']
                                         log.info(f"Batches created : {','.join(str(batch) for batch in created_batches)}")
-
-                                        if config['GLOBAL']['allowwfscripting'].lower() == 'true':
-                                            args['batches_id'] = created_batches
-                                            launch_script_splitter(workflow_settings[0], docservers, 'process', log, database, args, config, None)
                     else:
                         log.error("The workflow_id doesn't exists in database")
         except (Exception,):

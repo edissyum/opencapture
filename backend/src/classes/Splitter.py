@@ -31,6 +31,7 @@ from xml.dom import minidom
 from datetime import datetime
 from unidecode import unidecode
 from werkzeug.datastructures import FileStorage
+from ..scripting_functions import launch_script_splitter
 from ..classes.OpenCaptureForMEMWebServices import OpenCaptureForMEMWebServices
 
 
@@ -367,7 +368,14 @@ class Splitter:
                 self.db.insert(args)
                 page_display_order += 1
 
-            if not workflow_settings[0]['process']['use_interface']:
+            stop_workflow = False
+            if self.config['GLOBAL']['allowwfscripting'].lower() == 'true':
+                args['file'] = file
+                args['batches_id'] = [batch_id]
+                args['custom_id'] = upload_args['custom_id']
+                stop_workflow = launch_script_splitter(workflow_settings[0], self.docservers, 'process', self.log, self.db  , args, self.config, None)
+
+            if not workflow_settings[0]['process']['use_interface'] and not stop_workflow:
                 from ..splitter_exports import export_batch
                 export_batch(batch_id, self.log, self.docservers, upload_args['regex'], self.config, self.db, upload_args['custom_id'])
 

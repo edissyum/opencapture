@@ -132,8 +132,8 @@ def update_document_data(args):
             if datas and datas[0]:
                 datas = datas[0]['data']
 
-                for new_data in args['data']:
-                    datas['custom_fields'][new_data] = args['data'][new_data]
+                for new_data in args['datas']:
+                    datas['custom_fields'][new_data] = args['datas'][new_data]
 
                 database.update({
                     'table': ['splitter_batches'],
@@ -274,7 +274,7 @@ def launch_script_splitter(workflow_settings, docservers, step, log, database, a
 
                 res = scripting.main(data)
                 os.remove(tmp_file)
-                return change_workflow and res != 'DISABLED'
+                return change_workflow and res != 'DISABLED' or res == 'stop_workflow'
         except (Exception,):
            log.error('Error during ' + step + ' scripting : ' + str(traceback.format_exc()))
            os.remove(tmp_file)
