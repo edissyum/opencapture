@@ -35,13 +35,14 @@ from ..scripting_functions import launch_script_splitter
 from ..classes.OpenCaptureForMEMWebServices import OpenCaptureForMEMWebServices
 
 
-def construct_with_var(data, document_info):
+def construct_with_var(data, document_info, key=None):
     _data = []
     for column in data.split('#'):
         if column in document_info:
             _data.append(str(document_info[column]))
         else:
-            _data.append(column)
+            if not key or not key.startswith('custom_'):
+                _data.append(column)
     return _data
 
 
@@ -551,17 +552,24 @@ class Splitter:
 
         parameters['body_template'] = re.sub(regex['splitter_xml_comment'], '', parameters['body_template'])
         json_body = json.loads(parameters['body_template'])
-        json_body['files'] = []
 
         if isinstance(json_body['datas'], str):
             json_body['datas'] = ''.join(construct_with_var(json_body['datas'], metadata['custom_fields']))
         elif isinstance(json_body['datas'], dict):
             for sub_key in json_body['datas']:
                 json_body['datas'][sub_key] = ''.join(construct_with_var(json_body['datas'][sub_key],
-                                                                         metadata['custom_fields']))
+                                                                         metadata['custom_fields'], sub_key))
 
         tmp_json_body = json.loads(parameters['body_template'])
         for document in batch['documents']:
+            json_body['files'] = []
+            if isinstance(json_body['datas'], str):
+                json_body['datas'] = ''.join(construct_with_var(tmp_json_body['datas'], document['data']['custom_fields']))
+            elif isinstance(json_body['datas'], dict):
+                for sub_key in json_body['datas']:
+                    json_body['datas'][sub_key] = ''.join(construct_with_var(tmp_json_body['datas'][sub_key],
+                                                                             document['data']['custom_fields'], sub_key))
+
             for key in tmp_json_body['datas']:
                 if tmp_json_body['datas'][key] == 'doctype':
                     json_body['datas'][key] = document['doctype_key']
@@ -583,7 +591,7 @@ class Splitter:
                 json_body['files'].append(file)
             json_body['splitter_batch_id'] = batch['id']
             verifier.upload_documents(json_body)
-        return True, 20
+        return True, 200
 
     @staticmethod
     def get_split_methods(docservers):

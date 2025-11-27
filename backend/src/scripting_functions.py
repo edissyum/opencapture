@@ -145,6 +145,17 @@ def update_document_data(args):
                 })
 
 
+def execute_output_splitter(args):
+    database, config, regex, _, _, _, _, _, _, docservers, _, _, _ = create_classes_from_custom_id(args['custom_id'], True)
+    if 'batches_id' in args and args['batches_id']:
+        from .splitter_exports import export_batch
+        for batch_id in args['batches_id']:
+            export_batch(batch_id, args['log'], docservers, regex, config, database, args['custom_id'], args['outputs'])
+
+        return 'end_workflow'
+    return None
+
+
 def launch_script_verifier(workflow_settings, docservers, step, log, file, database, args, config, datas=None):
     if 'script' in workflow_settings[step] and workflow_settings[step]['script']:
         script = workflow_settings[step]['script']
@@ -160,7 +171,7 @@ def launch_script_verifier(workflow_settings, docservers, step, log, file, datab
 
         rand = str(uuid.uuid4())
         tmp_file = docservers['TMP_PATH'] + '/' + step + '_scripting_' + rand + '.py'
-        print(tmp_file)
+
         try:
             with open(tmp_file, 'w', encoding='utf-8') as python_script:
                 python_script.write(script)
@@ -184,6 +195,8 @@ def launch_script_verifier(workflow_settings, docservers, step, log, file, datab
 
                 if step == 'input':
                     data['ip'] = args['ip']
+                    if datas:
+                        data['datas'] = datas
                     data['database'] = database
                     data['user_info'] = args['user_info']
                 elif step in ('process', 'output'):
@@ -276,5 +289,5 @@ def launch_script_splitter(workflow_settings, docservers, step, log, database, a
                 os.remove(tmp_file)
                 return change_workflow and res != 'DISABLED' or res == 'stop_workflow'
         except (Exception,):
-           log.error('Error during ' + step + ' scripting : ' + str(traceback.format_exc()))
-           os.remove(tmp_file)
+            log.error('Error during ' + step + ' scripting : ' + str(traceback.format_exc()))
+            os.remove(tmp_file)

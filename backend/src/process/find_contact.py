@@ -14,6 +14,7 @@
 # See LICENCE file at the root folder for more details.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev: Serena tetart <serena.tetart@edissyum.com>
 
 import json
 import torch
@@ -22,6 +23,47 @@ import qwen_vl_utils
 from flask import current_app
 from ..controllers import accounts
 
+
+def parse_output(output: str):
+    final_dict = {}
+    key_dict = ""
+    sep_bool = True
+    i = 0
+    L = len(output)
+    while i < L:
+        if output[i] == "<":
+            if output.startswith("<SEP>", i):
+                i += 5
+                sep_bool = True
+                continue
+            else:
+                sep_bool = False
+                i += 1
+                key_dict = ""
+                while i < L and output[i] != ">":
+                    key_dict += output[i]; i += 1
+        elif output[i] == ">":
+            i += 1
+            value_dict = ""
+            while i < L and output[i] != "<":
+                c = output[i]
+                if c not in "\n[]":
+                    value_dict += c
+                i += 1
+            key_name = key_dict[2:].lower()
+            if not sep_bool:
+                final_dict[key_name] = value_dict
+            elif key_dict == "K_PHONE":
+                cur = final_dict.get(key_name, [])
+                if not isinstance(cur, list):
+                    cur = [cur]
+                cur.append(value_dict)
+                final_dict[key_name] = cur
+        else:
+            i += 1
+    return final_dict
+
+
 def run_inference(image):
     model_path = current_app.config['CONTACT_MODEL']
     model = transformers.Qwen2VLForConditionalGeneration.from_pretrained(
@@ -29,7 +71,6 @@ def run_inference(image):
         device_map=None,
         dtype=torch.float32
     )
-    model = torch.compile(model)
     model.eval()
 
     processor = transformers.AutoProcessor.from_pretrained(
@@ -39,6 +80,7 @@ def run_inference(image):
         max_pixels=512 * 28 * 28
     )
 
+    data = {}
     with torch.inference_mode():
         with torch.no_grad():
             formatted_data = [
@@ -78,14 +120,17 @@ def run_inference(image):
             ]
             generated_texts = processor.batch_decode(
                 generated_ids_trimmed,
-                skip_special_tokens=True,
+                skip_special_tokens=False,
                 clean_up_tokenization_spaces=False
             )
 
-            data = {}
-            if generated_texts and isinstance(generated_texts[0], str):
-                data = json.loads(generated_texts[0])
-            return data
+            response = (generated_texts[0])[1:-11]
+            data = parse_output(response)
+
+            if data and isinstance(data, str):
+                data = json.loads(data)
+    return data
+
 
 class FindContact:
     def __init__(self, ocr, log, regex, files, database, file, image, customer_id):
@@ -98,7 +143,6 @@ class FindContact:
         self.image = image
         self.database = database
         self.customer_id = customer_id
-
 
     def search_contact(self, data_name, data_value):
         where = f"LOWER({data_name}) LIKE LOWER(%s)"
@@ -193,4 +237,3 @@ class FindContact:
                 contact_data['supplier_id'] = contact['id']
                 return ['', {}, contact_data, '']
         return None
-
