@@ -1,3 +1,10 @@
+-- Ajout de la nouvelle table gérant les paramètres favoris
+CREATE TABLE settings_favorites (
+    "id"      SERIAL  UNIQUE PRIMARY KEY,
+    "user_id" INTEGER,
+    "route"   VARCHAR(255)
+);
+
 -- Remplacement des couleurs pour utiliser des codes hexadécimaux
 UPDATE form_models_field
 SET fields = jsonb_set(

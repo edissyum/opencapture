@@ -114,7 +114,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module }: {
                           className="p-3 w-1/2 shadow-none! border-2! border-(--border-secondary)! min-h-[20%] max-h-[60%]">
                 <div className="flex flex-col gap-3 space-y-3">
                     <Input id={ 'label-' + editableField.id }
-                           className="w-full" no_margin_bottom={ true }
+                           className="w-full" noMarginBottom={ true }
                            label={ t('FORMS.field_label') }
                            value={ t(editableField.label) }
                            onChange={ (e: any) =>
@@ -137,7 +137,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module }: {
                     { module === 'verifier' && (
                         <>
                             <Input id={ "default_value-" + editableField.id }
-                                   className="w-full" no_margin_bottom={ true }
+                                   className="w-full" noMarginBottom={ true }
                                    hint={ t('FORMS.default_value_hint') }
                                    label={ t('FORMS.default_value') }
                                    value={ editableField.default_value }

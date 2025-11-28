@@ -15,14 +15,15 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import Input from "../../../../components/Input.tsx";
-import { InputSwitch } from "primereact/inputswitch";
-import MultiSelectInput from "../../../../components/MultiSelect.tsx";
-import { Button } from "../../../../components/Button.tsx";
 import { useEffect, useState } from "react";
-import { axiosApiCall } from "../../../../services/hooks/axiosApiCall.tsx";
 import { Dropdown } from "primereact/dropdown";
 import { FloatLabel } from "primereact/floatlabel";
+import { InputSwitch } from "primereact/inputswitch";
+
+import Input from "../../../../components/Input";
+import { Button } from "../../../../components/Button";
+import MultiSelectInput from "../../../../components/MultiSelect";
+import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 
 export function SettingsSplitterFormsDetails({
     submit,

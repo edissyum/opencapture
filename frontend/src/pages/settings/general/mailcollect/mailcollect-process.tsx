@@ -203,6 +203,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                 <div className="flex gap-4 mb-4">
                     { authMethods.map((method) => (
                         <Controller
+                            key={ method.value }
                             control={ modulesControl }
                             name='authMethod'
                             render={ ({ field }) => (

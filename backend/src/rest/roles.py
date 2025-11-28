@@ -69,7 +69,7 @@ def update_role(role_id):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_role']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/roles/update/{role_id}'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'label', 'type': str, 'mandatory': True},
         {'id': 'enabled', 'type': bool, 'mandatory': False},
         {'id': 'label_short', 'type': str, 'mandatory': True},
@@ -81,7 +81,7 @@ def update_role(role_id):
             "message": message
         }, 400)
 
-    res = roles.update_role(role_id, request.json['args'])
+    res = roles.update_role(role_id, request.json)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -140,7 +140,7 @@ def create_role():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_role']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/roles/create'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'label', 'type': str, 'mandatory': True},
         {'id': 'label_short', 'type': str, 'mandatory': True},
         {'id': 'default_route', 'type': str, 'mandatory': False}
@@ -151,5 +151,5 @@ def create_role():
             "message": message
         }, 400)
 
-    res = roles.create_role(request.json['args'])
+    res = roles.create_role(request.json)
     return make_response(jsonify(res[0])), res[1]

@@ -25,7 +25,8 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     hint?: string;
     label?: string;
     height?: string;
-    no_margin_bottom?: boolean;
+    labelFusion?: boolean;
+    noMarginBottom?: boolean;
     iconPosition?: "left" | "right";
 }
 
@@ -39,7 +40,8 @@ const Input: React.FC<InputProps> = ({
     type = "text",
     height = "h-12",
     className = "",
-    no_margin_bottom = false,
+    labelFusion = false,
+    noMarginBottom = false,
     ...props
 }) => {
     const [passwordVisible, setPasswordVisible] = React.useState(false);
@@ -48,17 +50,19 @@ const Input: React.FC<InputProps> = ({
 
     const inputType = isPasswordField && passwordVisible ? "text" : type;
 
+    const hasValue = props.value !== undefined && props.value !== null && props.value !== '';
+
     return (
         <div className={ `flex flex-col rounded-md ${ className }` }>
             <div className={ `group group-focus-within:border-(--border-primary) relative flex justify-items-stretch 
-                            ${ error || no_margin_bottom ? '' : 'mb-5' }` }>
+                            ${ error || noMarginBottom ? '' : 'mb-5' }` }>
                 <FloatLabel className='w-full'>
-                    {/*@ts-ignore*/ }
+                    { /*@ts-ignore*/ }
                     <InputText
                         id={ id }
-                        className={ `peer! w-full! px-3! py-2! border-[1.5px]! rounded-md! focus:outline-none! focus:border-(--color-primary)!
+                        className={ `w-full! px-3! py-2! border-[1.5px]! rounded-md! focus:outline-none! focus:border-(--color-primary)!
                             hover:border-(--color-primary)! transition-colors duration-200 text-(--text-primary)!
-                            ${ props.placeholder ? "p-inputwrapper-filled" : "" } group-hover:border-(--color-primary)!
+                            ${ props.placeholder || hasValue ? "p-inputwrapper-filled" : "" } group-hover:border-(--color-primary)!
                             ${ isPasswordField ? 'border-r-0! rounded-r-none!' : '' }
                             ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' } disabled:bg-(--bg-secondary) disabled:cursor-not-allowed! ${ height }`
                         }
@@ -69,7 +73,13 @@ const Input: React.FC<InputProps> = ({
                         { ...props }
                     />
                     { label && (
-                        <label htmlFor={ id }>
+                        <label htmlFor={ id }
+                               className={ `${ labelFusion ? 'group-focus-within:border group-focus-within:border-b-0 ' +
+                                          'border-(--border-secondary) group-focus-within:rounded-md ' +
+                                          'group-focus-within:rounded-b-none group-focus-within:-top-2! ' +
+                                          'group-focus-within:p-0.5 group-focus-within:border-(--border-primary) ' +
+                                          'group-hover:border-(--border-primary)' : '' }
+                                          ${ hasValue && labelFusion ? 'border border-b-0 rounded-md rounded-b-none -top-2! p-0.5 border-(--border-primary)' : '' }` }>
                             { label }
                             { required && <span className="text-(--text-error) ml-1">*</span> }
                         </label>

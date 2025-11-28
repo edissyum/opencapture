@@ -151,7 +151,8 @@
         "metadata_document": "",
         "field_disabled": "",
         "change_label": "",
-        "change_zone_label_message": ""
+        "change_zone_label_message": "",
+        "add_role": ""
     },
     "GLOBAL": {
         "batches": "Lotes",
@@ -320,7 +321,19 @@
         "role_disabled_other": "Roles desactivados con éxito",
         "role_enabled_many": "Roles activados con éxito",
         "role_enabled_one": "Rol activado con éxito",
-        "role_enabled_other": "Roles activados con éxito"
+        "role_enabled_other": "Roles activados con éxito",
+        "list": "",
+        "editing": "",
+        "new_role": "",
+        "details": "",
+        "role_id": "",
+        "role_label": "",
+        "default_route": "",
+        "create_role": "",
+        "update_role": "",
+        "updating": "",
+        "creating": "",
+        "enabled": ""
     },
     "SETTINGS": {
         "abouts_us": "Acerca de",
@@ -363,7 +376,8 @@
         "forms_one": "Formulario",
         "forms_other": "Formularios",
         "export_zip_file_name": "",
-        "export_zip_file_name_hint": ""
+        "export_zip_file_name_hint": "",
+        "edit_role": ""
     },
     "SMTP": {
         "authentication": "Autenticación",

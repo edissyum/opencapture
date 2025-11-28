@@ -141,7 +141,8 @@
         "metadata_document": "",
         "field_disabled": "",
         "change_label": "",
-        "change_zone_label_message": ""
+        "change_zone_label_message": "",
+        "add_role": ""
     },
     "GLOBAL": {
         "batches": "Batches",
@@ -299,7 +300,19 @@
         "role_disabled_one": "Role disabled successfully",
         "role_disabled_other": "Roles disabled successfully",
         "role_enabled_one": "Role enabled successfully",
-        "role_enabled_other": "Roles enabled successfully"
+        "role_enabled_other": "Roles enabled successfully",
+        "list": "",
+        "editing": "",
+        "new_role": "",
+        "details": "",
+        "role_id": "",
+        "role_label": "",
+        "default_route": "",
+        "create_role": "",
+        "update_role": "",
+        "updating": "",
+        "creating": "",
+        "enabled": ""
     },
     "SETTINGS": {
         "abouts_us": "About",
@@ -341,7 +354,8 @@
         "forms_one": "Form",
         "forms_other": "Forms",
         "export_zip_file_name": "",
-        "export_zip_file_name_hint": ""
+        "export_zip_file_name_hint": "",
+        "edit_role": ""
     },
     "SMTP": {
         "authentication": "Authentication",

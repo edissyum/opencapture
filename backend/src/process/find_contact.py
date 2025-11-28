@@ -41,7 +41,8 @@ def parse_output(output: str):
                 i += 1
                 key_dict = ""
                 while i < L and output[i] != ">":
-                    key_dict += output[i]; i += 1
+                    key_dict += output[i]
+                    i += 1
         elif output[i] == ">":
             i += 1
             value_dict = ""

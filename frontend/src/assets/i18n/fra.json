@@ -151,7 +151,8 @@
         "metadata_document": "Métadonnées du document",
         "field_disabled": "Champ désactivé",
         "change_label": "Modifier le libellé",
-        "change_zone_label_message": "Modifier le libellé de la zone selectionnée. "
+        "change_zone_label_message": "Modifier le libellé de la zone selectionnée. ",
+        "add_role": "Ajouter un rôle"
     },
     "GLOBAL": {
         "batches": "Lots",
@@ -320,7 +321,19 @@
         "role_disabled_other": "Rôles désactivés avec succès",
         "role_enabled_many": "Rôles activés avec succès",
         "role_enabled_one": "Rôle activé avec succès",
-        "role_enabled_other": "Rôles activés avec succès"
+        "role_enabled_other": "Rôles activés avec succès",
+        "list": "Liste des roles",
+        "editing": "Édition du rôle",
+        "new_role": "Nouveau rôle",
+        "details": "Détails",
+        "role_id": "Identifiant technique du rôle",
+        "role_label": "Libellé du rôle",
+        "default_route": "Route par défaut lors de la connexion",
+        "create_role": "Créer le rôle",
+        "update_role": "Mettre à jour le rôle",
+        "updating": "Mise à jour en cours...",
+        "creating": "Création en cours...",
+        "enabled": "Activer le rôle"
     },
     "SETTINGS": {
         "abouts_us": "À propos",
@@ -363,7 +376,8 @@
         "forms_one": "Formulaire",
         "forms_other": "Formulaires",
         "export_zip_file_name": "Chemin de compression des fichiers exportés",
-        "export_zip_file_name_hint": "Chemin absolu incluant un masque de nommage avec l'extension 'zip' (vide pour desactiver)"
+        "export_zip_file_name_hint": "Chemin absolu incluant un masque de nommage avec l'extension 'zip' (vide pour desactiver)",
+        "edit_role": "Modifier le rôle"
     },
     "SMTP": {
         "authentication": "Authentification",
@@ -548,6 +562,6 @@
         "select_single_document_customer": "Le changement de compte client n'est possible que pour un seul document à la fois",
         "search_form": "Rechercher un formulaire",
         "erase_filters": "Effacer les filtres",
-        "facturation": ""
+        "facturation": "Traitement"
     }
 }

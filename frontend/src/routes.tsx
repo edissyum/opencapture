@@ -35,17 +35,18 @@ import { SettingsGeneralIndex } from "./pages/settings/general";
 import { SettingsVerifierIndex } from "./pages/settings/verifier";
 import { SettingsSplitterIndex } from "./pages/settings/splitter";
 import { SettingsGeneralSMTP } from "./pages/settings/general/smtp";
-import { SettingsGeneralRoles } from "./pages/settings/general/roles";
 import { SettingsGeneralUsers } from "./pages/settings/general/users";
+import { SettingsGeneralRoles } from "./pages/settings/general/roles/list";
 import { SettingsGeneralAdvanced } from "./pages/settings/general/advanced";
-import { SettingsGeneralMailcollect } from "./pages/settings/general/mailcollect";
-import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
 import { SettingsVerifierFormsList } from "./pages/settings/verifier/forms/list";
+import { SettingsSplitterFormsList } from "./pages/settings/splitter/forms/list";
+import { SettingsGeneralMailcollect } from "./pages/settings/general/mailcollect";
+import { SettingsGeneralRoleEditor } from "./pages/settings/general/roles/editor";
 import { SettingsVerifierFormsEditor } from "./pages/settings/verifier/forms/editor";
 import { SettingsVerifierFormsCreate } from "./pages/settings/verifier/forms/create";
-import { SettingsSplitterFormsList } from "./pages/settings/splitter/forms/list";
 import { SettingsSplitterFormsCreate } from "./pages/settings/splitter/forms/create";
 import { SettingsSplitterFormsEditor } from "./pages/settings/splitter/forms/editor";
+import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
 
 export const router = createBrowserRouter(
     [
@@ -137,16 +138,42 @@ export const router = createBrowserRouter(
                         {
                             path: "users",
                             loader: protectedLoader,
-                            element: <SettingsGeneralUsers/>,
-                            errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'SETTINGS.users' }
+                            handle: { breadcrumb: 'SETTINGS.users' },
+                            children: [
+                                {
+                                    index: true,
+                                    loader: protectedLoader,
+                                    element: <SettingsGeneralUsers/>,
+                                    errorElement: <LoginRequiredError/>
+                                }
+                            ]
                         },
                         {
                             path: "roles",
                             loader: protectedLoader,
-                            element: <SettingsGeneralRoles/>,
-                            errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'SETTINGS.roles' }
+                            handle: { breadcrumb: 'SETTINGS.roles' },
+                            children: [
+                                {
+                                    index: true,
+                                    loader: protectedLoader,
+                                    element: <SettingsGeneralRoles/>,
+                                    errorElement: <LoginRequiredError/>
+                                },
+                                {
+                                    path:'edit/:roleId',
+                                    loader: protectedLoader,
+                                    element: <SettingsGeneralRoleEditor/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.edit_role' }
+                                },
+                                {
+                                    path:'create',
+                                    loader: protectedLoader,
+                                    element: <SettingsGeneralRoleEditor/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'FORMS.add_role' }
+                                }
+                            ]
                         }
                     ]
                 },

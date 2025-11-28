@@ -58,7 +58,7 @@ export function showConfirmDialogWithInput({
                 </div>
                 <Input
                     autoFocus
-                    no_margin_bottom={true}
+                    noMarginBottom={true}
                     value={val}
                     onChange={(e) => setVal(e.target.value)}
                     placeholder={placeholder}

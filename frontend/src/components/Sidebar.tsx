@@ -17,6 +17,7 @@
 import { t } from "i18next";
 import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ContextMenu } from "primereact/contextmenu";
 import {
     Activity,
     Briefcase,
@@ -33,8 +34,8 @@ import {
 } from "lucide-react";
 
 import { LoginImage } from "./LoginImage";
-import { ContextMenu } from "primereact/contextmenu";
-import { useUser } from "../services/hooks/useUser.tsx";
+
+import { useUser } from "../services/hooks/useUser";
 
 export default function Sidebar() {
     const { user, loadingUser } = useUser();

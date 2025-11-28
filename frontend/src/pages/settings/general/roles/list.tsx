@@ -16,20 +16,22 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { CirclePause, CircleQuestionMark, FileText, Trash2, UserRoundPlus } from "lucide-react";
 
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
-import { showConfirmDialog } from "../../../services/hooks/ConfirmDialog";
+import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { showConfirmDialog } from "../../../../services/hooks/ConfirmDialog";
 
-import Input from "../../../components/Input";
-import { Button } from "../../../components/Button";
-import { Table } from "../../../components/list/Table";
-import { useUser } from "../../../services/hooks/useUser";
-import { showToast } from "../../../components/ToastProvider";
+import Input from "../../../../components/Input";
+import { Button } from "../../../../components/Button";
+import { Table } from "../../../../components/list/Table";
+import { useUser } from "../../../../services/hooks/useUser";
+import { showToast } from "../../../../components/ToastProvider";
 
 export function SettingsGeneralRoles() {
-    const { get, put, del } = axiosApiCall();
+    const navigate = useNavigate();
     const { user, loadingUser } = useUser();
+    const { get, put, del } = axiosApiCall();
 
     const [roles, setRoles] = useState([]);
     const [totalRoles, setTotalRoles] = useState(0);
@@ -74,7 +76,7 @@ export function SettingsGeneralRoles() {
             command: () => handleDisable()
         },
         {
-            label: <span className='critical'>t('ROLES.delete_roles')</span>,
+            label: <span className='critical'>{ t('ROLES.delete_roles') }</span>,
             icon: <Trash2 className='mr-1' size={ 16 }/>,
             command: () => handleDelete()
         }
@@ -237,19 +239,20 @@ export function SettingsGeneralRoles() {
                     </span>
                 </span>
                 <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height={ 'h-10' }
-                       value={ searchTerm } placeholder={ t('ROLES.search') } no_margin_bottom={ true }
+                       value={ searchTerm } placeholder={ t('ROLES.search') } noMarginBottom={ true }
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Button
                         size={ 'sm' }
                         variant={ "no_bg_border" }
-                        className='p-2 px-3 border'>
+                        className='p-2 px-3 border'
+                        onClick={ () => navigate('/settings/general/roles/create') }>
                         <UserRoundPlus size={ 16 } className="mr-2"/> { t('ROLES.add_role') }
                     </Button>
                 </span>
             </div>
             <Table
-                baseLink="/settings/general/roles/"
+                baseLink="/settings/general/roles/edit/"
                 data={ roles }
                 height="h-[40vh]"
                 actions={ actions }

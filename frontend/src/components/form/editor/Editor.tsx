@@ -15,6 +15,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
+import { Edit } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { TabPanel, TabView } from "primereact/tabview";
@@ -25,8 +26,7 @@ import { DndContext, type DragEndEvent, DragOverlay, type DragStartEvent, pointe
 
 import { findLineContainingField, findZoneContainingLine, getDropContext } from "./helpers";
 
-import { SettingsVerifierFormsDetails } from "../../../pages/settings/verifier/forms/details";
-import { SettingsSplitterFormsDetails } from "../../../pages/settings/splitter/forms/details";
+import { Button } from "../../Button";
 import { Loader } from "../../loader/Loader";
 import { FieldPalette } from "./FieldPalette";
 import { DroppableZone } from "./DroppableZone";
@@ -36,15 +36,16 @@ import { showToast } from "../../ToastProvider";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 import { useFormFields } from "../../../services/hooks/useFormFields";
 import { useCustomFields } from "../../../services/hooks/useCustomFields";
-import { getAvailableFields } from "../../../pages/settings/verifier/forms/availableFieldsSchema.tsx";
-import { Edit } from "lucide-react";
-import { showConfirmDialogWithInput } from "../../../services/hooks/ConfirmDialogWithInput.tsx";
-import { Button } from "../../Button.tsx";
+import { showConfirmDialogWithInput } from "../../../services/hooks/ConfirmDialogWithInput";
+
+import { SettingsVerifierFormsDetails } from "../../../pages/settings/verifier/forms/details";
+import { SettingsSplitterFormsDetails } from "../../../pages/settings/splitter/forms/details";
+import { getAvailableFields } from "../../../pages/settings/verifier/forms/availableFieldsSchema";
 
 export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const { get, post, put } = axiosApiCall();
     const { formId } = useParams<{ formId: any }>();
-
+    console.log(formId);
     if (!formId) return null;
 
     const [mainTabIndex, setMainTabIndex] = useState(0);

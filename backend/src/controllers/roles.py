@@ -113,7 +113,7 @@ def create_role(data):
         'label': data['label'],
         'label_short': data['label_short'],
         'default_route': data['default_route'] if 'default_route' in data else '',
-        'assign_roles': json.dumps(data['assign_roles'])
+        'assign_roles': json.dumps(data['assign_roles']) if 'assign_roles' in data else '[]'
     }
 
     res, error = roles.create_role({'columns': _columns})
