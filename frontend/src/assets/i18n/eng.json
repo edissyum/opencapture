@@ -312,7 +312,9 @@
         "update_role": "",
         "updating": "",
         "creating": "",
-        "enabled": ""
+        "enabled": "",
+        "create_success": "",
+        "update_success": ""
     },
     "SETTINGS": {
         "abouts_us": "About",

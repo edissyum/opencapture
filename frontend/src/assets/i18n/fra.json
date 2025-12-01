@@ -333,7 +333,9 @@
         "update_role": "Mettre à jour le rôle",
         "updating": "Mise à jour en cours...",
         "creating": "Création en cours...",
-        "enabled": "Activer le rôle"
+        "enabled": "Activer le rôle",
+        "create_success": "Rôle créé avec succès",
+        "update_success": "Rôle mis à jour avec succès"
     },
     "SETTINGS": {
         "abouts_us": "À propos",
