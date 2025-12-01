@@ -21,10 +21,10 @@ import os.path
 import requests
 import subprocess
 from flask_babel import gettext
-from flask import request, g as current_context
 from ..models import config, history
+from flask import request, g as current_context
 from ..main import create_classes_from_custom_id
-from ..functions import retrieve_custom_from_url, get_custom_path
+from ..functions import retrieve_custom_from_url, get_custom_path, retrieve_custom_list
 
 
 def read_config():
@@ -433,3 +433,7 @@ def add_favorites(args):
 def remove_favorites(favorite_id):
     config.remove_favorites(favorite_id)
     return '', 200
+
+def get_customs_list():
+    customs = retrieve_custom_list()
+    return {'customs': customs}, 200

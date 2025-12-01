@@ -21,9 +21,7 @@ import { Tooltip } from "react-tooltip";
 import { RouterProvider } from "react-router-dom";
 import { StrictMode, useEffect, useState } from "react";
 
-import { en } from "zod/locales"
-import { fr } from "zod/locales";
-import { es } from "zod/locales";
+import { en, es, fr } from "zod/locales"
 
 import { ConfirmDialog } from "primereact/confirmdialog";
 
@@ -54,10 +52,20 @@ export function App() {
         async function bootstrap() {
             applyTheme();
 
-            let _custom = getCustomFromUrl();
             let currentLang = localStorage.getItem("selectedLang");
-            const api = axios.create({ baseURL: `${ BACKEND_URL }/${ _custom }/ws/` });
 
+            let _custom = getCustomFromUrl();
+            if (!_custom) {
+                const api = axios.create({ baseURL: `${ BACKEND_URL }/ws/` });
+                const res = await api.get("/config/customsList");
+                const customs = res.data.customs as string[];
+                if (customs.length === 1) {
+                    window.location.href = `/${ customs[0] }/${ window.location.pathname.substring(1) }`;
+                    _custom = customs[0];
+                }
+            }
+
+            const api = axios.create({ baseURL: `${ BACKEND_URL }/${ _custom }/ws/` });
             const backendLang = await fetchCurrentLang(api);
             localStorage.setItem("backendLang", backendLang || "fra");
 
@@ -106,7 +114,7 @@ export function App() {
     return (
         <StrictMode>
             <CustomProvider custom={ custom }>
-                <ConfirmDialog />
+                <ConfirmDialog/>
                 <Tooltip id="tooltip" className="z-50"/>
                 <RouterProvider key={ appKey } router={ router }/>
             </CustomProvider>

@@ -247,6 +247,16 @@ def retrieve_custom_path(custom_id):
                 path = custom_param['path']
     return path
 
+def retrieve_custom_list():
+    custom_directory = str(Path(__file__).parents[1]) + '/custom/'
+    custom_ini_file = str(Path(__file__).parents[1]) + '/custom/custom.ini'
+    custom_list = []
+    if os.path.isdir(custom_directory) and os.path.isfile(custom_ini_file):
+        customs_config = _Config(custom_ini_file)
+        for custom_name, custom_param in customs_config.cfg.items():
+            custom_list.append(custom_name)
+    return custom_list
+
 
 def get_custom_array(custom_id):
     custom_array = {}

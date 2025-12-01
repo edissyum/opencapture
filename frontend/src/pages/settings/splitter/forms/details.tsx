@@ -31,7 +31,7 @@ export function SettingsSplitterFormsDetails({
     isSubmitting,
     formSettings,
     setFormSettings,
-    submitLabelLoading,
+    submitLabelLoading
 }: {
     formSettings: any;
     submitLabel: string;

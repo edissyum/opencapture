@@ -25,9 +25,9 @@ bp = Blueprint('config', __name__, url_prefix='/ws/')
 
 @bp.route('config/getAllowWFScripting', methods=['GET'])
 def get_allow_wf_scripting():
-    # if not privileges.has_privileges(request.environ['user_id'], ['access_config']):
-    #     return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/config/getAllowWFScripting'}), 403
-    #
+    if not privileges.has_privileges(request.environ['user_id'], ['access_config']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/config/getAllowWFScripting'}), 403
+
     configurations = config.read_config()
     if not configurations or 'GLOBAL' not in configurations[0] or 'allowwfscripting' not in configurations[0]['GLOBAL']:
         return make_response(jsonify({'errors': gettext('CONFIG_NOT_FOUND')}), 404)
@@ -257,6 +257,12 @@ def get_git_info():
 @bp.route('config/customExists', methods=['GET'])
 def custom_exists():
     return make_response(''), 200
+
+@bp.route('config/customsList', methods=['GET'])
+def customs_list():
+    res = config.get_customs_list()
+    return res
+
 
 @bp.route('config/favorites', methods=['GET'])
 @auth.token_required
