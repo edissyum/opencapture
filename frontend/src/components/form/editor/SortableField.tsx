@@ -29,7 +29,7 @@ import { OverlayPanel } from "primereact/overlaypanel";
 import Input from "../../Input";
 import { Button } from "../../Button";
 
-import { getFormatLabels, getColorOptions } from "./schemas";
+import { getColorOptions, getFormatLabels } from "./schemas";
 
 type Field = {
     id: string;
@@ -111,7 +111,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module }: {
             </div>
 
             <OverlayPanel ref={ op } dismissable
-                          className="p-3 w-1/2 shadow-none! border-2! border-(--border-secondary)! min-h-[20%] max-h-[60%]">
+                          className="bg-(--bg-primary)! p-3 w-1/2 shadow-none! border-2! border-(--border-secondary)! min-h-[20%] max-h-[60%]">
                 <div className="flex flex-col gap-3 space-y-3">
                     <Input id={ 'label-' + editableField.id }
                            className="w-full" noMarginBottom={ true }
@@ -204,7 +204,8 @@ export function SortableField({ field, onUpdateField, onDeleteField, module }: {
 
                         { module === 'splitter' && (
                             <div className="flex items-center gap-2">
-                                <InputSwitch inputId={ 'disabled-' + editableField.id } checked={ !!editableField.disabled }
+                                <InputSwitch inputId={ 'disabled-' + editableField.id }
+                                             checked={ !!editableField.disabled }
                                              onChange={ (e) => setEditableField((prev) => ({
                                                  ...prev,
                                                  disabled: e.value
@@ -215,7 +216,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module }: {
                                     { t('FORMS.field_disabled') }
                                 </label>
                             </div>
-                        )}
+                        ) }
                     </div>
 
                     <div className="flex gap-2">

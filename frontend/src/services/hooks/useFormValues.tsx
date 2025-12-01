@@ -69,7 +69,7 @@ export function useFormValues(
         [onSubmit]
     );
 
-    // Gestion de la suppression automatique des erreurs à la saisie
+    // Management of automatic deletion of input errors
     const handleChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
             const { name, value, type } = e.target;

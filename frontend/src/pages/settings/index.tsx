@@ -80,13 +80,14 @@ export function SettingsIndex() {
                 { favoriteOptions &&
                     favoriteOptions.map((option) => (
                         <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
-                                      description={ option['description'] } to={ option['href'] }></SettingsCard>
+                                      description={ option['description'] } to={ option['href'] }
+                                      module={ option['module'] ?? false }/>
                     ))
                 }
             </div>
 
             <h1 className="text-2xl font-bold flex items-center gap-1">
-                <Settings />
+                <Settings/>
                 { t('SETTINGS.title') }
             </h1>
             <p className="text-(--text-secondary)">
@@ -96,7 +97,7 @@ export function SettingsIndex() {
                 {
                     options.map((option) => (
                         <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
-                                      description={ option['description'] } to={ option['href'] }></SettingsCard>
+                                      description={ option['description'] } to={ option['href'] }/>
                     ))
                 }
             </div>

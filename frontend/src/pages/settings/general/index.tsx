@@ -84,7 +84,7 @@ export function SettingsGeneralIndex() {
             {
                 options.map((option) => (
                     <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
-                                  description={ option['description'] } to={ option['href'] }></SettingsCard>
+                                  description={ option['description'] } to={ option['href'] }/>
                 ))
             }
         </div>

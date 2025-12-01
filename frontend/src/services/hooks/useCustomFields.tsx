@@ -48,8 +48,8 @@ export function useCustomFields(module: string): UseCustomFieldsResult {
                     showErrorToast: true,
                 });
                 if (data) setCustomFields(data.customFields);
-            } catch {
-                console.log("Failed to fetch custom fields");
+            } catch (error) {
+                console.error("Failed to fetch custom fields : ", error);
             }
         };
 

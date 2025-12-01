@@ -79,7 +79,8 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
                 </div>
             ) }
             <div className={ `group w-full p-2 ${ bg } border-2 rounded-md hover:bg-[#E1EFE8] 
-                              hover:border-(--color-primary)/30 transition-colors duration-200` }>
+                              dark:hover:bg-(--bg-secondary) hover:border-(--color-primary)/30 
+                              transition-colors duration-200` }>
                 <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }/>
                 <span
                     onClick={ (e) => {
@@ -88,7 +89,8 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
                     className='cursor-pointer group-hover:opacity-100 opacity-0 transition-opacity -translate-x-1/2
                                duration-200 text-(--text-secondary) absolute z-20 -top-5.5 p-0.5 left-1/2 border-2
                                border-b-0 border-(--color-primary)/30 rounded-md rounded-b-none bg-[#E1EFE8]
-                               before:content-[""] before:absolute before:bottom-0 before:translate-y-px'>
+                               dark:bg-(--bg-secondary) before:content-[""] before:absolute before:bottom-0
+                               before:translate-y-px'>
                   <Settings size={ 18 }/>
                 </span>
                 <DroppableLine line={ line } onUpdateField={ onUpdateField } onDeleteField={ onDeleteField }

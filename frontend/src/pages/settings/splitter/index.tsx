@@ -23,7 +23,8 @@ export const getSettingsSplitterOptions = () => [
         name: t('SETTINGS.forms'),
         description: t('SETTINGS.forms_description'),
         icon: <LayoutTemplate/>,
-        href: '/settings/splitter/forms'
+        href: '/settings/splitter/forms',
+        module: 'splitter'
     }
 ];
 
@@ -35,7 +36,7 @@ export function SettingsSplitterIndex() {
             {
                 options.map((option) => (
                     <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
-                                  description={ option['description'] } to={ option['href'] }></SettingsCard>
+                                  description={ option['description'] } to={ option['href'] }/>
                 ))
             }
         </div>

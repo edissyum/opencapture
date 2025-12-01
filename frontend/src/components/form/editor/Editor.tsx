@@ -45,7 +45,7 @@ import { getAvailableFields } from "../../../pages/settings/verifier/forms/avail
 export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const { get, post, put } = axiosApiCall();
     const { formId } = useParams<{ formId: any }>();
-    console.log(formId);
+
     if (!formId) return null;
 
     const [mainTabIndex, setMainTabIndex] = useState(0);
@@ -170,22 +170,6 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
         }
     };
 
-    function logZones(zones: any[]) {
-        console.groupCollapsed("%c🧩 Zones Debug", "color:#4caf50; font-weight:bold;");
-        zones.forEach((zone: any) => {
-            console.group(`📦 ${ zone.name }`);
-            zone.lines.forEach((line: any) => {
-                console.group(`🧱 ${ line.id }`);
-                line.fields.forEach((f: any) =>
-                    console.log(`🔹 ${ f.label } (${ f.type }) (required: ${ f.required })`)
-                );
-                console.groupEnd();
-            });
-            console.groupEnd();
-        });
-        console.groupEnd();
-    }
-
     const handleDragEnd = (event: DragEndEvent) => {
         setActiveDragItem(null);
         const { active, over } = event;
@@ -197,7 +181,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
         const zonesCopy = structuredClone(zones);
         const { zone: targetZone, line: targetLine, field: targetField } = getDropContext(zonesCopy, over.id as string);
 
-        // 🔵 Move line
+        // Move line
         if (activeData.type === "line") {
             const sourceZone = findZoneContainingLine(zonesCopy, active.id as string);
             if (!sourceZone || !targetZone) return;
@@ -212,11 +196,10 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
             else targetZone.lines.push(movedLine);
 
             setZones([...zonesCopy]);
-            logZones(zonesCopy);
             return;
         }
 
-        // 🟢 Add from palette
+        // Add from palette
         if (activeData.from === "palette") {
             const newField = {
                 id: activeData.id,
@@ -250,11 +233,10 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
             setUsedFields((prev) => Array.from(new Set([...prev, activeData.id])));
 
             setZones([...zonesCopy]);
-            logZones(zonesCopy);
             return;
         }
 
-        // 🟡 Déplacement ou réordonnancement d’un champ existant
+        // Moving or reordering an existing field
         if (activeData.type === "field" || activeData.from === "form") {
             const sourceLine = findLineContainingField(zonesCopy, active.id as string);
             if (!sourceLine) return;
@@ -262,7 +244,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
             const movedField = sourceLine.fields.find((f: any) => f.id === active.id);
             if (!movedField) return;
 
-            // 🔸 Réordonnancement dans la même ligne
+            // Reordering within the same row
             if (targetLine && targetLine.id === sourceLine.id) {
                 const oldIndex = sourceLine.fields.findIndex((f: any) => f.id === active.id);
                 const newIndex = targetField
@@ -271,11 +253,10 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
 
                 sourceLine.fields = arrayMove(sourceLine.fields, oldIndex, newIndex);
                 setZones([...zonesCopy]);
-                logZones(zonesCopy);
                 return;
             }
 
-            // 🔹 Déplacement vers une autre ligne
+            // Moving to another line
             if (targetLine && targetLine.id !== sourceLine.id) {
                 if (targetLine.fields.length >= 5) {
                     const targetZoneForNewLine = findZoneContainingLine(zonesCopy, targetLine.id);
@@ -293,7 +274,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                     targetLine.fields.splice(insertIndex, 0, movedField);
                 }
 
-                // ✅ Supprime la ligne si elle est vide après déplacement
+                // Delete the row if it is empty after moving
                 sourceLine.fields = sourceLine.fields.filter((f: any) => f.id !== active.id);
                 const sourceZone = findZoneContainingLine(zonesCopy, sourceLine.id);
                 if (sourceZone && sourceLine.fields.length === 0) {
@@ -301,11 +282,10 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                 }
 
                 setZones([...zonesCopy]);
-                logZones(zonesCopy);
                 return;
             }
 
-            // 🔻 Drop sur une zone → nouvelle ligne
+            // Drop onto an area → new line
             if (targetZone && !targetLine) {
                 sourceLine.fields = sourceLine.fields.filter((f: any) => f.id !== active.id);
 
@@ -315,14 +295,13 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                     fields: [movedField],
                 });
 
-                // ✅ Supprime la ligne si elle devient vide
+                // Delete line if empty after move
                 const sourceZone = findZoneContainingLine(zonesCopy, sourceLine.id);
                 if (sourceZone && sourceLine.fields.length === 0) {
                     sourceZone.lines = sourceZone.lines.filter((l: any) => l.id !== sourceLine.id);
                 }
 
                 setZones([...zonesCopy]);
-                logZones(zonesCopy);
             }
         }
     };

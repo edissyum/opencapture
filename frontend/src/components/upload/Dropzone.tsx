@@ -61,13 +61,10 @@ export default function UploadDropzone({
         if (fileRejections.length > 0) {
             if (fileRejections[0].errors.some((e: any) => e.code === "too-many-files")) {
                 showToast(t("UPLOAD.too_many_files", { maxFiles: maxFiles }), "error");
-                // return;
             } else if (fileRejections[0].errors.some((e: any) => e.code === "file-invalid-type")) {
                 showToast(t("UPLOAD.invalid_file_type", { types: Object.values(accept).flat().join(", ") }), "error");
-                // return;
             } else if (fileRejections[0].errors.some((e: any) => e.code === "file-too-large")) {
                 showToast(t("UPLOAD.file_too_large", { maxSize: maxSize / (1024 * 1024) }), "error");
-                // return;
             } else {
                 showToast(t("UPLOAD.file_rejected"), "error");
             }

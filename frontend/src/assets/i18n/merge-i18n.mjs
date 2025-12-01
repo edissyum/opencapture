@@ -15,8 +15,8 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import fs from 'fs-extra';
 import path from 'path';
+import fs from 'fs-extra';
 
 const localesDir = path.resolve('./src/assets/i18n/');
 const languages = ['fra', 'eng', 'spa'];
@@ -63,8 +63,6 @@ languages.forEach((lng) => {
         }
     }
 
-
     fs.writeJsonSync(filePath, merged, { spaces: 4 });
     console.log(`✅ Merged translations for ${lng}`);
-
 });

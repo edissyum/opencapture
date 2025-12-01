@@ -29,3 +29,6 @@
     @apply bg-(--color-primary);
 }
 
+.p-inputswitch .p-inputswitch-slider {
+    @apply bg-(--bg-secondary);
+}

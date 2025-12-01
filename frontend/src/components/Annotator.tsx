@@ -215,7 +215,7 @@ export function Annotator({
                 prev.map((r) => {
                     if (r.id !== resizeTarget.id) return r;
 
-                    // on calcule une nouvelle boîte brute
+                    // Calculate a new raw box
                     let newRegion = { x: r.x, y: r.y, width: r.width, height: r.height };
 
                     switch (resizeTarget.corner) {
@@ -241,7 +241,7 @@ export function Annotator({
                             break;
                     }
 
-                    // 🧲 clamp dans l'image
+                    // clamp in the image
                     const clamped = clampRegionToImage(newRegion);
 
                     return {
@@ -316,11 +316,11 @@ export function Annotator({
             h = Math.abs(h);
         }
 
-        // clamp à 0
+        // Clamp to 0,0
         if (x < 0) x = 0;
         if (y < 0) y = 0;
 
-        // clamp à la largeur/hauteur de l'image affichée
+        // clamp to the width/height of the displayed image
         if (x + w > imgSize.w) {
             w = imgSize.w - x;
         }
@@ -328,7 +328,7 @@ export function Annotator({
             h = imgSize.h - y;
         }
 
-        // sécurité si l'image ne connaît pas encore sa taille
+        // safety if the image size is not yet known
         if (!imgSize.w || !imgSize.h) {
             return { x, y, width: w, height: h };
         }

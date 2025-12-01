@@ -24,7 +24,8 @@ export const getSettingsVerifierOptions = () => [
         name: t('SETTINGS.forms'),
         description: t('SETTINGS.forms_description'),
         icon: <LayoutTemplate/>,
-        href: '/settings/verifier/forms'
+        href: '/settings/verifier/forms',
+        module: 'verifier'
     }
 ];
 
@@ -36,7 +37,7 @@ export function SettingsVerifierIndex() {
             {
                 options.map((option) => (
                     <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
-                                  description={ option['description'] } to={ option['href'] }></SettingsCard>
+                                  description={ option['description'] } to={ option['href'] }/>
                 ))
             }
         </div>
