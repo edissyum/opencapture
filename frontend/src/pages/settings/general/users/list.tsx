@@ -18,16 +18,19 @@ import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { CirclePause, CircleQuestionMark, FileText, Trash2, UserRoundPlus } from "lucide-react";
 
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
-import { showConfirmDialog } from "../../../services/hooks/ConfirmDialog";
+import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { showConfirmDialog } from "../../../../services/hooks/ConfirmDialog";
 
-import Input from "../../../components/Input";
-import { Button } from "../../../components/Button";
-import { Table } from "../../../components/list/Table";
-import { showToast } from "../../../components/ToastProvider";
+import Input from "../../../../components/Input";
+import { Button } from "../../../../components/Button";
+import { Table } from "../../../../components/list/Table";
+import { showToast } from "../../../../components/ToastProvider";
+import { useNavigate } from "react-router-dom";
 
 export function SettingsGeneralUsers() {
     const { get, put, del } = axiosApiCall();
+
+    const navigate = useNavigate();
 
     const [users, setUsers] = useState([]);
     const [totalUsers, setTotalUsers] = useState(0);
@@ -249,13 +252,14 @@ export function SettingsGeneralUsers() {
                     <Button
                         size={ 'sm' }
                         variant={ "no_bg_border" }
-                        className='p-2 px-3 border-2 border-(--border-secondary)'>
+                        className='p-2 px-3 border'
+                        onClick={ () => navigate('/settings/general/users/create') }>
                         <UserRoundPlus size={ 16 } className="mr-2"/> { t('USERS.add_user') }
                     </Button>
                 </span>
             </div>
             <Table
-                baseLink="/settings/general/users/"
+                baseLink="/settings/general/users/edit/"
                 data={ users }
                 actions={ actions }
                 pagination={ true }

@@ -96,7 +96,7 @@ export function SettingsGeneralRoleEditor() {
                 { t('ROLES.list') }
             </div>
             <h1 className="text-xl font-bold mb-4">
-                { roleId ? t('ROLES.editing', { role: roleId }) : t('ROLES.new_role') }
+                { roleId ? t('ROLES.editing') : t('ROLES.new_role') }
             </h1>
             <h1 className="text-lg font-semibold mb-4">
                 { t('ROLES.details') }

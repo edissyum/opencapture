@@ -256,7 +256,7 @@ export function SettingsGeneralSMTP() {
                                     render={ ({ field }) => (
                                         <RadioBox
                                             label={ option === 'none' ? t('SMTP.secure_none') : option.toUpperCase() }
-                                            value={ field.value }
+                                            value={ field.value ?? '' }
                                             checked={ selectedEncryption === option }
                                             onChange={ () => {
                                                 field.onChange(option);

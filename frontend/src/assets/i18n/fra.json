@@ -152,7 +152,8 @@
         "field_disabled": "Champ désactivé",
         "change_label": "Modifier le libellé",
         "change_zone_label_message": "Modifier le libellé de la zone selectionnée. ",
-        "add_role": "Ajouter un rôle"
+        "add_role": "Ajouter un rôle",
+        "add_user": ""
     },
     "GLOBAL": {
         "batches": "Lots",
@@ -379,7 +380,8 @@
         "forms_other": "Formulaires",
         "export_zip_file_name": "Chemin de compression des fichiers exportés",
         "export_zip_file_name_hint": "Chemin absolu incluant un masque de nommage avec l'extension 'zip' (vide pour desactiver)",
-        "edit_role": "Modifier le rôle"
+        "edit_role": "Modifier le rôle",
+        "edit_user": ""
     },
     "SMTP": {
         "authentication": "Authentification",
@@ -447,10 +449,6 @@
         "upload_success_one": "Fichier téléversé avec succès",
         "upload_success_other": "Fichiers téléversés avec succès"
     },
-    "USER": {
-        "password": "Mot de passe",
-        "username": "Nom d'utilisateur"
-    },
     "USERS": {
         "delete_users": "Supprimer",
         "firstname": "Prénom",
@@ -462,6 +460,7 @@
         "selected_one": "utilisateur sélectionné",
         "selected_other": "utilisateurs sélectionnés",
         "status": "Statut",
+        "password": "Mot de passe",
         "username": "Nom d'utilisateur",
         "users_many": "Utilisateurs",
         "users_one": "Utilisateur",
@@ -497,7 +496,20 @@
         "user_disabled_other": "Utilisateurs désactivés avec succès",
         "user_enabled_many": "Utilisateurs activés avec succès",
         "user_enabled_one": "Utilisateur activé avec succès",
-        "user_enabled_other": "Utilisateurs activés avec succès"
+        "user_enabled_other": "Utilisateurs activés avec succès",
+        "creating": "Création en cours...",
+        "editing": "Édition de l'utilisateur",
+        "list": "Liste des utilisateurs",
+        "new_user": "Nouvel utilisateur",
+        "updating": "Mise à jour en cours...",
+        "create_user": "Créer l'utilisateur",
+        "update_user": "Mettre à jour l'utilisateur",
+        "email": "Addresse email",
+        "password_check": "Verification du mot de passe",
+        "security": "Sécurité",
+        "mode": "Mode d'authentification",
+        "standard": "Standard",
+        "webservice": "Webservice"
     },
     "VERIFIER": {
         "creation_date": "Date de création",

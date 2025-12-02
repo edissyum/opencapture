@@ -152,7 +152,8 @@
         "field_disabled": "",
         "change_label": "",
         "change_zone_label_message": "",
-        "add_role": ""
+        "add_role": "",
+        "add_user": ""
     },
     "GLOBAL": {
         "batches": "Lotes",
@@ -379,7 +380,8 @@
         "forms_other": "Formularios",
         "export_zip_file_name": "",
         "export_zip_file_name_hint": "",
-        "edit_role": ""
+        "edit_role": "",
+        "edit_user": ""
     },
     "SMTP": {
         "authentication": "Autenticación",
@@ -447,10 +449,6 @@
         "upload_success_one": "Archivo cargado con éxito",
         "upload_success_other": "Archivos cargados con éxito"
     },
-    "USER": {
-        "password": "Contraseña",
-        "username": "Nombre de usuario"
-    },
     "USERS": {
         "delete_users": "Eliminar",
         "firstname": "Nombre",
@@ -497,7 +495,21 @@
         "user_disabled_other": "Usuarios desactivados con éxito",
         "user_enabled_many": "Usuarios activados con éxito",
         "user_enabled_one": "Usuario activado con éxito",
-        "user_enabled_other": "Usuarios activados con éxito"
+        "user_enabled_other": "Usuarios activados con éxito",
+        "creating": "",
+        "editing": "",
+        "list": "",
+        "new_user": "",
+        "password": "",
+        "updating": "",
+        "create_user": "",
+        "update_user": "",
+        "email": "",
+        "password_check": "",
+        "security": "",
+        "mode": "",
+        "standard": "",
+        "webservice": ""
     },
     "VERIFIER": {
         "creation_date": "Fecha de creación",

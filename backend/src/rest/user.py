@@ -200,7 +200,7 @@ def update_user(user_id):
         if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_user']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/update/{user_id}'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'role', 'type': int, 'mandatory': False},
         {'id': 'mode', 'type': str, 'mandatory': False},
         {'id': 'email', 'type': str, 'mandatory': False},
@@ -217,7 +217,7 @@ def update_user(user_id):
             "message": message
         }, 400)
 
-    res = user.update_user(user_id, request.json['args'])
+    res = user.update_user(user_id, request.json)
     return make_response(jsonify(res[0])), res[1]
 
 

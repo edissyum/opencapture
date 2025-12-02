@@ -35,7 +35,7 @@ import { SettingsGeneralIndex } from "./pages/settings/general";
 import { SettingsVerifierIndex } from "./pages/settings/verifier";
 import { SettingsSplitterIndex } from "./pages/settings/splitter";
 import { SettingsGeneralSMTP } from "./pages/settings/general/smtp";
-import { SettingsGeneralUsers } from "./pages/settings/general/users";
+import { SettingsGeneralUsers } from "./pages/settings/general/users/list";
 import { SettingsGeneralRoles } from "./pages/settings/general/roles/list";
 import { SettingsGeneralAdvanced } from "./pages/settings/general/advanced";
 import { SettingsVerifierFormsList } from "./pages/settings/verifier/forms/list";
@@ -47,6 +47,7 @@ import { SettingsVerifierFormsCreate } from "./pages/settings/verifier/forms/cre
 import { SettingsSplitterFormsCreate } from "./pages/settings/splitter/forms/create";
 import { SettingsSplitterFormsEditor } from "./pages/settings/splitter/forms/editor";
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
+import { SettingsGeneralUserEditor } from "./pages/settings/general/users/editor.tsx";
 
 export const router = createBrowserRouter(
     [
@@ -145,6 +146,20 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader,
                                     element: <SettingsGeneralUsers/>,
                                     errorElement: <LoginRequiredError/>
+                                },
+                                {
+                                    path:'edit/:userId',
+                                    loader: protectedLoader,
+                                    element: <SettingsGeneralUserEditor/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.edit_user' }
+                                },
+                                {
+                                    path:'create',
+                                    loader: protectedLoader,
+                                    element: <SettingsGeneralUserEditor/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'FORMS.add_user' }
                                 }
                             ]
                         },

@@ -142,7 +142,8 @@
         "field_disabled": "",
         "change_label": "",
         "change_zone_label_message": "",
-        "add_role": ""
+        "add_role": "",
+        "add_user": ""
     },
     "GLOBAL": {
         "batches": "Batches",
@@ -357,7 +358,8 @@
         "forms_other": "Forms",
         "export_zip_file_name": "",
         "export_zip_file_name_hint": "",
-        "edit_role": ""
+        "edit_role": "",
+        "edit_user": ""
     },
     "SMTP": {
         "authentication": "Authentication",
@@ -420,10 +422,6 @@
         "upload_success_one": "File uploaded successfully",
         "upload_success_other": "Files uploaded successfully"
     },
-    "USER": {
-        "password": "Password",
-        "username": "Username"
-    },
     "USERS": {
         "delete_users": "Delete",
         "firstname": "First name",
@@ -459,7 +457,21 @@
         "user_disabled_one": "User disabled successfully",
         "user_disabled_other": "Users disabled successfully",
         "user_enabled_one": "User enabled successfully",
-        "user_enabled_other": "Users enabled successfully"
+        "user_enabled_other": "Users enabled successfully",
+        "creating": "",
+        "editing": "",
+        "list": "",
+        "new_user": "",
+        "password": "",
+        "updating": "",
+        "create_user": "",
+        "update_user": "",
+        "email": "",
+        "password_check": "",
+        "security": "",
+        "mode": "",
+        "standard": "",
+        "webservice": ""
     },
     "VERIFIER": {
         "creation_date": "Creation date",

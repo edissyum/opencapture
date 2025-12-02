@@ -107,11 +107,11 @@ export function Login() {
                 <form onSubmit={ handleSubmit } className="space-y-6" noValidate>
                     <div className="mt-2 mb-2">
                         <Input id="username" type="text" name="username" required error={ errors.username }
-                               onChange={ handleChange } label={ t('USER.username') }/>
+                               onChange={ handleChange } label={ t('USERS.username') }/>
                     </div>
                     <div>
                         <Input id="password" type="password" name="password" required error={ errors.password }
-                               onChange={ handleChange } label={ t('USER.password') }/>
+                               onChange={ handleChange } label={ t('USERS.password') }/>
                     </div>
 
                     <div className="text-center">
