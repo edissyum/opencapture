@@ -55,7 +55,7 @@ const Input: React.FC<InputProps> = ({
     return (
         <div className={ `flex flex-col rounded-md ${ className }` }>
             <div className={ `group group-focus-within:border-(--border-primary) relative flex justify-items-stretch 
-                            ${ error || noMarginBottom ? '' : 'mb-5' }` }>
+                            ${ error || noMarginBottom ? '' : 'mb-4' }` }>
                 <FloatLabel className='w-full'>
                     { /*@ts-ignore*/ }
                     <InputText

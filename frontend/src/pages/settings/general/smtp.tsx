@@ -59,6 +59,7 @@ export function SettingsGeneralSMTP() {
     } = useForm<FormData>({
         // @ts-ignore
         resolver: zodResolver(schema),
+        mode: 'onChange',
         defaultValues: {
             smtpHost: "smtp.gmail.com",
             smtpPort: 465,
