@@ -306,7 +306,6 @@
         "editing": "",
         "new_role": "",
         "details": "",
-        "role_id": "",
         "role_label": "",
         "default_route": "",
         "create_role": "",
@@ -315,7 +314,9 @@
         "creating": "",
         "enabled": "",
         "create_success": "",
-        "update_success": ""
+        "update_success": "",
+        "label_mandatory": "",
+        "label_short_mandatory": ""
     },
     "SETTINGS": {
         "abouts_us": "About",
@@ -471,7 +472,12 @@
         "security": "",
         "mode": "",
         "standard": "",
-        "webservice": ""
+        "webservice": "",
+        "password_mismatch": "",
+        "update_success": "",
+        "username_mandatory": "",
+        "password_mandatory": "",
+        "email_mandatory": ""
     },
     "VERIFIER": {
         "creation_date": "Creation date",

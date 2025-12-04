@@ -14,13 +14,16 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { t } from "i18next";
 import { Controller } from "react-hook-form";
-import Input from "../Input.tsx";
-import { Dropdown } from "primereact/dropdown";
+import { InputSwitch } from "primereact/inputswitch";
+
+import Input from "../Input";
+import { RadioBox } from "../RadioBox";
 import { Checkbox } from "../Checkbox";
+import { Dropdown } from "../Dropdown.tsx";
 
-
-export function DynamicForm({ schema, control, errors, formData, labelFusion = false }) {
+export function DynamicForm({ schema, control, errors, labelFusion = false }: any) {
     const extractFieldsFromSchema = (schema: any) => {
         const shape = schema._def.shape;
         return Object.entries(shape).map(([name, zodType]: any) => {
@@ -58,6 +61,47 @@ export function DynamicForm({ schema, control, errors, formData, labelFusion = f
                         ) }
                     />
                 );
+            case "input_switch":
+                return (
+                    <Controller
+                        key={ field.name }
+                        name={ field.name }
+                        control={ control }
+                        render={ ({ field: f }) => (
+                            <div className='flex items-center mb-7'>
+                                <InputSwitch
+                                    inputId={ f.name }
+                                    checked={ f.value }
+                                    onChange={ e => f.onChange(e.value) }
+                                />
+                                <label htmlFor={ f.name } className='cursor-pointer'>
+                                    { t('ROLES.enabled') }
+                                </label>
+                            </div>
+                        ) }
+                    />
+                );
+            case "radio_box":
+                return (
+                    <Controller
+                        key={ field.name }
+                        name={ field.name }
+                        control={ control }
+                        render={ ({ field: f }) => (
+                            <div className='flex gap-2'>
+                                { field.options.map((option: any) => (
+                                    <RadioBox
+                                        key={ option.value }
+                                        label={ option.label }
+                                        value={ option.value }
+                                        checked={ f.value === option.value }
+                                        onChange={ () => f.onChange(option.value) }/>
+                                    ))
+                                }
+                            </div>
+                        ) }
+                    />
+                )
             case "dropdown":
                 return (
                     <Controller
@@ -66,11 +110,14 @@ export function DynamicForm({ schema, control, errors, formData, labelFusion = f
                         control={ control }
                         render={ ({ field: f }) => (
                             <Dropdown
-                                className='w-full mb-7'
-                                placeholder={ field.label }
-                                options={ field.options }
+                                id={ f.name }
+                                className="mb-7"
                                 value={ f.value }
-                                onChange={ f.onChange }
+                                options={ field.options }
+                                onChange={ e => f.onChange(e.value) }
+                                placeholder={ field.placeholder || t('SELECT.select_option') }
+                                label={ field.label }
+                                labelFusion={ labelFusion }
                             />
                         ) }
                     />

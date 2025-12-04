@@ -80,7 +80,7 @@ def update_role(role_id, data):
             'enabled': data['enabled'],
             'label_short': data['label_short'],
             'default_route': data['default_route'] if 'default_route' in data else '',
-            'assign_roles': json.dumps(data['assign_roles'])
+            'assign_roles': json.dumps(data['assign_roles']) if 'assign_roles' in data else '[]'
         }
 
         _, error = roles.update_role({'set': _set, 'role_id': role_id})

@@ -74,7 +74,7 @@ const Input: React.FC<InputProps> = ({
                     />
                     { label && (
                         <label htmlFor={ id }
-                               className={ `${ labelFusion ? 'group-focus-within:border group-focus-within:border-b-0 ' +
+                               className={ `select-none ${ labelFusion ? 'group-focus-within:border group-focus-within:border-b-0 ' +
                                           'border-(--border-secondary) group-focus-within:rounded-md ' +
                                           'group-focus-within:rounded-b-none group-focus-within:-top-2! ' +
                                           'group-focus-within:p-0.5 group-focus-within:border-(--border-primary) ' +

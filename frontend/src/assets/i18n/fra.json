@@ -153,7 +153,7 @@
         "change_label": "Modifier le libellé",
         "change_zone_label_message": "Modifier le libellé de la zone selectionnée. ",
         "add_role": "Ajouter un rôle",
-        "add_user": ""
+        "add_user": "Ajouter un utilisateur"
     },
     "GLOBAL": {
         "batches": "Lots",
@@ -327,7 +327,6 @@
         "editing": "Édition du rôle",
         "new_role": "Nouveau rôle",
         "details": "Détails",
-        "role_id": "Identifiant technique du rôle",
         "role_label": "Libellé du rôle",
         "default_route": "Route par défaut lors de la connexion",
         "create_role": "Créer le rôle",
@@ -336,7 +335,9 @@
         "creating": "Création en cours...",
         "enabled": "Activer le rôle",
         "create_success": "Rôle créé avec succès",
-        "update_success": "Rôle mis à jour avec succès"
+        "update_success": "Rôle mis à jour avec succès",
+        "label_mandatory": "Libellé du rôle est obligatoire",
+        "label_short_mandatory": "Libellé technique est obligatoire"
     },
     "SETTINGS": {
         "abouts_us": "À propos",
@@ -381,7 +382,7 @@
         "export_zip_file_name": "Chemin de compression des fichiers exportés",
         "export_zip_file_name_hint": "Chemin absolu incluant un masque de nommage avec l'extension 'zip' (vide pour desactiver)",
         "edit_role": "Modifier le rôle",
-        "edit_user": ""
+        "edit_user": "Modifier l'utilisateur"
     },
     "SMTP": {
         "authentication": "Authentification",
@@ -509,7 +510,12 @@
         "security": "Sécurité",
         "mode": "Mode d'authentification",
         "standard": "Standard",
-        "webservice": "Webservice"
+        "webservice": "Webservice",
+        "password_mismatch": "Les mots de passe ne correspondent pas",
+        "update_success": "Utilisateur mis à jour avec succès",
+        "username_mandatory": "Nom d'utilisateur est obligatoire",
+        "password_mandatory": "Mot de passe est obligatoire",
+        "email_mandatory": "L'addresse email est obligatoire"
     },
     "VERIFIER": {
         "creation_date": "Date de création",

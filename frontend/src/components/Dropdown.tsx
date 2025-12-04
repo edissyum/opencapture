@@ -1,0 +1,75 @@
+/** This file is part of Open-Capture.
+
+ Open-Capture is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+
+ @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
+
+import React from "react";
+import { Dropdown as PrimeDropdown } from "primereact/dropdown";
+import { FloatLabel } from "primereact/floatlabel";
+
+interface DropdownProps {
+    id: any;
+    value: any;
+    label?: string;
+    className?: string;
+    disabled?: boolean;
+    required?: boolean;
+    placeholder?: string;
+    labelFusion?: boolean;
+    onChange: (e: any) => void;
+    options: { id: any; label: string }[];
+}
+
+export const Dropdown: React.FC<DropdownProps> = ({
+    id,
+    value,
+    label,
+    options,
+    onChange,
+    required,
+    className="",
+    placeholder = "",
+    disabled = false,
+    labelFusion = false
+}) => {
+
+    return (
+        <div className={ `${className} group group-focus-within:border-(--border-primary) relative flex justify-items-stretch` }>
+            <FloatLabel className='w-full'>
+                <PrimeDropdown
+                    id={ id }
+                    value={ value }
+                    options={ options }
+                    onChange={ onChange }
+                    disabled={ disabled }
+                    className={ 'w-full' }
+                    placeholder={ placeholder }
+                />
+                { label && (
+                    <label htmlFor={ id }
+                           className={ `select-none ${ labelFusion ? 'group-focus-within:border group-focus-within:border-b-0 ' +
+                               'border-(--border-secondary) group-focus-within:rounded-md ' +
+                               'group-focus-within:rounded-b-none group-focus-within:-top-2! ' +
+                               'group-focus-within:p-0.5 group-focus-within:border-(--border-primary) ' +
+                               'group-hover:border-(--border-primary)' : '' }
+                               ${ value && labelFusion ? 'border border-b-0 rounded-md rounded-b-none -top-2! p-0.5 border-(--border-primary)' : '' }` }>
+                        { label }
+                        { required && <span className="text-(--text-error) ml-1">*</span> }
+                    </label>
+                ) }
+            </FloatLabel>
+        </div>
+    );
+};

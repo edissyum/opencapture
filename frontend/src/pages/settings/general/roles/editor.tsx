@@ -14,16 +14,17 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { z } from "zod";
 import { t } from "i18next";
 import { ArrowLeft } from "lucide-react";
+import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { InputSwitch } from "primereact/inputswitch";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
 
-import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
-import { RadioBox } from "../../../../components/RadioBox";
 import { showToast } from "../../../../components/ToastProvider";
+import { DynamicForm } from "../../../../components/form/DynamicForm";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 
@@ -35,13 +36,47 @@ export function SettingsGeneralRoleEditor() {
     const { roleId } = useParams<{ roleId: any }>();
 
     const [loading, setLoading] = useState<boolean>(false);
-    const [hasError, setHasError] = useState<boolean>(false);
 
     const routes = [
         { value: '/home', label: t('GLOBAL.home') },
         { value: '/upload', label: t('GLOBAL.upload') }
     ]
 
+    const schema = z.object({
+        enabled: z.boolean().optional().describe(JSON.stringify({
+            component: "input_switch",
+            label: t("ROLES.enabled")
+        })),
+        label_short: z.string(t('ROLES.label_short_mandatory')).min(3).describe(JSON.stringify({
+            component: "input",
+            type: "text",
+            required: true,
+            disabled: !!roleId,
+            label: t("ROLES.label_short")
+        })),
+        label: z.string(t('ROLES.label_mandatory')).min(1, t('ROLES.label_mandatory')).describe(JSON.stringify({
+            component: "input",
+            required: true,
+            type: "text",
+            label: t("ROLES.role_label")
+        })),
+    });
+
+    const routesSchema = z.object({
+        default_route: z.string().optional().describe(JSON.stringify({
+            component: "radio_box",
+            options: routes,
+            label: t("ROLES.default_route")
+        }))
+    });
+
+    const { control, setValue, handleSubmit, formState: { errors } } = useForm({
+        resolver: zodResolver(schema.merge(routesSchema)),
+        defaultValues: {},
+        mode: "onChange"
+    });
+
+    // Fetch role data if editing an existing role
     useEffect(() => {
         if (!roleId) return;
 
@@ -57,15 +92,20 @@ export function SettingsGeneralRoleEditor() {
         fetchRole().then();
     }, [roleId]);
 
+    // Fill form when user data is loaded
     useEffect(() => {
-        setHasError(!role.label || !role.label_short);
+        if (Object.keys(role).length === 0) return;
+
+        Object.entries(role).forEach(([key, value]: any) => {
+            setValue(key, value);
+        });
     }, [role]);
 
-    const handleCreate = async () => {
+    const handleCreate: any = async (data: FormData) => {
         setLoading(true);
 
         try {
-            await post(`/roles/create`, role);
+            await post(`/roles/create`, data);
             showToast(t('ROLES.create_success'), 'success');
             navigate('/settings/general/roles');
             setLoading(false);
@@ -75,11 +115,11 @@ export function SettingsGeneralRoleEditor() {
         }
     }
 
-    const handleUpdate = async () => {
+    const handleUpdate: any = async (data: FormData) => {
         setLoading(true);
 
         try {
-            await put(`/roles/update/${ roleId }`, role);
+            await put(`/roles/update/${ roleId }`, data);
             showToast(t('ROLES.update_success'), 'success');
             setLoading(false);
         } catch (error) {
@@ -90,7 +130,7 @@ export function SettingsGeneralRoleEditor() {
 
     return (
         <div className="p-8 bg-(--bg-secondary) h-full">
-            <div className='flex items-center gap-1 text-(--text-secondary) cursor-pointer mb-4'
+            <div className='flex items-center gap-1 text-(--text-secondary) cursor-pointer mb-4 w-fit'
                  onClick={ () => navigate('/settings/general/roles') }>
                 <ArrowLeft/>
                 { t('ROLES.list') }
@@ -102,52 +142,25 @@ export function SettingsGeneralRoleEditor() {
                 { t('ROLES.details') }
             </h1>
             <div className='w-1/3'>
-                <div className='flex items-center mb-6'>
-                    <InputSwitch inputId={ 'enabled' } checked={ role.enabled ?? true }
-                                 onChange={ (e) => setRole({ ...role, enabled: e.target.value }) }/>
-                    <label htmlFor='enabled'>
-                        { t('ROLES.enabled') }
-                    </label>
-                </div>
-
-                <Input value={ role.label_short } required
-                       labelFusion={ true }
-                       label={ t('ROLES.role_id') }
-                       onChange={ (e) => {
-                           if (e.target.value.match(/\s/)) {
-                               e.target.value = e.target.value.replace(/\s/g, '');
-                               }
-                           setRole({ ...role, label_short: e.target.value })
-                       } }/>
-                <Input value={ role.label } required
-                       labelFusion={ true }
-                       label={ t('ROLES.role_label') }
-                       onChange={ (e) => setRole({ ...role, label: e.target.value }) }/>
+                <DynamicForm schema={ schema } errors={ errors } control={ control } labelFusion={ true }/>
             </div>
 
             <h1 className="text-lg font-semibold mb-2">
                 { t('ROLES.default_route') }
             </h1>
-            <div className='w-1/3 flex gap-2'>
-                { routes.map((route) => (
-                    <RadioBox
-                        key={ route.value }
-                        label={ route.label }
-                        value={ route.value }
-                        checked={ role.default_route === route.value }
-                        onChange={ () => {
-                            setRole({ ...role, default_route: route.value });
-                        } }/>
-                )) }
+            <div className='w-1/3'>
+                <DynamicForm schema={ routesSchema } errors={ errors } control={ control } labelFusion={ true }/>
             </div>
 
             <div className="mt-12">
                 { roleId ? (
-                    <Button onClick={ handleUpdate } disabled={ loading || hasError }>
+                    <Button onClick={ handleSubmit(handleUpdate) }
+                            disabled={ loading || Object.keys(errors).length > 0 }>
                         { loading ? t('ROLES.updating') : t('ROLES.update_role') }
                     </Button>
                 ) : (
-                    <Button onClick={ handleCreate } disabled={ loading || hasError }>
+                    <Button onClick={ handleSubmit(handleCreate) }
+                            disabled={ loading || Object.keys(errors).length > 0 }>
                         { loading ? t('ROLES.creating') : t('ROLES.create_role') }
                     </Button>
                 ) }

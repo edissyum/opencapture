@@ -35,16 +35,16 @@ def create_user(args):
         'select': ['users.id', 'users.status'],
         'username': args['username']
     })
+
     if user_id:
         if user_id['status'] != 'DEL':
             response = {
                 "errors": gettext('CREATE_USER_ERROR'),
                 "message": gettext('USERNAME_ALREADY_EXISTS')
             }
-            return response, 4000
+            return response, 400
 
     res, error = user.create_user(args)
-
     if error is None:
         if 'configurations' in current_context:
             configurations = current_context.configurations

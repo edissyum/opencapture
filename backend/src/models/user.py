@@ -68,7 +68,7 @@ def create_user(args):
                 'username': args['username'],
                 'firstname': args['firstname'],
                 'lastname': args['lastname'],
-                'email': args['email'],
+                'email': args['email'] if 'email' in args else '',
                 'role': args['role'],
                 'mode': args['mode'] if 'mode' in args else 'standard',
                 'password': generate_password_hash(args['password'])

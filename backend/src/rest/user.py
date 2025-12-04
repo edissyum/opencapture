@@ -24,7 +24,7 @@ from ..controllers import auth, user, privileges
 bp = Blueprint('users', __name__, url_prefix='/ws/')
 
 
-@bp.route('users/new', methods=['POST'])
+@bp.route('users/create', methods=['POST'])
 @auth.token_required
 def create_user():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_user']):
