@@ -71,7 +71,7 @@ export function SettingsGeneralRoleEditor() {
     });
 
     const { control, setValue, handleSubmit, formState: { errors } } = useForm({
-        resolver: zodResolver(schema.merge(routesSchema)),
+        resolver: zodResolver(schema.extend(routesSchema.shape)),
         defaultValues: {},
         mode: "onChange"
     });

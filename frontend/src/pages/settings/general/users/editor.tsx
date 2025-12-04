@@ -107,7 +107,7 @@ export function SettingsGeneralUserEditor() {
     });
 
     const { control, watch, setValue, setError, clearErrors, handleSubmit, formState: { errors } } = useForm({
-        resolver: zodResolver(detailsSchema.merge(securitySchema)),
+        resolver: zodResolver(detailsSchema.extend(securitySchema.shape)),
         defaultValues: {},
         mode: "onChange"
     });
