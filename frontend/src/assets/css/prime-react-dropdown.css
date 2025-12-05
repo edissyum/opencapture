@@ -15,6 +15,13 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+.p-inputwrapper-focus ~ label {
+    @apply px-1;
+    @apply top-0;
+    @apply bg-(--bg-primary);
+    @apply text-(--text-secondary);
+}
+
 .p-dropdown-filter-container .p-inputtext,
 .p-multiselect-filter-container .p-inputtext {
     @apply py-1;

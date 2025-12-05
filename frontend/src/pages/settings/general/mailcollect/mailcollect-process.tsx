@@ -22,7 +22,6 @@ import { Controller, useForm } from "react-hook-form";
 import { ArrowLeft, Ban, CornerUpRight, Trash } from "lucide-react";
 
 import { Stepper } from "primereact/stepper";
-import { Dropdown } from "primereact/dropdown";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputSwitch } from "primereact/inputswitch";
 import { StepperPanel } from "primereact/stepperpanel";
@@ -30,6 +29,7 @@ import { StepperPanel } from "primereact/stepperpanel";
 import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
 import { RadioBox } from "../../../../components/RadioBox";
+import { Dropdown } from "../../../../components/Dropdown";
 import { showToast } from "../../../../components/ToastProvider";
 
 import { getSchemaForAuthMethod } from "./authSchema";
@@ -346,18 +346,16 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                     name="folder_to_crawl"
                     control={ foldersControl }
                     render={ ({ field }) => (
-                        <FloatLabel>
-                            <Dropdown
-                                filter
-                                id="folder_to_crawl"
-                                value={ field.value }
-                                options={ folders.map((folder) => ({ label: folder, value: folder })) }
-                                onChange={ (e) => field.onChange(e.value) }
-                                className="w-full"
-                                disabled={ folders.length === 0 }
-                            />
-                            <label htmlFor="folder_to_crawl">{ t("MAILCOLLECT.folder_to_crawl") }</label>
-                        </FloatLabel>
+                        <Dropdown
+                            filter={ true }
+                            id="folder_to_crawl"
+                            value={ field.value }
+                            label={ t("MAILCOLLECT.folder_to_crawl") }
+                            options={ folders.map((folder) => ({ label: folder, value: folder })) }
+                            onChange={ (e) => field.onChange(e.value) }
+                            className="w-full"
+                            disabled={ folders.length === 0 }
+                        />
                     ) }
                 />
 
@@ -389,18 +387,16 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                     name="folder_destination"
                     control={ foldersControl }
                     render={ ({ field }) => (
-                        <FloatLabel>
-                            <Dropdown
-                                filter
-                                id="folder_destination"
-                                value={ field.value }
-                                options={ folders.map((folder) => ({ label: folder, value: folder })) }
-                                onChange={ (e) => field.onChange(e.value) }
-                                className="w-full mb-2"
-                                disabled={ folders.length === 0 }
-                            />
-                            <label htmlFor="folder_destination">{ t("MAILCOLLECT.folder_destination") }</label>
-                        </FloatLabel>
+                        <Dropdown
+                            filter={ true }
+                            value={ field.value }
+                            id="folder_destination"
+                            className="w-full mb-2"
+                            disabled={ folders.length === 0 }
+                            label={ t("MAILCOLLECT.folder_destination") }
+                            options={ folders.map((folder) => ({ label: folder, value: folder })) }
+                            onChange={ (e) => field.onChange(e.value) }
+                        />
                     ) }
                 />
 

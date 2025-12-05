@@ -23,13 +23,14 @@ interface DropdownProps {
     id: any;
     value: any;
     label?: string;
+    filter?: boolean;
     className?: string;
     disabled?: boolean;
     required?: boolean;
     placeholder?: string;
     labelFusion?: boolean;
     onChange: (e: any) => void;
-    options: { id: any; label: string }[];
+    options: { value: any; label: string }[];
 }
 
 export const Dropdown: React.FC<DropdownProps> = ({
@@ -39,6 +40,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
     options,
     onChange,
     required,
+    filter=false,
     className="",
     placeholder = "",
     disabled = false,
@@ -51,6 +53,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                 <PrimeDropdown
                     id={ id }
                     value={ value }
+                    filter={ filter }
                     options={ options }
                     onChange={ onChange }
                     disabled={ disabled }

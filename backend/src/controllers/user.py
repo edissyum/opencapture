@@ -339,6 +339,12 @@ def update_user(user_id, data):
 
         _, error = user.update_user({'set': _set, 'user_id': user_id})
 
+        if 'customers' in data:
+            update_customers_by_user_id(user_id, data['customers'])
+
+        if 'forms' in data:
+            update_forms_by_user_id(user_id, data['forms'])
+
         if error is None:
             user_info = user.get_user_by_id({'user_id': user_id})
             history.add_history({

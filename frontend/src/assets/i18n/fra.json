@@ -515,7 +515,10 @@
         "update_success": "Utilisateur mis à jour avec succès",
         "username_mandatory": "Nom d'utilisateur est obligatoire",
         "password_mandatory": "Mot de passe est obligatoire",
-        "email_mandatory": "L'addresse email est obligatoire"
+        "email_mandatory": "L'addresse email est obligatoire",
+        "forms": "Formulaires",
+        "settings": "Paramètres",
+        "customers": "Comptes clients"
     },
     "VERIFIER": {
         "creation_date": "Date de création",

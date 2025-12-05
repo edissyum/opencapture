@@ -16,13 +16,13 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import { Dropdown } from "primereact/dropdown";
-import { FloatLabel } from "primereact/floatlabel";
 import { InputSwitch } from "primereact/inputswitch";
 
 import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
+import { Dropdown } from "../../../../components/Dropdown";
 import MultiSelectInput from "../../../../components/MultiSelect";
+
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 
 export function SettingsSplitterFormsDetails({
@@ -143,26 +143,24 @@ export function SettingsSplitterFormsDetails({
                     />
                 </div>
                 <div className='flex items-center gap-2'>
-                    <FloatLabel className='w-full z-10'>
-                        <Dropdown
-                            filter
-                            className="w-1/2"
-                            id="metadata_method"
-                            options={ metadataMethods.map((metadataMethod: any) => ({
-                                value: metadataMethod.id,
-                                label: metadataMethod.label
-                            })) }
-                            value={ formSettings.settings.metadata_method }
-                            onChange={ (e) => setFormSettings({
-                                ...formSettings,
-                                settings: {
-                                    ...formSettings.settings,
-                                    metadata_method: e.value
-                                }
-                            }) }
-                        />
-                        <label htmlFor="metadata_method">{ t('FORMS.select_metadata_method') }</label>
-                    </FloatLabel>
+                    <Dropdown
+                        filter={ true }
+                        className="w-1/2"
+                        id="metadata_method"
+                        label={ t('FORMS.select_metadata_method') }
+                        options={ metadataMethods.map((metadataMethod: any) => ({
+                            value: metadataMethod.id,
+                            label: metadataMethod.label
+                        })) }
+                        value={ formSettings.settings.metadata_method }
+                        onChange={ (e) => setFormSettings({
+                            ...formSettings,
+                            settings: {
+                                ...formSettings.settings,
+                                metadata_method: e.value
+                            }
+                        }) }
+                    />
                 </div>
             </div>
 

@@ -34,7 +34,7 @@
         "react-dropzone": "^14.3.8",
         "react-hook-form": "^7.68.0",
         "react-i18next": "^16.3.5",
-        "react-router-dom": "^7.10.0",
+        "react-router-dom": "^7.10.1",
         "react-toastify": "^11.0.5",
         "react-tooltip": "^5.30.0",
         "tailwindcss": "^4.1.17",
@@ -51,7 +51,7 @@
         "eslint-plugin-react-refresh": "^0.4.24",
         "globals": "^16.5.0",
         "i18next-scanner": "^4.6.0",
-        "lucide-react": "^0.555.0",
+        "lucide-react": "^0.556.0",
         "typescript": "~5.9.3",
         "typescript-eslint": "^8.48.1",
         "vite": "^7.2.6"

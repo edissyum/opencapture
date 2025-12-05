@@ -515,7 +515,10 @@
         "update_success": "",
         "username_mandatory": "",
         "password_mandatory": "",
-        "email_mandatory": ""
+        "email_mandatory": "",
+        "forms": "",
+        "settings": "",
+        "customers": ""
     },
     "VERIFIER": {
         "creation_date": "Fecha de creación",

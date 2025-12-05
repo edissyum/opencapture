@@ -19,18 +19,23 @@ import React, { useState } from "react";
 import { t } from "i18next";
 
 import { MultiSelect } from "primereact/multiselect";
+import { FloatLabel } from "primereact/floatlabel";
 
 interface MultiSelectProps extends React.InputHTMLAttributes<HTMLInputElement> {
     id: string;
+    value: any[];
     options: any[];
+    label?: string;
     filter?: boolean;
     invalid?: boolean;
     filterBy?: string;
     required?: boolean;
     disabled?: boolean;
+    className?: string;
     optionValue: string;
     optionLabel: string;
     placeholder?: string;
+    labelFusion?: boolean;
     onChange: (value: any) => void;
     itemTemplate?: (option: any) => React.ReactNode;
 }
@@ -38,6 +43,7 @@ interface MultiSelectProps extends React.InputHTMLAttributes<HTMLInputElement> {
 const MultiSelectInput: React.FC<MultiSelectProps> = ({
     id,
     value,
+    label,
     invalid,
     options,
     filterBy,
@@ -46,7 +52,9 @@ const MultiSelectInput: React.FC<MultiSelectProps> = ({
     placeholder,
     itemTemplate,
     filter = true,
+    className = "",
     required = false,
+    labelFusion = false,
     onChange
 }) => {
 
@@ -80,35 +88,48 @@ const MultiSelectInput: React.FC<MultiSelectProps> = ({
         const originalJSX = itemTemplate
             ? itemTemplate(option)
             : option[optionLabel];
-
         return highlightJSX(originalJSX, filterValue);
     };
 
     return (
-        <div>
-            <MultiSelect
-                id={ id }
-                display="chip"
-                value={ value }
-                filter={ filter }
-                invalid={ invalid }
-                options={ options }
-                required={ required }
-                className={ 'w-full' }
-                focusOnHover={ false }
-                selectOnFocus={ false }
-                autoOptionFocus={ false }
-                optionValue={ optionValue }
-                optionLabel={ optionLabel }
-                placeholder={ placeholder }
-                itemTemplate={ wrappedItemTemplate }
-                filterBy={ filterBy ? filterBy : optionLabel }
-                emptyMessage={ t('GLOBAL.no_result_found') }
-                emptyFilterMessage={ t('GLOBAL.no_result_found') }
-                virtualScrollerOptions={ { itemSize: 45, orientation: 'vertical', showSpacer: false } }
-                onChange={ (e) => onChange(e) }
-                onFilter={ (e) => setFilterValue(e.filter) }
-            />
+        <div className={ `${className} group group-focus-within:border-(--border-primary) relative flex justify-items-stretch` }>
+            <FloatLabel className='w-full'>
+                <MultiSelect
+                    id={ id }
+                    display="chip"
+                    value={ value }
+                    filter={ filter }
+                    invalid={ invalid }
+                    options={ options }
+                    required={ required }
+                    className={ 'w-full' }
+                    focusOnHover={ false }
+                    selectOnFocus={ false }
+                    autoOptionFocus={ false }
+                    optionValue={ optionValue }
+                    optionLabel={ optionLabel }
+                    placeholder={ placeholder }
+                    itemTemplate={ wrappedItemTemplate }
+                    filterBy={ filterBy ? filterBy : optionLabel }
+                    emptyMessage={ t('GLOBAL.no_result_found') }
+                    emptyFilterMessage={ t('GLOBAL.no_result_found') }
+                    virtualScrollerOptions={ { itemSize: 45, orientation: 'vertical', showSpacer: false } }
+                    onChange={ (e) => onChange(e) }
+                    onFilter={ (e) => setFilterValue(e.filter) }
+                />
+                { label && (
+                    <label htmlFor={ id }
+                           className={ `select-none ${ labelFusion ? 'group-focus-within:border group-focus-within:border-b-0 ' +
+                               'border-(--border-secondary) group-focus-within:rounded-md ' +
+                               'group-focus-within:rounded-b-none group-focus-within:-top-2! ' +
+                               'group-focus-within:p-0.5 group-focus-within:border-(--border-primary) ' +
+                               'group-hover:border-(--border-primary)' : '' }
+                               ${ value?.length > 0 && labelFusion ? 'border border-b-0 rounded-md rounded-b-none -top-2! p-0.5 border-(--border-primary)' : '' }` }>
+                        { label }
+                        { required && <span className="text-(--text-error) ml-1">*</span> }
+                    </label>
+                ) }
+            </FloatLabel>
         </div>
     );
 };

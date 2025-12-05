@@ -258,26 +258,6 @@ def get_customers_by_user_id(user_id):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('users/customers/update/<int:user_id>', methods=['PUT'])
-@auth.token_required
-def update_customers_by_user_id(user_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_user']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/customers/update/{user_id}'}), 403
-
-    check, message = rest_validator(request.json, [
-        {'id': 'customers', 'type': list, 'mandatory': False}
-    ])
-
-    if not check:
-        return make_response({
-            "errors": gettext('BAD_REQUEST'),
-            "message": message
-        }, 400)
-
-    res = user.update_customers_by_user_id(user_id, request.json['customers'])
-    return make_response(jsonify(res[0])), res[1]
-
-
 @bp.route('users/getFormsByUserId/<int:user_id>', methods=['GET'])
 @auth.token_required
 def get_forms_by_user_id(user_id):
@@ -285,26 +265,6 @@ def get_forms_by_user_id(user_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/getFormsByUserId/{user_id}'}), 403
 
     res = user.get_forms_by_user_id(user_id)
-    return make_response(jsonify(res[0])), res[1]
-
-
-@bp.route('users/forms/update/<int:user_id>', methods=['PUT'])
-@auth.token_required
-def update_forms_by_user_id(user_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_user']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/users/forms/update/{user_id}'}), 403
-
-    check, message = rest_validator(request.json, [
-        {'id': 'forms', 'type': list, 'mandatory': False}
-    ])
-
-    if not check:
-        return make_response({
-            "errors": gettext('BAD_REQUEST'),
-            "message": message
-        }, 400)
-
-    res = user.update_forms_by_user_id(user_id, request.json['forms'])
     return make_response(jsonify(res[0])), res[1]
 
 

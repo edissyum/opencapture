@@ -75,11 +75,11 @@ const Input: React.FC<InputProps> = ({
                     { label && (
                         <label htmlFor={ id }
                                className={ `select-none ${ labelFusion ? 'group-focus-within:border group-focus-within:border-b-0 ' +
-                                          'border-(--border-secondary) group-focus-within:rounded-md ' +
-                                          'group-focus-within:rounded-b-none group-focus-within:-top-2! ' +
-                                          'group-focus-within:p-0.5 group-focus-within:border-(--border-primary) ' +
-                                          'group-hover:border-(--border-primary)' : '' }
-                                          ${ hasValue && labelFusion ? 'border border-b-0 rounded-md rounded-b-none -top-2! p-0.5 border-(--border-primary)' : '' }` }>
+                                   'border-(--border-secondary) group-focus-within:rounded-md ' +
+                                   'group-focus-within:rounded-b-none group-focus-within:-top-2! ' +
+                                   'group-focus-within:p-0.5 group-focus-within:border-(--border-primary) ' +
+                                   'group-hover:border-(--border-primary)' : '' }
+                                   ${ hasValue && labelFusion ? 'border border-b-0 rounded-md rounded-b-none -top-2! p-0.5 border-(--border-primary)' : '' }` }>
                             { label }
                             { required && <span className="text-(--text-error) ml-1">*</span> }
                         </label>
@@ -95,16 +95,19 @@ const Input: React.FC<InputProps> = ({
                     <button
                         type="button"
                         onClick={ () => setPasswordVisible((prev) => !prev) }
-                        className={ `password px-2 rounded-lg! rounded-l-none! group-focus-within:border-(--color-primary)!
-                            border-l-0! border! text-(--text-secondary)! hover:text-(--color-primary) z-20 cursor-pointer
-                            ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)! group-hover:border-(--color-primary)!' }` }
-                        tabIndex={ -1 }>
+                        className={ `password transition-colors duration-200 px-2 rounded-lg! rounded-l-none! 
+                                     group-focus-within:border-(--color-primary)! border-l-0! border! 
+                                     text-(--text-secondary)! hover:text-(--color-primary) z-20 cursor-pointer
+                                     ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)! ' +
+                            'group-hover:border-(--color-primary)!'
+                        }` }>
                         { passwordVisible ? <EyeOff size={ 18 }/> : <Eye size={ 18 }/> }
                     </button>
                 ) }
             </div>
-            { error &&
-                <p className="text-(--text-error) text-xs ml-1" dangerouslySetInnerHTML={ { __html: error } }></p> }
+            { error && (
+                <p className="text-(--text-error) text-xs ml-1" dangerouslySetInnerHTML={ { __html: error } }/>
+            ) }
         </div>
     );
 };

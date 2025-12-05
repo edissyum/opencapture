@@ -20,14 +20,12 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
-
-import { Dropdown } from "primereact/dropdown";
-import { FloatLabel } from "primereact/floatlabel";
 import { InputSwitch } from "primereact/inputswitch";
 import { OverlayPanel } from "primereact/overlaypanel";
 
 import Input from "../../Input";
 import { Button } from "../../Button";
+import { Dropdown } from "../../Dropdown";
 
 import { getColorOptions, getFormatLabels } from "./schemas";
 
@@ -121,18 +119,16 @@ export function SortableField({ field, onUpdateField, onDeleteField, module }: {
                                setEditableField((prev) => ({ ...prev, label: e.target.value }))
                            }
                     />
-                    <FloatLabel>
-                        <Dropdown
-                            id={ 'format-' + editableField.id }
-                            className="w-full"
-                            value={ editableField.format }
-                            options={ formatLabels }
-                            onChange={ (e) =>
-                                setEditableField((prev) => ({ ...prev, format: e.value }))
-                            }
-                        />
-                        <label htmlFor={ 'format-' + editableField.id }>{ t("FORMS.formats") }</label>
-                    </FloatLabel>
+                    <Dropdown
+                        className="w-full"
+                        options={ formatLabels }
+                        value={ editableField.format }
+                        label={ t("FORMS.formats") }
+                        id={ 'format-' + editableField.id }
+                        onChange={ (e) =>
+                            setEditableField((prev) => ({ ...prev, format: e.value }))
+                        }
+                    />
 
                     { module === 'verifier' && (
                         <>

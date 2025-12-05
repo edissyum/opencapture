@@ -34,13 +34,13 @@ import {
     Trash2,
     UsersRound
 } from "lucide-react";
-import { Dropdown } from "primereact/dropdown";
 import { RadioButton } from "primereact/radiobutton";
 
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
 import { Grid } from "../../components/list/Grid";
 import { Table } from "../../components/list/Table";
+import { Dropdown } from "../../components/Dropdown";
 import { Thumbnail } from "../../components/Thumbnail";
 import { showToast } from "../../components/ToastProvider";
 import MultiSelectInput from "../../components/MultiSelect";
@@ -521,7 +521,7 @@ export function VerifierListPage() {
                                     id="customers_select"
                                     options={ listCustomers }
                                     value={ selectedCustomers?.map(Number) ?? [] }
-                                    placeholder={ t('ACCOUNTS.search_customers') }
+                                    label={ t('ACCOUNTS.search_customers') }
                                     onChange={ (e) => {
                                         setSelectedCustomers(e.value);
                                     } }
@@ -544,13 +544,13 @@ export function VerifierListPage() {
                         { open.forms && (
                             <div className='mt-2'>
                                 <Dropdown
-                                    filter
+                                    filter={ true }
                                     id="folder_destination"
                                     value={ selectedForm }
-                                    placeholder={ t('VERIFIER.search_form') }
+                                    className="w-full mb-2"
+                                    label={ t('VERIFIER.search_form') }
                                     options={ listForms.map((form: any) => ({ label: form.label, value: form.id })) }
                                     onChange={ (e) => setSelectedForm(e.value) }
-                                    className="w-full mb-2"
                                 />
                             </div>
                         ) }
@@ -575,7 +575,7 @@ export function VerifierListPage() {
                                     options={ listSuppliers }
                                     filterBy="name,lastname,firstname"
                                     value={ selectedSuppliers.map(Number) ?? [] }
-                                    placeholder={ t('ACCOUNTS.search_suppliers') }
+                                    label={ t('ACCOUNTS.search_suppliers') }
                                     itemTemplate={ (option) => (
                                         <span className='flex items-center gap-0.5'>
                                             { option.name }

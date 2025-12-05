@@ -47,7 +47,7 @@ import { SettingsVerifierFormsCreate } from "./pages/settings/verifier/forms/cre
 import { SettingsSplitterFormsCreate } from "./pages/settings/splitter/forms/create";
 import { SettingsSplitterFormsEditor } from "./pages/settings/splitter/forms/editor";
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
-import { SettingsGeneralUserEditor } from "./pages/settings/general/users/editor.tsx";
+import { SettingsGeneralUserEditor } from "./pages/settings/general/users/editor";
 
 export const router = createBrowserRouter(
     [

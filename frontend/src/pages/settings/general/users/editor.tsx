@@ -33,9 +33,12 @@ export function SettingsGeneralUserEditor() {
     const navigate = useNavigate();
     const { user: loggedUser, loadingUser } = useUser();
 
+    const { userId } = useParams<{ userId: any }>();
+
     const [user, setUser] = useState<any>({});
     const [roles, setRoles] = useState<any[]>([]);
-    const { userId } = useParams<{ userId: any }>();
+    const [forms, setForms] = useState<any[]>([]);
+    const [customers, setCustomers] = useState<any[]>([]);
 
     const connectionModes = [
         { id: 'standard', label: t('USERS.standard') },
@@ -106,15 +109,35 @@ export function SettingsGeneralUserEditor() {
         }))
     });
 
+    const settingsSchema = z.object({
+        forms: z.array(z.number()).describe(JSON.stringify({
+            component: "multi_select",
+            options: forms.map((form: any) => ({
+                value: form.id,
+                label: form.label
+            })),
+            label: t("USERS.forms")
+        })),
+        customers: z.array(z.number()).describe(JSON.stringify({
+            component: "multi_select",
+            required: true,
+            options: customers.map((cutomers: any) => ({
+                value: cutomers.id,
+                label: cutomers.name
+            })),
+            label: t("USERS.customers")
+        }))
+    });
+
     const { control, watch, setValue, setError, clearErrors, handleSubmit, formState: { errors } } = useForm({
-        resolver: zodResolver(detailsSchema.extend(securitySchema.shape)),
+        resolver: zodResolver(detailsSchema.extend(securitySchema.shape).extend(settingsSchema.shape)),
         defaultValues: {},
         mode: "onChange"
     });
 
     const [loading, setLoading] = useState<boolean>(false);
 
-    // Fetch roles for role dropdown
+    // Fetch roles, forms and customers
     useEffect(() => {
         if (loadingUser) return;
 
@@ -127,7 +150,37 @@ export function SettingsGeneralUserEditor() {
             }
         };
 
+        const fetchVerifierForms = async () => {
+            try {
+                const response = await get(`/forms/verifier/list`) || [];
+                setForms((prevForms) => ([...prevForms, ...response.forms]));
+            } catch (error) {
+                console.error('Error fetching verifier forms :', error);
+            }
+        };
+
+        const fetchSplitterForms = async () => {
+            try {
+                const response = await get(`/forms/splitter/list`) || [];
+                setForms((prevForms) => ([...prevForms, ...response.forms]));
+            } catch (error) {
+                console.error('Error fetching splitter forms :', error);
+            }
+        };
+
+        const fetchCustomers = async () => {
+            try {
+                const response = await get(`/accounts/customers/list`) || [];
+                setCustomers(response.customers);
+            } catch (error) {
+                console.error('Error fetching customers :', error);
+            }
+        }
+
         fetchRoles().then();
+        fetchVerifierForms().then();
+        fetchSplitterForms().then();
+        fetchCustomers().then();
     }, [loadingUser]);
 
     // Fetch user data if editing an existing user
@@ -143,7 +196,20 @@ export function SettingsGeneralUserEditor() {
             }
         };
 
-        fetchUser().then();
+        fetchUser().then(async () => {
+            // Also fetch forms and customers associated with the user
+            const response_forms = await get(`/users/getFormsByUserId/${ userId }`);
+            setUser((prevUser: any) => ({
+                ...prevUser,
+                forms: response_forms
+            }));
+
+            const response_customers = await get(`/users/getCustomersByUserId/${ userId }`);
+            setUser((prevUser: any) => ({
+                ...prevUser,
+                customers: response_customers
+            }));
+        });
     }, [userId]);
 
     // Fill form when user data is loaded
@@ -160,8 +226,6 @@ export function SettingsGeneralUserEditor() {
         setLoading(true);
 
         try {
-            data.forms = [];
-            data.customers = [];
             await post(`/users/create`, data);
             showToast(t('ROLES.create_success'), 'success');
             navigate('/settings/general/users');
@@ -176,7 +240,6 @@ export function SettingsGeneralUserEditor() {
         if (errors && Object.keys(errors).length > 0) return;
 
         setLoading(true);
-
         try {
             await put(`/users/update/${ userId }`, data);
             showToast(t('USERS.update_success'), 'success');
@@ -205,44 +268,49 @@ export function SettingsGeneralUserEditor() {
         }
     }, [password, passwordCheck]);
 
-
     return (
         <div className="p-8 bg-(--bg-secondary) h-full overflow-y-auto">
-            <div className='flex items-center gap-1 text-(--text-secondary) cursor-pointer mb-4 w-fit'
-                 onClick={ () => navigate('/settings/general/users') }>
-                <ArrowLeft/>
-                { t('USERS.list') }
-            </div>
-            <h1 className="text-xl font-bold mb-4">
-                { userId ? t('USERS.editing') : t('USERS.new_user') }
-            </h1>
-            <h1 className="text-lg font-semibold mb-4">
-                { t('ROLES.details') }
-            </h1>
-            <div className='w-1/3 flex flex-col gap-4 my-6'>
-                <DynamicForm errors={ errors } control={ control } labelFusion={ true } schema={ detailsSchema }/>
-            </div>
-
-            <h1 className="text-lg font-semibold mb-4">
-                { t('USERS.security') }
-            </h1>
-
             <div className='w-1/3'>
-                <DynamicForm errors={ errors } control={ control } labelFusion={ true } schema={ securitySchema }/>
-            </div>
+                <div className='flex items-center gap-1 text-(--text-secondary) cursor-pointer mb-4 w-fit'
+                     onClick={ () => navigate('/settings/general/users') }>
+                    <ArrowLeft/>
+                    { t('USERS.list') }
+                </div>
+                <h1 className="text-xl font-bold mb-4">
+                    { userId ? t('USERS.editing') : t('USERS.new_user') }
+                </h1>
 
-            <div className="mt-6">
-                { userId ? (
-                    <Button onClick={ handleSubmit(handleUpdate) }
-                            disabled={ loading || Object.keys(errors).length > 0 }>
-                        { loading ? t('USERS.updating') : t('USERS.update_user') }
-                    </Button>
-                ) : (
-                    <Button onClick={ handleSubmit(handleCreate) }
-                            disabled={ loading || Object.keys(errors).length > 0 }>
-                        { loading ? t('USERS.creating') : t('USERS.create_user') }
-                    </Button>
-                ) }
+                <h1 className="text-lg font-semibold mb-4">
+                    { t('ROLES.details') }
+                </h1>
+
+                <DynamicForm errors={ errors } control={ control } labelFusion={ true } schema={ detailsSchema }/>
+
+                <h1 className="text-lg font-semibold mb-4">
+                    { t('USERS.security') }
+                </h1>
+
+                <DynamicForm errors={ errors } control={ control } labelFusion={ true } schema={ securitySchema }/>
+
+                <h1 className="text-lg font-semibold mb-4">
+                    { t('USERS.settings') }
+                </h1>
+
+                <DynamicForm errors={ errors } control={ control } labelFusion={ true } schema={ settingsSchema }/>
+
+                <div className="mt-6 w-fit">
+                    { userId ? (
+                        <Button onClick={ handleSubmit(handleUpdate) }
+                                disabled={ loading || Object.keys(errors).length > 0 }>
+                            { loading ? t('USERS.updating') : t('USERS.update_user') }
+                        </Button>
+                    ) : (
+                        <Button onClick={ handleSubmit(handleCreate) }
+                                disabled={ loading || Object.keys(errors).length > 0 }>
+                            { loading ? t('USERS.creating') : t('USERS.create_user') }
+                        </Button>
+                    ) }
+                </div>
             </div>
         </div>
     );

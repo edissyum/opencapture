@@ -21,7 +21,8 @@ import { InputSwitch } from "primereact/inputswitch";
 import Input from "../Input";
 import { RadioBox } from "../RadioBox";
 import { Checkbox } from "../Checkbox";
-import { Dropdown } from "../Dropdown.tsx";
+import { Dropdown } from "../Dropdown";
+import MultiSelectInput from "../MultiSelect";
 
 export function DynamicForm({ schema, control, errors, labelFusion = false }: any) {
     const extractFieldsFromSchema = (schema: any) => {
@@ -81,6 +82,27 @@ export function DynamicForm({ schema, control, errors, labelFusion = false }: an
                         ) }
                     />
                 );
+            case "multi_select":
+                return (
+                    <Controller
+                        key={ field.name }
+                        name={ field.name }
+                        control={ control }
+                        render={ ({ field: f }) => (
+                            <MultiSelectInput
+                                id={ f.name }
+                                className="mb-7"
+                                optionValue="value"
+                                optionLabel="label"
+                                value={ f.value }
+                                label={ field.label }
+                                options={ field.options }
+                                labelFusion={ labelFusion }
+                                onChange={ e => f.onChange(e.value) }
+                            />
+                        ) }
+                    />
+                );
             case "radio_box":
                 return (
                     <Controller
@@ -96,7 +118,7 @@ export function DynamicForm({ schema, control, errors, labelFusion = false }: an
                                         value={ option.value }
                                         checked={ f.value === option.value }
                                         onChange={ () => f.onChange(option.value) }/>
-                                    ))
+                                ))
                                 }
                             </div>
                         ) }
@@ -113,11 +135,10 @@ export function DynamicForm({ schema, control, errors, labelFusion = false }: an
                                 id={ f.name }
                                 className="mb-7"
                                 value={ f.value }
-                                options={ field.options }
-                                onChange={ e => f.onChange(e.value) }
-                                placeholder={ field.placeholder || t('SELECT.select_option') }
                                 label={ field.label }
+                                options={ field.options }
                                 labelFusion={ labelFusion }
+                                onChange={ e => f.onChange(e.value) }
                             />
                         ) }
                     />
