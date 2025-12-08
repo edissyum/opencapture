@@ -78,8 +78,8 @@ export function SettingsIndex() {
             </p>
             <div className='flex flex-row flex-wrap gap-4 my-6'>
                 { favoriteOptions &&
-                    favoriteOptions.map((option) => (
-                        <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
+                    favoriteOptions.map((option, index) => (
+                        <SettingsCard key={ index } icon={ option['icon'] } title={ option['name'] }
                                       description={ option['description'] } to={ option['href'] }
                                       module={ option['module'] ?? false }/>
                     ))

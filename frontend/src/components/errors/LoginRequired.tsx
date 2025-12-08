@@ -27,9 +27,13 @@ export default function LoginRequiredError() {
 
     useEffect(() => {
         if (isRouteErrorResponse(error) && error.status === 401) {
-            showToast(t('ERROR.login_required'), "error");
-            navigate("/login");
+            const accessToken = sessionStorage.getItem("accessToken");
+            if (!accessToken) {
+                showToast(t('ERROR.login_required'), "error");
+                navigate("/login");
+            }
         }
+
     }, [error, navigate]);
 
     return null;

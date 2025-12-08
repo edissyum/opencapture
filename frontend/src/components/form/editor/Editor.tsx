@@ -359,7 +359,6 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
 
         setIsSubmitting(true);
         const payload: any = {};
-        console.log(zones)
         zones.forEach((zone: any) => {
             const key = zone.id.replace("zone-", "");
             payload[key] = zone.lines.map((line: any) =>

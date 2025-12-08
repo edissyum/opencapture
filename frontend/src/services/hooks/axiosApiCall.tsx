@@ -22,6 +22,8 @@ import axios, { type AxiosRequestConfig } from "axios";
 import { BACKEND_URL } from "../config";
 import { useCustom } from "../custom/customContext";
 import { showToast } from "../../components/ToastProvider";
+import { useNavigate } from "react-router-dom";
+import { isRefreshing, setIsRefreshing } from "./authRefreshState.tsx";
 
 interface AxiosCustomRequestConfig extends AxiosRequestConfig {
     showErrorToast?: boolean;
@@ -30,6 +32,8 @@ interface AxiosCustomRequestConfig extends AxiosRequestConfig {
 
 export function axiosApiCall() {
     const custom = useCustom();
+    const navigate = useNavigate();
+
     const api = axios.create({
         headers: {
             "Content-Type": "application/json",
@@ -51,8 +55,9 @@ export function axiosApiCall() {
         res => res,
         async err => {
             const originalRequest = err.config;
-            if (err.response?.status === 401 && !originalRequest._retry && !originalRequest.url.includes('/auth/login')) {
+            if (err.response?.status === 401 && !originalRequest._retry && !isRefreshing && !originalRequest.url.includes('/auth/login')) {
                 originalRequest._retry = true;
+                setIsRefreshing(true);
 
                 const refreshToken = sessionStorage.getItem("refreshToken");
                 if (!refreshToken) {
@@ -74,14 +79,17 @@ export function axiosApiCall() {
                     );
                     const newAccessToken = refreshRes.data.token;
                     if (newAccessToken) {
+                        setIsRefreshing(false);
                         sessionStorage.setItem("accessToken", newAccessToken);
                         originalRequest.headers.Authorization = `Bearer ${ newAccessToken }`;
                         sessionStorage.setItem("user", JSON.stringify(refreshRes.data.user));
                         return api.request(originalRequest);
                     }
                 } catch (refreshErr) {
+                    setIsRefreshing(false);
                     showToast(t('AUTH.session_expired'), "error");
                     sessionStorage.clear();
+                    navigate('/login');
                     return Promise.reject(refreshErr);
                 }
             }
@@ -115,6 +123,11 @@ export function axiosApiCall() {
             });
             return res.data;
         } catch (err: any) {
+            if (err.response?.status === 401) {
+                // Handled by interceptor
+                return null;
+            }
+
             setError(err.message || "Erreur inconnue");
             if (config.showErrorToast !== false) {
                 if (err.response && err.response.data && err.response.data.message) {

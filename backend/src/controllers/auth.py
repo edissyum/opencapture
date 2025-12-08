@@ -119,13 +119,13 @@ def get_user(user_info):
 
 
 def refresh(token):
+    user_id = None
     try:
         payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms="HS512")
         user_id = payload['sub']
 
         user_info = user.get_user_by_id({'select': ['refresh_token'], 'user_id': user_id})
         if user_info:
-            user.update_user({'set': {'refresh_token': ''}, 'user_id': user_id})
             if user_info[0]['refresh_token'] == token:
                 res = {
                     'token': encode_auth_token(user_id)[0],
@@ -133,11 +133,16 @@ def refresh(token):
                 }
                 return res, 200
             else:
+                user.update_user({'set': {'refresh_token': ''}, 'user_id': user_id})
                 return '', 401
     except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
             jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
         error_message = str(_e)
         code = 500
+
+        if user_id:
+            user.update_user({'set': {'refresh_token': ''}, 'user_id': user_id})
+
         if error_message == 'Signature has expired':
             code = 401
             error_message = gettext('SESSION_EXPIRED')
