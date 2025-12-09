@@ -14,7 +14,6 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { t } from "i18next";
 import { Controller } from "react-hook-form";
 import { InputSwitch } from "primereact/inputswitch";
 
@@ -24,7 +23,7 @@ import { Checkbox } from "../Checkbox";
 import { Dropdown } from "../Dropdown";
 import MultiSelectInput from "../MultiSelect";
 
-export function DynamicForm({ schema, control, errors, labelFusion = false }: any) {
+export function DynamicForm({ schema, control, errors, labelFusion = false, gap = 4 }: any) {
     const extractFieldsFromSchema = (schema: any) => {
         const shape = schema._def.shape;
         return Object.entries(shape).map(([name, zodType]: any) => {
@@ -48,15 +47,24 @@ export function DynamicForm({ schema, control, errors, labelFusion = false }: an
                         control={ control }
                         render={ ({ field: f }) => (
                             <Input
+                                label={ field.label }
+                                value={ f.value ?? "" }
                                 required={ field.required }
                                 disabled={ field.disabled }
-                                label={ field.label }
-                                type={ field.type || "text" }
                                 labelFusion={ labelFusion }
+                                type={ field.type || "text" }
                                 placeholder={ field.placeholder }
                                 error={ errors[field.name]?.message }
-                                value={ f.value ?? "" }
-                                onChange={ e => f.onChange(e.target.value) }
+                                onChange={ e => {
+                                    const value = e.target.value
+
+                                    if (field.type === 'number') {
+                                        // valueAsNumber doesn't work with Controller, so we convert manually
+                                        f.onChange(value === '' ? undefined : Number(value));
+                                    } else {
+                                        f.onChange(value);
+                                    }
+                                } }
                                 onBlur={ f.onBlur }
                             />
                         ) }
@@ -76,7 +84,7 @@ export function DynamicForm({ schema, control, errors, labelFusion = false }: an
                                     onChange={ e => f.onChange(e.value) }
                                 />
                                 <label htmlFor={ f.name } className='cursor-pointer'>
-                                    { t('ROLES.enabled') }
+                                    { field.label }
                                 </label>
                             </div>
                         ) }
@@ -161,6 +169,6 @@ export function DynamicForm({ schema, control, errors, labelFusion = false }: an
         }
     };
 
-    return <div className="space-y-4">{ fields.map(renderField) }</div>;
+    return <div className={ `flex flex-col gap-${ gap }` }>{ fields.map(renderField) }</div>;
 }
 

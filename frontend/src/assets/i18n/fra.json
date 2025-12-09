@@ -173,7 +173,7 @@
         "disable": "Désactiver",
         "enable": "Activer",
         "delete": "Supprimer",
-        "save_settings": "Sauvegarder les paramètres",
+        "save_settings": "Enregistrer les paramètres",
         "saving": "Sauvegarde en cours...",
         "older": "Lots ancien",
         "today": "Lots du jour",
@@ -586,5 +586,19 @@
         "search_form": "Rechercher un formulaire",
         "erase_filters": "Effacer les filtres",
         "facturation": "Traitement"
+    },
+    "SECURITY": {
+        "default_auth": "Authentification par défaut",
+        "generate_auth_token": "Pour générer un token d'authentification,",
+        "here": "c'est par ici",
+        "ldap_auth": "Authentification LDAP",
+        "password_rules": "Règles de sécurité des mot de passe",
+        "min_length": "Nombre minimum de caractères",
+        "number_mandatory": "Présence d'un chiffre obligatoire",
+        "special_char_mandatory": "Présence d'un caractère spécial obligatoire",
+        "upper_case_mandatory": "Présence d'une majuscule obligatoire",
+        "enable_min_length": "Activer la taille minimale",
+        "enabled_login_method_updated_successfully": "Méthode d'authentification par défaut mise à jour avec succès",
+        "password_rules_updated_successfully": "Règles de sécurité des mots de passe mises à jour avec succès"
     }
 }

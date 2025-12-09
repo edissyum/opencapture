@@ -193,7 +193,6 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
             console.error("Erreur lors de la mise à jour du process : " + err);
         }
         setLoading(false);
-
     }
 
     return (

@@ -48,6 +48,7 @@ import { SettingsSplitterFormsCreate } from "./pages/settings/splitter/forms/cre
 import { SettingsSplitterFormsEditor } from "./pages/settings/splitter/forms/editor";
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
 import { SettingsGeneralUserEditor } from "./pages/settings/general/users/editor";
+import { SettingsGeneralSecurity } from "./pages/settings/general/security.tsx";
 
 export const router = createBrowserRouter(
     [
@@ -135,6 +136,13 @@ export const router = createBrowserRouter(
                             element: <SettingsGeneralAdvanced/>,
                             errorElement: <LoginRequiredError/>,
                             handle: { breadcrumb: 'SETTINGS.advanced' }
+                        },
+                        {
+                            path: "security",
+                            loader: protectedLoader,
+                            element: <SettingsGeneralSecurity/>,
+                            errorElement: <LoginRequiredError/>,
+                            handle: { breadcrumb: 'SETTINGS.security' }
                         },
                         {
                             path: "users",
