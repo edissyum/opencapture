@@ -23,7 +23,7 @@ import { Checkbox } from "../Checkbox";
 import { Dropdown } from "../Dropdown";
 import MultiSelectInput from "../MultiSelect";
 
-export function DynamicForm({ schema, control, errors, labelFusion = false, gap = 4 }: any) {
+export function DynamicForm({ schema, control, errors, labelFusion = false, gap = 4, grid = false }: any) {
     const extractFieldsFromSchema = (schema: any) => {
         const shape = schema._def.shape;
         return Object.entries(shape).map(([name, zodType]: any) => {
@@ -49,6 +49,7 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                             <Input
                                 label={ field.label }
                                 value={ f.value ?? "" }
+                                hint={ field.hint ?? "" }
                                 required={ field.required }
                                 disabled={ field.disabled }
                                 labelFusion={ labelFusion }
@@ -99,10 +100,10 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                         render={ ({ field: f }) => (
                             <MultiSelectInput
                                 id={ f.name }
-                                className="mb-7"
+                                className="mb-4"
+                                value={ f.value }
                                 optionValue="value"
                                 optionLabel="label"
-                                value={ f.value }
                                 label={ field.label }
                                 options={ field.options }
                                 labelFusion={ labelFusion }
@@ -141,11 +142,12 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                         render={ ({ field: f }) => (
                             <Dropdown
                                 id={ f.name }
-                                className="mb-7"
                                 value={ f.value }
                                 label={ field.label }
                                 options={ field.options }
                                 labelFusion={ labelFusion }
+                                required ={ field.required }
+                                error={ errors[field.name]?.message }
                                 onChange={ e => f.onChange(e.value) }
                             />
                         ) }
@@ -159,8 +161,8 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                         control={ control }
                         render={ ({ field: f }) => (
                             <Checkbox
-                                label={ field.label }
                                 checked={ f.value }
+                                label={ field.label }
                                 onChange={ f.onChange }
                             />
                         ) }
@@ -169,6 +171,6 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
         }
     };
 
-    return <div className={ `flex flex-col gap-${ gap }` }>{ fields.map(renderField) }</div>;
+    return <div
+        className={ `${ grid ? `grid grid-cols-${ grid }` : `flex flex-col` } gap-${ gap }` }>{ fields.map(renderField) }</div>;
 }
-

@@ -17,30 +17,52 @@
 import { z } from "zod";
 import { t } from "i18next";
 import { useForm } from "react-hook-form";
-import { ArrowRight } from "lucide-react";
+import { Stepper } from "primereact/stepper";
 import { useEffect, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { InputSwitch } from "primereact/inputswitch";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { StepperPanel } from "primereact/stepperpanel";
 import { Accordion, AccordionTab } from "primereact/accordion";
 
 import { Button } from "../../../components/Button";
 import { RadioBox } from "../../../components/RadioBox";
+import { showToast } from "../../../components/ToastProvider";
 import { DynamicForm } from "../../../components/form/DynamicForm";
+
+import { useUser } from "../../../services/hooks/useUser";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
-import { showToast } from "../../../components/ToastProvider.tsx";
 
 export function SettingsGeneralSecurity() {
+    const { user, loadingUser } = useUser();
     const { get, put, post } = axiosApiCall();
 
     const hasFetched = useRef(false);
+    const stepperRef = useRef<any>(null);
 
+    const [roles, setRoles] = useState<any>([]);
     const [activeIndex, setActiveIndex] = useState<number[]>([]);
+    const [stepperIndex, setStepperIndex] = useState(0);
+    const [loading, setLoading] = useState<boolean>(false);
     const [defaultAuth, setDefaultAuth] = useState<string>('');
-    const [passwordRules, setPasswordRules] = useState<any>(null);
     const [enabledAuth, setEnabledAuth] = useState<string>('default');
 
-    const default_schema = z.object({
-        minLength: z.number().min(0).describe(JSON.stringify({
+    useEffect(() => {
+        if (loadingUser) return;
+
+        const fetchRoles = async () => {
+            try {
+                const response = await get(`/roles/list/user/${ user.id }`, {});
+                setRoles(response.roles);
+            } catch (error) {
+                console.error('Error while fetching roles :', error);
+            }
+        }
+        fetchRoles().then();
+    }, [user, loadingUser]);
+
+    const defaultSchema = z.object({
+        minLength: z.number().describe(JSON.stringify({
             component: "input",
             type: "number",
             valueAsNumber: true,
@@ -60,14 +82,138 @@ export function SettingsGeneralSecurity() {
         }))
     });
 
-    const { control, setValue, handleSubmit, watch, formState: { errors } } = useForm({
-        resolver: zodResolver(default_schema),
+    const ldapConnectionSchema = z.object({
+        typeAD: z.enum(['openLDAP', 'adLDAP']).describe(JSON.stringify({
+            component: "dropdown",
+            required: enabledAuth === 'ldap',
+            label: t("SECURITY.ldap_ad_type"),
+            options: [
+                { label: 'openLDAP', value: 'openLDAP' },
+                { label: 'adLDAP', value: 'adLDAP' }
+            ]
+        })),
+        host: z.string().min(1).describe(JSON.stringify({
+            component: "input",
+            required: enabledAuth === 'ldap',
+            label: t("SECURITY.ldap_host")
+        })),
+        port: z.number().min(1).max(65535).describe(JSON.stringify({
+            type: "number",
+            component: "input",
+            valueAsNumber: true,
+            required: enabledAuth === 'ldap',
+            label: t("SECURITY.ldap_port")
+        })),
+        loginAdmin: z.string().min(1).describe(JSON.stringify({
+            component: "input",
+            required: enabledAuth === 'ldap',
+            label: t("SECURITY.ldap_admin_login")
+        })),
+        passwordAdmin: z.string().min(1).describe(JSON.stringify({
+            type: "password",
+            component: "input",
+            required: enabledAuth === 'ldap',
+            label: t("SECURITY.ldap_admin_password")
+        })),
+        baseDN: z.string().min(1).describe(JSON.stringify({
+            component: "input",
+            required: enabledAuth === 'ldap',
+            label: t("SECURITY.ldap_base_dn"),
+            hint: t('SECURITY.ldap_base_dn_hint')
+        })),
+        prefix: z.string().optional().describe(JSON.stringify({
+            required: false,
+            component: "input",
+            label: t("SECURITY.ldap_prefix"),
+            hint: t('SECURITY.ldap_prefix_hint')
+        })),
+        suffix: z.string().optional().describe(JSON.stringify({
+            required: false,
+            component: "input",
+            label: t("SECURITY.ldap_suffix"),
+            hint: t('SECURITY.ldap_suffix_hint')
+        }))
+    });
+
+    const getZodString = () => {
+        return enabledAuth === 'ldap' && stepperIndex == 1
+            ? z.string().min(1)
+            : z.string().optional();
+    };
+    const ldapSynchronisationSchema = z.object({
+        attributSourceUser: getZodString().describe(JSON.stringify({
+            component: "input",
+            required: enabledAuth === 'ldap' && stepperIndex == 1,
+            label: t("SECURITY.ldap_attribut_source_user"),
+            hint: t('SECURITY.ldap_attribut_source_user_hint')
+        })),
+        classObject: getZodString().describe(JSON.stringify({
+            component: "input",
+            required: enabledAuth === 'ldap' && stepperIndex == 1,
+            label: t("SECURITY.ldap_class_object"),
+            hint: t('SECURITY.ldap_class_object_hint')
+        })),
+        classUser: getZodString().describe(JSON.stringify({
+            component: "input",
+            required: enabledAuth === 'ldap' && stepperIndex == 1,
+            label: t("SECURITY.ldap_class_user"),
+            hint: t('SECURITY.ldap_class_user_hint')
+        })),
+        attributFirstName: getZodString().describe(JSON.stringify({
+            component: "input",
+            required: enabledAuth === 'ldap' && stepperIndex == 1,
+            label: t("SECURITY.ldap_attribute_first_name"),
+            hint: t('SECURITY.ldap_attribute_first_name_hint')
+        })),
+        attributLastName: getZodString().describe(JSON.stringify({
+            component: "input",
+            required: enabledAuth === 'ldap' && stepperIndex == 1,
+            label: t("SECURITY.ldap_attribute_last_name"),
+            hint: t('SECURITY.ldap_attribute_last_name_hint')
+        })),
+        usersDN: getZodString().describe(JSON.stringify({
+            component: "input",
+            required: enabledAuth === 'ldap' && stepperIndex == 1,
+            label: t("SECURITY.ldap_users_dn"),
+            hint: t('SECURITY.ldap_users_dn_hint')
+        })),
+        attributRoleDefault: z.number().describe(JSON.stringify({
+            component: "dropdown",
+            required: enabledAuth === 'ldap' && stepperIndex == 1,
+            label: t("SECURITY.attribut_role_default"),
+            options: roles.map((role: any) => ({
+                value: role.id,
+                label: role.label
+            }))
+        }))
+    });
+
+    const {
+        control: defaultControl,
+        setValue: defaultSetValue,
+        handleSubmit: defaultHandleSubmit,
+        watch: defaultWatch,
+        formState: { errors: defaultErrors }
+    } = useForm({
+        resolver: zodResolver(defaultSchema),
         defaultValues: {},
         mode: "onChange"
     });
 
-    const currentMinLength = watch('minLength');
+    const {
+        control: ldapControl,
+        setValue: ldapSetValue,
+        handleSubmit: ldapHandleSubmit,
+        formState: { errors: ldapErrors }
+    } = useForm({
+        resolver: zodResolver(ldapConnectionSchema.extend(ldapSynchronisationSchema.shape)),
+        defaultValues: {},
+        mode: "onChange"
+    });
 
+    const currentMinLength = defaultWatch('minLength');
+
+    // Fetch enabled authentication method, password rules and ldap settings
     useEffect(() => {
         if (hasFetched.current) return;
 
@@ -89,43 +235,74 @@ export function SettingsGeneralSecurity() {
         const fetchPasswordRules = async () => {
             const res = await get('/config/getConfiguration/passwordRules');
             if (res.configuration) {
-                setPasswordRules(res.configuration[0].data.value);
+                Object.entries(res.configuration[0].data.value).forEach(([key, value]: any) => {
+                    defaultSetValue(key, value);
+                });
+            }
+        };
+
+        const fetchLdapSettings = async () => {
+            const res = await get('/auth/retrieveLdapConfigurations');
+            if (res.ldap_configurations) {
+                Object.entries(res.ldap_configurations[0].data).forEach(([key, value]: any) => {
+                    if (key === 'port') {
+                        value = Number(value);
+                    }
+                    ldapSetValue(key, value);
+                });
             }
         };
 
         fetchEnabledAuth().then();
         fetchPasswordRules().then();
+        fetchLdapSettings().then();
     }, [])
 
-    // Fill form when password rules data is loaded
-    useEffect(() => {
-        if (!passwordRules) return;
-
-        Object.entries(passwordRules).forEach(([key, value]: any) => {
-            setValue(key, value);
-        });
-    }, [passwordRules]);
-
     const handleUpdate: any = async (data: FormData) => {
-        try {
-            await put('/config/updateConfiguration/passwordRules', {
-                value: data
-            });
-            showToast(t('SECURITY.password_rules_updated_successfully'), 'success');
-        } catch (error) {
-            console.error('Error updating password rules:', error);
+
+        if (enabledAuth === 'default') {
+            try {
+                await put('/config/updateConfiguration/passwordRules', { value: data });
+                showToast(t('SECURITY.password_rules_updated_successfully'), 'success');
+            } catch (error) {
+                console.error('Error updating password rules :', error);
+            }
+        } else if (enabledAuth === 'ldap') {
+            try {
+                await post('/auth/saveLoginMethodConfig', data);
+                showToast(t('SECURITY.ldap_settings_updated_successfully'), 'success');
+            } catch (error) {
+                console.error('Error updating LDAP settings :', error);
+            }
         }
 
         if (enabledAuth !== defaultAuth) {
             try {
-                await post('/auth/enableLoginMethodName', {
-                    method_name: enabledAuth
-                });
+                await post('/auth/enableLoginMethodName', { method_name: enabledAuth });
                 showToast(t('SECURITY.enabled_login_method_updated_successfully'), 'success');
             } catch (error) {
-                console.error('Error updating enabled authentication method:', error);
+                console.error('Error updating enabled authentication method :', error);
             }
         }
+    };
+
+    const handleNextStep: any = (data: FormData) => {
+        if (data && Object.keys(ldapErrors).length > 0) {
+            return;
+        }
+        stepperRef.current?.nextCallback();
+    }
+
+    const handlePreviousStep = () => stepperRef.current?.prevCallback();
+
+    const handleTestConnexion: any = (data: FormData) => {
+        setLoading(true);
+        // Simulate API call
+        setTimeout(() => {
+            setLoading(false);
+            showToast(t('MAILCOLLECT.ldap_connection_successful'), 'success');
+            handleNextStep(data);
+        }, 2000);
     };
 
     return (
@@ -137,7 +314,7 @@ export function SettingsGeneralSecurity() {
                 { t('SECURITY.here') }
                 <ArrowRight size={ 18 }/>
             </p>
-            <Accordion multiple activeIndex={ activeIndex } onTabChange={(e) => setActiveIndex(e.index as number[])}>
+            <Accordion multiple activeIndex={ activeIndex } onTabChange={ (e) => setActiveIndex(e.index as number[]) }>
                 <AccordionTab header={
                     <span className='flex items-center '>
                         <span>{ t('SECURITY.default_auth') }</span>
@@ -162,9 +339,9 @@ export function SettingsGeneralSecurity() {
                                     checked={ currentMinLength > 0 }
                                     onChange={ e => {
                                         if (!e.value) {
-                                            setValue('minLength', 0);
+                                            defaultSetValue('minLength', 0);
                                         } else {
-                                            setValue('minLength', 8);
+                                            defaultSetValue('minLength', 8);
                                         }
                                     } }
                                 />
@@ -172,8 +349,8 @@ export function SettingsGeneralSecurity() {
                                     { t('SECURITY.enable_min_length') }
                                 </label>
                             </div>
-
-                            <DynamicForm schema={ default_schema } control={ control } errors={ errors } gap={ 0 }/>
+                            <DynamicForm schema={ defaultSchema } control={ defaultControl } errors={ defaultErrors }
+                                         gap={ 0 }/>
                         </div>
                     </div>
                 </AccordionTab>
@@ -191,11 +368,55 @@ export function SettingsGeneralSecurity() {
                         </span>
                     </span>
                 }>
+                    <Stepper ref={ stepperRef } linear className='p-4' activeStep={ stepperIndex }
+                             onChangeStep={ (e: any) => setStepperIndex(e.index) }>
+                        <StepperPanel header={ t("MAILCOLLECT.connection") }>
+                            <DynamicForm schema={ ldapConnectionSchema } control={ ldapControl } errors={ ldapErrors }
+                                         grid={ 4 }/>
+                            <div className="flex justify-end mt-6">
+                                <Button onClick={ ldapHandleSubmit(handleTestConnexion) } className="ml-auto px-12"
+                                        data-tooltip-id='tooltip'
+                                        data-tooltip-content={ t("MAILCOLLECT.test_connexion_next") }
+                                        disabled={ loading || Object.keys(ldapErrors).length > 0 }>
+                                    { loading ? (
+                                        t("MAILCOLLECT.loading_test_connexion")
+                                    ) : (
+                                        t("MAILCOLLECT.next")
+                                    ) }
+                                </Button>
+                            </div>
+                        </StepperPanel>
+                        <StepperPanel header={ t("SECURITY.synchronisation") }>
+                            <DynamicForm schema={ ldapSynchronisationSchema } control={ ldapControl }
+                                         errors={ ldapErrors }
+                                         grid={ 4 }/>
+
+                            <div className="flex justify-between mt-6">
+                                <Button onClick={ handlePreviousStep } variant="no_bg"
+                                        className="mr-2 px-12 text-(--color-primary) border-transparent hover:border-(--color-primary)">
+                                    <ArrowLeft/> { t("MAILCOLLECT.previous") }
+                                </Button>
+                                <Button onClick={ ldapHandleSubmit(handleNextStep) }
+                                        disabled={ Object.keys(ldapErrors).length > 0 } className="ml-auto px-12">
+                                    { t("MAILCOLLECT.next") }
+                                </Button>
+                            </div>
+                        </StepperPanel>
+                        <StepperPanel header={ t("SECURITY.launch") }>
+                            <div className="flex justify-between mt-6">
+                                <Button onClick={ handlePreviousStep } variant="no_bg"
+                                        className="mr-2 px-12 text-(--color-primary) border-transparent hover:border-(--color-primary)">
+                                    <ArrowLeft/> { t("MAILCOLLECT.previous") }
+                                </Button>
+                            </div>
+                        </StepperPanel>
+                    </Stepper>
                 </AccordionTab>
             </Accordion>
 
             <div>
-                <Button className='mt-8' onClick={ handleSubmit(handleUpdate) }>
+                <Button className='mt-8'
+                        onClick={ enabledAuth === 'default' ? defaultHandleSubmit(handleUpdate) : ldapHandleSubmit(handleUpdate) }>
                     { t('GLOBAL.save_settings') }
                 </Button>
             </div>

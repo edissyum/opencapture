@@ -192,7 +192,7 @@ export function SettingsGeneralUserEditor() {
                 const response = await get(`/users/getById/${ userId }`);
                 setUser(response);
             } catch (error) {
-                console.error('Error fetching user data:', error);
+                console.error('Error fetching user data :', error);
             }
         };
 
@@ -232,7 +232,7 @@ export function SettingsGeneralUserEditor() {
             setLoading(false);
         } catch (error) {
             setLoading(false);
-            console.error('Error creating user:', error);
+            console.error('Error creating user :', error);
         }
     }
 
@@ -246,7 +246,7 @@ export function SettingsGeneralUserEditor() {
             setLoading(false);
         } catch (error) {
             setLoading(false);
-            console.error('Error updating user:', error);
+            console.error('Error updating user :', error);
         }
     }
 

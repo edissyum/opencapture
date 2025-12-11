@@ -120,7 +120,7 @@ export function SettingsGeneralRoles() {
                 setTotalRoles(response.roles[0]?.total || 0);
                 setRoles(response.roles);
             } catch (error) {
-                console.error('Erreur de récupération des rôles :', error);
+                console.error('Error while fetching roles :', error);
             } finally {
                 setLoadingRoles(false);
             }

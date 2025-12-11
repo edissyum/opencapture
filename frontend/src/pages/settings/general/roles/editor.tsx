@@ -85,7 +85,7 @@ export function SettingsGeneralRoleEditor() {
                 const response = await get(`/roles/getById/${ roleId }`);
                 setRole(response);
             } catch (error) {
-                console.error('Error fetching role data:', error);
+                console.error('Error fetching role data :', error);
             }
         };
 
@@ -111,7 +111,7 @@ export function SettingsGeneralRoleEditor() {
             setLoading(false);
         } catch (error) {
             setLoading(false);
-            console.error('Error creating role:', error);
+            console.error('Error creating role :', error);
         }
     }
 
@@ -124,7 +124,7 @@ export function SettingsGeneralRoleEditor() {
             setLoading(false);
         } catch (error) {
             setLoading(false);
-            console.error('Error updating role:', error);
+            console.error('Error updating role :', error);
         }
     }
 

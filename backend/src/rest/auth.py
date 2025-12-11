@@ -206,7 +206,7 @@ def save_login_method():
 
     check, message = rest_validator(request.json, [
         {'id': 'host', 'type': str, 'mandatory': True},
-        {'id': 'port', 'type': str, 'mandatory': True},
+        {'id': 'port', 'type': int, 'mandatory': True},
         {'id': 'typeAD', 'type': str, 'mandatory': True},
         {'id': 'baseDN', 'type': str, 'mandatory': False},
         {'id': 'prefix', 'type': str, 'mandatory': False},

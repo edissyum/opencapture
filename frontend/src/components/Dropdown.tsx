@@ -22,6 +22,7 @@ import { FloatLabel } from "primereact/floatlabel";
 interface DropdownProps {
     id: any;
     value: any;
+    error?: string;
     label?: string;
     filter?: boolean;
     className?: string;
@@ -37,6 +38,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
     id,
     value,
     label,
+    error,
     options,
     onChange,
     required,
@@ -48,31 +50,36 @@ export const Dropdown: React.FC<DropdownProps> = ({
 }) => {
 
     return (
-        <div className={ `${className} group group-focus-within:border-(--border-primary) relative flex justify-items-stretch` }>
-            <FloatLabel className='w-full'>
-                <PrimeDropdown
-                    id={ id }
-                    value={ value }
-                    filter={ filter }
-                    options={ options }
-                    onChange={ onChange }
-                    disabled={ disabled }
-                    className={ 'w-full' }
-                    placeholder={ placeholder }
-                />
-                { label && (
-                    <label htmlFor={ id }
-                           className={ `select-none ${ labelFusion ? 'group-focus-within:border group-focus-within:border-b-0 ' +
-                               'border-(--border-secondary) group-focus-within:rounded-md ' +
-                               'group-focus-within:rounded-b-none group-focus-within:-top-2! ' +
-                               'group-focus-within:p-0.5 group-focus-within:border-(--border-primary) ' +
-                               'group-hover:border-(--border-primary)' : '' }
+        <div>
+            <div className={ `${className} group group-focus-within:border-(--border-primary) relative flex justify-items-stretch ${ error ? '' : 'mb-4' }`}>
+                <FloatLabel className='w-full'>
+                    <PrimeDropdown
+                        id={ id }
+                        value={ value }
+                        filter={ filter }
+                        options={ options }
+                        onChange={ onChange }
+                        disabled={ disabled }
+                        className={ `w-full ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' }` }
+                        placeholder={ placeholder }
+                    />
+                    { label && (
+                        <label htmlFor={ id }
+                               className={ `select-none ${ labelFusion ? 'group-focus-within:border group-focus-within:border-b-0 ' +
+                                   'border-(--border-secondary) group-focus-within:rounded-md ' +
+                                   'group-focus-within:rounded-b-none group-focus-within:-top-2! ' +
+                                   'group-focus-within:p-0.5 group-focus-within:border-(--border-primary) ' +
+                                   'group-hover:border-(--border-primary)' : '' }
                                ${ value && labelFusion ? 'border border-b-0 rounded-md rounded-b-none -top-2! p-0.5 border-(--border-primary)' : '' }` }>
-                        { label }
-                        { required && <span className="text-(--text-error) ml-1">*</span> }
-                    </label>
-                ) }
-            </FloatLabel>
+                            { label }
+                            { required && <span className="text-(--text-error) ml-1">*</span> }
+                        </label>
+                    ) }
+                </FloatLabel>
+            </div>
+            { error && (
+                <p className="text-(--text-error) text-xs ml-1" dangerouslySetInnerHTML={ { __html: error } }/>
+            ) }
         </div>
     );
 };

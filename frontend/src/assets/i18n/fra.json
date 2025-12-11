@@ -253,7 +253,8 @@
         "new_mailcollect_process": "Nouveau processus MailCollect",
         "process_created": "Processus créé avec succès",
         "process_duplicated": "Processus dupliqué avec succès",
-        "enter_new_process_name_create": "Entrez le nom du nouveau processus MailCollect"
+        "enter_new_process_name_create": "Entrez le nom du nouveau processus MailCollect",
+        "ldap_connection_successful": "Connexion LDAP réussie"
     },
     "ONBOARD": {
         "select_module": "Choix du module par défaut",
@@ -599,6 +600,33 @@
         "upper_case_mandatory": "Présence d'une majuscule obligatoire",
         "enable_min_length": "Activer la taille minimale",
         "enabled_login_method_updated_successfully": "Méthode d'authentification par défaut mise à jour avec succès",
-        "password_rules_updated_successfully": "Règles de sécurité des mots de passe mises à jour avec succès"
+        "password_rules_updated_successfully": "Règles de sécurité des mots de passe mises à jour avec succès",
+        "launch": "Lancement",
+        "synchronisation": "Synchronisation",
+        "ldap_ad_type": "Type d'annuaire",
+        "ldap_admin_login": "Identifiant administrateur LDAP",
+        "ldap_admin_password": "Mot de passe administrateur LDAP",
+        "ldap_base_dn": "Base de recherche (Base DN)",
+        "ldap_host": "Hôte LDAP",
+        "ldap_port": "Port LDAP",
+        "ldap_prefix": "Préfixe LDAP",
+        "ldap_suffix": "Suffixe LDAP",
+        "ldap_base_dn_hint": "exemple: dc=example,dc=com",
+        "ldap_prefix_hint": "exemple: edissyum",
+        "ldap_suffix_hint": "exemple: @domaine-edisslab.com",
+        "ldap_users_dn": "Chemin des utilisateurs (Users DN)",
+        "ldap_users_dn_hint": "exemple: cn=employes,ou=utilisateurs,dc=edissyum,dc=com",
+        "attribut_role_default": "Rôle par défaut",
+        "ldap_attribut_source_user": "Attribut source utilisateur",
+        "ldap_attribut_source_user_hint": "exemple: uid",
+        "ldap_attribute_first_name": "Attribut prénom utilisateur",
+        "ldap_attribute_first_name_hint": "exemple: givenname",
+        "ldap_attribute_last_name": "Attribut nom utilisateur",
+        "ldap_attribute_last_name_hint": "exemple: sn",
+        "ldap_class_object": "Classe objet",
+        "ldap_class_object_hint": "exemple: posixAccount",
+        "ldap_class_user": "Classe utilisateur",
+        "ldap_class_user_hint": "exemple: objectClass",
+        "ldap_settings_updated_successfully": "Paramètres LDAP mis à jour avec succès"
     }
 }

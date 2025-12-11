@@ -243,7 +243,8 @@
         "new_mailcollect_process": "New MailCollect process",
         "process_created": "Process created successfully",
         "process_duplicated": "Process duplicated successfully",
-        "enter_new_process_name_create": "Enter the name of the new MailCollect process"
+        "enter_new_process_name_create": "Enter the name of the new MailCollect process",
+        "ldap_connection_successful": ""
     },
     "ONBOARD": {
         "select_module": "Select default module",
@@ -559,6 +560,33 @@
         "upper_case_mandatory": "Mandatory presence of an uppercase letter",
         "enable_min_length": "Enable minimum length",
         "enabled_login_method_updated_successfully": "",
-        "password_rules_updated_successfully": ""
+        "password_rules_updated_successfully": "",
+        "launch": "",
+        "synchronisation": "",
+        "ldap_ad_type": "",
+        "ldap_admin_login": "",
+        "ldap_admin_password": "",
+        "ldap_base_dn": "",
+        "ldap_host": "",
+        "ldap_port": "",
+        "ldap_prefix": "",
+        "ldap_suffix": "",
+        "ldap_base_dn_hint": "",
+        "ldap_prefix_hint": "",
+        "ldap_suffix_hint": "",
+        "ldap_users_dn": "",
+        "ldap_users_dn_hint": "",
+        "attribut_role_default": "",
+        "ldap_attribut_source_user": "",
+        "ldap_attribut_source_user_hint": "",
+        "ldap_attribute_first_name": "",
+        "ldap_attribute_first_name_hint": "",
+        "ldap_attribute_last_name": "",
+        "ldap_attribute_last_name_hint": "",
+        "ldap_class_object": "",
+        "ldap_class_object_hint": "",
+        "ldap_class_user": "",
+        "ldap_class_user_hint": "",
+        "ldap_settings_updated_successfully": ""
     }
 }

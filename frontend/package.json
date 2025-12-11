@@ -33,12 +33,12 @@
         "react-dom": "^19.2.1",
         "react-dropzone": "^14.3.8",
         "react-hook-form": "^7.68.0",
-        "react-i18next": "^16.4.0",
+        "react-i18next": "^16.4.1",
         "react-router-dom": "^7.10.1",
         "react-toastify": "^11.0.5",
         "react-tooltip": "^5.30.0",
         "tailwindcss": "^4.1.17",
-        "tinymce": "^8.2.2",
+        "tinymce": "^8.3.0",
         "zod": "^4.1.13"
     },
     "devDependencies": {
@@ -51,7 +51,7 @@
         "eslint-plugin-react-refresh": "^0.4.24",
         "globals": "^16.5.0",
         "i18next-scanner": "^4.6.0",
-        "lucide-react": "^0.556.0",
+        "lucide-react": "^0.560.0",
         "typescript": "~5.9.3",
         "typescript-eslint": "^8.49.0",
         "vite": "^7.2.7"
