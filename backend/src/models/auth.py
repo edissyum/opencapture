@@ -208,6 +208,28 @@ def disable_login_method(method_name):
     return login_method_data, error
 
 
+def disable_all_login_method():
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    error = None
+
+    login_method_data = database.update({
+        'table': ['login_methods'],
+        'set': {
+            'enabled': False
+        },
+        'where': ['enabled = %s'],
+        'data': [True]
+    })
+    if login_method_data[0] is False:
+        error = gettext('DISABLE_LOGIN_METHOD_DATA_ERROR')
+    return login_method_data, error
+
+
 def enable_login_method(method_name):
     if 'database' in current_context:
         database = current_context.database

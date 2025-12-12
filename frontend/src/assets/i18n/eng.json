@@ -561,7 +561,6 @@
         "enable_min_length": "Enable minimum length",
         "enabled_login_method_updated_successfully": "",
         "password_rules_updated_successfully": "",
-        "launch": "",
         "synchronisation": "",
         "ldap_ad_type": "",
         "ldap_admin_login": "",
@@ -587,6 +586,10 @@
         "ldap_class_object_hint": "",
         "ldap_class_user": "",
         "ldap_class_user_hint": "",
-        "ldap_settings_updated_successfully": ""
+        "ldap_settings_updated_successfully": "",
+        "using_ldap_connection": "",
+        "test_sync": "",
+        "test_sync_loading": "",
+        "ldap_synchronization_success": ""
     }
 }

@@ -56,7 +56,7 @@ def handle_login(data):
             res = [{
                 "errors": gettext('PGSQL_ERROR'),
                 "message": res.replace('\n', '')
-            }, 401]
+            }, 500]
     elif enabled_login_method and enabled_login_method[0]['method_name'] == 'ldap':
         if res is None:
             if 'token' in data:
@@ -67,6 +67,8 @@ def handle_login(data):
                     role_id = get_user_role_by_username(data['username'])
                     if role_id and role_id == 'superadmin':
                         res = login(data['username'], data['password'], data['lang'])
+                        if res[1] == 200 and data['username'] == 'admin' and data['password'] == 'admin':
+                            res[0]['admin_password_alert'] = 'True'
                     else:
                         configs = get_ldap_configurations()
                         if configs and configs[0]['ldap_configurations']:
@@ -75,17 +77,17 @@ def handle_login(data):
                             error = configs[0]['message']
                             res = [{
                                 "errors": error
-                            }, 401]
+                            }, 400]
                 else:
                     res = [{
                         "errors": gettext('LOGIN_ERROR'),
                         "message": gettext('BAD_AUTHENTICATION')
-                    }, 401]
+                    }, 400]
         else:
             res = [{
                 "errors": gettext('PGSQL_ERROR'),
                 "message": res.replace('\n', '')
-            }, 401]
+            }, 500]
 
     if res[1] == 200:
         res[0]['refresh_token'] = encode_auth_token(res[0]['user']['id'], refresh_token=True)[0]
@@ -628,7 +630,7 @@ def get_enabled_login_method():
             return {
                 "errors": gettext('LOGIN_ERROR'),
                 "message": gettext('SEVERAL_AUTH_METHODS_ENABLED')
-            }, 401
+            }, 500
 
         response = {
             "login_method_name": login_methods_name
@@ -697,6 +699,7 @@ def disable_login_method(method_name):
 
 
 def enable_login_method(method_name):
+    auth.disable_all_login_method()
     _, error = auth.enable_login_method(method_name)
     if error is None:
         return '', 200
@@ -734,7 +737,7 @@ def ldap_connection_bind(ldap_configs, data):
         res = [{
             "errors": gettext('LDAP_CONNECTION_ERROR'),
             "message": gettext('LOGIN_LDAP_ERROR')
-        }, 401]
+        }, 400]
 
     return res
 
@@ -798,7 +801,7 @@ def verify_ldap_server_connection(server_ldap_data):
     if error is None:
         response = ['', 200]
     else:
-        response = [error, 401]
+        response = [error, 400]
 
     return response
 
@@ -809,7 +812,7 @@ def synchronization_ldap_users(ldap_synchronization_data):
     if error is None:
         response = [ldap_synchronization_result, 200]
     else:
-        response = [error, 401]
+        response = [error, 400]
 
     return response
 
@@ -863,7 +866,6 @@ def check_user_ldap_connection(type_ad, domain_ldap, port_ldap, user_dn, user_pa
         return False
 
 
-
 def get_ldap_users(connection, class_user, object_class, users_dn, base_dn):
     try:
         if not users_dn:
@@ -903,10 +905,10 @@ def ldap_users_synchro(ldap_synchronization_data):
         prefix = ldap_synchronization_data['prefix'] if 'prefix' in ldap_synchronization_data else ''
         if type_ad and domain_ldap and port_ldap and username_ldap_admin and password_ldap_admin and base_dn:
             ldap_connection = connection_ldap(type_ad, domain_ldap, port_ldap, username_ldap_admin, password_ldap_admin, base_dn, suffix, prefix)
-            if attribut_source_user and class_user and class_object and attribut_first_name and attribut_last_name and attribut_role_default:
+            if attribut_source_user and attribut_first_name and attribut_last_name and attribut_role_default:
                 if ldap_connection['status_server_ldap']:
-                    list_ldap_users = get_ldap_users(ldap_connection['connection_object'], class_user, class_object, users_dn,
-                                                     base_dn)
+                    list_ldap_users = get_ldap_users(ldap_connection['connection_object'], class_user, class_object,
+                                                     users_dn, base_dn)
                     if list_ldap_users and list_ldap_users['status_search'] is True:
                         ldap_users_data = get_ldap_users_data(list_ldap_users, attribut_source_user, attribut_first_name,
                                                               attribut_last_name)

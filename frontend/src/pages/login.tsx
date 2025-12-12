@@ -21,22 +21,38 @@ import { getI18n, useTranslation } from "react-i18next";
 
 import Input from "../components/Input";
 import { Button } from '../components/Button';
+import { LoginImage } from "../components/LoginImage";
 import { showToast } from "../components/ToastProvider";
 
 import { useCustom } from "../services/custom/customContext";
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
 import { useFormValues } from "../services/hooks/useFormValues";
-import { LoginImage } from "../components/LoginImage";
 
 export function Login() {
     const [loadingLogin, setLoadingLogin] = useState(false);
     const [loginMessage, setLoginMessage] = useState<string>('');
+    const [enabledLoginMethod, setEnabledLoginMethod] = useState<string>('');
 
     const { t } = useTranslation();
-    const navigate = useNavigate();
     const { get, post } = axiosApiCall();
+    const navigate = useNavigate();
 
     const custom = useCustom();
+
+    // Fetch connection method from configuration
+    useEffect(() => {
+        async function fetchEnabledMethod() {
+            const res = await get('/auth/getEnabledLoginMethod');
+            console.log(res)
+            if (res.login_method_name) {
+                setEnabledLoginMethod(res.login_method_name[0].method_name);
+            }
+        }
+
+        fetchEnabledMethod().then();
+    }, []);
+
+    // Fetch login message from configuration if not already set
     useEffect(() => {
         async function getLoginMessage() {
             if (!loginMessage && custom) {
@@ -109,10 +125,8 @@ export function Login() {
                         <Input id="username" type="text" name="username" required error={ errors.username }
                                onChange={ handleChange } label={ t('USERS.username') }/>
                     </div>
-                    <div>
-                        <Input id="password" type="password" name="password" required error={ errors.password }
-                               onChange={ handleChange } label={ t('USERS.password') }/>
-                    </div>
+                    <Input id="password" type="password" name="password" required error={ errors.password }
+                           onChange={ handleChange } label={ t('USERS.password') }/>
 
                     <div className="text-center">
                         <Button disabled={ !custom } loading={ loadingLogin } type="submit" size='md'
@@ -122,6 +136,11 @@ export function Login() {
                         { !custom &&
                             <p className="mt-2 text-sm text-(--text-secondary)">{ t('ERROR.custom_not_provided') }</p> }
                     </div>
+                    { enabledLoginMethod === 'ldap' &&
+                        <p className="mt-4 text-sm text-(--color-primary)/70">
+                            { t('SECURITY.using_ldap_connection') }
+                        </p>
+                    }
                 </form>
             </div>
         </div>

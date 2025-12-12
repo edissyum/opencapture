@@ -601,7 +601,6 @@
         "enable_min_length": "Activer la taille minimale",
         "enabled_login_method_updated_successfully": "Méthode d'authentification par défaut mise à jour avec succès",
         "password_rules_updated_successfully": "Règles de sécurité des mots de passe mises à jour avec succès",
-        "launch": "Lancement",
         "synchronisation": "Synchronisation",
         "ldap_ad_type": "Type d'annuaire",
         "ldap_admin_login": "Identifiant administrateur LDAP",
@@ -627,6 +626,10 @@
         "ldap_class_object_hint": "exemple: posixAccount",
         "ldap_class_user": "Classe utilisateur",
         "ldap_class_user_hint": "exemple: objectClass",
-        "ldap_settings_updated_successfully": "Paramètres LDAP mis à jour avec succès"
+        "ldap_settings_updated_successfully": "Paramètres LDAP mis à jour avec succès",
+        "using_ldap_connection": "Utilisation de la connexion LDAP pour l'authentification des utilisateurs",
+        "test_sync": "Tester la synchronisation",
+        "test_sync_loading": "Test de synchronisation en cours...",
+        "ldap_synchronization_success": "Synchronisation LDAP réussie : {{ data }}"
     }
 }

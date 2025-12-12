@@ -147,15 +147,13 @@ export function SettingsGeneralSecurity() {
             label: t("SECURITY.ldap_attribut_source_user"),
             hint: t('SECURITY.ldap_attribut_source_user_hint')
         })),
-        classObject: getZodString().describe(JSON.stringify({
+        classObject: z.string().optional().describe(JSON.stringify({
             component: "input",
-            required: enabledAuth === 'ldap' && stepperIndex == 1,
             label: t("SECURITY.ldap_class_object"),
             hint: t('SECURITY.ldap_class_object_hint')
         })),
-        classUser: getZodString().describe(JSON.stringify({
+        classUser: z.string().optional().describe(JSON.stringify({
             component: "input",
-            required: enabledAuth === 'ldap' && stepperIndex == 1,
             label: t("SECURITY.ldap_class_user"),
             hint: t('SECURITY.ldap_class_user_hint')
         })),
@@ -171,9 +169,8 @@ export function SettingsGeneralSecurity() {
             label: t("SECURITY.ldap_attribute_last_name"),
             hint: t('SECURITY.ldap_attribute_last_name_hint')
         })),
-        usersDN: getZodString().describe(JSON.stringify({
+        usersDN: z.string().optional().describe(JSON.stringify({
             component: "input",
-            required: enabledAuth === 'ldap' && stepperIndex == 1,
             label: t("SECURITY.ldap_users_dn"),
             hint: t('SECURITY.ldap_users_dn_hint')
         })),
@@ -220,15 +217,11 @@ export function SettingsGeneralSecurity() {
         hasFetched.current = true;
 
         const fetchEnabledAuth = async () => {
-            const res = await get('/auth/retrieveLoginMethodName');
-            if (res.login_methods) {
-                Object.keys(res.login_methods).forEach((key) => {
-                    if (res.login_methods[key].enabled) {
-                        setDefaultAuth(res.login_methods[key].method_name);
-                        setEnabledAuth(res.login_methods[key].method_name);
-                        setActiveIndex(res.login_methods[key].method_name === 'default' ? [0] : [1]);
-                    }
-                });
+            const res = await get('/auth/getEnabledLoginMethod');
+            if (res.login_method_name) {
+                setDefaultAuth(res.login_method_name[0].method_name);
+                setEnabledAuth(res.login_method_name[0].method_name);
+                setActiveIndex(res.login_method_name[0].method_name === 'default' ? [0] : [1]);
             }
         }
 
@@ -295,15 +288,31 @@ export function SettingsGeneralSecurity() {
 
     const handlePreviousStep = () => stepperRef.current?.prevCallback();
 
-    const handleTestConnexion: any = (data: FormData) => {
+    const handleTestConnexion: any = async (data: FormData) => {
         setLoading(true);
-        // Simulate API call
-        setTimeout(() => {
-            setLoading(false);
-            showToast(t('MAILCOLLECT.ldap_connection_successful'), 'success');
+
+        try {
+            await post('/auth/connectionLdap', data);
             handleNextStep(data);
-        }, 2000);
+            showToast(t('MAILCOLLECT.ldap_connection_successful'), 'success');
+            setLoading(false);
+        } catch (error) {
+            setLoading(false);
+            console.error('Error testing LDAP connection :', error);
+        }
     };
+
+    const launchSync: any = async (data: FormData) => {
+        setLoading(true);
+        try {
+            const res = await post('/auth/ldapSynchronization', data);
+            showToast(t('SECURITY.ldap_synchronization_success', { 'data': '<strong>' + JSON.stringify(res) + '</strong>' }), 'success');
+            setLoading(false);
+        } catch (error) {
+            setLoading(false);
+            console.error('Error launching LDAP synchronization :', error);
+        }
+    }
 
     return (
         <div className="p-8 bg-(--bg-secondary) h-full overflow-auto">
@@ -396,17 +405,14 @@ export function SettingsGeneralSecurity() {
                                         className="mr-2 px-12 text-(--color-primary) border-transparent hover:border-(--color-primary)">
                                     <ArrowLeft/> { t("MAILCOLLECT.previous") }
                                 </Button>
-                                <Button onClick={ ldapHandleSubmit(handleNextStep) }
-                                        disabled={ Object.keys(ldapErrors).length > 0 } className="ml-auto px-12">
-                                    { t("MAILCOLLECT.next") }
-                                </Button>
-                            </div>
-                        </StepperPanel>
-                        <StepperPanel header={ t("SECURITY.launch") }>
-                            <div className="flex justify-between mt-6">
-                                <Button onClick={ handlePreviousStep } variant="no_bg"
-                                        className="mr-2 px-12 text-(--color-primary) border-transparent hover:border-(--color-primary)">
-                                    <ArrowLeft/> { t("MAILCOLLECT.previous") }
+                                <Button onClick={ ldapHandleSubmit(launchSync) }
+                                        disabled={ Object.keys(ldapErrors).length > 0 || loading }
+                                        className="ml-auto px-12">
+                                    { loading ? (
+                                        t("SECURITY.test_sync_loading")
+                                    ) : (
+                                        t("SECURITY.test_sync")
+                                    ) }
                                 </Button>
                             </div>
                         </StepperPanel>

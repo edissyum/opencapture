@@ -40,7 +40,6 @@ def login():
         }, 400)
 
     res = auth.handle_login(request.json)
-
     return make_response(res[0], res[1])
 
 
@@ -147,7 +146,7 @@ def check_connection_ldap_server():
 
     check, message = rest_validator(request.json, [
         {'id': 'host', 'type': str, 'mandatory': True},
-        {'id': 'port', 'type': str, 'mandatory': True},
+        {'id': 'port', 'type': int, 'mandatory': True},
         {'id': 'typeAD', 'type': str, 'mandatory': True},
         {'id': 'baseDN', 'type': str, 'mandatory': False},
         {'id': 'prefix', 'type': str, 'mandatory': False},
@@ -173,15 +172,15 @@ def ldap_synchronization_users():
 
     check, message = rest_validator(request.json, [
         {'id': 'host', 'type': str, 'mandatory': True},
-        {'id': 'port', 'type': str, 'mandatory': True},
+        {'id': 'port', 'type': int, 'mandatory': True},
         {'id': 'typeAD', 'type': str, 'mandatory': True},
         {'id': 'baseDN', 'type': str, 'mandatory': False},
-        {'id': 'usersDN', 'type': str, 'mandatory': True},
+        {'id': 'usersDN', 'type': str, 'mandatory': False},
         {'id': 'prefix', 'type': str, 'mandatory': False},
         {'id': 'suffix', 'type': str, 'mandatory': False},
-        {'id': 'classUser', 'type': str, 'mandatory': True},
+        {'id': 'classUser', 'type': str, 'mandatory': False},
         {'id': 'loginAdmin', 'type': str, 'mandatory': True},
-        {'id': 'classObject', 'type': str, 'mandatory': True},
+        {'id': 'classObject', 'type': str, 'mandatory': False},
         {'id': 'passwordAdmin', 'type': str, 'mandatory': True},
         {'id': 'attributLastName', 'type': str, 'mandatory': True},
         {'id': 'attributFirstName', 'type': str, 'mandatory': True},
@@ -210,8 +209,8 @@ def save_login_method():
         {'id': 'typeAD', 'type': str, 'mandatory': True},
         {'id': 'baseDN', 'type': str, 'mandatory': False},
         {'id': 'prefix', 'type': str, 'mandatory': False},
-        {'id': 'usersDN', 'type': str, 'mandatory': True},
         {'id': 'suffix', 'type': str, 'mandatory': False},
+        {'id': 'usersDN', 'type': str, 'mandatory': False},
         {'id': 'classUser', 'type': str, 'mandatory': True},
         {'id': 'loginAdmin', 'type': str, 'mandatory': True},
         {'id': 'classObject', 'type': str, 'mandatory': True},
