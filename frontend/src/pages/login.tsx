@@ -43,7 +43,6 @@ export function Login() {
     useEffect(() => {
         async function fetchEnabledMethod() {
             const res = await get('/auth/getEnabledLoginMethod');
-            console.log(res)
             if (res.login_method_name) {
                 setEnabledLoginMethod(res.login_method_name[0].method_name);
             }
