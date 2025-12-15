@@ -146,9 +146,9 @@ export function SplitterListPage() {
         {
             id: 'nb_pages',
             header: '',
-            className: 'max-w-16! w-16!',
+            className: 'max-w-16! w-16! p-2!',
             body: (item: any) => (
-                <div className='flex gap-1'>
+                <div className='flex gap-1 justify-end'>
                     <div className='flex justify-center items-center text-(--color-primary) gap-0.5'
                          data-tooltip-id="tooltip" data-tooltip-content={ t('SPLITTER.nb_documents') }>
                         <span>{ item.documents_count }</span>
@@ -448,7 +448,7 @@ export function SplitterListPage() {
             ) }
 
             <div className='p-8 h-full w-full flex flex-col flex-1 z-10'>
-                <div className='flex items-center gap-6'>
+                <div className='flex items-center gap-6 mb-4'>
                     <Button icon={ <Filter size={ 14 }/> } onClick={ () => setDisplayFilters(!displayFilters) }
                             className={ `rounded-3xl hover:text-(--color-primary) text-(--text-primary)
                             border-(--border-secondary) p-2.5! bg-(--bg-primary) 
@@ -477,52 +477,50 @@ export function SplitterListPage() {
                         </span>
                     </span>
                 </div>
-                <div className="mt-4 flex-1 overflow-hidden flex flex-col rounded-lg">
-                    { view === 'list' && (
-                        <Table
-                            baseLink="/splitter/viewer/"
-                            data={ batches }
-                            actions={ actions }
-                            pagination={ true }
-                            columns={ columns }
-                            lazyParams={ lazyParams }
-                            checkboxSelection={ true }
-                            loading={ loadingBatches }
-                            actionsLine={ getActionsLine }
-                            rowsPerPage={ lazyParams.rows }
-                            skeletonRows={ lazyParams.rows }
-                            selectedRows={ selectedBatches }
-                            totalRecords={ totalBatches || 0 }
-                            rowsPerPageOptions={ [4, 8, 16, 32] }
-                            emptyMessage={ t("SPLITTER.no_batches") }
-                            paginatorLeftText={ t('SPLITTER.batch_selected', { count: selectedBatches.length }) }
-                            onLazyParamsChange={ setLazyParams }
-                            onSelectionChange={ (rows) => setSelectedBatches(rows) }
-                        />
-                    ) }
-                    { view === 'grid' && (
-                        <Grid
-                            baseLink="/splitter/viewer/"
-                            data={ batches }
-                            module="splitter"
-                            actions={ actions }
-                            pagination={ true }
-                            columns={ columns }
-                            lazyParams={ lazyParams }
-                            loading={ loadingBatches }
-                            actionsLine={ getActionsLine }
-                            rowsPerPage={ lazyParams.rows }
-                            skeletonRows={ lazyParams.rows }
-                            selectedRows={ selectedBatches }
-                            totalRecords={ totalBatches || 0 }
-                            rowsPerPageOptions={ [4, 8, 16, 32] }
-                            emptyMessage={ t("VERIFIER.no_documents") }
-                            paginatorLeftText={ t('VERIFIER.document_selected', { count: selectedBatches.length }) }
-                            onLazyParamsChange={ setLazyParams }
-                            onSelectionChange={ (rows) => setSelectedBatches(rows) }
-                        />
-                    ) }
-                </div>
+                { view === 'list' && (
+                    <Table
+                        baseLink="/splitter/viewer/"
+                        data={ batches }
+                        actions={ actions }
+                        pagination={ true }
+                        columns={ columns }
+                        lazyParams={ lazyParams }
+                        checkboxSelection={ true }
+                        loading={ loadingBatches }
+                        actionsLine={ getActionsLine }
+                        rowsPerPage={ lazyParams.rows }
+                        skeletonRows={ lazyParams.rows }
+                        selectedRows={ selectedBatches }
+                        totalRecords={ totalBatches || 0 }
+                        rowsPerPageOptions={ [4, 8, 16, 32] }
+                        emptyMessage={ t("SPLITTER.no_batches") }
+                        paginatorLeftText={ t('SPLITTER.batch_selected', { count: selectedBatches.length }) }
+                        onLazyParamsChange={ setLazyParams }
+                        onSelectionChange={ (rows) => setSelectedBatches(rows) }
+                    />
+                ) }
+                { view === 'grid' && (
+                    <Grid
+                        baseLink="/splitter/viewer/"
+                        data={ batches }
+                        module="splitter"
+                        actions={ actions }
+                        pagination={ true }
+                        columns={ columns }
+                        lazyParams={ lazyParams }
+                        loading={ loadingBatches }
+                        actionsLine={ getActionsLine }
+                        rowsPerPage={ lazyParams.rows }
+                        skeletonRows={ lazyParams.rows }
+                        selectedRows={ selectedBatches }
+                        totalRecords={ totalBatches || 0 }
+                        rowsPerPageOptions={ [4, 8, 16, 32] }
+                        emptyMessage={ t("VERIFIER.no_documents") }
+                        paginatorLeftText={ t('VERIFIER.document_selected', { count: selectedBatches.length }) }
+                        onLazyParamsChange={ setLazyParams }
+                        onSelectionChange={ (rows) => setSelectedBatches(rows) }
+                    />
+                ) }
             </div>
         </div>
     );

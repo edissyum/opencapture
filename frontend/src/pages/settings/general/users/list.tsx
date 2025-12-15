@@ -258,28 +258,26 @@ export function SettingsGeneralUsers() {
                     </Button>
                 </span>
             </div>
-            <div className="flex-1 overflow-hidden flex flex-col rounded-lg">
-                <Table
-                    baseLink="/settings/general/users/edit/"
-                    data={ users }
-                    actions={ actions }
-                    pagination={ true }
-                    columns={ columns }
-                    loading={ loadingUsers }
-                    lazyParams={ lazyParams }
-                    checkboxSelection={ true }
-                    actionsLine={ getActionsLine }
-                    selectedRows={ selectedUsers }
-                    rowsPerPage={ lazyParams.rows }
-                    skeletonRows={ lazyParams.rows }
-                    totalRecords={ totalUsers || 0 }
-                    rowsPerPageOptions={ [4, 8, 16, 32] }
-                    emptyMessage={ t("USERS.no_user") }
-                    paginatorLeftText={ t('USERS.selected', { count: selectedUsers.length }) }
-                    onLazyParamsChange={ setLazyParams }
-                    onSelectionChange={ (rows) => setSelectedUsers(rows) }
-                />
-            </div>
+            <Table
+                baseLink="/settings/general/users/edit/"
+                data={ users }
+                actions={ actions }
+                pagination={ true }
+                columns={ columns }
+                loading={ loadingUsers }
+                lazyParams={ lazyParams }
+                checkboxSelection={ true }
+                actionsLine={ getActionsLine }
+                selectedRows={ selectedUsers }
+                rowsPerPage={ lazyParams.rows }
+                skeletonRows={ lazyParams.rows }
+                totalRecords={ totalUsers || 0 }
+                rowsPerPageOptions={ [4, 8, 16, 32] }
+                emptyMessage={ t("USERS.no_user") }
+                paginatorLeftText={ t('USERS.selected', { count: selectedUsers.length }) }
+                onLazyParamsChange={ setLazyParams }
+                onSelectionChange={ (rows) => setSelectedUsers(rows) }
+            />
         </div>
     );
 }

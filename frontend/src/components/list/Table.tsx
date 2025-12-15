@@ -122,36 +122,37 @@ export function Table<T extends { id: string }>({
 
     if (loading) {
         return (
-            <div
-                className={ `w-full overflow-hidden border border-(--border-secondary) rounded-md` }>
-                { pagination && (
-                    <div
-                        className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-t-md text-(--text-secondary) font-normal h-18">
-                        <Skeleton width='20%' className='dark:bg-(--bg-secondary)!'/>
-                        <Skeleton width='30%' className='dark:bg-(--bg-secondary)!'/>
-                    </div>
-                ) }
-                <div className='flex flex-row'>
-                    { columns.map((col, i) => (
-                        <span key={ i }
-                              className="w-1/6 px-5 py-2 text-left font-normal text-(--text-secondary)">
+            <div className='flex-1 overflow-hidden flex flex-col rounded-lg'>
+                <div className={ `w-full overflow-hidden border border-(--border-secondary) rounded-md` }>
+                    { pagination && (
+                        <div
+                            className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-t-md text-(--text-secondary) font-normal h-18">
+                            <Skeleton width='20%' className='dark:bg-(--bg-secondary)!'/>
+                            <Skeleton width='30%' className='dark:bg-(--bg-secondary)!'/>
+                        </div>
+                    ) }
+                    <div className='flex flex-row'>
+                        { columns.map((col, i) => (
+                            <span key={ i }
+                                  className="w-1/6 px-5 py-2 text-left font-normal text-(--text-secondary)">
                             <span className='block'>
                                 { col.header }
                             </span>
                         </span>
-                    )) }
-                </div>
-                <div className="flex flex-col">
-                    { Array.from({ length: skeletonRows }).map((_, idx) => (
-                        <div key={ idx }
-                             className="flex bg-(--bg-primary) even:bg-(--bg-secondary) border-b border-(--border-secondary)">
-                            { columns.map((_col, ci) => (
-                                <span key={ ci } className={ `px-4 py-2 text-sm w-1/6` }>
+                        )) }
+                    </div>
+                    <div className="flex flex-col">
+                        { Array.from({ length: skeletonRows }).map((_, idx) => (
+                            <div key={ idx }
+                                 className="flex bg-(--bg-primary) even:bg-(--bg-secondary) border-b border-(--border-secondary)">
+                                { columns.map((_col, ci) => (
+                                    <span key={ ci } className={ `px-4 py-2 text-sm w-1/6` }>
                                 <Skeleton className='dark:bg-(--bg-secondary)!'/>
                             </span>
-                            )) }
-                        </div>
-                    )) }
+                                )) }
+                            </div>
+                        )) }
+                    </div>
                 </div>
             </div>
         );

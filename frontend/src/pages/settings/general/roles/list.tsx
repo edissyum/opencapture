@@ -251,29 +251,27 @@ export function SettingsGeneralRoles() {
                     </Button>
                 </span>
             </div>
-            <div className="flex-1 overflow-hidden flex flex-col rounded-lg">
-                <Table
-                    baseLink="/settings/general/roles/edit/"
-                    data={ roles }
-                    height="h-[40vh]"
-                    actions={ actions }
-                    pagination={ true }
-                    columns={ columns }
-                    loading={ loadingRoles }
-                    lazyParams={ lazyParams }
-                    checkboxSelection={ true }
-                    actionsLine={ getActionsLine }
-                    selectedRows={ selectedRoles }
-                    rowsPerPage={ lazyParams.rows }
-                    skeletonRows={ lazyParams.rows }
-                    totalRecords={ totalRoles || 0 }
-                    rowsPerPageOptions={ [4, 8, 16, 32] }
-                    emptyMessage={ t("ROLES.no_role") }
-                    paginatorLeftText={ t('ROLES.selected', { count: selectedRoles.length }) }
-                    onLazyParamsChange={ setLazyParams }
-                    onSelectionChange={ (rows) => setSelectedRoles(rows) }
-                />
-            </div>
+            <Table
+                baseLink="/settings/general/roles/edit/"
+                data={ roles }
+                height="h-[40vh]"
+                actions={ actions }
+                pagination={ true }
+                columns={ columns }
+                loading={ loadingRoles }
+                lazyParams={ lazyParams }
+                checkboxSelection={ true }
+                actionsLine={ getActionsLine }
+                selectedRows={ selectedRoles }
+                rowsPerPage={ lazyParams.rows }
+                skeletonRows={ lazyParams.rows }
+                totalRecords={ totalRoles || 0 }
+                rowsPerPageOptions={ [4, 8, 16, 32] }
+                emptyMessage={ t("ROLES.no_role") }
+                paginatorLeftText={ t('ROLES.selected', { count: selectedRoles.length }) }
+                onLazyParamsChange={ setLazyParams }
+                onSelectionChange={ (rows) => setSelectedRoles(rows) }
+            />
         </div>
     );
 }

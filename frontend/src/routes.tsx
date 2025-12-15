@@ -38,17 +38,17 @@ import { SettingsGeneralSMTP } from "./pages/settings/general/smtp";
 import { SettingsGeneralUsers } from "./pages/settings/general/users/list";
 import { SettingsGeneralRoles } from "./pages/settings/general/roles/list";
 import { SettingsGeneralAdvanced } from "./pages/settings/general/advanced";
+import { SettingsGeneralSecurity } from "./pages/settings/general/security";
 import { SettingsVerifierFormsList } from "./pages/settings/verifier/forms/list";
 import { SettingsSplitterFormsList } from "./pages/settings/splitter/forms/list";
 import { SettingsGeneralMailcollect } from "./pages/settings/general/mailcollect";
 import { SettingsGeneralRoleEditor } from "./pages/settings/general/roles/editor";
+import { SettingsGeneralUserEditor } from "./pages/settings/general/users/editor";
 import { SettingsVerifierFormsEditor } from "./pages/settings/verifier/forms/editor";
 import { SettingsVerifierFormsCreate } from "./pages/settings/verifier/forms/create";
 import { SettingsSplitterFormsCreate } from "./pages/settings/splitter/forms/create";
 import { SettingsSplitterFormsEditor } from "./pages/settings/splitter/forms/editor";
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
-import { SettingsGeneralUserEditor } from "./pages/settings/general/users/editor";
-import { SettingsGeneralSecurity } from "./pages/settings/general/security.tsx";
 
 export const router = createBrowserRouter(
     [

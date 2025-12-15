@@ -605,7 +605,7 @@ export function VerifierListPage() {
             ) }
 
             <div className='p-8 h-full w-full flex flex-col flex-1 z-10'>
-                <div className='flex items-center gap-6'>
+                <div className='flex items-center gap-6 mb-4'>
                     <Button icon={ <Filter size={ 14 }/> } onClick={ () => setDisplayFilters(!displayFilters) }
                             className={ `rounded-3xl hover:text-(--color-primary) text-(--text-primary)
                                             border-(--border-secondary) p-2.5! bg-(--bg-primary)
@@ -634,53 +634,50 @@ export function VerifierListPage() {
                         </span>
                     </span>
                 </div>
-
-                <div className="mt-4 flex-1 overflow-hidden flex flex-col rounded-lg">
-                    { view === 'list' && (
-                        <Table
-                            baseLink="/verifier/viewer/"
-                            data={ documents }
-                            pagination={ true }
-                            columns={ columns }
-                            actions={ actions }
-                            lazyParams={ lazyParams }
-                            checkboxSelection={ true }
-                            actionsLine={ getActionsLine }
-                            loading={ loadingDocuments }
-                            rowsPerPage={ lazyParams.rows }
-                            skeletonRows={ lazyParams.rows }
-                            selectedRows={ selectedDocuments }
-                            totalRecords={ totalDocuments || 0 }
-                            rowsPerPageOptions={ [4, 8, 16, 32] }
-                            emptyMessage={ t("VERIFIER.no_documents") }
-                            paginatorLeftText={ t('VERIFIER.document_selected', { count: selectedDocuments.length }) }
-                            onLazyParamsChange={ setLazyParams }
-                            onSelectionChange={ (rows) => setSelectedDocuments(rows) }
-                        />
-                    ) }
-                    { view === 'grid' && (
-                        <Grid
-                            baseLink="/verifier/viewer/"
-                            module="verifier"
-                            data={ documents }
-                            pagination={ true }
-                            columns={ columns }
-                            actions={ actions }
-                            lazyParams={ lazyParams }
-                            loading={ loadingDocuments }
-                            actionsLine={ getActionsLine }
-                            rowsPerPage={ lazyParams.rows }
-                            skeletonRows={ lazyParams.rows }
-                            selectedRows={ selectedDocuments }
-                            totalRecords={ totalDocuments || 0 }
-                            rowsPerPageOptions={ [4, 8, 16, 32] }
-                            emptyMessage={ t("VERIFIER.no_documents") }
-                            paginatorLeftText={ t('VERIFIER.document_selected', { count: selectedDocuments.length }) }
-                            onLazyParamsChange={ setLazyParams }
-                            onSelectionChange={ (rows) => setSelectedDocuments(rows) }
-                        />
-                    ) }
-                </div>
+                { view === 'list' && (
+                    <Table
+                        baseLink="/verifier/viewer/"
+                        data={ documents }
+                        pagination={ true }
+                        columns={ columns }
+                        actions={ actions }
+                        lazyParams={ lazyParams }
+                        checkboxSelection={ true }
+                        actionsLine={ getActionsLine }
+                        loading={ loadingDocuments }
+                        rowsPerPage={ lazyParams.rows }
+                        skeletonRows={ lazyParams.rows }
+                        selectedRows={ selectedDocuments }
+                        totalRecords={ totalDocuments || 0 }
+                        rowsPerPageOptions={ [4, 8, 16, 32] }
+                        emptyMessage={ t("VERIFIER.no_documents") }
+                        paginatorLeftText={ t('VERIFIER.document_selected', { count: selectedDocuments.length }) }
+                        onLazyParamsChange={ setLazyParams }
+                        onSelectionChange={ (rows) => setSelectedDocuments(rows) }
+                    />
+                ) }
+                { view === 'grid' && (
+                    <Grid
+                        baseLink="/verifier/viewer/"
+                        module="verifier"
+                        data={ documents }
+                        pagination={ true }
+                        columns={ columns }
+                        actions={ actions }
+                        lazyParams={ lazyParams }
+                        loading={ loadingDocuments }
+                        actionsLine={ getActionsLine }
+                        rowsPerPage={ lazyParams.rows }
+                        skeletonRows={ lazyParams.rows }
+                        selectedRows={ selectedDocuments }
+                        totalRecords={ totalDocuments || 0 }
+                        rowsPerPageOptions={ [4, 8, 16, 32] }
+                        emptyMessage={ t("VERIFIER.no_documents") }
+                        paginatorLeftText={ t('VERIFIER.document_selected', { count: selectedDocuments.length }) }
+                        onLazyParamsChange={ setLazyParams }
+                        onSelectionChange={ (rows) => setSelectedDocuments(rows) }
+                    />
+                ) }
             </div>
         </div>
     );
