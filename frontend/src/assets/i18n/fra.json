@@ -644,7 +644,8 @@
         "ldap_synchronization_success": "Synchronisation LDAP réussie : {{ data }}",
         "data_type": "Type de données",
         "no_configurations": "Aucune configuration",
-        "value": "Valeur"
+        "value": "Valeur",
+        "update_configuration": "Modifier"
     },
     "TYPE": {
         "boolean": "Booléen",

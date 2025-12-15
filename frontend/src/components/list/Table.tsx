@@ -38,7 +38,7 @@ type Column<T> = {
 
 type DataTableProps<T> = {
     data: T[];
-    actions: any[];
+    actions?: any[];
     height?: string;
     baseLink?: string;
     loading?: boolean;
@@ -107,7 +107,7 @@ export function Table<T extends { id: string }>({
                 { paginatorLeftText && (
                     <span>{ selectedRows.length + " " + paginatorLeftText }</span>
                 )}
-                { actions && actions.map((action, idx) => (
+                { actions && paginatorLeftText && actions.map((action, idx) => (
                     <Button
                         key={ idx }
                         size={ 'sm' }
@@ -242,7 +242,7 @@ export function Table<T extends { id: string }>({
                     )) }
 
                     {
-                        actions.length > 0 && (
+                        actions && actions.length > 0 && (
                             <PrimeColumn
                                 bodyClassName="pl-0! pr-0! text-sm"
                                 body={ (rowData: any) => (

@@ -601,7 +601,8 @@
         "ldap_synchronization_success": "",
         "data_type": "",
         "no_configurations": "",
-        "value": ""
+        "value": "",
+        "update_configuration": ""
     },
     "TYPE": {
         "boolean": "",
