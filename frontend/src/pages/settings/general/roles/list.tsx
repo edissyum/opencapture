@@ -230,7 +230,7 @@ export function SettingsGeneralRoles() {
     }
 
     return (
-        <div className="p-8 bg-(--bg-secondary) h-full">
+        <div className="p-8 bg-(--bg-secondary) h-full w-full flex flex-col flex-1">
             <div className='flex items-center gap-6 mb-4'>
                 <span className='flex items-center gap-1'>
                     <FileText size={ 16 }/>
@@ -251,28 +251,29 @@ export function SettingsGeneralRoles() {
                     </Button>
                 </span>
             </div>
-            <Table
-                baseLink="/settings/general/roles/edit/"
-                data={ roles }
-                height="h-[40vh]"
-                actions={ actions }
-                pagination={ true }
-                columns={ columns }
-                loading={ loadingRoles }
-                lazyParams={ lazyParams }
-                checkboxSelection={ true }
-                actionsLine={ getActionsLine }
-                selectedRows={ selectedRoles }
-                rowsPerPage={ lazyParams.rows }
-                skeletonRows={ lazyParams.rows }
-                totalRecords={ totalRoles || 0 }
-                rowsPerPageOptions={ [4, 8, 16, 32] }
-                emptyMessage={ t("ROLES.no_role") }
-                paginatorLeftText={ t('ROLES.selected', { count: selectedRoles.length }) }
-                onLazyParamsChange={ setLazyParams }
-                onSelectionChange={ (rows) => setSelectedRoles(rows) }
-            />
-
+            <div className="flex-1 overflow-hidden flex flex-col rounded-lg">
+                <Table
+                    baseLink="/settings/general/roles/edit/"
+                    data={ roles }
+                    height="h-[40vh]"
+                    actions={ actions }
+                    pagination={ true }
+                    columns={ columns }
+                    loading={ loadingRoles }
+                    lazyParams={ lazyParams }
+                    checkboxSelection={ true }
+                    actionsLine={ getActionsLine }
+                    selectedRows={ selectedRoles }
+                    rowsPerPage={ lazyParams.rows }
+                    skeletonRows={ lazyParams.rows }
+                    totalRecords={ totalRoles || 0 }
+                    rowsPerPageOptions={ [4, 8, 16, 32] }
+                    emptyMessage={ t("ROLES.no_role") }
+                    paginatorLeftText={ t('ROLES.selected', { count: selectedRoles.length }) }
+                    onLazyParamsChange={ setLazyParams }
+                    onSelectionChange={ (rows) => setSelectedRoles(rows) }
+                />
+            </div>
         </div>
     );
 }

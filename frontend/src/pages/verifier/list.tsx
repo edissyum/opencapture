@@ -216,9 +216,9 @@ export function VerifierListPage() {
         {
             id: 'nb_pages',
             header: '',
-            className: 'max-w-16! w-16!',
+            className: 'max-w-16! w-16! p-2!',
             body: (item: any) => (
-                <div className='flex gap-1'>
+                <div className='flex gap-1 justify-end'>
                     <div className='flex justify-center items-center text-(--color-primary) gap-0.5'
                          data-tooltip-id="tooltip" data-tooltip-content={ t('VERIFIER.nb_pages') }>
                         <span>{ item.nb_pages }</span>

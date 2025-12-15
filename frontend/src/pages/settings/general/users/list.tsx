@@ -237,7 +237,7 @@ export function SettingsGeneralUsers() {
     }
 
     return (
-        <div className="p-8 bg-(--bg-secondary) h-full">
+        <div className="p-8 bg-(--bg-secondary) h-full w-full flex flex-col flex-1">
             <div className='flex items-center gap-6 mb-4'>
                 <span className='flex items-center gap-1'>
                     <FileText size={ 16 }/>
@@ -258,26 +258,28 @@ export function SettingsGeneralUsers() {
                     </Button>
                 </span>
             </div>
-            <Table
-                baseLink="/settings/general/users/edit/"
-                data={ users }
-                actions={ actions }
-                pagination={ true }
-                columns={ columns }
-                loading={ loadingUsers }
-                lazyParams={ lazyParams }
-                checkboxSelection={ true }
-                actionsLine={ getActionsLine }
-                selectedRows={ selectedUsers }
-                rowsPerPage={ lazyParams.rows }
-                skeletonRows={ lazyParams.rows }
-                totalRecords={ totalUsers || 0 }
-                rowsPerPageOptions={ [4, 8, 16, 32] }
-                emptyMessage={ t("USERS.no_user") }
-                paginatorLeftText={ t('USERS.selected', { count: selectedUsers.length }) }
-                onLazyParamsChange={ setLazyParams }
-                onSelectionChange={ (rows) => setSelectedUsers(rows) }
-            />
+            <div className="flex-1 overflow-hidden flex flex-col rounded-lg">
+                <Table
+                    baseLink="/settings/general/users/edit/"
+                    data={ users }
+                    actions={ actions }
+                    pagination={ true }
+                    columns={ columns }
+                    loading={ loadingUsers }
+                    lazyParams={ lazyParams }
+                    checkboxSelection={ true }
+                    actionsLine={ getActionsLine }
+                    selectedRows={ selectedUsers }
+                    rowsPerPage={ lazyParams.rows }
+                    skeletonRows={ lazyParams.rows }
+                    totalRecords={ totalUsers || 0 }
+                    rowsPerPageOptions={ [4, 8, 16, 32] }
+                    emptyMessage={ t("USERS.no_user") }
+                    paginatorLeftText={ t('USERS.selected', { count: selectedUsers.length }) }
+                    onLazyParamsChange={ setLazyParams }
+                    onSelectionChange={ (rows) => setSelectedUsers(rows) }
+                />
+            </div>
         </div>
     );
 }
