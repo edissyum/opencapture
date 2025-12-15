@@ -153,7 +153,17 @@
         "change_label": "Cambiar la etiqueta",
         "change_zone_label_message": "Cambiar la etiqueta de la zona seleccionada.",
         "add_role": "Agregar un rol",
-        "add_user": "Agregar un usuario"
+        "add_user": "Agregar un usuario",
+        "duplicate_forms": "",
+        "confirm_duplicate_form_many": "",
+        "confirm_duplicate_form_one": "",
+        "confirm_duplicate_form_other": "",
+        "duplicate_form_many": "",
+        "duplicate_form_one": "",
+        "duplicate_form_other": "",
+        "form_duplicated_many": "",
+        "form_duplicated_one": "",
+        "form_duplicated_other": ""
     },
     "GLOBAL": {
         "batches": "Lotes",
@@ -183,7 +193,8 @@
         "no_result_found": "No se encontraron resultados",
         "logout": "Cerrar sesión",
         "creating": "Creando...",
-        "modify": "Modificar"
+        "modify": "Modificar",
+        "duplicate": ""
     },
     "HISTORY": {
         "document_validated": "Documento n°<strong>{{ documentId }}</strong> validado con éxito",

@@ -143,7 +143,14 @@
         "change_label": "Change label",
         "change_zone_label_message": "Change the label of the selected zone. ",
         "add_role": "Add a role",
-        "add_user": "Add a user"
+        "add_user": "Add a user",
+        "duplicate_forms": "",
+        "confirm_duplicate_form_one": "",
+        "confirm_duplicate_form_other": "",
+        "duplicate_form_one": "",
+        "duplicate_form_other": "",
+        "form_duplicated_one": "",
+        "form_duplicated_other": ""
     },
     "GLOBAL": {
         "batches": "Batches",
@@ -173,7 +180,8 @@
         "no_result_found": "No results found",
         "logout": "Logout",
         "creating": "Creating...",
-        "modify": "Modify"
+        "modify": "Modify",
+        "duplicate": ""
     },
     "HISTORY": {
         "document_validated": "Document #<strong>{{ documentId }}</strong> successfully validated",

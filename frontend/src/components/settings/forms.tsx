@@ -17,7 +17,7 @@
 import { t } from "i18next";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { CirclePause, CircleQuestionMark, FileText, Plus, Trash2 } from "lucide-react";
+import { CirclePause, CircleQuestionMark, Copy, FileText, Plus, Trash2 } from "lucide-react";
 
 import Input from "../Input";
 import { Button } from "../Button";
@@ -28,7 +28,7 @@ import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
 
 export function FormsList({ module }: { module: string }) {
-    const { get, put, del } = axiosApiCall();
+    const { get, put, del, post } = axiosApiCall();
 
     const [forms, setForms] = useState([]);
     const [totalForms, setTotalForms] = useState(0);
@@ -74,6 +74,11 @@ export function FormsList({ module }: { module: string }) {
             visible: row?.enabled,
             icon: <CirclePause className='mr-1' size={ 16 }/>,
             command: () => handleDisable()
+        },
+        {
+            label: t('FORMS.duplicate_forms'),
+            icon: <Copy className='mr-1' size={ 16 }/>,
+            command: () => handleDuplicate()
         },
         {
             label: <span className='critical'>{ t('FORMS.delete_forms') }</span>,
@@ -172,7 +177,7 @@ export function FormsList({ module }: { module: string }) {
                     showToast(t('FORMS.form_disabled', { count: selectedForms.length }), 'success');
                 }
             } catch (err) {
-                console.error("Erreur désactivation du formulaire :", err);
+                console.error("Error disabling form :", err);
             }
         });
     }
@@ -203,7 +208,7 @@ export function FormsList({ module }: { module: string }) {
                     showToast(t('FORMS.form_enabled', { count: selectedForms.length }), 'success');
                 }
             } catch (err) {
-                console.error("Erreur activation du formulaire :", err);
+                console.error("Error enabling form :", err);
             }
         });
     }
@@ -234,7 +239,38 @@ export function FormsList({ module }: { module: string }) {
                     showToast(t('FORMS.form_deleted', { count: selectedForms.length }), 'success');
                 }
             } catch (err) {
-                console.error("Erreur suppression du formulaire :", err);
+                console.error("Error while deleting form :", err);
+            }
+        }
+    }
+
+    const handleDuplicate = () => {
+        if (selectedForms.length === 0) return;
+
+        showConfirmDialog({
+            icon: <CircleQuestionMark/>,
+            title: t('FORMS.duplicate_form', { count: selectedForms.length }),
+            message: t('FORMS.confirm_duplicate_form', { count: selectedForms.length }),
+            confirmText: t('GLOBAL.duplicate'),
+            cancelText: t('GLOBAL.cancel'),
+            onConfirm: async () => {
+                await duplicateForms(selectedForms.map((form: any) => form.id));
+                refresh();
+            },
+            onCancel: () => {
+                setSelectedForms([]);
+            }
+        });
+    }
+    const duplicateForms = async (ids: string[]) => {
+        for (const id of ids) {
+            try {
+                await post(`/forms/${ module }/duplicate/${ id }`);
+                if (id === ids[ids.length - 1]) {
+                    showToast(t('FORMS.form_duplicated', { count: selectedForms.length }), 'success');
+                }
+            } catch (err) {
+                console.error("Error while duplicating form :", err);
             }
         }
     }

@@ -50,7 +50,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
 }) => {
 
     return (
-        <div>
+        <div className='w-full'>
             <div className={ `${className} group group-focus-within:border-(--border-primary) relative flex justify-items-stretch ${ error ? '' : 'mb-4' }`}>
                 <FloatLabel className='w-full'>
                     <PrimeDropdown
