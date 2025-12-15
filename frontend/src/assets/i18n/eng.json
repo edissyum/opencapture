@@ -598,6 +598,14 @@
         "using_ldap_connection": "",
         "test_sync": "",
         "test_sync_loading": "",
-        "ldap_synchronization_success": ""
+        "ldap_synchronization_success": "",
+        "data_type": "",
+        "no_configurations": "",
+        "value": ""
+    },
+    "TYPE": {
+        "boolean": "",
+        "integer": "",
+        "list": ""
     }
 }

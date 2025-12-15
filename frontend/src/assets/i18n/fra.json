@@ -641,6 +641,14 @@
         "using_ldap_connection": "Utilisation de la connexion LDAP pour l'authentification des utilisateurs",
         "test_sync": "Tester la synchronisation",
         "test_sync_loading": "Test de synchronisation en cours...",
-        "ldap_synchronization_success": "Synchronisation LDAP réussie : {{ data }}"
+        "ldap_synchronization_success": "Synchronisation LDAP réussie : {{ data }}",
+        "data_type": "Type de données",
+        "no_configurations": "Aucune configuration",
+        "value": "Valeur"
+    },
+    "TYPE": {
+        "boolean": "Booléen",
+        "integer": "Nombre entier",
+        "list": "Liste à choix"
     }
 }

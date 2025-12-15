@@ -49,7 +49,7 @@ type DataTableProps<T> = {
     totalRecords?: number;
     emptyMessage?: string;
     skeletonRows?: number;
-    paginatorLeftText: string;
+    paginatorLeftText?: string;
     checkboxSelection?: boolean;
     rowsPerPageOptions?: number[];
     onSelectionChange?: (selected: T[]) => void;
@@ -104,7 +104,9 @@ export function Table<T extends { id: string }>({
     const paginatorLeftData = useMemo(() => {
         return (
             <div className='flex items-center gap-4'>
-                <span>{ selectedRows.length + " " + paginatorLeftText }</span>
+                { paginatorLeftText && (
+                    <span>{ selectedRows.length + " " + paginatorLeftText }</span>
+                )}
                 { actions && actions.map((action, idx) => (
                     <Button
                         key={ idx }
