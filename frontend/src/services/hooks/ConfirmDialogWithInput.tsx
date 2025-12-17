@@ -20,61 +20,87 @@ import React, { useState } from "react";
 import { confirmDialog } from "primereact/confirmdialog";
 
 import Input from "../../components/Input";
+import { Dropdown } from "../../components/Dropdown";
 
 export function showConfirmDialogWithInput({
+    icon,
     title,
     message,
-    icon,
-    placeholder = "",
-    cancelText = t("GLOBAL.cancel"),
-    confirmText = t("GLOBAL.yes"),
     value = "",
+    options = [],
+    type = "string",
+    placeholder = "",
+    confirmText = t("GLOBAL.yes"),
+    cancelText = t("GLOBAL.cancel"),
     onConfirm,
-    onCancel,
+    onCancel
 }: {
     title: string;
-    message: string;
-    icon?: React.ReactNode;
-    placeholder?: string;
-    cancelText?: string;
-    confirmText?: string;
+    type?: string;
     value?: string;
-    onConfirm: (value: string) => void;
+    message: string;
+    cancelText?: string;
+    placeholder?: string;
+    confirmText?: string;
+    icon?: React.ReactNode;
+    options?: { label: string; value: string }[];
     onCancel: () => void;
+    onConfirm: (value: string) => void;
 }) {
-
     let inputValue = value;
-
+    console.log("type", type);
     const InputWrapper = () => {
         const [val, setVal] = useState(value);
-
         inputValue = val;
 
         return (
             <div className="flex flex-col gap-3">
-                <div className="flex gap-4">
-                    {icon && <div className="flex justify-center">{icon}</div>}
-                    <span dangerouslySetInnerHTML={{ __html: message }} />
+                <div className={ `flex gap-4 text-(--text-secondary)` }>
+                    { icon && <div className="flex justify-center">{ icon }</div> }
+                    <span dangerouslySetInnerHTML={ { __html: message } }/>
                 </div>
-                <Input
-                    autoFocus
-                    noMarginBottom={true}
-                    value={val}
-                    onChange={(e) => setVal(e.target.value)}
-                    placeholder={placeholder}
-                    className="w-full"
-                />
+                { (type === "string" || type === "int") && (
+                    <Input
+                        autoFocus
+                        value={ val }
+                        className="w-full"
+                        noMarginBottom={ true }
+                        placeholder={ placeholder }
+                        onChange={ (e) => setVal(e.target.value) }
+                    />
+                ) }
+                { type === 'bool' && (
+                    <Dropdown
+                        id={ 'confirm-dialog-boolean' }
+                        value={ val }
+                        options={ [
+                            { label: t('GLOBAL.true'), value: 'true' },
+                            { label: t('GLOBAL.false'), value: 'false' },
+                        ] }
+                        onChange={ (e) => setVal(e.value) }
+                    />
+                ) }
+
+                { type === 'list' && options && (
+                    <Dropdown
+                        id={ 'confirm-dialog-boolean' }
+                        value={ val }
+                        options={ options }
+                        onChange={ (e) => setVal(e.value) }
+                    />
+                ) }
             </div>
         );
     };
 
     confirmDialog({
+        header: title,
+        draggable: false,
         closeOnEscape: true,
         dismissableMask: true,
-        message: <InputWrapper />,
-        header: title,
-        acceptLabel: confirmText,
         rejectLabel: cancelText,
+        acceptLabel: confirmText,
+        message: <InputWrapper/>,
         acceptClassName:
             "outline-none! shadow-none! bg-(--color-primary)! border-2! border-(--border-primary)! text-white! hover:bg-(--color-primary)/10! hover:text-(--color-primary)! disabled:opacity-40!",
         rejectClassName:
@@ -85,6 +111,6 @@ export function showConfirmDialogWithInput({
         reject: () => {
             onCancel();
         },
-        defaultFocus: "reject",
+        defaultFocus: "reject"
     });
 }

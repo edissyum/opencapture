@@ -16,7 +16,7 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import { CirclePause, CircleQuestionMark, FileText, Trash2, UserRoundPlus } from "lucide-react";
+import { ArrowRight, CirclePause, CircleQuestionMark, FileText, Trash2, UserRoundPlus } from "lucide-react";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../../../services/hooks/ConfirmDialog";
@@ -278,6 +278,14 @@ export function SettingsGeneralUsers() {
                 onLazyParamsChange={ setLazyParams }
                 onSelectionChange={ (rows) => setSelectedUsers(rows) }
             />
+
+            <h3 className={ 'font-semibold text-(--text-primary) mt-4' }>
+                { t('USERS.user_quota') }
+            </h3>
+            <p className='w-fit text-(--text-secondary) text-sm mb-6 flex items-center gap-0.5 cursor-pointer hover:text-(--color-primary)'>
+                { t('SECURITY.here') }
+                <ArrowRight size={ 18 }/>
+            </p>
         </div>
     );
 }

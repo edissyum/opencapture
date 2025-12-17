@@ -49,6 +49,8 @@ import { SettingsVerifierFormsCreate } from "./pages/settings/verifier/forms/cre
 import { SettingsSplitterFormsCreate } from "./pages/settings/splitter/forms/create";
 import { SettingsSplitterFormsEditor } from "./pages/settings/splitter/forms/editor";
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
+import { SettingsGeneralRegex } from "./pages/settings/general/regex.tsx";
+import { SettingsGeneralDocservers } from "./pages/settings/general/docservers.tsx";
 
 export const router = createBrowserRouter(
     [
@@ -136,6 +138,20 @@ export const router = createBrowserRouter(
                             element: <SettingsGeneralAdvanced/>,
                             errorElement: <LoginRequiredError/>,
                             handle: { breadcrumb: 'SETTINGS.advanced' }
+                        },
+                        {
+                            path: "regex",
+                            loader: protectedLoader,
+                            element: <SettingsGeneralRegex/>,
+                            errorElement: <LoginRequiredError/>,
+                            handle: { breadcrumb: 'SETTINGS.regex' }
+                        },
+                        {
+                            path: "docservers",
+                            loader: protectedLoader,
+                            element: <SettingsGeneralDocservers/>,
+                            errorElement: <LoginRequiredError/>,
+                            handle: { breadcrumb: 'SETTINGS.docservers' }
                         },
                         {
                             path: "security",

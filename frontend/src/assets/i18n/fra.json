@@ -194,7 +194,9 @@
         "logout": "Déconnexion",
         "creating": "Création en cours...",
         "modify": "Modifier",
-        "duplicate": "Dupliquer"
+        "duplicate": "Dupliquer",
+        "false": "False",
+        "true": "True"
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validé avec succès",
@@ -530,7 +532,8 @@
         "email_mandatory": "L'addresse email est obligatoire",
         "forms": "Formulaires",
         "settings": "Paramètres",
-        "customers": "Comptes clients"
+        "customers": "Comptes clients",
+        "user_quota": "Pour gérer le quota utilisateur,"
     },
     "VERIFIER": {
         "creation_date": "Date de création",
@@ -645,11 +648,23 @@
         "data_type": "Type de données",
         "no_configurations": "Aucune configuration",
         "value": "Valeur",
-        "update_configuration": "Modifier"
+        "update_configuration_details": "Vous vous apprêtez à modifier la configuration <strong>{{name}}</strong>",
+        "update_configuration_modale": "Modification du paramètre",
+        "configuration_updated": "Paramètre mis à jour avec succès"
     },
     "TYPE": {
         "boolean": "Booléen",
         "integer": "Nombre entier",
         "list": "Liste à choix"
+    },
+    "REGEX": {
+        "update_regex_modale": "Modification de l'expression régulière",
+        "update_regex_details": "Vous vous apprêtez à modifier l'expression régulière <strong>{{name}}</strong>",
+        "regex_updated": "Expression régulière mise à jour avec succès"
+    },
+    "DOCSERVERS": {
+        "docserver_updated": "Docserver mis à jour avec succès",
+        "update_docserver_details": "Vous vous apprêtez à modifier le docserver <strong>{{name}}</strong>",
+        "update_docserver_modale": "Modification du docserver"
     }
 }

@@ -82,7 +82,7 @@ export function SettingsGeneralMailcollect() {
                         selectedProcess.name = value;
                         setProcessList([...processList]);
                     } catch (error) {
-                        console.error("Erreur lors du renommage du processus MailCollect :", error);
+                        console.error("Error while renaming MailCollect process :", error);
                     }
                 }
                 renameProcess().then();

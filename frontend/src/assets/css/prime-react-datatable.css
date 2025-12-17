@@ -80,7 +80,7 @@
 
 /* Color for even rows */
 .p-datatable .p-datatable-tbody > tr:not(.p-row-odd) {
-    @apply bg-(--bg-secondary)!;
+    @apply bg-(--bg-secondary);
     @apply dark:bg-(--bg-primary);
     @apply dark:border-(--border-primary)!;
     @apply text-(--text-primary);
@@ -91,6 +91,10 @@
     @apply border-b;
     @apply border-(--border-secondary);
     @apply dark:bg-(--bg-primary);
+}
+
+.p-paginator {
+    @apply py-1;
 }
 
 /* Border for lines */
@@ -129,7 +133,15 @@
 
 /* Change paginator and contextMenu colors */
 .p-paginator .p-dropdown {
+    @apply h-10;
     @apply border-(--border-secondary);
+}
+
+.p-paginator .p-dropdown .p-dropdown-label {
+    @apply -top-1;
+    @apply relative;
+    background: none;
+    @apply text-(--text-secondary);
 }
 
 .p-paginator, .p-dropdown, .p-contextmenu, .p-submenu-list {

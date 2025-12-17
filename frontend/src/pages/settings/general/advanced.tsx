@@ -19,12 +19,14 @@ import { Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { showConfirmDialogWithInput } from "../../../services/hooks/ConfirmDialogWithInput";
 
 import Input from "../../../components/Input";
 import { Table } from "../../../components/list/Table";
+import { showToast } from "../../../components/ToastProvider";
 
 export function SettingsGeneralAdvanced() {
-    const { get } = axiosApiCall();
+    const { get, put } = axiosApiCall();
 
     const [loading, setLoading] = useState(false);
     const [configurations, setConfigurations] = useState<any>(null);
@@ -61,15 +63,15 @@ export function SettingsGeneralAdvanced() {
                         offset: lazyParams.first,
                         search: debouncedSearchTerm,
                         filter: lazyParams.sortField,
-                        order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null,
+                        order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null
                     }
                 });
                 if (response.configurations) {
                     setConfigurations(response.configurations);
-                    setTotalConfigurations(response.configurations.length);
+                    setTotalConfigurations(response.configurations[0]?.total || 0);
                 }
             } catch (error) {
-                console.error("Error fetching advanced configurations:", error);
+                console.error("Error fetching advanced configurations : ", error);
             }
         };
 
@@ -88,8 +90,33 @@ export function SettingsGeneralAdvanced() {
     }, [searchTerm]);
 
     const handleUpdate = () => {
-        // Logic to update the selected configuration
-        console.log(selectedConfiguration)
+        showConfirmDialogWithInput({
+            value: selectedConfiguration[0].data.value,
+            title: t('SECURITY.update_configuration_modale'),
+            message: t('SECURITY.update_configuration_details', { 'name': selectedConfiguration[0].label }),
+            confirmText: t('GLOBAL.modify'),
+            cancelText: t('GLOBAL.cancel'),
+            options: selectedConfiguration[0].data.options || [],
+            type: selectedConfiguration[0].data.type,
+            onConfirm: (value) => {
+                const updateValue = async () => {
+                    try {
+                        selectedConfiguration[0].data.value = value;
+                        await put('/config/updateConfiguration/' + selectedConfiguration[0].id, selectedConfiguration[0]['data']);
+                        showToast(t('SECURITY.configuration_updated'), "success");
+                        setSelectedConfiguration([]);
+                        setLoading(false);
+                    } catch (error) {
+                        setLoading(false);
+                        console.error("Error updating configuration : ", error);
+                    }
+                }
+                setLoading(true);
+                updateValue().then();
+            },
+            onCancel: () => {
+            }
+        });
     };
 
     const columns = [
@@ -129,8 +156,8 @@ export function SettingsGeneralAdvanced() {
                 if (row.data.type === 'bool') {
                     return (
                         <span
-                            className={ `bg-[#E8E8E8] p-2 rounded-md ${ row.data.value ? 'text-(--color-primary)' : 'text-(--text-error)' }` }>
-                            { row.data.value ? 'True' : 'False' }
+                            className={ `bg-[#E8E8E8] p-2 rounded-md ${ row.data.value === 'true' ? 'text-(--color-primary)' : 'text-(--text-error)' }` }>
+                            { row.data.value === 'true' ? 'True' : 'False' }
                         </span>
                     );
                 }

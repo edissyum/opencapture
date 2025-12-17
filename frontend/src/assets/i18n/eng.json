@@ -181,7 +181,9 @@
         "logout": "Logout",
         "creating": "Creating...",
         "modify": "Modify",
-        "duplicate": ""
+        "duplicate": "",
+        "false": "",
+        "true": ""
     },
     "HISTORY": {
         "document_validated": "Document #<strong>{{ documentId }}</strong> successfully validated",
@@ -489,7 +491,8 @@
         "email_mandatory": "Email address is mandatory",
         "forms": "Forms",
         "settings": "Settings",
-        "customers": "Customer accounts"
+        "customers": "Customer accounts",
+        "user_quota": ""
     },
     "VERIFIER": {
         "creation_date": "Creation date",
@@ -602,11 +605,23 @@
         "data_type": "",
         "no_configurations": "",
         "value": "",
-        "update_configuration": ""
+        "update_configuration_details": "",
+        "update_configuration_modale": "",
+        "configuration_updated": ""
     },
     "TYPE": {
         "boolean": "",
         "integer": "",
         "list": ""
+    },
+    "REGEX": {
+        "update_regex_modale": "",
+        "update_regex_details": "",
+        "regex_updated": ""
+    },
+    "DOCSERVERS": {
+        "docserver_updated": "",
+        "update_docserver_details": "",
+        "update_docserver_modale": ""
     }
 }

@@ -118,7 +118,7 @@ export function FormsList({ module }: { module: string }) {
                         offset: lazyParams.first,
                         search: debouncedSearchTerm,
                         filter: lazyParams.sortField,
-                        order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null,
+                        order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null
                     }
                 });
                 setTotalForms(response.forms[0].total || 0);
