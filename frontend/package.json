@@ -34,7 +34,7 @@
         "react-dropzone": "^14.3.8",
         "react-hook-form": "^7.68.0",
         "react-i18next": "^16.5.0",
-        "react-router-dom": "^7.10.1",
+        "react-router-dom": "^7.11.0",
         "react-toastify": "^11.0.5",
         "react-tooltip": "^5.30.0",
         "tailwindcss": "^4.1.18",

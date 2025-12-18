@@ -5,6 +5,10 @@ CREATE TABLE settings_favorites (
     "route"   VARCHAR(255)
 );
 
+-- Ajout de la colonne original_filename dans les batchs du Splitter
+ALTER TABLE splitter_batches
+ADD COLUMN original_filename VARCHAR(255);
+
 -- Remplacement des couleurs pour utiliser des codes hexadécimaux
 UPDATE form_models_field
 SET fields = jsonb_set(

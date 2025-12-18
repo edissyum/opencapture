@@ -116,8 +116,9 @@ if os.path.isdir(contact_model_path) and len(os.listdir(contact_model_path)) > 0
 app.config.from_mapping(
     ROTATE_MODEL=rotate_model,
     CONTACT_MODEL=contact_model,
-    BABEL_TRANSLATION_DIRECTORIES=app.root_path + '/assets/i18n/translations/',
+    JOURNAL_PATH=os.path.join(app.instance_path, 'journal/custom/'),
     UPLOAD_FOLDER=os.path.join(app.instance_path, 'upload/verifier/'),
+    BABEL_TRANSLATION_DIRECTORIES=app.root_path + '/assets/i18n/translations/',
     UPLOAD_FOLDER_SPLITTER=os.path.join(app.instance_path, 'upload/splitter/')
 )
 babel = Babel(app, default_locale='fr', locale_selector=get_locale)

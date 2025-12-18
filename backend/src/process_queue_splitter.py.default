@@ -21,7 +21,7 @@ import sys
 import time
 import json
 import traceback
-from . import app
+from src import app
 from kuyruk import Kuyruk
 from .classes.Log import Log
 from .classes.Files import Files

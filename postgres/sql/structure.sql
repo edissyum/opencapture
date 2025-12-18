@@ -255,6 +255,7 @@ CREATE TABLE "splitter_batches" (
     "subject"           VARCHAR(255),
     "file_path"         VARCHAR(255),
     "file_name"         VARCHAR(255),
+    "original_filename" VARCHAR(255),
     "thumbnail"         VARCHAR(255),
     "batch_folder"      VARCHAR(255),
     "creation_date"     TIMESTAMP       DEFAULT (CURRENT_TIMESTAMP),

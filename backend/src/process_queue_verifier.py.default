@@ -22,7 +22,7 @@ import logging
 import facturx
 import tempfile
 import traceback
-from . import app
+from src import app
 from lxml import etree
 from .process import main
 from .classes.Log import Log

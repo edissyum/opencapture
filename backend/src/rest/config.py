@@ -136,7 +136,7 @@ def update_regex(regex_id):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'regex']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'config/updateRegex/{regex_id}'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'id', 'type': int, 'mandatory': False},
         {'id': 'lang', 'type': str, 'mandatory': False},
         {'id': 'label', 'type': str, 'mandatory': True},
@@ -148,7 +148,7 @@ def update_regex(regex_id):
             "message": message
         }, 400)
 
-    res = config.update_regex(request.json['args'], regex_id)
+    res = config.update_regex(request.json, regex_id)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -184,11 +184,11 @@ def update_configuration_by_id(configuration_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/config/updateConfiguration/{configuration_id}'}), 403
 
-    check, message = rest_validator(request.json['data'], [
+    check, message = rest_validator(request.json, [
         {'id': 'type', 'type': str, 'mandatory': True},
         {'id': 'label_type', 'type': str, 'mandatory': False},
         {'id': 'description', 'type': str, 'mandatory': True},
-        {'id': 'value', 'type': str if request.json['data']['type'] not in ['bool'] else bool, 'mandatory': True},
+        {'id': 'value', 'type': str if request.json['type'] not in ['bool'] else bool, 'mandatory': True},
     ])
     if not check:
         return make_response({
@@ -196,7 +196,7 @@ def update_configuration_by_id(configuration_id):
             "message": message
         }, 400)
 
-    res = config.update_configuration_by_id(request.json['data'], configuration_id)
+    res = config.update_configuration_by_id(request.json, configuration_id)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -231,7 +231,7 @@ def update_docserver(docserver_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/config/updateDocserver/{docserver_id}'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'id', 'type': int, 'mandatory': True},
         {'id': 'path', 'type': str, 'mandatory': True},
         {'id': 'description', 'type': str, 'mandatory': True},
@@ -243,7 +243,7 @@ def update_docserver(docserver_id):
             "message": message
         }, 400)
 
-    res = config.update_docserver(request.json['args'], docserver_id)
+    res = config.update_docserver(request.json, docserver_id)
     return make_response(jsonify(res[0])), res[1]
 
 

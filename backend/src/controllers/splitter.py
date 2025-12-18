@@ -46,6 +46,7 @@ def handle_uploaded_file(files, workflow_id, user_id):
 
     for file in files:
         _f = files[file]
+        original_filename = _f.filename
         filename = Files.save_uploaded_file(_f, path, False)
 
         now = datetime.datetime.now()
@@ -69,8 +70,9 @@ def handle_uploaded_file(files, workflow_id, user_id):
                 'file': filename,
                 'user_id': user_id,
                 'custom_id': custom_id,
-                'workflow_id': workflow_id,
                 'ip': request.remote_addr,
+                'workflow_id': workflow_id,
+                'original_filename': original_filename,
                 'user_info': request.environ['user_info'],
                 'task_id_monitor': task_id_monitor[0]['process']
             })

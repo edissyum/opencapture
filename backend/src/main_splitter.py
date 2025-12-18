@@ -28,7 +28,9 @@ def launch(args):
     if 'process_queue_splitter' not in custom_array or not custom_array['process_queue_splitter'] and not custom_array['process_queue_splitter']['path']:
         from . import process_queue_splitter
     else:
-        custom_array['process_queue_splitter']['path'] = 'custom.' + custom_array['process_queue_splitter']['path'].split('.custom.')[1]
+        custom_array['process_queue_splitter']['path'] = 'custom.' + \
+                                                         custom_array['process_queue_splitter']['path'].split(
+                                                             'custom.')[1]
         process_queue_splitter = getattr(__import__(custom_array['process_queue_splitter']['path'],
                                                     fromlist=[custom_array['process_queue_splitter']['module']]),
                                          custom_array['process_queue_splitter']['module'])
