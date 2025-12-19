@@ -156,10 +156,10 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                 showToast(t("MAILCOLLECT.connexion_successful"), "success");
                 handleNextStep(data);
             }
-            setLoading(false);
         } catch (err) {
-            setLoading(false);
             console.error("Connection test failed : " + err);
+        } finally {
+            setLoading(false);
         }
     }
 

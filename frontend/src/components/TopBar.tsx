@@ -56,7 +56,7 @@ export default function TopBar() {
 
     return (
         <header
-            className="w-full h-20 flex flex-shrink-0 items-center justify-between px-6 bg-(--bg-primary) border-b-2 border-(--border-secondary)">
+            className="w-full h-20 flex shrink-0 items-center justify-between px-6 bg-(--bg-primary) border-b-2 border-(--border-secondary)">
             <div className="flex items-center gap-4">
                 <div className="relative inline-block w-64">
                     <select value={ selected || '' } style={ { backgroundImage: `url('${ img }')` } }
@@ -79,7 +79,7 @@ export default function TopBar() {
                     </span>
                 </div>
                 <Button to="/home" icon={ <Package size={ 24 } className="mr-2"/> } className="font-semibold p-2.5!" size='md'>
-                    { t('GLOBAL.batches') }
+                    { storedModule === 'verifier' ? t('VERIFIER.documents') : t('GLOBAL.batches') }
                 </Button>
                 <Button to="/upload" icon={ <CloudUpload size={ 24 } className="mr-2"/> } className="font-semibold p-2.5!" size='md' variant='no_bg'>
                     { t('GLOBAL.upload') }

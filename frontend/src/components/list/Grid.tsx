@@ -29,7 +29,6 @@ import { LazyBase64Image } from "./LazyImage";
 import { EllipsisVertical } from "lucide-react";
 import { ContextMenu } from "primereact/contextmenu";
 
-
 type Column<T> = {
     id: string | undefined;
     header: string;

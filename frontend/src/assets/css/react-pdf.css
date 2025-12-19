@@ -4,6 +4,7 @@
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
+
  Open-Capture is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -14,23 +15,12 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { StrictMode } from 'react'
-import { pdfjs } from "react-pdf";
-import { createRoot } from 'react-dom/client'
+.react-pdf__Page {
+    @apply rounded-lg;
+}
 
-import './index.css'
-
-import { App } from "./App";
-import { ToastProvider } from "./components/ToastProvider";
-
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-    "pdfjs-dist/build/pdf.worker.min.mjs",
-    import.meta.url
-).toString();
-
-createRoot(document.getElementById('root')!).render(
-    <StrictMode>
-        <ToastProvider />
-        <App />
-    </StrictMode>,
-);
+.react-pdf__Page__canvas {
+    @apply border-2;
+    @apply rounded-lg;
+    @apply border-(--border-secondary);
+}

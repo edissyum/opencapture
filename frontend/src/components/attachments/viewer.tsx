@@ -1,0 +1,136 @@
+/** This file is part of Open-Capture.
+
+ Open-Capture is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+
+ @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
+
+import { t } from "i18next";
+import { ArrowLeft } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+
+import { Button } from "../Button";
+
+import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { Loader } from "../loader/Loader.tsx";
+import { Document, Page } from "react-pdf";
+
+type AttachmentsListProps = {
+    show: boolean;
+    module: string;
+    attachmentId: any;
+    onClose: () => void;
+};
+
+const imageCache: any = new Map<string, string>();
+
+export function AttachmentsViewer({ show, module, attachmentId, onClose }: AttachmentsListProps) {
+    const { post } = axiosApiCall();
+
+    const [numPages, setNumPages] = useState<number>();
+    const [loading, setLoading] = useState(false);
+    const [currentAttachmentData, setCurrentAttachmentData] = useState<any>(null);
+
+    // Download attachment data
+    useEffect(() => {
+        if (!attachmentId || !show) return;
+
+        if (imageCache.has(attachmentId)) {
+            setCurrentAttachmentData(imageCache.get(attachmentId));
+            setLoading(false);
+            return;
+        }
+
+        setLoading(true);
+        const fetchAttachment = async () => {
+            try {
+                const res = await post(`/attachments/${ module }/download/${ attachmentId }`)
+                if (res) {
+                    let data;
+                    if (res['mime'] === 'application/pdf') {
+                        const byteCharacters = atob(res['file']);
+                        const byteNumbers = new Array(byteCharacters.length);
+                        for (let i = 0; i < byteCharacters.length; i++) {
+                            byteNumbers[i] = byteCharacters.charCodeAt(i);
+                        }
+                        data = new Uint8Array(byteNumbers);
+                    } else if (res['mime'].startsWith('image/')) {
+                        data = `data:${ res['mime'] };base64,${ res['file'] }`;
+                    }
+                    setCurrentAttachmentData(data);
+                    imageCache.set(attachmentId, data);
+                }
+            } catch (error) {
+                console.error("Error fetching attachment:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAttachment().then();
+    }, [show]);
+
+    const memoizedFile = useMemo(() => {
+        if (!currentAttachmentData) return null;
+        return { data: currentAttachmentData };
+    }, [currentAttachmentData]);
+
+    if (loading) {
+        return <Loader/>;
+    }
+
+    return (
+        <div className='h-full pb-4'>
+            <div className='h-full flex flex-col overflow-auto'>
+                <div className='sticky p-6 top-0 z-10'>
+                    <Button icon={ <ArrowLeft size={ 18 }/> } onClick={ () => onClose() }
+                            className='rounded-3xl hover:text-(--color-primary) text-(--text-primary)
+                               border-(--border-secondary) p-2.5! px-5! bg-(--bg-primary)'>
+                        { t('ATTACHMENTS.back_to_attachments_list') }
+                    </Button>
+                </div>
+                { imageCache.has(attachmentId) && (() => {
+                    const data = imageCache.get(attachmentId);
+                    if (typeof data === "string") {
+                        return (
+                            <div className='h-full flex justify-center items-center pb-2'>
+                                <img src={ data } alt="Attachment" className="max-w-full"/>
+                            </div>
+                        );
+                    } else if (data instanceof Uint8Array) {
+                        return (
+                            <div className='h-full flex justify-center pb-2'>
+                                <Document file={ memoizedFile } loading={ <Loader/> }
+                                          error={ t('ATTACHMENTS.error_loading_pdf') }
+                                          onLoadSuccess={ ({ numPages }) => setNumPages(numPages) }>
+                                    {/* @ts-ignore*/ }
+                                    { Array.from({ length: numPages }, (_, i) => (
+                                        <Page
+                                            key={ i }
+                                            className="mb-4"
+                                            pageNumber={ i + 1 }
+                                            renderTextLayer={ false }
+                                            renderAnnotationLayer={ false }
+                                        />
+                                    )) }
+                                </Document>
+                            </div>
+                        );
+                    } else {
+                        return null;
+                    }
+                })() }
+            </div>
+        </div>
+    );
+}

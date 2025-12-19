@@ -570,7 +570,6 @@
         "document_date": "Fecha del documento",
         "invoice_number": "Número de factura",
         "drop_create_new_line": "Suelta un campo para crear una nueva línea",
-        "indicators": "Indicadores",
         "page": "Página",
         "download_original_file": "Descargar el archivo original",
         "loading_page": "Cargando la página {{currentPage}}...",
@@ -600,7 +599,10 @@
         "select_single_document_customer": "El cambio de cuenta de cliente solo es posible para un documento a la vez",
         "search_form": "Buscar un formulario",
         "erase_filters": "Borrar filtros",
-        "facturation": "Procesamiento"
+        "facturation": "Procesamiento",
+        "hide_indicators": "",
+        "show_attachments": "",
+        "show_indicators": ""
     },
     "SECURITY": {
         "default_auth": "Autenticación predeterminada",
@@ -666,5 +668,15 @@
         "docserver_updated": "",
         "update_docserver_details": "",
         "update_docserver_modale": ""
+    },
+    "ATTACHMENTS": {
+        "back_to_file": "",
+        "register_date": "",
+        "upload_new_file": "",
+        "download": "",
+        "confirm_delete_attachment": "",
+        "delete_attachment": "",
+        "back_to_attachments_list": "",
+        "error_loading_pdf": ""
     }
 }

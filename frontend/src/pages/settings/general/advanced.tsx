@@ -105,10 +105,10 @@ export function SettingsGeneralAdvanced() {
                         await put('/config/updateConfiguration/' + selectedConfiguration[0].id, selectedConfiguration[0]['data']);
                         showToast(t('SECURITY.configuration_updated'), "success");
                         setSelectedConfiguration([]);
-                        setLoading(false);
                     } catch (error) {
-                        setLoading(false);
                         console.error("Error updating configuration : ", error);
+                    } finally {
+                        setLoading(false);
                     }
                 }
                 setLoading(true);

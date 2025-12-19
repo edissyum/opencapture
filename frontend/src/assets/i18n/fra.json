@@ -132,9 +132,9 @@
         "invalid_pattern": "Le format du champ est incorrect",
         "delete_field": "Suppprimer le champ",
         "invalid_date": "Date invalide",
-        "refuse": "Refuser",
+        "refuse": "Refuser le document",
         "refuse_loading": "Refus en cours...",
-        "validate": "Valider",
+        "validate": "Valider le document",
         "validate_loading": "Validation en cours...",
         "delete": "Supprimer",
         "duplicable": "Duplicable",
@@ -570,7 +570,6 @@
         "document_date": "Date du document",
         "invoice_number": "Numéro de facture",
         "drop_create_new_line": "Déposez un champ pour créer une nouvelle ligne",
-        "indicators": "Indicateurs",
         "page": "Page",
         "download_original_file": "Télécharger le fichier original",
         "loading_page": "Chargement de la page {{currentPage}}...",
@@ -600,7 +599,10 @@
         "select_single_document_customer": "Le changement de compte client n'est possible que pour un seul document à la fois",
         "search_form": "Rechercher un formulaire",
         "erase_filters": "Effacer les filtres",
-        "facturation": "Traitement"
+        "facturation": "Traitement",
+        "hide_indicators": "Cacher les indicateurs",
+        "show_attachments": "Voir les pièces jointes",
+        "show_indicators": "Voir les indicateurs"
     },
     "SECURITY": {
         "default_auth": "Authentification par défaut",
@@ -666,5 +668,15 @@
         "docserver_updated": "Docserver mis à jour avec succès",
         "update_docserver_details": "Vous vous apprêtez à modifier le docserver <strong>{{name}}</strong>",
         "update_docserver_modale": "Modification du docserver"
+    },
+    "ATTACHMENTS": {
+        "back_to_file": "Retour au fichier",
+        "register_date": "Date d'enregistrement",
+        "upload_new_file": "Nouvelle pièce jointe",
+        "download": "Télécharger",
+        "confirm_delete_attachment": "Voulez-vous vraiment supprimer cette pièce jointe ?",
+        "delete_attachment": "Supprimer la pièce jointe",
+        "back_to_attachments_list": "Retour à la liste des pièces jointes",
+        "error_loading_pdf": "Erreur lors du chargement du PDF"
     }
 }

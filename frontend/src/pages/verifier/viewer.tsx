@@ -19,7 +19,7 @@ import { t } from "i18next";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Copy, Download, Edit, Eye, EyeOff } from "lucide-react";
+import { ChevronLeft, ChevronRight, Copy, Download, Edit, Eye, EyeOff, Paperclip } from "lucide-react";
 
 import { Accordion, AccordionTab } from "primereact/accordion";
 
@@ -31,6 +31,7 @@ import { showToast } from "../../components/ToastProvider";
 import { ZoomControl } from "../../components/ZoomControl";
 import AutocompleteInput from "../../components/Autocomplete";
 import { Annotator, type Region } from "../../components/Annotator";
+import { AttachmentsList } from "../../components/attachments/list";
 
 import { useUser } from "../../services/hooks/useUser";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
@@ -89,7 +90,10 @@ export function VerifierViewerPage() {
     const totalPages = pagesList.length;
 
     const [zoom, setZoom] = useState(100);
+    const [attachmentsCount, setAttachmentsCount] = useState<number>(0);
+    const [showAttachments, setShowAttachments] = useState<boolean>(false);
     const [indicatorsVisible, setIndicatorsVisible] = useState<boolean>(true);
+    const [enableAttachments, setEnableAttachments] = useState<boolean>(true);
 
     const [regionsList, setRegionsList] = useState<any[]>([]);
     const [focusedField, setFocusedField] = useState<any>(null);
@@ -136,6 +140,17 @@ export function VerifierViewerPage() {
     useEffect(() => {
         if (!documentData) return;
 
+        const fetchEnableAttachments = async () => {
+            try {
+                const res = await get('config/getConfigurationNoAuth/enableAttachments');
+                if (res && res.configuration) {
+                    setEnableAttachments(res.configuration[0].data.value);
+                }
+            } catch (error) {
+                console.error("Error fetching enable attachments config:", error);
+            }
+        }
+
         const fetchForm = async () => {
             try {
                 get(`/forms/verifier/getById/${ documentData.form_id }`).then((response) => {
@@ -146,7 +161,9 @@ export function VerifierViewerPage() {
                 console.error("Error fetching form settings:", error);
             }
         };
+
         fetchForm().then();
+        fetchEnableAttachments().then();
     }, [documentDataLoading]);
 
     // Retrieve all third parties for autocomplete
@@ -883,80 +900,104 @@ export function VerifierViewerPage() {
 
     return (
         <div className='flex h-full overflow-hidden'>
-            <div className='w-1/2 bg-(--bg-secondary) p-8 h-full flex flex-col'>
-                <div className="border-2 border-(--border-secondary) rounded-xl h-full overflow-auto">
-                    { !pagesImageB64[currentPage] ? (
-                        <div className='w-full h-full flex flex-col items-center justify-center'>
-                            <span className='text-(--text-secondary)'>
-                                { t('VERIFIER.loading_page', { currentPage: currentPage }) }
-                                <Loader/>
-                            </span>
-                        </div>
-                    ) : (
-                        <Annotator
-                            width={ `${ zoom }%` }
-                            currentPage={ currentPage }
-                            focusedField={ focusedField }
-                            alt={ `Page ${ currentPage }` }
-                            imageB64={ pagesImageB64[currentPage] }
-                            originalWidth={ documentData['img_width'] }
-                            regionsList={ regionsList }
-                            onEnd={ handleEnd }
-                        />
-                    ) }
+            <div className={ `w-1/2 h-full flex flex-col ${showAttachments && enableAttachments ? '': 'hidden'}` }>
+                <AttachmentsList
+                    module="verifier"
+                    documentId={ documentId }
+                    onAttachmentsCountChange={ setAttachmentsCount }
+                    onClose={ () => setShowAttachments(false) }
+                />
+            </div>
+            { !showAttachments && (
+                <div className='w-1/2 bg-(--bg-secondary) p-8 h-full flex flex-col'>
+                    <div className="border-2 border-(--border-secondary) rounded-xl h-full overflow-auto">
+                        { !pagesImageB64[currentPage] ? (
+                            <div className='w-full h-full flex flex-col items-center justify-center'>
+                        <span className='text-(--text-secondary)'>
+                            { t('VERIFIER.loading_page', { currentPage: currentPage }) }
+                            <Loader/>
+                        </span>
+                            </div>
+                        ) : (
+                            <Annotator
+                                width={ `${ zoom }%` }
+                                currentPage={ currentPage }
+                                focusedField={ focusedField }
+                                alt={ `Page ${ currentPage }` }
+                                imageB64={ pagesImageB64[currentPage] }
+                                originalWidth={ documentData['img_width'] }
+                                regionsList={ regionsList }
+                                onEnd={ handleEnd }
+                            />
+                        ) }
                 </div>
-
-                <div className="flex flex-wrap gap-4 mt-4 items-center">
-                    <div className="flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
+                    <div className="flex flex-wrap gap-4 mt-4 items-center">
+                        { enableAttachments && (
+                            <div className="flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
                                     cursor-pointer border border-(--border-secondary) hover:border-(--border-primary)
-                                    hover:text-(--color-primary) transition-colors w-[48px] shrink-0"
-                         onClick={ handleDownloadOriginalFile }
-                         data-tooltip-id="tooltip"
-                         data-tooltip-content={ t('VERIFIER.download_original_file') }>
-                        <Download size={ 18 }/>
-                    </div>
+                                    hover:text-(--color-primary) transition-colors shrink-0 relative"
+                                 onClick={ () => setShowAttachments(true) }
+                                 data-tooltip-id="tooltip"
+                                 data-tooltip-content={ t('VERIFIER.show_attachments') }>
+                                <Paperclip size={ 18 }/>
+                                { attachmentsCount > 0 && (
+                                    <div className="z-1 absolute top-0 right-0 size-3 rounded-full bg-(--color-primary)"/>
+                                ) }
+                            </div>
+                        ) }
+                        <div className="flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
+                                    cursor-pointer border border-(--border-secondary) hover:border-(--border-primary)
+                                    hover:text-(--color-primary) transition-colors shrink-0"
+                             onClick={ handleDownloadOriginalFile }
+                             data-tooltip-id="tooltip"
+                             data-tooltip-content={ t('VERIFIER.download_original_file') }>
+                            <Download size={ 18 }/>
+                        </div>
 
-                    <div className="flex bg-(--bg-primary) p-3.5 rounded-full cursor-pointer border
+                        <div className="flex bg-(--bg-primary) p-3.5 rounded-full cursor-pointer border
                                     border-(--border-secondary) grow-5 min-w-[180px]">
-                        <ZoomControl zoom={ zoom } setZoom={ setZoom }/>
-                    </div>
+                            <ZoomControl zoom={ zoom } setZoom={ setZoom }/>
+                        </div>
 
-                    <div className="flex justify-center items-center gap-3 bg-(--bg-primary) p-3 rounded-full
+                        <div className="flex justify-center items-center gap-3 bg-(--bg-primary) p-3 rounded-full
                                     cursor-pointer border border-(--border-secondary) grow min-w-[160px] whitespace-nowrap">
-                        <button onClick={ handlePrev }
-                                disabled={ currentPage === 1 }
-                                className={ `
+                            <button onClick={ handlePrev }
+                                    disabled={ currentPage === 1 }
+                                    className={ `
                                     cursor-pointer rounded-full transition-colors 
                                     ${ currentPage === 1 ? "text-(--text-secondary) cursor-not-allowed"
-                                    : "hover:bg-(--bg-secondary) text-(--text-primary)" }`
-                                }>
-                            <ChevronLeft size={ 16 }/>
-                        </button>
+                                        : "hover:bg-(--bg-secondary) text-(--text-primary)" }`
+                                    }>
+                                <ChevronLeft size={ 16 }/>
+                            </button>
 
-                        <span className="whitespace-nowrap">
+                            <span className="whitespace-nowrap">
                             { t('VERIFIER.page') } { currentPage } / { totalPages || 1 }
                         </span>
 
-                        <button
-                            onClick={ handleNext }
-                            disabled={ currentPage === totalPages }
-                            className={ `cursor-pointer rounded-full transition-colors 
+                            <button
+                                onClick={ handleNext }
+                                disabled={ currentPage === totalPages }
+                                className={ `cursor-pointer rounded-full transition-colors 
                                 ${ currentPage === totalPages ? "text-(--text-secondary) cursor-not-allowed"
-                                : "hover:bg-(--bg-secondary) text-(--text-primary)" }` }>
-                            <ChevronRight size={ 16 }/>
-                        </button>
-                    </div>
+                                    : "hover:bg-(--bg-secondary) text-(--text-primary)" }` }>
+                                <ChevronRight size={ 16 }/>
+                            </button>
+                        </div>
 
-                    <div className="flex justify-center items-center select-none gap-3 bg-(--bg-primary) p-3
+                        <div className="flex justify-center items-center select-none gap-3 bg-(--bg-primary) p-3
                                     rounded-full cursor-pointer border border-(--border-secondary)
                                     hover:border-(--border-primary) hover:text-(--color-primary)
-                                    transition-colors shrink-0 min-w-[140px]"
-                         onClick={ handleChangeIndicatorsVisible }>
-                        { indicatorsVisible ? <Eye size={ 18 }/> : <EyeOff size={ 18 }/> }
-                        <span className="hidden sm:inline">{ t('VERIFIER.indicators') }</span>
+                                    transition-colors shrink-0"
+                             data-tooltip-id="tooltip"
+                             data-tooltip-content={ indicatorsVisible ? t('VERIFIER.hide_indicators') : t('VERIFIER.show_indicators') }
+                             onClick={ handleChangeIndicatorsVisible }>
+                            { indicatorsVisible ? <Eye size={ 18 }/> : <EyeOff size={ 18 }/> }
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
+
 
             <div className='w-1/2 bg-(--bg-primary) p-8 h-full border-l-2 border-(--border-secondary) overflow-auto'>
                 { documentDataLoading || formFields.length === 0 ? (
@@ -1057,18 +1098,17 @@ export function VerifierViewerPage() {
                         <div className='flex mt-6 w-full items-center gap-4'>
                             <div className='grow basis-0 w-full' data-tooltip-id="tooltip"
                                  data-tooltip-content={ supplierChanged ? t('VERIFIER.save_supplier_modification') : '' }>
-                                <Button
-                                    disabled={ loadingUpdateData || supplierChanged || formHasError || disableFields }
-                                    className='w-full' onClick={ () => validateDocument() }>
-                                    { loadingUpdateValidate && !formHasError ? t('FORMS.validate_loading') : t('FORMS.validate') }
+                                <Button className='w-full' variant='danger' onClick={ () => refuseDocument() }
+                                        disabled={ loadingUpdateData || supplierChanged || formHasError || disableFields }>
+                                    { !loadingUpdateRefuse ? t('FORMS.refuse') : t('FORMS.refuse_loading') }
                                 </Button>
                             </div>
                             <div className='grow basis-0 w-full' data-tooltip-id="tooltip"
                                  data-tooltip-content={ supplierChanged ? t('VERIFIER.save_supplier_modification') : '' }>
                                 <Button
                                     disabled={ loadingUpdateData || supplierChanged || formHasError || disableFields }
-                                    className='w-full' variant='danger' onClick={ () => refuseDocument() }>
-                                    { !loadingUpdateRefuse ? t('FORMS.refuse') : t('FORMS.refuse_loading') }
+                                    className='w-full' onClick={ () => validateDocument() }>
+                                    { loadingUpdateValidate && !formHasError ? t('FORMS.validate_loading') : t('FORMS.validate') }
                                 </Button>
                             </div>
                         </div>

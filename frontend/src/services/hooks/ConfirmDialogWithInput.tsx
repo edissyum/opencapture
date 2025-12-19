@@ -48,7 +48,6 @@ export function showConfirmDialogWithInput({
     onConfirm: (value: string) => void;
 }) {
     let inputValue = value;
-    console.log("type", type);
     const InputWrapper = () => {
         const [val, setVal] = useState(value);
         inputValue = val;

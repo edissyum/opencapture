@@ -108,10 +108,10 @@ export function SettingsGeneralRegex() {
                         await put('/config/updateRegex/' + selectedRegex[0].id, selectedRegex[0]);
                         showToast(t('REGEX.regex_updated'), "success");
                         setSelectedRegex([]);
-                        setLoading(false);
                     } catch (error) {
-                        setLoading(false);
                         console.error("Error updating regex : ", error);
+                    } finally {
+                        setLoading(false);
                     }
                 }
                 setLoading(true);

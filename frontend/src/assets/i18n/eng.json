@@ -527,7 +527,6 @@
         "document_date": "Document date",
         "invoice_number": "Invoice number",
         "drop_create_new_line": "Drop a field to create a new line",
-        "indicators": "Indicators",
         "page": "Page",
         "download_original_file": "Download original file",
         "loading_page": "Loading page {{currentPage}}...",
@@ -557,7 +556,10 @@
         "select_single_document_customer": "Customer account change is only possible for a single document at a time",
         "search_form": "Search a form",
         "erase_filters": "Clear filters",
-        "facturation": "Processing"
+        "facturation": "Processing",
+        "hide_indicators": "",
+        "show_attachments": "",
+        "show_indicators": ""
     },
     "SECURITY": {
         "default_auth": "Default authentication",
@@ -623,5 +625,15 @@
         "docserver_updated": "",
         "update_docserver_details": "",
         "update_docserver_modale": ""
+    },
+    "ATTACHMENTS": {
+        "back_to_file": "",
+        "register_date": "",
+        "upload_new_file": "",
+        "download": "",
+        "confirm_delete_attachment": "",
+        "delete_attachment": "",
+        "back_to_attachments_list": "",
+        "error_loading_pdf": ""
     }
 }

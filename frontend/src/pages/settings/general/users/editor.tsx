@@ -229,10 +229,10 @@ export function SettingsGeneralUserEditor() {
             await post(`/users/create`, data);
             showToast(t('ROLES.create_success'), 'success');
             navigate('/settings/general/users');
-            setLoading(false);
         } catch (error) {
-            setLoading(false);
             console.error('Error creating user :', error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -243,10 +243,10 @@ export function SettingsGeneralUserEditor() {
         try {
             await put(`/users/update/${ userId }`, data);
             showToast(t('USERS.update_success'), 'success');
-            setLoading(false);
         } catch (error) {
-            setLoading(false);
             console.error('Error updating user :', error);
+        } finally {
+            setLoading(false);
         }
     }
 

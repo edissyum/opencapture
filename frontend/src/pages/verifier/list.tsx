@@ -72,7 +72,7 @@ export function VerifierListPage() {
         } else if (storageLocale === 'spa') {
             setLocale('es-ES');
         }
-    }, [locale]);
+    }, []);
 
     const handleChangeView = (newView: 'list' | 'grid') => {
         setView(newView);
