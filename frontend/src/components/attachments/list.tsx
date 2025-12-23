@@ -185,7 +185,7 @@ export function AttachmentsList({ module, documentId, onAttachmentsCountChange, 
         <div className="flex flex-col h-full ">
             <div className={ `w-full h-full flex flex-col ${ showAttachment ? '' : 'hidden' }` }>
                 <AttachmentsViewer module={ module } show={ showAttachment }
-                                   attachmentId={ selectedAttachment?.id }
+                                   attachment={ selectedAttachment ?? {} }
                                    onClose={ () => setShowAttachment(false) }/>
             </div>
             <div className='h-full flex flex-col flex-1 overflow-y-auto'>

@@ -51,6 +51,8 @@ import { SettingsSplitterFormsEditor } from "./pages/settings/splitter/forms/edi
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
 import { SettingsGeneralRegex } from "./pages/settings/general/regex.tsx";
 import { SettingsGeneralDocservers } from "./pages/settings/general/docservers.tsx";
+import { SuppliersList } from "./pages/suppliers/list.tsx";
+import { CustomersList } from "./pages/customers/list.tsx";
 
 export const router = createBrowserRouter(
     [
@@ -73,6 +75,62 @@ export const router = createBrowserRouter(
                     element: <HomePage />,
                     loader: protectedLoader,
                     errorElement: <LoginRequiredError/>
+                },
+                {
+                    path: "suppliers",
+                    loader: protectedLoader,
+                    errorElement: <LoginRequiredError/>,
+                    handle: { breadcrumb: 'ACCOUNTS.suppliers_list' },
+                    children: [
+                        {
+                            index: true,
+                            loader: protectedLoader,
+                            element: <SuppliersList/>,
+                            errorElement: <LoginRequiredError/>
+                        },
+                        {
+                            path:'edit/:formId',
+                            loader: protectedLoader,
+                            element: <SettingsVerifierFormsEditor/>,
+                            errorElement: <LoginRequiredError/>,
+                            handle: { breadcrumb: 'SETTINGS.edit_form' }
+                        },
+                        {
+                            path:'create',
+                            loader: protectedLoader,
+                            element: <SettingsVerifierFormsCreate/>,
+                            errorElement: <LoginRequiredError/>,
+                            handle: { breadcrumb: 'FORMS.add_form' }
+                        }
+                    ]
+                },
+                {
+                    path: "customers",
+                    loader: protectedLoader,
+                    errorElement: <LoginRequiredError/>,
+                    handle: { breadcrumb: 'ACCOUNTS.customers_list' },
+                    children: [
+                        {
+                            index: true,
+                            loader: protectedLoader,
+                            element: <CustomersList/>,
+                            errorElement: <LoginRequiredError/>
+                        },
+                        {
+                            path:'edit/:formId',
+                            loader: protectedLoader,
+                            element: <SettingsVerifierFormsEditor/>,
+                            errorElement: <LoginRequiredError/>,
+                            handle: { breadcrumb: 'SETTINGS.edit_form' }
+                        },
+                        {
+                            path:'create',
+                            loader: protectedLoader,
+                            element: <SettingsVerifierFormsCreate/>,
+                            errorElement: <LoginRequiredError/>,
+                            handle: { breadcrumb: 'FORMS.add_form' }
+                        }
+                    ]
                 },
                 {
                     path: "verifier/viewer/:documentId",

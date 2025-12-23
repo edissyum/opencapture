@@ -35,9 +35,15 @@ def get_suppliers(_args):
         'where': ['status <> %s'],
         'data': ['DEL'],
         'offset': _args['offset'] if 'offset' in _args else 0,
-        'limit': _args['limit'] if 'limit' in _args else 'ALL',
-        'order_by': [_args['order']] if 'order' in _args else ''
+        'limit': _args['limit'] if 'limit' in _args else 'ALL'
     }
+
+    if 'filter' in _args and _args['filter']:
+        args['order_by'] = _args['filter']
+        if 'order' in _args and _args['order']:
+            args['order_by'] = [_args['filter'] + ' ' + _args['order']]
+        else:
+            args['order_by'] = [_args['filter'] + ' DESC']
 
     if 'search' in _args and _args['search']:
         search = _args['search'].replace("'", "''")
@@ -508,6 +514,14 @@ def retrieve_customers(data, module, user_id=None):
         'offset': data['offset'] if 'offset' in data else 0,
         'limit': data['limit'] if 'limit' in data else 'ALL'
     }
+
+    if 'filter' in data and data['filter']:
+        args['order_by'] = data['filter']
+        if 'order' in data and data['order']:
+            args['order_by'] = [data['filter'] + ' ' + data['order']]
+        else:
+            args['order_by'] = [data['filter'] + ' DESC']
+
     if 'search' in data and data['search']:
         args['offset'] = ''
         args['where'].append(

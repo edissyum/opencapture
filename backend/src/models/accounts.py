@@ -28,7 +28,7 @@ def get_suppliers(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
-
+    print(args)
     suppliers = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['accounts_supplier'],

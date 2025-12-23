@@ -15,14 +15,16 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import os
 import base64
 import mimetypes
+import os
+
+from flask import Blueprint, request, make_response, jsonify, g as current_context
 from flask_babel import gettext
-from ..main import create_classes_from_custom_id
+
 from ..controllers import auth, accounts, verifier, privileges
 from ..functions import retrieve_custom_from_url, rest_validator
-from flask import Blueprint, request, make_response, jsonify, g as current_context
+from ..main import create_classes_from_custom_id
 
 bp = Blueprint('accounts', __name__, url_prefix='/ws/')
 
@@ -37,6 +39,7 @@ def suppliers_list():
     check, message = rest_validator(request.args, [
         {'id': 'order', 'type': str, 'mandatory': False},
         {'id': 'limit', 'type': int, 'mandatory': False},
+        {'id': 'filter', 'type': str, 'mandatory': False},
         {'id': 'offset', 'type': int, 'mandatory': False},
         {'id': 'search', 'type': str, 'mandatory': False}
     ])
@@ -84,9 +87,11 @@ def update_supplier(supplier_id):
 
     lastname_mandatory = False
     name_mandatory = False
-    if 'lastname' in request.json['args'] and request.json['args']['lastname'] and ('name' not in request.json['args'] or not request.json['args']['name']):
+    if 'lastname' in request.json['args'] and request.json['args']['lastname'] and (
+            'name' not in request.json['args'] or not request.json['args']['name']):
         lastname_mandatory = True
-    if 'name' in request.json['args'] and request.json['args']['name'] and ('lastname' not in request.json['args'] or not request.json['args']['lastname']):
+    if 'name' in request.json['args'] and request.json['args']['name'] and (
+            'lastname' not in request.json['args'] or not request.json['args']['lastname']):
         name_mandatory = True
 
     check, message = rest_validator(request.json['args'], [
@@ -286,8 +291,10 @@ def create_supplier():
         {'id': 'skip_auto_validate', 'type': bool, 'mandatory': False},
         {'id': 'get_only_raw_footer', 'type': bool, 'mandatory': False},
         {'id': 'default_accounting_plan', 'type': int, 'mandatory': False},
-        {'id': 'lastname', 'type': str, 'mandatory': True if 'name' not in request.json['args'] or not request.json['args']['name'] else False},
-        {'id': 'name', 'type': str, 'mandatory': True if 'lastname' not in request.json['args'] or not request.json['args']['lastname'] else False}
+        {'id': 'lastname', 'type': str,
+         'mandatory': True if 'name' not in request.json['args'] or not request.json['args']['name'] else False},
+        {'id': 'name', 'type': str,
+         'mandatory': True if 'lastname' not in request.json['args'] or not request.json['args']['lastname'] else False}
     ])
 
     if not check:
@@ -325,7 +332,8 @@ def delete_supplier_positions(supplier_id):
 @bp.route('accounts/suppliers/<int:supplier_id>/deletePosition', methods=['PUT'])
 @auth.token_required
 def delete_supplier_position(supplier_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list | access_verifier', 'update_supplier | access_verifier']):
+    if not privileges.has_privileges(request.environ['user_id'],
+                                     ['suppliers_list | access_verifier', 'update_supplier | access_verifier']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/accounts/suppliers/{supplier_id}/deletePosition'}), 403
 
@@ -354,7 +362,8 @@ def delete_supplier_position(supplier_id):
 @bp.route('accounts/suppliers/<int:supplier_id>/deletePage', methods=['PUT'])
 @auth.token_required
 def delete_supplier_page(supplier_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list | access_verifier', 'update_supplier | access_verifier']):
+    if not privileges.has_privileges(request.environ['user_id'],
+                                     ['suppliers_list | access_verifier', 'update_supplier | access_verifier']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/accounts/suppliers/{supplier_id}/deletePage'}), 403
 
@@ -556,6 +565,7 @@ def import_suppliers():
     res = accounts.import_suppliers(args)
     return res
 
+
 @bp.route('accounts/civilities/list', methods=['GET'])
 @auth.token_required
 def get_civilities():
@@ -565,20 +575,24 @@ def get_civilities():
     res = accounts.get_civilities()
     return make_response({'civilities': res}), res[1]
 
+
 @bp.route('accounts/civilities/delete/<int:civility_id>', methods=['DELETE'])
 @auth.token_required
 def delete_civility(civility_id):
     if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list | access_verifier']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/accounts/civilities/delete/{civility_id}'}), 403
+        return jsonify(
+            {'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/accounts/civilities/delete/{civility_id}'}), 403
 
     res = accounts.delete_civility(civility_id)
     return make_response(res[0]), res[1]
+
 
 @bp.route('accounts/civilities/create', methods=['POST'])
 @auth.token_required
 def create_civility():
     if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list | access_verifier']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/accounts/civilities/delete/{civility_id}'}), 403
+        return jsonify(
+            {'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/accounts/civilities/delete/{civility_id}'}), 403
 
     data = request.json
     check, message = rest_validator(data, [

@@ -17,24 +17,24 @@
 
 import { t } from "i18next";
 import { ArrowLeft } from "lucide-react";
+import { Document, Page } from "react-pdf";
 import { useEffect, useMemo, useState } from "react";
 
 import { Button } from "../Button";
+import { Loader } from "../loader/Loader";
 
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
-import { Loader } from "../loader/Loader.tsx";
-import { Document, Page } from "react-pdf";
 
 type AttachmentsListProps = {
     show: boolean;
     module: string;
-    attachmentId: any;
+    attachment: any;
     onClose: () => void;
 };
 
 const imageCache: any = new Map<string, string>();
 
-export function AttachmentsViewer({ show, module, attachmentId, onClose }: AttachmentsListProps) {
+export function AttachmentsViewer({ show, module, attachment, onClose }: AttachmentsListProps) {
     const { post } = axiosApiCall();
 
     const [numPages, setNumPages] = useState<number>();
@@ -43,10 +43,10 @@ export function AttachmentsViewer({ show, module, attachmentId, onClose }: Attac
 
     // Download attachment data
     useEffect(() => {
-        if (!attachmentId || !show) return;
+        if (!attachment.id || !show) return;
 
-        if (imageCache.has(attachmentId)) {
-            setCurrentAttachmentData(imageCache.get(attachmentId));
+        if (imageCache.has(attachment.id)) {
+            setCurrentAttachmentData(imageCache.get(attachment.id));
             setLoading(false);
             return;
         }
@@ -54,7 +54,7 @@ export function AttachmentsViewer({ show, module, attachmentId, onClose }: Attac
         setLoading(true);
         const fetchAttachment = async () => {
             try {
-                const res = await post(`/attachments/${ module }/download/${ attachmentId }`)
+                const res = await post(`/attachments/${ module }/download/${ attachment.id }`)
                 if (res) {
                     let data;
                     if (res['mime'] === 'application/pdf') {
@@ -68,7 +68,7 @@ export function AttachmentsViewer({ show, module, attachmentId, onClose }: Attac
                         data = `data:${ res['mime'] };base64,${ res['file'] }`;
                     }
                     setCurrentAttachmentData(data);
-                    imageCache.set(attachmentId, data);
+                    imageCache.set(attachment.id, data);
                 }
             } catch (error) {
                 console.error("Error fetching attachment:", error);
@@ -92,15 +92,23 @@ export function AttachmentsViewer({ show, module, attachmentId, onClose }: Attac
     return (
         <div className='h-full pb-4'>
             <div className='h-full flex flex-col overflow-auto'>
-                <div className='sticky p-6 top-0 z-10'>
+                <div className='sticky p-6 pb-0 top-0 z-10'>
                     <Button icon={ <ArrowLeft size={ 18 }/> } onClick={ () => onClose() }
                             className='rounded-3xl hover:text-(--color-primary) text-(--text-primary)
                                border-(--border-secondary) p-2.5! px-5! bg-(--bg-primary)'>
                         { t('ATTACHMENTS.back_to_attachments_list') }
                     </Button>
                 </div>
-                { imageCache.has(attachmentId) && (() => {
-                    const data = imageCache.get(attachmentId);
+                <div className='p-6 max-w-3xl'>
+                    <p className='font-semibold text-(--text-primary) truncate'>
+                        { attachment['filename'] }
+                    </p>
+                    <p className='text-sm text-(--text-secondary) mt-1'>
+                        { t('ATTACHMENTS.register_date') }: { attachment.creation_date }
+                    </p>
+                </div>
+                { imageCache.has(attachment.id) && (() => {
+                    const data = imageCache.get(attachment.id);
                     if (typeof data === "string") {
                         return (
                             <div className='h-full flex justify-center items-center pb-2'>

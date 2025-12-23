@@ -109,6 +109,7 @@ export function SettingsGeneralUsers() {
         }
     ];
 
+    // Fetch users
     useEffect(() => {
         if (loadingUsers) return;
         setLoadingUsers(true);
@@ -127,7 +128,7 @@ export function SettingsGeneralUsers() {
                 setTotalUsers(response.users[0]?.total || 0);
                 setUsers(response.users);
             } catch (error) {
-                console.error('Erreur de récupération des utilisateurs :', error);
+                console.error('Error while fetching users :', error);
             } finally {
                 setLoadingUsers(false);
             }
@@ -231,7 +232,7 @@ export function SettingsGeneralUsers() {
                     showToast(t('USERS.user_deleted', { count: selectedUsers.length }), 'success');
                 }
             } catch (err) {
-                console.error("Erreur suppression de l'utilisateur :", err);
+                console.error("Error deleting user :", err);
             }
         }
     }
