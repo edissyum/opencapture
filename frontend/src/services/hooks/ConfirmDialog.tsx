@@ -20,9 +20,10 @@ import { t } from "i18next";
 import { confirmDialog } from 'primereact/confirmdialog';
 
 export function showConfirmDialog({
-    title,
-    message,
     icon,
+    title,
+    danger,
+    message,
     cancelText = t('GLOBAL.cancel'),
     confirmText = t('GLOBAL.yes'),
     onConfirm,
@@ -30,22 +31,32 @@ export function showConfirmDialog({
 }: {
     title: string;
     message: string;
-    icon?: React.ReactNode;
+    danger?: boolean;
     cancelText?: string;
     confirmText?: string;
+    icon?: React.ReactNode;
     onConfirm: () => void;
     onCancel: () => void;
 }) {
+    let acceptClassName = "outline-none! shadow-none! border-2! text-white!";
+
+    if (!danger) {
+        acceptClassName += " bg-(--color-primary)! border-(--border-primary)! hover:bg-(--color-primary)/10! hover:text-(--color-primary)!";
+    } else {
+        acceptClassName += " bg-(--text-error)! border-(--text-error)! hover:bg-(--text-error)/10! hover:text-(--text-error)!";
+    }
+
     confirmDialog({
         icon: icon,
         header: title,
         draggable: false,
         closeOnEscape: true,
         dismissableMask: true,
+        className: "max-w-3xl!",
         rejectLabel: cancelText,
         acceptLabel: confirmText,
         message: <span dangerouslySetInnerHTML={ { __html: message } }/>,
-        acceptClassName: "outline-none! shadow-none! bg-(--color-primary)! border-2! border-(--border-primary)! text-white! hover:bg-(--color-primary)/10! hover:text-(--color-primary)!",
+        acceptClassName: acceptClassName,
         rejectClassName: "outline-none! shadow-none! bg-transparent! text-(--text-secondary)! border-2! border-transparent! hover:border-2! hover:border-(--text-secondary)!",
         accept() {
             onConfirm();

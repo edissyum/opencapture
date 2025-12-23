@@ -154,6 +154,7 @@ export function AttachmentsList({ module, documentId, onAttachmentsCountChange, 
             message: t('ATTACHMENTS.confirm_delete_attachment'),
             confirmText: t('GLOBAL.delete'),
             cancelText: t('GLOBAL.cancel'),
+            danger: true,
             onConfirm: async () => {
                 setLoading(true);
                 try {

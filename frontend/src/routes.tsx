@@ -53,6 +53,7 @@ import { SettingsGeneralRegex } from "./pages/settings/general/regex.tsx";
 import { SettingsGeneralDocservers } from "./pages/settings/general/docservers.tsx";
 import { SuppliersList } from "./pages/suppliers/list.tsx";
 import { CustomersList } from "./pages/customers/list.tsx";
+import { SupplierEditor } from "./pages/suppliers/editor.tsx";
 
 export const router = createBrowserRouter(
     [
@@ -89,18 +90,18 @@ export const router = createBrowserRouter(
                             errorElement: <LoginRequiredError/>
                         },
                         {
-                            path:'edit/:formId',
+                            path:'edit/:supplierId',
                             loader: protectedLoader,
-                            element: <SettingsVerifierFormsEditor/>,
+                            element: <SupplierEditor/>,
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'SETTINGS.edit_form' }
+                            handle: { breadcrumb: 'ACCOUNTS.edit_supplier' }
                         },
                         {
                             path:'create',
                             loader: protectedLoader,
-                            element: <SettingsVerifierFormsCreate/>,
+                            element: <SupplierEditor/>,
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'FORMS.add_form' }
+                            handle: { breadcrumb: 'ACCOUNTS.add_supplier' }
                         }
                     ]
                 },

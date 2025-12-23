@@ -285,6 +285,7 @@ export function SplitterListPage() {
             message: t('SPLITTER.confirm_delete_batch', { count: selectedBatches.length }),
             confirmText: t('GLOBAL.delete'),
             cancelText: t('GLOBAL.cancel'),
+            danger: true,
             onConfirm: async () => {
                 await deleteDocuments(selectedBatches.map(doc => doc.id));
                 setSelectedBatches([]);
@@ -430,8 +431,8 @@ export function SplitterListPage() {
                             <div className='mt-2'>
                                 <Dropdown
                                     filter={ true }
-                                    id="folder_destination"
                                     value={ selectedForm }
+                                    id="folder_destination"
                                     label={ t('VERIFIER.search_form') }
                                     options={ listForms.map((form: any) => ({ label: form.label, value: form.id })) }
                                     onChange={ (e) => setSelectedForm(e.value) }

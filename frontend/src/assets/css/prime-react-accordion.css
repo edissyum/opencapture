@@ -15,6 +15,10 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+.p-accordion .p-accordion-tab {
+    @apply mb-3;
+}
+
 /* Header background and text color and border */
 .p-accordion-header-link {
     @apply bg-(--bg-primary);

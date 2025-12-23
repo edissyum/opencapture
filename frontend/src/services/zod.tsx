@@ -18,6 +18,6 @@ import { z } from "zod";
 
 export const emptyToUndefined = <T extends z.ZodTypeAny>(schema: T) =>
     z.preprocess(
-        (val: any) => (val === "" ? undefined : val),
+        (val: any) => (val === "" || val === null ? undefined : val),
         schema.optional()
     );

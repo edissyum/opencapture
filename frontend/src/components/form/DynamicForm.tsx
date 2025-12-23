@@ -41,76 +41,82 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
         switch (field.component) {
             case "input":
                 return (
-                    <Controller
-                        key={ field.name }
-                        name={ field.name }
-                        control={ control }
-                        render={ ({ field: f }) => (
-                            <Input
-                                label={ field.label }
-                                value={ f.value ?? "" }
-                                hint={ field.hint ?? "" }
-                                required={ field.required }
-                                disabled={ field.disabled }
-                                labelFusion={ labelFusion }
-                                type={ field.type || "text" }
-                                placeholder={ field.placeholder }
-                                error={ errors[field.name]?.message }
-                                onChange={ e => {
-                                    const value = e.target.value
+                    <div className={ field.className || "" } key={ field.name }>
+                        <Controller
+                            key={ field.name }
+                            name={ field.name }
+                            control={ control }
+                            render={ ({ field: f }) => (
+                                <Input
+                                    label={ field.label }
+                                    value={ f.value ?? "" }
+                                    hint={ field.hint ?? "" }
+                                    required={ field.required }
+                                    disabled={ field.disabled }
+                                    labelFusion={ labelFusion }
+                                    type={ field.type || "text" }
+                                    placeholder={ field.placeholder }
+                                    error={ errors[field.name]?.message }
+                                    onChange={ e => {
+                                        const value = e.target.value
 
-                                    if (field.type === 'number') {
-                                        // valueAsNumber doesn't work with Controller, so we convert manually
-                                        f.onChange(value === '' ? undefined : Number(value));
-                                    } else {
-                                        f.onChange(value);
-                                    }
-                                } }
-                                onBlur={ f.onBlur }
-                            />
-                        ) }
-                    />
+                                        if (field.type === 'number') {
+                                            // valueAsNumber doesn't work with Controller, so we convert manually
+                                            f.onChange(value === '' ? undefined : Number(value));
+                                        } else {
+                                            f.onChange(value);
+                                        }
+                                    } }
+                                    onBlur={ f.onBlur }
+                                />
+                            ) }
+                        />
+                    </div>
                 );
             case "input_switch":
                 return (
-                    <Controller
-                        key={ field.name }
-                        name={ field.name }
-                        control={ control }
-                        render={ ({ field: f }) => (
-                            <div className='flex items-center mb-7'>
-                                <InputSwitch
-                                    inputId={ f.name }
-                                    checked={ f.value }
-                                    onChange={ e => f.onChange(e.value) }
-                                />
-                                <label htmlFor={ f.name } className='cursor-pointer'>
-                                    { field.label }
-                                </label>
-                            </div>
-                        ) }
-                    />
+                    <div className={ field.className || "" } key={ field.name }>
+                        <Controller
+                            key={ field.name }
+                            name={ field.name }
+                            control={ control }
+                            render={ ({ field: f }) => (
+                                <div className='flex items-center mb-7'>
+                                    <InputSwitch
+                                        inputId={ f.name }
+                                        checked={ f.value }
+                                        onChange={ e => f.onChange(e.value) }
+                                    />
+                                    <label htmlFor={ f.name } className='cursor-pointer'>
+                                        { field.label }
+                                    </label>
+                                </div>
+                            ) }
+                        />
+                    </div>
                 );
             case "multi_select":
                 return (
-                    <Controller
-                        key={ field.name }
-                        name={ field.name }
-                        control={ control }
-                        render={ ({ field: f }) => (
-                            <MultiSelectInput
-                                id={ f.name }
-                                className="mb-4"
-                                value={ f.value }
-                                optionValue="value"
-                                optionLabel="label"
-                                label={ field.label }
-                                options={ field.options }
-                                labelFusion={ labelFusion }
-                                onChange={ e => f.onChange(e.value) }
-                            />
-                        ) }
-                    />
+                    <div className={ field.className || "" } key={ field.name }>
+                        <Controller
+                            key={ field.name }
+                            name={ field.name }
+                            control={ control }
+                            render={ ({ field: f }) => (
+                                <MultiSelectInput
+                                    id={ f.name }
+                                    className="mb-4"
+                                    value={ f.value }
+                                    optionValue="value"
+                                    optionLabel="label"
+                                    label={ field.label }
+                                    options={ field.options }
+                                    labelFusion={ labelFusion }
+                                    onChange={ e => f.onChange(e.value) }
+                                />
+                            ) }
+                        />
+                    </div>
                 );
             case "radio_box":
                 return (
@@ -135,23 +141,26 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                 )
             case "dropdown":
                 return (
-                    <Controller
-                        key={ field.name }
-                        name={ field.name }
-                        control={ control }
-                        render={ ({ field: f }) => (
-                            <Dropdown
-                                id={ f.name }
-                                value={ f.value }
-                                label={ field.label }
-                                options={ field.options }
-                                labelFusion={ labelFusion }
-                                required ={ field.required }
-                                error={ errors[field.name]?.message }
-                                onChange={ e => f.onChange(e.value) }
-                            />
-                        ) }
-                    />
+                    <div className={ field.className || "" } key={ field.name }>
+                        <Controller
+                            key={ field.name }
+                            name={ field.name }
+                            control={ control }
+                            render={ ({ field: f }) => (
+                                <Dropdown
+                                    id={ f.name }
+                                    value={ f.value }
+                                    label={ field.label }
+                                    options={ field.options }
+                                    labelFusion={ labelFusion }
+                                    required={ field.required }
+                                    filter={ field.filter || false }
+                                    error={ errors[field.name]?.message }
+                                    onChange={ e => f.onChange(e.value) }
+                                />
+                            ) }
+                        />
+                    </div>
                 );
             case "checkbox":
                 return (
@@ -171,6 +180,9 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
         }
     };
 
-    return <div
-        className={ `${ grid ? `grid grid-cols-${ grid }` : `flex flex-col` } gap-${ gap }` }>{ fields.map(renderField) }</div>;
+    return (
+        <div className={ `${ grid ? `grid grid-cols-${ grid }` : `flex flex-col` } gap-${ gap }` }>
+            { fields.map(renderField) }
+        </div>
+    );
 }

@@ -115,6 +115,7 @@ export function CustomersList() {
             message: t('ACCOUNTS.confirm_delete_customer', { count: selectedCustomers.length }),
             confirmText: t('GLOBAL.delete'),
             cancelText: t('GLOBAL.cancel'),
+            danger: true,
             onConfirm: async () => {
                 await deleteCustomers(selectedCustomers.map((supplier: any) => supplier.id));
                 refresh();

@@ -153,6 +153,7 @@ export function SettingsGeneralUsers() {
             message: t('USERS.confirm_disable_user', { count: selectedUsers.length }),
             confirmText: t('GLOBAL.disable'),
             cancelText: t('GLOBAL.cancel'),
+            danger: true,
             onConfirm: async () => {
                 await disableUsers(selectedUsers.map((user: any) => user.id));
                 refresh();
@@ -215,6 +216,7 @@ export function SettingsGeneralUsers() {
             message: t('USERS.confirm_delete_user', { count: selectedUsers.length }),
             confirmText: t('GLOBAL.delete'),
             cancelText: t('GLOBAL.cancel'),
+            danger: true,
             onConfirm: async () => {
                 await deleteUsers(selectedUsers.map((user: any) => user.id));
                 refresh();

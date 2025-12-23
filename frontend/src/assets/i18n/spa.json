@@ -41,12 +41,6 @@
         "supplier_deleted_one": "",
         "supplier_deleted_other": "",
         "reinit_positions": "",
-        "confirm_reinit_supplier_position_many": "",
-        "confirm_reinit_supplier_position_one": "",
-        "confirm_reinit_supplier_position_other": "",
-        "reinit_supplier_position_many": "",
-        "reinit_supplier_position_one": "",
-        "reinit_supplier_position_other": "",
         "supplier_position_reinit_many": "",
         "supplier_position_reinit_one": "",
         "supplier_position_reinit_other": "",
@@ -57,7 +51,17 @@
         "delete_customer": "",
         "delete_customer_many": "",
         "delete_customer_one": "",
-        "delete_customer_other": ""
+        "delete_customer_other": "",
+        "confirm_reinit_supplier_position": "",
+        "edit_supplier": "",
+        "supplier_address": "",
+        "supplier_information": "",
+        "document_lang": "",
+        "default_currency": "",
+        "default_accounting_plan": "",
+        "update_supplier": "",
+        "updating": "",
+        "vat_or_duns_required": ""
     },
     "AUTH": {
         "authenticated": "Te has autenticado con éxito",
@@ -230,7 +234,10 @@
         "modify": "Modificar",
         "duplicate": "",
         "false": "",
-        "true": ""
+        "true": "",
+        "reinit": "",
+        "english": "",
+        "french": ""
     },
     "HISTORY": {
         "document_validated": "Documento n°<strong>{{ documentId }}</strong> validado con éxito",
@@ -567,7 +574,8 @@
         "forms": "Formularios",
         "settings": "Configuraciones",
         "customers": "Cuentas de clientes",
-        "user_quota": ""
+        "user_quota": "",
+        "civility": ""
     },
     "VERIFIER": {
         "creation_date": "Fecha de creación",
@@ -712,5 +720,12 @@
         "delete_attachment": "",
         "back_to_attachments_list": "",
         "error_loading_pdf": ""
+    },
+    "ADDRESSES": {
+        "address1": "",
+        "address2": "",
+        "city": "",
+        "country": "",
+        "postal_code": ""
     }
 }

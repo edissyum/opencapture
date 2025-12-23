@@ -396,6 +396,7 @@ export function VerifierListPage() {
             message: t('VERIFIER.confirm_delete_document', { count: selectedDocuments.length }),
             confirmText: t('GLOBAL.delete'),
             cancelText: t('GLOBAL.cancel'),
+            danger: true,
             onConfirm: async () => {
                 await deleteDocuments(selectedDocuments.map(doc => doc.id));
                 setSelectedDocuments([]);
@@ -545,8 +546,8 @@ export function VerifierListPage() {
                             <div className='mt-2'>
                                 <Dropdown
                                     filter={ true }
-                                    id="folder_destination"
                                     value={ selectedForm }
+                                    id="folder_destination"
                                     className="w-full mb-2"
                                     label={ t('VERIFIER.search_form') }
                                     options={ listForms.map((form: any) => ({ label: form.label, value: form.id })) }

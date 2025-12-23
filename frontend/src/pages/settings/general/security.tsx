@@ -325,7 +325,7 @@ export function SettingsGeneralSecurity() {
             </p>
             <Accordion multiple activeIndex={ activeIndex } onTabChange={ (e) => setActiveIndex(e.index as number[]) }>
                 <AccordionTab header={
-                    <span className='flex items-center '>
+                    <span className='flex items-center'>
                         <span>{ t('SECURITY.default_auth') }</span>
                         <span className='flex ml-auto' onClick={ (e) => e.stopPropagation() }>
                             <RadioBox

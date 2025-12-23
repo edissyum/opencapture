@@ -160,6 +160,7 @@ export function FormsList({ module }: { module: string }) {
             message: t('FORMS.confirm_disable_form', { count: selectedForms.length }),
             confirmText: t('GLOBAL.disable'),
             cancelText: t('GLOBAL.cancel'),
+            danger: true,
             onConfirm: async () => {
                 await disableForms(selectedForms.map((form: any) => form.id));
                 refresh();
@@ -222,6 +223,7 @@ export function FormsList({ module }: { module: string }) {
             message: t('FORMS.confirm_delete_form', { count: selectedForms.length }),
             confirmText: t('GLOBAL.delete'),
             cancelText: t('GLOBAL.cancel'),
+            danger: true,
             onConfirm: async () => {
                 await deleteForms(selectedForms.map((form: any) => form.id));
                 refresh();

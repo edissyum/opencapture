@@ -347,13 +347,13 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                     render={ ({ field }) => (
                         <Dropdown
                             filter={ true }
+                            className="w-full"
                             id="folder_to_crawl"
                             value={ field.value }
+                            disabled={ folders.length === 0 }
                             label={ t("MAILCOLLECT.folder_to_crawl") }
                             options={ folders.map((folder) => ({ label: folder, value: folder })) }
                             onChange={ (e) => field.onChange(e.value) }
-                            className="w-full"
-                            disabled={ folders.length === 0 }
                         />
                     ) }
                 />

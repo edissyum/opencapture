@@ -125,6 +125,7 @@ export function SuppliersList() {
             message: t('ACCOUNTS.confirm_delete_supplier', { count: selectedSuppliers.length }),
             confirmText: t('GLOBAL.delete'),
             cancelText: t('GLOBAL.cancel'),
+            danger: true,
             onConfirm: async () => {
                 await deleteSuppliers(selectedSuppliers.map((supplier: any) => supplier.id));
                 refresh();
@@ -151,11 +152,11 @@ export function SuppliersList() {
         if (selectedSuppliers.length === 0) return;
 
         showConfirmDialog({
-            icon: <CircleQuestionMark/>,
-            title: t('ACCOUNTS.reinit_supplier_position', { count: selectedSuppliers.length }),
-            message: t('ACCOUNTS.confirm_reinit_supplier_position', { count: selectedSuppliers.length }),
-            confirmText: t('GLOBAL.delete'),
+            title: t('ACCOUNTS.reinit_positions'),
+            message: t('ACCOUNTS.confirm_reinit_supplier_position'),
+            confirmText: t('GLOBAL.reinit'),
             cancelText: t('GLOBAL.cancel'),
+            danger: true,
             onConfirm: async () => {
                 await reinitPositionsSuppliers(selectedSuppliers.map((supplier: any) => supplier.id));
                 refresh();

@@ -145,6 +145,7 @@ export function SettingsGeneralRoles() {
             message: t('ROLES.confirm_disable_role', { count: selectedRoles.length }),
             confirmText: t('GLOBAL.disable'),
             cancelText: t('GLOBAL.cancel'),
+            danger: true,
             onConfirm: async () => {
                 await disableRoles(selectedRoles.map((user:any) => user.id))
                 refresh();
@@ -207,6 +208,7 @@ export function SettingsGeneralRoles() {
             message: t('ROLES.confirm_delete_role', { count: selectedRoles.length }),
             confirmText: t('GLOBAL.delete'),
             cancelText: t('GLOBAL.cancel'),
+            danger: true,
             onConfirm: async () => {
                 await deleteRoles(selectedRoles.map((user: any) => user.id));
                 refresh();

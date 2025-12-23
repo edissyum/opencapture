@@ -12,7 +12,7 @@
         "firstname": "Prénom",
         "function": "Fonction",
         "iban": "Numéro IBAN",
-        "lastname": "Nom",
+        "lastname": "Nom de famille",
         "phone": "Téléphone",
         "postal_code": "Code postal",
         "rccm": "Numéro RCCM",
@@ -41,12 +41,6 @@
         "supplier_deleted_one": "Compte de tiers supprimé avec succès",
         "supplier_deleted_other": "Comptes de tiers supprimés avec succès",
         "reinit_positions": "Réinitialiser les positions",
-        "confirm_reinit_supplier_position_many": "Voulez-vous vraiment réinitialiser les positions enregistrées pour ces {{count}} comptes de tiers ?",
-        "confirm_reinit_supplier_position_one": "Voulez-vous vraiment réinitialiser les positions enregistrées pour ce compte de tiers ?",
-        "confirm_reinit_supplier_position_other": "Voulez-vous vraiment réinitialiser les positions enregistrées pour ces {{count}} comptes de tiers ?",
-        "reinit_supplier_position_many": "Réinitilialiser les positions des comptes de tiers",
-        "reinit_supplier_position_one": "Réinitilialiser les positions du compte de tiers",
-        "reinit_supplier_position_other": "Réinitilialiser les positions des comptes de tiers",
         "supplier_position_reinit_many": "Positions des comptes de tiers réinitialisées avec succès",
         "supplier_position_reinit_one": "Position du compte de tiers réinitialisée avec succès",
         "supplier_position_reinit_other": "Positions des comptes de tiers réinitialisées avec succès",
@@ -57,7 +51,17 @@
         "delete_customer": "Supprimer le compte client",
         "delete_customer_many": "Supprimer les comptes clients",
         "delete_customer_one": "Supprimer le compte client",
-        "delete_customer_other": "Supprimer les comptes clients"
+        "delete_customer_other": "Supprimer les comptes clients",
+        "confirm_reinit_supplier_position": "Open-Capture apprend en continu, et garde en mémoire la position de certains champs pour une capture plus rapide lors des nouveaux documents.\nVous pouvez réinitialiser cette mémoire et repartir à zéro pour ce compte tiers.",
+        "edit_supplier": "Modifier le compte de tiers",
+        "supplier_address": "Adresse du compte de tiers",
+        "supplier_information": "Informations du compte de tiers",
+        "document_lang": "Langue des documents",
+        "default_currency": "Devise par défaut",
+        "default_accounting_plan": "Compte de charge par défaut",
+        "update_supplier": "Mettre à jour le compte de tiers",
+        "updating": "Mise à jour en cours...",
+        "vat_or_duns_required": "Numéro de TVA ou DUNS est requis"
     },
     "AUTH": {
         "authenticated": "Vous vous êtes authentifié avec succès",
@@ -230,7 +234,10 @@
         "modify": "Modifier",
         "duplicate": "Dupliquer",
         "false": "False",
-        "true": "True"
+        "true": "True",
+        "reinit": "Réinitialiser",
+        "english": "Anglais",
+        "french": "Français"
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validé avec succès",
@@ -567,7 +574,8 @@
         "forms": "Formulaires",
         "settings": "Paramètres",
         "customers": "Comptes clients",
-        "user_quota": "Pour gérer le quota utilisateur,"
+        "user_quota": "Pour gérer le quota utilisateur,",
+        "civility": "Civilité"
     },
     "VERIFIER": {
         "creation_date": "Date de création",
@@ -712,5 +720,12 @@
         "delete_attachment": "Supprimer la pièce jointe",
         "back_to_attachments_list": "Retour à la liste des pièces jointes",
         "error_loading_pdf": "Erreur lors du chargement du PDF"
+    },
+    "ADDRESSES": {
+        "address1": "Numéro et rue",
+        "address2": "Complément d'adresse",
+        "city": "Ville",
+        "country": "Pays",
+        "postal_code": "Code postal"
     }
 }
