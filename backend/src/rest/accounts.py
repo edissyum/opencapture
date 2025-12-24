@@ -87,14 +87,14 @@ def update_supplier(supplier_id):
 
     lastname_mandatory = False
     name_mandatory = False
-    if 'lastname' in request.json['args'] and request.json['args']['lastname'] and (
-            'name' not in request.json['args'] or not request.json['args']['name']):
+    if 'lastname' in request.json and request.json['lastname'] and (
+            'name' not in request.json or not request.json['name']):
         lastname_mandatory = True
-    if 'name' in request.json['args'] and request.json['args']['name'] and (
-            'lastname' not in request.json['args'] or not request.json['args']['lastname']):
+    if 'name' in request.json and request.json['name'] and (
+            'lastname' not in request.json or not request.json['lastname']):
         name_mandatory = True
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'bic', 'type': str, 'mandatory': False},
         {'id': 'duns', 'type': str, 'mandatory': False},
         {'id': 'iban', 'type': str, 'mandatory': False},
@@ -127,7 +127,7 @@ def update_supplier(supplier_id):
             "message": message
         }, 400)
 
-    data = request.json['args']
+    data = request.json
     res = accounts.update_supplier(supplier_id, data)
     return make_response(jsonify(res[0])), res[1]
 
@@ -182,7 +182,7 @@ def update_address(address_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/accounts/addresses/update/{address_id}'}), 403
 
-    data = request.json['args']
+    data = request.json
     check, message = rest_validator(data, [
         {'id': 'city', 'type': str, 'mandatory': False},
         {'id': 'country', 'type': str, 'mandatory': False},
@@ -234,7 +234,7 @@ def create_address():
                                          ['create_supplier | create_customer | access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/addresses/create'}), 403
 
-    data = request.json['args']
+    data = request.json
     check, message = rest_validator(data, [
         {'id': 'city', 'type': str, 'mandatory': False},
         {'id': 'country', 'type': str, 'mandatory': False},
@@ -268,7 +268,7 @@ def create_supplier():
         if not privileges.has_privileges(request.environ['user_id'], ['create_supplier | access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/suppliers/create'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'bic', 'type': str, 'mandatory': False},
         {'id': 'duns', 'type': str, 'mandatory': False},
         {'id': 'iban', 'type': str, 'mandatory': False},
@@ -292,9 +292,9 @@ def create_supplier():
         {'id': 'get_only_raw_footer', 'type': bool, 'mandatory': False},
         {'id': 'default_accounting_plan', 'type': int, 'mandatory': False},
         {'id': 'lastname', 'type': str,
-         'mandatory': True if 'name' not in request.json['args'] or not request.json['args']['name'] else False},
+         'mandatory': True if 'name' not in request.json or not request.json['name'] else False},
         {'id': 'name', 'type': str,
-         'mandatory': True if 'lastname' not in request.json['args'] or not request.json['args']['lastname'] else False}
+         'mandatory': True if 'lastname' not in request.json or not request.json['lastname'] else False}
     ])
 
     if not check:
@@ -303,7 +303,7 @@ def create_supplier():
             "message": message
         }, 400)
 
-    res = accounts.create_supplier(request.json['args'])
+    res = accounts.create_supplier(request.json)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -442,7 +442,7 @@ def update_customer(customer_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/accounts/customers/update/{customer_id}'}), 403
 
-    data = request.json['args']
+    data = request.json
     check, message = rest_validator(data, [
         {'id': 'name', 'type': str, 'mandatory': False},
         {'id': 'siret', 'type': int, 'mandatory': False},

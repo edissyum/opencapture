@@ -229,16 +229,20 @@ def update_supplier(supplier_id, data):
                 if 'vat_number' in _set and _set['vat_number']:
                     _where.append('vat_number = %s')
                     _data.append(_set['vat_number'])
-                if 'duns' in _set and _set['duns']:
+                elif 'duns' in _set and _set['duns']:
                     _where.append('duns = %s')
                     _data.append(_set['duns'])
+                else:
+                    _where.append('1=0')  # No vat_number or duns to check
 
             existing_suppliers = accounts.get_suppliers({
                 'where': _where,
                 'data': _data
             })
+
             for existing_supplier in existing_suppliers:
                 if existing_supplier['id'] != supplier_id:
+                    print(existing_supplier)
                     response = {
                         "errors": gettext('UPDATE_SUPPLIER_ERROR'),
                         "message": gettext('SUPPLIER_VAT_NUMBER_ALREADY_EXISTS')

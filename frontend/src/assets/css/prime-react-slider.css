@@ -15,8 +15,11 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-/* Overlay popup on small screen */
+.p-inputswitch.p-highlight .p-inputswitch-slider::before {
+    @apply left-0.5;
+}
 
+/* Overlay popup on small screen */
 .p-slider .p-slider-range {
     @apply bg-(--color-primary);
 }

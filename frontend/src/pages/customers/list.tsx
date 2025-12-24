@@ -144,7 +144,7 @@ export function CustomersList() {
                 <span className='flex items-center gap-1'>
                     <FileText size={ 16 }/>
                     <span>
-                        { t('ACCOUNTS.suppliers_list') } ({ totalCustomers || 0 })
+                        { t('ACCOUNTS.customers_list') } ({ totalCustomers || 0 })
                     </span>
                 </span>
                 <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height={ 'h-10' }
@@ -155,8 +155,8 @@ export function CustomersList() {
                         size={ 'sm' }
                         variant={ "no_bg_border" }
                         className='p-2 px-3 border'
-                        onClick={ () => navigate('/suppliers/create') }>
-                        <UserRoundPlus size={ 16 } className="mr-2"/> { t('ACCOUNTS.add_supplier') }
+                        onClick={ () => navigate('/customers/create') }>
+                        <UserRoundPlus size={ 16 } className="mr-2"/> { t('ACCOUNTS.add_customer') }
                     </Button>
                 </span>
             </div>

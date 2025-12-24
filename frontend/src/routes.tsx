@@ -54,6 +54,7 @@ import { SettingsGeneralDocservers } from "./pages/settings/general/docservers.t
 import { SuppliersList } from "./pages/suppliers/list.tsx";
 import { CustomersList } from "./pages/customers/list.tsx";
 import { SupplierEditor } from "./pages/suppliers/editor.tsx";
+import { CustomerEditor } from "./pages/customers/editor.tsx";
 
 export const router = createBrowserRouter(
     [
@@ -94,14 +95,12 @@ export const router = createBrowserRouter(
                             loader: protectedLoader,
                             element: <SupplierEditor/>,
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'ACCOUNTS.edit_supplier' }
                         },
                         {
                             path:'create',
                             loader: protectedLoader,
                             element: <SupplierEditor/>,
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'ACCOUNTS.add_supplier' }
                         }
                     ]
                 },
@@ -118,18 +117,16 @@ export const router = createBrowserRouter(
                             errorElement: <LoginRequiredError/>
                         },
                         {
-                            path:'edit/:formId',
+                            path:'edit/:customerId',
                             loader: protectedLoader,
-                            element: <SettingsVerifierFormsEditor/>,
+                            element: <CustomerEditor/>,
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'SETTINGS.edit_form' }
                         },
                         {
                             path:'create',
                             loader: protectedLoader,
-                            element: <SettingsVerifierFormsCreate/>,
+                            element: <CustomerEditor/>,
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'FORMS.add_form' }
                         }
                     ]
                 },

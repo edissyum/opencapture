@@ -157,3 +157,7 @@ h2 {
 .tox .tox-split-button__chevron:focus::after {
     box-shadow: 0 0 0 2px var(--color-primary) !important;
 }
+
+:focus-visible {
+    @apply outline-none;
+}

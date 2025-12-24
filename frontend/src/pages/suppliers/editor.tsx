@@ -18,7 +18,7 @@ import { z } from "zod";
 import { t } from "i18next";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Accordion, AccordionTab } from "primereact/accordion";
 
@@ -26,13 +26,17 @@ import { emptyToUndefined } from "../../services/zod";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 
 import { Button } from "../../components/Button";
+import { showToast } from "../../components/ToastProvider";
 import { DynamicForm } from "../../components/form/DynamicForm";
+import { ArrowLeft } from "lucide-react";
 
 export function SupplierEditor() {
-    const { get } = axiosApiCall();
+    const { get, post, put } = axiosApiCall();
+    const navigate = useNavigate();
     const { supplierId } = useParams<{ supplierId: any }>();
 
     const [forms, setForms] = useState<any[]>([]);
+    const [regexes, setRegexes] = useState<any[]>([]);
     const [civilities, setCivilities] = useState<any[]>([]);
     const [currencies, setCurrencies] = useState<any[]>([]);
     const [address, setAddress] = useState<any>(null);
@@ -40,11 +44,10 @@ export function SupplierEditor() {
     const [loading, setLoading] = useState<boolean>(false);
     const [accountingPlans, setAccountingPlans] = useState<any[]>([]);
     const [vatMandatory, setVatMandatory] = useState<boolean>(true);
+    const [informalContact, setInformalContact] = useState<boolean>(false);
 
-    // fetch supplier data and currencies and forms and civilities and accounting plans
+    // fetch supplier data and currencies and forms and civilities and accounting plans and regex
     useEffect(() => {
-        if (!supplierId) return;
-
         const fetchSupplier = async () => {
             try {
                 const response = await get(`/accounts/suppliers/getById/${ supplierId }`);
@@ -117,8 +120,33 @@ export function SupplierEditor() {
             }
         };
 
+        const fetchRegex = async () => {
+            try {
+                const response = await get('/config/getRegexById/vat_number');
+                if (response && response.regex) {
+                    setRegexes((prevRegexes) => [...prevRegexes, {
+                        id: 'vat_number',
+                        content: response.regex[0].content
+                    }]);
+                }
+
+                const response_duns = await get('/config/getRegexById/duns');
+                if (response_duns && response_duns.regex) {
+                    setRegexes((prevRegexes) => [...prevRegexes, {
+                        id: 'duns',
+                        content: response_duns.regex[0].content
+                    }]);
+                }
+            } catch (error) {
+                console.error('Error fetching regex:', error);
+            }
+        };
+
+        fetchRegex().then();
         fetchForms().then();
-        fetchSupplier().then();
+        if (supplierId) {
+            fetchSupplier().then();
+        }
         fetchCivilities().then();
         fetchCurrencies().then();
         fetchAccountingPlans().then();
@@ -137,6 +165,17 @@ export function SupplierEditor() {
             }
         }
     }, [supplier, address]);
+
+    const supplierBooleansSchema = z.object({
+        get_only_raw_footer: z.boolean().optional().describe(JSON.stringify({
+            component: "input_switch",
+            label: t("ACCOUNTS.get_only_raw_footer")
+        })),
+        informal_contact: z.boolean().optional().describe(JSON.stringify({
+            component: "input_switch",
+            label: t("ACCOUNTS.informal_contact")
+        }))
+    });
 
     const supplierSchema = z.object({
         name: z.string().min(1).optional().describe(JSON.stringify({
@@ -160,13 +199,14 @@ export function SupplierEditor() {
             component: "dropdown",
             options: civilities.map((civility) => ({
                 label: civility.label,
-                value: civility.id
+                value: civility.id.toString()
             })),
             label: t("USERS.civility")
         })),
         lastname: emptyToUndefined(z.string().min(1)).optional().describe(JSON.stringify({
             component: "input",
             type: "text",
+            required: informalContact,
             className: "col-span-2",
             label: t("ACCOUNTS.lastname")
         })),
@@ -181,27 +221,47 @@ export function SupplierEditor() {
             type: "text",
             label: t("ACCOUNTS.function")
         })),
-        vat_number: z.string().optional().describe(JSON.stringify({
+        vat_number: emptyToUndefined(z.string()).optional().refine((value) => {
+                if (!value) return true;
+                const regex = regexes.find(r => r.id === "vat_number")?.content;
+                if (!regex) return true;
+
+                return new RegExp(regex).test(value);
+            },
+            {
+                message: t("ACCOUNTS.invalid_vat_number"),
+            }
+        ).describe(JSON.stringify({
             component: "input",
             type: "text",
             required: vatMandatory,
             className: "col-span-2",
             label: t("ACCOUNTS.vat_number")
         })),
-        siren: z.string().optional().describe(JSON.stringify({
+        siren: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ACCOUNTS.siren")
         })),
-        siret: z.string().optional().describe(JSON.stringify({
+        siret: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ACCOUNTS.siret")
         })),
-        duns: z.string().optional().describe(JSON.stringify({
+        duns: emptyToUndefined(z.string().min(1)).optional().refine((value) => {
+                if (!value) return true;
+                const regex = regexes.find(r => r.id === "duns")?.content;
+                if (!regex) return true;
+
+                return new RegExp(regex).test(value);
+            },
+            {
+                message: t("ACCOUNTS.invalid_duns"),
+            }
+        ).describe(JSON.stringify({
             component: "input",
             type: "text",
-            required: !vatMandatory,
+            required: !vatMandatory && !informalContact,
             label: t("ACCOUNTS.duns")
         })),
         iban: z.string().optional().describe(JSON.stringify({
@@ -225,17 +285,17 @@ export function SupplierEditor() {
         document_lang: z.string().describe(JSON.stringify({
             component: "dropdown",
             options: [
-                { label: t('GLOBAL.english'), value: "eng" },
-                { label: t('GLOBAL.french'), value: "fra" }
+                { label: t('GLOBAL.french'), value: "fra" },
+                { label: t('GLOBAL.english'), value: "eng" }
             ],
             label: t("ACCOUNTS.document_lang")
         })),
-        default_currency: z.string().optional().describe(JSON.stringify({
+        default_currency: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
             component: "dropdown",
             options: currencies,
             label: t("ACCOUNTS.default_currency")
         })),
-        form_id: z.number().optional().describe(JSON.stringify({
+        form_id: emptyToUndefined(z.number()).optional().describe(JSON.stringify({
             component: "dropdown",
             options: forms.map((form) => ({
                 label: form.label,
@@ -244,52 +304,37 @@ export function SupplierEditor() {
             className: "col-span-2",
             label: t("FORMS.form_name")
         })),
-        default_accounting_plan: z.number().optional().describe(JSON.stringify({
+        default_accounting_plan: emptyToUndefined(z.number()).optional().describe(JSON.stringify({
             component: "dropdown",
             filter: true,
             options: accountingPlans,
             className: "col-span-6",
             label: t("ACCOUNTS.default_accounting_plan")
         }))
-    }).superRefine((data, ctx) => {
-        console.log("Both VAT number and DUNS are missing");
-        if (!data.vat_number && !data.duns) {
-            ctx.addIssue({
-                path: ["vat_number"],
-                message: t("ACCOUNTS.vat_or_duns_required"),
-                code: z.ZodIssueCode.custom,
-            });
-
-            ctx.addIssue({
-                path: ["duns"],
-                message: t("ACCOUNTS.vat_or_duns_required"),
-                code: z.ZodIssueCode.custom,
-            });
-        }
     });
 
     const addressSchema = z.object({
-        address1: z.string().min(1).optional().describe(JSON.stringify({
+        address1: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ADDRESSES.address1")
         })),
-        address2: z.string().min(1).optional().describe(JSON.stringify({
+        address2: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ADDRESSES.address2")
         })),
-        postal_code: z.string().min(1).optional().describe(JSON.stringify({
+        postal_code: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ADDRESSES.postal_code")
         })),
-        city: z.string().min(1).optional().describe(JSON.stringify({
+        city: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ADDRESSES.city")
         })),
-        country: z.string().min(1).optional().describe(JSON.stringify({
+        country: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ADDRESSES.country")
@@ -297,28 +342,96 @@ export function SupplierEditor() {
     });
 
     const { control, watch, setValue, setError, clearErrors, handleSubmit, formState: { errors } } = useForm({
-        resolver: zodResolver(supplierSchema.safeExtend(addressSchema.shape)),
+        resolver: zodResolver(supplierSchema.safeExtend(addressSchema.shape).extend(supplierBooleansSchema.shape)),
         defaultValues: {},
         mode: "onChange"
     });
 
-    const vat = watch("vat_number");
     const duns = watch("duns");
+    const vat = watch("vat_number");
+    const informal_contact: any = watch("informal_contact");
 
     useEffect(() => {
-        if (vat && !duns) {
-            setVatMandatory(true);
-        } else if (!vat && duns) {
+        setInformalContact(informal_contact);
+        if (informal_contact) {
             setVatMandatory(false);
-        }
-    }, [vat, duns]);
+            clearErrors("vat_number");
+            clearErrors("duns");
+            return;
+        } else {
+            if (vat && !duns) {
+                setVatMandatory(true);
+            } else if (!vat && duns) {
+                setVatMandatory(false);
+            }
 
-    const handleUpdate = (data: any) => {
-        console.log("Form submitted with data:", data);
+            if (!vat && !duns) {
+                setVatMandatory(true);
+                setError("vat_number", {
+                    type: "manual",
+                    message: t("ACCOUNTS.vat_or_duns_required")
+                });
+                setError("duns", {
+                    type: "manual",
+                    message: t("ACCOUNTS.vat_or_duns_required")
+                });
+            } else {
+                clearErrors("vat_number");
+                clearErrors("duns");
+            }
+        }
+    }, [vat, duns, informal_contact]);
+
+    const onSubmit = async (data: any) => {
+        console.log(data)
+        try {
+            setLoading(true);
+            const addressData: any = {};
+            const supplierData: any = {};
+
+            for (const key in data) {
+                if (key in addressSchema.shape) {
+                    addressData[key] = data[key];
+                } else {
+                    supplierData[key] = data[key];
+                }
+            }
+
+            if (supplier?.address_id) {
+                await put(`/accounts/addresses/update/${ supplier?.address_id }`, addressData);
+            } else {
+                const addressResponse = await post('/accounts/addresses/create', addressData);
+                if (addressResponse && addressResponse.id) {
+                    supplierData.address_id = addressResponse.id;
+                }
+            }
+
+            if (!supplierId) {
+                const res = await post(`/accounts/suppliers/create`, supplierData);
+                if (res && res.id) {
+                    navigate(`/suppliers/edit/${ res.id }`);
+                }
+                showToast(t('ACCOUNTS.supplier_created'), 'success');
+                return;
+            } else {
+                await put(`/accounts/suppliers/update/${ supplierId }`, supplierData);
+                showToast(t('ACCOUNTS.supplier_updated'), 'success');
+            }
+        } catch (error) {
+            console.error("Error updating supplier:", error);
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
         <div className="p-8 bg-(--bg-primary) h-full overflow-y-auto">
+            <div className='flex items-center gap-1 text-(--text-secondary) cursor-pointer mb-6 w-fit'
+                 onClick={ () => navigate('/suppliers') }>
+                <ArrowLeft/>
+                { t('ACCOUNTS.list') }
+            </div>
+            <DynamicForm grid={ 2 } errors={ errors } control={ control } schema={ supplierBooleansSchema }/>
             <Accordion multiple activeIndex={ 0 }>
                 <AccordionTab header={ t("ACCOUNTS.supplier_information") }>
                     <div className='p-6'>
@@ -334,16 +447,15 @@ export function SupplierEditor() {
 
             <div className="mt-6 w-fit">
                 { supplierId ? (
-                    <Button onClick={ handleSubmit(handleUpdate) }
+                    <Button onClick={ handleSubmit(onSubmit) }
                             disabled={ loading || Object.keys(errors).length > 0 }>
                         { loading ? t('ACCOUNTS.updating') : t('ACCOUNTS.update_supplier') }
                     </Button>
                 ) : (
-                    <div></div>
-                    // <Button onClick={ handleSubmit(handleCreate) }
-                    //         disabled={ loading || Object.keys(errors).length > 0 }>
-                    //     { loading ? t('USERS.creating') : t('USERS.create_user') }
-                    // </Button>
+                    <Button onClick={ handleSubmit(onSubmit) }
+                            disabled={ loading || Object.keys(errors).length > 0 }>
+                        { loading ? t('ACCOUNTS.creating') : t('ACCOUNTS.create_supplier') }
+                    </Button>
                 ) }
             </div>
         </div>

@@ -16,6 +16,7 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ArrowRight, CirclePause, CircleQuestionMark, FileText, Trash2, UserRoundPlus } from "lucide-react";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
@@ -25,7 +26,6 @@ import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
 import { Table } from "../../../../components/list/Table";
 import { showToast } from "../../../../components/ToastProvider";
-import { useNavigate } from "react-router-dom";
 
 export function SettingsGeneralUsers() {
     const { get, put, del } = axiosApiCall();
