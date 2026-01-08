@@ -107,30 +107,6 @@
     @apply hidden;
 }
 
-/* Change contextMenu text color */
-.p-contextmenu, .p-menuitem-text {
-    @apply text-(--text-primary);
-}
-
-.p-contextmenu .p-menuitem.p-highlight > .p-menuitem-content .p-menuitem-link .p-submenu-icon {
-    @apply text-(--color-primary);
-}
-
-.p-contextmenu .p-menuitem.p-highlight > .p-menuitem-content {
-    @apply bg-(--color-primary)/10;
-    @apply text-(--color-primary);
-}
-
-.p-contextmenu .p-menuitem > .p-menuitem-content .p-menuitem-link {
-    @apply px-3;
-    @apply py-2.5;
-}
-
-.p-menuitem-content .p-menuitem-link:has(.critical):hover svg,
-.p-menuitem-content .p-menuitem-link:has(.critical):hover span {
-    @apply text-(--text-error)!;
-}
-
 /* Change paginator and contextMenu colors */
 .p-paginator .p-dropdown {
     @apply h-10;
@@ -141,16 +117,6 @@
     @apply -top-1;
     @apply relative;
     background: none;
-    @apply text-(--text-secondary);
-}
-
-.p-paginator, .p-dropdown, .p-contextmenu, .p-submenu-list {
-    @apply bg-(--bg-primary);
-}
-
-.p-contextmenu .p-menuitem:not(.p-highlight):not(.p-disabled) > .p-menuitem-content:hover,
-.p-contextmenu .p-menuitem:not(.p-highlight):not(.p-disabled).p-focus > .p-menuitem-content {
-    @apply bg-(--bg-secondary);
     @apply text-(--text-secondary);
 }
 

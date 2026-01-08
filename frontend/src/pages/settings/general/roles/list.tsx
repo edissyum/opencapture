@@ -140,7 +140,6 @@ export function SettingsGeneralRoles() {
         if (selectedRoles.length === 0) return;
 
         showConfirmDialog({
-            icon: <CircleQuestionMark/>,
             title: t('ROLES.disable_role', { count: selectedRoles.length }),
             message: t('ROLES.confirm_disable_role', { count: selectedRoles.length }),
             confirmText: t('GLOBAL.disable'),
@@ -172,7 +171,6 @@ export function SettingsGeneralRoles() {
         if (selectedRoles.length === 0) return;
 
         showConfirmDialog({
-            icon: <CircleQuestionMark/>,
             title: t('ROLES.enable_role', { count: selectedRoles.length }),
             message: t('ROLES.confirm_enable_role', { count: selectedRoles.length }),
             confirmText: t('GLOBAL.enable'),
@@ -203,7 +201,6 @@ export function SettingsGeneralRoles() {
         if (selectedRoles.length === 0) return;
 
         showConfirmDialog({
-            icon: <CircleQuestionMark/>,
             title: t('ROLES.delete_role', { count: selectedRoles.length }),
             message: t('ROLES.confirm_delete_role', { count: selectedRoles.length }),
             confirmText: t('GLOBAL.delete'),

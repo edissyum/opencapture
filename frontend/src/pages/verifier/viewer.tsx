@@ -19,7 +19,7 @@ import { t } from "i18next";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Copy, Download, Edit, Eye, EyeOff, Paperclip } from "lucide-react";
+import { ChevronLeft, ChevronRight, Copy, Download, Edit, Eye, EyeOff, Paperclip, SquarePlus } from "lucide-react";
 
 import { Accordion, AccordionTab } from "primereact/accordion";
 
@@ -55,6 +55,7 @@ export function VerifierViewerPage() {
     const [suggestionsSuppliers, setSuggestionsSuppliers] = useState<any[]>([]);
 
     const [currentSupplier, setCurrentSupplier] = useState<any>(null);
+    const [supplierExists, setSupplierExists] = useState<boolean>(true);
     const [supplierChanged, setSupplierChanged] = useState<boolean>(false);
     const [originalCurrentSupplier, setOriginalCurrentSupplier] = useState<any>(null);
 
@@ -301,6 +302,7 @@ export function VerifierViewerPage() {
                 ...zone,
                 lines: [...zone.lines],
             }));
+
             Object.keys(formFields).forEach((parentKey: any) => {
                 const zoneIndex = newZones.findIndex(z => z.id === parentKey);
                 if (zoneIndex === -1) {
@@ -543,6 +545,7 @@ export function VerifierViewerPage() {
 
         // Detect supplier change
         if (!force) {
+            let supplierExists = true;
             let supplierChange = false;
             if (checkIfFieldIsSupplierField(field.id)) {
                 if (value === null || value === undefined || value === '') {
@@ -552,8 +555,13 @@ export function VerifierViewerPage() {
                 if (originalCurrentSupplier && value !== originalCurrentSupplier[field.id]) {
                     supplierChange = true;
                 }
+
+                if (!originalCurrentSupplier && value) {
+                    supplierExists = false;
+                }
             }
-            setSupplierChanged(supplierChange)
+            setSupplierExists(supplierExists);
+            setSupplierChanged(supplierChange);
         }
 
         // onBlur doesn't work well with date picker, so we save directly here for date fields
@@ -618,7 +626,7 @@ export function VerifierViewerPage() {
         }
 
         // Do not save supplier data if supplier changed and still not updated
-        if (checkIfFieldIsSupplierField(field.id) && supplierChanged && !force) {
+        if (checkIfFieldIsSupplierField(field.id) && (supplierChanged || !supplierExists) && !force) {
             return;
         }
 
@@ -900,7 +908,7 @@ export function VerifierViewerPage() {
 
     return (
         <div className='flex h-full overflow-hidden'>
-            <div className={ `w-1/2 h-full flex flex-col ${showAttachments && enableAttachments ? '': 'hidden'}` }>
+            <div className={ `w-1/2 h-full flex flex-col ${ showAttachments && enableAttachments ? '' : 'hidden' }` }>
                 <AttachmentsList
                     module="verifier"
                     documentId={ documentId }
@@ -930,7 +938,7 @@ export function VerifierViewerPage() {
                                 onEnd={ handleEnd }
                             />
                         ) }
-                </div>
+                    </div>
                     <div className="flex flex-wrap gap-4 mt-4 items-center">
                         { enableAttachments && (
                             <div className="flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
@@ -941,7 +949,8 @@ export function VerifierViewerPage() {
                                  data-tooltip-content={ t('VERIFIER.show_attachments') }>
                                 <Paperclip size={ 18 }/>
                                 { attachmentsCount > 0 && (
-                                    <div className="z-1 absolute top-0 right-0 size-3 rounded-full bg-(--color-primary)"/>
+                                    <div
+                                        className="z-1 absolute top-0 right-0 size-3 rounded-full bg-(--color-primary)"/>
                                 ) }
                             </div>
                         ) }
@@ -996,7 +1005,7 @@ export function VerifierViewerPage() {
                         </div>
                     </div>
                 </div>
-            )}
+            ) }
 
 
             <div className='w-1/2 bg-(--bg-primary) p-8 h-full border-l-2 border-(--border-secondary) overflow-auto'>
@@ -1007,16 +1016,30 @@ export function VerifierViewerPage() {
                         <Accordion multiple activeIndex={ [0] } className='flex flex-col gap-4'>
                             { fieldsZone.filter((zone: any) => zone.lines.length > 0).map((zone) => (
                                 <AccordionTab key={ zone.id } header={
-                                    <span className='flex items-center gap-2'>
-                                    <span>
-                                        { zone.name }
+                                    <span className='flex items-center gap-2 h-[20px]'>
+                                        <span>
+                                            { zone.name }
+                                        </span>
+                                        <span className='flex ml-auto'>
+                                            { supplierChanged && zone.id === 'supplier' && (
+                                                <Edit size={ 20 } data-tooltip-id="tooltip"
+                                                      onClick={ (e) => {
+                                                          e.preventDefault();
+                                                          e.stopPropagation();
+                                                      } }
+                                                      data-tooltip-content={ t('VERIFIER.supplier_changed') }/>
+                                            ) }
+
+                                            { !supplierExists && zone.id === 'supplier' && (
+                                                <SquarePlus size={ 20 } data-tooltip-id="tooltip"
+                                                            onClick={ (e) => {
+                                                                e.preventDefault();
+                                                                e.stopPropagation();
+                                                            } }
+                                                            data-tooltip-content={ t('VERIFIER.create_supplier') }/>
+                                            ) }
+                                        </span>
                                     </span>
-                                    <span className='flex ml-auto'>
-                                        <Edit size={ 20 } data-tooltip-id="tooltip"
-                                              className={ supplierChanged && zone.id === 'supplier' ? 'opacity-100' : 'opacity-0' }
-                                              data-tooltip-content={ t('VERIFIER.supplier_changed') }/>
-                                    </span>
-                                </span>
                                 }>
                                     <div className='w-full px-4 pt-6'>
                                         { zone.lines.map((line: any, index: number) => (

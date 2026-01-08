@@ -280,7 +280,6 @@ export function SplitterListPage() {
         if (selectedBatches.length === 0) return;
 
         showConfirmDialog({
-            icon: <CircleQuestionMark/>,
             title: t('SPLITTER.delete_batch'),
             message: t('SPLITTER.confirm_delete_batch', { count: selectedBatches.length }),
             confirmText: t('GLOBAL.delete'),

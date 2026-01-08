@@ -20,7 +20,7 @@ import { t } from "i18next";
 import { confirmDialog } from 'primereact/confirmdialog';
 
 export function showConfirmDialog({
-    icon,
+    hint,
     title,
     danger,
     message,
@@ -29,6 +29,7 @@ export function showConfirmDialog({
     onConfirm,
     onCancel
 }: {
+    hint?: string;
     title: string;
     message: string;
     danger?: boolean;
@@ -46,8 +47,18 @@ export function showConfirmDialog({
         acceptClassName += " bg-(--text-error)! border-(--text-error)! hover:bg-(--text-error)/10! hover:text-(--text-error)!";
     }
 
+    if (hint) {
+        let hintClassName;
+        if (danger) {
+            hintClassName = 'font-semibold bg-(--text-error)/10 border-(--text-error)';
+        } else {
+            hintClassName = 'bg-(--color-primary)/10 border-(--border-primary)';
+        }
+
+        message += `<p class="${ hintClassName } mt-4 p-4 border-2 border-r-0 border-b-0 border-t-0">${ hint }</p>`;
+    }
+
     confirmDialog({
-        icon: icon,
         header: title,
         draggable: false,
         closeOnEscape: true,

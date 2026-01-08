@@ -110,7 +110,6 @@ export function CustomersList() {
         if (selectedCustomers.length === 0) return;
 
         showConfirmDialog({
-            icon: <CircleQuestionMark/>,
             title: t('ACCOUNTS.delete_customer', { count: selectedCustomers.length }),
             message: t('ACCOUNTS.confirm_delete_customer', { count: selectedCustomers.length }),
             confirmText: t('GLOBAL.delete'),

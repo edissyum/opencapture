@@ -120,7 +120,6 @@ export function SuppliersList() {
         if (selectedSuppliers.length === 0) return;
 
         showConfirmDialog({
-            icon: <CircleQuestionMark/>,
             title: t('ACCOUNTS.delete_supplier', { count: selectedSuppliers.length }),
             message: t('ACCOUNTS.confirm_delete_supplier', { count: selectedSuppliers.length }),
             confirmText: t('GLOBAL.delete'),
@@ -154,6 +153,7 @@ export function SuppliersList() {
         showConfirmDialog({
             title: t('ACCOUNTS.reinit_positions'),
             message: t('ACCOUNTS.confirm_reinit_supplier_position'),
+            hint: t('GLOBAL.action_irreversible'),
             confirmText: t('GLOBAL.reinit'),
             cancelText: t('GLOBAL.cancel'),
             danger: true,

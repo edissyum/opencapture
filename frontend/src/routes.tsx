@@ -49,12 +49,12 @@ import { SettingsVerifierFormsCreate } from "./pages/settings/verifier/forms/cre
 import { SettingsSplitterFormsCreate } from "./pages/settings/splitter/forms/create";
 import { SettingsSplitterFormsEditor } from "./pages/settings/splitter/forms/editor";
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
-import { SettingsGeneralRegex } from "./pages/settings/general/regex.tsx";
-import { SettingsGeneralDocservers } from "./pages/settings/general/docservers.tsx";
-import { SuppliersList } from "./pages/suppliers/list.tsx";
-import { CustomersList } from "./pages/customers/list.tsx";
-import { SupplierEditor } from "./pages/suppliers/editor.tsx";
-import { CustomerEditor } from "./pages/customers/editor.tsx";
+import { SettingsGeneralRegex } from "./pages/settings/general/regex";
+import { SettingsGeneralDocservers } from "./pages/settings/general/docservers";
+import { SuppliersList } from "./pages/suppliers/list";
+import { CustomersList } from "./pages/customers/list";
+import { SupplierEditor } from "./pages/suppliers/editor";
+import { CustomerEditor } from "./pages/customers/editor";
 
 export const router = createBrowserRouter(
     [

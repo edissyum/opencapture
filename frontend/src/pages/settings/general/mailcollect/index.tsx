@@ -19,7 +19,7 @@ import { useEffect, useRef, useState } from "react";
 import { ContextMenu } from "primereact/contextmenu";
 import { InputSwitch } from "primereact/inputswitch";
 import { Accordion, AccordionTab } from "primereact/accordion";
-import { CircleQuestionMark, Copy, EllipsisVertical, Inbox, PencilLine, Trash } from "lucide-react";
+import { Copy, EllipsisVertical, Inbox, PencilLine, Trash } from "lucide-react";
 
 import { Button } from "../../../../components/Button";
 import { Loader } from "../../../../components/loader/Loader";
@@ -30,7 +30,6 @@ import { MailCollectProcess } from "./mailcollect-process";
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../../../services/hooks/ConfirmDialog";
 import { showConfirmDialogWithInput } from "../../../../services/hooks/ConfirmDialogWithInput";
-
 
 export function SettingsGeneralMailcollect() {
     const { get, post, put, del } = axiosApiCall();
@@ -96,11 +95,12 @@ export function SettingsGeneralMailcollect() {
         if (!selectedProcess) return;
 
         showConfirmDialog({
-            icon: <CircleQuestionMark/>,
             title: t('MAILCOLLECT.delete_process'),
             message: t('MAILCOLLECT.confirm_delete_process', { name: selectedProcess.name }),
+            hint: t('GLOBAL.action_irreversible'),
             confirmText: t('MAILCOLLECT.delete'),
             cancelText: t('GLOBAL.cancel'),
+            danger: true,
             onConfirm: async () => {
                 try {
                     await del('/mailcollect/deleteProcess/' + selectedProcess.id);
@@ -244,7 +244,6 @@ export function SettingsGeneralMailcollect() {
             message = t('MAILCOLLECT.confirm_enable_process', { 'name': process.name });
         }
         showConfirmDialog({
-            icon: <CircleQuestionMark/>,
             title: title,
             message: message,
             confirmText: confirmText,

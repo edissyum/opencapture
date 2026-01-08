@@ -26,21 +26,21 @@
         "@tinymce/tinymce-react": "^6.3.0",
         "axios": "^1.13.2",
         "fs-extra": "^11.3.3",
-        "i18next": "^25.7.3",
+        "i18next": "^25.7.4",
         "moment": "^2.30.1",
         "primereact": "^10.9.7",
         "react": "^19.2.3",
         "react-dom": "^19.2.3",
         "react-dropzone": "^14.3.8",
-        "react-hook-form": "^7.69.0",
-        "react-i18next": "^16.5.0",
-        "react-pdf": "^10.2.0",
-        "react-router-dom": "^7.11.0",
+        "react-hook-form": "^7.70.0",
+        "react-i18next": "^16.5.1",
+        "react-pdf": "^10.3.0",
+        "react-router-dom": "^7.12.0",
         "react-toastify": "^11.0.5",
         "react-tooltip": "^5.30.0",
         "tailwindcss": "^4.1.18",
         "tinymce": "^8.3.1",
-        "zod": "^4.2.1"
+        "zod": "^4.3.5"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.2",
@@ -50,11 +50,11 @@
         "eslint": "^9.39.2",
         "eslint-plugin-react-hooks": "^7.0.1",
         "eslint-plugin-react-refresh": "^0.4.26",
-        "globals": "^16.5.0",
+        "globals": "^17.0.0",
         "i18next-scanner": "^4.6.0",
         "lucide-react": "^0.562.0",
         "typescript": "~5.9.3",
-        "typescript-eslint": "^8.50.1",
-        "vite": "^7.3.0"
+        "typescript-eslint": "^8.52.0",
+        "vite": "^7.3.1"
     }
 }

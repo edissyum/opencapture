@@ -91,6 +91,7 @@
 .p-float-label:has(input:focus) label,
 .p-float-label:has(.p-inputwrapper-filled) label {
     @apply px-1;
+    @apply h-3.5;
     @apply top-0.5;
     @apply bg-(--bg-primary);
     @apply text-(--text-secondary);

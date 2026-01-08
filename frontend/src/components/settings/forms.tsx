@@ -155,7 +155,6 @@ export function FormsList({ module }: { module: string }) {
         if (selectedForms.length === 0) return;
 
         showConfirmDialog({
-            icon: <CircleQuestionMark/>,
             title: t('FORMS.disable_form', { count: selectedForms.length }),
             message: t('FORMS.confirm_disable_form', { count: selectedForms.length }),
             confirmText: t('GLOBAL.disable'),
@@ -187,7 +186,6 @@ export function FormsList({ module }: { module: string }) {
         if (selectedForms.length === 0) return;
 
         showConfirmDialog({
-            icon: <CircleQuestionMark/>,
             title: t('FORMS.enable_form', { count: selectedForms.length }),
             message: t('FORMS.confirm_enable_form', { count: selectedForms.length }),
             confirmText: t('GLOBAL.enable'),
@@ -218,7 +216,6 @@ export function FormsList({ module }: { module: string }) {
         if (selectedForms.length === 0) return;
 
         showConfirmDialog({
-            icon: <CircleQuestionMark/>,
             title: t('FORMS.delete_form', { count: selectedForms.length }),
             message: t('FORMS.confirm_delete_form', { count: selectedForms.length }),
             confirmText: t('GLOBAL.delete'),
@@ -250,7 +247,6 @@ export function FormsList({ module }: { module: string }) {
         if (selectedForms.length === 0) return;
 
         showConfirmDialog({
-            icon: <CircleQuestionMark/>,
             title: t('FORMS.duplicate_form', { count: selectedForms.length }),
             message: t('FORMS.confirm_duplicate_form', { count: selectedForms.length }),
             confirmText: t('GLOBAL.duplicate'),

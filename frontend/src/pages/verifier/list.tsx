@@ -391,7 +391,6 @@ export function VerifierListPage() {
         if (selectedDocuments.length === 0) return;
 
         showConfirmDialog({
-            icon: <CircleQuestionMark/>,
             title: t('VERIFIER.delete_document'),
             message: t('VERIFIER.confirm_delete_document', { count: selectedDocuments.length }),
             confirmText: t('GLOBAL.delete'),

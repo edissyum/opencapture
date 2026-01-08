@@ -19,11 +19,12 @@ import { Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { showConfirmDialogWithInput } from "../../../services/hooks/ConfirmDialogWithInput";
 
 import Input from "../../../components/Input";
 import { Table } from "../../../components/list/Table";
-import { showConfirmDialogWithInput } from "../../../services/hooks/ConfirmDialogWithInput.tsx";
-import { showToast } from "../../../components/ToastProvider.tsx";
+import { showToast } from "../../../components/ToastProvider";
+
 
 export function SettingsGeneralRegex() {
     const { get, put } = axiosApiCall();

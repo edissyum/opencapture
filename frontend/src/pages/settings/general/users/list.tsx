@@ -148,7 +148,6 @@ export function SettingsGeneralUsers() {
         if (selectedUsers.length === 0) return;
 
         showConfirmDialog({
-            icon: <CircleQuestionMark/>,
             title: t('USERS.disable_user', { count: selectedUsers.length }),
             message: t('USERS.confirm_disable_user', { count: selectedUsers.length }),
             confirmText: t('GLOBAL.disable'),
@@ -180,7 +179,6 @@ export function SettingsGeneralUsers() {
         if (selectedUsers.length === 0) return;
 
         showConfirmDialog({
-            icon: <CircleQuestionMark/>,
             title: t('USERS.enable_user', { count: selectedUsers.length }),
             message: t('USERS.confirm_enable_user', { count: selectedUsers.length }),
             confirmText: t('GLOBAL.enable'),
@@ -211,7 +209,6 @@ export function SettingsGeneralUsers() {
         if (selectedUsers.length === 0) return;
 
         showConfirmDialog({
-            icon: <CircleQuestionMark/>,
             title: t('USERS.delete_user', { count: selectedUsers.length }),
             message: t('USERS.confirm_delete_user', { count: selectedUsers.length }),
             confirmText: t('GLOBAL.delete'),

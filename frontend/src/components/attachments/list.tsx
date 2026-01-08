@@ -22,10 +22,10 @@ import { ArrowLeft, CircleQuestionMark, CloudUpload, Download, EllipsisVertical,
 
 import { Button } from "../Button";
 import { Loader } from "../loader/Loader";
+import { AttachmentsViewer } from "./viewer";
 
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
-import { AttachmentsViewer } from "./viewer.tsx";
 
 type AttachmentsListProps = {
     module: string;
@@ -149,7 +149,6 @@ export function AttachmentsList({ module, documentId, onAttachmentsCountChange, 
         if (!selectedAttachment) return;
 
         showConfirmDialog({
-            icon: <CircleQuestionMark/>,
             title: t('ATTACHMENTS.delete_attachment'),
             message: t('ATTACHMENTS.confirm_delete_attachment'),
             confirmText: t('GLOBAL.delete'),

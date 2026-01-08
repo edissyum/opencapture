@@ -252,7 +252,8 @@
         "true": "",
         "reinit": "",
         "english": "",
-        "french": ""
+        "french": "",
+        "action_irreversible": ""
     },
     "HISTORY": {
         "document_validated": "Documento n°<strong>{{ documentId }}</strong> validado con éxito",
