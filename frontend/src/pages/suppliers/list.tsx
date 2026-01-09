@@ -18,7 +18,7 @@
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CirclePause, CircleQuestionMark, FileText, Trash2, UserRoundPlus } from "lucide-react";
+import { CirclePause, FileText, Trash2, UserRoundPlus } from "lucide-react";
 
 
 import Input from "../../components/Input";

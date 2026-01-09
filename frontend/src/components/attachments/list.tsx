@@ -18,7 +18,7 @@
 import { t } from "i18next";
 import { ContextMenu } from "primereact/contextmenu";
 import React, { useEffect, useRef, useState } from "react";
-import { ArrowLeft, CircleQuestionMark, CloudUpload, Download, EllipsisVertical, Trash2 } from "lucide-react";
+import { ArrowLeft, CloudUpload, Download, EllipsisVertical, Trash2 } from "lucide-react";
 
 import { Button } from "../Button";
 import { Loader } from "../loader/Loader";

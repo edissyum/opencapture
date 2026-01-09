@@ -22,7 +22,6 @@ import {
     Building2,
     ChevronDown,
     CircleCheckBig,
-    CircleQuestionMark,
     Eye,
     FileText,
     Filter,
@@ -48,36 +47,23 @@ import MultiSelectInput from "../../components/MultiSelect";
 import { useUser } from "../../services/hooks/useUser";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
+import { usePersistentState } from "../../services/hooks/usePersistentState";
+
+const LANG_MAP: Record<string, string> = {
+    fra: 'fr-FR',
+    eng: 'en-US',
+    spa: 'es-ES'
+};
 
 export function VerifierListPage() {
     const { user, loadingUser } = useUser();
     const { get, post, del, put } = axiosApiCall();
 
-    const [view, setView] = useState<'list' | 'grid'>('list');
+    const [view, setView] = usePersistentState<'list' | 'grid'>('selectedView', 'list');
+    const [storedLang] = usePersistentState<string>('selectedLang', 'fra');
+    const locale = LANG_MAP[storedLang] ?? 'fr-FR';
+
     const [displayFilters, setDisplayFilters] = useState(false);
-
-    useEffect(() => {
-        if (localStorage.getItem('selectedView') === 'grid') {
-            setView('grid');
-        }
-    }, [view]);
-
-    const [locale, setLocale] = useState('fr-FR');
-    useEffect(() => {
-        const storageLocale = localStorage.getItem('selectedLang');
-        if (storageLocale === 'fra') {
-            setLocale('fr-FR');
-        } else if (storageLocale === 'eng') {
-            setLocale('en-US');
-        } else if (storageLocale === 'spa') {
-            setLocale('es-ES');
-        }
-    }, []);
-
-    const handleChangeView = (newView: 'list' | 'grid') => {
-        setView(newView);
-        localStorage.setItem('selectedView', newView);
-    }
 
     const [open, setOpen] = useState({
         forms: true,
@@ -112,13 +98,20 @@ export function VerifierListPage() {
     const [loadingDocuments, setLoadingDocuments] = useState(false);
     const [totalDocuments, setTotalDocuments] = useState<number | null>(null);
 
-    const [lazyParams, setLazyParams] = useState({
-        first: 0,
-        rows: 16,
-        page: 0,
-        sortField: null as string | null,
-        sortOrder: null as 1 | -1 | null,
-    });
+    const [lazyParams, setLazyParams] = usePersistentState<{
+        first: number;
+        rows: number;
+        page: number;
+        sortField: string | null;
+        sortOrder: 1 | -1 | null;
+    }>('verifierListLazyParams', {
+            first: 0,
+            rows: 16,
+            page: 0,
+            sortField: null,
+            sortOrder: null
+        }
+    );
 
     const [hovered, setHovered] = useState<string | null>(null);
 
@@ -623,12 +616,12 @@ export function VerifierListPage() {
                            onChange={ (e) => setSearchTerm(e.target.value) }/>
                     <span className='ml-auto text-(--text-secondary) flex cursor-pointer'>
                         <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.list') }
-                              onClick={ () => handleChangeView('list') }
+                              onClick={ () => setView('list') }
                               className={ `${ view == 'list' ? "bg-(--color-primary)/20 border-(--border-primary)/50" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-l-md dark:bg-(--bg-secondary) border` }>
                             <Rows3 size={ 20 }/>
                         </span>
                         <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.grid') }
-                              onClick={ () => handleChangeView('grid') }
+                              onClick={ () => setView('grid') }
                               className={ `${ view == 'grid' ? "bg-(--color-primary)/20 border-(--border-primary)/50" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-r-md dark:bg-(--bg-secondary) border` }>
                             <LayoutGrid size={ 20 }/>
                         </span>

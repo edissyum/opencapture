@@ -69,14 +69,14 @@
         "create_supplier": "Créer le compte de tiers",
         "creating": "Création en cours...",
         "supplier_created": "Compte de tiers créé avec succès",
-        "list": "Liste des comptes de tiers",
         "create_customer": "Créer le compte client",
         "customer_address": "Adresse du compte client",
         "customer_created": "Compte client créé avec succès",
         "customer_information": "Informations du compte client",
         "customer_updated": "Compte client mis à jour avec succès",
         "update_customer": "Mettre à jour le compte client",
-        "add_customer": "Ajouter un compte client"
+        "add_customer": "Ajouter un compte client",
+        "list": "Liste des comptes de tiers"
     },
     "AUTH": {
         "authenticated": "Vous vous êtes authentifié avec succès",
@@ -660,7 +660,9 @@
         "facturation": "Traitement",
         "hide_indicators": "Cacher les indicateurs",
         "show_attachments": "Voir les pièces jointes",
-        "show_indicators": "Voir les indicateurs"
+        "show_indicators": "Voir les indicateurs",
+        "create_supplier": "Le tiers n'existe pas, cliquez ici pour le créer avant de valider le document",
+        "back_to_form": "Retour au formulaire"
     },
     "SECURITY": {
         "default_auth": "Authentification par défaut",

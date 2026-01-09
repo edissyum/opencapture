@@ -18,7 +18,7 @@
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CircleQuestionMark, FileText, Trash2, UserRoundPlus } from "lucide-react";
+import { FileText, Trash2, UserRoundPlus } from "lucide-react";
 
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";

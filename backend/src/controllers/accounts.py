@@ -440,7 +440,7 @@ def create_address(data):
 
 def create_supplier(data, from_api=False):
     _columns = {
-        'name': data['name'],
+        'name': data['name'] if 'name' in data and 'informal_contact' in data and not data['informal_contact'] else None,
         'bic': data['bic'] if 'bic' in data else None,
         'iban': data['iban'] if 'iban' in data else None,
         'rccm': data['rccm'] if 'rccm' in data else None,
@@ -490,7 +490,7 @@ def create_supplier(data, from_api=False):
                 'ip': ip,
                 'submodule': 'create_supplier',
                 'user_info': user_info,
-                'desc': gettext('SUPPLIER_CREATED', supplier=data['name'])
+                'desc': gettext('SUPPLIER_CREATED', supplier=data['name'] if 'name' in data else data['lastname'])
             })
             response = {
                 "id": res

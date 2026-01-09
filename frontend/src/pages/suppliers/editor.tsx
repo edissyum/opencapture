@@ -16,10 +16,11 @@
 
 import { z } from "zod";
 import { t } from "i18next";
+import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate, useParams } from "react-router-dom";
 import { Accordion, AccordionTab } from "primereact/accordion";
 
 import { emptyToUndefined } from "../../services/zod";
@@ -28,12 +29,27 @@ import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { Button } from "../../components/Button";
 import { showToast } from "../../components/ToastProvider";
 import { DynamicForm } from "../../components/form/DynamicForm";
-import { ArrowLeft } from "lucide-react";
 
-export function SupplierEditor() {
+type SupplierEditorProps = {
+    newDatas?: any;
+    supplierId?: number;
+    onCreated?: (supplier: any) => void;
+    onUpdated?: () => void;
+    onClose?: () => void;
+};
+
+export function SupplierEditor({
+    newDatas,
+    supplierId: supplierIdProp,
+    onCreated,
+    onUpdated,
+    onClose
+}: SupplierEditorProps) {
     const { get, post, put } = axiosApiCall();
     const navigate = useNavigate();
-    const { supplierId } = useParams<{ supplierId: any }>();
+
+    const { supplierId: supplierIdFromRoute } = useParams<{ supplierId: string }>();
+    const supplierId = supplierIdProp ?? supplierIdFromRoute;
 
     const [forms, setForms] = useState<any[]>([]);
     const [regexes, setRegexes] = useState<any[]>([]);
@@ -150,21 +166,24 @@ export function SupplierEditor() {
         fetchCivilities().then();
         fetchCurrencies().then();
         fetchAccountingPlans().then();
-    }, []);
+    }, [supplierId]);
 
     // set form default values
     useEffect(() => {
-        if (supplier) {
-            for (const [key, value] of Object.entries(supplier)) {
-                setValue(key as any, value);
-            }
-        }
-        if (address) {
-            for (const [key, value] of Object.entries(address)) {
-                setValue(key as any, value);
-            }
-        }
-    }, [supplier, address]);
+        const applyValues = (source: Record<string, any> | null) => {
+            if (!source) return;
+
+            Object.entries(source).forEach(([key, value]) => {
+                if (value !== undefined && value !== null) {
+                    setValue(key as any, value);
+                }
+            });
+        };
+
+        applyValues(supplier);
+        applyValues(address);
+        applyValues(newDatas);
+    }, [supplier, address, newDatas]);
 
     const supplierBooleansSchema = z.object({
         get_only_raw_footer: z.boolean().optional().describe(JSON.stringify({
@@ -195,7 +214,7 @@ export function SupplierEditor() {
             type: "phone",
             label: t("ACCOUNTS.phone")
         })),
-        civility: emptyToUndefined(z.number().optional()).describe(JSON.stringify({
+        civility: emptyToUndefined(z.string().optional()).describe(JSON.stringify({
             component: "dropdown",
             options: civilities.map((civility) => ({
                 label: civility.label,
@@ -282,7 +301,7 @@ export function SupplierEditor() {
             type: "text",
             label: t("ACCOUNTS.rccm")
         })),
-        document_lang: z.string().describe(JSON.stringify({
+        document_lang: emptyToUndefined(z.string()).describe(JSON.stringify({
             component: "dropdown",
             options: [
                 { label: t('GLOBAL.french'), value: "fra" },
@@ -383,7 +402,6 @@ export function SupplierEditor() {
     }, [vat, duns, informal_contact]);
 
     const onSubmit = async (data: any) => {
-        console.log(data)
         try {
             setLoading(true);
             const addressData: any = {};
@@ -408,14 +426,23 @@ export function SupplierEditor() {
 
             if (!supplierId) {
                 const res = await post(`/accounts/suppliers/create`, supplierData);
-                if (res && res.id) {
+                if (res && res.id && !onCreated) {
                     navigate(`/suppliers/edit/${ res.id }`);
                 }
+
                 showToast(t('ACCOUNTS.supplier_created'), 'success');
+
+                if (onCreated) {
+                    onCreated(res);
+                }
                 return;
             } else {
                 await put(`/accounts/suppliers/update/${ supplierId }`, supplierData);
                 showToast(t('ACCOUNTS.supplier_updated'), 'success');
+
+                if (onUpdated) {
+                    onUpdated();
+                }
             }
         } catch (error) {
             console.error("Error updating supplier:", error);
@@ -427,9 +454,15 @@ export function SupplierEditor() {
     return (
         <div className="p-8 bg-(--bg-primary) h-full overflow-y-auto">
             <div className='flex items-center gap-1 text-(--text-secondary) cursor-pointer mb-6 w-fit'
-                 onClick={ () => navigate('/suppliers') }>
+                 onClick={ () => {
+                     if (onClose) {
+                         onClose();
+                     } else {
+                         navigate('/suppliers');
+                     }
+                 } }>
                 <ArrowLeft/>
-                { t('ACCOUNTS.list') }
+                { onClose ? t('VERIFIER.back_to_form') : t('ACCOUNTS.list') }
             </div>
             <DynamicForm grid={ 2 } errors={ errors } control={ control } schema={ supplierBooleansSchema }/>
             <Accordion multiple activeIndex={ 0 }>

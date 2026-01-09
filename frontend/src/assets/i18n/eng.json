@@ -62,14 +62,14 @@
         "create_supplier": "",
         "creating": "",
         "supplier_created": "",
-        "list": "",
         "create_customer": "",
         "customer_address": "",
         "customer_created": "",
         "customer_information": "",
         "customer_updated": "",
         "update_customer": "",
-        "add_customer": ""
+        "add_customer": "",
+        "list": ""
     },
     "AUTH": {
         "authenticated": "You have successfully authenticated",
@@ -610,7 +610,9 @@
         "facturation": "Processing",
         "hide_indicators": "",
         "show_attachments": "",
-        "show_indicators": ""
+        "show_indicators": "",
+        "create_supplier": "",
+        "back_to_form": ""
     },
     "SECURITY": {
         "default_auth": "Default authentication",

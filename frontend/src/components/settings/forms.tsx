@@ -17,7 +17,7 @@
 import { t } from "i18next";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { CirclePause, CircleQuestionMark, Copy, FileText, Plus, Trash2 } from "lucide-react";
+import { CirclePause, Copy, FileText, Plus, Trash2 } from "lucide-react";
 
 import Input from "../Input";
 import { Button } from "../Button";

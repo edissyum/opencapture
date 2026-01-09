@@ -102,6 +102,9 @@ export function SettingsGeneralAdvanced() {
                 const updateValue = async () => {
                     try {
                         selectedConfiguration[0].data.value = value;
+                        if (selectedConfiguration[0].data.type === 'bool') {
+                            selectedConfiguration[0].data.value = value === 'true';
+                        }
                         await put('/config/updateConfiguration/' + selectedConfiguration[0].id, selectedConfiguration[0]['data']);
                         showToast(t('SECURITY.configuration_updated'), "success");
                         setSelectedConfiguration([]);
@@ -156,8 +159,8 @@ export function SettingsGeneralAdvanced() {
                 if (row.data.type === 'bool') {
                     return (
                         <span
-                            className={ `bg-[#E8E8E8] p-2 rounded-md ${ row.data.value === 'true' ? 'text-(--color-primary)' : 'text-(--text-error)' }` }>
-                            { row.data.value === 'true' ? 'True' : 'False' }
+                            className={ `bg-[#E8E8E8] p-2 rounded-md ${ row.data.value ? 'text-(--color-primary)' : 'text-(--text-error)' }` }>
+                            { row.data.value ? 'True' : 'False' }
                         </span>
                     );
                 }

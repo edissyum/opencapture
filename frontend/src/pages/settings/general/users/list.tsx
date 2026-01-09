@@ -17,7 +17,7 @@
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, CirclePause, CircleQuestionMark, FileText, Trash2, UserRoundPlus } from "lucide-react";
+import { ArrowRight, CirclePause, FileText, Trash2, UserRoundPlus } from "lucide-react";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../../../services/hooks/ConfirmDialog";
