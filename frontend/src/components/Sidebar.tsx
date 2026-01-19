@@ -55,6 +55,10 @@ export default function Sidebar() {
     const handleLogout = () => {
         sessionStorage.clear();
 
+        localStorage.removeItem("selectedWorkflow");
+        localStorage.removeItem("splitterListLazyParams");
+        localStorage.removeItem("verifierListLazyParams");
+
         navigate("/login", { replace: true });
     };
 
