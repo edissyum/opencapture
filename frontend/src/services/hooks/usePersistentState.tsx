@@ -46,3 +46,8 @@ export function usePersistentState<T>(key: string, defaultValue: T) {
 
     return [state, setState] as const;
 }
+
+export function clearPersistentState(key: string) {
+    localStorage.removeItem(key);
+}
+

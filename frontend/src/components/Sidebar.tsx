@@ -36,6 +36,7 @@ import {
 import { LoginImage } from "./LoginImage";
 
 import { useUser } from "../services/hooks/useUser";
+import { clearPersistentState } from "../services/hooks/usePersistentState.tsx";
 
 export default function Sidebar() {
     const { user, loadingUser } = useUser();
@@ -55,9 +56,9 @@ export default function Sidebar() {
     const handleLogout = () => {
         sessionStorage.clear();
 
-        localStorage.removeItem("selectedWorkflow");
-        localStorage.removeItem("splitterListLazyParams");
-        localStorage.removeItem("verifierListLazyParams");
+        clearPersistentState("selectedWorkflow");
+        clearPersistentState("splitterListLazyParams");
+        clearPersistentState("verifierListLazyParams");
 
         navigate("/login", { replace: true });
     };
