@@ -677,16 +677,38 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 if 'supplier' in ai_invoice_values and ai_invoice_values['supplier']:
                     log.info('Supplier found using AI : ' + str(ai_invoice_values['supplier']['name']))
                     datas['datas']['name'] = ai_invoice_values['supplier']['name']
+                    for key in ai_invoice_values['supplier']:
+                        if ai_invoice_values['supplier'][key] and 'name' not in key:
+                            log.info(f"{key} found using AI : {str(ai_invoice_values['supplier'][key])}")
+                            datas['datas'][key] = ai_invoice_values['supplier'][key]
+
+                    if 'vat_number' in ai_invoice_values['supplier'] and ai_invoice_values['supplier']['vat_number']:
+                        vat_number = ai_invoice_values['supplier']['vat_number']
+                        supplier_found = database.select({
+                            'select': ['accounts_supplier.id as supplier_id', '*'],
+                            'table': ['accounts_supplier'],
+                            'where': ['vat_number = %s', 'accounts_supplier.status <> %s'],
+                            'data': [vat_number, 'DEL']
+                        })
+
+                        if supplier_found:
+                            log.info('Supplier matched in database using VAT NUMBER : ' + supplier_found[0]['name'])
+                            supplier = [supplier_found[0]['vat_number'], (('', ''), ('', '')), supplier_found[0], False,
+                                        'vat_number']
 
                 if 'line_items' in ai_invoice_values and ai_invoice_values['line_items']:
                     cpt_lines = 0
                     for line in ai_invoice_values['line_items']:
+                        index_poste = 'poste' if cpt_lines == 0 else 'poste_' + str(cpt_lines)
+                        index_unite = 'unite' if cpt_lines == 0 else 'unite_' + str(cpt_lines)
                         index_ht = 'line_ht' if cpt_lines == 0 else 'line_ht_' + str(cpt_lines)
                         index_quantity = 'quantity' if cpt_lines == 0 else 'quantity_' + str(cpt_lines)
                         index_unit = 'unit_price' if cpt_lines == 0 else 'unit_price_' + str(cpt_lines)
                         index_reference = 'reference' if cpt_lines == 0 else 'reference_' + str(cpt_lines)
                         index_description = 'description' if cpt_lines == 0 else 'description_' + str(cpt_lines)
 
+                        datas['datas'][index_poste] = line['poste'] if 'poste' in line else ''
+                        datas['datas'][index_unite] = line['unite'] if 'unite' in line else ''
                         datas['datas'][index_ht] = line['total_price'] if 'total_price' in line else ''
                         datas['datas'][index_unit] = line['unit_price'] if 'unit_price' in line else ''
                         datas['datas'][index_quantity] = line['quantity'] if 'quantity' in line else ''
@@ -695,7 +717,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                         cpt_lines += 1
 
                 for value in ai_invoice_values:
-                    print(value, ai_invoice_values[value])
                     if ai_invoice_values[value] and value not in datas['datas']:
                         if isinstance(ai_invoice_values[value], (str, int, float)):
                             if int(configurations['timeDelta']) not in [-1, 0]:
@@ -921,7 +942,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 allow_auto = False
                 break
 
-    if (supplier and not supplier[2]['skip_auto_validate']) or allow_auto or not workflow_settings['input']['apply_process']:
+    if (supplier and (allow_auto and not supplier[2]['skip_auto_validate'])) or allow_auto or not workflow_settings['input']['apply_process']:
         status = 'END'
         log.info('All the usefull informations are found. Execute outputs action and end process')
         document_id = insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, status,

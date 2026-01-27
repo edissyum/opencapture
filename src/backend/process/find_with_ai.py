@@ -19,9 +19,11 @@ import os
 import re
 import json
 import pypdf
+import base64
 import requests
 import tempfile
 import pdftotext
+import mimetypes
 from pdf2image import convert_from_path
 from src.backend.classes.Files import convert_heif_to_jpg, rotate_img
 
@@ -96,8 +98,6 @@ class FindWithAI:
         elif '##FILE_NAME##' in str(self.llm_model['json_content']):
             with open(file_path, 'rb') as file:
                 file_data = file.read()
-                import base64
-                import mimetypes
                 mimetype = mimetypes.guess_type(file_path)[0]
                 fileb64 = base64.b64encode(file_data).decode('utf-8')
                 file_content = 'data:' + mimetype + ';base64,' + fileb64
@@ -135,7 +135,7 @@ class FindWithAI:
                 content = response['choices'][0]['message']['content']
             elif 'document_annotation' in response and len(response['document_annotation']) > 0:
                 content = response['document_annotation']
-
+        print(content)
         if content:
             try:
                 content = json.loads(content)

@@ -427,7 +427,7 @@ CREATE TABLE "attachments" (
 CREATE TABLE "ai_llm" (
     "id"           SERIAL       UNIQUE PRIMARY KEY,
     "name"         VARCHAR(50)  NOT NULL,
-    "provider"     VARCHAR(10)  NOT NULL,
+    "provider"     VARCHAR(50)  NOT NULL,
     "url"          VARCHAR(255),
     "api_key"      VARCHAR(255),
     "json_content" JSONB        DEFAULT '{}',
