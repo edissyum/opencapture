@@ -93,6 +93,17 @@ class FindWithAI:
             json_content_str = json.dumps(self.llm_model['json_content'])
             json_content_str = json_content_str.replace('"##OCR_CONTENT##"', json.dumps(ocr_content))
             self.llm_model['json_content'] = json.loads(json_content_str)
+        elif '##FILE_NAME##' in str(self.llm_model['json_content']):
+            with open(file_path, 'rb') as file:
+                file_data = file.read()
+                import base64
+                import mimetypes
+                mimetype = mimetypes.guess_type(file_path)[0]
+                fileb64 = base64.b64encode(file_data).decode('utf-8')
+                file_content = 'data:' + mimetype + ';base64,' + fileb64
+                json_content_str = json.dumps(self.llm_model['json_content'])
+                json_content_str = json_content_str.replace('"##FILE_NAME##"', json.dumps(file_content))
+                self.llm_model['json_content'] = json.loads(json_content_str)
 
         headers = {
             "Authorization": f"Bearer {self.llm_model['api_key']}",
@@ -122,13 +133,15 @@ class FindWithAI:
         else:
             if 'choices' in response and len(response['choices']) > 0:
                 content = response['choices'][0]['message']['content']
+            elif 'document_annotation' in response and len(response['document_annotation']) > 0:
+                content = response['document_annotation']
 
         if content:
             try:
                 content = json.loads(content)
             except json.JSONDecodeError as e:
                 self.log.error(str(content))
-                self.log.error(f"Error decoding JSON response: {e}")
+                self.log.error(f"Error decoding JSON response (maybe max_tokens is too low) : {e}")
                 return None
 
             if self.llm_model['provider'] == 'gemini':

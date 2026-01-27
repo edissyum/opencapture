@@ -39,9 +39,11 @@ export const getAvailableFields = (t: TFunction) => ({
         { id: 'country', label: t('ACCOUNTS.country'), type: 'text', required: true, format: 'alphanum_extended_with_accent', default_value: '' }
     ],
     lines: [
+        { id: 'poste', label: t('VERIFIER.poste'), type: 'text', required: false, format: 'alphanum_extended_with_accent', default_value: '' },
         { id: 'description', label: t('VERIFIER.item_description'), type: 'text', required: false, format: 'alphanum_extended_with_accent', default_value: '' },
         { id: 'reference', label: t('VERIFIER.item_reference'), type: 'text', required: false, format: 'alphanum_extended_with_accent', default_value: '' },
         { id: 'quantity', label: t('VERIFIER.item_quantity'), type: 'text', required: false, format: 'number', default_value: '' },
+        { id: 'unity', label: t('VERIFIER.unity'), type: 'text', required: false, format: 'number', default_value: '' },
         { id: 'unit_price', label: t('VERIFIER.item_unit_price'), type: 'text', required: false, format: 'number_float', default_value: '' },
         { id: 'line_ht', label: t('VERIFIER.item_total_excl_tax'), type: 'text', required: false, format: 'number_float', default_value: '' },
         { id: 'line_vat_rat', label: t('VERIFIER.item_tax_rate'), type: 'text', required: false, format: 'number_float', default_value: '' }
