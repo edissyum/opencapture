@@ -19,15 +19,24 @@ import os
 import json
 import base64
 import hashlib
+import requests
+from asn1crypto import tsp, algos
 from datetime import datetime, UTC
-from rfc3161ng import RemoteTimestamper
+from rfc3161ng import RemoteTimestamper, make_timestamp_request
 
 class NFZ42020:
     def __init__(self, log, path, enabled, module, original_filename, sanitized_filename):
         self.log = log
+        self.path = path
         self.module = module
         self.enabled = enabled
         self.journal_init = False
+
+        self.tsa_provider = 'freetsa'
+        if self.tsa_provider == 'certinomis':
+            self.tsa_url = 'https://try-tsa.certinomis.fr/tts-proxy/timestamp.do'
+        else:
+            self.tsa_url = 'https://freetsa.org/tsr'
 
         self.sanitized_filename = sanitized_filename
         self.original_filename = os.path.basename(original_filename)
@@ -122,17 +131,60 @@ class NFZ42020:
         if not last_entry:
             return
 
-        tsr = generate_rfc3161_tsr(last_entry["current_hash"])
+        tsr = self.generate_rfc3161_tsr(last_entry["current_hash"])
 
         seal_entry = {
             "timestamp": datetime.now(UTC).isoformat(),
             "journal_index": last_entry["index"],
             "hash_sealed": last_entry["current_hash"],
             "algorithm": "SHA-256",
-            "tsa_url": 'https://freetsa.org/tsr',
+            "tsa_url": self.tsa_url,
+            "tsr_hash": hashlib.sha256(tsr).hexdigest(),
             "tsr_base64": base64.b64encode(tsr).decode("ascii")
         }
         append_journal_entry(seal_entry, self.journal_tsa_filename)
+
+
+    def generate_rfc3161_tsr(self, data_hash_hex):
+        data_digest = bytes.fromhex(data_hash_hex)
+
+        if self.tsa_provider == 'certinomis':
+            return self.certinomis_generate_tsr(data_digest)
+        else:
+            return self.freetsa_generate_tsr(data_digest)
+
+
+    def freetsa_generate_tsr(self, digest):
+        timestamper = RemoteTimestamper(self.tsa_url, hashname="sha256")
+        return timestamper.timestamp(digest)
+
+
+    def certinomis_generate_tsr(self, digest):
+        message_imprint = tsp.MessageImprint({
+            'hash_algorithm': algos.DigestAlgorithm({'algorithm': 'sha256'}),
+            'hashed_message': digest
+        })
+
+        tsq = tsp.TimeStampReq({
+            'version': 1,
+            'message_imprint': message_imprint,
+            'cert_req': True
+        })
+        tsq_bytes = tsq.dump()
+
+        response = requests.post(
+            self.tsa_url,
+            data=tsq_bytes,
+            headers={"Content-Type": "application/timestamp-query", "Accept": "application/timestamp-reply"},
+            cert=(self.path + "/usercert.pem", self.path + "/userkeyrsa.pem"),
+            verify=False
+        )
+
+        if response.status_code != 200:
+            raise RuntimeError(response.content)
+
+        return response.content
+
 
 
 def count_journal_entries(journal_path):
@@ -207,7 +259,11 @@ def hash_file_content(file_path, chunk_size=8192):
     return h.hexdigest()
 
 
-def generate_rfc3161_tsr(data_hash):
-    data = bytes.fromhex(data_hash)
-    timestamper = RemoteTimestamper('https://freetsa.org/tsr', hashname="sha256")
-    return timestamper.timestamp(data)
+# # Certificat client
+# openssl pkcs12 -in cert.p12 -clcerts -nokeys -out usercert.pem
+#
+# # Clé privée NON chiffrée
+# openssl pkcs12 -in cert.p12 -nocerts -nodes -out userkey.pem
+#
+# # Conversion RSA propre
+# openssl pkcs8 -topk8 -inform PEM -outform PEM -in userkey.pem -out userkeyrsa.pem -nocrypt
