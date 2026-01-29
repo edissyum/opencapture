@@ -170,10 +170,10 @@ export function Grid<T extends { id: string }>({
     }
 
     return (
-        <div className='h-full flex flex-col'>
+        <>
             { pagination && (
                 <div
-                    className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-lg text-(--text-secondary) font-normal mb-4">
+                    className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-lg text-(--text-secondary) font-normal">
                     { paginatorLeftData }
                     <Paginator
                         rows={ rowsPerPage }
@@ -194,11 +194,11 @@ export function Grid<T extends { id: string }>({
                 </div>
             ) }
             { data.length === 0 ? (
-                <div className="text-center text-(--text-secondary) py-8">
+                <div className="text-center text-(--text-secondary) py-8 pt-4">
                     { emptyMessage }
                 </div>
             ) : (
-                <div className="grid grid-cols-4 gap-4 overflow-y-auto">
+                <div className="grid grid-cols-4 gap-4 overflow-y-auto pt-4">
                     { data.map((row) => (
                         <div key={ row.id }
                              onClick={ () => handleRowClick(row) }
@@ -259,6 +259,6 @@ export function Grid<T extends { id: string }>({
                     )) }
                 </div>
             ) }
-        </div>
+        </>
     );
 }
