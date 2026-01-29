@@ -32,8 +32,9 @@ export function SettingsCard({ show = true, icon, title, description, to, classN
     if (!show) return null;
 
     return (
-        <Link to={ to }
-              className={ `${ className } relative flex justify-start items-center min-w-80 p-2.5 pl-4 border-2 border-(--border-secondary) rounded-md hover:border-gray-400 duration-200` }>
+        <Link to={ to } className={ `${ className } relative flex justify-start items-center min-w-[22rem] p-2.5 
+                                     pl-4 border-2 border-(--border-secondary) rounded-md hover:border-gray-400 
+                                     duration-200` }>
             <div className="text-(--text-primary) mr-4 bg-(--bg-secondary) p-2 rounded-md">
                 { icon }
             </div>
@@ -42,7 +43,7 @@ export function SettingsCard({ show = true, icon, title, description, to, classN
                     { title }
                     <span>
                         { module && (
-                            <span className="text-[10px] ml-1 text-(--color-primary) absolute top-1 right-1">
+                            <span className="text-[10px] ml-1 text-(--color-primary) absolute top-2 right-2 capitalize">
                                 { module }
                             </span>
                         ) }
