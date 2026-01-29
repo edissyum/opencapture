@@ -172,8 +172,8 @@ export function Grid<T extends { id: string }>({
     return (
         <>
             { pagination && (
-                <div
-                    className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-lg text-(--text-secondary) font-normal">
+                <div className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-lg
+                                text-(--text-secondary) font-normal">
                     { paginatorLeftData }
                     <Paginator
                         rows={ rowsPerPage }
