@@ -83,7 +83,7 @@ export function SettingsGeneralUsers() {
             command: () => handleDisable()
         },
         {
-            label: <span className='critical'>{ t('USERS.delete_users') }</span>,
+            label: <span className='critical'>{ t('GLOBAL.delete') }</span>,
             icon: <Trash2 className='mr-1' size={ 16 }/>,
             command: () => handleDelete()
         }

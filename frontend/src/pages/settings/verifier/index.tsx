@@ -26,6 +26,13 @@ export const getSettingsVerifierOptions = () => [
         icon: <LayoutTemplate/>,
         href: '/settings/verifier/forms',
         module: 'verifier'
+    },
+    {
+        name: t('VERIFIER.custom_fields'),
+        description: t('SETTINGS.custom_fields_description'),
+        icon: <LayoutTemplate/>,
+        href: '/settings/verifier/custom-fields',
+        module: 'verifier'
     }
 ];
 

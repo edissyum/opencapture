@@ -71,7 +71,7 @@ def retrieve_custom_fields(args):
         database = _vars[0]
     error = None
     custom_fields = database.select({
-        'select': ['*'] if 'select' not in args else args['select'],
+        'select': ['*', 'count(*) OVER() as total'] if 'select' not in args else args['select'],
         'table': ['custom_fields'],
         'where': ['status <> %s'] if 'where' not in args else args['where'],
         'data': ['DEL'] if 'data' not in args else args['data']

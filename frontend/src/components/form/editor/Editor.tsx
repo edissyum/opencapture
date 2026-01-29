@@ -147,10 +147,12 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     }, [formSettings]);
 
     if (customFields.length > 0) {
-        availableFields.customFields = customFields.map((cf: any) => (
-            mapField(cf, module)
-        ));
+        availableFields.customFields = customFields.map((cf: any) => ({
+            ...cf,
+            id: `custom_${ cf.id }`
+        })).map((cf: any) => mapField(cf, module));
     }
+
     const [activeTab, setActiveTab] = useState<keyof typeof availableFields>(defaultTab);
     const [availableItems, setAvailableItems] = useState(availableFields[activeTab].map((f: any) => (f)));
 

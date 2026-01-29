@@ -453,7 +453,10 @@
         "export_zip_file_name": "Chemin de compression des fichiers exportés",
         "export_zip_file_name_hint": "Chemin absolu incluant un masque de nommage avec l'extension 'zip' (vide pour desactiver)",
         "edit_role": "Modifier le rôle",
-        "edit_user": "Modifier l'utilisateur"
+        "edit_user": "Modifier l'utilisateur",
+        "custom_fields_description": "Liste des champs personnalisés",
+        "add_custom_fields": "Ajouter un champ personnalisé",
+        "edit_custom_fields": "Modifier le champ personnalisé"
     },
     "SMTP": {
         "authentication": "Authentification",
@@ -487,7 +490,6 @@
         "batch_selected_many": "lots sélectionnés",
         "batch_selected_one": "lot sélectionné",
         "batch_selected_other": "lots sélectionnés",
-        "batches": "Lots",
         "confirm_delete_batch_many": "Voulez-vous vraiment supprimer ces {{count}} lots ?",
         "confirm_delete_batch_one": "Voulez-vous vraiment supprimer ce lot ?",
         "confirm_delete_batch_other": "Voulez-vous vraiment supprimer ces {{count}} lots ?",
@@ -496,7 +498,10 @@
         "id": "Identifiant technique",
         "no_batches": "Aucun lot",
         "search": "Rechercher (identifiant technique)",
-        "nb_documents": "Nombre de documents"
+        "nb_documents": "Nombre de documents",
+        "batches_many": "Lots",
+        "batches_one": "Lot",
+        "batches_other": "Lots"
     },
     "UPLOAD": {
         "upload_dropzone": "Cliquez pour choisir un fichier",
@@ -662,7 +667,15 @@
         "show_attachments": "Voir les pièces jointes",
         "show_indicators": "Voir les indicateurs",
         "create_supplier": "Le tiers n'existe pas, cliquez ici pour le créer avant de valider le document",
-        "back_to_form": "Retour au formulaire"
+        "back_to_form": "Retour au formulaire",
+        "documents_many": "Documents",
+        "documents_one": "Document",
+        "documents_other": "Documents",
+        "poste": "Poste",
+        "unity": "Unité",
+        "custom_fields_many": "Champs personnalisés",
+        "custom_fields_one": "Chanp personnalisé",
+        "custom_fields_other": "Chanps personnalisés"
     },
     "SECURITY": {
         "default_auth": "Authentification par défaut",
@@ -745,5 +758,29 @@
         "city": "Ville",
         "country": "Pays",
         "postal_code": "Code postal"
+    },
+    "CUSTOM-FIELDS": {
+        "add_custom_field": "Ajouter un champ personnalisé",
+        "label_short": "Libellé technique",
+        "type": "Type de données",
+        "type_checkbox": "Case à cocher",
+        "type_date": "Date",
+        "type_regex": "Expression régulière",
+        "type_select": "Liste à choix",
+        "type_text": "Chaîne de caractères",
+        "type_textarea": "Multi-lignes",
+        "confirm_delete_custom_fields_many": "Voulez-vous vraiment supprimer ces {{count}} champs personnalisés ?",
+        "confirm_delete_custom_fields_one": "Voulez-vous vraiment supprimer ce champ personnalisé ?",
+        "confirm_delete_custom_fields_other": "Voulez-vous vraiment supprimer ces {{count}} champs personnalisés ?",
+        "delete_custom_fields_many": "Supprimer les champs personnalisés",
+        "delete_custom_fields_one": "Supprimer le champ personnalisé",
+        "delete_custom_fields_other": "Supprimer les champs personnalisés",
+        "no_custom_fields": "Aucun champ personnalisé",
+        "selected_many": "champs personnalisés sélectionnés",
+        "selected_one": "champ personnalisé sélectionné",
+        "selected_other": "champs personnalisés sélectionnés",
+        "custom_field_deleted_many": "Champs personnalisés supprimés avec succès",
+        "custom_field_deleted_one": "Champ personnalisé supprimé avec succès",
+        "custom_field_deleted_other": "Champs personnalisés supprimés avec succès"
     }
 }

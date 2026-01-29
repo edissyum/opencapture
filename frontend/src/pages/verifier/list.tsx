@@ -96,7 +96,7 @@ export function VerifierListPage() {
     const [documents, setDocuments] = useState<any[]>([]);
     const [selectedDocuments, setSelectedDocuments] = useState<any[]>([]);
     const [loadingDocuments, setLoadingDocuments] = useState(false);
-    const [totalDocuments, setTotalDocuments] = useState<number | null>(null);
+    const [totalDocuments, setTotalDocuments] = useState<number>(0);
 
     const [lazyParams, setLazyParams] = usePersistentState<{
         first: number;
@@ -362,7 +362,7 @@ export function VerifierListPage() {
             console.error("Error changing document form:", err);
         } finally {
             setSelectedDocuments([]);
-            setTotalDocuments(null);
+            setTotalDocuments(0);
             setLazyParams({ ...lazyParams, first: 0 });
         }
 
@@ -392,7 +392,7 @@ export function VerifierListPage() {
             onConfirm: async () => {
                 await deleteDocuments(selectedDocuments.map(doc => doc.id));
                 setSelectedDocuments([]);
-                setTotalDocuments(null);
+                setTotalDocuments(0);
                 setLazyParams({ ...lazyParams, first: 0 });
             },
             onCancel: () => {
@@ -608,7 +608,7 @@ export function VerifierListPage() {
                     <span className='flex items-center gap-1'>
                         <FileText size={ 16 }/>
                         <span>
-                            { t('VERIFIER.documents', { count: totalDocuments! }) } ({ totalDocuments || 0 })
+                            { t('VERIFIER.documents', { count: totalDocuments }) } ({ totalDocuments || 0 })
                         </span>
                     </span>
                     <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10'

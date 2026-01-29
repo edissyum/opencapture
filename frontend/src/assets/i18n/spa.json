@@ -453,7 +453,10 @@
         "export_zip_file_name": "Ruta de compresión de los archivos exportados",
         "export_zip_file_name_hint": "Ruta absoluta que incluye una máscara de nombre con la extensión 'zip' (vacío para desactivar)",
         "edit_role": "Editar el rol",
-        "edit_user": "Editar el usuario"
+        "edit_user": "Editar el usuario",
+        "custom_fields_description": "",
+        "add_custom_fields": "",
+        "edit_custom_fields": ""
     },
     "SMTP": {
         "authentication": "Autenticación",
@@ -487,7 +490,6 @@
         "batch_selected_many": "lotes seleccionados",
         "batch_selected_one": "lote seleccionado",
         "batch_selected_other": "lotes seleccionados",
-        "batches": "Lotes",
         "confirm_delete_batch_many": "¿Seguro que deseas eliminar estos {{count}} lotes?",
         "confirm_delete_batch_one": "¿Seguro que deseas eliminar este lote?",
         "confirm_delete_batch_other": "¿Seguro que deseas eliminar estos {{count}} lotes?",
@@ -496,7 +498,10 @@
         "id": "Identificador técnico",
         "no_batches": "Ningún lote",
         "search": "Buscar (identificador técnico)",
-        "nb_documents": "Número de documentos"
+        "nb_documents": "Número de documentos",
+        "batches_many": "",
+        "batches_one": "",
+        "batches_other": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Haz clic para elegir un archivo",
@@ -662,7 +667,15 @@
         "show_attachments": "",
         "show_indicators": "",
         "create_supplier": "",
-        "back_to_form": ""
+        "back_to_form": "",
+        "documents_many": "",
+        "documents_one": "",
+        "documents_other": "",
+        "poste": "",
+        "unity": "",
+        "custom_fields_many": "",
+        "custom_fields_one": "",
+        "custom_fields_other": ""
     },
     "SECURITY": {
         "default_auth": "Autenticación predeterminada",
@@ -745,5 +758,29 @@
         "city": "",
         "country": "",
         "postal_code": ""
+    },
+    "CUSTOM-FIELDS": {
+        "add_custom_field": "",
+        "label_short": "",
+        "type": "",
+        "type_checkbox": "",
+        "type_date": "",
+        "type_regex": "",
+        "type_select": "",
+        "type_text": "",
+        "type_textarea": "",
+        "confirm_delete_custom_fields_many": "",
+        "confirm_delete_custom_fields_one": "",
+        "confirm_delete_custom_fields_other": "",
+        "delete_custom_fields_many": "",
+        "delete_custom_fields_one": "",
+        "delete_custom_fields_other": "",
+        "no_custom_fields": "",
+        "selected_many": "",
+        "selected_one": "",
+        "selected_other": "",
+        "custom_field_deleted_many": "",
+        "custom_field_deleted_one": "",
+        "custom_field_deleted_other": ""
     }
 }

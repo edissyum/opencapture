@@ -421,7 +421,10 @@
         "export_zip_file_name": "Exported files compression path",
         "export_zip_file_name_hint": "Absolute path including a naming mask with 'zip' extension (empty to disable)",
         "edit_role": "Edit role",
-        "edit_user": "Edit user"
+        "edit_user": "Edit user",
+        "custom_fields_description": "",
+        "add_custom_fields": "",
+        "edit_custom_fields": ""
     },
     "SMTP": {
         "authentication": "Authentication",
@@ -454,7 +457,6 @@
     "SPLITTER": {
         "batch_selected_one": "batch selected",
         "batch_selected_other": "batches selected",
-        "batches": "Batches",
         "confirm_delete_batch_one": "Are you sure you want to delete this batch?",
         "confirm_delete_batch_other": "Are you sure you want to delete these {{count}} batches?",
         "delete_batch": "Delete batch",
@@ -462,7 +464,9 @@
         "id": "Technical ID",
         "no_batches": "No batches",
         "search": "Search (technical ID)",
-        "nb_documents": "Number of documents"
+        "nb_documents": "Number of documents",
+        "batches_one": "",
+        "batches_other": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Click to choose a file",
@@ -612,7 +616,13 @@
         "show_attachments": "",
         "show_indicators": "",
         "create_supplier": "",
-        "back_to_form": ""
+        "back_to_form": "",
+        "documents_one": "",
+        "documents_other": "",
+        "poste": "",
+        "unity": "",
+        "custom_fields_one": "",
+        "custom_fields_other": ""
     },
     "SECURITY": {
         "default_auth": "Default authentication",
@@ -695,5 +705,25 @@
         "city": "",
         "country": "",
         "postal_code": ""
+    },
+    "CUSTOM-FIELDS": {
+        "add_custom_field": "",
+        "label_short": "",
+        "type": "",
+        "type_checkbox": "",
+        "type_date": "",
+        "type_regex": "",
+        "type_select": "",
+        "type_text": "",
+        "type_textarea": "",
+        "confirm_delete_custom_fields_one": "",
+        "confirm_delete_custom_fields_other": "",
+        "delete_custom_fields_one": "",
+        "delete_custom_fields_other": "",
+        "no_custom_fields": "",
+        "selected_one": "",
+        "selected_other": "",
+        "custom_field_deleted_one": "",
+        "custom_field_deleted_other": ""
     }
 }

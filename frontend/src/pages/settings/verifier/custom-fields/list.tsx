@@ -14,10 +14,11 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { FormEditor } from "../../../../components/form/editor/Editor";
+import { CustomFieldsList } from "../../../../components/settings/custom-fields-list";
 
-export function SettingsVerifierFormsEditor() {
+
+export function SettingsVerifierCustomFieldsList() {
     return (
-        <FormEditor module="verifier"/>
-    );
+        <CustomFieldsList module="verifier"/>
+    )
 }

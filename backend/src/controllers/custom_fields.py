@@ -37,7 +37,25 @@ def add_custom_field(args):
 
 
 def retrieve_custom_fields(args):
-    custom_fields_res, error = custom_fields.retrieve_custom_fields(args)
+    _args = {
+        'where': ['enabled = %s', 'status <> %s'],
+        'data': [True, 'DEL'],
+    }
+
+    if 'module' in args:
+        _args['where'].append('module = %s')
+        _args['data'].append(args['module'])
+
+    if 'type' in args:
+        _args['where'].append('type = %s')
+        _args['data'].append(args['type'])
+
+    if 'search' in args and args['search']:
+        _args['where'].append('(label ILIKE %s OR label_short ILIKE %s)')
+        _args['data'].append('%' + args['search'] + '%')
+        _args['data'].append('%' + args['search'] + '%')
+
+    custom_fields_res, error = custom_fields.retrieve_custom_fields(_args)
 
     if error is None:
         response = {

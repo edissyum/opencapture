@@ -55,6 +55,7 @@ import { SuppliersList } from "./pages/suppliers/list";
 import { CustomersList } from "./pages/customers/list";
 import { SupplierEditor } from "./pages/suppliers/editor";
 import { CustomerEditor } from "./pages/customers/editor";
+import { SettingsVerifierCustomFieldsList } from "./pages/settings/verifier/custom-fields/list";
 
 export const router = createBrowserRouter(
     [
@@ -309,6 +310,33 @@ export const router = createBrowserRouter(
                                     errorElement: <LoginRequiredError/>,
                                     handle: { breadcrumb: 'FORMS.add_form' }
                                 }
+                            ]
+                        },
+                        {
+                            path: "custom-fields",
+                            loader: protectedLoader,
+                            handle: { breadcrumb: 'VERIFIER.custom_fields' },
+                            children: [
+                                {
+                                    index: true,
+                                    loader: protectedLoader,
+                                    element: <SettingsVerifierCustomFieldsList/>,
+                                    errorElement: <LoginRequiredError/>
+                                },
+                                // {
+                                //     path:'edit/:customFieldId',
+                                //     loader: protectedLoader,
+                                //     element: <SettingsVerifierCustomFieldsEditor/>,
+                                //     errorElement: <LoginRequiredError/>,
+                                //     handle: { breadcrumb: 'SETTINGS.edit_custom_fields' }
+                                // },
+                                // {
+                                //     path:'create',
+                                //     loader: protectedLoader,
+                                //     element: <SettingsVerifierCustomFieldsEditor/>,
+                                //     errorElement: <LoginRequiredError/>,
+                                //     handle: { breadcrumb: 'SETTINGS.add_custom_fields' }
+                                // }
                             ]
                         }
                     ]

@@ -242,7 +242,6 @@ def update_supplier(supplier_id, data):
 
             for existing_supplier in existing_suppliers:
                 if existing_supplier['id'] != supplier_id:
-                    print(existing_supplier)
                     response = {
                         "errors": gettext('UPDATE_SUPPLIER_ERROR'),
                         "message": gettext('SUPPLIER_VAT_NUMBER_ALREADY_EXISTS')

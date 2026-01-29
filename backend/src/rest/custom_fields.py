@@ -21,6 +21,7 @@ from flask import Blueprint, request, make_response, jsonify
 from flask_babel import gettext
 
 from ..controllers import auth, custom_fields, forms, privileges
+from ..functions import rest_validator
 
 bp = Blueprint('customFields', __name__, url_prefix='/ws/')
 
@@ -31,19 +32,20 @@ def retrieve_fields():
     if not privileges.has_privileges(request.environ['user_id'], ['custom_fields | custom_fields_advanced']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/customFields/list'}), 403
 
-    args = {
-        'where': ['enabled = %s', 'status <> %s'],
-        'data': [True, 'DEL'],
-    }
-    if 'module' in request.args:
-        args['where'].append('module = %s')
-        args['data'].append(request.args['module'])
+    check, message = rest_validator(request.args, [
+        {'id': 'type', 'type': str, 'mandatory': False},
+        {'id': 'limit', 'type': str, 'mandatory': False},
+        {'id': 'offset', 'type': str, 'mandatory': False},
+        {'id': 'search', 'type': str, 'mandatory': False},
+        {'id': 'module', 'type': str, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
 
-    if 'type' in request.args:
-        args['where'].append('type = %s')
-        args['data'].append(request.args['type'])
-
-    res = custom_fields.retrieve_custom_fields(args)
+    res = custom_fields.retrieve_custom_fields(request.args)
     return make_response(jsonify(res[0])), res[1]
 
 

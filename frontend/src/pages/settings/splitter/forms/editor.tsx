@@ -18,6 +18,6 @@ import { FormEditor } from "../../../../components/form/editor/Editor";
 
 export function SettingsSplitterFormsEditor() {
     return (
-        <FormEditor module="splitter" />
+        <FormEditor module="splitter"/>
     );
 }

@@ -399,15 +399,27 @@ def delete_custom_field_from_forms(args):
     if not error:
         for form in _forms:
             fields = forms.get_fields({'form_id': form['id']})
-            for tmp_field in fields[0]['fields']:
-                cpt = 0
-                for field in fields[0]['fields'][tmp_field]:
-                    if field['unit'] == 'custom':
-                        custom_id = field['id'].split('_')[1]
-                        if int(custom_id) == int(args['custom_field_id']):
-                            del fields[0]['fields'][tmp_field][cpt]
-                    cpt += 1
-            forms.update_form_fields({'set': {'fields': json.dumps(fields[0]['fields'])}, 'form_id': form['id']})
+            if fields[0] and fields[0]['fields']:
+                for tmp_field in fields[0]['fields']:
+                    cpt = 0
+                    for line in fields[0]['fields'][tmp_field]:
+                        if isinstance(line, dict):
+                            for key, field in line.items():
+                                if not isinstance(field, bool) and field['id'].startswith('custom_'):
+                                    custom_id = field['id'].split('_')[1]
+                                    if int(custom_id) == int(args['custom_field_id']):
+                                        del fields[0]['fields'][tmp_field][cpt]
+                        else:
+                            for field in line:
+                                if isinstance(field, list):
+                                    for _field in field:
+                                        field = _field
+                                if field['id'].startswith('custom_'):
+                                    custom_id = field['id'].split('_')[1]
+                                    if int(custom_id) == int(args['custom_field_id']):
+                                        del fields[0]['fields'][tmp_field][cpt]
+                        cpt += 1
+                forms.update_form_fields({'set': {'fields': json.dumps(fields[0]['fields'])}, 'form_id': form['id']})
     return '', 200
 
 
@@ -416,18 +428,34 @@ def update_custom_field_from_forms(args):
     if not error:
         for form in _forms:
             fields = forms.get_fields({'form_id': form['id']})
-            for tmp_field in fields[0]['fields']:
-                cpt = 0
-                for field in fields[0]['fields'][tmp_field]:
-                    if field['unit'] == 'custom':
-                        custom_id = field['id'].split('_')[1]
-                        if int(custom_id) == int(args['id']):
-                            fields[0]['fields'][tmp_field][cpt]['type'] = args['type']
-                            fields[0]['fields'][tmp_field][cpt]['format'] = args['type']
-                            fields[0]['fields'][tmp_field][cpt]['label'] = args['label']
-                            fields[0]['fields'][tmp_field][cpt]['module'] = args['module']
-                            fields[0]['fields'][tmp_field][cpt]['enabled'] = args['enabled']
-                    cpt += 1
+            if fields[0] and fields[0]['fields']:
+                for tmp_field in fields[0]['fields']:
+                    cpt = 0
+                    for line in fields[0]['fields'][tmp_field]:
+                        if isinstance(line, dict):
+                            for key, field in line.items():
+                                if not isinstance(field, bool) and field['id'].startswith('custom_'):
+                                    custom_id = field['id'].split('_')[1]
+                                    if int(custom_id) == int(args['custom_field_id']):
+                                        fields[0]['fields'][tmp_field][cpt]['type'] = args['type']
+                                        fields[0]['fields'][tmp_field][cpt]['format'] = args['type']
+                                        fields[0]['fields'][tmp_field][cpt]['label'] = args['label']
+                                        fields[0]['fields'][tmp_field][cpt]['module'] = args['module']
+                                        fields[0]['fields'][tmp_field][cpt]['enabled'] = args['enabled']
+                        else:
+                            for field in line:
+                                if isinstance(field, list):
+                                    for _field in field:
+                                        field = _field
+                                if field['id'].startswith('custom_'):
+                                    custom_id = field['id'].split('_')[1]
+                                    if int(custom_id) == int(args['custom_field_id']):
+                                        fields[0]['fields'][tmp_field][cpt]['type'] = args['type']
+                                        fields[0]['fields'][tmp_field][cpt]['format'] = args['type']
+                                        fields[0]['fields'][tmp_field][cpt]['label'] = args['label']
+                                        fields[0]['fields'][tmp_field][cpt]['module'] = args['module']
+                                        fields[0]['fields'][tmp_field][cpt]['enabled'] = args['enabled']
+                        cpt += 1
             forms.update_form_fields({'set': {'fields': json.dumps(fields[0]['fields'])}, 'form_id': form['id']})
     return '', 200
 
@@ -438,10 +466,22 @@ def custom_present_in_form(args):
     if not error:
         for form in _forms:
             fields = forms.get_fields({'form_id': form['id']})
-            for tmp_field in fields[0]['fields']:
-                for field in fields[0]['fields'][tmp_field]:
-                    if field['unit'] == 'custom':
-                        custom_id = field['id'].split('_')[1]
-                        if int(custom_id) == int(args['custom_id']):
-                            custom_present = True
+            if fields[0] and fields[0]['fields']:
+                for tmp_field in fields[0]['fields']:
+                    for line in fields[0]['fields'][tmp_field]:
+                        if isinstance(line, dict):
+                            for key, field in line.items():
+                                if not isinstance(field, bool) and field['id'].startswith('custom_'):
+                                    custom_id = field['id'].split('_')[1]
+                                    if int(custom_id) == int(args['custom_field_id']):
+                                        custom_present = True
+                        else:
+                            for field in line:
+                                if isinstance(field, list):
+                                    for _field in field:
+                                        field = _field
+                                if field['id'].startswith('custom_'):
+                                    custom_id = field['id'].split('_')[1]
+                                    if int(custom_id) == int(args['custom_field_id']):
+                                        custom_present = True
     return custom_present, 200

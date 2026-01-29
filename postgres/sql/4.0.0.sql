@@ -100,7 +100,7 @@ SET fields = (
            )
     FROM jsonb_each(fields)
 )
-WHERE jsonb_typeof(fields) = 'object' AND form_id = 23;
+WHERE jsonb_typeof(fields) = 'object';
 
 -- Modification des libellés
 UPDATE form_models_field

@@ -79,7 +79,7 @@ export function SplitterListPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedBatches, setSelectedBatches] = useState<any[]>([]);
     const [loadingBatches, setLoadingBatches] = useState(false);
-    const [totalBatches, setTotalBatches] = useState<number | null>(null);
+    const [totalBatches, setTotalBatches] = useState<number>(0);
 
     const [lazyParams, setLazyParams] = usePersistentState<{
         first: number;
@@ -283,7 +283,7 @@ export function SplitterListPage() {
             onConfirm: async () => {
                 await deleteDocuments(selectedBatches.map(doc => doc.id));
                 setSelectedBatches([]);
-                setTotalBatches(null);
+                setTotalBatches(0);
                 setLazyParams({ ...lazyParams, first: 0 });
             },
             onCancel: () => {
@@ -453,7 +453,7 @@ export function SplitterListPage() {
                     <span className='flex items-center gap-1'>
                         <FileText size={ 16 }/>
                         <span>
-                            { t('SPLITTER.batches', { count: totalBatches! }) } ({ totalBatches || 0 })
+                            { t('SPLITTER.batches', { count: totalBatches }) } ({ totalBatches || 0 })
                         </span>
                     </span>
                     <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-80' height='h-10'

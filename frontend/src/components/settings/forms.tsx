@@ -59,7 +59,7 @@ export function FormsList({ module }: { module: string }) {
                 </span>
             ),
             className: 'max-w-[8rem] w-[8rem]'
-        },
+        }
     ];
 
     const getActionsLine = (row: any) => [
@@ -99,7 +99,7 @@ export function FormsList({ module }: { module: string }) {
             command: () => handleDisable()
         },
         {
-            label: <span className='critical'>{ t('FORMS.delete_forms') }</span>,
+            label: <span className='critical'>{ t('GLOBAL.delete') }</span>,
             icon: <Trash2 className='mr-1' size={ 16 }/>,
             command: () => handleDelete()
         }
