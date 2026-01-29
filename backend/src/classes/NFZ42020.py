@@ -52,6 +52,12 @@ class NFZ42020:
 
             self.initialize_journal()
 
+            try:
+                os.chmod(self.journal_filename, 0o640)
+                os.chmod(self.journal_tsa_filename, 0o640)
+            except Exception as e:
+                self.log.error(f"Error setting permissions on NF Z42-020 journal files: {e}")
+
     def initialize_journal(self):
         if os.path.exists(self.journal_filename):
             self.journal_init = True
