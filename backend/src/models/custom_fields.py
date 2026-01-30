@@ -115,12 +115,11 @@ def update(args):
     _args = {
         'table': ['custom_fields'],
         'set': {
-            'label': args['label'],
             'type': args['type'],
+            'label': args['label'],
             'module': args['module'],
-            'enabled': args['enabled'],
             'label_short': args['label_short'],
-            'metadata_key': args['metadata_key'],
+            'metadata_key': args['metadata_key'] if 'metadata_key' in args else None,
             'settings': json.dumps({
                 'conditional': args['conditional'] if 'conditional' in args and args['conditional'] else False,
                 'options': args['options'] if 'options' in args and args['options'] else None,

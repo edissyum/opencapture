@@ -14,10 +14,18 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import type { JSX } from "react";
+import { type JSX } from "react";
 import { Controller } from "react-hook-form";
 import { InputSwitch } from "primereact/inputswitch";
-import { Calendar, CaseSensitive, ListTodo, Regex, SquareCheckBig, TextInitial } from "lucide-react";
+import {
+    Calendar,
+    CaseSensitive,
+    CircleQuestionMark,
+    ListTodo,
+    Regex,
+    SquareCheckBig,
+    TextInitial
+} from "lucide-react";
 
 import Input from "../Input";
 import { RadioBox } from "../RadioBox";
@@ -63,6 +71,9 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                                     label={ field.label }
                                     value={ f.value ?? "" }
                                     hint={ field.hint ?? "" }
+                                    bgColor={ field.bgColor }
+                                    textWeight={ field.textWeight }
+                                    textColor={ field.textColor }
                                     required={ field.required }
                                     disabled={ field.disabled }
                                     labelFusion={ labelFusion }
@@ -93,7 +104,7 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                             name={ field.name }
                             control={ control }
                             render={ ({ field: f }) => (
-                                <div className='flex items-center mb-2'>
+                                <div className='flex items-center mb-2 relative w-fit'>
                                     <InputSwitch
                                         inputId={ f.name }
                                         checked={ f.value }
@@ -102,6 +113,13 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                                     <label htmlFor={ f.name } className='cursor-pointer'>
                                         { field.label }
                                     </label>
+                                    { field.hint && (
+                                        <span className={ `absolute cursor-pointer z-10 -right-5 top-1.5 
+                                                           text-(--text-secondary)` }>
+                                            <CircleQuestionMark data-tooltip-id="tooltip" size={ 16 }
+                                                                data-tooltip-content={ field.hint }/>
+                                        </span>
+                                    ) }
                                 </div>
                             ) }
                         />

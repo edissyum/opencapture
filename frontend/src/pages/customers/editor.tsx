@@ -213,12 +213,12 @@ export function CustomerEditor() {
                 { customerId ? (
                     <Button onClick={ handleSubmit(onSubmit) }
                             disabled={ loading || Object.keys(errors).length > 0 }>
-                        { loading ? t('ACCOUNTS.updating') : t('ACCOUNTS.update_customer') }
+                        { loading ? t('GLOBAL.updating') : t('ACCOUNTS.update_customer') }
                     </Button>
                 ) : (
                     <Button onClick={ handleSubmit(onSubmit) }
                             disabled={ loading || Object.keys(errors).length > 0 }>
-                        { loading ? t('ACCOUNTS.creating') : t('ACCOUNTS.create_customer') }
+                        { loading ? t('GLOBAL.creating') : t('ACCOUNTS.create_customer') }
                     </Button>
                 ) }
             </div>

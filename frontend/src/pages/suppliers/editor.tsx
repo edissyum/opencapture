@@ -482,12 +482,12 @@ export function SupplierEditor({
                 { supplierId ? (
                     <Button onClick={ handleSubmit(onSubmit) }
                             disabled={ loading || Object.keys(errors).length > 0 }>
-                        { loading ? t('ACCOUNTS.updating') : t('ACCOUNTS.update_supplier') }
+                        { loading ? t('GLOBAL.updating') : t('ACCOUNTS.update_supplier') }
                     </Button>
                 ) : (
                     <Button onClick={ handleSubmit(onSubmit) }
                             disabled={ loading || Object.keys(errors).length > 0 }>
-                        { loading ? t('ACCOUNTS.creating') : t('ACCOUNTS.create_supplier') }
+                        { loading ? t('GLOBAL.creating') : t('ACCOUNTS.create_supplier') }
                     </Button>
                 ) }
             </div>

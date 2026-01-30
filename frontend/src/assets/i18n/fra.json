@@ -59,7 +59,6 @@
         "default_currency": "Devise par défaut",
         "default_accounting_plan": "Compte de charge par défaut",
         "update_supplier": "Mettre à jour le compte de tiers",
-        "updating": "Mise à jour en cours...",
         "vat_or_duns_required": "Numéro de TVA ou DUNS est requis",
         "invalid_duns": "Format du numéro DUNS invalide",
         "invalid_vat_number": "Format du numéro de TVA invalide",
@@ -67,7 +66,6 @@
         "informal_contact": "Contact informel",
         "supplier_updated": "Compte de tiers mis à jour avec succès",
         "create_supplier": "Créer le compte de tiers",
-        "creating": "Création en cours...",
         "supplier_created": "Compte de tiers créé avec succès",
         "create_customer": "Créer le compte client",
         "customer_address": "Adresse du compte client",
@@ -257,7 +255,8 @@
         "reinit": "Réinitialiser",
         "english": "Anglais",
         "french": "Français",
-        "action_irreversible": "Cette action est irréversible."
+        "action_irreversible": "Cette action est irréversible.",
+        "updating": "Mise à jour en cours..."
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validé avec succès",
@@ -405,8 +404,6 @@
         "default_route": "Route par défaut lors de la connexion",
         "create_role": "Créer le rôle",
         "update_role": "Mettre à jour le rôle",
-        "updating": "Mise à jour en cours...",
-        "creating": "Création en cours...",
         "enabled": "Activer le rôle",
         "create_success": "Rôle créé avec succès",
         "update_success": "Rôle mis à jour avec succès",
@@ -581,11 +578,9 @@
         "user_enabled_many": "Utilisateurs activés avec succès",
         "user_enabled_one": "Utilisateur activé avec succès",
         "user_enabled_other": "Utilisateurs activés avec succès",
-        "creating": "Création en cours...",
         "editing": "Édition de l'utilisateur",
         "list": "Liste des utilisateurs",
         "new_user": "Nouvel utilisateur",
-        "updating": "Mise à jour en cours...",
         "create_user": "Créer l'utilisateur",
         "update_user": "Mettre à jour l'utilisateur",
         "email": "Addresse email",
@@ -752,7 +747,9 @@
         "remove_keyword_value": "Expression régulière (REGEX) du mot-clé à supprimer",
         "remove_spaces": "Supprimer les espaces et les sauts de ligne",
         "remove_special_char": "Supprimer les caractères spéciaux",
-        "regex_settings_content": "Configuration de l'expression régulière (REGEX)"
+        "regex_settings_content": "Configuration de l'expression régulière (REGEX)",
+        "remove_keyword_hint": "Cet exemple montre comment une règle repère une donnée dans un texte, puis supprime les éléments inutiles pour ne conserver que la valeur recherchée.",
+        "remove_keyword_title": "Comprendre le nettoyage après extraction"
     },
     "DOCSERVERS": {
         "docserver_updated": "Docserver mis à jour avec succès",
@@ -799,6 +796,8 @@
         "custom_field_deleted_one": "Champ personnalisé supprimé avec succès",
         "custom_field_deleted_other": "Champs personnalisés supprimés avec succès",
         "autocomplete": "Identifiant d'autocomplétion",
-        "custom_type": "Type"
+        "custom_type": "Type",
+        "update_custom_fields": "Mettre à jour le champ personnalisé",
+        "update_success": "Champ personnalisé mis à jour avec succès"
     }
 }

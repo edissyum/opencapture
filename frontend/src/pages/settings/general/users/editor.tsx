@@ -302,12 +302,12 @@ export function SettingsGeneralUserEditor() {
                     { userId ? (
                         <Button onClick={ handleSubmit(handleUpdate) }
                                 disabled={ loading || Object.keys(errors).length > 0 }>
-                            { loading ? t('USERS.updating') : t('USERS.update_user') }
+                            { loading ? t('GLOBAL.updating') : t('USERS.update_user') }
                         </Button>
                     ) : (
                         <Button onClick={ handleSubmit(handleCreate) }
                                 disabled={ loading || Object.keys(errors).length > 0 }>
-                            { loading ? t('USERS.creating') : t('USERS.create_user') }
+                            { loading ? t('GLOBAL.creating') : t('USERS.create_user') }
                         </Button>
                     ) }
                 </div>

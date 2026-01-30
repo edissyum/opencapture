@@ -16,6 +16,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 @import "tailwindcss";
+@import "./assets/css/tooltip.css";
 @import "./assets/css/react-pdf.css";
 @import "./assets/css/tailwind-theme.css";
 @import "./assets/css/prime-react-tab.css";

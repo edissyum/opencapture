@@ -52,7 +52,6 @@
         "default_currency": "",
         "default_accounting_plan": "",
         "update_supplier": "",
-        "updating": "",
         "vat_or_duns_required": "",
         "invalid_duns": "",
         "invalid_vat_number": "",
@@ -60,7 +59,6 @@
         "informal_contact": "",
         "supplier_updated": "",
         "create_supplier": "",
-        "creating": "",
         "supplier_created": "",
         "create_customer": "",
         "customer_address": "",
@@ -237,7 +235,8 @@
         "reinit": "",
         "english": "",
         "french": "",
-        "action_irreversible": ""
+        "action_irreversible": "",
+        "updating": ""
     },
     "HISTORY": {
         "document_validated": "Document #<strong>{{ documentId }}</strong> successfully validated",
@@ -374,8 +373,6 @@
         "default_route": "Default route upon login",
         "create_role": "Create role",
         "update_role": "Update role",
-        "updating": "Updating...",
-        "creating": "Creating...",
         "enabled": "Enable role",
         "create_success": "Role created successfully",
         "update_success": "Role updated successfully",
@@ -532,11 +529,9 @@
         "user_disabled_other": "Users disabled successfully",
         "user_enabled_one": "User enabled successfully",
         "user_enabled_other": "Users enabled successfully",
-        "creating": "Creating...",
         "editing": "Editing user",
         "list": "User list",
         "new_user": "New user",
-        "updating": "Updating...",
         "create_user": "Create user",
         "update_user": "Update user",
         "email": "Email address",
@@ -699,7 +694,9 @@
         "remove_keyword_value": "",
         "remove_spaces": "",
         "remove_special_char": "",
-        "regex_settings_content": ""
+        "regex_settings_content": "",
+        "remove_keyword_hint": "",
+        "remove_keyword_title": ""
     },
     "DOCSERVERS": {
         "docserver_updated": "",
@@ -742,6 +739,8 @@
         "custom_field_deleted_one": "",
         "custom_field_deleted_other": "",
         "autocomplete": "",
-        "custom_type": ""
+        "custom_type": "",
+        "update_custom_fields": "",
+        "update_success": ""
     }
 }

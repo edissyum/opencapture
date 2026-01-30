@@ -15,7 +15,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { FloatLabel } from "primereact/floatlabel";
 import { CircleQuestionMark, Eye, EyeOff } from "lucide-react";
@@ -25,6 +25,9 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     hint?: string;
     label?: string;
     height?: string;
+    bgColor?: string;
+    textColor?: string;
+    textWeight?: string;
     labelFusion?: boolean;
     noMarginBottom?: boolean;
     iconPosition?: "left" | "right";
@@ -35,8 +38,11 @@ const Input: React.FC<InputProps> = ({
     hint,
     label,
     error,
+    bgColor,
     required,
     disabled,
+    textColor,
+    textWeight,
     type = "text",
     height = "h-12",
     className = "",
@@ -52,19 +58,73 @@ const Input: React.FC<InputProps> = ({
 
     const hasValue = props.value !== undefined && props.value !== null && props.value !== '';
 
+    const value = props.value ?? "";
+
+    const [textWidth, setTextWidth] = useState(0);
+    const textRef = useRef<HTMLSpanElement>(null);
+    const [inputWidth, setInputWidth] = useState(0);
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const bgWidth = Math.min(textWidth + 25, inputWidth +10);
+
+    useEffect(() => {
+        if (textRef.current) {
+            setTextWidth(textRef.current.offsetWidth);
+        }
+    }, [value]);
+
+    useEffect(() => {
+        if (inputRef.current) {
+            setInputWidth(inputRef.current.clientWidth);
+        }
+    }, []);
+
     return (
         <div className={ `flex flex-col rounded-md ${ className }` }>
             <div className={ `group group-focus-within:border-(--border-primary) relative flex justify-items-stretch 
                             ${ error || noMarginBottom ? '' : 'mb-4' }` }>
                 <FloatLabel className='w-full'>
+                    { bgColor && hasValue && (
+                        <>
+                            <div
+                                className={ `h-6 left-3 absolute bg-(--${ bgColor })/15 pointer-events-none w-fit` }
+                                style={ {
+                                    top: "1.55rem",
+                                    transform: "translate(-4px, -50%)",
+                                    width: `${bgWidth}px`,
+                                    borderRadius: "2px",
+                                    transition: "width 0.1s",
+                                } }
+                            />
+                            <span
+                                ref={ textRef }
+                                style={ {
+                                    position: "absolute",
+                                    visibility: "hidden",
+                                    whiteSpace: "pre",
+                                    fontSize: "1rem",
+                                    fontFamily: "inherit",
+                                    fontWeight: 400,
+                                } }
+                            >
+                                { value }
+                            </span>
+                        </>
+                    ) }
+
                     { /*@ts-ignore*/ }
                     <InputText
                         id={ id }
-                        className={ `w-full! px-3! py-2! border-[1.5px]! rounded-md! focus:outline-none! focus:border-(--color-primary)!
-                            hover:border-(--color-primary)! transition-colors duration-200 text-(--text-primary)!
-                            ${ props.placeholder || hasValue ? "p-inputwrapper-filled" : "" } group-hover:border-(--color-primary)!
-                            ${ isPasswordField ? 'border-r-0! rounded-r-none!' : '' }
-                            ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' } disabled:bg-(--bg-secondary) disabled:cursor-not-allowed! ${ height }`
+                        ref={ inputRef }
+                        className={ `w-full! px-3! py-2! border-[1.5px]! rounded-md! focus:outline-none! 
+                            hover:border-(--color-primary)! transition-colors duration-200 
+                            ${ textColor ? `text-(--${ textColor })!` : 'text-(--text-primary)!' } 
+                            ${ props.placeholder || hasValue ? "p-inputwrapper-filled" : "" } 
+                            ${ isPasswordField ? 'border-r-0! rounded-r-none!' : '' } 
+                            ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' } 
+                            ${ height } disabled:bg-(--bg-secondary) disabled:cursor-not-allowed!
+                            ${ textWeight ? `${ textWeight }!` : '' }
+                            group-hover:border-(--color-primary)! focus:border-(--color-primary)!`
                         }
                         type={ inputType }
                         disabled={ disabled }

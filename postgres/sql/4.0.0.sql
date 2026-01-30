@@ -170,3 +170,6 @@ WHERE fields::text LIKE '%FACTURATION.order_number%';
 UPDATE form_models_field
 SET fields = REPLACE(fields::text, 'FACTURATION.delivery_number', 'VERIFIER.delivery_number')::jsonb
 WHERE fields::text LIKE '%FACTURATION.delivery_number%';
+
+-- Suppression de la colonne enabled des custom_fields
+ALTER TABLE custom_fields DROP COLUMN enabled;

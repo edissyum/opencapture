@@ -59,7 +59,6 @@
         "default_currency": "",
         "default_accounting_plan": "",
         "update_supplier": "",
-        "updating": "",
         "vat_or_duns_required": "",
         "invalid_duns": "",
         "invalid_vat_number": "",
@@ -67,7 +66,6 @@
         "informal_contact": "",
         "supplier_updated": "",
         "create_supplier": "",
-        "creating": "",
         "supplier_created": "",
         "create_customer": "",
         "customer_address": "",
@@ -257,7 +255,8 @@
         "reinit": "",
         "english": "",
         "french": "",
-        "action_irreversible": ""
+        "action_irreversible": "",
+        "updating": ""
     },
     "HISTORY": {
         "document_validated": "Documento n°<strong>{{ documentId }}</strong> validado con éxito",
@@ -405,8 +404,6 @@
         "default_route": "Ruta predeterminada al iniciar sesión",
         "create_role": "Crear el rol",
         "update_role": "Actualizar el rol",
-        "updating": "Actualizando...",
-        "creating": "Creando...",
         "enabled": "Activar el rol",
         "create_success": "Rol creado con éxito",
         "update_success": "Rol actualizado con éxito",
@@ -581,11 +578,9 @@
         "user_enabled_many": "Usuarios activados con éxito",
         "user_enabled_one": "Usuario activado con éxito",
         "user_enabled_other": "Usuarios activados con éxito",
-        "creating": "Creando...",
         "editing": "Editando al usuario",
         "list": "Lista de usuarios",
         "new_user": "Nuevo usuario",
-        "updating": "Actualizando...",
         "create_user": "Crear el usuario",
         "update_user": "Actualizar el usuario",
         "email": "Dirección de correo",
@@ -752,7 +747,9 @@
         "remove_keyword_value": "",
         "remove_spaces": "",
         "remove_special_char": "",
-        "regex_settings_content": ""
+        "regex_settings_content": "",
+        "remove_keyword_hint": "",
+        "remove_keyword_title": ""
     },
     "DOCSERVERS": {
         "docserver_updated": "",
@@ -799,6 +796,8 @@
         "custom_field_deleted_one": "",
         "custom_field_deleted_other": "",
         "autocomplete": "",
-        "custom_type": ""
+        "custom_type": "",
+        "update_custom_fields": "",
+        "update_success": ""
     }
 }

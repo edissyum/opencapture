@@ -52,8 +52,8 @@ def get_custom_field_by_id(custom_field_id):
 
 def retrieve_custom_fields(args):
     _args = {
-        'where': ['enabled = %s', 'status <> %s'],
-        'data': [True, 'DEL'],
+        'where': ['status <> %s'],
+        'data': ['DEL']
     }
 
     if 'module' in args:

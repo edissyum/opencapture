@@ -156,12 +156,12 @@ export function SettingsGeneralRoleEditor() {
                 { roleId ? (
                     <Button onClick={ handleSubmit(handleUpdate) }
                             disabled={ loading || Object.keys(errors).length > 0 }>
-                        { loading ? t('ROLES.updating') : t('ROLES.update_role') }
+                        { loading ? t('GLOBAL.updating') : t('ROLES.update_role') }
                     </Button>
                 ) : (
                     <Button onClick={ handleSubmit(handleCreate) }
                             disabled={ loading || Object.keys(errors).length > 0 }>
-                        { loading ? t('ROLES.creating') : t('ROLES.create_role') }
+                        { loading ? t('GLOBAL.creating') : t('ROLES.create_role') }
                     </Button>
                 ) }
             </div>

@@ -93,7 +93,6 @@ CREATE TABLE "custom_fields" (
     "type"         VARCHAR(10),
     "module"       VARCHAR(10),
     "settings"     JSONB        DEFAULT '{}',
-    "enabled"      BOOLEAN      DEFAULT True,
     "status"       VARCHAR(5)   DEFAULT 'OK'
 );
 
