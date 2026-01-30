@@ -23,9 +23,9 @@ import { useSortable } from "@dnd-kit/sortable";
 import { InputSwitch } from "primereact/inputswitch";
 import { OverlayPanel } from "primereact/overlaypanel";
 
-import Input from "../../Input";
-import { Button } from "../../Button";
-import { Dropdown } from "../../Dropdown";
+import Input from "../../../Input";
+import { Button } from "../../../Button";
+import { Dropdown } from "../../../Dropdown";
 
 import { getColorOptions, getFormatLabels } from "./schemas";
 

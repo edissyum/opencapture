@@ -36,6 +36,20 @@ def add_custom_field(args):
         return response, 400
 
 
+def get_custom_field_by_id(custom_field_id):
+    custom_field_info, error = custom_fields.get_custom_field_by_id({
+        'custom_field_id': custom_field_id
+    })
+
+    if error is None:
+        return custom_field_info, 200
+    else:
+        response = {
+            "errors": gettext('GET_CUSTOM_FIELD_BY_ID_ERROR'),
+            "message": gettext(error)
+        }
+        return response, 400
+
 def retrieve_custom_fields(args):
     _args = {
         'where': ['enabled = %s', 'status <> %s'],
@@ -54,6 +68,9 @@ def retrieve_custom_fields(args):
         _args['where'].append('(label ILIKE %s OR label_short ILIKE %s)')
         _args['data'].append('%' + args['search'] + '%')
         _args['data'].append('%' + args['search'] + '%')
+
+    if 'filter' in args and args['filter']:
+        _args['order_by'] = [f"{args['filter']} {args['order']}"]
 
     custom_fields_res, error = custom_fields.retrieve_custom_fields(_args)
 

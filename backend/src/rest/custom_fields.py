@@ -35,7 +35,9 @@ def retrieve_fields():
     check, message = rest_validator(request.args, [
         {'id': 'type', 'type': str, 'mandatory': False},
         {'id': 'limit', 'type': str, 'mandatory': False},
+        {'id': 'order', 'type': str, 'mandatory': False},
         {'id': 'offset', 'type': str, 'mandatory': False},
+        {'id': 'filter', 'type': str, 'mandatory': False},
         {'id': 'search', 'type': str, 'mandatory': False},
         {'id': 'module', 'type': str, 'mandatory': False}
     ])
@@ -47,6 +49,16 @@ def retrieve_fields():
 
     res = custom_fields.retrieve_custom_fields(request.args)
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('customFields/getById/<int:custom_field_id>', methods=['GET'])
+@auth.token_required
+def get_custom_field_by_id(custom_field_id):
+    if not privileges.has_privileges(request.environ['user_id'], ['custom_fields | custom_fields_advanced']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/customFields/getById/{custom_field_id}'}), 403
+
+    _custom_field = custom_fields.get_custom_field_by_id(custom_field_id)
+    return make_response(jsonify(_custom_field[0])), _custom_field[1]
 
 
 @bp.route('customFields/add', methods=['POST'])

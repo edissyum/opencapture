@@ -56,6 +56,9 @@ import { CustomersList } from "./pages/customers/list";
 import { SupplierEditor } from "./pages/suppliers/editor";
 import { CustomerEditor } from "./pages/customers/editor";
 import { SettingsVerifierCustomFieldsList } from "./pages/settings/verifier/custom-fields/list";
+import { SettingsSplitterCustomFieldsList } from "./pages/settings/splitter/custom-fields/list";
+import { SettingsVerifierCustomFieldsEditor } from "./pages/settings/verifier/custom-fields/editor";
+import { SettingsSplitterCustomFieldsEditor } from "./pages/settings/splitter/custom-fields/editor";
 
 export const router = createBrowserRouter(
     [
@@ -323,20 +326,20 @@ export const router = createBrowserRouter(
                                     element: <SettingsVerifierCustomFieldsList/>,
                                     errorElement: <LoginRequiredError/>
                                 },
-                                // {
-                                //     path:'edit/:customFieldId',
-                                //     loader: protectedLoader,
-                                //     element: <SettingsVerifierCustomFieldsEditor/>,
-                                //     errorElement: <LoginRequiredError/>,
-                                //     handle: { breadcrumb: 'SETTINGS.edit_custom_fields' }
-                                // },
-                                // {
-                                //     path:'create',
-                                //     loader: protectedLoader,
-                                //     element: <SettingsVerifierCustomFieldsEditor/>,
-                                //     errorElement: <LoginRequiredError/>,
-                                //     handle: { breadcrumb: 'SETTINGS.add_custom_fields' }
-                                // }
+                                {
+                                    path:'edit/:customFieldId',
+                                    loader: protectedLoader,
+                                    element: <SettingsVerifierCustomFieldsEditor/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.edit_custom_fields' }
+                                },
+                                {
+                                    path:'create',
+                                    loader: protectedLoader,
+                                    element: <SettingsVerifierCustomFieldsEditor/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.add_custom_fields' }
+                                }
                             ]
                         }
                     ]
@@ -377,6 +380,33 @@ export const router = createBrowserRouter(
                                     element: <SettingsSplitterFormsCreate/>,
                                     errorElement: <LoginRequiredError/>,
                                     handle: { breadcrumb: 'FORMS.add_form' }
+                                }
+                            ]
+                        },
+                        {
+                            path: "custom-fields",
+                            loader: protectedLoader,
+                            handle: { breadcrumb: 'VERIFIER.custom_fields' },
+                            children: [
+                                {
+                                    index: true,
+                                    loader: protectedLoader,
+                                    element: <SettingsSplitterCustomFieldsList/>,
+                                    errorElement: <LoginRequiredError/>
+                                },
+                                {
+                                    path:'edit/:customFieldId',
+                                    loader: protectedLoader,
+                                    element: <SettingsSplitterCustomFieldsEditor/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.edit_custom_fields' }
+                                },
+                                {
+                                    path:'create',
+                                    loader: protectedLoader,
+                                    element: <SettingsSplitterCustomFieldsEditor/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.add_custom_fields' }
                                 }
                             ]
                         }

@@ -25,6 +25,13 @@ export const getSettingsSplitterOptions = () => [
         icon: <LayoutTemplate/>,
         href: '/settings/splitter/forms',
         module: 'splitter'
+    },
+    {
+        name: t('VERIFIER.custom_fields'),
+        description: t('SETTINGS.custom_fields_description'),
+        icon: <LayoutTemplate/>,
+        href: '/settings/splitter/custom-fields',
+        module: 'splitter'
     }
 ];
 

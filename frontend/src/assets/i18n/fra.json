@@ -134,7 +134,11 @@
         "phone": "Numéro de téléphone",
         "select": "Liste à choix",
         "text": "Chaîne de caractères",
-        "regex": "Expression régulière (REGEX)"
+        "regex": "Expression régulière (REGEX)",
+        "adeli": "Numéro ADELI",
+        "amount": "Montant (e.g 1000 €)",
+        "iban": "Numéro IBAN",
+        "luhn_algorithm": "Algorithme de Luhn"
     },
     "FORMS": {
         "add_form": "Ajouter un formulaire",
@@ -378,7 +382,6 @@
         "selected_many": "rôles sélectionnés",
         "selected_one": "rôle sélectionné",
         "selected_other": "rôles sélectionnés",
-        "label": "Libellé",
         "confirm_delete_role_many": "Voulez-vous vraiment supprimer ces {{count}} rôles ?",
         "confirm_delete_role_one": "Voulez-vous vraiment supprimer ce rôle ?",
         "confirm_delete_role_other": "Voulez-vous vraiment supprimer ces {{count}} rôles ?",
@@ -501,7 +504,11 @@
         "nb_documents": "Nombre de documents",
         "batches_many": "Lots",
         "batches_one": "Lot",
-        "batches_other": "Lots"
+        "batches_other": "Lots",
+        "separator_mem": "Séparateur MEM Courrier",
+        "separator_meta1": "Separateur Méta 1",
+        "separator_meta2": "Séparateur Méta 2",
+        "separator_meta3": "Séparateur Méta 3"
     },
     "UPLOAD": {
         "upload_dropzone": "Cliquez pour choisir un fichier",
@@ -674,8 +681,8 @@
         "poste": "Poste",
         "unity": "Unité",
         "custom_fields_many": "Champs personnalisés",
-        "custom_fields_one": "Chanp personnalisé",
-        "custom_fields_other": "Chanps personnalisés"
+        "custom_fields_one": "Champ personnalisé",
+        "custom_fields_other": "Champs personnalisés"
     },
     "SECURITY": {
         "default_auth": "Authentification par défaut",
@@ -735,7 +742,17 @@
     "REGEX": {
         "update_regex_modale": "Modification de l'expression régulière",
         "update_regex_details": "Vous vous apprêtez à modifier l'expression régulière <strong>{{name}}</strong>",
-        "regex_updated": "Expression régulière mise à jour avec succès"
+        "regex_updated": "Expression régulière mise à jour avec succès",
+        "char_min": "Nombre de caractères minimum",
+        "content": "Expression régulière (REGEX)",
+        "format": "Format de la donnée",
+        "regex_cleaning": "Nettoyage du résultat",
+        "regex_settings": "Détails de la donnée récupérée",
+        "remove_keyword": "Supprimer un mot clé spécifique après extraction",
+        "remove_keyword_value": "Expression régulière (REGEX) du mot-clé à supprimer",
+        "remove_spaces": "Supprimer les espaces et les sauts de ligne",
+        "remove_special_char": "Supprimer les caractères spéciaux",
+        "regex_settings_content": "Configuration de l'expression régulière (REGEX)"
     },
     "DOCSERVERS": {
         "docserver_updated": "Docserver mis à jour avec succès",
@@ -761,7 +778,6 @@
     },
     "CUSTOM-FIELDS": {
         "add_custom_field": "Ajouter un champ personnalisé",
-        "label_short": "Libellé technique",
         "type": "Type de données",
         "type_checkbox": "Case à cocher",
         "type_date": "Date",
@@ -781,6 +797,8 @@
         "selected_other": "champs personnalisés sélectionnés",
         "custom_field_deleted_many": "Champs personnalisés supprimés avec succès",
         "custom_field_deleted_one": "Champ personnalisé supprimé avec succès",
-        "custom_field_deleted_other": "Champs personnalisés supprimés avec succès"
+        "custom_field_deleted_other": "Champs personnalisés supprimés avec succès",
+        "autocomplete": "Identifiant d'autocomplétion",
+        "custom_type": "Type"
     }
 }

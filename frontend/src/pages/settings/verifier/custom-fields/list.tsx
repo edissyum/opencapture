@@ -14,7 +14,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { CustomFieldsList } from "../../../../components/settings/custom-fields-list";
+import { CustomFieldsList } from "../../../../components/settings/custom-fields/list";
 
 
 export function SettingsVerifierCustomFieldsList() {

@@ -14,7 +14,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { FormEditor } from "../../../../components/form/editor/Editor";
+import { FormEditor } from "../../../../components/settings/forms/editor/Editor";
 
 export function SettingsSplitterFormsEditor() {
     return (

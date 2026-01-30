@@ -74,10 +74,34 @@ def retrieve_custom_fields(args):
         'select': ['*', 'count(*) OVER() as total'] if 'select' not in args else args['select'],
         'table': ['custom_fields'],
         'where': ['status <> %s'] if 'where' not in args else args['where'],
-        'data': ['DEL'] if 'data' not in args else args['data']
+        'data': ['DEL'] if 'data' not in args else args['data'],
+        'order_by': ['id ASC'] if 'order_by' not in args else args['order_by'],
     })
 
     return custom_fields, error
+
+
+def get_custom_field_by_id(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    error = None
+    custom_field = database.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['custom_fields'],
+        'where': ['id = %s', 'status <> %s'],
+        'data': [args['custom_field_id'], 'DEL']
+    })
+
+    if not custom_field:
+        error = gettext('GET_CUSTOM_FIELD_BY_ID_ERROR')
+    else:
+        custom_field = custom_field[0]
+
+    return custom_field, error
 
 
 def update(args):

@@ -19,13 +19,13 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FileText, Plus, Trash2 } from "lucide-react";
 
-import Input from "../Input";
-import { Button } from "../Button";
-import { Table } from "../list/Table";
-import { showToast } from "../ToastProvider";
+import Input from "../../Input";
+import { Button } from "../../Button";
+import { Table } from "../../list/Table";
+import { showToast } from "../../ToastProvider";
 
-import { axiosApiCall } from "../../services/hooks/axiosApiCall";
-import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
+import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { showConfirmDialog } from "../../../services/hooks/ConfirmDialog";
 
 export function CustomFieldsList({ module }: { module: string }) {
     const { get, del } = axiosApiCall();
@@ -62,8 +62,9 @@ export function CustomFieldsList({ module }: { module: string }) {
     ];
 
     const columns = [
-        { id: 'label', field: 'label', header: t('FORMS.label') },
-        { id: 'label_short', field: 'label_short', header: t('CUSTOM-FIELDS.label_short') },
+        { id: 'id', field: 'id', header: '', sortable: true, className: 'max-w-10! w-10!' },
+        { id: 'label', field: 'label', header: t('FORMS.label'), sortable: true },
+        { id: 'label_short', field: 'label_short', header: t('ROLES.label_short') },
         {
             id: 'type', field: 'type', header: t('CUSTOM-FIELDS.type'), body: (row: any) => (
                 <span className={ `px-2 py-1 rounded-lg text-xs font-medium` }>
@@ -160,9 +161,7 @@ export function CustomFieldsList({ module }: { module: string }) {
             <div className='flex items-center gap-6 mb-4'>
                 <span className='flex items-center gap-1'>
                     <FileText size={ 16 }/>
-                    <span>
-                        { t('VERIFIER.custom_fields', { count: totalCustomFields }) } ({ totalCustomFields || 0 })
-                    </span>
+                    { t('VERIFIER.custom_fields', { count: totalCustomFields }) } ({ totalCustomFields || 0 })
                 </span>
                 <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height={ 'h-10' }
                        value={ searchTerm } placeholder={ t('USERS.search') } noMarginBottom={ true }

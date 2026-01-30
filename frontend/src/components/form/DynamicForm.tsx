@@ -14,14 +14,17 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import type { JSX } from "react";
 import { Controller } from "react-hook-form";
 import { InputSwitch } from "primereact/inputswitch";
+import { Calendar, CaseSensitive, ListTodo, Regex, SquareCheckBig, TextInitial } from "lucide-react";
 
 import Input from "../Input";
 import { RadioBox } from "../RadioBox";
 import { Checkbox } from "../Checkbox";
 import { Dropdown } from "../Dropdown";
 import MultiSelectInput from "../MultiSelect";
+
 
 export function DynamicForm({ schema, control, errors, labelFusion = false, gap = 4, grid = false }: any) {
     const extractFieldsFromSchema = (schema: any) => {
@@ -33,6 +36,15 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
             }
             return { name, ...metadata, zodType };
         });
+    };
+
+    const logoMap: Record<string, JSX.Element> = {
+        text: <CaseSensitive/>,
+        date: <Calendar/>,
+        select: <ListTodo/>,
+        checkbox: <SquareCheckBig/>,
+        textarea: <TextInitial/>,
+        regex: <Regex/>
     };
 
     const fields = extractFieldsFromSchema(schema);
@@ -81,7 +93,7 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                             name={ field.name }
                             control={ control }
                             render={ ({ field: f }) => (
-                                <div className='flex items-center mb-7'>
+                                <div className='flex items-center mb-2'>
                                     <InputSwitch
                                         inputId={ f.name }
                                         checked={ f.value }
@@ -174,6 +186,39 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                                 label={ field.label }
                                 onChange={ f.onChange }
                             />
+                        ) }
+                    />
+                );
+            case "box":
+                return (
+                    <Controller
+                        key={ field.name }
+                        name={ field.name }
+                        control={ control }
+                        render={ ({ field: f }) => (
+                            <div className='flex gap-4'>
+                                { field.options.map((action: any) => (
+                                    <div
+                                        key={ action.value }
+                                        onClick={ () => f.onChange(action.value) }
+                                        className={ `cursor-pointer border-2 w-1/3 py-5 rounded-md text-center duration-200
+                                                     ${ f.value === action.value ? "text-(--color-primary) bg-(--color-primary)/20 border-(--color-primary)"
+                                            : "border-(--border-secondary) hover:border-(--text-secondary) text-(--text-primary)" }
+                                        ` }>
+                                        <div className="flex justify-center mb-2">
+                                            { logoMap[action.logo] }
+                                        </div>
+                                        <span
+                                            className={ `${ action.hint ? 'font-semibold' : 'text-(--text-secondary)' }
+                                                ${ f.value === action.value ? 'text-(--color-primary)!' : '' }` }>
+                                            { action.label }
+                                        </span>
+                                        <p className="text-(--text-secondary) text-sm">
+                                            { action.hint }
+                                        </p>
+                                    </div>
+                                )) }
+                            </div>
                         ) }
                     />
                 );

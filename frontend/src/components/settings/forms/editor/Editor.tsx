@@ -26,21 +26,21 @@ import { DndContext, type DragEndEvent, DragOverlay, type DragStartEvent, pointe
 
 import { findLineContainingField, findZoneContainingLine, getDropContext } from "./helpers";
 
-import { Button } from "../../Button";
-import { Loader } from "../../loader/Loader";
+import { Button } from "../../../Button";
+import { Loader } from "../../../loader/Loader";
 import { FieldPalette } from "./FieldPalette";
 import { DroppableZone } from "./DroppableZone";
 import { DroppableLine } from "./DroppableLine";
-import { showToast } from "../../ToastProvider";
+import { showToast } from "../../../ToastProvider";
 
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
-import { useFormFields } from "../../../services/hooks/useFormFields";
-import { useCustomFields } from "../../../services/hooks/useCustomFields";
-import { showConfirmDialogWithInput } from "../../../services/hooks/ConfirmDialogWithInput";
+import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { useFormFields } from "../../../../services/hooks/useFormFields";
+import { useCustomFields } from "../../../../services/hooks/useCustomFields";
+import { showConfirmDialogWithInput } from "../../../../services/hooks/ConfirmDialogWithInput";
 
-import { SettingsVerifierFormsDetails } from "../../../pages/settings/verifier/forms/details";
-import { SettingsSplitterFormsDetails } from "../../../pages/settings/splitter/forms/details";
-import { getAvailableFields } from "../../../pages/settings/verifier/forms/availableFieldsSchema";
+import { SettingsVerifierFormsDetails } from "../../../../pages/settings/verifier/forms/details";
+import { SettingsSplitterFormsDetails } from "../../../../pages/settings/splitter/forms/details";
+import { getAvailableFields } from "../../../../pages/settings/verifier/forms/availableFieldsSchema";
 
 export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const { get, post, put } = axiosApiCall();

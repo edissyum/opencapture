@@ -127,7 +127,11 @@
         "phone": "Phone number",
         "select": "Selection list",
         "text": "String",
-        "regex": "Regular expression (REGEX)"
+        "regex": "Regular expression (REGEX)",
+        "adeli": "",
+        "amount": "",
+        "iban": "",
+        "luhn_algorithm": ""
     },
     "FORMS": {
         "add_form": "Add a form",
@@ -352,7 +356,6 @@
         "search": "Search",
         "selected_one": "role selected",
         "selected_other": "roles selected",
-        "label": "Label",
         "confirm_delete_role_one": "Are you sure you want to delete this role?",
         "confirm_delete_role_other": "Are you sure you want to delete these {{count}} roles?",
         "delete_role_one": "Delete role",
@@ -466,7 +469,11 @@
         "search": "Search (technical ID)",
         "nb_documents": "Number of documents",
         "batches_one": "",
-        "batches_other": ""
+        "batches_other": "",
+        "separator_mem": "",
+        "separator_meta1": "",
+        "separator_meta2": "",
+        "separator_meta3": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Click to choose a file",
@@ -682,7 +689,17 @@
     "REGEX": {
         "update_regex_modale": "",
         "update_regex_details": "",
-        "regex_updated": ""
+        "regex_updated": "",
+        "char_min": "",
+        "content": "",
+        "format": "",
+        "regex_cleaning": "",
+        "regex_settings": "",
+        "remove_keyword": "",
+        "remove_keyword_value": "",
+        "remove_spaces": "",
+        "remove_special_char": "",
+        "regex_settings_content": ""
     },
     "DOCSERVERS": {
         "docserver_updated": "",
@@ -708,7 +725,6 @@
     },
     "CUSTOM-FIELDS": {
         "add_custom_field": "",
-        "label_short": "",
         "type": "",
         "type_checkbox": "",
         "type_date": "",
@@ -724,6 +740,8 @@
         "selected_one": "",
         "selected_other": "",
         "custom_field_deleted_one": "",
-        "custom_field_deleted_other": ""
+        "custom_field_deleted_other": "",
+        "autocomplete": "",
+        "custom_type": ""
     }
 }

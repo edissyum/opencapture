@@ -14,7 +14,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { FormsList } from "../../../../components/settings/forms";
+import { FormsList } from "../../../../components/settings/forms/list";
 
 export function SettingsSplitterFormsList() {
     return (
