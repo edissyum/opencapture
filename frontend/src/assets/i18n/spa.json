@@ -749,7 +749,10 @@
         "remove_special_char": "",
         "regex_settings_content": "",
         "remove_keyword_hint": "",
-        "remove_keyword_title": ""
+        "remove_keyword_title": "",
+        "test-zone": "",
+        "result": "",
+        "test_value": ""
     },
     "DOCSERVERS": {
         "docserver_updated": "",
@@ -798,6 +801,11 @@
         "autocomplete": "",
         "custom_type": "",
         "update_custom_fields": "",
-        "update_success": ""
+        "update_success": "",
+        "choices": "",
+        "conditional_option": "",
+        "conditional_value": "",
+        "conditional_custom_field": "",
+        "new_choice": ""
     }
 }

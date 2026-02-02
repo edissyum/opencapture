@@ -44,7 +44,7 @@ import { Table } from "../../components/list/Table";
 import { Dropdown } from "../../components/Dropdown";
 import { Thumbnail } from "../../components/Thumbnail";
 import MultiSelectInput from "../../components/MultiSelect";
-import { usePersistentState } from "../../services/hooks/usePersistentState.tsx";
+import { usePersistentState } from "../../services/hooks/usePersistentState";
 
 export function SplitterListPage() {
     const { user, loadingUser } = useUser();

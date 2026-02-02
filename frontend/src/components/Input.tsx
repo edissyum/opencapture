@@ -65,7 +65,7 @@ const Input: React.FC<InputProps> = ({
     const [inputWidth, setInputWidth] = useState(0);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const bgWidth = Math.min(textWidth + 25, inputWidth +10);
+    const bgWidth = Math.min(textWidth + 10, inputWidth + 10);
 
     useEffect(() => {
         if (textRef.current) {
@@ -87,26 +87,16 @@ const Input: React.FC<InputProps> = ({
                     { bgColor && hasValue && (
                         <>
                             <div
-                                className={ `h-6 left-3 absolute bg-(--${ bgColor })/15 pointer-events-none w-fit` }
+                                className={ `h-6 left-3 ${ bgColor } absolute pointer-events-none w-fit rounded-sm` }
                                 style={ {
                                     top: "1.55rem",
                                     transform: "translate(-4px, -50%)",
-                                    width: `${bgWidth}px`,
-                                    borderRadius: "2px",
+                                    width: `${ bgWidth }px`,
                                     transition: "width 0.1s",
                                 } }
                             />
-                            <span
-                                ref={ textRef }
-                                style={ {
-                                    position: "absolute",
-                                    visibility: "hidden",
-                                    whiteSpace: "pre",
-                                    fontSize: "1rem",
-                                    fontFamily: "inherit",
-                                    fontWeight: 400,
-                                } }
-                            >
+                            <span ref={ textRef } className="invisible absolute pointer-events-none whitespace-pre
+                                                             font-semibold text-normal">
                                 { value }
                             </span>
                         </>
@@ -118,14 +108,16 @@ const Input: React.FC<InputProps> = ({
                         ref={ inputRef }
                         className={ `w-full! px-3! py-2! border-[1.5px]! rounded-md! focus:outline-none! 
                             hover:border-(--color-primary)! transition-colors duration-200 
-                            ${ textColor ? `text-(--${ textColor })!` : 'text-(--text-primary)!' } 
                             ${ props.placeholder || hasValue ? "p-inputwrapper-filled" : "" } 
                             ${ isPasswordField ? 'border-r-0! rounded-r-none!' : '' } 
                             ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' } 
                             ${ height } disabled:bg-(--bg-secondary) disabled:cursor-not-allowed!
-                            ${ textWeight ? `${ textWeight }!` : '' }
                             group-hover:border-(--color-primary)! focus:border-(--color-primary)!`
                         }
+                        style={ {
+                            fontWeight: `${textWeight ? textWeight : '400'}`,
+                            color: `${ textColor ? `var(--${ textColor })` : 'var(--text-primary)' }`
+                        } }
                         type={ inputType }
                         disabled={ disabled }
                         required={ required }
@@ -136,10 +128,10 @@ const Input: React.FC<InputProps> = ({
                         <label htmlFor={ id }
                                className={ `select-none ${ labelFusion ? 'group-focus-within:border group-focus-within:border-b-0 ' +
                                    'border-(--border-secondary) group-focus-within:rounded-md ' +
-                                   'group-focus-within:rounded-b-none group-focus-within:-top-2! ' +
+                                   'group-focus-within:rounded-b-none group-focus-within:-top-[0.3rem]! ' +
                                    'group-focus-within:p-0.5 group-focus-within:border-(--border-primary) ' +
                                    'group-hover:border-(--border-primary)' : '' }
-                                   ${ hasValue && labelFusion ? 'border border-b-0 rounded-md rounded-b-none -top-2! p-0.5 border-(--border-primary)' : '' }` }>
+                                   ${ hasValue && labelFusion ? 'labelFusion border border-b-0 rounded-md rounded-b-none -top-[0.3rem]! p-0.5 border-(--border-primary)' : '' }` }>
                             { label }
                             { required && <span className="text-(--text-error) ml-1">*</span> }
                         </label>

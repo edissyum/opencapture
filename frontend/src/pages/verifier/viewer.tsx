@@ -19,9 +19,11 @@ import { t } from "i18next";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Accordion, AccordionTab } from "primereact/accordion";
 import { ChevronLeft, ChevronRight, Copy, Download, Edit, Eye, EyeOff, Paperclip, SquarePlus } from "lucide-react";
 
-import { Accordion, AccordionTab } from "primereact/accordion";
+
+import { SupplierEditor } from "../suppliers/editor";
 
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
@@ -38,7 +40,6 @@ import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { useFormFields } from "../../services/hooks/useFormFields";
 import { useCustomFields } from "../../services/hooks/useCustomFields";
 import { useHistoryLogger } from "../../services/hooks/useHistoryLogger";
-import { SupplierEditor } from "../suppliers/editor.tsx";
 
 export function VerifierViewerPage() {
     const { get, post, put } = axiosApiCall();

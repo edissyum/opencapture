@@ -17,26 +17,44 @@
 import z from "zod";
 import { t } from "i18next";
 import { Tooltip } from "react-tooltip";
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { CircleQuestionMark } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { InputSwitch } from "primereact/inputswitch";
-import { Controller, useForm } from "react-hook-form";
+import { ContextMenu } from "primereact/contextmenu";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
+import { Accordion, AccordionTab } from "primereact/accordion";
+import { CircleQuestionMark, EllipsisVertical, Plus, Trash } from "lucide-react";
 
+import Input from "../../Input";
 import { Button } from "../../Button";
+import { Dropdown } from "../../Dropdown";
 import { showToast } from "../../ToastProvider";
 
 import { DynamicForm } from "../../form/DynamicForm";
 import { emptyToUndefined } from "../../../services/zod";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { useCustomFields } from "../../../services/hooks/useCustomFields";
 
 export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const { get, post, put } = axiosApiCall();
     const { customFieldId } = useParams<{ customFieldId: any }>();
 
+    const { customFields } = useCustomFields(module);
+    const cm = useRef({ current: null } as any);
+    const [selectedOptionIndex, setSelectedOptionIndex] = useState<number>();
+
     const [customField, setCustomField] = useState<any>({});
     const [loading, setLoading] = useState(false);
+    const [highlightedResult, setHighlightedResult] = useState('');
+
+    const menuModel: any = [
+        {
+            label: <span className='critical'>{ t('MAILCOLLECT.delete') }</span>,
+            icon: <Trash className='mr-2' size={ 16 }/>,
+            command: () => handleDeleteOption()
+        }
+    ];
 
     // Fetch customField data if editing an existing custom field
     useEffect(() => {
@@ -118,7 +136,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
     });
 
     const regexDetailsSchema = z.object({
-        format: z.string().min(1).describe(JSON.stringify({
+        format: emptyToUndefined(z.string()).describe(JSON.stringify({
             component: "dropdown",
             label: t("REGEX.format"),
             options: [
@@ -138,11 +156,11 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         })),
     });
     const regexContentSchema = z.object({
-        content: z.string().min(1).describe(JSON.stringify({
+        content: emptyToUndefined(z.string()).describe(JSON.stringify({
             component: "input",
-            bgColor: "color-primary",
+            bgColor: "bg-(--color-primary)/15",
             textColor: "color-primary",
-            textWeight: 'font-semibold',
+            textWeight: '600',
             label: t("REGEX.content")
         })),
     });
@@ -155,9 +173,9 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
     const regexCleanSchema = z.object({
         remove_keyword_value: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
             component: "input",
-            bgColor: "text-error",
+            bgColor: "bg-(--text-error)/15",
             textColor: "text-error",
-            textWeight: 'font-semibold',
+            textWeight: '600',
             label: t("REGEX.remove_keyword_value")
         })),
         remove_special_char: z.boolean().nullable().optional().describe(JSON.stringify({
@@ -169,7 +187,23 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
             label: t("REGEX.remove_spaces")
         }))
     });
-    const regexSchema = regexDetailsSchema.extend(regexContentSchema.shape).extend(regexCleanSchema.shape).extend(regexRemoveKeywordSchema.shape);
+    const regexTestSchema = z.object({
+        test: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
+            component: "input",
+            label: t("REGEX.test_value")
+        }))
+    });
+    const regexSchema = regexDetailsSchema.extend(regexContentSchema.shape).
+        extend(regexCleanSchema.shape).
+        extend(regexRemoveKeywordSchema.shape).
+        extend(regexTestSchema.shape);
+
+    const [selectOptions, setSelectOptions] = useState<{
+        id: string;
+        label: string;
+        conditional_custom_field: any;
+        conditional_custom_value: string;
+    }[]>([]);
 
     const { control, watch, setValue, setError, clearErrors, handleSubmit, formState: { errors } } = useForm({
         // @ts-ignore
@@ -177,6 +211,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         defaultValues: {},
         mode: "onChange"
     });
+    const watchTest = watch("test");
     const watchLabel = watch("label");
 
     // Fill form when custom_field data is loaded
@@ -196,6 +231,10 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                 }
             });
         }
+
+        if (customField.settings.options && Array.isArray(customField.settings.options)) {
+            setSelectOptions(customField.settings.options);
+        }
     }, [customField]);
 
     // Fill label_short with label value
@@ -206,19 +245,73 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         setValue("label_short", newLabelShort);
     }, [watchLabel]);
 
+    // Highlight regex matches in test zone
+    useEffect(() => {
+        if (!watchTest) return;
+
+        const contentRegexValue = watch("content");
+        const removeKeywordValue = watch("remove_keyword_value");
+
+        if (!contentRegexValue) return;
+
+        const contentRegex = new RegExp(contentRegexValue, 'g');
+        const removeRegex = removeKeywordValue
+            ? new RegExp(removeKeywordValue, 'g')
+            : null;
+
+        let html = '';
+
+        const matches = [...watchTest.matchAll(contentRegex)];
+
+        matches.forEach(match => {
+            const fullMatch = match[0];
+
+            let label = '';
+            let value = fullMatch;
+
+            if (removeRegex) {
+                const keywordMatch = fullMatch.match(removeRegex);
+                if (keywordMatch) {
+                    label = keywordMatch[0];
+                    value = fullMatch.replace(removeRegex, '');
+                }
+            }
+
+            if (label) {
+                html += `
+                <span class='bg-(--bg-error) text-(--text-error) font-semibold px-2 py-1 rounded-md'>
+                    ${ label }
+                </span>
+            `;
+            }
+
+            if (value) {
+                html += `
+               <span class='bg-(--color-primary)/15 text-(--color-primary) font-semibold px-2 py-1 rounded-md'>
+                    ${ value }
+                </span>
+            `;
+            }
+        });
+
+        setHighlightedResult(html);
+
+    }, [watchTest, watch("content"), watch("remove_keyword_value")]);
+
     const handleUpdate = async (data: any) => {
         if (errors && Object.keys(errors).length > 0) return;
 
         const payload = {
             ...data,
-            id: customFieldId,
             module: module,
-            options: data.options,
+            id: customFieldId,
+            options: selectOptions,
             conditional: data.conditional
         };
 
         if (data.type === 'regex') {
             payload.regex = {
+                test: data.test,
                 format: data.format,
                 content: data.content,
                 char_min: data.char_min,
@@ -226,7 +319,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                 remove_keyword_value: data.remove_keyword_value,
                 remove_special_char: data.remove_special_char,
                 remove_spaces: data.remove_spaces
-            }
+            };
         }
 
         setLoading(true);
@@ -240,58 +333,70 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         }
     }
 
+    const handleDeleteOption = async () => {
+        if (!selectedOptionIndex) return;
+
+        const optionToDelete = selectOptions[selectedOptionIndex];
+        if (!optionToDelete) return;
+        const newOptions = selectOptions.filter((_, index) => index !== selectedOptionIndex);
+        setSelectOptions(newOptions);
+    }
+
     return (
-        <div className="p-8 h-full overflow-y-auto">
-            <h1 className="text-lg font-semibold mb-4">
-                { t('ROLES.details') }
-            </h1>
+        <div className="h-full overflow-y-auto">
+            <div className='p-8 pb-0'>
+                <h1 className="text-lg font-semibold mb-4">
+                    { t('ROLES.details') }
+                </h1>
 
-            <div className='w-1/3'>
-                <DynamicForm errors={ errors } control={ control } schema={ detailsSchema }/>
+                <div className='w-1/3'>
+                    <DynamicForm errors={ errors } control={ control } schema={ detailsSchema }/>
+                </div>
+
+                <h1 className="text-lg font-semibold mb-4">
+                    { t('CUSTOM-FIELDS.custom_type') }
+                </h1>
+                <DynamicForm errors={ errors } control={ control } schema={ typeSchema }/>
             </div>
-
-            <h1 className="text-lg font-semibold mb-4">
-                { t('CUSTOM-FIELDS.custom_type') }
-            </h1>
-            <DynamicForm errors={ errors } control={ control } schema={ typeSchema }/>
 
             { watch("type") === 'regex' && (
                 <>
-                    <h1 className="text-lg font-semibold mb-4 mt-6">
-                        { t('REGEX.regex_settings') }
-                    </h1>
+                    <div className='px-8'>
+                        <h1 className="text-lg font-semibold mb-4 mt-6">
+                            { t('REGEX.regex_settings') }
+                        </h1>
 
-                    <div className='w-1/3'>
-                        <DynamicForm errors={ errors } control={ control } schema={ regexDetailsSchema }/>
-                    </div>
+                        <div className='w-1/3'>
+                            <DynamicForm errors={ errors } control={ control } schema={ regexDetailsSchema }/>
+                        </div>
 
-                    <h1 className="text-lg font-semibold mb-4 mt-6">
-                        { t('REGEX.regex_settings_content') }
-                    </h1>
-                    <div className='w-1/3'>
-                        <DynamicForm errors={ errors } control={ control } schema={ regexContentSchema }/>
-                    </div>
+                        <h1 className="text-lg font-semibold mb-4 mt-6">
+                            { t('REGEX.regex_settings_content') }
+                        </h1>
+                        <div className='w-1/3'>
+                            <DynamicForm errors={ errors } control={ control } schema={ regexContentSchema }/>
+                        </div>
 
-                    <h1 className="text-lg font-semibold mb-4 mt-6">
-                        { t('REGEX.regex_cleaning') }
-                    </h1>
+                        <h1 className="text-lg font-semibold mb-4 mt-6">
+                            { t('REGEX.regex_cleaning') }
+                        </h1>
 
-                    <Controller
-                        name="remove_keyword"
-                        control={ control }
-                        render={ ({ field }) => (
-                            <div className="flex items-center gap-2 relative w-fit mb-2">
-                                <InputSwitch
-                                    inputId={ field.name }
-                                    checked={ !!field.value }
-                                    onChange={ e => field.onChange(e.value) }
-                                />
+                        <Controller
+                            name="remove_keyword"
+                            control={ control }
+                            render={ ({ field }) => (
+                                <div className="flex items-center gap-2 relative w-fit mb-2">
+                                    <InputSwitch
+                                        inputId={ field.name }
+                                        checked={ !!field.value }
+                                        onChange={ e => field.onChange(e.value) }
+                                    />
 
-                                <label htmlFor={ field.name } className="cursor-pointer">
-                                    { t("REGEX.remove_keyword") }
-                                </label>
+                                    <label htmlFor={ field.name } className="cursor-pointer">
+                                        { t("REGEX.remove_keyword") }
+                                    </label>
 
-                                <span className={ `absolute cursor-pointer z-10 -right-5 top-1.5
+                                    <span className={ `absolute cursor-pointer z-10 -right-5 top-1.5
                                                    text-(--text-secondary)` }>
                                     <CircleQuestionMark data-tooltip-id="tooltip-1" size={ 16 }/>
 
@@ -306,17 +411,162 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                                         </div>
                                     </Tooltip>
                                 </span>
+                                </div>
+                            ) }
+                        />
+
+                        <div className='w-1/3'>
+                            <DynamicForm errors={ errors } control={ control } schema={ regexCleanSchema }/>
+                        </div>
+                    </div>
+
+                    <div className='px-8 py-4 bg-(--bg-secondary) border-t-2 border-b-2 border-(--border-secondary)
+                                    w-full'>
+                        <h1 className="text-lg font-semibold mb-4">
+                            { t('REGEX.test-zone') }
+                        </h1>
+
+                        <div className='w-1/3'>
+                            <DynamicForm errors={ errors } control={ control } labelFusion={ true }
+                                         schema={ regexTestSchema }/>
+                        </div>
+
+                        <h1 className="text-lg font-semibold mt-2">
+                            { t('REGEX.result') }
+                        </h1>
+
+                        { watchTest && (
+                            <div className={ 'mt-2 p-4 rounded-md w-fit' }>
+                                <div dangerouslySetInnerHTML={ { __html: highlightedResult } }/>
                             </div>
                         ) }
-                    />
-
-                    <div className='w-1/3'>
-                        <DynamicForm errors={ errors } control={ control } schema={ regexCleanSchema }/>
                     </div>
                 </>
             ) }
 
-            <div className="mt-6 w-fit">
+            { watch("type") === 'select' && (
+                <div className='px-8'>
+                    <h1 className="text-lg font-semibold mb-4 mt-6">
+                        { t('CUSTOM-FIELDS.choices') }
+                    </h1>
+
+                    <Accordion multiple className={ 'max-h-72 overflow-y-auto border-(--border-secondary)' }>
+                        { selectOptions.map((option, index) => (
+                            <AccordionTab key={ index } header={
+                                <span className='flex items-center gap-2'>
+                                    <span>
+                                        { option.label }
+                                    </span>
+                                    <span className='flex ml-auto'>
+                                        <EllipsisVertical onClick={ (e) => {
+                                            setSelectedOptionIndex(index);
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            cm.current?.show(e);
+                                        } }/>
+                                        { menuModel && (
+                                            <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }/>
+                                        ) }
+                                    </span>
+                                </span>
+                            }>
+                                <div className='flex flex-col gap-4 mb-4 p-6'>
+                                    <div className='w-1/3'>
+                                        <Input type="text"
+                                               label={ t('FORMS.label') } value={ option.label }
+                                               onChange={ (e) => {
+                                                   const newOptions = [...selectOptions];
+                                                   newOptions[index].label = e.target.value;
+                                                   setSelectOptions(newOptions);
+                                               } }
+                                        />
+                                        <Input type="text"
+                                               label={ t('ROLES.label_short') } value={ option.id }
+                                               onChange={ (e) => {
+                                                   const newOptions = [...selectOptions];
+                                                   newOptions[index].id = e.target.value;
+                                                   setSelectOptions(newOptions);
+                                               } }
+                                        />
+                                    </div>
+
+                                    <div className="flex items-center gap-2">
+                                        <InputSwitch
+                                            id='conditional_custom_field'
+                                            checked={ option.conditional_custom_field !== undefined }
+                                            onChange={ (e) => {
+                                                const newOptions = [...selectOptions];
+                                                if (e.value) {
+                                                    newOptions[index].conditional_custom_field = -1;
+                                                } else {
+                                                    newOptions[index].conditional_custom_field = undefined;
+                                                    newOptions[index].conditional_custom_value = '';
+                                                }
+                                                setSelectOptions(newOptions);
+                                            } }
+                                        />
+                                        <label htmlFor='conditional_custom_field'
+                                               className="flex items-center gap-4 cursor-pointer select-none
+                                                          text-(--text-secondary)">
+                                            { t('CUSTOM-FIELDS.conditional_option') }
+                                        </label>
+                                    </div>
+
+                                    { option.conditional_custom_field !== undefined && (
+                                        <div className='flex gap-4 w-1/2'>
+                                            <Dropdown
+                                                id={ `conditional_custom_field` }
+                                                filter={ true }
+                                                value={ option.conditional_custom_field }
+                                                label={ t('CUSTOM-FIELDS.conditional_custom_field') }
+                                                onChange={ (e) => {
+                                                    const newOptions = [...selectOptions];
+                                                    newOptions[index].conditional_custom_field = e.value;
+                                                    setSelectOptions(newOptions);
+                                                } }
+                                                options={ customFields.filter((cf: any) => cf.id !== customFieldId).map((cf: any) => ({
+                                                    label: cf.label,
+                                                    value: cf.id
+                                                })) }
+                                            />
+
+                                            <Input
+                                                type="text"
+                                                label={ t('CUSTOM-FIELDS.conditional_value') }
+                                                value={ option.conditional_custom_value }
+                                                onChange={ (e) => {
+                                                    const newOptions = [...selectOptions];
+                                                    newOptions[index].conditional_custom_value = e.target.value;
+                                                    setSelectOptions(newOptions);
+                                                } }
+                                            />
+                                        </div>
+                                    ) }
+                                </div>
+                            </AccordionTab>
+                        )) }
+                    </Accordion>
+
+                    <div className='mt-4 flex justify-end'>
+                        <Button size={ 'sm' } variant={ "no_bg_border" } onClick={ () => {
+                            setSelectOptions([
+                                ...selectOptions,
+                                {
+                                    id: '',
+                                    label: '',
+                                    conditional_custom_field: undefined,
+                                    conditional_custom_value: ''
+                                }
+                            ]);
+                        } }>
+                            <Plus size={ 16 }/>
+                            { t('CUSTOM-FIELDS.new_choice') }
+                        </Button>
+                    </div>
+                </div>
+            ) }
+
+            <div className="p-8 w-fit">
                 { customFieldId ? (
                     <Button onClick={ handleSubmit(handleUpdate) }
                             disabled={ loading || Object.keys(errors).length > 0 }>

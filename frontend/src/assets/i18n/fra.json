@@ -749,7 +749,10 @@
         "remove_special_char": "Supprimer les caractères spéciaux",
         "regex_settings_content": "Configuration de l'expression régulière (REGEX)",
         "remove_keyword_hint": "Cet exemple montre comment une règle repère une donnée dans un texte, puis supprime les éléments inutiles pour ne conserver que la valeur recherchée.",
-        "remove_keyword_title": "Comprendre le nettoyage après extraction"
+        "remove_keyword_title": "Comprendre le nettoyage après extraction",
+        "test-zone": "Zone de test",
+        "result": "Résultat",
+        "test_value": "Chaîne de caractères à tester"
     },
     "DOCSERVERS": {
         "docserver_updated": "Docserver mis à jour avec succès",
@@ -798,6 +801,11 @@
         "autocomplete": "Identifiant d'autocomplétion",
         "custom_type": "Type",
         "update_custom_fields": "Mettre à jour le champ personnalisé",
-        "update_success": "Champ personnalisé mis à jour avec succès"
+        "update_success": "Champ personnalisé mis à jour avec succès",
+        "choices": "Choix",
+        "conditional_option": "Choix conditionnel",
+        "conditional_value": "Valeur conditionnelle",
+        "conditional_custom_field": "Champ personnalisé conditionnel",
+        "new_choice": "Nouveau choix"
     }
 }

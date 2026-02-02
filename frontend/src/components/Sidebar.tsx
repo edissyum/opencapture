@@ -36,7 +36,7 @@ import {
 import { LoginImage } from "./LoginImage";
 
 import { useUser } from "../services/hooks/useUser";
-import { clearPersistentState } from "../services/hooks/usePersistentState.tsx";
+import { clearPersistentState } from "../services/hooks/usePersistentState";
 
 export default function Sidebar() {
     const { user, loadingUser } = useUser();

@@ -97,6 +97,10 @@
     @apply text-(--text-secondary);
 }
 
+.labelFusion {
+    @apply -top-[0.3rem]!;
+}
+
 .p-float-label label {
     @apply truncate;
     @apply max-w-[90%];
