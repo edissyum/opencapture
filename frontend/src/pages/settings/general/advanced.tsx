@@ -124,7 +124,7 @@ export function SettingsGeneralAdvanced() {
 
     const columns = [
         { id: 'id', field: 'id', header: '', className: 'max-w-10! w-10!' },
-        { id: 'label', field: 'label', header: t('FORMS.label'), className: 'max-w-45! w-45!' },
+        { id: 'label', field: 'label', header: t('GLOBAL.label'), className: 'max-w-45! w-45!' },
         {
             id: 'description',
             className: 'max-w-4xl! w-4xl! truncate-data',

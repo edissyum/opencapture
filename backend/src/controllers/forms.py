@@ -456,7 +456,7 @@ def update_custom_field_from_forms(args):
                                         fields[0]['fields'][tmp_field][cpt]['module'] = args['module']
                                         fields[0]['fields'][tmp_field][cpt]['enabled'] = args['enabled']
                         cpt += 1
-            forms.update_form_fields({'set': {'fields': json.dumps(fields[0]['fields'])}, 'form_id': form['id']})
+                forms.update_form_fields({'set': {'fields': json.dumps(fields[0]['fields'])}, 'form_id': form['id']})
     return '', 200
 
 

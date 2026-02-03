@@ -49,7 +49,7 @@ export function SettingsGeneralRoles() {
     const columns = [
         { id: 'id', field: 'id', header: '', sortable: true, className: 'max-w-10! w-10!' },
         { id: 'label_short', field: 'label_short', sortable: true, header: t('ROLES.label_short'), className: 'max-w-[12rem] w-[12rem]' },
-        { id: 'label', field: 'label', header: t('FORMS.label'), sortable: true },
+        { id: 'label', field: 'label', header: t('GLOBAL.label'), sortable: true },
         {
             id: 'status',
             header: t('USERS.status'),

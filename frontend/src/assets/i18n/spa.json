@@ -140,7 +140,6 @@
     },
     "FORMS": {
         "add_form": "Agregar un formulario",
-        "label": "Etiqueta",
         "no_form": "Ningún formulario",
         "selected_many": "formularios seleccionados",
         "selected_one": "formulario seleccionado",
@@ -256,7 +255,8 @@
         "english": "",
         "french": "",
         "action_irreversible": "",
-        "updating": ""
+        "updating": "",
+        "label": ""
     },
     "HISTORY": {
         "document_validated": "Documento n°<strong>{{ documentId }}</strong> validado con éxito",
@@ -806,6 +806,8 @@
         "conditional_option": "",
         "conditional_value": "",
         "conditional_custom_field": "",
-        "new_choice": ""
+        "new_choice": "",
+        "create_custom_fields": "",
+        "create_success": ""
     }
 }

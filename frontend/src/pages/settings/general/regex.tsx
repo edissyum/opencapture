@@ -54,7 +54,7 @@ export function SettingsGeneralRegex() {
 
     const columns = [
         { id: 'regex_id', field: 'regex_id', header: t('SMTP.login')},
-        { id: 'label', field: 'label', header: t('FORMS.label')},
+        { id: 'label', field: 'label', header: t('GLOBAL.label')},
         { id: 'content', header: t('SECURITY.value'), field: 'content' }
     ];
 

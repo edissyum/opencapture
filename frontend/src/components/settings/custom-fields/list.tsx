@@ -63,7 +63,7 @@ export function CustomFieldsList({ module }: { module: string }) {
 
     const columns = [
         { id: 'id', field: 'id', header: '', sortable: true, className: 'max-w-10! w-10!' },
-        { id: 'label', field: 'label', header: t('FORMS.label'), sortable: true },
+        { id: 'label', field: 'label', header: t('GLOBAL.label'), sortable: true },
         { id: 'label_short', field: 'label_short', header: t('ROLES.label_short') },
         {
             id: 'type', field: 'type', header: t('CUSTOM-FIELDS.type'), body: (row: any) => (

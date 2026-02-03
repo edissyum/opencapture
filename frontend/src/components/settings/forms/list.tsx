@@ -47,7 +47,7 @@ export function FormsList({ module }: { module: string }) {
 
     const columns = [
         { id: 'id', field: 'id', header: '', className: 'max-w-10! w-10!' },
-        { id: 'label', field: 'label', header: t('FORMS.label') },
+        { id: 'label', field: 'label', header: t('GLOBAL.label') },
         {
             id: 'status',
             header: t('USERS.status'),

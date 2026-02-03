@@ -133,7 +133,6 @@
     },
     "FORMS": {
         "add_form": "Add a form",
-        "label": "Label",
         "no_form": "No form",
         "selected_one": "form selected",
         "selected_other": "forms selected",
@@ -236,7 +235,8 @@
         "english": "",
         "french": "",
         "action_irreversible": "",
-        "updating": ""
+        "updating": "",
+        "label": ""
     },
     "HISTORY": {
         "document_validated": "Document #<strong>{{ documentId }}</strong> successfully validated",
@@ -749,6 +749,8 @@
         "conditional_option": "",
         "conditional_value": "",
         "conditional_custom_field": "",
-        "new_choice": ""
+        "new_choice": "",
+        "create_custom_fields": "",
+        "create_success": ""
     }
 }

@@ -140,7 +140,6 @@
     },
     "FORMS": {
         "add_form": "Ajouter un formulaire",
-        "label": "Libellé",
         "no_form": "Aucun formulaire",
         "selected_many": "formulaires sélectionnés",
         "selected_one": "formulaire sélectionné",
@@ -230,6 +229,7 @@
         "statistics": "Statistiques",
         "upload": "Téléversement",
         "yes": "Oui",
+        "label": "Libellé",
         "grid": "Affichage en grille",
         "list": "Affichage en liste",
         "select_all": "Selectionner tout / Tout désélectionner",
@@ -806,6 +806,8 @@
         "conditional_option": "Choix conditionnel",
         "conditional_value": "Valeur conditionnelle",
         "conditional_custom_field": "Champ personnalisé conditionnel",
-        "new_choice": "Nouveau choix"
+        "new_choice": "Nouveau choix",
+        "create_custom_fields": "Créer le champ personnalisé",
+        "create_success": "Champ personnalisé créé avec succès"
     }
 }
