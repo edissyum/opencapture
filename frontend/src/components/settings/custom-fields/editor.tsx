@@ -479,7 +479,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
 
                         <div className="flex items-center gap-2">
                             <InputSwitch
-                                id='conditional_custom_field'
+                                inputId='conditional_custom_field'
                                 checked={ isOptionsConditional }
                                 onChange={ (e) => {
                                     setIsOptionsConditional(e.value);
@@ -513,7 +513,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                                     </span>
                                 </span>
                             }>
-                                <div className='flex flex-col gap-4 mb-4 p-6'>
+                                <div className='flex flex-col gap-4 mb-4 p-6 pb-0'>
                                     <div className='w-1/3'>
                                         <Input type="text"
                                                label={ t('GLOBAL.label') } value={ option.label }
