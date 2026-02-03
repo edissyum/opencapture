@@ -80,13 +80,13 @@ export function SettingsVerifierFormsDetails({
                 />
 
                 <div className='flex items-center gap-2'>
-                    <InputSwitch id="default_form"
+                    <InputSwitch inputId="default_form"
                                  checked={ formSettings.default_form }
                                  onChange={ (e) => setFormSettings({
                                      ...formSettings,
                                      default_form: e.value
                                  }) }/>
-                    <label htmlFor='default_form'>{ t('FORMS.default_form') }</label>
+                    <label htmlFor='default_form' className='cursor-pointer'>{ t('FORMS.default_form') }</label>
                 </div>
             </div>
             <div>
@@ -115,7 +115,7 @@ export function SettingsVerifierFormsDetails({
                 <h2 className="text-(--text-primary) mt-6">{ t('SETTINGS.advanced') }</h2>
                 <div className='flex items-center gap-2'>
                     <InputSwitch
-                        id="allow_learning"
+                        inputId="allow_learning"
                         checked={ formSettings.settings.allow_learning }
                         onChange={ (e) => setFormSettings({
                             ...formSettings,
