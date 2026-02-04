@@ -360,6 +360,7 @@ CREATE TABLE "mailcollect" (
     "folder_to_crawl"               VARCHAR(255) NOT NULL,
     "folder_destination"            VARCHAR(255) NOT NULL,
     "action_after_process"          VARCHAR(255) NOT NULL,
+    "verifier_workflow_id"          VARCHAR(255),
     "verifier_customer_id"          INTEGER,
     "verifier_form_id"              VARCHAR(255),
     "verifier_insert_body_as_doc"   BOOLEAN      DEFAULT False,
