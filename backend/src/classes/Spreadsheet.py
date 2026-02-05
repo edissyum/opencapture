@@ -34,6 +34,10 @@ class Spreadsheet:
         with open(self.referencial_supplier_index, encoding='utf-8') as file:
             fp = json.load(file)
             self.referencial_supplier_array['name'] = fp['name']
+            self.referencial_supplier_array['lastname'] = fp['lastname']
+            self.referencial_supplier_array['firstname'] = fp['firstname']
+            self.referencial_supplier_array['civility'] = fp['civility']
+            self.referencial_supplier_array['function'] = fp['function']
             self.referencial_supplier_array['vat_number'] = fp['vat_number']
             self.referencial_supplier_array['siret'] = fp['siret']
             self.referencial_supplier_array['siren'] = fp['siren']
@@ -50,6 +54,7 @@ class Spreadsheet:
             self.referencial_supplier_array['get_only_raw_footer'] = fp['get_only_raw_footer']
             self.referencial_supplier_array['lang'] = fp['lang']
             self.referencial_supplier_array['default_currency'] = fp['default_currency']
+            self.referencial_supplier_array['informal_contact'] = fp['informal_contact']
 
     @staticmethod
     def read_csv_sheet(referencial_spreadsheet):
@@ -75,6 +80,8 @@ class Spreadsheet:
                     line[self.referencial_supplier_array['postal_code']] = '0' + str(
                         line[self.referencial_supplier_array['postal_code']])
             for t in line:
+                if isinstance(line[t], bool):
+                    line[t] = str(line[t])
                 if isinstance(line[t], (float, int)) and line[t] and not math.isnan(line[t]):
                     line[t] = str(int(line[t]))
             self.referencial_supplier_data.append(line)
