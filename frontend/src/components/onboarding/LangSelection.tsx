@@ -15,10 +15,11 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import { CheckOverlay } from "../CheckOverlay";
+import { usePersistentState } from "../../services/hooks/usePersistentState";
 
 interface LangSelectionProps {
     i18n: ReturnType<typeof useTranslation>['i18n'];
@@ -31,13 +32,11 @@ export function LangSelection({ i18n, refresh = true }: LangSelectionProps) {
         { code: 'eng', label: 'English' },
         { code: 'spa', label: 'Español' }
     ];
-    const [selectedLang, setSelectedlang] = useState<string>(() => {
-        return localStorage.getItem('selectedLang') || 'fra';
-    });
+    const [selectedLang, setSelectedlang] = usePersistentState<string>('selectedLang', 'fra', false)
 
     useEffect(() => {
         if (selectedLang) {
-            localStorage.setItem('selectedLang', selectedLang);
+            setSelectedlang(selectedLang);
             i18n.changeLanguage(selectedLang).then();
         }
     }, [selectedLang, i18n]);

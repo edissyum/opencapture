@@ -26,6 +26,7 @@ import { showToast } from "../../ToastProvider";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../../services/hooks/ConfirmDialog";
+import { usePersistentState } from "../../../services/hooks/usePersistentState";
 
 export function FormsList({ module }: { module: string }) {
     const { get, put, del, post } = axiosApiCall();
@@ -36,13 +37,20 @@ export function FormsList({ module }: { module: string }) {
     const [loadingForms, setLoadingForms] = useState(false);
 
     const [searchTerm, setSearchTerm] = useState('');
-    const [lazyParams, setLazyParams] = useState({
-        first: 0,
-        rows: 16,
-        page: 0,
-        sortField: null as string | null,
-        sortOrder: null as 1 | -1 | null,
-    });
+    const [lazyParams, setLazyParams] = usePersistentState<{
+        first: number;
+        rows: number;
+        page: number;
+        sortField: string | null;
+        sortOrder: 1 | -1 | null;
+    }>('formsListLazyParams', {
+            first: 0,
+            rows: 16,
+            page: 0,
+            sortField: null,
+            sortOrder: null
+        }
+    );
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
     const columns = [
