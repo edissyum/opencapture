@@ -198,11 +198,6 @@ if __name__ == '__main__':
                              data[spreadsheet.referencial_supplier_array['get_only_raw_footer']].lower() == 'true'):
                         GET_ONLY_RAW_FOOTER = False
 
-                    INFORMAL_CONTACT = False
-                    if data[spreadsheet.referencial_supplier_array['informal_contact']] and \
-                            data[spreadsheet.referencial_supplier_array['informal_contact']].lower() == 'true':
-                        INFORMAL_CONTACT = True
-
                     args = {
                         'table': ['addresses'],
                         'set': {
