@@ -59,8 +59,8 @@ export function VerifierListPage() {
     const { user, loadingUser } = useUser();
     const { get, post, del, put } = axiosApiCall();
 
-    const [view, setView] = usePersistentState<'list' | 'grid'>('selectedView', 'list');
-    const [storedLang] = usePersistentState<string>('selectedLang', 'fra');
+    const [view, setView] = usePersistentState<'list' | 'grid'>('selectedView', 'list', false);
+    const [storedLang] = usePersistentState<string>('selectedLang', 'fra', false);
     const locale = LANG_MAP[storedLang] ?? 'fr-FR';
 
     const [displayFilters, setDisplayFilters] = useState(false);

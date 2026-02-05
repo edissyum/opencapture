@@ -56,9 +56,13 @@ export default function Sidebar() {
     const handleLogout = () => {
         sessionStorage.clear();
 
-        clearPersistentState("selectedWorkflow");
-        clearPersistentState("splitterListLazyParams");
-        clearPersistentState("verifierListLazyParams");
+        const prefix = 'OpenCapture_';
+        Object.keys(localStorage).forEach(key => {
+            if (key.startsWith(prefix)) {
+                clearPersistentState(key);
+            }
+        });
+
 
         navigate("/login", { replace: true });
     };
