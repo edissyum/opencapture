@@ -68,10 +68,10 @@ if __name__ == '__main__':
             log.debug('-' * 40)
             # Retrieve the list of existing suppliers in the database
             list_existing_supplier_args = {
-                'select': ['vat_number', 'duns'],
+                'select': ['vat_number', 'duns', 'email'],
                 'table': ['accounts_supplier'],
-                'where': ['vat_number <> %s OR duns <> %s'],
-                'data': ['NULL', 'NULL']
+                'where': ['vat_number <> %s OR duns <> %s OR email <> %s'],
+                'data': ['NULL', 'NULL', 'NULL']
             }
             list_existing_supplier = database.select(list_existing_supplier_args)
             for value in list_existing_supplier:
@@ -83,6 +83,7 @@ if __name__ == '__main__':
             count = count + 1
             vat_number = data[spreadsheet.referencial_supplier_array['vat_number']]
             duns = data[spreadsheet.referencial_supplier_array['duns']]
+            email = data[spreadsheet.referencial_supplier_array['email']]
 
             if vat_number != vat_number:
                 vat_number = None
@@ -90,15 +91,21 @@ if __name__ == '__main__':
             if duns != duns:
                 duns = None
 
-            if not vat_number and not duns:
+            INFORMAL_CONTACT = False
+            if data[spreadsheet.referencial_supplier_array['informal_contact']] and \
+                    (data[spreadsheet.referencial_supplier_array['informal_contact']].lower() == 'true'):
+                INFORMAL_CONTACT = True
+
+            if not vat_number and not duns and not INFORMAL_CONTACT:
                 log.error('The following supplier has no VAT number nor DUNS : ' +
                           str(data[spreadsheet.referencial_supplier_array['name']]))
                 continue
 
             vat_number_exists = vat_number and any(str(vat_number) == value['vat_number'] for value in list_existing_supplier)
             duns_exists = duns and any(str(duns) == value['duns'] and value['duns'] for value in list_existing_supplier)
+            email_exists = email and INFORMAL_CONTACT and any(str(email) == value['email'] and value['email'] for value in list_existing_supplier)
 
-            if not vat_number_exists and not duns_exists:
+            if not vat_number_exists and not duns_exists and (not INFORMAL_CONTACT or INFORMAL_CONTACT and email and not email_exists):
                 log.debug('Adding supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]))
                 args = {
                     'table': 'addresses',
@@ -136,11 +143,16 @@ if __name__ == '__main__':
                     'columns': {
                         'vat_number': str(vat_number)[:20] if vat_number else None,
                         'name': str(_vat[spreadsheet.referencial_supplier_array['name']]),
+                        'lastname': str(data[spreadsheet.referencial_supplier_array['lastname']]).strip(),
+                        'firstname': str(data[spreadsheet.referencial_supplier_array['firstname']]).strip(),
+                        'civility': str(data[spreadsheet.referencial_supplier_array['civility']]).strip(),
+                        'function': str(data[spreadsheet.referencial_supplier_array['function']]).strip(),
                         'siren': str(_vat[spreadsheet.referencial_supplier_array['siren']]),
-                        'siret': str(_vat[spreadsheet.referencial_supplier_array['siren']]),
+                        'siret': str(_vat[spreadsheet.referencial_supplier_array['siret']]),
                         'iban': str(_vat[spreadsheet.referencial_supplier_array['iban']]),
                         'email': str(_vat[spreadsheet.referencial_supplier_array['email']]),
                         'get_only_raw_footer': GET_ONLY_RAW_FOOTER,
+                        'informal_contact': INFORMAL_CONTACT,
                         'address_id': str(address_id),
                         'document_lang': str(_vat[spreadsheet.referencial_supplier_array['lang']]),
                         'duns': str(_vat[spreadsheet.referencial_supplier_array['duns']]),
@@ -170,13 +182,14 @@ if __name__ == '__main__':
                         log.error('While adding supplier : ' +
                               str(data[spreadsheet.referencial_supplier_array['name']]), False)
             else:
+
                 log.debug('Updating supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]))
-                if vat_number or duns:
+                if vat_number or duns or (INFORMAL_CONTACT and email):
                     current_supplier = database.select({
                         'select': ['id', 'address_id'],
                         'table': ['accounts_supplier'],
-                        'where': ['vat_number = %s OR duns = %s'],
-                        'data': [str(vat_number)[:20], str(duns)]
+                        'where': ['vat_number = %s OR duns = %s OR email = %s'],
+                        'data': [str(vat_number)[:20], str(duns), str(email)]
                     })[0]
 
                     GET_ONLY_RAW_FOOTER = True
@@ -184,6 +197,11 @@ if __name__ == '__main__':
                             (data[spreadsheet.referencial_supplier_array['get_only_raw_footer']] or
                              data[spreadsheet.referencial_supplier_array['get_only_raw_footer']].lower() == 'true'):
                         GET_ONLY_RAW_FOOTER = False
+
+                    INFORMAL_CONTACT = False
+                    if data[spreadsheet.referencial_supplier_array['informal_contact']] and \
+                            data[spreadsheet.referencial_supplier_array['informal_contact']].lower() == 'true':
+                        INFORMAL_CONTACT = True
 
                     args = {
                         'table': ['addresses'],
@@ -227,20 +245,29 @@ if __name__ == '__main__':
                         'set': {
                             'vat_number': str(vat_number)[:20] if vat_number else None,
                             'name': str(data[spreadsheet.referencial_supplier_array['name']]).strip(),
+                            'lastname': str(data[spreadsheet.referencial_supplier_array['lastname']]).strip(),
+                            'firstname': str(data[spreadsheet.referencial_supplier_array['firstname']]).strip(),
+                            'civility': str(data[spreadsheet.referencial_supplier_array['civility']]).strip(),
+                            'function': str(data[spreadsheet.referencial_supplier_array['function']]).strip(),
                             'siren': str(data[spreadsheet.referencial_supplier_array['siren']]).strip(),
                             'siret': str(data[spreadsheet.referencial_supplier_array['siret']]).strip(),
                             'iban': str(data[spreadsheet.referencial_supplier_array['iban']]).strip(),
                             'email': str(data[spreadsheet.referencial_supplier_array['email']]),
                             'get_only_raw_footer': GET_ONLY_RAW_FOOTER,
+                            'informal_contact': INFORMAL_CONTACT,
                             'address_id': address_id,
                             'document_lang': str(data[spreadsheet.referencial_supplier_array['lang']]),
                             'duns': str(data[spreadsheet.referencial_supplier_array['duns']]),
                             'bic': str(data[spreadsheet.referencial_supplier_array['bic']]),
                             'default_currency': str(data[spreadsheet.referencial_supplier_array['default_currency']])
                         },
-                        'where': ['vat_number = %s OR duns = %s'],
+                        'where': ['vat_number = %s OR duns = %s' + (' OR email = %s' if INFORMAL_CONTACT and email else '')],
                         'data': [str(vat_number), str(duns)]
                     }
+
+                    if INFORMAL_CONTACT and email:
+                        args['data'].append(str(email))
+
                     log.debug('Supplier data : ' + str(args['set']))
 
                     for key in args['set']:

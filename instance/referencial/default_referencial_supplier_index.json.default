@@ -1,5 +1,9 @@
 {
     "name"                : "Nom Fournisseur",
+    "lastname"            : "Nom",
+    "firstname"           : "Prénom",
+    "civility"            : "Civilité",
+    "function"            : "Fonction",
     "vat_number"          : "TVA INTRA",
     "siret"               : "SIRET",
     "siren"               : "SIREN",
@@ -15,5 +19,6 @@
     "country"             : "PAYS",
     "get_only_raw_footer" : "CONTROLE DE COHERENCE",
     "lang"                : "LANGUE DES DOCUMENTS",
-    "default_currency"    : "DEVISE PAR DEFAUT"
+    "default_currency"    : "DEVISE PAR DEFAUT",
+    "informal_contact"    : "INFORMEL"
 }
