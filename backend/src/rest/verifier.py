@@ -129,7 +129,7 @@ def documents_list():
         {'id': 'search', 'type': str, 'mandatory': False},
         {'id': 'filter', 'type': str, 'mandatory': False},
         {'id': 'user_id', 'type': int, 'mandatory': False},
-        {'id': 'form_id', 'type': int, 'mandatory': False},
+        {'id': 'form_id', 'type': str, 'mandatory': False},
         {'id': 'allowedCustomers', 'type': list, 'mandatory': False},
         {'id': 'allowedSuppliers', 'type': list, 'mandatory': False}
     ])
@@ -707,7 +707,7 @@ def get_totals():
         {'id': 'status', 'type': str, 'mandatory': False},
         {'id': 'search', 'type': str, 'mandatory': False},
         {'id': 'user_id', 'type': int, 'mandatory': True},
-        {'id': 'form_id', 'type': int, 'mandatory': False},
+        {'id': 'form_id', 'type': str, 'mandatory': False},
         {'id': 'allowedCustomers', 'type': list, 'mandatory': False},
         {'id': 'allowedSuppliers', 'type': list, 'mandatory': False}
     ])

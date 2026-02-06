@@ -255,7 +255,6 @@ def get_totals_by_status(args):
         else:
             where.append('documents.form_id = %s')
             data.append(args['form_id'])
-
     total = database.select({
         'select': select,
         'table': ['documents'],

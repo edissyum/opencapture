@@ -18,7 +18,7 @@
 import { useEffect, useState } from "react";
 
 // If prefixKey is true, the key will be prefixed with "OpenCapture_" and be deleted on logout, otherwise it will be stored as is and not deleted on logout
-export function usePersistentState<T>(key: string, defaultValue: T, prefixKey = true) {
+export function usePersistentState<T>(key: string, defaultValue: any, prefixKey = true) {
     if (prefixKey) {
         const prefix = 'OpenCapture_';
         if (!key.startsWith(prefix)) {
@@ -28,7 +28,6 @@ export function usePersistentState<T>(key: string, defaultValue: T, prefixKey = 
 
     const [state, setState] = useState<T>(() => {
         const stored = localStorage.getItem(key);
-
         if (stored === null) {
             return defaultValue;
         }

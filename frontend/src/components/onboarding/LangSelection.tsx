@@ -32,7 +32,7 @@ export function LangSelection({ i18n, refresh = true }: LangSelectionProps) {
         { code: 'eng', label: 'English' },
         { code: 'spa', label: 'Español' }
     ];
-    const [selectedLang, setSelectedlang] = usePersistentState<string>('selectedLang', 'fra', false)
+    const [selectedLang, setSelectedlang] = usePersistentState<string>('selectedLang', 'fra', false);
 
     useEffect(() => {
         if (selectedLang) {

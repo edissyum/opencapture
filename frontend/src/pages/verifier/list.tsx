@@ -84,11 +84,11 @@ export function VerifierListPage() {
     const [listCustomers, setListCustomers] = useState<any>([]);
     const [listSuppliers, setListSuppliers] = useState<any>([]);
 
-    const [selectedCustomers, setSelectedCustomers] = useState<any>(null);
-    const [selectedSuppliers, setSelectedSuppliers] = useState<any>([]);
-    const [selectedStatus, setSelectedStatus] = useState('NEW');
-    const [selectedForm, setSelectedForm] = useState<string | null>(null);
-    const [selectedTime, setSelectedTime] = useState<string | null>(null);
+    const [selectedSuppliers, setSelectedSuppliers] = usePersistentState<any>('selectedSuppliersVerifier', []);
+    const [selectedCustomers, setSelectedCustomers] = usePersistentState<any>('selectedCustomersVerifier', []);
+    const [selectedForm, setSelectedForm] = usePersistentState<string>('selectedFormVerifier', '');
+    const [selectedTime, setSelectedTime] = usePersistentState<string>('selectedTimeVerifier', '');
+    const [selectedStatus, setSelectedStatus] = usePersistentState<string>('selectedStatusVerifier', 'NEW');
 
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
@@ -302,6 +302,7 @@ export function VerifierListPage() {
                     allowedSuppliers: selectedSuppliers.length > 0 ? selectedSuppliers : null,
                     order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null
                 }) || [];
+                console.log(res)
                 setTotalDocuments(res.total);
                 setDocuments(res.documents);
             } catch (err) {
@@ -412,8 +413,8 @@ export function VerifierListPage() {
     }
 
     const handleResetFilters = () => {
-        setSelectedTime(null);
-        setSelectedForm(null);
+        setSelectedTime('');
+        setSelectedForm('');
         setSelectedStatus('NEW');
         setSelectedCustomers(null);
         setSelectedSuppliers([]);
@@ -421,7 +422,7 @@ export function VerifierListPage() {
 
     return (
         <div className='flex h-full w-full overflow-hidden'>
-            <div className={ `h-full transition-all duration-200 border-r-2 border-(--border-secondary) 
+            <div className={ `h-full transition-all duration-200 border-r-2 border-(--border-secondary) pb-16
                             ${ displayFilters ? "w-[400px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
                 <div className='border-b-2 border-(--border-secondary) p-4 flex items-center justify-between'>
                     <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
@@ -431,7 +432,7 @@ export function VerifierListPage() {
                     </span>
                 </div>
                 <div className='p-4 flex flex-col gap-6 h-full overflow-y-auto'>
-                    <div>
+                    <div className='flex flex-col'>
                         <div className="flex items-center justify-between cursor-pointer mb-2"
                              onClick={ () => setOpen({ ...open, batches: !open.batches }) }>
                             <div className="flex items-center gap-2">
@@ -538,12 +539,15 @@ export function VerifierListPage() {
                             <div className='mt-2'>
                                 <Dropdown
                                     filter={ true }
-                                    value={ selectedForm }
+                                    value={ selectedForm.toString() }
                                     id="folder_destination"
                                     className="w-full mb-2"
                                     label={ t('VERIFIER.search_form') }
-                                    options={ listForms.map((form: any) => ({ label: form.label, value: form.id })) }
-                                    onChange={ (e) => setSelectedForm(e.value) }
+                                    options={ listForms.map((form: any) => ({
+                                        label: form.label,
+                                        value: form.id.toString()
+                                    })) }
+                                    onChange={ (e) => setSelectedForm(e.value.toString()) }
                                 />
                             </div>
                         ) }
