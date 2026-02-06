@@ -58,10 +58,10 @@ export function SplitterListPage() {
         { 'id': 'older', 'label': t('GLOBAL.older'), 'totals': 0 }
     ]);
     const [open, setOpen] = useState({
-        forms: true,
+        forms: false,
         status: true,
         batches: true,
-        customers: true
+        customers: false
     });
 
     const [listForms, setListForms] = useState<any>([]);

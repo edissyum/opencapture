@@ -66,11 +66,11 @@ export function VerifierListPage() {
     const [displayFilters, setDisplayFilters] = useState(false);
 
     const [open, setOpen] = useState({
-        forms: true,
+        forms: false,
         status: true,
         batches: true,
-        customers: true,
-        suppliers: true
+        customers: false,
+        suppliers: false
     });
 
     const [listTimes, setListTimes] = useState([
