@@ -18,3 +18,10 @@
 .p-dialog.p-confirm-dialog .p-confirm-dialog-message {
     @apply ml-0;
 }
+
+.p-dialog .p-dialog-header,
+.p-confirm-dialog .p-dialog-content,
+.p-dialog .p-dialog-footer {
+    @apply bg-(--bg-primary)!;
+    @apply text-(--text-primary)!;
+}

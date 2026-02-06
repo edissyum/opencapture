@@ -22,20 +22,38 @@
     @apply text-(--text-secondary);
 }
 
+.p-dropdown-filter-icon {
+    @apply text-(--color-primary);
+}
+
+.p-dropdown-panel,
+.p-dropdown-filter-container {
+    @apply border;
+    @apply rounded-md;
+    @apply bg-(--bg-secondary);
+    @apply border-(--border-secondary);
+}
+
+.p-dropdown-items-wrapper {
+    @apply rounded-b-md;
+}
+
 .p-dropdown-filter-container .p-inputtext,
 .p-multiselect-filter-container .p-inputtext {
     @apply py-1;
+    @apply border-(--border-secondary);
 }
 
 .p-multiselect:hover,
 .p-dropdown-filter-container .p-inputtext:enabled:focus,
 .p-dropdown-filter-container .p-inputtext:enabled:hover {
-    @apply border-(--color-primary);
     @apply shadow-none;
+    @apply border-(--color-primary);
 }
 
 .p-dropdown-panel .p-dropdown-header {
     @apply bg-(--bg-secondary);
+    @apply border-b-(--border-secondary);
 }
 
 .p-multiselect-filter {

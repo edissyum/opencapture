@@ -30,7 +30,7 @@ import { usePersistentState } from "../../../services/hooks/usePersistentState";
 
 export function CustomFieldsList({ module }: { module: string }) {
     const { get, del } = axiosApiCall();
-
+    console.log(module)
     const [customFields, setCustomFields] = useState([]);
     const [totalCustomFields, setTotalCustomFields] = useState(0);
     const [selectedCustomFields, setSelectedCustomFields] = useState<any[]>([]);

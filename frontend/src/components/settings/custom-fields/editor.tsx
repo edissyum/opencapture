@@ -47,8 +47,8 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
 
     const [customField, setCustomField] = useState<any>({});
     const [loading, setLoading] = useState(false);
-    const [isOptionsConditional, setIsOptionsConditional] = useState<boolean>(false);
     const [highlightedResult, setHighlightedResult] = useState('');
+    const [isOptionsConditional, setIsOptionsConditional] = useState<boolean>(false);
 
     const menuModel: any = [
         {
@@ -79,12 +79,14 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         { id: 'date', label: t('CUSTOM-FIELDS.type_date'), 'logo': 'date' },
         { id: 'select', label: t('CUSTOM-FIELDS.type_select'), 'logo': 'select' },
         { id: 'textarea', label: t('CUSTOM-FIELDS.type_textarea'), 'logo': 'textarea' },
-        { id: 'checkbox', label: t('CUSTOM-FIELDS.type_checkbox'), 'logo': 'checkbox' }
     ];
+
     if (module === 'verifier') {
         typesList.splice(1, 0, {
             id: 'regex', label: t('CUSTOM-FIELDS.type_regex'), 'logo': 'regex'
         });
+    } else {
+        typesList.push({ id: 'checkbox', label: t('CUSTOM-FIELDS.type_checkbox'), 'logo': 'checkbox' });
     }
 
     const baseShape = {
@@ -109,7 +111,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
     } else if (module === 'splitter') {
         detailsSchema = z.object({
             ...baseShape,
-            metadata_key: z.string().min(1).describe(JSON.stringify({
+            metadata_key: emptyToUndefined(z.string()).describe(JSON.stringify({
                 component: "dropdown",
                 type: "text",
                 label: t("CUSTOM-FIELDS.autocomplete"),
@@ -214,6 +216,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         mode: "onChange"
     });
     const watchTest = watch("test");
+    const watchType = watch("type");
     const watchLabel = watch("label");
 
     // Fill form when custom_field data is loaded
@@ -333,7 +336,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
 
     const handleUpdate = async (data: any) => {
         const payload = getPayload(data);
-
+        console.log('Payload for update :', payload);
         setLoading(true);
         try {
             await put(`/customFields/update`, payload);
@@ -352,7 +355,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         try {
             await post(`/customFields/add`, payload);
             showToast(t('CUSTOM-FIELDS.create_success'), 'success');
-            navigate(`/settings/${module}/custom-fields`);
+            navigate(`/settings/${ module }/custom-fields`);
         } catch (error) {
             console.error('Error updating custom field :', error);
         } finally {
@@ -386,7 +389,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                 <DynamicForm errors={ errors } control={ control } schema={ typeSchema }/>
             </div>
 
-            { watch("type") === 'regex' && (
+            { watchType === 'regex' && (
                 <>
                     <div className='px-8'>
                         <h1 className="text-lg font-semibold mb-4 mt-6">
@@ -469,28 +472,29 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                     </div>
                 </>
             ) }
-
-            { watch("type") === 'select' && (
+            {/* watch need to match select or checkbox */ }
+            { (watchType === 'select' || watchType === 'checkbox') && (
                 <div className='px-8'>
-                    <div className={'flex justify-between items-center'}>
+                    <div className={ 'flex justify-between items-center' }>
                         <h1 className="text-lg font-semibold mb-4 mt-6">
                             { t('CUSTOM-FIELDS.choices') }
                         </h1>
-
-                        <div className="flex items-center gap-2">
-                            <InputSwitch
-                                inputId='conditional_custom_field'
-                                checked={ isOptionsConditional }
-                                onChange={ (e) => {
-                                    setIsOptionsConditional(e.value);
-                                } }
-                            />
-                            <label htmlFor='conditional_custom_field'
-                                   className="flex items-center gap-4 cursor-pointer select-none
+                        { watchType === 'select' && (
+                            <div className="flex items-center gap-2">
+                                <InputSwitch
+                                    inputId='conditional_custom_field'
+                                    checked={ isOptionsConditional }
+                                    onChange={ (e) => {
+                                        setIsOptionsConditional(e.value);
+                                    } }
+                                />
+                                <label htmlFor='conditional_custom_field'
+                                       className="flex items-center gap-4 cursor-pointer select-none
                                                           text-(--text-secondary)">
-                                { t('CUSTOM-FIELDS.conditional_option') }
-                            </label>
-                        </div>
+                                    { t('CUSTOM-FIELDS.conditional_option') }
+                                </label>
+                            </div>
+                        ) }
                     </div>
 
                     <Accordion multiple className={ 'max-h-72 overflow-y-auto border-(--border-secondary)' }>
@@ -595,7 +599,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                     </Button>
                 ) : (
                     <Button onClick={ handleSubmit(handleCreate) }
-                        disabled={ loading || Object.keys(errors).length > 0 }>
+                            disabled={ loading || Object.keys(errors).length > 0 }>
                         { loading ? t('GLOBAL.creating') : t('CUSTOM-FIELDS.create_custom_fields') }
                     </Button>
                 ) }

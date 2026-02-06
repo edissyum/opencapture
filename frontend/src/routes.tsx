@@ -319,13 +319,13 @@ export const router = createBrowserRouter(
                                 {
                                     index: true,
                                     loader: protectedLoader,
-                                    element: <CustomFieldsList module="splitter"/>,
+                                    element: <CustomFieldsList module="verifier"/>,
                                     errorElement: <LoginRequiredError/>
                                 },
                                 {
                                     path:'edit/:customFieldId',
                                     loader: protectedLoader,
-                                    element: <CustomFieldsEditor module="splitter"/>,
+                                    element: <CustomFieldsEditor module="verifier"/>,
                                     errorElement: <LoginRequiredError/>,
                                     handle: { breadcrumb: 'SETTINGS.edit_custom_fields' }
                                 },
@@ -387,13 +387,13 @@ export const router = createBrowserRouter(
                                 {
                                     index: true,
                                     loader: protectedLoader,
-                                    element: <CustomFieldsList module="verifier"/>,
+                                    element: <CustomFieldsList module="splitter"/>,
                                     errorElement: <LoginRequiredError/>
                                 },
                                 {
                                     path:'edit/:customFieldId',
                                     loader: protectedLoader,
-                                    element: <CustomFieldsEditor module="verifier"/>,
+                                    element: <CustomFieldsEditor module="splitter"/>,
                                     errorElement: <LoginRequiredError/>,
                                     handle: { breadcrumb: 'SETTINGS.edit_custom_fields' }
                                 },

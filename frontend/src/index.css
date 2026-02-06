@@ -144,12 +144,23 @@ h2 {
 }
 
 .Toastify__toast {
+    @apply bg-(--bg-secondary)!;
+    @apply text-(--text-primary)!;
     width: fit-content !important;
+}
+
+.Toastify__close-button {
+    @apply text-(--text-primary)!;
 }
 
 /* TinyMCE customization */
 .tox .tox-edit-area::before {
     @apply border-(--color-primary)!;
+}
+
+.tox-edit-area__iframe {
+    @apply bg-(--bg-primary)!;
+    @apply text-(--text-primary)!;
 }
 
 .tox .tox-tbtn--enabled {
