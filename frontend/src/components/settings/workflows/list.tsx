@@ -17,7 +17,7 @@
 import { t } from "i18next";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FileText, Plus, Trash2 } from "lucide-react";
+import { Copy, FileText, Plus, Trash2 } from "lucide-react";
 
 import Input from "../../Input";
 import { Button } from "../../Button";
@@ -27,14 +27,15 @@ import { showToast } from "../../ToastProvider";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../../services/hooks/ConfirmDialog";
 import { usePersistentState } from "../../../services/hooks/usePersistentState";
+import { showConfirmDialogWithInput } from "../../../services/hooks/ConfirmDialogWithInput.tsx";
 
-export function CustomFieldsList({ module }: { module: string }) {
-    const { get, del } = axiosApiCall();
+export function WorkflowsList({ module }: { module: string }) {
+    const { get, post, del } = axiosApiCall();
 
-    const [customFields, setCustomFields] = useState([]);
-    const [totalCustomFields, setTotalCustomFields] = useState(0);
-    const [selectedCustomFields, setSelectedCustomFields] = useState<any[]>([]);
-    const [loadingCustomFields, setLoadingCustomFields] = useState(false);
+    const [workflows, setWorkflows] = useState([]);
+    const [totalWorkflows, setTotalWorkflows] = useState(0);
+    const [selectedWorkflows, setSelectedWorkflows] = useState<any[]>([]);
+    const [loadingWorkflows, setLoadingWorkflows] = useState(false);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [lazyParams, setLazyParams] = usePersistentState<{
@@ -43,7 +44,7 @@ export function CustomFieldsList({ module }: { module: string }) {
         page: number;
         sortField: string | null;
         sortOrder: 1 | -1 | null;
-    }>(`customFieldsList${module}LazyParams`, {
+    }>(`workflowsList${module}LazyParams`, {
             first: 0,
             rows: 16,
             page: 0,
@@ -54,6 +55,11 @@ export function CustomFieldsList({ module }: { module: string }) {
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
     const getActionsLine = () => [
+        {
+            label: t('FORMS.duplicate_forms'),
+            icon: <Copy className='mr-1' size={ 16 }/>,
+            command: () => handleDuplicate()
+        },
         {
             label: <span className='critical'>{ t('GLOBAL.delete') }</span>,
             icon: <Trash2 className='mr-1' size={ 16 }/>,
@@ -71,30 +77,18 @@ export function CustomFieldsList({ module }: { module: string }) {
 
     const columns = [
         { id: 'id', field: 'id', header: '', sortable: true, className: 'max-w-10! w-10!' },
-        { id: 'label', field: 'label', header: t('GLOBAL.label'), sortable: true },
-        { id: 'label_short', field: 'label_short', header: t('ROLES.label_short') },
-        {
-            id: 'type', field: 'type', header: t('CUSTOM-FIELDS.type'), body: (row: any) => (
-                <span className={ `px-2 py-1 rounded-lg text-xs font-medium` }>
-                    { row.type === 'text' && t('CUSTOM-FIELDS.type_text') }
-                    { row.type === 'select' && t('CUSTOM-FIELDS.type_select') }
-                    { row.type === 'regex' && t('CUSTOM-FIELDS.type_regex') }
-                    { row.type === 'date' && t('CUSTOM-FIELDS.type_date') }
-                    { row.type === 'textarea' && t('CUSTOM-FIELDS.type_textarea') }
-                    { row.type === 'checkbox' && t('CUSTOM-FIELDS.type_checkbox') }
-                </span>
-            )
-        }
+        { id: 'workflow_id', field: 'workflow_id', header: t('ROLES.label_short') },
+        { id: 'label', field: 'label', header: t('GLOBAL.label'), sortable: true }
     ];
 
-    // Fetch custom fields
+    // Fetch workflows
     useEffect(() => {
-        if (loadingCustomFields) return;
-        setLoadingCustomFields(true);
+        if (loadingWorkflows) return;
+        setLoadingWorkflows(true);
 
-        const fetchCustomFields = async () => {
+        const fetchWorkflows = async () => {
             try {
-                const response = await get(`/customFields/list?module=${ module }`, {
+                const response = await get(`/workflows/${ module }/list`, {
                     params: {
                         limit: lazyParams.rows,
                         offset: lazyParams.first,
@@ -103,15 +97,15 @@ export function CustomFieldsList({ module }: { module: string }) {
                         order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null
                     }
                 });
-                setTotalCustomFields(response.customFields[0].total || 0);
-                setCustomFields(response.customFields);
+                setTotalWorkflows(response.workflows[0].total || 0);
+                setWorkflows(response.workflows);
             } catch (error) {
-                console.error('Error fetching custom fields :', error);
+                console.error('Error fetching workflows :', error);
             } finally {
-                setLoadingCustomFields(false);
+                setLoadingWorkflows(false);
             }
         }
-        fetchCustomFields().then();
+        fetchWorkflows().then();
     }, [lazyParams, debouncedSearchTerm]);
 
     // Debounce search term
@@ -127,39 +121,71 @@ export function CustomFieldsList({ module }: { module: string }) {
 
     const refresh = () => {
         setTimeout(() => {
-            setSelectedCustomFields([]);
-            setTotalCustomFields(0);
+            setSelectedWorkflows([]);
+            setTotalWorkflows(0);
             setLazyParams({ ...lazyParams, first: 0 });
         });
     }
 
+    const handleDuplicate = () => {
+        if (selectedWorkflows.length === 0) return;
+
+        showConfirmDialogWithInput({
+            label: t('WORKFLOWS.new_short_label'),
+            title: t('WORKFLOWS.duplicate_workflow'),
+            message: t('WORKFLOWS.confirm_duplicate_workflow', { name: selectedWorkflows[0].label }),
+            confirmText: t('GLOBAL.duplicate'),
+            cancelText: t('GLOBAL.cancel'),
+            onConfirm: async (value) => {
+                if (!value) {
+                    showToast(t('WORKFLOWS.label_required'), 'error');
+                    return;
+                }
+
+                await duplicateWorkflows(selectedWorkflows[0].id, value);
+                refresh();
+            },
+            onCancel: () => {
+                setSelectedWorkflows([]);
+            }
+        });
+    }
+    const duplicateWorkflows = async (id: number, value: string) => {
+        try {
+            await post(`/workflows/duplicate/${ id }`, { workflow_label_short: value });
+            showToast(t('FORMS.form_duplicated', { count: selectedWorkflows.length }), 'success');
+        } catch (err) {
+            console.error("Error while duplicating workflow :", err);
+        }
+    }
+
     const handleDelete = () => {
-        if (selectedCustomFields.length === 0) return;
+        if (setSelectedWorkflows.length === 0) return;
 
         showConfirmDialog({
-            title: t('CUSTOM-FIELDS.delete_custom_fields', { count: selectedCustomFields.length }),
-            message: t('CUSTOM-FIELDS.confirm_delete_custom_fields', { count: selectedCustomFields.length }),
+            title: t('WORKFLOWS.delete_workflows', { count: selectedWorkflows.length }),
+            message: t('WORKFLOWS.confirm_delete_workflows', { count: selectedWorkflows.length }),
             confirmText: t('GLOBAL.delete'),
             cancelText: t('GLOBAL.cancel'),
             danger: true,
             onConfirm: async () => {
-                await deleteForms(selectedCustomFields.map((form: any) => form.id));
+                await deleteWorkflows(selectedWorkflows.map((form: any) => form.id));
                 refresh();
             },
             onCancel: () => {
-                setSelectedCustomFields([]);
+                setSelectedWorkflows([]);
             }
         });
     }
-    const deleteForms = async (ids: string[]) => {
+    const deleteWorkflows = async (ids: string[]) => {
         for (const id of ids) {
             try {
-                await del(`/customFields/delete/${ id }`);
+                await del(`/workflows/delete/${ id }`);
                 if (id === ids[ids.length - 1]) {
-                    showToast(t('CUSTOM-FIELDS.custom_field_deleted', { count: selectedCustomFields.length }), 'success');
+                    showToast(t('WORKFLOWS.workflow_deleted', { count: selectedWorkflows.length }), 'success');
                 }
             } catch (err) {
-                console.error("Error while deleting custom field :", err);
+                console.error("Error while deleting workflow :", err);
             }
         }
     }
@@ -169,40 +195,40 @@ export function CustomFieldsList({ module }: { module: string }) {
             <div className='flex items-center gap-6 mb-4'>
                 <span className='flex items-center gap-1'>
                     <FileText size={ 16 }/>
-                    { t('VERIFIER.custom_fields', { count: totalCustomFields }) } ({ totalCustomFields || 0 })
+                    { t('SETTINGS.workflows', { count: totalWorkflows }) } ({ totalWorkflows || 0 })
                 </span>
                 <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height={ 'h-10' }
                        value={ searchTerm } placeholder={ t('USERS.search') } noMarginBottom={ true }
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
-                    <Link to={ `/settings/${ module }/custom-fields/create` }>
+                    <Link to={ `/settings/${ module }/workflows/create` }>
                         <Button size={ 'sm' }
                                 className='p-2 border'
                                 variant={ "no_bg_border" }>
-                            <Plus size={ 14 } className="mr-1"/> { t('SETTINGS.add_custom_field') }
+                            <Plus size={ 14 } className="mr-1"/> { t('WORKFLOWS.add_workflow') }
                         </Button>
                     </Link>
                 </span>
             </div>
             <Table
-                baseLink={ `/settings/${ module }/custom-fields/edit/` }
-                data={ customFields }
+                baseLink={ `/settings/${ module }/workflows/edit/` }
+                data={ workflows }
                 actions={ actions }
                 pagination={ true }
                 columns={ columns }
-                loading={ loadingCustomFields }
+                loading={ loadingWorkflows }
                 lazyParams={ lazyParams }
                 checkboxSelection={ true }
                 actionsLine={ getActionsLine }
-                selectedRows={ selectedCustomFields }
+                selectedRows={ selectedWorkflows }
                 rowsPerPage={ lazyParams.rows }
                 skeletonRows={ lazyParams.rows }
-                totalRecords={ totalCustomFields || 0 }
+                totalRecords={ totalWorkflows || 0 }
                 rowsPerPageOptions={ [4, 8, 16, 32] }
-                emptyMessage={ t("CUSTOM-FIELDS.no_custom_fields") }
-                paginatorLeftText={ t('CUSTOM-FIELDS.selected', { count: selectedCustomFields.length }) }
+                emptyMessage={ t("WORKFLOWS.no_workflows") }
+                paginatorLeftText={ t('WORKFLOWS.selected', { count: selectedWorkflows.length }) }
                 onLazyParamsChange={ setLazyParams }
-                onSelectionChange={ (rows) => setSelectedCustomFields(rows) }
+                onSelectionChange={ (rows) => setSelectedWorkflows(rows) }
             />
         </div>
     );

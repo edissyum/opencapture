@@ -30,31 +30,32 @@ import { HomePage } from "./pages/home";
 import { UploadPage } from "./pages/upload";
 import { Onboarding } from "./pages/onboarding";
 import { SettingsIndex } from "./pages/settings";
+import { SuppliersList } from "./pages/suppliers/list";
+import { CustomersList } from "./pages/customers/list";
+import { SupplierEditor } from "./pages/suppliers/editor";
+import { CustomerEditor } from "./pages/customers/editor";
+import { FormsList } from "./components/settings/forms/list";
 import { VerifierViewerPage } from "./pages/verifier/viewer";
 import { SettingsGeneralIndex } from "./pages/settings/general";
 import { SettingsVerifierIndex } from "./pages/settings/verifier";
 import { SettingsSplitterIndex } from "./pages/settings/splitter";
 import { SettingsGeneralSMTP } from "./pages/settings/general/smtp";
-import { SettingsGeneralUsers } from "./pages/settings/general/users/list";
+import { WorkflowsList } from "./components/settings/workflows/list";
+import { SettingsGeneralRegex } from "./pages/settings/general/regex";
+import { FormEditor } from "./components/settings/forms/editor/Editor";
 import { SettingsGeneralRoles } from "./pages/settings/general/roles/list";
-import { SettingsGeneralAdvanced } from "./pages/settings/general/advanced";
+import { SettingsGeneralUsers } from "./pages/settings/general/users/list";
 import { SettingsGeneralSecurity } from "./pages/settings/general/security";
+import { SettingsGeneralAdvanced } from "./pages/settings/general/advanced";
+import { CustomFieldsList } from "./components/settings/custom-fields/list";
+import { SettingsGeneralDocservers } from "./pages/settings/general/docservers";
+import { CustomFieldsEditor } from "./components/settings/custom-fields/editor";
 import { SettingsGeneralMailcollect } from "./pages/settings/general/mailcollect";
 import { SettingsGeneralRoleEditor } from "./pages/settings/general/roles/editor";
 import { SettingsGeneralUserEditor } from "./pages/settings/general/users/editor";
 import { SettingsVerifierFormsCreate } from "./pages/settings/verifier/forms/create";
 import { SettingsSplitterFormsCreate } from "./pages/settings/splitter/forms/create";
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
-import { SettingsGeneralRegex } from "./pages/settings/general/regex";
-import { SettingsGeneralDocservers } from "./pages/settings/general/docservers";
-import { SuppliersList } from "./pages/suppliers/list";
-import { CustomersList } from "./pages/customers/list";
-import { SupplierEditor } from "./pages/suppliers/editor";
-import { CustomerEditor } from "./pages/customers/editor";
-import { FormsList } from "./components/settings/forms/list";
-import { FormEditor } from "./components/settings/forms/editor/Editor";
-import { CustomFieldsList } from "./components/settings/custom-fields/list.tsx";
-import { CustomFieldsEditor } from "./components/settings/custom-fields/editor.tsx";
 
 export const router = createBrowserRouter(
     [
@@ -334,7 +335,34 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader,
                                     element: <CustomFieldsEditor module="splitter"/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.add_custom_fields' }
+                                    handle: { breadcrumb: 'SETTINGS.add_custom_field' }
+                                }
+                            ]
+                        },
+                        {
+                            path: "workflows",
+                            loader: protectedLoader,
+                            handle: { breadcrumb: 'SETTINGS.workflows' },
+                            children: [
+                                {
+                                    index: true,
+                                    loader: protectedLoader,
+                                    element: <WorkflowsList module="verifier"/>,
+                                    errorElement: <LoginRequiredError/>
+                                },
+                                {
+                                    path:'edit/:workflowId',
+                                    loader: protectedLoader,
+                                    element: <CustomFieldsEditor module="verifier"/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.edit_workflow' }
+                                },
+                                {
+                                    path:'create',
+                                    loader: protectedLoader,
+                                    element: <CustomFieldsEditor module="splitter"/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.add_workflow' }
                                 }
                             ]
                         }
@@ -402,7 +430,34 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader,
                                     element: <CustomFieldsEditor module="verifier"/>,
                                     errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.add_custom_fields' }
+                                    handle: { breadcrumb: 'SETTINGS.add_custom_field' }
+                                }
+                            ]
+                        },
+                        {
+                            path: "workflows",
+                            loader: protectedLoader,
+                            handle: { breadcrumb: 'SETTINGS.workflows' },
+                            children: [
+                                {
+                                    index: true,
+                                    loader: protectedLoader,
+                                    element: <WorkflowsList module="splitter"/>,
+                                    errorElement: <LoginRequiredError/>
+                                },
+                                {
+                                    path:'edit/:workflowId',
+                                    loader: protectedLoader,
+                                    element: <CustomFieldsEditor module="splitter"/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.edit_workflow' }
+                                },
+                                {
+                                    path:'create',
+                                    loader: protectedLoader,
+                                    element: <CustomFieldsEditor module="splitter"/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.add_workflow' }
                                 }
                             ]
                         }

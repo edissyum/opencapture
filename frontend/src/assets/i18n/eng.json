@@ -423,8 +423,14 @@
         "edit_role": "Edit role",
         "edit_user": "Edit user",
         "custom_fields_description": "",
-        "add_custom_fields": "",
-        "edit_custom_fields": ""
+        "edit_custom_fields": "",
+        "add_workflow": "",
+        "edit_workflow": "",
+        "workflows": "",
+        "workflows_description": "",
+        "workflows_one": "",
+        "workflows_other": "",
+        "add_custom_field": ""
     },
     "SMTP": {
         "authentication": "Authentication",
@@ -724,7 +730,6 @@
         "postal_code": ""
     },
     "CUSTOM-FIELDS": {
-        "add_custom_field": "",
         "type": "",
         "type_checkbox": "",
         "type_date": "",
@@ -752,5 +757,20 @@
         "new_choice": "",
         "create_custom_fields": "",
         "create_success": ""
+    },
+    "WORKFLOWS": {
+        "confirm_delete_workflows_one": "",
+        "confirm_delete_workflows_other": "",
+        "delete_workflows_one": "",
+        "delete_workflows_other": "",
+        "no_workflows": "",
+        "selected_one": "",
+        "selected_other": "",
+        "workflow_deleted_one": "",
+        "workflow_deleted_other": "",
+        "add_workflow": "",
+        "new_short_label": "",
+        "confirm_duplicate_workflow": "",
+        "duplicate_workflow": ""
     }
 }

@@ -455,8 +455,15 @@
         "edit_role": "Modifier le rôle",
         "edit_user": "Modifier l'utilisateur",
         "custom_fields_description": "Liste des champs personnalisés",
-        "add_custom_fields": "Ajouter un champ personnalisé",
-        "edit_custom_fields": "Modifier le champ personnalisé"
+        "edit_custom_fields": "Modifier le champ personnalisé",
+        "add_workflow": "Ajouter un workflow",
+        "edit_workflow": "Modifier le workflow",
+        "workflows": "Workflows",
+        "workflows_description": "Liste des workflows",
+        "workflows_many": "Workflows",
+        "workflows_one": "Workflow",
+        "workflows_other": "Workflows",
+        "add_custom_field": "Ajouter un champ personnalisé"
     },
     "SMTP": {
         "authentication": "Authentification",
@@ -777,7 +784,6 @@
         "postal_code": "Code postal"
     },
     "CUSTOM-FIELDS": {
-        "add_custom_field": "Ajouter un champ personnalisé",
         "type": "Type de données",
         "type_checkbox": "Case à cocher",
         "type_date": "Date",
@@ -809,5 +815,24 @@
         "new_choice": "Nouveau choix",
         "create_custom_fields": "Créer le champ personnalisé",
         "create_success": "Champ personnalisé créé avec succès"
+    },
+    "WORKFLOWS": {
+        "confirm_delete_workflows_many": "Voulez-vous vraiment supprimer ces {{count}} workflows ?",
+        "confirm_delete_workflows_one": "Voulez-vous vraiment supprimer ce workflow ?",
+        "confirm_delete_workflows_other": "Voulez-vous vraiment supprimer ces {{count}} workflows ?",
+        "delete_workflows_many": "Supprimer les workflows",
+        "delete_workflows_one": "Supprimer le workflow",
+        "delete_workflows_other": "Supprimer les workflows",
+        "no_workflows": "Aucun workflow",
+        "selected_many": "workflows sélectionnés",
+        "selected_one": "workflow sélectionné",
+        "selected_other": "workflows sélectionnés",
+        "workflow_deleted_many": "Workflows supprimés avec succès",
+        "workflow_deleted_one": "Workflow supprimé avec succès",
+        "workflow_deleted_other": "Workflows supprimés avec succès",
+        "add_workflow": "Ajouter un workflow",
+        "new_short_label": "Nouveau libellé technique",
+        "confirm_duplicate_workflow": "Etes-vous sûr de vouloir dupliquer le workflow <strong>{{name}}</strong> ?",
+        "duplicate_workflow": "Dupliquer le workflow"
     }
 }

@@ -302,7 +302,7 @@ export function VerifierListPage() {
                     allowedSuppliers: selectedSuppliers.length > 0 ? selectedSuppliers : null,
                     order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null
                 }) || [];
-                console.log(res)
+
                 setTotalDocuments(res.total);
                 setDocuments(res.documents);
             } catch (err) {

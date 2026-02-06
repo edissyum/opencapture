@@ -126,16 +126,15 @@ def get_workflow_by_workflow_id(workflow_id, module):
     return make_response(jsonify(_workflow[0])), _workflow[1]
 
 
-@bp.route('workflows/<string:module>/duplicate', methods=['POST'])
+@bp.route('workflows/duplicate/<int:workflow_id>', methods=['POST'])
 @auth.token_required
-def duplicate_workflow(module):
-    list_priv = ['settings', 'update_workflow'] if module == 'verifier' else ['settings', 'update_workflow_splitter']
+def duplicate_workflow(workflow_id):
+    list_priv = ['settings', 'update_workflow']
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/workflows/{module}/duplicate'}), 403
+                        'message': f'/workflows/duplicate/{workflow_id}'}), 403
 
     check, message = rest_validator(request.json, [
-        {'id': 'workflow_id', 'type': int, 'mandatory': True},
         {'id': 'workflow_label_short', 'type': str, 'mandatory': True}
     ])
 
@@ -145,17 +144,18 @@ def duplicate_workflow(module):
             "message": message
         }, 400)
 
+    request.json['workflow_id'] = workflow_id
     res = workflow.duplicate_workflow(request.json)
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('workflows/<string:module>/delete/<int:workflow_id>', methods=['DELETE'])
+@bp.route('workflows/delete/<int:workflow_id>', methods=['DELETE'])
 @auth.token_required
-def delete_workflow(module, workflow_id):
-    list_priv = ['settings', 'update_workflow'] if module == 'verifier' else ['settings', 'update_workflow_splitter']
+def delete_workflow(workflow_id):
+    list_priv = ['settings', 'update_workflow']
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/workflows/{module}/delete/{workflow_id}'}), 403
+                        'message': f'/workflows/delete/{workflow_id}'}), 403
 
     res = workflow.delete_workflow(workflow_id)
     return make_response(jsonify(res[0])), res[1]

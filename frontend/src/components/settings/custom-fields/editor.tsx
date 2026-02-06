@@ -336,7 +336,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
 
     const handleUpdate = async (data: any) => {
         const payload = getPayload(data);
-        console.log('Payload for update :', payload);
+
         setLoading(true);
         try {
             await put(`/customFields/update`, payload);

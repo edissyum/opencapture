@@ -32,6 +32,13 @@ export const getSettingsSplitterOptions = () => [
         icon: <LayoutTemplate/>,
         href: '/settings/splitter/custom-fields',
         module: 'splitter'
+    },
+    {
+        name: t('SETTINGS.workflows'),
+        description: t('SETTINGS.workflows_description'),
+        icon: <LayoutTemplate/>,
+        href: '/settings/splitter/workflows',
+        module: 'splitter'
     }
 ];
 

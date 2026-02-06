@@ -27,6 +27,7 @@ export function showConfirmDialogWithInput({
     title,
     message,
     value = "",
+    label = "",
     options = [],
     type = "string",
     placeholder = "",
@@ -38,6 +39,7 @@ export function showConfirmDialogWithInput({
     title: string;
     type?: string;
     value?: string;
+    label?: string;
     message: string;
     cancelText?: string;
     placeholder?: string;
@@ -62,6 +64,7 @@ export function showConfirmDialogWithInput({
                     <Input
                         autoFocus
                         value={ val }
+                        label={ label }
                         className="w-full"
                         noMarginBottom={ true }
                         placeholder={ placeholder }

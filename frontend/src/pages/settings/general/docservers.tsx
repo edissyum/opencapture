@@ -74,7 +74,6 @@ export function SettingsGeneralDocservers() {
                     }
                 });
                 if (response.docservers) {
-                    console.log(response.docservers);
                     setDocservers(response.docservers);
                     setTotalDocservers(response.docservers[0]?.total || 0);
                 }
