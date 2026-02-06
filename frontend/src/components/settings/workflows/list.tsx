@@ -138,7 +138,7 @@ export function WorkflowsList({ module }: { module: string }) {
             cancelText: t('GLOBAL.cancel'),
             onConfirm: async (value) => {
                 if (!value) {
-                    showToast(t('WORKFLOWS.label_required'), 'error');
+                    showToast(t('WORKFLOWS.short_label_required'), 'error');
                     return;
                 }
 

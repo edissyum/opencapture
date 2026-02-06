@@ -771,6 +771,16 @@
         "add_workflow": "",
         "new_short_label": "",
         "confirm_duplicate_workflow": "",
-        "duplicate_workflow": ""
+        "duplicate_workflow": "",
+        "short_label_required": ""
+    },
+    "MONITORING": {
+        "processes": "",
+        "search_filename": "",
+        "creation_date": "",
+        "end_date": "",
+        "filename": "",
+        "no_processes": "",
+        "status": ""
     }
 }

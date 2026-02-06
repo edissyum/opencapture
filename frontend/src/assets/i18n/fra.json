@@ -224,7 +224,7 @@
         "history": "Historique",
         "home": "Accueil",
         "login": "Connexion",
-        "monitoring": "Monitoring processus",
+        "monitoring": "Monitoring",
         "settings": "Paramètres",
         "statistics": "Statistiques",
         "upload": "Téléversement",
@@ -833,6 +833,15 @@
         "add_workflow": "Ajouter un workflow",
         "new_short_label": "Nouveau libellé technique",
         "confirm_duplicate_workflow": "Etes-vous sûr de vouloir dupliquer le workflow <strong>{{name}}</strong> ?",
-        "duplicate_workflow": "Dupliquer le workflow"
+        "duplicate_workflow": "Dupliquer le workflow",
+        "short_label_required": "Libellé technique est obligatoire pour dupliquer un workflow"
+    },
+    "MONITORING": {
+        "processes": "Processus",
+        "search_filename": "Rechercher par nom de fichier",
+        "creation_date": "Date de début",
+        "end_date": "Date de fin",
+        "no_processes": "Aucun processus en cour",
+        "status": "Statut"
     }
 }

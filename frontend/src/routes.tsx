@@ -56,6 +56,7 @@ import { SettingsGeneralUserEditor } from "./pages/settings/general/users/editor
 import { SettingsVerifierFormsCreate } from "./pages/settings/verifier/forms/create";
 import { SettingsSplitterFormsCreate } from "./pages/settings/splitter/forms/create";
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
+import { MonitoringList } from "./pages/monitoring/list";
 
 export const router = createBrowserRouter(
     [
@@ -75,9 +76,22 @@ export const router = createBrowserRouter(
             children: [
                 {
                     path: "home",
-                    element: <HomePage />,
+                    element: <HomePage/>,
                     loader: protectedLoader,
                     errorElement: <LoginRequiredError/>
+                },
+                {
+                    path: "monitoring",
+                    loader: protectedLoader,
+                    errorElement: <LoginRequiredError/>,
+                    children: [
+                        {
+                            index: true,
+                            loader: protectedLoader,
+                            element: <MonitoringList/>,
+                            errorElement: <LoginRequiredError/>
+                        }
+                    ]
                 },
                 {
                     path: "suppliers",
@@ -133,7 +147,7 @@ export const router = createBrowserRouter(
                 },
                 {
                     path: "verifier/viewer/:documentId",
-                    element: <VerifierViewerPage />,
+                    element: <VerifierViewerPage/>,
                     loader: protectedLoader,
                     errorElement: <LoginRequiredError/>
                 },
