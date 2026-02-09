@@ -19,7 +19,6 @@ import { useEffect, useState } from "react";
 import { RadioButton } from "primereact/radiobutton";
 import { Activity, ChevronDown, Filter, Package } from "lucide-react";
 
-import Input from "../components/Input";
 import { Button } from "../components/Button";
 import { Table } from "../components/list/Table";
 import { Dropdown } from "../components/Dropdown";
@@ -32,10 +31,8 @@ export function HistoryList() {
 
     const [history, setHistory] = useState<any[]>([]);
     const [totalHistory, setTotalHistory] = useState(0);
-    const [searchFilename, setSearchFilename] = useState('');
     const [displayFilters, setDisplayFilters] = useState(false);
     const [loadingHistory, setLoadingHistory] = useState(false);
-    const [debouncedSearchFilename, setDebouncedSearchFilename] = useState('');
 
     const [open, setOpen] = useState({
         user: true,
@@ -85,17 +82,6 @@ export function HistoryList() {
         { id: 'user_ip', field: 'user_ip', header: t('HISTORY.ip') },
     ];
 
-    // Debounce search term
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            setDebouncedSearchFilename(searchFilename);
-        }, 500);
-
-        return () => {
-            clearTimeout(handler);
-        };
-    }, [searchFilename]);
-
     // Fetch processes list, submodules and users
     useEffect(() => {
         setLoadingHistory(true);
@@ -109,7 +95,6 @@ export function HistoryList() {
                     offset: lazyParams.first,
                     submodule: selectedSubModule,
                     filter: lazyParams.sortField,
-                    filename: debouncedSearchFilename,
                     order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null
                 }
             });
@@ -154,7 +139,7 @@ export function HistoryList() {
         fetchHistory().then();
         fetchSubModules().then();
         setLoadingHistory(false);
-    }, [lazyParams, debouncedSearchFilename, selectedModule, selectedSubModule, selectedUser]);
+    }, [lazyParams, selectedModule, selectedSubModule, selectedUser]);
 
     const handleResetFilters = () => {
         setSelectedUser('');
@@ -281,10 +266,6 @@ export function HistoryList() {
                             { t('HISTORY.history') } ({ totalHistory || 0 })
                         </span>
                     </span>
-                    <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-96' height='h-10'
-                           value={ searchFilename } placeholder={ t('MONITORING.search_filename') }
-                           noMarginBottom={ true }
-                           onChange={ (e) => setSearchFilename(e.target.value) }/>
                 </div>
                 <Table
                     data={ history }
