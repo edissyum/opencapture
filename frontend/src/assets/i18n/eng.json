@@ -236,12 +236,24 @@
         "french": "",
         "action_irreversible": "",
         "updating": "",
-        "label": ""
+        "label": "",
+        "relaunch": ""
     },
     "HISTORY": {
         "document_validated": "Document #<strong>{{ documentId }}</strong> successfully validated",
         "viewer": "Viewing document #<strong>{{ documentId }}</strong>",
-        "document_refused": "Document #<strong>{{ document_id }}</strong> refused"
+        "document_refused": "Document #<strong>{{ document_id }}</strong> refused",
+        "accounts": "",
+        "splitter": "",
+        "verifier": "",
+        "submodule": "",
+        "user": "",
+        "description": "",
+        "event_date": "",
+        "no_history": "",
+        "user_info": "",
+        "ip": "",
+        "history": ""
     },
     "MAILCOLLECT": {
         "no_process": "No MailCollect process is configured",
@@ -507,7 +519,6 @@
         "search": "Search",
         "selected_one": "user selected",
         "selected_other": "users selected",
-        "status": "Status",
         "password": "Password",
         "username": "Username",
         "users_one": "User",
@@ -779,8 +790,13 @@
         "search_filename": "",
         "creation_date": "",
         "end_date": "",
-        "filename": "",
         "no_processes": "",
-        "status": ""
+        "last_message": "",
+        "done": "",
+        "error": "",
+        "running": "",
+        "confirm_retry_process": "",
+        "retry_process": "",
+        "process_relaunched": ""
     }
 }

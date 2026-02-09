@@ -58,7 +58,7 @@ export function FormsList({ module }: { module: string }) {
         { id: 'label', field: 'label', header: t('GLOBAL.label') },
         {
             id: 'status',
-            header: t('USERS.status'),
+            header: t('GLOBAL.status'),
             body: (row: any) => (
                 <span
                     className={ `px-2 py-1 rounded-lg text-xs font-medium 

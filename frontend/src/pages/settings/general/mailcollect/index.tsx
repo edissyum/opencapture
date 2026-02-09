@@ -85,8 +85,6 @@ export function SettingsGeneralMailcollect() {
                     }
                 }
                 renameProcess().then();
-            },
-            onCancel: () => {
             }
         });
     };
@@ -109,8 +107,6 @@ export function SettingsGeneralMailcollect() {
                 } catch (error) {
                     console.error("Erreur lors de la suppression du processus MailCollect :", error);
                 }
-            },
-            onCancel: () => {
             }
         })
     }
@@ -143,8 +139,6 @@ export function SettingsGeneralMailcollect() {
                     }
                 }
                 duplicateProcess().then();
-            },
-            onCancel: () => {
             }
         });
     };
@@ -223,8 +217,6 @@ export function SettingsGeneralMailcollect() {
                     }
                 }
                 addProcess().then();
-            },
-            onCancel: () => {
             }
         });
     };
@@ -264,8 +256,6 @@ export function SettingsGeneralMailcollect() {
 
                 process.enabled = !process.enabled;
                 setProcessList([...processList]);
-            },
-            onCancel: () => {
             }
         })
     }

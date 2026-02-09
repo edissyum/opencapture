@@ -57,6 +57,7 @@ import { SettingsVerifierFormsCreate } from "./pages/settings/verifier/forms/cre
 import { SettingsSplitterFormsCreate } from "./pages/settings/splitter/forms/create";
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
 import { MonitoringList } from "./pages/monitoring/list";
+import { HistoryList } from "./pages/history";
 
 export const router = createBrowserRouter(
     [
@@ -89,6 +90,19 @@ export const router = createBrowserRouter(
                             index: true,
                             loader: protectedLoader,
                             element: <MonitoringList/>,
+                            errorElement: <LoginRequiredError/>
+                        }
+                    ]
+                },
+                {
+                    path: "history",
+                    loader: protectedLoader,
+                    errorElement: <LoginRequiredError/>,
+                    children: [
+                        {
+                            index: true,
+                            loader: protectedLoader,
+                            element: <HistoryList/>,
                             errorElement: <LoginRequiredError/>
                         }
                     ]

@@ -244,7 +244,7 @@
         "today": "Lots du jour",
         "yesterday": "Lots de la veille",
         "forms": "Formulaires",
-        "status": "Status",
+        "status": "Statut",
         "no_result_found": "Aucun résultat trouvé",
         "logout": "Déconnexion",
         "creating": "Création en cours...",
@@ -256,12 +256,24 @@
         "english": "Anglais",
         "french": "Français",
         "action_irreversible": "Cette action est irréversible.",
-        "updating": "Mise à jour en cours..."
+        "updating": "Mise à jour en cours...",
+        "relaunch": "Relancer"
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validé avec succès",
         "viewer": "Visualisation du document n°<strong>{{ documentId }}</strong>",
-        "document_refused": "Document n°<strong>{{ document_id }}</strong> refusé"
+        "document_refused": "Document n°<strong>{{ document_id }}</strong> refusé",
+        "accounts": "Comptes tiers",
+        "splitter": "Open-Capture Splitter",
+        "verifier": "Open-Capture Verifier",
+        "submodule": "Sous-module",
+        "user": "Utilisateur",
+        "description": "Description",
+        "event_date": "Date de l'événement",
+        "no_history": "Aucune ligne d'historique",
+        "user_info": "Utilisateur",
+        "ip": "Adresse IP",
+        "history": "Lignes d'historique"
     },
     "MAILCOLLECT": {
         "no_process": "Aucun processus MailCollect n'est configuré",
@@ -547,7 +559,6 @@
         "selected_many": "utilisateurs sélectionnés",
         "selected_one": "utilisateur sélectionné",
         "selected_other": "utilisateurs sélectionnés",
-        "status": "Statut",
         "password": "Mot de passe",
         "username": "Nom d'utilisateur",
         "users_many": "Utilisateurs",
@@ -841,7 +852,13 @@
         "search_filename": "Rechercher par nom de fichier",
         "creation_date": "Date de début",
         "end_date": "Date de fin",
-        "no_processes": "Aucun processus en cour",
-        "status": "Statut"
+        "no_processes": "Aucun processus en cours",
+        "last_message": "Dernier message",
+        "done": "Processus terminé",
+        "error": "Processus en erreur",
+        "running": "Processus en cours",
+        "confirm_retry_process": "Voulez-vous vraiment relancer le processus ?",
+        "retry_process": "Relancer le processus",
+        "process_relaunched": "Processus relancé avec succès"
     }
 }

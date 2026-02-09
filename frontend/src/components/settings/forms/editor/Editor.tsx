@@ -416,8 +416,6 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                 zone.name = value;
                 setZones([...zones]);
                 put(`forms/updateLabel/${ formId }/${ zone_id }`, { label: value });
-            },
-            onCancel: () => {
             }
         });
     }

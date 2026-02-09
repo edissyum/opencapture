@@ -256,12 +256,24 @@
         "french": "",
         "action_irreversible": "",
         "updating": "",
-        "label": ""
+        "label": "",
+        "relaunch": ""
     },
     "HISTORY": {
         "document_validated": "Documento n°<strong>{{ documentId }}</strong> validado con éxito",
         "viewer": "Visualización del documento n°<strong>{{ documentId }}</strong>",
-        "document_refused": "Documento n°<strong>{{ document_id }}</strong> rechazado"
+        "document_refused": "Documento n°<strong>{{ document_id }}</strong> rechazado",
+        "accounts": "",
+        "splitter": "",
+        "verifier": "",
+        "submodule": "",
+        "user": "",
+        "description": "",
+        "event_date": "",
+        "no_history": "",
+        "user_info": "",
+        "ip": "",
+        "history": ""
     },
     "MAILCOLLECT": {
         "no_process": "No hay procesos MailCollect configurados",
@@ -547,7 +559,6 @@
         "selected_many": "usuarios seleccionados",
         "selected_one": "usuario seleccionado",
         "selected_other": "usuarios seleccionados",
-        "status": "Estado",
         "password": "Contraseña",
         "username": "Nombre de usuario",
         "users_many": "Usuarios",
@@ -841,8 +852,13 @@
         "search_filename": "",
         "creation_date": "",
         "end_date": "",
-        "filename": "",
         "no_processes": "",
-        "status": ""
+        "last_message": "",
+        "done": "",
+        "error": "",
+        "running": "",
+        "confirm_retry_process": "",
+        "retry_process": "",
+        "process_relaunched": ""
     }
 }

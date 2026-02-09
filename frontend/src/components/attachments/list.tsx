@@ -164,8 +164,6 @@ export function AttachmentsList({ module, documentId, onAttachmentsCountChange, 
                 } finally {
                     setLoading(false);
                 }
-            },
-            onCancel: () => {
             }
         })
     };

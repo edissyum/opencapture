@@ -116,8 +116,6 @@ export function SettingsGeneralAdvanced() {
                 }
                 setLoading(true);
                 updateValue().then();
-            },
-            onCancel: () => {
             }
         });
     };

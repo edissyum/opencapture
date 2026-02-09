@@ -194,7 +194,9 @@ export function Table<T extends { id: string }>({
                     contextMenuSelection={ selectedRows }
                     onContextMenuSelectionChange={ (e: any) => {
                         handleSelectionChange([e.value]);
-                        cm.current?.show(e.originalEvent);
+                        if (actionsLine) {
+                            cm.current?.show(e.originalEvent);
+                        }
                     } }
                     onPage={ (e) =>
                         onLazyParamsChange({

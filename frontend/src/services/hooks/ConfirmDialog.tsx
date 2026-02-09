@@ -37,7 +37,7 @@ export function showConfirmDialog({
     confirmText?: string;
     icon?: React.ReactNode;
     onConfirm: () => void;
-    onCancel: () => void;
+    onCancel?: () => void;
 }) {
     let acceptClassName = "outline-none! shadow-none! border-2! text-white!";
 
@@ -73,7 +73,7 @@ export function showConfirmDialog({
             onConfirm();
         },
         reject() {
-            onCancel();
+            if (onCancel) onCancel();
         }
     })
 }

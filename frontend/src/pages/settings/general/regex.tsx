@@ -117,8 +117,6 @@ export function SettingsGeneralRegex() {
                 }
                 setLoading(true);
                 updateValue().then();
-            },
-            onCancel: () => {
             }
         });
     };

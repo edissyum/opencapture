@@ -59,7 +59,7 @@ export function SettingsGeneralUsers() {
         { id: 'role', field: 'label', header: t('USERS.role') },
         {
             id: 'status',
-            header: t('USERS.status'),
+            header: t('GLOBAL.status'),
             body: (row: any) => (
                 <span
                     className={ `px-2 py-1 rounded-lg text-xs font-medium 
