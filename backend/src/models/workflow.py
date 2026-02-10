@@ -28,12 +28,13 @@ def get_workflows(args):
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         database = _vars[0]
+
     _workflows = database.select({
         'select': ["*"] if "select" not in args else args["select"],
         'table': ["workflows"],
         'where': args['where'],
         'data': [] if "data" not in args else args["data"],
-        'order_by': ["id ASC"],
+        'order_by': ["id ASC"] if "order_by" not in args else args["order_by"],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
         'offset': str(args['offset']) if 'offset' in args else 0
     })

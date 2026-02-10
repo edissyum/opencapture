@@ -345,7 +345,21 @@
     },
     "OUTPUTS": {
         "outputs": "Output streams",
-        "select_outputs": "Select output streams to execute upon validation"
+        "select_outputs": "Select output streams to execute upon validation",
+        "add_output": "",
+        "no_outputs": "",
+        "selected_one": "",
+        "selected_other": "",
+        "confirm_delete_outputs_one": "",
+        "confirm_delete_outputs_other": "",
+        "delete_outputs_one": "",
+        "delete_outputs_other": "",
+        "output_deleted_one": "",
+        "output_deleted_other": "",
+        "confirm_duplicate_output": "",
+        "duplicate_output": "",
+        "outputs_duplicated_one": "",
+        "outputs_duplicated_other": ""
     },
     "ROLES": {
         "add_role": "Add a role",
@@ -436,13 +450,15 @@
         "edit_user": "Edit user",
         "custom_fields_description": "",
         "edit_custom_fields": "",
-        "add_workflow": "",
-        "edit_workflow": "",
         "workflows": "",
         "workflows_description": "",
         "workflows_one": "",
         "workflows_other": "",
-        "add_custom_field": ""
+        "add_custom_field": "",
+        "outputs": "",
+        "outputs_description": "",
+        "outputs_one": "",
+        "outputs_other": ""
     },
     "SMTP": {
         "authentication": "Authentication",
@@ -783,7 +799,9 @@
         "new_short_label": "",
         "confirm_duplicate_workflow": "",
         "duplicate_workflow": "",
-        "short_label_required": ""
+        "short_label_required": "",
+        "workflows_duplicated_one": "",
+        "workflows_duplicated_other": ""
     },
     "MONITORING": {
         "processes": "",

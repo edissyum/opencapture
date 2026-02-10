@@ -27,15 +27,14 @@ import { showToast } from "../../ToastProvider";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../../services/hooks/ConfirmDialog";
 import { usePersistentState } from "../../../services/hooks/usePersistentState";
-import { showConfirmDialogWithInput } from "../../../services/hooks/ConfirmDialogWithInput.tsx";
 
-export function WorkflowsList({ module }: { module: string }) {
+export function OutputsList({ module }: { module: string }) {
     const { get, post, del } = axiosApiCall();
 
-    const [workflows, setWorkflows] = useState([]);
-    const [totalWorkflows, setTotalWorkflows] = useState(0);
-    const [selectedWorkflows, setSelectedWorkflows] = useState<any[]>([]);
-    const [loadingWorkflows, setLoadingWorkflows] = useState(false);
+    const [outputs, setOutputs] = useState([]);
+    const [totalOutputs, setTotalOutputs] = useState(0);
+    const [selectedOutputs, setSelectedOutputs] = useState<any[]>([]);
+    const [loadingOutputs, setLoadingOutputs] = useState(false);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [lazyParams, setLazyParams] = usePersistentState<{
@@ -44,7 +43,7 @@ export function WorkflowsList({ module }: { module: string }) {
         page: number;
         sortField: string | null;
         sortOrder: 1 | -1 | null;
-    }>(`workflowsList${module}LazyParams`, {
+    }>(`outputsList${module}LazyParams`, {
             first: 0,
             rows: 16,
             page: 0,
@@ -77,18 +76,18 @@ export function WorkflowsList({ module }: { module: string }) {
 
     const columns = [
         { id: 'id', field: 'id', header: '', sortable: true, className: 'max-w-10! w-10!' },
-        { id: 'workflow_id', field: 'workflow_id', header: t('ROLES.label_short') },
-        { id: 'label', field: 'label', header: t('GLOBAL.label'), sortable: true }
+        { id: 'output_label', field: 'output_label', header: t('GLOBAL.label'), sortable: true },
+        { id: 'output_type_id', field: 'output_type_id', header: t('ROLES.label_short'), sortable: true }
     ];
 
-    // Fetch workflows
+    // Fetch outputs
     useEffect(() => {
-        if (loadingWorkflows) return;
-        setLoadingWorkflows(true);
+        if (loadingOutputs) return;
+        setLoadingOutputs(true);
 
-        const fetchWorkflows = async () => {
+        const fetchOutputs = async () => {
             try {
-                const response = await get(`/workflows/${ module }/list`, {
+                const response = await get(`/outputs/${ module }/list`, {
                     params: {
                         limit: lazyParams.rows,
                         offset: lazyParams.first,
@@ -97,15 +96,15 @@ export function WorkflowsList({ module }: { module: string }) {
                         order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null
                     }
                 });
-                setTotalWorkflows(response.workflows[0].total || 0);
-                setWorkflows(response.workflows);
+                setTotalOutputs(response.outputs[0].total || 0);
+                setOutputs(response.outputs);
             } catch (error) {
-                console.error('Error fetching workflows :', error);
+                console.error('Error fetching outputs :', error);
             } finally {
-                setLoadingWorkflows(false);
+                setLoadingOutputs(false);
             }
         }
-        fetchWorkflows().then();
+        fetchOutputs().then();
     }, [lazyParams, debouncedSearchTerm]);
 
     // Debounce search term
@@ -121,71 +120,65 @@ export function WorkflowsList({ module }: { module: string }) {
 
     const refresh = () => {
         setTimeout(() => {
-            setSelectedWorkflows([]);
-            setTotalWorkflows(0);
+            setSelectedOutputs([]);
+            setTotalOutputs(0);
             setLazyParams({ ...lazyParams, first: 0 });
         });
     }
 
     const handleDuplicate = () => {
-        if (selectedWorkflows.length === 0) return;
+        if (selectedOutputs.length === 0) return;
 
-        showConfirmDialogWithInput({
-            label: t('WORKFLOWS.new_short_label'),
-            title: t('WORKFLOWS.duplicate_workflow'),
-            message: t('WORKFLOWS.confirm_duplicate_workflow', { name: selectedWorkflows[0].label }),
+        showConfirmDialog({
+            title: t('OUTPUTS.duplicate_output'),
+            message: t('OUTPUTS.confirm_duplicate_output', { name: selectedOutputs[0].output_label }),
             confirmText: t('GLOBAL.duplicate'),
             cancelText: t('GLOBAL.cancel'),
-            onConfirm: async (value) => {
-                if (!value) {
-                    showToast(t('WORKFLOWS.short_label_required'), 'error');
-                    return;
-                }
-
-                await duplicateWorkflows(selectedWorkflows[0].id, value);
+            onConfirm: async () => {
+                await duplicateOutputs(selectedOutputs[0].id);
                 refresh();
             },
             onCancel: () => {
-                setSelectedWorkflows([]);
+                setSelectedOutputs([]);
             }
         });
     }
-    const duplicateWorkflows = async (id: number, value: string) => {
+    const duplicateOutputs = async (id: number) => {
         try {
-            await post(`/workflows/duplicate/${ id }`, { workflow_label_short: value });
-            showToast(t('WORKFLOWS.workflows_duplicated', { count: selectedWorkflows.length }), 'success');
+            await post(`/outputs/duplicate/${ id }`);
+            showToast(t('OUTPUTS.outputs_duplicated', { count: selectedOutputs.length }), 'success');
         } catch (err) {
-            console.error("Error while duplicating workflow :", err);
+            console.error("Error while duplicating output :", err);
         }
     }
 
     const handleDelete = () => {
-        if (setSelectedWorkflows.length === 0) return;
+        if (setSelectedOutputs.length === 0) return;
 
         showConfirmDialog({
-            title: t('WORKFLOWS.delete_workflows', { count: selectedWorkflows.length }),
-            message: t('WORKFLOWS.confirm_delete_workflows', { count: selectedWorkflows.length }),
+            title: t('OUTPUTS.delete_outputs', { count: selectedOutputs.length }),
+            message: t('OUTPUTS.confirm_delete_outputs', { count: selectedOutputs.length }),
             confirmText: t('GLOBAL.delete'),
             cancelText: t('GLOBAL.cancel'),
             danger: true,
             onConfirm: async () => {
-                await deleteWorkflows(selectedWorkflows.map((form: any) => form.id));
+                await deleteOutputs(selectedOutputs.map((form: any) => form.id));
                 refresh();
             },
             onCancel: () => {
-                setSelectedWorkflows([]);
+                setSelectedOutputs([]);
             }
         });
     }
-    const deleteWorkflows = async (ids: string[]) => {
+    const deleteOutputs = async (ids: string[]) => {
         for (const id of ids) {
             try {
-                await del(`/workflows/delete/${ id }`);
+                await del(`/outputs/delete/${ id }`);
                 if (id === ids[ids.length - 1]) {
-                    showToast(t('WORKFLOWS.workflow_deleted', { count: selectedWorkflows.length }), 'success');
+                    showToast(t('OUTPUTS.output_deleted', { count: selectedOutputs.length }), 'success');
                 }
             } catch (err) {
-                console.error("Error while deleting workflow :", err);
+                console.error("Error while deleting output :", err);
             }
         }
     }
@@ -195,40 +188,40 @@ export function WorkflowsList({ module }: { module: string }) {
             <div className='flex items-center gap-6 mb-4'>
                 <span className='flex items-center gap-1'>
                     <FileText size={ 16 }/>
-                    { t('SETTINGS.workflows', { count: totalWorkflows }) } ({ totalWorkflows || 0 })
+                    { t('SETTINGS.outputs', { count: totalOutputs }) } ({ totalOutputs || 0 })
                 </span>
                 <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height={ 'h-10' }
                        value={ searchTerm } placeholder={ t('USERS.search') } noMarginBottom={ true }
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
-                    <Link to={ `/settings/${ module }/workflows/create` }>
+                    <Link to={ `/settings/${ module }/outputs/create` }>
                         <Button size={ 'sm' }
                                 className='p-2 border'
                                 variant={ "no_bg_border" }>
-                            <Plus size={ 14 } className="mr-1"/> { t('WORKFLOWS.add_workflow') }
+                            <Plus size={ 14 } className="mr-1"/> { t('OUTPUTS.add_output') }
                         </Button>
                     </Link>
                 </span>
             </div>
             <Table
-                baseLink={ `/settings/${ module }/workflows/edit/` }
-                data={ workflows }
+                baseLink={ `/settings/${ module }/outputs/edit/` }
+                data={ outputs }
                 actions={ actions }
                 pagination={ true }
                 columns={ columns }
-                loading={ loadingWorkflows }
+                loading={ loadingOutputs }
                 lazyParams={ lazyParams }
                 checkboxSelection={ true }
                 actionsLine={ getActionsLine }
-                selectedRows={ selectedWorkflows }
+                selectedRows={ selectedOutputs }
                 rowsPerPage={ lazyParams.rows }
                 skeletonRows={ lazyParams.rows }
-                totalRecords={ totalWorkflows || 0 }
+                totalRecords={ totalOutputs || 0 }
                 rowsPerPageOptions={ [4, 8, 16, 32] }
-                emptyMessage={ t("WORKFLOWS.no_workflows") }
-                paginatorLeftText={ t('WORKFLOWS.selected', { count: selectedWorkflows.length }) }
+                emptyMessage={ t("OUTPUTS.no_outputs") }
+                paginatorLeftText={ t('OUTPUTS.selected', { count: selectedOutputs.length }) }
                 onLazyParamsChange={ setLazyParams }
-                onSelectionChange={ (rows) => setSelectedWorkflows(rows) }
+                onSelectionChange={ (rows) => setSelectedOutputs(rows) }
             />
         </div>
     );

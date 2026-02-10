@@ -40,6 +40,13 @@ export const getSettingsVerifierOptions = () => [
         icon: <LayoutTemplate/>,
         href: '/settings/verifier/workflows',
         module: 'verifier'
+    },
+    {
+        name: t('SETTINGS.outputs'),
+        description: t('SETTINGS.outputs_description'),
+        icon: <LayoutTemplate/>,
+        href: '/settings/verifier/outputs',
+        module: 'verifier'
     }
 ];
 

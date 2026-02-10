@@ -78,13 +78,13 @@ def get_output_by_id(output_id, module):
     return make_response(jsonify(_output[0])), _output[1]
 
 
-@bp.route('outputs/<string:module>/duplicate/<int:output_id>', methods=['POST'])
+@bp.route('outputs/duplicate/<int:output_id>', methods=['POST'])
 @auth.token_required
-def duplicate_output(output_id, module):
-    list_priv = ['settings', 'outputs_list'] if module == 'verifier' else ['settings', 'outputs_list_splitter']
+def duplicate_output(output_id):
+    list_priv = ['settings', 'outputs_list']
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/outputs/{module}/duplicate/{output_id}'}), 403
+                        'message': f'/outputs/duplicate/{output_id}'}), 403
 
     res = outputs.duplicate_output(output_id)
     return make_response(jsonify(res[0])), res[1]
@@ -116,13 +116,13 @@ def update_output(output_id, module):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('outputs/<string:module>/delete/<int:output_id>', methods=['DELETE'])
+@bp.route('outputs/delete/<int:output_id>', methods=['DELETE'])
 @auth.token_required
-def delete_output(output_id, module):
-    list_priv = ['settings', 'outputs_list'] if module == 'verifier' else ['settings', 'outputs_list_splitter']
+def delete_output(output_id):
+    list_priv = ['settings', 'outputs_list']
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/outputs/{module}/delete/{output_id}'}), 403
+                        'message': f'/outputs/delete/{output_id}'}), 403
 
     res = outputs.delete_output(output_id)
     return make_response(jsonify(res[0])), res[1]

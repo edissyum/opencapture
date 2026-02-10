@@ -15,21 +15,23 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import os
-import sys
 import json
+import os
 import stat
+import sys
 import traceback
 from io import StringIO
+
+from flask import request, g as current_context
 from flask_babel import gettext
 from pyflakes.scripts import pyflakes
-from ..controllers import user
+
 from ..classes.Config import Config
-from flask import request, g as current_context
-from ..models import workflow, history
-from ..scripting_functions import check_code
+from ..controllers import user
 from ..functions import retrieve_custom_from_url
 from ..main import create_classes_from_custom_id
+from ..models import workflow, history
+from ..scripting_functions import check_code
 
 
 def get_workflows(args):
@@ -41,12 +43,24 @@ def get_workflows(args):
         'data': [args['module'] if 'module' in args else '']
     }
 
+    if 'filter' in args and args['filter']:
+        _args['order_by'] = args['filter']
+        if 'order' in args and args['order']:
+            _args['order_by'] = [args['filter'] + ' ' + args['order']]
+        else:
+            _args['order_by'] = [args['filter'] + ' DESC']
+
+    if 'search' in args and args['search']:
+        _args['where'].append("(workflow_id ILIKE %s OR label ILIKE %s)")
+        _args['data'].extend(['%' + args['search'] + '%', '%' + args['search'] + '%'])
+
     if 'user_id' in args and args['user_id']:
         user_customers = user.get_customers_by_user_id(args['user_id'])
         if user_customers[1] != 200:
             return user_customers[0], user_customers[1]
 
-        _args['where'].append("((input->>'customer_id')::INTEGER IS NULL OR (input->>'customer_id')::INTEGER = ANY(%s))")
+        _args['where'].append(
+            "((input->>'customer_id')::INTEGER IS NULL OR (input->>'customer_id')::INTEGER = ANY(%s))")
         _args['data'].append(user_customers[0])
 
     _workflows = workflow.get_workflows(_args)
@@ -362,12 +376,12 @@ def create_script_and_watcher(args):
                 fs_watcher_command = new_script_filename + ' $filename'
                 if fs_watcher_job in fs_watcher_config.cfg:
                     Config.fswatcher_update_command(fs_watcher_config.file, fs_watcher_job, fs_watcher_command,
-                                                     args['workflow_label'])
+                                                    args['workflow_label'])
                     Config.fswatcher_update_watch(fs_watcher_config.file, fs_watcher_job, args['input_folder'],
-                                                   args['workflow_label'])
+                                                  args['workflow_label'])
                 else:
                     Config.fswatcher_add_section(fs_watcher_config.file, fs_watcher_job, fs_watcher_command,
-                                                  args['input_folder'], args['workflow_label'])
+                                                 args['input_folder'], args['workflow_label'])
 
                 try:
                     os.popen('sudo systemctl restart fs-watcher')

@@ -365,7 +365,26 @@
     },
     "OUTPUTS": {
         "outputs": "Cadenas de salida",
-        "select_outputs": "Selecciona las cadenas de salida a ejecutar al validar"
+        "select_outputs": "Selecciona las cadenas de salida a ejecutar al validar",
+        "add_output": "",
+        "no_outputs": "",
+        "selected_many": "",
+        "selected_one": "",
+        "selected_other": "",
+        "confirm_delete_outputs_many": "",
+        "confirm_delete_outputs_one": "",
+        "confirm_delete_outputs_other": "",
+        "delete_outputs_many": "",
+        "delete_outputs_one": "",
+        "delete_outputs_other": "",
+        "output_deleted_many": "",
+        "output_deleted_one": "",
+        "output_deleted_other": "",
+        "confirm_duplicate_output": "",
+        "duplicate_output": "",
+        "outputs_duplicated_many": "",
+        "outputs_duplicated_one": "",
+        "outputs_duplicated_other": ""
     },
     "ROLES": {
         "add_role": "Agregar un rol",
@@ -468,14 +487,17 @@
         "edit_user": "Editar el usuario",
         "custom_fields_description": "",
         "edit_custom_fields": "",
-        "add_workflow": "",
-        "edit_workflow": "",
         "workflows": "",
         "workflows_description": "",
         "workflows_many": "",
         "workflows_one": "",
         "workflows_other": "",
-        "add_custom_field": ""
+        "add_custom_field": "",
+        "outputs": "",
+        "outputs_description": "",
+        "outputs_many": "",
+        "outputs_one": "",
+        "outputs_other": ""
     },
     "SMTP": {
         "authentication": "Autenticación",
@@ -845,7 +867,10 @@
         "new_short_label": "",
         "confirm_duplicate_workflow": "",
         "duplicate_workflow": "",
-        "short_label_required": ""
+        "short_label_required": "",
+        "workflows_duplicated_many": "",
+        "workflows_duplicated_one": "",
+        "workflows_duplicated_other": ""
     },
     "MONITORING": {
         "processes": "",

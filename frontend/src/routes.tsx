@@ -28,15 +28,18 @@ import SettingsLayout from "./layout/SettingsLayout";
 import { Login } from "./pages/login";
 import { HomePage } from "./pages/home";
 import { UploadPage } from "./pages/upload";
+import { HistoryList } from "./pages/history";
 import { Onboarding } from "./pages/onboarding";
 import { SettingsIndex } from "./pages/settings";
 import { SuppliersList } from "./pages/suppliers/list";
 import { CustomersList } from "./pages/customers/list";
+import { MonitoringList } from "./pages/monitoring/list";
 import { SupplierEditor } from "./pages/suppliers/editor";
 import { CustomerEditor } from "./pages/customers/editor";
 import { FormsList } from "./components/settings/forms/list";
 import { VerifierViewerPage } from "./pages/verifier/viewer";
 import { SettingsGeneralIndex } from "./pages/settings/general";
+import { OutputsList } from "./components/settings/outputs/list";
 import { SettingsVerifierIndex } from "./pages/settings/verifier";
 import { SettingsSplitterIndex } from "./pages/settings/splitter";
 import { SettingsGeneralSMTP } from "./pages/settings/general/smtp";
@@ -56,8 +59,6 @@ import { SettingsGeneralUserEditor } from "./pages/settings/general/users/editor
 import { SettingsVerifierFormsCreate } from "./pages/settings/verifier/forms/create";
 import { SettingsSplitterFormsCreate } from "./pages/settings/splitter/forms/create";
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
-import { MonitoringList } from "./pages/monitoring/list";
-import { HistoryList } from "./pages/history";
 
 export const router = createBrowserRouter(
     [
@@ -377,20 +378,19 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader,
                                     element: <WorkflowsList module="verifier"/>,
                                     errorElement: <LoginRequiredError/>
-                                },
+                                }
+                            ]
+                        },
+                        {
+                            path: "outputs",
+                            loader: protectedLoader,
+                            handle: { breadcrumb: 'SETTINGS.outputs' },
+                            children: [
                                 {
-                                    path:'edit/:workflowId',
+                                    index: true,
                                     loader: protectedLoader,
-                                    element: <CustomFieldsEditor module="verifier"/>,
-                                    errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.edit_workflow' }
-                                },
-                                {
-                                    path:'create',
-                                    loader: protectedLoader,
-                                    element: <CustomFieldsEditor module="splitter"/>,
-                                    errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.add_workflow' }
+                                    element: <OutputsList module="verifier"/>,
+                                    errorElement: <LoginRequiredError/>
                                 }
                             ]
                         }
@@ -472,20 +472,19 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader,
                                     element: <WorkflowsList module="splitter"/>,
                                     errorElement: <LoginRequiredError/>
-                                },
+                                }
+                            ]
+                        },
+                        {
+                            path: "outputs",
+                            loader: protectedLoader,
+                            handle: { breadcrumb: 'SETTINGS.outputs' },
+                            children: [
                                 {
-                                    path:'edit/:workflowId',
+                                    index: true,
                                     loader: protectedLoader,
-                                    element: <CustomFieldsEditor module="splitter"/>,
-                                    errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.edit_workflow' }
-                                },
-                                {
-                                    path:'create',
-                                    loader: protectedLoader,
-                                    element: <CustomFieldsEditor module="splitter"/>,
-                                    errorElement: <LoginRequiredError/>,
-                                    handle: { breadcrumb: 'SETTINGS.add_workflow' }
+                                    element: <OutputsList module="splitter"/>,
+                                    errorElement: <LoginRequiredError/>
                                 }
                             ]
                         }

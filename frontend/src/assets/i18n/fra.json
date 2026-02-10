@@ -365,7 +365,26 @@
     },
     "OUTPUTS": {
         "outputs": "Chaînes sortantes",
-        "select_outputs": "Sélectionner les chaînes sortantes à exécuter lors de la validation"
+        "select_outputs": "Sélectionner les chaînes sortantes à exécuter lors de la validation",
+        "add_output": "Ajouter une chaîne sortante",
+        "no_outputs": "Aucune chaîne sortante",
+        "selected_many": "chaînes sortantes sélectionnées",
+        "selected_one": "chaîne sortante sélectionnée",
+        "selected_other": "chaînes sortantes sélectionnées",
+        "confirm_delete_outputs_many": "Voulez-vous vraiment supprimer ces {{count}} chaînes sortantes ?",
+        "confirm_delete_outputs_one": "Voulez-vous vraiment supprimer cette chaîne sortante ?",
+        "confirm_delete_outputs_other": "Voulez-vous vraiment supprimer ces {{count}} chaînes sortantes ?",
+        "delete_outputs_many": "Supprimer les chaînes sortantes",
+        "delete_outputs_one": "Supprimer la chaîne sortante",
+        "delete_outputs_other": "Supprimer les chaînes sortantes",
+        "output_deleted_many": "Chaînes sortantes supprimées avec succès",
+        "output_deleted_one": "Chaîne sortante supprimée avec succès",
+        "output_deleted_other": "Chaînes sortantes supprimées avec succès",
+        "confirm_duplicate_output": "Etes-vous sûr de vouloir dupliquer la chaîne sortante <strong>{{name}}</strong> ?",
+        "duplicate_output": "Dupliquer la chaîne sortante",
+        "outputs_duplicated_many": "Chaînes sortantes dupliquées avec succès",
+        "outputs_duplicated_one": "Chaîne sortante dupliquée avec succès",
+        "outputs_duplicated_other": "Chaînes sortantes dupliquées avec succès"
     },
     "ROLES": {
         "add_role": "Ajouter un rôle",
@@ -468,14 +487,17 @@
         "edit_user": "Modifier l'utilisateur",
         "custom_fields_description": "Liste des champs personnalisés",
         "edit_custom_fields": "Modifier le champ personnalisé",
-        "add_workflow": "Ajouter un workflow",
-        "edit_workflow": "Modifier le workflow",
         "workflows": "Workflows",
         "workflows_description": "Liste des workflows",
         "workflows_many": "Workflows",
         "workflows_one": "Workflow",
         "workflows_other": "Workflows",
-        "add_custom_field": "Ajouter un champ personnalisé"
+        "add_custom_field": "Ajouter un champ personnalisé",
+        "outputs": "Chaînes sortantes",
+        "outputs_description": "Liste des chaînes sortantes",
+        "outputs_many": "Chaînes sortantes",
+        "outputs_one": "Chaîne sortante",
+        "outputs_other": "Chaînes sortantes"
     },
     "SMTP": {
         "authentication": "Authentification",
@@ -845,7 +867,10 @@
         "new_short_label": "Nouveau libellé technique",
         "confirm_duplicate_workflow": "Etes-vous sûr de vouloir dupliquer le workflow <strong>{{name}}</strong> ?",
         "duplicate_workflow": "Dupliquer le workflow",
-        "short_label_required": "Libellé technique est obligatoire pour dupliquer un workflow"
+        "short_label_required": "Libellé technique est obligatoire pour dupliquer un workflow",
+        "workflows_duplicated_many": "Workflows dupliqués avec succès",
+        "workflows_duplicated_one": "Workflow dupliqué avec succès",
+        "workflows_duplicated_other": "Workflows dupliqués avec succès"
     },
     "MONITORING": {
         "processes": "Processus",

@@ -24,15 +24,27 @@ from ..main import create_classes_from_custom_id
 from ..functions import retrieve_custom_from_url
 
 
-def get_outputs(data):
-    args = {
-        'select': ['*', ],
-        'offset': data['offset'] if 'offset' in data else 0,
-        'limit': data['limit'] if 'limit' in data else 'ALL',
+def get_outputs(args):
+    _args = {
+        'select': ['*', 'count(*) OVER() as total'],
+        'offset': args['offset'] if 'offset' in args else 0,
+        'limit': args['limit'] if 'limit' in args else 'ALL',
         'where': ["status <> 'DEL'", "module = %s"],
-        'data': [data['module'] if 'module' in data else '']
+        'data': [args['module'] if 'module' in args else '']
     }
-    _outputs = outputs.get_outputs(args)
+
+    if 'filter' in args and args['filter']:
+        _args['order_by'] = args['filter']
+        if 'order' in args and args['order']:
+            _args['order_by'] = [args['filter'] + ' ' + args['order']]
+        else:
+            _args['order_by'] = [args['filter'] + ' DESC']
+
+    if 'search' in args and args['search']:
+        _args['where'].append("output_label ILIKE %s")
+        _args['data'].append(f"%{args['search']}%")
+
+    _outputs = outputs.get_outputs(_args)
 
     response = {
         "outputs": _outputs
