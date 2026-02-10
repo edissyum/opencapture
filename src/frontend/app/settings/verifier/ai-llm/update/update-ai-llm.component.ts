@@ -56,9 +56,9 @@ export class UpdateAiLLMComponent implements OnInit {
             class: "",
             values: [
                 {id: 'mistral', label: 'Mistral'},
+                {id: 'mistral_ocr', label: 'Mistral OCR'},
                 {id: 'gemini', label: 'Google Gemini'},
                 {id: 'copilot', label: 'Microsoft Copilot'}
-                //{id: 'custom', label: this.translate.instant('AI-LLM.custom')}
             ]
         },
         {
@@ -154,6 +154,7 @@ export class UpdateAiLLMComponent implements OnInit {
     };
     defaultUrlPlaceholder   : any           = {
         "mistral": "https://api.mistral.ai/v1/chat/completions",
+        "mistral_ocr": "https://api.mistral.ai/v1/ocr",
         "gemini": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent",
         "copilot": "https://oc.cognitiveservices.azure.com/openai/deployments/gpt-5-mini/chat/completions?api-version=2024-08-01-preview"
     };
@@ -161,6 +162,10 @@ export class UpdateAiLLMComponent implements OnInit {
         "mistral": {
             "input_price": 0.00010,
             "output_price": 0.00030
+        },
+        "mistral_ocr": {
+            "input_price": 0.86000,
+            "output_price": 0.00000
         },
         "gemini": {
             "input_price": 0.00010,
@@ -202,6 +207,129 @@ export class UpdateAiLLMComponent implements OnInit {
             "model": "mistral-small-latest",
             "messages": this.defaultPrompts,
             "response_format": this.defaultResponseFormat
+        },
+        "mistral_ocr": {
+            "document": {
+                "document_url": "##FILE_NAME##",
+                "type": "document_url"
+            },
+            "document_annotation_format": {
+                "json_schema": {
+                    "name": "invoice_info",
+                    "schema": {
+                        "properties": {
+                            "currency": {
+                                "type": "string"
+                            },
+                            "delivery_number": {
+                                "type": "string"
+                            },
+                            "document_date": {
+                                "format": "date",
+                                "type": "string"
+                            },
+                            "document_due_date": {
+                                "format": "date",
+                                "type": "string"
+                            },
+                            "invoice_number": {
+                                "type": "string"
+                            },
+                            "line_items": {
+                                "items": {
+                                    "properties": {
+                                        "description": {
+                                            "type": "string"
+                                        },
+                                        "quantity": {
+                                            "type": [
+                                                "integer",
+                                                "number"
+                                            ]
+                                        },
+                                        "reference": {
+                                            "type": "string"
+                                        },
+                                        "total_price": {
+                                            "type": "number"
+                                        },
+                                        "unit_price": {
+                                            "type": "number"
+                                        }
+                                    },
+                                    "required": [
+                                        "description",
+                                        "quantity",
+                                        "unit_price",
+                                        "total_price"
+                                    ],
+                                    "type": "object"
+                                },
+                                "type": "array"
+                            },
+                            "order_number": {
+                                "type": "string"
+                            },
+                            "quotation_number": {
+                                "type": "string"
+                            },
+                            "supplier": {
+                                "properties": {
+                                    "address_1": {
+                                        "type": "string"
+                                    },
+                                    "city": {
+                                        "type": "string"
+                                    },
+                                    "country": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "iban": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "postal_code": {
+                                        "type": "string"
+                                    },
+                                    "vat_number": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "address",
+                                    "postal_code",
+                                    "city",
+                                    "country",
+                                    "VAT_number",
+                                    "email"
+                                ],
+                                "type": "object"
+                            },
+                            "total_ht": {
+                                "type": "number"
+                            },
+                            "total_ttc": {
+                                "type": "number"
+                            },
+                            "total_vat": {
+                                "type": "number"
+                            },
+                            "vat_rate": {
+                                "type": "number"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "json_schema"
+            },
+            "model": "mistral-ocr-2512"
         },
         "copilot": {
             "temperature": 1,
@@ -341,7 +469,7 @@ export class UpdateAiLLMComponent implements OnInit {
         this.llmProvider = event.value;
         this.modelLLMForm.forEach(element => {
             if (element.id === 'url') {
-                element.placeholder = this.defaultUrlPlaceholder[this.llmProvider];
+                element.control.setValue(this.defaultUrlPlaceholder[this.llmProvider]);
             }
             if (element.id === 'input_price' || element.id === 'output_price') {
                 if (this.defaultCosts[this.llmProvider][element.id] !== undefined) {

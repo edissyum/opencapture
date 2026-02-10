@@ -437,6 +437,36 @@ export class FormBuilderComponent implements OnInit {
                     default_value: ''
                 },
                 {
+                    id: 'poste',
+                    label: _('FACTURATION.poste'),
+                    unit: 'lines',
+                    type: 'text',
+                    required: false,
+                    required_icon: 'far fa-star',
+                    class: "w-1/5",
+                    class_label: "1/5",
+                    format: 'alphanum_extended',
+                    format_icon:'fa-solid fa-hashtag',
+                    display: 'simple',
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
+                },
+                {
+                    id: 'unite',
+                    label: _('FACTURATION.unite'),
+                    unit: 'lines',
+                    type: 'text',
+                    required: false,
+                    required_icon: 'far fa-star',
+                    class: "w-1/5",
+                    class_label: "1/5",
+                    format: 'alphanum_extended',
+                    format_icon:'fa-solid fa-hashtag',
+                    display: 'simple',
+                    display_icon:'fa-solid fa-file-alt',
+                    default_value: ''
+                },
+                {
                     id: 'quantity',
                     label: _('FACTURATION.quantity'),
                     unit: 'lines',

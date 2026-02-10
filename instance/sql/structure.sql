@@ -357,6 +357,7 @@ CREATE TABLE "mailcollect" (
     "is_splitter"                   BOOLEAN      DEFAULT False,
     "enabled"                       BOOLEAN      DEFAULT True,
     "splitter_workflow_id"          VARCHAR(255),
+    "verifier_workflow_id"          VARCHAR(255),
     "folder_to_crawl"               VARCHAR(255) NOT NULL,
     "folder_destination"            VARCHAR(255) NOT NULL,
     "folder_trash"                  VARCHAR(255),
@@ -427,7 +428,7 @@ CREATE TABLE "attachments" (
 CREATE TABLE "ai_llm" (
     "id"           SERIAL       UNIQUE PRIMARY KEY,
     "name"         VARCHAR(50)  NOT NULL,
-    "provider"     VARCHAR(10)  NOT NULL,
+    "provider"     VARCHAR(50)  NOT NULL,
     "url"          VARCHAR(255),
     "api_key"      VARCHAR(255),
     "json_content" JSONB        DEFAULT '{}',

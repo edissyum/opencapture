@@ -277,6 +277,10 @@ export class WorkflowBuilderComponent implements OnInit {
                         'label': this.translate.instant('FACTURATION.invoice_number')
                     },
                     {
+                        'id': 'order_number',
+                        'label': this.translate.instant('FACTURATION.order_number')
+                    },
+                    {
                         'id': 'quotation_number',
                         'label': this.translate.instant('FACTURATION.quotation_number')
                     },

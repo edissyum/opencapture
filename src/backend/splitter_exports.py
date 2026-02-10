@@ -96,7 +96,7 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id, 
             export_zip_file = form['settings']['export_zip_file']
         else:
             outputs_id = workflow_settings['output']['outputs_id']
-    print(outputs_id)
+
     for output_id in outputs_id:
         output = outputs.get_output_by_id({'output_id': output_id})
         if not output:

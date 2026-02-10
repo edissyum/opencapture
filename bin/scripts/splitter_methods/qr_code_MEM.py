@@ -81,7 +81,7 @@ def split(splitter, pages):
                                    splitter.separator_qr.pages))
         if is_separator:
             qr_code = is_separator[0]['qr_code']
-            splitter.log.info("QR Code in page " + str(index) + " : " + str(qr_code))
+            splitter.log.info("QR Code in page " + str(index) + " : " + str(qr_code.replace('%', '%%')))
 
             """
                 MEM separator (MAARCH_ or MEM_ are a MEM Courrier prefix)
