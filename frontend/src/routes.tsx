@@ -42,6 +42,7 @@ import { SettingsGeneralIndex } from "./pages/settings/general";
 import { OutputsList } from "./components/settings/outputs/list";
 import { SettingsVerifierIndex } from "./pages/settings/verifier";
 import { SettingsSplitterIndex } from "./pages/settings/splitter";
+import { AiLLMList } from "./pages/settings/verifier/ai-llm/list";
 import { SettingsGeneralSMTP } from "./pages/settings/general/smtp";
 import { WorkflowsList } from "./components/settings/workflows/list";
 import { SettingsGeneralRegex } from "./pages/settings/general/regex";
@@ -390,6 +391,19 @@ export const router = createBrowserRouter(
                                     index: true,
                                     loader: protectedLoader,
                                     element: <OutputsList module="verifier"/>,
+                                    errorElement: <LoginRequiredError/>
+                                }
+                            ]
+                        },
+                        {
+                            path: "ai-llm",
+                            loader: protectedLoader,
+                            handle: { breadcrumb: 'SETTINGS.ai_llm' },
+                            children: [
+                                {
+                                    index: true,
+                                    loader: protectedLoader,
+                                    element: <AiLLMList module="verifier"/>,
                                     errorElement: <LoginRequiredError/>
                                 }
                             ]

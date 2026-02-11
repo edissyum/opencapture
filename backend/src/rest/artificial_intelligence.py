@@ -142,6 +142,7 @@ def list_llm_models():
     check, message = rest_validator(request.args, [
         {'id': 'order', 'type': str, 'mandatory': False},
         {'id': 'limit', 'type': int, 'mandatory': False},
+        {'id': 'search', 'type': str, 'mandatory': False},
         {'id': 'offset', 'type': int, 'mandatory': False}
     ])
     if not check:

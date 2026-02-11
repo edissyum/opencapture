@@ -464,14 +464,27 @@ def rename_model(new_name, model_id, module):
         return response, 400
 
 def list_llm_models(args):
-    _llm_models = artificial_intelligence.get_llm_models({
+    _args = {
         'select': ['*', 'count(*) OVER() as total'],
         'where': ["status <> %s"],
         'data': ['DEL'],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
         'offset': str(args['offset']) if 'offset' in args else 0,
         'order': args['order'] if 'order' in args else 'id DESC'
-    })
+    }
+
+    if 'filter' in args and args['filter']:
+        _args['order_by'] = args['filter']
+        if 'order' in args and args['order']:
+            _args['order_by'] = [args['filter'] + ' ' + args['order']]
+        else:
+            _args['order_by'] = [args['filter'] + ' DESC']
+
+    if 'search' in args and args['search']:
+        _args['where'][0] += " AND (name ILIKE %s OR provider ILIKE %s)"
+        _args['data'].extend(['%' + args['search'] + '%', '%' + args['search'] + '%'])
+
+    _llm_models = artificial_intelligence.get_llm_models(_args)
     response = {
         "llm_models": _llm_models
     }

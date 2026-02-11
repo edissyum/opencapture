@@ -14,7 +14,7 @@ deskew==1.5.3
 pyzbar==0.1.9
 pandas==3.0.0
 kuyruk==10.2.1
-pillow==12.1.0
+pillow==12.1.1
 imutils==0.5.4
 factur-x==3.15
 psycopg==3.3.2

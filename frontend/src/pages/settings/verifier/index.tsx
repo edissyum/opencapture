@@ -15,7 +15,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { LayoutTemplate } from "lucide-react";
+import { BrainCircuit, CodeXml, FolderOutput, LayoutTemplate, Workflow } from "lucide-react";
 
 import { SettingsCard } from "../../../components/settings/SettingsCard";
 
@@ -30,22 +30,29 @@ export const getSettingsVerifierOptions = () => [
     {
         name: t('VERIFIER.custom_fields'),
         description: t('SETTINGS.custom_fields_description'),
-        icon: <LayoutTemplate/>,
+        icon: <CodeXml/>,
         href: '/settings/verifier/custom-fields',
         module: 'verifier'
     },
     {
         name: t('SETTINGS.workflows'),
         description: t('SETTINGS.workflows_description'),
-        icon: <LayoutTemplate/>,
+        icon: <Workflow/>,
         href: '/settings/verifier/workflows',
         module: 'verifier'
     },
     {
         name: t('SETTINGS.outputs'),
         description: t('SETTINGS.outputs_description'),
-        icon: <LayoutTemplate/>,
+        icon: <FolderOutput/>,
         href: '/settings/verifier/outputs',
+        module: 'verifier'
+    },
+    {
+        name: t('SETTINGS.ai_llm'),
+        description: t('SETTINGS.ai_llm_description'),
+        icon: <BrainCircuit/>,
+        href: '/settings/verifier/ai-llm',
         module: 'verifier'
     }
 ];

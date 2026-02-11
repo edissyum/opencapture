@@ -497,7 +497,12 @@
         "outputs_description": "Liste des chaînes sortantes",
         "outputs_many": "Chaînes sortantes",
         "outputs_one": "Chaîne sortante",
-        "outputs_other": "Chaînes sortantes"
+        "outputs_other": "Chaînes sortantes",
+        "ai_llm": "Modèle IA LLM",
+        "ai_llm_description": "Paramétrage IA LLM - extraction",
+        "ai_llm_many": "Modèles d'IA LLM",
+        "ai_llm_one": "Modèle d'IA LLM",
+        "ai_llm_other": "Modèles d'IA LLM"
     },
     "SMTP": {
         "authentication": "Authentification",
@@ -885,5 +890,23 @@
         "confirm_retry_process": "Voulez-vous vraiment relancer le processus ?",
         "retry_process": "Relancer le processus",
         "process_relaunched": "Processus relancé avec succès"
+    },
+    "AI-LLM": {
+        "provider": "Fournisseur",
+        "url": "URL",
+        "add_model": "Ajouter un modèle",
+        "confirm_delete_model_many": "Voulez-vous vraiment supprimer ces {{count}} modèles d'IA LLM ?",
+        "confirm_delete_model_one": "Voulez-vous vraiment supprimer ce modèle d'IA LLM ?",
+        "confirm_delete_model_other": "Voulez-vous vraiment supprimer ces {{count}} modèles d'IA LLM ?",
+        "delete_model_many": "Supprimer les modèles d'IA LLM",
+        "delete_model_one": "Supprimer le modèle d'IA LLM",
+        "delete_model_other": "Supprimer les modèles d'IA LLM",
+        "model_deleted_many": "Modèles d'IA LLM supprimés avec succès",
+        "model_deleted_one": "Modèle d'IA LLM supprimé avec succès",
+        "model_deleted_other": "Modèles d'IA LLM supprimés avec succès",
+        "no_models": "Aucun modèle d'IA LLM",
+        "selected_many": "modèles sélectionnés",
+        "selected_one": "modèle sélectionné",
+        "selected_other": "modèles sélectionnés"
     }
 }

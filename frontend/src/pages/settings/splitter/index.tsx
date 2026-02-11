@@ -15,7 +15,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { LayoutTemplate } from "lucide-react";
+import { CodeXml, FolderOutput, LayoutTemplate, Workflow } from "lucide-react";
 import { SettingsCard } from "../../../components/settings/SettingsCard";
 
 export const getSettingsSplitterOptions = () => [
@@ -29,22 +29,22 @@ export const getSettingsSplitterOptions = () => [
     {
         name: t('VERIFIER.custom_fields'),
         description: t('SETTINGS.custom_fields_description'),
-        icon: <LayoutTemplate/>,
+        icon: <CodeXml/>,
         href: '/settings/splitter/custom-fields',
         module: 'splitter'
     },
     {
         name: t('SETTINGS.workflows'),
         description: t('SETTINGS.workflows_description'),
-        icon: <LayoutTemplate/>,
+        icon: <Workflow/>,
         href: '/settings/splitter/workflows',
         module: 'splitter'
     },
     {
         name: t('SETTINGS.outputs'),
         description: t('SETTINGS.outputs_description'),
-        icon: <LayoutTemplate/>,
-        href: '/settings/verifier/outputs',
+        icon: <FolderOutput/>,
+        href: '/settings/splitter/outputs',
         module: 'splitter'
     }
 ];

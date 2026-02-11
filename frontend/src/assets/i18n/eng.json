@@ -458,7 +458,11 @@
         "outputs": "",
         "outputs_description": "",
         "outputs_one": "",
-        "outputs_other": ""
+        "outputs_other": "",
+        "ai_llm": "",
+        "ai_llm_description": "",
+        "ai_llm_one": "",
+        "ai_llm_other": ""
     },
     "SMTP": {
         "authentication": "Authentication",
@@ -816,5 +820,19 @@
         "confirm_retry_process": "",
         "retry_process": "",
         "process_relaunched": ""
+    },
+    "AI-LLM": {
+        "provider": "",
+        "url": "",
+        "add_model": "",
+        "confirm_delete_model_one": "",
+        "confirm_delete_model_other": "",
+        "delete_model_one": "",
+        "delete_model_other": "",
+        "model_deleted_one": "",
+        "model_deleted_other": "",
+        "no_models": "",
+        "selected_one": "",
+        "selected_other": ""
     }
 }
