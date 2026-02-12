@@ -28,7 +28,7 @@ import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../../../services/hooks/ConfirmDialog";
 import { usePersistentState } from "../../../../services/hooks/usePersistentState";
 
-export function AiLLMList({ module }: { module: string }) {
+export function SettingsVerifierAiLLMList({ module }: { module: string }) {
     const { get, del } = axiosApiCall();
 
     const [aiLlm, setAiLlm] = useState([]);

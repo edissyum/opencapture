@@ -50,9 +50,16 @@ def get_history(request_args):
     args = {
         'select': ['*', 'count(*) OVER() as total', "to_char(history_date, '" + _format + "') as date"],
         'offset': request_args['offset'] if 'offset' in request_args else 0,
-        'limit': request_args['limit'] if 'limit' in request_args else 'ALL',
-        'order_by': ['id DESC']
+        'limit': request_args['limit'] if 'limit' in request_args else 'ALL'
     }
+
+    if 'filter' in request_args and request_args['filter']:
+        args['order_by'] = request_args['filter']
+        if 'order' in request_args and request_args['order']:
+            args['order_by'] = [request_args['filter'] + ' ' + request_args['order']]
+        else:
+            args['order_by'] = [request_args['filter'] + ' DESC']
+
     where = []
     data = []
     if 'user' in request_args and request_args['user']:

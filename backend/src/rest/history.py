@@ -57,8 +57,10 @@ def get_history():
         {'id': 'user', 'type': str, 'mandatory': False},
         {'id': 'year', 'type': int, 'mandatory': False},
         {'id': 'limit', 'type': int, 'mandatory': False},
+        {'id': 'order', 'type': str, 'mandatory': False},
         {'id': 'offset', 'type': int, 'mandatory': False},
         {'id': 'module', 'type': str, 'mandatory': False},
+        {'id': 'filter', 'type': str, 'mandatory': False},
         {'id': 'submodule', 'type': str, 'mandatory': False}
     ])
 

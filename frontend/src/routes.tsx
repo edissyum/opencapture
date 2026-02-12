@@ -17,16 +17,23 @@
 
 import { createBrowserRouter } from "react-router-dom";
 
-import { protectedLoader } from "./components/auth/auth";
-import LoginRequiredError from "./components/errors/LoginRequired";
-
-import { getCustomFromUrl } from "./services/custom/getCustom";
-
 import MainLayout from "./layout/MainLayout";
 import SettingsLayout from "./layout/SettingsLayout";
 
+import { protectedLoader } from "./components/auth/auth";
+import { FormsList } from "./components/settings/forms/list";
+import { OutputsList } from "./components/settings/outputs/list";
+import LoginRequiredError from "./components/errors/LoginRequired";
+import { WorkflowsList } from "./components/settings/workflows/list";
+import { FormEditor } from "./components/settings/forms/editor/Editor";
+import { CustomFieldsList } from "./components/settings/custom-fields/list";
+import { CustomFieldsEditor } from "./components/settings/custom-fields/editor";
+
+import { getCustomFromUrl } from "./services/custom/getCustom";
+
 import { Login } from "./pages/login";
 import { HomePage } from "./pages/home";
+import { AboutPage } from "./pages/about";
 import { UploadPage } from "./pages/upload";
 import { HistoryList } from "./pages/history";
 import { Onboarding } from "./pages/onboarding";
@@ -36,27 +43,21 @@ import { CustomersList } from "./pages/customers/list";
 import { MonitoringList } from "./pages/monitoring/list";
 import { SupplierEditor } from "./pages/suppliers/editor";
 import { CustomerEditor } from "./pages/customers/editor";
-import { FormsList } from "./components/settings/forms/list";
 import { VerifierViewerPage } from "./pages/verifier/viewer";
 import { SettingsGeneralIndex } from "./pages/settings/general";
-import { OutputsList } from "./components/settings/outputs/list";
 import { SettingsVerifierIndex } from "./pages/settings/verifier";
 import { SettingsSplitterIndex } from "./pages/settings/splitter";
-import { AiLLMList } from "./pages/settings/verifier/ai-llm/list";
 import { SettingsGeneralSMTP } from "./pages/settings/general/smtp";
-import { WorkflowsList } from "./components/settings/workflows/list";
 import { SettingsGeneralRegex } from "./pages/settings/general/regex";
-import { FormEditor } from "./components/settings/forms/editor/Editor";
 import { SettingsGeneralRoles } from "./pages/settings/general/roles/list";
 import { SettingsGeneralUsers } from "./pages/settings/general/users/list";
 import { SettingsGeneralSecurity } from "./pages/settings/general/security";
 import { SettingsGeneralAdvanced } from "./pages/settings/general/advanced";
-import { CustomFieldsList } from "./components/settings/custom-fields/list";
 import { SettingsGeneralDocservers } from "./pages/settings/general/docservers";
-import { CustomFieldsEditor } from "./components/settings/custom-fields/editor";
 import { SettingsGeneralMailcollect } from "./pages/settings/general/mailcollect";
 import { SettingsGeneralRoleEditor } from "./pages/settings/general/roles/editor";
 import { SettingsGeneralUserEditor } from "./pages/settings/general/users/editor";
+import { SettingsVerifierAiLLMList } from "./pages/settings/verifier/ai-llm/list";
 import { SettingsVerifierFormsCreate } from "./pages/settings/verifier/forms/create";
 import { SettingsSplitterFormsCreate } from "./pages/settings/splitter/forms/create";
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
@@ -80,6 +81,12 @@ export const router = createBrowserRouter(
                 {
                     path: "home",
                     element: <HomePage/>,
+                    loader: protectedLoader,
+                    errorElement: <LoginRequiredError/>
+                },
+                {
+                    path: "about",
+                    element: <AboutPage/>,
                     loader: protectedLoader,
                     errorElement: <LoginRequiredError/>
                 },
@@ -403,7 +410,7 @@ export const router = createBrowserRouter(
                                 {
                                     index: true,
                                     loader: protectedLoader,
-                                    element: <AiLLMList module="verifier"/>,
+                                    element: <SettingsVerifierAiLLMList module="verifier"/>,
                                     errorElement: <LoginRequiredError/>
                                 }
                             ]
