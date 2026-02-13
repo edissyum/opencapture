@@ -224,9 +224,10 @@ def retrieve_documents(args):
     if 'allowedCustomers' in args and args['allowedCustomers']:
         args['where'].append('customer_id IN (' + ','.join(map(str, args['allowedCustomers'])) + ')')
     else:
-        allowed_customers, _ = user.get_customers_by_user_id(args['user_id'])
-        allowed_customers.append(0)
-        args['where'].append('customer_id IN (' + ','.join(map(str, allowed_customers)) + ')')
+        if 'user_id' in args and args['user_id']:
+            allowed_customers, _ = user.get_customers_by_user_id(args['user_id'])
+            allowed_customers.append(0)
+            args['where'].append('customer_id IN (' + ','.join(map(str, allowed_customers)) + ')')
 
     if 'allowedSuppliers' in args and args['allowedSuppliers']:
         if not args['allowedSuppliers'][0]:

@@ -41,6 +41,7 @@ import { SettingsIndex } from "./pages/settings";
 import { SuppliersList } from "./pages/suppliers/list";
 import { CustomersList } from "./pages/customers/list";
 import { MonitoringList } from "./pages/monitoring/list";
+import { StatisticsPage } from "./pages/statistics/list";
 import { SupplierEditor } from "./pages/suppliers/editor";
 import { CustomerEditor } from "./pages/customers/editor";
 import { VerifierViewerPage } from "./pages/verifier/viewer";
@@ -87,6 +88,12 @@ export const router = createBrowserRouter(
                 {
                     path: "about",
                     element: <AboutPage/>,
+                    loader: protectedLoader,
+                    errorElement: <LoginRequiredError/>
+                },
+                {
+                    path: "statistics",
+                    element: <StatisticsPage/>,
                     loader: protectedLoader,
                     errorElement: <LoginRequiredError/>
                 },

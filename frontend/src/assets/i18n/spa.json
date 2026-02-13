@@ -908,5 +908,18 @@
         "selected_many": "",
         "selected_one": "",
         "selected_other": ""
+    },
+    "STATISTICS": {
+        "bar_chart": "",
+        "pie_chart": "",
+        "select_statistic": "",
+        "select_year": "",
+        "verifier_batches_uploaded_per_month": "",
+        "verifier_batches_uploaded_per_user": "",
+        "verifier_batches_uploaded_per_worklow": "",
+        "verifier_batches_uploaded_per_year": "",
+        "verifier_batches_validated_per_form": "",
+        "verifier_batches_validated_per_user": "",
+        "select_chart": ""
     }
 }

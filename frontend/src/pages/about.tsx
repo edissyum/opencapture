@@ -20,7 +20,7 @@ export function AboutPage() {
     return (
         <div className="p-4">
             <h1 className="text-2xl font-bold mb-4">About Open-Capture</h1>
-            <p>Version: {packageJson.version}</p>
+            <p>Version: { packageJson.version }</p>
         </div>
     );
 }
