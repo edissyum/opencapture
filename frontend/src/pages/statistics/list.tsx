@@ -82,7 +82,10 @@ export function StatisticsPage() {
         const fetchAvailableYears = async () => {
             const res = await get('/history/getAvailableYears');
             if (res.years) {
-                const uniqueYears: any = Array.from(new Set(res.years.map((data: any) => data.year)));
+                const uniqueYears: any = Array.from(new Set(res.years.map((data: any) => {
+                    return { 'value': data.year, 'label': data.year }
+                })));
+                uniqueYears.unshift({ 'value': null, 'label': t('STATISTICS.all_years') });
                 setAvailableYears(uniqueYears);
             }
         };
@@ -150,7 +153,7 @@ export function StatisticsPage() {
                 value={ selectedYear }
                 labelFusion={ true }
                 label={ t('STATISTICS.select_year') }
-                options={ availableYears.map(year => ({ value: year, label: year.toString() })) }
+                options={ availableYears.map(year => ({ value: year.value, label: year.label })) }
                 onChange={ (e) => setSelectedYear(e.value) }
             />
 

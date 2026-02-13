@@ -910,8 +910,6 @@
         "selected_other": "modèles sélectionnés"
     },
     "STATISTICS": {
-        "bar_chart": "Graphique en barres",
-        "pie_chart": "Graphique circulaire",
         "select_statistic": "Choix de la statistique à afficher",
         "select_year": "Choix de l'année",
         "verifier_batches_uploaded_per_month": "Lots uploadés sur l'année",
@@ -920,6 +918,6 @@
         "verifier_batches_uploaded_per_year": "Lots uploadés par année",
         "verifier_batches_validated_per_form": "Lots traités par formulaire",
         "verifier_batches_validated_per_user": "Lots traités par utilisateur",
-        "select_chart": "Choix du type de graphique"
+        "all_years": "Toutes les années"
     }
 }
