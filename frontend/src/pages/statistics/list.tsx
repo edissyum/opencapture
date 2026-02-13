@@ -16,7 +16,7 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import { Bar, BarChart, Legend, Pie, PieChart, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, Tooltip, XAxis, YAxis } from "recharts";
 
 import { statisticsFunctions } from "./functions";
 
@@ -30,15 +30,9 @@ export function StatisticsPage() {
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
 
-    const chartTypes = [
-        { value: 'pie', label: t('STATISTICS.pie_chart') },
-        { value: 'bar', label: t('STATISTICS.bar_chart') }
-    ];
-
     const [statisticData, setStatisticData] = useState<any>({});
     const [selectedModule, setSelectedModule] = useState<string>();
     const [selectedStatisticId, setSelectedStatisticId] = useState<string>();
-    const [selectedChartType, setSelectedChartType] = useState<string>('bar');
 
     const [availableYears, setAvailableYears] = useState<number[]>([]);
     const [selectedYear, setSelectedYear] = useState<number | null>(null);
@@ -152,14 +146,6 @@ export function StatisticsPage() {
                 onChange={ handleStatisticChange }
             />
             <Dropdown
-                id="select-chart"
-                labelFusion={ true }
-                value={ selectedChartType }
-                label={ t('STATISTICS.select_chart') }
-                options={ chartTypes }
-                onChange={ (e) => setSelectedChartType(e.value) }
-            />
-            <Dropdown
                 id="select-year"
                 value={ selectedYear }
                 labelFusion={ true }
@@ -168,29 +154,16 @@ export function StatisticsPage() {
                 onChange={ (e) => setSelectedYear(e.value) }
             />
 
-            { selectedStatisticId && statisticData[selectedStatisticId] && selectedChartType && (
-                <>
-                    { selectedChartType === 'pie' && (
-                        <PieChart key={ selectedStatisticId } className='w-full aspect-square max-h-[60vh]' responsive
-                                  data={ statisticData[selectedStatisticId].data }>
-                            <Pie dataKey="value" label/>
-                            <Tooltip/>
-                            <Legend/>
-                        </PieChart>
-                    ) }
-
-                    { selectedChartType === 'bar' && (
-                        <BarChart key={ selectedStatisticId } className='w-full aspect-square max-h-[60vh]' responsive
-                                  data={ statisticData[selectedStatisticId].data }>
-                            <Bar dataKey="value" label={ { position: "top" } }/>
-                            <XAxis dataKey="name"/>
-                            <YAxis/>
-                            <Tooltip
-                                formatter={ (value) => [`${ value }`, t('SECURITY.value')] }
-                            />
-                        </BarChart>
-                    ) }
-                </>
+            { selectedStatisticId && statisticData[selectedStatisticId] && (
+                <BarChart key={ selectedStatisticId } className='w-full aspect-square max-h-[60vh]' responsive
+                          data={ statisticData[selectedStatisticId].data }>
+                    <Bar dataKey="value" label={ { position: "top" } }/>
+                    <XAxis dataKey="name"/>
+                    <YAxis/>
+                    <Tooltip formatter={
+                        (value) => [`${ value }`, t('SECURITY.value')]
+                    }/>
+                </BarChart>
             ) }
         </div>
     );
