@@ -220,7 +220,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
     const watchTest = watch("test");
     const watchType = watch("type");
     const watchLabel = watch("label");
-    console.log(errors)
+
     // Fill form when custom_field data is loaded
     useEffect(() => {
         if (Object.keys(customField).length === 0) return;
