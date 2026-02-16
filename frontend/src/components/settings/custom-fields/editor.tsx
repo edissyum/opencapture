@@ -32,7 +32,6 @@ import { Dropdown } from "../../Dropdown";
 import { showToast } from "../../ToastProvider";
 
 import { DynamicForm } from "../../form/DynamicForm";
-import { emptyToUndefined } from "../../../services/zod";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 import { useCustomFields } from "../../../services/hooks/useCustomFields";
 
@@ -103,7 +102,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
             label: t("ROLES.label_short")
         }))
     };
-    let detailsSchema;
+    let detailsSchema: any = {};
     if (module === 'verifier') {
         detailsSchema = z.object({
             ...baseShape
@@ -111,7 +110,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
     } else if (module === 'splitter') {
         detailsSchema = z.object({
             ...baseShape,
-            metadata_key: emptyToUndefined(z.string()).describe(JSON.stringify({
+            metadata_key: z.string().nullable().optional().describe(JSON.stringify({
                 component: "dropdown",
                 type: "text",
                 label: t("CUSTOM-FIELDS.autocomplete"),
@@ -139,8 +138,8 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         }))
     });
 
-    const regexDetailsSchema = z.object({
-        format: emptyToUndefined(z.string()).describe(JSON.stringify({
+    const regexDetailsSchema: any = z.object({
+        format: z.string().nullable().describe(JSON.stringify({
             component: "dropdown",
             label: t("REGEX.format"),
             options: [
@@ -159,8 +158,8 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
             label: t("REGEX.char_min")
         })),
     });
-    const regexContentSchema = z.object({
-        content: emptyToUndefined(z.string()).describe(JSON.stringify({
+    const regexContentSchema: any = z.object({
+        content: z.string().describe(JSON.stringify({
             component: "input",
             bgColor: "bg-(--color-primary)/15",
             textColor: "color-primary",
@@ -168,14 +167,14 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
             label: t("REGEX.content")
         })),
     });
-    const regexRemoveKeywordSchema = z.object({
-        remove_keyword: z.boolean().nullable().optional().describe(JSON.stringify({
+    const regexRemoveKeywordSchema: any = z.object({
+        remove_keyword: z.boolean().optional().describe(JSON.stringify({
             component: "input_switch",
             label: t("REGEX.remove_keyword")
         }))
     });
-    const regexCleanSchema = z.object({
-        remove_keyword_value: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
+    const regexCleanSchema: any = z.object({
+        remove_keyword_value: z.string().optional().describe(JSON.stringify({
             component: "input",
             bgColor: "bg-(--text-error)/15",
             textColor: "text-error",
@@ -191,13 +190,13 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
             label: t("REGEX.remove_spaces")
         }))
     });
-    const regexTestSchema = z.object({
-        test: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
+    const regexTestSchema: any = z.object({
+        test: z.string().optional().describe(JSON.stringify({
             component: "input",
             label: t("REGEX.test_value")
         }))
     });
-    const regexSchema = regexDetailsSchema.extend(regexContentSchema.shape).
+    const regexSchema: any = regexDetailsSchema.extend(regexContentSchema.shape).
         extend(regexCleanSchema.shape).
         extend(regexRemoveKeywordSchema.shape).
         extend(regexTestSchema.shape);
@@ -210,15 +209,18 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
     }[]>([]);
 
     const { control, watch, setValue, handleSubmit, formState: { errors } } = useForm({
-        // @ts-ignore
         resolver: zodResolver(detailsSchema.extend(typeSchema.shape).extend(regexSchema.shape)),
-        defaultValues: {},
-        mode: "onChange"
+        mode: "onChange",
+        defaultValues: {
+            metadata_key: "",
+            format: "",
+            remove_keyword_value: false
+        }
     });
     const watchTest = watch("test");
     const watchType = watch("type");
     const watchLabel = watch("label");
-
+    console.log(errors)
     // Fill form when custom_field data is loaded
     useEffect(() => {
         if (Object.keys(customField).length === 0) return;
@@ -460,15 +462,21 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                                          schema={ regexTestSchema }/>
                         </div>
 
-                        <h1 className="text-lg font-semibold mt-2">
-                            { t('REGEX.result') }
-                        </h1>
+                        { highlightedResult &&
+                            (
+                                <>
+                                    <h1 className="text-lg font-semibold mt-2">
+                                        { t('REGEX.result') }
+                                    </h1>
 
-                        { watchTest && (
-                            <div className={ 'mt-2 p-4 rounded-md w-fit' }>
-                                <div dangerouslySetInnerHTML={ { __html: highlightedResult } }/>
-                            </div>
-                        ) }
+                                    { watchTest && (
+                                        <div className={ 'mt-2 p-4 rounded-md w-fit' }>
+                                            <div dangerouslySetInnerHTML={ { __html: highlightedResult } }/>
+                                        </div>
+                                    ) }
+
+                                </>
+                            ) }
                     </div>
                 </>
             ) }

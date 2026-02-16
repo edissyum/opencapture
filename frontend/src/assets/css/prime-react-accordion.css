@@ -89,6 +89,7 @@
 /* Floating label */
 .p-float-label:has(.p-filled) label,
 .p-float-label:has(input:focus) label,
+.p-float-label:has(textarea:focus) label,
 .p-float-label:has(.p-inputwrapper-filled) label {
     @apply px-1;
     @apply h-3.5;

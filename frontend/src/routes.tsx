@@ -62,6 +62,7 @@ import { SettingsVerifierAiLLMList } from "./pages/settings/verifier/ai-llm/list
 import { SettingsVerifierFormsCreate } from "./pages/settings/verifier/forms/create";
 import { SettingsSplitterFormsCreate } from "./pages/settings/splitter/forms/create";
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
+import { SettingsVerifierAiLLMEditor } from "./pages/settings/verifier/ai-llm/editor";
 
 export const router = createBrowserRouter(
     [
@@ -377,7 +378,7 @@ export const router = createBrowserRouter(
                                 {
                                     path:'create',
                                     loader: protectedLoader,
-                                    element: <CustomFieldsEditor module="splitter"/>,
+                                    element: <CustomFieldsEditor module="verifier"/>,
                                     errorElement: <LoginRequiredError/>,
                                     handle: { breadcrumb: 'SETTINGS.add_custom_field' }
                                 }
@@ -417,8 +418,22 @@ export const router = createBrowserRouter(
                                 {
                                     index: true,
                                     loader: protectedLoader,
-                                    element: <SettingsVerifierAiLLMList module="verifier"/>,
+                                    element: <SettingsVerifierAiLLMList/>,
                                     errorElement: <LoginRequiredError/>
+                                },
+                                {
+                                    path:'edit/:aiLLMId',
+                                    loader: protectedLoader,
+                                    element: <SettingsVerifierAiLLMEditor/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.edit_ai_llm' }
+                                },
+                                {
+                                    path:'create',
+                                    loader: protectedLoader,
+                                    element: <SettingsVerifierAiLLMEditor/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.add_ai_llm' }
                                 }
                             ]
                         }
@@ -484,7 +499,7 @@ export const router = createBrowserRouter(
                                 {
                                     path:'create',
                                     loader: protectedLoader,
-                                    element: <CustomFieldsEditor module="verifier"/>,
+                                    element: <CustomFieldsEditor module="splitter"/>,
                                     errorElement: <LoginRequiredError/>,
                                     handle: { breadcrumb: 'SETTINGS.add_custom_field' }
                                 }

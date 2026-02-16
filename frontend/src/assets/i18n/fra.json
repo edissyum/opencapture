@@ -257,7 +257,8 @@
         "french": "Français",
         "action_irreversible": "Cette action est irréversible.",
         "updating": "Mise à jour en cours...",
-        "relaunch": "Relancer"
+        "relaunch": "Relancer",
+        "copied": "Copié"
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validé avec succès",
@@ -502,7 +503,9 @@
         "ai_llm_description": "Paramétrage IA LLM - extraction",
         "ai_llm_many": "Modèles d'IA LLM",
         "ai_llm_one": "Modèle d'IA LLM",
-        "ai_llm_other": "Modèles d'IA LLM"
+        "ai_llm_other": "Modèles d'IA LLM",
+        "add_ai_llm": "Ajouter un modèle d'IA LLM",
+        "edit_ai_llm": "Modifier le modèle d'IA LLM"
     },
     "SMTP": {
         "authentication": "Authentification",
@@ -907,7 +910,23 @@
         "no_models": "Aucun modèle d'IA LLM",
         "selected_many": "modèles sélectionnés",
         "selected_one": "modèle sélectionné",
-        "selected_other": "modèles sélectionnés"
+        "selected_other": "modèles sélectionnés",
+        "details": "Détails du modèle",
+        "name": "Nom du modèle",
+        "api_key": "Clé API",
+        "costs": "Finances",
+        "input_cost": "Prix d'entrée",
+        "output_cost": "Prix de sortie",
+        "json_content": "Contenu de l'appel API (format JSON)",
+        "create_ai_llm": "Créer le modèle d'IA LLM",
+        "update_ai_llm": "Mettre à jour le modèle d'IA LLM",
+        "json_content_hint_prefix": "Le contenu de l’appel API doit contenir",
+        "json_content_hint_suffix": "pour indiquer où le contenu OCR du document doit être inséré.",
+        "api_call": "Appel API",
+        "costs_description": "Coûts pour 1000 tokens. Utilisé à des fins de suivi et d'alerte financière, il ne s'agit pas de coûts réels et ne sont pas mis à jour automatiquement. Veuillez les mettre à jour manuellement en fonction de votre contrat avec le fournisseur de l'API.",
+        "json_content_invalid": "Le contenu de l'appel API doit être un JSON valide",
+        "created": "Modèle d'IA LLM créé avec succès",
+        "updated": "Modèle d'IA LLM mis à jour avec succès"
     },
     "STATISTICS": {
         "select_statistic": "Choix de la statistique à afficher",

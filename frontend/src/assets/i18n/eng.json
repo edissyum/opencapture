@@ -237,7 +237,8 @@
         "action_irreversible": "",
         "updating": "",
         "label": "",
-        "relaunch": ""
+        "relaunch": "",
+        "copied": ""
     },
     "HISTORY": {
         "document_validated": "Document #<strong>{{ documentId }}</strong> successfully validated",
@@ -462,7 +463,9 @@
         "ai_llm": "",
         "ai_llm_description": "",
         "ai_llm_one": "",
-        "ai_llm_other": ""
+        "ai_llm_other": "",
+        "add_ai_llm": "",
+        "edit_ai_llm": ""
     },
     "SMTP": {
         "authentication": "Authentication",
@@ -833,7 +836,23 @@
         "model_deleted_other": "",
         "no_models": "",
         "selected_one": "",
-        "selected_other": ""
+        "selected_other": "",
+        "details": "",
+        "name": "",
+        "api_key": "",
+        "costs": "",
+        "input_cost": "",
+        "output_cost": "",
+        "json_content": "",
+        "create_ai_llm": "",
+        "update_ai_llm": "",
+        "json_content_hint_prefix": "",
+        "json_content_hint_suffix": "",
+        "api_call": "",
+        "costs_description": "",
+        "json_content_invalid": "",
+        "created": "",
+        "updated": ""
     },
     "STATISTICS": {
         "select_statistic": "",

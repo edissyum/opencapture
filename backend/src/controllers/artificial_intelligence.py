@@ -506,9 +506,14 @@ def get_model_llm_by_id(model_id):
 
 def create_llm_model(data):
     _columns = {
+        'url': data['url'],
         'name': data['name'],
-        'provider': data['provider']
+        'api_key': data['api_key'],
+        'provider': data['provider'],
+        'json_content': json.dumps(data['json_content'])
     }
+    if 'settings' in data:
+        _columns['settings'] = json.dumps(data['settings'])
 
     res, error = artificial_intelligence.create_llm_model({'columns': _columns})
 

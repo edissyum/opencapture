@@ -27,7 +27,7 @@ import { showToast } from "../../ToastProvider";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../../services/hooks/ConfirmDialog";
 import { usePersistentState } from "../../../services/hooks/usePersistentState";
-import { showConfirmDialogWithInput } from "../../../services/hooks/ConfirmDialogWithInput.tsx";
+import { showConfirmDialogWithInput } from "../../../services/hooks/ConfirmDialogWithInput";
 
 export function WorkflowsList({ module }: { module: string }) {
     const { get, post, del } = axiosApiCall();

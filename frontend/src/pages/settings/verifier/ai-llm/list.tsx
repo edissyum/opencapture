@@ -28,7 +28,7 @@ import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../../../services/hooks/ConfirmDialog";
 import { usePersistentState } from "../../../../services/hooks/usePersistentState";
 
-export function SettingsVerifierAiLLMList({ module }: { module: string }) {
+export function SettingsVerifierAiLLMList() {
     const { get, del } = axiosApiCall();
 
     const [aiLlm, setAiLlm] = useState([]);
@@ -43,7 +43,7 @@ export function SettingsVerifierAiLLMList({ module }: { module: string }) {
         page: number;
         sortField: string | null;
         sortOrder: 1 | -1 | null;
-    }>(`aiLlmList${module}LazyParams`, {
+    }>(`aiLlmListVerifierLazyParams`, {
             first: 0,
             rows: 16,
             page: 0,
@@ -171,7 +171,7 @@ export function SettingsVerifierAiLLMList({ module }: { module: string }) {
                        value={ searchTerm } placeholder={ t('USERS.search') } noMarginBottom={ true }
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
-                    <Link to={ `/settings/ai-llm/create` }>
+                    <Link to={ `/settings/verifier/ai-llm/create` }>
                         <Button size={ 'sm' }
                                 className='p-2 border'
                                 variant={ "no_bg_border" }>
@@ -181,7 +181,7 @@ export function SettingsVerifierAiLLMList({ module }: { module: string }) {
                 </span>
             </div>
             <Table
-                baseLink={ `/settings/ai-llm/edit/` }
+                baseLink={ `/settings/verifier/ai-llm/edit/` }
                 data={ aiLlm }
                 actions={ actions }
                 pagination={ true }

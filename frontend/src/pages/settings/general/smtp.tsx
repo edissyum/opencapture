@@ -35,7 +35,7 @@ export function SettingsGeneralSMTP() {
 
     const smtpProtocoleSecureEnum = z.enum(['ssl', 'tls', 'none']);
 
-    const schema = z.object({
+    const schema: any = z.object({
         smtpHost: z.string().min(1, { message: t('SMTP.smtp_host_required') }),
         smtpPort: z.number().min(1).max(65535),
         smtpProtocoleSecure: smtpProtocoleSecureEnum,
@@ -57,14 +57,15 @@ export function SettingsGeneralSMTP() {
         setValue,
         formState: { errors, isSubmitting }
     } = useForm<FormData>({
-        // @ts-ignore
         resolver: zodResolver(schema),
         mode: 'onChange',
         defaultValues: {
             smtpHost: "smtp.gmail.com",
             smtpPort: 465,
             smtpProtocoleSecure: 'ssl',
-            smtpAuth: true
+            smtpAuth: true,
+            smtpFromMail: "",
+            smtpDestAdminMail: ""
         }
     });
 

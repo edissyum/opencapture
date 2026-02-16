@@ -197,24 +197,25 @@ export function SupplierEditor({
     });
 
     const supplierSchema = z.object({
-        name: z.string().min(1).optional().describe(JSON.stringify({
+        name: z.string().optional().describe(JSON.stringify({
             component: "input",
             className: "col-span-3",
+            required: !informalContact,
             type: "text",
             label: t("ACCOUNTS.name")
         })),
-        email: emptyToUndefined(z.email().optional()).describe(JSON.stringify({
+        email: emptyToUndefined(z.email()).optional().describe(JSON.stringify({
             component: "input",
             className: "col-span-2",
             type: "email",
             label: t("USERS.email")
         })),
-        phone: emptyToUndefined(z.string().min(1)).optional().describe(JSON.stringify({
+        phone: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "phone",
             label: t("ACCOUNTS.phone")
         })),
-        civility: emptyToUndefined(z.string().optional()).describe(JSON.stringify({
+        civility: z.string().optional().describe(JSON.stringify({
             component: "dropdown",
             options: civilities.map((civility) => ({
                 label: civility.label,
@@ -222,25 +223,25 @@ export function SupplierEditor({
             })),
             label: t("USERS.civility")
         })),
-        lastname: emptyToUndefined(z.string().min(1)).optional().describe(JSON.stringify({
+        lastname: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             required: informalContact,
             className: "col-span-2",
             label: t("ACCOUNTS.lastname")
         })),
-        firstname: emptyToUndefined(z.string().min(1)).describe(JSON.stringify({
+        firstname: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             className: "col-span-2",
             label: t("USERS.firstname")
         })),
-        function: emptyToUndefined(z.string().min(1)).describe(JSON.stringify({
+        function: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ACCOUNTS.function")
         })),
-        vat_number: emptyToUndefined(z.string()).optional().refine((value) => {
+        vat_number: z.string().optional().refine((value) => {
                 if (!value) return true;
                 const regex = regexes.find(r => r.id === "vat_number")?.content;
                 if (!regex) return true;
@@ -257,17 +258,17 @@ export function SupplierEditor({
             className: "col-span-2",
             label: t("ACCOUNTS.vat_number")
         })),
-        siren: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
+        siren: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ACCOUNTS.siren")
         })),
-        siret: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
+        siret: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ACCOUNTS.siret")
         })),
-        duns: emptyToUndefined(z.string().min(1)).optional().refine((value) => {
+        duns: z.string().refine((value) => {
                 if (!value) return true;
                 const regex = regexes.find(r => r.id === "duns")?.content;
                 if (!regex) return true;
@@ -301,7 +302,7 @@ export function SupplierEditor({
             type: "text",
             label: t("ACCOUNTS.rccm")
         })),
-        document_lang: emptyToUndefined(z.string()).describe(JSON.stringify({
+        document_lang: z.string().describe(JSON.stringify({
             component: "dropdown",
             options: [
                 { label: t('GLOBAL.french'), value: "fra" },
@@ -309,12 +310,12 @@ export function SupplierEditor({
             ],
             label: t("ACCOUNTS.document_lang")
         })),
-        default_currency: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
+        default_currency: z.string().optional().describe(JSON.stringify({
             component: "dropdown",
             options: currencies,
             label: t("ACCOUNTS.default_currency")
         })),
-        form_id: emptyToUndefined(z.number()).optional().describe(JSON.stringify({
+        form_id: z.number().optional().describe(JSON.stringify({
             component: "dropdown",
             options: forms.map((form) => ({
                 label: form.label,
@@ -323,7 +324,7 @@ export function SupplierEditor({
             className: "col-span-2",
             label: t("FORMS.form_name")
         })),
-        default_accounting_plan: emptyToUndefined(z.number()).optional().describe(JSON.stringify({
+        default_accounting_plan: z.number().optional().describe(JSON.stringify({
             component: "dropdown",
             filter: true,
             options: accountingPlans,
@@ -333,27 +334,27 @@ export function SupplierEditor({
     });
 
     const addressSchema = z.object({
-        address1: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
+        address1: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ADDRESSES.address1")
         })),
-        address2: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
+        address2: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ADDRESSES.address2")
         })),
-        postal_code: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
+        postal_code: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ADDRESSES.postal_code")
         })),
-        city: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
+        city: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ADDRESSES.city")
         })),
-        country: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
+        country: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ADDRESSES.country")
@@ -361,9 +362,32 @@ export function SupplierEditor({
     });
 
     const { control, watch, setValue, setError, clearErrors, handleSubmit, formState: { errors } } = useForm({
+        mode: "onChange",
         resolver: zodResolver(supplierSchema.safeExtend(addressSchema.shape).extend(supplierBooleansSchema.shape)),
-        defaultValues: {},
-        mode: "onChange"
+        defaultValues: {
+            email: "",
+            phone: "",
+            civility: "",
+            lastname: "",
+            firstname: "",
+            function: "",
+            vat_number: "",
+            siren: "",
+            siret: "",
+            duns: "",
+            iban: "",
+            bic: "",
+            rccm: "",
+            document_lang: "",
+            default_currency: "",
+            form_id: undefined,
+            default_accounting_plan: undefined,
+            address1: "",
+            address2: "",
+            postal_code: "",
+            city: "",
+            country: ""
+        }
     });
 
     const duns = watch("duns");

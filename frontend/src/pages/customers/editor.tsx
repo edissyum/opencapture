@@ -16,19 +16,18 @@
 
 import { z } from "zod";
 import { t } from "i18next";
+import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate, useParams } from "react-router-dom";
 import { Accordion, AccordionTab } from "primereact/accordion";
 
-import { emptyToUndefined } from "../../services/zod";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 
 import { Button } from "../../components/Button";
 import { showToast } from "../../components/ToastProvider";
 import { DynamicForm } from "../../components/form/DynamicForm";
-import { ArrowLeft } from "lucide-react";
 
 export function CustomerEditor() {
     const { get, post, put } = axiosApiCall();
@@ -41,6 +40,8 @@ export function CustomerEditor() {
 
     // fetch customer data
     useEffect(() => {
+        if (!customerId) return;
+
         const fetchCustomer = async () => {
             try {
                 const response = await get(`/accounts/customers/getById/${ customerId }`);
@@ -77,28 +78,28 @@ export function CustomerEditor() {
     }, [customer, address]);
 
     const customerSchema = z.object({
-        name: emptyToUndefined(z.string()).describe(JSON.stringify({
+        name: z.string().min(1).describe(JSON.stringify({
             component: "input",
             required: true,
             type: "text",
             label: t("ACCOUNTS.name")
         })),
-        vat_number: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
+        vat_number: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ACCOUNTS.vat_number")
         })),
-        siren: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
+        siren: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ACCOUNTS.siren")
         })),
-        siret: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
+        siret: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ACCOUNTS.siret")
         })),
-        company_number: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
+        company_number: z.string().optional().describe(JSON.stringify({
             component: "input",
             required: false,
             type: "text",
@@ -115,27 +116,27 @@ export function CustomerEditor() {
     });
 
     const addressSchema = z.object({
-        address1: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
+        address1: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ADDRESSES.address1")
         })),
-        address2: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
+        address2: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ADDRESSES.address2")
         })),
-        postal_code: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
+        postal_code: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ADDRESSES.postal_code")
         })),
-        city: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
+        city: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ADDRESSES.city")
         })),
-        country: emptyToUndefined(z.string()).optional().describe(JSON.stringify({
+        country: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ADDRESSES.country")
@@ -144,7 +145,19 @@ export function CustomerEditor() {
 
     const { control, setValue, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(customerSchema.safeExtend(addressSchema.shape)),
-        defaultValues: {},
+        defaultValues: {
+            name: "",
+            vat_number: "",
+            siren: "",
+            siret: "",
+            company_number: "",
+            module: "",
+            address1: "",
+            address2: "",
+            postal_code: "",
+            city: "",
+            country: ""
+        },
         mode: "onChange"
     });
 

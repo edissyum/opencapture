@@ -467,8 +467,7 @@ def create_customer():
     if not privileges.has_privileges(request.environ['user_id'], ['create_customer']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/customers/create'}), 403
 
-    data = request.json['args']
-    check, message = rest_validator(data, [
+    check, message = rest_validator(request.json, [
         {'id': 'name', 'type': str, 'mandatory': True},
         {'id': 'siret', 'type': int, 'mandatory': False},
         {'id': 'siren', 'type': int, 'mandatory': False},
@@ -482,7 +481,7 @@ def create_customer():
             "message": message
         }, 400)
 
-    res = accounts.create_customer(data)
+    res = accounts.create_customer(request.json)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -592,7 +591,7 @@ def delete_civility(civility_id):
 def create_civility():
     if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list | access_verifier']):
         return jsonify(
-            {'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/accounts/civilities/delete/{civility_id}'}), 403
+            {'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/accounts/civilities/create'}), 403
 
     data = request.json
     check, message = rest_validator(data, [

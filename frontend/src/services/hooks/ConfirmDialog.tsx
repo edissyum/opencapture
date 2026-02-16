@@ -19,6 +19,8 @@ import React from "react";
 import { t } from "i18next";
 import { confirmDialog } from 'primereact/confirmdialog';
 
+import Hint from "../../components/Hint";
+
 export function showConfirmDialog({
     hint,
     title,
@@ -47,15 +49,19 @@ export function showConfirmDialog({
         acceptClassName += " bg-(--text-error)! border-(--text-error)! hover:bg-(--text-error)/10! hover:text-(--text-error)!";
     }
 
+    let content: any = message;
     if (hint) {
-        let hintClassName;
-        if (danger) {
-            hintClassName = 'font-semibold bg-(--text-error)/10 border-(--text-error)';
-        } else {
-            hintClassName = 'bg-(--color-primary)/10 border-(--border-primary)';
-        }
+        content = (
+            <>
+                <span dangerouslySetInnerHTML={ { __html: message } }/>
 
-        message += `<p class="${ hintClassName } mt-4 p-4 border-2 border-r-0 border-b-0 border-t-0">${ hint }</p>`;
+                { hint && (
+                    <Hint variant={ danger ? "error" : "success" }>
+                        { hint }
+                    </Hint>
+                ) }
+            </>
+        );
     }
 
     confirmDialog({
@@ -66,7 +72,7 @@ export function showConfirmDialog({
         className: "max-w-3xl!",
         rejectLabel: cancelText,
         acceptLabel: confirmText,
-        message: <span dangerouslySetInnerHTML={ { __html: message } }/>,
+        message: content,
         acceptClassName: acceptClassName,
         rejectClassName: "outline-none! shadow-none! bg-transparent! text-(--text-secondary)! border-2! border-transparent! hover:border-2! hover:border-(--text-secondary)!",
         accept() {
