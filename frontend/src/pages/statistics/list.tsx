@@ -16,10 +16,12 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
+import { ChevronDown, Filter, Package } from "lucide-react";
 import { Bar, BarChart, Tooltip, XAxis, YAxis } from "recharts";
 
 import { statisticsFunctions } from "./functions";
 
+import { Button } from "../../components/Button";
 import { Dropdown } from "../../components/Dropdown";
 
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
@@ -28,7 +30,13 @@ export function StatisticsPage() {
     const { get, post } = axiosApiCall();
 
     const [users, setUsers] = useState<any[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [displayFilters, setDisplayFilters] = useState(false);
+
+    const [open, setOpen] = useState({
+        module: true,
+        statistics: true,
+        year: true
+    });
 
     const [statisticData, setStatisticData] = useState<any>({});
     const [selectedModule, setSelectedModule] = useState<string>();
@@ -72,11 +80,9 @@ export function StatisticsPage() {
     const [filteredStatisticsOptions, setFilteredStatisticsOptions] = useState(statisticsOptions);
 
     useEffect(() => {
-        setLoading(true);
         const fetchUsers = async () => {
             const res = await get('/users/list_full')
             setUsers(res.users);
-            setLoading(false);
         };
 
         const fetchAvailableYears = async () => {
@@ -130,44 +136,121 @@ export function StatisticsPage() {
         }
     }
 
-    return (
-        <div className="p-4 h-full">
-            <Dropdown
-                id="module"
-                labelFusion={ true }
-                value={ selectedModule }
-                label={ t('MAILCOLLECT.module') }
-                options={ [{ 'value': 'verifier', 'label': 'Verifier' }, { 'value': 'splitter', 'label': 'Splitter' }] }
-                onChange={ handleModuleChange }
-            />
-            <Dropdown
-                id="statistics-dropdown"
-                labelFusion={ true }
-                value={ selectedStatisticId }
-                label={ t('STATISTICS.select_statistic') }
-                options={ filteredStatisticsOptions.map(option => ({ value: option.id, label: option.label })) }
-                onChange={ handleStatisticChange }
-            />
-            <Dropdown
-                id="select-year"
-                value={ selectedYear }
-                labelFusion={ true }
-                label={ t('STATISTICS.select_year') }
-                options={ availableYears.map(year => ({ value: year.value, label: year.label })) }
-                onChange={ (e) => setSelectedYear(e.value) }
-            />
+    const handleResetFilters = () => {
+        setSelectedModule(undefined);
+        setSelectedStatisticId(undefined);
+        setFilteredStatisticsOptions(statisticsOptions);
+    }
 
-            { selectedStatisticId && statisticData[selectedStatisticId] && (
-                <BarChart key={ selectedStatisticId } className='w-full aspect-square max-h-[60vh]' responsive
-                          data={ statisticData[selectedStatisticId].data }>
-                    <Bar dataKey="value" label={ { position: "top" } }/>
-                    <XAxis dataKey="name"/>
-                    <YAxis/>
-                    <Tooltip formatter={
-                        (value) => [`${ value }`, t('SECURITY.value')]
-                    }/>
-                </BarChart>
-            ) }
+    return (
+        <div className="flex h-full w-full overflow-hidden">
+            <div className={ `h-full transition-all duration-200 border-r-2 border-(--border-secondary)
+                            ${ displayFilters ? "w-[400px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
+                <div className='border-b-2 border-(--border-secondary) p-4 flex items-center justify-between'>
+                    <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
+                    <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary)'
+                          onClick={ handleResetFilters }>
+                        { t('VERIFIER.erase_filters') }
+                    </span>
+                </div>
+                <div className='p-4 flex flex-col gap-6 h-full overflow-y-auto'>
+                    <div className='flex flex-col'>
+                        <div className="flex items-center justify-between cursor-pointer mb-2"
+                             onClick={ () => setOpen({ ...open, module: !open.module }) }>
+                            <div className="flex items-center gap-2">
+                                <Package className="text-(--color-primary)" size={ 20 }/>
+                                <h3 className='text-lg font-semibold'>{ t('MAILCOLLECT.module') }</h3>
+                            </div>
+                            <ChevronDown
+                                size={ 18 }
+                                className={ `transition-transform ${ open.module ? "rotate-180" : "" }` }/>
+                        </div>
+
+                        { open.module && (
+                            <div className='mt-2'>
+                                <Dropdown
+                                    id="module"
+                                    value={ selectedModule }
+                                    label={ t('MAILCOLLECT.module') }
+                                    options={ [{ 'value': 'verifier', 'label': 'Verifier' }, { 'value': 'splitter', 'label': 'Splitter' }] }
+                                    onChange={ handleModuleChange }
+                                />
+                            </div>
+                        ) }
+                    </div>
+                    <div className='flex flex-col'>
+                        <div className="flex items-center justify-between cursor-pointer mb-2"
+                             onClick={ () => setOpen({ ...open, statistics: !open.statistics }) }>
+                            <div className="flex items-center gap-2">
+                                <Package className="text-(--color-primary)" size={ 20 }/>
+                                <h3 className='text-lg font-semibold'>{ t('GLOBAL.statistics') }</h3>
+                            </div>
+                            <ChevronDown
+                                size={ 18 }
+                                className={ `transition-transform ${ open.statistics ? "rotate-180" : "" }` }/>
+                        </div>
+
+                        { open.statistics && (
+                            <div className='mt-2'>
+                                <Dropdown
+                                    id="statistics"
+                                    value={ selectedStatisticId }
+                                    label={ t('STATISTICS.select_statistic') }
+                                    options={ filteredStatisticsOptions.map(option => ({ value: option.id, label: option.label })) }
+                                    onChange={ handleStatisticChange }
+                                />
+                            </div>
+                        ) }
+                    </div>
+                    <div className='flex flex-col'>
+                        <div className="flex items-center justify-between cursor-pointer mb-2"
+                             onClick={ () => setOpen({ ...open, year: !open.year }) }>
+                            <div className="flex items-center gap-2">
+                                <Package className="text-(--color-primary)" size={ 20 }/>
+                                <h3 className='text-lg font-semibold'>{ t('STATISTICS.year_optionnal') }</h3>
+                            </div>
+                            <ChevronDown
+                                size={ 18 }
+                                className={ `transition-transform ${ open.year ? "rotate-180" : "" }` }/>
+                        </div>
+
+                        { open.year && (
+                            <div className='mt-2'>
+                                <Dropdown
+                                    id="year"
+                                    value={ selectedYear }
+                                    label={ t('STATISTICS.select_year') }
+                                    options={ availableYears.map((year: any) => ({ value: year.value, label: year.label })) }
+                                    onChange={ (e) => setSelectedYear(e.value) }
+                                />
+                            </div>
+                        ) }
+                    </div>
+                </div>
+            </div>
+
+            <div className='p-4 h-full w-full flex flex-col flex-1 z-10'>
+                <div className='flex items-center gap-6 mb-4'>
+                    <Button icon={ <Filter size={ 14 }/> } onClick={ () => setDisplayFilters(!displayFilters) }
+                            className={ `rounded-3xl hover:text-(--color-primary) text-(--text-primary)
+                                            border-(--border-secondary) p-2.5! bg-(--bg-primary)
+                                            ${ displayFilters ? 'bg-(--color-primary) text-white hover:text-white' : 'bg-(--bg-primary) text-(--text-primary)' }` }>
+                        { t('VERIFIER.filters') }
+                    </Button>
+                </div>
+
+                { selectedStatisticId && statisticData[selectedStatisticId] && (
+                    <BarChart key={ selectedStatisticId } className='w-full aspect-square max-h-[70vh]' responsive
+                              data={ statisticData[selectedStatisticId].data }>
+                        <Bar dataKey="value" label={ { position: "top" } }/>
+                        <XAxis dataKey="name"/>
+                        <YAxis/>
+                        <Tooltip formatter={
+                            (value) => [`${ value }`, t('SECURITY.value')]
+                        }/>
+                    </BarChart>
+                ) }
+            </div>
         </div>
     );
 }

@@ -168,7 +168,7 @@ export function HistoryList() {
                             </div>
                             <ChevronDown
                                 size={ 18 }
-                                className={ `transition-transform ${ open.submodule ? "rotate-180" : "" }` }/>
+                                className={ `transition-transform ${ open.user ? "rotate-180" : "" }` }/>
                         </div>
 
                         { open.user && (

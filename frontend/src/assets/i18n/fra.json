@@ -918,6 +918,7 @@
         "verifier_batches_uploaded_per_year": "Lots uploadés par année",
         "verifier_batches_validated_per_form": "Lots traités par formulaire",
         "verifier_batches_validated_per_user": "Lots traités par utilisateur",
-        "all_years": "Toutes les années"
+        "all_years": "Toutes les années",
+        "year_optionnal": "Année (optionnelle)"
     }
 }
