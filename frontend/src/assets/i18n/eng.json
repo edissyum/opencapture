@@ -864,6 +864,8 @@
         "verifier_batches_validated_per_form": "",
         "verifier_batches_validated_per_user": "",
         "all_years": "",
-        "year_optionnal": ""
+        "year_optionnal": "",
+        "results": "",
+        "select_filters": ""
     }
 }

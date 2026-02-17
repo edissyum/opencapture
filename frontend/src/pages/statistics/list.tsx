@@ -172,7 +172,10 @@ export function StatisticsPage() {
                                     id="module"
                                     value={ selectedModule }
                                     label={ t('MAILCOLLECT.module') }
-                                    options={ [{ 'value': 'verifier', 'label': 'Verifier' }, { 'value': 'splitter', 'label': 'Splitter' }] }
+                                    options={ [{ 'value': 'verifier', 'label': 'Verifier' }, {
+                                        'value': 'splitter',
+                                        'label': 'Splitter'
+                                    }] }
                                     onChange={ handleModuleChange }
                                 />
                             </div>
@@ -196,7 +199,10 @@ export function StatisticsPage() {
                                     id="statistics"
                                     value={ selectedStatisticId }
                                     label={ t('STATISTICS.select_statistic') }
-                                    options={ filteredStatisticsOptions.map(option => ({ value: option.id, label: option.label })) }
+                                    options={ filteredStatisticsOptions.map(option => ({
+                                        value: option.id,
+                                        label: option.label
+                                    })) }
                                     onChange={ handleStatisticChange }
                                 />
                             </div>
@@ -220,7 +226,10 @@ export function StatisticsPage() {
                                     id="year"
                                     value={ selectedYear }
                                     label={ t('STATISTICS.select_year') }
-                                    options={ availableYears.map((year: any) => ({ value: year.value, label: year.label })) }
+                                    options={ availableYears.map((year: any) => ({
+                                        value: year.value,
+                                        label: year.label
+                                    })) }
                                     onChange={ (e) => setSelectedYear(e.value) }
                                 />
                             </div>
@@ -229,7 +238,7 @@ export function StatisticsPage() {
                 </div>
             </div>
 
-            <div className='p-4 h-full w-full flex flex-col flex-1 z-10'>
+            <div className='p-8 h-full w-full flex flex-col flex-1 z-10'>
                 <div className='flex items-center gap-6 mb-4'>
                     <Button icon={ <Filter size={ 14 }/> } onClick={ () => setDisplayFilters(!displayFilters) }
                             className={ `rounded-3xl hover:text-(--color-primary) text-(--text-primary)
@@ -237,9 +246,14 @@ export function StatisticsPage() {
                                             ${ displayFilters ? 'bg-(--color-primary) text-white hover:text-white' : 'bg-(--bg-primary) text-(--text-primary)' }` }>
                         { t('VERIFIER.filters') }
                     </Button>
+                    { selectedStatisticId && statisticData[selectedStatisticId] && (
+                        <span>
+                            { t('STATISTICS.results') } : { statisticData[selectedStatisticId].total }
+                        </span>
+                    ) }
                 </div>
 
-                { selectedStatisticId && statisticData[selectedStatisticId] && (
+                { selectedStatisticId && statisticData[selectedStatisticId] ? (
                     <BarChart key={ selectedStatisticId } className='w-full aspect-square max-h-[70vh]' responsive
                               data={ statisticData[selectedStatisticId].data }>
                         <Bar dataKey="value" label={ { position: "top" } }/>
@@ -249,6 +263,14 @@ export function StatisticsPage() {
                             (value) => [`${ value }`, t('SECURITY.value')]
                         }/>
                     </BarChart>
+                ) : (
+                    <div className='w-full h-full relative'>
+                        <img className={ 'absolute rotate-y-180 rotate-20 -left-1/8 -top-15' }
+                             src={ '/src/assets/imgs/arrow.svg' } alt='Arrow description'/>
+                        <div className='h-full flex items-center justify-center text-(--text-secondary)'>
+                            { t('STATISTICS.select_filters') }
+                        </div>
+                    </div>
                 ) }
             </div>
         </div>

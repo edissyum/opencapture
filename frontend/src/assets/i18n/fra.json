@@ -938,6 +938,8 @@
         "verifier_batches_validated_per_form": "Lots traités par formulaire",
         "verifier_batches_validated_per_user": "Lots traités par utilisateur",
         "all_years": "Toutes les années",
-        "year_optionnal": "Année (optionnelle)"
+        "year_optionnal": "Année (optionnelle)",
+        "results": "Nombre de résultats",
+        "select_filters": "Sélectionnez des filtres pour afficher les statistiques correspondantes"
     }
 }

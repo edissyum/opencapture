@@ -133,6 +133,8 @@ export const statisticsFunctions = {
     },
 
     verifierBatchesUploadedPerMonth: async (params: any) => {
+        if (!params.selectedYear) return null;
+
         const storageLocale = localStorage.getItem('selectedLang');
         let locale = 'fr-FR';
         if (storageLocale === 'eng') {
