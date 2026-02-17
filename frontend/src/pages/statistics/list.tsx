@@ -238,18 +238,18 @@ export function StatisticsPage() {
                 </div>
             </div>
 
-            <div className='p-8 h-full w-full flex flex-col flex-1 z-10'>
-                <div className='flex items-center gap-6 mb-4'>
+            <div className='p-8 h-full w-full flex flex-col flex-1'>
+                <div className='flex items-center gap-6 mb-4 z-1'>
                     <Button icon={ <Filter size={ 14 }/> } onClick={ () => setDisplayFilters(!displayFilters) }
                             className={ `rounded-3xl hover:text-(--color-primary) text-(--text-primary)
-                                            border-(--border-secondary) p-2.5! bg-(--bg-primary)
-                                            ${ displayFilters ? 'bg-(--color-primary) text-white hover:text-white' : 'bg-(--bg-primary) text-(--text-primary)' }` }>
+                                         border-(--border-secondary) p-2.5! bg-(--bg-primary)
+                                         ${ displayFilters ? 'bg-(--color-primary) text-white hover:text-white' : 'bg-(--bg-primary) text-(--text-primary)' }` }>
                         { t('VERIFIER.filters') }
                     </Button>
                     { selectedStatisticId && statisticData[selectedStatisticId] && (
-                        <span>
+                        <>
                             { t('STATISTICS.results') } : { statisticData[selectedStatisticId].total }
-                        </span>
+                        </>
                     ) }
                 </div>
 
@@ -265,7 +265,7 @@ export function StatisticsPage() {
                     </BarChart>
                 ) : (
                     <div className='w-full h-full relative'>
-                        <img className={ 'absolute rotate-y-180 rotate-20 -left-1/8 -top-15' }
+                        <img className={ 'absolute rotate-y-180 rotate-20 -left-1/8 -top-15 z-0' }
                              src={ '/src/assets/imgs/arrow.svg' } alt='Arrow description'/>
                         <div className='h-full flex items-center justify-center text-(--text-secondary)'>
                             { t('STATISTICS.select_filters') }
