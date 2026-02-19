@@ -265,8 +265,6 @@ export function StatisticsPage() {
                     </BarChart>
                 ) : (
                     <div className='w-full h-full relative'>
-                        <img className={ 'absolute rotate-y-180 rotate-20 -left-1/8 -top-15 z-0' }
-                             src={ '/src/assets/imgs/arrow.svg' } alt='Arrow description'/>
                         <div className='h-full flex items-center justify-center text-(--text-secondary)'>
                             { t('STATISTICS.select_filters') }
                         </div>
