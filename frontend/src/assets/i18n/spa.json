@@ -340,7 +340,9 @@
         "process_created": "Proceso creado con éxito",
         "process_duplicated": "Proceso duplicado con éxito",
         "enter_new_process_name_create": "Introduce el nombre del nuevo proceso MailCollect",
-        "ldap_connection_successful": ""
+        "ldap_connection_successful": "",
+        "ocr_attachments": "",
+        "ocr_attachments_hint": ""
     },
     "ONBOARD": {
         "select_module": "Selección del módulo predeterminado",

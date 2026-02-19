@@ -19,20 +19,20 @@ import { t } from "i18next";
 import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { ArrowLeft, Ban, CornerUpRight, Trash } from "lucide-react";
+import { ArrowLeft, Ban, CircleQuestionMark, CornerUpRight, Trash } from "lucide-react";
 
 import { Stepper } from "primereact/stepper";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputSwitch } from "primereact/inputswitch";
 import { StepperPanel } from "primereact/stepperpanel";
 
+import { getSchemaForAuthMethod } from "./authSchema";
+
 import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
 import { RadioBox } from "../../../../components/RadioBox";
 import { Dropdown } from "../../../../components/Dropdown";
 import { showToast } from "../../../../components/ToastProvider";
-
-import { getSchemaForAuthMethod } from "./authSchema";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 
@@ -71,6 +71,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
     const modulesSchema: any = z.object({
         module: z.enum(['verifier', 'splitter']).default('verifier'),
         is_splitter: z.boolean().default(false),
+        ocr_attachments: z.boolean().optional(),
         verifier_insert_body_as_doc: z.boolean().optional(),
         verifier_workflow_id: z.any().optional(),
         splitter_insert_body_as_doc: z.boolean().optional(),
@@ -111,6 +112,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
         defaultValues: { authMethod }
     });
 
+    // Set form values from process on load
     useEffect(() => {
         setValueAuth("securedConnection", process.secured_connection);
         Object.keys(process.options).forEach((key: any) => {
@@ -129,6 +131,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
         });
     }, [process]);
 
+    // Update auth form values when auth method changes, to reset fields that are not common between methods and set default values
     useEffect(() => {
         Object.keys(authSchema.shape).forEach((key: any) => {
             if (!getValuesAuth(key)) {
@@ -416,8 +419,9 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                 <div className="flex gap-4 mb-4">
                     { modules.map((module) => (
                         <Controller
-                            control={ modulesControl }
                             name='is_splitter'
+                            key={ module.value }
+                            control={ modulesControl }
                             render={ ({ field }) => (
                                 <RadioBox
                                     label={ module.label }
@@ -433,6 +437,23 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                 </div>
 
                 <div>
+                    <Controller
+                        name="ocr_attachments"
+                        control={ modulesControl }
+                        render={ ({ field }) => (
+                            <div className='mb-6 flex gap-2 relative w-fit'>
+                                <InputSwitch inputId={ 'ocr_attachments' } checked={ field.value }
+                                             onChange={ (e) => field.onChange(e.value) }/>
+                                <label htmlFor='ocr_attachments'
+                                       className="flex items-center gap-4 cursor-pointer select-none">
+                                    { t('MAILCOLLECT.ocr_attachments') }
+                                </label>
+                                <span className={ `absolute cursor-pointer z-10 -right-6 -top-0.5 text-(--text-secondary)` }>
+                                    <CircleQuestionMark data-tooltip-id="tooltip" data-tooltip-content={ t('MAILCOLLECT.ocr_attachments_hint') } size={ 16 }/>
+                                </span>
+                            </div>
+                        ) }
+                    />
                     { selectedModule === 'verifier' && (
                         <>
                             <Controller
@@ -543,6 +564,5 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                 </div>
             </StepperPanel>
         </Stepper>
-    )
-        ;
+    );
 }

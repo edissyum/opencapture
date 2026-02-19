@@ -340,7 +340,9 @@
         "process_created": "Processus créé avec succès",
         "process_duplicated": "Processus dupliqué avec succès",
         "enter_new_process_name_create": "Entrez le nom du nouveau processus MailCollect",
-        "ldap_connection_successful": "Connexion LDAP réussie"
+        "ldap_connection_successful": "Connexion LDAP réussie",
+        "ocr_attachments": "Océriser les pièces jointes",
+        "ocr_attachments_hint": "Si activé, les pièces jointes seront océrisées avant d'être traitées par Open-Capture. Ne fonctionne qu'avec des PJ au format PDF."
     },
     "ONBOARD": {
         "select_module": "Choix du module par défaut",

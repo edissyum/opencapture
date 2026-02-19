@@ -76,6 +76,7 @@ def update_process(process_id):
         {'id': 'options', 'type': dict, 'mandatory': True},
         {'id': 'is_splitter', 'type': bool, 'mandatory': False},
         {'id': 'folder_to_crawl', 'type': str, 'mandatory': True},
+        {'id': 'ocr_attachments', 'type': bool, 'mandatory': False},
         {'id': 'folder_destination', 'type': str, 'mandatory': True},
         {'id': 'secured_connection', 'type': bool, 'mandatory': False},
         {'id': 'action_after_process', 'type': str, 'mandatory': True},

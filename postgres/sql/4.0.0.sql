@@ -173,3 +173,6 @@ WHERE fields::text LIKE '%FACTURATION.delivery_number%';
 
 -- Suppression de la colonne enabled des custom_fields
 ALTER TABLE custom_fields DROP COLUMN enabled;
+
+-- Ajout de l'océrisation des PJ dans le MailCollect
+ALTER TABLE mailcollect ADD COLUMN ocr_attachments BOOLEAN DEFAULT false;

@@ -28,6 +28,7 @@ import chardet
 import requests
 import mimetypes
 from ssl import SSLError
+from .Files import Files
 from tnefparse import TNEF
 from xhtml2pdf import pisa
 from socket import gaierror
@@ -318,7 +319,7 @@ class Mail:
 
         return data
 
-    def backup_email(self, msg, backup_path):
+    def backup_email(self, msg, backup_path, log, ocr_attachments):
         """
         Backup e-mail into path
 
@@ -397,6 +398,10 @@ class Mail:
                     with open(file_path, 'wb') as attach:
                         attach.write(file['content'])
                     attach.close()
+
+                if file_path and os.path.isfile(file_path) and ocr_attachments:
+                    if file['format'] and file['format'].lower() in ['.pdf']:
+                        Files.ocrise_pdf(file_path, log)
         return True
 
     def move_to_destination_folder(self, msg, destination, log):
