@@ -24,12 +24,25 @@ from ..models import positions_masks, history
 
 def get_positions_masks(data):
     args = {
-        'select': ['positions_masks.*', 'form_models.label as form_label', 'count(*) OVER() as total'],
+        'select': ['positions_masks.*', 'form_models.label as form_label', 'accounts_supplier.name as supplier_name', 'count(*) OVER() as total'],
         'offset': data['offset'] if 'offset' in data else 0,
         'limit': data['limit'] if 'limit' in data else 'ALL',
-        'where': ["positions_masks.status <> 'DEL'"],
+        'where': ["positions_masks.status <> %s"],
+        'data': ['DEL'],
         'order_by': ['positions_masks.id ASC']
     }
+
+    if 'filter' in data and data['filter']:
+        args['order_by'] = data['filter']
+        if 'order' in data and data['order']:
+            args['order_by'] = [data['filter'] + ' ' + data['order']]
+        else:
+            args['order_by'] = [data['filter'] + ' DESC']
+
+    if 'search' in data and data['search']:
+        args['where'].extend(['(positions_masks.label ILIKE %s OR form_models.label ILIKE %s OR accounts_supplier.name ILIKE %s)'])
+        args['data'].extend(['%' + data['search'] + '%', '%' + data['search'] + '%', '%' + data['search'] + '%'])
+
     _positions_masks, error = positions_masks.get_positions_masks(args)
     if error is None:
         response = {

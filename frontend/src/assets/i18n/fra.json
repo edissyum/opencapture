@@ -507,7 +507,12 @@
         "ai_llm_one": "Modèle d'IA LLM",
         "ai_llm_other": "Modèles d'IA LLM",
         "add_ai_llm": "Ajouter un modèle d'IA LLM",
-        "edit_ai_llm": "Modifier le modèle d'IA LLM"
+        "edit_ai_llm": "Modifier le modèle d'IA LLM",
+        "positions-masks": "Masques de positions",
+        "positions-masks_description": "Création et gestion des masques de positions",
+        "positions-masks_many": "Masques de positions",
+        "positions-masks_one": "Masque de position",
+        "positions-masks_other": "Masques de positions"
     },
     "SMTP": {
         "authentication": "Authentification",
@@ -943,5 +948,21 @@
         "year_optionnal": "Année (optionnelle)",
         "results": "Nombre de résultats",
         "select_filters": "Sélectionnez des filtres pour afficher les statistiques correspondantes"
+    },
+    "POSITIONS-MASKS": {
+        "add_model": "Ajouter un masque de position",
+        "confirm_delete_model_many": "Voulez-vous vraiment supprimer ces {{count}} masques de position ?",
+        "confirm_delete_model_one": "Voulez-vous vraiment supprimer ce masque de position ?",
+        "confirm_delete_model_other": "Voulez-vous vraiment supprimer ces {{count}} masques de position ?",
+        "delete_model_many": "Supprimer les masques de position",
+        "delete_model_one": "Supprimer le masque de position",
+        "delete_model_other": "Supprimer les masques de position",
+        "deleted_many": "Masques de position supprimés avec succès",
+        "deleted_one": "Masque de position supprimé avec succès",
+        "deleted_other": "Masques de position supprimés avec succès",
+        "selected_many": "masques selectionnés",
+        "selected_one": "masque sélectionné",
+        "selected_other": "masques sélectionnés",
+        "no_positions_masks": "Aucun masque de position"
     }
 }

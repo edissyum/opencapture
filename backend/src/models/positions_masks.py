@@ -32,8 +32,8 @@ def get_positions_masks(args):
     error = None
     positions_masks = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['positions_masks', 'form_models'],
-        'left_join': ['positions_masks.form_id = form_models.id'],
+        'table': ['positions_masks', 'form_models', 'accounts_supplier'],
+        'left_join': ['positions_masks.form_id = form_models.id', 'positions_masks.supplier_id = accounts_supplier.id'],
         'where': ['1=1'] if 'where' not in args or not args['where'] else args['where'],
         'data': [] if 'data' not in args else args['data'],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',

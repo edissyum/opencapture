@@ -862,7 +862,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
             log.info('Skip automatic validation for this supplier this time')
             database.update({
-                'table': ['accounts_suppliers'],
+                'table': ['accounts_supplier'],
                 'set': {
                     'skip_auto_validate': 'False'
                 },

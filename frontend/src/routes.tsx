@@ -63,6 +63,7 @@ import { SettingsVerifierFormsCreate } from "./pages/settings/verifier/forms/cre
 import { SettingsSplitterFormsCreate } from "./pages/settings/splitter/forms/create";
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
 import { SettingsVerifierAiLLMEditor } from "./pages/settings/verifier/ai-llm/editor";
+import { SettingsVerifierPositionsMasksList } from "./pages/settings/verifier/positions-masks/list";
 
 export const router = createBrowserRouter(
     [
@@ -72,13 +73,13 @@ export const router = createBrowserRouter(
         },
         {
             path: "onboarding",
-            element: <Onboarding />,
+            element: <Onboarding/>,
             loader: protectedLoader,
             errorElement: <LoginRequiredError/>
         },
         {
             path: "/",
-            element: <MainLayout />,
+            element: <MainLayout/>,
             children: [
                 {
                     path: "home",
@@ -137,13 +138,13 @@ export const router = createBrowserRouter(
                             errorElement: <LoginRequiredError/>
                         },
                         {
-                            path:'edit/:supplierId',
+                            path: 'edit/:supplierId',
                             loader: protectedLoader,
                             element: <SupplierEditor/>,
                             errorElement: <LoginRequiredError/>,
                         },
                         {
-                            path:'create',
+                            path: 'create',
                             loader: protectedLoader,
                             element: <SupplierEditor/>,
                             errorElement: <LoginRequiredError/>,
@@ -163,13 +164,13 @@ export const router = createBrowserRouter(
                             errorElement: <LoginRequiredError/>
                         },
                         {
-                            path:'edit/:customerId',
+                            path: 'edit/:customerId',
                             loader: protectedLoader,
                             element: <CustomerEditor/>,
                             errorElement: <LoginRequiredError/>,
                         },
                         {
-                            path:'create',
+                            path: 'create',
                             loader: protectedLoader,
                             element: <CustomerEditor/>,
                             errorElement: <LoginRequiredError/>,
@@ -184,7 +185,7 @@ export const router = createBrowserRouter(
                 },
                 {
                     path: "upload",
-                    element: <UploadPage />,
+                    element: <UploadPage/>,
                     loader: protectedLoader,
                     errorElement: <LoginRequiredError/>
                 }
@@ -192,13 +193,13 @@ export const router = createBrowserRouter(
         },
         {
             path: "/settings",
-            element: <SettingsLayout />,
+            element: <SettingsLayout/>,
             handle: { breadcrumb: 'SETTINGS.title' },
             children: [
                 {
                     index: true,
                     loader: protectedLoader,
-                    element: <SettingsIndex />,
+                    element: <SettingsIndex/>,
                     errorElement: <LoginRequiredError/>,
                 },
                 {
@@ -210,7 +211,7 @@ export const router = createBrowserRouter(
                         {
                             index: true,
                             loader: protectedLoader,
-                            element: <SettingsGeneralIndex />,
+                            element: <SettingsGeneralIndex/>,
                             errorElement: <LoginRequiredError/>,
                         },
                         {
@@ -274,14 +275,14 @@ export const router = createBrowserRouter(
                                     errorElement: <LoginRequiredError/>
                                 },
                                 {
-                                    path:'edit/:userId',
+                                    path: 'edit/:userId',
                                     loader: protectedLoader,
                                     element: <SettingsGeneralUserEditor/>,
                                     errorElement: <LoginRequiredError/>,
                                     handle: { breadcrumb: 'SETTINGS.edit_user' }
                                 },
                                 {
-                                    path:'create',
+                                    path: 'create',
                                     loader: protectedLoader,
                                     element: <SettingsGeneralUserEditor/>,
                                     errorElement: <LoginRequiredError/>,
@@ -301,14 +302,14 @@ export const router = createBrowserRouter(
                                     errorElement: <LoginRequiredError/>
                                 },
                                 {
-                                    path:'edit/:roleId',
+                                    path: 'edit/:roleId',
                                     loader: protectedLoader,
                                     element: <SettingsGeneralRoleEditor/>,
                                     errorElement: <LoginRequiredError/>,
                                     handle: { breadcrumb: 'SETTINGS.edit_role' }
                                 },
                                 {
-                                    path:'create',
+                                    path: 'create',
                                     loader: protectedLoader,
                                     element: <SettingsGeneralRoleEditor/>,
                                     errorElement: <LoginRequiredError/>,
@@ -342,14 +343,14 @@ export const router = createBrowserRouter(
                                     errorElement: <LoginRequiredError/>
                                 },
                                 {
-                                    path:'edit/:formId',
+                                    path: 'edit/:formId',
                                     loader: protectedLoader,
                                     element: <FormEditor module="verifier"/>,
                                     errorElement: <LoginRequiredError/>,
                                     handle: { breadcrumb: 'SETTINGS.edit_form' }
                                 },
                                 {
-                                    path:'create',
+                                    path: 'create',
                                     loader: protectedLoader,
                                     element: <SettingsVerifierFormsCreate/>,
                                     errorElement: <LoginRequiredError/>,
@@ -369,14 +370,14 @@ export const router = createBrowserRouter(
                                     errorElement: <LoginRequiredError/>
                                 },
                                 {
-                                    path:'edit/:customFieldId',
+                                    path: 'edit/:customFieldId',
                                     loader: protectedLoader,
                                     element: <CustomFieldsEditor module="verifier"/>,
                                     errorElement: <LoginRequiredError/>,
                                     handle: { breadcrumb: 'SETTINGS.edit_custom_fields' }
                                 },
                                 {
-                                    path:'create',
+                                    path: 'create',
                                     loader: protectedLoader,
                                     element: <CustomFieldsEditor module="verifier"/>,
                                     errorElement: <LoginRequiredError/>,
@@ -422,19 +423,32 @@ export const router = createBrowserRouter(
                                     errorElement: <LoginRequiredError/>
                                 },
                                 {
-                                    path:'edit/:aiLLMId',
+                                    path: 'edit/:aiLLMId',
                                     loader: protectedLoader,
                                     element: <SettingsVerifierAiLLMEditor/>,
                                     errorElement: <LoginRequiredError/>,
                                     handle: { breadcrumb: 'SETTINGS.edit_ai_llm' }
                                 },
                                 {
-                                    path:'create',
+                                    path: 'create',
                                     loader: protectedLoader,
                                     element: <SettingsVerifierAiLLMEditor/>,
                                     errorElement: <LoginRequiredError/>,
                                     handle: { breadcrumb: 'SETTINGS.add_ai_llm' }
                                 }
+                            ]
+                        },
+                        {
+                            path: "positions-masks",
+                            loader: protectedLoader,
+                            handle: { breadcrumb: 'SETTINGS.positions-masks' },
+                            children: [
+                                {
+                                    index: true,
+                                    loader: protectedLoader,
+                                    element: <SettingsVerifierPositionsMasksList/>,
+                                    errorElement: <LoginRequiredError/>
+                                },
                             ]
                         }
                     ]
@@ -463,14 +477,14 @@ export const router = createBrowserRouter(
                                     errorElement: <LoginRequiredError/>
                                 },
                                 {
-                                    path:'edit/:formId',
+                                    path: 'edit/:formId',
                                     loader: protectedLoader,
                                     element: <FormEditor module="splitter"/>,
                                     errorElement: <LoginRequiredError/>,
                                     handle: { breadcrumb: 'SETTINGS.edit_form' }
                                 },
                                 {
-                                    path:'create',
+                                    path: 'create',
                                     loader: protectedLoader,
                                     element: <SettingsSplitterFormsCreate/>,
                                     errorElement: <LoginRequiredError/>,
@@ -490,14 +504,14 @@ export const router = createBrowserRouter(
                                     errorElement: <LoginRequiredError/>
                                 },
                                 {
-                                    path:'edit/:customFieldId',
+                                    path: 'edit/:customFieldId',
                                     loader: protectedLoader,
                                     element: <CustomFieldsEditor module="splitter"/>,
                                     errorElement: <LoginRequiredError/>,
                                     handle: { breadcrumb: 'SETTINGS.edit_custom_fields' }
                                 },
                                 {
-                                    path:'create',
+                                    path: 'create',
                                     loader: protectedLoader,
                                     element: <CustomFieldsEditor module="splitter"/>,
                                     errorElement: <LoginRequiredError/>,

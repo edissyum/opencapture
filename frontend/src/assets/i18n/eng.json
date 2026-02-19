@@ -467,7 +467,11 @@
         "ai_llm_one": "",
         "ai_llm_other": "",
         "add_ai_llm": "",
-        "edit_ai_llm": ""
+        "edit_ai_llm": "",
+        "positions-masks": "",
+        "positions-masks_description": "",
+        "positions-masks_one": "",
+        "positions-masks_other": ""
     },
     "SMTP": {
         "authentication": "Authentication",
@@ -869,5 +873,17 @@
         "year_optionnal": "",
         "results": "",
         "select_filters": ""
+    },
+    "POSITIONS-MASKS": {
+        "add_model": "",
+        "confirm_delete_model_one": "",
+        "confirm_delete_model_other": "",
+        "delete_model_one": "",
+        "delete_model_other": "",
+        "selected_one": "",
+        "selected_other": "",
+        "no_positions_masks": "",
+        "deleted_one": "",
+        "deleted_other": ""
     }
 }
