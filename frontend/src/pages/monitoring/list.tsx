@@ -203,7 +203,7 @@ export function MonitoringList() {
     return (
         <div className='flex h-full w-full overflow-hidden'>
             <div className={ `h-full transition-all duration-200 border-r-2 border-(--border-secondary) pb-16
-                            ${ displayFilters ? "w-[400px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
+                            ${ displayFilters ? "w-[300px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
                 <div className='border-b-2 border-(--border-secondary) p-4 flex items-center justify-between'>
                     <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
                     <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary)'
