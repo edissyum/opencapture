@@ -46,7 +46,7 @@ export function showConfirmDialogWithInput({
     confirmText?: string;
     icon?: React.ReactNode;
     options?: { label: string; value: string }[];
-    onCancel: () => void;
+    onCancel?: () => void;
     onConfirm: (value: string) => void;
 }) {
     let inputValue = value;
@@ -111,7 +111,7 @@ export function showConfirmDialogWithInput({
             onConfirm(inputValue);
         },
         reject: () => {
-            onCancel();
+            if (onCancel) onCancel();
         },
         defaultFocus: "reject"
     });

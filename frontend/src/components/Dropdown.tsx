@@ -30,6 +30,7 @@ interface DropdownProps {
     required?: boolean;
     placeholder?: string;
     labelFusion?: boolean;
+    noMarginBottom?: boolean;
     onChange: (e: any) => void;
     options: { value: any; label: string }[];
 }
@@ -46,12 +47,13 @@ export const Dropdown: React.FC<DropdownProps> = ({
     className="",
     placeholder = "",
     disabled = false,
-    labelFusion = false
+    labelFusion = false,
+    noMarginBottom = false
 }) => {
 
     return (
         <div className='w-full'>
-            <div className={ `${className} group group-focus-within:border-(--border-primary) relative flex justify-items-stretch ${ error ? '' : 'mb-4' }`}>
+            <div className={ `${className} group group-focus-within:border-(--border-primary) relative flex justify-items-stretch ${ error || noMarginBottom ? '' : 'mb-4' }`}>
                 <FloatLabel className='w-full'>
                     <PrimeDropdown
                         id={ id }

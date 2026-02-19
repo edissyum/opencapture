@@ -197,7 +197,13 @@
         "duplicate_form_one": "",
         "duplicate_form_other": "",
         "form_duplicated_one": "",
-        "form_duplicated_other": ""
+        "form_duplicated_other": "",
+        "save_field": "",
+        "field_metadata": "",
+        "result_mask": "",
+        "search_mask": "",
+        "validation_mask": "",
+        "field_metadata_hint": ""
     },
     "GLOBAL": {
         "batches": "Batches",

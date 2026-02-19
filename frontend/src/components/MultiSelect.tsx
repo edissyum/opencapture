@@ -15,8 +15,9 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import React, { useState } from "react";
 import { t } from "i18next";
+import { X } from "lucide-react";
+import React, { useState } from "react";
 
 import { MultiSelect } from "primereact/multiselect";
 import { FloatLabel } from "primereact/floatlabel";
@@ -109,6 +110,13 @@ const MultiSelectInput: React.FC<MultiSelectProps> = ({
                     optionValue={ optionValue }
                     optionLabel={ optionLabel }
                     placeholder={ placeholder }
+                    removeIcon={(options: any) => (
+                        <i {...options.iconProps}
+                           className={`${options.iconProps?.className ?? ""}`}>
+                            <X size={ 16 }/>
+                        </i>
+                    )}
+
                     itemTemplate={ wrappedItemTemplate }
                     filterBy={ filterBy ? filterBy : optionLabel }
                     emptyMessage={ t('GLOBAL.no_result_found') }

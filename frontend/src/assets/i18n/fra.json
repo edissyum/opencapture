@@ -217,7 +217,13 @@
         "duplicate_form_other": "Dupliquer les formulaires",
         "form_duplicated_many": "Formulaires dupliqués avec succès",
         "form_duplicated_one": "Formulaire dupliqué avec succès",
-        "form_duplicated_other": "Formulaires dupliqués avec succès"
+        "form_duplicated_other": "Formulaires dupliqués avec succès",
+        "save_field": "Enregistrer le champ",
+        "field_metadata": "Métadonnées de champ",
+        "result_mask": "Masque de résultat",
+        "search_mask": "Masque de recherche",
+        "validation_mask": "Masque de validation",
+        "field_metadata_hint": "Paramétrage avancé du champ si un référentiel custom est activé. Permets la recherche et le remplissage automatique du champ"
     },
     "GLOBAL": {
         "batches": "Lots",

@@ -45,7 +45,8 @@ export function Step1() {
     }, [selectedModule]);
 
     return (
-        <><h1 className="text-4xl">{ t('ONBOARD.select_module') }</h1>
+        <>
+            <h1 className="text-4xl">{ t('ONBOARD.select_module') }</h1>
             <p className="text-(--text-secondary)">
                 { t('ONBOARD.select_module_info') }
             </p>

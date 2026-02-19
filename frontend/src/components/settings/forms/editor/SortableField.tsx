@@ -28,6 +28,7 @@ import { Button } from "../../../Button";
 import { Dropdown } from "../../../Dropdown";
 
 import { getColorOptions, getFormatLabels } from "./schemas";
+import Hint from "../../../Hint.tsx";
 
 type Field = {
     id: string;
@@ -37,7 +38,11 @@ type Field = {
     format?: string;
     disabled?: boolean;
     required?: boolean;
+    result_mask?: string;
+    search_mask?: string;
     default_value?: string;
+    validation_mask?: string;
+    field_metadata?: boolean;
 };
 
 export function SortableField({ field, onUpdateField, onDeleteField, module }: {
@@ -121,6 +126,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module }: {
                     />
                     <Dropdown
                         className="w-full"
+                        noMarginBottom={ true }
                         options={ formatLabels }
                         value={ editableField.format }
                         label={ t("FORMS.formats") }
@@ -130,63 +136,122 @@ export function SortableField({ field, onUpdateField, onDeleteField, module }: {
                         }
                     />
 
+                    <Input id={ "default_value-" + editableField.id }
+                           className="w-full" noMarginBottom={ true }
+                           hint={ t('FORMS.default_value_hint') }
+                           label={ t('FORMS.default_value') }
+                           value={ editableField.default_value }
+                           onChange={ (e: any) =>
+                               setEditableField((prev) => ({ ...prev, default_value: e.target.value }))
+                           }
+                    />
+
                     { module === 'verifier' && (
-                        <>
-                            <Input id={ "default_value-" + editableField.id }
-                                   className="w-full" noMarginBottom={ true }
-                                   hint={ t('FORMS.default_value_hint') }
-                                   label={ t('FORMS.default_value') }
-                                   value={ editableField.default_value }
-                                   onChange={ (e: any) =>
-                                       setEditableField((prev) => ({ ...prev, default_value: e.target.value }))
-                                   }
-                            />
-
-                            <div ref={ ref } className="relative inline-block w-full">
-                                <div onClick={ () => setOpen((o) => !o) }
-                                     className="flex items-center justify-center border rounded-md cursor-pointer transition-all select-none h-10"
-                                     style={ {
-                                         backgroundColor: editableField.color + '1A',
-                                         color: editableField.color
-                                     } }>
-                                    { editableField.color ? (
-                                        <>
-                                            { colorOptions.find((c) => c.value === editableField.color)?.name }
-                                        </>
-                                    ) : (
-                                        <span className="text-(--text-secondary)">{ t('COLORS.select_color') }</span>
-                                    ) }
-                                </div>
-
-                                { open && (
-                                    <div
-                                        className="left-0 mt-2 w-full p-3 bg-white border rounded-lg shadow-lg grid grid-cols-6 gap-2 z-50"
-                                        style={ {
-                                            animation: "fadeIn 0.1s ease-in-out"
-                                        } }
-                                    >
-                                        { colorOptions.map((color) => (
-                                            <div
-                                                key={ color.value }
-                                                onClick={ () => handleSelect(color.value) }
-                                                title={ color.name }
-                                                className="w-full flex justify-center items-center h-14 rounded-md cursor-pointer border hover:scale-110 transition-transform bg-opacity-10"
-                                                style={ {
-                                                    color: color.value,
-                                                    backgroundColor: color.value + '1A'
-                                                } }>
-                                                { color.name }
-                                            </div>
-                                        )) }
-                                    </div>
+                        <div ref={ ref } className="relative inline-block w-full">
+                            <div onClick={ () => setOpen((o) => !o) }
+                                 className="flex items-center justify-center border rounded-md cursor-pointer transition-all select-none h-10"
+                                 style={ {
+                                     backgroundColor: editableField.color + '1A',
+                                     color: editableField.color
+                                 } }>
+                                { editableField.color ? (
+                                    <>
+                                        { colorOptions.find((c) => c.value === editableField.color)?.name }
+                                    </>
+                                ) : (
+                                    <span className="text-(--text-secondary)">{ t('COLORS.select_color') }</span>
                                 ) }
                             </div>
-                        </>
+
+                            { open && (
+                                <div
+                                    className="left-0 mt-2 w-full p-3 bg-white border rounded-lg shadow-lg grid grid-cols-6 gap-2 z-50"
+                                    style={ {
+                                        animation: "fadeIn 0.1s ease-in-out"
+                                    } }
+                                >
+                                    { colorOptions.map((color) => (
+                                        <div
+                                            key={ color.value }
+                                            onClick={ () => handleSelect(color.value) }
+                                            title={ color.name }
+                                            className="w-full flex justify-center items-center h-14 rounded-md cursor-pointer border hover:scale-110 transition-transform bg-opacity-10"
+                                            style={ {
+                                                color: color.value,
+                                                backgroundColor: color.value + '1A'
+                                            } }>
+                                            { color.name }
+                                        </div>
+                                    )) }
+                                </div>
+                            ) }
+                        </div>
+                    ) }
+
+                    { module === 'splitter' && (
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <InputSwitch inputId={ 'field_metadata-' + editableField.id }
+                                             checked={ !!editableField.field_metadata }
+                                             onChange={ (e) => setEditableField((prev) => ({
+                                                 ...prev,
+                                                 field_metadata: e.value
+                                             })) }
+                                />
+                                <label htmlFor={ 'field_metadata-' + editableField.id }
+                                       className="flex items-center gap-4 cursor-pointer select-none text-(--text-secondary)">
+                                    { t('FORMS.field_metadata') }
+                                </label>
+                            </div>
+                            { editableField.field_metadata && (
+                                <div className='mt-4'>
+                                    <Hint>
+                                        { t('FORMS.field_metadata_hint') }
+                                    </Hint>
+                                    <div className='flex gap-4'>
+                                        <Input id={ 'search_mask-' + editableField.id }
+                                               className="w-1/3" noMarginBottom={ true }
+                                               label={ t('FORMS.search_mask') }
+                                               value={ editableField.search_mask }
+                                               onChange={ (e: any) =>
+                                                   setEditableField((prev) => ({
+                                                       ...prev,
+                                                       search_mask: e.target.value
+                                                   }))
+                                               }
+                                        />
+                                        <Input id={ 'result_mask-' + editableField.id }
+                                               className="w-1/3" noMarginBottom={ true }
+                                               label={ t('FORMS.result_mask') }
+                                               value={ editableField.result_mask }
+                                               onChange={ (e: any) =>
+                                                   setEditableField((prev) => ({
+                                                       ...prev,
+                                                       result_mask: e.target.value
+                                                   }))
+                                               }
+                                        />
+                                        <Input id={ 'validation_mask-' + editableField.id }
+                                               className="w-1/3" noMarginBottom={ true }
+                                               label={ t('FORMS.validation_mask') }
+                                               value={ editableField.validation_mask }
+                                               onChange={ (e: any) =>
+                                                   setEditableField((prev) => ({
+                                                       ...prev,
+                                                       validation_mask: e.target.value
+                                                   }))
+                                               }
+                                        />
+                                    </div>
+                                </div>
+                            ) }
+                        </div>
                     ) }
 
                     <div className='flex gap-2'>
                         <div className="flex items-center gap-2">
-                            <InputSwitch inputId={ 'required-' + editableField.id } checked={ !!editableField.required }
+                            <InputSwitch inputId={ 'required-' + editableField.id }
+                                         checked={ !!editableField.required }
                                          onChange={ (e) => setEditableField((prev) => ({
                                              ...prev,
                                              required: e.value
@@ -199,32 +264,34 @@ export function SortableField({ field, onUpdateField, onDeleteField, module }: {
                         </div>
 
                         { module === 'splitter' && (
-                            <div className="flex items-center gap-2">
-                                <InputSwitch inputId={ 'disabled-' + editableField.id }
-                                             checked={ !!editableField.disabled }
-                                             onChange={ (e) => setEditableField((prev) => ({
-                                                 ...prev,
-                                                 disabled: e.value
-                                             })) }
-                                />
-                                <label htmlFor={ 'disabled-' + editableField.id }
-                                       className="flex items-center gap-4 cursor-pointer select-none text-(--text-secondary)">
-                                    { t('FORMS.field_disabled') }
-                                </label>
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <InputSwitch inputId={ 'disabled-' + editableField.id }
+                                                 checked={ !!editableField.disabled }
+                                                 onChange={ (e) => setEditableField((prev) => ({
+                                                     ...prev,
+                                                     disabled: e.value
+                                                 })) }
+                                    />
+                                    <label htmlFor={ 'disabled-' + editableField.id }
+                                           className="flex items-center gap-4 cursor-pointer select-none text-(--text-secondary)">
+                                        { t('FORMS.field_disabled') }
+                                    </label>
+                                </div>
                             </div>
                         ) }
                     </div>
 
                     <div className="flex gap-2">
-                        <Button variant='danger' onClick={ () => onDeleteField(field.id) }>
-                            { t('FORMS.delete_field') }
-                        </Button>
                         <div className='flex ml-auto gap-4'>
                             <Button variant="no_bg" onClick={ () => op.current?.hide() }>
                                 { t('GLOBAL.cancel') }
                             </Button>
+                            <Button variant='danger' onClick={ () => onDeleteField(field.id) }>
+                                { t('FORMS.delete_field') }
+                            </Button>
                             <Button variant="primary" onClick={ handleSave }>
-                                { t('MAILCOLLECT.save') }
+                                { t('FORMS.save_field') }
                             </Button>
                         </div>
                     </div>

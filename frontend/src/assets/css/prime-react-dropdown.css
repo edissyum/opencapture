@@ -113,13 +113,27 @@
 }
 
 .p-multiselect-token {
-    @apply bg-(--bg-secondary);
+    @apply border;
+    @apply rounded-md;
+    @apply text-(--text-primary)!;
+    @apply bg-(--color-primary)/10;
+    @apply border-(--color-primary)/40;
+}
+
+.p-multiselect-token-icon {
+    @apply transition-colors;
+    @apply text-(--text-secondary)!;
 }
 
 .p-multiselect-token-icon:hover {
-    @apply text-(--color-primary);
+    @apply text-(--text-primary)!;
 }
 
 .p-multiselect-token {
     @apply text-(--text-secondary);
+}
+
+.p-inputwrapper-filled.p-multiselect.p-multiselect-chip .p-multiselect-label {
+    @apply p-2;
+    @apply text-(--text-primary);
 }

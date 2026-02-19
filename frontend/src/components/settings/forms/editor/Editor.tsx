@@ -429,13 +429,17 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
             required: field.required ?? false,
             default_value: field.default_value || "",
             format: field.format ?? "alphanum_extended_with_accent",
-            typeLabel: t(`CUSTOM_FIELDS.type_${ field.type }`)
+            typeLabel: t(`CUSTOM-FIELDS.type_${ field.type }`)
         };
 
         if (module === "splitter") {
             return {
                 ...base,
-                disabled: field.disabled || false
+                disabled: field.disabled || false,
+                result_mask: field.result_mask || '',
+                search_mask: field.search_mask || '',
+                validation_mask: field.validation_mask || '',
+                field_metadata: field.field_metadata || false,
             };
         }
 
