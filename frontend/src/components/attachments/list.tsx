@@ -192,7 +192,7 @@ export function AttachmentsList({ module, documentId, onAttachmentsCountChange, 
                         <Button icon={ <ArrowLeft size={ 18 }/> } onClick={ () => onClose() }
                                 className='rounded-3xl hover:text-(--color-primary) text-(--text-primary)
                                border-(--border-secondary) p-2.5! px-5! bg-(--bg-primary)'>
-                            { t('ATTACHMENTS.back_to_file') }
+                            { module === 'verifier' ? t('ATTACHMENTS.back_to_file') : t('ATTACHMENTS.back_to_batch') }
                         </Button>
 
                         <input ref={ fileInputRef } type="file" className="hidden" onChange={ handleFileSelected }/>

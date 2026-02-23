@@ -171,8 +171,8 @@ def retrieve_batches(args):
         'data': ['*'] if 'data' not in args else args['data'],
         'group_by': ['splitter_batches.id'] if 'group_by' not in args else args['group_by'],
         'order_by': ['splitter_batches.creation_date DESC'] if 'order_by' not in args else args['order_by'],
-        'limit': str(args['limit']) if 'limit' in args else 'ALL',
-        'offset': str(args['offset']) if 'offset' in args else 0,
+        'limit': str(args['limit']) if 'limit' in args and args['limit'] else 'ALL',
+        'offset': str(args['offset']) if 'offset' in args and args['offset'] else 0,
     }
 
     if args['batch_id']:

@@ -44,6 +44,7 @@ import { MonitoringList } from "./pages/monitoring/list";
 import { StatisticsPage } from "./pages/statistics/list";
 import { SupplierEditor } from "./pages/suppliers/editor";
 import { CustomerEditor } from "./pages/customers/editor";
+import { SplitterViewerPage } from "./pages/splitter/viewer";
 import { VerifierViewerPage } from "./pages/verifier/viewer";
 import { SettingsGeneralIndex } from "./pages/settings/general";
 import { SettingsVerifierIndex } from "./pages/settings/verifier";
@@ -180,6 +181,12 @@ export const router = createBrowserRouter(
                 {
                     path: "verifier/viewer/:documentId",
                     element: <VerifierViewerPage/>,
+                    loader: protectedLoader,
+                    errorElement: <LoginRequiredError/>
+                },
+                {
+                    path: "splitter/viewer/:batchId",
+                    element: <SplitterViewerPage/>,
                     loader: protectedLoader,
                     errorElement: <LoginRequiredError/>
                 },

@@ -126,3 +126,23 @@
 .p-radiobutton:not(.p-disabled):has(.p-radiobutton-input:hover) .p-radiobutton-box {
     @apply border-(--color-primary)/80;
 }
+
+.p-panel-header {
+    @apply border-2;
+    @apply rounded-xl;
+    @apply rounded-b-none;
+    @apply bg-(--bg-primary);
+    @apply border-(--border-secondary);
+}
+
+.p-panel-title {
+    @apply w-full;
+}
+
+.p-panel-content {
+    @apply border-2;
+    @apply border-t-0;
+    @apply rounded-b-xl;
+    @apply bg-(--bg-primary);
+    @apply border-(--border-secondary);
+}

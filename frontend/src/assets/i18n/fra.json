@@ -567,7 +567,17 @@
         "separator_mem": "Séparateur MEM Courrier",
         "separator_meta1": "Separateur Méta 1",
         "separator_meta2": "Séparateur Méta 2",
-        "separator_meta3": "Séparateur Méta 3"
+        "separator_meta3": "Séparateur Méta 3",
+        "batch_content": "Contenu du lot",
+        "pages_many": "pages",
+        "pages_one": "page",
+        "pages_other": "pages",
+        "delete_document": "Supprimer le document",
+        "principal_document": "Document principal",
+        "type_document": "Typer le document",
+        "documents_many": "documents",
+        "documents_one": "document",
+        "documents_other": "documents"
     },
     "UPLOAD": {
         "upload_dropzone": "Cliquez pour choisir un fichier",
@@ -828,7 +838,8 @@
         "confirm_delete_attachment": "Voulez-vous vraiment supprimer cette pièce jointe ?",
         "delete_attachment": "Supprimer la pièce jointe",
         "back_to_attachments_list": "Retour à la liste des pièces jointes",
-        "error_loading_pdf": "Erreur lors du chargement du PDF"
+        "error_loading_pdf": "Erreur lors du chargement du PDF",
+        "back_to_batch": "Retour au lot"
     },
     "ADDRESSES": {
         "address1": "Numéro et rue",

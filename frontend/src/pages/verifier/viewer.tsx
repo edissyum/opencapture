@@ -22,7 +22,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import { ChevronLeft, ChevronRight, Copy, Download, Edit, Eye, EyeOff, Paperclip, SquarePlus } from "lucide-react";
 
-
 import { SupplierEditor } from "../suppliers/editor";
 
 import Input from "../../components/Input";

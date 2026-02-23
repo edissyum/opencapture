@@ -523,7 +523,15 @@
         "separator_mem": "",
         "separator_meta1": "",
         "separator_meta2": "",
-        "separator_meta3": ""
+        "separator_meta3": "",
+        "batch_content": "",
+        "pages_one": "",
+        "pages_other": "",
+        "delete_document": "",
+        "principal_document": "",
+        "type_document": "",
+        "documents_one": "",
+        "documents_other": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Click to choose a file",
@@ -766,7 +774,8 @@
         "confirm_delete_attachment": "",
         "delete_attachment": "",
         "back_to_attachments_list": "",
-        "error_loading_pdf": ""
+        "error_loading_pdf": "",
+        "back_to_batch": ""
     },
     "ADDRESSES": {
         "address1": "",
