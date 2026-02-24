@@ -50,3 +50,8 @@
     @apply bg-(--bg-secondary);
     @apply text-(--text-secondary);
 }
+
+.p-contextmenu .p-menuitem[data-p-disabled="true"] {
+    @apply opacity-50;
+    @apply cursor-not-allowed;
+}

@@ -914,28 +914,29 @@ export function VerifierViewerPage() {
                 <div className="fixed inset-0 z-50">
                     <div className="absolute inset-0 bg-black/60"/>
                     <div className="absolute top-0 right-0 h-full w-[70%] bg-(--bg-primary) animate-slide-in-right">
-                        <SupplierEditor supplierId={ currentSupplier?.id }
-                                        newDatas={ tmpDocumentData?.datas || {} }
-                                        onClose={ () => setShowSupplierEditor(false) }
-                                        onUpdated={ () => {
-                                            if (documentData.supplier_id) {
-                                                fetchThirdParty(documentData.supplier_id).then();
-                                                setShowSupplierEditor(false);
-                                            }
-                                        } }
-                                        onCreated={ (res: any) => {
-                                            setDocumentData((prevData: any) => ({
-                                                ...prevData,
-                                                'supplier_id': res.id
-                                            }));
-                                            setTmpDocumentData((prevData: any) => ({
-                                                ...prevData,
-                                                'supplier_id': res.id
-                                            }));
-                                            updateDocument({ 'supplier_id': res.id }).then();
-                                            fetchThirdParty(res.id).then();
-                                            setShowSupplierEditor(false);
-                                        } }
+                        <SupplierEditor
+                            supplierId={ currentSupplier?.id }
+                            newDatas={ tmpDocumentData?.datas || {} }
+                            onClose={ () => setShowSupplierEditor(false) }
+                            onUpdated={ () => {
+                                if (documentData.supplier_id) {
+                                    fetchThirdParty(documentData.supplier_id).then();
+                                    setShowSupplierEditor(false);
+                                }
+                            } }
+                            onCreated={ (res: any) => {
+                                setDocumentData((prevData: any) => ({
+                                    ...prevData,
+                                    'supplier_id': res.id
+                                }));
+                                setTmpDocumentData((prevData: any) => ({
+                                    ...prevData,
+                                    'supplier_id': res.id
+                                }));
+                                updateDocument({ 'supplier_id': res.id }).then();
+                                fetchThirdParty(res.id).then();
+                                setShowSupplierEditor(false);
+                            } }
                         />
                     </div>
                 </div>

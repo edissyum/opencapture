@@ -18,7 +18,7 @@
 import { t } from "i18next";
 import { ContextMenu } from "primereact/contextmenu";
 import React, { useEffect, useRef, useState } from "react";
-import { ArrowLeft, CloudUpload, Download, EllipsisVertical, Trash2 } from "lucide-react";
+import { ArrowLeft, CloudUpload, Download, EllipsisVertical, Trash2, Unlink } from "lucide-react";
 
 import { Button } from "../Button";
 import { Loader } from "../loader/Loader";
@@ -31,10 +31,17 @@ type AttachmentsListProps = {
     module: string;
     documentId: any;
     onClose: () => void;
+    unBinding?: () => void;
     onAttachmentsCountChange: (count: number) => void;
 };
 
-export function AttachmentsList({ module, documentId, onAttachmentsCountChange, onClose }: AttachmentsListProps) {
+export function AttachmentsList({
+    module,
+    documentId,
+    onAttachmentsCountChange,
+    onClose,
+    unBinding
+}: AttachmentsListProps) {
     const { get, post, del } = axiosApiCall();
 
     const cm = useRef({ current: null } as any);
@@ -175,7 +182,7 @@ export function AttachmentsList({ module, documentId, onAttachmentsCountChange, 
         }
     };
 
-    if (loading ) {
+    if (loading) {
         return <Loader/>;
     }
 
@@ -188,24 +195,34 @@ export function AttachmentsList({ module, documentId, onAttachmentsCountChange, 
             </div>
             <div className='h-full flex flex-col flex-1 overflow-y-auto'>
                 { !showAttachment && (
-                    <div className='flex justify-between sticky p-6 top-0 z-10'>
+                    <div className='flex gap-2 sticky p-6 top-0 z-10'>
                         <Button icon={ <ArrowLeft size={ 18 }/> } onClick={ () => onClose() }
                                 className='rounded-3xl hover:text-(--color-primary) text-(--text-primary)
-                               border-(--border-secondary) p-2.5! px-5! bg-(--bg-primary)'>
+                                           border-(--border-secondary) p-2.5! px-5! bg-(--bg-primary)'>
                             { module === 'verifier' ? t('ATTACHMENTS.back_to_file') : t('ATTACHMENTS.back_to_batch') }
                         </Button>
+                        { module === 'splitter' && (
+                            <Button icon={ <Unlink size={ 18 }/> } onClick={ () => unBinding() }
+                                    className='rounded-3xl hover:text-(--color-primary) text-(--text-primary)
+                                               border-(--border-secondary) p-2.5! px-5! bg-(--bg-primary)'>
+                                { t('ATTACHMENTS.unbinding') }
+                            </Button>
+                        ) }
 
-                        <input ref={ fileInputRef } type="file" className="hidden" onChange={ handleFileSelected }/>
-                        <Button icon={ <CloudUpload size={ 18 }/> } onClick={ () => fileInputRef.current?.click() }
-                                className='rounded-3xl hover:text-(--color-primary) text-(--text-primary)
+                        <div className='ml-auto'>
+                            <input ref={ fileInputRef } type="file" className="hidden" onChange={ handleFileSelected }/>
+                            <Button icon={ <CloudUpload size={ 18 }/> } onClick={ () => fileInputRef.current?.click() }
+                                    className='rounded-3xl hover:text-(--color-primary) text-(--text-primary)
                                border-(--border-secondary) p-2.5! px-5! bg-(--bg-primary)'>
-                            { t('ATTACHMENTS.upload_new_file') }
-                        </Button>
+                                { t('ATTACHMENTS.upload_new_file') }
+                            </Button>
+                        </div>
                     </div>
                 ) }
 
                 { !showAttachment && (
-                    <div className="grid grid-cols-2 gap-4 px-6 pb-6">
+                    <div
+                        className={ `grid ${ module === 'verifier' ? 'grid-cols-2' : 'grid-cols-3' } gap-4 px-6 pb-6` }>
                         { attachments.map((attachment) => (
                             <div key={ attachment.id } onClick={ () => handleAttachementView(attachment) }
                                  className="border-2 border-(--border-secondary) hover:border-(--text-secondary)

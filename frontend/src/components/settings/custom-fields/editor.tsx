@@ -159,7 +159,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         })),
     });
     const regexContentSchema: any = z.object({
-        content: z.string().describe(JSON.stringify({
+        content: z.string().optional().describe(JSON.stringify({
             component: "input",
             bgColor: "bg-(--color-primary)/15",
             textColor: "color-primary",
@@ -214,7 +214,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         defaultValues: {
             metadata_key: "",
             format: "",
-            remove_keyword_value: false
+            remove_keyword_value: ""
         }
     });
     const watchTest = watch("test");

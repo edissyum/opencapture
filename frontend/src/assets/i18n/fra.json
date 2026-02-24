@@ -264,7 +264,9 @@
         "action_irreversible": "Cette action est irréversible.",
         "updating": "Mise à jour en cours...",
         "relaunch": "Relancer",
-        "copied": "Copié"
+        "copied": "Copié",
+        "validate": "Valider",
+        "unsaved_changes_warning": "Cette page vous demande de confirmer sa fermeture ; des données que vous avez saisies pourraient ne pas être enregistrées."
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validé avec succès",
@@ -577,7 +579,19 @@
         "type_document": "Typer le document",
         "documents_many": "documents",
         "documents_one": "document",
-        "documents_other": "documents"
+        "documents_other": "documents",
+        "delete_page": "Supprimer la page",
+        "rotation": "Rotation",
+        "confirm_delete_document_page_many": "Voulez-vous vraiment supprimer ces {{count}} pages du document ?",
+        "confirm_delete_document_page_one": "Voulez-vous vraiment supprimer cette page du document ?",
+        "confirm_delete_document_page_other": "Voulez-vous vraiment supprimer ces {{count}} pages du document ?",
+        "delete_document_page_many": "Supprimer les pages du document",
+        "delete_document_page_one": "Supprimer la page du document",
+        "delete_document_page_other": "Supprimer les pages du document",
+        "confirm_delete_document": "Voulez-vous vraiment supprimer ce document ?",
+        "confirm_set_document_principal": "Êtes-vous sûr de vouloir définir ce document comme document principal ?<br>Les autres documents seront mis en pièces jointes",
+        "set_document_principal": "Définir comme document principal (liassage)",
+        "confirm_unbinding": "Voulez-vous vraiment déliasser ces pièces jointes ? Elles deviendront des documents indépendants dans ce lot (cette action est irréversible)"
     },
     "UPLOAD": {
         "upload_dropzone": "Cliquez pour choisir un fichier",
@@ -839,7 +853,8 @@
         "delete_attachment": "Supprimer la pièce jointe",
         "back_to_attachments_list": "Retour à la liste des pièces jointes",
         "error_loading_pdf": "Erreur lors du chargement du PDF",
-        "back_to_batch": "Retour au lot"
+        "back_to_batch": "Retour au lot",
+        "unbinding": "Déliasser"
     },
     "ADDRESSES": {
         "address1": "Numéro et rue",

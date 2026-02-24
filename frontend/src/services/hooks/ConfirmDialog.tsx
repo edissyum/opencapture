@@ -49,7 +49,7 @@ export function showConfirmDialog({
         acceptClassName += " bg-(--text-error)! border-(--text-error)! hover:bg-(--text-error)/10! hover:text-(--text-error)!";
     }
 
-    let content: any = message;
+    let content: any = <span dangerouslySetInnerHTML={ { __html: message } }/>;
     if (hint) {
         content = (
             <>

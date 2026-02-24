@@ -521,14 +521,14 @@ def create_document(args):
         'doctype_key': None,
         'batch_id': args['batchId'],
         'split_index': args['splitIndex'],
-        'display_order': args['displayOrder']
+        'display_order': args['display_order']
     })
 
     if res:
         for update_data in args['updatedDocuments']:
             splitter.update_document({
                 'id': update_data['id'],
-                'display_order': update_data['displayOrder']
+                'display_order': update_data['display_order']
             })
 
         workflow_id = None
@@ -590,10 +590,10 @@ def save_modifications(data):
 
     for document in data['documents']:
         page_display_order = 1
-        if document['displayOrder']:
+        if document['display_order']:
             res = splitter.update_document({
-                'id': document['id'].split('-')[-1],
-                'display_order': document['displayOrder']
+                'id': document['id'],
+                'display_order': document['display_order']
             })[0]
 
             if not res:
@@ -603,11 +603,10 @@ def save_modifications(data):
                 }
                 return response, 400
 
-        document['id'] = document['id'].split('-')[-1]
         res = splitter.update_document({
-            'id': document['id'].split('-')[-1],
+            'id': document['id'],
             'doctype_key': document['doctypeKey'] if 'doctypeKey' in document else None,
-            'document_metadata': document['metadata']
+            'data': document['data'] if 'data' in document else None
         })[0]
         if not res:
             response = {

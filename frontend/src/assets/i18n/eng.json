@@ -244,7 +244,9 @@
         "updating": "",
         "label": "",
         "relaunch": "",
-        "copied": ""
+        "copied": "",
+        "validate": "",
+        "unsaved_changes_warning": ""
     },
     "HISTORY": {
         "document_validated": "Document #<strong>{{ documentId }}</strong> successfully validated",
@@ -531,7 +533,17 @@
         "principal_document": "",
         "type_document": "",
         "documents_one": "",
-        "documents_other": ""
+        "documents_other": "",
+        "delete_page": "",
+        "rotation": "",
+        "confirm_delete_document_page_one": "",
+        "confirm_delete_document_page_other": "",
+        "delete_document_page_one": "",
+        "delete_document_page_other": "",
+        "confirm_delete_document": "",
+        "confirm_set_document_principal": "",
+        "set_document_principal": "",
+        "confirm_unbinding": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Click to choose a file",
@@ -775,7 +787,8 @@
         "delete_attachment": "",
         "back_to_attachments_list": "",
         "error_loading_pdf": "",
-        "back_to_batch": ""
+        "back_to_batch": "",
+        "unbinding": ""
     },
     "ADDRESSES": {
         "address1": "",

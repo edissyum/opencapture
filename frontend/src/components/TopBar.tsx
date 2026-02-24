@@ -20,6 +20,7 @@ import { useState } from "react";
 import { ChevronsUpDown, CloudUpload, Package } from "lucide-react";
 
 import { Button } from "./Button";
+import { useLocation } from "react-router-dom";
 
 
 export default function TopBar() {
@@ -35,6 +36,9 @@ export default function TopBar() {
             img: '/src/assets/imgs/Open-Capture_Splitter.svg'
         }
     ];
+
+    const location = useLocation();
+    const isDisabled = location.pathname !== '/home';
 
     const [selected, setSelected] = useState<string | null>(null);
     const [img, setImg] = useState<string | null>(null);
@@ -59,12 +63,16 @@ export default function TopBar() {
             className="w-full h-20 flex shrink-0 items-center justify-between px-6 bg-(--bg-primary) border-b-2 border-(--border-secondary)">
             <div className="flex items-center gap-4">
                 <div className="relative inline-block w-64">
-                    <select value={ selected || '' } style={ { backgroundImage: `url('${ img }')` } }
-                            onChange={ (e) => {
-                                handleSelect(e.target.value)
-                            } }
-                            className="w-full bg-size-[35px] bg-no-repeat bg-position-[8px] pl-[60px] cursor-pointer
-                            rounded-lg py-2.5 border-2 border-(--border-secondary) appearance-none">
+                    <select
+                        value={ selected || '' } style={ { backgroundImage: `url('${ img }')` } }
+                        disabled={ isDisabled }
+                        onChange={ (e) => {
+                            handleSelect(e.target.value)
+                        } }
+                        className={ `w-full bg-size-[35px] bg-no-repeat bg-position-[8px] pl-[60px]
+                            rounded-lg py-2.5 border-2 border-(--border-secondary) appearance-none
+                            ${ isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' }` }
+                    >
                         {
                             options.map((option) => (
                                 <option key={ option['id'] } value={ option['id'] }
@@ -74,14 +82,17 @@ export default function TopBar() {
                             ))
                         }
                     </select>
-                    <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2">
+                    <span className={ `pointer-events-none absolute right-4 top-1/2 -translate-y-1/2
+                                    ${ isDisabled ? 'opacity-50' : '' }` }>
                         { <ChevronsUpDown size={ 20 }/> }
                     </span>
                 </div>
-                <Button to="/home" icon={ <Package size={ 24 } className="mr-2"/> } className="font-semibold p-2.5!" size='md'>
+                <Button to="/home" icon={ <Package size={ 24 } className="mr-2"/> } className="font-semibold p-2.5!"
+                        size='md'>
                     { storedModule === 'verifier' ? t('VERIFIER.documents') : t('GLOBAL.batches') }
                 </Button>
-                <Button to="/upload" icon={ <CloudUpload size={ 24 } className="mr-2"/> } className="font-semibold p-2.5!" size='md' variant='no_bg'>
+                <Button to="/upload" icon={ <CloudUpload size={ 24 } className="mr-2"/> }
+                        className="font-semibold p-2.5!" size='md' variant='no_bg'>
                     { t('GLOBAL.upload') }
                 </Button>
             </div>

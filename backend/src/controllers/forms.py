@@ -441,7 +441,6 @@ def update_custom_field_from_forms(args):
                                         fields[0]['fields'][tmp_field][cpt]['format'] = args['type']
                                         fields[0]['fields'][tmp_field][cpt]['label'] = args['label']
                                         fields[0]['fields'][tmp_field][cpt]['module'] = args['module']
-                                        fields[0]['fields'][tmp_field][cpt]['enabled'] = args['enabled']
                         else:
                             for field in line:
                                 if isinstance(field, list):
@@ -454,7 +453,6 @@ def update_custom_field_from_forms(args):
                                         fields[0]['fields'][tmp_field][cpt]['format'] = args['type']
                                         fields[0]['fields'][tmp_field][cpt]['label'] = args['label']
                                         fields[0]['fields'][tmp_field][cpt]['module'] = args['module']
-                                        fields[0]['fields'][tmp_field][cpt]['enabled'] = args['enabled']
                         cpt += 1
                 forms.update_form_fields({'set': {'fields': json.dumps(fields[0]['fields'])}, 'form_id': form['id']})
     return '', 200

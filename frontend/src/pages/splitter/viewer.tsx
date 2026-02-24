@@ -30,17 +30,10 @@ import {
     FolderTree,
     Layers,
     Paperclip,
+    RotateCw,
     Trash2,
     X
 } from "lucide-react";
-
-import { useUser } from "../../services/hooks/useUser";
-import { axiosApiCall } from "../../services/hooks/axiosApiCall";
-import { useCustomFields } from "../../services/hooks/useCustomFields";
-
-import { Button } from "../../components/Button";
-import { AttachmentsList } from "../../components/attachments/list";
-
 import {
     closestCenter,
     DndContext,
@@ -50,15 +43,32 @@ import {
     type DragStartEvent,
     PointerSensor,
     useSensor,
-    useSensors
+    useSensors,
 } from "@dnd-kit/core";
-import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
+
+import { useUser } from "../../services/hooks/useUser";
+import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { useCustomFields } from "../../services/hooks/useCustomFields";
+import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
+import { useUnsavedChangesWarning } from "../../services/hooks/useUnsavedChangesWarning";
+
+import { Button } from "../../components/Button";
+import { AttachmentsList } from "../../components/attachments/list";
+
 import { DraggablePage } from "./dnd/draggablePage";
+import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
+
 import { b64ToFile } from "../settings/general/customization";
+import { useFormFields } from "../../services/hooks/useFormFields.tsx";
+import ISOCalendar from "../../components/Calendar.tsx";
+import moment from "moment/moment";
+import Input from "../../components/Input.tsx";
 
 export function SplitterViewerPage() {
     const { get, post } = axiosApiCall();
     const cm = useRef({ current: null } as any);
+    const [unSavedChanges, setUnSavedChanges] = useState(false);
+    useUnsavedChangesWarning(unSavedChanges);
 
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
@@ -71,31 +81,60 @@ export function SplitterViewerPage() {
     const [documents, setDocuments] = useState<any>([]);
     const [batch, setBatch] = useState<any>(null);
     const [pagesCount, setPagesCount] = useState<number>(0);
+    const [batchMetadata, setBatchMetadata] = useState<any[]>([]);
+    const [batchMetadataValues, setBatchMetadataValues] = useState<any>({});
+    const [documentMetadata, setDocumentMetadata] = useState<any>(null);
+
+    const formId = batch?.form_id;
+    const { formFields, loading: loadingFormFields } = useFormFields(formId);
 
     const [thumbnail, setThumbnail] = useState<string | null>(null);
     const [attachmentsCount, setAttachmentsCount] = useState<number>(0);
     const [showAttachments, setShowAttachments] = useState<boolean>(false);
     const [enableAttachments, setEnableAttachments] = useState<boolean>(true);
+
+    const [movedPages, setMovedPages] = useState<any[]>([]);
+    const [deletedPages, setDeletedPages] = useState<any[]>([]);
+    const [selectedPages, setSelectedPages] = useState<any[]>([]);
+    const [deletedDocuments, setDeletedDocuments] = useState<any[]>([]);
+    const [selectedDocument, setSelectedDocument] = useState<any>(null);
+
     const [activeDragItem, setActiveDragItem] = useState<any>(null);
 
     const menuItems: any = [
         {
             label: t('SPLITTER.principal_document'),
             icon: <FileBadge className='mr-1' size={ 16 }/>,
-            command: () => handleDelete()
+            disabled: documents.length <= 1,
+            command: () => handleDocumentPrincipal()
         },
         {
             label: t('SPLITTER.type_document'),
             icon: <FolderTree className='mr-1' size={ 16 }/>,
-            command: () => handleDelete()
+            command: () => {
+            }
         },
         {
             label: <span className='critical'>{ t('SPLITTER.delete_document') }</span>,
             icon: <Trash2 className='mr-1' size={ 16 }/>,
-            command: () => handleDelete()
+            command: () => handleDeleteDocument()
         }
     ];
 
+    const pageMenuItems = [
+        {
+            label: t('SPLITTER.rotation'),
+            icon: <RotateCw className='mr-1' size={ 16 }/>,
+            command: () => handleRotation()
+        },
+        {
+            label: t('SPLITTER.delete_page'),
+            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            command: () => handleDeletePage()
+        }
+    ]
+
+    // Fetch batch details and attachments config
     useEffect(() => {
         if (!batchId || loadingUser) return;
 
@@ -121,6 +160,7 @@ export function SplitterViewerPage() {
         fetchEnableAttachments().then();
     }, [loadingUser]);
 
+    // Fetch documents of the batch
     useEffect(() => {
         if (!batch) return;
 
@@ -128,6 +168,9 @@ export function SplitterViewerPage() {
             try {
                 const response = await get(`/splitter/documents/${ batch.id }`);
                 if (response?.documents) {
+                    response.documents.forEach((doc: any) => {
+                        doc.metada = doc.data?.custom_fields;
+                    })
                     setDocuments(response.documents);
                     let count = 0;
                     response.documents.forEach((doc: any) => {
@@ -144,6 +187,76 @@ export function SplitterViewerPage() {
 
         fetchDocuments().then();
     }, [batch]);
+
+    // Recalculate pages count when documents change (e.g. after drag and drop)
+    useEffect(() => {
+        let count = 0;
+        documents.forEach((doc: any) => {
+            doc.pages.forEach(() => {
+                count++;
+            });
+        });
+        setPagesCount(count);
+    }, [documents]);
+
+    // Fill batch and document metadata
+    useEffect(() => {
+        if (loadingFormFields) return;
+
+        if (formFields.batch_metadata) {
+            const batchMetadata = formFields.batch_metadata;
+            let lines: any[] = [];
+
+            Object.values(batchMetadata).forEach((line: any) => {
+                let linesFields: any[] = [];
+                Object.values(line).forEach((field: any) => {
+                    if (field && typeof field !== 'boolean') {
+                        const fieldId = parseInt(field.id.replace('custom_', ''));
+                        const customField = customFields.find((f: any) => f.id === fieldId);
+
+                        if (customField) {
+                            field = { ...field, ...customField };
+                        }
+
+                        if (batch.data.custom_fields) {
+                            if (batch.data.custom_fields[field.label_short]) {
+                                let value = batch.data.custom_fields[field.label_short];
+
+                                if (field.type === 'date') {
+                                    const dateValue = moment(value, 'YYYY-MM-DD', true);
+                                    if (dateValue.isValid()) {
+                                        value = dateValue.format('YYYY-MM-DD');
+                                    } else {
+                                        value = null;
+                                    }
+                                }
+                                field = { ...field, value: value };
+                            }
+                        }
+                        if (field.value) {
+                            setBatchMetadataValues((prev: any) => ({ ...prev, [field.label_short]: field.value }));
+                        }
+                        linesFields.push(field);
+                    }
+                });
+
+                if (linesFields.length > 0) {
+                    lines.push(linesFields);
+                }
+
+            });
+
+            setBatchMetadata(lines);
+        }
+    }, [loadingFormFields]);
+
+    const normalizeDisplayOrder = (docs: any[]) => {
+        docs.forEach((doc) => {
+            doc.pages.forEach((page: any, index: number) => {
+                page.display_order = index + 1; // ou index si backend 0-based
+            });
+        });
+    };
 
     const handleDragStart = (event: DragStartEvent) => {
         const { active } = event;
@@ -189,23 +302,51 @@ export function SplitterViewerPage() {
                     // Different doc: remove from source, insert at hovered position
                     const [movedPage] = sourceDoc.pages.splice(pageIndex, 1);
                     targetDoc.pages.splice(overIndex, 0, movedPage);
+
+                    setMovedPages(prev => {
+                        const filtered = prev.filter(p => p.pageId !== movedPage.id);
+
+                        return [
+                            ...filtered,
+                            {
+                                pageId: movedPage.id,
+                                newDocumentId: targetDoc.id
+                            }
+                        ];
+                    });
+
                     setActiveDragItem((prev: any) =>
                         prev ? { ...prev, documentId: targetDoc.id } : prev
                     );
                 }
+                normalizeDisplayOrder(next);
                 return next;
             }
 
             // Case 2: hovering over an empty document drop zone
             if (over.data.current?.type === 'document-zone') {
-                const targetDoc = next.find(d => String(d.id) === String(over.data.current.documentId));
+                const targetDoc = next.find(d => String(d.id) === String(over.data.current?.documentId));
                 if (!targetDoc || targetDoc.id === sourceDoc.id) return docs;
 
                 const [movedPage] = sourceDoc.pages.splice(pageIndex, 1);
                 targetDoc.pages.push(movedPage);
+
+                setMovedPages(prev => {
+                    const filtered = prev.filter(p => p.pageId !== movedPage.id);
+
+                    return [
+                        ...filtered,
+                        {
+                            pageId: movedPage.id,
+                            newDocumentId: targetDoc.id
+                        }
+                    ];
+                });
+
                 setActiveDragItem((prev: any) =>
                     prev ? { ...prev, documentId: targetDoc.id } : prev
                 );
+                normalizeDisplayOrder(next);
                 return next;
             }
 
@@ -245,6 +386,141 @@ export function SplitterViewerPage() {
         fetchAndDownload().then();
     };
 
+    const handleDeleteDocument = () => {
+        showConfirmDialog({
+            title: t('SPLITTER.delete_document'),
+            message: t('SPLITTER.confirm_delete_document'),
+            confirmText: t('GLOBAL.delete'),
+            cancelText: t('GLOBAL.cancel'),
+            danger: true,
+            onConfirm: async () => {
+                setDeletedDocuments((prev) => [...prev, selectedDocument]);
+                setDocuments((docs: any[]) => docs.filter(doc => doc.id !== selectedDocument.id));
+                setUnSavedChanges(true);
+            },
+            onCancel: () => {
+                setSelectedDocument([]);
+            }
+        });
+    }
+
+    const handleRotation = () => {
+        const currentDegree = selectedPages[0]?.rotation || 0;
+        switch (currentDegree) {
+            case -90: {
+                selectedPages[0].rotation = 0;
+                break;
+            }
+            case 180: {
+                selectedPages[0].rotation = -90;
+                break;
+            }
+            default: {
+                selectedPages[0].rotation += 90;
+                break;
+            }
+        }
+    }
+
+    const handleDeletePage = () => {
+        showConfirmDialog({
+            title: t('SPLITTER.delete_document_page', { count: selectedPages.length }),
+            message: t('SPLITTER.confirm_delete_document_page', { count: selectedPages.length }),
+            confirmText: t('GLOBAL.delete'),
+            cancelText: t('GLOBAL.cancel'),
+            danger: true,
+            onConfirm: async () => {
+                setUnSavedChanges(true);
+                setDeletedPages((prev) => [...prev, ...selectedPages]);
+                setDocuments((docs: any[]) => {
+                    const next = docs.map(doc => ({ ...doc, pages: [...doc.pages] }));
+                    selectedPages.forEach((page) => {
+                        const doc = next.find(d => d.id === page.document_id);
+                        if (doc) {
+                            doc.pages = doc.pages.filter((p: any) => p.id !== page.id);
+                        }
+                    });
+                    normalizeDisplayOrder(next);
+                    return next;
+                });
+            },
+            onCancel: () => {
+                setSelectedPages([]);
+            }
+        });
+    }
+
+    const handleDocumentPrincipal = () => {
+        showConfirmDialog({
+            title: t('SPLITTER.set_document_principal'),
+            message: t('SPLITTER.confirm_set_document_principal'),
+            confirmText: t('GLOBAL.validate'),
+            cancelText: t('GLOBAL.cancel'),
+            onConfirm: async () => {
+                const documentsToMove = documents.filter((doc: any) => doc.id !== selectedDocument.id);
+                if (documentsToMove) {
+
+                    documentsToMove.forEach((doc: any) => {
+                        setDeletedDocuments((prev) => [...prev, doc]);
+                    });
+                    setDocuments([selectedDocument]);
+                    setUnSavedChanges(true);
+                }
+            },
+            onCancel: () => {
+                setSelectedDocument([]);
+            }
+        });
+    }
+
+    const handleSaveChanges = async () => {
+        try {
+            await post('/splitter/saveModifications', {
+                'batchId': batchId,
+                'documents': documents,
+                'movedPages': movedPages,
+                'batchMetadata': batchMetadataValues,
+                'deletedPagesIds': deletedPages.map(p => p.id),
+                'deletedDocumentsIds': deletedDocuments.map(d => d.id)
+            });
+            setDeletedPages([]);
+            setDeletedDocuments([]);
+            setUnSavedChanges(false);
+        } catch (error) {
+            console.error("Error saving changes:", error);
+        }
+    }
+
+    const getWidthLine = (line: any) => {
+        const currentLineFields = Object.values(line).filter((field: any) => typeof field !== 'boolean');
+        return currentLineFields.length === 1 ? 'w-full' :
+            currentLineFields.length === 2 ? 'w-1/2' :
+                currentLineFields.length === 3 ? 'w-1/3' :
+                    currentLineFields.length === 4 ? 'w-1/4' :
+                        'w-1/5';
+    }
+
+    const handleUpdateBatchMetadataValues = (field: any, value: any) => {
+        setBatchMetadataValues((prev: any) => ({ ...prev, [field.label_short]: value }));
+        setUnSavedChanges(true);
+    }
+
+    const handleUnbinding = () => {
+        showConfirmDialog({
+            title: t('ATTACHMENTS.unbinding'),
+            message: t('SPLITTER.confirm_unbinding'),
+            confirmText: t('GLOBAL.validate'),
+            cancelText: t('GLOBAL.cancel'),
+            onConfirm: async () => {
+                setShowAttachments(false);
+            },
+            onCancel: () => {
+                setShowAttachments(false);
+                setSelectedDocument([]);
+            }
+        });
+    }
+
     if (!batch) return null;
 
     return (
@@ -264,42 +540,47 @@ export function SplitterViewerPage() {
                     </div>
                 </>
             ) }
-            <div className='px-8 pt-4 flex items-center'>
-                <Button
-                    size={ 'sm' }
-                    variant={ "secondary" }
-                    onClick={ handleDownloadOriginalFile }
-                    className='p-2 px-3 bg-(--bg-primary) border-(--border-secondary) text-(--text-secondary) hover:text-(--color-primary)'>
-                    <Download size={ 16 } className="mr-2"/> { batch.file_name }
-                </Button>
-                <div className="ml-auto">
-                    { enableAttachments && (
-                        <div className="flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
+
+            { !showAttachments && (
+                <div className='px-8 py-4 flex items-center'>
+                    <Button
+                        size={ 'sm' }
+                        variant={ "secondary" }
+                        onClick={ handleDownloadOriginalFile }
+                        className='p-2 px-3 bg-(--bg-primary) border-(--border-secondary) text-(--text-secondary) hover:text-(--color-primary)'>
+                        <Download size={ 16 } className="mr-2"/> { batch.file_name }
+                    </Button>
+                    <div className="ml-auto">
+                        { enableAttachments && (
+                            <div className="flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
                                     cursor-pointer border border-(--border-secondary) hover:border-(--border-primary)
                                     hover:text-(--color-primary) transition-colors shrink-0 relative"
-                             onClick={ () => setShowAttachments(true) }
-                             data-tooltip-id="tooltip"
-                             data-tooltip-content={ t('VERIFIER.show_attachments') }>
-                            <Paperclip size={ 18 }/>
-                            { attachmentsCount > 0 && (
-                                <div className="z-1 absolute top-0 right-0 size-3 rounded-full bg-(--color-primary)"/>
-                            ) }
-                        </div>
-                    ) }
+                                 onClick={ () => setShowAttachments(true) }
+                                 data-tooltip-id="tooltip"
+                                 data-tooltip-content={ t('VERIFIER.show_attachments') }>
+                                <Paperclip size={ 16 }/>
+                                { attachmentsCount > 0 && (
+                                    <div
+                                        className="z-1 absolute top-0 right-0 size-3 rounded-full bg-(--color-primary)"/>
+                                ) }
+                            </div>
+                        ) }
+                    </div>
                 </div>
-            </div>
+            ) }
 
-            <div className={ `h-full flex flex-col pb-10 ${ showAttachments && enableAttachments ? '' : 'hidden' }` }>
+            <div className={ `w-full h-full flex flex-col ${ showAttachments && enableAttachments ? '' : 'hidden' }` }>
                 <AttachmentsList
                     module="splitter"
                     documentId={ batchId }
+                    unBinding={ handleUnbinding }
                     onAttachmentsCountChange={ setAttachmentsCount }
                     onClose={ () => setShowAttachments(false) }
                 />
             </div>
 
             { !showAttachments && (
-                <div className='px-8 py-4 h-full overflow-y-auto'>
+                <div className='px-8 pb-4 h-full overflow-y-auto'>
                     <Accordion className='mb-8' activeIndex={ 0 }>
                         <AccordionTab header={ t('SPLITTER.batch_content') }>
                             <div className='p-4'>
@@ -311,10 +592,52 @@ export function SplitterViewerPage() {
                                     </span>
                                     <span className='flex items-center gap-1'>
                                         <FileStack size={ 16 }/>
-                                        <span>{ batch.documents_count }</span>
-                                        { t('SPLITTER.documents', { count: batch.documents_count }) }
+                                        <span>{ documents.length }</span>
+                                        { t('SPLITTER.documents', { count: documents.length }) }
                                     </span>
                                 </div>
+
+                                { batchMetadata && (
+                                    <div>
+                                        <div onClick={ handleSaveChanges }>save</div>
+                                        <h3 className='font-semibold mb-4'>{ t('FORMS.metadata_batch') }</h3>
+                                        { batchMetadata.map((line: any, index: number) => (
+                                            <div key={ index } className={ `flex gap-4 mb-2` }>
+                                                { Object.values(line).map((field: any) => (
+                                                    <div key={ field.id }
+                                                         className={ `min-w-1/6 ${ getWidthLine(line) }` }>
+                                                        {
+                                                            field.type === 'date' ? (
+                                                                <ISOCalendar
+                                                                    id={ field.id }
+                                                                    key={ field.id }
+                                                                    label={ t(field.label) }
+                                                                    required={ field.required }
+                                                                    value={ batchMetadataValues[field.label_short] }
+                                                                    onChange={ (e) => {
+                                                                        handleUpdateBatchMetadataValues(field, e)
+                                                                    } }
+                                                                />
+                                                            ) : (
+                                                                <Input
+                                                                    id={ field.id }
+                                                                    key={ field.id }
+                                                                    type={ field.type }
+                                                                    label={ t(field.label) }
+                                                                    required={ field.required }
+                                                                    value={ batchMetadataValues[field.label_short] }
+                                                                    onChange={ (e) => {
+                                                                        handleUpdateBatchMetadataValues(field, e.target.value)
+                                                                    } }
+                                                                />
+                                                            )
+                                                        }
+                                                    </div>
+                                                )) }
+                                            </div>
+                                        )) }
+                                    </div>
+                                ) }
                             </div>
                         </AccordionTab>
                     </Accordion>
@@ -344,34 +667,36 @@ export function SplitterViewerPage() {
                                             { t('SPLITTER.pages', { count: document.pages.length }) }
                                         </div>
                                         <div className='ml-auto'>
-                                            <EllipsisVertical size={ 18 } className="cursor-pointer"
-                                                              onClick={ (e) => {
-                                                                  e.preventDefault();
-                                                                  e.stopPropagation();
-                                                                  cm.current?.show(e);
-                                                              } }
+                                            <EllipsisVertical
+                                                size={ 18 } className="cursor-pointer"
+                                                onClick={ (e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    setSelectedDocument(document);
+                                                    cm.current?.show(e);
+                                                } }
                                             />
-                                            <ContextMenu model={ menuItems } className="w-auto!" ref={ cm }/>
+                                            <ContextMenu model={ menuItems } className="w-auto!" ref={ cm }
+                                                         onHide={ () => setSelectedDocument(null) }/>
                                         </div>
                                     </div>
                                 }
                             >
-                                <SortableContext
-                                    items={ document.pages.map((p: any) => `page-${ p.id }`) }
-                                    strategy={ verticalListSortingStrategy }
-                                >
-                                    <DroppableDocumentZone
-                                        documentId={ document.id }
-                                        isEmpty={ document.pages.length === 0 }
-                                    >
+                                <SortableContext strategy={ verticalListSortingStrategy }
+                                                 items={ document.pages.map((p: any) => `page-${ p.id }`) }>
+                                    <DroppableDocumentZone documentId={ document.id }
+                                                           isEmpty={ document.pages.length === 0 }>
                                         { document.pages.length > 0 && (
                                             <div className="flex gap-3">
                                                 { document.pages.map((page: any) => (
                                                     <DraggablePage
                                                         page={ page }
                                                         key={ page.id }
+                                                        selectedPages={ selectedPages }
+                                                        onSelectionChange={ (pages) => setSelectedPages(pages) }
                                                         onZoom={ handlePreview }
                                                         documentId={ document.id }
+                                                        menuItems={ pageMenuItems }
                                                     />
                                                 )) }
                                             </div>
@@ -385,6 +710,7 @@ export function SplitterViewerPage() {
                             { activeDragItem?.type === 'page' && (
                                 <DraggablePage
                                     isDragOverlay
+                                    selectedPages={ [] }
                                     page={ activeDragItem.page }
                                     documentId={ activeDragItem.documentId }
                                 />

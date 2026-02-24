@@ -33,6 +33,8 @@ export interface FormField {
     label: string;
     type: string;
     value?: any;
+    batch_metadata?: any;
+    document_metadata?: any;
 }
 
 interface useFormFieldsResult {
