@@ -184,7 +184,6 @@ export class SplitterFormBuilderComponent implements OnInit {
         private http: HttpClient,
         private route: ActivatedRoute,
         public userService: UserService,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
@@ -278,6 +277,7 @@ export class SplitterFormBuilderComponent implements OnInit {
                                                 type                 : data.customFields[field].type,
                                                 format               : data.customFields[field].type,
                                                 label                : data.customFields[field].label,
+                                                label_short          : data.customFields[field].label_short,
                                                 required             : data.customFields[field].required,
                                                 metadata_key         : data.customFields[field].metadata_key,
                                                 conditioned_fields   : [],
@@ -395,6 +395,7 @@ export class SplitterFormBuilderComponent implements OnInit {
             }
         });
     }
+
     dropFromForm(event: any) {
         const unit = event.container.id;
         const previousUnit = event.previousContainer.id;
@@ -475,6 +476,7 @@ export class SplitterFormBuilderComponent implements OnInit {
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {
+                    console.log(this.fields)
                     this.http.post(environment['url'] + '/ws/forms/splitter/updateFields/' + this.formId, this.fields,
                         {headers: this.authService.headers}).pipe(
                         tap(() => {
