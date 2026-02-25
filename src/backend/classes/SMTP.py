@@ -44,8 +44,7 @@ class SMTP:
         self.messsage_delay = '\n\n Attention, durant les ' + str(self.delay) + \
                               ' dernières minutes, d\'autres erreurs ont pu arriver sans notifications.'
 
-        if self.enabled:
-            self.test_connection()
+        self.test_connection()
 
     def test_connection(self, return_error=False):
         """

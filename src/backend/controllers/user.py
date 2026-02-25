@@ -192,8 +192,10 @@ def send_email_forgot_password(args):
                 'user_info': user_info['lastname'] + ' ' + user_info['firstname'] + ' (' + user_info['username'] + ')',
                 'desc': gettext('USER_FORGOT_SUCCESS', user=user_info['username'])
             })
-        return user_info, 200
-    else:
+            return user_info, 200
+        else :
+            error = gettext('RESET_PASSWORD_ERROR')
+    if error:
         response = {
             "errors": gettext('SEND_EMAIL_FORGOT_PASSWORD_ERROR'),
             "message": gettext(error)
