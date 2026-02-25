@@ -23,6 +23,12 @@
             "label" : "Séparation par code QR MEM Courrier",
             "script": "qr_code_MEM.py",
             "method": "process"
+        },
+        {
+            "id"    : "blank_page",
+            "label" : "Séparation par pages blanches",
+            "script": "blank_pages.py",
+            "method": "process"
         }
     ]
 }
