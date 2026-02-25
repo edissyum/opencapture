@@ -199,7 +199,8 @@ def create_document():
         {'id': 'userId', 'type': int, 'mandatory': True},
         {'id': 'batchId', 'type': int, 'mandatory': True},
         {'id': 'workflowId', 'type': int, 'mandatory': True},
-        {'id': 'display_order', 'type': int, 'mandatory': True},
+        {'id': 'splitIndex', 'type': int, 'mandatory': True},
+        {'id': 'displayOrder', 'type': int, 'mandatory': True},
         {'id': 'updatedDocuments', 'type': list, 'mandatory': False},
     ])
 

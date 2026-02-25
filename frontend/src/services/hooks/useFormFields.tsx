@@ -19,33 +19,15 @@ import { useEffect, useState } from "react";
 
 import { axiosApiCall } from "./axiosApiCall";
 
-export interface FormField {
-    splice(arg0: any, arg1: number, newLine: any): any;
-    some(arg0: (line: any) => boolean): any;
-    findIndex(arg0: (line: any) => boolean): any;
-    push(newLine: any): any;
-    flatMap(arg0: (line: any) => any[]): any;
-    flat(): any;
-    map(arg0: (line: any, index: number) => { id: string; fields: any; }): any;
-    forEach(arg0: (line: any) => void): any;
-    id: string;
-    name: string;
-    label: string;
-    type: string;
-    value?: any;
-    batch_metadata?: any;
-    document_metadata?: any;
-}
-
 interface useFormFieldsResult {
-    formFields: FormField[];
+    formFields: any;
     loading: boolean;
     error?: string | null;
 }
 
 export function useFormFields(formId: number): useFormFieldsResult {
     const { get, loading, error } = axiosApiCall();
-    const [formFields, setFormFields] = useState<useFormFieldsResult[]>([]);
+    const [formFields, setFormFields] = useState<any>([]);
 
     useEffect(() => {
         if (!formId) return;
@@ -57,12 +39,12 @@ export function useFormFields(formId: number): useFormFieldsResult {
                 });
                 if (data) setFormFields(data.fields);
             } catch {
+                console.error("Failed to fetch form fields");
             }
         };
 
         fetchFormFields().then();
     }, [formId]);
 
-    // @ts-ignore
     return { formFields, loading, error };
 }

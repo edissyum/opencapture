@@ -61,6 +61,30 @@ def upload_splitter():
     res = attachments.handle_uploaded_file(request.files, None, request.form['batchId'], 'splitter')
     return make_response(res[0], res[1])
 
+
+@bp.route('attachments/splitter/unbind', methods=['POST'])
+@auth.token_required
+def unbind_attachment_splitter():
+    if not privileges.has_privileges(request.environ['user_id'], ['access_splitter', 'upload_attachments_splitter']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/attachments/splitter/unbind'}), 403
+
+    check, message = rest_validator(request.json, [
+        {'id': 'pagesCount', 'type': int, 'mandatory': False},
+        {'id': 'attachmentId', 'type': int, 'mandatory': True},
+        {'id': 'newDocumentId', 'type': int, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = attachments.unbind_attachment(request.json)
+    return make_response(res[0], res[1])
+
+
+
 @bp.route('attachments/verifier/list/<int:document_id>', methods=['GET'])
 @auth.token_required
 def get_attachments_by_document_id(document_id):

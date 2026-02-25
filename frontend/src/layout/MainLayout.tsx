@@ -35,9 +35,9 @@ export default function MainLayout() {
     }
 
     return (
-        <div className="flex h-screen">
+        <div className="flex h-screen w-screen">
             <Sidebar />
-            <main className="flex flex-col w-full h-full bg-(--bg-secondary)">
+            <main className="flex flex-col w-full h-full bg-(--bg-secondary) overflow-hidden">
                 <TopBar />
                 <Outlet />
             </main>

@@ -202,7 +202,8 @@ export function AttachmentsList({
                             { module === 'verifier' ? t('ATTACHMENTS.back_to_file') : t('ATTACHMENTS.back_to_batch') }
                         </Button>
                         { module === 'splitter' && (
-                            <Button icon={ <Unlink size={ 18 }/> } onClick={ () => unBinding() }
+                            <Button icon={ <Unlink size={ 18 }/> } onClick={ () => unBinding && unBinding() }
+                                    disabled={ attachments.length === 0 }
                                     className='rounded-3xl hover:text-(--color-primary) text-(--text-primary)
                                                border-(--border-secondary) p-2.5! px-5! bg-(--bg-primary)'>
                                 { t('ATTACHMENTS.unbinding') }

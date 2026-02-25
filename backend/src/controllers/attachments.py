@@ -17,16 +17,19 @@
 
 import os
 import uuid
+import pypdf
 import magic
 import base64
+
 from flask_babel import gettext
 from pdf2image import convert_from_path
-from ..models import attachments
+from werkzeug.datastructures import FileStorage
+from flask import current_app, request, g as current_context
+
 from ..controllers import history
 from ..classes.Files import Files
-from werkzeug.datastructures import FileStorage
+from ..models import attachments, splitter
 from ..main import create_classes_from_custom_id
-from flask import current_app, request, g as current_context
 from ..functions import check_extensions_mime, retrieve_custom_from_url
 
 
@@ -107,6 +110,7 @@ def handle_uploaded_file(files, document_id, batch_id, module, from_api=False):
                 })
     return '', 200
 
+
 def get_attachments_by_document_id(document_id, get_thumb=True):
     _attachments = attachments.get_attachments_by_document_id(document_id)
 
@@ -126,6 +130,7 @@ def get_attachments_by_document_id(document_id, get_thumb=True):
             mime_type = mime.from_file(attachment['path'])
             attachment['mime_type'] = mime_type
     return _attachments, 200
+
 
 def get_attachments_by_batch_id(batch_id, get_thumb=True):
     _attachments = attachments.get_attachments_by_batch_id(batch_id)
@@ -147,6 +152,7 @@ def get_attachments_by_batch_id(batch_id, get_thumb=True):
             attachment['mime_type'] = mime_type
     return _attachments, 200
 
+
 def delete_attachment(attachment_id, module):
     _attachment = attachments.get_attachment_by_id(attachment_id)
 
@@ -162,6 +168,7 @@ def delete_attachment(attachment_id, module):
     })
     return _attachment, 200
 
+
 def download_attachment(attachment_id):
     _attachment = attachments.get_attachment_by_id(attachment_id)
 
@@ -176,3 +183,57 @@ def download_attachment(attachment_id):
         return content, mime_type
     else:
         return None, ''
+
+
+def unbind_attachment(args):
+    if 'docservers' in current_context:
+        docservers = current_context.docservers
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+        database = _vars[0]
+
+    attachment = attachments.get_attachment_by_id(args['attachmentId'])
+    document, _ = splitter.get_document_by_id({'select': ['batch_id'], 'id': args['newDocumentId']})
+    if attachment and document:
+        batch, _ = splitter.get_batch_by_id({'id': document['batch_id']})
+        original_filepath = docservers['SPLITTER_ORIGINAL_DOC'] + '/' + batch['file_path']
+
+        if os.path.isfile(original_filepath):
+            pdf = pypdf.PdfReader(original_filepath, strict=False)
+            max_source_page = len(pdf.pages)
+            if batch:
+                file_path = attachment['path']
+                thumb_folder = docservers['SPLITTER_THUMB'] + '/' + batch['batch_folder']
+                batch_folder = docservers['SPLITTER_BATCHES'] + '/' + batch['batch_folder']
+                if os.path.isfile(file_path):
+                    extension = os.path.splitext(file_path)[1]
+                    if extension.lower() == '.pdf':
+                        images = convert_from_path(file_path, dpi=300)
+                        for i, image in enumerate(images):
+                            full_filename = f"page-{max_source_page + i + 1:03d}.jpg"
+                            full_path = os.path.join(batch_folder, full_filename)
+                            image.save(full_path, 'JPEG')
+                            thumb_path = os.path.join(thumb_folder, full_filename)
+                            image.save(thumb_path, 'JPEG', quality=50)
+
+                            splitter.insert_page({
+                                'source_page': max_source_page + 1,
+                                'document_id': args['newDocumentId'],
+                                'path': batch['batch_folder'] + '/' + full_filename
+                            })
+                            max_source_page += 1
+
+                            # Merge attachment PDF with original PDF (needed for export)
+                            merged_pdf = pypdf.PdfWriter()
+                            for page in range(len(pdf.pages)):
+                                merged_pdf.add_page(pdf.pages[page])
+
+                            new_pdf = pypdf.PdfReader(file_path, strict=False)
+                            for page in range(len(new_pdf.pages)):
+                                merged_pdf.add_page(new_pdf.pages[page])
+                            merged_pdf.write(original_filepath)
+
+    return '', 200

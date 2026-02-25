@@ -36,7 +36,7 @@ from ..functions import retrieve_custom_from_url
 from ..main import create_classes_from_custom_id
 from flask import current_app, request, g as current_context
 from ..models import splitter, doctypes, accounts, history, workflow, outputs, forms, attachments
-from ..controllers import user, monitoring, attachments as attachments_controller, workflow, status
+from ..controllers import user, monitoring, attachments as attachments_controller, status
 
 
 def handle_uploaded_file(files, workflow_id, user_id):
@@ -197,7 +197,7 @@ def retrieve_batches(data):
         args['where'].append("splitter_batches.status = %s")
         args['data'].append(args['status'])
 
-    if 'time' in args and args['time'] is not None:
+    if 'time' in args and args['time']:
         if args['time'] in ['today', 'yesterday']:
             args['where'].append(
                 "to_char(splitter_batches.creation_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "', 'YYYY-MM-DD')")
@@ -521,16 +521,10 @@ def create_document(args):
         'doctype_key': None,
         'batch_id': args['batchId'],
         'split_index': args['splitIndex'],
-        'display_order': args['display_order']
+        'display_order': args['displayOrder']
     })
 
     if res:
-        for update_data in args['updatedDocuments']:
-            splitter.update_document({
-                'id': update_data['id'],
-                'display_order': update_data['display_order']
-            })
-
         workflow_id = None
         workflow_info = workflow.get_workflow_by_id({'workflow_id': args['workflowId']})
         if workflow_info and workflow_info[0]:
@@ -605,7 +599,7 @@ def save_modifications(data):
 
         res = splitter.update_document({
             'id': document['id'],
-            'doctype_key': document['doctypeKey'] if 'doctypeKey' in document else None,
+            'doctype_key': document['doctype_key'] if 'doctype_key' in document else None,
             'data': document['data'] if 'data' in document else None
         })[0]
         if not res:
@@ -638,14 +632,14 @@ def save_modifications(data):
     """
     for deleted_documents_id in data['deleted_documents_ids']:
         res = splitter.update_document({
-            'id': deleted_documents_id.split('-')[-1],
+            'id': deleted_documents_id,
             'status': 'DEL'
         })[0]
 
         database.delete({
             'table': ["history"],
-            'where': ["custom_fields ->> 'splitter_document_id' = %s"],
-            'data': [deleted_documents_id.split('-')[-1]]
+            'where': ["custom_fields ->> 'splitter_document_id' = TEXT(%s)"],
+            'data': [deleted_documents_id]
         })
         database.conn.commit()
 

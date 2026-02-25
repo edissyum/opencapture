@@ -591,7 +591,8 @@
         "confirm_delete_document": "Voulez-vous vraiment supprimer ce document ?",
         "confirm_set_document_principal": "Êtes-vous sûr de vouloir définir ce document comme document principal ?<br>Les autres documents seront mis en pièces jointes",
         "set_document_principal": "Définir comme document principal (liassage)",
-        "confirm_unbinding": "Voulez-vous vraiment déliasser ces pièces jointes ? Elles deviendront des documents indépendants dans ce lot (cette action est irréversible)"
+        "confirm_unbinding": "Voulez-vous vraiment déliasser ces pièces jointes ? Elles deviendront des documents indépendants dans ce lot (cette action est irréversible)",
+        "preview": "Apercu"
     },
     "UPLOAD": {
         "upload_dropzone": "Cliquez pour choisir un fichier",

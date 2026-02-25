@@ -369,10 +369,12 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                 )
             );
 
-            payload[key] = payload[key].map((line: any, index: number) => ({
-                ...line,
-                duplicable: zone.lines[index]?.duplicable || false,
-            }));
+            if (module === 'verifier') {
+                payload[key] = payload[key].map((line: any, index: number) => ({
+                    ...line,
+                    duplicable: zone.lines[index]?.duplicable || false,
+                }));
+            }
         });
 
         try {

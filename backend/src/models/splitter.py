@@ -141,9 +141,9 @@ def insert_page(args):
     args = {
         'table': 'splitter_pages',
         'columns': {
-            'document_id': str(args['document_id']),
             'thumbnail': args['path'],
-            'source_page': args['source_page']
+            'source_page': args['source_page'],
+            'document_id': str(args['document_id'])
         }
     }
     res = database.insert(args)
@@ -214,6 +214,28 @@ def get_batch_by_id(args):
     batch = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['splitter_batches'],
+        'where': ['id = %s'],
+        'data': [args['id']]
+    })
+    if not batch:
+        error = gettext('GET_DOCUMENT_BY_ID_ERROR')
+    else:
+        batch = batch[0]
+
+    return batch, error
+
+
+def get_document_by_id(args):
+    if 'database' in current_context:
+        database = current_context.database
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        database = _vars[0]
+    error = None
+    batch = database.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['splitter_documents'],
         'where': ['id = %s'],
         'data': [args['id']]
     })

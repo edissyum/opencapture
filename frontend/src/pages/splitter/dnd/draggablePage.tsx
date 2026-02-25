@@ -15,8 +15,9 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { useRef, useState } from "react";
+import { t } from "i18next";
 import { CSS } from "@dnd-kit/utilities";
+import { useRef, useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { EllipsisVertical, Eye } from "lucide-react";
 import { ContextMenu } from "primereact/contextmenu";
@@ -83,17 +84,17 @@ export function DraggablePage({
 
     return (
         <div ref={ setNodeRef } style={ isDragOverlay ? {} : style }
-             className={ `DraggablePage group flex items-center gap-2 rounded-md border border-(--border-secondary) transition-colors 
-                bg-(--bg-secondary) cursor-default select-none h-full hover:bg-(--color-primary)/20 hover:cursor-pointer
+             className={ `DraggablePage group flex items-center gap-2 rounded-lg border border-(--border-secondary) transition-colors 
+                bg-(--bg-secondary) cursor-default select-none h-full hover:bg-(--color-primary)/20 hover:cursor-pointer min-w-76
                 ${ isDragOverlay ? 'rotate-1 opacity-90' : '' }` }>
 
-            <div className='h-full'>
+            <div className='h-full w-full flex flex-col items-center'>
                 { page.thumbnail && (
-                    <div className='relative'>
+                    <div className='relative p-6'>
                         <img
                             src={ URL.createObjectURL(b64ToFile('data:image/jpg;base64,' + page.thumbnail)) }
                             alt={ `Page ${ page.source_page }` }
-                            className={ `h-90 p-4 rounded-[20px]
+                            className={ `h-90 rounded-lg
                             ${ page.rotation === 90 ? 'rotate-90 m-auto scale-75 px-2' : '' }
                             ${ page.rotation === 180 ? 'rotate-180 m-auto' : '' }
                             ${ page.rotation === -90 ? '-rotate-90 m-auto scale-75 px-2' : '' }` }
@@ -106,12 +107,13 @@ export function DraggablePage({
                                  if (onZoom) onZoom(page);
                              } }>
                             <Eye size={ 18 }/>
-                            Apercu
+                            { t('SPLITTER.preview') }
                         </div>
 
                         <Checkbox
+                            size={ 6 }
                             id={ page.id }
-                            className="absolute top-2 left-2"
+                            className="absolute top-3 left-3"
                             checked={ selectedPages.some(p => p.id === page.id) }
                             onChange={ (checked: boolean, id: string | undefined) => onSelect(checked, id) }
                         />

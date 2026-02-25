@@ -65,7 +65,7 @@ import moment from "moment/moment";
 import Input from "../../components/Input.tsx";
 
 export function SplitterViewerPage() {
-    const { get, post } = axiosApiCall();
+    const { get, post, del } = axiosApiCall();
     const cm = useRef({ current: null } as any);
     const [unSavedChanges, setUnSavedChanges] = useState(false);
     useUnsavedChangesWarning(unSavedChanges);
@@ -80,8 +80,8 @@ export function SplitterViewerPage() {
 
     const [documents, setDocuments] = useState<any>([]);
     const [batch, setBatch] = useState<any>(null);
-    const [pagesCount, setPagesCount] = useState<number>(0);
     const [batchMetadata, setBatchMetadata] = useState<any[]>([]);
+    const [pagesCount, setPagesCount] = useState<number>(0);
     const [batchMetadataValues, setBatchMetadataValues] = useState<any>({});
     const [documentMetadata, setDocumentMetadata] = useState<any>(null);
 
@@ -90,6 +90,7 @@ export function SplitterViewerPage() {
 
     const [thumbnail, setThumbnail] = useState<string | null>(null);
     const [attachmentsCount, setAttachmentsCount] = useState<number>(0);
+    const [attachmentsRefreshKey, setAttachmentsRefreshKey] = useState(0);
     const [showAttachments, setShowAttachments] = useState<boolean>(false);
     const [enableAttachments, setEnableAttachments] = useState<boolean>(true);
 
@@ -141,7 +142,11 @@ export function SplitterViewerPage() {
         const fetchBatchDetails = async () => {
             try {
                 const response = await post('/splitter/batches/list', { 'batchId': batchId, 'user_id': user.id });
-                if (response?.batches?.length > 0) setBatch(response.batches[0]);
+                if (response?.batches?.length > 0) {
+                    const batchData = response.batches[0];
+                    batchData.maxSplitIndex = batchData.documents_count;
+                    setBatch(batchData);
+                }
             } catch (error) {
                 console.error('Error fetching batch details:', error);
             }
@@ -210,7 +215,7 @@ export function SplitterViewerPage() {
             Object.values(batchMetadata).forEach((line: any) => {
                 let linesFields: any[] = [];
                 Object.values(line).forEach((field: any) => {
-                    if (field && typeof field !== 'boolean') {
+                    if (field) {
                         const fieldId = parseInt(field.id.replace('custom_', ''));
                         const customField = customFields.find((f: any) => f.id === fieldId);
 
@@ -459,7 +464,6 @@ export function SplitterViewerPage() {
             onConfirm: async () => {
                 const documentsToMove = documents.filter((doc: any) => doc.id !== selectedDocument.id);
                 if (documentsToMove) {
-
                     documentsToMove.forEach((doc: any) => {
                         setDeletedDocuments((prev) => [...prev, doc]);
                     });
@@ -492,11 +496,10 @@ export function SplitterViewerPage() {
     }
 
     const getWidthLine = (line: any) => {
-        const currentLineFields = Object.values(line).filter((field: any) => typeof field !== 'boolean');
-        return currentLineFields.length === 1 ? 'w-full' :
-            currentLineFields.length === 2 ? 'w-1/2' :
-                currentLineFields.length === 3 ? 'w-1/3' :
-                    currentLineFields.length === 4 ? 'w-1/4' :
+        return line.length === 1 ? 'w-full' :
+            line.length === 2 ? 'w-1/2' :
+                line.length === 3 ? 'w-1/3' :
+                    line.length === 4 ? 'w-1/4' :
                         'w-1/5';
     }
 
@@ -512,7 +515,20 @@ export function SplitterViewerPage() {
             confirmText: t('GLOBAL.validate'),
             cancelText: t('GLOBAL.cancel'),
             onConfirm: async () => {
+                const response = await get(`/attachments/splitter/list/${ batchId }`);
+                if (response) {
+                    for (const attachment of response) {
+                        const newDocumentId = await addDocument();
+                        await post(`/attachments/splitter/unbind`, {
+                            pagesCount: pagesCount,
+                            attachmentId: attachment.id,
+                            newDocumentId: newDocumentId,
+                        });
+                        await del(`/attachments/splitter/delete/${ attachment.id }`);
+                    }
+                }
                 setShowAttachments(false);
+                setAttachmentsRefreshKey(prev => prev + 1);
             },
             onCancel: () => {
                 setShowAttachments(false);
@@ -521,10 +537,38 @@ export function SplitterViewerPage() {
         });
     }
 
+    const addDocument = async () => {
+        try {
+            const response = await post('/splitter/addDocument', {
+                userId: user.id,
+                batchId: batchId,
+                workflowId: batch.workflow_id,
+                splitIndex: batch.maxSplitIndex + 1,
+                displayOrder: batch.maxSplitIndex + 1
+            });
+
+            if (response?.newDocumentId) {
+                const newDocument = {
+                    id: response.newDocumentId,
+                    pages: [],
+                    data: {
+                        custom_fields: {}
+                    }
+                };
+                setDocuments((prev: any[]) => [...prev, newDocument]);
+                setBatch((prev: any) => ({ ...prev, maxSplitIndex: prev.maxSplitIndex + 1 }));
+                return response.newDocumentId;
+            }
+
+        } catch (error) {
+            console.error("Error adding document:", error);
+        }
+    }
+
     if (!batch) return null;
 
     return (
-        <div className='flex flex-col h-full overflow-hidden'>
+        <div className='flex flex-col h-full w-full overflow-hidden'>
             { thumbnail && (
                 <>
                     <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
@@ -540,6 +584,8 @@ export function SplitterViewerPage() {
                     </div>
                 </>
             ) }
+            <div onClick={ handleSaveChanges }>save</div>
+            <div onClick={ addDocument }>add document</div>
 
             { !showAttachments && (
                 <div className='px-8 py-4 flex items-center'>
@@ -571,6 +617,7 @@ export function SplitterViewerPage() {
 
             <div className={ `w-full h-full flex flex-col ${ showAttachments && enableAttachments ? '' : 'hidden' }` }>
                 <AttachmentsList
+                    key={ attachmentsRefreshKey }
                     module="splitter"
                     documentId={ batchId }
                     unBinding={ handleUnbinding }
@@ -581,7 +628,7 @@ export function SplitterViewerPage() {
 
             { !showAttachments && (
                 <div className='px-8 pb-4 h-full overflow-y-auto'>
-                    <Accordion className='mb-8' activeIndex={ 0 }>
+                    <Accordion className='mb-8'>
                         <AccordionTab header={ t('SPLITTER.batch_content') }>
                             <div className='p-4'>
                                 <div className='text-(--text-secondary) flex items-center gap-4 mb-4'>
@@ -599,11 +646,10 @@ export function SplitterViewerPage() {
 
                                 { batchMetadata && (
                                     <div>
-                                        <div onClick={ handleSaveChanges }>save</div>
                                         <h3 className='font-semibold mb-4'>{ t('FORMS.metadata_batch') }</h3>
                                         { batchMetadata.map((line: any, index: number) => (
                                             <div key={ index } className={ `flex gap-4 mb-2` }>
-                                                { Object.values(line).map((field: any) => (
+                                                { line.map((field: any) => (
                                                     <div key={ field.id }
                                                          className={ `min-w-1/6 ${ getWidthLine(line) }` }>
                                                         {
@@ -651,10 +697,10 @@ export function SplitterViewerPage() {
                     >
                         { documents.map((document: any) => (
                             <Panel
-                                className='mb-4'
+                                className='PanelDocumentList mb-4 w-full'
                                 key={ document.id }
                                 header={
-                                    <div className="flex items-center gap-1.5 w-full">
+                                    <div className="flex items-center gap-1.5">
                                         { !document.doctype_label && (
                                             <div className='text-(--text-error) font-semibold flex items-center gap-2'>
                                                 <FolderTree size={ 18 }/>
@@ -687,7 +733,7 @@ export function SplitterViewerPage() {
                                     <DroppableDocumentZone documentId={ document.id }
                                                            isEmpty={ document.pages.length === 0 }>
                                         { document.pages.length > 0 && (
-                                            <div className="flex gap-3">
+                                            <div className="flex gap-3 overflow-x-auto py-2">
                                                 { document.pages.map((page: any) => (
                                                     <DraggablePage
                                                         page={ page }

@@ -543,7 +543,8 @@
         "confirm_delete_document": "",
         "confirm_set_document_principal": "",
         "set_document_principal": "",
-        "confirm_unbinding": ""
+        "confirm_unbinding": "",
+        "preview": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Click to choose a file",
