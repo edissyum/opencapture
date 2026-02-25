@@ -1,0 +1,1 @@
+ALTER TABLE ai_llm ALTER COLUMN provider TYPE VARCHAR(50);
