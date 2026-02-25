@@ -397,6 +397,11 @@ export class WorkflowBuilderSplitterComponent implements OnInit {
 
     setSeparationMode(value: any) {
         this.separationMode = value;
+        this.fields['input'].forEach((element: any) => {
+            if (element.id === 'separate_by_document_number_value') {
+                element.show = value === 'separate_by_document_number';
+            }
+        });
     }
 
     setUsedOutputs() {

@@ -29,6 +29,12 @@
             "label" : "Séparation par pages blanches",
             "script": "blank_pages.py",
             "method": "process"
+        },
+        {
+            "id"    : "separate_by_document_number",
+            "label" : "Séparation par nombre de pages",
+            "script": "separate_by_document_number.py",
+            "method": "process"
         }
     ]
 }

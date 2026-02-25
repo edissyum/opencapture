@@ -56,7 +56,7 @@
                     </div>
                     <div class="mt-4 grid grid-cols-3 gap-6">
                         @for (field of this.fields['input']; track field['id']) {
-                            @if (field['type'] === 'text' && field['show']) {
+                            @if ((field['type'] === 'text' || field['type'] === 'number') && field['show']) {
                                 <mat-form-field>
                                     <mat-label>{{ field['label'] | translate }}</mat-label>
                                     <input matInput [formControl]="field['control']" [required]="field['required']"
