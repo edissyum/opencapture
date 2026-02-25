@@ -520,7 +520,6 @@ export function SplitterViewerPage() {
                     for (const attachment of response) {
                         const newDocumentId = await addDocument();
                         await post(`/attachments/splitter/unbind`, {
-                            pagesCount: pagesCount,
                             attachmentId: attachment.id,
                             newDocumentId: newDocumentId,
                         });
@@ -733,7 +732,7 @@ export function SplitterViewerPage() {
                                     <DroppableDocumentZone documentId={ document.id }
                                                            isEmpty={ document.pages.length === 0 }>
                                         { document.pages.length > 0 && (
-                                            <div className="flex gap-3 overflow-x-auto py-2">
+                                            <div className="flex gap-3 overflow-x-auto p-4">
                                                 { document.pages.map((page: any) => (
                                                     <DraggablePage
                                                         page={ page }

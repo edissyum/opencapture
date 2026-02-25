@@ -69,7 +69,6 @@ def unbind_attachment_splitter():
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/attachments/splitter/unbind'}), 403
 
     check, message = rest_validator(request.json, [
-        {'id': 'pagesCount', 'type': int, 'mandatory': False},
         {'id': 'attachmentId', 'type': int, 'mandatory': True},
         {'id': 'newDocumentId', 'type': int, 'mandatory': True}
     ])

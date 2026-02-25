@@ -140,6 +140,7 @@
 }
 
 .p-panel-content {
+    @apply p-0;
     @apply border-2;
     @apply border-t-0;
     @apply rounded-b-xl;
