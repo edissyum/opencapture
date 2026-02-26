@@ -17,7 +17,7 @@
 
 import { t } from "i18next";
 import { CSS } from "@dnd-kit/utilities";
-import { useRef, useState } from "react";
+import React, { useMemo, useRef } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { EllipsisVertical, Eye } from "lucide-react";
 import { ContextMenu } from "primereact/contextmenu";
@@ -29,52 +29,33 @@ import { Checkbox } from "../../../components/Checkbox";
 interface DraggablePageProps {
     page: any;
     menuItems?: any[];
-    selectedPages: any[];
+    isSelected: boolean;
     isDragOverlay?: boolean;
     documentId: string | number;
     onZoom?: (page: any) => void;
-    onSelectionChange?: (selectedPages: any[]) => void;
+    onSelectionChange?: (page: any, checked: boolean) => void;
 }
 
-export function DraggablePage({
+export const DraggablePage = React.memo(function DraggablePage({
     page,
     documentId,
     isDragOverlay,
     onZoom,
     menuItems,
-    selectedPages,
+    isSelected,
     onSelectionChange
 }: DraggablePageProps) {
-    const {
-        attributes,
-        listeners,
-        setNodeRef,
-        transform,
-        transition,
-        isDragging
-    } = useSortable({
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: `page-${ page.id }`,
         data: { page, documentId, type: 'page' }
     });
 
-    const [_, setSelectedpages] = useState<any>([]);
-    const cm = useRef({ current: null } as any);
+    const cm = useRef<any>(null);
 
-    const onSelect = (checked: boolean, id?: string) => {
-        let newSelectedPages = [...selectedPages];
-        if (checked) {
-            newSelectedPages.push(page);
-        } else {
-            newSelectedPages = newSelectedPages.filter(r => r.id !== id);
-        }
-        setSelectedpages(newSelectedPages);
-        onSelectionChange && onSelectionChange(newSelectedPages);
-    }
-
-    const handleMenuClose = () => {
-        setSelectedpages([]);
-        onSelectionChange && onSelectionChange([]);
-    }
+    const thumbnailUrl = useMemo(() => {
+        if (!page.thumbnail) return null;
+        return URL.createObjectURL(b64ToFile('data:image/jpg;base64,' + page.thumbnail));
+    }, [page.thumbnail]);
 
     const style = {
         transition,
@@ -83,29 +64,34 @@ export function DraggablePage({
     };
 
     return (
-        <div ref={ setNodeRef } style={ isDragOverlay ? {} : style }
-             className={ `DraggablePage group flex items-center gap-2 rounded-lg border border-(--border-secondary) transition-colors 
-                bg-(--bg-secondary) cursor-default select-none h-full hover:bg-(--color-primary)/20 hover:cursor-pointer min-w-76
-                ${ isDragOverlay ? 'rotate-1 opacity-90' : '' }` }>
-
+        <div
+            ref={ setNodeRef }
+            style={ isDragOverlay ? {} : style }
+            className='DraggablePage group flex items-center gap-2 rounded-lg border border-(--border-secondary)
+                       transition-colors bg-(--bg-secondary) cursor-default select-none h-full
+                       hover:bg-(--color-primary)/20 hover:cursor-pointer min-w-64'
+        >
             <div className='h-full w-full flex flex-col items-center'>
-                { page.thumbnail && (
+                { thumbnailUrl && (
                     <div className='relative p-6'>
                         <img
-                            src={ URL.createObjectURL(b64ToFile('data:image/jpg;base64,' + page.thumbnail)) }
+                            src={ thumbnailUrl }
                             alt={ `Page ${ page.source_page }` }
-                            className={ `h-90 rounded-lg
-                            ${ page.rotation === 90 ? 'rotate-90 m-auto scale-75 px-2' : '' }
-                            ${ page.rotation === 180 ? 'rotate-180 m-auto' : '' }
-                            ${ page.rotation === -90 ? '-rotate-90 m-auto scale-75 px-2' : '' }` }
+                            className={ `h-80 rounded-lg
+                                ${ page.rotation === 90 ? 'rotate-90 m-auto scale-75 px-2' : '' }
+                                ${ page.rotation === 180 ? 'rotate-180 m-auto' : '' }
+                                ${ page.rotation === -90 ? '-rotate-90 m-auto scale-75 px-2' : '' }` }
                         />
 
-                        <div className="flex items-center gap-1 text-(--text-secondary) rounded-md absolute bottom-2 transition-opacity
-                                        right-4 bg-(--bg-primary) py-1 px-2 border-2 border-(--border-secondary) group-hover:opacity-100 opacity-0"
-                             onClick={ (e) => {
-                                 e.stopPropagation();
-                                 if (onZoom) onZoom(page);
-                             } }>
+                        <div
+                            className="flex items-center gap-1 text-(--text-secondary) rounded-md absolute bottom-2
+                                       transition-opacity right-4 bg-(--bg-primary) py-1 px-2 border-2
+                                       border-(--border-secondary) group-hover:opacity-100 opacity-0"
+                            onClick={ (e) => {
+                                e.stopPropagation();
+                                onZoom?.(page);
+                            } }
+                        >
                             <Eye size={ 18 }/>
                             { t('SPLITTER.preview') }
                         </div>
@@ -113,31 +99,37 @@ export function DraggablePage({
                         <Checkbox
                             size={ 6 }
                             id={ page.id }
+                            checked={ isSelected }
                             className="absolute top-3 left-3"
-                            checked={ selectedPages.some(p => p.id === page.id) }
-                            onChange={ (checked: boolean, id: string | undefined) => onSelect(checked, id) }
+                            onChange={ (checked: boolean) => onSelectionChange?.(page, checked) }
                         />
                     </div>
                 ) }
-                <div className="w-full cursor-grab active:cursor-grabbing rounded-md rounded-t-none
+
+                <div
+                    className="w-full cursor-grab active:cursor-grabbing rounded-md rounded-t-none
                                p-2 flex items-center gap-1 bg-(--bg-primary) font-semibold"
-                     { ...attributes }
-                     { ...listeners }
+                    { ...attributes }
+                    { ...listeners }
                 >
-                    <span className="text-sm ">Page { page.source_page } ID { page.id }</span>
+                    <span className="text-sm">Page { page.source_page }</span>
                     <EllipsisVertical
                         size={ 18 } className="cursor-pointer ml-auto"
                         onClick={ (e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            setSelectedpages([page]);
+                            onSelectionChange?.(page, true);
                             cm.current?.show(e);
-                            onSelectionChange && onSelectionChange([page]);
                         } }
                     />
-                    <ContextMenu model={ menuItems } className="w-auto!" ref={ cm } onHide={ handleMenuClose }/>
+                    <ContextMenu
+                        model={ menuItems }
+                        className="w-auto!"
+                        ref={ cm }
+                        onHide={ () => onSelectionChange?.(page, false) }
+                    />
                 </div>
             </div>
         </div>
     );
-}
+});

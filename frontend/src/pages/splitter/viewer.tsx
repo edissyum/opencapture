@@ -16,12 +16,14 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
+import moment from "moment/moment";
 import { Panel } from "primereact/panel";
 import { useParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ContextMenu } from "primereact/contextmenu";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+
 import {
     Download,
     EllipsisVertical,
@@ -31,38 +33,41 @@ import {
     Layers,
     Paperclip,
     RotateCw,
+    Trash,
     Trash2,
     X
 } from "lucide-react";
 import {
-    closestCenter,
     DndContext,
     type DragEndEvent,
     type DragOverEvent,
     DragOverlay,
     type DragStartEvent,
     PointerSensor,
+    pointerWithin,
     useSensor,
     useSensors,
 } from "@dnd-kit/core";
 
 import { useUser } from "../../services/hooks/useUser";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { useFormFields } from "../../services/hooks/useFormFields";
 import { useCustomFields } from "../../services/hooks/useCustomFields";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
 import { useUnsavedChangesWarning } from "../../services/hooks/useUnsavedChangesWarning";
 
+import Input from "../../components/Input";
 import { Button } from "../../components/Button";
+import ISOCalendar from "../../components/Calendar";
+import { Checkbox } from "../../components/Checkbox";
+import { Loader } from "../../components/loader/Loader";
+import { showToast } from "../../components/ToastProvider";
 import { AttachmentsList } from "../../components/attachments/list";
 
 import { DraggablePage } from "./dnd/draggablePage";
 import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
 
 import { b64ToFile } from "../settings/general/customization";
-import { useFormFields } from "../../services/hooks/useFormFields.tsx";
-import ISOCalendar from "../../components/Calendar.tsx";
-import moment from "moment/moment";
-import Input from "../../components/Input.tsx";
 
 export function SplitterViewerPage() {
     const { get, post, del } = axiosApiCall();
@@ -76,12 +81,12 @@ export function SplitterViewerPage() {
 
     const { user, loadingUser } = useUser();
     const { batchId } = useParams<{ batchId: string }>();
+    const [loading, setLoading] = useState(false);
     const { customFields } = useCustomFields('splitter');
 
     const [documents, setDocuments] = useState<any>([]);
     const [batch, setBatch] = useState<any>(null);
     const [batchMetadata, setBatchMetadata] = useState<any[]>([]);
-    const [pagesCount, setPagesCount] = useState<number>(0);
     const [batchMetadataValues, setBatchMetadataValues] = useState<any>({});
     const [documentMetadata, setDocumentMetadata] = useState<any>(null);
 
@@ -99,6 +104,27 @@ export function SplitterViewerPage() {
     const [selectedPages, setSelectedPages] = useState<any[]>([]);
     const [deletedDocuments, setDeletedDocuments] = useState<any[]>([]);
     const [selectedDocument, setSelectedDocument] = useState<any>(null);
+
+    const selectedPageIds = useMemo(
+        () => new Set(selectedPages.map((p: any) => p.id)),
+        [selectedPages]
+    );
+
+    // ✅ Callback stable
+    const handleSelectionChange = useCallback((page: any, checked: boolean) => {
+        setSelectedPages(prev =>
+            checked ? [...prev, page] : prev.filter((p: any) => p.id !== page.id)
+        );
+    }, []);
+
+    // ✅ handlePreview stable
+    const handlePreview = useCallback(async (page: any) => {
+        const response = await get(`/splitter/pages/${ page.id }/fullThumbnail`);
+        if (response.fullThumbnail) {
+            const blob = b64ToFile('data:image/jpg;base64,' + response.fullThumbnail);
+            setThumbnail(URL.createObjectURL(blob));
+        }
+    }, []);
 
     const [activeDragItem, setActiveDragItem] = useState<any>(null);
 
@@ -133,7 +159,7 @@ export function SplitterViewerPage() {
             icon: <Trash2 className='mr-1' size={ 16 }/>,
             command: () => handleDeletePage()
         }
-    ]
+    ];
 
     // Fetch batch details and attachments config
     useEffect(() => {
@@ -144,7 +170,6 @@ export function SplitterViewerPage() {
                 const response = await post('/splitter/batches/list', { 'batchId': batchId, 'user_id': user.id });
                 if (response?.batches?.length > 0) {
                     const batchData = response.batches[0];
-                    batchData.maxSplitIndex = batchData.documents_count;
                     setBatch(batchData);
                 }
             } catch (error) {
@@ -169,6 +194,7 @@ export function SplitterViewerPage() {
     useEffect(() => {
         if (!batch) return;
 
+        setLoading(true);
         const fetchDocuments = async () => {
             try {
                 const response = await get(`/splitter/documents/${ batch.id }`);
@@ -177,13 +203,7 @@ export function SplitterViewerPage() {
                         doc.metada = doc.data?.custom_fields;
                     })
                     setDocuments(response.documents);
-                    let count = 0;
-                    response.documents.forEach((doc: any) => {
-                        doc.pages.forEach(() => {
-                            count++;
-                        });
-                    });
-                    setPagesCount(count);
+                    setLoading(false);
                 }
             } catch (error) {
                 console.error('Error fetching documents:', error);
@@ -194,15 +214,10 @@ export function SplitterViewerPage() {
     }, [batch]);
 
     // Recalculate pages count when documents change (e.g. after drag and drop)
-    useEffect(() => {
-        let count = 0;
-        documents.forEach((doc: any) => {
-            doc.pages.forEach(() => {
-                count++;
-            });
-        });
-        setPagesCount(count);
-    }, [documents]);
+    const pagesCount = useMemo(() =>
+            documents.reduce((acc: number, doc: any) => acc + doc.pages.length, 0),
+        [documents]
+    );
 
     // Fill batch and document metadata
     useEffect(() => {
@@ -261,6 +276,7 @@ export function SplitterViewerPage() {
                 page.display_order = index + 1; // ou index si backend 0-based
             });
         });
+        setUnSavedChanges(true);
     };
 
     const handleDragStart = (event: DragStartEvent) => {
@@ -324,7 +340,7 @@ export function SplitterViewerPage() {
                         prev ? { ...prev, documentId: targetDoc.id } : prev
                     );
                 }
-                normalizeDisplayOrder(next);
+
                 return next;
             }
 
@@ -351,25 +367,18 @@ export function SplitterViewerPage() {
                 setActiveDragItem((prev: any) =>
                     prev ? { ...prev, documentId: targetDoc.id } : prev
                 );
-                normalizeDisplayOrder(next);
                 return next;
             }
 
             return docs;
         });
+
     };
 
     const handleDragEnd = (_event: DragEndEvent) => {
         setActiveDragItem(null);
+        normalizeDisplayOrder(documents);
     };
-
-    const handlePreview = async (page: any) => {
-        const response = await get(`/splitter/pages/${ page.id }/fullThumbnail`);
-        if (response.fullThumbnail) {
-            const blob = b64ToFile('data:image/jpg;base64,' + response.fullThumbnail);
-            setThumbnail(URL.createObjectURL(blob));
-        }
-    }
 
     const handleDownloadOriginalFile = () => {
         if (!batch) return;
@@ -410,22 +419,40 @@ export function SplitterViewerPage() {
     }
 
     const handleRotation = () => {
-        const currentDegree = selectedPages[0]?.rotation || 0;
-        switch (currentDegree) {
-            case -90: {
-                selectedPages[0].rotation = 0;
-                break;
-            }
-            case 180: {
-                selectedPages[0].rotation = -90;
-                break;
-            }
-            default: {
-                selectedPages[0].rotation += 90;
-                break;
-            }
-        }
-    }
+        if (selectedPages.length === 0) return;
+
+        setDocuments((docs: any[]) => {
+            return docs.map(doc => ({
+                ...doc,
+                pages: doc.pages.map((page: any) => {
+                    const isSelected = selectedPages.some(p => p.id === page.id);
+                    if (!isSelected) return page;
+
+                    const currentDegree = page.rotation || 0;
+
+                    let newRotation;
+                    switch (currentDegree) {
+                        case -90:
+                            newRotation = 0;
+                            break;
+                        case 180:
+                            newRotation = -90;
+                            break;
+                        default:
+                            newRotation = currentDegree + 90;
+                            break;
+                    }
+
+                    return {
+                        ...page,
+                        rotation: newRotation
+                    };
+                })
+            }));
+        });
+
+        setUnSavedChanges(true);
+    };
 
     const handleDeletePage = () => {
         showConfirmDialog({
@@ -462,13 +489,19 @@ export function SplitterViewerPage() {
             confirmText: t('GLOBAL.validate'),
             cancelText: t('GLOBAL.cancel'),
             onConfirm: async () => {
+                setLoading(true);
                 const documentsToMove = documents.filter((doc: any) => doc.id !== selectedDocument.id);
                 if (documentsToMove) {
+                    await post(`/splitter/moveDocumentsToAttachments/${ batch.id }`, { documents: documentsToMove });
+
                     documentsToMove.forEach((doc: any) => {
                         setDeletedDocuments((prev) => [...prev, doc]);
                     });
                     setDocuments([selectedDocument]);
-                    setUnSavedChanges(true);
+                    setAttachmentsRefreshKey(prev => prev + 1);
+                    showToast(t('SPLITTER.document_set_as_principal'), 'success');
+                    await handleSaveChanges(false, documentsToMove);
+                    setLoading(false);
                 }
             },
             onCancel: () => {
@@ -477,19 +510,39 @@ export function SplitterViewerPage() {
         });
     }
 
-    const handleSaveChanges = async () => {
+    const handleSaveChanges = async (notif = true, extraDeletedDocuments = []) => {
+        setLoading(true);
         try {
+            const documentsWithoutTnl = documents.map((doc: any) => ({
+                ...doc,
+                pages: doc.pages.map((p: any) => ({
+                    id: p.id,
+                    status: p.status,
+                    rotation: p.rotation,
+                    source_page: p.source_page,
+                    docuemnt_id: p.document_id,
+                    display_order: p.display_order
+                }))
+            }));
+
+            const deletedDocumentsIds = [...deletedDocuments, ...extraDeletedDocuments].map(d => d.id);
+
             await post('/splitter/saveModifications', {
                 'batchId': batchId,
-                'documents': documents,
                 'movedPages': movedPages,
+                'documents': documentsWithoutTnl,
                 'batchMetadata': batchMetadataValues,
+                'deletedDocumentsIds': deletedDocumentsIds,
                 'deletedPagesIds': deletedPages.map(p => p.id),
-                'deletedDocumentsIds': deletedDocuments.map(d => d.id)
             });
             setDeletedPages([]);
             setDeletedDocuments([]);
+            setLoading(false);
             setUnSavedChanges(false);
+
+            if (notif) {
+                showToast(t('SPLITTER.changes_saved'), 'success');
+            }
         } catch (error) {
             console.error("Error saving changes:", error);
         }
@@ -515,6 +568,7 @@ export function SplitterViewerPage() {
             confirmText: t('GLOBAL.validate'),
             cancelText: t('GLOBAL.cancel'),
             onConfirm: async () => {
+                setLoading(true);
                 const response = await get(`/attachments/splitter/list/${ batchId }`);
                 if (response) {
                     for (const attachment of response) {
@@ -526,12 +580,15 @@ export function SplitterViewerPage() {
                         await del(`/attachments/splitter/delete/${ attachment.id }`);
                     }
                 }
+                setLoading(false);
                 setShowAttachments(false);
                 setAttachmentsRefreshKey(prev => prev + 1);
+                showToast(t('SPLITTER.unbind_success'), 'success');
             },
             onCancel: () => {
-                setShowAttachments(false);
+                setLoading(false);
                 setSelectedDocument([]);
+                setShowAttachments(false);
             }
         });
     }
@@ -542,8 +599,8 @@ export function SplitterViewerPage() {
                 userId: user.id,
                 batchId: batchId,
                 workflowId: batch.workflow_id,
-                splitIndex: batch.maxSplitIndex + 1,
-                displayOrder: batch.maxSplitIndex + 1
+                splitIndex: batch.max_split_index + 1,
+                displayOrder: batch.max_split_index + 1
             });
 
             if (response?.newDocumentId) {
@@ -555,7 +612,7 @@ export function SplitterViewerPage() {
                     }
                 };
                 setDocuments((prev: any[]) => [...prev, newDocument]);
-                setBatch((prev: any) => ({ ...prev, maxSplitIndex: prev.maxSplitIndex + 1 }));
+                setBatch((prev: any) => ({ ...prev, max_split_index: prev.max_split_index + 1 }));
                 return response.newDocumentId;
             }
 
@@ -564,10 +621,50 @@ export function SplitterViewerPage() {
         }
     }
 
+    const selectAll = () => {
+        if (selectedPages.length === 0) {
+            const allPages = documents.reduce((acc: any[], doc: any) => [...acc, ...doc.pages], []);
+            setSelectedPages(allPages);
+        } else {
+            setSelectedPages([]);
+        }
+    }
+
     if (!batch) return null;
 
     return (
-        <div className='flex flex-col h-full w-full overflow-hidden'>
+        <div className='flex flex-col h-full w-full overflow-hidden relative'>
+            { loading && (
+                <div className={ `absolute inset-0 z-20 flex items-center justify-center bg-(--bg-primary)/80` }>
+                    <Loader/>
+                </div>
+            ) }
+            { (!showAttachments) && (
+                <div className='absolute bottom-0 w-full flex items-center gap-4 p-4 bg-(--bg-primary) border-t-2
+                            border-(--border-secondary) z-10'>
+                    <Checkbox checked={ selectedPages.length !== 0 } onChange={ selectAll }
+                              indeterminate={ selectedPages.length != pagesCount }/>
+                    <Button size="sm" onClick={ () => handleSaveChanges() } disabled={ !unSavedChanges }>
+                        { t('GLOBAL.save_changes') }
+                    </Button>
+                    <div data-tooltip-id="tooltip"
+                         data-tooltip-content={ attachmentsCount > 0 ? t('SPLITTER.cant_add_document') : '' }>
+                        <Button size="sm" onClick={ addDocument } disabled={ attachmentsCount > 0 }>
+                            { t('SPLITTER.add_document') }
+                        </Button>
+                    </div>
+                    <Button variant={ 'no_bg_border' } onClick={ handleRotation } disabled={ selectedPages.length < 2 }
+                            className='flex items-center'>
+                        <RotateCw size={ 16 }/>
+                    </Button>
+                    <Button variant={ 'no_bg_border' } onClick={ handleDeletePage }
+                            disabled={ selectedPages.length == 0 }
+                            className='flex items-center'>
+                        <Trash size={ 16 }/>
+                    </Button>
+                </div>
+            ) }
+
             { thumbnail && (
                 <>
                     <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
@@ -583,8 +680,6 @@ export function SplitterViewerPage() {
                     </div>
                 </>
             ) }
-            <div onClick={ handleSaveChanges }>save</div>
-            <div onClick={ addDocument }>add document</div>
 
             { !showAttachments && (
                 <div className='px-8 py-4 flex items-center'>
@@ -595,39 +690,49 @@ export function SplitterViewerPage() {
                         className='p-2 px-3 bg-(--bg-primary) border-(--border-secondary) text-(--text-secondary) hover:text-(--color-primary)'>
                         <Download size={ 16 } className="mr-2"/> { batch.file_name }
                     </Button>
-                    <div className="ml-auto">
-                        { enableAttachments && (
-                            <div className="flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
-                                    cursor-pointer border border-(--border-secondary) hover:border-(--border-primary)
-                                    hover:text-(--color-primary) transition-colors shrink-0 relative"
+
+                    { enableAttachments && (
+                        <div className={ `ml-auto ${ documents.length > 1 && 'cursor-not-allowed!' }` }
+                             data-tooltip-id="tooltip"
+                             data-tooltip-content={ documents.length > 1 ? t('SPLITTER.one_document') : '' }
+                        >
+                            <div className={
+                                `flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
+                                border border-(--border-secondary) hover:border-(--border-primary)
+                                hover:text-(--color-primary) transition-colors shrink-0 relative cursor-pointer
+                                ${ documents.length > 1 && 'opacity-50 pointer-events-none' }`
+                            }
                                  onClick={ () => setShowAttachments(true) }
                                  data-tooltip-id="tooltip"
-                                 data-tooltip-content={ t('VERIFIER.show_attachments') }>
+                                 data-tooltip-content={ t('VERIFIER.show_attachments') }
+                            >
                                 <Paperclip size={ 16 }/>
                                 { attachmentsCount > 0 && (
                                     <div
                                         className="z-1 absolute top-0 right-0 size-3 rounded-full bg-(--color-primary)"/>
                                 ) }
                             </div>
-                        ) }
-                    </div>
+                        </div>
+                    ) }
                 </div>
             ) }
 
-            <div className={ `w-full h-full flex flex-col ${ showAttachments && enableAttachments ? '' : 'hidden' }` }>
-                <AttachmentsList
-                    key={ attachmentsRefreshKey }
-                    module="splitter"
-                    documentId={ batchId }
-                    unBinding={ handleUnbinding }
-                    onAttachmentsCountChange={ setAttachmentsCount }
-                    onClose={ () => setShowAttachments(false) }
-                />
-            </div>
+            { enableAttachments && (
+                <div className={ `w-full h-full flex flex-col ${ !showAttachments && 'hidden' }` }>
+                    <AttachmentsList
+                        key={ attachmentsRefreshKey }
+                        module="splitter"
+                        documentId={ batchId }
+                        unBinding={ handleUnbinding }
+                        onAttachmentsCountChange={ setAttachmentsCount }
+                        onClose={ () => setShowAttachments(false) }
+                    />
+                </div>
+            ) }
 
             { !showAttachments && (
-                <div className='px-8 pb-4 h-full overflow-y-auto'>
-                    <Accordion className='mb-8'>
+                <div className='px-8 pb-18 h-full overflow-y-auto'>
+                    <Accordion className='mb-8' activeIndex={ 0 }>
                         <AccordionTab header={ t('SPLITTER.batch_content') }>
                             <div className='p-4'>
                                 <div className='text-(--text-secondary) flex items-center gap-4 mb-4'>
@@ -689,7 +794,7 @@ export function SplitterViewerPage() {
 
                     <DndContext
                         sensors={ sensors }
-                        collisionDetection={ closestCenter }
+                        collisionDetection={ pointerWithin }
                         onDragStart={ handleDragStart }
                         onDragOver={ handleDragOver }
                         onDragEnd={ handleDragEnd }
@@ -729,24 +834,15 @@ export function SplitterViewerPage() {
                             >
                                 <SortableContext strategy={ verticalListSortingStrategy }
                                                  items={ document.pages.map((p: any) => `page-${ p.id }`) }>
-                                    <DroppableDocumentZone documentId={ document.id }
-                                                           isEmpty={ document.pages.length === 0 }>
-                                        { document.pages.length > 0 && (
-                                            <div className="flex gap-3 overflow-x-auto p-4">
-                                                { document.pages.map((page: any) => (
-                                                    <DraggablePage
-                                                        page={ page }
-                                                        key={ page.id }
-                                                        selectedPages={ selectedPages }
-                                                        onSelectionChange={ (pages) => setSelectedPages(pages) }
-                                                        onZoom={ handlePreview }
-                                                        documentId={ document.id }
-                                                        menuItems={ pageMenuItems }
-                                                    />
-                                                )) }
-                                            </div>
-                                        ) }
-                                    </DroppableDocumentZone>
+                                    <DroppableDocumentZone
+                                        pages={ document.pages }
+                                        documentId={ document.id }
+                                        menuItems={ pageMenuItems }
+                                        selectedPageIds={ selectedPageIds }
+                                        isEmpty={ document.pages.length === 0 }
+                                        onSelectionChange={ handleSelectionChange }
+                                        onZoom={ handlePreview }
+                                    />
                                 </SortableContext>
                             </Panel>
                         )) }
@@ -755,7 +851,7 @@ export function SplitterViewerPage() {
                             { activeDragItem?.type === 'page' && (
                                 <DraggablePage
                                     isDragOverlay
-                                    selectedPages={ [] }
+                                    isSelected={ false }
                                     page={ activeDragItem.page }
                                     documentId={ activeDragItem.documentId }
                                 />

@@ -246,7 +246,8 @@
         "relaunch": "",
         "copied": "",
         "validate": "",
-        "unsaved_changes_warning": ""
+        "unsaved_changes_warning": "",
+        "save_changes": ""
     },
     "HISTORY": {
         "document_validated": "Document #<strong>{{ documentId }}</strong> successfully validated",
@@ -544,7 +545,15 @@
         "confirm_set_document_principal": "",
         "set_document_principal": "",
         "confirm_unbinding": "",
-        "preview": ""
+        "preview": "",
+        "changes_saved": "",
+        "document_set_as_principal": "",
+        "unbind_success": "",
+        "dropzone_empty": "",
+        "dropzone_over": "",
+        "add_document": "",
+        "one_document": "",
+        "cant_add_document": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Click to choose a file",

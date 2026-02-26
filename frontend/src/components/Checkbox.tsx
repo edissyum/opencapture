@@ -15,30 +15,44 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { Check } from "lucide-react";
+import { Check, Minus } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 type CheckboxProps = {
     id?: string;
-    label?: string;
     size?: number;
+    label?: string;
     checked?: boolean;
     className?: string;
+    indeterminate?: boolean;
     onChange?: (checked: boolean, id: string | undefined) => void;
 };
 
-export function Checkbox({ id, checked = false, onChange, label, className, size = 5 }: CheckboxProps) {
+export function Checkbox({ id, checked = false, onChange, label, className, indeterminate, size = 5 }: CheckboxProps) {
     const [isChecked, setIsChecked] = useState(checked);
+    const [isIndeterminate, setIsIndeterminate] = useState(indeterminate);
 
     useEffect(() => {
         setIsChecked(checked);
     }, [checked]);
 
+    useEffect(() => {
+        setIsIndeterminate(indeterminate);
+    }, [indeterminate]);
+
     const toggle = (event: React.MouseEvent<HTMLDivElement>) => {
         event.preventDefault();
         event.stopPropagation();
 
-        const newValue = !isChecked;
+        let newValue: boolean;
+
+        if (isIndeterminate) {
+            newValue = true;
+            setIsIndeterminate(false);
+        } else {
+            newValue = !isChecked;
+        }
+
         setIsChecked(newValue);
         if (onChange) onChange(newValue, id);
     };
@@ -53,7 +67,13 @@ export function Checkbox({ id, checked = false, onChange, label, className, size
                     ${ isChecked ? "bg-(--color-primary) border-(--color-primary)" : "bg-(--bg-primary)" }
                     transition-all hover:border-(--color-primary) shrink-0` }
             >
-                { isChecked && <Check id={ id } className={ `size-${ size } text-white` }/> }
+                { isChecked && !isIndeterminate && (
+                    <Check className={ `size-${ size } text-white` }/>
+                ) }
+
+                { isIndeterminate && (
+                    <Minus className={ `size-${ size } text-white` }/>
+                ) }
             </div>
             { label &&
                 <span onClick={ toggle } title={ label }

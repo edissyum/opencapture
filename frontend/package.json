@@ -24,6 +24,7 @@
         "@hookform/resolvers": "^5.2.2",
         "@tailwindcss/vite": "^4.2.1",
         "@tanstack/react-table": "^8.21.3",
+        "@tanstack/react-virtual": "^3.13.19",
         "@tinymce/tinymce-react": "^6.3.0",
         "axios": "^1.13.5",
         "fs-extra": "^11.3.3",

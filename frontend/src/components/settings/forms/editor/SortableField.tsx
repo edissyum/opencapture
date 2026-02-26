@@ -23,12 +23,12 @@ import { useSortable } from "@dnd-kit/sortable";
 import { InputSwitch } from "primereact/inputswitch";
 import { OverlayPanel } from "primereact/overlaypanel";
 
+import Hint from "../../../Hint";
 import Input from "../../../Input";
 import { Button } from "../../../Button";
 import { Dropdown } from "../../../Dropdown";
 
 import { getColorOptions, getFormatLabels } from "./schemas";
-import Hint from "../../../Hint.tsx";
 
 type Field = {
     id: string;

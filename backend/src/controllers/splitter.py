@@ -223,6 +223,9 @@ def retrieve_batches(data):
 
             attachments_count = attachments.get_attachments_by_batch_id(batch['id'])
             batches[index]['attachments_count'] = len(attachments_count) if attachments_count else 0
+
+            max_split_index = splitter.get_documents_max_split_index({'id': batch['id']})[0][0]['split_index']
+            batches[index]['max_split_index'] = max_split_index if max_split_index else 1
             try:
                 thumbnail = f"{docservers['SPLITTER_THUMB']}/{batches[index]['batch_folder']}/{batches[index]['thumbnail']}"
                 with open(thumbnail, 'rb') as image_file:

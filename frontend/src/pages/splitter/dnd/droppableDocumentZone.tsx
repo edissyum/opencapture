@@ -15,37 +15,102 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import type { ReactNode } from "react";
+import { t } from "i18next";
 import { useDroppable } from "@dnd-kit/core";
+import { useRef } from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import { DraggablePage } from "./draggablePage";
+
+// PAGE_WIDTH must match the min-w of DraggablePage (min-w-64 = 256px) + gap (12px)
+const PAGE_WIDTH = 268;
 
 interface DroppableDocumentZoneProps {
     isEmpty?: boolean;
-    children?: ReactNode;
     documentId: string | number;
+    pages: any[];
+    selectedPageIds: Set<number | string>;
+    menuItems: any[];
+    onSelectionChange: (page: any, checked: boolean) => void;
+    onZoom: (page: any) => void;
 }
 
-export function DroppableDocumentZone({ documentId, children, isEmpty }: DroppableDocumentZoneProps) {
-    const { isOver, setNodeRef } = useDroppable({
+export function DroppableDocumentZone({
+    documentId,
+    pages,
+    selectedPageIds,
+    menuItems,
+    onSelectionChange,
+    onZoom,
+}: DroppableDocumentZoneProps) {
+    const { isOver, setNodeRef: setDropRef } = useDroppable({
         id: `droppable-doc-${ documentId }`,
         data: { documentId, type: 'document-zone' }
     });
 
+    const isEmpty = pages.length === 0;
+
+    const scrollRef = useRef<HTMLDivElement>(null);
+
+    // Horizontal virtualizer — only renders pages in the visible scroll window
+    const virtualizer = useVirtualizer({
+        count: pages.length,
+        getScrollElement: () => scrollRef.current,
+        estimateSize: () => PAGE_WIDTH,
+        horizontal: true,
+        overscan: 5, // render 3 extra pages on each side for smooth drag-scroll
+    });
+
+    const virtualItems = virtualizer.getVirtualItems();
+    const totalWidth = virtualizer.getTotalSize();
+
+    const setRefs = (el: HTMLDivElement | null) => {
+        setDropRef(el);
+        (scrollRef as any).current = el;
+    };
+
     return (
-        <div ref={ setNodeRef }
-             className={ `DroppableDocument w-full transition-colors rounded-md
-                ${ isEmpty ? 'border-2 border-dashed' : '' }
-                ${ isOver ? 'bg-(--color-primary)/10 border-(--color-primary)' : isEmpty ? 'border-(--border-secondary)' : '' }` }>
+        <div ref={ setDropRef }
+             className={ `DroppableDocument w-full transition-colors rounded-md min-h-80
+                ${ isEmpty && 'border-2 border-dashed border-(--border-secondary)' }
+                ${ isOver && 'bg-(--color-primary)/10 border-(--color-primary)' }` }>
             { isEmpty && !isOver && (
-                <div className="flex items-center justify-center h-20 text-(--text-secondary) text-sm">
-                    Déposer une page ici
+                <div className="flex items-center align-center justify-center h-80 text-(--text-secondary) text-sm">
+                    { t('SPLITTER.dropzone_empty') }
                 </div>
             ) }
             { isOver && isEmpty && (
-                <div className="flex items-center justify-center h-20 text-(--color-primary) text-sm font-medium">
-                    Relâcher pour déposer
+                <div className="flex items-center justify-center h-80 text-(--color-primary) text-sm font-medium">
+                    { t('SPLITTER.dropzone_over') }
                 </div>
             ) }
-            { children }
+
+            { pages.length > 0 && (
+                <div ref={ setRefs }
+                    className="overflow-x-auto p-4 h-110">
+                    <div style={ { width: totalWidth, position: 'relative' } }>
+                        { virtualItems.map((virtualItem) => {
+                            const page = pages[virtualItem.index];
+                            return (
+                                <div key={ page.id } className={ `absolute top-0` }
+                                     style={ {
+                                         left: virtualItem.start,
+                                         width: virtualItem.size - 12
+                                     } } // subtract gap from width to prevent horizontal scrollbar
+                                >
+                                    <DraggablePage
+                                        page={ page }
+                                        isSelected={ selectedPageIds.has(page.id) }
+                                        onSelectionChange={ onSelectionChange }
+                                        onZoom={ onZoom }
+                                        documentId={ documentId }
+                                        menuItems={ menuItems }
+                                    />
+                                </div>
+                            );
+                        }) }
+                    </div>
+                </div>
+            ) }
         </div>
     );
 }
