@@ -67,6 +67,7 @@ def get_attachments_by_batch_id(batch_id):
         'select': ['*'],
         'table': ['attachments'],
         'where': ["batch_id = %s", "status not in ('DEL')"],
+        'order_by': ['id DESC'],
         'data': [batch_id]
     })
     return attachments

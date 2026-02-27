@@ -267,7 +267,8 @@
         "copied": "Copié",
         "validate": "Valider",
         "unsaved_changes_warning": "Cette page vous demande de confirmer sa fermeture ; des données que vous avez saisies pourraient ne pas être enregistrées.",
-        "save_changes": "Sauvegarder"
+        "save_changes": "Sauvegarder",
+        "search": "Rechercher"
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validé avec succès",
@@ -632,7 +633,6 @@
         "lastname": "Nom",
         "no_user": "Aucun utilisateur",
         "role": "Rôle",
-        "search": "Rechercher",
         "selected_many": "utilisateurs sélectionnés",
         "selected_one": "utilisateur sélectionné",
         "selected_other": "utilisateurs sélectionnés",
@@ -708,7 +708,6 @@
         "to": "à",
         "filters": "Filtres",
         "documents": "Documents",
-        "search": "Rechercher",
         "unkown_supplier": "Tiers inconnu",
         "nb_attachments": "Nombre de pièces jointes",
         "confirm_delete_document_many": "Voulez-vous vraiment supprimer ces {{count}} documents ?",
@@ -864,7 +863,8 @@
         "back_to_attachments_list": "Retour à la liste des pièces jointes",
         "error_loading_pdf": "Erreur lors du chargement du PDF",
         "back_to_batch": "Retour au lot",
-        "unbinding": "Déliasser"
+        "unbinding": "Déliasser",
+        "unbinding_warning": "Il n'est pas possible de déliasser les pièces jointes si une ou plusieurs pièces jointes ne sont pas au format PDF"
     },
     "ADDRESSES": {
         "address1": "Numéro et rue",

@@ -616,7 +616,7 @@ export function VerifierListPage() {
                         </span>
                     </span>
                     <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10'
-                           value={ searchTerm } placeholder={ t('VERIFIER.search') } noMarginBottom={ true }
+                           value={ searchTerm } placeholder={ t('GLOBAL.search') } noMarginBottom={ true }
                            onChange={ (e) => setSearchTerm(e.target.value) }/>
                     <span className='ml-auto text-(--text-secondary) flex cursor-pointer'>
                         <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.list') }

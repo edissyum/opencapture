@@ -172,7 +172,7 @@ export function CustomFieldsList({ module }: { module: string }) {
                     { t('VERIFIER.custom_fields', { count: totalCustomFields }) } ({ totalCustomFields || 0 })
                 </span>
                 <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height={ 'h-10' }
-                       value={ searchTerm } placeholder={ t('USERS.search') } noMarginBottom={ true }
+                       value={ searchTerm } placeholder={ t('GLOBAL.search') } noMarginBottom={ true }
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Link to={ `/settings/${ module }/custom-fields/create` }>

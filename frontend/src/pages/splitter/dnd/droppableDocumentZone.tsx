@@ -16,9 +16,10 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { useDroppable } from "@dnd-kit/core";
 import { useRef } from "react";
+import { useDroppable } from "@dnd-kit/core";
 import { useVirtualizer } from "@tanstack/react-virtual";
+
 import { DraggablePage } from "./draggablePage";
 
 // PAGE_WIDTH must match the min-w of DraggablePage (min-w-64 = 256px) + gap (12px)
@@ -28,7 +29,7 @@ interface DroppableDocumentZoneProps {
     isEmpty?: boolean;
     documentId: string | number;
     pages: any[];
-    selectedPageIds: Set<number | string>;
+    selectedPageIds: any[];
     menuItems: any[];
     onSelectionChange: (page: any, checked: boolean) => void;
     onZoom: (page: any) => void;
@@ -99,7 +100,7 @@ export function DroppableDocumentZone({
                                 >
                                     <DraggablePage
                                         page={ page }
-                                        isSelected={ selectedPageIds.has(page.id) }
+                                        isSelected={ selectedPageIds.includes(page.id) }
                                         onSelectionChange={ onSelectionChange }
                                         onZoom={ onZoom }
                                         documentId={ documentId }

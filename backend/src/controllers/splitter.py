@@ -527,6 +527,13 @@ def create_document(args):
         'display_order': args['displayOrder']
     })
 
+    current_documents_count, _ = splitter.get_batch_by_id({'select': ['documents_count'], 'id': args['batchId']})
+    if current_documents_count and len(current_documents_count) > 0:
+        splitter.update_batch_documents_count({
+            'id': args['batchId'],
+            'number': current_documents_count['documents_count'] + 1
+        })
+
     if res:
         workflow_id = None
         workflow_info = workflow.get_workflow_by_id({'workflow_id': args['workflowId']})
@@ -576,7 +583,8 @@ def save_modifications(data):
 
     res = splitter.update_batch({
         'batch_id': data['batch_id'],
-        'batch_metadata': data['batch_metadata']
+        'batch_metadata': data['batch_metadata'],
+        'documents_count': len(data['documents'])
     })[0]
     if not res:
         response = {
@@ -584,6 +592,11 @@ def save_modifications(data):
             "message": ''
         }
         return response, 400
+
+    splitter.update_batch_documents_count({
+        'id': data['batch_id'],
+        'number': len(data['documents'])
+    })
 
     for document in data['documents']:
         page_display_order = 1
@@ -603,7 +616,7 @@ def save_modifications(data):
         res = splitter.update_document({
             'id': document['id'],
             'doctype_key': document['doctype_key'] if 'doctype_key' in document else None,
-            'data': document['data'] if 'data' in document else None
+            'document_metadata': document['document_metadata'] if 'document_metadata' in document else None
         })[0]
         if not res:
             response = {

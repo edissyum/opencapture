@@ -25,6 +25,7 @@ import { Accordion, AccordionTab } from "primereact/accordion";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
 import {
+    ChevronDown,
     Download,
     EllipsisVertical,
     FileBadge,
@@ -89,6 +90,8 @@ export function SplitterViewerPage() {
     const [batchMetadata, setBatchMetadata] = useState<any[]>([]);
     const [batchMetadataValues, setBatchMetadataValues] = useState<any>({});
     const [documentMetadata, setDocumentMetadata] = useState<any>(null);
+    const [documentMetadataValues, setDocumentMetadataValues] = useState<any>({});
+    const [documentMetadataOpen, setDocumentMetadataOpen] = useState<boolean>(false);
 
     const formId = batch?.form_id;
     const { formFields, loading: loadingFormFields } = useFormFields(formId);
@@ -104,11 +107,6 @@ export function SplitterViewerPage() {
     const [selectedPages, setSelectedPages] = useState<any[]>([]);
     const [deletedDocuments, setDeletedDocuments] = useState<any[]>([]);
     const [selectedDocument, setSelectedDocument] = useState<any>(null);
-
-    const selectedPageIds = useMemo(
-        () => new Set(selectedPages.map((p: any) => p.id)),
-        [selectedPages]
-    );
 
     // ✅ Callback stable
     const handleSelectionChange = useCallback((page: any, checked: boolean) => {
@@ -190,20 +188,71 @@ export function SplitterViewerPage() {
         fetchEnableAttachments().then();
     }, [loadingUser]);
 
-    // Fetch documents of the batch
+    // Fetch documents of the batch and initialize metadata values
     useEffect(() => {
-        if (!batch) return;
+        if (!batch || loadingFormFields) return;
 
         setLoading(true);
         const fetchDocuments = async () => {
             try {
                 const response = await get(`/splitter/documents/${ batch.id }`);
                 if (response?.documents) {
-                    response.documents.forEach((doc: any) => {
-                        doc.metada = doc.data?.custom_fields;
-                    })
-                    setDocuments(response.documents);
+                    let lines: any[] = [];
+                    const documentMetadata = formFields.document_metadata;
+
+                    if (documentMetadata) {
+                        response.documents.forEach((doc: any) => {
+                            doc.document_metadata = doc.data?.custom_fields;
+                            if (doc.document_metadata) {
+                                Object.values(documentMetadata).forEach((line: any) => {
+                                    let linesFields: any[] = [];
+                                    Object.values(line).forEach((field: any) => {
+                                        if (field) {
+                                            const fieldId = parseInt(field.id.replace('custom_', ''));
+                                            const customField = customFields.find((f: any) => f.id === fieldId);
+
+                                            if (customField) {
+                                                field = { ...field, ...customField };
+                                            }
+
+                                            if (doc.data.custom_fields) {
+                                                if (doc.data.custom_fields[field.label_short]) {
+                                                    let value = doc.data.custom_fields[field.label_short];
+
+                                                    if (field.type === 'date') {
+                                                        const dateValue = moment(value, 'YYYY-MM-DD', true);
+                                                        if (dateValue.isValid()) {
+                                                            value = dateValue.format('YYYY-MM-DD');
+                                                        } else {
+                                                            value = null;
+                                                        }
+                                                    }
+                                                    field = { ...field, value: value };
+                                                }
+
+                                                if (field.value) {
+                                                    setDocumentMetadataValues((prev: any) => ({
+                                                        ...prev, [doc.id]: {
+                                                            ...prev[doc.id],
+                                                            [field.label_short]: field.value
+                                                        }
+                                                    }));
+                                                }
+                                                linesFields.push(field);
+                                            }
+                                        }
+                                    });
+
+                                    if (linesFields.length > 0 && !lines.some(line => line.every((f: any) => linesFields.some((lf: any) => lf.id === f.id)))) {
+                                        lines.push(linesFields);
+                                    }
+                                });
+                            }
+                        })
+                    }
                     setLoading(false);
+                    setDocumentMetadata(lines);
+                    setDocuments(response.documents);
                 }
             } catch (error) {
                 console.error('Error fetching documents:', error);
@@ -211,7 +260,7 @@ export function SplitterViewerPage() {
         };
 
         fetchDocuments().then();
-    }, [batch]);
+    }, [batch, loadingFormFields]);
 
     // Recalculate pages count when documents change (e.g. after drag and drop)
     const pagesCount = useMemo(() =>
@@ -219,13 +268,13 @@ export function SplitterViewerPage() {
         [documents]
     );
 
-    // Fill batch and document metadata
+    // Fill batch metadata
     useEffect(() => {
         if (loadingFormFields) return;
 
         if (formFields.batch_metadata) {
-            const batchMetadata = formFields.batch_metadata;
             let lines: any[] = [];
+            const batchMetadata = formFields.batch_metadata;
 
             Object.values(batchMetadata).forEach((line: any) => {
                 let linesFields: any[] = [];
@@ -525,6 +574,16 @@ export function SplitterViewerPage() {
                 }))
             }));
 
+            Object.keys(documentMetadataValues).forEach((document_id: any) => {
+                const doc = documentsWithoutTnl.find((d: any) => String(d.id) === String(document_id));
+                if (doc) {
+                    doc.document_metadata = {
+                        ...doc.document_metadata,
+                        ...documentMetadataValues[document_id]
+                    }
+                }
+            });
+
             const deletedDocumentsIds = [...deletedDocuments, ...extraDeletedDocuments].map(d => d.id);
 
             await post('/splitter/saveModifications', {
@@ -558,6 +617,16 @@ export function SplitterViewerPage() {
 
     const handleUpdateBatchMetadataValues = (field: any, value: any) => {
         setBatchMetadataValues((prev: any) => ({ ...prev, [field.label_short]: value }));
+        setUnSavedChanges(true);
+    }
+
+    const handleUpdateDocumentMetadataValues = (document_id: number, field: any, value: any) => {
+        setDocumentMetadataValues((prev: any) => ({
+            ...prev, [document_id]: {
+                ...prev[document_id],
+                [field.label_short]: value
+            }
+        }));
         setUnSavedChanges(true);
     }
 
@@ -653,7 +722,7 @@ export function SplitterViewerPage() {
                             { t('SPLITTER.add_document') }
                         </Button>
                     </div>
-                    <Button variant={ 'no_bg_border' } onClick={ handleRotation } disabled={ selectedPages.length < 2 }
+                    <Button variant={ 'no_bg_border' } onClick={ handleRotation } disabled={ selectedPages.length == 0 }
                             className='flex items-center'>
                         <RotateCw size={ 16 }/>
                     </Button>
@@ -756,31 +825,30 @@ export function SplitterViewerPage() {
                                                 { line.map((field: any) => (
                                                     <div key={ field.id }
                                                          className={ `min-w-1/6 ${ getWidthLine(line) }` }>
-                                                        {
-                                                            field.type === 'date' ? (
-                                                                <ISOCalendar
-                                                                    id={ field.id }
-                                                                    key={ field.id }
-                                                                    label={ t(field.label) }
-                                                                    required={ field.required }
-                                                                    value={ batchMetadataValues[field.label_short] }
-                                                                    onChange={ (e) => {
-                                                                        handleUpdateBatchMetadataValues(field, e)
-                                                                    } }
-                                                                />
-                                                            ) : (
-                                                                <Input
-                                                                    id={ field.id }
-                                                                    key={ field.id }
-                                                                    type={ field.type }
-                                                                    label={ t(field.label) }
-                                                                    required={ field.required }
-                                                                    value={ batchMetadataValues[field.label_short] }
-                                                                    onChange={ (e) => {
-                                                                        handleUpdateBatchMetadataValues(field, e.target.value)
-                                                                    } }
-                                                                />
-                                                            )
+                                                        { field.type === 'date' ? (
+                                                            <ISOCalendar
+                                                                id={ field.id }
+                                                                key={ field.id }
+                                                                label={ t(field.label) }
+                                                                required={ field.required }
+                                                                value={ batchMetadataValues[field.label_short] }
+                                                                onChange={ (e) => {
+                                                                    handleUpdateBatchMetadataValues(field, e)
+                                                                } }
+                                                            />
+                                                        ) : (
+                                                            <Input
+                                                                id={ field.id }
+                                                                key={ field.id }
+                                                                type={ field.type }
+                                                                label={ t(field.label) }
+                                                                required={ field.required }
+                                                                value={ batchMetadataValues[field.label_short] }
+                                                                onChange={ (e) => {
+                                                                    handleUpdateBatchMetadataValues(field, e.target.value)
+                                                                } }
+                                                            />
+                                                        )
                                                         }
                                                     </div>
                                                 )) }
@@ -794,15 +862,15 @@ export function SplitterViewerPage() {
 
                     <DndContext
                         sensors={ sensors }
-                        collisionDetection={ pointerWithin }
-                        onDragStart={ handleDragStart }
-                        onDragOver={ handleDragOver }
                         onDragEnd={ handleDragEnd }
+                        onDragOver={ handleDragOver }
+                        onDragStart={ handleDragStart }
+                        collisionDetection={ pointerWithin }
                     >
                         { documents.map((document: any) => (
                             <Panel
-                                className='PanelDocumentList mb-4 w-full'
                                 key={ document.id }
+                                className='PanelDocumentList mb-4 w-full'
                                 header={
                                     <div className="flex items-center gap-1.5">
                                         { !document.doctype_label && (
@@ -832,14 +900,66 @@ export function SplitterViewerPage() {
                                     </div>
                                 }
                             >
+                                { documentMetadata && document.pages.length > 0 && (
+                                    <div className='px-4 pt-4'>
+                                        <h3 className='font-semibold flex items-center cursor-pointer gap-1'
+                                            onClick={ () => setDocumentMetadataOpen(prev => !prev) }>
+                                            { t('FORMS.metadata_document') }
+                                            <ChevronDown
+                                                size={ 16 }
+                                                className={ `transition-transform duration-200 ${ documentMetadataOpen ? 'rotate-0' : '-rotate-90' }` }
+                                            />
+                                        </h3>
+                                        <div className={ `grid transition-all duration-300 ease-in-out` }
+                                             style={ { gridTemplateRows: documentMetadataOpen ? '1fr' : '0fr' } }
+                                        >
+                                            <div className="overflow-hidden">
+                                                { documentMetadata.map((line: any, index: number) => (
+                                                    <div key={ index } className={ `flex gap-4 mt-4` }>
+                                                        { line.map((field: any) => (
+                                                            <div key={ field.id }
+                                                                 className={ `min-w-1/6 ${ getWidthLine(line) }` }>
+                                                                { field.type === 'date' ? (
+                                                                    <ISOCalendar
+                                                                        id={ field.id }
+                                                                        key={ field.id }
+                                                                        label={ t(field.label) }
+                                                                        required={ field.required }
+                                                                        value={ documentMetadataValues[document.id]?.[field.label_short] }
+                                                                        onChange={ (e) => {
+                                                                            handleUpdateDocumentMetadataValues(document.id, field, e)
+                                                                        } }
+                                                                    />
+                                                                ) : (
+                                                                    <Input
+                                                                        id={ field.id }
+                                                                        key={ field.id }
+                                                                        type={ field.type }
+                                                                        label={ t(field.label) }
+                                                                        required={ field.required }
+                                                                        value={ documentMetadataValues[document.id]?.[field.label_short] }
+                                                                        onChange={ (e) => {
+                                                                            handleUpdateDocumentMetadataValues(document.id, field, e.target.value)
+                                                                        } }
+                                                                    />
+                                                                )
+                                                                }
+                                                            </div>
+                                                        )) }
+                                                    </div>
+                                                )) }
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) }
                                 <SortableContext strategy={ verticalListSortingStrategy }
                                                  items={ document.pages.map((p: any) => `page-${ p.id }`) }>
                                     <DroppableDocumentZone
                                         pages={ document.pages }
                                         documentId={ document.id }
                                         menuItems={ pageMenuItems }
-                                        selectedPageIds={ selectedPageIds }
                                         isEmpty={ document.pages.length === 0 }
+                                        selectedPageIds={ selectedPages.map(p => p.id) }
                                         onSelectionChange={ handleSelectionChange }
                                         onZoom={ handlePreview }
                                     />

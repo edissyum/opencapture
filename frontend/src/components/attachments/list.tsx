@@ -18,8 +18,23 @@
 import { t } from "i18next";
 import { ContextMenu } from "primereact/contextmenu";
 import React, { useEffect, useRef, useState } from "react";
-import { ArrowLeft, CloudUpload, Download, EllipsisVertical, Trash2, Unlink } from "lucide-react";
+import {
+    ArrowLeft,
+    AudioLines,
+    BookOpen,
+    CloudUpload,
+    Download,
+    EllipsisVertical,
+    File,
+    FileArchive,
+    Presentation,
+    Sheet,
+    Trash2,
+    Unlink,
+    Video
+} from "lucide-react";
 
+import Hint from "../Hint";
 import { Button } from "../Button";
 import { Loader } from "../loader/Loader";
 import { AttachmentsViewer } from "./viewer";
@@ -50,8 +65,10 @@ export function AttachmentsList({
 
     const [locale, setLocale] = useState('fr-FR');
     const [attachments, setAttachments] = useState<any[]>([]);
+    const [containsNotPdf, setContainsNotPdf] = useState(false);
     const [showAttachment, setShowAttachment] = useState(false);
     const [selectedAttachment, setSelectedAttachment] = useState<any>(null);
+
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     // Set locale based on stored language preference
@@ -72,11 +89,32 @@ export function AttachmentsList({
     }, []);
 
     const refreshAttachments = async () => {
+        setContainsNotPdf(false);
         try {
             const response = await get(`/attachments/${ module }/list/${ documentId }`);
             if (response) {
                 onAttachmentsCountChange(response.length);
                 response.forEach((attachment: any) => {
+                    attachment.extension = attachment.filename.split('.').pop();
+                    if (attachment.extension !== 'pdf') {
+                        setContainsNotPdf(true);
+                    }
+
+                    if (['ods', 'csv', 'xls', 'xlsx'].includes(attachment.extension)) {
+                        attachment.extension_icon = <Sheet size={ 48 } className='text-(--text-secondary)'/>
+                    } else if (['ppt', 'pptx', 'odp'].includes(attachment.extension)) {
+                        attachment.extension_icon = <Presentation size={ 48 } className='text-(--text-secondary)'/>
+                    } else if (['doc', 'docx', 'odt', 'dot'].includes(attachment.extension)) {
+                        attachment.extension_icon = <BookOpen size={ 48 } className='text-(--text-secondary)'/>
+                    } else if (['zip', 'tar.gz', 'tar', '7z', 'tgz', 'tar.z'].includes(attachment.extension)) {
+                        attachment.extension_icon = <FileArchive size={ 48 } className='text-(--text-secondary)'/>
+                    } else if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm'].includes(attachment.extension)) {
+                        attachment.extension_icon = <Video size={ 48 } className='text-(--text-secondary)'/>
+                    } else if (['mp3', 'wav', 'flac', 'ogg', 'wma', 'aac', 'm4a'].includes(attachment.extension)) {
+                        attachment.extension_icon = <AudioLines size={ 48 } className='text-(--text-secondary)'/>
+                    } else {
+                        attachment.extension_icon = <File size={ 48 } className='text-(--text-secondary)'/>
+                    }
                     attachment.creation_date = new Intl.DateTimeFormat(locale, {
                         day: "2-digit",
                         month: "2-digit",
@@ -203,7 +241,7 @@ export function AttachmentsList({
                         </Button>
                         { module === 'splitter' && (
                             <Button icon={ <Unlink size={ 18 }/> } onClick={ () => unBinding && unBinding() }
-                                    disabled={ attachments.length === 0 }
+                                    disabled={ attachments.length === 0 || containsNotPdf }
                                     className='rounded-3xl hover:text-(--color-primary) text-(--text-primary)
                                                border-(--border-secondary) p-2.5! px-5! bg-(--bg-primary)'>
                                 { t('ATTACHMENTS.unbinding') }
@@ -221,6 +259,14 @@ export function AttachmentsList({
                     </div>
                 ) }
 
+                { module === 'splitter' && attachments.length > 0 && containsNotPdf && (
+                    <div className='px-6'>
+                        <Hint variant="warning">
+                            { t('ATTACHMENTS.unbinding_warning') }
+                        </Hint>
+                    </div>
+                ) }
+
                 { !showAttachment && (
                     <div
                         className={ `grid ${ module === 'verifier' ? 'grid-cols-2' : 'grid-cols-3' } gap-4 px-6 pb-6` }>
@@ -231,10 +277,16 @@ export function AttachmentsList({
                                 <div className="relative bg-[#D0DAD5] dark:bg-(--bg-secondary) rounded-b-none w-full p-6
                                                 pb-0 rounded-md flex items-center justify-center text-(--text-secondary)">
                                     <div className="w-full h-40 relative">
-                                        <img alt={ attachment.filename }
-                                             src={ 'data:image/jpg;base64,' + attachment['thumb'] }
-                                             className='object-cover object-top rounded-t-lg w-full! h-full!'
-                                        />
+                                        { attachment['thumb'] ? (
+                                            <img alt={ attachment.filename }
+                                                 src={ 'data:image/jpg;base64,' + attachment['thumb'] }
+                                                 className='object-cover object-top rounded-t-lg w-full! h-full!'
+                                            />
+                                        ) : (
+                                            <div className='w-full h-full flex items-center justify-center'>
+                                                { attachment.extension_icon }
+                                            </div>
+                                        ) }
                                     </div>
                                 </div>
                                 <div className='px-6 py-3'>
