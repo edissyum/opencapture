@@ -69,6 +69,7 @@ import { DraggablePage } from "./dnd/draggablePage";
 import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
 
 import { b64ToFile } from "../settings/general/customization";
+import { Dropdown } from "../../components/Dropdown.tsx";
 
 export function SplitterViewerPage() {
     const { get, post, del } = axiosApiCall();
@@ -92,6 +93,8 @@ export function SplitterViewerPage() {
     const [documentMetadata, setDocumentMetadata] = useState<any>(null);
     const [documentMetadataValues, setDocumentMetadataValues] = useState<any>({});
     const [documentMetadataOpen, setDocumentMetadataOpen] = useState<boolean>(false);
+
+    const [metadata, setMetadata] = useState<any>([]);
 
     const formId = batch?.form_id;
     const { formFields, loading: loadingFormFields } = useFormFields(formId);
@@ -318,6 +321,41 @@ export function SplitterViewerPage() {
             setBatchMetadata(lines);
         }
     }, [loadingFormFields]);
+
+    // Load referential
+    useEffect(() => {
+        if (batchMetadata.length == 0) return;
+
+        const fetchReferential = async () => {
+            try {
+                const response = await get(`/splitter/metadataMethods/${ batch.form_id }`);
+                if (response && response.metadataMethods) {
+                    if (response.metadataMethods[0].callOnSplitterView) {
+                        const referential = await get(`/splitter/loadReferential/${ batch.form_id }`);
+                        if (referential?.metadata) {
+                            referential.metadata.forEach((metadataItem: any) => {
+                                metadataItem.data['metadataId'] = metadataItem.external_id ? metadataItem.external_id : metadataItem.id;
+                                batchMetadata.forEach((line: any) => {
+                                    line.forEach((field: any) => {
+                                        const metadataKey = field.metadata_key;
+                                        if (metadataKey && !(metadataKey in metadataItem.data)) {
+                                            metadataItem.data[metadataKey] = '';
+                                        }
+                                    });
+                                });
+
+                                setMetadata((prev: any) => [...prev, metadataItem.data]);
+                            });
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching referential:', error);
+            }
+        }
+
+        fetchReferential().then();
+    }, [batchMetadata])
 
     const normalizeDisplayOrder = (docs: any[]) => {
         docs.forEach((doc) => {
@@ -690,6 +728,24 @@ export function SplitterViewerPage() {
         }
     }
 
+    const getMetadaValuesForField = (field: any) => {
+        const result: any = [];
+        let resultMask = field.result_mask;
+        if (resultMask) {
+            resultMask.split('#').map((part: string) => {
+                if (field.metadata_key !== part) {
+                    result.push(part);
+                }
+            });
+        }
+
+        return metadata.map((m: any) => ({
+            label: m[field.metadata_key],
+            value: m[field.metadata_key],
+            extras: result.map(key => m[key]).filter(Boolean)
+        }));
+    }
+
     const selectAll = () => {
         if (selectedPages.length === 0) {
             const allPages = documents.reduce((acc: any[], doc: any) => [...acc, ...doc.pages], []);
@@ -837,17 +893,32 @@ export function SplitterViewerPage() {
                                                                 } }
                                                             />
                                                         ) : (
-                                                            <Input
-                                                                id={ field.id }
-                                                                key={ field.id }
-                                                                type={ field.type }
-                                                                label={ t(field.label) }
-                                                                required={ field.required }
-                                                                value={ batchMetadataValues[field.label_short] }
-                                                                onChange={ (e) => {
-                                                                    handleUpdateBatchMetadataValues(field, e.target.value)
-                                                                } }
-                                                            />
+                                                            <div>
+                                                                { field.metadata_key && metadata.length > 0 ? (
+                                                                    <Dropdown
+                                                                        id={ field.id }
+                                                                        filter={ true }
+                                                                        label={ field.label }
+                                                                        className="w-full mb-2"
+                                                                        useExtraInLabel={ true }
+                                                                        options={ getMetadaValuesForField(field) }
+                                                                        value={ batchMetadataValues[field.label_short] }
+                                                                        onChange={ (e) => handleUpdateBatchMetadataValues(field, e.value) }
+                                                                    />
+                                                                ) : (
+                                                                    <Input
+                                                                        id={ field.id }
+                                                                        key={ field.id }
+                                                                        type={ field.type }
+                                                                        label={ t(field.label) }
+                                                                        required={ field.required }
+                                                                        value={ batchMetadataValues[field.label_short] }
+                                                                        onChange={ (e) => {
+                                                                            handleUpdateBatchMetadataValues(field, e.target.value)
+                                                                        } }
+                                                                    />
+                                                                ) }
+                                                            </div>
                                                         )
                                                         }
                                                     </div>

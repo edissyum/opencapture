@@ -448,11 +448,13 @@ def update_custom_field_from_forms(args):
                                         field = _field
                                 if field['id'].startswith('custom_'):
                                     custom_id = field['id'].split('_')[1]
-                                    if int(custom_id) == int(args['custom_field_id']):
-                                        fields[0]['fields'][tmp_field][cpt]['type'] = args['type']
-                                        fields[0]['fields'][tmp_field][cpt]['format'] = args['type']
-                                        fields[0]['fields'][tmp_field][cpt]['label'] = args['label']
-                                        fields[0]['fields'][tmp_field][cpt]['module'] = args['module']
+                                    if int(custom_id) == int(args['id']):
+                                        for _f in fields[0]['fields'][tmp_field][cpt]:
+                                            if _f['id'] == field['id']:
+                                                _f['type'] = args['type']
+                                                _f['format'] = args['type']
+                                                _f['label'] = args['label']
+                                                _f['module'] = args['module']
                         cpt += 1
                 forms.update_form_fields({'set': {'fields': json.dumps(fields[0]['fields'])}, 'form_id': form['id']})
     return '', 200

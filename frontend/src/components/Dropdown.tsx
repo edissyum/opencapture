@@ -31,6 +31,7 @@ interface DropdownProps {
     placeholder?: string;
     labelFusion?: boolean;
     noMarginBottom?: boolean;
+    useExtraInLabel?: boolean;
     onChange: (e: any) => void;
     options: { value: any; label: string }[];
 }
@@ -43,18 +44,41 @@ export const Dropdown: React.FC<DropdownProps> = ({
     options,
     onChange,
     required,
-    filter=false,
-    className="",
+    filter = false,
+    className = "",
     placeholder = "",
     disabled = false,
     labelFusion = false,
-    noMarginBottom = false
+    noMarginBottom = false,
+    useExtraInLabel = false
 }) => {
+    let dropdownItemTemplate = undefined;
+    let dropdownValueTemplate = undefined;
+    if (useExtraInLabel) {
+        dropdownItemTemplate = (option: any) => {
+            if (!option) return null;
+            return (
+                <span>
+                    { option.label }
+                    { option.extras?.length > 0 && (
+                        <span className='text-(--text-secondary) text-sm ml-2'>
+                            — { option.extras.join(" - ") }
+                        </span>
+                    ) }
+                </span>
+            );
+        };
+
+        dropdownValueTemplate = (option: any) => {
+            if (!option) return null;
+            return option.label;
+        };
+    }
 
     return (
         <div className='w-full'>
-            <div className={ `${className} group group-focus-within:border-(--border-primary) relative flex 
-                              justify-items-stretch ${ error || noMarginBottom ? '' : 'mb-4' }`}>
+            <div className={ `${ className } group group-focus-within:border-(--border-primary) relative flex
+                              justify-items-stretch ${ error || noMarginBottom ? '' : 'mb-4' }` }>
                 <FloatLabel className='w-full'>
                     <PrimeDropdown
                         id={ id }
@@ -63,7 +87,9 @@ export const Dropdown: React.FC<DropdownProps> = ({
                         options={ options }
                         onChange={ onChange }
                         disabled={ disabled }
-                        className={ `w-full hover:border-(--color-primary)! ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' }` }
+                        itemTemplate={ dropdownItemTemplate }
+                        valueTemplate={ dropdownValueTemplate }
+                        className={ `w-full min-h-14 flex items-center hover:border-(--color-primary)! ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' }` }
                         placeholder={ placeholder }
                     />
                     { label && (
