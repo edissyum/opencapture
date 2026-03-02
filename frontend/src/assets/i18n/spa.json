@@ -268,7 +268,8 @@
         "validate": "Validar",
         "unsaved_changes_warning": "Esta página le pide que confirme que desea salir; los datos que ha introducido pueden no guardarse.",
         "save_changes": "Guardar cambios",
-        "search": ""
+        "search": "",
+        "back": ""
     },
     "HISTORY": {
         "document_validated": "Documento n°<strong>{{ documentId }}</strong> validado correctamente",
@@ -563,7 +564,6 @@
         "delete_batches": "Eliminar",
         "id": "Identificador técnico",
         "no_batches": "Ningún lote",
-        "search": "Buscar (identificador técnico)",
         "nb_documents": "Número de documentos",
         "batches_many": "Lotes",
         "batches_one": "Lote",

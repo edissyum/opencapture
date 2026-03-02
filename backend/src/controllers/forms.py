@@ -433,14 +433,15 @@ def update_custom_field_from_forms(args):
                     cpt = 0
                     for line in fields[0]['fields'][tmp_field]:
                         if isinstance(line, dict):
-                            for key, field in line.items():
+                            for key, field in list(line.items()):
                                 if not isinstance(field, bool) and field['id'].startswith('custom_'):
                                     custom_id = field['id'].split('_')[1]
                                     if int(custom_id) == int(args['id']):
-                                        fields[0]['fields'][tmp_field][cpt]['type'] = args['type']
-                                        fields[0]['fields'][tmp_field][cpt]['format'] = args['type']
-                                        fields[0]['fields'][tmp_field][cpt]['label'] = args['label']
-                                        fields[0]['fields'][tmp_field][cpt]['module'] = args['module']
+                                        fields[0]['fields'][tmp_field][cpt][key]['type'] = args['type']
+                                        fields[0]['fields'][tmp_field][cpt][key]['format'] = args['type']
+                                        fields[0]['fields'][tmp_field][cpt][key]['label'] = args['label']
+                                        fields[0]['fields'][tmp_field][cpt][key]['module'] = args['module']
+
                         else:
                             for field in line:
                                 if isinstance(field, list):

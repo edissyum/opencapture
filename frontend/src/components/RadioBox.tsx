@@ -31,7 +31,7 @@ export function RadioBox({ label, value, checked, onChange, border=true }: {
     return (
         <label key={ value } className={ `peer peer-checked:bg-(--color-primary) 
                                 ${ border ? 'border-2 border-(--border-secondary) hover:border-(--color-primary) rounded-lg px-3 py-2': '' }
-                                transition-colors duration-200 text-(--text-primary) cursor-pointer flex items-center 
+                                transition-colors text-(--text-primary) cursor-pointer flex items-center 
                                 justify-center gap-1 bg-(--bg-primary) 
                                 ${ checked && border ? 'bg-(--color-primary)/20 border-(--color-primary)' : '' }` }>
             <RadioButton inputId={ value } checked={ checked } className='mr-1 scale-80'

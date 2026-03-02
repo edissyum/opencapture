@@ -184,6 +184,7 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                                     options={ field.options }
                                     labelFusion={ labelFusion }
                                     required={ field.required }
+                                    editable={ field.editable }
                                     filter={ field.filter || false }
                                     error={ errors[field.name]?.message }
                                     onChange={ e => f.onChange(e.value) }
@@ -218,7 +219,7 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                                 { field.options.map((action: any) => (
                                     <div key={ action.value }
                                          onClick={ () => f.onChange(action.value) }
-                                         className={ `cursor-pointer border-2 w-1/3 py-5 rounded-md text-center duration-200
+                                         className={ `cursor-pointer border-2 w-1/3 py-5 rounded-md text-center
                                                      ${ f.value === action.value ? "text-(--color-primary) bg-(--color-primary)/20 border-(--color-primary)"
                                              : "border-(--border-secondary) hover:border-(--text-secondary) text-(--text-primary)" }
                                         ` }>

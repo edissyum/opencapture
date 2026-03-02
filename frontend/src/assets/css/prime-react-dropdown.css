@@ -15,6 +15,10 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+.p-dropdown .p-dropdown-label[data-pc-section="input"] {
+    @apply cursor-text;
+}
+
 .p-inputwrapper-focus ~ label {
     @apply px-1;
     @apply top-0;

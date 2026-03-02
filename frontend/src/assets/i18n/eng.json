@@ -248,7 +248,8 @@
         "validate": "Validate",
         "unsaved_changes_warning": "This page is asking you to confirm that you want to leave; data you have entered may not be saved.",
         "save_changes": "Save changes",
-        "search": ""
+        "search": "",
+        "back": ""
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> successfully validated",
@@ -520,7 +521,6 @@
         "delete_batches": "Delete",
         "id": "Technical identifier",
         "no_batches": "No batches",
-        "search": "Search (technical identifier)",
         "nb_documents": "Number of documents",
         "batches_one": "Batch",
         "batches_other": "Batches",

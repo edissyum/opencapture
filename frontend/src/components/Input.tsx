@@ -107,7 +107,7 @@ const Input: React.FC<InputProps> = ({
                         id={ id }
                         ref={ inputRef }
                         className={ `w-full! px-3! py-2! border-[1.5px]! rounded-md! focus:outline-none! 
-                            hover:border-(--color-primary)! transition-colors duration-200 
+                            hover:border-(--color-primary)! transition-colors 
                             ${ props.placeholder || hasValue ? "p-inputwrapper-filled" : "" } 
                             ${ isPasswordField ? 'border-r-0! rounded-r-none!' : '' } 
                             ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' } 
@@ -147,7 +147,7 @@ const Input: React.FC<InputProps> = ({
                     <button
                         type="button"
                         onClick={ () => setPasswordVisible((prev) => !prev) }
-                        className={ `password transition-colors duration-200 px-2 rounded-lg! rounded-l-none! 
+                        className={ `password transition-colors px-2 rounded-lg! rounded-l-none! 
                                      group-focus-within:border-(--color-primary)! border-l-0! border! 
                                      text-(--text-secondary)! hover:text-(--color-primary) z-20 cursor-pointer
                                      ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)! ' +

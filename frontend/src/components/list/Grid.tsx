@@ -202,7 +202,7 @@ export function Grid<T extends { id: string }>({
                     { data.map((row) => (
                         <div key={ row.id }
                              onClick={ () => handleRowClick(row) }
-                             className="border-2 border-(--border-secondary) hover:border-(--text-secondary) rounded-lg cursor-pointer bg-(--bg-primary) transition-border-color duration-200">
+                             className="border-2 border-(--border-secondary) hover:border-(--text-secondary) rounded-lg cursor-pointer bg-(--bg-primary) transition-border-color">
                             <div
                                 className="relative bg-[#D0DAD5] dark:bg-(--bg-secondary) rounded-b-none w-full p-6 pb-0 rounded-md flex items-center justify-center text-(--text-secondary)">
                                 <LazyBase64Image

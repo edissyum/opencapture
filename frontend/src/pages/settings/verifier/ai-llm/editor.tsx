@@ -273,7 +273,7 @@ export function SettingsVerifierAiLLMEditor() {
                     { providers.map((provider: any) => (
                         <div key={ provider.name }
                              onClick={ () => setSelectedProvider(provider.name) }
-                             className={ `border-2 border-(--border-secondary) hover:border-(--color-primary) transition-colors duration-200
+                             className={ `border-2 border-(--border-secondary) hover:border-(--color-primary) transition-colors
                              rounded-lg px-8 py-3 cursor-pointer flex items-center justify-center gap-4
                              ${ selectedProvider === provider.name ? 'bg-(--color-primary)/20 border-(--color-primary)' : '' } ` }>
                             { provider.logo && <img src={ provider.logo } alt={ provider.name } className='h-7'/> }
@@ -315,7 +315,7 @@ export function SettingsVerifierAiLLMEditor() {
                               className='bg-(--color-primary)/10 border-(--border-primary) p-1.5 rounded-md cursor-pointer relative'>
                             <div
                                 className={ `absolute opacity-0 top-0 left-1/2 -translate-x-1/2 text-nowrap ${ dataCopied ? '-top-10! opacity-100!' : '' }
-                                              transition-all duration-300 bg-[#E4DDD3] border-(--border-primary) p-1.5 rounded-md` }>
+                                              transition-all bg-[#E4DDD3] border-(--border-primary) p-1.5 rounded-md` }>
                                 { t('GLOBAL.copied') } !
                             </div>
                             <Copy size={ 18 }/>

@@ -18,13 +18,14 @@
 import { t } from "i18next";
 import moment from "moment/moment";
 import { Panel } from "primereact/panel";
-import { useParams } from "react-router-dom";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { ContextMenu } from "primereact/contextmenu";
 import { Accordion, AccordionTab } from "primereact/accordion";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
 import {
+    ArrowLeft,
     ChevronDown,
     Download,
     EllipsisVertical,
@@ -61,18 +62,19 @@ import Input from "../../components/Input";
 import { Button } from "../../components/Button";
 import ISOCalendar from "../../components/Calendar";
 import { Checkbox } from "../../components/Checkbox";
+import { Dropdown } from "../../components/Dropdown";
 import { Loader } from "../../components/loader/Loader";
 import { showToast } from "../../components/ToastProvider";
 import { AttachmentsList } from "../../components/attachments/list";
 
 import { DraggablePage } from "./dnd/draggablePage";
-import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
 
+import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
 import { b64ToFile } from "../settings/general/customization";
-import { Dropdown } from "../../components/Dropdown.tsx";
 
 export function SplitterViewerPage() {
     const { get, post, del } = axiosApiCall();
+    const navigate = useNavigate();
     const cm = useRef({ current: null } as any);
     const [unSavedChanges, setUnSavedChanges] = useState(false);
     useUnsavedChangesWarning(unSavedChanges);
@@ -162,7 +164,72 @@ export function SplitterViewerPage() {
         }
     ];
 
-    // Fetch batch details and attachments config
+    // Fetch batch details, documents and attachments config
+    const fetchDocuments = async () => {
+        try {
+            const response = await get(`/splitter/documents/${ batchId }`);
+            if (response?.documents) {
+                let lines: any[] = [];
+                const documentMetadata = formFields.document_metadata;
+
+                if (documentMetadata) {
+                    response.documents.forEach((doc: any) => {
+                        doc.document_metadata = doc.data?.custom_fields;
+                        if (doc.document_metadata) {
+                            Object.values(documentMetadata).forEach((line: any) => {
+                                let linesFields: any[] = [];
+                                Object.values(line).forEach((field: any) => {
+                                    if (field) {
+                                        const fieldId = parseInt(field.id.replace('custom_', ''));
+                                        const customField = customFields.find((f: any) => f.id === fieldId);
+
+                                        if (customField) {
+                                            field = { ...field, ...customField };
+                                        }
+
+                                        if (doc.data.custom_fields) {
+                                            if (doc.data.custom_fields[field.label_short]) {
+                                                let value = doc.data.custom_fields[field.label_short];
+
+                                                if (field.type === 'date') {
+                                                    const dateValue = moment(value, 'YYYY-MM-DD', true);
+                                                    if (dateValue.isValid()) {
+                                                        value = dateValue.format('YYYY-MM-DD');
+                                                    } else {
+                                                        value = null;
+                                                    }
+                                                }
+                                                field = { ...field, value: value };
+                                            }
+
+                                            if (field.value) {
+                                                setDocumentMetadataValues((prev: any) => ({
+                                                    ...prev, [doc.id]: {
+                                                        ...prev[doc.id],
+                                                        [field.label_short]: field.value
+                                                    }
+                                                }));
+                                            }
+                                            linesFields.push(field);
+                                        }
+                                    }
+                                });
+
+                                if (linesFields.length > 0 && !lines.some(line => line.every((f: any) => linesFields.some((lf: any) => lf.id === f.id)))) {
+                                    lines.push(linesFields);
+                                }
+                            });
+                        }
+                    })
+                }
+                setLoading(false);
+                setDocumentMetadata(lines);
+                setDocuments(response.documents);
+            }
+        } catch (error) {
+            console.error('Error fetching documents:', error);
+        }
+    };
     useEffect(() => {
         if (!batchId || loadingUser) return;
 
@@ -188,82 +255,9 @@ export function SplitterViewerPage() {
         };
 
         fetchBatchDetails().then();
+        fetchDocuments().then();
         fetchEnableAttachments().then();
     }, [loadingUser]);
-
-    // Fetch documents of the batch and initialize metadata values
-    useEffect(() => {
-        if (!batch || loadingFormFields) return;
-
-        setLoading(true);
-        const fetchDocuments = async () => {
-            try {
-                const response = await get(`/splitter/documents/${ batch.id }`);
-                if (response?.documents) {
-                    let lines: any[] = [];
-                    const documentMetadata = formFields.document_metadata;
-
-                    if (documentMetadata) {
-                        response.documents.forEach((doc: any) => {
-                            doc.document_metadata = doc.data?.custom_fields;
-                            if (doc.document_metadata) {
-                                Object.values(documentMetadata).forEach((line: any) => {
-                                    let linesFields: any[] = [];
-                                    Object.values(line).forEach((field: any) => {
-                                        if (field) {
-                                            const fieldId = parseInt(field.id.replace('custom_', ''));
-                                            const customField = customFields.find((f: any) => f.id === fieldId);
-
-                                            if (customField) {
-                                                field = { ...field, ...customField };
-                                            }
-
-                                            if (doc.data.custom_fields) {
-                                                if (doc.data.custom_fields[field.label_short]) {
-                                                    let value = doc.data.custom_fields[field.label_short];
-
-                                                    if (field.type === 'date') {
-                                                        const dateValue = moment(value, 'YYYY-MM-DD', true);
-                                                        if (dateValue.isValid()) {
-                                                            value = dateValue.format('YYYY-MM-DD');
-                                                        } else {
-                                                            value = null;
-                                                        }
-                                                    }
-                                                    field = { ...field, value: value };
-                                                }
-
-                                                if (field.value) {
-                                                    setDocumentMetadataValues((prev: any) => ({
-                                                        ...prev, [doc.id]: {
-                                                            ...prev[doc.id],
-                                                            [field.label_short]: field.value
-                                                        }
-                                                    }));
-                                                }
-                                                linesFields.push(field);
-                                            }
-                                        }
-                                    });
-
-                                    if (linesFields.length > 0 && !lines.some(line => line.every((f: any) => linesFields.some((lf: any) => lf.id === f.id)))) {
-                                        lines.push(linesFields);
-                                    }
-                                });
-                            }
-                        })
-                    }
-                    setLoading(false);
-                    setDocumentMetadata(lines);
-                    setDocuments(response.documents);
-                }
-            } catch (error) {
-                console.error('Error fetching documents:', error);
-            }
-        };
-
-        fetchDocuments().then();
-    }, [batch, loadingFormFields]);
 
     // Recalculate pages count when documents change (e.g. after drag and drop)
     const pagesCount = useMemo(() =>
@@ -654,7 +648,22 @@ export function SplitterViewerPage() {
     }
 
     const handleUpdateBatchMetadataValues = (field: any, value: any) => {
+        const selectedMetadata = metadata.find((m: any) => m[field.metadata_key] === value);
         setBatchMetadataValues((prev: any) => ({ ...prev, [field.label_short]: value }));
+
+        batchMetadata.forEach((line: any) => {
+            line.forEach((f: any) => {
+                if (f.metadata_key) {
+                    setBatchMetadataValues((prev: any) => ({
+                        ...prev, [f.label_short]: selectedMetadata ? selectedMetadata[f.metadata_key] : ''
+                    }));
+                }
+            });
+        });
+
+        if (selectedMetadata && selectedMetadata.metadataId) {
+            setBatchMetadataValues((prev: any) => ({ ...prev, ['metadataId']: selectedMetadata.metadataId }));
+        }
         setUnSavedChanges(true);
     }
 
@@ -687,6 +696,8 @@ export function SplitterViewerPage() {
                         await del(`/attachments/splitter/delete/${ attachment.id }`);
                     }
                 }
+
+                await fetchDocuments();
                 setLoading(false);
                 setShowAttachments(false);
                 setAttachmentsRefreshKey(prev => prev + 1);
@@ -742,7 +753,7 @@ export function SplitterViewerPage() {
         return metadata.map((m: any) => ({
             label: m[field.metadata_key],
             value: m[field.metadata_key],
-            extras: result.map(key => m[key]).filter(Boolean)
+            extras: result.map((key: any) => m[key]).filter(Boolean)
         }));
     }
 
@@ -807,7 +818,11 @@ export function SplitterViewerPage() {
             ) }
 
             { !showAttachments && (
-                <div className='px-8 py-4 flex items-center'>
+                <div className='px-8 py-4 flex items-center gap-2'>
+                    <Button size={ 'sm' } variant={ "no_bg" } className='p-2'
+                            icon={ <ArrowLeft size={ 16 }/> } onClick={ () => navigate('/home') }>
+                        { t('GLOBAL.back') }
+                    </Button>
                     <Button
                         size={ 'sm' }
                         variant={ "secondary" }
@@ -978,10 +993,10 @@ export function SplitterViewerPage() {
                                             { t('FORMS.metadata_document') }
                                             <ChevronDown
                                                 size={ 16 }
-                                                className={ `transition-transform duration-200 ${ documentMetadataOpen ? 'rotate-0' : '-rotate-90' }` }
+                                                className={ `transition-transform ${ documentMetadataOpen ? 'rotate-0' : '-rotate-90' }` }
                                             />
                                         </h3>
-                                        <div className={ `grid transition-all duration-300 ease-in-out` }
+                                        <div className={ `grid transition-all` }
                                              style={ { gridTemplateRows: documentMetadataOpen ? '1fr' : '0fr' } }
                                         >
                                             <div className="overflow-hidden">

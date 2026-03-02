@@ -268,7 +268,8 @@
         "validate": "Valider",
         "unsaved_changes_warning": "Cette page vous demande de confirmer sa fermeture ; des données que vous avez saisies pourraient ne pas être enregistrées.",
         "save_changes": "Sauvegarder",
-        "search": "Rechercher"
+        "search": "Rechercher",
+        "back": "Retour"
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validé avec succès",
@@ -563,7 +564,6 @@
         "delete_batches": "Supprimer",
         "id": "Identifiant technique",
         "no_batches": "Aucun lot",
-        "search": "Rechercher (identifiant technique)",
         "nb_documents": "Nombre de documents",
         "batches_many": "Lots",
         "batches_one": "Lot",

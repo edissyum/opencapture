@@ -20,7 +20,18 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Accordion, AccordionTab } from "primereact/accordion";
-import { ChevronLeft, ChevronRight, Copy, Download, Edit, Eye, EyeOff, Paperclip, SquarePlus } from "lucide-react";
+import {
+    ArrowLeft,
+    ChevronLeft,
+    ChevronRight,
+    Copy,
+    Download,
+    Edit,
+    Eye,
+    EyeOff,
+    Paperclip,
+    SquarePlus
+} from "lucide-react";
 
 import { SupplierEditor } from "../suppliers/editor";
 
@@ -951,94 +962,103 @@ export function VerifierViewerPage() {
                 />
             </div>
             { !showAttachments && (
-                <div className='w-1/2 bg-(--bg-secondary) p-8 h-full flex flex-col'>
-                    <div className="border-2 border-(--border-secondary) rounded-xl h-full overflow-auto">
-                        { !pagesImageB64[currentPage] ? (
-                            <div className='w-full h-full flex flex-col items-center justify-center'>
-                        <span className='text-(--text-secondary)'>
-                            { t('VERIFIER.loading_page', { currentPage: currentPage }) }
-                            <Loader/>
-                        </span>
-                            </div>
-                        ) : (
-                            <Annotator
-                                width={ `${ zoom }%` }
-                                currentPage={ currentPage }
-                                focusedField={ focusedField }
-                                alt={ `Page ${ currentPage }` }
-                                imageB64={ pagesImageB64[currentPage] }
-                                originalWidth={ documentData['img_width'] }
-                                regionsList={ regionsList }
-                                onEnd={ handleEnd }
-                            />
-                        ) }
+                <div className='w-1/2'>
+                    <div>
+                        <Button size={ 'sm' } variant={ "no_bg" } className='hover:border-none! hover:p-2'
+                                icon={ <ArrowLeft size={ 16 }/> } onClick={ () => navigate('/home') }>
+                            { t('GLOBAL.back') }
+                        </Button>
                     </div>
-                    <div className="flex flex-wrap gap-4 mt-4 items-center">
-                        { enableAttachments && (
-                            <div className="flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
+                    <div className='bg-(--bg-secondary) px-8 pb-16 h-full flex flex-col'>
+                        <div className="border-2 border-(--border-secondary) rounded-xl h-full overflow-auto">
+                            { !pagesImageB64[currentPage] ? (
+                                <div className='w-full h-full flex flex-col items-center justify-center'>
+                                <span className='text-(--text-secondary)'>
+                                    { t('VERIFIER.loading_page', { currentPage: currentPage }) }
+                                    <Loader/>
+                                </span>
+                                </div>
+                            ) : (
+                                <Annotator
+                                    width={ `${ zoom }%` }
+                                    currentPage={ currentPage }
+                                    focusedField={ focusedField }
+                                    alt={ `Page ${ currentPage }` }
+                                    imageB64={ pagesImageB64[currentPage] }
+                                    originalWidth={ documentData['img_width'] }
+                                    regionsList={ regionsList }
+                                    onEnd={ handleEnd }
+                                />
+                            ) }
+                        </div>
+                        <div className="flex flex-wrap gap-4 mt-4 items-center">
+                            { enableAttachments && (
+                                <div className="flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
                                     cursor-pointer border border-(--border-secondary) hover:border-(--border-primary)
                                     hover:text-(--color-primary) transition-colors shrink-0 relative"
-                                 onClick={ () => setShowAttachments(true) }
-                                 data-tooltip-id="tooltip"
-                                 data-tooltip-content={ t('VERIFIER.show_attachments') }>
-                                <Paperclip size={ 18 }/>
-                                { attachmentsCount > 0 && (
-                                    <div
-                                        className="z-1 absolute top-0 right-0 size-3 rounded-full bg-(--color-primary)"/>
-                                ) }
-                            </div>
-                        ) }
-                        <div className="flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
+                                     onClick={ () => setShowAttachments(true) }
+                                     data-tooltip-id="tooltip"
+                                     data-tooltip-content={ t('VERIFIER.show_attachments') }>
+                                    <Paperclip size={ 18 }/>
+                                    { attachmentsCount > 0 && (
+                                        <div
+                                            className="z-1 absolute top-0 right-0 size-3 rounded-full bg-(--color-primary)"/>
+                                    ) }
+                                </div>
+                            ) }
+                            <div className="flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
                                     cursor-pointer border border-(--border-secondary) hover:border-(--border-primary)
                                     hover:text-(--color-primary) transition-colors shrink-0"
-                             onClick={ handleDownloadOriginalFile }
-                             data-tooltip-id="tooltip"
-                             data-tooltip-content={ t('VERIFIER.download_original_file') }>
-                            <Download size={ 18 }/>
-                        </div>
+                                 onClick={ handleDownloadOriginalFile }
+                                 data-tooltip-id="tooltip"
+                                 data-tooltip-content={ t('VERIFIER.download_original_file') }>
+                                <Download size={ 18 }/>
+                            </div>
 
-                        <div className="flex bg-(--bg-primary) p-3.5 rounded-full cursor-pointer border
+                            <div className="flex bg-(--bg-primary) p-3.5 rounded-full cursor-pointer border
                                     border-(--border-secondary) grow-5 min-w-[180px]">
-                            <ZoomControl zoom={ zoom } setZoom={ setZoom }/>
-                        </div>
+                                <ZoomControl zoom={ zoom } setZoom={ setZoom }/>
+                            </div>
 
-                        <div className="flex justify-center items-center gap-3 bg-(--bg-primary) p-3 rounded-full
+                            <div className="flex justify-center items-center gap-3 bg-(--bg-primary) p-3 rounded-full
                                     cursor-pointer border border-(--border-secondary) grow min-w-[160px] whitespace-nowrap">
-                            <button onClick={ handlePrev }
-                                    disabled={ currentPage === 1 }
-                                    className={ `
+                                <button onClick={ handlePrev }
+                                        disabled={ currentPage === 1 }
+                                        className={ `
                                     cursor-pointer rounded-full transition-colors 
                                     ${ currentPage === 1 ? "text-(--text-secondary) cursor-not-allowed"
-                                        : "hover:bg-(--bg-secondary) text-(--text-primary)" }`
-                                    }>
-                                <ChevronLeft size={ 16 }/>
-                            </button>
+                                            : "hover:bg-(--bg-secondary) text-(--text-primary)" }`
+                                        }>
+                                    <ChevronLeft size={ 16 }/>
+                                </button>
 
-                            <span className="whitespace-nowrap">
+                                <span className="whitespace-nowrap">
                             { t('VERIFIER.page') } { currentPage } / { totalPages || 1 }
                         </span>
 
-                            <button
-                                onClick={ handleNext }
-                                disabled={ currentPage === totalPages }
-                                className={ `cursor-pointer rounded-full transition-colors 
+                                <button
+                                    onClick={ handleNext }
+                                    disabled={ currentPage === totalPages }
+                                    className={ `cursor-pointer rounded-full transition-colors 
                                 ${ currentPage === totalPages ? "text-(--text-secondary) cursor-not-allowed"
-                                    : "hover:bg-(--bg-secondary) text-(--text-primary)" }` }>
-                                <ChevronRight size={ 16 }/>
-                            </button>
-                        </div>
+                                        : "hover:bg-(--bg-secondary) text-(--text-primary)" }` }>
+                                    <ChevronRight size={ 16 }/>
+                                </button>
+                            </div>
 
-                        <div className="flex justify-center items-center select-none gap-3 bg-(--bg-primary) p-3
+                            <div className="flex justify-center items-center select-none gap-3 bg-(--bg-primary) p-3
                                     rounded-full cursor-pointer border border-(--border-secondary)
                                     hover:border-(--border-primary) hover:text-(--color-primary)
                                     transition-colors shrink-0"
-                             data-tooltip-id="tooltip"
-                             data-tooltip-content={ indicatorsVisible ? t('VERIFIER.hide_indicators') : t('VERIFIER.show_indicators') }
-                             onClick={ handleChangeIndicatorsVisible }>
-                            { indicatorsVisible ? <Eye size={ 18 }/> : <EyeOff size={ 18 }/> }
+                                 data-tooltip-id="tooltip"
+                                 data-tooltip-content={ indicatorsVisible ? t('VERIFIER.hide_indicators') : t('VERIFIER.show_indicators') }
+                                 onClick={ handleChangeIndicatorsVisible }>
+                                { indicatorsVisible ? <Eye size={ 18 }/> : <EyeOff size={ 18 }/> }
+                            </div>
                         </div>
                     </div>
                 </div>
+
             ) }
 
             <div className='w-1/2 bg-(--bg-primary) p-8 h-full border-l-2 border-(--border-secondary) overflow-auto'>
@@ -1082,59 +1102,57 @@ export function VerifierViewerPage() {
                                                 { Object.values(line).filter((field: any) => typeof field !== 'boolean').map((field: any) => (
                                                     <div key={ field.id }
                                                          className={ `min-w-1/6 ${ getWidthLine(line) }` }>
-                                                        {
-                                                            field.type === 'date' ? (
-                                                                <ISOCalendar
+                                                        { field.type === 'date' ? (
+                                                            <ISOCalendar
+                                                                id={ field.id }
+                                                                label={ t(field.label) }
+                                                                error={ errors[field.id] }
+                                                                required={ field.required }
+                                                                value={ tmpDocumentData?.datas?.[field.id] }
+                                                                disabled={ disableFields }
+                                                                onChange={ (e) => updateDocumentData(field, e) }
+                                                                onClick={ () => handleFocusField(field.id, field.label, field.color) }
+                                                            />
+                                                        ) : (zone.id === 'supplier' && (field.id === 'lastname' || field.id === 'name') ? (
+                                                                <AutocompleteInput
                                                                     id={ field.id }
+                                                                    label={ t(field.label) }
+                                                                    required={ field.required }
+                                                                    disabled={ disableFields }
+                                                                    suggestions={ suggestionsSuppliers }
+                                                                    value={ tmpDocumentData?.datas?.[field.id] ?? "" }
+                                                                    optionLabel={ field.id === 'name' ? 'name' : 'lastname' }
+                                                                    search={ (e) => handleSupplierSearch(e, field.id) }
+                                                                    onChange={ (value) => handleSupplierChange(field, value) }
+                                                                    itemTemplate={ (supplier: any) => (
+                                                                        <div>
+                                                                            { field.id === 'name' ? supplier.name : supplier.lastname }
+                                                                            { field.id === 'lastname' && supplier.firstname ? ` ${ supplier.firstname }` : '' }
+                                                                            <span
+                                                                                className='text-(--text-secondary)'>
+                                                                                    { field.id === 'lastname' && supplier.name ? ` (${ supplier.name })` : '' }
+                                                                                </span>
+                                                                        </div>
+                                                                    ) }
+                                                                />
+                                                            ) : (
+                                                                <Input
+                                                                    id={ field.id }
+                                                                    key={ field.id }
+                                                                    type={ field.type }
                                                                     label={ t(field.label) }
                                                                     error={ errors[field.id] }
                                                                     required={ field.required }
-                                                                    value={ tmpDocumentData?.datas?.[field.id] }
+                                                                    value={ tmpDocumentData?.datas?.[field.id] ?? "" }
                                                                     disabled={ disableFields }
-                                                                    onChange={ (e) => updateDocumentData(field, e) }
                                                                     onClick={ () => handleFocusField(field.id, field.label, field.color) }
+                                                                    onChange={ (e) => updateDocumentData(field, e.target.value) }
+                                                                    onBlur={ (e) => {
+                                                                        prepareDocumentData(field, e.target.value)
+                                                                    } }
                                                                 />
-                                                            ) : (
-                                                                zone.id === 'supplier' && (field.id === 'lastname' || field.id === 'name') ? (
-                                                                    <AutocompleteInput
-                                                                        id={ field.id }
-                                                                        label={ t(field.label) }
-                                                                        required={ field.required }
-                                                                        disabled={ disableFields }
-                                                                        suggestions={ suggestionsSuppliers }
-                                                                        value={ tmpDocumentData?.datas?.[field.id] ?? "" }
-                                                                        optionLabel={ field.id === 'name' ? 'name' : 'lastname' }
-                                                                        search={ (e) => handleSupplierSearch(e, field.id) }
-                                                                        onChange={ (value) => handleSupplierChange(field, value) }
-                                                                        itemTemplate={ (supplier: any) => (
-                                                                            <div>
-                                                                                { field.id === 'name' ? supplier.name : supplier.lastname }
-                                                                                { field.id === 'lastname' && supplier.firstname ? ` ${ supplier.firstname }` : '' }
-                                                                                <span
-                                                                                    className='text-(--text-secondary)'>
-                                                                                    { field.id === 'lastname' && supplier.name ? ` (${ supplier.name })` : '' }
-                                                                                </span>
-                                                                            </div>
-                                                                        ) }
-                                                                    />
-                                                                ) : (
-                                                                    <Input
-                                                                        id={ field.id }
-                                                                        key={ field.id }
-                                                                        type={ field.type }
-                                                                        label={ t(field.label) }
-                                                                        error={ errors[field.id] }
-                                                                        required={ field.required }
-                                                                        value={ tmpDocumentData?.datas?.[field.id] ?? "" }
-                                                                        disabled={ disableFields }
-                                                                        onClick={ () => handleFocusField(field.id, field.label, field.color) }
-                                                                        onChange={ (e) => updateDocumentData(field, e.target.value) }
-                                                                        onBlur={ (e) => {
-                                                                            prepareDocumentData(field, e.target.value)
-                                                                        } }
-                                                                    />
-                                                                )
-                                                            ) }
+                                                            )
+                                                        ) }
                                                     </div>
                                                 )) }
                                                 { line.duplicable && (

@@ -49,7 +49,6 @@
 
 .p-datepicker-trigger {
     @apply border-l-0;
-    @apply duration-200;
     @apply transition-colors;
     @apply bg-(--bg-secondary);
     @apply text-(--text-primary);
@@ -63,7 +62,6 @@
 .p-calendar-w-btn .p-inputtext:hover {
     @apply shadow-none;
     @apply outline-none;
-    @apply duration-200;
     @apply transition-colors;
     @apply border-(--color-primary);
 }

@@ -41,7 +41,7 @@ export function Step4() {
 
             <div className="flex gap-4 justify-center mt-4">
                 <div className={ `cursor-pointer relative w-48 h-26 bg-(--bg-primary) border-2 
-                        border-(--border-primary) rounded-lg transition-border-color duration-200
+                        border-(--border-primary) rounded-lg transition-border-color
                         ${ selectedView === 'grid' ? 'border-(--border-primary)' : 'border-(--border-secondary) hover:border-gray-400' } ` }
                      onClick={ () => setSelectedView('grid') }>
                     <CheckOverlay show={ selectedView === 'grid' }/>
@@ -56,7 +56,7 @@ export function Step4() {
                     </div>
                 </div>
                 <div className={ `cursor-pointer relative w-48 h-26 bg-(--bg-primary) border-2 
-                        border-(--border-primary) rounded-lg transition-border-color duration-200
+                        border-(--border-primary) rounded-lg transition-border-color
                         ${ selectedView === 'list' ? 'border-(--border-primary)' : 'border-(--border-secondary) hover:border-gray-400' } ` }
                      onClick={ () => setSelectedView('list') }>
                     <CheckOverlay show={ selectedView === 'list' }/>

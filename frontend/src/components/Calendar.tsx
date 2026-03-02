@@ -173,7 +173,6 @@ const ISOCalendar: React.FC<ISOCalendarProps> = ({
                         showIcon
                         id={ id }
                         className="w-full"
-                        showOnFocus={false}
                         locale={ localeLang }
                         disabled={ disabled }
                         // @ts-ignore

@@ -73,7 +73,7 @@ export const DraggablePage = React.memo(function DraggablePage({
         >
             <div className='h-full w-full flex flex-col items-center'>
                 { thumbnailUrl && (
-                    <div className='relative p-6'>
+                    <div className='relative p-4'>
                         <img
                             src={ thumbnailUrl }
                             alt={ `Page ${ page.source_page }` }

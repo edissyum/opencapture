@@ -37,7 +37,6 @@
     @apply rounded-xl;
     @apply border-(--border-secondary);
     @apply transition-all;
-    @apply duration-300;
 }
 .p-accordion .p-accordion-header.p-highlight .p-accordion-header-link {
     @apply rounded-b-none;

@@ -76,15 +76,12 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
     let typesList = [
         { id: 'text', label: t('CUSTOM-FIELDS.type_text'), 'logo': 'text' },
         { id: 'date', label: t('CUSTOM-FIELDS.type_date'), 'logo': 'date' },
+        { id: 'regex', label: t('CUSTOM-FIELDS.type_regex'), 'logo': 'regex' },
         { id: 'select', label: t('CUSTOM-FIELDS.type_select'), 'logo': 'select' },
-        { id: 'textarea', label: t('CUSTOM-FIELDS.type_textarea'), 'logo': 'textarea' },
+        { id: 'textarea', label: t('CUSTOM-FIELDS.type_textarea'), 'logo': 'textarea' }
     ];
 
-    if (module === 'verifier') {
-        typesList.splice(1, 0, {
-            id: 'regex', label: t('CUSTOM-FIELDS.type_regex'), 'logo': 'regex'
-        });
-    } else {
+    if (module === 'splitter') {
         typesList.push({ id: 'checkbox', label: t('CUSTOM-FIELDS.type_checkbox'), 'logo': 'checkbox' });
     }
 
@@ -112,6 +109,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
             ...baseShape,
             metadata_key: z.string().nullable().optional().describe(JSON.stringify({
                 component: "dropdown",
+                editable: true,
                 type: "text",
                 label: t("CUSTOM-FIELDS.autocomplete"),
                 options: [
