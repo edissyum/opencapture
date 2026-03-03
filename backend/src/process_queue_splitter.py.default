@@ -23,11 +23,12 @@ import json
 import traceback
 from src import app
 from kuyruk import Kuyruk
-from .classes.Log import Log
-from .classes.Files import Files
 from flask_babel import gettext
-from .classes.Splitter import Splitter
-from .classes.SeparatorQR import SeparatorQR
+from src.classes.Log import Log
+from src.classes.Files import Files
+from src.classes.Splitter import Splitter
+from src.classes.NFZ42020 import NFZ42020
+from src.classes.SeparatorQR import SeparatorQR
 from .functions import retrieve_config_from_custom_id
 from .scripting_functions import launch_script_splitter
 from main import timer, check_file, create_classes_from_custom_id
@@ -102,6 +103,10 @@ def launch(args):
             launch_script_splitter(workflow_settings[0], docservers, 'input', log, database, args, config, datas)
 
         if workflow_settings:
+            # TODO NF Z42-020 Journal initialization using workflow settings
+            journal_path = app.config['JOURNAL_PATH'] + '/' + args['custom_id']
+            nfz42020 = NFZ42020(log, journal_path, True, 'splitter', args['original_filename'], args['file'])
+
             if workflow_settings[0]['process']['use_interface'] and \
                     'form_id' in workflow_settings[0]['process'] and workflow_settings[0]['process']['form_id']:
                 outputs = database.select({
@@ -163,6 +168,9 @@ def launch(args):
                     attachments = args['attachments']
 
                 if check_file(files, path, log, docservers):
+                    if nfz42020.enabled:
+                        nfz42020.log_event('FILE_RECEIVED')
+
                     if 'workflow_id' in args and args['workflow_id']:
                         available_split_methods_path = docservers['SPLITTER_METHODS_PATH'] + "/splitter_methods.json"
                         if splitter_method_id and os.path.isfile(available_split_methods_path):
@@ -221,6 +229,18 @@ def launch(args):
         })
 
         for batch_id in created_batches:
+            if nfz42020.enabled:
+                splitter_docservers = docservers['SPLITTER_ORIGINAL_DOC']
+                batch_data = database.select({
+                    'select': ['file_path'],
+                    'table': ['splitter_batches'],
+                    'where': ['id = %s'],
+                    'data': [batch_id]
+                })
+                if batch_data:
+                    stored_path = splitter_docservers + '/' + batch_data[0]['file_path']
+                    nfz42020.log_event('BATCH_CREATED', batch_id, stored_path)
+
             database.insert({
                 'table': 'history',
                 'columns': {
@@ -249,11 +269,14 @@ def launch(args):
                             'history_module': 'splitter',
                             'user_info': args['user_info'],
                             'workflow_id': args['workflow_id'],
-                            'custom_fields': json.dumps({"splitter_document_id": document['id']}),
                             'history_submodule': 'create_document',
+                            'custom_fields': json.dumps({"splitter_document_id": document['id']}),
                             'user_id': args['user_id'] if 'user_id' in args and args['user_id'] else 0,
                             'history_desc': f"{gettext('DOCUMENT')} n°<strong>{str(document['id'])}</strong> {gettext('CREATED_ON_BATCH')} N°<strong>{str(batch_id)}</strong>"
                         }
                     })
 
         database.conn.close()
+
+        if nfz42020.enabled:
+            nfz42020.seal_journal()
