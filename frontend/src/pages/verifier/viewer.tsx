@@ -669,7 +669,6 @@ export function VerifierViewerPage() {
     const saveDocumentData = async (data: any) => {
         setLoadingUpdateDocumentData(true);
         try {
-            console.log(data)
             await put(`verifier/documents/${ documentId }/updateData`, data);
         } catch (error) {
             console.error("Error saving document data:", error);
