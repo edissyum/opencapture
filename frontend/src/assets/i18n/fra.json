@@ -285,7 +285,8 @@
         "no_history": "Aucune ligne d'historique",
         "user_info": "Utilisateur",
         "ip": "Adresse IP",
-        "history": "Lignes d'historique"
+        "history": "Lignes d'historique",
+        "viewer_splitter": "Visualisation du lot n°<strong>{{ batchId }}</strong>"
     },
     "MAILCOLLECT": {
         "no_process": "Aucun processus MailCollect n'est configuré",

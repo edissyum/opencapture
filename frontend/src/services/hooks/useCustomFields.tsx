@@ -21,10 +21,11 @@ import { axiosApiCall } from "./axiosApiCall";
 
 export interface CustomField {
     id: string;
+    value?: any;
+    type: string;
     name: string;
     label: string;
-    type: string;
-    value?: any;
+    settings?: any;
 }
 
 interface UseCustomFieldsResult {

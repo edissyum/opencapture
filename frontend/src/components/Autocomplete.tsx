@@ -53,7 +53,7 @@ const AutocompleteInput: React.FC<AutocompleteProps> = ({
 
     return (
         <div>
-            <FloatLabel className="w-full">
+            <FloatLabel className="w-full mb-4">
                 <AutoComplete
                     key={ id }
                     name={ id }
@@ -63,6 +63,7 @@ const AutocompleteInput: React.FC<AutocompleteProps> = ({
                     dropdown={ dropdown }
                     disabled={ disabled }
                     required={ required }
+                    className={ "w-full" }
                     completeMethod={ search }
                     suggestions={ suggestions }
                     itemTemplate={ itemTemplate }

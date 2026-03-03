@@ -71,7 +71,7 @@ export function DroppableDocumentZone({
 
     return (
         <div ref={ setDropRef }
-             className={ `DroppableDocument w-full transition-colors rounded-md min-h-80
+             className={ `DroppableDocument w-full transition-colors rounded-md
                 ${ isEmpty && 'border-2 border-dashed border-(--border-secondary)' }
                 ${ isOver && 'bg-(--color-primary)/10 border-(--color-primary)' }` }>
             { isEmpty && !isOver && (
@@ -87,7 +87,7 @@ export function DroppableDocumentZone({
 
             { pages.length > 0 && (
                 <div ref={ setRefs }
-                    className="overflow-x-auto p-4 h-110">
+                     className="overflow-x-auto p-4 h-105">
                     <div style={ { width: totalWidth, position: 'relative' } }>
                         { virtualItems.map((virtualItem) => {
                             const page = pages[virtualItem.index];

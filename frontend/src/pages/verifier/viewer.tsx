@@ -38,6 +38,7 @@ import { SupplierEditor } from "../suppliers/editor";
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
 import ISOCalendar from "../../components/Calendar";
+import { Dropdown } from "../../components/Dropdown";
 import { Loader } from "../../components/loader/Loader";
 import { showToast } from "../../components/ToastProvider";
 import { ZoomControl } from "../../components/ZoomControl";
@@ -125,6 +126,8 @@ export function VerifierViewerPage() {
 
     // Fetch document data
     useEffect(() => {
+        if (loadingUser || !documentId) return;
+
         logHistory({
             module: 'verifier',
             submodule: 'viewer',
@@ -327,6 +330,13 @@ export function VerifierViewerPage() {
                 if (formFields[parentKey] !== null) {
                     formFields[parentKey].forEach((line: any) => {
                         Object.values(line).filter((field: any) => typeof field !== 'boolean').forEach((field: any) => {
+                            if (field.id.includes('custom_') && !field.settings) {
+                                const customField: any = customFields.find((f) => `custom_${ f.id }` === field.id);
+                                if (customField) {
+                                    field.settings = customField.settings;
+                                }
+                            }
+
                             if (field.default_value && (!tmpDocumentData?.datas?.[field.id] || tmpDocumentData?.datas?.[field.id] === '')) {
                                 let value = field.default_value;
                                 if (field.type === 'date') {
@@ -343,7 +353,6 @@ export function VerifierViewerPage() {
                                 prepareDocumentData(field, value);
                             }
                         });
-
                         newZones[zoneIndex].lines.push(line);
                     });
                 }
@@ -577,8 +586,8 @@ export function VerifierViewerPage() {
         setSupplierExists(supplierExists);
         setSupplierChanged(supplierChange);
 
-        // onBlur doesn't work well with date picker, so we save directly here for date fields
-        if (field.type === 'date' && value && !field.error) {
+        // onBlur doesn't work well with date picker and dropdown, so we save directly here for date fields
+        if (['date', 'select'].includes(field.type) && value && !field.error) {
             prepareDocumentData(field, value);
         }
     }
@@ -660,6 +669,7 @@ export function VerifierViewerPage() {
     const saveDocumentData = async (data: any) => {
         setLoadingUpdateDocumentData(true);
         try {
+            console.log(data)
             await put(`verifier/documents/${ documentId }/updateData`, data);
         } catch (error) {
             console.error("Error saving document data:", error);
@@ -918,6 +928,34 @@ export function VerifierViewerPage() {
         });
     }
 
+    const getFilteredConditionalOptions = (field: any) => {
+        if (!field.settings?.options) return []
+        if (!field.settings?.conditional) return field.settings.options;
+
+        const options: any[] = [];
+        field.settings.options.forEach((option: any) => {
+            const conditionalCustomField = customFields.find((f) => f.id === option.conditional_custom_field);
+            if (conditionalCustomField) {
+                const conditionalFieldId = 'custom_' + String(option.conditional_custom_field);
+                let conditionalFieldValue = tmpDocumentData?.datas?.[conditionalFieldId];
+                if (conditionalCustomField.type === 'select') {
+                    const conditionalOption = conditionalCustomField.settings.options.find((o: any) => o.id === conditionalFieldValue.id);
+                    if (conditionalOption) {
+                        conditionalFieldValue = conditionalOption.label;
+                    }
+                }
+
+                if (conditionalFieldValue === option.conditional_custom_value) {
+                    options.push({
+                        'value': option.id,
+                        'label': option.label
+                    });
+                }
+            }
+        });
+        return options;
+    };
+
     if (!documentData) return;
     return (
         <div className='flex h-full overflow-hidden'>
@@ -1033,8 +1071,8 @@ export function VerifierViewerPage() {
                                 </button>
 
                                 <span className="whitespace-nowrap">
-                            { t('VERIFIER.page') } { currentPage } / { totalPages || 1 }
-                        </span>
+                                    { t('VERIFIER.page') } { currentPage } / { totalPages || 1 }
+                                </span>
 
                                 <button
                                     onClick={ handleNext }
@@ -1102,56 +1140,74 @@ export function VerifierViewerPage() {
                                                 { Object.values(line).filter((field: any) => typeof field !== 'boolean').map((field: any) => (
                                                     <div key={ field.id }
                                                          className={ `min-w-1/6 ${ getWidthLine(line) }` }>
-                                                        { field.type === 'date' ? (
+                                                        { field.type === 'date' && (
                                                             <ISOCalendar
                                                                 id={ field.id }
                                                                 label={ t(field.label) }
                                                                 error={ errors[field.id] }
+                                                                disabled={ disableFields }
                                                                 required={ field.required }
                                                                 value={ tmpDocumentData?.datas?.[field.id] }
-                                                                disabled={ disableFields }
                                                                 onChange={ (e) => updateDocumentData(field, e) }
                                                                 onClick={ () => handleFocusField(field.id, field.label, field.color) }
                                                             />
-                                                        ) : (zone.id === 'supplier' && (field.id === 'lastname' || field.id === 'name') ? (
-                                                                <AutocompleteInput
-                                                                    id={ field.id }
-                                                                    label={ t(field.label) }
-                                                                    required={ field.required }
-                                                                    disabled={ disableFields }
-                                                                    suggestions={ suggestionsSuppliers }
-                                                                    value={ tmpDocumentData?.datas?.[field.id] ?? "" }
-                                                                    optionLabel={ field.id === 'name' ? 'name' : 'lastname' }
-                                                                    search={ (e) => handleSupplierSearch(e, field.id) }
-                                                                    onChange={ (value) => handleSupplierChange(field, value) }
-                                                                    itemTemplate={ (supplier: any) => (
-                                                                        <div>
-                                                                            { field.id === 'name' ? supplier.name : supplier.lastname }
-                                                                            { field.id === 'lastname' && supplier.firstname ? ` ${ supplier.firstname }` : '' }
-                                                                            <span
-                                                                                className='text-(--text-secondary)'>
-                                                                                    { field.id === 'lastname' && supplier.name ? ` (${ supplier.name })` : '' }
-                                                                                </span>
-                                                                        </div>
-                                                                    ) }
-                                                                />
-                                                            ) : (
-                                                                <Input
-                                                                    id={ field.id }
-                                                                    key={ field.id }
-                                                                    type={ field.type }
-                                                                    label={ t(field.label) }
-                                                                    error={ errors[field.id] }
-                                                                    required={ field.required }
-                                                                    value={ tmpDocumentData?.datas?.[field.id] ?? "" }
-                                                                    disabled={ disableFields }
-                                                                    onClick={ () => handleFocusField(field.id, field.label, field.color) }
-                                                                    onChange={ (e) => updateDocumentData(field, e.target.value) }
-                                                                    onBlur={ (e) => {
-                                                                        prepareDocumentData(field, e.target.value)
-                                                                    } }
-                                                                />
-                                                            )
+                                                        ) }
+
+                                                        { field.type === 'select' && field.settings?.options && (
+                                                            <Dropdown
+                                                                id={ field.id }
+                                                                label={ t(field.label) }
+                                                                required={ field.required }
+                                                                disabled={ disableFields }
+                                                                value={ tmpDocumentData?.datas?.[field.id] }
+                                                                options={ getFilteredConditionalOptions(field) }
+                                                                onChange={ (e) => updateDocumentData(field, e.value) }
+                                                            />
+                                                        ) }
+
+                                                        { field.type === 'text' && (
+                                                            <>
+                                                                { (zone.id === 'supplier' && (field.id === 'lastname' || field.id === 'name') ? (
+                                                                        <AutocompleteInput
+                                                                            id={ field.id }
+                                                                            label={ t(field.label) }
+                                                                            required={ field.required }
+                                                                            disabled={ disableFields }
+                                                                            suggestions={ suggestionsSuppliers }
+                                                                            value={ tmpDocumentData?.datas?.[field.id] ?? "" }
+                                                                            optionLabel={ field.id === 'name' ? 'name' : 'lastname' }
+                                                                            search={ (e) => handleSupplierSearch(e, field.id) }
+                                                                            onChange={ (value) => handleSupplierChange(field, value) }
+                                                                            itemTemplate={ (supplier: any) => (
+                                                                                <div>
+                                                                                    { field.id === 'name' ? supplier.name : supplier.lastname }
+                                                                                    { field.id === 'lastname' && supplier.firstname ? ` ${ supplier.firstname }` : '' }
+                                                                                    <span
+                                                                                        className='text-(--text-secondary)'>
+                                                                                        { field.id === 'lastname' && supplier.name ? ` (${ supplier.name })` : '' }
+                                                                                    </span>
+                                                                                </div>
+                                                                            ) }
+                                                                        />
+                                                                    ) : (
+                                                                        <Input
+                                                                            id={ field.id }
+                                                                            key={ field.id }
+                                                                            type={ field.type }
+                                                                            label={ t(field.label) }
+                                                                            error={ errors[field.id] }
+                                                                            required={ field.required }
+                                                                            value={ tmpDocumentData?.datas?.[field.id] ?? "" }
+                                                                            disabled={ disableFields }
+                                                                            onClick={ () => handleFocusField(field.id, field.label, field.color) }
+                                                                            onChange={ (e) => updateDocumentData(field, e.target.value) }
+                                                                            onBlur={ (e) => {
+                                                                                prepareDocumentData(field, e.target.value)
+                                                                            } }
+                                                                        />
+                                                                    )
+                                                                ) }
+                                                            </>
                                                         ) }
                                                     </div>
                                                 )) }

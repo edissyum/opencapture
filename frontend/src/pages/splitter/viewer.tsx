@@ -56,6 +56,7 @@ import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { useFormFields } from "../../services/hooks/useFormFields";
 import { useCustomFields } from "../../services/hooks/useCustomFields";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
+import { useHistoryLogger } from "../../services/hooks/useHistoryLogger";
 import { useUnsavedChangesWarning } from "../../services/hooks/useUnsavedChangesWarning";
 
 import Input from "../../components/Input";
@@ -68,8 +69,8 @@ import { showToast } from "../../components/ToastProvider";
 import { AttachmentsList } from "../../components/attachments/list";
 
 import { DraggablePage } from "./dnd/draggablePage";
-
 import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
+
 import { b64ToFile } from "../settings/general/customization";
 
 export function SplitterViewerPage() {
@@ -84,6 +85,8 @@ export function SplitterViewerPage() {
     );
 
     const { user, loadingUser } = useUser();
+    const { logHistory } = useHistoryLogger();
+
     const { batchId } = useParams<{ batchId: string }>();
     const [loading, setLoading] = useState(false);
     const { customFields } = useCustomFields('splitter');
@@ -230,8 +233,16 @@ export function SplitterViewerPage() {
             console.error('Error fetching documents:', error);
         }
     };
+
+    // Fetch batch details and attachments config on load
     useEffect(() => {
         if (!batchId || loadingUser) return;
+
+        logHistory({
+            module: 'splitter',
+            submodule: 'viewer',
+            desc: t('HISTORY.viewer_splitter', { batchId: batchId })
+        }).then();
 
         const fetchBatchDetails = async () => {
             try {
@@ -872,7 +883,7 @@ export function SplitterViewerPage() {
 
             { !showAttachments && (
                 <div className='px-8 pb-18 h-full overflow-y-auto'>
-                    <Accordion className='mb-8' activeIndex={ 0 }>
+                    <Accordion className='mb-6' activeIndex={ 0 }>
                         <AccordionTab header={ t('SPLITTER.batch_content') }>
                             <div className='p-4'>
                                 <div className='text-(--text-secondary) flex items-center gap-4 mb-4'>

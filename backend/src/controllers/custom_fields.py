@@ -72,6 +72,9 @@ def retrieve_custom_fields(args):
     if 'filter' in args and args['filter']:
         _args['order_by'] = [f"{args['filter']} {args['order']}"]
 
+    if 'offset' in args and args['offset']:
+        _args['offset'] = args['offset']
+
     custom_fields_res, error = custom_fields.retrieve_custom_fields(_args)
 
     if error is None:

@@ -285,7 +285,8 @@
         "no_history": "Sin entradas en el historial",
         "user_info": "Usuario",
         "ip": "Dirección IP",
-        "history": "Entradas del historial"
+        "history": "Entradas del historial",
+        "viewer_splitter": ""
     },
     "MAILCOLLECT": {
         "no_process": "No hay ningún proceso MailCollect configurado",

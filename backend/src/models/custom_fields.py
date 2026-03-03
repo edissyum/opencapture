@@ -75,6 +75,7 @@ def retrieve_custom_fields(args):
         'table': ['custom_fields'],
         'where': ['status <> %s'] if 'where' not in args else args['where'],
         'data': ['DEL'] if 'data' not in args else args['data'],
+        'offset': args['offset'] if 'offset' in args else 0,
         'order_by': ['id ASC'] if 'order_by' not in args else args['order_by'],
     })
 
