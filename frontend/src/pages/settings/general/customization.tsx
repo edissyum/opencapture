@@ -14,9 +14,9 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Editor } from "@tinymce/tinymce-react";
-import { useEffect, useState } from "react";
 
 import { Button } from "../../../components/Button";
 import { showToast } from "../../../components/ToastProvider";
@@ -157,7 +157,7 @@ export function SettingsGeneralCustomization() {
     }
 
     const handleUpdateLoginMessage = () => {
-        put('config/updateConfiguration/loginMessage', { args: { value: loginMessage } }).then(() => {
+        put('config/updateConfiguration/loginMessage', { value: loginMessage }).then(() => {
             showToast(t('CUSTOMIZATION.login_message_updated'));
         });
     }
@@ -211,14 +211,14 @@ export function SettingsGeneralCustomization() {
             <Editor
                 key={ editorKey }
                 licenseKey="gpl"
-                initialValue={ loginMessage }
+                value={ loginMessage }
                 tinymceScriptSrc='/tinymce/tinymce.min.js'
                 onEditorChange={ (newContent) => {
                     setLoginMessage(newContent)
                 } }
                 init={ {
                     height: 300,
-                    width: '50%',
+                    width: '60%',
                     resize: false,
                     menubar: false,
                     skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
@@ -227,7 +227,8 @@ export function SettingsGeneralCustomization() {
                     promotion: false,
                     language: 'fr_FR',
                     language_url: '/src/assets/i18n/tinymce/langs/fr_FR.js',
-                    toolbar: 'undo redo | formatselect | bold italic forecolor backcolor | link | alignleft aligncenter alignright alignjustify',
+                    toolbar: 'undo redo | formatselect | fontsize | bold italic underline forecolor backcolor | link | alignleft aligncenter alignright alignjustify',
+                    font_size_formats: '14pt 16pt 18pt 20pt 22pt 24pt 36pt',
                     plugins: 'lists link image table',
                     color_map: [
                         '#19864B', 'Open-Capture Green',

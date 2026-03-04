@@ -54,6 +54,7 @@ export function Login() {
     // Fetch login message from configuration if not already set
     useEffect(() => {
         async function getLoginMessage() {
+            console.log(loginMessage)
             if (!loginMessage && custom) {
                 await get("/config/getConfigurationNoAuth/loginMessage").then((response) => {
                     if (response && response.configuration) {
@@ -109,11 +110,11 @@ export function Login() {
 
     return (
         <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+            <div className="sm:mx-auto w-full md:max-w-md sm:max-w-sm">
                 <LoginImage className="mx-auto"></LoginImage>
-                <h2 className="mt-10 text-center text-2xl/9 tracking-tight text-(--text-primary)">
-                    { t("GLOBAL.login") }
-                </h2>
+            </div>
+
+            <div className="sm:mx-auto w-full md:max-w-1/2 sm:max-w-sm">
                 <p className="mt-2 text-center text-sm text-(--text-secondary)"
                    dangerouslySetInnerHTML={ { __html: loginMessage } }/>
             </div>
