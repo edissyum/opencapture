@@ -605,7 +605,10 @@
         "dropzone_over": "Suelte para depositar",
         "add_document": "Agregar un documento",
         "one_document": "Si desea agregar adjuntos, el lote debe contener solo un documento",
-        "cant_add_document": "Si desea agregar un documento, primero elimine los adjuntos"
+        "cant_add_document": "Si desea agregar un documento, primero elimine los adjuntos",
+        "pages_selected_many": "",
+        "pages_selected_one": "",
+        "pages_selected_other": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Haga clic para elegir un archivo",

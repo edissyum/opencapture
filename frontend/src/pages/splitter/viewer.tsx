@@ -18,8 +18,8 @@
 import { t } from "i18next";
 import moment from "moment/moment";
 import { Panel } from "primereact/panel";
-import { useNavigate, useParams } from "react-router-dom";
 import { ContextMenu } from "primereact/contextmenu";
+import { useNavigate, useParams } from "react-router-dom";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
@@ -34,7 +34,8 @@ import {
     FolderTree,
     Layers,
     Paperclip,
-    RotateCw,
+    Plus,
+    RotateCw, Save,
     Trash,
     Trash2,
     X
@@ -72,6 +73,8 @@ import { DraggablePage } from "./dnd/draggablePage";
 import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
 
 import { b64ToFile } from "../settings/general/customization";
+import DOMPurify from "dompurify";
+import { Divider } from "primereact/divider";
 
 export function SplitterViewerPage() {
     const { get, post, del } = axiosApiCall();
@@ -547,6 +550,8 @@ export function SplitterViewerPage() {
     };
 
     const handleDeletePage = () => {
+        if (selectedPages.length === 0) return;
+
         showConfirmDialog({
             title: t('SPLITTER.delete_document_page', { count: selectedPages.length }),
             message: t('SPLITTER.confirm_delete_document_page', { count: selectedPages.length }),
@@ -787,28 +792,48 @@ export function SplitterViewerPage() {
                 </div>
             ) }
             { (!showAttachments) && (
-                <div className='absolute bottom-0 w-full flex items-center gap-4 p-4 bg-(--bg-primary) border-t-2
+                <div className='flex justify-center'>
+                    <div className='fixed bottom-4 shadow-lg rounded-3xl flex justify-center items-center gap-4 p-4 bg-(--bg-primary) border-2
                             border-(--border-secondary) z-10'>
-                    <Checkbox checked={ selectedPages.length !== 0 } onChange={ selectAll }
-                              indeterminate={ selectedPages.length != pagesCount }/>
-                    <Button size="sm" onClick={ () => handleSaveChanges() } disabled={ !unSavedChanges }>
-                        { t('GLOBAL.save_changes') }
-                    </Button>
-                    <div data-tooltip-id="tooltip"
-                         data-tooltip-content={ attachmentsCount > 0 ? t('SPLITTER.cant_add_document') : '' }>
-                        <Button size="sm" onClick={ addDocument } disabled={ attachmentsCount > 0 }>
-                            { t('SPLITTER.add_document') }
-                        </Button>
+                        <Checkbox checked={ selectedPages.length !== 0 } onChange={ selectAll }
+                                  indeterminate={ selectedPages.length != pagesCount }/>
+                        <div className='text-sm'>
+                            <strong>{ selectedPages.length } </strong>
+                            <span
+                                dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(t('SPLITTER.pages_selected', { count: selectedPages.length })) } }/>
+                        </div>
+
+                        <div onClick={ handleDeletePage }
+                             className={ `text-sm text-(--text-error)/80 flex items-center gap-1
+                                        ${ selectedPages.length == 0 ? 'hidden' : 'cursor-pointer' } ` }>
+                            <Trash size={ 16 }/>
+                            { t('GLOBAL.delete') }
+                        </div>
+
+                        <div onClick={ handleRotation }
+                             className={ `flex items-center text-(--text-secondary) text-sm gap-1 
+                             ${ selectedPages.length == 0 ? 'hidden' : 'cursor-pointer' } ` }>
+                            <RotateCw size={ 14 }/>
+                            { t('SPLITTER.rotation') }
+                        </div>
+
+                        <Divider layout="vertical"/>
+
+                        <div data-tooltip-id="tooltip"
+                             className={ `flex items-center text-(--text-secondary) text-sm gap-1 
+                                ${ attachmentsCount > 0 ? 'cursor-not-allowed' : 'cursor-pointer' } ` }
+                             data-tooltip-content={ attachmentsCount > 0 ? t('SPLITTER.cant_add_document') : '' }>
+                            <div onClick={ addDocument } className={'flex items-center gap-1'}>
+                                <Plus size={ 16 }/>
+                                { t('SPLITTER.add_document') }
+                            </div>
+                        </div>
+                        <div onClick={ () => handleSaveChanges() }
+                             className={ `flex items-center text-(--text-secondary) text-sm gap-1 
+                             ${ !unSavedChanges ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' } ` }>
+                            <Save size={ 16 }/>
+                        </div>
                     </div>
-                    <Button variant={ 'no_bg_border' } onClick={ handleRotation } disabled={ selectedPages.length == 0 }
-                            className='flex items-center'>
-                        <RotateCw size={ 16 }/>
-                    </Button>
-                    <Button variant={ 'no_bg_border' } onClick={ handleDeletePage }
-                            disabled={ selectedPages.length == 0 }
-                            className='flex items-center'>
-                        <Trash size={ 16 }/>
-                    </Button>
                 </div>
             ) }
 
@@ -830,20 +855,21 @@ export function SplitterViewerPage() {
 
             { !showAttachments && (
                 <div className='px-8 py-4 flex items-center gap-2'>
-                    <Button size={ 'sm' } variant={ "no_bg" } className='p-2'
-                            icon={ <ArrowLeft size={ 16 }/> } onClick={ () => navigate('/home') }>
+                    <Button icon={ <ArrowLeft size={ 16 }/> } onClick={ () => navigate('/home') }
+                            className='rounded-3xl hover:text-(--color-primary) text-(--text-primary)
+                                           border-(--border-secondary) p-2! px-5! bg-(--bg-primary)'>
                         { t('GLOBAL.back') }
                     </Button>
-                    <Button
-                        size={ 'sm' }
-                        variant={ "secondary" }
-                        onClick={ handleDownloadOriginalFile }
-                        className='p-2 px-3 bg-(--bg-primary) border-(--border-secondary) text-(--text-secondary) hover:text-(--color-primary)'>
-                        <Download size={ 16 } className="mr-2"/> { batch.file_name }
-                    </Button>
+                    <div className='ml-auto'>
+                        <Button icon={ <Download size={ 18 }/> } onClick={ handleDownloadOriginalFile }
+                                className='rounded-3xl hover:text-(--color-primary) text-(--text-primary)
+                                           border-(--border-secondary) p-2! px-5! bg-(--bg-primary)'>
+                            { batch.file_name }
+                        </Button>
+                    </div>
 
                     { enableAttachments && (
-                        <div className={ `ml-auto ${ documents.length > 1 && 'cursor-not-allowed!' }` }
+                        <div className={ `${ documents.length > 1 && 'cursor-not-allowed!' }` }
                              data-tooltip-id="tooltip"
                              data-tooltip-content={ documents.length > 1 ? t('SPLITTER.one_document') : '' }
                         >
@@ -977,7 +1003,8 @@ export function SplitterViewerPage() {
                                             </div>
                                         ) }
                                         <div>{ document.doctype_label }</div>
-                                        <div className='text-(--text-secondary) font-medium flex items-center gap-1.5'>
+                                        <div
+                                            className='text-(--text-secondary) font-medium flex items-center gap-1.5 bg-(--bg-secondary) px-3 py-1 rounded-3xl'>
                                             <span>{ document.pages.length }</span>
                                             { t('SPLITTER.pages', { count: document.pages.length }) }
                                         </div>

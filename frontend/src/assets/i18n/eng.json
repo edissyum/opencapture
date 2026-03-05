@@ -557,7 +557,9 @@
         "dropzone_over": "Release to drop",
         "add_document": "Add a document",
         "one_document": "If you want to add attachments, the batch must contain only one document",
-        "cant_add_document": "If you want to add a document, please delete the attachments first"
+        "cant_add_document": "If you want to add a document, please delete the attachments first",
+        "pages_selected_one": "",
+        "pages_selected_other": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Click to choose a file",

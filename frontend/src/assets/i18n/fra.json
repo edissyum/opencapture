@@ -605,7 +605,10 @@
         "dropzone_over": "Relâcher pour déposer",
         "add_document": "Ajouter un document",
         "one_document": "Si vous souhaitez ajouter des pièces jointes, le lot ne doit contenir qu'un seul document",
-        "cant_add_document": "Si vous souhaitez ajouter un document, veuillez d'abord supprimer les pièces jointes"
+        "cant_add_document": "Si vous souhaitez ajouter un document, veuillez d'abord supprimer les pièces jointes",
+        "pages_selected_many": "<strong>pages</strong> <span style='font-size:12px'>sélectionnées</span>",
+        "pages_selected_one": "<strong>page</strong> <span style='font-size:12px'>sélectionnée</span>",
+        "pages_selected_other": "<strong>pages</strong> <span style='font-size:12px'>sélectionnées</span>"
     },
     "UPLOAD": {
         "upload_dropzone": "Cliquez pour choisir un fichier",
