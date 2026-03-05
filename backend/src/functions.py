@@ -247,6 +247,7 @@ def retrieve_custom_path(custom_id):
                 path = custom_param['path']
     return path
 
+
 def retrieve_custom_list():
     custom_directory = str(Path(__file__).parents[1]) + '/custom/'
     custom_ini_file = str(Path(__file__).parents[1]) + '/custom/custom.ini'
@@ -501,3 +502,12 @@ def find_workflow_with_ia(file, ai_model_id, database, docservers, files, ocr, l
                             log.info('[IA] Document doctype detected : ' + doc['doctype'])
                             return doc['doctype']
     return False
+
+
+def check_order_by(filter, order, allowed_filters):
+    allowed_orders = {"asc", "desc"}
+    if filter not in allowed_filters:
+        return False, gettext('FILTER_NOT_ALLOWED') + ' : ' + filter
+    if order not in allowed_orders:
+        return False, gettext('ORDER_NOT_ALLOWED') + ' : ' + order
+    return True, ''

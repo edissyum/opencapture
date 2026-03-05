@@ -23,7 +23,7 @@ import pandas as pd
 from pathlib import Path
 from flask_babel import gettext
 from flask import request, g as current_context
-from ..functions import retrieve_custom_from_url
+from ..functions import retrieve_custom_from_url, check_order_by
 from ..main import create_classes_from_custom_id
 from ..models import artificial_intelligence, history
 from sklearn import feature_extraction, model_selection, naive_bayes, pipeline, metrics
@@ -470,10 +470,18 @@ def list_llm_models(args):
         'data': ['DEL'],
         'limit': str(args['limit']) if 'limit' in args else 'ALL',
         'offset': str(args['offset']) if 'offset' in args else 0,
-        'order': args['order'] if 'order' in args else 'id DESC'
     }
 
     if 'filter' in args and args['filter']:
+        allowed_filters = ['id', 'name', 'provider']
+        check_order, error = check_order_by(args['filter'], args['order'], allowed_filters)
+        if not check_order:
+            response = {
+                "errors": gettext('FILTERS_ERROR'),
+                "message": error
+            }
+            return response, 400
+
         _args['order_by'] = args['filter']
         if 'order' in args and args['order']:
             _args['order_by'] = [args['filter'] + ' ' + args['order']]

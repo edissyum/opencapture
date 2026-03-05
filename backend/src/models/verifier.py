@@ -185,9 +185,11 @@ def get_totals(args):
             data.append(user_forms)
 
     if 'allowedCustomers' in args and args['allowedCustomers']:
+        args['allowedCustomers'] = [str(customer) for customer in args['allowedCustomers'] if isinstance(customer, int)]
         where.append('customer_id IN (' + ','.join(map(str, args['allowedCustomers'])) + ')')
 
     if 'allowedSuppliers' in args and args['allowedSuppliers']:
+        args['allowedSuppliers'] = [str(supplier) for supplier in args['allowedSuppliers'] if isinstance(supplier, int)]
         where.append('supplier_id IN (' + ','.join(map(str, args['allowedSuppliers'])) + ')')
 
     if 'form_id' in args and args['form_id']:
@@ -244,9 +246,11 @@ def get_totals_by_status(args):
             data.append(user_forms)
 
     if 'allowedCustomers' in args and args['allowedCustomers']:
+        args['allowedCustomers'] = [str(customer) for customer in args['allowedCustomers'] if isinstance(customer, int)]
         where.append('customer_id IN (' + ','.join(map(str, args['allowedCustomers'])) + ')')
 
     if 'allowedSuppliers' in args and args['allowedSuppliers']:
+        args['allowedSuppliers'] = [str(supplier) for supplier in args['allowedSuppliers'] if isinstance(supplier, int)]
         where.append('supplier_id IN (' + ','.join(map(str, args['allowedSuppliers'])) + ')')
 
     if 'form_id' in args and args['form_id']:

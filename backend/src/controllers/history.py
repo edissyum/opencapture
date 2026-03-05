@@ -18,7 +18,7 @@
 from flask_babel import gettext
 from ..models import history
 from flask import g as current_context, request
-from ..functions import retrieve_custom_from_url
+from ..functions import retrieve_custom_from_url, check_order_by
 from ..main import create_classes_from_custom_id
 
 
@@ -55,6 +55,15 @@ def get_history(request_args):
     }
 
     if 'filter' in request_args and request_args['filter']:
+        allowed_filters = ['id', 'history_module', 'history_submodule', 'date']
+        check_order, error = check_order_by(request_args['filter'], request_args['order'], allowed_filters)
+        if not check_order:
+            response = {
+                "errors": gettext('FILTERS_ERROR'),
+                "message": error
+            }
+            return response, 400
+
         args['order_by'] = request_args['filter']
         if 'order' in request_args and request_args['order']:
             args['order_by'] = [request_args['filter'] + ' ' + request_args['order']]

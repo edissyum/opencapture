@@ -32,7 +32,7 @@ from ..main_splitter import launch
 from ..classes.OpenADS import OpenADS
 from ..classes.Splitter import Splitter
 from werkzeug.datastructures import FileStorage
-from ..functions import retrieve_custom_from_url
+from ..functions import retrieve_custom_from_url, check_order_by
 from ..main import create_classes_from_custom_id
 from flask import current_app, request, g as current_context
 from ..models import splitter, doctypes, accounts, history, workflow, outputs, forms, attachments
@@ -160,8 +160,6 @@ def retrieve_batches(data):
         'time': data['time'] if 'time' in data else None,
         'status': data['status'] if 'status' in data else None,
         'search': data['search'] if 'search' in data else None,
-        'order': data['order'] if 'order' in data else None,
-        'filter': data['filter'] if 'filter' in data else None,
         'batch_id': data['batchId'] if 'batchId' in data else None,
         'form_id': data['form_id'] if 'form_id' in data else None,
         'allowed_customers': data['allowedCustomers'] if 'allowedCustomers' in data else None
@@ -205,6 +203,15 @@ def retrieve_batches(data):
             args['where'].append("to_char(splitter_batches.creation_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
 
     if 'filter' in args and args['filter']:
+        allowed_filters = ['id', 'creation_date']
+        check_order, error = check_order_by(args['filter'], args['order'], allowed_filters)
+        if not check_order:
+            response = {
+                "errors": gettext('FILTERS_ERROR'),
+                "message": error
+            }
+            return response, 400
+
         args['order_by'] = args['filter']
         if 'order' in args and args['order']:
             args['order_by'] = [args['filter'] + ' ' + args['order']]

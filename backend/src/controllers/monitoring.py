@@ -67,7 +67,8 @@ def get_processes(module=None, get_last_processes=False):
             data.append(request.args['status'])
 
     if 'filename' in request.args and request.args['filename']:
-        where.append(f"filename ILIKE '%%{request.args['filename']}%%'")
+        where.append(f"filename ILIKE %s")
+        data.append(f"%{request.args['filename']}%")
 
     if where:
         args.update({'where': where, 'data': data})

@@ -16,18 +16,19 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-import csv
 import base64
+import csv
 import subprocess
 from io import StringIO
 
-from flask_babel import gettext
 from flask import request, g as current_context
-from ..controllers import auth
-from ..main import create_classes_from_custom_id
-from ..functions import retrieve_custom_from_url, get_custom_path
-from ..models import user, accounts, forms, history, roles
+from flask_babel import gettext
 from werkzeug.security import check_password_hash, generate_password_hash
+
+from ..controllers import auth
+from ..functions import retrieve_custom_from_url, get_custom_path, check_order_by
+from ..main import create_classes_from_custom_id
+from ..models import user, accounts, forms, history, roles
 
 
 def create_user(args):
@@ -82,7 +83,8 @@ def create_user(args):
             'ip': request.remote_addr,
             'submodule': 'create_user',
             'user_info': request.environ['user_info'],
-            'desc': gettext('CREATE_USER', user=args['lastname'] + ' ' + args['firstname'] + ' (' + args['username'] + ')')
+            'desc': gettext('CREATE_USER',
+                            user=args['lastname'] + ' ' + args['firstname'] + ' (' + args['username'] + ')')
         })
         return {'id': res}, 200
     else:
@@ -93,7 +95,47 @@ def create_user(args):
         return response, 400
 
 
-def get_users(args):
+def get_users(data):
+    args = {
+        'select': ['users.*', 'label', 'count(*) OVER() as total'],
+        'table': ['users', 'roles'],
+        'left_join': ['users.role = roles.id'],
+        'where': ['users.status NOT IN (%s)', "role <> 1"],
+        'data': ['DEL'],
+        'offset': data['offset'] if 'offset' in data else 0,
+        'limit': data['limit'] if 'limit' in data else 'ALL',
+        'order_by': ['users.id ASC']
+    }
+
+    if 'filter' in data and data['filter']:
+        allowed_filters = ['id', 'username', 'firstname', 'lastname']
+        check_order, error = check_order_by(data['filter'], data['order'], allowed_filters)
+        if not check_order:
+            response = {
+                "errors": gettext('FILTERS_ERROR'),
+                "message": error
+            }
+            return response, 400
+
+        args['order_by'] = data['filter']
+        if 'order' in data and data['order']:
+            args['order_by'] = [data['filter'] + ' ' + data['order']]
+        else:
+            args['order_by'] = [data['filter'] + ' DESC']
+
+    if 'search' in request.args and request.args['search']:
+        args['offset'] = ''
+        args['where'].append(
+            "(LOWER(username) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+               "LOWER(firstname) LIKE '%%" + request.args[
+            'search'].lower() + "%%' OR "
+            "LOWER(lastname) LIKE '%%" + request.args['search'].lower() + "%%')"
+        )
+
+    if 'mode' in request.args and request.args['mode']:
+        args['where'].append("mode = %s")
+        args['data'].append(request.args['mode'])
+
     users, _ = user.get_users(args)
 
     response = {
@@ -154,7 +196,8 @@ def get_user_by_mail(user_mail):
 
 
 def get_user_by_username(username):
-    _select = ['users.id', 'username', 'firstname', 'lastname', 'role', 'users.status', 'creation_date', 'users.enabled']
+    _select = ['users.id', 'username', 'firstname', 'lastname', 'role', 'users.status', 'creation_date',
+               'users.enabled']
     user_info, error = user.get_user_by_username({
         'select': _select,
         'username': username
@@ -351,7 +394,8 @@ def update_user(user_id, data):
                 'module': 'general',
                 'ip': request.remote_addr,
                 'submodule': 'update_user',
-                'user_info': user_info[0]['lastname'] + ' ' + user_info[0]['firstname'] + ' (' + user_info[0]['username'] + ')',
+                'user_info': user_info[0]['lastname'] + ' ' + user_info[0]['firstname'] + ' (' + user_info[0][
+                    'username'] + ')',
                 'desc': gettext('USER_UPDATED', user=user_info[0]['username'])
             })
             return {"user": user_info[0], "minutes_before_exp": minutes_before_exp}, 200

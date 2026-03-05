@@ -73,30 +73,7 @@ def get_users():
             "message": message
         }, 400)
 
-    args = {
-        'select': ['users.*', 'label', 'count(*) OVER() as total'],
-        'table': ['users', 'roles'],
-        'left_join': ['users.role = roles.id'],
-        'where': ['users.status NOT IN (%s)', "role <> 1"],
-        'data': ['DEL'],
-        'offset': request.args['offset'] if 'offset' in request.args else 0,
-        'limit': request.args['limit'] if 'limit' in request.args else 'ALL',
-        'order_by': ['users.id ASC'] if 'filter' not in request.args else [f"users.{request.args['filter']} {request.args['order']}"]
-    }
-
-    if 'search' in request.args and request.args['search']:
-        args['offset'] = ''
-        args['where'].append(
-            "(LOWER(username) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-            "LOWER(firstname) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-            "LOWER(lastname) LIKE '%%" + request.args['search'].lower() + "%%')"
-        )
-
-    if 'mode' in request.args and request.args['mode']:
-        args['where'].append("mode = %s")
-        args['data'].append(request.args['mode'])
-
-    _users = user.get_users(args)
+    _users = user.get_users(request.args)
     return make_response(jsonify(_users[0])), _users[1]
 
 

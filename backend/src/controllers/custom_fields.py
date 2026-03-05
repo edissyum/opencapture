@@ -18,6 +18,7 @@
 
 from flask_babel import gettext
 from ..controllers import forms
+from ..functions import check_order_by
 from ..models import custom_fields
 
 
@@ -70,6 +71,14 @@ def retrieve_custom_fields(args):
         _args['data'].append('%' + args['search'] + '%')
 
     if 'filter' in args and args['filter']:
+        allowed_filters = ['id', 'label']
+        check_order, error = check_order_by(args['filter'], args['order'], allowed_filters)
+        if not check_order:
+            response = {
+                "errors": gettext('FILTERS_ERROR'),
+                "message": error
+            }
+            return response, 400
         _args['order_by'] = [f"{args['filter']} {args['order']}"]
 
     if 'offset' in args and args['offset']:

@@ -21,7 +21,7 @@ from flask_babel import gettext
 from flask import request, g as current_context
 from ..models import outputs, history
 from ..main import create_classes_from_custom_id
-from ..functions import retrieve_custom_from_url
+from ..functions import retrieve_custom_from_url, check_order_by
 
 
 def get_outputs(args):
@@ -34,6 +34,15 @@ def get_outputs(args):
     }
 
     if 'filter' in args and args['filter']:
+        allowed_filters = ['id', 'output_label']
+        check_order, error = check_order_by(args['filter'], args['order'], allowed_filters)
+        if not check_order:
+            response = {
+                "errors": gettext('FILTERS_ERROR'),
+                "message": error
+            }
+            return response, 400
+
         _args['order_by'] = args['filter']
         if 'order' in args and args['order']:
             _args['order_by'] = [args['filter'] + ' ' + args['order']]

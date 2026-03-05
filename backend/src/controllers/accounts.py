@@ -25,7 +25,7 @@ from unidecode import unidecode
 from flask_babel import gettext
 from ..models import accounts, history
 from flask import request, g as current_context
-from ..functions import retrieve_custom_from_url
+from ..functions import retrieve_custom_from_url, check_order_by
 from ..main import create_classes_from_custom_id
 
 
@@ -39,6 +39,15 @@ def get_suppliers(_args):
     }
 
     if 'filter' in _args and _args['filter']:
+        allowed_filters = ['id', 'name']
+        check_order, error = check_order_by(args['filter'], args['order'], allowed_filters)
+        if not check_order:
+            response = {
+                "errors": gettext('FILTERS_ERROR'),
+                "message": error
+            }
+            return response, 400
+
         args['order_by'] = _args['filter']
         if 'order' in _args and _args['order']:
             args['order_by'] = [_args['filter'] + ' ' + _args['order']]
@@ -46,19 +55,20 @@ def get_suppliers(_args):
             args['order_by'] = [_args['filter'] + ' DESC']
 
     if 'search' in _args and _args['search']:
-        search = _args['search'].replace("'", "''")
+        search_param = '%' + _args['search'].lower() + '%'
         args['where'].append(
-            "(LOWER(unaccent(name)) ILIKE unaccent('%%" + search.lower() + "%%') OR "
-            "LOWER(siret) LIKE '%%" + search.lower() + "%%' OR "
-            "LOWER(email) ILIKE '%%" + search.lower() + "%%' OR "
-            "LOWER(phone) ILIKE '%%" + search.lower() + "%%' OR "
-            "LOWER(lastname) ILIKE '%%" + search.lower() + "%%' OR "
-            "LOWER(siren) LIKE '%%" + search.lower() + "%%' OR "
-            "LOWER(bic) LIKE '%%" + search.lower() + "%%' OR "
-            "LOWER(duns) LIKE '%%" + search.lower() + "%%' OR "
-            "LOWER(rccm) LIKE '%%" + search.lower() + "%%' OR "
-            "LOWER(vat_number) LIKE '%%" + search.lower() + "%%')"
+            "(LOWER(unaccent(name)) ILIKE unaccent(%s) OR "
+            "LOWER(siret) LIKE %s OR "
+            "LOWER(email) ILIKE %s OR "
+            "LOWER(phone) ILIKE %s OR "
+            "LOWER(lastname) ILIKE %s OR "
+            "LOWER(siren) LIKE %s OR "
+            "LOWER(bic) LIKE %s OR "
+            "LOWER(duns) LIKE %s OR "
+            "LOWER(rccm) LIKE %s OR "
+            "LOWER(vat_number) LIKE %s)"
         )
+        args['data'].extend([search_param] * 10)
 
     if 'name' in _args and _args['name']:
         args['offset'] = ''
@@ -519,6 +529,14 @@ def retrieve_customers(data, module, user_id=None):
     }
 
     if 'filter' in data and data['filter']:
+        allowed_filters = ['id', 'name']
+        check_order, error = check_order_by(args['filter'], args['order'], allowed_filters)
+        if not check_order:
+            response = {
+                "errors": gettext('FILTERS_ERROR'),
+                "message": error
+            }
+            return response, 400
         args['order_by'] = data['filter']
         if 'order' in data and data['order']:
             args['order_by'] = [data['filter'] + ' ' + data['order']]
@@ -526,14 +544,16 @@ def retrieve_customers(data, module, user_id=None):
             args['order_by'] = [data['filter'] + ' DESC']
 
     if 'search' in data and data['search']:
+        search_param = '%' + data['search'].lower() + '%'
         args['offset'] = ''
         args['where'].append(
-            "(LOWER(unaccent(name)) LIKE unaccent('%%" + data['search'].lower() + "%%') OR "
-            "LOWER(siret) LIKE '%%" + data['search'].lower() + "%%' OR "
-            "LOWER(company_number) LIKE '%%" + data['search'].lower() + "%%' OR "
-            "LOWER(siren) LIKE '%%" + data['search'].lower() + "%%' OR "
-            "LOWER(vat_number) LIKE '%%" + data['search'].lower() + "%%')"
+            "(LOWER(unaccent(name)) LIKE unaccent(%s) OR "
+            "LOWER(siret) LIKE %s OR "
+            "LOWER(company_number) LIKE %s OR "
+            "LOWER(siren) LIKE %s OR "
+            "LOWER(vat_number) LIKE %s)"
         )
+        args['data'].extend([search_param] * 5)
 
     customers = accounts.retrieve_customers(args)
 

@@ -28,7 +28,7 @@ from pyflakes.scripts import pyflakes
 
 from ..classes.Config import Config
 from ..controllers import user
-from ..functions import retrieve_custom_from_url
+from ..functions import retrieve_custom_from_url, check_order_by
 from ..main import create_classes_from_custom_id
 from ..models import workflow, history
 from ..scripting_functions import check_code
@@ -44,6 +44,14 @@ def get_workflows(args):
     }
 
     if 'filter' in args and args['filter']:
+        allowed_filters = ['id', 'workflow_id', 'label']
+        check_order, error = check_order_by(args['filter'], args['order'], allowed_filters)
+        if not check_order:
+            response = {
+                "errors": gettext('FILTERS_ERROR'),
+                "message": error
+            }
+            return response, 400
         _args['order_by'] = args['filter']
         if 'order' in args and args['order']:
             _args['order_by'] = [args['filter'] + ' ' + args['order']]

@@ -19,16 +19,30 @@
 import json
 from flask import request
 from flask_babel import gettext
+
+from ..functions import check_order_by
 from ..models import roles, history, user
 
 
 def get_roles(args):
-    _args = {
-        'select': ['*', 'count(*) OVER() as total'],
-        'offset': args['offset'],
-        'limit': args['limit'],
-        'order_by': args['order_by']
+    args = {
+        'user_id': request.args['user_id'],
+        'offset': request.args['offset'] if 'offset' in request.args else 0,
+        'limit': request.args['limit'] if 'limit' in request.args else 'ALL',
+        'search': request.args['search'] if 'search' in request.args else None,
+        'full': 'full' in request.args,
+        'order_by': ['id ASC']
     }
+
+    if 'filter' in request.args and request.args['filter']:
+        allowed_filters = ['id', 'workflow_id', 'label']
+        check_order, error = check_order_by(args['filter'], args['order'], allowed_filters)
+        if not check_order:
+            response = {
+                "errors": gettext('FILTERS_ERROR'),
+                "message": error
+            }
+            return response, 400
 
     if args['full']:
         _args['where'] = ['status NOT IN (%s)']

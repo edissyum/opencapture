@@ -35,7 +35,7 @@ from ..scripting_functions import check_code
 from ..main import launch, create_classes_from_custom_id
 from ..models import verifier, accounts, forms, attachments
 from ..controllers import auth, user, monitoring, history, status
-from ..functions import retrieve_custom_from_url, delete_documents
+from ..functions import retrieve_custom_from_url, delete_documents, check_order_by
 from flask import current_app, Response, request, g as current_context
 
 
@@ -236,14 +236,14 @@ def retrieve_documents(args):
             args['where'].append('supplier_id IN (' + ','.join(map(str, args['allowedSuppliers'])) + ')')
 
     if 'filter' in args and args['filter']:
-        if args['filter'] not in ['id', 'register_date']:
-            cast = 'text' if args['filter'] not in ['document_date'] else 'timestamp with time zone'
-            args['where'].append(f"documents.datas ->> '{args['filter']}' IS NOT NULL")
-            args['where'].append(f"documents.datas ->> '{args['filter']}' != ''")
-            if args['filter'] == 'document_date':
-                args['where'].append(f"documents.datas ->> '{args['filter']}' != 'Invalid date'")
-                args['where'].append(f"documents.datas ->> '{args['filter']}' ~ '[0-9]{{4}}-[0-9]{{2}}-[0-9]{{2}}'")
-            args['filter'] = f"(documents.datas ->> '{args['filter']}')::{cast}"
+        allowed_filters = ['id', 'register_date']
+        check_order, error = check_order_by(args['filter'], args['order'], allowed_filters)
+        if not check_order:
+            response = {
+                "errors": gettext('FILTERS_ERROR'),
+                "message": error
+            }
+            return response, 400
 
         args['order_by'] = args['filter']
         if 'order' in args and args['order']:

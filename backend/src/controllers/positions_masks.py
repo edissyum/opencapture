@@ -19,6 +19,8 @@
 import json
 from flask import request
 from flask_babel import gettext
+
+from ..functions import check_order_by
 from ..models import positions_masks, history
 
 
@@ -33,6 +35,15 @@ def get_positions_masks(data):
     }
 
     if 'filter' in data and data['filter']:
+        allowed_filters = ['id', 'label']
+        check_order, error = check_order_by(args['filter'], args['order'], allowed_filters)
+        if not check_order:
+            response = {
+                "errors": gettext('FILTERS_ERROR'),
+                "message": error
+            }
+            return response, 400
+
         args['order_by'] = data['filter']
         if 'order' in data and data['order']:
             args['order_by'] = [data['filter'] + ' ' + data['order']]
