@@ -124,28 +124,35 @@ export function axiosApiCall() {
             });
             return res.data;
         } catch (err: any) {
-            if (err.response?.status === 401) {
-                // Handled by interceptor
+            if (err.response?.status === 401 && err.config?.url && !err.config.url.includes('/auth/login')) {
+                // Handled by interceptor if we're not already on the login endpoint
                 return null;
             }
 
-            setError(err.message || "Erreur inconnue");
+            setError(err.message || t('ERROR.unknown_error'));
             if (config.showErrorToast !== false) {
-                if (err.response && err.response.data && err.response.data.message) {
+                if (err.response && err.response.data && err.response.data.message || err.response?.status === 429) {
+                    const title = err.response?.status === 429 ? t('ERROR.too_many_requests') : err.response.data.errors;
+                    const details = err.response?.status === 429 ? t('ERROR.too_many_requests_details') : err.response.data.message;
+
                     showToast(
                         <div>
                             <h4>
                                 <strong>
-                                    { err.response.data.errors }
+                                    { title }
                                 </strong>
                             </h4>
                             <p>
-                                { err.response.data.message }
+                                { details }
                             </p>
                         </div>, "error"
                     )
                 } else {
-                    showToast(err.message || "Erreur inconnue", "error");
+                    if (err.response?.status === 429) {
+                        showToast(t('ERROR.too_many_requests'), "error");
+                    } else {
+                        showToast(err.message || t('ERROR.unknown_error'), "error");
+                    }
                 }
             }
             throw err;

@@ -15,9 +15,10 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import React, { useEffect, useRef, useState } from "react";
+import DOMPurify from "dompurify";
 import { InputText } from "primereact/inputtext";
 import { FloatLabel } from "primereact/floatlabel";
+import React, { useEffect, useRef, useState } from "react";
 import { CircleQuestionMark, Eye, EyeOff } from "lucide-react";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -158,7 +159,7 @@ const Input: React.FC<InputProps> = ({
                 ) }
             </div>
             { error && (
-                <p className="text-(--text-error) text-xs ml-1" dangerouslySetInnerHTML={ { __html: error } }/>
+                <p className="text-(--text-error) text-xs ml-1" dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(error) } }/>
             ) }
         </div>
     );

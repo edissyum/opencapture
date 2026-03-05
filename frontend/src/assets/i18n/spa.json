@@ -117,7 +117,10 @@
     "ERROR": {
         "admin_password_alert": "Todavía está usando la contraseña predeterminada de la cuenta de administrador. Por favor, cámbiela lo antes posible por razones de seguridad",
         "login_required": "Debe iniciar sesión para acceder a esta página",
-        "custom_not_provided": "No hay ningún custom en la URL o el proporcionado no existe. Por favor, verifique la URL o contacte a su administrador"
+        "custom_not_provided": "No hay ningún custom en la URL o el proporcionado no existe. Por favor, verifique la URL o contacte a su administrador",
+        "unknown_error": "",
+        "too_many_requests": "",
+        "too_many_requests_details": ""
     },
     "FORMATS": {
         "alphanum": "Caracteres alfanuméricos [0-9aA-zZ']",
@@ -229,7 +232,6 @@
         "batches": "Lotes",
         "history": "Historial",
         "home": "Inicio",
-        "login": "Iniciar sesión",
         "monitoring": "Monitoreo",
         "settings": "Configuración",
         "statistics": "Estadísticas",

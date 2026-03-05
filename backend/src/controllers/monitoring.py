@@ -21,7 +21,7 @@ from ..helpers import get_context_var
 
 
 def get_processes(module=None, get_last_processes=False):
-    configurations = get_context_var('docservers', 10)
+    configurations = get_context_var('configurations', 10)
 
     if configurations['locale'] == 'fra':
         _format = 'DD/MM/YYYY HH24:MI:SS'
@@ -91,7 +91,7 @@ def get_processes(module=None, get_last_processes=False):
 
 
 def get_process_by_id(process_id):
-    configurations = get_context_var('docservers', 10)
+    configurations = get_context_var('configurations', 10)
 
     if configurations['locale'] == 'fra':
         _format = 'TMDay DD TMMonth YYYY HH24:MI:SS'
@@ -107,7 +107,7 @@ def get_process_by_id(process_id):
 
 
 def get_process_by_token(process_token):
-    configurations = get_context_var('docservers', 10)
+    configurations = get_context_var('configurations', 10)
 
     if configurations['locale'] == 'fra':
         _format = 'TMDay DD TMMonth YYYY HH24:MI:SS'

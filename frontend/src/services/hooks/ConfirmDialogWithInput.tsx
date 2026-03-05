@@ -16,6 +16,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
+import DOMPurify from "dompurify";
 import React, { useState } from "react";
 import { confirmDialog } from "primereact/confirmdialog";
 
@@ -58,7 +59,7 @@ export function showConfirmDialogWithInput({
             <div className="flex flex-col gap-3">
                 <div className={ `flex gap-4 text-(--text-secondary)` }>
                     { icon && <div className="flex justify-center">{ icon }</div> }
-                    <span dangerouslySetInnerHTML={ { __html: message } }/>
+                    <span dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(message) } }/>
                 </div>
                 { (type === "string" || type === "int") && (
                     <Input

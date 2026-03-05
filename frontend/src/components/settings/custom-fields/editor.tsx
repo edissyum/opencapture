@@ -16,6 +16,7 @@
 
 import z from "zod";
 import { t } from "i18next";
+import DOMPurify from "dompurify";
 import { Tooltip } from "react-tooltip";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
@@ -29,8 +30,8 @@ import { CircleQuestionMark, EllipsisVertical, Plus, Trash } from "lucide-react"
 import Input from "../../Input";
 import { Button } from "../../Button";
 import { Dropdown } from "../../Dropdown";
-import { showToast } from "../../ToastProvider";
 
+import { showToast } from "../../ToastProvider";
 import { DynamicForm } from "../../form/DynamicForm";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 import { useCustomFields } from "../../../services/hooks/useCustomFields";
@@ -469,7 +470,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
 
                                     { watchTest && (
                                         <div className={ 'mt-2 p-4 rounded-md w-fit' }>
-                                            <div dangerouslySetInnerHTML={ { __html: highlightedResult } }/>
+                                            <div dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(highlightedResult) } }/>
                                         </div>
                                     ) }
 

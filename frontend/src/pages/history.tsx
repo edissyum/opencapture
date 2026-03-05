@@ -15,14 +15,15 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
+import DOMPurify from "dompurify";
 import { useEffect, useState } from "react";
 import { RadioButton } from "primereact/radiobutton";
 import { Activity, ChevronDown, Filter, Package } from "lucide-react";
 
 import { Button } from "../components/Button";
 import { Table } from "../components/list/Table";
-import { Dropdown } from "../components/Dropdown";
 
+import { Dropdown } from "../components/Dropdown";
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
 import { usePersistentState } from "../services/hooks/usePersistentState";
 
@@ -76,7 +77,7 @@ export function HistoryList() {
         { id: 'user_info', field: 'user_info', header: t('HISTORY.user_info') },
         {
             id: 'history_desc', field: 'history_desc', header: t('HISTORY.description'), className: 'max-w-[40rem]', body: (row: any) => (
-                <div className='block truncate max-w-[40rem] whitespace-nowrap' dangerouslySetInnerHTML={ { __html: row.history_desc } }></div>
+                <div className='block truncate max-w-[40rem] whitespace-nowrap' dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(row.history_desc) } }></div>
             )
         },
         { id: 'user_ip', field: 'user_ip', header: t('HISTORY.ip') },

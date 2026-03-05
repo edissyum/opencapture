@@ -110,7 +110,10 @@
     "ERROR": {
         "admin_password_alert": "You are still using the default admin account password. Please change it as soon as possible for security reasons",
         "login_required": "You must be logged in to access this page",
-        "custom_not_provided": "No custom is present in the URL or the one provided does not exist. Please check the URL or contact your administrator"
+        "custom_not_provided": "No custom is present in the URL or the one provided does not exist. Please check the URL or contact your administrator",
+        "unknown_error": "",
+        "too_many_requests": "",
+        "too_many_requests_details": ""
     },
     "FORMATS": {
         "alphanum": "Alphanumeric characters [0-9aA-zZ']",
@@ -209,7 +212,6 @@
         "batches": "Batches",
         "history": "History",
         "home": "Home",
-        "login": "Login",
         "monitoring": "Monitoring",
         "settings": "Settings",
         "statistics": "Statistics",

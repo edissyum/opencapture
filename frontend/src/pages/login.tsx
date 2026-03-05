@@ -15,6 +15,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import DOMPurify from "dompurify";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getI18n, useTranslation } from "react-i18next";
@@ -54,7 +55,6 @@ export function Login() {
     // Fetch login message from configuration if not already set
     useEffect(() => {
         async function getLoginMessage() {
-            console.log(loginMessage)
             if (!loginMessage && custom) {
                 await get("/config/getConfigurationNoAuth/loginMessage").then((response) => {
                     if (response && response.configuration) {
@@ -116,7 +116,7 @@ export function Login() {
 
             <div className="sm:mx-auto w-full md:max-w-1/2 sm:max-w-sm">
                 <p className="mt-2 text-center text-sm text-(--text-secondary)"
-                   dangerouslySetInnerHTML={ { __html: loginMessage } }/>
+                   dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(loginMessage) } }/>
             </div>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">

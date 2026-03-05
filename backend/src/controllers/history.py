@@ -34,7 +34,7 @@ def add_history(args):
 
 
 def get_history(request_args):
-    configurations = get_context_var('docservers', 10)
+    configurations = get_context_var('configurations', 10)
 
     if configurations['locale'] == 'fra':
         _format = 'DD/MM/YYYY HH24:MI:SS'

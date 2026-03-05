@@ -324,7 +324,7 @@ def get_forms_by_user_id(user_id):
 
 
 def update_user(user_id, data):
-    configurations = get_context_var('docservers', 10)
+    configurations = get_context_var('configurations', 10)
 
     minutes_before_exp = configurations['jwtExpiration']
     user_info, error = user.get_user_by_id({'user_id': user_id})

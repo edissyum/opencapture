@@ -16,11 +16,11 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import moment from "moment";
-import React, { useEffect, useState } from "react";
-
+import DOMPurify from "dompurify";
 import { addLocale } from "primereact/api";
 import { Calendar } from "primereact/calendar";
 import { FloatLabel } from "primereact/floatlabel";
+import React, { useEffect, useState } from "react";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 interface ISOCalendarProps {
@@ -196,7 +196,7 @@ const ISOCalendar: React.FC<ISOCalendarProps> = ({
                     ) }
                 </FloatLabel>
             </div>
-            { error && <p className="text-(--text-error) text-sm " dangerouslySetInnerHTML={ { __html: error } }></p> }
+            { error && <p className="text-(--text-error) text-sm " dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(error) } }></p> }
         </div>
     );
 };

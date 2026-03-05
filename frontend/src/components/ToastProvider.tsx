@@ -16,13 +16,14 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import React from "react";
+import DOMPurify from "dompurify";
 import { toast, ToastContainer, type ToastOptions } from "react-toastify";
 
 export const showToast = (message: any, type: "success" | "warning" | "error" | "info" = "success", options?: ToastOptions) => {
     let content: React.ReactNode = message;
 
     if (typeof message === "string" && message.includes("<")) {
-        content = <div dangerouslySetInnerHTML={{ __html: message }} />;
+        content = <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(message) }} />;
     }
 
     const autoClose =

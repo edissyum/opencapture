@@ -16,8 +16,9 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import React from "react";
-import { Dropdown as PrimeDropdown } from "primereact/dropdown";
+import DOMPurify from "dompurify";
 import { FloatLabel } from "primereact/floatlabel";
+import { Dropdown as PrimeDropdown } from "primereact/dropdown";
 
 interface DropdownProps {
     id: any;
@@ -109,7 +110,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                 </FloatLabel>
             </div>
             { error && (
-                <p className="text-(--text-error) text-xs ml-1" dangerouslySetInnerHTML={ { __html: error } }/>
+                <p className="text-(--text-error) text-xs ml-1" dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(error) } }/>
             ) }
         </div>
     );

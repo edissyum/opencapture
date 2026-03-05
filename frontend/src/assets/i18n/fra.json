@@ -117,7 +117,10 @@
     "ERROR": {
         "admin_password_alert": "Vous utilisez encore le mot de passe par défaut du compte admin. Veuillez le changer au plus vite pour des questions de sécurité",
         "login_required": "Vous devez être connecté pour accéder à cette page",
-        "custom_not_provided": "Aucun custom n'est présent dans l'URL ou celui fourni n'existe pas. Veuillez vérifier l'URL ou contacter votre administrateur"
+        "custom_not_provided": "Aucun custom n'est présent dans l'URL ou celui fourni n'existe pas. Veuillez vérifier l'URL ou contacter votre administrateur",
+        "unknown_error": "Erreur inconnue",
+        "too_many_requests": "Trop de requêtes. Veuillez réessayer dans quelques instants.",
+        "too_many_requests_details": "Il semble que vous ayez effectué trop de requêtes en peu de temps. Pour des raisons de sécurité, nous avons temporairement limité le nombre de requêtes que vous pouvez effectuer. Veuillez patienter quelques instants avant de réessayer."
     },
     "FORMATS": {
         "alphanum": "Caractères alphanumériques [0-9aA-zZ']",
@@ -229,7 +232,6 @@
         "batches": "Lots",
         "history": "Historique",
         "home": "Accueil",
-        "login": "Connexion",
         "monitoring": "Monitoring",
         "settings": "Paramètres",
         "statistics": "Statistiques",

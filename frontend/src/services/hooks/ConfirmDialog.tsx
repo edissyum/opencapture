@@ -17,6 +17,7 @@
 
 import React from "react";
 import { t } from "i18next";
+import DOMPurify from "dompurify";
 import { confirmDialog } from 'primereact/confirmdialog';
 
 import Hint from "../../components/Hint";
@@ -49,11 +50,11 @@ export function showConfirmDialog({
         acceptClassName += " bg-(--text-error)! border-(--text-error)! hover:bg-(--text-error)/10! hover:text-(--text-error)!";
     }
 
-    let content: any = <span dangerouslySetInnerHTML={ { __html: message } }/>;
+    let content: any = <span dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(message) } }/>;
     if (hint) {
         content = (
             <>
-                <span dangerouslySetInnerHTML={ { __html: message } }/>
+                <span dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(message) } }/>
 
                 { hint && (
                     <Hint variant={ danger ? "error" : "success" }>

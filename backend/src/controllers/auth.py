@@ -197,7 +197,7 @@ def generate_token(user_id, days_before_exp):
 
 
 def encode_auth_token(user_id, refresh_token=False):
-    configurations = get_context_var('docservers', 10)
+    configurations = get_context_var('configurations', 10)
     minutes_before_exp = int(configurations['jwtExpiration'])
 
     try:
@@ -413,7 +413,7 @@ def login(username, password, lang, method='default'):
 
 
 def login_with_token(token, lang):
-    configurations = get_context_var('docservers', 10)
+    configurations = get_context_var('configurations', 10)
     minutes_before_exp = configurations['jwtExpiration']
     session['lang'] = lang
 

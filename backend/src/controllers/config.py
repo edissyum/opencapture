@@ -134,7 +134,7 @@ def retrieve_docservers(data):
 
 
 def retrieve_regex(data):
-    configurations = get_context_var('docservers', 10)
+    configurations = get_context_var('configurations', 10)
 
     args = {
         'select': ['*', 'count(*) OVER() as total'],

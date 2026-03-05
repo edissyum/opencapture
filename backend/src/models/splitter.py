@@ -19,9 +19,7 @@
 import json
 from ..controllers import user
 from flask_babel import gettext
-from flask import request, g as current_context
-from ..main import create_classes_from_custom_id
-from ..functions import retrieve_custom_from_url
+from ..helpers import get_context_var
 
 
 def retrieve_metadata(args):
