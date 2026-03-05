@@ -22,6 +22,7 @@ import urllib.parse
 from flask_cors import CORS
 from ultralytics import YOLO
 from flask_babel import Babel
+from .rest.auth import limiter
 from werkzeug.wrappers import Request
 from .main import create_classes_from_custom_id
 from flask import request, g as current_context, Flask, session
@@ -96,6 +97,7 @@ def get_locale():
 app = Flask(__name__, instance_relative_config=True)
 app.wsgi_app = Middleware(app.wsgi_app)
 CORS(app, supports_credentials=True)
+limiter.init_app(app)
 
 # Load Artificial Intelligence model to rotate document
 rotate_model = None

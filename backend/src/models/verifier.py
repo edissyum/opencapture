@@ -15,20 +15,13 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask_babel import gettext
 from ..controllers import user
-from flask import request, g as current_context
-from ..functions import retrieve_custom_from_url
-from ..main import create_classes_from_custom_id
+from flask_babel import gettext
+from ..helpers import get_context_var
 
 
 def get_document_by_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     document = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -46,12 +39,7 @@ def get_document_by_id(args):
 
 
 def get_document_informations_by_token(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     error = None
     document_info = database.select({
@@ -69,12 +57,7 @@ def get_document_informations_by_token(args):
 
 
 def get_documents(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     documents = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -91,12 +74,7 @@ def get_documents(args):
 
 
 def get_total_documents(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     total = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -110,12 +88,7 @@ def get_total_documents(args):
 
 
 def update_document(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     document = database.update({
@@ -132,12 +105,7 @@ def update_document(args):
 
 
 def update_documents(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     documents = database.update({
         'table': ['documents'],
@@ -153,12 +121,7 @@ def update_documents(args):
 
 
 def get_totals(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     select = data = []
 
@@ -185,12 +148,12 @@ def get_totals(args):
             data.append(user_forms)
 
     if 'allowedCustomers' in args and args['allowedCustomers']:
-        args['allowedCustomers'] = [str(customer) for customer in args['allowedCustomers'] if isinstance(customer, int)]
-        where.append('customer_id IN (' + ','.join(map(str, args['allowedCustomers'])) + ')')
+        where.append('customer_id = ANY(%s)')
+        data.append([int(c) for c in args['allowedCustomers']])
 
     if 'allowedSuppliers' in args and args['allowedSuppliers']:
-        args['allowedSuppliers'] = [str(supplier) for supplier in args['allowedSuppliers'] if isinstance(supplier, int)]
-        where.append('supplier_id IN (' + ','.join(map(str, args['allowedSuppliers'])) + ')')
+        where.append('supplier_id = ANY(%s)')
+        data.append([int(c) for c in args['allowedSuppliers']])
 
     if 'form_id' in args and args['form_id']:
         if args['form_id'] == 'no_form':
@@ -214,12 +177,7 @@ def get_totals(args):
 
 
 def get_totals_by_status(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     data = []
     select = ['COUNT(id) as total']
@@ -246,12 +204,12 @@ def get_totals_by_status(args):
             data.append(user_forms)
 
     if 'allowedCustomers' in args and args['allowedCustomers']:
-        args['allowedCustomers'] = [str(customer) for customer in args['allowedCustomers'] if isinstance(customer, int)]
-        where.append('customer_id IN (' + ','.join(map(str, args['allowedCustomers'])) + ')')
+        where.append('customer_id = ANY(%s)')
+        data.append([int(c) for c in args['allowedCustomers']])
 
     if 'allowedSuppliers' in args and args['allowedSuppliers']:
-        args['allowedSuppliers'] = [str(supplier) for supplier in args['allowedSuppliers'] if isinstance(supplier, int)]
-        where.append('supplier_id IN (' + ','.join(map(str, args['allowedSuppliers'])) + ')')
+        where.append('supplier_id = ANY(%s)')
+        data.append([int(c) for c in args['allowedSuppliers']])
 
     if 'form_id' in args and args['form_id']:
         if args['form_id'] == 'no_form':
@@ -273,12 +231,7 @@ def get_totals_by_status(args):
 
 
 def update_status(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     args = {
         'table': ['documents'],

@@ -22,24 +22,19 @@ import magic
 import base64
 
 from flask_babel import gettext
+from flask import current_app, request
 from pdf2image import convert_from_path
 from werkzeug.datastructures import FileStorage
-from flask import current_app, request, g as current_context
 
 from ..controllers import history
 from ..classes.Files import Files
+from ..helpers import get_context_var
 from ..models import attachments, splitter
-from ..main import create_classes_from_custom_id
-from ..functions import check_extensions_mime, retrieve_custom_from_url
+from ..functions import check_extensions_mime
 
 
 def handle_uploaded_file(files, document_id, batch_id, module, from_api=False):
-    if 'docservers' in current_context:
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
+    docservers = get_context_var('docservers', 9)
 
     message, code = check_extensions_mime(files, 'attachments')
     if code != 200:
@@ -186,12 +181,7 @@ def download_attachment(attachment_id):
 
 
 def unbind_attachment(args):
-    if 'docservers' in current_context:
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
+    docservers = get_context_var('docservers', 9)
 
     attachment = attachments.get_attachment_by_id(args['attachmentId'])
     document, _ = splitter.get_document_by_id({'select': ['batch_id'], 'id': args['newDocumentId']})

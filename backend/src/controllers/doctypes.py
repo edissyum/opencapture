@@ -20,13 +20,10 @@ import csv
 import base64
 import codecs
 from io import StringIO
-
-from flask_babel import gettext
 from ..models import doctypes
-from flask import request, g as current_context
+from flask_babel import gettext
+from ..helpers import get_context_var
 from ..classes.SeparatorQR import SeparatorQR
-from ..functions import retrieve_custom_from_url
-from ..main import create_classes_from_custom_id
 
 
 def add_doctype(args):
@@ -118,12 +115,7 @@ def update(args):
 
 
 def generate_separator(args):
-    if 'docservers' in current_context and 'configurations' in current_context:
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
+    docservers = get_context_var('docservers', 9)
 
     separators = []
     if args['type'] == "bundleSeparator":

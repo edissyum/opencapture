@@ -22,8 +22,8 @@ from flask import request
 from socket import gaierror
 from imaplib import IMAP4_SSL
 from flask_babel import gettext
-from imap_tools import MailBox, MailBoxUnencrypted, FolderInfo
 from ..models import mailcollect, history
+from imap_tools import MailBox, MailBoxUnencrypted, FolderInfo
 
 
 def retrieve_processes(args):

@@ -18,8 +18,8 @@
 
 import json
 from flask import request
-from flask_babel import gettext
 from ..controllers import user
+from flask_babel import gettext
 from ..models import forms, accounts, verifier, history
 
 

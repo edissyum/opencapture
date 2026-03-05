@@ -15,19 +15,12 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import request, g as current_context
-from ..main import create_classes_from_custom_id
-from ..functions import retrieve_custom_from_url
+from ..helpers import get_context_var
 from ..classes.MEMWebServices import MEMWebServices
 
 
 def test_connection(args):
-    if 'log' in current_context:
-        log = current_context.log
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
+    log = get_context_var('log', 5)
     _ws = MEMWebServices(
         args['host'],
         args['login'],
@@ -38,12 +31,7 @@ def test_connection(args):
 
 
 def get_users(args):
-    if 'log' in current_context:
-        log = current_context.log
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
+    log = get_context_var('log', 5)
     _ws = MEMWebServices(
         args['host'],
         args['login'],
@@ -55,12 +43,7 @@ def get_users(args):
 
 
 def get_doctypes(args):
-    if 'log' in current_context:
-        log = current_context.log
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
+    log = get_context_var('log', 5)
     _ws = MEMWebServices(
         args['host'],
         args['login'],
@@ -72,12 +55,7 @@ def get_doctypes(args):
 
 
 def get_entities(args):
-    if 'log' in current_context:
-        log = current_context.log
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
+    log = get_context_var('log', 5)
     _ws = MEMWebServices(
         args['host'],
         args['login'],
@@ -89,12 +67,7 @@ def get_entities(args):
 
 
 def get_custom_fields(args):
-    if 'log' in current_context:
-        log = current_context.log
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
+    log = get_context_var('log', 5)
     _ws = MEMWebServices(
         args['host'],
         args['login'],
@@ -106,12 +79,7 @@ def get_custom_fields(args):
 
 
 def get_contact_custom_fields(args):
-    if 'log' in current_context:
-        log = current_context.log
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
+    log = get_context_var('log', 5)
     _ws = MEMWebServices(
         args['host'],
         args['login'],
@@ -123,12 +91,7 @@ def get_contact_custom_fields(args):
 
 
 def get_priorities(args):
-    if 'log' in current_context:
-        log = current_context.log
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
+    log = get_context_var('log', 5)
     _ws = MEMWebServices(
         args['host'],
         args['login'],
@@ -140,12 +103,7 @@ def get_priorities(args):
 
 
 def get_statuses(args):
-    if 'log' in current_context:
-        log = current_context.log
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
+    log = get_context_var('log', 5)
     _ws = MEMWebServices(
         args['host'],
         args['login'],
@@ -157,12 +115,7 @@ def get_statuses(args):
 
 
 def retrieve_contact(args):
-    if 'log' in current_context:
-        log = current_context.log
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
+    log = get_context_var('log', 5)
 
     _ws = MEMWebServices(
         args['host'],
@@ -175,12 +128,7 @@ def retrieve_contact(args):
 
 
 def get_document_with_contact(args):
-    if 'log' in current_context:
-        log = current_context.log
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
+    log = get_context_var('log', 5)
     _ws = MEMWebServices(
         args['host'],
         args['login'],
@@ -192,12 +140,7 @@ def get_document_with_contact(args):
 
 
 def get_indexing_models(args):
-    if 'log' in current_context:
-        log = current_context.log
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
+    log = get_context_var('log', 5)
     _ws = MEMWebServices(
         args['host'],
         args['login'],

@@ -16,18 +16,11 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask_babel import gettext
-from flask import request, g as current_context
-from ..functions import retrieve_custom_from_url
-from ..main import create_classes_from_custom_id
+from ..helpers import get_context_var
 
 
 def get_workflows(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     _workflows = database.select({
         'select': ["*"] if "select" not in args else args["select"],
@@ -43,12 +36,7 @@ def get_workflows(args):
 
 
 def get_workflow_by_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     _workflow = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -66,12 +54,7 @@ def get_workflow_by_id(args):
 
 
 def get_workflow_by_workflow_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     _workflow = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -89,12 +72,7 @@ def get_workflow_by_workflow_id(args):
 
 
 def create_workflow(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     _workflow = database.insert({
@@ -109,12 +87,7 @@ def create_workflow(args):
 
 
 def update_workflow(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     _workflow = database.update({
@@ -131,12 +104,7 @@ def update_workflow(args):
 
 
 def get_workflow_by_form_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     _workflow = database.select({
         'select': ['*'] if 'select' not in args else args['select'],

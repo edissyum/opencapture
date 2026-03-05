@@ -17,20 +17,13 @@
 # @dev : Essaid MEGHELLET <essaid.meghellet@edissyum.com>
 
 import json
-from flask import request, g as current_context
 from flask_babel import gettext
+from ..helpers import get_context_var
 from werkzeug.security import check_password_hash
-from ..functions import retrieve_custom_from_url
-from ..main import create_classes_from_custom_id
 
 
 def login(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     user = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -49,12 +42,7 @@ def login(args):
 
 
 def get_user_role_by_username(username):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     user_role_id = database.select({
         'select': ['role'],
@@ -79,12 +67,7 @@ def get_user_role_by_username(username):
 
 
 def verify_user_by_username(username):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     user_id = database.select({
@@ -101,14 +84,8 @@ def verify_user_by_username(username):
 
 
 def get_enabled_login_method():
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        if not _vars[0]:
-            return {}, _vars[1]
-        database = _vars[0]
+    database = get_context_var('database', 0)
+
     error = None
     enabled_method_name = database.select({
         'select': ['method_name'],
@@ -119,12 +96,7 @@ def get_enabled_login_method():
 
 
 def get_ldap_configurations():
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     ldap_configurations = database.select({
         'select': ['data'],
@@ -139,12 +111,7 @@ def get_ldap_configurations():
 
 
 def update_login_method(login_method_name, server_data):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     login_method_data = database.update({
@@ -172,12 +139,7 @@ def update_login_method(login_method_name, server_data):
 
 
 def retrieve_login_methods():
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     login_methods_name = database.select({
         'select': ['method_name', 'enabled'],
@@ -187,12 +149,7 @@ def retrieve_login_methods():
 
 
 def disable_login_method(method_name):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     login_method_data = database.update({
@@ -209,12 +166,7 @@ def disable_login_method(method_name):
 
 
 def disable_all_login_method():
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     login_method_data = database.update({
@@ -231,12 +183,7 @@ def disable_all_login_method():
 
 
 def enable_login_method(method_name):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     login_method_data = database.update({

@@ -15,11 +15,10 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask_babel import gettext
 from ..models import history
-from flask import g as current_context, request
-from ..functions import retrieve_custom_from_url, check_order_by
-from ..main import create_classes_from_custom_id
+from flask_babel import gettext
+from ..helpers import get_context_var
+from ..functions import check_order_by
 
 
 def add_history(args):
@@ -35,12 +34,7 @@ def add_history(args):
 
 
 def get_history(request_args):
-    if 'configurations' in current_context:
-        configurations = current_context.configurations
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        configurations = _vars[10]
+    configurations = get_context_var('docservers', 10)
 
     if configurations['locale'] == 'fra':
         _format = 'DD/MM/YYYY HH24:MI:SS'

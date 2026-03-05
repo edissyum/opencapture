@@ -15,23 +15,23 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import json
 import os
-import stat
 import sys
+import json
+import stat
 import traceback
 from io import StringIO
 
-from flask import request, g as current_context
+from flask import request
 from flask_babel import gettext
 from pyflakes.scripts import pyflakes
 
-from ..classes.Config import Config
 from ..controllers import user
-from ..functions import retrieve_custom_from_url, check_order_by
-from ..main import create_classes_from_custom_id
+from ..classes.Config import Config
+from ..helpers import get_context_var
 from ..models import workflow, history
 from ..scripting_functions import check_code
+from ..functions import retrieve_custom_from_url, check_order_by
 
 
 def get_workflows(args):
@@ -170,14 +170,8 @@ def duplicate_workflow(args):
 
 
 def is_path_allowed(input_path):
-    custom_id = retrieve_custom_from_url(request)
-    if 'docservers' in current_context and 'configuration' in current_context:
-        docservers = current_context.docservers
-        configurations = current_context.configuration
-    else:
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
-        configurations = _vars[10]
+    docservers = get_context_var('docservers', 9)
+    configurations = get_context_var('configuration', 10)
 
     if 'INPUTS_ALLOWED_PATH' in docservers and input_path:
         if 'restrictInputsPath' in configurations and configurations['restrictInputsPath']:
@@ -329,13 +323,9 @@ def delete_workflow(workflow_id):
 
 def create_script_and_watcher(args):
     custom_id = retrieve_custom_from_url(request)
-    if 'docservers' in current_context and 'config' in current_context:
-        docservers = current_context.docservers
-        config = current_context.config
-    else:
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
-        config = _vars[1]
+
+    config = get_context_var('config', 1)
+    docservers = get_context_var('docservers', 9)
 
     folder_script = docservers['SCRIPTS_PATH'] + '/' + args['module'] + '_workflows/'
     arguments = '-workflow_id ' + str(args['workflow_id'])
@@ -423,13 +413,9 @@ def get_workflow_by_form_id(form_id):
 
 def delete_script_and_incron(args):
     custom_id = retrieve_custom_from_url(request)
-    if 'docservers' in current_context and 'config' in current_context:
-        docservers = current_context.docservers
-        config = current_context.config
-    else:
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
-        config = _vars[1]
+
+    config = get_context_var('config', 1)
+    docservers = get_context_var('docservers', 9)
 
     folder_script = docservers['SCRIPTS_PATH'] + args['module'] + '_workflows/'
     script_name = args['workflow_id'] + '.sh'
@@ -457,12 +443,7 @@ def delete_script_and_incron(args):
 
 
 def test_script(args):
-    custom_id = retrieve_custom_from_url(request)
-    if 'config' in current_context and 'docservers' in current_context and 'log' in current_context:
-        docservers = current_context.docservers
-    else:
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
+    docservers = get_context_var('docservers', 9)
 
     try:
         check_res, message = check_code(args['codeContent'], docservers['VERIFIER_SHARE'], args['input_folder'])

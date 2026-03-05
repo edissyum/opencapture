@@ -14,20 +14,14 @@
 # See LICENCE file at the root folder for more details.
 
 # @dev : Tristan Coulange <tristan.coulange@free.fr>
+# @dev : Nathan CHEVAL <nathan.cheval@edissyum.com>
 
-from flask import request, g as current_context
 from flask_babel import gettext
-from ..functions import retrieve_custom_from_url
-from ..main import create_classes_from_custom_id
+from ..helpers import get_context_var
 
 
 def get_models(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     models = database.select({
         'select': ["*"] if "select" not in args else args["select"],
         'table': ["ai_models"],
@@ -41,12 +35,7 @@ def get_models(args):
 
 
 def get_llm_models(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     models = database.select({
         'select': ["*"] if "select" not in args else args["select"],
@@ -61,12 +50,7 @@ def get_llm_models(args):
 
 
 def get_model_by_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     model = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -83,12 +67,7 @@ def get_model_by_id(args):
 
 
 def get_model_llm_by_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     model = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -105,12 +84,7 @@ def get_model_llm_by_id(args):
 
 
 def create_model(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     model = database.insert({
@@ -124,12 +98,7 @@ def create_model(args):
 
 
 def update_models(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     models = database.update({
@@ -145,12 +114,7 @@ def update_models(args):
 
 
 def update_llm_models(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     models = database.update({
@@ -165,12 +129,7 @@ def update_llm_models(args):
     return models, error
 
 def create_llm_model(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     error = None
 
@@ -186,12 +145,7 @@ def create_llm_model(args):
 
 
 def get_llm_model_by_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     error = None
     llm_model = database.select({

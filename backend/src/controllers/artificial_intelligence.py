@@ -21,21 +21,16 @@ import json
 import time
 import pandas as pd
 from pathlib import Path
+from flask import request
 from flask_babel import gettext
-from flask import request, g as current_context
-from ..functions import retrieve_custom_from_url, check_order_by
-from ..main import create_classes_from_custom_id
+from ..helpers import get_context_var
+from ..functions import check_order_by
 from ..models import artificial_intelligence, history
 from sklearn import feature_extraction, model_selection, naive_bayes, pipeline, metrics
 
 
 def splitter_retrieve_documents():
-    if 'docservers' in current_context:
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
+    docservers = get_context_var('docservers', 9)
     data = []
     for file_name in os.listdir(docservers.get('SPLITTER_TRAIN_PATH_FILES')):
         if not file_name.lower().endswith(".csv") and not file_name.lower().endswith(".gitkeep"):
@@ -44,12 +39,7 @@ def splitter_retrieve_documents():
 
 
 def verifier_retrieve_documents():
-    if 'docservers' in current_context:
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
+    docservers = get_context_var('docservers', 9)
     data = []
     for file_name in os.listdir(docservers.get('VERIFIER_TRAIN_PATH_FILES')):
         if not file_name.lower().endswith(".csv") and not file_name.lower().endswith(".gitkeep"):
@@ -198,14 +188,9 @@ def launch_train(data, model_name, module):
     :param model_name: The name of model
     :return: N/A
     """
-    if 'docservers' in current_context and 'log' in current_context:
-        log = current_context.log
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
-        log = _vars[5]
+
+    log = get_context_var('log', 5)
+    docservers = get_context_var('docservers', 9)
 
     folders = []
     for element in data['docs']:
@@ -260,14 +245,9 @@ def launch_train_model(model_name, csv_file, model_id, module):
     :param module: verifier or splitter
     :return: N/A
     """
-    if 'artificial_intelligence' in current_context and 'log' in current_context:
-        log = current_context.log
-        _artificial_intelligence = current_context.artificial_intelligence
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
-        _artificial_intelligence = _vars[12]
+
+    log = get_context_var('log', 5)
+    _artificial_intelligence = get_context_var('artificial_intelligence', 12)
 
     dataset = pd.read_csv(csv_file)
 
@@ -310,21 +290,12 @@ def launch_train_model(model_name, csv_file, model_id, module):
 
 
 def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id, module):
-    if 'ocr' in current_context and 'files' in current_context and 'docservers' in current_context \
-            and 'log' in current_context and 'artificial_intelligence' in current_context:
-        ocr = current_context.ocr
-        log = current_context.log
-        files = current_context.files
-        docservers = current_context.docservers
-        _artificial_intelligence = current_context.artificial_intelligence
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        ocr = _vars[4]
-        log = _vars[5]
-        files = _vars[3]
-        docservers = _vars[9]
-        _artificial_intelligence = _vars[12]
+    ocr = get_context_var('ocr', 4)
+    log = get_context_var('log', 5)
+    files = get_context_var('files', 3)
+    docservers = get_context_var('docservers', 9)
+
+    _artificial_intelligence= get_context_var('artificial_intelligence', 12)
 
     j = 0
     rows = []
@@ -381,12 +352,7 @@ def predict_from_file_content(model_id, files_content):
     :param model_id: id of the model we want to use
     :return:
     """
-    if 'artificial_intelligence' in current_context:
-        _artificial_intelligence = current_context.artificial_intelligence
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        _artificial_intelligence = _vars[12]
+    _artificial_intelligence = get_context_var('artificial_intelligence', 12)
 
     _artificial_intelligence.model_id = model_id
     ai_model = artificial_intelligence.get_model_by_id({'model_id': model_id})
@@ -408,12 +374,7 @@ def predict_from_file_path(model_id, file_path):
     :param model_id:  id of the model we want to use
     :return:
     """
-    if 'artificial_intelligence' in current_context:
-        _artificial_intelligence = current_context.artificial_intelligence
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        _artificial_intelligence = _vars[12]
+    _artificial_intelligence= get_context_var('artificial_intelligence', 12)
 
     _artificial_intelligence.model_id = model_id
     result, status = _artificial_intelligence.predict_from_file_path(file_path)
@@ -435,12 +396,7 @@ def rename_model(new_name, model_id, module):
     :param module: verifier or splitter
     :return: N/A
     """
-    if 'docservers' in current_context:
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
+    docservers = get_context_var('docservers', 9)
 
     args = {
         'select': ['model_path'],

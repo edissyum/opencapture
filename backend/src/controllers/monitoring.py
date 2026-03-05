@@ -15,19 +15,13 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import request, g as current_context
+from flask import request
 from ..models import monitoring
-from ..main import create_classes_from_custom_id
-from ..functions import retrieve_custom_from_url
+from ..helpers import get_context_var
 
 
 def get_processes(module=None, get_last_processes=False):
-    if 'configurations' in current_context:
-        configurations = current_context.configurations
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        configurations = _vars[10]
+    configurations = get_context_var('docservers', 10)
 
     if configurations['locale'] == 'fra':
         _format = 'DD/MM/YYYY HH24:MI:SS'
@@ -97,12 +91,7 @@ def get_processes(module=None, get_last_processes=False):
 
 
 def get_process_by_id(process_id):
-    if 'configurations' in current_context:
-        configurations = current_context.configurations
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        configurations = _vars[10]
+    configurations = get_context_var('docservers', 10)
 
     if configurations['locale'] == 'fra':
         _format = 'TMDay DD TMMonth YYYY HH24:MI:SS'
@@ -118,12 +107,7 @@ def get_process_by_id(process_id):
 
 
 def get_process_by_token(process_token):
-    if 'configurations' in current_context:
-        configurations = current_context.configurations
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        configurations = _vars[10]
+    configurations = get_context_var('docservers', 10)
 
     if configurations['locale'] == 'fra':
         _format = 'TMDay DD TMMonth YYYY HH24:MI:SS'

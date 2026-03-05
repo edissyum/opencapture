@@ -43,6 +43,7 @@ configparser==7.2.0
 scikit-learn==1.8.0
 transformers==5.2.0
 python-magic==0.4.27
+Flask-Limiter==4.1.1
 pycryptodome==3.23.0
 pypdf[crypto]==6.7.5
 qwen-vl-utils==0.0.14

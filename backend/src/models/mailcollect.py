@@ -1,6 +1,5 @@
 # This file is part of Open-Capture.
 # Copyright Edissyum Consulting since 2020 under licence GPLv3
-import json
 
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,22 +16,13 @@ import json
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-from flask import request, g as current_context
+import json
 from flask_babel import gettext
-
-from ..functions import retrieve_custom_from_url
-from ..main import create_classes_from_custom_id
+from ..helpers import get_context_var
 
 
 def retrieve_processes(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        if not _vars[0]:
-            return {}, _vars[1]
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     error = None
     processes = database.select({
@@ -48,14 +38,8 @@ def retrieve_processes(args):
 
 
 def get_process_by_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        if not _vars[0]:
-            return {}, _vars[1]
-        database = _vars[0]
+    database = get_context_var('database', 0)
+
     error = None
     process = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -68,14 +52,7 @@ def get_process_by_id(args):
 
 
 def update_process(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        if not _vars[0]:
-            return {}, _vars[1]
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     error = None
 
@@ -94,14 +71,8 @@ def update_process(args):
 
 
 def create_process(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        if not _vars[0]:
-            return {}, _vars[1]
-        database = _vars[0]
+    database = get_context_var('database', 0)
+
     error = None
 
     if 'options' in args['columns']:

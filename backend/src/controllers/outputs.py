@@ -17,11 +17,12 @@
 
 import os
 import json
+from flask import request
 from flask_babel import gettext
-from flask import request, g as current_context
+
+from ..helpers import get_context_var
 from ..models import outputs, history
-from ..main import create_classes_from_custom_id
-from ..functions import retrieve_custom_from_url, check_order_by
+from ..functions import check_order_by
 
 
 def get_outputs(args):
@@ -110,14 +111,8 @@ def duplicate_output(output_id):
 
 
 def is_path_allowed(parameters):
-    custom_id = retrieve_custom_from_url(request)
-    if 'docservers' in current_context and 'configuration' in current_context:
-        docservers = current_context.docservers
-        configurations = current_context.configuration
-    else:
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
-        configurations = _vars[10]
+    docservers = get_context_var('docservers', 9)
+    configurations = get_context_var('configurations', 10)
 
     if 'OUTPUTS_ALLOWED_PATH' in docservers and 'restrictOutputsPath' in configurations and configurations['restrictOutputsPath']:
         for parameter in parameters:
@@ -258,14 +253,8 @@ def delete_output(output_id):
 
 
 def get_allowed_path():
-    custom_id = retrieve_custom_from_url(request)
-    if 'docservers' in current_context and 'configurations' in current_context:
-        docservers = current_context.docservers
-        configurations = current_context.configurations
-    else:
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
-        configurations = _vars[10]
+    docservers = get_context_var('docservers', 9)
+    configurations = get_context_var('configurations', 10)
 
     if configurations['restrictOutputsPath'] and 'OUTPUTS_ALLOWED_PATH' in docservers:
         response = {'allowedPath': docservers['OUTPUTS_ALLOWED_PATH']}

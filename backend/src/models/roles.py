@@ -17,18 +17,11 @@
 # @dev : Oussama BRICH <oussama.brich@edissyum.com>
 
 from flask_babel import gettext
-from flask import request, g as current_context
-from ..functions import retrieve_custom_from_url
-from ..main import create_classes_from_custom_id
+from ..helpers import get_context_var
 
 
 def get_roles(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     roles = database.select({
         'select': ["*"] if "select" not in args else args["select"],
         'table': ["roles"],
@@ -43,12 +36,7 @@ def get_roles(args):
 
 
 def get_role_by_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     role = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -66,12 +54,7 @@ def get_role_by_id(args):
 
 
 def update_role(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     role = database.update({
@@ -88,12 +71,7 @@ def update_role(args):
 
 
 def create_role(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     role = database.insert({
@@ -108,12 +86,7 @@ def create_role(args):
 
 
 def update_role_privileges(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     role = database.update({
@@ -130,12 +103,7 @@ def update_role_privileges(args):
 
 
 def create_role_privileges(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     role_privilege = database.insert({

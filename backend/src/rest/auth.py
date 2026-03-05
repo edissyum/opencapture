@@ -17,14 +17,18 @@
 
 from ..models import user
 from flask_babel import gettext
+from flask_limiter import Limiter
 from ..functions import rest_validator
 from ..controllers import auth, privileges
+from flask_limiter.util import get_remote_address
 from flask import Blueprint, request, make_response, jsonify
 
 bp = Blueprint('auth', __name__, url_prefix='/ws/')
 
+limiter = Limiter(key_func=get_remote_address, default_limits=["200/hour"])
 
 @bp.route('auth/login', methods=['POST'])
+@limiter.limit("5/minute", key_func=lambda: request.json.get("username", get_remote_address()))
 def login():
     check, message = rest_validator(request.json, [
         {'id': 'lang', 'type': str, 'mandatory': True},
@@ -77,6 +81,7 @@ def check_token():
 
 @bp.route('auth/generateAuthToken', methods=['POST'])
 @auth.token_required
+@limiter.limit("5/minute", key_func=lambda: request.json.get("username", get_remote_address()))
 def generate_auth_token():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'configurations', 'generate_auth_token']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/auth/generateAuthToken'}), 403

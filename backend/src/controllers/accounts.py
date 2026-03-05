@@ -23,10 +23,11 @@ import codecs
 from . import user
 from unidecode import unidecode
 from flask_babel import gettext
+
+from flask import request
+from ..helpers import get_context_var
 from ..models import accounts, history
-from flask import request, g as current_context
-from ..functions import retrieve_custom_from_url, check_order_by
-from ..main import create_classes_from_custom_id
+from ..functions import check_order_by
 
 
 def get_suppliers(_args):
@@ -596,12 +597,7 @@ def get_default_accounting_plan():
 
 
 def get_currency_code():
-    if 'docservers' in current_context:
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
+    docservers = get_context_var('docservers', 9)
 
     file_path = docservers['REFERENTIALS_PATH'] + '/CURRENCY_CODE.csv'
     currency_code = {}
@@ -818,14 +814,8 @@ def fill_row(row, supplier, address, ind):
 
 
 def fill_reference_file():
-    if 'docservers' in current_context and 'config' in current_context:
-        docservers = current_context.docservers
-        config = current_context.config
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
-        config = _vars[1]
+    config = get_context_var('config', 1)
+    docservers = get_context_var('docservers', 9)
 
     file_path = docservers['REFERENTIALS_PATH'] + '/' + config['REFERENCIAL']['referencialsupplierdocument']
     referencial_index = docservers['REFERENTIALS_PATH'] + '/' + config['REFERENCIAL']['referencialsupplierindex']

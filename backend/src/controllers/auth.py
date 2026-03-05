@@ -26,10 +26,11 @@ import functools
 from ldap3 import Server, ALL
 from flask_babel import gettext
 from ..controllers import privileges
+from ..helpers import get_context_var
 from ldap3.core.exceptions import LDAPException
-from datetime import datetime, timezone, timedelta
 from ..functions import retrieve_custom_from_url
 from ..main import create_classes_from_custom_id
+from datetime import datetime, timezone, timedelta
 from ..models import auth, user, roles, monitoring, history
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import request, g as current_context, jsonify, current_app, session
@@ -153,12 +154,7 @@ def refresh(token):
 
 
 def check_connection():
-    if 'config' in current_context:
-        config = current_context.config
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        config = _vars[1]
+    config = get_context_var('config', 1)
     db_user = os.environ['POSTGRES_USER']
     db_host = os.environ['POSTGRES_HOST']
     db_port = os.environ['POSTGRES_PORT']
@@ -201,12 +197,7 @@ def generate_token(user_id, days_before_exp):
 
 
 def encode_auth_token(user_id, refresh_token=False):
-    if 'configurations' in current_context:
-        configurations = current_context.configurations
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        configurations = _vars[10]
+    configurations = get_context_var('docservers', 10)
     minutes_before_exp = int(configurations['jwtExpiration'])
 
     try:
@@ -236,12 +227,7 @@ def encode_auth_token(user_id, refresh_token=False):
 
 
 def generate_unique_url_token(token, workflow_id, module):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     form_settings = None
     days_before_exp = None
@@ -427,12 +413,7 @@ def login(username, password, lang, method='default'):
 
 
 def login_with_token(token, lang):
-    if 'configurations' in current_context:
-        configurations = current_context.configurations
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        configurations = _vars[10]
+    configurations = get_context_var('docservers', 10)
     minutes_before_exp = configurations['jwtExpiration']
     session['lang'] = lang
 
@@ -712,12 +693,7 @@ def enable_login_method(method_name):
 
 
 def ldap_connection_bind(ldap_configs, data):
-    if 'log' in current_context:
-        log = current_context.log
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
+    log = get_context_var('log', 5)
 
     ldap_configurations = ldap_configs[0]['ldap_configurations']
     data_ldap_configs = ldap_configurations[0]['data']

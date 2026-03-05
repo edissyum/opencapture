@@ -17,19 +17,12 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
-from flask import request, g as current_context
 from flask_babel import gettext
-from ..functions import retrieve_custom_from_url
-from ..main import create_classes_from_custom_id
+from ..helpers import get_context_var
 
 
 def add_custom_field(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     customs_exists, error = retrieve_custom_fields({
         'where': ['label_short = %s', 'module = %s', 'status <> %s'],
         'data': [args['label_short'], args['module'], 'DEL']
@@ -63,12 +56,7 @@ def add_custom_field(args):
 
 
 def retrieve_custom_fields(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     custom_fields = database.select({
         'select': ['*', 'count(*) OVER() as total'] if 'select' not in args else args['select'],
@@ -83,12 +71,7 @@ def retrieve_custom_fields(args):
 
 
 def get_custom_field_by_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     custom_field = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -106,12 +89,7 @@ def get_custom_field_by_id(args):
 
 
 def update(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     _args = {
         'table': ['custom_fields'],
@@ -138,12 +116,7 @@ def update(args):
 
 
 def delete(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     res = database.update({

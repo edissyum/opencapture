@@ -15,19 +15,12 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import request, g as current_context
-from ..main import create_classes_from_custom_id
-from ..functions import retrieve_custom_from_url
+from ..helpers import get_context_var
 from ..classes.OpenCaptureForMEMWebServices import OpenCaptureForMEMWebServices
 
 
 def get_access_token(args):
-    if 'log' in current_context:
-        log = current_context.log
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
+    log = get_context_var('log', 5)
 
     _ws = OpenCaptureForMEMWebServices(
         args['host'],
@@ -38,12 +31,7 @@ def get_access_token(args):
     return _ws.access_token
 
 def get_processes(args):
-    if 'log' in current_context:
-        log = current_context.log
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
+    log = get_context_var('log', 5)
 
     _ws = OpenCaptureForMEMWebServices(
         args['host'],

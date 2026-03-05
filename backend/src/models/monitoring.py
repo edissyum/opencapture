@@ -15,18 +15,11 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import request, g as current_context
-from ..functions import retrieve_custom_from_url
-from ..main import create_classes_from_custom_id
+from ..helpers import get_context_var
 
 
 def get_processes(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     _processes = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -41,12 +34,7 @@ def get_processes(args):
 
 
 def get_process_by_id(process_id, date_format):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     error = None
     _process = database.select({
@@ -63,12 +51,7 @@ def get_process_by_id(process_id, date_format):
 
 
 def get_process_by_document_id(document_id):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     error = None
     _process = database.select({
@@ -81,12 +64,7 @@ def get_process_by_document_id(document_id):
 
 
 def get_process_by_token(process_token, date_format):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     error = None
     _process = database.select({
@@ -103,12 +81,7 @@ def get_process_by_token(process_token, date_format):
 
 
 def insert(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     error = None
     res = database.insert({
@@ -118,12 +91,7 @@ def insert(args):
     return res, error
 
 def update_retry(process_id):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     error = None
     res = database.update({

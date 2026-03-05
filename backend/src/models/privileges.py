@@ -15,19 +15,12 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import request, g as current_context
 from flask_babel import gettext
-from ..functions import retrieve_custom_from_url
-from ..main import create_classes_from_custom_id
+from ..helpers import get_context_var
 
 
 def get_privileges():
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     privileges = database.select({
         'select': ['*'],
@@ -41,12 +34,7 @@ def get_privileges():
 
 
 def get_by_role_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     privileges = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -64,12 +52,7 @@ def get_by_role_id(args):
 
 
 def get_by_user_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     privileges = database.select({
         'select': ['*', 'users.id'] if 'select' not in args else args['select'],

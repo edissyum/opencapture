@@ -13,18 +13,15 @@
 
 # See LICENCE file at the root folder for more details.
 
-# @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-from ..helpers import get_context_var
-from ..classes.COOGWebServices import COOGWebServices
+from flask import request, g as current_context
+from .functions import retrieve_custom_from_url
+from .main import create_classes_from_custom_id
 
-
-def get_access_token(args):
-    log = get_context_var('log', 5)
-    _ws = COOGWebServices(
-        args['host'],
-        args['token'],
-        args['cert_path'],
-        log
-    )
-    return _ws.access_token
+def get_context_var(name: str, index: int):
+    if name in current_context:
+        return getattr(current_context, name)
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    return _vars[index]

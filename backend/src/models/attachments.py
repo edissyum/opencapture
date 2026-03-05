@@ -16,17 +16,10 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask_babel import gettext
-from flask import request, g as current_context
-from ..functions import retrieve_custom_from_url
-from ..main import create_classes_from_custom_id
+from ..helpers import get_context_var
 
 def create_attachment(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     error = None
     attachment = database.insert({
@@ -40,12 +33,7 @@ def create_attachment(args):
     return attachment, error
 
 def get_attachments_by_document_id(document_id):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     attachments = database.select({
         'select': ['*'],
@@ -56,12 +44,7 @@ def get_attachments_by_document_id(document_id):
     return attachments
 
 def get_attachments_by_batch_id(batch_id):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     attachments = database.select({
         'select': ['*'],
@@ -73,12 +56,7 @@ def get_attachments_by_batch_id(batch_id):
     return attachments
 
 def get_attachment_by_id(attachment_id):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     attachment = database.select({
         'select': ['*'],
@@ -89,12 +67,7 @@ def get_attachment_by_id(attachment_id):
     return attachment[0]
 
 def delete_attachment(attachment_id):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     attachment = database.update({
         'table': ['attachments'],
@@ -107,12 +80,7 @@ def delete_attachment(attachment_id):
     return attachment
 
 def update_attachment(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     attachment = database.update({
         'table': ['attachments'],

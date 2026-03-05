@@ -25,12 +25,7 @@ from ..functions import retrieve_custom_from_url
 
 
 def retrieve_metadata(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     error = None
     metadata = database.select({
@@ -44,12 +39,7 @@ def retrieve_metadata(args):
 
 
 def create_document(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     args = {
         'table': 'splitter_documents',
         'columns': args
@@ -59,12 +49,7 @@ def create_document(args):
 
 
 def get_next_splitter_index(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     res = database.select({
         'select': ['max(split_index) as max_split_index'],
@@ -82,12 +67,7 @@ def get_next_splitter_index(args):
 
 
 def add_batch(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     args = {
         'table': 'splitter_batches',
         'columns': {
@@ -105,12 +85,7 @@ def add_batch(args):
 
 
 def set_demand_number(demand_number):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     error = None
     args = {
@@ -130,12 +105,7 @@ def set_demand_number(demand_number):
 
 
 def insert_page(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     error = None
     args = {
@@ -155,12 +125,7 @@ def insert_page(args):
 
 
 def retrieve_batches(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     query_args = {
@@ -184,12 +149,7 @@ def retrieve_batches(args):
 
 
 def count_batches(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     query_args = {
         'select': ['count(*)'],
@@ -204,12 +164,7 @@ def count_batches(args):
 
 
 def get_batch_by_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     batch = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -226,12 +181,7 @@ def get_batch_by_id(args):
 
 
 def get_document_by_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     batch = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -248,12 +198,7 @@ def get_document_by_id(args):
 
 
 def get_batch_documents(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     pages = database.select({
@@ -271,12 +216,7 @@ def get_batch_documents(args):
 
 
 def get_page_by_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     pages = database.select({
@@ -293,12 +233,7 @@ def get_page_by_id(args):
 
 
 def get_document_pages(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     pages = database.select({
@@ -316,12 +251,7 @@ def get_document_pages(args):
 
 
 def get_max_source_page(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     pages = database.select({
@@ -338,12 +268,7 @@ def get_max_source_page(args):
 
 
 def get_documents(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     pages = database.select({
@@ -361,12 +286,7 @@ def get_documents(args):
 
 
 def get_documents_max_split_index(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     pages = database.select({
@@ -383,12 +303,7 @@ def get_documents_max_split_index(args):
 
 
 def update_status(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     args = {
         'table': ['splitter_batches'],
@@ -403,12 +318,7 @@ def update_status(args):
 
 
 def update_customer(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     args = {
         'table': ['splitter_batches'],
@@ -423,12 +333,7 @@ def update_customer(args):
 
 
 def change_form(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     args = {
         'table': ['splitter_batches'],
@@ -444,12 +349,7 @@ def change_form(args):
 
 
 def lock_batch(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     args = {
         'table': ['splitter_batches'],
@@ -466,12 +366,7 @@ def lock_batch(args):
 
 
 def update_document(data):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     args = {
         'table': ['splitter_documents'],
         'where': ['id = %s'],
@@ -494,12 +389,7 @@ def update_document(data):
 
 
 def update_page(data):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     args = {
         'table': ['splitter_pages'],
         'set': {},
@@ -520,12 +410,7 @@ def update_page(data):
 
 
 def update_batch(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     res = database.update({
         'table': ['splitter_batches'],
         'set': {
@@ -541,12 +426,7 @@ def update_batch(args):
 
 
 def remove_lock_by_user_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     data = {
         'table': ['splitter_batches'],
@@ -563,12 +443,7 @@ def remove_lock_by_user_id(args):
 
 
 def remove_lock_by_batch_id(batch_id):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     data = {
         'table': ['splitter_batches'],
@@ -584,12 +459,7 @@ def remove_lock_by_batch_id(batch_id):
 
 
 def update_batch_documents_count(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     args = {
         'table': ['splitter_batches'],
@@ -605,12 +475,7 @@ def update_batch_documents_count(args):
 
 
 def get_totals(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     select = []
 
@@ -647,12 +512,7 @@ def get_totals(args):
 
 
 def get_totals_by_status(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     data = []
     select = ['COUNT(id) as total']
@@ -677,7 +537,8 @@ def get_totals_by_status(args):
             data.append(user_forms)
 
     if 'allowedCustomers' in args and args['allowedCustomers']:
-        where.append('customer_id IN (' + ','.join(map(str, args['allowedCustomers'])) + ')')
+        where.append('customer_id = ANY(%s)')
+        data.append([int(c) for c in args['allowedCustomers']])
 
     if 'form_id' in args and args['form_id']:
         if args['form_id'] == 'no_form':

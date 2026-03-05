@@ -17,21 +17,12 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
-from flask import request, g as current_context
 from flask_babel import gettext
-from ..functions import retrieve_custom_from_url
-from ..main import create_classes_from_custom_id
+from ..helpers import get_context_var
 
 
 def retrieve_configurations(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        if not _vars[0]:
-            return {}, _vars[1]
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     configurations = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -46,12 +37,7 @@ def retrieve_configurations(args):
 
 
 def retrieve_docservers(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     configurations = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -67,12 +53,7 @@ def retrieve_docservers(args):
 
 
 def retrieve_regex(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     configurations = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -88,12 +69,7 @@ def retrieve_regex(args):
 
 
 def retrieve_configuration_by_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     configurations = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -106,12 +82,7 @@ def retrieve_configuration_by_id(args):
 
 
 def retrieve_configuration_by_label(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     configurations = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -124,12 +95,7 @@ def retrieve_configuration_by_label(args):
 
 
 def retrieve_regex_by_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     regex = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -142,12 +108,7 @@ def retrieve_regex_by_id(args):
 
 
 def retrieve_regex_by_regex_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     regex = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -160,12 +121,7 @@ def retrieve_regex_by_regex_id(args):
 
 
 def retrieve_docserver_by_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     configurations = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -178,12 +134,7 @@ def retrieve_docserver_by_id(args):
 
 
 def update_configuration_by_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     configuration = database.update({
@@ -202,12 +153,7 @@ def update_configuration_by_id(args):
 
 
 def update_configuration_by_label(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     configuration = database.update({
@@ -226,12 +172,7 @@ def update_configuration_by_label(args):
 
 
 def update_regex(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     configuration = database.update({
@@ -248,12 +189,7 @@ def update_regex(args):
 
 
 def update_docserver(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     docserver = database.update({
@@ -273,12 +209,7 @@ def update_docserver(args):
     return docserver, error
 
 def get_favorites(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     favorites = database.select({
@@ -294,12 +225,7 @@ def get_favorites(args):
     return favorites, error
 
 def add_favorites(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     favorite = database.insert({
@@ -312,12 +238,7 @@ def add_favorites(args):
     return favorite, error
 
 def remove_favorites(favorite_id):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     database.delete({
         'table': ['settings_favorites'],
         'where': ['id = %s'],

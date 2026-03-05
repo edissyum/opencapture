@@ -26,17 +26,18 @@ import traceback
 import importlib
 import pandas as pd
 from PIL import Image
+from ..main import launch
 from flask_babel import gettext
 from .. import verifier_exports
 from ..classes.Files import Files
-from werkzeug.datastructures import FileStorage
 from ..classes.Files import rotate_img
+from ..helpers import get_context_var
 from ..scripting_functions import check_code
-from ..main import launch, create_classes_from_custom_id
+from werkzeug.datastructures import FileStorage
+from flask import current_app, Response, request
 from ..models import verifier, accounts, forms, attachments
 from ..controllers import auth, user, monitoring, history, status
 from ..functions import retrieve_custom_from_url, delete_documents, check_order_by
-from flask import current_app, Response, request, g as current_context
 
 
 def upload_documents(body):
@@ -60,12 +61,7 @@ def retry_from_monitoring(process_id):
         return response, 400
 
     process = process['process'][0]
-    if 'docservers' in current_context:
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
+    docservers = get_context_var('docservers', 9)
 
     path = docservers['ERROR_PATH'] + '/' + process['workflow_id'] + '/' + process['filename']
     if not os.path.isfile(path):
@@ -222,18 +218,21 @@ def retrieve_documents(args):
         args['offset'] = ''
 
     if 'allowedCustomers' in args and args['allowedCustomers']:
-        args['where'].append('customer_id IN (' + ','.join(map(str, args['allowedCustomers'])) + ')')
+        args['where'].append('customer_id = ANY(%s)')
+        args['data'].append([int(c) for c in args['allowedCustomers']])
     else:
         if 'user_id' in args and args['user_id']:
             allowed_customers, _ = user.get_customers_by_user_id(args['user_id'])
             allowed_customers.append(0)
-            args['where'].append('customer_id IN (' + ','.join(map(str, allowed_customers)) + ')')
+            args['where'].append('customer_id = ANY(%s)')
+            args['data'].append([int(c) for c in allowed_customers])
 
     if 'allowedSuppliers' in args and args['allowedSuppliers']:
         if not args['allowedSuppliers'][0]:
             args['where'].append('supplier_id is NULL')
         else:
-            args['where'].append('supplier_id IN (' + ','.join(map(str, args['allowedSuppliers'])) + ')')
+            args['where'].append('supplier_id = ANY(%s)')
+            args['data'].append([int(c) for c in args['allowedSuppliers']])
 
     if 'filter' in args and args['filter']:
         allowed_filters = ['id', 'register_date']
@@ -376,12 +375,7 @@ def delete_document_data_by_document_id(document_id, field_id):
 
 
 def delete_documents_by_document_id(document_id):
-    if 'docservers' in current_context:
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
+    docservers = get_context_var('docservers', 9)
 
     document, error = verifier.get_document_by_id({'document_id': document_id})
     if not error:
@@ -500,16 +494,9 @@ def remove_lock_by_user_id(user_id):
 
 
 def export_mem(document_id, data):
-    if 'regex' in current_context and 'database' in current_context and 'log' in current_context:
-        log = current_context.log
-        regex = current_context.regex
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
-        regex = _vars[2]
-        database = _vars[0]
+    log = get_context_var('log', 5)
+    regex = get_context_var('regex', 2)
+    database = get_context_var('database', 9)
 
     log.database = database
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
@@ -518,14 +505,8 @@ def export_mem(document_id, data):
 
 
 def export_coog(document_id, data):
-    if 'database' in current_context and 'log' in current_context:
-        log = current_context.log
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
-        database = _vars[0]
+    log = get_context_var('log', 5)
+    database = get_context_var('database', 0)
 
     log.database = database
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
@@ -535,14 +516,8 @@ def export_coog(document_id, data):
 
 
 def export_opencrm(document_id, data):
-    if 'database' in current_context and 'log' in current_context:
-        log = current_context.log
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
-        database = _vars[0]
+    log = get_context_var('log', 5)
+    database = get_context_var('database', 0)
 
     log.database = database
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
@@ -552,16 +527,9 @@ def export_opencrm(document_id, data):
 
 
 def export_cmis(document_id, data):
-    if 'database' in current_context and 'log' in current_context:
-        log = current_context.log
-        database = current_context.database
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
-        database = _vars[0]
-        docservers = _vars[9]
+    log = get_context_var('log', 5)
+    database = get_context_var('database', 0)
+    docservers = get_context_var('docservers', 9)
 
     log.database = database
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
@@ -574,14 +542,8 @@ def export_xml(document_id, data):
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
 
     if not error:
-        if 'database' in current_context and 'log' in current_context:
-            log = current_context.log
-            database = current_context.database
-        else:
-            custom_id = retrieve_custom_from_url(request)
-            _vars = create_classes_from_custom_id(custom_id)
-            log = _vars[5]
-            database = _vars[0]
+        log = get_context_var('log', 5)
+        database = get_context_var('database', 0)
 
         log.database = database
         return verifier_exports.export_xml(data['data'], log, document_info, database)
@@ -590,14 +552,8 @@ def export_xml(document_id, data):
 def export_pdf(document_id, data):
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if not error:
-        if 'log' in current_context and 'database' in current_context:
-            log = current_context.log
-            database = current_context.database
-        else:
-            custom_id = retrieve_custom_from_url(request)
-            _vars = create_classes_from_custom_id(custom_id)
-            log = _vars[5]
-            database = _vars[0]
+        log = get_context_var('log', 5)
+        database = get_context_var('database', 0)
 
         log.database = database
         return verifier_exports.export_pdf(data['data'], log, document_info, data['compress_type'], data['ocrise'])
@@ -606,16 +562,9 @@ def export_pdf(document_id, data):
 def export_facturx(document_id, data):
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if not error:
-        if 'log' in current_context and 'regex' in current_context and 'database' in current_context:
-            log = current_context.log
-            regex = current_context.regex
-            database = current_context.database
-        else:
-            custom_id = retrieve_custom_from_url(request)
-            _vars = create_classes_from_custom_id(custom_id)
-            log = _vars[5]
-            regex = _vars[2]
-            database = _vars[0]
+        log = get_context_var('log', 5)
+        regex = get_context_var('regex', 2)
+        database = get_context_var('database', 0)
 
         log.database = database
         return verifier_exports.export_facturx(data['data'], log, regex, document_info)
@@ -623,18 +572,11 @@ def export_facturx(document_id, data):
 
 def launch_output_script(document_id, workflow_settings, outputs):
     custom_id = retrieve_custom_from_url(request)
-    if 'config' in current_context and 'docservers' in current_context and 'log' in current_context \
-            and 'database' in current_context:
-        log = current_context.log
-        config = current_context.config
-        database = current_context.database
-        docservers = current_context.docservers
-    else:
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
-        config = _vars[1]
-        database = _vars[0]
-        docservers = _vars[9]
+
+    log = get_context_var('log', 5)
+    config = get_context_var('config', 1)
+    database = get_context_var('database', 0)
+    docservers = get_context_var('docservers', 9)
 
     if 'script' in workflow_settings['output'] and workflow_settings['output']['script']:
         script = workflow_settings['output']['script']
@@ -695,16 +637,9 @@ def launch_output_script(document_id, workflow_settings, outputs):
 
 
 def ocr_on_the_fly(file_name, selection, thumb_size, lang, remove_spaces=False):
-    if 'files' in current_context and 'ocr' in current_context and 'docservers' in current_context:
-        files = current_context.files
-        ocr = current_context.ocr
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        ocr = _vars[4]
-        files = _vars[3]
-        docservers = _vars[9]
+    ocr = get_context_var('ocr', 4)
+    files = get_context_var('files', 3)
+    docservers = get_context_var('docservers', 9)
 
     path = docservers['VERIFIER_IMAGE_FULL'] + '/' + file_name
     if not os.path.isfile(path):
@@ -748,14 +683,8 @@ def get_original_doc_by_document_id(document_id):
 
 
 def get_file_content(file_type, filename, mime_type, compress=False, year_and_month=False, document_id=False):
-    if 'docservers' in current_context and 'files' in current_context:
-        files = current_context.files
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        files = _vars[3]
-        docservers = _vars[9]
+    files = get_context_var('files', 3)
+    docservers = get_context_var('docservers', 9)
 
     content = False
     path = ''

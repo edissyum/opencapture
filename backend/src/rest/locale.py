@@ -16,10 +16,9 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 from flask_babel import gettext
-from ..functions import retrieve_custom_from_url
-from ..main import create_classes_from_custom_id
+from ..helpers import get_context_var
 from ..controllers import auth, config, privileges
-from flask import Blueprint, make_response, jsonify, session, request, g as current_context
+from flask import Blueprint, make_response, jsonify, session, request
 
 bp = Blueprint('i18n', __name__, url_prefix='/ws/')
 
@@ -37,12 +36,7 @@ def change_language(lang):
 
 @bp.route('i18n/getAllLang', methods=['GET'])
 def get_all_lang():
-    if 'languages' in current_context:
-        languages = current_context.languages
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        languages = _vars[11]
+    languages = get_context_var('languages', 11)
 
     langs = []
     for lang in languages:
@@ -52,14 +46,8 @@ def get_all_lang():
 
 @bp.route('i18n/getCurrentLang', methods=['GET'])
 def get_current_lang():
-    if 'languages' in current_context and 'configurations' in current_context:
-        languages = current_context.languages
-        configurations = current_context.configurations
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        configurations = _vars[10]
-        languages = _vars[11]
+    languages = get_context_var('languages', 11)
+    configurations = get_context_var('configurations', 10)
 
     current_lang = configurations['locale']
     angular_moment_lang = ''

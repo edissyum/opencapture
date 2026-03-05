@@ -29,12 +29,12 @@ from .. import splitter_exports
 from ..classes.CMIS import CMIS
 from ..classes.Files import Files
 from ..main_splitter import launch
+from ..helpers import get_context_var
 from ..classes.OpenADS import OpenADS
+from flask import current_app, request
 from ..classes.Splitter import Splitter
 from werkzeug.datastructures import FileStorage
 from ..functions import retrieve_custom_from_url, check_order_by
-from ..main import create_classes_from_custom_id
-from flask import current_app, request, g as current_context
 from ..models import splitter, doctypes, accounts, history, workflow, outputs, forms, attachments
 from ..controllers import user, monitoring, attachments as attachments_controller, status
 
@@ -82,18 +82,10 @@ def handle_uploaded_file(files, workflow_id, user_id):
 
 
 def launch_referential_update(form_data):
-    if 'database' in current_context and 'log' in current_context and 'config' in current_context and 'docservers' in current_context:
-        log = current_context.log
-        config = current_context.config
-        database = current_context.database
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        log = _vars[5]
-        config = _vars[1]
-        database = _vars[0]
-        docservers = _vars[9]
+    log = get_context_var('log', 5)
+    config = get_context_var('config', 1)
+    database = get_context_var('database', 0)
+    docservers = get_context_var('docservers', 9)
 
     available_methods = docservers['SPLITTER_METADATA_PATH'] + "/metadata_methods.json"
     call_on_splitter_view = False
@@ -146,12 +138,7 @@ def retrieve_referential(form_id):
 
 
 def retrieve_batches(data):
-    if 'docservers' in current_context:
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
+    docservers = get_context_var('docservers', 9)
 
     args = {
         'user_id': data['user_id'],
@@ -255,12 +242,7 @@ def retrieve_batches(data):
 
 
 def download_original_file(batch_id):
-    if 'docservers' in current_context:
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
+    docservers = get_context_var('docservers', 9)
 
     res = splitter.get_batch_by_id({'id': batch_id})
     if res[0]:
@@ -408,12 +390,7 @@ def remove_lock_by_batch_id(batch_id):
 
 
 def get_page_full_thumbnail(page_id):
-    if 'docservers' in current_context:
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
+    docservers = get_context_var('docservers', 9)
 
     res, error = splitter.get_page_by_id({'id': page_id})
     if not res:
@@ -438,12 +415,7 @@ def get_page_full_thumbnail(page_id):
 
 
 def get_batch_thumbnail(batch_id):
-    if 'docservers' in current_context:
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
+    docservers = get_context_var('docservers', 9)
 
     res, error = splitter.get_batch_by_id({'id': batch_id})
     if error:
@@ -468,12 +440,7 @@ def get_batch_thumbnail(batch_id):
 
 def retrieve_documents(batch_id):
     res_documents = []
-    if 'docservers' in current_context:
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
+    docservers = get_context_var('docservers', 9)
 
     documents, _ = splitter.get_batch_documents({'batch_id': batch_id})
     if documents:
@@ -518,12 +485,7 @@ def retrieve_documents(batch_id):
 
 
 def create_document(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     res = splitter.create_document({
         'data': '{}',
@@ -581,12 +543,7 @@ def get_output_parameters(parameters):
 
 
 def save_modifications(data):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
 
     res = splitter.update_batch({
         'batch_id': data['batch_id'],
@@ -733,19 +690,11 @@ def test_openads_connection(args):
 
 def export_batch(data):
     custom_id = retrieve_custom_from_url(request)
-    if 'regex' in current_context and 'log' in current_context and 'docservers' in current_context:
-        log = current_context.log
-        regex = current_context.regex
-        docservers = current_context.docservers
-        config = current_context.config
-        database = current_context.database
-    else:
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
-        config = _vars[1]
-        regex = _vars[2]
-        log = _vars[5]
-        docservers = _vars[9]
+    log = get_context_var('log', 5)
+    regex = get_context_var('regex', 2)
+    config = get_context_var('config', 1)
+    database = get_context_var('database', 0)
+    docservers = get_context_var('docservers', 9)
 
     save_response = save_modifications({
         'batch_id': data['batchId'],
@@ -763,12 +712,7 @@ def export_batch(data):
 
 
 def get_split_methods():
-    if 'docservers' in current_context:
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
+    docservers = get_context_var('docservers', 9)
     split_methods = Splitter.get_split_methods(docservers)
     if len(split_methods) > 0:
         return split_methods, 200
@@ -776,12 +720,7 @@ def get_split_methods():
 
 
 def get_metadata_methods(form_method=False):
-    if 'docservers' in current_context:
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
+    docservers = get_context_var('docservers', 9)
 
     metadata_methods = Splitter.get_metadata_methods(docservers, form_method)
     if metadata_methods and len(metadata_methods) > 0:
@@ -851,12 +790,7 @@ def get_totals(selected_status, user_id, form_id=None, allowed_customers=None, t
 
 
 def merge_batches(parent_id, batches):
-    if 'docservers' in current_context:
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
+    docservers = get_context_var('docservers', 9)
 
     parent_info = splitter.get_batch_by_id({'id': parent_id})[0]
     parent_filename = docservers['SPLITTER_ORIGINAL_DOC'] + '/' + parent_info['file_path']
@@ -979,12 +913,7 @@ def get_batch_outputs(batch_id):
     return {'outputs': _outputs}, 200
 
 def move_documents_to_attachment(documents, batch_id):
-    if 'docservers' in current_context:
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
+    docservers = get_context_var('docservers', 9)
 
     for document in documents:
         document_id = document['id']

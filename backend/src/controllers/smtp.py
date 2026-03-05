@@ -15,19 +15,16 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+from flask import request
 from flask_babel import gettext
-from flask import request, g as current_context
+from ..helpers import get_context_var
 from ..main import create_classes_from_custom_id
 from ..functions import retrieve_custom_from_url
 
 
 def check_smtp_status():
-    if 'smtp' in current_context:
-        smtp = current_context.smtp
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id, True)
-        smtp = _vars[8]
+    smtp = get_context_var('smtp', 8)
+
     smtp.test_connection()
     return smtp.is_up
 

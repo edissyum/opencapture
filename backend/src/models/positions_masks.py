@@ -23,12 +23,7 @@ from ..main import create_classes_from_custom_id
 
 
 def get_positions_masks(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     positions_masks = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -45,12 +40,7 @@ def get_positions_masks(args):
 
 
 def get_positions_mask_by_id(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
     position_mask = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -68,12 +58,7 @@ def get_positions_mask_by_id(args):
 
 
 def update_positions_mask(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     res = database.update({
@@ -90,12 +75,7 @@ def update_positions_mask(args):
 
 
 def update_poitions_mask_fields(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     error = None
 
     res = database.update({
@@ -112,12 +92,7 @@ def update_poitions_mask_fields(args):
 
 
 def add_positions_mask(args):
-    if 'database' in current_context:
-        database = current_context.database
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        database = _vars[0]
+    database = get_context_var('database', 0)
     positions_masks_exists, error = get_positions_masks({
         'where': ['positions_masks.label = %s', 'positions_masks.status <> %s'],
         'data': [args['label'], 'DEL']

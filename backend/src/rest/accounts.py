@@ -523,14 +523,7 @@ def get_reference_file():
     if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list', 'export_suppliers']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/supplier/getReferenceFile'}), 403
 
-    if 'docservers' in current_context and 'config' in current_context:
-        docservers = current_context.docservers
-        config = current_context.config
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
-        config = _vars[1]
+    config = get_context_var('config', 1)
 
     file_path = docservers['REFERENTIALS_PATH'] + '/' + config['REFERENCIAL']['referencialsupplierdocument']
     mime = mimetypes.guess_type(file_path)[0]

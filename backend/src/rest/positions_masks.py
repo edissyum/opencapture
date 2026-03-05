@@ -18,10 +18,11 @@
 import os
 import base64
 from flask_babel import gettext
-from ..main import create_classes_from_custom_id
-from ..functions import retrieve_custom_from_url, rest_validator
+from ..functions import rest_validator
 from ..controllers import auth, positions_masks, verifier, privileges
-from flask import Blueprint, request, make_response, jsonify, current_app, g as current_context
+from flask import Blueprint, request, make_response, jsonify, current_app
+
+from ..helpers import get_context_var
 
 bp = Blueprint('positions_masks', __name__, url_prefix='/ws/')
 
@@ -193,14 +194,8 @@ def delete_page_by_positions_mask_id(position_mask_id):
 @bp.route('positions_masks/getImageFromPdf/<int:positions_mask_id>', methods=['POST'])
 @auth.token_required
 def get_image_from_pdf(positions_mask_id):
-    if 'docservers' in current_context and 'files' in current_context:
-        files = current_context.files
-        docservers = current_context.docservers
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        files = _vars[3]
-        docservers = _vars[9]
+    files = get_context_var('files', 3)
+    docservers = get_context_var('docservers', 9)
 
     file = request.files
     path = current_app.config['UPLOAD_FOLDER']

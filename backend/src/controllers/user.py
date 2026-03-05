@@ -16,19 +16,19 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-import base64
 import csv
+import base64
 import subprocess
 from io import StringIO
 
-from flask import request, g as current_context
+from flask import request
 from flask_babel import gettext
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from ..controllers import auth
-from ..functions import retrieve_custom_from_url, get_custom_path, check_order_by
-from ..main import create_classes_from_custom_id
+from ..helpers import get_context_var
 from ..models import user, accounts, forms, history, roles
+from ..functions import retrieve_custom_from_url, get_custom_path, check_order_by
 
 
 def create_user(args):
@@ -47,12 +47,7 @@ def create_user(args):
 
     res, error = user.create_user(args)
     if error is None:
-        if 'configurations' in current_context:
-            configurations = current_context.configurations
-        else:
-            custom_id = retrieve_custom_from_url(request)
-            _vars = create_classes_from_custom_id(custom_id)
-            configurations = _vars[10]
+        configurations = get_context_var('configurations', 10)
 
         if configurations['userQuota']['enabled'] is True:
             quota = configurations['userQuota']['quota']
@@ -70,11 +65,8 @@ def create_user(args):
 
             if quota <= total_active_users:
                 custom_id = retrieve_custom_from_url(request)
-                if 'smtp' in current_context and current_context.smtp:
-                    smtp = current_context.smtp
-                else:
-                    _vars = create_classes_from_custom_id(custom_id, True)
-                    smtp = _vars[8]
+                smtp = get_context_var('smtp', 8)
+
                 if email_dest and smtp and smtp.is_up:
                     smtp.send_user_quota_notifications(email_dest, custom_id)
 
@@ -216,12 +208,7 @@ def get_user_by_username(username):
 def send_email_forgot_password(args):
     user_info, error = user.get_user_by_id({'user_id': args['userId']})
     if error is None:
-        if 'smtp' in current_context and current_context.smtp:
-            smtp = current_context.smtp
-        else:
-            custom_id = retrieve_custom_from_url(request)
-            _vars = create_classes_from_custom_id(custom_id, True)
-            smtp = _vars[8]
+        smtp = get_context_var('smtp', 8)
 
         if smtp and smtp.is_up:
             reset_token = auth.generate_reset_token(args['userId'])
@@ -337,12 +324,7 @@ def get_forms_by_user_id(user_id):
 
 
 def update_user(user_id, data):
-    if 'configurations' in current_context:
-        configurations = current_context.configurations
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        configurations = _vars[10]
+    configurations = get_context_var('docservers', 10)
 
     minutes_before_exp = configurations['jwtExpiration']
     user_info, error = user.get_user_by_id({'user_id': user_id})
@@ -593,11 +575,7 @@ def export_users(args):
 
 def import_users(args):
     custom_id = retrieve_custom_from_url(request)
-    if 'docservers' in current_context:
-        docservers = current_context.docservers
-    else:
-        _vars = create_classes_from_custom_id(custom_id)
-        docservers = _vars[9]
+    docservers = get_context_var('docservers', 9)
 
     custom_path = get_custom_path(custom_id)
     if not custom_path:

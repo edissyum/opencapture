@@ -20,30 +20,19 @@ import base64
 import os.path
 import requests
 import subprocess
+from flask import request
 from flask_babel import gettext
 from ..models import config, history
-from flask import request, g as current_context
-from ..main import create_classes_from_custom_id
+from ..helpers import get_context_var
 from ..functions import retrieve_custom_from_url, get_custom_path, retrieve_custom_list
 
 
 def read_config():
-    if 'config' in current_context:
-        configurations = current_context.config
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        configurations = _vars[1]
-    return configurations, 200
+    return get_context_var('config', 1), 200
 
 
 def change_locale_in_config(lang):
-    if 'languages' in current_context:
-        languages = current_context.languages
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        languages = _vars[11]
+    languages = get_context_var('languages', 11)
 
     language = {'label': 'Francais', 'lang_code': 'fra'}
     for _l in languages:
@@ -145,12 +134,7 @@ def retrieve_docservers(data):
 
 
 def retrieve_regex(data):
-    if 'configurations' in current_context:
-        configurations = current_context.configurations
-    else:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        configurations = _vars[10]
+    configurations = get_context_var('docservers', 10)
 
     args = {
         'select': ['*', 'count(*) OVER() as total'],
