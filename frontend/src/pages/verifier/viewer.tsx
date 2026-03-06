@@ -993,6 +993,7 @@ export function VerifierViewerPage() {
             <div className={ `w-1/2 h-full flex flex-col ${ showAttachments && enableAttachments ? '' : 'hidden' }` }>
                 <AttachmentsList
                     module="verifier"
+                    disabled={ disableFields }
                     documentId={ documentId }
                     onAttachmentsCountChange={ setAttachmentsCount }
                     onClose={ () => setShowAttachments(false) }
@@ -1000,7 +1001,7 @@ export function VerifierViewerPage() {
             </div>
             { !showAttachments && (
                 <div className='w-1/2'>
-                    <div>
+                    <div className='px-1'>
                         <Button size={ 'sm' } variant={ "no_bg" } className='hover:border-none! hover:p-2'
                                 icon={ <ArrowLeft size={ 16 }/> } onClick={ () => navigate('/home') }>
                             { t('GLOBAL.back') }
@@ -1061,11 +1062,10 @@ export function VerifierViewerPage() {
                                     cursor-pointer border border-(--border-secondary) grow min-w-[160px] whitespace-nowrap">
                                 <button onClick={ handlePrev }
                                         disabled={ currentPage === 1 }
-                                        className={ `
-                                    cursor-pointer rounded-full transition-colors 
-                                    ${ currentPage === 1 ? "text-(--text-secondary) cursor-not-allowed"
-                                            : "hover:bg-(--bg-secondary) text-(--text-primary)" }`
-                                        }>
+                                        className={ `cursor-pointer rounded-full transition-colors 
+                                                    ${ currentPage === 1 ? "text-(--text-secondary) cursor-not-allowed"
+                                                    : "hover:bg-(--bg-secondary) text-(--text-primary)" }` }
+                                >
                                     <ChevronLeft size={ 16 }/>
                                 </button>
 

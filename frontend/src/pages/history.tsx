@@ -76,8 +76,13 @@ export function HistoryList() {
         { id: 'date', field: 'date', header: t('HISTORY.event_date'), sortable: true },
         { id: 'user_info', field: 'user_info', header: t('HISTORY.user_info') },
         {
-            id: 'history_desc', field: 'history_desc', header: t('HISTORY.description'), className: 'max-w-[40rem]', body: (row: any) => (
-                <div className='block truncate max-w-[40rem] whitespace-nowrap' dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(row.history_desc) } }></div>
+            id: 'history_desc',
+            field: 'history_desc',
+            header: t('HISTORY.description'),
+            className: 'max-w-[40rem]',
+            body: (row: any) => (
+                <div className='block truncate max-w-[40rem] whitespace-nowrap'
+                     dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(row.history_desc) } }></div>
             )
         },
         { id: 'user_ip', field: 'user_ip', header: t('HISTORY.ip') },
@@ -255,10 +260,9 @@ export function HistoryList() {
 
             <div className='p-8 h-full w-full flex flex-col flex-1 z-10'>
                 <div className='flex items-center gap-6 mb-4'>
-                    <Button icon={ <Filter size={ 14 }/> } onClick={ () => setDisplayFilters(!displayFilters) }
-                            className={ `rounded-3xl hover:text-(--color-primary) text-(--text-primary)
-                                            border-(--border-secondary) p-2.5! bg-(--bg-primary)
-                                            ${ displayFilters ? 'bg-(--color-primary) text-white hover:text-white' : 'bg-(--bg-primary) text-(--text-primary)' }` }>
+                    <Button variant='bg_white_rounded' icon={ <Filter size={ 14 }/> }
+                            onClick={ () => setDisplayFilters(!displayFilters) }
+                            className={ `${ displayFilters ? 'bg-(--color-primary) text-white hover:text-white' : 'bg-(--bg-primary) text-(--text-primary)' }` }>
                         { t('VERIFIER.filters') }
                     </Button>
                     <span className='flex items-center gap-1'>

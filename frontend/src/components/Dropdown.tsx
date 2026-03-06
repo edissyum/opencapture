@@ -81,7 +81,9 @@ export const Dropdown: React.FC<DropdownProps> = ({
     return (
         <div className='w-full'>
             <div className={ `${ className } group group-focus-within:border-(--border-primary) relative flex
-                              justify-items-stretch ${ error || noMarginBottom ? '' : 'mb-4' }` }>
+                              justify-items-stretch 
+                              ${ error || noMarginBottom ? '' : 'mb-4' }
+                              ${ disabled ? 'cursor-not-allowed' : '' }` }>
                 <FloatLabel className='w-full'>
                     <PrimeDropdown
                         id={ id }

@@ -580,7 +580,7 @@ def save_modifications(data):
         res = splitter.update_document({
             'id': document['id'],
             'doctype_key': document['doctype_key'] if 'doctype_key' in document else None,
-            'document_metadata': document['document_metadata'] if 'document_metadata' in document else None
+            'document_metadata': document['document_metadata'] if 'document_metadata' in document and document['document_metadata'] else {}
         })[0]
         if not res:
             response = {

@@ -29,6 +29,7 @@ import { Checkbox } from "../../../components/Checkbox";
 interface DraggablePageProps {
     page: any;
     menuItems?: any[];
+    disabled?: boolean;
     isSelected: boolean;
     isDragOverlay?: boolean;
     documentId: string | number;
@@ -38,10 +39,11 @@ interface DraggablePageProps {
 
 export const DraggablePage = React.memo(function DraggablePage({
     page,
+    onZoom,
+    disabled,
+    menuItems,
     documentId,
     isDragOverlay,
-    onZoom,
-    menuItems,
     isSelected,
     onSelectionChange
 }: DraggablePageProps) {
@@ -66,10 +68,12 @@ export const DraggablePage = React.memo(function DraggablePage({
     return (
         <div
             ref={ setNodeRef }
+            onClick={ () => !disabled && onSelectionChange?.(page, !isSelected) }
             style={ isDragOverlay ? {} : style }
-            className='DraggablePage group flex items-center gap-2 rounded-lg border border-(--border-secondary)
-                       transition-colors bg-(--bg-secondary) cursor-default select-none h-full
-                       hover:bg-(--color-primary)/20 hover:cursor-pointer min-w-64'
+            className={ `DraggablePage group flex items-center gap-2 rounded-lg border-2 border-(--border-secondary)
+                transition-colors bg-(--bg-secondary) cursor-default select-none h-full
+                hover:bg-(--color-primary)/20 hover:cursor-pointer min-w-64
+                ${ isSelected && 'bg-(--color-primary)/20 border-(--color-primary)' }` }
         >
             <div className='h-full w-full flex flex-col items-center'>
                 { thumbnailUrl && (
@@ -84,9 +88,9 @@ export const DraggablePage = React.memo(function DraggablePage({
                         />
 
                         <div
-                            className="flex items-center gap-1 text-(--text-secondary) rounded-md absolute bottom-2
-                                       transition-opacity right-4 bg-(--bg-primary) py-1 px-2 border-2
-                                       border-(--border-secondary) group-hover:opacity-100 opacity-0"
+                            className="flex items-center left-1/2 -translate-x-1/2 gap-1 text-white rounded-3xl
+                                       absolute bottom-2 transition-opacity bg-(--color-primary) py-2 px-3
+                                       group-hover:opacity-100 opacity-0 text-sm"
                             onClick={ (e) => {
                                 e.stopPropagation();
                                 onZoom?.(page);
@@ -99,23 +103,24 @@ export const DraggablePage = React.memo(function DraggablePage({
                         <Checkbox
                             size={ 6 }
                             id={ page.id }
+                            disabled={ disabled }
                             checked={ isSelected }
                             className="absolute top-3 left-3"
-                            onChange={ (checked: boolean) => onSelectionChange?.(page, checked) }
+                            onChange={ (checked: boolean) => !disabled && onSelectionChange?.(page, checked) }
                         />
                     </div>
                 ) }
 
-                <div
-                    className="w-full cursor-grab active:cursor-grabbing rounded-md rounded-t-none
+                <div className="w-full cursor-grab active:cursor-grabbing rounded-lg rounded-t-none
                                p-2 flex items-center gap-1 bg-(--bg-primary) font-semibold"
-                    { ...attributes }
-                    { ...listeners }
+                     { ...attributes }
+                     { ...listeners }
                 >
                     <span className="text-sm">Page { page.source_page }</span>
                     <EllipsisVertical
-                        size={ 18 } className="cursor-pointer ml-auto"
+                        size={ 18 } className={ `ml-auto ${ disabled ? 'cursor-not-allowed' : 'cursor-pointer' }` }
                         onClick={ (e) => {
+                            if (disabled) return;
                             e.preventDefault();
                             e.stopPropagation();
                             onSelectionChange?.(page, true);

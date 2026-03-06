@@ -134,6 +134,16 @@
     @apply border-(--border-secondary);
 }
 
+.panelSelected .p-panel-header {
+    @apply border-(--color-primary);
+    @apply border-b-(--border-secondary);
+}
+
+.panelSelected .p-panel-content {
+    @apply border-(--color-primary);
+    @apply border-t-(--border-secondary);
+}
+
 .p-panel-title {
     @apply w-full;
 }

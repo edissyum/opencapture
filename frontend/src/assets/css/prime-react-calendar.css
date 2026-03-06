@@ -26,16 +26,9 @@
      @apply min-w-md!;
 }
 
-.calendar .p-inputtext {
+.p-calendar .p-inputtext {
     @apply border-r-0;
     @apply border-(--border-secondary);
-}
-
-.calendar .p-inputtext:hover + .p-datepicker-trigger,
-.calendar .p-inputtext:focus + .p-datepicker-trigger {
-    @apply border-(--border-primary);
-    @apply text-(--color-primary);
-    @apply bg-(--color-primary)/10;
 }
 
 .p-inputwrapper:hover .p-inputtext,

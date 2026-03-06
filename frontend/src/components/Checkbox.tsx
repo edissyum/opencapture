@@ -23,12 +23,22 @@ type CheckboxProps = {
     size?: number;
     label?: string;
     checked?: boolean;
+    disabled?: boolean;
     className?: string;
     indeterminate?: boolean;
     onChange?: (checked: boolean, id: string | undefined) => void;
 };
 
-export function Checkbox({ id, checked = false, onChange, label, className, indeterminate, size = 5 }: CheckboxProps) {
+export function Checkbox({
+    id,
+    checked = false,
+    onChange,
+    label,
+    className,
+    indeterminate,
+    size = 5,
+    disabled = false
+}: CheckboxProps) {
     const [isChecked, setIsChecked] = useState(checked);
     const [isIndeterminate, setIsIndeterminate] = useState(indeterminate);
 
@@ -41,6 +51,8 @@ export function Checkbox({ id, checked = false, onChange, label, className, inde
     }, [indeterminate]);
 
     const toggle = (event: React.MouseEvent<HTMLDivElement>) => {
+        if (disabled) return;
+
         event.preventDefault();
         event.stopPropagation();
 
@@ -65,6 +77,7 @@ export function Checkbox({ id, checked = false, onChange, label, className, inde
                 style={ { width: `calc(0.25rem*${ size })`, height: `calc(0.25rem*${ size })` } }
                 className={ `border border-(--border-secondary) rounded flex items-center justify-center
                     ${ isChecked ? "bg-(--color-primary) border-(--color-primary)" : "bg-(--bg-primary)" }
+                    ${ disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-(--bg-secondary)" }
                     transition-all hover:border-(--color-primary) shrink-0` }
             >
                 { isChecked && !isIndeterminate && (

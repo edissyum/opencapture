@@ -81,7 +81,9 @@
         "field_required": "es obligatorio",
         "login": "Iniciar sesión",
         "session_expired": "Su sesión ha expirado, por favor vuelva a iniciar sesión",
-        "welcome": "Bienvenido a Open-Capture, solución de captura de documentos 100% Open Source"
+        "welcome": "Bienvenido a Open-Capture, solución de captura de documentos 100% Open Source",
+        "forgot_password": "",
+        "reset_here": ""
     },
     "COLORS": {
         "black": "Negro",
@@ -269,7 +271,6 @@
         "copied": "Copiado",
         "validate": "Validar",
         "unsaved_changes_warning": "Esta página le pide que confirme que desea salir; los datos que ha introducido pueden no guardarse.",
-        "save_changes": "Guardar cambios",
         "search": "",
         "back": ""
     },
@@ -608,7 +609,14 @@
         "cant_add_document": "Si desea agregar un documento, primero elimine los adjuntos",
         "pages_selected_many": "",
         "pages_selected_one": "",
-        "pages_selected_other": ""
+        "pages_selected_other": "",
+        "validate_batch": "",
+        "change_form": "",
+        "confirm_change_form": "",
+        "batch_validated": "",
+        "empty_documents_error": "",
+        "form_changed": "",
+        "unlabeled_document_error": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Haga clic para elegir un archivo",

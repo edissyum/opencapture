@@ -512,6 +512,7 @@ class Splitter:
                         document_md5 = hashlib.md5(f.read()).hexdigest()
 
                 doc_loop_item = doc_loop_item_template.group(1)
+                doc_loop_item = doc_loop_item.replace('#id#', str(document['id']))
                 doc_loop_item = doc_loop_item.replace('#date#', date)
                 doc_loop_item = doc_loop_item.replace('#user_lastname#', user_lastname)
                 doc_loop_item = doc_loop_item.replace('#user_lastname#', user_lastname)
@@ -522,9 +523,10 @@ class Splitter:
                 doc_loop_item = doc_loop_item.replace('#random#', str(random.randint(0, 99999)).zfill(5))
                 doc_loop_item = doc_loop_item.replace('#filename#', document['filename'] if 'filename' in document else '')
 
-                for key in document['data']['custom_fields']:
-                    if f'#{key}#' in xml_as_string:
-                        doc_loop_item = doc_loop_item.replace(f'#{key}#', str(document['data']['custom_fields'][key]))
+                if 'custom_fields' in document['data'] and document['data']['custom_fields']:
+                    for key in document['data']['custom_fields']:
+                        if f'#{key}#' in xml_as_string:
+                            doc_loop_item = doc_loop_item.replace(f'#{key}#', str(document['data']['custom_fields'][key]))
 
                 documents_tags += doc_loop_item
 

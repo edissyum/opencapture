@@ -167,19 +167,19 @@ const ISOCalendar: React.FC<ISOCalendarProps> = ({
 
     return (
         <div className="flex flex-col">
-            <div className={ `${ error ? '' : 'mb-5' }` }>
+            <div className={ `${ error ? '' : 'mb-5' } ${ disabled ? 'cursor-not-allowed' : '' }` }>
                 <FloatLabel className="w-full calendar">
                     <Calendar
                         showIcon
                         id={ id }
-                        className="w-full"
+                        className={ `w-full ${disabled ? 'pointer-events-none' : '' }` }
                         locale={ localeLang }
                         disabled={ disabled }
                         // @ts-ignore
                         onClick={ onClick }
                         onChange={ handleChange }
                         value={ isoToDate(value) }
-                        icon={<CalendarIcon size={ 18 }/>}
+                        icon={ <CalendarIcon size={ 18 }/> }
                         dateFormat={
                             localeLang === "fr"
                                 ? "dd/mm/yy"
@@ -196,7 +196,8 @@ const ISOCalendar: React.FC<ISOCalendarProps> = ({
                     ) }
                 </FloatLabel>
             </div>
-            { error && <p className="text-(--text-error) text-sm " dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(error) } }></p> }
+            { error && <p className="text-(--text-error) text-sm "
+                          dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(error) } }></p> }
         </div>
     );
 };

@@ -33,9 +33,11 @@ import {
     FileStack,
     FolderTree,
     Layers,
+    PackageCheck,
     Paperclip,
     Plus,
-    RotateCw, Save,
+    RotateCw,
+    Save,
     Trash,
     Trash2,
     X
@@ -90,12 +92,14 @@ export function SplitterViewerPage() {
     const { user, loadingUser } = useUser();
     const { logHistory } = useHistoryLogger();
 
+    const [forms, setForms] = useState<any[]>([]);
     const { batchId } = useParams<{ batchId: string }>();
     const [loading, setLoading] = useState(false);
     const { customFields } = useCustomFields('splitter');
 
     const [documents, setDocuments] = useState<any>([]);
     const [batch, setBatch] = useState<any>(null);
+    const [disabledBatch, setDisabledBatch] = useState(false);
     const [batchMetadata, setBatchMetadata] = useState<any[]>([]);
     const [batchMetadataValues, setBatchMetadataValues] = useState<any>({});
     const [documentMetadata, setDocumentMetadata] = useState<any>(null);
@@ -170,7 +174,6 @@ export function SplitterViewerPage() {
         }
     ];
 
-    // Fetch batch details, documents and attachments config
     const fetchDocuments = async () => {
         try {
             const response = await get(`/splitter/documents/${ batchId }`);
@@ -237,7 +240,7 @@ export function SplitterViewerPage() {
         }
     };
 
-    // Fetch batch details and attachments config on load
+    // Fetch batch details, forms and attachments config on load
     useEffect(() => {
         if (!batchId || loadingUser) return;
 
@@ -252,6 +255,9 @@ export function SplitterViewerPage() {
                 const response = await post('/splitter/batches/list', { 'batchId': batchId, 'user_id': user.id });
                 if (response?.batches?.length > 0) {
                     const batchData = response.batches[0];
+                    if (batchData.status === 'END') {
+                        setDisabledBatch(true);
+                    }
                     setBatch(batchData);
                 }
             } catch (error) {
@@ -268,8 +274,21 @@ export function SplitterViewerPage() {
             }
         };
 
+        const fetchForms = async () => {
+            try {
+                const response = await get('/forms/splitter/list', {
+                    params: {
+                        user: user.id,
+                    }
+                });
+                setForms(response.forms);
+            } catch (error) {
+                console.error('Error fetching forms :', error);
+            }
+        }
+
+        fetchForms().then();
         fetchBatchDetails().then();
-        fetchDocuments().then();
         fetchEnableAttachments().then();
     }, [loadingUser]);
 
@@ -279,7 +298,7 @@ export function SplitterViewerPage() {
         [documents]
     );
 
-    // Fill batch metadata
+    // Fill batch metadata and fetch documents
     useEffect(() => {
         if (loadingFormFields) return;
 
@@ -328,6 +347,7 @@ export function SplitterViewerPage() {
 
             setBatchMetadata(lines);
         }
+        fetchDocuments().then();
     }, [loadingFormFields]);
 
     // Load referential
@@ -495,6 +515,23 @@ export function SplitterViewerPage() {
         fetchAndDownload().then();
     };
 
+    // Handle keyboard delete key for selected document
+    useEffect(() => {
+        if (!selectedDocument) return;
+
+        const handleKeyDown = (event: any) => {
+            if (event.key === "Delete") {
+                handleDeleteDocument();
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [selectedDocument]);
+
     const handleDeleteDocument = () => {
         showConfirmDialog({
             title: t('SPLITTER.delete_document'),
@@ -607,31 +644,35 @@ export function SplitterViewerPage() {
         });
     }
 
+    const buildDocumentMetadataForSave = () => {
+        const documentsWithoutTnl = documents.map((doc: any) => ({
+            ...doc,
+            pages: doc.pages.map((p: any) => ({
+                id: p.id,
+                status: p.status,
+                rotation: p.rotation,
+                source_page: p.source_page,
+                docuemnt_id: p.document_id,
+                display_order: p.display_order
+            }))
+        }));
+
+        Object.keys(documentMetadataValues).forEach((document_id: any) => {
+            const doc = documentsWithoutTnl.find((d: any) => String(d.id) === String(document_id));
+            if (doc) {
+                doc.document_metadata = {
+                    ...doc.document_metadata,
+                    ...documentMetadataValues[document_id]
+                }
+            }
+        });
+        return documentsWithoutTnl;
+    }
+
     const handleSaveChanges = async (notif = true, extraDeletedDocuments = []) => {
         setLoading(true);
         try {
-            const documentsWithoutTnl = documents.map((doc: any) => ({
-                ...doc,
-                pages: doc.pages.map((p: any) => ({
-                    id: p.id,
-                    status: p.status,
-                    rotation: p.rotation,
-                    source_page: p.source_page,
-                    docuemnt_id: p.document_id,
-                    display_order: p.display_order
-                }))
-            }));
-
-            Object.keys(documentMetadataValues).forEach((document_id: any) => {
-                const doc = documentsWithoutTnl.find((d: any) => String(d.id) === String(document_id));
-                if (doc) {
-                    doc.document_metadata = {
-                        ...doc.document_metadata,
-                        ...documentMetadataValues[document_id]
-                    }
-                }
-            });
-
+            const documentsWithoutTnl = buildDocumentMetadataForSave();
             const deletedDocumentsIds = [...deletedDocuments, ...extraDeletedDocuments].map(d => d.id);
 
             await post('/splitter/saveModifications', {
@@ -774,11 +815,69 @@ export function SplitterViewerPage() {
     }
 
     const selectAll = () => {
+        if (disabledBatch) return;
+
         if (selectedPages.length === 0) {
             const allPages = documents.reduce((acc: any[], doc: any) => [...acc, ...doc.pages], []);
             setSelectedPages(allPages);
         } else {
             setSelectedPages([]);
+        }
+    }
+
+    const handleChangeForm = async (event: any) => {
+        showConfirmDialog({
+            title: t('SPLITTER.change_form'),
+            message: t('SPLITTER.confirm_change_form'),
+            confirmText: t('GLOBAL.modify'),
+            cancelText: t('GLOBAL.cancel'),
+            onConfirm: async () => {
+                setLoading(true);
+                try {
+                    await post('/splitter/changeForm', { 'batchId': batchId, formId: event.value });
+                    showToast(t('SPLITTER.form_changed'), 'success');
+                    // refresh page to load new form fields and metadata
+                    setTimeout(() => {
+                        navigate(0);
+                    });
+                } catch (error) {
+                    console.error("Error changing form:", error);
+                }
+            },
+        });
+    }
+
+    const handleValidateBatch = async () => {
+        const emptyDocs = documents.filter((doc: any) => doc.pages.length === 0);
+        if (emptyDocs.length > 0) {
+            showToast(t('SPLITTER.empty_documents_error'), 'error');
+            return;
+        }
+
+        const unLabeledDocs = documents.filter((doc: any) => !doc.doctype_label);
+        if (unLabeledDocs.length > 0) {
+            showToast(t('SPLITTER.unlabeled_document_error'), 'error');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const documentsWithoutTnl = buildDocumentMetadataForSave();
+            await post('/splitter/export', {
+                'batchId': batchId,
+                'formId': batch.form_id,
+                'movedPages': movedPages,
+                'documents': documentsWithoutTnl,
+                'batchMetadata': batchMetadataValues,
+                'deletedPagesIds': deletedPages.map(p => p.id),
+                'deletedDocumentsIds': deletedDocuments.map(d => d.id)
+            });
+            showToast(t('SPLITTER.batch_validated'), 'success');
+            navigate('/home');
+        } catch (error) {
+            console.error("Error validating batch:", error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -793,26 +892,29 @@ export function SplitterViewerPage() {
             ) }
             { (!showAttachments) && (
                 <div className='flex justify-center'>
-                    <div className='fixed bottom-4 shadow-lg rounded-3xl flex justify-center items-center gap-4 p-4 bg-(--bg-primary) border-2
+                    <div className='fixed bottom-4 shadow-lg rounded-3xl flex justify-center items-center gap-6 p-3 bg-(--bg-primary) border-2
                             border-(--border-secondary) z-10'>
-                        <Checkbox checked={ selectedPages.length !== 0 } onChange={ selectAll }
-                                  indeterminate={ selectedPages.length != pagesCount }/>
-                        <div className='text-sm'>
-                            <strong>{ selectedPages.length } </strong>
-                            <span
-                                dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(t('SPLITTER.pages_selected', { count: selectedPages.length })) } }/>
+                        <div className={ `bg-(--bg-secondary) p-3 rounded-xl flex items-center gap-2
+                            ${ selectedPages.length == 0 ? 'bg-(--bg-secondary)' : 'bg-(--color-primary)/20' }` }>
+                            <Checkbox checked={ selectedPages.length !== 0 } onChange={ selectAll }
+                                      indeterminate={ selectedPages.length != pagesCount } disabled={ disabledBatch }/>
+                            <div className={ `text-sm ${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer' }` }
+                                 onClick={ selectAll }>
+                                <strong>{ selectedPages.length } </strong>
+                                <span
+                                    dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(t('SPLITTER.pages_selected', { count: selectedPages.length })) } }/>
+                            </div>
                         </div>
-
                         <div onClick={ handleDeletePage }
                              className={ `text-sm text-(--text-error)/80 flex items-center gap-1
-                                        ${ selectedPages.length == 0 ? 'hidden' : 'cursor-pointer' } ` }>
+                                        ${ selectedPages.length == 0 || disabledBatch ? 'hidden' : 'cursor-pointer' } ` }>
                             <Trash size={ 16 }/>
                             { t('GLOBAL.delete') }
                         </div>
 
                         <div onClick={ handleRotation }
                              className={ `flex items-center text-(--text-secondary) text-sm gap-1 
-                             ${ selectedPages.length == 0 ? 'hidden' : 'cursor-pointer' } ` }>
+                             ${ selectedPages.length == 0 || disabledBatch ? 'hidden' : 'cursor-pointer' } ` }>
                             <RotateCw size={ 14 }/>
                             { t('SPLITTER.rotation') }
                         </div>
@@ -821,18 +923,26 @@ export function SplitterViewerPage() {
 
                         <div data-tooltip-id="tooltip"
                              className={ `flex items-center text-(--text-secondary) text-sm gap-1 
-                                ${ attachmentsCount > 0 ? 'cursor-not-allowed' : 'cursor-pointer' } ` }
+                                ${ attachmentsCount > 0 || disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer' } ` }
                              data-tooltip-content={ attachmentsCount > 0 ? t('SPLITTER.cant_add_document') : '' }>
-                            <div onClick={ addDocument } className={'flex items-center gap-1'}>
+                            <div onClick={ addDocument } className={ 'flex items-center gap-1' }>
                                 <Plus size={ 16 }/>
                                 { t('SPLITTER.add_document') }
                             </div>
                         </div>
-                        <div onClick={ () => handleSaveChanges() }
+
+                        <div onClick={ () => unSavedChanges && handleSaveChanges() }
                              className={ `flex items-center text-(--text-secondary) text-sm gap-1 
-                             ${ !unSavedChanges ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' } ` }>
+                             ${ !unSavedChanges || disabledBatch ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' } ` }>
                             <Save size={ 16 }/>
                         </div>
+
+                        <Button disabled={ unSavedChanges || loading || disabledBatch }
+                                className='flex items-center gap-2 px-3!'
+                                onClick={ handleValidateBatch }>
+                            <PackageCheck size={ 16 }/>
+                            { t('SPLITTER.validate_batch') }
+                        </Button>
                     </div>
                 </div>
             ) }
@@ -855,15 +965,13 @@ export function SplitterViewerPage() {
 
             { !showAttachments && (
                 <div className='px-8 py-4 flex items-center gap-2'>
-                    <Button icon={ <ArrowLeft size={ 16 }/> } onClick={ () => navigate('/home') }
-                            className='rounded-3xl hover:text-(--color-primary) text-(--text-primary)
-                                           border-(--border-secondary) p-2! px-5! bg-(--bg-primary)'>
+                    <Button variant='bg_white_rounded' icon={ <ArrowLeft size={ 16 }/> }
+                            onClick={ () => navigate('/home') }>
                         { t('GLOBAL.back') }
                     </Button>
                     <div className='ml-auto'>
-                        <Button icon={ <Download size={ 18 }/> } onClick={ handleDownloadOriginalFile }
-                                className='rounded-3xl hover:text-(--color-primary) text-(--text-primary)
-                                           border-(--border-secondary) p-2! px-5! bg-(--bg-primary)'>
+                        <Button variant='bg_white_rounded' icon={ <Download size={ 18 }/> }
+                                onClick={ handleDownloadOriginalFile }>
                             { batch.file_name }
                         </Button>
                     </div>
@@ -897,9 +1005,10 @@ export function SplitterViewerPage() {
             { enableAttachments && (
                 <div className={ `w-full h-full flex flex-col ${ !showAttachments && 'hidden' }` }>
                     <AttachmentsList
-                        key={ attachmentsRefreshKey }
                         module="splitter"
                         documentId={ batchId }
+                        disabled={ disabledBatch }
+                        key={ attachmentsRefreshKey }
                         unBinding={ handleUnbinding }
                         onAttachmentsCountChange={ setAttachmentsCount }
                         onClose={ () => setShowAttachments(false) }
@@ -912,18 +1021,31 @@ export function SplitterViewerPage() {
                     <Accordion className='mb-6' activeIndex={ 0 }>
                         <AccordionTab header={ t('SPLITTER.batch_content') }>
                             <div className='p-4'>
-                                <div className='text-(--text-secondary) flex items-center gap-4 mb-4'>
-                                    <span className='flex items-center gap-1'>
-                                        <Layers size={ 16 }/>
-                                        <span>{ pagesCount }</span>
+                                <div className='text-(--text-secondary) flex items-center gap-4 mb-6'>
+                                    <span className='flex items-center'>
+                                        <Layers size={ 16 }/>&nbsp;
+                                        <span>{ pagesCount }</span>&nbsp;
                                         { t('SPLITTER.pages', { count: pagesCount }) }
                                     </span>
-                                    <span className='flex items-center gap-1'>
-                                        <FileStack size={ 16 }/>
-                                        <span>{ documents.length }</span>
+                                    <span className='flex items-center'>
+                                        <FileStack size={ 16 }/>&nbsp;
+                                        <span>{ documents.length }</span>&nbsp;
                                         { t('SPLITTER.documents', { count: documents.length }) }
                                     </span>
                                 </div>
+
+                                <Dropdown id={ "forms" }
+                                          filter={ true }
+                                          className="w-1/3"
+                                          disabled={ disabledBatch }
+                                          label={ t('VERIFIER.form') }
+                                          options={ forms.map((form: any) => ({
+                                              label: form.label,
+                                              value: form.id
+                                          })) }
+                                          value={ batch.form_id }
+                                          onChange={ handleChangeForm }
+                                />
 
                                 { batchMetadata && (
                                     <div>
@@ -938,6 +1060,7 @@ export function SplitterViewerPage() {
                                                                 id={ field.id }
                                                                 key={ field.id }
                                                                 label={ t(field.label) }
+                                                                disabled={ disabledBatch }
                                                                 required={ field.required }
                                                                 value={ batchMetadataValues[field.label_short] }
                                                                 onChange={ (e) => {
@@ -953,6 +1076,7 @@ export function SplitterViewerPage() {
                                                                         label={ field.label }
                                                                         className="w-full mb-2"
                                                                         useExtraInLabel={ true }
+                                                                        disabled={ disabledBatch }
                                                                         options={ getMetadaValuesForField(field) }
                                                                         value={ batchMetadataValues[field.label_short] }
                                                                         onChange={ (e) => handleUpdateBatchMetadataValues(field, e.value) }
@@ -963,6 +1087,7 @@ export function SplitterViewerPage() {
                                                                         key={ field.id }
                                                                         type={ field.type }
                                                                         label={ t(field.label) }
+                                                                        disabled={ disabledBatch }
                                                                         required={ field.required }
                                                                         value={ batchMetadataValues[field.label_short] }
                                                                         onChange={ (e) => {
@@ -993,25 +1118,30 @@ export function SplitterViewerPage() {
                         { documents.map((document: any) => (
                             <Panel
                                 key={ document.id }
-                                className='PanelDocumentList mb-4 w-full'
+                                onClick={ () => setSelectedDocument(document) }
+                                className={ `PanelDocumentList mb-4 w-full ${ selectedDocument?.id === document.id ? 'panelSelected' : 'border-transparent' }` }
                                 header={
                                     <div className="flex items-center gap-1.5">
                                         { !document.doctype_label && (
                                             <div className='text-(--text-error) font-semibold flex items-center gap-2'>
-                                                <FolderTree size={ 18 }/>
+                                                <div className='bg-(--text-error)/20 rounded-md p-1'>
+                                                    <FolderTree size={ 20 }/>
+                                                </div>
                                                 { t('SPLITTER.type_document') }
                                             </div>
                                         ) }
                                         <div>{ document.doctype_label }</div>
                                         <div
-                                            className='text-(--text-secondary) font-medium flex items-center gap-1.5 bg-(--bg-secondary) px-3 py-1 rounded-3xl'>
-                                            <span>{ document.pages.length }</span>
+                                            className='text-(--text-secondary) font-medium flex items-center bg-(--bg-secondary) px-3 py-1 rounded-3xl'>
+                                            <span>{ document.pages.length }&nbsp;</span>
                                             { t('SPLITTER.pages', { count: document.pages.length }) }
                                         </div>
                                         <div className='ml-auto'>
                                             <EllipsisVertical
-                                                size={ 18 } className="cursor-pointer"
+                                                size={ 18 }
+                                                className={ `${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer' }` }
                                                 onClick={ (e) => {
+                                                    if (disabledBatch) return;
                                                     e.preventDefault();
                                                     e.stopPropagation();
                                                     setSelectedDocument(document);
@@ -1024,7 +1154,7 @@ export function SplitterViewerPage() {
                                     </div>
                                 }
                             >
-                                { documentMetadata && document.pages.length > 0 && (
+                                { documentMetadata.length > 0 && document.pages.length > 0 && (
                                     <div className='px-4 pt-4'>
                                         <h3 className='font-semibold flex items-center cursor-pointer gap-1'
                                             onClick={ () => setDocumentMetadataOpen(prev => !prev) }>
@@ -1048,6 +1178,7 @@ export function SplitterViewerPage() {
                                                                         id={ field.id }
                                                                         key={ field.id }
                                                                         label={ t(field.label) }
+                                                                        disabled={ disabledBatch }
                                                                         required={ field.required }
                                                                         value={ documentMetadataValues[document.id]?.[field.label_short] }
                                                                         onChange={ (e) => {
@@ -1060,6 +1191,7 @@ export function SplitterViewerPage() {
                                                                         key={ field.id }
                                                                         type={ field.type }
                                                                         label={ t(field.label) }
+                                                                        disabled={ disabledBatch }
                                                                         required={ field.required }
                                                                         value={ documentMetadataValues[document.id]?.[field.label_short] }
                                                                         onChange={ (e) => {
@@ -1080,6 +1212,7 @@ export function SplitterViewerPage() {
                                                  items={ document.pages.map((p: any) => `page-${ p.id }`) }>
                                     <DroppableDocumentZone
                                         pages={ document.pages }
+                                        disabled={ disabledBatch }
                                         documentId={ document.id }
                                         menuItems={ pageMenuItems }
                                         isEmpty={ document.pages.length === 0 }

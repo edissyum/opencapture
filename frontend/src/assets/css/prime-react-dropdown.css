@@ -15,7 +15,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-.p-dropdown .p-dropdown-label[data-pc-section="input"] {
+.p-dropdown input {
     @apply cursor-text;
 }
 

@@ -45,6 +45,7 @@ import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
 type AttachmentsListProps = {
     module: string;
     documentId: any;
+    disabled?: boolean;
     onClose: () => void;
     unBinding?: () => void;
     onAttachmentsCountChange: (count: number) => void;
@@ -52,6 +53,7 @@ type AttachmentsListProps = {
 
 export function AttachmentsList({
     module,
+    disabled,
     documentId,
     onAttachmentsCountChange,
     onClose,
@@ -191,7 +193,7 @@ export function AttachmentsList({
     };
 
     const handleDelete = () => {
-        if (!selectedAttachment) return;
+        if (!selectedAttachment || disabled) return;
 
         showConfirmDialog({
             title: t('ATTACHMENTS.delete_attachment'),
@@ -234,25 +236,24 @@ export function AttachmentsList({
             <div className='h-full flex flex-col flex-1 overflow-y-auto'>
                 { !showAttachment && (
                     <div className='flex gap-2 sticky p-6 top-0 z-10'>
-                        <Button icon={ <ArrowLeft size={ 18 }/> } onClick={ () => onClose() }
-                                className='rounded-3xl hover:text-(--color-primary) text-(--text-primary)
-                                           border-(--border-secondary) p-2.5! px-5! bg-(--bg-primary)'>
+                        <Button variant='bg_white_rounded' icon={ <ArrowLeft size={ 18 }/> }
+                                onClick={ () => onClose() }>
                             { module === 'verifier' ? t('ATTACHMENTS.back_to_file') : t('ATTACHMENTS.back_to_batch') }
                         </Button>
                         { module === 'splitter' && (
-                            <Button icon={ <Unlink size={ 18 }/> } onClick={ () => unBinding && unBinding() }
-                                    disabled={ attachments.length === 0 || containsNotPdf }
-                                    className='rounded-3xl hover:text-(--color-primary) text-(--text-primary)
-                                               border-(--border-secondary) p-2.5! px-5! bg-(--bg-primary)'>
+                            <Button variant='bg_white_rounded' icon={ <Unlink size={ 18 }/> }
+                                    onClick={ () => unBinding && unBinding() }
+                                    disabled={ attachments.length === 0 || containsNotPdf || disabled }>
                                 { t('ATTACHMENTS.unbinding') }
                             </Button>
                         ) }
 
                         <div className='ml-auto'>
-                            <input ref={ fileInputRef } type="file" className="hidden" onChange={ handleFileSelected }/>
-                            <Button icon={ <CloudUpload size={ 18 }/> } onClick={ () => fileInputRef.current?.click() }
-                                    className='rounded-3xl hover:text-(--color-primary) text-(--text-primary)
-                               border-(--border-secondary) p-2.5! px-5! bg-(--bg-primary)'>
+                            <input ref={ fileInputRef } disabled={ disabled } type="file" className="hidden"
+                                   onChange={ handleFileSelected }/>
+                            <Button variant='bg_white_rounded' icon={ <CloudUpload size={ 18 }/> }
+                                    onClick={ () => fileInputRef.current?.click() }
+                                    disabled={ disabled }>
                                 { t('ATTACHMENTS.upload_new_file') }
                             </Button>
                         </div>

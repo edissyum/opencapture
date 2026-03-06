@@ -41,8 +41,8 @@ const AutocompleteInput: React.FC<AutocompleteProps> = ({
     label,
     suggestions,
     itemTemplate,
-    dropdown=false,
-    multiple=false,
+    dropdown = false,
+    multiple = false,
     required = false,
     disabled = false,
     optionLabel = "name",
@@ -53,7 +53,7 @@ const AutocompleteInput: React.FC<AutocompleteProps> = ({
 
     return (
         <div>
-            <FloatLabel className="w-full mb-4">
+            <FloatLabel className={ `w-full mb-4 ${ disabled ? 'cursor-not-allowed' : '' }` }>
                 <AutoComplete
                     key={ id }
                     name={ id }
@@ -63,7 +63,7 @@ const AutocompleteInput: React.FC<AutocompleteProps> = ({
                     dropdown={ dropdown }
                     disabled={ disabled }
                     required={ required }
-                    className={ "w-full" }
+                    className={ `w-full ${ disabled ? 'pointer-events-none' : '' }` }
                     completeMethod={ search }
                     suggestions={ suggestions }
                     itemTemplate={ itemTemplate }

@@ -93,9 +93,7 @@ export function AttachmentsViewer({ show, module, attachment, onClose }: Attachm
         <div className='h-full pb-4'>
             <div className='h-full flex flex-col overflow-auto'>
                 <div className='sticky p-6 pb-0 top-0 z-10'>
-                    <Button icon={ <ArrowLeft size={ 18 }/> } onClick={ () => onClose() }
-                            className='rounded-3xl hover:text-(--color-primary) text-(--text-primary)
-                               border-(--border-secondary) p-2.5! px-5! bg-(--bg-primary)'>
+                    <Button variant='bg_white_rounded' icon={ <ArrowLeft size={ 18 }/> } onClick={ () => onClose() }>
                         { t('ATTACHMENTS.back_to_attachments_list') }
                     </Button>
                 </div>

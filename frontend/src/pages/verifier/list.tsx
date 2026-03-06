@@ -603,10 +603,8 @@ export function VerifierListPage() {
 
             <div className='p-8 h-full w-full flex flex-col flex-1 z-10'>
                 <div className='flex items-center gap-6 mb-4'>
-                    <Button icon={ <Filter size={ 14 }/> } onClick={ () => setDisplayFilters(!displayFilters) }
-                            className={ `rounded-3xl hover:text-(--color-primary) text-(--text-primary)
-                                            border-(--border-secondary) p-2.5! bg-(--bg-primary)
-                                            ${ displayFilters ? 'bg-(--color-primary) text-white hover:text-white' : 'bg-(--bg-primary) text-(--text-primary)' }` }>
+                    <Button variant='bg_white_rounded' icon={ <Filter size={ 14 }/> } onClick={ () => setDisplayFilters(!displayFilters) }
+                            className={ `${ displayFilters ? 'bg-(--color-primary) text-white hover:text-white' : 'bg-(--bg-primary) text-(--text-primary)' }` }>
                         { t('VERIFIER.filters') }
                     </Button>
                     <span className='flex items-center gap-1'>

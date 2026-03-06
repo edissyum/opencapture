@@ -26,22 +26,24 @@ import { DraggablePage } from "./draggablePage";
 const PAGE_WIDTH = 268;
 
 interface DroppableDocumentZoneProps {
-    isEmpty?: boolean;
-    documentId: string | number;
     pages: any[];
-    selectedPageIds: any[];
+    disabled: boolean;
     menuItems: any[];
+    isEmpty?: boolean;
+    selectedPageIds: any[];
+    documentId: string | number;
     onSelectionChange: (page: any, checked: boolean) => void;
     onZoom: (page: any) => void;
 }
 
 export function DroppableDocumentZone({
-    documentId,
     pages,
-    selectedPageIds,
-    menuItems,
-    onSelectionChange,
     onZoom,
+    disabled,
+    menuItems,
+    documentId,
+    selectedPageIds,
+    onSelectionChange,
 }: DroppableDocumentZoneProps) {
     const { isOver, setNodeRef: setDropRef } = useDroppable({
         id: `droppable-doc-${ documentId }`,
@@ -100,11 +102,12 @@ export function DroppableDocumentZone({
                                 >
                                     <DraggablePage
                                         page={ page }
-                                        isSelected={ selectedPageIds.includes(page.id) }
-                                        onSelectionChange={ onSelectionChange }
                                         onZoom={ onZoom }
-                                        documentId={ documentId }
+                                        disabled={ disabled }
                                         menuItems={ menuItems }
+                                        documentId={ documentId }
+                                        onSelectionChange={ onSelectionChange }
+                                        isSelected={ selectedPageIds.includes(page.id) }
                                     />
                                 </div>
                             );

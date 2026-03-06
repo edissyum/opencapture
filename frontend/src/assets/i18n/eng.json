@@ -74,7 +74,9 @@
         "field_required": "is required",
         "login": "Log in",
         "session_expired": "Your session has expired, please log in again",
-        "welcome": "Welcome to Open-Capture, a 100% Open Source document capture solution"
+        "welcome": "Welcome to Open-Capture, a 100% Open Source document capture solution",
+        "forgot_password": "",
+        "reset_here": ""
     },
     "COLORS": {
         "black": "Black",
@@ -249,7 +251,6 @@
         "copied": "Copied",
         "validate": "Validate",
         "unsaved_changes_warning": "This page is asking you to confirm that you want to leave; data you have entered may not be saved.",
-        "save_changes": "Save changes",
         "search": "",
         "back": ""
     },
@@ -559,7 +560,14 @@
         "one_document": "If you want to add attachments, the batch must contain only one document",
         "cant_add_document": "If you want to add a document, please delete the attachments first",
         "pages_selected_one": "",
-        "pages_selected_other": ""
+        "pages_selected_other": "",
+        "validate_batch": "",
+        "change_form": "",
+        "confirm_change_form": "",
+        "batch_validated": "",
+        "empty_documents_error": "",
+        "form_changed": "",
+        "unlabeled_document_error": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Click to choose a file",

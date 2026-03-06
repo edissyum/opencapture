@@ -83,7 +83,8 @@ const Input: React.FC<InputProps> = ({
     return (
         <div className={ `flex flex-col rounded-md ${ className }` }>
             <div className={ `group group-focus-within:border-(--border-primary) relative flex justify-items-stretch 
-                            ${ error || noMarginBottom ? '' : 'mb-4' }` }>
+                            ${ error || noMarginBottom ? '' : 'mb-4' }
+                            ${ disabled ? 'cursor-not-allowed' : '' }` }>
                 <FloatLabel className='w-full'>
                     { bgColor && hasValue && (
                         <>
@@ -113,10 +114,10 @@ const Input: React.FC<InputProps> = ({
                             ${ isPasswordField ? 'border-r-0! rounded-r-none!' : '' } 
                             ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' } 
                             ${ height } disabled:bg-(--bg-secondary) disabled:cursor-not-allowed!
-                            group-hover:border-(--color-primary)! focus:border-(--color-primary)!`
+                            ${ disabled ? '' : 'group-hover:border-(--color-primary)!' } focus:border-(--color-primary)!`
                         }
                         style={ {
-                            fontWeight: `${textWeight ? textWeight : '400'}`,
+                            fontWeight: `${ textWeight ? textWeight : '400' }`,
                             color: `${ textColor ? `var(--${ textColor })` : 'var(--text-primary)' }`
                         } }
                         type={ inputType }
@@ -159,7 +160,8 @@ const Input: React.FC<InputProps> = ({
                 ) }
             </div>
             { error && (
-                <p className="text-(--text-error) text-xs ml-1" dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(error) } }/>
+                <p className="text-(--text-error) text-xs ml-1"
+                   dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(error) } }/>
             ) }
         </div>
     );

@@ -20,6 +20,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getI18n, useTranslation } from "react-i18next";
 
+import packageJson from "../../package.json";
+
 import Input from "../components/Input";
 import { Button } from '../components/Button';
 import { LoginImage } from "../components/LoginImage";
@@ -108,40 +110,58 @@ export function Login() {
         }
     }, t);
 
+    const handleNavigateToReset = () => {
+        navigate('/reset-password');
+    };
+
     return (
-        <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-            <div className="sm:mx-auto w-full md:max-w-md sm:max-w-sm">
-                <LoginImage className="mx-auto"></LoginImage>
-            </div>
-
-            <div className="sm:mx-auto w-full md:max-w-1/2 sm:max-w-sm">
-                <p className="mt-2 text-center text-sm text-(--text-secondary)"
-                   dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(loginMessage) } }/>
-            </div>
-
-            <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form onSubmit={ handleSubmit } className="space-y-6" noValidate>
-                    <div className="mt-2 mb-2">
-                        <Input id="username" type="text" name="username" required error={ errors.username }
-                               onChange={ handleChange } label={ t('USERS.username') }/>
+        <div className="flex h-screen flex-col items-center justify-between py-6 bg-(--bg-secondary)">
+            <div className="flex flex-1 items-center justify-center w-full">
+                <div className='bg-(--bg-primary) flex flex-col justify-center w-1/4 p-8 rounded-xl gap-12'>
+                    <div className="sm:mx-auto w-4/5">
+                        <LoginImage className="mx-auto"></LoginImage>
                     </div>
-                    <Input id="password" type="password" name="password" required error={ errors.password }
-                           onChange={ handleChange } label={ t('USERS.password') }/>
 
-                    <div className="text-center">
-                        <Button disabled={ !custom } loading={ loadingLogin } type="submit" size='md'
-                                className="w-full">
-                            { t('AUTH.login') }
-                        </Button>
-                        { !custom &&
-                            <p className="mt-2 text-sm text-(--text-secondary)">{ t('ERROR.custom_not_provided') }</p> }
-                    </div>
-                    { enabledLoginMethod === 'ldap' &&
-                        <p className="mt-4 text-sm text-(--color-primary)/70">
-                            { t('SECURITY.using_ldap_connection') }
+                    <div className='flex flex-col gap-4'>
+                        <p dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(loginMessage) } }/>
+                        <form onSubmit={ handleSubmit } noValidate>
+                            <div className="mt-2 mb-2">
+                                <Input id="username" type="text" name="username" required error={ errors.username }
+                                       onChange={ handleChange } label={ t('USERS.username') }/>
+                            </div>
+                            <Input id="password" type="password" name="password" required error={ errors.password }
+                                   onChange={ handleChange } label={ t('USERS.password') }/>
+
+                            <div className="text-center">
+                                <Button disabled={ !custom } loading={ loadingLogin } type="submit" size='md'
+                                        className="w-full">
+                                    { t('AUTH.login') }
+                                </Button>
+                                { !custom &&
+                                    <p className="mt-2 text-sm text-(--text-secondary)">{ t('ERROR.custom_not_provided') }</p> }
+                            </div>
+                            { enabledLoginMethod === 'ldap' &&
+                                <p className="mt-4 text-sm text-(--color-primary)/70">
+                                    { t('SECURITY.using_ldap_connection') }
+                                </p>
+                            }
+                        </form>
+                        <p className='text-(--text-secondary) text-sm text-center'>
+                            { t('AUTH.forgot_password') }&nbsp;
+                            <span onClick={ handleNavigateToReset }
+                                  className="cursor-pointer underline text-(--color-primary)">{ t('AUTH.reset_here') } </span>
                         </p>
-                    }
-                </form>
+                    </div>
+                </div>
+            </div>
+            <div className="text-sm text-(--text-secondary) flex flex-col">
+                <span className='text-center'>
+                    Open-Capture { packageJson.version }
+                </span>
+                <span>
+                    Powered by <a href="https://edissyum.com" target="_blank"
+                                  className="underline text-(--color-primary)">Edissyum</a>
+                </span>
             </div>
         </div>
     );
