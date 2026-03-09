@@ -77,13 +77,17 @@
         "list": "Liste des comptes de tiers"
     },
     "AUTH": {
-        "authenticated": "Vous vous êtes authentifié avec succès",
         "field_required": "est requis",
         "login": "Se connecter",
         "session_expired": "Votre session à expirée, veuillez vous reconnecter",
         "welcome": "Bienvenue dans Open-Capture, solution de capture de documents 100% Open Source",
         "forgot_password": "Mot de passe oublié ?",
-        "reset_here": "Réinitialisez-le ici"
+        "reset_here": "Réinitialisez-le ici",
+        "see_guide": "Accéder au guide d'utilisation",
+        "usage_guide": "Guide d'utilisation",
+        "all_documents": "tous vos documents",
+        "capture": "Capturez et gérer",
+        "connexion": "Connexion"
     },
     "COLORS": {
         "black": "Noir",
@@ -228,7 +232,8 @@
         "result_mask": "Masque de résultat",
         "search_mask": "Masque de recherche",
         "validation_mask": "Masque de validation",
-        "field_metadata_hint": "Paramétrage avancé du champ si un référentiel custom est activé. Permets la recherche et le remplissage automatique du champ"
+        "field_metadata_hint": "Paramétrage avancé du champ si un référentiel custom est activé. Permets la recherche et le remplissage automatique du champ",
+        "doctypes": "Types de documents"
     },
     "GLOBAL": {
         "batches": "Lots",
@@ -527,7 +532,14 @@
         "positions-masks_description": "Création et gestion des masques de positions",
         "positions-masks_many": "Masques de positions",
         "positions-masks_one": "Masque de position",
-        "positions-masks_other": "Masques de positions"
+        "positions-masks_other": "Masques de positions",
+        "ai_doctypes": "IA typologie de document",
+        "ai_doctypes_description": "Types de documents basés sur l'IA - classification",
+        "ai_doctypes_many": "Modèles de typologie de document IA",
+        "ai_doctypes_one": "Modèle de typologie de document IA",
+        "ai_doctypes_other": "Modèles de typologie de document IA",
+        "add_ai_doctype": "Ajouter un modèle de typologie de document IA",
+        "edit_ai_doctype": "Modifier le modèle de typologie de document IA"
     },
     "SMTP": {
         "authentication": "Authentification",
@@ -1020,5 +1032,31 @@
         "selected_one": "masque sélectionné",
         "selected_other": "masques sélectionnés",
         "no_positions_masks": "Aucun masque de position"
+    },
+    "AI-DOCTYPES": {
+        "add_ai_doctype": "Ajouter un modèle de type de document IA",
+        "confirm_delete_ai_doctypes_many": "Voulez-vous vraiment supprimer ces {{count}} types de documents IA ?",
+        "confirm_delete_ai_doctypes_one": "Voulez-vous vraiment supprimer ce type de document IA ?",
+        "confirm_delete_ai_doctypes_other": "Voulez-vous vraiment supprimer ces {{count}} types de documents IA ?",
+        "delete_ai_doctypes_many": "Supprimer les types de documents IA",
+        "delete_ai_doctypes_one": "Supprimer le type de document IA",
+        "delete_ai_doctypes_other": "Supprimer les types de documents IA",
+        "model_deleted_many": "Types de documents IA supprimés avec succès",
+        "model_deleted_one": "Type de document IA supprimé avec succès",
+        "model_deleted_other": "Types de documents IA supprimés avec succès",
+        "no_ai_doctypes": "Aucun type de document IA",
+        "selected_many": "modèles de typologie de document IA sélectionnés",
+        "selected_one": "modèle de typologie de document IA sélectionné",
+        "selected_other": "modèles de typologie de document IA sélectionnés",
+        "accuracy_score": "Précision",
+        "details": "Détails du modèle",
+        "min_proba": "Probabilité minimale (%)",
+        "model_path": "Chemin du modèle",
+        "model_path_need_sav_end": "Le chemin du modèle doit se terminer par '.sav'",
+        "test_model": "Tester le modèle",
+        "test_model_desc": "Déposez un fichier pour tester la prédiction du modèle",
+        "prediction": "Prédiction du modèle",
+        "proba": "Probabilité de la prédiction",
+        "test_model_result": "Résultat du test du modèle de typologie de document IA"
     }
 }

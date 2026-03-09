@@ -51,7 +51,20 @@ def get_ai_models(module):
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/ai/{module}/list'}), 403
 
-    models = artificial_intelligence.get_models(module)
+    check, message = rest_validator(request.args, [
+        {'id': 'order', 'type': str, 'mandatory': False},
+        {'id': 'limit', 'type': int, 'mandatory': False},
+        {'id': 'search', 'type': str, 'mandatory': False},
+        {'id': 'offset', 'type': int, 'mandatory': False}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+
+    models = artificial_intelligence.get_models(module, request.args)
     return make_response(jsonify(models[0])), models[1]
 
 

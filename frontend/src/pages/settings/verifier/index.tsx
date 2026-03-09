@@ -15,7 +15,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { BrainCircuit, CodeXml, FolderOutput, LayoutTemplate, ScanLine, Workflow } from "lucide-react";
+import { BrainCircuit, BrainCog, CodeXml, FolderOutput, LayoutTemplate, ScanLine, Workflow } from "lucide-react";
 
 import { SettingsCard } from "../../../components/settings/SettingsCard";
 
@@ -53,6 +53,13 @@ export const getSettingsVerifierOptions = () => [
         description: t('SETTINGS.ai_llm_description'),
         icon: <BrainCircuit/>,
         href: '/settings/verifier/ai-llm',
+        module: 'verifier'
+    },
+    {
+        name: t('SETTINGS.ai_doctypes'),
+        description: t('SETTINGS.ai_doctypes_description'),
+        icon: <BrainCog/>,
+        href: '/settings/verifier/ai-doctypes',
         module: 'verifier'
     },
     {

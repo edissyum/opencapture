@@ -228,7 +228,7 @@ export function SettingsGeneralCustomization() {
                     language: 'fr_FR',
                     language_url: '/src/assets/i18n/tinymce/langs/fr_FR.js',
                     toolbar: 'undo redo | formatselect | fontsize | bold italic underline forecolor backcolor | link | alignleft aligncenter alignright alignjustify',
-                    font_size_formats: '14pt 16pt 18pt 20pt 22pt 24pt 36pt',
+                    font_size_formats: '8pt 10pt 12pt 14pt 16pt 18pt',
                     plugins: 'lists link image table',
                     color_map: [
                         '#19864B', 'Open-Capture Green',

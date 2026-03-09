@@ -47,8 +47,36 @@ def verifier_retrieve_documents():
     return data
 
 
-def get_models(module):
-    _models = artificial_intelligence.get_models({'where': ["status <> %s", "module = %s"], 'data': ['DEL', module]})
+def get_models(module, data):
+    args = {
+        'select': ['*', 'count(*) OVER() as total'],
+        'where': ["status <> %s", "module = %s"],
+        'data': ['DEL', module],
+        'limit': str(data['limit']) if 'limit' in data else 'ALL',
+        'offset': str(data['offset']) if 'offset' in data else 0,
+        'order_by': ['id DESC']
+    }
+
+    if 'filter' in data and data['filter']:
+        allowed_filters = ['id', 'model_label']
+        check_order, error = check_order_by(data['filter'], data['order'], allowed_filters)
+        if not check_order:
+            response = {
+                "errors": gettext('FILTERS_ERROR'),
+                "message": error
+            }
+            return response, 400
+        args['order_by'] = data['filter']
+        if 'order' in data and data['order']:
+            args['order_by'] = [data['filter'] + ' ' + data['order']]
+        else:
+            args['order_by'] = [data['filter'] + ' DESC']
+
+    if 'search' in data and data['search']:
+        args['where'].append("model_label ILIKE %s")
+        args['data'].append('%' + data['search'] + '%')
+
+    _models = artificial_intelligence.get_models(args)
     response = {
         "models": _models
     }

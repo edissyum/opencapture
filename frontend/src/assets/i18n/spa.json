@@ -77,13 +77,17 @@
         "list": "Lista de cuentas de terceros"
     },
     "AUTH": {
-        "authenticated": "Ha iniciado sesión correctamente",
         "field_required": "es obligatorio",
         "login": "Iniciar sesión",
         "session_expired": "Su sesión ha expirado, por favor vuelva a iniciar sesión",
         "welcome": "Bienvenido a Open-Capture, solución de captura de documentos 100% Open Source",
         "forgot_password": "",
-        "reset_here": ""
+        "reset_here": "",
+        "see_guide": "",
+        "usage_guide": "",
+        "all_documents": "",
+        "capture": "",
+        "connexion": ""
     },
     "COLORS": {
         "black": "Negro",
@@ -228,7 +232,8 @@
         "result_mask": "Máscara de resultado",
         "search_mask": "Máscara de búsqueda",
         "validation_mask": "Máscara de validación",
-        "field_metadata_hint": "Configuración avanzada del campo cuando se activa una referencia personalizada. Permite buscar y rellenar automáticamente el campo"
+        "field_metadata_hint": "Configuración avanzada del campo cuando se activa una referencia personalizada. Permite buscar y rellenar automáticamente el campo",
+        "doctypes": ""
     },
     "GLOBAL": {
         "batches": "Lotes",
@@ -527,7 +532,14 @@
         "positions-masks_description": "Creación y gestión de máscaras de posición",
         "positions-masks_many": "Máscaras de posición",
         "positions-masks_one": "Máscara de posición",
-        "positions-masks_other": "Máscaras de posición"
+        "positions-masks_other": "Máscaras de posición",
+        "ai_doctypes": "",
+        "ai_doctypes_description": "",
+        "ai_doctypes_many": "",
+        "ai_doctypes_one": "",
+        "ai_doctypes_other": "",
+        "add_ai_doctype": "",
+        "edit_ai_doctype": ""
     },
     "SMTP": {
         "authentication": "Autenticación",
@@ -1020,5 +1032,31 @@
         "selected_one": "máscara seleccionada",
         "selected_other": "máscaras seleccionadas",
         "no_positions_masks": "Ninguna máscara de posición"
+    },
+    "AI-DOCTYPES": {
+        "add_ai_doctype": "",
+        "confirm_delete_ai_doctypes_many": "",
+        "confirm_delete_ai_doctypes_one": "",
+        "confirm_delete_ai_doctypes_other": "",
+        "delete_ai_doctypes_many": "",
+        "delete_ai_doctypes_one": "",
+        "delete_ai_doctypes_other": "",
+        "model_deleted_many": "",
+        "model_deleted_one": "",
+        "model_deleted_other": "",
+        "no_ai_doctypes": "",
+        "selected_many": "",
+        "selected_one": "",
+        "selected_other": "",
+        "accuracy_score": "",
+        "details": "",
+        "min_proba": "",
+        "model_path": "",
+        "model_path_need_sav_end": "",
+        "test_model": "",
+        "test_model_desc": "",
+        "prediction": "",
+        "proba": "",
+        "test_model_result": ""
     }
 }

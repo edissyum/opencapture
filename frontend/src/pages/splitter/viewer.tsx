@@ -123,6 +123,15 @@ export function SplitterViewerPage() {
     const [deletedDocuments, setDeletedDocuments] = useState<any[]>([]);
     const [selectedDocument, setSelectedDocument] = useState<any>(null);
 
+    const listRef = useRef({ current: null } as any);
+    // Scroll to bottom when documents change (e.g. after drag and drop or adding a new document)
+    useEffect(() => {
+        listRef.current?.scrollTo({
+            top: listRef.current.scrollHeight,
+            behavior: "smooth"
+        });
+    }, [documents]);
+
     // ✅ Callback stable
     const handleSelectionChange = useCallback((page: any, checked: boolean) => {
         setSelectedPages(prev =>
@@ -892,7 +901,7 @@ export function SplitterViewerPage() {
             ) }
             { (!showAttachments) && (
                 <div className='flex justify-center'>
-                    <div className='fixed bottom-4 shadow-lg rounded-3xl flex justify-center items-center gap-6 p-3 bg-(--bg-primary) border-2
+                    <div className='fixed bottom-4 shadow-lg rounded-3xl flex justify-center items-center gap-4 p-3 bg-(--bg-primary) border-2
                             border-(--border-secondary) z-10'>
                         <div className={ `bg-(--bg-secondary) p-3 rounded-xl flex items-center gap-2
                             ${ selectedPages.length == 0 ? 'bg-(--bg-secondary)' : 'bg-(--color-primary)/20' }` }>
@@ -906,15 +915,17 @@ export function SplitterViewerPage() {
                             </div>
                         </div>
                         <div onClick={ handleDeletePage }
-                             className={ `text-sm text-(--text-error)/80 flex items-center gap-1
+                             className={ `text-sm text-(--text-error) flex items-center gap-1 font-semibold 
+                                        hover:bg-(--bg-error) transition-colors rounded-xl p-3
                                         ${ selectedPages.length == 0 || disabledBatch ? 'hidden' : 'cursor-pointer' } ` }>
                             <Trash size={ 16 }/>
                             { t('GLOBAL.delete') }
                         </div>
 
                         <div onClick={ handleRotation }
-                             className={ `flex items-center text-(--text-secondary) text-sm gap-1 
-                             ${ selectedPages.length == 0 || disabledBatch ? 'hidden' : 'cursor-pointer' } ` }>
+                             className={ `flex items-center text-(--text-secondprimaryary) text-sm gap-1 font-semibold 
+                                        hover:bg-(--bg-secondary) transition-colors rounded-xl p-3
+                                        ${ selectedPages.length == 0 || disabledBatch ? 'hidden' : 'cursor-pointer' } ` }>
                             <RotateCw size={ 14 }/>
                             { t('SPLITTER.rotation') }
                         </div>
@@ -922,8 +933,9 @@ export function SplitterViewerPage() {
                         <Divider layout="vertical"/>
 
                         <div data-tooltip-id="tooltip"
-                             className={ `flex items-center text-(--text-secondary) text-sm gap-1 
-                                ${ attachmentsCount > 0 || disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer' } ` }
+                             className={ `flex items-center text-(--text-primary) font-semibold text-sm gap-1
+                                          hover:bg-(--bg-secondary) transition-colors rounded-xl p-3 
+                                        ${ attachmentsCount > 0 || disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer' } ` }
                              data-tooltip-content={ attachmentsCount > 0 ? t('SPLITTER.cant_add_document') : '' }>
                             <div onClick={ addDocument } className={ 'flex items-center gap-1' }>
                                 <Plus size={ 16 }/>
@@ -932,7 +944,8 @@ export function SplitterViewerPage() {
                         </div>
 
                         <div onClick={ () => unSavedChanges && handleSaveChanges() }
-                             className={ `flex items-center text-(--text-secondary) text-sm gap-1 
+                             className={ `flex items-center text-(--text-primary) text-sm gap-1
+                              hover:bg-(--bg-secondary) transition-colors rounded-full p-3
                              ${ !unSavedChanges || disabledBatch ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' } ` }>
                             <Save size={ 16 }/>
                         </div>
@@ -1017,7 +1030,8 @@ export function SplitterViewerPage() {
             ) }
 
             { !showAttachments && (
-                <div className='px-8 pb-18 h-full overflow-y-auto'>
+                <div ref={ listRef } className='px-8 pb-18 h-full overflow-y-auto'
+                     onClick={ () => setSelectedDocument(null) }>
                     <Accordion className='mb-6' activeIndex={ 0 }>
                         <AccordionTab header={ t('SPLITTER.batch_content') }>
                             <div className='p-4'>
@@ -1118,7 +1132,11 @@ export function SplitterViewerPage() {
                         { documents.map((document: any) => (
                             <Panel
                                 key={ document.id }
-                                onClick={ () => setSelectedDocument(document) }
+                                onClick={ (e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setSelectedDocument(document)
+                                } }
                                 className={ `PanelDocumentList mb-4 w-full ${ selectedDocument?.id === document.id ? 'panelSelected' : 'border-transparent' }` }
                                 header={
                                     <div className="flex items-center gap-1.5">

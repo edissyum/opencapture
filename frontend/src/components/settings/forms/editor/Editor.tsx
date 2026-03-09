@@ -500,6 +500,11 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                                 { isSubmitting ? t('GLOBAL.saving') + "..." : t('GLOBAL.save_settings') }
                             </Button>
                         </TabPanel>
+                        { module === 'splitter' && (
+                            <TabPanel header={ t("FORMS.doctypes") }>
+
+                            </TabPanel>
+                        ) }
                     </TabView>
                 </div>
                 { mainTabIndex === 1 && (

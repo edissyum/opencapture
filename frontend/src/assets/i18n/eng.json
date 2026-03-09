@@ -70,13 +70,17 @@
         "list": "Third-party accounts list"
     },
     "AUTH": {
-        "authenticated": "You have successfully logged in",
         "field_required": "is required",
         "login": "Log in",
         "session_expired": "Your session has expired, please log in again",
         "welcome": "Welcome to Open-Capture, a 100% Open Source document capture solution",
         "forgot_password": "",
-        "reset_here": ""
+        "reset_here": "",
+        "see_guide": "",
+        "usage_guide": "",
+        "all_documents": "",
+        "capture": "",
+        "connexion": ""
     },
     "COLORS": {
         "black": "Black",
@@ -208,7 +212,8 @@
         "result_mask": "Result mask",
         "search_mask": "Search mask",
         "validation_mask": "Validation mask",
-        "field_metadata_hint": "Advanced field configuration when a custom reference is enabled. Allows searching and auto-filling the field"
+        "field_metadata_hint": "Advanced field configuration when a custom reference is enabled. Allows searching and auto-filling the field",
+        "doctypes": ""
     },
     "GLOBAL": {
         "batches": "Batches",
@@ -486,7 +491,13 @@
         "positions-masks": "Position masks",
         "positions-masks_description": "Creation and management of position masks",
         "positions-masks_one": "Position mask",
-        "positions-masks_other": "Position masks"
+        "positions-masks_other": "Position masks",
+        "ai_doctypes": "",
+        "ai_doctypes_description": "",
+        "ai_doctypes_one": "",
+        "ai_doctypes_other": "",
+        "add_ai_doctype": "",
+        "edit_ai_doctype": ""
     },
     "SMTP": {
         "authentication": "Authentication",
@@ -936,5 +947,27 @@
         "selected_one": "mask selected",
         "selected_other": "masks selected",
         "no_positions_masks": "No position masks"
+    },
+    "AI-DOCTYPES": {
+        "add_ai_doctype": "",
+        "confirm_delete_ai_doctypes_one": "",
+        "confirm_delete_ai_doctypes_other": "",
+        "delete_ai_doctypes_one": "",
+        "delete_ai_doctypes_other": "",
+        "model_deleted_one": "",
+        "model_deleted_other": "",
+        "no_ai_doctypes": "",
+        "selected_one": "",
+        "selected_other": "",
+        "accuracy_score": "",
+        "details": "",
+        "min_proba": "",
+        "model_path": "",
+        "model_path_need_sav_end": "",
+        "test_model": "",
+        "test_model_desc": "",
+        "prediction": "",
+        "proba": "",
+        "test_model_result": ""
     }
 }

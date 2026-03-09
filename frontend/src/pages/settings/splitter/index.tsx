@@ -15,7 +15,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { CodeXml, FolderOutput, LayoutTemplate, Workflow } from "lucide-react";
+import { BrainCog, CodeXml, FolderOutput, LayoutTemplate, Workflow } from "lucide-react";
 import { SettingsCard } from "../../../components/settings/SettingsCard";
 
 export const getSettingsSplitterOptions = () => [
@@ -46,7 +46,14 @@ export const getSettingsSplitterOptions = () => [
         icon: <FolderOutput/>,
         href: '/settings/splitter/outputs',
         module: 'splitter'
-    }
+    },
+    {
+        name: t('SETTINGS.ai_doctypes'),
+        description: t('SETTINGS.ai_doctypes_description'),
+        icon: <BrainCog/>,
+        href: '/settings/splitter/ai-doctypes',
+        module: 'splitter'
+    },
 ];
 
 export function SettingsSplitterIndex() {

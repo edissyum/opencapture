@@ -65,6 +65,8 @@ import { SettingsSplitterFormsCreate } from "./pages/settings/splitter/forms/cre
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
 import { SettingsVerifierAiLLMEditor } from "./pages/settings/verifier/ai-llm/editor";
 import { SettingsVerifierPositionsMasksList } from "./pages/settings/verifier/positions-masks/list";
+import { AiDoctypesList } from "./components/settings/ai-doctypes/list.tsx";
+import { AiDoctypesEditor } from "./components/settings/ai-doctypes/editor.tsx";
 
 export const router = createBrowserRouter(
     [
@@ -457,6 +459,33 @@ export const router = createBrowserRouter(
                                     errorElement: <LoginRequiredError/>
                                 },
                             ]
+                        },
+                        {
+                            path: "ai-doctypes",
+                            loader: protectedLoader,
+                            handle: { breadcrumb: 'SETTINGS.ai_doctypes' },
+                            children: [
+                                {
+                                    index: true,
+                                    loader: protectedLoader,
+                                    element: <AiDoctypesList module="verifier"/>,
+                                    errorElement: <LoginRequiredError/>
+                                },
+                                {
+                                    path: 'edit/:aiDoctypeId',
+                                    loader: protectedLoader,
+                                    element: <AiDoctypesEditor module="verifier"/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.edit_ai_doctype' }
+                                },
+                                {
+                                    path: 'create',
+                                    loader: protectedLoader,
+                                    element: <AiDoctypesEditor module="verifier"/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.add_ai_doctype' }
+                                }
+                            ]
                         }
                     ]
                 },
@@ -549,6 +578,33 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader,
                                     element: <OutputsList module="splitter"/>,
                                     errorElement: <LoginRequiredError/>
+                                }
+                            ]
+                        },
+                        {
+                            path: "ai-doctypes",
+                            loader: protectedLoader,
+                            handle: { breadcrumb: 'SETTINGS.ai_doctypes' },
+                            children: [
+                                {
+                                    index: true,
+                                    loader: protectedLoader,
+                                    element: <AiDoctypesList module="splitter"/>,
+                                    errorElement: <LoginRequiredError/>
+                                },
+                                {
+                                    path: 'edit/:aiDoctypeId',
+                                    loader: protectedLoader,
+                                    element: <AiDoctypesEditor module="splitter"/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.edit_ai_doctype' }
+                                },
+                                {
+                                    path: 'create',
+                                    loader: protectedLoader,
+                                    element: <AiDoctypesEditor module="splitter"/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.add_ai_doctype' }
                                 }
                             ]
                         }
