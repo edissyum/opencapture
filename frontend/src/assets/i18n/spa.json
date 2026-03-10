@@ -277,7 +277,9 @@
         "validate": "Validar",
         "unsaved_changes_warning": "Esta página le pide que confirme que desea salir; los datos que ha introducido pueden no guardarse.",
         "search": "",
-        "back": ""
+        "back": "",
+        "no_results_for": "",
+        "select": ""
     },
     "HISTORY": {
         "document_validated": "Documento n°<strong>{{ documentId }}</strong> validado correctamente",
@@ -628,7 +630,8 @@
         "batch_validated": "",
         "empty_documents_error": "",
         "form_changed": "",
-        "unlabeled_document_error": ""
+        "unlabeled_document_error": "",
+        "select_doctype": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Haga clic para elegir un archivo",
@@ -1058,5 +1061,11 @@
         "prediction": "",
         "proba": "",
         "test_model_result": ""
+    },
+    "DOCTYPES": {
+        "root": "",
+        "no_doctypes": "",
+        "update_doctype": "",
+        "is_default": ""
     }
 }

@@ -61,7 +61,7 @@ export function useHistoryLogger() {
         };
 
         try {
-            await post("history/add", finalPayload);
+            post("history/add", finalPayload);
         } catch (err) {
             console.error("Failed to log history:", err);
         }

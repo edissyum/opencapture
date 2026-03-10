@@ -176,3 +176,6 @@ ALTER TABLE custom_fields DROP COLUMN enabled;
 
 -- Ajout de l'océrisation des PJ dans le MailCollect
 ALTER TABLE mailcollect ADD COLUMN ocr_attachments BOOLEAN DEFAULT false;
+
+-- Replace doctypes code to use - instead of .
+UPDATE doctypes SET code = REPLACE(code, '.', '-') WHERE code LIKE '%.%';

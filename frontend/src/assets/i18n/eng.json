@@ -257,7 +257,9 @@
         "validate": "Validate",
         "unsaved_changes_warning": "This page is asking you to confirm that you want to leave; data you have entered may not be saved.",
         "search": "",
-        "back": ""
+        "back": "",
+        "no_results_for": "",
+        "select": ""
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> successfully validated",
@@ -578,7 +580,8 @@
         "batch_validated": "",
         "empty_documents_error": "",
         "form_changed": "",
-        "unlabeled_document_error": ""
+        "unlabeled_document_error": "",
+        "select_doctype": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Click to choose a file",
@@ -969,5 +972,11 @@
         "prediction": "",
         "proba": "",
         "test_model_result": ""
+    },
+    "DOCTYPES": {
+        "root": "",
+        "no_doctypes": "",
+        "update_doctype": "",
+        "is_default": ""
     }
 }

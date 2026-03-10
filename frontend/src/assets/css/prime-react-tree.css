@@ -1,0 +1,111 @@
+/** This file is part of Open-Capture.
+
+ Open-Capture is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+
+ @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
+
+.p-tree {
+    @apply p-0;
+    @apply flex;
+    @apply h-full;
+    @apply w-full;
+    @apply border-0;
+    @apply flex-col;
+    @apply overflow-hidden;
+}
+
+.p-tree .p-tree-container {
+    @apply px-6;
+    @apply pt-0;
+    @apply pb-4;
+    @apply h-full;
+}
+
+.p-tree .p-tree-container .p-treenode {
+    @apply p-0;
+}
+
+.p-tree .p-tree-container .p-treenode .p-treenode-content .p-tree-toggler:enabled {
+    @apply m-0;
+    @apply text-(--text-primary);
+}
+
+.p-tree .p-tree-container .p-treenode .p-treenode-content.p-treenode-selectable:not(.p-highlight):hover {
+    @apply bg-(--color-primary)/20;
+}
+
+.p-tree .p-tree-container .p-treenode .p-treenode-content .p-tree-toggler:enabled:hover {
+    @apply bg-transparent;
+}
+
+.p-tree .p-tree-container .p-treenode .p-treenode-content {
+    @apply px-2;
+    @apply py-1;
+    @apply flex;
+    @apply gap-1;
+    @apply text-sm;
+    @apply rounded-md;
+    @apply items-center;
+    @apply text-(--text-primary);
+}
+
+.p-tree .p-tree-container .p-treenode .p-treenode-content div .icons {
+    @apply text-(--color-primary);
+}
+
+.p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight {
+    @apply text-white;
+    @apply bg-(--color-primary);
+}
+
+.p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight div .icons,
+.p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight .p-tree-toggler {
+    @apply text-white;
+}
+
+.p-tree .p-tree-container .p-treenode:focus > .p-treenode-content {
+    @apply shadow-none;
+    @apply outline-none;
+}
+
+.p-tree .p-tree-container .p-treenode-leaf .p-treenode-content {
+    @apply ml-6;
+}
+
+.p-tree .p-tree-container .p-treenode .p-treenode-content .p-tree-toggler {
+    @apply size-3;
+}
+
+.p-tree .p-tree-container .p-treenode-leaf .p-treenode-content .p-tree-toggler {
+    @apply hidden;
+}
+
+.actionsButton {
+    @apply flex;
+    @apply cursor-pointer;
+    @apply text-(--text-primary);
+}
+
+.actionsButton > span {
+    @apply flex;
+    @apply size-8;
+    @apply border;
+    @apply items-center;
+    @apply justify-center;
+    @apply border-(--border-secondary);
+}
+
+.actionsButton > span:hover {
+    @apply hover:text-(--color-primary);
+}

@@ -29,6 +29,7 @@ import {
     ChevronDown,
     Download,
     EllipsisVertical,
+    File,
     FileBadge,
     FileStack,
     FolderTree,
@@ -77,6 +78,7 @@ import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
 import { b64ToFile } from "../settings/general/customization";
 import DOMPurify from "dompurify";
 import { Divider } from "primereact/divider";
+import { DoctypesTree } from "../../components/settings/doctypes/doctypesTree.tsx";
 
 export function SplitterViewerPage() {
     const { get, post, del } = axiosApiCall();
@@ -99,9 +101,10 @@ export function SplitterViewerPage() {
 
     const [documents, setDocuments] = useState<any>([]);
     const [batch, setBatch] = useState<any>(null);
-    const [disabledBatch, setDisabledBatch] = useState(false);
     const [batchMetadata, setBatchMetadata] = useState<any[]>([]);
+    const [disabledBatch, setDisabledBatch] = useState(false);
     const [batchMetadataValues, setBatchMetadataValues] = useState<any>({});
+    const [addDocumentTrigger, setAddDocumentTrigger] = useState(0);
     const [documentMetadata, setDocumentMetadata] = useState<any>(null);
     const [documentMetadataValues, setDocumentMetadataValues] = useState<any>({});
     const [documentMetadataOpen, setDocumentMetadataOpen] = useState<boolean>(false);
@@ -123,23 +126,27 @@ export function SplitterViewerPage() {
     const [deletedDocuments, setDeletedDocuments] = useState<any[]>([]);
     const [selectedDocument, setSelectedDocument] = useState<any>(null);
 
+    const [tmpDoctype, setTmpDoctype] = useState<any>(null);
+    const [showDoctypeSelection, setShowDoctypeSelection] = useState(false);
+
     const listRef = useRef({ current: null } as any);
+
     // Scroll to bottom when documents change (e.g. after drag and drop or adding a new document)
     useEffect(() => {
+        if (addDocumentTrigger === 0) return;
+
         listRef.current?.scrollTo({
             top: listRef.current.scrollHeight,
             behavior: "smooth"
         });
-    }, [documents]);
+    }, [addDocumentTrigger]);
 
-    // ✅ Callback stable
     const handleSelectionChange = useCallback((page: any, checked: boolean) => {
         setSelectedPages(prev =>
             checked ? [...prev, page] : prev.filter((p: any) => p.id !== page.id)
         );
     }, []);
 
-    // ✅ handlePreview stable
     const handlePreview = useCallback(async (page: any) => {
         const response = await get(`/splitter/pages/${ page.id }/fullThumbnail`);
         if (response.fullThumbnail) {
@@ -160,8 +167,7 @@ export function SplitterViewerPage() {
         {
             label: t('SPLITTER.type_document'),
             icon: <FolderTree className='mr-1' size={ 16 }/>,
-            command: () => {
-            }
+            command: () => setShowDoctypeSelection(true)
         },
         {
             label: <span className='critical'>{ t('SPLITTER.delete_document') }</span>,
@@ -797,6 +803,7 @@ export function SplitterViewerPage() {
                 };
                 setDocuments((prev: any[]) => [...prev, newDocument]);
                 setBatch((prev: any) => ({ ...prev, max_split_index: prev.max_split_index + 1 }));
+                setAddDocumentTrigger(prev => prev + 1);
                 return response.newDocumentId;
             }
 
@@ -888,12 +895,32 @@ export function SplitterViewerPage() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const typeDocument = async (document: any) => {
+        setSelectedDocument(document);
+        setShowDoctypeSelection(true);
+    };
+
+    const handleChangeDoctype = async (doctype: any) => {
+        setDocuments((docs: any[]) => {
+            return docs.map(doc => {
+                if (doc.id === selectedDocument.id) {
+                    return { ...doc, doctype_label: doctype.label, doctype_key: doctype.key };
+                }
+                return doc;
+            });
+        });
+        setTmpDoctype(null);
+        setUnSavedChanges(true);
+        setSelectedDocument(null);
+        setShowDoctypeSelection(false);
     }
 
     if (!batch) return null;
 
     return (
-        <div className='flex flex-col h-full w-full overflow-hidden relative'>
+        <div className='flex flex-col h-full w-full relative'>
             { loading && (
                 <div className={ `absolute inset-0 z-20 flex items-center justify-center bg-(--bg-primary)/80` }>
                     <Loader/>
@@ -972,6 +999,39 @@ export function SplitterViewerPage() {
                                 onClick={ () => setThumbnail(null) }>
                             <X size={ 16 }/>
                         </Button>
+                    </div>
+                </>
+            ) }
+
+            { showDoctypeSelection && (
+                <>
+                    <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
+                         onClick={ () => setShowDoctypeSelection(false) }/>
+                    <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+                                    min-w-[32vw] h-3/4 max-h-screen border-2 border-(--border-secondary)
+                                    rounded-lg bg-(--bg-primary) flex flex-col">
+                        <div className='flex items-center px-6 pt-6'>
+                            <h2>
+                                { t('SPLITTER.select_doctype') }
+                            </h2>
+                            <div className='ml-auto cursor-pointer text-(--text-secondary)'
+                                 onClick={ () => setShowDoctypeSelection(false) }>
+                                <X/>
+                            </div>
+                        </div>
+                        <div className='overflow-hidden'>
+                            <DoctypesTree formId={ batch.form_id } canFolderBeSelected={ false } editor={ false }
+                                          onSelect={ (node) => handleChangeDoctype(node) }
+                                          onTmpSelect={ (node) => setTmpDoctype(node) }/>
+                        </div>
+                        <div className='mt-2 flex justify-end items-center gap-4 px-6 py-4'>
+                            <Button variant={ "no_bg" } onClick={ () => setShowDoctypeSelection(false) }>
+                                { t('GLOBAL.cancel') }
+                            </Button>
+                            <Button onClick={ () => handleChangeDoctype(tmpDoctype) } disabled={ !tmpDoctype }>
+                                { t('GLOBAL.select') }
+                            </Button>
+                        </div>
                     </div>
                 </>
             ) }
@@ -1140,15 +1200,25 @@ export function SplitterViewerPage() {
                                 className={ `PanelDocumentList mb-4 w-full ${ selectedDocument?.id === document.id ? 'panelSelected' : 'border-transparent' }` }
                                 header={
                                     <div className="flex items-center gap-1.5">
-                                        { !document.doctype_label && (
-                                            <div className='text-(--text-error) font-semibold flex items-center gap-2'>
-                                                <div className='bg-(--text-error)/20 rounded-md p-1'>
-                                                    <FolderTree size={ 20 }/>
+                                        <div className='cursor-pointer hover:text-(--color-primary)'
+                                             onClick={ () => typeDocument(document) }>
+                                            { !document.doctype_label && (
+                                                <div className='hover:underline transition-colors items-center gap-2
+                                                                hover:text-(--text-error) text-(--text-error)/80 font-semibold flex'>
+                                                    <div className='bg-(--text-error)/20 rounded-md p-1'>
+                                                        <FolderTree size={ 20 }/>
+                                                    </div>
+                                                    { t('SPLITTER.type_document') }
                                                 </div>
-                                                { t('SPLITTER.type_document') }
+                                            ) }
+                                            <div
+                                                className='hover:underline transition-colors items-center gap-2 font-semibold flex'>
+                                                <div className='bg-(--bg-secondary) rounded-md p-1'>
+                                                    <File size={ 20 }/>
+                                                </div>
+                                                <div className='hover:underline'>{ document.doctype_label }</div>
                                             </div>
-                                        ) }
-                                        <div>{ document.doctype_label }</div>
+                                        </div>
                                         <div
                                             className='text-(--text-secondary) font-medium flex items-center bg-(--bg-secondary) px-3 py-1 rounded-3xl'>
                                             <span>{ document.pages.length }&nbsp;</span>
@@ -1166,8 +1236,7 @@ export function SplitterViewerPage() {
                                                     cm.current?.show(e);
                                                 } }
                                             />
-                                            <ContextMenu model={ menuItems } className="w-auto!" ref={ cm }
-                                                         onHide={ () => setSelectedDocument(null) }/>
+                                            <ContextMenu model={ menuItems } className="w-auto!" ref={ cm }/>
                                         </div>
                                     </div>
                                 }

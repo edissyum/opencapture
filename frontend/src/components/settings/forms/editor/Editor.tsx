@@ -42,9 +42,15 @@ import { SettingsVerifierFormsDetails } from "../../../../pages/settings/verifie
 import { SettingsSplitterFormsDetails } from "../../../../pages/settings/splitter/forms/details";
 import { getAvailableFields } from "../../../../pages/settings/verifier/forms/availableFieldsSchema";
 
+import { DoctypesTree } from "../../doctypes/doctypesTree";
+import { DoctypeDetails } from "../../doctypes/doctypesDetails.tsx";
+
 export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const { get, post, put } = axiosApiCall();
     const { formId } = useParams<{ formId: any }>();
+
+    const [doctypes, setDoctypes] = useState<any[]>([]);
+    const [selectedDoctype, setSelectedDoctype] = useState<any>(null);
 
     if (!formId) return null;
 
@@ -502,13 +508,17 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                         </TabPanel>
                         { module === 'splitter' && (
                             <TabPanel header={ t("FORMS.doctypes") }>
-
+                                <DoctypeDetails doctypes={ doctypes } selectedDoctype={ selectedDoctype }
+                                                doctypeChanged={ (doctype) => {
+                                                    setSelectedDoctype(doctype)
+                                                } }/>
                             </TabPanel>
                         ) }
                     </TabView>
                 </div>
+
                 { mainTabIndex === 1 && (
-                    <div className="w-[25rem] flex flex-col">
+                    <div className="w-[25rem] h-full flex flex-col">
                         <TabView
                             scrollable
                             className="available_fields"
@@ -523,6 +533,14 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                                 </TabPanel>
                             )) }
                         </TabView>
+                    </div>
+                ) }
+
+                { mainTabIndex === 2 && module === 'splitter' && (
+                    <div className="w-[35rem] flex flex-col">
+                        <DoctypesTree formId={ formId } editor={ true } selectedDoctype={ selectedDoctype }
+                                      onDoctypesLoaded={ (doctypes) => setDoctypes(doctypes) }
+                                      onSelect={ (node) => setSelectedDoctype(node) }/>
                     </div>
                 ) }
             </div>

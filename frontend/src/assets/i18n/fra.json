@@ -277,7 +277,9 @@
         "validate": "Valider",
         "unsaved_changes_warning": "Cette page vous demande de confirmer sa fermeture ; des données que vous avez saisies pourraient ne pas être enregistrées.",
         "search": "Rechercher",
-        "back": "Retour"
+        "back": "Retour",
+        "no_results_for": "Aucun résultat pour ",
+        "select": "Sélectionner"
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validé avec succès",
@@ -628,7 +630,8 @@
         "batch_validated": "Lot validé avec succès",
         "empty_documents_error": "Validation impossible : un ou plusieurs documents du lot sont vides",
         "form_changed": "Formulaire changé avec succès",
-        "unlabeled_document_error": "Validation impossible : un ou plusieurs documents du lot ne sont pas typés"
+        "unlabeled_document_error": "Validation impossible : un ou plusieurs documents du lot ne sont pas typés",
+        "select_doctype": "Sélectionner un type de document"
     },
     "UPLOAD": {
         "upload_dropzone": "Cliquez pour choisir un fichier",
@@ -1058,5 +1061,11 @@
         "prediction": "Prédiction du modèle",
         "proba": "Probabilité de la prédiction",
         "test_model_result": "Résultat du test du modèle de typologie de document IA"
+    },
+    "DOCTYPES": {
+        "root": "Racine",
+        "no_doctypes": "Aucun type de document",
+        "update_doctype": "Modifier le type de document",
+        "is_default": "Type de document par défaut"
     }
 }

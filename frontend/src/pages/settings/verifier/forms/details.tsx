@@ -64,7 +64,7 @@ export function SettingsVerifierFormsDetails({
     return (
         <div className='p-6'>
             <div>
-                <h2 className='text-(--text-primary)'>{ t('SETTINGS.general') }</h2>
+                <h3 className='text-lg font-semibold text-(--text-primary)'>{ t('SETTINGS.general') }</h3>
                 <Input
                     type="text"
                     id="form_label"
@@ -90,7 +90,7 @@ export function SettingsVerifierFormsDetails({
                 </div>
             </div>
             <div>
-                <h2 className="text-(--text-primary) mt-6">{ t('OUTPUTS.outputs') }</h2>
+                <h3 className="text-lg font-semibold text-(--text-primary) mt-6">{ t('OUTPUTS.outputs') }</h3>
 
                 <div className='w-1/2 mt-4'>
                     <MultiSelectInput
@@ -112,7 +112,7 @@ export function SettingsVerifierFormsDetails({
                 </div>
             </div>
             <div>
-                <h2 className="text-(--text-primary) mt-6">{ t('SETTINGS.advanced') }</h2>
+                <h3 className="text-lg font-semibold text-(--text-primary) mt-6">{ t('SETTINGS.advanced') }</h3>
                 <div className='flex items-center gap-2'>
                     <InputSwitch
                         inputId="allow_learning"
