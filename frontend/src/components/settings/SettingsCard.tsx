@@ -32,7 +32,7 @@ export function SettingsCard({ show = true, icon, title, description, to, classN
     if (!show) return null;
 
     return (
-        <Link to={ to } className={ `${ className } relative flex justify-start items-center min-w-[22rem] p-2.5 
+        <Link to={ to } className={ `${ className } relative flex justify-start items-center max-w-full p-2.5 
                                      pl-4 border-2 border-(--border-secondary) rounded-md hover:border-gray-400` }>
             <div className="text-(--text-primary) mr-4 bg-(--bg-secondary) p-2 rounded-md">
                 { icon }

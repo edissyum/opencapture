@@ -15,59 +15,20 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { Copy, Download, File, FileBadge, Folder, FolderOpen, Maximize, Minimize, Upload } from "lucide-react";
 import type { TreeNode } from "primereact/treenode";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Tree, type TreeExpandedKeysType } from "primereact/tree";
+import { Copy, Download, Maximize, Minimize, Upload, X } from "lucide-react";
 
-import Input from "../../Input";
-import { buildPrimeTree, collectExpanded, normalizeValue } from "./helpers";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 
-function makeNodeTemplate(searchText: string, expandedKeys: TreeExpandedKeysType) {
-    return (node: TreeNode) => {
-        const doctype = node.data;
-        const isFolder = doctype.type === "folder" || doctype.type === "root";
-        const isExpanded = isFolder && expandedKeys[node.key as string];
+import { buildPrimeTree, collectExpanded, makeNodeTemplate } from "./helpers";
 
-        const renderLabel = () => {
-            if (!searchText) return doctype.label;
-
-            const norm = normalizeValue(doctype.label);
-            const normS = normalizeValue(searchText);
-            const idx = norm.indexOf(normS);
-
-            if (idx === -1) return doctype.label;
-
-            return (
-                <>
-                    { doctype.label.slice(0, idx) }
-                    <mark className="bg-yellow-700 text-white rounded p-0.5">
-                        { doctype.label.slice(idx, idx + searchText.length) }
-                    </mark>
-                    { doctype.label.slice(idx + searchText.length) }
-                </>
-            );
-        };
-
-        return (
-            <div className="flex items-center ml-1 gap-1">
-                <span className="shrink-0 icons">
-                    { isFolder ? (
-                        isExpanded ? <FolderOpen stroke={ 'white' } fill={ 'var(--color-primary)' } size={ 16 }/> :
-                            <Folder stroke={ 'white' } fill={ 'var(--color-primary)' } size={ 16 }/>
-                    ) : (
-                        doctype.is_default ? <FileBadge size={ 16 }/> : <File size={ 16 }/>
-                    ) }
-                </span>
-
-                <span className="truncate text-sm" style={ { fontWeight: isFolder ? 600 : 400 } }>
-                    { renderLabel() }
-                </span>
-            </div>
-        );
-    };
-}
+import Hint from "../../Hint";
+import Input from "../../Input";
+import { Button } from "../../Button";
+import { Dropdown } from "../../Dropdown";
+import { showToast } from "../../ToastProvider.tsx";
 
 export function DoctypesTree({
     formId,
@@ -88,10 +49,15 @@ export function DoctypesTree({
 }) {
     const { get } = axiosApiCall();
 
+    const [forms, setForms] = useState<any[]>([]);
     const [doctypes, setDoctypes] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [expandedKeys, setExpandedKeys] = useState<TreeExpandedKeysType>({});
     const [selectedKey, setSelectedKey] = useState<string | null>(null);
+    const [selectedFormId, setSelectedFormId] = useState<number | null>(null);
+
+    const [showCloneDialog, setShowCloneDialog] = useState(false);
+    const [forceRelaunch, setForceRelaunch] = useState(0);
 
     const ROOT_NODE: TreeNode = {
         key: "0",
@@ -99,7 +65,7 @@ export function DoctypesTree({
         data: { code: "0", label: t('DOCTYPES.root'), type: "root" }
     };
 
-    // Fetch doctypes
+    // Fetch doctypes and forms
     useEffect(() => {
         const fetchDocTypes = async () => {
             try {
@@ -111,15 +77,25 @@ export function DoctypesTree({
             }
         };
 
+        const fetchForms = async () => {
+            try {
+                const res = await get(`/forms/splitter/list`);
+                setForms(res.forms.filter((f: any) => f.id !== formId));
+            } catch (error) {
+                console.error("Error fetching forms:", error);
+            }
+        };
+
+        fetchForms().then();
         fetchDocTypes().then();
-    }, [formId]);
+    }, [formId, forceRelaunch]);
 
     // Set selected key from props
     useEffect(() => {
         if (selectedDoctype) {
             setSelectedKey(selectedDoctype.code);
         } else {
-            setSelectedKey(null);
+            setSelectedKey('0');
         }
     }, [selectedDoctype]);
 
@@ -170,9 +146,63 @@ export function DoctypesTree({
 
     }, [doctypes, canFolderBeSelected, onSelect]);
 
+    const cloneDoctypes = async () => {
+        try {
+            await get(`/doctypes/clone/${ selectedFormId }/${ formId }`);
+            setShowCloneDialog(false);
+            setForceRelaunch(f => f + 1);
+            showToast(t('DOCTYPES.clone_success'), "success");
+        } catch (error) {
+            console.error("Error cloning doctypes:", error);
+        }
+    }
 
     return (
         <div className="h-full overflow-hidden flex">
+            { showCloneDialog && (
+                <>
+                    <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
+                         onClick={ () => setShowCloneDialog(false) }/>
+                    <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+                                            min-w-[32vw] h-fit max-h-screen border-2 border-(--border-secondary)
+                                            rounded-lg bg-(--bg-primary) flex flex-col">
+                        <div className='flex flex-col items-center px-6 p-6'>
+                            <div className='flex flex-col'>
+                                <h2>
+                                    { t('DOCTYPES.clone_doctype_title') }
+                                </h2>
+                                <p className='text-sm text-(--text-secondary) mb-4'>
+                                    { t('DOCTYPES.clone_doctype_desc') }
+                                </p>
+
+                                <Hint variant='warning'>
+                                    { t('GLOBAL.action_irreversible') }
+                                </Hint>
+                            </div>
+                            <div className='absolute right-4 top-4 cursor-pointer text-(--text-secondary)'
+                                 onClick={ () => setShowCloneDialog(false) }>
+                                <X/>
+                            </div>
+                            <div className='w-full flex flex-col gap-2 mt-2'>
+                                <Dropdown value={ selectedFormId } id="clone_form_select"
+                                          options={ forms.map((f: any) => ({ label: f.label, value: f.id })) }
+                                          onChange={ e => setSelectedFormId(e.value) }
+                                          label={ t('DOCTYPES.select_form_to_clone_from') }
+                                />
+                            </div>
+                            <div className='mt-4 flex justify-end w-full gap-4'>
+                                <Button variant={ "no_bg" } onClick={ () => setShowCloneDialog(false) }>
+                                    { t('GLOBAL.cancel') }
+                                </Button>
+                                <Button onClick={ () => cloneDoctypes() }>
+                                    { t('DOCTYPES.clone_doctypes') }
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            ) }
+
             <Tree
                 value={ treeNodes }
                 selectionMode="single"
@@ -214,7 +244,9 @@ export function DoctypesTree({
                 filter
                 filterMode="lenient"
                 emptyMessage={
-                    searchTerm ? t('GLOBAL.no_results_for') + `"${ searchTerm }"` : t("DOCTYPES.no_doctypes")
+                    searchTerm ? t('GLOBAL.no_results_for') +
+                        `"${ searchTerm }"`
+                        : t("DOCTYPES.no_doctypes")
                 }
                 filterTemplate={ () => (
                     <div className="p-6 pb-0">
@@ -232,30 +264,33 @@ export function DoctypesTree({
 
                         <div className="flex mb-3">
                             <div className="actionsButton">
-                                <span onClick={ expandAll }
-                                      className="rounded-l-md dark:bg-(--bg-secondary)">
-                                    <Maximize size={ 16 }/>
-                                </span>
+                                        <span onClick={ expandAll }
+                                              className="rounded-l-md dark:bg-(--bg-secondary)">
+                                            <Maximize size={ 16 }/>
+                                        </span>
 
                                 <span onClick={ collapseAll }
                                       className="rounded-r-md dark:bg-(--bg-secondary)">
-                                    <Minimize size={ 16 }/>
-                                </span>
+                                            <Minimize size={ 16 }/>
+                                        </span>
                             </div>
 
                             { editor && (
                                 <div className="actionsButton ml-auto">
-                                    <span className="rounded-l-md dark:bg-(--bg-secondary)">
-                                        <Download size={ 16 }/>
-                                    </span>
+                                            <span className="rounded-l-md dark:bg-(--bg-secondary)">
+                                                <Download size={ 16 }/>
+                                            </span>
 
                                     <span className="rounded-r-md dark:bg-(--bg-secondary)">
-                                        <Upload size={ 16 }/>
-                                    </span>
+                                                <Upload size={ 16 }/>
+                                            </span>
 
-                                    <span className="rounded-md dark:bg-(--bg-secondary) ml-2">
-                                        <Copy size={ 16 }/>
-                                    </span>
+                                    <span className="rounded-md dark:bg-(--bg-secondary) ml-2"
+                                          onClick={ () => setShowCloneDialog(true) }
+                                          data-tooltip-content={ t('DOCTYPES.clone_doctype') }
+                                          data-tooltip-id='tooltip'>
+                                                <Copy size={ 16 }/>
+                                            </span>
                                 </div>
                             ) }
 

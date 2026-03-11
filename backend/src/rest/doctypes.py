@@ -19,6 +19,7 @@ import json
 from flask_babel import gettext
 from flask import Blueprint, request, make_response, jsonify
 from ..controllers import auth, doctypes, privileges
+from ..functions import rest_validator
 
 bp = Blueprint('doctypes', __name__, url_prefix='/ws/')
 
@@ -46,8 +47,21 @@ def add_doctype():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_document_type']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/doctypes/add'}), 403
 
-    data = json.loads(request.data)
-    res = doctypes.add_doctype(data)
+    check, message = rest_validator(request.json, [
+        {'id': 'key', 'type': str, 'mandatory': True},
+        {'id': 'type', 'type': str, 'mandatory': True},
+        {'id': 'code', 'type': str, 'mandatory': True},
+        {'id': 'label', 'type': str, 'mandatory': True},
+        {'id': 'form_id', 'type': int, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = doctypes.add_doctype(request.json)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -115,6 +129,5 @@ def export_doctypes():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'document_type_splitter']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/doctypes/generateSeparator'}), 403
 
-    data = json.loads(request.data)
-    res = doctypes.export_doctypes(data['args'])
+    res = doctypes.export_doctypes(request.json)
     return make_response(jsonify(res[0])), res[1]

@@ -80,7 +80,7 @@
 }
 
 .p-tree .p-tree-container .p-treenode-leaf .p-treenode-content {
-    @apply ml-6;
+    @apply ml-4;
 }
 
 .p-tree .p-tree-container .p-treenode .p-treenode-content .p-tree-toggler {

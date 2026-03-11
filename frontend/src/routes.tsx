@@ -65,8 +65,8 @@ import { SettingsSplitterFormsCreate } from "./pages/settings/splitter/forms/cre
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
 import { SettingsVerifierAiLLMEditor } from "./pages/settings/verifier/ai-llm/editor";
 import { SettingsVerifierPositionsMasksList } from "./pages/settings/verifier/positions-masks/list";
-import { AiDoctypesList } from "./components/settings/ai-doctypes/list.tsx";
-import { AiDoctypesEditor } from "./components/settings/ai-doctypes/editor.tsx";
+import { AiDoctypesList } from "./components/settings/ai-doctypes/list";
+import { AiDoctypesEditor } from "./components/settings/ai-doctypes/editor";
 
 export const router = createBrowserRouter(
     [

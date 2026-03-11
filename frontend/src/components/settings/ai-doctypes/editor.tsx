@@ -14,15 +14,16 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { z } from "zod";
 import { t } from "i18next";
+import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { DynamicForm } from "../../form/DynamicForm.tsx";
+
+import { DynamicForm } from "../../form/DynamicForm";
 
 export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const { get, post, put } = axiosApiCall();
@@ -57,7 +58,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
             component: "input",
             label: t("AI-LLM.name")
         })),
-        model_path: z.string().refine(val => val.endsWith('.sav'), {
+        model_path: z.string().refine((val: string) => val.endsWith('.sav'), {
             message: t('AI-DOCTYPES.model_path_need_sav_end')
         }).describe(JSON.stringify({
             required: true,

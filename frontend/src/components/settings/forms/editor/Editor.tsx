@@ -43,13 +43,14 @@ import { SettingsSplitterFormsDetails } from "../../../../pages/settings/splitte
 import { getAvailableFields } from "../../../../pages/settings/verifier/forms/availableFieldsSchema";
 
 import { DoctypesTree } from "../../doctypes/doctypesTree";
-import { DoctypeDetails } from "../../doctypes/doctypesDetails.tsx";
+import { DoctypeDetails } from "../../doctypes/doctypesDetails";
 
 export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const { get, post, put } = axiosApiCall();
     const { formId } = useParams<{ formId: any }>();
 
     const [doctypes, setDoctypes] = useState<any[]>([]);
+    const [doctypeUpdatedCpt, setDoctypeUpdatedCpt] = useState(0);
     const [selectedDoctype, setSelectedDoctype] = useState<any>(null);
 
     if (!formId) return null;
@@ -509,6 +510,8 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                         { module === 'splitter' && (
                             <TabPanel header={ t("FORMS.doctypes") }>
                                 <DoctypeDetails doctypes={ doctypes } selectedDoctype={ selectedDoctype }
+                                                formId={ formId }
+                                                doctypeUpdated={ () => setDoctypeUpdatedCpt(prev => prev + 1) }
                                                 doctypeChanged={ (doctype) => {
                                                     setSelectedDoctype(doctype)
                                                 } }/>
@@ -538,7 +541,8 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
 
                 { mainTabIndex === 2 && module === 'splitter' && (
                     <div className="w-[35rem] flex flex-col">
-                        <DoctypesTree formId={ formId } editor={ true } selectedDoctype={ selectedDoctype }
+                        <DoctypesTree key={ doctypeUpdatedCpt } formId={ parseInt(formId) } editor={ true }
+                                      selectedDoctype={ selectedDoctype }
                                       onDoctypesLoaded={ (doctypes) => setDoctypes(doctypes) }
                                       onSelect={ (node) => setSelectedDoctype(node) }/>
                     </div>

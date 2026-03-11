@@ -25,7 +25,7 @@ from flask import Blueprint, request, make_response, jsonify
 
 bp = Blueprint('auth', __name__, url_prefix='/ws/')
 
-limiter = Limiter(key_func=get_remote_address, default_limits=["200/hour"])
+limiter = Limiter(key_func=get_remote_address, default_limits=["200/hour"], storage_uri="memory://")
 
 @bp.route('auth/login', methods=['POST'])
 @limiter.limit("5/minute", key_func=lambda: request.json.get("username", get_remote_address()))

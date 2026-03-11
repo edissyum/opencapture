@@ -13,8 +13,10 @@
  along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
-import type { TreeExpandedKeysType } from "primereact/tree";
+
 import type { TreeNode } from "primereact/treenode";
+import type { TreeExpandedKeysType } from "primereact/tree";
+import { FileBadge, Folder, FolderOpen, File } from "lucide-react";
 
 export function normalizeValue(v: string) {
     return v.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -46,7 +48,6 @@ export function filterItems(items: any, text: string) {
     return roots;
 }
 
-
 export function buildPrimeTree(items: any[], level = "0"): TreeNode[] {
     return items.filter(o =>
         o.code.startsWith(level + "-") &&
@@ -76,4 +77,50 @@ export function collectExpanded(nodes: TreeNode[]) {
 
     walk(nodes);
     return keys;
+}
+
+
+export function makeNodeTemplate(searchText: string, expandedKeys: TreeExpandedKeysType) {
+    return (node: TreeNode) => {
+        const doctype = node.data;
+        const isFolder = doctype.type === "folder" || doctype.type === "root";
+        const isExpanded = isFolder && expandedKeys[node.key as string];
+
+        const renderLabel = () => {
+            if (!searchText) return doctype.label;
+
+            const norm = normalizeValue(doctype.label);
+            const normS = normalizeValue(searchText);
+            const idx = norm.indexOf(normS);
+
+            if (idx === -1) return doctype.label;
+
+            return (
+                <>
+                    { doctype.label.slice(0, idx) }
+                    <mark className="bg-yellow-700 text-white rounded p-0.5">
+                        { doctype.label.slice(idx, idx + searchText.length) }
+                    </mark>
+                    { doctype.label.slice(idx + searchText.length) }
+                </>
+            );
+        };
+
+        return (
+            <div className="flex items-center ml-1 gap-1">
+                <span className="shrink-0 icons">
+                    { isFolder ? (
+                        isExpanded ? <FolderOpen stroke={ 'white' } fill={ 'var(--color-primary)' } size={ 16 }/> :
+                            <Folder stroke={ 'white' } fill={ 'var(--color-primary)' } size={ 16 }/>
+                    ) : (
+                        doctype.is_default ? <FileBadge size={ 16 }/> : <File size={ 16 }/>
+                    ) }
+                </span>
+
+                <span className="truncate text-sm" style={ { fontWeight: isFolder ? 600 : 400 } }>
+                    { renderLabel() }
+                </span>
+            </div>
+        );
+    };
 }

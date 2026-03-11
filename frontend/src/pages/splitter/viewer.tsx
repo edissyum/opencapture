@@ -16,8 +16,10 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
+import DOMPurify from "dompurify";
 import moment from "moment/moment";
 import { Panel } from "primereact/panel";
+import { Divider } from "primereact/divider";
 import { ContextMenu } from "primereact/contextmenu";
 import { useNavigate, useParams } from "react-router-dom";
 import { Accordion, AccordionTab } from "primereact/accordion";
@@ -71,14 +73,12 @@ import { Dropdown } from "../../components/Dropdown";
 import { Loader } from "../../components/loader/Loader";
 import { showToast } from "../../components/ToastProvider";
 import { AttachmentsList } from "../../components/attachments/list";
+import { DoctypesTree } from "../../components/settings/doctypes/doctypesTree";
 
 import { DraggablePage } from "./dnd/draggablePage";
 import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
 
 import { b64ToFile } from "../settings/general/customization";
-import DOMPurify from "dompurify";
-import { Divider } from "primereact/divider";
-import { DoctypesTree } from "../../components/settings/doctypes/doctypesTree.tsx";
 
 export function SplitterViewerPage() {
     const { get, post, del } = axiosApiCall();

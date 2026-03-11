@@ -1063,9 +1063,34 @@
         "test_model_result": "Résultat du test du modèle de typologie de document IA"
     },
     "DOCTYPES": {
-        "root": "Racine",
+        "root": "root",
         "no_doctypes": "Aucun type de document",
         "update_doctype": "Modifier le type de document",
-        "is_default": "Type de document par défaut"
+        "is_default": "Type de document par défaut",
+        "confirm_delete_doctype": "Voulez-vous vraiment supprimer ce type de document ?",
+        "delete_doctype": "Supprimer le type de document",
+        "select_doctype": "Sélectionner un type de document",
+        "doctype": "Type de document",
+        "folder": "Chemise",
+        "add_child_to_folder": "Ajouter une chemise ou un type de document pour commencer",
+        "no_children": "Cette chemise est vide",
+        "create_doctype": "Créer le type de document",
+        "create_folder": "Créer la chemise",
+        "add_doctype": "Nouveau type de document",
+        "add_folder": "Nouvelle chemise",
+        "clone_doctype": "Cloner les types de document depuis un autre formulaire",
+        "clone_doctype_title": "Cloner depuis un formulaire",
+        "clone_doctypes": "Cloner les types",
+        "clone_doctype_desc": "Importer les types de document d'un autre formulaire vers celui-ci",
+        "select_form_to_clone_from": "Selectionner le formulaire source",
+        "clone_success": "Types de document clonés avec succès",
+        "doctype_created": "Type de document créé avec succès",
+        "doctype_deleted": "Type de document supprimé avec succès",
+        "folder_created": "Chemise créée avec succès",
+        "folder_deleted": "Chemise supprimée avec succès",
+        "confirm_delete_folder": "Voulez-vous vraiment supprimer cette chemise ? <br> Les types de documents enfants ne seront plus utilisables",
+        "delete_folder": "Supprimer la chemise",
+        "update_folder": "Modifier la chemise",
+        "children": "Contenu de la chemise"
     }
 }
