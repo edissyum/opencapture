@@ -282,7 +282,7 @@
         "select": "Sélectionner"
     },
     "HISTORY": {
-        "document_validated": "Document n°<strong>{{ documentId }}</strong> validé avec succès",
+        "document_validated": "Document n°<strong>{{ documentId }}</strong> validé",
         "viewer": "Visualisation du document n°<strong>{{ documentId }}</strong>",
         "document_refused": "Document n°<strong>{{ document_id }}</strong> refusé",
         "accounts": "Comptes tiers",
@@ -296,7 +296,8 @@
         "user_info": "Utilisateur",
         "ip": "Adresse IP",
         "history": "Lignes d'historique",
-        "viewer_splitter": "Visualisation du lot n°<strong>{{ batchId }}</strong>"
+        "viewer_splitter": "Visualisation du lot n°<strong>{{ batchId }}</strong>",
+        "output_executed": "Chaîne sortante <strong>{{ outputLabel }}</strong> exécutée sur le document n°<strong>{{ documentId }}</strong>"
     },
     "MAILCOLLECT": {
         "no_process": "Aucun processus MailCollect n'est configuré",
@@ -800,7 +801,8 @@
         "unity": "Unité",
         "custom_fields_many": "Champs personnalisés",
         "custom_fields_one": "Champ personnalisé",
-        "custom_fields_other": "Champs personnalisés"
+        "custom_fields_other": "Champs personnalisés",
+        "document_validated": "Document validé avec succès"
     },
     "SECURITY": {
         "default_auth": "Authentification par défaut",

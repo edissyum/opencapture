@@ -28,19 +28,22 @@ import Hint from "../../Hint";
 import Input from "../../Input";
 import { Button } from "../../Button";
 import { Dropdown } from "../../Dropdown";
-import { showToast } from "../../ToastProvider.tsx";
+import { showToast } from "../../ToastProvider";
+import { Loader } from "../../loader/Loader.tsx";
 
 export function DoctypesTree({
     formId,
     editor,
     onSelect,
     onTmpSelect,
+    doctypesList,
     selectedDoctype,
     onDoctypesLoaded,
     canFolderBeSelected = true
 }: {
     formId: number;
     editor?: boolean;
+    doctypesList?: any[];
     selectedDoctype?: any;
     canFolderBeSelected?: boolean;
     onSelect?: (node: any) => void;
@@ -50,14 +53,16 @@ export function DoctypesTree({
     const { get } = axiosApiCall();
 
     const [forms, setForms] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
     const [doctypes, setDoctypes] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [expandedKeys, setExpandedKeys] = useState<TreeExpandedKeysType>({});
     const [selectedKey, setSelectedKey] = useState<string | null>(null);
     const [selectedFormId, setSelectedFormId] = useState<number | null>(null);
 
-    const [showCloneDialog, setShowCloneDialog] = useState(false);
     const [forceRelaunch, setForceRelaunch] = useState(0);
+    const [showCloneDialog, setShowCloneDialog] = useState(false);
 
     const ROOT_NODE: TreeNode = {
         key: "0",
@@ -67,6 +72,14 @@ export function DoctypesTree({
 
     // Fetch doctypes and forms
     useEffect(() => {
+        if (!editor) {
+            if (doctypesList) {
+                setDoctypes(doctypesList);
+                setLoading(false);
+            }
+            return;
+        }
+
         const fetchDocTypes = async () => {
             try {
                 const response = await get(`/doctypes/list/${ formId }`);
@@ -74,6 +87,8 @@ export function DoctypesTree({
                 onDoctypesLoaded?.(response.doctypes);
             } catch (error) {
                 console.error("Error fetching doctypes:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -101,6 +116,8 @@ export function DoctypesTree({
 
     // Derived tree
     const treeNodes = useMemo(() => {
+        if (!doctypes) return [];
+
         const children = buildPrimeTree(doctypes);
 
         if (!editor) {
@@ -156,6 +173,8 @@ export function DoctypesTree({
             console.error("Error cloning doctypes:", error);
         }
     }
+
+    if (loading) return <Loader/>;
 
     return (
         <div className="h-full overflow-hidden flex">

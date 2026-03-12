@@ -40,20 +40,7 @@ export function useHistoryLogger() {
         loadingRef.current = loadingUser;
     }, [user, loadingUser]);
 
-    const waitForUser = async () => {
-        if (!loadingRef.current) return;
-
-        await new Promise(resolve => {
-            const check = () => {
-                if (!loadingRef.current) resolve(null);
-                else setTimeout(check, 50);
-            };
-            check();
-        });
-    };
-
-    const logHistory = async (payload: HistoryPayload) => {
-        await waitForUser();
+    const logHistory = (payload: HistoryPayload) => {
         const finalPayload = {
             ...payload,
             user_id: userRef.current.id,

@@ -95,8 +95,10 @@ export function SplitterViewerPage() {
     const { logHistory } = useHistoryLogger();
 
     const [forms, setForms] = useState<any[]>([]);
+    const [doctypes, setDoctypes] = useState<any[]>([]);
     const { batchId } = useParams<{ batchId: string }>();
     const [loading, setLoading] = useState(false);
+    const [loadingBatch, setLoadingBatch] = useState(true);
     const { customFields } = useCustomFields('splitter');
 
     const [documents, setDocuments] = useState<any>([]);
@@ -120,7 +122,6 @@ export function SplitterViewerPage() {
     const [showAttachments, setShowAttachments] = useState<boolean>(false);
     const [enableAttachments, setEnableAttachments] = useState<boolean>(true);
 
-    const [movedPages, setMovedPages] = useState<any[]>([]);
     const [deletedPages, setDeletedPages] = useState<any[]>([]);
     const [selectedPages, setSelectedPages] = useState<any[]>([]);
     const [deletedDocuments, setDeletedDocuments] = useState<any[]>([]);
@@ -194,8 +195,7 @@ export function SplitterViewerPage() {
             const response = await get(`/splitter/documents/${ batchId }`);
             if (response?.documents) {
                 let lines: any[] = [];
-                const documentMetadata = formFields.document_metadata;
-
+                const documentMetadata = formFields?.document_metadata;
                 if (documentMetadata) {
                     response.documents.forEach((doc: any) => {
                         doc.document_metadata = doc.data?.custom_fields;
@@ -244,9 +244,8 @@ export function SplitterViewerPage() {
                                 }
                             });
                         }
-                    })
+                    });
                 }
-                setLoading(false);
                 setDocumentMetadata(lines);
                 setDocuments(response.documents);
             }
@@ -263,7 +262,7 @@ export function SplitterViewerPage() {
             module: 'splitter',
             submodule: 'viewer',
             desc: t('HISTORY.viewer_splitter', { batchId: batchId })
-        }).then();
+        });
 
         const fetchBatchDetails = async () => {
             try {
@@ -307,6 +306,22 @@ export function SplitterViewerPage() {
         fetchEnableAttachments().then();
     }, [loadingUser]);
 
+    // fetch doctypes for doctype selection
+    useEffect(() => {
+        if (!formId) return;
+
+        const fetchDocTypes = async () => {
+            try {
+                const response = await get(`/doctypes/list/${ batch?.form_id }`);
+                setDoctypes(response.doctypes);
+            } catch (error) {
+                console.error("Error fetching doctypes:", error);
+            }
+        };
+
+        fetchDocTypes().then();
+    }, [formId]);
+
     // Recalculate pages count when documents change (e.g. after drag and drop)
     const pagesCount = useMemo(() =>
             documents.reduce((acc: number, doc: any) => acc + doc.pages.length, 0),
@@ -317,7 +332,7 @@ export function SplitterViewerPage() {
     useEffect(() => {
         if (loadingFormFields) return;
 
-        if (formFields.batch_metadata) {
+        if (formFields?.batch_metadata) {
             let lines: any[] = [];
             const batchMetadata = formFields.batch_metadata;
 
@@ -400,6 +415,13 @@ export function SplitterViewerPage() {
         fetchReferential().then();
     }, [batchMetadata])
 
+    // Disable loading when batch and documents are loaded
+    useEffect(() => {
+        if (batch && documents && !loadingFormFields) {
+            setLoadingBatch(false);
+        }
+    }, [batch, documents]);
+
     const normalizeDisplayOrder = (docs: any[]) => {
         docs.forEach((doc) => {
             doc.pages.forEach((page: any, index: number) => {
@@ -454,18 +476,6 @@ export function SplitterViewerPage() {
                     const [movedPage] = sourceDoc.pages.splice(pageIndex, 1);
                     targetDoc.pages.splice(overIndex, 0, movedPage);
 
-                    setMovedPages(prev => {
-                        const filtered = prev.filter(p => p.pageId !== movedPage.id);
-
-                        return [
-                            ...filtered,
-                            {
-                                pageId: movedPage.id,
-                                newDocumentId: targetDoc.id
-                            }
-                        ];
-                    });
-
                     setActiveDragItem((prev: any) =>
                         prev ? { ...prev, documentId: targetDoc.id } : prev
                     );
@@ -481,18 +491,6 @@ export function SplitterViewerPage() {
 
                 const [movedPage] = sourceDoc.pages.splice(pageIndex, 1);
                 targetDoc.pages.push(movedPage);
-
-                setMovedPages(prev => {
-                    const filtered = prev.filter(p => p.pageId !== movedPage.id);
-
-                    return [
-                        ...filtered,
-                        {
-                            pageId: movedPage.id,
-                            newDocumentId: targetDoc.id
-                        }
-                    ];
-                });
 
                 setActiveDragItem((prev: any) =>
                     prev ? { ...prev, documentId: targetDoc.id } : prev
@@ -641,16 +639,22 @@ export function SplitterViewerPage() {
                 setLoading(true);
                 const documentsToMove = documents.filter((doc: any) => doc.id !== selectedDocument.id);
                 if (documentsToMove) {
-                    await post(`/splitter/moveDocumentsToAttachments/${ batch.id }`, { documents: documentsToMove });
+                    try {
+                        await post(`/splitter/moveDocumentsToAttachments/${ batch.id }`, { documents: documentsToMove });
+                    } catch (error) {
+                        console.error("Error moving documents to attachments:", error);
+                    } finally {
+                        setLoading(false);
+                    }
 
                     documentsToMove.forEach((doc: any) => {
                         setDeletedDocuments((prev) => [...prev, doc]);
                     });
+
                     setDocuments([selectedDocument]);
                     setAttachmentsRefreshKey(prev => prev + 1);
                     showToast(t('SPLITTER.document_set_as_principal'), 'success');
                     await handleSaveChanges(false, documentsToMove);
-                    setLoading(false);
                 }
             },
             onCancel: () => {
@@ -667,7 +671,7 @@ export function SplitterViewerPage() {
                 status: p.status,
                 rotation: p.rotation,
                 source_page: p.source_page,
-                docuemnt_id: p.document_id,
+                document_id: p.document_id,
                 display_order: p.display_order
             }))
         }));
@@ -692,7 +696,6 @@ export function SplitterViewerPage() {
 
             await post('/splitter/saveModifications', {
                 'batchId': batchId,
-                'movedPages': movedPages,
                 'documents': documentsWithoutTnl,
                 'batchMetadata': batchMetadataValues,
                 'deletedDocumentsIds': deletedDocumentsIds,
@@ -797,6 +800,10 @@ export function SplitterViewerPage() {
                 const newDocument = {
                     id: response.newDocumentId,
                     pages: [],
+                    doctype_key: null,
+                    doctype_label: null,
+                    document_metadata: {},
+                    display_order: batch.max_split_index + 1,
                     data: {
                         custom_fields: {}
                     }
@@ -882,7 +889,6 @@ export function SplitterViewerPage() {
             await post('/splitter/export', {
                 'batchId': batchId,
                 'formId': batch.form_id,
-                'movedPages': movedPages,
                 'documents': documentsWithoutTnl,
                 'batchMetadata': batchMetadataValues,
                 'deletedPagesIds': deletedPages.map(p => p.id),
@@ -917,7 +923,7 @@ export function SplitterViewerPage() {
         setShowDoctypeSelection(false);
     }
 
-    if (!batch) return null;
+    if (loadingBatch || !batch) return <Loader/>;
 
     return (
         <div className='flex flex-col h-full w-full relative'>
@@ -962,9 +968,9 @@ export function SplitterViewerPage() {
                         <div data-tooltip-id="tooltip"
                              className={ `flex items-center text-(--text-primary) font-semibold text-sm gap-1
                                           hover:bg-(--bg-secondary) transition-colors rounded-xl p-3 
-                                        ${ attachmentsCount > 0 || disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer' } ` }
+                                        ${ attachmentsCount > 0 || disabledBatch ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' } ` }
                              data-tooltip-content={ attachmentsCount > 0 ? t('SPLITTER.cant_add_document') : '' }>
-                            <div onClick={ addDocument } className={ 'flex items-center gap-1' }>
+                            <div onClick={ () => attachmentsCount === 0 && addDocument() } className={ 'flex items-center gap-1' }>
                                 <Plus size={ 16 }/>
                                 { t('SPLITTER.add_document') }
                             </div>
@@ -1021,7 +1027,7 @@ export function SplitterViewerPage() {
                         </div>
                         <div className='overflow-hidden'>
                             <DoctypesTree formId={ batch.form_id } canFolderBeSelected={ false } editor={ false }
-                                          onSelect={ (node) => handleChangeDoctype(node) }
+                                          doctypesList={ doctypes } onSelect={ (node) => handleChangeDoctype(node) }
                                           onTmpSelect={ (node) => setTmpDoctype(node) }/>
                         </div>
                         <div className='mt-2 flex justify-end items-center gap-4 px-6 py-4'>
@@ -1211,11 +1217,13 @@ export function SplitterViewerPage() {
                                                     { t('SPLITTER.type_document') }
                                                 </div>
                                             ) }
-                                            <div
-                                                className='hover:underline transition-colors items-center gap-2 font-semibold flex'>
-                                                <div className='bg-(--bg-secondary) rounded-md p-1'>
-                                                    <File size={ 20 }/>
-                                                </div>
+                                            <div className='hover:underline transition-colors items-center gap-2
+                                                            font-semibold flex'>
+                                                { document.doctype_label && (
+                                                    <div className='bg-(--bg-secondary) rounded-md p-1'>
+                                                        <File size={ 20 }/>
+                                                    </div>
+                                                ) }
                                                 <div className='hover:underline'>{ document.doctype_label }</div>
                                             </div>
                                         </div>

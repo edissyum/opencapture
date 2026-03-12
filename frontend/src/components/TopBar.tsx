@@ -73,14 +73,12 @@ export default function TopBar() {
                             rounded-lg py-2.5 border-2 border-(--border-secondary) appearance-none
                             ${ isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' }` }
                     >
-                        {
-                            options.map((option) => (
-                                <option key={ option['id'] } value={ option['id'] }
-                                        className="cursor-pointer px-4 py-2 hover:bg-(--bg-secondary)">
-                                    { option['label'] }
-                                </option>
-                            ))
-                        }
+                        { options.map((option) => (
+                            <option key={ option['id'] } value={ option['id'] }
+                                    className="cursor-pointer px-4 py-2 hover:bg-(--bg-secondary)">
+                                { option['label'] }
+                            </option>
+                        )) }
                     </select>
                     <span className={ `pointer-events-none absolute right-4 top-1/2 -translate-y-1/2
                                     ${ isDisabled ? 'opacity-50' : '' }` }>

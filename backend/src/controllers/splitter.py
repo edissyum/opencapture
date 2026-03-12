@@ -16,27 +16,29 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 # @dev : Nathan CHEVAL <nathan.cheval@edissyum.com>
 
-import json
-import uuid
-import pypdf
 import base64
-import shutil
-import secrets
-import os.path
 import datetime
+import json
+import os.path
+import secrets
+import shutil
+import uuid
+
+import pypdf
+from flask import current_app, request
 from flask_babel import gettext
+from werkzeug.datastructures import FileStorage
+
 from .. import splitter_exports
 from ..classes.CMIS import CMIS
 from ..classes.Files import Files
-from ..main_splitter import launch
-from ..helpers import get_context_var
 from ..classes.OpenADS import OpenADS
-from flask import current_app, request
 from ..classes.Splitter import Splitter
-from werkzeug.datastructures import FileStorage
-from ..functions import retrieve_custom_from_url, check_order_by
-from ..models import splitter, doctypes, accounts, history, workflow, outputs, forms, attachments
 from ..controllers import user, monitoring, attachments as attachments_controller, status
+from ..functions import retrieve_custom_from_url, check_order_by
+from ..helpers import get_context_var
+from ..main_splitter import launch
+from ..models import splitter, doctypes, accounts, history, workflow, outputs, forms, attachments
 
 
 def handle_uploaded_file(files, workflow_id, user_id):
@@ -51,7 +53,8 @@ def handle_uploaded_file(files, workflow_id, user_id):
 
         now = datetime.datetime.now()
         year, month, day = [str('%02d' % now.year), str('%02d' % now.month), str('%02d' % now.day)]
-        hour, minute, second, microsecond = [str('%02d' % now.hour), str('%02d' % now.minute), str('%02d' % now.second), str('%02d' % now.microsecond)]
+        hour, minute, second, microsecond = [str('%02d' % now.hour), str('%02d' % now.minute), str('%02d' % now.second),
+                                             str('%02d' % now.microsecond)]
         date_batch = year + month + day + '_' + hour + minute + second + microsecond
         token = date_batch + '_' + secrets.token_hex(32) + '_' + str(uuid.uuid4())
         tokens.append({'filename': os.path.basename(filename), 'token': token})
@@ -104,7 +107,7 @@ def launch_referential_update(form_data):
                         'form_id': form_data['form_id']
                     }
                     metadata_load = Splitter.import_method_from_script(docservers['SPLITTER_METADATA_PATH'],
-                                                                        method['script'], method['method'])
+                                                                       method['script'], method['method'])
                     metadata_load(args)
     except (Exception,) as e:
         response = {
@@ -169,7 +172,8 @@ def retrieve_batches(data):
         user_forms = user_forms[0]
 
     args['table'] = ['splitter_batches']
-    args['select'] = ['splitter_batches.*', "to_char(splitter_batches.creation_date, 'DD-MM-YYYY " + gettext('AT') + " HH24:MI:SS') as batch_date"]
+    args['select'] = ['splitter_batches.*', "to_char(splitter_batches.creation_date, 'DD-MM-YYYY " + gettext(
+        'AT') + " HH24:MI:SS') as batch_date"]
     args['where'] = ['customer_id = ANY(%s)', 'form_id = ANY(%s)']
     args['data'] = [user_customers, user_forms]
 
@@ -185,9 +189,11 @@ def retrieve_batches(data):
     if 'time' in args and args['time']:
         if args['time'] in ['today', 'yesterday']:
             args['where'].append(
-                "to_char(splitter_batches.creation_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "', 'YYYY-MM-DD')")
+                "to_char(splitter_batches.creation_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args[
+                    'time'] + "', 'YYYY-MM-DD')")
         else:
-            args['where'].append("to_char(splitter_batches.creation_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
+            args['where'].append(
+                "to_char(splitter_batches.creation_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
 
     if 'filter' in args and args['filter']:
         allowed_filters = ['id', 'creation_date']
@@ -213,7 +219,8 @@ def retrieve_batches(data):
             batches[index]['form_label'] = form[0]['label'] if 'label' in form[0] else gettext('FORM_UNDEFINED')
 
             customer = accounts.get_customer_by_id({'customer_id': batch['customer_id']})
-            batches[index]['customer_name'] = customer[0]['name'] if 'name' in customer[0] else gettext('CUSTOMER_UNDEFINED')
+            batches[index]['customer_name'] = customer[0]['name'] if 'name' in customer[0] else gettext(
+                'CUSTOMER_UNDEFINED')
 
             attachments_count = attachments.get_attachments_by_batch_id(batch['id'])
             batches[index]['attachments_count'] = len(attachments_count) if attachments_count else 0
@@ -339,9 +346,16 @@ def update_customer(args):
 
 
 def change_form(args):
-    res = splitter.change_form(args)
+    res = splitter.change_form({'form_id': args['formId'], 'batch_id': args['batchId']})
 
     if res:
+        history.add_history({
+            'module': 'splitter',
+            'ip': request.remote_addr,
+            'submodule': 'change_form',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('CHANGE_FORM_SUCCESS', batch_id=args['batch_id'])
+        })
         return res, 200
     else:
         return res, 400
@@ -437,6 +451,7 @@ def get_batch_thumbnail(batch_id):
         }
         return response, 400
     return {'thumbnail': res['thumbnail']}, 200
+
 
 def retrieve_documents(batch_id):
     res_documents = []
@@ -546,8 +561,8 @@ def save_modifications(data):
     database = get_context_var('database', 0)
 
     res = splitter.update_batch({
-        'batch_id': data['batch_id'],
-        'batch_metadata': data['batch_metadata'],
+        'batch_id': data['batchId'],
+        'batch_metadata': data['batchMetadata'],
         'documents_count': len(data['documents'])
     })[0]
     if not res:
@@ -558,8 +573,8 @@ def save_modifications(data):
         return response, 400
 
     splitter.update_batch_documents_count({
-        'id': data['batch_id'],
-        'number': len(data['documents'])
+        'id': data['batchId'],
+        'number': len(data['documents']) - len(data['deletedDocumentsIds'])
     })
 
     for document in data['documents']:
@@ -580,7 +595,8 @@ def save_modifications(data):
         res = splitter.update_document({
             'id': document['id'],
             'doctype_key': document['doctype_key'] if 'doctype_key' in document else None,
-            'document_metadata': document['document_metadata'] if 'document_metadata' in document and document['document_metadata'] else {}
+            'document_metadata': document['document_metadata'] if 'document_metadata' in document and
+                                                                  document['document_metadata'] else {}
         })[0]
         if not res:
             response = {
@@ -596,7 +612,7 @@ def save_modifications(data):
             res = splitter.update_page({
                 'page_id': page['id'],
                 'document_id': document['id'],
-                'rotation':  page['rotation'],
+                'rotation': page['rotation'],
                 'display_order': page_display_order
             })[0]
             page_display_order += 1
@@ -610,7 +626,7 @@ def save_modifications(data):
     """
         Deleted documents
     """
-    for deleted_documents_id in data['deleted_documents_ids']:
+    for deleted_documents_id in data['deletedDocumentsIds']:
         res = splitter.update_document({
             'id': deleted_documents_id,
             'status': 'DEL'
@@ -633,7 +649,7 @@ def save_modifications(data):
     """
         Deleted pages
     """
-    for deleted_pages_id in data['deleted_pages_ids']:
+    for deleted_pages_id in data['deletedPagesIds']:
         res = splitter.update_page({
             'page_id': deleted_pages_id,
             'status': 'DEL'
@@ -699,7 +715,6 @@ def export_batch(data):
     save_response = save_modifications({
         'batch_id': data['batchId'],
         'documents': data['documents'],
-        'moved_pages': data['movedPages'],
         'batch_metadata': data['batchMetadata'],
         'deleted_pages_ids': data['deletedPagesIds'],
         'deleted_documents_ids': data['deletedDocumentsIds']
@@ -835,7 +850,8 @@ def merge_batches(parent_id, batches):
 
                 for page in splitter.get_document_pages({'document_id': doc['id']})[0]:
                     new_source_page = parent_max_source_page + page['source_page']
-                    new_page = parent_info['batch_folder'] + '/' + 'page-' + str(doc['id']) + str(new_source_page).zfill(3) + '.jpg'
+                    new_page = parent_info['batch_folder'] + '/' + 'page-' + str(doc['id']) + str(
+                        new_source_page).zfill(3) + '.jpg'
                     new_page_absolute = docservers['SPLITTER_BATCHES'] + '/' + new_page
                     if not os.path.isfile(new_page_absolute):
                         shutil.copy(docservers['SPLITTER_BATCHES'] + '/' + page['thumbnail'], new_page_absolute)
@@ -912,6 +928,7 @@ def get_batch_outputs(batch_id):
 
     return {'outputs': _outputs}, 200
 
+
 def move_documents_to_attachment(documents, batch_id):
     docservers = get_context_var('docservers', 9)
 
@@ -939,5 +956,4 @@ def move_documents_to_attachment(documents, batch_id):
 
         if os.path.isfile(tmp_filename):
             os.remove(tmp_filename)
-
     return '', 200

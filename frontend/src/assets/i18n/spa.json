@@ -296,7 +296,8 @@
         "user_info": "Usuario",
         "ip": "Dirección IP",
         "history": "Entradas del historial",
-        "viewer_splitter": ""
+        "viewer_splitter": "",
+        "output_executed": ""
     },
     "MAILCOLLECT": {
         "no_process": "No hay ningún proceso MailCollect configurado",
@@ -800,7 +801,8 @@
         "unity": "Unidad",
         "custom_fields_many": "Campos personalizados",
         "custom_fields_one": "Campo personalizado",
-        "custom_fields_other": "Campos personalizados"
+        "custom_fields_other": "Campos personalizados",
+        "document_validated": ""
     },
     "SECURITY": {
         "default_auth": "Autenticación predeterminada",

@@ -132,7 +132,7 @@ export function VerifierViewerPage() {
             module: 'verifier',
             submodule: 'viewer',
             desc: t('HISTORY.viewer', { documentId: documentId })
-        }).then();
+        });
 
         const fetchDocumentData = async () => {
             try {
@@ -893,15 +893,23 @@ export function VerifierViewerPage() {
 
                     logHistory({
                         module: 'verifier',
-                        submodule: 'document_validated',
-                        desc: t('HISTORY.document_validated', { documentId: documentId })
-                    }).then();
-
-                    await updateDocument({ 'status': 'END', 'locked': false, 'locked_by': null }).then(() => {
-                        setLoadingUpdateValidate(false);
-                        showToast('VERIFIER.document_validated', 'success');
-                        navigate('/home');
+                        submodule: 'output_executed',
+                        desc: t('HISTORY.output_executed', { outputLabel: output.output_label, documentId: documentId })
                     });
+
+                    if (cpt === currentForm.outputs.length) {
+                        logHistory({
+                            module: 'verifier',
+                            submodule: 'document_validated',
+                            desc: t('HISTORY.document_validated', { documentId: documentId })
+                        });
+
+                        await updateDocument({ 'status': 'END', 'locked': false, 'locked_by': null }).then(() => {
+                            setLoadingUpdateValidate(false);
+                            showToast(t('VERIFIER.document_validated'), 'success');
+                            navigate('/home');
+                        });
+                    }
                 } catch (error) {
                     cpt += 1;
                     outputError = true;
@@ -918,7 +926,7 @@ export function VerifierViewerPage() {
             module: 'verifier',
             submodule: 'document_refused',
             desc: t('HISTORY.document_refused', { documentId: documentId })
-        }).then();
+        })
 
         await updateDocument({ 'status': 'ERR', 'locked': false, 'locked_by': null }).then(() => {
             showToast(t('VERIFIER.document_refused'), 'success');
@@ -955,7 +963,8 @@ export function VerifierViewerPage() {
         return options;
     };
 
-    if (!documentData) return;
+    if (documentDataLoading || !documentData) return <Loader/>;
+
     return (
         <div className='flex h-full overflow-hidden'>
             { showSupplierEditor && (

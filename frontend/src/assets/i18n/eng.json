@@ -276,7 +276,8 @@
         "user_info": "User",
         "ip": "IP address",
         "history": "History entries",
-        "viewer_splitter": ""
+        "viewer_splitter": "",
+        "output_executed": ""
     },
     "MAILCOLLECT": {
         "no_process": "No MailCollect process is configured",
@@ -732,7 +733,8 @@
         "poste": "Position",
         "unity": "Unit",
         "custom_fields_one": "Custom field",
-        "custom_fields_other": "Custom fields"
+        "custom_fields_other": "Custom fields",
+        "document_validated": ""
     },
     "SECURITY": {
         "default_auth": "Default authentication",

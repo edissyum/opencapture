@@ -16,10 +16,8 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-from flask import request, g as current_context
 from flask_babel import gettext
-from ..functions import retrieve_custom_from_url
-from ..main import create_classes_from_custom_id
+from ..helpers import get_context_var
 
 
 def get_positions_masks(args):

@@ -601,7 +601,7 @@ export function VerifierListPage() {
                 <Thumbnail module={ 'verifier' } document_info={ hovered } open={ true }/>
             ) }
 
-            <div className='p-8 h-full w-full flex flex-col flex-1 z-10'>
+            <div className='p-6 h-full w-full flex flex-col flex-1 z-10'>
                 <div className='flex items-center gap-6 mb-4'>
                     <Button variant='bg_white_rounded' icon={ <Filter size={ 14 }/> } onClick={ () => setDisplayFilters(!displayFilters) }
                             className={ `${ displayFilters ? 'bg-(--color-primary) text-white hover:text-white' : 'bg-(--bg-primary) text-(--text-primary)' }` }>

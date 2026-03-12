@@ -174,8 +174,17 @@ def delete_batches():
     if not privileges.has_privileges(request.environ['user_id'], ['access_splitter | update_status_splitter']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/status'}), 403
 
-    data = json.loads(request.data)
-    res = splitter.delete_batches(data)
+    check, message = rest_validator(request.json, [
+        {'id': 'ids', 'type': list, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = splitter.delete_batches(request.json)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -201,7 +210,7 @@ def create_document():
         {'id': 'workflowId', 'type': int, 'mandatory': True},
         {'id': 'splitIndex', 'type': int, 'mandatory': True},
         {'id': 'displayOrder', 'type': int, 'mandatory': True},
-        {'id': 'updatedDocuments', 'type': list, 'mandatory': False},
+        {'id': 'updatedDocuments', 'type': list, 'mandatory': False}
     ])
 
     if not check:
@@ -220,11 +229,18 @@ def change_form():
     if not privileges.has_privileges(request.environ['user_id'], ['access_splitter']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/changeForm'}), 403
 
-    data = json.loads(request.data)
-    response, status = splitter.change_form({
-        'form_id': data['formId'],
-        'batch_id': data['batchId']
-    })
+    check, message = rest_validator(request.json, [
+        {'id': 'formId', 'type': int, 'mandatory': True},
+        {'id': 'batchId', 'type': int, 'mandatory': True}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    response, status = splitter.change_form(request.json)
     return make_response(jsonify(response)), status
 
 
@@ -289,16 +305,21 @@ def save_modifications():
     if not privileges.has_privileges(request.environ['user_id'], ['access_splitter']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/saveModifications'}), 403
 
-    data = json.loads(request.data)
-    data = {
-        'batch_id': data['batchId'],
-        'documents': data['documents'],
-        'moved_pages': data['movedPages'],
-        'batch_metadata': data['batchMetadata'],
-        'deleted_pages_ids': data['deletedPagesIds'],
-        'deleted_documents_ids': data['deletedDocumentsIds']
-    }
-    response, status = splitter.save_modifications(data)
+    check, message = rest_validator(request.json, [
+        {'id': 'batchId', 'type': int, 'mandatory': True},
+        {'id': 'documents', 'type': list, 'mandatory': True},
+        {'id': 'batchMetadata', 'type': list, 'mandatory': False},
+        {'id': 'deletedPagesIds', 'type': list, 'mandatory': False},
+        {'id': 'deletedDocumentsIds', 'type': list, 'mandatory': False}
+    ])
+
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    response, status = splitter.save_modifications(request.json)
     return make_response(jsonify(response)), status
 
 

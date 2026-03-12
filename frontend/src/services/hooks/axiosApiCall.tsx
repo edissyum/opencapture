@@ -98,7 +98,7 @@ export function axiosApiCall() {
         }
     );
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [uploadProgress, setUploadProgress] = useState<number>(0);
 
