@@ -269,7 +269,7 @@ export function SettingsGeneralUserEditor() {
     }, [password, passwordCheck]);
 
     return (
-        <div className="p-8 bg-(--bg-secondary) h-full overflow-y-auto">
+        <div className="p-6 bg-(--bg-secondary) h-full overflow-y-auto">
             <div className='w-1/3'>
                 <div className='flex items-center gap-1 text-(--text-secondary) cursor-pointer mb-4 w-fit'
                      onClick={ () => navigate('/settings/general/users') }>

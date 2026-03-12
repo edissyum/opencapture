@@ -78,7 +78,7 @@ export function SplitterListPage() {
     const [batches, setBatches] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedBatches, setSelectedBatches] = useState<any[]>([]);
-    const [loadingBatches, setLoadingBatches] = useState(false);
+    const [loadingBatches, setLoadingBatches] = useState(true);
     const [totalBatches, setTotalBatches] = useState<number>(0);
 
     const [lazyParams, setLazyParams] = usePersistentState<{
@@ -209,8 +209,6 @@ export function SplitterListPage() {
 
     // Fetch batches
     useEffect(() => {
-        if (loadingBatches) return;
-
         async function retrieveBatches() {
             if (!user || loadingUser) return;
             setLoadingBatches(true);

@@ -95,7 +95,7 @@ export function VerifierListPage() {
 
     const [documents, setDocuments] = useState<any[]>([]);
     const [selectedDocuments, setSelectedDocuments] = useState<any[]>([]);
-    const [loadingDocuments, setLoadingDocuments] = useState(false);
+    const [loadingDocuments, setLoadingDocuments] = useState(true);
     const [totalDocuments, setTotalDocuments] = useState<number>(0);
 
     const [lazyParams, setLazyParams] = usePersistentState<{
@@ -282,8 +282,6 @@ export function VerifierListPage() {
 
     // Fetch documents
     useEffect(() => {
-        if (loadingDocuments) return;
-
         async function retrieveDocuments() {
             if (!user || loadingUser) return;
             setLoadingDocuments(true);

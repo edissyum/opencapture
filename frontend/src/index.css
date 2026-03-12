@@ -32,7 +32,6 @@
 @import "./assets/css/prime-react-contextmenu.css";
 @import "./assets/css/prime-react-autocomplete.css";
 
-@import 'primereact/resources/primereact.css';
 @import 'primereact/resources/themes/lara-light-indigo/theme.css';
 
 @import "react-pdf/dist/Page/TextLayer.css";

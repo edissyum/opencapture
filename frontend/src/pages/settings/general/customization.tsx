@@ -14,9 +14,9 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Editor } from "@tinymce/tinymce-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Button } from "../../../components/Button";
 import { showToast } from "../../../components/ToastProvider";
@@ -48,6 +48,18 @@ export function SettingsGeneralCustomization() {
     const [loading, setLoading] = useState(false);
     const [loginMessage, setLoginMessage] = useState<string>('');
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
+    // Create stable Object URLs for preview images, revoke old ones on change / unmount
+    const fileUrls = useMemo(() => files.map(f => URL.createObjectURL(f)), [files]);
+    const prevUrlsRef = useRef<string[]>([]);
+    useEffect(() => {
+        // Revoke URLs from the previous render cycle
+        prevUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
+        prevUrlsRef.current = fileUrls;
+        return () => {
+            fileUrls.forEach(url => URL.revokeObjectURL(url));
+        };
+    }, [fileUrls]);
 
     const defaultImage = "/src/assets/imgs/login_image.svg"
 
@@ -197,7 +209,7 @@ export function SettingsGeneralCustomization() {
                                 <div key={ index } onClick={ () => handleSelectedIndex(index) }
                                      className="h-full grow-0 justify-center items-center cursor-pointer relative mt-4 border-(--border-primary) border rounded-lg p-4">
                                     <CheckOverlay show={ selectedIndex === index }/>
-                                    <img className="h-full" src={ URL.createObjectURL(file) } alt={ file.name }/>
+                                    <img className="h-full" src={ fileUrls[index] } alt={ file.name }/>
                                 </div>
                             ))
                         }

@@ -129,7 +129,7 @@ export function SettingsGeneralRoleEditor() {
     }
 
     return (
-        <div className="p-8 bg-(--bg-secondary) h-full">
+        <div className="p-6 bg-(--bg-secondary) h-full">
             <div className='flex items-center gap-1 text-(--text-secondary) cursor-pointer mb-4 w-fit'
                  onClick={ () => navigate('/settings/general/roles') }>
                 <ArrowLeft/>

@@ -198,7 +198,7 @@ export function AiDoctypesList({ module }: { module: string }) {
     }
 
     return (
-        <div className="p-8 bg-(--bg-secondary) flex flex-col h-full">
+        <div className="p-6 bg-(--bg-secondary) flex flex-col h-full">
             { testingModel && (
                 <div>
                     <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"

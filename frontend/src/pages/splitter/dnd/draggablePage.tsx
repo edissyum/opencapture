@@ -17,7 +17,7 @@
 
 import { t } from "i18next";
 import { CSS } from "@dnd-kit/utilities";
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { EllipsisVertical, Eye } from "lucide-react";
 import { ContextMenu } from "primereact/contextmenu";
@@ -54,9 +54,16 @@ export const DraggablePage = React.memo(function DraggablePage({
 
     const cm = useRef<any>(null);
 
-    const thumbnailUrl = useMemo(() => {
-        if (!page.thumbnail) return null;
-        return URL.createObjectURL(b64ToFile('data:image/jpg;base64,' + page.thumbnail));
+    const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!page.thumbnail) {
+            setThumbnailUrl(null);
+            return;
+        }
+        const url = URL.createObjectURL(b64ToFile('data:image/jpg;base64,' + page.thumbnail));
+        setThumbnailUrl(url);
+        return () => URL.revokeObjectURL(url);
     }, [page.thumbnail]);
 
     const style = {

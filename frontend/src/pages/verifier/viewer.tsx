@@ -17,7 +17,7 @@
 
 import { t } from "i18next";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import {
@@ -98,11 +98,11 @@ export function VerifierViewerPage() {
         number_int: '^[\\-?0-9]*$',
         number_float: '^[\\-?0-9]*([.][0-9]*)*$',
         char: '^[A-Za-z\\s]*$',
-        email: '^[A-Za-z0-9._\%+\\-]{1,64}@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,252}$'
+        email: '^[A-Za-z0-9._\\%+\\-]{1,64}@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,252}$'
     };
 
     const [pagesList, setPagesList] = useState<number[]>([]);
-    const totalPages = pagesList.length;
+    const totalPages = useMemo(() => pagesList.length, [pagesList]);
 
     const [zoom, setZoom] = useState(100);
     const [attachmentsCount, setAttachmentsCount] = useState<number>(0);
@@ -118,7 +118,9 @@ export function VerifierViewerPage() {
     const [pagesImageB64, setPagesImageB64] = useState<{ [key: number]: string }>({});
 
     const lang = localStorage.getItem("selectedLang") || "en";
-    moment.locale(lang.startsWith("fr") ? "fr" : lang.startsWith("es") ? "es" : "en");
+    useEffect(() => {
+        moment.locale(lang.startsWith("fr") ? "fr" : lang.startsWith("es") ? "es" : "en");
+    }, [lang]);
 
     const { user, loadingUser } = useUser();
     const { logHistory } = useHistoryLogger();
@@ -195,6 +197,7 @@ export function VerifierViewerPage() {
                 console.error("Error fetching all third parties:", error);
             }
         }
+        console.log('here')
         fetchAllSuppliers().then();
     }, []);
 
@@ -720,14 +723,17 @@ export function VerifierViewerPage() {
         }
     }
 
-    const getWidthLine = (line: any) => {
-        const currentLineFields = Object.values(line).filter((field: any) => typeof field !== 'boolean');
-        return currentLineFields.length === 1 ? 'w-full' :
-            currentLineFields.length === 2 ? 'w-1/2' :
-                currentLineFields.length === 3 ? 'w-1/3' :
-                    currentLineFields.length === 4 ? 'w-1/4' :
-                        'w-1/5';
-    }
+    const getWidthLine = useCallback((line: any) => {
+        const fields = Object.values(line).filter((f: any) => typeof f !== 'boolean');
+
+        switch (fields.length) {
+            case 1: return 'w-full';
+            case 2: return 'w-1/2';
+            case 3: return 'w-1/3';
+            case 4: return 'w-1/4';
+            default: return 'w-1/5';
+        }
+    }, []);
 
     function retrieveFieldById(fieldId: string) {
         let field = null;
@@ -1073,7 +1079,7 @@ export function VerifierViewerPage() {
                                         disabled={ currentPage === 1 }
                                         className={ `cursor-pointer rounded-full transition-colors 
                                                     ${ currentPage === 1 ? "text-(--text-secondary) cursor-not-allowed"
-                                                    : "hover:bg-(--bg-secondary) text-(--text-primary)" }` }
+                                            : "hover:bg-(--bg-secondary) text-(--text-primary)" }` }
                                 >
                                     <ChevronLeft size={ 16 }/>
                                 </button>

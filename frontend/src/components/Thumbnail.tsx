@@ -21,8 +21,6 @@ import { Loader } from "./loader/Loader";
 
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
 
-import { b64ToFile } from "../pages/settings/general/customization";
-
 type TNLProps = {
     open: boolean;
     module: string;
@@ -52,7 +50,7 @@ export function Thumbnail({ document_info, open, module }: TNLProps) {
             }).then((res) => {
                 thumbCache[module].set(
                     document_info.id,
-                    b64ToFile('data:image/jpg;base64,' + res.file)
+                    'data:image/jpg;base64,' + res.file
                 );
             }).catch(() => {
                 thumbCache[module].set(document_info.id, { error: "Erreur lors du chargement de la vignette" });
@@ -61,10 +59,8 @@ export function Thumbnail({ document_info, open, module }: TNLProps) {
             get(`/splitter/batches/${document_info.id}/getThumb`, {}).then((res) => {
                 thumbCache[module].set(
                     document_info.id,
-                    b64ToFile('data:image/jpg;base64,' + res.thumbnail)
+                    'data:image/jpg;base64,' + res.thumbnail
                 );
-            }).catch(() => {
-                thumbCache[module].set(document_info.id, { error: "Erreur lors du chargement de la vignette" });
             }).finally(() => setLoading(false));
         }
     }, [open, document_info]);
@@ -80,8 +76,8 @@ export function Thumbnail({ document_info, open, module }: TNLProps) {
             { cached?.error && <p className="text-sm text-(--text-error)">{ cached.error }</p> }
 
             { cached && !cached.error && (
-                <img className="h-full" src={ URL.createObjectURL(cached) }
-                     alt={ cached.name }/>
+                <img className="h-full" src={ cached }
+                     alt="thumbnail"/>
             ) }
         </div>
     );

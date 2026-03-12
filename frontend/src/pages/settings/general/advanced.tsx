@@ -173,7 +173,7 @@ export function SettingsGeneralAdvanced() {
     ];
 
     return (
-        <div className="p-8 bg-(--bg-secondary) h-full w-full flex flex-col flex-1">
+        <div className="p-6 bg-(--bg-secondary) h-full w-full flex flex-col flex-1">
             <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-1/5 mb-4' height={ 'h-10' }
                    value={ searchTerm } placeholder={ t('GLOBAL.search') } noMarginBottom={ true }
                    onChange={ (e) => setSearchTerm(e.target.value) }/>

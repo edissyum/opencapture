@@ -117,6 +117,26 @@ export function SplitterViewerPage() {
     const { formFields, loading: loadingFormFields } = useFormFields(formId);
 
     const [thumbnail, setThumbnail] = useState<string | null>(null);
+    const thumbnailRef = useRef<string | null>(null);
+
+    // Revoke the previous Object URL whenever thumbnail changes or on unmount
+    useEffect(() => {
+        return () => {
+            if (thumbnailRef.current) {
+                URL.revokeObjectURL(thumbnailRef.current);
+                thumbnailRef.current = null;
+            }
+        };
+    }, []);
+
+    const setThumbnailSafe = useCallback((url: string | null) => {
+        if (thumbnailRef.current) {
+            URL.revokeObjectURL(thumbnailRef.current);
+        }
+        thumbnailRef.current = url;
+        setThumbnail(url);
+    }, []);
+
     const [attachmentsCount, setAttachmentsCount] = useState<number>(0);
     const [attachmentsRefreshKey, setAttachmentsRefreshKey] = useState(0);
     const [showAttachments, setShowAttachments] = useState<boolean>(false);
@@ -152,7 +172,7 @@ export function SplitterViewerPage() {
         const response = await get(`/splitter/pages/${ page.id }/fullThumbnail`);
         if (response.fullThumbnail) {
             const blob = b64ToFile('data:image/jpg;base64,' + response.fullThumbnail);
-            setThumbnail(URL.createObjectURL(blob));
+            setThumbnailSafe(URL.createObjectURL(blob));
         }
     }, []);
 
@@ -996,13 +1016,13 @@ export function SplitterViewerPage() {
             { thumbnail && (
                 <>
                     <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
-                         onClick={ () => setThumbnail(null) }/>
+                         onClick={ () => setThumbnailSafe(null) }/>
                     <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                                     max-w-[32vw] border-2 border-(--border-secondary)
                                     rounded-lg overflow-hidden">
                         <img src={ thumbnail } alt="Thumbnail"/>
                         <Button variant="secondary" size="sm" className="absolute top-2 right-2"
-                                onClick={ () => setThumbnail(null) }>
+                                onClick={ () => setThumbnailSafe(null) }>
                             <X size={ 16 }/>
                         </Button>
                     </div>

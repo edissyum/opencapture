@@ -180,7 +180,7 @@ export function SuppliersList() {
     }
 
     return (
-        <div className="p-8 bg-(--bg-secondary) h-full w-full flex flex-col flex-1">
+        <div className="p-6 bg-(--bg-secondary) h-full w-full flex flex-col flex-1">
             <div className='flex items-center gap-6 mb-4'>
                 <span className='flex items-center gap-1'>
                     <FileText size={ 16 }/>

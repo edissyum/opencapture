@@ -18,7 +18,7 @@
 import { t } from "i18next";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios, { type AxiosRequestConfig } from "axios";
+import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios";
 
 import { BACKEND_URL } from "../config";
 import { useCustom } from "../custom/customContext";
@@ -31,9 +31,21 @@ interface AxiosCustomRequestConfig extends AxiosRequestConfig {
     onUploadProgress?: (progress: any) => void;
 }
 
-export function axiosApiCall() {
-    const custom = useCustom();
-    const navigate = useNavigate();
+/* ------------------------------------------------------------------ */
+/*  Singleton Axios instance — created once per `custom` value        */
+/* ------------------------------------------------------------------ */
+
+const instanceCache = new Map<string, AxiosInstance>();
+
+// Mutable ref so the interceptor can call navigate() without being
+// recreated on every render.  Updated by the hook below.
+let _navigate: ((path: string) => void) | null = null;
+
+function getOrCreateApi(custom: string | null): AxiosInstance {
+    const key = custom ?? "__default__";
+
+    const cached = instanceCache.get(key);
+    if (cached) return cached;
 
     const api = axios.create({
         headers: {
@@ -90,13 +102,30 @@ export function axiosApiCall() {
                     setIsRefreshing(false);
                     showToast(t('AUTH.session_expired'), "error");
                     sessionStorage.clear();
-                    navigate('/login');
+                    _navigate?.('/login');
                     return Promise.reject(refreshErr);
                 }
             }
             return Promise.reject(err);
         }
     );
+
+    instanceCache.set(key, api);
+    return api;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Hook — lightweight wrapper, only manages per-component state      */
+/* ------------------------------------------------------------------ */
+
+export function axiosApiCall() {
+    const custom = useCustom();
+    // Keep the module-level navigate ref in sync so the interceptor
+    // always has access to the latest router navigate function.
+    _navigate = useNavigate();
+
+    // Get the cached singleton (Map.get — O(1), no object allocation)
+    const api = getOrCreateApi(custom);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
