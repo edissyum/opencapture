@@ -35,7 +35,7 @@ if __name__ == '__main__':
         })
 
         try:
-            if batche is None:
+            if not batche:
                 batch_folder = f"{path_batches}/{directory}"
                 thumb_folder = f"{path_thumb}/{directory}"
                 shutil.rmtree(batch_folder)
