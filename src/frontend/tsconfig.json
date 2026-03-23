@@ -11,7 +11,7 @@
         "declaration": false,
         "importHelpers": true,
         "noImplicitReturns": true,
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "noImplicitOverride": true,
         "outDir": "./dist/out-tsc",
         "experimentalDecorators": true,
