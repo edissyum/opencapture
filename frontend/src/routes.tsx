@@ -67,6 +67,7 @@ import { SettingsVerifierAiLLMEditor } from "./pages/settings/verifier/ai-llm/ed
 import { SettingsVerifierPositionsMasksList } from "./pages/settings/verifier/positions-masks/list";
 import { AiDoctypesList } from "./components/settings/ai-doctypes/list";
 import { AiDoctypesEditor } from "./components/settings/ai-doctypes/editor";
+import { WorkflowEditor } from "./components/settings/workflows/editor.tsx";
 
 export const router = createBrowserRouter(
     [
@@ -404,6 +405,20 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader,
                                     element: <WorkflowsList module="verifier"/>,
                                     errorElement: <LoginRequiredError/>
+                                },
+                                {
+                                    path: 'edit/:workflowId',
+                                    loader: protectedLoader,
+                                    element: <WorkflowEditor module="verifier"/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.edit_workflow' }
+                                },
+                                {
+                                    path: 'create',
+                                    loader: protectedLoader,
+                                    element: <WorkflowEditor module="verifier"/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.add_workflow' }
                                 }
                             ]
                         },
@@ -565,6 +580,20 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader,
                                     element: <WorkflowsList module="splitter"/>,
                                     errorElement: <LoginRequiredError/>
+                                },
+                                {
+                                    path: 'edit/:workflowId',
+                                    loader: protectedLoader,
+                                    element: <WorkflowEditor module="splitter"/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.edit_workflow' }
+                                },
+                                {
+                                    path: 'create',
+                                    loader: protectedLoader,
+                                    element: <WorkflowEditor module="splitter"/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.add_workflow' }
                                 }
                             ]
                         },

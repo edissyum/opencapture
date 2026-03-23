@@ -542,7 +542,9 @@
         "ai_doctypes_one": "",
         "ai_doctypes_other": "",
         "add_ai_doctype": "",
-        "edit_ai_doctype": ""
+        "edit_ai_doctype": "",
+        "add_workflow": "",
+        "edit_workflow": ""
     },
     "SMTP": {
         "authentication": "Autenticación",
@@ -951,7 +953,6 @@
         "workflow_deleted_many": "Flujos de trabajo eliminados correctamente",
         "workflow_deleted_one": "Flujo de trabajo eliminado correctamente",
         "workflow_deleted_other": "Flujos de trabajo eliminados correctamente",
-        "add_workflow": "Agregar un flujo de trabajo",
         "new_short_label": "Nueva etiqueta técnica",
         "confirm_duplicate_workflow": "¿Está seguro de que desea duplicar el flujo de trabajo <strong>{{name}}</strong>?",
         "duplicate_workflow": "Duplicar flujo de trabajo",

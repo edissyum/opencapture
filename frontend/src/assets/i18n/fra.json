@@ -542,7 +542,9 @@
         "ai_doctypes_one": "Modèle de typologie de document IA",
         "ai_doctypes_other": "Modèles de typologie de document IA",
         "add_ai_doctype": "Ajouter un modèle de typologie de document IA",
-        "edit_ai_doctype": "Modifier le modèle de typologie de document IA"
+        "edit_ai_doctype": "Modifier le modèle de typologie de document IA",
+        "add_workflow": "Ajouter un workflow",
+        "edit_workflow": "Modifier le workflow"
     },
     "SMTP": {
         "authentication": "Authentification",
@@ -951,7 +953,6 @@
         "workflow_deleted_many": "Workflows supprimés avec succès",
         "workflow_deleted_one": "Workflow supprimé avec succès",
         "workflow_deleted_other": "Workflows supprimés avec succès",
-        "add_workflow": "Ajouter un workflow",
         "new_short_label": "Nouveau libellé technique",
         "confirm_duplicate_workflow": "Etes-vous sûr de vouloir dupliquer le workflow <strong>{{name}}</strong> ?",
         "duplicate_workflow": "Dupliquer le workflow",

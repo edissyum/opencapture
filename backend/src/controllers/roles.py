@@ -25,16 +25,15 @@ from ..models import roles, history, user
 
 
 def get_roles(args):
-    args = {
-        'user_id': request.args['user_id'],
-        'offset': request.args['offset'] if 'offset' in request.args else 0,
-        'limit': request.args['limit'] if 'limit' in request.args else 'ALL',
-        'search': request.args['search'] if 'search' in request.args else None,
-        'full': 'full' in request.args,
+    _args = {
+        'user_id': args['user_id'],
+        'offset': args['offset'] if 'offset' in args else 0,
+        'limit': args['limit'] if 'limit' in args else 'ALL',
+        'search': args['search'] if 'search' in args else None,
         'order_by': ['id ASC']
     }
 
-    if 'filter' in request.args and request.args['filter']:
+    if 'filter' in args and args['filter']:
         allowed_filters = ['id', 'workflow_id', 'label']
         check_order, error = check_order_by(args['filter'], args['order'], allowed_filters)
         if not check_order:
@@ -44,7 +43,7 @@ def get_roles(args):
             }
             return response, 400
 
-    if args['full']:
+    if 'full' in args and args['full']:
         _args['where'] = ['status NOT IN (%s)']
         _args['data'] = ['DEL']
     else:

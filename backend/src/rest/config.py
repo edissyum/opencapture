@@ -24,6 +24,7 @@ bp = Blueprint('config', __name__, url_prefix='/ws/')
 
 
 @bp.route('config/getAllowWFScripting', methods=['GET'])
+@auth.token_required
 def get_allow_wf_scripting():
     if not privileges.has_privileges(request.environ['user_id'], ['access_config']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/config/getAllowWFScripting'}), 403

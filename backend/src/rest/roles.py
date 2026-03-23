@@ -41,8 +41,10 @@ def get_roles(user_id):
             "message": message
         }, 400)
 
-    request.args['user_id'] = user_id
-    _roles = roles.get_roles(request.args)
+    args = dict(request.args)
+    args['user_id'] = user_id
+
+    _roles = roles.get_roles(args)
     return make_response(jsonify(_roles[0])), _roles[1]
 
 

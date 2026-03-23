@@ -205,7 +205,7 @@ export function WorkflowsList({ module }: { module: string }) {
                         <Button size={ 'sm' }
                                 className='p-2 border'
                                 variant={ "no_bg_border" }>
-                            <Plus size={ 14 } className="mr-1"/> { t('WORKFLOWS.add_workflow') }
+                            <Plus size={ 14 } className="mr-1"/> { t('SETTINGS.add_workflow') }
                         </Button>
                     </Link>
                 </span>

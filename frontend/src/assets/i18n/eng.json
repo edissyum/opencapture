@@ -500,7 +500,9 @@
         "ai_doctypes_one": "",
         "ai_doctypes_other": "",
         "add_ai_doctype": "",
-        "edit_ai_doctype": ""
+        "edit_ai_doctype": "",
+        "add_workflow": "",
+        "edit_workflow": ""
     },
     "SMTP": {
         "authentication": "Authentication",
@@ -875,7 +877,6 @@
         "selected_other": "workflows selected",
         "workflow_deleted_one": "Workflow successfully deleted",
         "workflow_deleted_other": "Workflows successfully deleted",
-        "add_workflow": "Add a workflow",
         "new_short_label": "New technical label",
         "confirm_duplicate_workflow": "Are you sure you want to duplicate the workflow <strong>{{name}}</strong>?",
         "duplicate_workflow": "Duplicate workflow",
