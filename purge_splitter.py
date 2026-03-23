@@ -100,16 +100,18 @@ if __name__ == '__main__':
             # Remove files from docservers based on the file paths
             if batch['file_path'] is not None:
                 file_path = f"{docservers['SPLITTER_ORIGINAL_DOC']}/{batch['file_path']}"
-                os.remove(file_path)
-                log.info(f"File removed: {file_path}")
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+                    log.info(f"File removed: {file_path}")
 
             if batch['batch_folder'] is not None:
                 batch_folder = f"{docservers['SPLITTER_BATCHES']}/{batch['batch_folder']}"
                 thumb_folder = f"{docservers['SPLITTER_THUMB']}/{batch['batch_folder']}"
-                shutil.rmtree(batch_folder)
-                log.info(f"File removed: {batch_folder}")
-                shutil.rmtree(thumb_folder)
-                log.info(f"File removed: {thumb_folder}")
+                if os.path.exists(batch_folder) and os.path.exists(thumb_folder):
+                    shutil.rmtree(batch_folder)
+                    log.info(f"File removed: {batch_folder}")
+                    shutil.rmtree(thumb_folder)
+                    log.info(f"File removed: {thumb_folder}")
         except (Exception,) as e:
             log.error(f"Error while removing files : {e}")
             continue
