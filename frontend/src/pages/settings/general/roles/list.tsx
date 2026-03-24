@@ -243,8 +243,8 @@ export function SettingsGeneralRoles() {
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Button
                         size={ 'sm' }
-                        variant={ "no_bg_border" }
-                        className='p-2 px-3 border'
+                        variant="bg_white"
+                        className='p-2 px-3'
                         onClick={ () => navigate('/settings/general/roles/create') }>
                         <UserRoundPlus size={ 16 } className="mr-2"/> { t('ROLES.add_role') }
                     </Button>

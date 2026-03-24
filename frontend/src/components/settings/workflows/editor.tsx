@@ -21,7 +21,8 @@ import { useParams } from "react-router-dom";
 
 import { useCustom } from "../../../services/custom/customContext";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
-import { convert_function, rotation_options, system_fields, tesseract_function } from "./helpers.tsx";
+
+import { convert_function, rotation_options, system_fields, tesseract_function } from "./helpers";
 
 export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const custom = useCustom();
@@ -297,8 +298,6 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             options: convert_function.map((f: any) => ({ label: f.label, value: f.id }))
         }));
     }
-
-
 
     return (
         <div className="p-6 flex flex-col gap-4">

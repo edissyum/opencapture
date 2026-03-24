@@ -24,6 +24,7 @@ import { SettingsCard } from "../../components/settings/SettingsCard";
 import { getSettingsGeneralOptions } from "./general";
 import { getSettingsVerifierOptions } from "./verifier";
 import { getSettingsSplitterOptions } from "./splitter";
+import { Loader } from "../../components/loader/Loader.tsx";
 
 export function SettingsIndex() {
     const options = [
@@ -47,6 +48,8 @@ export function SettingsIndex() {
         },
     ];
 
+    const [loading, setLoading] = useState(true);
+
     const { ready, getFavorites } = useFavorites();
     const [favoriteOptions, setFavoriteOptions] = useState([]);
 
@@ -64,8 +67,13 @@ export function SettingsIndex() {
                 const favoriteRoutes = favs.map((fav: any) => fav.route);
                 setFavoriteOptions(allOptions.filter((option: any) => favoriteRoutes.includes(option.href)));
             }
+            setLoading(false);
         })();
     }, [ready]);
+
+    if (loading) {
+        return <Loader/>;
+    }
 
     return (
         <div className="p-8">

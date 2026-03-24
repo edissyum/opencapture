@@ -19,7 +19,7 @@ import React from "react";
 import { LoaderCircle } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
-type ButtonVariant = "primary" | "secondary" | "danger" | "no_bg" | "no_bg_border" | "bg_white_rounded";
+type ButtonVariant = "primary" | "secondary" | "danger" | "no_bg" | "no_bg_border" | "bg_white_rounded" | "bg_white";
 type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -65,6 +65,7 @@ export function Button({
         secondary: "bg-(--color-primary)/10 border-2 border-(--border-primary) text-(--color-primary) hover:bg-(--color-primary) hover:text-white",
         danger: "bg-(--text-error) border-2 border-(--text-error) text-white hover:bg-(--text-error)/10 hover:text-(--text-error)",
         no_bg: "bg-transparent text-(--text-secondary) hover:border-2 hover:border-(--text-secondary) border-2 border-transparent",
+        bg_white: "bg-(--bg-primary) text-(--text-secondary) border-1 border-(--border-secondary) hover:bg-(--border-secondary)/10",
         bg_white_rounded: "rounded-3xl! hover:text-(--color-primary) text-(--text-primary) border-2 border-(--border-secondary) bg-(--bg-primary) p-2! px-5!",
         no_bg_border: "bg-transparent text-(--text-secondary) border-1 border-(--text-secondary) hover:bg-(--text-secondary)/10",
     };

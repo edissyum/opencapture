@@ -26,6 +26,7 @@ from ..models import roles, history, user
 
 def get_roles(args):
     _args = {
+        'select': ['*', 'count(*) OVER() as total'],
         'user_id': args['user_id'],
         'offset': args['offset'] if 'offset' in args else 0,
         'limit': args['limit'] if 'limit' in args else 'ALL',
