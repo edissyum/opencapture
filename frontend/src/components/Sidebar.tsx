@@ -70,7 +70,7 @@ export default function Sidebar() {
     const [collapsed, setCollapsed] = useState(false);
 
     const standardClasses = "flex items-center p-3 gap-2 hover:text-(--text-primary) text-(--text-secondary) font-semibold transition-colors border-transparent";
-    const activeClasses = "bg-(--color-primary)/10 rounded-lg text-(--color-primary)! hover:text-(--color-primary)! border-(--border-primary)!";
+    const activeClasses = "bg-(--bg-selected) rounded-lg text-(--color-primary)! hover:text-(--color-primary)! border-(--border-primary)!";
 
     if (!user || loadingUser) return;
 

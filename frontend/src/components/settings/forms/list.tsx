@@ -295,9 +295,7 @@ export function FormsList({ module }: { module: string }) {
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Link to={ `/settings/${ module }/forms/create` }>
-                        <Button size={ 'sm' }
-                                className='p-2 border'
-                                variant={ "no_bg_border" }>
+                        <Button size='sm' className='p-2 border' variant="bg_white">
                             <Plus size={ 14 } className="mr-1"/> { t('FORMS.add_form') }
                         </Button>
                     </Link>

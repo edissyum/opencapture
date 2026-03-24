@@ -93,7 +93,7 @@ export default function UploadDropzone({
                     cursor-pointer transition border-(--border-secondary) hover:border-(--border-primary)
                     ${ files.length == 0 || !showPreview ? "items-center justify-center" : "items-start" }
                     ${ className ?? "" }
-                    ${ isDragActive ? "bg-(--color-primary)/20 border-(--border-primary)!" : "" }` }>
+                    ${ isDragActive ? "bg-(--bg-selected) border-(--border-primary)!" : "" }` }>
                 <input { ...getInputProps() } />
 
                 { isDragActive ? (
@@ -128,7 +128,7 @@ export default function UploadDropzone({
                              className="relative flex items-center gap-4 bg-(--bg-primary) px-3 py-2 rounded-lg border-2 border-(--border-secondary)">
 
                             { progressByFile?.[file.name] !== undefined && (
-                                <div className="absolute top-0 left-0 h-full bg-(--color-primary)/10 transition-[width]
+                                <div className="absolute top-0 left-0 h-full bg-(--bg-selected) transition-[width]
                                                 duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]
                                                 border-r-2 border-(--color-primary)"
                                      style={ { width: `${ progressByFile[file.name] }%` } }/>

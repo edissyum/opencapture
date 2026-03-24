@@ -220,7 +220,7 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                                     <div key={ action.value }
                                          onClick={ () => f.onChange(action.value) }
                                          className={ `cursor-pointer border-2 w-1/3 py-5 rounded-md text-center
-                                                     ${ f.value === action.value ? "text-(--color-primary) bg-(--color-primary)/20 border-(--color-primary)"
+                                                     ${ f.value === action.value ? "text-(--color-primary) bg-(--bg-selected) border-(--color-primary)"
                                              : "border-(--border-secondary) hover:border-(--text-secondary) text-(--text-primary)" }
                                         ` }>
                                         <div className="flex justify-center mb-2">

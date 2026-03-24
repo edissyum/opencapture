@@ -45,7 +45,7 @@ export function showConfirmDialog({
     let acceptClassName = "outline-none! shadow-none! border-2! text-white!";
 
     if (!danger) {
-        acceptClassName += " bg-(--color-primary)! border-(--border-primary)! hover:bg-(--color-primary)/10! hover:text-(--color-primary)!";
+        acceptClassName += " bg-(--color-primary)! border-(--border-primary)! hover:bg-(--bg-selected)! hover:text-(--color-primary)!";
     } else {
         acceptClassName += " bg-(--text-error)! border-(--text-error)! hover:bg-(--text-error)/10! hover:text-(--text-error)!";
     }

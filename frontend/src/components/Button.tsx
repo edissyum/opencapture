@@ -61,8 +61,8 @@ export function Button({
     }
 
     const variantStyles: Record<ButtonVariant, string> = {
-        primary: "bg-(--color-primary) border-2 border-(--border-primary) text-white hover:bg-(--color-primary)/10 hover:text-(--color-primary)",
-        secondary: "bg-(--color-primary)/10 border-2 border-(--border-primary) text-(--color-primary) hover:bg-(--color-primary) hover:text-white",
+        primary: "bg-(--color-primary) border-2 border-(--border-primary) text-white hover:bg-(--bg-selected) hover:text-(--color-primary)",
+        secondary: "bg-(--bg-selected) border-2 border-(--border-primary) text-(--color-primary) hover:bg-(--color-primary) hover:text-white",
         danger: "bg-(--text-error) border-2 border-(--text-error) text-white hover:bg-(--text-error)/10 hover:text-(--text-error)",
         no_bg: "bg-transparent text-(--text-secondary) hover:border-2 hover:border-(--text-secondary) border-2 border-transparent",
         bg_white: "bg-(--bg-primary) text-(--text-secondary) border-1 border-(--border-secondary) hover:bg-(--border-secondary)/10",

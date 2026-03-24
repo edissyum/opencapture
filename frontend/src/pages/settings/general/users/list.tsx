@@ -250,8 +250,8 @@ export function SettingsGeneralUsers() {
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Button
-                        size={ 'sm' }
-                        variant={ "no_bg_border" }
+                        size='sm'
+                        variant="bg_white"
                         className='p-2 px-3 border'
                         onClick={ () => navigate('/settings/general/users/create') }>
                         <UserRoundPlus size={ 16 } className="mr-2"/> { t('USERS.add_user') }

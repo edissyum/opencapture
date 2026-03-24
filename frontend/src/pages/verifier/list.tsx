@@ -617,12 +617,12 @@ export function VerifierListPage() {
                     <span className='ml-auto text-(--text-secondary) flex cursor-pointer'>
                         <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.list') }
                               onClick={ () => setView('list') }
-                              className={ `${ view == 'list' ? "bg-(--color-primary)/20 border-(--border-primary)/50" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-l-md dark:bg-(--bg-secondary) border` }>
+                              className={ `${ view == 'list' ? "bg-(--bg-selected) border-(--border-primary)/50" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-l-md dark:bg-(--bg-secondary) border` }>
                             <Rows3 size={ 20 }/>
                         </span>
                         <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.grid') }
                               onClick={ () => setView('grid') }
-                              className={ `${ view == 'grid' ? "bg-(--color-primary)/20 border-(--border-primary)/50" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-r-md dark:bg-(--bg-secondary) border` }>
+                              className={ `${ view == 'grid' ? "bg-(--bg-selected) border-(--border-primary)/50" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-r-md dark:bg-(--bg-secondary) border` }>
                             <LayoutGrid size={ 20 }/>
                         </span>
                     </span>

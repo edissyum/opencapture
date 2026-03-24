@@ -73,7 +73,8 @@ export function SettingsVerifierAiLLMList() {
         { id: 'id', field: 'id', header: '', sortable: true, className: 'max-w-10! w-10!' },
         { id: 'name', field: 'name', header: t('GLOBAL.label'), sortable: true },
         { id: 'provider', field: 'provider', header: t('AI-LLM.provider'), sortable: true },
-        { id: 'url', field: 'url', header: t('AI-LLM.url'), className: 'max-w-[40rem]',
+        {
+            id: 'url', field: 'url', header: t('AI-LLM.url'), className: 'max-w-[40rem]',
             body: (row: any) => (
                 <span className="block truncate max-w-[40rem] whitespace-nowrap">
                     { row.url }
@@ -172,9 +173,7 @@ export function SettingsVerifierAiLLMList() {
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Link to={ `/settings/verifier/ai-llm/create` }>
-                        <Button size={ 'sm' }
-                                className='p-2 border'
-                                variant={ "no_bg_border" }>
+                        <Button size='sm' className='p-2 border' variant="bg_white">
                             <Plus size={ 14 } className="mr-1"/> { t('AI-LLM.add_model') }
                         </Button>
                     </Link>

@@ -55,7 +55,7 @@
 /* Highlight color for selected rows and sorted columns */
 .p-datatable .p-sortable-column.p-highlight ,
 .p-datatable .p-datatable-tbody > tr.p-highlight {
-    @apply bg-(--color-primary)/10!;
+    @apply bg-(--bg-selected)!;
     @apply text-(--color-primary)!;
 }
 

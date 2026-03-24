@@ -202,9 +202,7 @@ export function WorkflowsList({ module }: { module: string }) {
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Link to={ `/settings/${ module }/workflows/create` }>
-                        <Button size={ 'sm' }
-                                className='p-2 border'
-                                variant={ "no_bg_border" }>
+                        <Button size='sm' className='p-2 border' variant="bg_white">
                             <Plus size={ 14 } className="mr-1"/> { t('SETTINGS.add_workflow') }
                         </Button>
                     </Link>

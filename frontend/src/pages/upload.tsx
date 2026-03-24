@@ -180,7 +180,7 @@ export function UploadPage() {
                              onClick={ () => setSelectedWorkflow(workflow.workflow_id) }
                              className={ `cursor-pointer flex items-center gap-1 border-2 border-(--border-secondary) 
                                           rounded-md p-2 hover:border-(--color-primary)
-                                          ${ selectedWorkflow === workflow.workflow_id ? 'text-(--color-primary) font-semibold bg-(--color-primary)/10' : '' }` }>
+                                          ${ selectedWorkflow === workflow.workflow_id ? 'text-(--color-primary) border-(--color-primary) font-semibold bg-(--bg-selected)' : '' }` }>
                             { selectedWorkflow === workflow.workflow_id && (
                                 <Check size={ 18 } className='shrink-0'/>
                             ) }

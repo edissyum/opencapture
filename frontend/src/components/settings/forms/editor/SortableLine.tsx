@@ -60,7 +60,7 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
         },
         animateLayoutChanges
     });
-    const bg = isOver ? "bg-(--color-primary)/20 border-(--color-primary)" : "bg-(--bg-primary) border-transparent";
+    const bg = isOver ? "bg-(--bg-selected) border-(--color-primary)" : "bg-(--bg-primary) border-transparent";
 
     const style = {
         transition,

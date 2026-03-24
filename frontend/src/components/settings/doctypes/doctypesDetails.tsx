@@ -387,7 +387,7 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                                 <div className='flex flex-col gap-2 w-full'>
                                     { info?.children?.map((child: any) => (
                                         <div key={ child.code }
-                                             className="flex items-center gap-2 cursor-pointer hover:bg-(--color-primary)/20 rounded-md p-2"
+                                             className="flex items-center gap-2 cursor-pointer hover:bg-(--bg-selected) rounded-md p-2"
                                              onClick={ () => doctypeChanged?.(child) }>
                                             <div className='bg-(--bg-secondary) rounded-md p-1'>
                                                 { child.type === "folder" ? (

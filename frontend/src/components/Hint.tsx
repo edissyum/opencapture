@@ -22,7 +22,7 @@ export default function Hint({ children, variant = "success" }: any) {
 
     const baseClasses = "p-4 border-2 border-r-0 border-b-0 border-t-0 font-semibold";
     const variants: any = {
-        success: "bg-(--color-primary)/10 border-(--border-primary)",
+        success: "bg-(--bg-selected) border-(--border-primary)",
         warning: "bg-yellow-500/10 border-yellow-500",
         error: "bg-(--text-error)/10 border-(--text-error)"
     };

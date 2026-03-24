@@ -27,7 +27,7 @@
 }
 
 .p-contextmenu .p-menuitem.p-highlight > .p-menuitem-content {
-    @apply bg-(--color-primary)/10;
+    @apply bg-(--bg-selected);
     @apply text-(--color-primary);
 }
 

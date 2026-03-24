@@ -141,7 +141,7 @@ export function Login() {
             <div className="flex flex-1 items-center justify-center w-full">
                 <div className='bg-(--bg-primary) h-auto flex justify-center w-200 p-4 rounded-xl gap-6'>
                     <div className='bg-(--bg-primary) h-auto flex flex-1'>
-                        <div className='w-full bg-(--color-primary)/20 font-bold text-2xl overflow-hidden rounded-md flex flex-col relative
+                        <div className='w-full bg-(--bg-selected) font-bold text-2xl overflow-hidden rounded-md flex flex-col relative
                         aspect-[calc(1/1.4142)]'>
                             <div className="absolute top-0 right-0 p-4 flex gap-2 z-10">
                                 <span onClick={ () => setActiveCard('guide') }

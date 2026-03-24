@@ -42,7 +42,7 @@
 }
 
 .p-tree .p-tree-container .p-treenode .p-treenode-content.p-treenode-selectable:not(.p-highlight):hover {
-    @apply bg-(--color-primary)/20;
+    @apply bg-(--bg-selected);
 }
 
 .p-tree .p-tree-container .p-treenode .p-treenode-content .p-tree-toggler:enabled:hover {

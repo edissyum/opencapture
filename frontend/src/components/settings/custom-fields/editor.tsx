@@ -580,7 +580,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                     </Accordion>
 
                     <div className='mt-4 flex justify-end'>
-                        <Button size={ 'sm' } variant={ "no_bg_border" } onClick={ () => {
+                        <Button size='sm' variant="bg_white" onClick={ () => {
                             setSelectOptions([
                                 ...selectOptions,
                                 {

@@ -167,9 +167,7 @@ export function SettingsVerifierPositionsMasksList() {
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Link to={ `/settings/verifier/positions-masks/create` }>
-                        <Button size={ 'sm' }
-                                className='p-2 border'
-                                variant={ "no_bg_border" }>
+                        <Button size='sm' className='p-2 border' variant="bg_white">
                             <Plus size={ 14 } className="mr-1"/> { t('POSITIONS-MASKS.add_model') }
                         </Button>
                     </Link>

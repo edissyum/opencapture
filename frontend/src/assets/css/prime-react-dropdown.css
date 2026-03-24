@@ -112,7 +112,7 @@
 .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight,
 .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight.p-focus,
 .p-multiselect-panel .p-multiselect-items .p-multiselect-item.p-highlight {
-    @apply bg-(--color-primary)/10;
+    @apply bg-(--bg-selected);
     @apply text-(--color-primary);
 }
 
@@ -120,7 +120,7 @@
     @apply border;
     @apply rounded-md;
     @apply text-(--text-primary)!;
-    @apply bg-(--color-primary)/10;
+    @apply bg-(--bg-selected);
     @apply border-(--color-primary)/40;
 }
 

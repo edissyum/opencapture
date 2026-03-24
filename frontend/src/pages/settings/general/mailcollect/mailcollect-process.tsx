@@ -370,7 +370,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                 <div key={ action.value }
                                      onClick={ () => field.onChange(action.value) }
                                      className={ `cursor-pointer border-2 w-1/3 py-5 rounded-md text-(--text-primary)
-                                                ${ field.value === action.value ? "bg-(--color-primary)/20 border-(--color-primary)" : "border-(--border-secondary) hover:border-(--text-secondary)" }
+                                                ${ field.value === action.value ? "bg-(--bg-selected) border-(--color-primary)" : "border-(--border-secondary) hover:border-(--text-secondary)" }
                                                 text-center` }>
                                     <div className="flex justify-center mb-2">
                                         { action.logo }
@@ -404,7 +404,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
 
                 <div className="flex justify-between mt-6">
                     <Button onClick={ handlePreviousStep } variant="no_bg"
-                            className="mr-2 px-12 text-(--color-primary) border-transparent hover:border-(--color-primary)">
+                            className="mr-2 px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
                         <ArrowLeft/> { t("MAILCOLLECT.previous") }
                     </Button>
                     <Button onClick={ handleSubmitFolders(handleNextStep) } className="ml-auto px-12">
@@ -550,7 +550,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
 
                 <div className="flex justify-between mt-6">
                     <Button onClick={ handlePreviousStep } variant="no_bg"
-                            className="mr-2 px-12 text-(--color-primary) border-transparent hover:border-(--color-primary)">
+                            className="mr-2 px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
                         <ArrowLeft/> { t("MAILCOLLECT.previous") }
                     </Button>
                     <Button type="submit" className="ml-auto px-12" onClick={ handleSubmitModules(onSubmit) }

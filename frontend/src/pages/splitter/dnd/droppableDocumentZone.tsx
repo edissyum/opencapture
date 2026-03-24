@@ -75,7 +75,7 @@ export function DroppableDocumentZone({
         <div ref={ setDropRef }
              className={ `DroppableDocument w-full transition-colors rounded-md
                 ${ isEmpty && 'border-2 border-dashed border-(--border-secondary)' }
-                ${ isOver && 'bg-(--color-primary)/10 border-(--color-primary)' }` }>
+                ${ isOver && 'bg-(--bg-selected) border-(--color-primary)' }` }>
             { isEmpty && !isOver && (
                 <div className="flex items-center align-center justify-center h-80 text-(--text-secondary) text-sm">
                     { t('SPLITTER.dropzone_empty') }

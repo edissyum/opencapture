@@ -957,7 +957,7 @@ export function SplitterViewerPage() {
                     <div className='fixed bottom-4 shadow-lg rounded-3xl flex justify-center items-center gap-4 p-3 bg-(--bg-primary) border-2
                             border-(--border-secondary) z-10'>
                         <div className={ `bg-(--bg-secondary) p-3 rounded-xl flex items-center gap-2
-                            ${ selectedPages.length == 0 ? 'bg-(--bg-secondary)' : 'bg-(--color-primary)/20' }` }>
+                            ${ selectedPages.length == 0 ? 'bg-(--bg-secondary)' : 'bg-(--bg-selected)' }` }>
                             <Checkbox checked={ selectedPages.length !== 0 } onChange={ selectAll }
                                       indeterminate={ selectedPages.length != pagesCount } disabled={ disabledBatch }/>
                             <div className={ `text-sm ${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer' }` }

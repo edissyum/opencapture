@@ -193,7 +193,7 @@ export function SuppliersList() {
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Button
-                        size={ 'sm' }
+                        size='sm'
                         variant="bg_white"
                         className='p-2 px-3 border'
                         onClick={ () => navigate('/suppliers/create') }>

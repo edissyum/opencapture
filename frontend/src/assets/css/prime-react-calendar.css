@@ -47,7 +47,7 @@
     @apply text-(--text-primary);
     @apply border-(--border-secondary);
     @apply hover:text-(--color-primary);
-    @apply hover:bg-(--color-primary)/10;
+    @apply hover:bg-(--bg-selected);
     @apply hover:border-(--border-primary);
 }
 
@@ -71,5 +71,5 @@
 }
 
 .p-datepicker table td > span.p-highlight {
-    @apply bg-(--color-primary)/10;
+    @apply bg-(--bg-selected);
 }

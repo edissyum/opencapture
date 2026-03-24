@@ -110,7 +110,7 @@ export function Table<T extends { id: string }>({
                 { actions && paginatorLeftText && actions.map((action, idx) => (
                     <Button
                         key={ idx }
-                        size={ 'sm' }
+                        size='sm'
                         variant={ "no_bg_border" }
                         className='p-2 border'
                         onClick={ action.command }

@@ -105,7 +105,7 @@ export function showConfirmDialogWithInput({
         acceptLabel: confirmText,
         message: <InputWrapper/>,
         acceptClassName:
-            "outline-none! shadow-none! bg-(--color-primary)! border-2! border-(--border-primary)! text-white! hover:bg-(--color-primary)/10! hover:text-(--color-primary)! disabled:opacity-40!",
+            "outline-none! shadow-none! bg-(--color-primary)! border-2! border-(--border-primary)! text-white! hover:bg-(--bg-selected)! hover:text-(--color-primary)! disabled:opacity-40!",
         rejectClassName:
             "outline-none! shadow-none! bg-transparent! text-(--text-secondary)! border-2! border-transparent! hover:border-2! hover:border-(--text-secondary)!",
         accept: () => {

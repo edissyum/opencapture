@@ -150,11 +150,8 @@ export function CustomersList() {
                        value={ searchTerm } placeholder={ t('GLOBAL.search') } noMarginBottom={ true }
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
-                    <Button
-                        size={ 'sm' }
-                        variant={ "no_bg_border" }
-                        className='p-2 px-3 border'
-                        onClick={ () => navigate('/customers/create') }>
+                    <Button size='sm' variant="bg_white" className='p-2 px-3'
+                            onClick={ () => navigate('/customers/create') }>
                         <UserRoundPlus size={ 16 } className="mr-2"/> { t('ACCOUNTS.add_customer') }
                     </Button>
                 </span>

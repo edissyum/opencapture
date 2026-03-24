@@ -1017,7 +1017,7 @@ export function VerifierViewerPage() {
             { !showAttachments && (
                 <div className='w-1/2'>
                     <div className='px-1'>
-                        <Button size={ 'sm' } variant={ "no_bg" } className='hover:border-none! hover:p-2'
+                        <Button size='sm' variant={ "no_bg" } className='hover:border-none! hover:p-2'
                                 icon={ <ArrowLeft size={ 16 }/> } onClick={ () => navigate('/home') }>
                             { t('GLOBAL.back') }
                         </Button>
