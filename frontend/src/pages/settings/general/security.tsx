@@ -402,7 +402,7 @@ export function SettingsGeneralSecurity() {
 
                             <div className="flex justify-between mt-6">
                                 <Button onClick={ handlePreviousStep } variant="no_bg"
-                                        className="mr-2 px-12 text-(--color-primary) border-transparent hover:border-(--color-primary)">
+                                        className="mr-2 px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
                                     <ArrowLeft/> { t("MAILCOLLECT.previous") }
                                 </Button>
                                 <Button onClick={ ldapHandleSubmit(launchSync) }

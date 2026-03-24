@@ -16,34 +16,53 @@
 
 import { t } from "i18next";
 
-export const rotation_options = [
+export const getRotationOptions = () => [
     { id: "no_rotation", label: t("WORKFLOWS.rotation_none") },
     { id: "90", label: t("WORKFLOWS.rotation_90") },
     { id: "180", label: t("WORKFLOWS.rotation_180") },
     { id: "270", label: t("WORKFLOWS.rotation_270") }
 ];
 
-export const tesseract_function = [
-    { id: 'line_box_builder', label: t('WORKFLOW.line_box_builder') },
-    { id: 'text_builder', label: t('WORKFLOW.text_builder') }
+export const getTesseractOptions = () => [
+    { id: 'line_box_builder', label: t('WORKFLOWS.line_box_builder') },
+    { id: 'text_builder', label: t('WORKFLOWS.text_builder') }
 ];
 
-export const convert_function = [
+export const getConvertOptions = () => [
     { 'id': 'pdf2image', 'label': 'pdf2image' },
     { 'id': 'imagemagick', 'label': 'ImageMagick' }
 ];
 
-export const system_fields = [
+export const getSystemFields = () => [
     { id: 'name', label: t('FORMS.supplier') },
     { id: 'contact', label: t('ACCOUNTS.informal_contact') },
-    { id: 'subject', label: t('WORKFLOW.subject') },
-    { id: 'invoice_number', label: t('FACTURATION.invoice_number') },
-    { id: 'order_number', label: t('FACTURATION.order_number') },
-    { id: 'quotation_number', label: t('FACTURATION.quotation_number') },
-    { id: 'delivery_number', label: t('FACTURATION.delivery_number') },
-    { id: 'document_date', label: t('FACTURATION.document_date') },
-    { id: 'document_due_date', label: t('FACTURATION.document_due_date') },
-    { id: 'firstname_lastname', label: t('FACTURATION.firstname_lastname') },
-    { id: 'currency', label: t('WORKFLOW.currency') },
-    { id: 'footer', label: t('WORKFLOW.footer') }
+    { id: 'subject', label: t('VERIFIER.subject') },
+    { id: 'invoice_number', label: t('VERIFIER.invoice_number') },
+    { id: 'order_number', label: t('VERIFIER.order_number') },
+    { id: 'quotation_number', label: t('VERIFIER.quotation_number') },
+    { id: 'delivery_number', label: t('VERIFIER.delivery_number') },
+    { id: 'document_date', label: t('VERIFIER.document_date') },
+    { id: 'document_due_date', label: t('VERIFIER.document_due_date') },
+    { id: 'firstname_lastname', label: t('VERIFIER.firstname_lastname') },
+    { id: 'currency', label: t('VERIFIER.currency') },
+    { id: 'footer', label: t('VERIFIER.footer') }
+];
+
+export const getSplitterMethods = () => [
+    {
+        'id': 'no_sep',
+        'label': t('WORKFLOWS.no_separation')
+    },
+    {
+        'id': 'qr_code_OC',
+        'label': t('WORKFLOWS.qr_code_separation')
+    },
+    {
+        'id': 'c128_OC',
+        'label': t('WORKFLOWS.c128_separation')
+    },
+    {
+        'id': 'separate_by_document_number',
+        'label': t('WORKFLOWS.separate_by_document_number')
+    }
 ];

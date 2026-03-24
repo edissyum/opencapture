@@ -78,7 +78,6 @@ export function SettingsIndex() {
     return (
         <div className="p-8">
             <h1 className="text-2xl font-bold flex items-center gap-1">
-                <Star/>
                 { t('SETTINGS.favorites') }
             </h1>
             <p className="text-(--text-secondary)">
@@ -95,7 +94,6 @@ export function SettingsIndex() {
             </div>
 
             <h1 className="text-2xl font-bold flex items-center gap-1">
-                <Settings/>
                 { t('SETTINGS.title') }
             </h1>
             <p className="text-(--text-secondary)">
