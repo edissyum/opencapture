@@ -1012,7 +1012,13 @@
         "no_ai_model": "Aucun modèle d'IA",
         "no_customer": "Aucun compte client",
         "input_scripting": "Script de pré-traitement",
-        "process_scripting": "Script de post-traitement"
+        "process_scripting": "Script de post-traitement",
+        "outputs": "Chaînes sortantes",
+        "update_success": "Workflow mis à jour avec succès",
+        "no_output": "Aucune chaîne sortante",
+        "script_content": "Contenu du script",
+        "next_script_testing": "Tester le fonctionnement du script avant de passer à l'étape suivante",
+        "test_script_success": "Script testé avec succès"
     },
     "MONITORING": {
         "processes": "Processus",

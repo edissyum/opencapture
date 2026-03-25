@@ -141,6 +141,7 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                                     optionLabel="label"
                                     label={ field.label }
                                     options={ field.options }
+                                    disabled={ field.disabled }
                                     labelFusion={ labelFusion }
                                     onChange={ e => f.onChange(e.value) }
                                 />
@@ -185,6 +186,7 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                                     labelFusion={ labelFusion }
                                     required={ field.required }
                                     editable={ field.editable }
+                                    disabled={ field.disabled }
                                     filter={ field.filter || false }
                                     error={ errors[field.name]?.message }
                                     onChange={ e => f.onChange(e.value) }

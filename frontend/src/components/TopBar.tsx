@@ -38,7 +38,7 @@ export default function TopBar() {
     ];
 
     const location = useLocation();
-    const isDisabled = location.pathname !== '/home';
+    const isDisabled = location.pathname !== '/home' && location.pathname !== '/upload';
 
     const [selected, setSelected] = useState<string | null>(null);
     const [img, setImg] = useState<string | null>(null);

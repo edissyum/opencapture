@@ -30,8 +30,8 @@ import { showToast } from "../../components/ToastProvider";
 import { DynamicForm } from "../../components/form/DynamicForm";
 
 export function CustomerEditor() {
-    const { get, post, put } = axiosApiCall();
     const navigate = useNavigate();
+    const { get, post, put } = axiosApiCall();
     const { customerId } = useParams<{ customerId: any }>();
 
     const [address, setAddress] = useState<any>(null);

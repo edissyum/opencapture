@@ -15,10 +15,10 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import os
-import sys
 import json
+import os
 import stat
+import sys
 import traceback
 from io import StringIO
 
@@ -26,12 +26,12 @@ from flask import request
 from flask_babel import gettext
 from pyflakes.scripts import pyflakes
 
-from ..controllers import user
 from ..classes.Config import Config
+from ..controllers import user
+from ..functions import retrieve_custom_from_url, check_order_by
 from ..helpers import get_context_var
 from ..models import workflow, history
 from ..scripting_functions import check_code
-from ..functions import retrieve_custom_from_url, check_order_by
 
 
 def get_workflows(args):
@@ -66,6 +66,8 @@ def get_workflows(args):
         user_customers = user.get_customers_by_user_id(args['user_id'])
         if user_customers[1] != 200:
             return user_customers[0], user_customers[1]
+
+        user_customers[0].append(0)
 
         _args['where'].append(
             "((input->>'customer_id')::INTEGER IS NULL OR (input->>'customer_id')::INTEGER = ANY(%s))")
@@ -333,6 +335,7 @@ def create_script_and_watcher(args):
     ######
     # CREATE SCRIPT
     ######
+
     if os.path.isdir(folder_script):
         script_name = args['workflow_id'] + '.sh'
         if os.path.isfile(folder_script + '/' + script_name):
@@ -355,7 +358,6 @@ def create_script_and_watcher(args):
             ######
             # CREATE OR UPDATE FS WATCHER CONFIG
             ######
-
             if not os.path.exists(args['input_folder']):
                 try:
                     os.mkdir(args['input_folder'], mode=0o777)
@@ -448,19 +450,25 @@ def test_script(args):
     try:
         check_res, message = check_code(args['codeContent'], docservers['VERIFIER_SHARE'], args['input_folder'])
         if not check_res:
-            result_string = ('[OUTPUT_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +
-                             '&nbsp;<strong>(' + message.strip() + ')</strong>')
-            return result_string, 400
+            result_str = gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') + ' <strong>(' + message.strip() + ')</strong>'
+            return {
+                "errors": gettext('BAD_REQUEST'),
+                "message": result_str
+            }, 400
 
         result = StringIO()
         sys.stderr = result
         pyflakes.check(args['codeContent'], '')
         result_string = result.getvalue()
         splitted_result = result_string.split(':')
+
         if len(splitted_result) >= 3:
-            result_string = '<strong>' + gettext('LINE') + ' ' + splitted_result[1] + ' ' + \
+            result_str = '<strong>' + gettext('LINE') + ' ' + splitted_result[1] + ' ' + \
                             gettext('COLUMN') + ' ' + splitted_result[2] + '</strong> : ' + splitted_result[3]
-            return result_string, 400
+            return {
+                "errors": gettext('BAD_REQUEST'),
+                "message": result_str
+            }, 400
     except (Exception,):
         return traceback.format_exc(), 400
     return result_string, 200

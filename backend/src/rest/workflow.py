@@ -53,7 +53,7 @@ def create_workflow(module):
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/workflows/{module}/create'}), 403
 
-    args = dict(request.json['args'])
+    args = dict(request.json)
     args['module'] = module
 
     check, message = rest_validator(args, [
@@ -169,7 +169,7 @@ def update_workflow(module, workflow_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/workflows/{module}/update/{workflow_id}'}), 403
 
-    data = request.json['args']
+    data = request.json
     data['module'] = module
 
     check, message = rest_validator(data, [
@@ -197,12 +197,13 @@ def create_script_and_watcher(module):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/workflows/{module}/createScriptAndWatcher'}), 403
 
-    args = dict(request.json['args'])
+    args = dict(request.json)
     args['module'] = module
 
     check, message = rest_validator(args, [
         {'id': 'workflow_id', 'type': str, 'mandatory': True},
-        {'id': 'input_folder', 'type': str, 'mandatory': True}
+        {'id': 'input_folder', 'type': str, 'mandatory': True},
+        {'id': 'workflow_label', 'type': str, 'mandatory': True}
     ])
     if not check:
         return make_response({
@@ -231,8 +232,10 @@ def test_script(module):
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_workflow | update_workflow']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/workflows/{module}testScript'}), 403
 
-    check, message = rest_validator(request.json['args'], [
-        {'id': 'codeContent', 'type': str, 'mandatory': True}
+    check, message = rest_validator(request.json, [
+        {'id': 'step', 'type': str, 'mandatory': True},
+        {'id': 'codeContent', 'type': str, 'mandatory': True},
+        {'id': 'input_folder', 'type': str, 'mandatory': True}
     ])
     if not check:
         return make_response({
@@ -240,5 +243,5 @@ def test_script(module):
             "message": message
         }, 400)
 
-    res = workflow.test_script(request.json['args'])
+    res = workflow.test_script(request.json)
     return make_response(jsonify(res[0])), res[1]

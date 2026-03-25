@@ -54,6 +54,7 @@ const MultiSelectInput: React.FC<MultiSelectProps> = ({
     itemTemplate,
     filter = true,
     className = "",
+    disabled= false,
     required = false,
     labelFusion = false,
     onChange
@@ -93,7 +94,8 @@ const MultiSelectInput: React.FC<MultiSelectProps> = ({
     };
 
     return (
-        <div className={ `${className} group group-focus-within:border-(--border-primary) relative flex justify-items-stretch` }>
+        <div className={ `${className} group group-focus-within:border-(--border-primary) relative flex
+                          justify-items-stretch ${ disabled ? 'cursor-not-allowed' : '' }` }>
             <FloatLabel className='w-full'>
                 <MultiSelect
                     id={ id }
@@ -102,6 +104,7 @@ const MultiSelectInput: React.FC<MultiSelectProps> = ({
                     filter={ filter }
                     invalid={ invalid }
                     options={ options }
+                    disabled={ disabled }
                     required={ required }
                     className={ 'w-full' }
                     focusOnHover={ false }

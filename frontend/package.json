@@ -22,6 +22,7 @@
         "@dnd-kit/modifiers": "^9.0.0",
         "@dnd-kit/sortable": "^10.0.0",
         "@hookform/resolvers": "^5.2.2",
+        "@monaco-editor/react": "^4.7.0",
         "@tailwindcss/vite": "^4.2.2",
         "@tanstack/react-table": "^8.21.3",
         "@tanstack/react-virtual": "^3.13.23",
@@ -42,7 +43,7 @@
         "react-router-dom": "^7.13.2",
         "react-toastify": "^11.0.5",
         "react-tooltip": "^5.30.0",
-        "recharts": "^3.8.0",
+        "recharts": "^3.8.1",
         "tailwindcss": "^4.2.2",
         "tinymce": "^8.3.2",
         "zod": "^4.3.6"

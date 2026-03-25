@@ -18,15 +18,22 @@ import { z } from "zod";
 import { t } from "i18next";
 import { useForm } from "react-hook-form";
 import { Stepper } from "primereact/stepper";
-import { useParams } from "react-router-dom";
+import { Editor } from '@monaco-editor/react';
+import { FloatLabel } from "primereact/floatlabel";
+import { useNavigate, useParams } from "react-router-dom";
+
+import { ArrowLeft, Terminal } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { InputSwitch } from "primereact/inputswitch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { StepperPanel } from "primereact/stepperpanel";
 
 import { useCustom } from "../../../services/custom/customContext";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 
+import { Button } from "../../Button";
 import { Loader } from "../../loader/Loader";
+import { showToast } from "../../ToastProvider";
 import { DynamicForm } from "../../form/DynamicForm";
 
 import {
@@ -36,13 +43,11 @@ import {
     getSystemFields,
     getTesseractOptions
 } from "./helpers";
-import { InputSwitch } from "primereact/inputswitch";
-import { ArrowLeft, Terminal } from "lucide-react";
-import { Button } from "../../Button.tsx";
 
 export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const custom = useCustom();
     const { get, post, put } = axiosApiCall();
+    const navigate = useNavigate();
     const { workflowId } = useParams<{ workflowId: any }>();
 
     const [loading, setLoading] = useState(true);
@@ -51,36 +56,70 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
     const [forms, setForms] = useState([]);
     const [aiLLM, setAiLLM] = useState([]);
+    const [outputs, setOutputs] = useState([]);
     const [aiModels, setAiModels] = useState([]);
     const [customers, setCustomers] = useState([]);
     const [customFields, setCustomFields] = useState([]);
     const [splitterMethods, setSplitterMethods] = useState<any>([]);
+
+    const [useInterface, setUseInterface] = useState(false);
     const [splitterMethodActive, setSplitterMethodActive] = useState('no_sep');
 
     const [inputScripting, setInputScripting] = useState(false);
     const [processScripting, setProcessScripting] = useState(false);
     const [outputScripting, setOutputScripting] = useState(false);
 
-    const [workflow, setWorkflow] = useState(null);
+    const [inputScript, setInputScript] = useState('');
+    const [processScript, setProcessScript] = useState('');
+    const [outputScript, setOutputScript] = useState('');
+
     const [allowScripting, setAllowScripting] = useState(false);
 
     // Fetch if scripting is allowed
     // Fetch forms for dropdown
     // Fetch AI LLMs for dropdown
+    // Fetch outputs for dropdown
     // Fetch customers for dropdown
     // Fetch AI models for dropdown
     // Fetch custom fields for dropdown
     // Fetch splitter methods for dropdown
     useEffect(() => {
         const init = async () => {
-            const fetchScriptingAllowed = async () => {
+            const fetchForms = async () => {
                 try {
-                    const response = await get(`/config/getAllowWFScripting`);
-                    if (response) {
-                        setAllowScripting(response.allowWFScripting.toLowerCase() === 'true');
+                    const response = await get(`/forms/${ module }/list`);
+                    if (response && response.forms) {
+                        setForms(response.forms);
                     }
                 } catch (error) {
-                    console.error('Error fetching scripting allowed :', error);
+                    console.error('Error fetching forms :', error);
+                }
+            };
+
+            const fetchAiLLMs = async () => {
+                try {
+                    const response = await get(`/ai/llm/list`);
+                    if (response && response.llm_models) {
+                        response.llm_models.unshift({ id: 'no_ai_llm', name: t('WORKFLOWS.no_ai_llm') });
+                        setAiLLM(response.llm_models);
+                    }
+                } catch (error) {
+                    console.error('Error fetching AI LLMs :', error);
+                }
+            };
+
+            const fetchOutputs = async () => {
+                try {
+                    const response = await get(`/outputs/${ module }/list`);
+                    if (response && response.outputs) {
+                        response.outputs.unshift({
+                            "id": 0,
+                            "output_label": t("WORKFLOWS.no_output"),
+                        })
+                        setOutputs(response.outputs);
+                    }
+                } catch (error) {
+                    console.error('Error fetching outputs :', error);
                 }
             };
 
@@ -108,6 +147,19 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 }
             };
 
+            const fetchCustomField = async () => {
+                if (module !== 'verifier') return;
+
+                try {
+                    const response = await get(`/customFields/list?module=${ module }&type=regex`);
+                    if (response && response.customFields) {
+                        setCustomFields(response.customFields);
+                    }
+                } catch (error) {
+                    console.error('Error fetching custom fields :', error);
+                }
+            };
+
             const fetchSplitterMethods = async () => {
                 if (module === 'verifier') {
                     setSplitterMethods(getSplitterMethods());
@@ -123,44 +175,20 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 }
             };
 
-            const fetchForms = async () => {
+            const fetchScriptingAllowed = async () => {
                 try {
-                    const response = await get(`/forms/${ module }/list`);
-                    if (response && response.forms) {
-                        setForms(response.forms);
+                    const response = await get(`/config/getAllowWFScripting`);
+                    if (response) {
+                        setAllowScripting(response.allowWFScripting.toLowerCase() === 'true');
                     }
                 } catch (error) {
-                    console.error('Error fetching forms :', error);
-                }
-            };
-
-            const fetchAiLLMs = async () => {
-                try {
-                    const response = await get(`/ai/llm/list`);
-                    if (response && response.llm_models) {
-                        response.llm_models.unshift({ id: 'no_ai_llm', model_label: t('WORKFLOWS.no_ai_llm') });
-                        setAiLLM(response.llm_models);
-                    }
-                } catch (error) {
-                    console.error('Error fetching AI LLMs :', error);
-                }
-            };
-
-            const fetchCustomField = async () => {
-                if (module !== 'verifier') return;
-
-                try {
-                    const response = await get(`/customFields/list?module=${ module }&type=regex`);
-                    if (response && response.customFields) {
-                        setCustomFields(response.customFields);
-                    }
-                } catch (error) {
-                    console.error('Error fetching custom fields :', error);
+                    console.error('Error fetching scripting allowed :', error);
                 }
             };
 
             await fetchForms();
             await fetchAiLLMs();
+            await fetchOutputs();
             await fetchAiModels();
             await fetchCustomers();
             await fetchCustomField();
@@ -180,15 +208,23 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             try {
                 const response = await get(`/workflows/${ module }/getById/${ workflowId }`);
                 if (response) {
-                    setWorkflow(response);
                     Object.entries(response).forEach(([key, value]: any) => {
                         if (['label', 'workflow_id'].includes(key)) {
-                            detailsSetValue(key, value, { shouldValidate: true });
-                        }
-                        if (key === 'input' || key === 'process') {
-                            Object.entries(value).forEach(([inputKey, inputValue]) => {
+                            detailsSetValue(key, value);
+                        } else {
+                            Object.entries(value).forEach(([inputKey, inputValue]: any) => {
                                 if (inputValue !== null) {
-                                    workflowSetValue(inputKey, inputValue, { shouldValidate: true });
+                                    if (inputKey === 'script') {
+                                        if (key === 'input') {
+                                            setInputScript(inputValue);
+                                        } else if (key === 'process') {
+                                            setProcessScript(inputValue);
+                                        } else if (key === 'output') {
+                                            setOutputScript(inputValue);
+                                        }
+                                    } else {
+                                        workflowSetValue(inputKey, inputValue);
+                                    }
                                 }
                             });
                         }
@@ -201,13 +237,16 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
         fetchCustomField().then();
     }, [workflowId]);
+
     const detailSchema = z.object({
-        label: z.string().describe(JSON.stringify({
+        label: z.string().min(3).describe(JSON.stringify({
             required: true,
             component: "input",
             label: t("WORKFLOWS.label")
         })),
-        workflow_id: z.string().optional().describe(JSON.stringify({
+        workflow_id: z.string().min(3).describe(JSON.stringify({
+            required: true,
+            disabled: !!workflowId,
             component: "input",
             label: t("WORKFLOWS.label_short")
         }))
@@ -216,31 +255,38 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
     const {
         control: detailsControl,
         setValue: detailsSetValue,
+        getValues: detailsGetValues,
         handleSubmit: detailsHandleSubmit,
         formState: { errors: detailsErrors }
     } = useForm({
         resolver: zodResolver(detailSchema),
-        defaultValues: {},
+        defaultValues: {
+            label: '',
+            workflow_id: ''
+        },
         mode: "onChange"
     });
 
-    const inputSchemaStartSwitchs = z.object({
-        facturx_only: z.boolean().optional().describe(JSON.stringify({
-            component: "input_switch",
-            label: t("WORKFLOWS.facturx_only")
-        })),
+    let inputSchemaStartSwitchs = z.object({
         remove_blank_pages: z.boolean().optional().describe(JSON.stringify({
             component: "input_switch",
             label: t("WORKFLOWS.remove_blank_pages")
         }))
     });
+    if (module === 'verifier') {
+        inputSchemaStartSwitchs = inputSchemaStartSwitchs.extend({
+            facturx_only: z.boolean().optional().describe(JSON.stringify({
+                component: "input_switch",
+                label: t("WORKFLOWS.facturx_only")
+            }))
+        });
+    }
+
     const inputSchemaFields = z.object({
-        input_folder: z.string().describe(JSON.stringify({
-            required: true,
+        input_folder: z.string().optional().describe(JSON.stringify({
             component: "input",
             label: t("WORKFLOWS.input_folder"),
-            placeholder:
-                `/var/share/${ custom }/input`
+            placeholder: `/var/share/${ custom }/input`
         })),
         customer_id: z.number().optional().describe(JSON.stringify({
             component: "dropdown",
@@ -265,11 +311,11 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             options: splitterMethods.map((m: any) => ({ label: m.label, value: m.id }))
         })),
         separate_by_document_number_value: z.number().describe(JSON.stringify({
-            component: "input",
             type: "number",
+            component: "input",
+            label: t("WORKFLOWS.separate_by_document_number_value"),
             required: splitterMethodActive == 'separate_by_document_number',
-            disabled: splitterMethodActive !== 'separate_by_document_number',
-            label: t("WORKFLOWS.separate_by_document_number_value")
+            disabled: splitterMethodActive !== 'separate_by_document_number'
         }))
     });
     const inputSchemaEndSwitchs = z.object({
@@ -280,72 +326,75 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
     });
     const inputSchema = inputSchemaStartSwitchs.extend(inputSchemaFields.shape).extend(inputSchemaEndSwitchs.shape);
 
-    const processSchemaStartSwitchs: any = z.object({
-        allow_third_party_validation: z.boolean().optional().describe(JSON.stringify({
-            component: "input_switch",
-            label: t("WORKFLOWS.allow_third_party_validation"),
-            hint: t("WORKFLOWS.allow_third_party_validation_hint")
-        })),
-        allow_automatic_validation: z.boolean().optional().describe(JSON.stringify({
-            component: "input_switch",
-            label: t("WORKFLOWS.allow_automatic_validation"),
-            hint: t("WORKFLOWS.allow_automatic_validation_hint")
-        })),
-        override_supplier_form: z.boolean().optional().describe(JSON.stringify({
-            component: "input_switch",
-            label: t("WORKFLOWS.override_supplier_form")
-        })),
-        api_only: z.boolean().optional().describe(JSON.stringify({
-            component: "input_switch",
-            label: t("WORKFLOWS.api_only"),
-            hint: t("WORKFLOWS.api_only_hint")
-        }))
-    });
-    const processSchemaInputFields: any = z.object({
-        form_id: z.number().optional().describe(JSON.stringify({
+    let processSchemaStartSwitchs: any = z.object({});
+    if (module === 'verifier') {
+        processSchemaStartSwitchs= z.object({
+            allow_third_party_validation: z.boolean().optional().describe(JSON.stringify({
+                component: "input_switch",
+                label: t("WORKFLOWS.allow_third_party_validation"),
+                hint: t("WORKFLOWS.allow_third_party_validation_hint")
+            })),
+            allow_automatic_validation: z.boolean().optional().describe(JSON.stringify({
+                component: "input_switch",
+                label: t("WORKFLOWS.allow_automatic_validation"),
+                hint: t("WORKFLOWS.allow_automatic_validation_hint")
+            })),
+            override_supplier_form: z.boolean().optional().describe(JSON.stringify({
+                component: "input_switch",
+                label: t("WORKFLOWS.override_supplier_form")
+            })),
+            api_only: z.boolean().optional().describe(JSON.stringify({
+                component: "input_switch",
+                label: t("WORKFLOWS.api_only"),
+                hint: t("WORKFLOWS.api_only_hint")
+            }))
+        });
+    }
+
+    let processSchemaInputFields: any = z.object({
+        form_id: z.any().describe(JSON.stringify({
             component: "dropdown",
-            required: stepperIndex == 1,
+            required: useInterface && stepperIndex == 1,
+            disabled: !useInterface,
             label: t("VERIFIER.associated_form"),
             options: forms.map((f: any) => ({ label: f.label, value: f.id }))
         }))
     });
+
     if (module === 'verifier') {
-        processSchemaInputFields['ai_llm'] = z.string().describe(JSON.stringify({
-            component: "dropdown",
-            required: stepperIndex == 1,
-            label: t("WORKFLOWS.ai_llm"),
-            hint: t("WORKFLOWS.ai_llm_hint"),
-            options: aiLLM.map((m: any) => ({ label: m.name, value: m.id }))
-        }));
-
-        processSchemaInputFields['system_fields'] = z.array(z.string()).describe(JSON.stringify({
-            component: "dropdown",
-            label: t("WORKFLOWS.system_fields"),
-            options: getSystemFields().map((f: any) => ({ label: f.label, value: f.id }))
-        }));
-
-        processSchemaInputFields['custom_fields'] = z.array(z.string()).describe(JSON.stringify({
-            component: "dropdown",
-            label: t("WORKFLOWS.custom_fields_to_search"),
-            hint: t("WORKFLOWS.custom_fields_to_search_hint"),
-            options: customFields.map((f: any) => ({ label: f.label, value: f.id }))
-        }));
-
-        processSchemaInputFields['tesseract_function'] = z.array(z.string()).describe(JSON.stringify({
-            component: "dropdown",
-            required: stepperIndex == 1,
-            label: t("WORKFLOWS.tesseract_function"),
-            hint: t("WORKFLOWS.tesseract_function_hint"),
-            options: getTesseractOptions().map((f: any) => ({ label: f.label, value: f.id }))
-        }));
-
-        processSchemaInputFields['convert_function'] = z.array(z.string()).describe(JSON.stringify({
-            component: "dropdown",
-            required: stepperIndex == 1,
-            label: t("WORKFLOWS.convert_function"),
-            hint: t("WORKFLOWS.convert_function_hint"),
-            options: getConvertOptions().map((f: any) => ({ label: f.label, value: f.id }))
-        }));
+        processSchemaInputFields = processSchemaInputFields.extend({
+            ai_llm: z.string().describe(JSON.stringify({
+                component: "dropdown",
+                label: t("WORKFLOWS.ai_llm"),
+                hint: t("WORKFLOWS.ai_llm_hint"),
+                options: aiLLM.map((m: any) => ({ label: m.name, value: m.id }))
+            })),
+            system_fields: z.array(z.string()).describe(JSON.stringify({
+                component: "multi_select",
+                label: t("WORKFLOWS.system_fields"),
+                options: getSystemFields().map((f: any) => ({ label: f.label, value: f.id }))
+            })),
+            custom_fields: z.array(z.number()).describe(JSON.stringify({
+                component: "multi_select",
+                label: t("WORKFLOWS.custom_fields_to_search"),
+                hint: t("WORKFLOWS.custom_fields_to_search_hint"),
+                options: customFields.map((f: any) => ({ label: f.label, value: f.id }))
+            })),
+            tesseract_function: z.string().describe(JSON.stringify({
+                component: "dropdown",
+                required: stepperIndex == 1,
+                label: t("WORKFLOWS.tesseract_function"),
+                hint: t("WORKFLOWS.tesseract_function_hint"),
+                options: getTesseractOptions().map((f: any) => ({ label: f.label, value: f.id }))
+            })),
+            convert_function: z.string().describe(JSON.stringify({
+                component: "dropdown",
+                required: stepperIndex == 1,
+                label: t("WORKFLOWS.convert_function"),
+                hint: t("WORKFLOWS.convert_function_hint"),
+                options: getConvertOptions().map((f: any) => ({ label: f.label, value: f.id }))
+            }))
+        });
     }
     const processSchemaEndSwitchs: any = z.object({
         delete_documents: z.boolean().optional().describe(JSON.stringify({
@@ -360,25 +409,75 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
     });
     const processSchema = processSchemaStartSwitchs.extend(processSchemaInputFields.shape).extend(processSchemaEndSwitchs.shape);
 
+    const outputSchema = z.object({
+        outputs_id: z.array(z.number()).describe(JSON.stringify({
+            disabled: useInterface,
+            component: "multi_select",
+            label: t("WORKFLOWS.outputs"),
+            options: outputs.map((o: any) => ({ label: o.output_label, value: o.id }))
+        }))
+    });
+
     const {
         watch: workflowWatch,
         control: workflowControl,
         setValue: workflowSetValue,
+        setError: workflowSetError,
+        getValues: workflowGetValues,
         handleSubmit: workflowHandleSubmit,
         formState: { errors: workflowErrors }
     } = useForm({
-        resolver: zodResolver(inputSchema.extend(processSchema.shape)),
-        defaultValues: {},
+        resolver: zodResolver(inputSchema.extend(processSchema.shape).extend(outputSchema.shape)),
+        defaultValues: {
+            input_folder: '',
+            api_only: false,
+            allow_automatic_validation: false,
+            allow_third_party_validation: false,
+            override_supplier_form: false,
+            facturx_only: false,
+            remove_blank_pages: true,
+            apply_process: true,
+            use_interface: true,
+            splitter_method_id: 'no_sep',
+            rotation: 'no_rotation',
+            ai_llm: 'no_ai_llm',
+            customer_id: 0,
+            ai_model_id: 0,
+            form_id: undefined,
+            convert_function: 'pdf2image',
+            tesseract_function: 'line_box_builder',
+            system_fields: [],
+            custom_fields: [],
+            outputs_id: []
+        },
         mode: "onChange"
     });
 
+    const formIdValue: any = workflowWatch('form_id');
+    const useInterfaceValue: any = workflowWatch('use_interface');
     const splitterMethod: any = workflowWatch('splitter_method_id');
+
+    // Enable/disable outputs dropdown based on useInterface switch
+    useEffect(() => {
+        setUseInterface(useInterfaceValue);
+    }, [useInterfaceValue]);
+
+    // Enable/disable separate_by_document_number_value based on splitter method
     useEffect(() => {
         if (splitterMethod !== 'separate_by_document_number') {
             workflowSetValue('separate_by_document_number_value', 0);
         }
         setSplitterMethodActive(splitterMethod);
     }, [splitterMethod]);
+
+    // Update outputs options based on selected form
+    useEffect(() => {
+        const form: any = forms.find((f: any) => f.id === formIdValue);
+        if (form) {
+            const outputsList = outputs.filter((o: any) => form.outputs.some((fo: any) => parseInt(fo) === o.id));
+            workflowSetValue('outputs_id', outputsList.map((o: any) => o.id));
+        }
+    }, [formIdValue]);
 
     const handleNextStep: any = (data: FormData) => {
         if (data && Object.keys(workflowErrors).length > 0) {
@@ -389,10 +488,123 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
     const handlePreviousStep = () => stepperRef.current?.prevCallback();
 
-    const handleSubmitInput = (data: any) => {
-        console.log(data);
+    const handleSubmitStep = async (data: any) => {
+        const label = detailsGetValues('label');
+        const workflowId = detailsGetValues('workflow_id');
+        if (Object.keys(detailsErrors).length > 0 || !workflowId || !label) {
+            await detailsHandleSubmit(() => {
+            })();
+            showToast(t("WORKFLOWS.fix_details_errors"), 'error');
+            return;
+        }
+
+        if (stepperIndex === 0) {
+            const input_folder = workflowGetValues('input_folder');
+            if (input_folder) {
+                if (workflowId) {
+                    try {
+                        const response = await post(`workflows/${ module }/createScriptAndWatcher`, {
+                            workflow_label: label,
+                            workflow_id: workflowId,
+                            input_folder: input_folder
+                        })
+                        console.log(response)
+                    } catch (error) {
+                        console.log('Error validating input folder :', error);
+                        return;
+                    }
+                } else {
+                    showToast(t("WORKFLOWS.fix_details_errors"), 'error');
+                    return;
+                }
+            }
+        }
+
+        if (inputScripting && stepperIndex === 2 || stepperIndex == 1) {
+            if (useInterface && !formIdValue) {
+                workflowSetError('form_id', { message: t("WORKFLOWS.form_required") });
+                return;
+            }
+        }
+
         handleNextStep(data);
     }
+
+    const handleSubmit = async (data: any) => {
+        if (Object.keys(detailsErrors).length > 0 || Object.keys(workflowErrors).length > 0) {
+            return;
+        }
+
+        const payload: any = {
+            ...detailsGetValues(),
+            input: {
+                input_folder: data.input_folder,
+                customer_id: data.customer_id,
+                ai_model_id: data.ai_model_id,
+                rotation: data.rotation,
+                splitter_method_id: data.splitter_method_id,
+                separate_by_document_number_value: data.separate_by_document_number_value,
+                facturx_only: data.facturx_only,
+                remove_blank_pages: data.remove_blank_pages,
+                apply_process: data.apply_process,
+            },
+            process: {
+                form_id: data.form_id,
+                ai_llm: data.ai_llm,
+                system_fields: data.system_fields,
+                custom_fields: data.custom_fields,
+                tesseract_function: data.tesseract_function,
+                convert_function: data.convert_function,
+                allow_third_party_validation: data.allow_third_party_validation,
+                allow_automatic_validation: data.allow_automatic_validation,
+                override_supplier_form: data.override_supplier_form,
+                api_only: data.api_only,
+                delete_documents: data.delete_documents,
+                use_interface: data.use_interface,
+            },
+            output: {
+                outputs_id: data.outputs_id
+            }
+        };
+
+        if (inputScripting || inputScript) {
+            payload.input['script'] = inputScript;
+        }
+        if (processScripting || processScript) {
+            payload.process['script'] = processScript;
+        }
+        if (outputScripting || outputScript) {
+            payload.output['script'] = outputScript;
+        }
+
+        try {
+            if (workflowId) {
+                await put(`/workflows/verifier/update/${ workflowId }`, payload);
+                showToast(t('WORKFLOWS.update_success'), 'success');
+            } else {
+                await post(`/workflows/${ module }/create`, payload);
+                showToast(t('WORKFLOWS.create_success'), 'success');
+                navigate(`/settings/${ module }/workflows`);
+            }
+        } catch (error) {
+            console.error('Error updating workflow :', error);
+        }
+    }
+
+    const handleSubmitScript = async (script: string, step: string) => {
+        try {
+            await post(`/workflows/${ module }/testScript`, {
+                step: step,
+                codeContent: script,
+                input_folder: workflowWatch('input_folder')
+            });
+            showToast(t('WORKFLOWS.test_script_success'), 'success');
+            handleNextStep({});
+        } catch (error: any) {
+            console.error('Error testing script :', error);
+        }
+    }
+
     if (loading) return <Loader/>;
 
     return (
@@ -405,7 +617,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 <DynamicForm errors={ detailsErrors } control={ detailsControl } schema={ detailSchema } grid={ 2 }/>
             </div>
 
-            <Stepper ref={ stepperRef } linear className='p-4' activeStep={ stepperIndex }
+            <Stepper ref={ stepperRef } linear className='p-4 workflowStepper' activeStep={ stepperIndex }
                      onChangeStep={ (e: any) => setStepperIndex(e.index) }>
                 <StepperPanel header={ t("WORKFLOWS.input") }>
                     <DynamicForm schema={ inputSchemaStartSwitchs } control={ workflowControl }
@@ -419,23 +631,27 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                     <DynamicForm schema={ inputSchemaEndSwitchs } control={ workflowControl }
                                  errors={ workflowErrors }/>
 
-                    <div className='flex items-center mt-2'>
-                        <InputSwitch inputId='inputScripting' checked={ inputScripting }
-                                     onChange={ (e) => setInputScripting(e.value) }/>
-                        <label htmlFor={ 'inputScripting' }
-                               className="flex items-center gap-4 cursor-pointer">
-                            { t('WORKFLOWS.input_scripting') }
-                        </label>
-                    </div>
+                    { allowScripting && (
+                        <div className='flex items-center mt-3'>
+                            <InputSwitch inputId='inputScripting' checked={ inputScripting }
+                                         onChange={ (e) => setInputScripting(e.value) }/>
+                            <label htmlFor={ 'inputScripting' }
+                                   className="flex items-center gap-4 cursor-pointer">
+                                { t('WORKFLOWS.input_scripting') }
+                            </label>
+                        </div>
+                    ) }
 
                     <div className="flex justify-end mt-6">
-                        <Button onClick={ workflowHandleSubmit(handleSubmitInput) } className="ml-auto px-12"
+                        <Button onClick={ workflowHandleSubmit(handleSubmitStep) } className="ml-auto px-12"
                                 disabled={ loading || Object.keys(workflowErrors).length > 0 }>
                             { t("MAILCOLLECT.next") }
                         </Button>
                     </div>
                 </StepperPanel>
+
                 { inputScripting && (
+                    // @ts-ignore
                     <StepperPanel header={
                         <div className='flex items-center gap-2'>
                             <Terminal className='bg-(--border-secondary) text-(--text-secondary) p-2 rounded-lg'
@@ -447,36 +663,77 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                     } pt={ {
                         header: { className: "stepper-secondary left-1/5 -translate-x-1/5" }
                     } }>
+                        <FloatLabel className="w-full">
+                            <Editor
+                                className='border-2 border-(--border-secondary) rounded-md p-2'
+                                height="40vh"
+                                defaultLanguage="python"
+                                defaultValue={ inputScript }
+                                options={ {
+                                    contextmenu: true,
+                                    minimap: { enabled: true }
+                                } }
+                                onChange={ (value) => setInputScript(value || '') }
+                                theme={ document.documentElement.classList.contains('dark') ? 'vs-dark' : '' }
+                            />
+                            <label className="text-(--text-secondary) top-0! bg-(--bg-primary) px-1">
+                                { t("WORKFLOWS.script_content") }
+                            </label>
+                        </FloatLabel>
+                        <div className='mt-4 flex justify-between'>
+                            <Button onClick={ handlePreviousStep } variant="no_bg"
+                                    className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
+                                <ArrowLeft/> { t("MAILCOLLECT.previous") }
+                            </Button>
 
+                            <Button data-tooltip-id='tooltip'
+                                    data-tooltip-content={ t("WORKFLOWS.next_script_testing") }
+                                    onClick={ () => handleSubmitScript(inputScript, 'input') } className="px-12"
+                                    disabled={ loading || Object.keys(workflowErrors).length > 0 }>
+                                { t("MAILCOLLECT.next") }
+                            </Button>
+                        </div>
                     </StepperPanel>
                 ) }
+
                 <StepperPanel header={ t("WORKFLOWS.process") }>
                     <DynamicForm schema={ processSchemaStartSwitchs } control={ workflowControl }
                                  errors={ workflowErrors }/>
 
                     <div className='mt-4'>
-                        <DynamicForm schema={ processSchemaInputFields } control={ workflowControl } errors={ workflowErrors }
-                                     grid={ 2 }/>
+                        <DynamicForm schema={ processSchemaInputFields } control={ workflowControl }
+                                     errors={ workflowErrors } grid={ 2 }/>
                     </div>
 
                     <DynamicForm schema={ processSchemaEndSwitchs } control={ workflowControl }
                                  errors={ workflowErrors }/>
 
-                    <div className='flex items-center mt-2'>
-                        <InputSwitch inputId='processScripting' checked={ processScripting }
-                                     onChange={ (e) => setProcessScripting(e.value) }/>
-                        <label htmlFor={ 'processScripting' }
-                               className="flex items-center gap-4 cursor-pointer">
-                            { t('WORKFLOWS.process_scripting') }
-                        </label>
-                    </div>
+                    { allowScripting && (
+                        <div className='flex items-center mt-3'>
+                            <InputSwitch inputId='processScripting' checked={ processScripting }
+                                         onChange={ (e) => setProcessScripting(e.value) }/>
+                            <label htmlFor={ 'processScripting' }
+                                   className="flex items-center gap-4 cursor-pointer">
+                                { t('WORKFLOWS.process_scripting') }
+                            </label>
+                        </div>
+                    ) }
 
-                    <Button onClick={ handlePreviousStep } variant="no_bg"
-                            className="mt-4 mr-2 px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
-                        <ArrowLeft/> { t("MAILCOLLECT.previous") }
-                    </Button>
+                    <div className='mt-4 flex justify-between'>
+                        <Button onClick={ handlePreviousStep } variant="no_bg"
+                                className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
+                            <ArrowLeft/> { t("MAILCOLLECT.previous") }
+                        </Button>
+
+                        <Button onClick={ workflowHandleSubmit(handleSubmitStep) } className="px-12"
+                                disabled={ loading || Object.keys(workflowErrors).length > 0 }>
+                            { t("MAILCOLLECT.next") }
+                        </Button>
+                    </div>
                 </StepperPanel>
+
                 { processScripting && (
+                    // @ts-ignore
                     <StepperPanel header={
                         <div className='flex items-center gap-2'>
                             <Terminal className='bg-(--border-secondary) text-(--text-secondary) p-2 rounded-lg'
@@ -488,10 +745,55 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                     } pt={ {
                         header: { className: "stepper-secondary left-1/2 translate-x-1/2" }
                     } }>
+                        <FloatLabel className="w-full">
+                            <Editor
+                                className='border-2 border-(--border-secondary) rounded-md p-2'
+                                height="40vh"
+                                defaultLanguage="python"
+                                defaultValue={ processScript }
+                                options={ {
+                                    contextmenu: true,
+                                    minimap: { enabled: true }
+                                } }
+                                onChange={ (value) => setProcessScript(value || '') }
+                                theme={ document.documentElement.classList.contains('dark') ? 'vs-dark' : '' }
+                            />
+                            <label className="text-(--text-secondary) top-0! bg-(--bg-primary) px-1">
+                                { t("WORKFLOWS.script_content") }
+                            </label>
+                        </FloatLabel>
 
+                        <div className='mt-4 flex justify-between'>
+                            <Button onClick={ handlePreviousStep } variant="no_bg"
+                                    className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
+                                <ArrowLeft/> { t("MAILCOLLECT.previous") }
+                            </Button>
+
+                            <Button data-tooltip-id='tooltip'
+                                    data-tooltip-content={ t("WORKFLOWS.next_script_testing") }
+                                    onClick={ () => handleSubmitScript(processScript, 'process') } className="px-12"
+                                    disabled={ loading || Object.keys(workflowErrors).length > 0 }>
+                                { t("MAILCOLLECT.next") }
+                            </Button>
+                        </div>
                     </StepperPanel>
                 ) }
+
                 <StepperPanel header={ t("WORKFLOWS.output") }>
+                    <DynamicForm schema={ outputSchema } control={ workflowControl }
+                                 errors={ workflowErrors }/>
+
+                    <div className='mt-4 flex justify-between'>
+                        <Button onClick={ handlePreviousStep } variant="no_bg"
+                                className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
+                            <ArrowLeft/> { t("MAILCOLLECT.previous") }
+                        </Button>
+
+                        <Button onClick={ workflowHandleSubmit(handleSubmit) } className="px-12"
+                                disabled={ loading || Object.keys(workflowErrors).length > 0 }>
+                            { workflowId ? t("MAILCOLLECT.save") : t("MAILCOLLECT.create") }
+                        </Button>
+                    </div>
                 </StepperPanel>
             </Stepper>
         </div>

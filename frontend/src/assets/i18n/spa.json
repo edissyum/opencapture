@@ -1012,8 +1012,13 @@
         "no_ai_model": "",
         "no_customer": "",
         "input_scripting": "",
-        "next": "",
-        "process_scripting": ""
+        "process_scripting": "",
+        "outputs": "",
+        "update_success": "",
+        "no_output": "",
+        "script_content": "",
+        "next_script_testing": "",
+        "test_script_success": ""
     },
     "MONITORING": {
         "processes": "Procesos",

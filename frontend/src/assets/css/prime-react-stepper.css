@@ -27,10 +27,29 @@
     @apply border-(--border-secondary);
 }
 
+.stepper-secondary[data-p-highlight="true"] {
+    @apply bg-(--bg-selected);
+    @apply text-(--text-primary);
+    @apply border-(--border-primary);
+}
+
+.stepper-secondary[data-p-highlight="true"] .p-stepper-title div svg {
+    @apply text-(--bg-primary)!;
+    @apply bg-(--color-primary)!;
+}
+
+.stepper-secondary[data-p-highlight="true"] .p-stepper-title div div {
+    @apply text-(--color-primary)!;
+}
+
 .stepper-secondary button {
     @apply w-full;
 }
 
 .stepper-secondary button .p-stepper-number {
     @apply hidden;
+}
+
+.workflowStepper .p-stepper-nav {
+    @apply w-11/12!;
 }

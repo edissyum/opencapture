@@ -25,6 +25,7 @@ import { useCustom } from "../custom/customContext";
 import { isRefreshing, setIsRefreshing } from "./authRefreshState";
 
 import { showToast } from "../../components/ToastProvider";
+import DOMPurify from "dompurify";
 
 interface AxiosCustomRequestConfig extends AxiosRequestConfig {
     showErrorToast?: boolean;
@@ -171,9 +172,7 @@ export function axiosApiCall() {
                                     { title }
                                 </strong>
                             </h4>
-                            <p>
-                                { details }
-                            </p>
+                            <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(details) }}/>
                         </div>, "error"
                     )
                 } else {
