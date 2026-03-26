@@ -14,7 +14,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 import TopBar from "../components/TopBar";
 import Sidebar from "../components/Sidebar";
@@ -22,13 +22,15 @@ import Sidebar from "../components/Sidebar";
 import { useCustom } from "../services/custom/customContext";
 
 export default function MainLayout() {
-    let pathNameWithoutCustom: string = window.location.pathname.replace(useCustom() || "", "") || "/";
+    const location = useLocation();
+
+    let pathNameWithoutCustom: string = location.pathname.replace(useCustom() || "", "") || "/";
     pathNameWithoutCustom = pathNameWithoutCustom.replace("//", "/");
     if (pathNameWithoutCustom === "/") {
         if (sessionStorage.getItem('accessToken')) {
             return <Navigate to="/home" replace />;
         } else {
-            if (window.location.pathname !== "/login") {
+            if (location.pathname !== "/login") {
                 return <Navigate to="/login" replace />;
             }
         }
@@ -38,7 +40,9 @@ export default function MainLayout() {
         <div className="flex h-screen w-screen">
             <Sidebar />
             <main className="flex flex-col w-full h-full bg-(--bg-secondary) overflow-hidden">
-                <TopBar />
+                { !location.pathname.includes('verifier/viewer/') && !location.pathname.includes('splitter/viewer/') && (
+                    <TopBar />
+                )}
                 <Outlet />
             </main>
         </div>

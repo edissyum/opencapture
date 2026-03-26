@@ -197,7 +197,7 @@ export function VerifierViewerPage() {
                 console.error("Error fetching all third parties:", error);
             }
         }
-        console.log('here')
+
         fetchAllSuppliers().then();
     }, []);
 
@@ -1016,13 +1016,13 @@ export function VerifierViewerPage() {
             </div>
             { !showAttachments && (
                 <div className='w-1/2'>
-                    <div className='px-1'>
-                        <Button size='sm' variant={ "no_bg" } className='hover:border-none! hover:p-2'
+                    <div className='pt-6 pl-8 pb-4'>
+                        <Button size='sm' variant="bg_white_rounded"
                                 icon={ <ArrowLeft size={ 16 }/> } onClick={ () => navigate('/home') }>
                             { t('GLOBAL.back') }
                         </Button>
                     </div>
-                    <div className='bg-(--bg-secondary) px-8 pb-16 h-full flex flex-col'>
+                    <div className='bg-(--bg-secondary) px-8 pb-24 h-full flex flex-col'>
                         <div className="border-2 border-(--border-secondary) rounded-xl h-full overflow-auto">
                             { !pagesImageB64[currentPage] ? (
                                 <div className='w-full h-full flex flex-col items-center justify-center'>

@@ -95,7 +95,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                         editable={ editable }
                         itemTemplate={ dropdownItemTemplate }
                         valueTemplate={ dropdownValueTemplate }
-                        className={ `w-full min-h-12 flex items-center hover:border-(--color-primary)! ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' }` }
+                        className={ `w-full min-h-12 flex items-center hover:border-(--border-primary)! ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' }` }
                         placeholder={ placeholder }
                     />
                     { label && (

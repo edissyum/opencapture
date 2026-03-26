@@ -130,7 +130,7 @@ export default function UploadDropzone({
                             { progressByFile?.[file.name] !== undefined && (
                                 <div className="absolute top-0 left-0 h-full bg-(--bg-selected) transition-[width]
                                                 duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]
-                                                border-r-2 border-(--color-primary)"
+                                                border-r-2 border-(--border-primary)"
                                      style={ { width: `${ progressByFile[file.name] }%` } }/>
                             ) }
 

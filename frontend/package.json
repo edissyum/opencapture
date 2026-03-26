@@ -2,6 +2,7 @@
     "name": "opencapture",
     "version": "4.0.0",
     "license": "GPL-3.0",
+    "repository": "https://github.com/edissyum/opencapture",
     "author": "Edissyum Consulting <nathan.cheval@edissyum.com>",
     "description": "Open-Capture is the one and only 100% Open Source intelligent document capture solution",
     "private": true,
@@ -31,7 +32,7 @@
         "axios": "^1.13.6",
         "dompurify": "^3.3.3",
         "fs-extra": "^11.3.4",
-        "i18next": "^25.10.9",
+        "i18next": "^25.10.10",
         "moment": "^2.30.1",
         "primereact": "^10.9.7",
         "react": "^19.2.4",
@@ -58,9 +59,9 @@
         "eslint-plugin-react-refresh": "^0.5.2",
         "globals": "^17.4.0",
         "i18next-scanner": "^4.6.0",
-        "lucide-react": "^1.6.0",
+        "lucide-react": "^1.7.0",
         "typescript": "~6.0.2",
         "typescript-eslint": "^8.57.2",
-        "vite": "^8.0.2"
+        "vite": "^8.0.3"
     }
 }

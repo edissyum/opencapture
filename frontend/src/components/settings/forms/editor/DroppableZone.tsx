@@ -33,7 +33,7 @@ export function DroppableZone({
         data: { type: "zone", zoneId: zone.id }
     });
 
-    const bg = isOver ? "bg-(--bg-selected) border-(--color-primary)" : "bg-(--bg-primary)";
+    const bg = isOver ? "bg-(--bg-selected) border-(--border-primary)" : "bg-(--bg-primary)";
     const padding = zone.lines.length === 1 && zone.lines[0]?.fields.length === 0 ? 'p-5' : 'pl-2 p-5';
 
     return (

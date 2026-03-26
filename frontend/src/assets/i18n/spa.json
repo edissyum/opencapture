@@ -87,7 +87,15 @@
         "usage_guide": "",
         "all_documents": "",
         "capture": "",
-        "connexion": ""
+        "connexion": "",
+        "reset-password": "",
+        "smtp-server-down": "",
+        "know_password": "",
+        "login_here": "",
+        "reset": "",
+        "send_email": "",
+        "forgot_password_email_sent": "",
+        "password_reset_success": ""
     },
     "COLORS": {
         "black": "Negro",
@@ -725,7 +733,10 @@
         "settings": "Configuración",
         "customers": "Cuentas de clientes",
         "user_quota": "Para gestionar la cuota de usuario,",
-        "civility": "Tratamiento"
+        "civility": "Tratamiento",
+        "invalid_email": "",
+        "password_confirm": "",
+        "passwords_do_not_match": ""
     },
     "VERIFIER": {
         "creation_date": "Fecha de creación",
@@ -1018,7 +1029,11 @@
         "no_output": "",
         "script_content": "",
         "next_script_testing": "",
-        "test_script_success": ""
+        "test_script_success": "",
+        "create_success": "",
+        "fix_details_errors": "",
+        "form_required": "",
+        "validating_script": ""
     },
     "MONITORING": {
         "processes": "Procesos",
@@ -1154,5 +1169,29 @@
         "delete_folder": "",
         "update_folder": "",
         "children": ""
+    },
+    "ABOUT": {
+        "see_changelog": "",
+        "version_check_error": "",
+        "update_available": "",
+        "see_on_github": "",
+        "lib_backend": "",
+        "lib_front": "",
+        "license_desc": "",
+        "license_status": "",
+        "status": "",
+        "team": "",
+        "address": "",
+        "documentation": "",
+        "editor": "",
+        "society": "",
+        "software": "",
+        "software_website": "",
+        "support": "",
+        "lead_dev": "",
+        "mondon": "",
+        "misc_dev": "",
+        "splitter_dev": "",
+        "active_dev": ""
     }
 }

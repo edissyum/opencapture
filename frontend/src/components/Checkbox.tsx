@@ -76,9 +76,9 @@ export function Checkbox({
                 onClick={ toggle }
                 style={ { width: `calc(0.25rem*${ size })`, height: `calc(0.25rem*${ size })` } }
                 className={ `border border-(--border-secondary) rounded flex items-center justify-center
-                    ${ isChecked ? "bg-(--color-primary) border-(--color-primary)" : "bg-(--bg-primary)" }
+                    ${ isChecked ? "bg-(--color-primary) border-(--border-primary)" : "bg-(--bg-primary)" }
                     ${ disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-(--bg-secondary)" }
-                    transition-all hover:border-(--color-primary) shrink-0` }
+                    transition-all hover:border-(--border-primary) shrink-0` }
             >
                 { isChecked && !isIndeterminate && (
                     <Check className={ `size-${ size } text-white` }/>

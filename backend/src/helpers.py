@@ -19,9 +19,9 @@ from flask import request, g as current_context
 from .functions import retrieve_custom_from_url
 from .main import create_classes_from_custom_id
 
-def get_context_var(name: str, index: int):
-    if name in current_context:
+def get_context_var(name: str, index: int, load_smtp=False):
+    if name in current_context and getattr(current_context, name) is not None:
         return getattr(current_context, name)
     custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
+    _vars = create_classes_from_custom_id(custom_id, load_smtp)
     return _vars[index]

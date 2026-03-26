@@ -421,7 +421,7 @@ export function VerifierListPage() {
     return (
         <div className='flex h-full w-full overflow-hidden'>
             <div className={ `h-full transition-all border-r-2 border-(--border-secondary) pb-16
-                            ${ displayFilters ? "w-[400px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
+                            ${ displayFilters ? "min-w-[350px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
                 <div className='border-b-2 border-(--border-secondary) p-4 flex items-center justify-between'>
                     <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
                     <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary)'
@@ -429,9 +429,9 @@ export function VerifierListPage() {
                         { t('VERIFIER.erase_filters') }
                     </span>
                 </div>
-                <div className='p-4 flex flex-col gap-6 h-full overflow-y-auto'>
-                    <div className='flex flex-col'>
-                        <div className="flex items-center justify-between cursor-pointer mb-2"
+                <div className='flex flex-col h-full overflow-y-auto'>
+                    <div className={ `flex flex-col p-4 ${ open.batches ? 'bg-(--bg-secondary)' : ''} border-b-2 border-(--border-secondary)` }>
+                        <div className="flex items-center justify-between cursor-pointer"
                              onClick={ () => setOpen({ ...open, batches: !open.batches }) }>
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
@@ -443,7 +443,7 @@ export function VerifierListPage() {
                         </div>
 
                         { open.batches && (
-                            <div className='flex flex-col'>
+                            <div className='flex flex-col mt-2'>
                                 { listTimes.map((time) => (
                                     <div className='flex items-center text-(--text-secondary)' key={ time.id }>
                                         <RadioButton
@@ -462,8 +462,8 @@ export function VerifierListPage() {
                             </div>
                         ) }
                     </div>
-                    <div className='flex flex-col'>
-                        <div className="flex items-center justify-between cursor-pointer mb-2"
+                    <div className={ `flex flex-col p-4 ${ open.status ? 'bg-(--bg-secondary)' : ''} border-b-2 border-(--border-secondary)` }>
+                        <div className="flex items-center justify-between cursor-pointer"
                              onClick={ () => setOpen({ ...open, status: !open.status }) }>
                             <div className="flex items-center gap-2">
                                 <CircleCheckBig className="text-(--color-primary)" size={ 20 }/>
@@ -474,7 +474,7 @@ export function VerifierListPage() {
                                 className={ `transition-transform ${ open.status ? "rotate-180" : "" }` }/>
                         </div>
                         { open.status && (
-                            <div className='flex flex-col'>
+                            <div className='flex flex-col mt-2'>
                                 { Object.keys(listStatuses).map((key: any) => (
                                     <div className='flex items-center text-(--text-secondary)' key={ key }>
                                         <RadioButton
@@ -494,8 +494,8 @@ export function VerifierListPage() {
                             </div>
                         ) }
                     </div>
-                    <div className='flex flex-col'>
-                        <div className="flex items-center justify-between cursor-pointer mb-2"
+                    <div className={ `flex flex-col p-4 ${ open.customers ? 'bg-(--bg-secondary)' : ''} border-b-2 border-(--border-secondary)` }>
+                        <div className="flex items-center justify-between cursor-pointer"
                              onClick={ () => setOpen({ ...open, customers: !open.customers }) }>
                             <div className="flex items-center gap-2">
                                 <Briefcase className="text-(--color-primary)" size={ 20 }/>
@@ -521,8 +521,8 @@ export function VerifierListPage() {
                             </div>
                         ) }
                     </div>
-                    <div className='flex flex-col'>
-                        <div className="flex items-center justify-between cursor-pointer mb-2"
+                    <div className={ `flex flex-col p-4 ${ open.forms ? 'bg-(--bg-secondary)' : ''} border-b-2 border-(--border-secondary)` }>
+                        <div className="flex items-center justify-between cursor-pointer"
                              onClick={ () => setOpen({ ...open, forms: !open.forms }) }>
                             <div className="flex items-center gap-2">
                                 <LayoutTemplate className="text-(--color-primary)" size={ 20 }/>
@@ -550,8 +550,8 @@ export function VerifierListPage() {
                             </div>
                         ) }
                     </div>
-                    <div className='flex flex-col'>
-                        <div className="flex items-center justify-between cursor-pointer mb-2"
+                    <div className={ `flex flex-col p-4 ${ open.suppliers ? 'bg-(--bg-secondary)' : ''} border-b-2 border-(--border-secondary)` }>
+                        <div className="flex items-center justify-between cursor-pointer"
                              onClick={ () => setOpen({ ...open, suppliers: !open.suppliers }) }>
                             <div className="flex items-center gap-2">
                                 <Building2 className="text-(--color-primary)" size={ 20 }/>

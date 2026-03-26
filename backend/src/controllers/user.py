@@ -65,7 +65,7 @@ def create_user(args):
 
             if quota <= total_active_users:
                 custom_id = retrieve_custom_from_url(request)
-                smtp = get_context_var('smtp', 8)
+                smtp = get_context_var('smtp', 8, True)
 
                 if email_dest and smtp and smtp.is_up:
                     smtp.send_user_quota_notifications(email_dest, custom_id)
@@ -208,7 +208,7 @@ def get_user_by_username(username):
 def send_email_forgot_password(args):
     user_info, error = user.get_user_by_id({'user_id': args['userId']})
     if error is None:
-        smtp = get_context_var('smtp', 8)
+        smtp = get_context_var('smtp', 8, True)
 
         if smtp and smtp.is_up:
             reset_token = auth.generate_reset_token(args['userId'])
@@ -222,7 +222,7 @@ def send_email_forgot_password(args):
                 'user_info': user_info['lastname'] + ' ' + user_info['firstname'] + ' (' + user_info['username'] + ')',
                 'desc': gettext('USER_FORGOT_SUCCESS', user=user_info['username'])
             })
-        return user_info, 200
+        return '', 200
     else:
         response = {
             "errors": gettext('SEND_EMAIL_FORGOT_PASSWORD_ERROR'),
@@ -250,7 +250,7 @@ def reset_password(args):
                 'user_info': user_info['lastname'] + ' ' + user_info['firstname'] + ' (' + user_info['username'] + ')',
                 'desc': gettext('USER_RESET_PASSWORD_SUCCESS', user=user_info['username'])
             })
-            return user_info, 200
+            return '', 200
         response = {
             "errors": gettext('RESET_PASSWORD_ERROR'),
             "message": gettext('RESET_TOKEN_MISMATCH')

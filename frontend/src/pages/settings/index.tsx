@@ -18,13 +18,13 @@ import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { Check, Search, Settings, SlidersHorizontal, Star } from "lucide-react";
 
+import { Loader } from "../../components/loader/Loader";
 import { useFavorites } from "../../services/hooks/useFavorite";
 import { SettingsCard } from "../../components/settings/SettingsCard";
 
 import { getSettingsGeneralOptions } from "./general";
 import { getSettingsVerifierOptions } from "./verifier";
 import { getSettingsSplitterOptions } from "./splitter";
-import { Loader } from "../../components/loader/Loader.tsx";
 
 export function SettingsIndex() {
     const options = [

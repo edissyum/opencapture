@@ -28,8 +28,8 @@ import Hint from "../../Hint";
 import Input from "../../Input";
 import { Button } from "../../Button";
 import { Dropdown } from "../../Dropdown";
+import { Loader } from "../../loader/Loader";
 import { showToast } from "../../ToastProvider";
-import { Loader } from "../../loader/Loader.tsx";
 
 export function DoctypesTree({
     formId,

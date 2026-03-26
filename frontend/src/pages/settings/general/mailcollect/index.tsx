@@ -19,7 +19,7 @@ import { useEffect, useRef, useState } from "react";
 import { ContextMenu } from "primereact/contextmenu";
 import { InputSwitch } from "primereact/inputswitch";
 import { Accordion, AccordionTab } from "primereact/accordion";
-import { Copy, EllipsisVertical, Inbox, PencilLine, Trash } from "lucide-react";
+import { Copy, EllipsisVertical, Inbox, PencilLine, Plus, Trash } from "lucide-react";
 
 import { Button } from "../../../../components/Button";
 import { Loader } from "../../../../components/loader/Loader";
@@ -265,8 +265,8 @@ export function SettingsGeneralMailcollect() {
     return (
         <div className="p-6 bg-(--bg-secondary) h-full overflow-y-scroll">
             <div className="flex justify-end mb-4">
-                <Button variant="secondary" onClick={ handleAddProcess }
-                        className="px-6 bg-transparent hover:bg-(--color-primary)">
+                <Button size='sm' variant="bg_white" onClick={ handleAddProcess } className="p-2 px-3">
+                    <Plus size={ 16 } className="mr-2"/>
                     { t("MAILCOLLECT.add_process") }
                 </Button>
             </div>

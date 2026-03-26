@@ -268,7 +268,7 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                                           return node || selectedDoctype;
                                       }) }>
                                     { b.type !== "document" && (
-                                        <FolderOpen size={ 16 } fill={ 'var(--color-primary)' } stroke={ 'white' }/>
+                                        <FolderOpen size={ 16 } fill='var(--color-primary)' stroke='white'/>
                                     ) }
                                     { b.label && (
                                         <span className="font-medium text-(--text-primary)">

@@ -226,7 +226,7 @@ class SMTP:
             msg['From'] = 'MailCollect@OpenCapture.com'
 
         msg['Subject'] = '[OpenCapture - ' + gettext('RESET_PASSWORD') + ']'
-        url = current_url + '/resetPassword?reset_token=' + reset_token
+        url = current_url + '/reset-password?reset_token=' + reset_token
         message = gettext('FORGOT_EMAIL_HEADER') + '<a href="' + url + '">' + gettext('CLICK_HERE') + '</a>' + gettext('FORGOT_EMAIL_FOOTER')
 
         msg.attach(MIMEText(message, 'html'))

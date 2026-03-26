@@ -273,9 +273,9 @@ export function SettingsVerifierAiLLMEditor() {
                     { providers.map((provider: any) => (
                         <div key={ provider.name }
                              onClick={ () => setSelectedProvider(provider.name) }
-                             className={ `border-2 border-(--border-secondary) hover:border-(--color-primary) transition-colors
+                             className={ `border-2 border-(--border-secondary) hover:border-(--border-primary) transition-colors
                              rounded-lg px-8 py-3 cursor-pointer flex items-center justify-center gap-4
-                             ${ selectedProvider === provider.name ? 'bg-(--bg-selected) border-(--color-primary)' : '' } ` }>
+                             ${ selectedProvider === provider.name ? 'bg-(--bg-selected) border-(--border-primary)' : '' } ` }>
                             { provider.logo && <img src={ provider.logo } alt={ provider.name } className='h-7'/> }
                             <p className='text-lg font-semibold'>{ provider.label }</p>
                         </div>

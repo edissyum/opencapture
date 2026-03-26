@@ -15,8 +15,8 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ContextMenu } from "primereact/contextmenu";
 import {
     Activity,
@@ -40,7 +40,18 @@ import { clearPersistentState } from "../services/hooks/usePersistentState";
 
 export default function Sidebar() {
     const { user, loadingUser } = useUser();
+    const location = useLocation();
     const navigate = useNavigate();
+
+    // If in verifier or splitter viewer, collapse the sidebar by default
+    useEffect(() => {
+        if (window.location.pathname.includes('verifier/viewer/') || window.location.pathname.includes('splitter/viewer/')) {
+            setCollapsed(true);
+        } else {
+            setCollapsed(false);
+        }
+    }, [location.pathname]);
+
 
     const cm = useRef({ current: null } as any);
     const menuModel: any = [
@@ -62,7 +73,6 @@ export default function Sidebar() {
                 clearPersistentState(key);
             }
         });
-
 
         navigate("/login", { replace: true });
     };

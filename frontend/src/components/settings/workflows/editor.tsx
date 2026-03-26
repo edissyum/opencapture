@@ -51,6 +51,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
     const { workflowId } = useParams<{ workflowId: any }>();
 
     const [loading, setLoading] = useState(true);
+    const [loadingScript, setLoadingScript] = useState(false);
     const stepperRef = useRef<any>(null);
     const [stepperIndex, setStepperIndex] = useState(0);
 
@@ -267,22 +268,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         mode: "onChange"
     });
 
-    let inputSchemaStartSwitchs = z.object({
-        remove_blank_pages: z.boolean().optional().describe(JSON.stringify({
-            component: "input_switch",
-            label: t("WORKFLOWS.remove_blank_pages")
-        }))
-    });
-    if (module === 'verifier') {
-        inputSchemaStartSwitchs = inputSchemaStartSwitchs.extend({
-            facturx_only: z.boolean().optional().describe(JSON.stringify({
-                component: "input_switch",
-                label: t("WORKFLOWS.facturx_only")
-            }))
-        });
-    }
-
-    const inputSchemaFields = z.object({
+    let inputSchemaFields = z.object({
         input_folder: z.string().optional().describe(JSON.stringify({
             component: "input",
             label: t("WORKFLOWS.input_folder"),
@@ -299,11 +285,6 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             hint: t("WORKFLOWS.ai_model_hint"),
             options: aiModels.map((m: any) => ({ label: m.model_label, value: m.id }))
         })),
-        rotation: z.string().optional().describe(JSON.stringify({
-            component: "dropdown",
-            label: t("WORKFLOWS.rotation"),
-            options: getRotationOptions().map((o: any) => ({ label: o.label, value: o.id }))
-        })),
         splitter_method_id: z.string().optional().describe(JSON.stringify({
             required: true,
             component: "dropdown",
@@ -318,17 +299,59 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             disabled: splitterMethodActive !== 'separate_by_document_number'
         }))
     });
-    const inputSchemaEndSwitchs = z.object({
+    let inputSchemaEndSwitchs = z.object({
+        remove_blank_pages: z.boolean().optional().describe(JSON.stringify({
+            component: "input_switch",
+            label: t("WORKFLOWS.remove_blank_pages")
+        })),
         apply_process: z.boolean().optional().describe(JSON.stringify({
             component: "input_switch",
             label: t("WORKFLOWS.apply_process")
         }))
     });
-    const inputSchema = inputSchemaStartSwitchs.extend(inputSchemaFields.shape).extend(inputSchemaEndSwitchs.shape);
+
+    if (module === 'verifier') {
+        inputSchemaFields = inputSchemaFields.extend({
+            rotation: z.string().optional().describe(JSON.stringify({
+                component: "dropdown",
+                label: t("WORKFLOWS.rotation"),
+                options: getRotationOptions().map((o: any) => ({ label: o.label, value: o.id }))
+            }))
+        });
+        inputSchemaEndSwitchs = inputSchemaEndSwitchs.extend({
+            facturx_only: z.boolean().optional().describe(JSON.stringify({
+                component: "input_switch",
+                label: t("WORKFLOWS.facturx_only")
+            }))
+        });
+    }
+
+    const inputSchema = inputSchemaFields.extend(inputSchemaEndSwitchs.shape);
 
     let processSchemaStartSwitchs: any = z.object({});
+    let processSchemaInputFields: any = z.object({
+        form_id: z.any().describe(JSON.stringify({
+            component: "dropdown",
+            required: useInterface && stepperIndex == 1,
+            disabled: !useInterface,
+            label: t("VERIFIER.associated_form"),
+            options: forms.map((f: any) => ({ label: f.label, value: f.id }))
+        }))
+    });
+    let processSchemaEndSwitchs: any = z.object({
+        delete_documents: z.boolean().optional().describe(JSON.stringify({
+            component: "input_switch",
+            label: t("WORKFLOWS.delete_documents"),
+            hint: t("WORKFLOWS.delete_documents_hint")
+        })),
+        use_interface: z.boolean().optional().describe(JSON.stringify({
+            component: "input_switch",
+            label: t("WORKFLOWS.use_interface")
+        }))
+    });
+
     if (module === 'verifier') {
-        processSchemaStartSwitchs= z.object({
+        processSchemaStartSwitchs = z.object({
             allow_third_party_validation: z.boolean().optional().describe(JSON.stringify({
                 component: "input_switch",
                 label: t("WORKFLOWS.allow_third_party_validation"),
@@ -349,19 +372,6 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 hint: t("WORKFLOWS.api_only_hint")
             }))
         });
-    }
-
-    let processSchemaInputFields: any = z.object({
-        form_id: z.any().describe(JSON.stringify({
-            component: "dropdown",
-            required: useInterface && stepperIndex == 1,
-            disabled: !useInterface,
-            label: t("VERIFIER.associated_form"),
-            options: forms.map((f: any) => ({ label: f.label, value: f.id }))
-        }))
-    });
-
-    if (module === 'verifier') {
         processSchemaInputFields = processSchemaInputFields.extend({
             ai_llm: z.string().describe(JSON.stringify({
                 component: "dropdown",
@@ -395,18 +405,16 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 options: getConvertOptions().map((f: any) => ({ label: f.label, value: f.id }))
             }))
         });
+    } else {
+        processSchemaInputFields = processSchemaInputFields.extend({
+            rotation: z.string().optional().describe(JSON.stringify({
+                component: "dropdown",
+                label: t("WORKFLOWS.rotation"),
+                options: getRotationOptions().map((o: any) => ({ label: o.label, value: o.id }))
+            }))
+        });
     }
-    const processSchemaEndSwitchs: any = z.object({
-        delete_documents: z.boolean().optional().describe(JSON.stringify({
-            component: "input_switch",
-            label: t("WORKFLOWS.delete_documents"),
-            hint: t("WORKFLOWS.delete_documents_hint")
-        })),
-        use_interface: z.boolean().optional().describe(JSON.stringify({
-            component: "input_switch",
-            label: t("WORKFLOWS.use_interface")
-        }))
-    });
+
     const processSchema = processSchemaStartSwitchs.extend(processSchemaInputFields.shape).extend(processSchemaEndSwitchs.shape);
 
     const outputSchema = z.object({
@@ -508,9 +516,8 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                             workflow_id: workflowId,
                             input_folder: input_folder
                         })
-                        console.log(response)
                     } catch (error) {
-                        console.log('Error validating input folder :', error);
+                        console.debug('Error validating input folder :', error);
                         return;
                     }
                 } else {
@@ -579,7 +586,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
         try {
             if (workflowId) {
-                await put(`/workflows/verifier/update/${ workflowId }`, payload);
+                await put(`/workflows/${ module }/update/${ workflowId }`, payload);
                 showToast(t('WORKFLOWS.update_success'), 'success');
             } else {
                 await post(`/workflows/${ module }/create`, payload);
@@ -593,6 +600,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
     const handleSubmitScript = async (script: string, step: string) => {
         try {
+            setLoadingScript(true);
             await post(`/workflows/${ module }/testScript`, {
                 step: step,
                 codeContent: script,
@@ -600,7 +608,9 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             });
             showToast(t('WORKFLOWS.test_script_success'), 'success');
             handleNextStep({});
+            setLoadingScript(false);
         } catch (error: any) {
+            setLoadingScript(false);
             console.error('Error testing script :', error);
         }
     }
@@ -608,25 +618,23 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
     if (loading) return <Loader/>;
 
     return (
-        <div className="h-full overflow-y-auto p-6">
-            <h1 className="text-lg font-semibold mb-4">
-                { t('WORKFLOWS.details') }
-            </h1>
+        <div className="h-full overflow-y-auto">
+            <div className='px-8 pt-8'>
+                <h1 className="text-lg font-semibold mb-4">
+                    { t('WORKFLOWS.details') }
+                </h1>
 
-            <div className='w-full'>
-                <DynamicForm errors={ detailsErrors } control={ detailsControl } schema={ detailSchema } grid={ 2 }/>
+                <div className='w-full'>
+                    <DynamicForm errors={ detailsErrors } control={ detailsControl } schema={ detailSchema }
+                                 grid={ 2 }/>
+                </div>
             </div>
 
             <Stepper ref={ stepperRef } linear className='p-4 workflowStepper' activeStep={ stepperIndex }
                      onChangeStep={ (e: any) => setStepperIndex(e.index) }>
                 <StepperPanel header={ t("WORKFLOWS.input") }>
-                    <DynamicForm schema={ inputSchemaStartSwitchs } control={ workflowControl }
-                                 errors={ workflowErrors }/>
-
-                    <div className='mt-4'>
-                        <DynamicForm schema={ inputSchemaFields } control={ workflowControl } errors={ workflowErrors }
-                                     grid={ 2 }/>
-                    </div>
+                    <DynamicForm schema={ inputSchemaFields } control={ workflowControl } errors={ workflowErrors }
+                                 grid={ 2 }/>
 
                     <DynamicForm schema={ inputSchemaEndSwitchs } control={ workflowControl }
                                  errors={ workflowErrors }/>
@@ -666,7 +674,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                         <FloatLabel className="w-full">
                             <Editor
                                 className='border-2 border-(--border-secondary) rounded-md p-2'
-                                height="40vh"
+                                height="50vh"
                                 defaultLanguage="python"
                                 defaultValue={ inputScript }
                                 options={ {
@@ -690,7 +698,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                                     data-tooltip-content={ t("WORKFLOWS.next_script_testing") }
                                     onClick={ () => handleSubmitScript(inputScript, 'input') } className="px-12"
                                     disabled={ loading || Object.keys(workflowErrors).length > 0 }>
-                                { t("MAILCOLLECT.next") }
+                                { loadingScript ? t("WORKFLOWS.validating_script") : t("MAILCOLLECT.next") }
                             </Button>
                         </div>
                     </StepperPanel>
@@ -700,7 +708,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                     <DynamicForm schema={ processSchemaStartSwitchs } control={ workflowControl }
                                  errors={ workflowErrors }/>
 
-                    <div className='mt-4'>
+                    <div className='mt-6'>
                         <DynamicForm schema={ processSchemaInputFields } control={ workflowControl }
                                      errors={ workflowErrors } grid={ 2 }/>
                     </div>
@@ -748,7 +756,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                         <FloatLabel className="w-full">
                             <Editor
                                 className='border-2 border-(--border-secondary) rounded-md p-2'
-                                height="40vh"
+                                height="50vh"
                                 defaultLanguage="python"
                                 defaultValue={ processScript }
                                 options={ {
@@ -773,7 +781,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                                     data-tooltip-content={ t("WORKFLOWS.next_script_testing") }
                                     onClick={ () => handleSubmitScript(processScript, 'process') } className="px-12"
                                     disabled={ loading || Object.keys(workflowErrors).length > 0 }>
-                                { t("MAILCOLLECT.next") }
+                                { loadingScript ? t("WORKFLOWS.validating_script") : t("MAILCOLLECT.next") }
                             </Button>
                         </div>
                     </StepperPanel>

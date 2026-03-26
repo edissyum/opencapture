@@ -23,16 +23,14 @@ from ..functions import retrieve_custom_from_url
 
 
 def check_smtp_status():
-    smtp = get_context_var('smtp', 8)
+    smtp = get_context_var('smtp', 8, True)
 
     smtp.test_connection()
     return smtp.is_up
 
 
 def test_send(email):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id, True)
-    smtp = _vars[8]
+    smtp = get_context_var('smtp', 8, True)
 
     res = smtp.test_connection(return_error=True)
     if smtp.is_up:

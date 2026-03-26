@@ -60,7 +60,7 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
         },
         animateLayoutChanges
     });
-    const bg = isOver ? "bg-(--bg-selected) border-(--color-primary)" : "bg-(--bg-primary) border-transparent";
+    const bg = isOver ? "bg-(--bg-selected) border-(--border-primary)" : "bg-(--bg-primary) border-transparent";
 
     const style = {
         transition,
@@ -79,7 +79,7 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
                 </div>
             ) }
             <div className={ `group w-full p-2 ${ bg } border-2 rounded-md hover:bg-[#E1EFE8] 
-                              dark:hover:bg-(--bg-secondary) hover:border-(--color-primary)/30 
+                              dark:hover:bg-(--bg-secondary) hover:border-(--border-primary)/30 
                               transition-colors` }>
                 <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }/>
                 <span
@@ -88,7 +88,7 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
                     } }
                     className='cursor-pointer group-hover:opacity-100 opacity-0 transition-opacity -translate-x-1/2
                                text-(--text-secondary) absolute z-20 -top-5.5 p-0.5 left-1/2 border-2
-                               border-b-0 border-(--color-primary)/30 rounded-md rounded-b-none bg-[#E1EFE8]
+                               border-b-0 border-(--border-primary)/30 rounded-md rounded-b-none bg-[#E1EFE8]
                                dark:bg-(--bg-secondary) before:content-[""] before:absolute before:bottom-0
                                before:translate-y-px'>
                   <Settings size={ 18 }/>

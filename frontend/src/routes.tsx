@@ -67,13 +67,18 @@ import { SettingsVerifierAiLLMEditor } from "./pages/settings/verifier/ai-llm/ed
 import { SettingsVerifierPositionsMasksList } from "./pages/settings/verifier/positions-masks/list";
 import { AiDoctypesList } from "./components/settings/ai-doctypes/list";
 import { AiDoctypesEditor } from "./components/settings/ai-doctypes/editor";
-import { WorkflowEditor } from "./components/settings/workflows/editor.tsx";
+import { WorkflowEditor } from "./components/settings/workflows/editor";
+import { ResetPassword } from "./pages/reset-password";
 
 export const router = createBrowserRouter(
     [
         {
             path: "/login",
             element: <Login/>
+        },
+        {
+            path: "/reset-password",
+            element: <ResetPassword/>
         },
         {
             path: "onboarding",

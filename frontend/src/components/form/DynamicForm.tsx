@@ -104,7 +104,7 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                             name={ field.name }
                             control={ control }
                             render={ ({ field: f }) => (
-                                <div className='flex items-center mb-2 relative w-fit'>
+                                <div className='flex items-center relative w-fit'>
                                     <InputSwitch
                                         inputId={ f.name }
                                         checked={ f.value }
@@ -222,7 +222,7 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                                     <div key={ action.value }
                                          onClick={ () => f.onChange(action.value) }
                                          className={ `cursor-pointer border-2 w-1/3 py-5 rounded-md text-center
-                                                     ${ f.value === action.value ? "text-(--color-primary) bg-(--bg-selected) border-(--color-primary)"
+                                                     ${ f.value === action.value ? "text-(--color-primary) bg-(--bg-selected) border-(--border-primary)"
                                              : "border-(--border-secondary) hover:border-(--text-secondary) text-(--text-primary)" }
                                         ` }>
                                         <div className="flex justify-center mb-2">

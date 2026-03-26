@@ -87,7 +87,15 @@
         "usage_guide": "Guide d'utilisation",
         "all_documents": "tous vos documents",
         "capture": "Capturez et gérer",
-        "connexion": "Connexion"
+        "connexion": "Connexion",
+        "reset-password": "Réinitialisation du mot de passe",
+        "smtp-server-down": "Le serveur SMTP n'est pas disponible ou n'est pas configuré, réinitialisation du mot de passe impossible",
+        "know_password": "Vous connaissez votre mot de passe ? ",
+        "login_here": "Connexion ici",
+        "reset": "Réinitialiser le mot de passe",
+        "send_email": "Envoyer l'email de réinitialisation",
+        "forgot_password_email_sent": "Email de réinitialisation envoyé avec succès",
+        "password_reset_success": "Mot de passe réinitialisé avec succès"
     },
     "COLORS": {
         "black": "Noir",
@@ -725,7 +733,10 @@
         "settings": "Paramètres",
         "customers": "Comptes clients",
         "user_quota": "Pour gérer le quota utilisateur,",
-        "civility": "Civilité"
+        "civility": "Civilité",
+        "invalid_email": "Addresse email invalide",
+        "password_confirm": "Confirmation du mot de passe",
+        "passwords_do_not_match": "Les mots de passe ne correspondent pas"
     },
     "VERIFIER": {
         "creation_date": "Date de création",
@@ -1018,7 +1029,11 @@
         "no_output": "Aucune chaîne sortante",
         "script_content": "Contenu du script",
         "next_script_testing": "Tester le fonctionnement du script avant de passer à l'étape suivante",
-        "test_script_success": "Script testé avec succès"
+        "test_script_success": "Script testé avec succès",
+        "create_success": "Workflow créé avec succès",
+        "fix_details_errors": "Veuillez corriger les erreurs dans les détails du workflow avant de continuer",
+        "form_required": "Un formulaire est requis pour ce workflow",
+        "validating_script": "Validation du script en cours..."
     },
     "MONITORING": {
         "processes": "Processus",
@@ -1154,5 +1169,29 @@
         "delete_folder": "Supprimer la chemise",
         "update_folder": "Modifier la chemise",
         "children": "Contenu de la chemise"
+    },
+    "ABOUT": {
+        "see_changelog": "voir le changelog",
+        "version_check_error": "Erreur lors de communication avec Github pour vérifier la version de l'application. Veuillez réessayer plus tard.",
+        "update_available": "Mise à jour disponible",
+        "see_on_github": "Voir sur Github",
+        "editor": "Éditeur",
+        "lib_backend": "Librairies utilisées pour le backend",
+        "lib_front": "Librairies utilisées pour le frontend",
+        "license_desc": "License",
+        "license_status": "Logiciel libre et open source",
+        "status": "Statut",
+        "team": "Équipe de développement",
+        "address": "Adresse",
+        "documentation": "Documentation",
+        "society": "Société",
+        "software": "Site officiel de la société",
+        "software_website": "Site officiel du logiciel",
+        "support": "Support",
+        "lead_dev": "Lead développeur",
+        "mondon": "Refonte de l’interface V4 - Développements divers",
+        "misc_dev": "Développements divers",
+        "splitter_dev": "Développements sur le module Splitter",
+        "active_dev": ""
     }
 }

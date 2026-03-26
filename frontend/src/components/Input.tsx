@@ -109,12 +109,12 @@ const Input: React.FC<InputProps> = ({
                         id={ id }
                         ref={ inputRef }
                         className={ `w-full! px-3! py-2! border-[1.5px]! rounded-md! focus:outline-none! 
-                            hover:border-(--color-primary)! transition-colors 
+                            hover:border-(--border-primary)! transition-colors 
                             ${ props.placeholder || hasValue ? "p-inputwrapper-filled" : "" } 
                             ${ isPasswordField ? 'border-r-0! rounded-r-none!' : '' } 
                             ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' } 
                             ${ height } disabled:bg-(--bg-secondary) disabled:cursor-not-allowed!
-                            ${ disabled ? '' : 'group-hover:border-(--color-primary)!' } focus:border-(--color-primary)!`
+                            ${ disabled ? '' : 'group-hover:border-(--border-primary)!' } focus:border-(--border-primary)!`
                         }
                         style={ {
                             fontWeight: `${ textWeight ? textWeight : '400' }`,
@@ -150,10 +150,10 @@ const Input: React.FC<InputProps> = ({
                         type="button"
                         onClick={ () => setPasswordVisible((prev) => !prev) }
                         className={ `password transition-colors px-2 rounded-lg! rounded-l-none! 
-                                     group-focus-within:border-(--color-primary)! border-l-0! border! 
+                                     group-focus-within:border-(--border-primary)! border-l-0! border! 
                                      text-(--text-secondary)! hover:text-(--color-primary) z-20 cursor-pointer
                                      ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)! ' +
-                            'group-hover:border-(--color-primary)!'
+                            'group-hover:border-(--border-primary)!'
                         }` }>
                         { passwordVisible ? <EyeOff size={ 18 }/> : <Eye size={ 18 }/> }
                     </button>

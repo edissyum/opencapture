@@ -80,7 +80,7 @@ export const DraggablePage = React.memo(function DraggablePage({
             className={ `DraggablePage group flex items-center gap-2 rounded-lg border-2 border-(--border-secondary)
                 transition-colors bg-(--bg-secondary) cursor-default select-none h-full
                 hover:bg-(--bg-selected) hover:cursor-pointer min-w-64
-                ${ isSelected && 'bg-(--bg-selected) border-(--color-primary)' }` }
+                ${ isSelected && 'bg-(--bg-selected) border-(--border-primary)' }` }
         >
             <div className='h-full w-full flex flex-col items-center'>
                 { thumbnailUrl && (
