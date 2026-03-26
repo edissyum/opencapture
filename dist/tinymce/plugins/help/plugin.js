@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 8.2.0 (2025-10-23)
+ * TinyMCE version 8.3.2 (2026-01-14)
  */
 
 (function () {
@@ -620,6 +620,7 @@
         { key: 'suggestededits', name: 'Suggested Edits', type: "premium" /* PluginType.Premium */ },
         { key: 'autocorrect', name: 'Spelling Autocorrect', type: "premium" /* PluginType.Premium */ },
         { key: 'tableofcontents', name: 'Table of Contents', type: "premium" /* PluginType.Premium */ },
+        { key: 'fullpagehtml', name: 'Fullpage HTML', type: "premium" /* PluginType.Premium */ },
         { key: 'advtemplate', name: 'Templates', type: "premium" /* PluginType.Premium */, slug: 'advanced-templates' },
         { key: 'tinycomments', name: 'Tiny Comments', type: "premium" /* PluginType.Premium */, slug: 'introduction-to-tiny-comments' },
         { key: 'tinydrive', name: 'Tiny Drive', type: "premium" /* PluginType.Premium */, slug: 'tinydrive-introduction' },
@@ -671,7 +672,7 @@
         const getPluginKeys = (editor) => {
             const keys$1 = keys(editor.plugins);
             const forcedPlugins = getForcedPlugins(editor);
-            const hiddenPlugins = isUndefined(forcedPlugins) ? ['onboarding'] : forcedPlugins.concat(['onboarding']);
+            const hiddenPlugins = isUndefined(forcedPlugins) ? ['onboarding', 'licensekeymanager'] : forcedPlugins.concat(['onboarding', 'licensekeymanager']);
             return filter(keys$1, (k) => !contains(hiddenPlugins, k));
         };
         const pluginLister = (editor) => {
