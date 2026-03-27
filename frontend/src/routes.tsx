@@ -69,6 +69,7 @@ import { AiDoctypesList } from "./components/settings/ai-doctypes/list";
 import { AiDoctypesEditor } from "./components/settings/ai-doctypes/editor";
 import { WorkflowEditor } from "./components/settings/workflows/editor";
 import { ResetPassword } from "./pages/reset-password";
+import { MonitoringDetails } from "./pages/monitoring/details.tsx";
 
 export const router = createBrowserRouter(
     [
@@ -118,7 +119,13 @@ export const router = createBrowserRouter(
                             loader: protectedLoader,
                             element: <MonitoringList/>,
                             errorElement: <LoginRequiredError/>
-                        }
+                        },
+                        {
+                            path: ':processId',
+                            loader: protectedLoader,
+                            element: <MonitoringDetails/>,
+                            errorElement: <LoginRequiredError/>,
+                        },
                     ]
                 },
                 {

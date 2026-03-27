@@ -255,6 +255,13 @@ def get_git_info():
     }), 200
 
 
+@bp.route('config/packages', methods=['GET'])
+def get_packages():
+    return make_response({
+        'packages': config.get_packages()
+    }), 200
+
+
 @bp.route('config/customExists', methods=['GET'])
 def custom_exists():
     return make_response(''), 200

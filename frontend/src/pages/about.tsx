@@ -17,7 +17,7 @@
 import { t } from "i18next";
 import { Panel } from "primereact/panel";
 import { useEffect, useState } from "react";
-import { ArrowRight, Building2, CircleAlert, Code, Library, Shield, Tag, Users } from "lucide-react";
+import { ArrowRight, Building2, CircleAlert, Code, Cpu, Library, Shield, Tag, Users } from "lucide-react";
 
 import packageJson from '../../package.json';
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
@@ -31,9 +31,15 @@ export function AboutPage() {
 
     const logo = "/src/assets/imgs/login_image.svg"
 
+    const [backendPackages, setBackendPackages] = useState<any>([]);
+    const [frontendPackages, setFrontendPackages] = useState<any>([]);
     const [lastVersion, setLastVersion] = useState<string>('');
 
+    // Fetch latest version and backend packages on component mount
     useEffect(() => {
+        setFrontendPackages(packageJson.dependencies);
+        setFrontendPackages((prev: any) => ({ ...prev, ...packageJson.devDependencies }));
+
         const fetchLatestVersion = async () => {
             try {
                 const response = await get('/config/gitInfo');
@@ -42,8 +48,6 @@ export function AboutPage() {
                 } else {
                     setLastVersion('error');
                 }
-                setLastVersion('4.0.1');
-
             } catch (error) {
                 setLastVersion('error');
                 console.error('Error fetching latest version:', error);
@@ -52,7 +56,17 @@ export function AboutPage() {
             }
         };
 
+        const fetchBackendPackages = async () => {
+            try {
+                const response = await get('/config/packages');
+                setBackendPackages(response.packages);
+            } catch (error) {
+                console.error('Error fetching backend packages:', error);
+            }
+        };
+
         fetchLatestVersion().then();
+        fetchBackendPackages().then();
     }, []);
 
     const classes = 'flex items-center px-6 py-3';
@@ -63,7 +77,7 @@ export function AboutPage() {
     return (
         <div className="p-8 w-full h-full flex justify-center overflow-scroll">
             <div className='w-1/2 flex flex-col items-center gap-4'>
-                <div className='w-full flex flex-col gap-6  pb-4 items-center'>
+                <div className='w-full flex flex-col gap-4 pb-4 items-center'>
                     <div>
                         <div
                             className='bg-(--bg-primary) border-2 border-(--border-secondary) rounded-2xl pt-6 pb-4 px-8'>
@@ -73,8 +87,9 @@ export function AboutPage() {
                             Logiciel libre de capture et gestion documentaire
                         </div>
                         <div className='flex items-center gap-4'>
-                            <div
-                                className='bg-(--bg-primary) border-2 border-(--border-secondary) rounded-lg p-2 py-1 flex items-center gap-2 w-fit'>
+                            <div className='bg-(--bg-primary) border-2 border-(--border-secondary) rounded-lg p-2 py-1
+                                            flex items-center gap-2 w-fit'
+                            >
                                 <Tag size={ 18 }/>
                                 { packageJson.version }
                             </div>
@@ -113,10 +128,13 @@ export function AboutPage() {
                                     </div>
                                 </div>
                                 <div className='ml-auto'>
-                                    <Button variant="primary">
-                                        { t('ABOUT.see_on_github') }
-                                        <ArrowRight size={ 18 } className='ml-2'/>
-                                    </Button>
+                                    <a target='_blank'
+                                       href={ `${ packageJson.repository }/releases/tag/${ lastVersion }` }>
+                                        <Button variant="primary">
+                                            { t('ABOUT.see_on_github') }
+                                            <ArrowRight size={ 18 } className='ml-2'/>
+                                        </Button>
+                                    </a>
                                 </div>
                             </div>
                         ) }
@@ -134,7 +152,7 @@ export function AboutPage() {
                                 </div>
                                 <div className={ `${ classes }` }>
                                     <p className='w-1/3'>{ t('ABOUT.status') }</p>
-                                    <p>{ t('ABOUT.license_status') }</p>
+                                    <p className='text-(--text-primary)'>{ t('ABOUT.license_status') }</p>
                                 </div>
                             </>
                         </Panel>
@@ -147,11 +165,11 @@ export function AboutPage() {
                             <>
                                 <div className={ `${ classesWithBorder }` }>
                                     <p className='w-1/3'>{ t('ABOUT.society') }</p>
-                                    <p>Edissyum Consulting</p>
+                                    <p className='text-(--text-primary)'>Edissyum Consulting</p>
                                 </div>
                                 <div className={ `${ classesWithBorder }` }>
                                     <p className='w-1/3'>{ t('ABOUT.address') }</p>
-                                    <p>98 Avenue Pierre Semard, 84200 Carpentras</p>
+                                    <p className='text-(--text-primary)'>98 Avenue Pierre Semard, 84200 Carpentras</p>
                                 </div>
                                 <div className={ `${ classesWithBorder }` }>
                                     <p className='w-1/3'>{ t('ABOUT.software') }</p>
@@ -256,19 +274,47 @@ export function AboutPage() {
 
                         <Panel header={
                             <div className='flex items-center gap-3 text-(--text-secondary)'>
+                                <Code/> { t('ABOUT.technical_infos') }
+                            </div>
+                        }>
+                            <div className={ `${ classesWithBorder }` }>
+                                <p className='w-1/3'>Backend</p>
+                                <p className='text-(--text-primary)'>Python &gt;= 3.13 & Flask</p>
+                            </div>
+                            <div className={ `${ classesWithBorder }` }>
+                                <p className='w-1/3'>Frontend</p>
+                                <p className='text-(--text-primary)'>React + Vite</p>
+                            </div>
+                            <div className={ `${ classesWithBorder }` }>
+                                <p className='w-1/3'>{ t('ABOUT.database') }</p>
+                                <p className='text-(--text-primary)'>PostgreSQL</p>
+                            </div>
+                            <div className={ `${ classes }` }>
+                                <p className='w-1/3'>{ t('ABOUT.ocr') }</p>
+                                <p className='text-(--text-primary)'>Tesseract &gt;= 5 + OpenCV</p>
+                            </div>
+                        </Panel>
+
+                        <Panel header={
+                            <div className='flex items-center gap-3 text-(--text-secondary)'>
                                 <Library/> { t('ABOUT.lib_front') }
                             </div>
                         }>
-                            <div className={ `${ classesWithBorder } py-0! px-0! grid grid-cols-2` }>
-                                { Object.keys(packageJson.dependencies).map((key: any, index: any) => (
+                            <div className={ `${ classes } py-0! px-0! grid grid-cols-2` }>
+                                { Object.keys(frontendPackages).map((key: any, index: any) => (
                                     <div key={ index }
-                                         className={ `w-full flex justify-between py-3 px-4 ${ index % 2 === 0 ? 'border-r-2 border-(--border-secondary)' : '' }` }>
+                                         className={ `w-full border-b-2 border-(--border-secondary) 
+                                                      flex justify-between py-3 px-4 
+                                                      ${ index % 2 === 0 ? 'border-r-2' : '' }
+                                                      ${ index >= Object.keys(frontendPackages).length - 2 ? 'border-b-0!' : '' }`
+                                         }>
                                         <div className='font-semibold flex items-center gap-2'>
-                                            <div className='bg-(--color-primary) rounded-full size-1.5'/> { key }
+                                            <div className='bg-(--color-primary) rounded-full size-1.5'/>
+                                            { key }
                                         </div>
                                         <div className='ml-auto text-(--text-secondary)'>
                                             {/*@ts-ignore*/ }
-                                            { packageJson.dependencies[key] }
+                                            { frontendPackages[key] }
                                         </div>
                                     </div>
                                 )) }
@@ -277,9 +323,27 @@ export function AboutPage() {
 
                         <Panel header={
                             <div className='flex items-center gap-3 text-(--text-secondary)'>
-                                <Code/> { t('ABOUT.lib_backend') }
+                                <Cpu/> { t('ABOUT.lib_backend') }
                             </div>
                         }>
+                            <div className={ `${ classes } py-0! px-0! grid grid-cols-2` }>
+                                { Object.keys(backendPackages).map((key: any, index: any) => (
+                                    <div key={ index }
+                                         className={ `w-full border-b-2 border-(--border-secondary) 
+                                                      flex justify-between py-3 px-4 
+                                                      ${ index % 2 === 0 ? 'border-r-2' : '' }
+                                                      ${ index === Object.keys(backendPackages).length - 1 ? 'border-b-0!' : '' }`
+                                         }>
+                                        <div className='font-semibold flex items-center gap-2'>
+                                            <div className='bg-(--color-primary) rounded-full size-1.5'/>
+                                            { backendPackages[key].split('==')[0] }
+                                        </div>
+                                        <div className='ml-auto text-(--text-secondary)'>
+                                            { backendPackages[key].split('==')[1] }
+                                        </div>
+                                    </div>
+                                )) }
+                            </div>
                         </Panel>
                     </div>
                 </div>

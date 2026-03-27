@@ -106,7 +106,7 @@ export function Table<T extends { id: string }>({
             <div className='flex items-center gap-4'>
                 { paginatorLeftText && (
                     <span>{ selectedRows.length + " " + paginatorLeftText }</span>
-                )}
+                ) }
                 { actions && paginatorLeftText && actions.map((action, idx) => (
                     <Button
                         key={ idx }
@@ -226,8 +226,8 @@ export function Table<T extends { id: string }>({
 
                     { columns.map((col, idx) => (
                         <PrimeColumn
-                            headerClassName={ `${ col.className } ${checkboxSelection ? 'cursor-pointer' : 'cursor-auto'} text-(--text-secondary) font-normal pl-1 pr-1 py-2 border-(--border-secondary)` }
-                            bodyClassName={ `${ col.className } ${checkboxSelection ? 'cursor-pointer' : 'cursor-auto'} pl-1 pr-1 text-sm py-2` }
+                            headerClassName={ `${ col.className } ${ checkboxSelection ? 'cursor-pointer' : 'cursor-auto' } text-(--text-secondary) font-normal pl-1 pr-1 py-2 border-(--border-secondary)` }
+                            bodyClassName={ `${ col.className } ${ checkboxSelection || baseLink ? 'cursor-pointer' : 'cursor-auto' } pl-1 pr-1 text-sm py-2` }
                             key={ idx }
                             field={ col.id as string }
                             header={

@@ -1047,7 +1047,29 @@
         "running": "Processus en cours",
         "confirm_retry_process": "Voulez-vous vraiment relancer le processus ?",
         "retry_process": "Relancer le processus",
-        "process_relaunched": "Processus relancé avec succès"
+        "process_relaunched": "Processus relancé avec succès",
+        "done_small": "Terminé",
+        "error_small": "Erreur",
+        "process_details": "Détails du processus",
+        "id": "Identifiant du processus",
+        "workflow": "Workflow associé",
+        "elapsed_time": "Temps d'exécution",
+        "hours_many": "heures",
+        "hours_one": "heure",
+        "hours_other": "heures",
+        "minutes_many": "minutes",
+        "minutes_one": "minute",
+        "minutes_other": "minutes",
+        "seconds_many": "secondes",
+        "seconds_one": "seconde",
+        "seconds_other": "secondes",
+        "and": "et",
+        "process_steps": "Étapes du processus",
+        "step": "Étape",
+        "exec_date": "Date d'exécution",
+        "event_details": "Détails de l'événement",
+        "copy_error_message": "Copier le contenu de l'erreur dans le presse-papier",
+        "error_message_copied": "Message d'erreur copié dans le presse-papier"
     },
     "AI-LLM": {
         "provider": "Fournisseur",
@@ -1192,6 +1214,8 @@
         "mondon": "Refonte de l’interface V4 - Développements divers",
         "misc_dev": "Développements divers",
         "splitter_dev": "Développements sur le module Splitter",
-        "active_dev": ""
+        "technical_infos": "Informations techniques",
+        "database": "Base de données",
+        "ocr": "OCR"
     }
 }

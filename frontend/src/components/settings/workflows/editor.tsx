@@ -511,7 +511,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             if (input_folder) {
                 if (workflowId) {
                     try {
-                        const response = await post(`workflows/${ module }/createScriptAndWatcher`, {
+                        await post(`workflows/${ module }/createScriptAndWatcher`, {
                             workflow_label: label,
                             workflow_id: workflowId,
                             input_folder: input_folder

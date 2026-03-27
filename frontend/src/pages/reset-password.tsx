@@ -31,12 +31,12 @@ import { showToast } from "../components/ToastProvider";
 import { DynamicForm } from "../components/form/DynamicForm";
 
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
-import { clearPersistentState } from "../services/hooks/usePersistentState.tsx";
+import { clearPersistentState } from "../services/hooks/usePersistentState";
 
 export function ResetPassword() {
-    const { get, post, put } = axiosApiCall();
-    const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const { get, post, put } = axiosApiCall();
 
     const [loading, setLoading] = useState(true);
     const [sending, setSending] = useState(false);

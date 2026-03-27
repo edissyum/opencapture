@@ -101,7 +101,7 @@ def get_process_by_id(process_id):
     process, _ = monitoring.get_process_by_id(process_id, _format)
 
     response = {
-        "process": process
+        "process": process[0]
     }
     return response, 200
 

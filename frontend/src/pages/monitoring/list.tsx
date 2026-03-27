@@ -17,7 +17,7 @@
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { RadioButton } from "primereact/radiobutton";
-import { Activity, CheckCheck, ChevronDown, Filter, Loader2, Package, RotateCw, X, } from "lucide-react";
+import { Activity, ChevronDown, Filter, Loader2, Package, RotateCw } from "lucide-react";
 
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
@@ -80,14 +80,14 @@ export function MonitoringList() {
             id: 'creation_date',
             field: 'creation_date',
             header: t('MONITORING.creation_date'),
-            className: 'w-50 max-w-50'
+            className: 'w-60 max-w-60'
         },
-        { id: 'end_date', field: 'end_date', header: t('MONITORING.end_date'), className: 'w-50 max-w-50' },
+        { id: 'end_date', field: 'end_date', header: t('MONITORING.end_date'), className: 'w-60 max-w-60' },
         {
             id: 'filename',
             field: 'filename',
             header: t('VERIFIER.filename'),
-            className: 'max-w-64',
+            className: 'max-w-60',
             body: (row: any) => (
                 <span className="block max-w-64 truncate" data-tooltip-id="tooltip"
                       data-tooltip-content={ row.filename }>
@@ -98,29 +98,39 @@ export function MonitoringList() {
         {
             id: 'last_message', field: 'last_message', header: t('MONITORING.last_message'), className: 'max-w-[50rem]',
             body: (row: any) => (
-                <span className="block truncate max-w-[50rem] whitespace-nowrap">
+                <span className={ `block truncate max-w-[50rem] whitespace-nowrap
+                                   ${ row.status === 'done' && 'text-(--color-primary)' }
+                                   ${ row.status === 'error' && 'text-(--text-error)' }` }
+                >
                     { row.last_message }
                 </span>
             )
         },
         {
-            id: 'status', field: 'status', header: t('GLOBAL.status'), className: 'flex', body: (row: any) => (
+            id: 'status', field: 'status', header: t('GLOBAL.status'), body: (row: any) => (
                 <span>
                     { row.status === 'running' && (
                         <Loader2 className="animate-spin "/>
                     ) }
                     { row.status === 'done' && (
-                        <CheckCheck className='text-(--color-primary)'/>
+                        <div className='bg-(--color-primary)/10 text-(--color-primary) rounded-sm px-2 py-1 border-0 w-fit'>
+                            { t('MONITORING.done_small') }
+                        </div>
                     ) }
                     { row.status === 'error' && (
-                        <div className='flex text-(--text-error) items-center'>
-                            <X size={ 24 }/>
-                            <RotateCw size={ 18 } data-tooltip-content={ t('MONITORING.retry_process') }
-                                      data-tooltip-id="tooltip"
-                                      onClick={ (e) => {
-                                          e.stopPropagation();
-                                          handleRetryProcess(row.id).then();
-                                      } }/>
+                        <div className='flex items-center gap-2 text-(--text-error) w-fit'>
+                            <div className='bg-(--bg-error) rounded-sm px-3 py-1 border-0'>
+                                { t('MONITORING.error_small') }
+                            </div>
+                            { !row.retry && (
+                                <RotateCw size={ 18 } data-tooltip-content={ t('MONITORING.retry_process') }
+                                          data-tooltip-id="tooltip"
+                                          onClick={ (e) => {
+                                              e.stopPropagation();
+                                              handleRetryProcess(row.id).then();
+                                          } }
+                                />
+                            ) }
                         </div>
                     ) }
                 </span>
@@ -203,7 +213,7 @@ export function MonitoringList() {
     return (
         <div className='flex h-full w-full overflow-hidden'>
             <div className={ `h-full transition-all border-r-2 border-(--border-secondary) pb-16
-                            ${ displayFilters ? "w-[300px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
+                            ${ displayFilters ? "min-w-[300px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
                 <div className='border-b-2 border-(--border-secondary) p-4 flex items-center justify-between'>
                     <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
                     <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary)'
@@ -211,9 +221,10 @@ export function MonitoringList() {
                         { t('VERIFIER.erase_filters') }
                     </span>
                 </div>
-                <div className='p-4 flex flex-col gap-6 h-full overflow-y-auto'>
-                    <div className='flex flex-col'>
-                        <div className="flex items-center justify-between cursor-pointer mb-2"
+                <div className='flex flex-col h-full overflow-y-auto'>
+                    <div
+                        className={ `p-4 flex flex-col ${ open.module ? 'bg-(--bg-secondary)' : '' } border-b-2 border-(--border-secondary)` }>
+                        <div className="flex items-center justify-between cursor-pointer"
                              onClick={ () => setOpen({ ...open, module: !open.module }) }>
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
@@ -225,7 +236,7 @@ export function MonitoringList() {
                         </div>
 
                         { open.module && (
-                            <div className='flex flex-col'>
+                            <div className='flex flex-col mt-2'>
                                 { listModules.map((module: any) => (
                                     <div className='flex items-center text-(--text-secondary)' key={ module.id }>
                                         <RadioButton
@@ -244,8 +255,9 @@ export function MonitoringList() {
                             </div>
                         ) }
                     </div>
-                    <div className='flex flex-col'>
-                        <div className="flex items-center justify-between cursor-pointer mb-2"
+                    <div
+                        className={ `p-4 flex flex-col ${ open.status ? 'bg-(--bg-secondary)' : '' } border-b-2 border-(--border-secondary)` }>
+                        <div className="flex items-center justify-between cursor-pointer"
                              onClick={ () => setOpen({ ...open, status: !open.status }) }>
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
@@ -257,7 +269,7 @@ export function MonitoringList() {
                         </div>
 
                         { open.status && (
-                            <div className='flex flex-col'>
+                            <div className='flex flex-col mt-2'>
                                 { listStatuses.map((status: any) => (
                                     <div className='flex items-center text-(--text-secondary)' key={ status.id }>
                                         <RadioButton
@@ -279,9 +291,10 @@ export function MonitoringList() {
                 </div>
             </div>
 
-            <div className='p-8 h-full w-full flex flex-col flex-1 z-10'>
+            <div className='p-6 h-full w-full flex flex-col flex-1 z-10'>
                 <div className='flex items-center gap-6 mb-4'>
-                    <Button variant='bg_white_rounded' icon={ <Filter size={ 14 }/> } onClick={ () => setDisplayFilters(!displayFilters) }
+                    <Button variant='bg_white_rounded' icon={ <Filter size={ 14 }/> }
+                            onClick={ () => setDisplayFilters(!displayFilters) }
                             className={ `${ displayFilters ? 'bg-(--color-primary) text-white hover:text-white' : 'bg-(--bg-primary) text-(--text-primary)' }` }>
                         { t('VERIFIER.filters') }
                     </Button>

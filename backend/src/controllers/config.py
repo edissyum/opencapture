@@ -421,3 +421,9 @@ def remove_favorites(favorite_id):
 def get_customs_list():
     customs = retrieve_custom_list()
     return {'customs': customs}, 200
+
+def get_packages():
+    with open('pip-requirements.txt', 'r') as f:
+        packages = [line.strip() for line in f if line.strip() and not line.startswith('#') and not line.startswith('--')]
+
+    return packages

@@ -1047,7 +1047,29 @@
         "running": "Proceso en curso",
         "confirm_retry_process": "¿Está seguro de que desea relanzar el proceso?",
         "retry_process": "Relanzar proceso",
-        "process_relaunched": "Proceso relanzado correctamente"
+        "process_relaunched": "Proceso relanzado correctamente",
+        "done_small": "",
+        "error_small": "",
+        "process_details": "",
+        "id": "",
+        "workflow": "",
+        "elapsed_time": "",
+        "hours_many": "",
+        "hours_one": "",
+        "hours_other": "",
+        "minutes_many": "",
+        "minutes_one": "",
+        "minutes_other": "",
+        "seconds_many": "",
+        "seconds_one": "",
+        "seconds_other": "",
+        "and": "",
+        "process_steps": "",
+        "step": "",
+        "exec_date": "",
+        "event_details": "",
+        "copy_error_message": "",
+        "error_message_copied": ""
     },
     "AI-LLM": {
         "provider": "Proveedor",
@@ -1192,6 +1214,8 @@
         "mondon": "",
         "misc_dev": "",
         "splitter_dev": "",
-        "active_dev": ""
+        "technical_infos": "",
+        "database": "",
+        "ocr": ""
     }
 }
