@@ -418,7 +418,31 @@
         "duplicate_output": "Duplicar cadena de salida",
         "outputs_duplicated_many": "Cadenas de salida duplicadas correctamente",
         "outputs_duplicated_one": "Cadena de salida duplicada correctamente",
-        "outputs_duplicated_other": "Cadenas de salida duplicadas correctamente"
+        "outputs_duplicated_other": "Cadenas de salida duplicadas correctamente",
+        "compress_default": "",
+        "compress_ebook": "",
+        "compress_prepress": "",
+        "compress_printer": "",
+        "compress_screen": "",
+        "compress_type": "",
+        "no_compress": "",
+        "ocrise": "",
+        "type": "",
+        "details": "",
+        "specific": "",
+        "links": "",
+        "copy_to_clipboard": "",
+        "current_date": "",
+        "document_date_day": "",
+        "document_date_full": "",
+        "document_date_month": "",
+        "document_date_year": "",
+        "register_date_day": "",
+        "register_date_full": "",
+        "register_date_month": "",
+        "register_date_year": "",
+        "b64_file_content": "",
+        "original_filename": ""
     },
     "ROLES": {
         "add_role": "Agregar un rol",
@@ -555,7 +579,9 @@
         "edit_workflow": "",
         "update-status": "",
         "update-status_description_splitter": "",
-        "update-status_description_verifier": ""
+        "update-status_description_verifier": "",
+        "add_output": "",
+        "edit_output": ""
     },
     "SMTP": {
         "authentication": "Autenticación",
@@ -821,7 +847,8 @@
         "document_validated": "",
         "footer": "",
         "subject": "",
-        "firstname_lastname": ""
+        "firstname_lastname": "",
+        "system_fields": ""
     },
     "SECURITY": {
         "default_auth": "Autenticación predeterminada",
@@ -1227,6 +1254,7 @@
         "id_documents": "",
         "id_placeholder": "",
         "update": "",
-        "update_success": ""
+        "update_success_splitter": "",
+        "update_success_verifier": ""
     }
 }

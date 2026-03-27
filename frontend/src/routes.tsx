@@ -69,8 +69,9 @@ import { AiDoctypesList } from "./components/settings/ai-doctypes/list";
 import { AiDoctypesEditor } from "./components/settings/ai-doctypes/editor";
 import { WorkflowEditor } from "./components/settings/workflows/editor";
 import { ResetPassword } from "./pages/reset-password";
-import { MonitoringDetails } from "./pages/monitoring/details.tsx";
-import { UpdateStatus } from "./components/settings/update-status/update.tsx";
+import { MonitoringDetails } from "./pages/monitoring/details";
+import { UpdateStatus } from "./components/settings/update-status/update";
+import { OutputEditor } from "./components/settings/outputs/editor";
 
 export const router = createBrowserRouter(
     [
@@ -452,6 +453,20 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader,
                                     element: <OutputsList module="verifier"/>,
                                     errorElement: <LoginRequiredError/>
+                                },
+                                {
+                                    path: 'edit/:outputId',
+                                    loader: protectedLoader,
+                                    element: <OutputEditor module="verifier"/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.edit_output' }
+                                },
+                                {
+                                    path: 'create',
+                                    loader: protectedLoader,
+                                    element: <OutputEditor module="verifier"/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.add_output' }
                                 }
                             ]
                         },
@@ -634,6 +649,20 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader,
                                     element: <OutputsList module="splitter"/>,
                                     errorElement: <LoginRequiredError/>
+                                },
+                                {
+                                    path: 'edit/:outputId',
+                                    loader: protectedLoader,
+                                    element: <OutputEditor module="splitter"/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.edit_output' }
+                                },
+                                {
+                                    path: 'create',
+                                    loader: protectedLoader,
+                                    element: <OutputEditor module="verifier"/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.add_output' }
                                 }
                             ]
                         },

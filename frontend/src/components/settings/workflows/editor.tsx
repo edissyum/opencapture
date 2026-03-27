@@ -52,6 +52,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
     const [loading, setLoading] = useState(true);
     const [loadingScript, setLoadingScript] = useState(false);
+
     const stepperRef = useRef<any>(null);
     const [stepperIndex, setStepperIndex] = useState(0);
 

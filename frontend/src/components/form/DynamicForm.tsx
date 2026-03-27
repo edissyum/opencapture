@@ -17,15 +17,7 @@
 import { type JSX } from "react";
 import { Controller } from "react-hook-form";
 import { InputSwitch } from "primereact/inputswitch";
-import {
-    Calendar,
-    CaseSensitive,
-    CircleQuestionMark,
-    ListTodo,
-    Regex,
-    SquareCheckBig,
-    TextInitial
-} from "lucide-react";
+import { Calendar, CaseSensitive, CircleQuestionMark, ListTodo, Regex, SquareCheckBig, TextInitial } from "lucide-react";
 
 import Input from "../Input";
 import { RadioBox } from "../RadioBox";
@@ -104,13 +96,15 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                             name={ field.name }
                             control={ control }
                             render={ ({ field: f }) => (
-                                <div className='flex items-center relative w-fit'>
+                                <div className={ `flex items-center relative ${ field.disabled ? 'cursor-not-allowed' : '' }` }>
                                     <InputSwitch
                                         inputId={ f.name }
                                         checked={ f.value }
+                                        disabled={ field.disabled }
                                         onChange={ e => f.onChange(e.value) }
                                     />
-                                    <label htmlFor={ f.name } className='cursor-pointer'>
+                                    <label htmlFor={ f.name }
+                                           className={ `${ field.disabled ? 'cursor-not-allowed' : 'cursor-pointer' }` }>
                                         { field.label }
                                     </label>
                                     { field.hint && (

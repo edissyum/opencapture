@@ -418,7 +418,31 @@
         "duplicate_output": "Dupliquer la chaîne sortante",
         "outputs_duplicated_many": "Chaînes sortantes dupliquées avec succès",
         "outputs_duplicated_one": "Chaîne sortante dupliquée avec succès",
-        "outputs_duplicated_other": "Chaînes sortantes dupliquées avec succès"
+        "outputs_duplicated_other": "Chaînes sortantes dupliquées avec succès",
+        "compress_default": "Compression très faible",
+        "compress_ebook": "Compression élevée",
+        "compress_prepress": "Compression moyenne",
+        "compress_printer": "Compression faible",
+        "compress_screen": "Compression très élevée",
+        "compress_type": "Type de compression",
+        "no_compress": "Pas de compression",
+        "ocrise": "Océrisation du PDF",
+        "type": "Type de la chaîne sortante",
+        "details": "Détails de la chaîne sortante",
+        "links": "Liaisons",
+        "specific": "Spécifiques",
+        "copy_to_clipboard": "Copier le libellé technique dans le presse-papier",
+        "current_date": "Date du jour",
+        "document_date_day": "Jour du document",
+        "document_date_full": "Date du document",
+        "document_date_month": "Mois du document",
+        "document_date_year": "Année du document",
+        "register_date_day": "Jour d'enregistrement",
+        "register_date_full": "Date d'enregistrement",
+        "register_date_month": "Mois d'enregistrement",
+        "register_date_year": "Année d'enregistrement",
+        "b64_file_content": "Contenu du document base64",
+        "original_filename": "Nom du fichier original"
     },
     "ROLES": {
         "add_role": "Ajouter un rôle",
@@ -555,7 +579,9 @@
         "edit_workflow": "Modifier le workflow",
         "update-status": "Changement de statut",
         "update-status_description_verifier": "Modification des statuts des documents",
-        "update-status_description_splitter": "Modification des statuts des lots"
+        "update-status_description_splitter": "Modification des statuts des lots",
+        "add_output": "Ajouter une chaîne sortante",
+        "edit_output": "Modifier la chaîne sortante"
     },
     "SMTP": {
         "authentication": "Authentification",
@@ -821,7 +847,8 @@
         "document_validated": "Document validé avec succès",
         "footer": "Pied de page",
         "subject": "Sujet",
-        "firstname_lastname": "Nom et prénom"
+        "firstname_lastname": "Nom et prénom",
+        "system_fields": "Champs système"
     },
     "SECURITY": {
         "default_auth": "Authentification par défaut",

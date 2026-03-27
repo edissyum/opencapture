@@ -393,7 +393,31 @@
         "confirm_duplicate_output": "Are you sure you want to duplicate the output chain <strong>{{name}}</strong>?",
         "duplicate_output": "Duplicate output chain",
         "outputs_duplicated_one": "Output chain successfully duplicated",
-        "outputs_duplicated_other": "Output chains successfully duplicated"
+        "outputs_duplicated_other": "Output chains successfully duplicated",
+        "compress_default": "",
+        "compress_ebook": "",
+        "compress_prepress": "",
+        "compress_printer": "",
+        "compress_screen": "",
+        "compress_type": "",
+        "no_compress": "",
+        "ocrise": "",
+        "type": "",
+        "details": "",
+        "specific": "",
+        "links": "",
+        "copy_to_clipboard": "",
+        "current_date": "",
+        "document_date_day": "",
+        "document_date_full": "",
+        "document_date_month": "",
+        "document_date_year": "",
+        "register_date_day": "",
+        "register_date_full": "",
+        "register_date_month": "",
+        "register_date_year": "",
+        "b64_file_content": "",
+        "original_filename": ""
     },
     "ROLES": {
         "add_role": "Add a role",
@@ -513,7 +537,9 @@
         "edit_workflow": "",
         "update-status": "",
         "update-status_description_splitter": "",
-        "update-status_description_verifier": ""
+        "update-status_description_verifier": "",
+        "add_output": "",
+        "edit_output": ""
     },
     "SMTP": {
         "authentication": "Authentication",
@@ -753,7 +779,8 @@
         "document_validated": "",
         "footer": "",
         "subject": "",
-        "firstname_lastname": ""
+        "firstname_lastname": "",
+        "system_fields": ""
     },
     "SECURITY": {
         "default_auth": "Default authentication",
@@ -1135,6 +1162,7 @@
         "id_documents": "",
         "id_placeholder": "",
         "update": "",
-        "update_success": ""
+        "update_success_splitter": "",
+        "update_success_verifier": ""
     }
 }

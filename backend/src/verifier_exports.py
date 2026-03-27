@@ -936,7 +936,7 @@ def export_mem(data, document_info, log, regex, database):
         return response, 400
 
 
-def export_cmis(data, document_info, log, database, docservers, compress_type, ocerise):
+def export_cmis(data, document_info, log, database, docservers, compress_type, ocrise):
     if 'id' in document_info and document_info['id']:
         task = monitoring.get_process_by_document_id(document_info['id'])[0]
         if task and task[0]:
@@ -970,7 +970,7 @@ def export_cmis(data, document_info, log, database, docservers, compress_type, o
             cmis_params = get_output_parameters(data['options']['parameters'])
             data['options']['parameters'].append({'id': 'folder_out', 'value': docservers['TMP_PATH']})
             data['options']['parameters'].append({'id': 'filename', 'value': cmis_params['pdf_filename']})
-            res_pdf_export, _ = export_pdf(data, log, document_info, compress_type, ocerise, enable_log=False)
+            res_pdf_export, _ = export_pdf(data, log, document_info, compress_type, ocrise, enable_log=False)
 
             data['options']['parameters'].append({'id': 'folder_out', 'value': docservers['TMP_PATH']})
             data['options']['parameters'].append({'id': 'filename', 'value': cmis_params['xml_filename']})
