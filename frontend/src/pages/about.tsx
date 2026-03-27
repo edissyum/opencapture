@@ -255,6 +255,20 @@ export function AboutPage() {
                                         DEV
                                     </div>
                                 </div>
+                                <div className={ `${ classesWithBorder }` }>
+                                    <div className='rounded-full bg-[#A76227]/15 font-semibold
+                                                    text-[#A76227] border border-[#A76227] p-3'>
+                                        PY
+                                    </div>
+                                    <div className='ml-4'>
+                                        <p className='font-semibold'>Pierre-Yvon BEZERT</p>
+                                        <p className='text-(--text-secondary) text-sm'>{ t('ABOUT.docker') }</p>
+                                    </div>
+                                    <div className='ml-auto rounded-2xl bg-[#1CC7BE]/15 font-semibold
+                                                    text-[#1CC7BE] border border-[#1CC7BE] px-3'>
+                                        DOCKER
+                                    </div>
+                                </div>
                                 <div className={ `${ classes }` }>
                                     <div className='rounded-full bg-(--bg-secondary) font-semibold
                                                     text-(--text-secondary) border border-(--border-secondary) p-3'>

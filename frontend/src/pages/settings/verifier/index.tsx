@@ -15,7 +15,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { BrainCircuit, BrainCog, CodeXml, FolderOutput, LayoutTemplate, ScanLine, Workflow } from "lucide-react";
+import { BrainCircuit, BrainCog, CodeXml, Flag, FolderOutput, LayoutTemplate, ScanLine, Workflow } from "lucide-react";
 
 import { SettingsCard } from "../../../components/settings/SettingsCard";
 
@@ -67,6 +67,13 @@ export const getSettingsVerifierOptions = () => [
         description: t('SETTINGS.positions-masks_description'),
         icon: <ScanLine/>,
         href: '/settings/verifier/positions-masks',
+        module: 'verifier'
+    },
+    {
+        name: t('SETTINGS.update-status'),
+        description: t('SETTINGS.update-status_description_verifier'),
+        icon: <Flag/>,
+        href: '/settings/verifier/update-status',
         module: 'verifier'
     }
 ];

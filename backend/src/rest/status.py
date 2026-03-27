@@ -17,12 +17,10 @@
 
 from flask_babel import gettext
 from ..functions import rest_validator
-from flask import Blueprint, make_response, jsonify, request
 from ..controllers import auth, status, privileges
-
+from flask import Blueprint, make_response, jsonify, request
 
 bp = Blueprint('status', __name__, url_prefix='/ws/')
-
 
 @bp.route('status/<string:module>/list', methods=['POST'])
 @auth.token_required

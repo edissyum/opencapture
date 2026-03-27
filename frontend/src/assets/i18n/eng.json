@@ -510,7 +510,10 @@
         "add_ai_doctype": "",
         "edit_ai_doctype": "",
         "add_workflow": "",
-        "edit_workflow": ""
+        "edit_workflow": "",
+        "update-status": "",
+        "update-status_description_splitter": "",
+        "update-status_description_verifier": ""
     },
     "SMTP": {
         "authentication": "Authentication",
@@ -1124,6 +1127,14 @@
         "splitter_dev": "",
         "technical_infos": "",
         "database": "",
-        "ocr": ""
+        "ocr": "",
+        "docker": ""
+    },
+    "UPDATE-STATUS": {
+        "new_status": "",
+        "id_documents": "",
+        "id_placeholder": "",
+        "update": "",
+        "update_success": ""
     }
 }

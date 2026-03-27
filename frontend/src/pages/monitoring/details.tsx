@@ -249,7 +249,7 @@ export function MonitoringDetails() {
                     </div>
                 </div>
             </div>
-            <h1 className="my-4 text-md font-bold">{ t('MONITORING.process_steps') }</h1>
+            <h1 className="mt-6 mb-4 text-md font-bold">{ t('MONITORING.process_steps') }</h1>
             <Table
                 pagination={ true }
                 columns={ columns }

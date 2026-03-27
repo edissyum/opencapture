@@ -70,6 +70,7 @@ import { AiDoctypesEditor } from "./components/settings/ai-doctypes/editor";
 import { WorkflowEditor } from "./components/settings/workflows/editor";
 import { ResetPassword } from "./pages/reset-password";
 import { MonitoringDetails } from "./pages/monitoring/details.tsx";
+import { UpdateStatus } from "./components/settings/update-status/update.tsx";
 
 export const router = createBrowserRouter(
     [
@@ -354,6 +355,13 @@ export const router = createBrowserRouter(
                             errorElement: <LoginRequiredError/>
                         },
                         {
+                            path: 'update-status',
+                            loader: protectedLoader,
+                            element: <UpdateStatus module='verifier'/>,
+                            handle: { breadcrumb: 'SETTINGS.update-status' },
+                            errorElement: <LoginRequiredError/>
+                        },
+                        {
                             path: "forms",
                             loader: protectedLoader,
                             handle: { breadcrumb: 'SETTINGS.forms' },
@@ -526,6 +534,13 @@ export const router = createBrowserRouter(
                             index: true,
                             loader: protectedLoader,
                             element: <SettingsSplitterIndex/>,
+                            errorElement: <LoginRequiredError/>
+                        },
+                        {
+                            path: 'update-status',
+                            loader: protectedLoader,
+                            element: <UpdateStatus module='splitter'/>,
+                            handle: { breadcrumb: 'SETTINGS.update-status' },
                             errorElement: <LoginRequiredError/>
                         },
                         {

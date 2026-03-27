@@ -552,7 +552,10 @@
         "add_ai_doctype": "Ajouter un modèle de typologie de document IA",
         "edit_ai_doctype": "Modifier le modèle de typologie de document IA",
         "add_workflow": "Ajouter un workflow",
-        "edit_workflow": "Modifier le workflow"
+        "edit_workflow": "Modifier le workflow",
+        "update-status": "Changement de statut",
+        "update-status_description_verifier": "Modification des statuts des documents",
+        "update-status_description_splitter": "Modification des statuts des lots"
     },
     "SMTP": {
         "authentication": "Authentification",
@@ -1216,6 +1219,15 @@
         "splitter_dev": "Développements sur le module Splitter",
         "technical_infos": "Informations techniques",
         "database": "Base de données",
-        "ocr": "OCR"
+        "ocr": "OCR",
+        "docker": "Déploiement Docker"
+    },
+    "UPDATE-STATUS": {
+        "new_status": "Nouveau statut",
+        "id_documents": "Identifiants des documents",
+        "id_placeholder": "Identifiant du document à mettre à jour (appuyez sur entrée ou sur , pour ajouter à la liste)",
+        "update": "Mettre à jour le statut",
+        "update_success_verifier": "Statut des documents mis à jour avec succès",
+        "update_success_splitter": "Statut des lots mis à jour avec succès"
     }
 }

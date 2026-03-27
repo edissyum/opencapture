@@ -178,7 +178,7 @@ export function SettingsGeneralSMTP() {
                                  onClick={ () => handleProviderChange(provider.name) }
                                  className={ `border-2 border-(--border-secondary) hover:border-(--border-primary) transition-colors
                              rounded-lg px-8 py-3 cursor-pointer flex items-center justify-center gap-4
-                             ${ selectedProvider === provider.name ? 'bg-(--bg-selected) border-(--border-primary)' : '' } ` }>
+                             ${ selectedProvider === provider.name ? 'bg-(--bg-selected) border-(--border-primary)!' : '' } ` }>
                                 { provider.logo && <img src={ provider.logo } alt={ provider.name } className='h-5'/> }
                                 <p className='text-lg font-semibold'>{ provider.name }</p>
                             </div>

@@ -15,7 +15,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { BrainCog, CodeXml, FolderOutput, LayoutTemplate, Workflow } from "lucide-react";
+import { BrainCog, CodeXml, Flag, FolderOutput, LayoutTemplate, Workflow } from "lucide-react";
 import { SettingsCard } from "../../../components/settings/SettingsCard";
 
 export const getSettingsSplitterOptions = () => [
@@ -54,6 +54,14 @@ export const getSettingsSplitterOptions = () => [
         href: '/settings/splitter/ai-doctypes',
         module: 'splitter'
     },
+    {
+        name: t('SETTINGS.update-status'),
+        description: t('SETTINGS.update-status_description_splitter'),
+        icon: <Flag/>,
+        href: '/settings/splitter/update-status',
+        module: 'splitter'
+    }
+
 ];
 
 export function SettingsSplitterIndex() {
