@@ -86,15 +86,28 @@
     @apply text-(--text-primary);
 }
 
-/* Border for paginator header */
+/* Paginator custom */
 .p-datatable .p-paginator-top {
     @apply border-b;
-    @apply border-(--border-secondary);
     @apply dark:bg-(--bg-primary);
+    @apply border-(--border-secondary);
 }
 
 .p-paginator {
     @apply py-1;
+    @apply pr-0;
+}
+
+.p-paginator-current {
+    @apply ml-3;
+}
+
+.p-dropdown-trigger .p-icon {
+    @apply size-3;
+}
+
+.p-dropdown .p-dropdown-trigger {
+    @apply w-8;
 }
 
 /* Border for lines */
@@ -123,4 +136,9 @@
 .p-paginator, .p-placeholder {
     font-family: "Montserrat", sans-serif;
     @apply text-(--text-secondary)!;
+}
+
+/* Hover effect for rows */
+.p-datatable .p-datatable-tbody > tr:hover {
+    @apply bg-(--bg-selected)!;
 }

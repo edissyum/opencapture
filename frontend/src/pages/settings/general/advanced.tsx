@@ -46,7 +46,7 @@ export function SettingsGeneralAdvanced() {
     const actions = [
         {
             label: t('GLOBAL.modify'),
-            icon: <Pencil className='mr-1' size={ 16 }/>,
+            icon: <Pencil size={ 16 }/>,
             command: () => handleUpdate()
         }
     ];
@@ -157,14 +157,14 @@ export function SettingsGeneralAdvanced() {
                 if (row.data.type === 'bool') {
                     return (
                         <span
-                            className={ `bg-[#E8E8E8] p-2 rounded-md ${ row.data.value ? 'text-(--color-primary)' : 'text-(--text-error)' }` }>
+                            className={ `${ row.data.value ? 'bg-(--color-primary)/10' : 'bg-(--bg-error)' } px-2 py-1 rounded-md ${ row.data.value ? 'text-(--color-primary)' : 'text-(--text-error)' }` }>
                             { row.data.value ? 'True' : 'False' }
                         </span>
                     );
                 }
 
                 return (
-                    <span className='bg-[#E8E8E8] p-2 rounded-md text-(--text-secondary)'>
+                    <span className='bg-[#E8E8E8] px-2 py-1 rounded-md text-(--text-secondary)'>
                         { row.data.value }
                     </span>
                 );

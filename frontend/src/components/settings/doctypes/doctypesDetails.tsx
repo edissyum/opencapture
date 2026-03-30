@@ -18,17 +18,7 @@ import { t } from "i18next";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { InputSwitch } from "primereact/inputswitch";
 import { ContextMenu } from "primereact/contextmenu";
-import {
-    ChevronRight,
-    EllipsisVertical,
-    File,
-    FilePlusCorner,
-    Folder,
-    FolderOpen,
-    FolderPlus,
-    Trash,
-    X
-} from "lucide-react";
+import { ChevronRight, EllipsisVertical, File, FilePlusCorner, Folder, FolderOpen, FolderPlus, Trash, X } from "lucide-react";
 
 import Input from "../../Input";
 import { Button } from "../../Button";
@@ -202,7 +192,7 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                     <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
                          onClick={ () => setShowAddDoctype(false) }/>
                     <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                                    min-w-[32vw] h-fit max-h-screen border-2 border-(--border-secondary)
+                                    min-w-[32vw] h-fit max-h-screen border border-(--border-secondary)
                                     rounded-lg bg-(--bg-primary) flex flex-col">
                         <div className='flex flex-col px-6 p-6'>
                             <div className='flex'>
@@ -253,43 +243,49 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
 
             { info?.breadcrumb && (
                 <div className='flex gap-4'>
-                    <div className="flex w-fit gap-2 text-sm text-(--text-secondary) border-2
+                    <div className="flex w-fit gap-1 text-sm text-(--text-secondary) border
                                     border-(--border-secondary) bg-(--bg-primary) rounded-xl p-2">
                         { info.breadcrumb.map((b: any, i: number) => (
-                            <span key={ b.code } className={ `flex items-center ${ i === 0 && 'ml-1' }` }>
-                                { i > 0 && <ChevronRight size={ 18 }/> }
-                                <span className='px-2.5 py-1 rounded-full flex items-center gap-1 bg-transparent transition-colors
-                                               hover:bg-(--bg-secondary) cursor-pointer'
-                                      onClick={ () => doctypeChanged?.(() => {
-                                          const node = doctypes.find((d: any) => d.code === b.code);
-                                          if (b.type === 'root') {
-                                              return ROOT_NODE;
-                                          }
-                                          return node || selectedDoctype;
-                                      }) }>
-                                    { b.type !== "document" && (
-                                        <FolderOpen size={ 16 } fill='var(--color-primary)' stroke='white'/>
-                                    ) }
-                                    { b.label && (
-                                        <span className="font-medium text-(--text-primary)">
-                                            { b.label }
-                                        </span>
-                                    ) }
+                            <>
+                                { i > 0 && (
+                                    <span className='flex items-center'>
+                                        <ChevronRight size={ 18 }/>
+                                    </span>
+                                ) }
+                                <span key={ b.code } className='flex items-center'>
+                                    <span className='px-2.5 py-1 rounded-full flex items-center gap-1 bg-transparent transition-colors
+                                                   hover:bg-(--bg-secondary) cursor-pointer'
+                                          onClick={ () => doctypeChanged?.(() => {
+                                              const node = doctypes.find((d: any) => d.code === b.code);
+                                              if (b.type === 'root') {
+                                                  return ROOT_NODE;
+                                              }
+                                              return node || selectedDoctype;
+                                          }) }>
+                                        { b.type !== "document" && (
+                                            <FolderOpen size={ 16 } fill='var(--color-primary)' stroke='white'/>
+                                        ) }
+                                        { b.label && (
+                                            <span className="font-medium text-(--text-primary)">
+                                                { b.label }
+                                            </span>
+                                        ) }
+                                    </span>
                                 </span>
-                            </span>
+                            </>
                         )) }
                     </div>
                     <div className='ml-auto flex gap-2'>
                         { selectedDoctype.type !== 'document' && (
                             <>
-                                <Button variant='secondary' className='px-2!' onClick={ () => {
+                                <Button variant='secondary' className='px-4!' onClick={ () => {
                                     setNewDoctypeType('folder')
                                     setShowAddDoctype(true)
                                 } }>
                                     <FolderPlus size={ 18 }/>&nbsp;
                                     { t('DOCTYPES.folder') }
                                 </Button>
-                                <Button className='px-2!' onClick={ () => {
+                                <Button className='px-4!' onClick={ () => {
                                     setNewDoctypeType('document');
                                     setShowAddDoctype(true);
                                 } }>
@@ -298,7 +294,7 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                                 </Button>
                             </>
                         ) }
-                        <div className={ `flex cursor-pointer items-center px-2 border-2 border-(--border-secondary)
+                        <div className={ `flex cursor-pointer items-center px-2 border border-(--border-secondary)
                                           bg-(--bg-primary) rounded-lg ${ selectedDoctype.code === "root" && 'cursor-not-allowed!' }` }
                              onClick={ (e) => {
                                  cm.current?.show(e);
@@ -315,7 +311,7 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
 
             { selectedDoctype.type === 'document' ? (
                 <div>
-                    <div className="p-4 rounded-xl border-2 border-(--border-secondary) bg-(--bg-primary)">
+                    <div className="p-4 rounded-xl border border-(--border-secondary) bg-(--bg-primary)">
                         <h3 className='text-lg font-semibold'>
                             { t('DOCTYPES.update_doctype') }
                         </h3>
@@ -353,7 +349,7 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                 <div className='flex flex-col gap-6 h-full'>
                     { selectedDoctype.type !== "root" && (
                         <div>
-                            <div className="p-4 rounded-xl border-2 border-(--border-secondary) bg-(--bg-primary)">
+                            <div className="p-4 rounded-xl border border-(--border-secondary) bg-(--bg-primary)">
                                 <h3 className='text-lg font-semibold'>
                                     { t('DOCTYPES.update_folder') }
                                 </h3>
@@ -378,7 +374,7 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                         </div>
                     ) }
                     <div
-                        className="p-4 rounded-xl border-2 border-(--border-secondary) bg-(--bg-primary) overflow-scroll">
+                        className="p-4 rounded-xl border border-(--border-secondary) bg-(--bg-primary) overflow-scroll">
                         <div className='flex flex-col gap-4'>
                             <h3 className='text-lg font-semibold'>
                                 { t('DOCTYPES.children') }
@@ -389,14 +385,14 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                                         <div key={ child.code }
                                              className="flex items-center gap-2 cursor-pointer hover:bg-(--bg-selected) rounded-md p-2"
                                              onClick={ () => doctypeChanged?.(child) }>
-                                            <div className='bg-(--bg-secondary) rounded-md p-1'>
+                                            <div className='bg-(--bg-secondary) rounded-md p-2'>
                                                 { child.type === "folder" ? (
-                                                    <FolderOpen size={ 20 }/>
+                                                    <FolderOpen size={ 18 }/>
                                                 ) : (
-                                                    <File size={ 20 }/>
+                                                    <File size={ 18 }/>
                                                 ) }
                                             </div>
-                                            <div>
+                                            <div className='text-(--text-primary)'>
                                                 { child.label }
                                             </div>
                                             <div
@@ -409,7 +405,7 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                             ) : (
                                 <div className='flex flex-col gap-2 w-full items-center text-(--text-secondary) p-5'>
                                     <Folder className='p-2 rounded-md bg-(--bg-secondary)' size={ 45 }/>
-                                    <span>{ t('DOCTYPES.no_children') }</span>
+                                    <h1 className='text-xl font-semibold text-(--text-primary)'>{ t('DOCTYPES.no_children') }</h1>
                                     <span>{ t('DOCTYPES.add_child_to_folder') }</span>
                                 </div>
                             ) }

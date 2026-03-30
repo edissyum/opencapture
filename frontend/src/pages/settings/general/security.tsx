@@ -306,6 +306,7 @@ export function SettingsGeneralSecurity() {
         setLoading(true);
         try {
             const res = await post('/auth/ldapSynchronization', data);
+            // construct message {"create_users":0,"disabled_users":2,"update_users":0}
             showToast(t('SECURITY.ldap_synchronization_success', { 'data': '<strong>' + JSON.stringify(res) + '</strong>' }), 'success');
         } catch (error) {
             console.error('Error launching LDAP synchronization :', error);

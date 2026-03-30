@@ -53,7 +53,7 @@ export function SettingsGeneralDocservers() {
     const actions = [
         {
             label: t('GLOBAL.modify'),
-            icon: <Pencil className='mr-1' size={ 16 }/>,
+            icon: <Pencil size={ 16 }/>,
             command: () => handleUpdate()
         }
     ];

@@ -19,7 +19,7 @@
     @apply flex;
     @apply p-2;
     @apply absolute;
-    @apply border-2;
+    @apply border;
     @apply rounded-xl;
     @apply border-dashed;
     @apply bg-(--bg-primary);
@@ -52,4 +52,8 @@
 
 .workflowStepper .p-stepper-nav {
     @apply w-11/12!;
+}
+
+.p-stepper .p-stepper-header .p-stepper-action .p-stepper-number {
+    @apply border-0;
 }

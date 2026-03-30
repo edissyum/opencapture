@@ -183,7 +183,7 @@ export function DoctypesTree({
                     <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
                          onClick={ () => setShowCloneDialog(false) }/>
                     <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                                            min-w-[32vw] h-fit max-h-screen border-2 border-(--border-secondary)
+                                            min-w-[32vw] h-fit max-h-screen border border-(--border-secondary)
                                             rounded-lg bg-(--bg-primary) flex flex-col">
                         <div className='flex flex-col items-center px-6 p-6'>
                             <div className='flex flex-col'>
@@ -283,33 +283,31 @@ export function DoctypesTree({
 
                         <div className="flex mb-3">
                             <div className="actionsButton">
-                                        <span onClick={ expandAll }
-                                              className="rounded-l-md dark:bg-(--bg-secondary)">
-                                            <Maximize size={ 16 }/>
-                                        </span>
+                                <span onClick={ expandAll } className="rounded-l-md dark:bg-(--bg-secondary) border">
+                                    <Maximize size={ 16 }/>
+                                </span>
 
-                                <span onClick={ collapseAll }
-                                      className="rounded-r-md dark:bg-(--bg-secondary)">
-                                            <Minimize size={ 16 }/>
-                                        </span>
+                                <span onClick={ collapseAll } className="rounded-r-md dark:bg-(--bg-secondary) border border-l-0">
+                                    <Minimize size={ 16 }/>
+                                </span>
                             </div>
 
                             { editor && (
                                 <div className="actionsButton ml-auto">
-                                            <span className="rounded-l-md dark:bg-(--bg-secondary)">
-                                                <Download size={ 16 }/>
-                                            </span>
+                                    <span className="rounded-l-md dark:bg-(--bg-secondary) border">
+                                        <Download size={ 16 }/>
+                                    </span>
 
-                                    <span className="rounded-r-md dark:bg-(--bg-secondary)">
-                                                <Upload size={ 16 }/>
-                                            </span>
+                                    <span className="rounded-r-md dark:bg-(--bg-secondary) border border-l-0">
+                                        <Upload size={ 16 }/>
+                                    </span>
 
-                                    <span className="rounded-md dark:bg-(--bg-secondary) ml-2"
+                                    <span className="rounded-md dark:bg-(--bg-secondary) ml-2 border"
                                           onClick={ () => setShowCloneDialog(true) }
                                           data-tooltip-content={ t('DOCTYPES.clone_doctype') }
                                           data-tooltip-id='tooltip'>
-                                                <Copy size={ 16 }/>
-                                            </span>
+                                        <Copy size={ 16 }/>
+                                    </span>
                                 </div>
                             ) }
 

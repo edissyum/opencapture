@@ -64,12 +64,12 @@ export function AiDoctypesList({ module }: { module: string }) {
     const getActionsLine: any = () => [
         {
             label: <span className='critical'>{ t('GLOBAL.delete') }</span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         },
         {
             label: t('AI-DOCTYPES.test_model'),
-            icon: <Sparkles className='mr-1' size={ 16 }/>,
+            icon: <Sparkles size={ 16 }/>,
             command: () => {
                 setTestingModel(true)
                 setTestingModelFile(null);
@@ -80,7 +80,7 @@ export function AiDoctypesList({ module }: { module: string }) {
     const actions: any = [
         {
             label: <span className='critical'>{ t('GLOBAL.delete') }</span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }
     ];
@@ -205,7 +205,7 @@ export function AiDoctypesList({ module }: { module: string }) {
                          onClick={ () => setTestingModel(false) }/>
                     <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl
                                     outline-none shadow-none bg-(--bg-primary) text-(--text-secondary) w-1/2
-                                    border-2 border-(--border-secondary) hover:border-2 hover:border-(--text-secondary)">
+                                    border border-(--border-secondary) hover:border hover:border-(--text-secondary)">
                         <div className="p-6 flex flex-col gap-2">
                             <h3 className="font-semibold text-(--text-primary)">{ t('AI-DOCTYPES.test_model') }</h3>
                             <p className='text-(--text-secondary)'>{ t('AI-DOCTYPES.test_model_desc') }</p>

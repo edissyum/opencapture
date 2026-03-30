@@ -56,7 +56,7 @@ export function SettingsVerifierAiLLMList() {
     const getActionsLine = () => [
         {
             label: <span className='critical'>{ t('GLOBAL.delete') }</span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }
     ];
@@ -64,7 +64,7 @@ export function SettingsVerifierAiLLMList() {
     const actions: any = [
         {
             label: <span className='critical'>{ t('GLOBAL.delete') }</span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }
     ];

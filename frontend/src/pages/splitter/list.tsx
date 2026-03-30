@@ -100,7 +100,7 @@ export function SplitterListPage() {
     const getActionsLine = () => [
         {
             label: <span className='critical'>{ t('SPLITTER.delete_batch') } </span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }
     ];
@@ -108,7 +108,7 @@ export function SplitterListPage() {
     const actions: any = [
         {
             label: t('SPLITTER.delete_batches'),
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }
     ];
@@ -303,22 +303,24 @@ export function SplitterListPage() {
         setSelectedForm('');
         setSelectedStatus('NEW');
     }
-
+    console.log(displayFilters)
     return (
         <div className='flex h-full w-full overflow-hidden'>
             <div className={ `h-full transition-all border-r-2 border-(--border-secondary) pb-10
                             ${ displayFilters ? "min-w-[350px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
-                <div className='border-b-2 border-(--border-secondary) p-4 flex items-center justify-between'>
-                    <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
+                <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between'>
+                    <h1 className='text-2xl font-bold'>
+                        { t('VERIFIER.filters') }
+                    </h1>
                     <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary)'
                           onClick={ handleResetFilters }>
                         { t('VERIFIER.erase_filters') }
                     </span>
                 </div>
                 <div className='flex flex-col h-full overflow-y-auto'>
-                    <div className={ `p-4 ${ open.batches ? 'bg-(--bg-secondary)' : ''} border-b-2 border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between cursor-pointer"
-                             onClick={ () => setOpen({ ...open, batches: !open.batches }) }>
+                    <div onClick={ () => setOpen({ ...open, batches: !open.batches }) }
+                         className={ `p-4 ${ open.batches ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.batches') }</h3>
@@ -348,9 +350,9 @@ export function SplitterListPage() {
                             </div>
                         ) }
                     </div>
-                    <div className={ `flex flex-col p-4 ${ open.status ? 'bg-(--bg-secondary)' : ''} border-b-2 border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between cursor-pointer"
-                             onClick={ () => setOpen({ ...open, status: !open.status }) }>
+                    <div onClick={ () => setOpen({ ...open, status: !open.status }) }
+                         className={ `flex flex-col p-4 cursor-pointer ${ open.status ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <CircleCheckBig className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.status') }</h3>
@@ -380,9 +382,9 @@ export function SplitterListPage() {
                             </div>
                         ) }
                     </div>
-                    <div className={ `flex flex-col p-4 ${ open.customers ? 'bg-(--bg-secondary)' : ''} border-b-2 border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between cursor-pointer"
-                             onClick={ () => setOpen({ ...open, customers: !open.customers }) }>
+                    <div onClick={ () => setOpen({ ...open, customers: !open.customers }) }
+                         className={ `flex flex-col p-4 cursor-pointer ${ open.customers ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <Briefcase className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('ACCOUNTS.customers_list') }</h3>
@@ -407,9 +409,9 @@ export function SplitterListPage() {
                             </div>
                         ) }
                     </div>
-                    <div className={ `flex flex-col p-4 ${ open.forms ? 'bg-(--bg-secondary)' : ''} border-b-2 border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between cursor-pointer"
-                             onClick={ () => setOpen({ ...open, forms: !open.forms }) }>
+                    <div onClick={ () => setOpen({ ...open, forms: !open.forms }) }
+                         className={ `flex flex-col p-4 cursor-pointer ${ open.forms ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <LayoutTemplate className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.forms') }</h3>
@@ -445,9 +447,8 @@ export function SplitterListPage() {
 
             <div className='p-6 h-full w-full flex flex-col flex-1 z-10'>
                 <div className='flex items-center gap-6 mb-4'>
-                    <Button variant='bg_white_rounded' icon={ <Filter size={ 14 }/> }
-                            onClick={ () => setDisplayFilters(!displayFilters) }
-                            className={ `${ displayFilters ? 'bg-(--color-primary) text-white hover:text-white' : 'bg-(--bg-primary) text-(--text-primary)' }` }>
+                    <Button variant='bg_white_rounded' icon={ <Filter size={ 14 }/> } selected={ displayFilters }
+                            onClick={ () => setDisplayFilters(!displayFilters) }>
                         { t('VERIFIER.filters') }
                     </Button>
                     <span className='flex items-center gap-1'>
@@ -462,12 +463,12 @@ export function SplitterListPage() {
                     <span className='ml-auto text-(--text-secondary) flex cursor-pointer'>
                         <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.list') }
                               onClick={ () => setView('list') }
-                              className={ `${ view == 'list' ? "bg-(--bg-selected) border-(--border-primary)/50" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-l-md dark:bg-(--bg-secondary) border` }>
+                              className={ `${ view == 'list' ? "bg-(--bg-selected) border-(--border-primary)/50 text-(--color-primary)" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-l-md dark:bg-(--bg-secondary) border` }>
                             <Rows3 size={ 20 }/>
                         </span>
                         <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.grid') }
                               onClick={ () => setView('grid') }
-                              className={ `${ view == 'grid' ? "bg-(--bg-selected) border-(--border-primary)/50" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-r-md dark:bg-(--bg-secondary) border` }>
+                              className={ `${ view == 'grid' ? "bg-(--bg-selected) border-(--border-primary)/50 text-(--color-primary)" : "bg-white border-(--border-secondary)" } flex justify-center items-center size-10 rounded-r-md dark:bg-(--bg-secondary) border` }>
                             <LayoutGrid size={ 20 }/>
                         </span>
                     </span>

@@ -42,7 +42,7 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
         },
         {
             label: <span className='critical'>{ t('FORMS.delete') } </span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => {
                 onDeleteLine(line.id)
             }
@@ -78,7 +78,7 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
                     <GripVertical size={ 22 }/>
                 </div>
             ) }
-            <div className={ `group w-full p-2 ${ bg } border-2 rounded-md hover:bg-[#E1EFE8] 
+            <div className={ `group w-full p-2 ${ bg } border rounded-md hover:bg-[#E1EFE8] 
                               dark:hover:bg-(--bg-secondary) hover:border-(--border-primary)/30 
                               transition-colors` }>
                 <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }/>
@@ -87,7 +87,7 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
                         cm.current?.show(e)
                     } }
                     className='cursor-pointer group-hover:opacity-100 opacity-0 transition-opacity -translate-x-1/2
-                               text-(--text-secondary) absolute z-20 -top-5.5 p-0.5 left-1/2 border-2
+                               text-(--text-secondary) absolute z-20 -top-5.5 p-0.5 left-1/2 border
                                border-b-0 border-(--border-primary)/30 rounded-md rounded-b-none bg-[#E1EFE8]
                                dark:bg-(--bg-secondary) before:content-[""] before:absolute before:bottom-0
                                before:translate-y-px'>

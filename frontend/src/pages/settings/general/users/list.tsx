@@ -74,17 +74,17 @@ export function SettingsGeneralUsers() {
     const actions: any = [
         {
             label: t('USERS.enable_users'),
-            icon: <CirclePause className='mr-1' size={ 16 }/>,
+            icon: <CirclePause size={ 16 }/>,
             command: () => handleEnable()
         },
         {
             label: t('USERS.disable_users'),
-            icon: <CirclePause className='mr-1' size={ 16 }/>,
+            icon: <CirclePause size={ 16 }/>,
             command: () => handleDisable()
         },
         {
             label: <span className='critical'>{ t('GLOBAL.delete') }</span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }
     ];
@@ -93,18 +93,18 @@ export function SettingsGeneralUsers() {
         {
             label: t('USERS.enable_users'),
             visible: !row?.enabled,
-            icon: <CirclePause className='mr-1' size={ 16 }/>,
+            icon: <CirclePause size={ 16 }/>,
             command: () => handleEnable()
         },
         {
             label: t('USERS.disable_users'),
-            icon: <CirclePause className='mr-1' size={ 16 }/>,
+            icon: <CirclePause size={ 16 }/>,
             visible: row?.enabled,
             command: () => handleDisable()
         },
         {
             label: <span className='critical'>{ t('USERS.delete_users') }</span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }
     ];

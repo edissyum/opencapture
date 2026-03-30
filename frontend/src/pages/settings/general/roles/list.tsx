@@ -67,17 +67,17 @@ export function SettingsGeneralRoles() {
     const actions: any = [
         {
             label: t('ROLES.enable_roles'),
-            icon: <CirclePause className='mr-1' size={ 16 }/>,
+            icon: <CirclePause size={ 16 }/>,
             command: () => handleEnable()
         },
         {
             label: t('ROLES.disable_roles'),
-            icon: <CirclePause className='mr-1' size={ 16 }/>,
+            icon: <CirclePause size={ 16 }/>,
             command: () => handleDisable()
         },
         {
             label: <span className='critical'>{ t('ROLES.delete_roles') }</span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }
     ];
@@ -86,18 +86,18 @@ export function SettingsGeneralRoles() {
         {
             label: t('ROLES.enable_roles'),
             visible: !row?.enabled,
-            icon: <CirclePause className='mr-1' size={ 16 }/>,
+            icon: <CirclePause size={ 16 }/>,
             command: () => handleEnable()
         },
         {
             label: t('ROLES.disable_roles'),
             visible: row?.enabled,
-            icon: <CirclePause className='mr-1' size={ 16 }/>,
+            icon: <CirclePause size={ 16 }/>,
             command: () => handleDisable()
         },
         {
             label: <span className='critical'>{ t('ROLES.delete_roles') }</span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }
     ];

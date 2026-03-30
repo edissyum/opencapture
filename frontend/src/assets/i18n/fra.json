@@ -74,7 +74,9 @@
         "customer_updated": "Compte client mis à jour avec succès",
         "update_customer": "Mettre à jour le compte client",
         "add_customer": "Ajouter un compte client",
-        "list": "Liste des comptes de tiers"
+        "list": "Liste des comptes de tiers",
+        "edit_customer": "Modifier le compte client",
+        "edit_supplier": "Modifier le compte de tiers"
     },
     "AUTH": {
         "field_required": "est requis",
@@ -605,7 +607,7 @@
         "send_test_email": "Envoyer l'email de test",
         "send_test_infos": "Les informations déjà enregistrées seront utilisées pour envoyer un email de test",
         "sending": "Envoi en cours...",
-        "test_email_error": "Echec de l'envoi",
+        "test_email_error": "Échec de l'envoi",
         "test_email_success": "Envoi réussi",
         "host": "Adresse du serveur",
         "login": "Identifiant",
@@ -1099,7 +1101,9 @@
         "exec_date": "Date d'exécution",
         "event_details": "Détails de l'événement",
         "copy_error_message": "Copier le contenu de l'erreur dans le presse-papier",
-        "error_message_copied": "Message d'erreur copié dans le presse-papier"
+        "error_message_copied": "Message d'erreur copié dans le presse-papier",
+        "list": "Monitoring des processus",
+        "details": "Détails du processus"
     },
     "AI-LLM": {
         "provider": "Fournisseur",

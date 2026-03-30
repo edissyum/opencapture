@@ -458,7 +458,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     return (
         <DndContext onDragEnd={ handleDragEnd } onDragStart={ handleDragStart } collisionDetection={ pointerWithin }>
             <div className="flex h-full">
-                <div className="flex flex-col border-r-2 border-(--border-secondary) w-full">
+                <div className="flex flex-col border-r border-(--border-secondary) w-full">
                     <TabView activeIndex={ mainTabIndex } onTabChange={ (e) => setMainTabIndex(e.index) }>
                         <TabPanel header={ t("SETTINGS.form_details") } className='bg-(--bg-primary) h-full'>
                             { formSettingsLoading ? (

@@ -200,7 +200,7 @@ export function Login() {
                         </div>
                     </div>
                     <div className='flex flex-1 flex-col pr-2'>
-                        <div className="sm:mx-auto w-3/5">
+                        <div className="sm:mx-auto w-3/5 mt-2">
                             <LoginImage className="mx-auto"></LoginImage>
                         </div>
 

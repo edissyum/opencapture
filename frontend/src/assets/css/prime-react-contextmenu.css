@@ -15,6 +15,15 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+.p-contextmenu-root-list > .p-menuitem > .p-menuitem-content > .p-menuitem-link > .p-menuitem-text {
+    @apply mr-10;
+}
+
+.p-contextmenu .p-submenu-list {
+    @apply w-fit;
+    @apply min-w-60;
+}
+
 .p-contextmenu {
     @apply w-auto;
 }
@@ -33,6 +42,7 @@
 
 .p-contextmenu .p-menuitem > .p-menuitem-content .p-menuitem-link {
     @apply px-3;
+    @apply gap-2;
     @apply py-2.5;
 }
 

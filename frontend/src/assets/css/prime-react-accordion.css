@@ -33,7 +33,7 @@
 }
 
 .p-accordion .p-accordion-header .p-accordion-header-link {
-    @apply border-2;
+    @apply border;
     @apply rounded-xl;
     @apply border-(--border-secondary);
     @apply transition-all;
@@ -43,7 +43,7 @@
 }
 
 .p-accordion .p-accordion-content {
-    @apply border-2;
+    @apply border;
     @apply border-t-0;
     @apply rounded-b-xl;
     @apply border-(--border-secondary);
@@ -127,7 +127,7 @@
 }
 
 .p-panel-header {
-    @apply border-2;
+    @apply border;
     @apply rounded-xl;
     @apply rounded-b-none;
     @apply bg-(--bg-primary);
@@ -150,7 +150,7 @@
 
 .p-panel-content {
     @apply p-0;
-    @apply border-2;
+    @apply border;
     @apply border-t-0;
     @apply rounded-b-xl;
     @apply bg-(--bg-primary);

@@ -24,26 +24,31 @@ import { useCustom } from "../services/custom/customContext";
 export default function MainLayout() {
     const location = useLocation();
 
+    const unAllowedLocations = [
+        "/verifier/viewer",
+        "/splitter/viewer"
+    ];
+
     let pathNameWithoutCustom: string = location.pathname.replace(useCustom() || "", "") || "/";
     pathNameWithoutCustom = pathNameWithoutCustom.replace("//", "/");
     if (pathNameWithoutCustom === "/") {
         if (sessionStorage.getItem('accessToken')) {
-            return <Navigate to="/home" replace />;
+            return <Navigate to="/home" replace/>;
         } else {
             if (location.pathname !== "/login") {
-                return <Navigate to="/login" replace />;
+                return <Navigate to="/login" replace/>;
             }
         }
     }
 
     return (
         <div className="flex h-screen w-screen">
-            <Sidebar />
+            <Sidebar/>
             <main className="flex flex-col w-full h-full bg-(--bg-secondary) overflow-hidden">
-                { !location.pathname.includes('verifier/viewer/') && !location.pathname.includes('splitter/viewer/') && (
-                    <TopBar />
-                )}
-                <Outlet />
+                { !unAllowedLocations.includes(location.pathname) && (
+                    <TopBar/>
+                ) }
+                <Outlet/>
             </main>
         </div>
     );

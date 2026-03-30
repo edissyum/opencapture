@@ -47,14 +47,14 @@ export function SettingsGeneralRegex() {
     const actions = [
         {
             label: t('GLOBAL.modify'),
-            icon: <Pencil className='mr-1' size={ 16 }/>,
+            icon: <Pencil size={ 16 }/>,
             command: () => handleUpdate()
         }
     ];
 
     const columns = [
-        { id: 'regex_id', field: 'regex_id', header: t('SMTP.login')},
-        { id: 'label', field: 'label', header: t('GLOBAL.label')},
+        { id: 'regex_id', field: 'regex_id', header: t('SMTP.login') },
+        { id: 'label', field: 'label', header: t('GLOBAL.label'), className: 'min-w-40 w-40' },
         { id: 'content', header: t('SECURITY.value'), field: 'content' }
     ];
 
@@ -103,7 +103,8 @@ export function SettingsGeneralRegex() {
             message: t('REGEX.update_regex_details', { 'name': selectedRegex[0].label }),
             confirmText: t('GLOBAL.modify'),
             cancelText: t('GLOBAL.cancel'),
-            onConfirm: (value) => {const updateValue = async () => {
+            onConfirm: (value) => {
+                const updateValue = async () => {
                     try {
                         selectedRegex[0].content = value;
                         await put('/config/updateRegex/' + selectedRegex[0].id, selectedRegex[0]);

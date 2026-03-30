@@ -113,7 +113,7 @@ export function SettingsVerifierFormsDetails({
             </div>
             <div>
                 <h3 className="text-lg font-semibold text-(--text-primary) mt-6">{ t('SETTINGS.advanced') }</h3>
-                <div className='flex items-center gap-2'>
+                <div className='flex items-center gap-2 mt-4'>
                     <InputSwitch
                         inputId="allow_learning"
                         checked={ formSettings.settings.allow_learning }

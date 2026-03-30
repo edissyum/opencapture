@@ -27,9 +27,9 @@ interface ThemeSelectionProps {
 
 export function ThemeSelection({ onThemeChange }: ThemeSelectionProps) {
     const options = [
-        {id: 'dark', label: t('ONBOARD.dark_mode')},
-        {id: 'system', label: t('ONBOARD.system')},
-        {id: 'light', label: t('ONBOARD.light_mode')}
+        { id: 'dark', label: t('ONBOARD.dark_mode') },
+        { id: 'system', label: t('ONBOARD.system') },
+        { id: 'light', label: t('ONBOARD.light_mode') }
     ];
 
     const [selectedTheme, setTheme] = useState<string>(() => {
@@ -49,7 +49,8 @@ export function ThemeSelection({ onThemeChange }: ThemeSelectionProps) {
             { options.map((theme) => (
                 <div key={ theme['id'] }>
                     <div
-                        className={ `relative w-48 h-26 border-2 flex items-center bg-(--bg-primary) text-(--text-primary) rounded-lg cursor-pointer hover:opacity-80 p-8 justify-center transition-opacity
+                        className={ `relative w-48 h-26 border flex items-center bg-(--bg-primary) text-(--text-primary)
+                                     rounded-lg cursor-pointer hover:opacity-80 p-8 justify-center transition-opacity
                             ${ theme['id'] === 'light' ? 'bg-white' : 'dark bg-(--bg-primary)' } 
                             ${ selectedTheme === theme['id'] ? 'border-(--border-primary)' : 'border-(--border-secondary)' }` }
                         onClick={ () => setTheme(theme['id']) }>
@@ -64,7 +65,7 @@ export function ThemeSelection({ onThemeChange }: ThemeSelectionProps) {
                         {
                             theme['id'] === 'system' &&
                             <div className="absolute inset-0 bg-white box-border rounded-md"
-                                 style={ {clipPath: 'inset(0 0 0 50%)'} }>
+                                 style={ { clipPath: 'inset(0 0 0 50%)' } }>
                                 <div
                                     className="absolute rounded-lg top-2.5 w-[110px] h-20 left-9 bg-gray-200"></div>
                                 <div className="absolute rounded-lg top-2.5 w-8 h-7 left-38 bg-gray-200"></div>
@@ -72,8 +73,9 @@ export function ThemeSelection({ onThemeChange }: ThemeSelectionProps) {
                         }
                     </div>
                     <div
-                        className={ `flex flex-col justify-center items-center ${ selectedTheme === theme['id'] ? 'text-(--color-primary)' : '' }` }>
-                        <h2>
+                        className={ `flex flex-col justify-center items-center
+                                     ${ selectedTheme === theme['id'] ? 'text-(--color-primary)' : '' }` }>
+                        <h2 className='text-lg! mt-1'>
                             { theme['label'] }
                         </h2>
                     </div>

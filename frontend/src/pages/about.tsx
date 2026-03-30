@@ -70,26 +70,25 @@ export function AboutPage() {
     }, []);
 
     const classes = 'flex items-center px-6 py-3';
-    const classesWithBorder = `${ classes } border-b-2 border-(--border-secondary)`;
+    const classesWithBorder = `${ classes } border-b border-(--border-secondary)`;
 
     if (loading) return <Loader/>;
 
     return (
-        <div className="p-8 w-full h-full flex justify-center overflow-scroll">
+        <div className="p-6 w-full h-full flex justify-center overflow-scroll bg-(--bg-secondary)">
             <div className='w-1/2 flex flex-col items-center gap-4'>
                 <div className='w-full flex flex-col gap-4 pb-4 items-center'>
-                    <div>
+                    <>
                         <div
-                            className='bg-(--bg-primary) border-2 border-(--border-secondary) rounded-2xl pt-6 pb-4 px-8'>
+                            className='bg-(--bg-primary) border border-(--border-secondary) rounded-2xl pt-6 pb-4 px-8'>
                             <img src={ logo } className='w-full' alt="Open-Capture Logo"/>
                         </div>
                         <div className='mt-2 mb-4 text-(--text-secondary)'>
                             Logiciel libre de capture et gestion documentaire
                         </div>
                         <div className='flex items-center gap-4'>
-                            <div className='bg-(--bg-primary) border-2 border-(--border-secondary) rounded-lg p-2 py-1
-                                            flex items-center gap-2 w-fit'
-                            >
+                            <div className='bg-(--bg-primary) border border-(--border-secondary) rounded-lg p-2 py-1
+                                            flex items-center gap-2 w-fit'>
                                 <Tag size={ 18 }/>
                                 { packageJson.version }
                             </div>
@@ -100,11 +99,11 @@ export function AboutPage() {
                                 <ArrowRight size={ 20 }/>
                             </a>
                         </div>
-                    </div>
+                    </>
                     <div className='w-full'>
                         { lastVersion === 'error' && (
                             <div
-                                className="bg-(--text-error)/10 border-(--text-error) border-2 rounded-lg p-4 flex items-center">
+                                className="bg-(--text-error)/10 border-(--text-error) border rounded-lg p-4 flex items-center">
                                 <div className='bg-(--text-error) p-2 rounded-lg'>
                                     <CircleAlert className="text-white" size={ 24 }/>
                                 </div>
@@ -115,7 +114,7 @@ export function AboutPage() {
                         ) }
                         { lastVersion > packageJson.version && (
                             <div
-                                className="bg-(--color-primary)/10 border-(--border-primary)/10 border-2 rounded-lg p-4 flex items-center">
+                                className="bg-(--color-primary)/10 border-(--border-primary)/10 border rounded-lg p-4 flex items-center">
                                 <div className='bg-(--color-primary) p-2 rounded-lg'>
                                     <CircleAlert className="text-white" size={ 24 }/>
                                 </div>
@@ -317,9 +316,9 @@ export function AboutPage() {
                             <div className={ `${ classes } py-0! px-0! grid grid-cols-2` }>
                                 { Object.keys(frontendPackages).map((key: any, index: any) => (
                                     <div key={ index }
-                                         className={ `w-full border-b-2 border-(--border-secondary) 
+                                         className={ `w-full border-b border-(--border-secondary) 
                                                       flex justify-between py-3 px-4 
-                                                      ${ index % 2 === 0 ? 'border-r-2' : '' }
+                                                      ${ index % 2 === 0 ? 'border-r' : '' }
                                                       ${ index >= Object.keys(frontendPackages).length - 2 ? 'border-b-0!' : '' }`
                                          }>
                                         <div className='font-semibold flex items-center gap-2'>
@@ -343,9 +342,9 @@ export function AboutPage() {
                             <div className={ `${ classes } py-0! px-0! grid grid-cols-2` }>
                                 { Object.keys(backendPackages).map((key: any, index: any) => (
                                     <div key={ index }
-                                         className={ `w-full border-b-2 border-(--border-secondary) 
+                                         className={ `w-full border-b border-(--border-secondary) 
                                                       flex justify-between py-3 px-4 
-                                                      ${ index % 2 === 0 ? 'border-r-2' : '' }
+                                                      ${ index % 2 === 0 ? 'border-r' : '' }
                                                       ${ index === Object.keys(backendPackages).length - 1 ? 'border-b-0!' : '' }`
                                          }>
                                         <div className='font-semibold flex items-center gap-2'>

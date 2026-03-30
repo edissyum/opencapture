@@ -56,13 +56,13 @@ export function SuppliersList() {
     const actions: any = [
         {
             label: t('ACCOUNTS.reinit_positions', { 'count': selectedSuppliers.length }),
-            icon: <CirclePause className='mr-1' size={ 16 }/>,
+            icon: <CirclePause size={ 16 }/>,
             command: () => handleReinitPositions()
         },
         {
             label: <span
                 className='critical'>{ t('ACCOUNTS.delete_supplier', { 'count': selectedSuppliers.length }) }</span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }
     ];
@@ -70,13 +70,13 @@ export function SuppliersList() {
     const getActionsLine = (row: any) => [
         {
             label: t('ACCOUNTS.reinit_positions'),
-            icon: <CirclePause className='mr-1' size={ 16 }/>,
+            icon: <CirclePause size={ 16 }/>,
             visible: row?.enabled,
             command: () => handleReinitPositions()
         },
         {
             label: <span className='critical'>{ t('GLOBAL.delete') }</span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }
     ];

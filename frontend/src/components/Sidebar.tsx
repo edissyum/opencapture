@@ -86,7 +86,7 @@ export default function Sidebar() {
 
     return (
         <aside
-            className={ `min-h-screen px-3 py-2 flex flex-col border-r-2 border-r-(--border-secondary) shrink-0 transition-all ${ collapsed ? "w-18" : "w-65" }` }>
+            className={ `min-h-screen px-3 py-2 flex flex-col border-r border-r-(--border-secondary) shrink-0 transition-all ${ collapsed ? "w-18" : "w-65" }` }>
             <div
                 className={ `flex items-center max-w-10/12 min-h-18 max-h-30 gap-3 mb-3 ${ collapsed ? "p-2" : "p-4" }` }>
                 { !collapsed && (
@@ -99,7 +99,7 @@ export default function Sidebar() {
             </div>
 
             <nav className={ `${ collapsed ? 'items-center' : '' } flex flex-col gap-1.5` }>
-                <Link to="/home" className={ `border-2 ${ standardClasses } ${
+                <Link to="/home" className={ `border ${ standardClasses } ${
                     ['/home', '/upload'].some((path) => location.pathname.includes(path)) ? activeClasses : ""
                 }` }>
                     <House size={ 20 } { ...(collapsed && {
@@ -110,7 +110,7 @@ export default function Sidebar() {
                 </Link>
 
                 <Link to="/settings"
-                      className={ `border-2 ${ standardClasses } ${ location.pathname.includes("/settings") ? activeClasses : "" }` }>
+                      className={ `border ${ standardClasses } ${ location.pathname.includes("/settings") ? activeClasses : "" }` }>
                     <Settings size={ 20 } { ...(collapsed && {
                         "data-tooltip-id": "tooltip",
                         "data-tooltip-content": t('GLOBAL.settings'),
@@ -119,7 +119,7 @@ export default function Sidebar() {
                 </Link>
 
                 <Link to="/history"
-                      className={ `border-2 ${ standardClasses } ${ location.pathname.includes("/history") ? activeClasses : "" }` }>
+                      className={ `border ${ standardClasses } ${ location.pathname.includes("/history") ? activeClasses : "" }` }>
                     <Clock4 size={ 20 } { ...(collapsed && {
                         "data-tooltip-id": "tooltip",
                         "data-tooltip-content": t('GLOBAL.history'),
@@ -128,7 +128,7 @@ export default function Sidebar() {
                 </Link>
 
                 <Link to="/statistics"
-                      className={ `border-2 ${ standardClasses } ${ location.pathname.includes("/statistics") ? activeClasses : "" }` }>
+                      className={ `border ${ standardClasses } ${ location.pathname.includes("/statistics") ? activeClasses : "" }` }>
                     <ChartNoAxesColumn size={ 20 } { ...(collapsed && {
                         "data-tooltip-id": "tooltip",
                         "data-tooltip-content": t('GLOBAL.statistics'),
@@ -137,7 +137,7 @@ export default function Sidebar() {
                 </Link>
 
                 <Link to="/monitoring"
-                      className={ `border-2 ${ standardClasses } ${ location.pathname.includes("/monitoring") ? activeClasses : "" }` }>
+                      className={ `border ${ standardClasses } ${ location.pathname.includes("/monitoring") ? activeClasses : "" }` }>
                     <Activity size={ 20 } { ...(collapsed && {
                         "data-tooltip-id": "tooltip",
                         "data-tooltip-content": t('GLOBAL.monitoring'),
@@ -146,7 +146,7 @@ export default function Sidebar() {
                 </Link>
 
                 <Link to="/suppliers"
-                      className={ `border-2 ${ standardClasses } ${ location.pathname.includes("/suppliers") ? activeClasses : "" }` }>
+                      className={ `border ${ standardClasses } ${ location.pathname.includes("/suppliers") ? activeClasses : "" }` }>
                     <Building2 size={ 20 } { ...(collapsed && {
                         "data-tooltip-id": "tooltip",
                         "data-tooltip-content": t('ACCOUNTS.suppliers_list'),
@@ -155,7 +155,7 @@ export default function Sidebar() {
                 </Link>
 
                 <Link to="/customers"
-                      className={ `border-2 ${ standardClasses } ${ location.pathname.includes("/customers") ? activeClasses : "" }` }>
+                      className={ `border ${ standardClasses } ${ location.pathname.includes("/customers") ? activeClasses : "" }` }>
                     <Briefcase size={ 20 } { ...(collapsed && {
                         "data-tooltip-id": "tooltip",
                         "data-tooltip-content": t('ACCOUNTS.customers_list'),
@@ -164,7 +164,7 @@ export default function Sidebar() {
                 </Link>
 
                 <Link to="/about"
-                      className={ `border-2 ${ standardClasses } ${ location.pathname.includes("/about") ? activeClasses : "" }` }>
+                      className={ `border ${ standardClasses } ${ location.pathname.includes("/about") ? activeClasses : "" }` }>
                     <Info size={ 20 } { ...(collapsed && {
                         "data-tooltip-id": "tooltip",
                         "data-tooltip-content": t('SETTINGS.abouts_us'),

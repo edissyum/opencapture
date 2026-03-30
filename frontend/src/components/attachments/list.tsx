@@ -165,12 +165,12 @@ export function AttachmentsList({
     const menuItems: any = [
         {
             label: t('ATTACHMENTS.download'),
-            icon: <Download className='mr-1' size={ 16 }/>,
+            icon: <Download size={ 16 }/>,
             command: () => handleDownload()
         },
         {
             label: <span className='critical'>{ t('GLOBAL.delete') }</span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }
     ];

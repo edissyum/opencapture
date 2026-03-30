@@ -164,7 +164,7 @@ export function UploadPage() {
 
     return (
         <div className='flex h-full w-full overflow-hidden'>
-            <div className='pb-20 h-full w-[350px] shrink-0 border-r-2 border-(--border-secondary) bg-(--bg-primary)'>
+            <div className='pb-20 h-full w-[350px] shrink-0 border-r border-(--border-secondary) bg-(--bg-primary)'>
                 <h1 className='px-6 pt-6 text-xl font-bold mb-4 truncate flex items-center gap-2'>
                     <Wrench size={ 20 } className='text-(--color-primary)'/>
                     { t('UPLOAD.select_workflows') }
@@ -178,9 +178,9 @@ export function UploadPage() {
                     { workflows.map((workflow) => (
                         <div key={ workflow.id }
                              onClick={ () => setSelectedWorkflow(workflow.workflow_id) }
-                             className={ `cursor-pointer flex items-center gap-1 border-2 border-(--border-secondary) 
+                             className={ `cursor-pointer flex items-center gap-1 border border-(--border-secondary) 
                                           rounded-md p-2 hover:border-(--border-primary)
-                                          ${ selectedWorkflow === workflow.workflow_id ? 'text-(--color-primary) border-(--border-primary) font-semibold bg-(--bg-selected)' : '' }` }>
+                                          ${ selectedWorkflow === workflow.workflow_id ? 'text-(--color-primary) border-(--color-primary) font-semibold bg-(--bg-selected)' : '' }` }>
                             { selectedWorkflow === workflow.workflow_id && (
                                 <Check size={ 18 } className='shrink-0'/>
                             ) }
@@ -189,13 +189,15 @@ export function UploadPage() {
                     )) }
                 </div>
             </div>
-            <div className='p-8 w-full flex flex-col h-full'>
-                <h1 className='text-lg font-bold mb-2'>
-                    { t('UPLOAD.upload') }
-                </h1>
-                <p className='mb-4 text-(--text-secondary)'>
-                    { t('UPLOAD.upload_hint') }
-                </p>
+            <div className='p-6 w-full flex flex-col h-full overflow-auto gap-4'>
+                <div>
+                    <h1 className='text-lg font-bold'>
+                        { t('UPLOAD.upload') }
+                    </h1>
+                    <p className='text-(--text-secondary)'>
+                        { t('UPLOAD.upload_hint') }
+                    </p>
+                </div>
                 <UploadDropzone
                     accept={ {
                         "application/*": [".pdf"],

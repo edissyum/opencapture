@@ -20,7 +20,6 @@ import { useState } from "react";
 import { ChevronsUpDown, CloudUpload, Package } from "lucide-react";
 
 import { Button } from "./Button";
-import { useLocation } from "react-router-dom";
 
 
 export default function TopBar() {
@@ -36,9 +35,6 @@ export default function TopBar() {
             img: '/src/assets/imgs/Open-Capture_Splitter.svg'
         }
     ];
-
-    const location = useLocation();
-    const isDisabled = location.pathname !== '/home' && location.pathname !== '/upload';
 
     const [selected, setSelected] = useState<string | null>(null);
     const [img, setImg] = useState<string | null>(null);
@@ -60,18 +56,16 @@ export default function TopBar() {
 
     return (
         <header
-            className="w-full h-20 flex shrink-0 items-center justify-between px-6 bg-(--bg-primary) border-b-2 border-(--border-secondary)">
+            className="w-full h-20 flex shrink-0 items-center justify-between px-6 bg-(--bg-primary) border-b border-(--border-secondary)">
             <div className="flex items-center gap-4">
                 <div className="relative inline-block w-64">
                     <select
                         value={ selected || '' } style={ { backgroundImage: `url('${ img }')` } }
-                        disabled={ isDisabled }
                         onChange={ (e) => {
                             handleSelect(e.target.value)
                         } }
-                        className={ `w-full bg-size-[35px] bg-no-repeat bg-position-[8px] pl-[60px]
-                            rounded-lg py-2.5 border-2 border-(--border-secondary) appearance-none
-                            ${ isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' }` }
+                        className='w-full bg-size-[35px] bg-no-repeat bg-position-[8px] pl-[60px]
+                            rounded-lg py-2.5 border border-(--border-secondary) appearance-none cursor-pointer'
                     >
                         { options.map((option) => (
                             <option key={ option['id'] } value={ option['id'] }
@@ -80,8 +74,7 @@ export default function TopBar() {
                             </option>
                         )) }
                     </select>
-                    <span className={ `pointer-events-none absolute right-4 top-1/2 -translate-y-1/2
-                                    ${ isDisabled ? 'opacity-50' : '' }` }>
+                    <span className='pointer-events-none absolute right-4 top-1/2 -translate-y-1/2'>
                         { <ChevronsUpDown size={ 20 }/> }
                     </span>
                 </div>

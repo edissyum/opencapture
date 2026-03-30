@@ -24,6 +24,7 @@
 .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
     @apply text-(--color-primary)!;
     @apply border-(--color-primary)!;
+    @apply border-b-2!;
 }
 
 .p-tabview {
@@ -44,8 +45,16 @@
 
 .p-tabview .p-tabview-nav,
 .p-tabview .p-tabview-nav li .p-tabview-nav-link {
+    @apply border-b!;
     @apply border-(--border-secondary);
 }
+
+.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+    @apply m-0;
+    @apply border-0!;
+}
+
+
 
 .available_fields .p-tabview-panels {
     @apply bg-(--bg-primary)!;
@@ -55,7 +64,7 @@
 .p-tabview .p-tabview-nav-btn.p-link {
     @apply w-8;
     @apply shadow-none;
-    @apply border-b-2;
+    @apply border-b;
     @apply text-(--color-primary);
     @apply border-(--border-secondary);
 }
@@ -65,7 +74,7 @@
 }
 
 .p-tabview-nav-next {
-    @apply border-l-2;
+    @apply border-l;
 }
 
 .p-tabview-scrollable .p-tabview-nav-container {

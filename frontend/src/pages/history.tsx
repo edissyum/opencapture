@@ -154,20 +154,20 @@ export function HistoryList() {
     }
 
     return (
-        <div className='flex h-full w-full overflow-hidden'>
+        <div className='flex h-full bg-(--bg-secondary) w-full overflow-hidden'>
             <div className={ `h-full transition-all border-r-2 border-(--border-secondary)
                             ${ displayFilters ? "w-[300px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
-                <div className='border-b-2 border-(--border-secondary) p-4 flex items-center justify-between'>
+                <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between'>
                     <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
                     <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary)'
                           onClick={ handleResetFilters }>
                         { t('VERIFIER.erase_filters') }
                     </span>
                 </div>
-                <div className='p-4 flex flex-col gap-6 h-full overflow-y-auto'>
-                    <div className='flex flex-col'>
-                        <div className="flex items-center justify-between cursor-pointer mb-2"
-                             onClick={ () => setOpen({ ...open, user: !open.user }) }>
+                <div className='flex flex-col h-full overflow-y-auto'>
+                    <div onClick={ () => setOpen({ ...open, user: !open.user }) }
+                         className={ `flex flex-col p-4 cursor-pointer ${ open.user ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('HISTORY.user') }</h3>
@@ -194,9 +194,9 @@ export function HistoryList() {
                             </div>
                         ) }
                     </div>
-                    <div className='flex flex-col'>
-                        <div className="flex items-center justify-between cursor-pointer mb-2"
-                             onClick={ () => setOpen({ ...open, module: !open.module }) }>
+                    <div onClick={ () => setOpen({ ...open, module: !open.module }) }
+                         className={ `flex flex-col cursor-pointer p-4 ${ open.module ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('MAILCOLLECT.module') }</h3>
@@ -226,9 +226,9 @@ export function HistoryList() {
                             </div>
                         ) }
                     </div>
-                    <div className='flex flex-col'>
-                        <div className="flex items-center justify-between cursor-pointer mb-2"
-                             onClick={ () => setOpen({ ...open, submodule: !open.submodule }) }>
+                    <div onClick={ () => setOpen({ ...open, submodule: !open.submodule }) }
+                         className={ `flex flex-col cursor-pointer p-4 ${ open.submodule ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('HISTORY.submodule') }</h3>
@@ -258,11 +258,10 @@ export function HistoryList() {
                 </div>
             </div>
 
-            <div className='p-8 h-full w-full flex flex-col flex-1 z-10'>
+            <div className='p-6 h-full w-full flex flex-col flex-1 z-10'>
                 <div className='flex items-center gap-6 mb-4'>
                     <Button variant='bg_white_rounded' icon={ <Filter size={ 14 }/> }
-                            onClick={ () => setDisplayFilters(!displayFilters) }
-                            className={ `${ displayFilters ? 'bg-(--color-primary) text-white hover:text-white' : 'bg-(--bg-primary) text-(--text-primary)' }` }>
+                            onClick={ () => setDisplayFilters(!displayFilters) } selected={ displayFilters }>
                         { t('VERIFIER.filters') }
                     </Button>
                     <span className='flex items-center gap-1'>

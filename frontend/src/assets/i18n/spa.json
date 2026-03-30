@@ -74,7 +74,9 @@
         "customer_updated": "Cuenta de cliente actualizada correctamente",
         "update_customer": "Actualizar cuenta de cliente",
         "add_customer": "Agregar una cuenta de cliente",
-        "list": "Lista de cuentas de terceros"
+        "list": "Lista de cuentas de terceros",
+        "edit_customer": "",
+        "edit_supplier": ""
     },
     "AUTH": {
         "field_required": "es obligatorio",
@@ -1099,7 +1101,9 @@
         "exec_date": "",
         "event_details": "",
         "copy_error_message": "",
-        "error_message_copied": ""
+        "error_message_copied": "",
+        "list": "",
+        "details": ""
     },
     "AI-LLM": {
         "provider": "Proveedor",

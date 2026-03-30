@@ -194,7 +194,7 @@ export function OutputEditor({ module }: { module: string }) {
             </div>
 
             { stepperIndex === 1 && (
-                <div className="w-[25rem] h-full flex flex-col border-l-2 border-(--border-secondary)">
+                <div className="w-[25rem] h-full flex flex-col border-l border-(--border-secondary)">
                     <TabView scrollable className="available_fields">
                         <TabPanel header={ t("VERIFIER.system_fields") }>
                             <div className="p-6 flex flex-col gap-2">

@@ -476,18 +476,16 @@ export function SupplierEditor({
     }
 
     return (
-        <div className="p-8 bg-(--bg-primary) h-full overflow-y-auto">
-            <div className='flex items-center gap-1 text-(--text-secondary) cursor-pointer mb-6 w-fit'
-                 onClick={ () => {
-                     if (onClose) {
+        <div className="p-6 bg-(--bg-primary) h-full overflow-y-auto flex flex-col gap-4">
+            { onClose && (
+                <div className='flex items-center gap-1 text-(--text-secondary) cursor-pointer w-fit'
+                     onClick={ () => {
                          onClose();
-                     } else {
-                         navigate('/suppliers');
-                     }
-                 } }>
-                <ArrowLeft/>
-                { onClose ? t('VERIFIER.back_to_form') : t('ACCOUNTS.list') }
-            </div>
+                     } }>
+                    <ArrowLeft/>
+                    { t('VERIFIER.back_to_form') }
+                </div>
+            ) }
             <DynamicForm grid={ 2 } errors={ errors } control={ control } schema={ supplierBooleansSchema }/>
             <Accordion multiple activeIndex={ 0 }>
                 <AccordionTab header={ t("ACCOUNTS.supplier_information") }>
@@ -502,7 +500,7 @@ export function SupplierEditor({
                 </AccordionTab>
             </Accordion>
 
-            <div className="mt-6 w-fit">
+            <div className="w-fit">
                 { supplierId ? (
                     <Button onClick={ handleSubmit(onSubmit) }
                             disabled={ loading || Object.keys(errors).length > 0 }>

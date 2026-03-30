@@ -74,23 +74,23 @@ export function FormsList({ module }: { module: string }) {
         {
             label: t('FORMS.enable_forms'),
             visible: !row?.enabled,
-            icon: <CirclePause className='mr-1' size={ 16 }/>,
+            icon: <CirclePause size={ 16 }/>,
             command: () => handleEnable()
         },
         {
             label: t('FORMS.disable_forms'),
             visible: row?.enabled,
-            icon: <CirclePause className='mr-1' size={ 16 }/>,
+            icon: <CirclePause size={ 16 }/>,
             command: () => handleDisable()
         },
         {
             label: t('FORMS.duplicate_forms'),
-            icon: <Copy className='mr-1' size={ 16 }/>,
+            icon: <Copy size={ 16 }/>,
             command: () => handleDuplicate()
         },
         {
             label: <span className='critical'>{ t('FORMS.delete_forms') }</span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }
     ];
@@ -98,17 +98,17 @@ export function FormsList({ module }: { module: string }) {
     const actions: any = [
         {
             label: t('FORMS.enable_forms'),
-            icon: <CirclePause className='mr-1' size={ 16 }/>,
+            icon: <CirclePause size={ 16 }/>,
             command: () => handleEnable()
         },
         {
             label: t('FORMS.disable_forms'),
-            icon: <CirclePause className='mr-1' size={ 16 }/>,
+            icon: <CirclePause size={ 16 }/>,
             command: () => handleDisable()
         },
         {
             label: <span className='critical'>{ t('GLOBAL.delete') }</span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }
     ];

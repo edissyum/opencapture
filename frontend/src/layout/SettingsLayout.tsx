@@ -17,7 +17,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 
 import Sidebar from "../components/Sidebar";
-import TopBarSettings from "../components/settings/TopBar";
+import BreadCrumbTopbar from "../components/settings/TopBar";
 
 import { useCustom } from "../services/custom/customContext";
 
@@ -38,7 +38,7 @@ export default function SettingsLayout() {
         <div className="flex h-screen">
             <Sidebar />
             <div className='flex flex-col w-full h-full'>
-                <TopBarSettings />
+                <BreadCrumbTopbar />
                 <span className='overflow-y-auto h-full'>
                     <Outlet />
                 </span>

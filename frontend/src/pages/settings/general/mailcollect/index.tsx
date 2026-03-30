@@ -264,19 +264,24 @@ export function SettingsGeneralMailcollect() {
 
     return (
         <div className="p-6 bg-(--bg-secondary) h-full overflow-y-scroll">
-            <div className="flex justify-end mb-4">
-                <Button size='sm' variant="bg_white" onClick={ handleAddProcess } className="p-2 px-3">
-                    <Plus size={ 16 } className="mr-2"/>
-                    { t("MAILCOLLECT.add_process") }
-                </Button>
-            </div>
+
+            { processList.length !== 0 && (
+                <div className="flex justify-end mb-4">
+                    <Button size='sm' variant="bg_white" onClick={ handleAddProcess } className="p-2 px-3">
+                        <Plus size={ 16 } className="mr-2"/>
+                        { t("MAILCOLLECT.add_process") }
+                    </Button>
+                </div>
+            ) }
 
             { processList.length === 0 ? (
-                <div className="w-1/3">
-                    <Inbox className="mb-4"/>
-                    <h1 className="mb-2 font-semibold text-lg">{ t("MAILCOLLECT.no_process") }</h1>
+                <div className="w-1/3 flex flex-col gap-4 ">
+                    <div className='p-2 bg-(--bg-primary) rounded-md w-fit'>
+                        <Inbox/>
+                    </div>
+                    <h1 className="font-semibold text-lg">{ t("MAILCOLLECT.no_process") }</h1>
                     <p className="text-(--text-secondary)">{ t("MAILCOLLECT.no_process_info") }</p>
-                    <Button className="mt-4" onClick={ handleAddProcess }>
+                    <Button onClick={ handleAddProcess }>
                         { t("MAILCOLLECT.add_process") }
                     </Button>
                 </div>

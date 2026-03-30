@@ -89,46 +89,16 @@ export const router = createBrowserRouter(
             loader: protectedLoader,
             errorElement: <LoginRequiredError/>
         },
-        {
+        { // Route with settings Topbar
             path: "/",
-            element: <MainLayout/>,
+            element: <SettingsLayout/>,
             children: [
-                {
-                    path: "home",
-                    element: <HomePage/>,
-                    loader: protectedLoader,
-                    errorElement: <LoginRequiredError/>
-                },
                 {
                     path: "about",
                     element: <AboutPage/>,
                     loader: protectedLoader,
-                    errorElement: <LoginRequiredError/>
-                },
-                {
-                    path: "statistics",
-                    element: <StatisticsPage/>,
-                    loader: protectedLoader,
-                    errorElement: <LoginRequiredError/>
-                },
-                {
-                    path: "monitoring",
-                    loader: protectedLoader,
                     errorElement: <LoginRequiredError/>,
-                    children: [
-                        {
-                            index: true,
-                            loader: protectedLoader,
-                            element: <MonitoringList/>,
-                            errorElement: <LoginRequiredError/>
-                        },
-                        {
-                            path: ':processId',
-                            loader: protectedLoader,
-                            element: <MonitoringDetails/>,
-                            errorElement: <LoginRequiredError/>,
-                        },
-                    ]
+                    handle: { breadcrumb: 'SETTINGS.abouts_us' }
                 },
                 {
                     path: "history",
@@ -139,6 +109,7 @@ export const router = createBrowserRouter(
                             index: true,
                             loader: protectedLoader,
                             element: <HistoryList/>,
+                            handle: { breadcrumb: 'GLOBAL.history' },
                             errorElement: <LoginRequiredError/>
                         }
                     ]
@@ -160,12 +131,14 @@ export const router = createBrowserRouter(
                             loader: protectedLoader,
                             element: <SupplierEditor/>,
                             errorElement: <LoginRequiredError/>,
+                            handle: { breadcrumb: 'ACCOUNTS.edit_supplier' }
                         },
                         {
                             path: 'create',
                             loader: protectedLoader,
                             element: <SupplierEditor/>,
                             errorElement: <LoginRequiredError/>,
+                            handle: { breadcrumb: 'ACCOUNTS.add_supplier' }
                         }
                     ]
                 },
@@ -186,14 +159,56 @@ export const router = createBrowserRouter(
                             loader: protectedLoader,
                             element: <CustomerEditor/>,
                             errorElement: <LoginRequiredError/>,
+                            handle: { breadcrumb: 'ACCOUNTS.edit_customer' }
                         },
                         {
                             path: 'create',
                             loader: protectedLoader,
                             element: <CustomerEditor/>,
                             errorElement: <LoginRequiredError/>,
+                            handle: { breadcrumb: 'ACCOUNTS.add_customer' }
                         }
                     ]
+                },
+                {
+                    path: "statistics",
+                    element: <StatisticsPage/>,
+                    loader: protectedLoader,
+                    errorElement: <LoginRequiredError/>,
+                    handle: { breadcrumb: 'GLOBAL.statistics' }
+                },
+                {
+                    path: "monitoring",
+                    loader: protectedLoader,
+                    handle: { breadcrumb: 'MONITORING.list' },
+                    errorElement: <LoginRequiredError/>,
+                    children: [
+                        {
+                            index: true,
+                            loader: protectedLoader,
+                            element: <MonitoringList/>,
+                            errorElement: <LoginRequiredError/>,
+                        },
+                        {
+                            path: ':processId',
+                            loader: protectedLoader,
+                            element: <MonitoringDetails/>,
+                            errorElement: <LoginRequiredError/>,
+                            handle: { breadcrumb: 'MONITORING.details' },
+                        },
+                    ]
+                }
+            ]
+        },
+        {
+            path: "/",
+            element: <MainLayout/>,
+            children: [
+                {
+                    path: "home",
+                    element: <HomePage/>,
+                    loader: protectedLoader,
+                    errorElement: <LoginRequiredError/>
                 },
                 {
                     path: "verifier/viewer/:documentId",

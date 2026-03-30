@@ -1023,7 +1023,7 @@ export function VerifierViewerPage() {
                         </Button>
                     </div>
                     <div className='bg-(--bg-secondary) px-8 pb-24 h-full flex flex-col'>
-                        <div className="border-2 border-(--border-secondary) rounded-xl h-full overflow-auto">
+                        <div className="border border-(--border-secondary) rounded-xl h-full overflow-auto">
                             { !pagesImageB64[currentPage] ? (
                                 <div className='w-full h-full flex flex-col items-center justify-center'>
                                 <span className='text-(--text-secondary)'>
@@ -1113,7 +1113,7 @@ export function VerifierViewerPage() {
 
             ) }
 
-            <div className='w-1/2 bg-(--bg-primary) p-8 h-full border-l-2 border-(--border-secondary) overflow-auto'>
+            <div className='w-1/2 bg-(--bg-primary) p-8 h-full border-l border-(--border-secondary) overflow-auto'>
                 { documentDataLoading || formFields.length === 0 ? (
                     <Loader/>
                 ) : (

@@ -77,7 +77,7 @@ export const DraggablePage = React.memo(function DraggablePage({
             ref={ setNodeRef }
             onClick={ () => !disabled && onSelectionChange?.(page, !isSelected) }
             style={ isDragOverlay ? {} : style }
-            className={ `DraggablePage group flex items-center gap-2 rounded-lg border-2 border-(--border-secondary)
+            className={ `DraggablePage group flex items-center gap-2 rounded-lg border border-(--border-secondary)
                 transition-colors bg-(--bg-secondary) cursor-default select-none h-full
                 hover:bg-(--bg-selected) hover:cursor-pointer min-w-64
                 ${ isSelected && 'bg-(--bg-selected) border-(--border-primary)' }` }

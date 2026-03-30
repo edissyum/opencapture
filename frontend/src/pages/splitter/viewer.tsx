@@ -181,18 +181,18 @@ export function SplitterViewerPage() {
     const menuItems: any = [
         {
             label: t('SPLITTER.principal_document'),
-            icon: <FileBadge className='mr-1' size={ 16 }/>,
+            icon: <FileBadge size={ 16 }/>,
             disabled: documents.length <= 1,
             command: () => handleDocumentPrincipal()
         },
         {
             label: t('SPLITTER.type_document'),
-            icon: <FolderTree className='mr-1' size={ 16 }/>,
+            icon: <FolderTree size={ 16 }/>,
             command: () => setShowDoctypeSelection(true)
         },
         {
             label: <span className='critical'>{ t('SPLITTER.delete_document') }</span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDeleteDocument()
         }
     ];
@@ -200,12 +200,12 @@ export function SplitterViewerPage() {
     const pageMenuItems = [
         {
             label: t('SPLITTER.rotation'),
-            icon: <RotateCw className='mr-1' size={ 16 }/>,
+            icon: <RotateCw size={ 16 }/>,
             command: () => handleRotation()
         },
         {
             label: t('SPLITTER.delete_page'),
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDeletePage()
         }
     ];

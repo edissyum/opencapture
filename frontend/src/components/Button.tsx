@@ -19,14 +19,15 @@ import React from "react";
 import { LoaderCircle } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
-type ButtonVariant = "primary" | "secondary" | "danger" | "no_bg" | "no_bg_border" | "bg_white_rounded" | "bg_white";
 type ButtonSize = "sm" | "md" | "lg";
+type ButtonVariant = "primary" | "secondary" | "danger" | "no_bg" | "no_bg_border" | "bg_white_rounded" | "bg_white";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     to?: string;
     exact?: boolean;
     size?: ButtonSize;
     loading?: boolean;
+    selected?: boolean;
     icon?: React.ReactNode;
     variant?: ButtonVariant;
 }
@@ -36,6 +37,7 @@ export function Button({
     icon,
     disabled,
     children,
+    selected,
     className,
     size = "md",
     exact = false,
@@ -53,7 +55,7 @@ export function Button({
         : false;
 
     let baseStyles =
-        "cursor-pointer inline-flex items-center justify-center font-medium " +
+        "cursor-pointer inline-flex gap-1.5 items-center justify-center font-medium " +
         "transition-colors focus:outline-none disabled:opacity-50 disabled:pointer-events-none";
 
     if (!className?.includes('rounded-')) {
@@ -61,14 +63,24 @@ export function Button({
     }
 
     const variantStyles: Record<ButtonVariant, string> = {
-        primary: "bg-(--color-primary) border-2 border-(--border-primary) text-white hover:bg-(--bg-selected) hover:text-(--color-primary)",
-        secondary: "bg-(--bg-selected) border-2 border-(--border-primary) text-(--color-primary) hover:bg-(--color-primary) hover:text-white",
-        danger: "bg-(--text-error) border-2 border-(--text-error) text-white hover:bg-(--text-error)/10 hover:text-(--text-error)",
-        no_bg: "bg-transparent text-(--text-secondary) hover:border-2 hover:border-(--text-secondary) border-2 border-transparent",
-        bg_white: "bg-(--bg-primary) text-(--text-secondary) border-1 border-(--border-secondary) hover:bg-(--border-secondary)/10",
-        bg_white_rounded: "rounded-3xl! hover:text-(--color-primary) text-(--text-primary) border-2 border-(--border-secondary) bg-(--bg-primary) p-2! px-5!",
-        no_bg_border: "bg-transparent text-(--text-secondary) border-1 border-(--text-secondary) hover:bg-(--text-secondary)/10",
+        primary: "bg-(--color-primary) border border-(--border-primary) text-white hover:bg-(--bg-selected) hover:text-(--color-primary)",
+        secondary: "bg-(--bg-selected) border border-(--border-primary) text-(--color-primary) hover:bg-(--color-primary) hover:text-white",
+        danger: "bg-(--text-error) border border-(--text-error) text-white hover:bg-(--text-error)/10 hover:text-(--text-error)",
+        no_bg: "bg-transparent text-(--text-secondary) hover:border hover:border-(--text-secondary) border border-transparent",
+        bg_white: "bg-(--bg-primary) text-(--text-secondary) border border-(--border-secondary) hover:bg-(--border-secondary)/10",
+        bg_white_rounded: "rounded-3xl! hover:text-(--color-primary) text-(--text-primary) border border-(--border-secondary) bg-(--bg-primary) p-2! px-5!",
+        no_bg_border: "bg-transparent text-(--text-secondary) border border-(--border-secondary) hover:bg-(--text-secondary)/10",
     };
+
+    const variantSelectedStyles: Record<ButtonVariant, string> = {
+        primary: "bg-(--bg-selected) border border-(--border-primary) text-(--color-primary) hover:bg-(--color-primary) hover:text-white",
+        secondary: "bg-(--color-primary) border border-(--border-primary) text-white hover:bg-(--bg-selected) hover:text-(--color-primary)",
+        danger: "bg-(--text-error) border border-(--text-error) text-white hover:bg-(--text-error)/10 hover:text-(--text-error)",
+        no_bg: "bg-transparent text-(--color-secondary) hover:border hover:border-(--text-secondary) border border-transparent",
+        bg_white: "bg-(--bg-primary) text-(--text-secondary) border border-(--border-secondary) hover:bg-(--border-secondary)/10",
+        bg_white_rounded: "bg-(--color-primary)! border border-(--border-primary)! text-white! hover:bg-(--bg-selected)! hover:text-(--color-primary)!",
+        no_bg_border: "bg-transparent text-(--text-secondary) border border-(--border-secondary) hover:bg-(--text-secondary"
+    }
 
     if (className?.includes('text-')) {
         variantStyles[variant] = variantStyles[variant].replace('text-white', '');
@@ -94,6 +106,10 @@ export function Button({
     let classes = `${ baseStyles } ${ variantStyles[variant] } ${ sizeStyles[size] }`;
     if (className) {
         classes = classes + " " + className;
+    }
+
+    if (selected) {
+        classes = classes + " " + variantSelectedStyles[variant];
     }
 
     const content = loading ? (

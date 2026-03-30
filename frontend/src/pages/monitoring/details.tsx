@@ -16,20 +16,18 @@
 
 import { t } from "i18next";
 import DOMPurify from "dompurify";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 
-import { Button } from "../../components/Button";
 import { Table } from "../../components/list/Table";
 import { Loader } from "../../components/loader/Loader";
 import { showToast } from "../../components/ToastProvider";
 
 export function MonitoringDetails() {
     const { get } = axiosApiCall();
-    const navigate = useNavigate();
     const { processId } = useParams<{ processId: any }>();
 
     const [steps, setSteps] = useState<any>([]);
@@ -187,12 +185,8 @@ export function MonitoringDetails() {
 
     return (
         <div className="bg-(--bg-secondary) p-6 h-full w-full flex flex-col overflow-hidden">
-            <Button variant='bg_white_rounded' icon={ <ArrowLeft size={ 16 }/> }
-                    onClick={ () => navigate('/monitoring') }>
-                { t('GLOBAL.back') }
-            </Button>
-            <h1 className="mt-4 text-md font-bold">{ t('MONITORING.process_details') }</h1>
-            <div className="p-4 bg-(--bg-primary) border-2 border-(--border-secondary) rounded-lg mt-4 grid grid-cols-6">
+            <h1 className="text-md font-bold">{ t('MONITORING.process_details') }</h1>
+            <div className="p-4 bg-(--bg-primary) border border-(--border-secondary) rounded-lg mt-4 grid grid-cols-6">
                 <div>
                     <p className='text-(--text-secondary) font-semibold mb-1'>
                         { t('MONITORING.id') }

@@ -109,10 +109,10 @@ export function Table<T extends { id: string }>({
                 ) }
                 { actions && paginatorLeftText && actions.map((action, idx) => (
                     <Button
-                        key={ idx }
                         size='sm'
+                        key={ idx }
+                        className='p-2 border gap-1'
                         variant={ "no_bg_border" }
-                        className='p-2 border'
                         onClick={ action.command }
                         disabled={ selectedRows.length === 0 }>
                         { action.icon } { action.label }
@@ -135,8 +135,7 @@ export function Table<T extends { id: string }>({
                     ) }
                     <div className='flex flex-row'>
                         { columns.map((col, i) => (
-                            <span key={ i }
-                                  className="w-1/6 px-5 py-2 text-left font-normal text-(--text-secondary)">
+                            <span key={ i } className="w-1/6 px-5 py-2 text-left font-bold text-(--text-secondary)">
                             <span className='block'>
                                 { col.header }
                             </span>

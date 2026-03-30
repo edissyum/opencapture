@@ -392,7 +392,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
 
             { watchType === 'regex' && (
                 <>
-                    <div className='px-8'>
+                    <div className='px-8 pb-8'>
                         <h1 className="text-lg font-semibold mb-4 mt-6">
                             { t('REGEX.regex_settings') }
                         </h1>
@@ -450,7 +450,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                             <DynamicForm errors={ errors } control={ control } schema={ regexCleanSchema }/>
                         </div>
                     </div>
-                    <div className='px-8 py-4 bg-(--bg-secondary) border-t-2 border-b-2 border-(--border-secondary)
+                    <div className='px-8 py-4 bg-(--bg-secondary) border-t border-b border-(--border-secondary)
                                     w-full'>
                         <h1 className="text-lg font-semibold mb-4">
                             { t('REGEX.test-zone') }

@@ -16,7 +16,6 @@
 
 import { z } from "zod";
 import { t } from "i18next";
-import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -203,12 +202,7 @@ export function CustomerEditor() {
     }
 
     return (
-        <div className="p-8 bg-(--bg-primary) h-full overflow-y-auto">
-            <div className='flex items-center gap-1 text-(--text-secondary) cursor-pointer mb-6 w-fit'
-                 onClick={ () => navigate('/customers') }>
-                <ArrowLeft/>
-                { t('ACCOUNTS.customers_list') }
-            </div>
+        <div className="p-8 bg-(--bg-primary) h-full overflow-y-auto flex flex-col gap-4">
             <Accordion multiple activeIndex={ 0 }>
                 <AccordionTab header={ t("ACCOUNTS.customer_information") }>
                     <div className='p-6'>
@@ -222,7 +216,7 @@ export function CustomerEditor() {
                 </AccordionTab>
             </Accordion>
 
-            <div className="mt-6 w-fit">
+            <div className="w-fit">
                 { customerId ? (
                     <Button onClick={ handleSubmit(onSubmit) }
                             disabled={ loading || Object.keys(errors).length > 0 }>

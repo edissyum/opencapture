@@ -67,7 +67,9 @@
         "customer_updated": "Customer account successfully updated",
         "update_customer": "Update customer account",
         "add_customer": "Add a customer account",
-        "list": "Third-party accounts list"
+        "list": "Third-party accounts list",
+        "edit_customer": "",
+        "edit_supplier": ""
     },
     "AUTH": {
         "field_required": "is required",
@@ -1019,7 +1021,9 @@
         "exec_date": "",
         "event_details": "",
         "copy_error_message": "",
-        "error_message_copied": ""
+        "error_message_copied": "",
+        "list": "",
+        "details": ""
     },
     "AI-LLM": {
         "provider": "Provider",

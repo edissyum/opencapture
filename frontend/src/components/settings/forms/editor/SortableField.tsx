@@ -99,7 +99,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module }: {
     return (
         <>
             <div ref={ setNodeRef } style={ style } onClick={ openOverlay }
-                 className="SortableField truncate bg-(--bg-primary) border-2 border-(--border-secondary)
+                 className="SortableField truncate bg-(--bg-primary) border border-(--border-secondary)
                    rounded-md px-3 py-2 flex items-center gap-2 hover:border-(--border-primary)
                    transition-colors select-none">
                 <button type="button" aria-label="Déplacer le champ" { ...attributes } { ...listeners }
@@ -114,7 +114,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module }: {
             </div>
 
             <OverlayPanel ref={ op } dismissable
-                          className="bg-(--bg-primary)! p-3 w-1/2 shadow-none! border-2! border-(--border-secondary)! min-h-[20%] max-h-[60%]">
+                          className="bg-(--bg-primary)! p-3 w-1/2 shadow-none! border! border-(--border-secondary)! min-h-[20%] max-h-[60%]">
                 <div className="flex flex-col gap-3 space-y-3">
                     <Input id={ 'label-' + editableField.id }
                            className="w-full" noMarginBottom={ true }

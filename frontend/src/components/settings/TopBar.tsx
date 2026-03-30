@@ -22,7 +22,7 @@ import { NavLink, useLocation, useMatches } from "react-router-dom";
 
 import { useFavorites } from "../../services/hooks/useFavorite";
 
-export default function TopBarSettings() {
+export default function BreadCrumbTopbar() {
     const location = useLocation();
     const matches = useMatches();
     const breadcrumbs = matches.filter((m: any) => m.handle && m.handle?.breadcrumb);
@@ -32,7 +32,7 @@ export default function TopBarSettings() {
     const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
-        if (!ready) return;
+        if (!ready || !location.pathname.includes('/settings')) return;
 
         (async () => {
             const favs = await getFavorites();
@@ -46,7 +46,7 @@ export default function TopBarSettings() {
 
     return (
         <header
-            className="w-full h-16 flex flex-shrink-0 items-center justify-between px-6 border-b-2 border-(--border-secondary) text-(--text-secondary)">
+            className="w-full h-16 flex shrink-0 items-center justify-between px-6 border-b border-(--border-secondary) text-(--text-secondary)">
             <div className="w-full flex items-center gap-4">
                 { breadcrumbs.map((match: any, idx) => {
                     const isLast = idx === breadcrumbs.length - 1;
@@ -66,7 +66,7 @@ export default function TopBarSettings() {
                     );
                 }) }
                 { !['/settings', '/settings/general', '/settings/verifier', '/settings/splitter'].includes(location.pathname)
-                    && !location.pathname.includes('edit/') && (
+                    && !location.pathname.includes('edit/') && location.pathname.includes('/settings') && (
                         <div data-tooltip-id="tooltip"
                              data-tooltip-content={ isFav ? t('SETTINGS.remove_favorites') : t('SETTINGS.add_favorites') }
                              onClick={ () => {

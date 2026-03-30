@@ -74,6 +74,11 @@
     @apply text-white;
 }
 
+.p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight div .icons svg {
+    @apply fill-white;
+    @apply stroke-(--color-primary);
+}
+
 .p-tree .p-tree-container .p-treenode:focus > .p-treenode-content {
     @apply shadow-none;
     @apply outline-none;
@@ -100,7 +105,6 @@
 .actionsButton > span {
     @apply flex;
     @apply size-8;
-    @apply border;
     @apply items-center;
     @apply justify-center;
     @apply border-(--border-secondary);

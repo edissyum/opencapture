@@ -211,10 +211,10 @@ export function MonitoringList() {
     }
 
     return (
-        <div className='flex h-full w-full overflow-hidden'>
-            <div className={ `h-full transition-all border-r-2 border-(--border-secondary) pb-16
+        <div className='flex h-full w-full overflow-hidden bg-(--bg-secondary)'>
+            <div className={ `h-full transition-all border-r border-(--border-secondary) pb-16
                             ${ displayFilters ? "min-w-[300px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
-                <div className='border-b-2 border-(--border-secondary) p-4 flex items-center justify-between'>
+                <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between'>
                     <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
                     <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary)'
                           onClick={ handleResetFilters }>
@@ -223,8 +223,8 @@ export function MonitoringList() {
                 </div>
                 <div className='flex flex-col h-full overflow-y-auto'>
                     <div
-                        className={ `p-4 flex flex-col ${ open.module ? 'bg-(--bg-secondary)' : '' } border-b-2 border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between cursor-pointer"
+                        className={ `p-4 flex flex-col ${ open.module ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, module: !open.module }) }>
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
@@ -256,8 +256,8 @@ export function MonitoringList() {
                         ) }
                     </div>
                     <div
-                        className={ `p-4 flex flex-col ${ open.status ? 'bg-(--bg-secondary)' : '' } border-b-2 border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between cursor-pointer"
+                        className={ `p-4 flex flex-col ${ open.status ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, status: !open.status }) }>
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
@@ -294,8 +294,7 @@ export function MonitoringList() {
             <div className='p-6 h-full w-full flex flex-col flex-1 z-10'>
                 <div className='flex items-center gap-6 mb-4'>
                     <Button variant='bg_white_rounded' icon={ <Filter size={ 14 }/> }
-                            onClick={ () => setDisplayFilters(!displayFilters) }
-                            className={ `${ displayFilters ? 'bg-(--color-primary) text-white hover:text-white' : 'bg-(--bg-primary) text-(--text-primary)' }` }>
+                            onClick={ () => setDisplayFilters(!displayFilters) } selected={ displayFilters }>
                         { t('VERIFIER.filters') }
                     </Button>
                     <span className='flex items-center gap-1'>

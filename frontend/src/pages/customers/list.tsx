@@ -58,7 +58,7 @@ export function CustomersList() {
         {
             label: <span
                 className='critical'>{ t('ACCOUNTS.delete_customer', { 'count': selectedCustomers.length }) }</span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }
     ];
@@ -66,7 +66,7 @@ export function CustomersList() {
     const getActionsLine = () => [
         {
             label: <span className='critical'>{ t('GLOBAL.delete') }</span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }
     ];

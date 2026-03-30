@@ -182,13 +182,13 @@ export function ResetPassword() {
 
     return (
         <div className="flex h-screen flex-col items-center justify-center py-6 bg-(--bg-secondary)">
-            <div className="bg-(--bg-primary) h-auto flex justify-center w-130 p-4 rounded-xl">
+            <div className="bg-(--bg-primary) h-auto flex justify-center w-130 p-8 rounded-xl">
                 <div className='flex flex-1 flex-col'>
                     <div className="sm:mx-auto w-3/5 mb-10">
                         <LoginImage className="mx-auto"></LoginImage>
                     </div>
                     <div className='flex flex-col align-center h-full justify-center'>
-                        <div className='font-bold mb-4 text-center'>
+                        <div className='font-bold mb-4'>
                             <span className='text-2xl'>{ t('AUTH.reset-password') }</span>
                         </div>
                         { !smtpStatus && (
@@ -208,15 +208,15 @@ export function ResetPassword() {
                                        label={ t('USERS.email') }/>
                             </div>
                         ) }
-                        <div className="flex justify-center w-full mt-2">
+                        <div className="mt-2">
                             { resetToken ? (
-                                <Button loading={ sending } type="submit"
+                                <Button loading={ sending } type="submit" className='w-full'
                                         disabled={ Object.keys(errors).length > 0 || !password || !passwordConfirm }
                                         onClick={ handleReset }>
                                     { t('AUTH.reset') }
                                 </Button>
                             ) : (
-                                <Button loading={ sending } type="submit"
+                                <Button loading={ sending } type="submit"  className='w-full'
                                         disabled={ !smtpStatus || !!emailError || !email }
                                         onClick={ handleSendEmail }>
                                     { t('AUTH.send_email') }

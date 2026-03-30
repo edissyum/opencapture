@@ -20,7 +20,7 @@
 }
 
 .react-pdf__Page__canvas {
-    @apply border-2;
+    @apply border;
     @apply rounded-lg;
     @apply border-(--border-secondary);
 }

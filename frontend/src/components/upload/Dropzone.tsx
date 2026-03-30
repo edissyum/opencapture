@@ -89,9 +89,8 @@ export default function UploadDropzone({
     return (
         <div className='h-full flex flex-col'>
             <div
-                { ...getRootProps() } className={ `flex justify-center h-50 border-2 border-dashed rounded-xl p-6 
+                { ...getRootProps() } className={ `flex justify-center border-2 border-dashed rounded-xl p-6 
                     cursor-pointer transition border-(--border-secondary) hover:border-(--border-primary)
-                    ${ files.length == 0 || !showPreview ? "items-center justify-center" : "items-start" }
                     ${ className ?? "" }
                     ${ isDragActive ? "bg-(--bg-selected) border-(--border-primary)!" : "" }` }>
                 <input { ...getInputProps() } />
@@ -104,28 +103,31 @@ export default function UploadDropzone({
                 ) : (
                     <div className="flex flex-col items-center gap-2">
                         <UploadCloud size={ 38 } className="text-(--text-secondary)"/>
-                        <span className='flex gap-1 font-semibold'>
-                                <p className='text-(--color-primary)'>
-                                    { t('UPLOAD.upload_dropzone') }
-                                </p>
-                                <p>
-                                    { t('UPLOAD.upload_dropzone_2') }
-                                </p>
-                            </span>
-                        <p className="text-(--text-secondary) mt-2 -mb-2">
-                            { t('UPLOAD.max_filesize', { maxSize: maxSize / (1024 * 1024) }) }
-                        </p>
-                        <p className="text-(--text-secondary)">
-                            { t('UPLOAD.allowed_extensions') } : { Object.values(accept).flat().join(", ") }
-                        </p>
+                        <div className='flex gap-1 font-semibold'>
+                            <p className='text-(--color-primary)'>
+                                { t('UPLOAD.upload_dropzone') }
+                            </p>
+                            <p>
+                                { t('UPLOAD.upload_dropzone_2') }
+                            </p>
+                        </div>
+
+                        <div className='text-center mt-2'>
+                            <p className="text-(--text-secondary) text-sm">
+                                { t('UPLOAD.max_filesize', { maxSize: maxSize / (1024 * 1024) }) }
+                            </p>
+                            <p className="text-(--text-secondary) text-sm">
+                                { t('UPLOAD.allowed_extensions') } : { Object.values(accept).flat().join(", ") }
+                            </p>
+                        </div>
                     </div>
                 ) }
             </div>
             { files.length > 0 && showPreview && (
-                <div className="mt-4 space-y-1 h-full overflow-y-auto">
+                <div className="mt-4 space-y-1 overflow-y-auto">
                     { files.map((file) => (
                         <div key={ file.name + file.size }
-                             className="relative flex items-center gap-4 bg-(--bg-primary) px-3 py-2 rounded-lg border-2 border-(--border-secondary)">
+                             className="relative flex items-center gap-4 bg-(--bg-primary) px-3 py-2 rounded-lg border border-(--border-secondary)">
 
                             { progressByFile?.[file.name] !== undefined && (
                                 <div className="absolute top-0 left-0 h-full bg-(--bg-selected) transition-[width]

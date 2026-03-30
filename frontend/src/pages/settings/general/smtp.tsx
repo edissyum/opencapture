@@ -169,14 +169,14 @@ export function SettingsGeneralSMTP() {
 
     return (
         <div className='flex h-full overflow-hidden'>
-            <div className='border-r-2 border-(--border-secondary) w-full overflow-y-auto'>
+            <div className='border-r border-(--border-secondary) w-full overflow-y-auto'>
                 <div className='p-8'>
                     <h1 className='text-2xl font-bold'>{ t('SMTP.provider') }</h1>
                     <div className='flex gap-4 mt-6'>
                         { providers.map((provider) => (
                             <div key={ provider.name }
                                  onClick={ () => handleProviderChange(provider.name) }
-                                 className={ `border-2 border-(--border-secondary) hover:border-(--border-primary) transition-colors
+                                 className={ `border border-(--border-secondary) hover:border-(--border-primary) transition-colors
                              rounded-lg px-8 py-3 cursor-pointer flex items-center justify-center gap-4
                              ${ selectedProvider === provider.name ? 'bg-(--bg-selected) border-(--border-primary)!' : '' } ` }>
                                 { provider.logo && <img src={ provider.logo } alt={ provider.name } className='h-5'/> }
@@ -224,7 +224,7 @@ export function SettingsGeneralSMTP() {
                                         control={ control }
                                         name='smtpLogin'
                                         render={ ({ field }) => (
-                                            <Input id='smtpLogin' value={field.value}
+                                            <Input id='smtpLogin' value={ field.value }
                                                    disabled={ !smtpAuth }
                                                    onChange={ (value) => field.onChange(value) }
                                                    label={ t('SMTP.login') } autoComplete='new-mail'
@@ -237,7 +237,7 @@ export function SettingsGeneralSMTP() {
                                         control={ control }
                                         name='smtpPwd'
                                         render={ ({ field }) => (
-                                            <Input id='smtpPwd' value={field.value}
+                                            <Input id='smtpPwd' value={ field.value }
                                                    disabled={ !smtpAuth } type='password'
                                                    onChange={ (value) => field.onChange(value) }
                                                    label={ t('SMTP.password') } autoComplete='new-password'
@@ -326,19 +326,19 @@ export function SettingsGeneralSMTP() {
                 </div>
                 <div className='flex flex-col justify-center p-8'>
                     { statusTestEmail === 'error' && (
-                        <div className='flex items-center gap-4'>
-                            <img src="/src/assets/imgs/smtp/smtp_fail.svg" alt="Error" className='h-12'/>
-                            <h1 className='text-2xl font-bold text-(--text-error)'>{ t('SMTP.test_email_error') }</h1>
+                        <div className='flex items-center gap-4 mb-8'>
+                            <img src="/src/assets/imgs/smtp/smtp_fail.svg" alt="Error" className='h-9'/>
+                            <h1 className='text-xl font-bold text-(--text-error)'>{ t('SMTP.test_email_error') }</h1>
                         </div>
                     ) }
                     { statusTestEmail === 'success' && (
-                        <div className='flex items-center gap-4'>
-                            <img src="/src/assets/imgs/smtp/smtp_success.svg" alt="Error" className='h-12'/>
-                            <h1 className='text-2xl font-bold text-(--color-success)'>{ t('SMTP.test_email_success') }</h1>
+                        <div className='flex items-center gap-4 mb-8'>
+                            <img src="/src/assets/imgs/smtp/smtp_success.svg" alt="Error" className='h-9'/>
+                            <h1 className='text-xl font-bold text-(--color-success)'>{ t('SMTP.test_email_success') }</h1>
                         </div>
                     ) }
-                    <div className='w-full bg-[#212528] h-48 rounded-lg mt-8'>
-                        { statusTestEmail === 'error' && (
+                    { statusTestEmail === 'error' && (
+                        <div className='w-full bg-[#212528] h-48 rounded-lg'>
                             <div className='p-4 text-(--text-secondary)'>
                                 <p>
                                     { statusTestEmailMessage.split(',').map((msg, index) => (
@@ -346,8 +346,8 @@ export function SettingsGeneralSMTP() {
                                     )) }
                                 </p>
                             </div>
-                        ) }
-                    </div>
+                        </div>
+                    ) }
                 </div>
             </div>
         </div>

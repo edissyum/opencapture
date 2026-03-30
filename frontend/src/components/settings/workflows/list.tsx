@@ -57,12 +57,12 @@ export function WorkflowsList({ module }: { module: string }) {
     const getActionsLine = () => [
         {
             label: t('FORMS.duplicate_forms'),
-            icon: <Copy className='mr-1' size={ 16 }/>,
+            icon: <Copy size={ 16 }/>,
             command: () => handleDuplicate()
         },
         {
             label: <span className='critical'>{ t('GLOBAL.delete') }</span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }
     ];
@@ -70,7 +70,7 @@ export function WorkflowsList({ module }: { module: string }) {
     const actions: any = [
         {
             label: <span className='critical'>{ t('GLOBAL.delete') }</span>,
-            icon: <Trash2 className='mr-1' size={ 16 }/>,
+            icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }
     ];

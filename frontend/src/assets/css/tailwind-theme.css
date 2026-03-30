@@ -20,6 +20,7 @@
 @theme {
     --default-transition-duration: 300ms;
 
+    --color-green-600: oklch(0.3012 0.0308 160.84); /* HEX CODE #203329 */
     --color-green-400: oklch(0.5474 0.1307 153.5); /* HEX CODE #19864B */
     --color-green-100: oklch(0.9884 0.0164 162.77); /* HEX CODE #F2FFF8 */
 
