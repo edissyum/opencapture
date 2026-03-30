@@ -139,6 +139,6 @@
 }
 
 /* Hover effect for rows */
-.p-datatable .p-datatable-tbody > tr:hover {
+.p-datatable:not(.no_hover) .p-datatable-tbody > tr:hover {
     @apply bg-(--bg-selected)!;
 }

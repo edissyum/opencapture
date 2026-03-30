@@ -109,7 +109,12 @@
 
 /* Input switch */
 .p-inputswitch {
+    @apply -ml-1;
     @apply scale-80;
+}
+
+.p-inputswitch .p-inputswitch-slider::before {
+    margin-top: -0.600rem;
 }
 
 .p-inputswitch.p-highlight .p-inputswitch-slider {

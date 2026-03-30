@@ -15,10 +15,10 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { Edit } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import { TabPanel, TabView } from "primereact/tabview";
+import { EllipsisVertical, Pen } from "lucide-react";
 import { Accordion, AccordionTab } from "primereact/accordion";
 
 import { arrayMove } from "@dnd-kit/sortable";
@@ -44,10 +44,20 @@ import { getAvailableFields } from "../../../../pages/settings/verifier/forms/av
 
 import { DoctypesTree } from "../../doctypes/doctypesTree";
 import { DoctypeDetails } from "../../doctypes/doctypesDetails";
+import { ContextMenu } from "primereact/contextmenu";
 
 export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const { get, post, put } = axiosApiCall();
     const { formId } = useParams<{ formId: any }>();
+    const cm = useRef({ current: null } as any);
+
+    const menuItems: any = [
+        {
+            label: t('FORMS.change_label'),
+            icon: <Pen size={ 16 }/>,
+            command: () => handleChangeLabel()
+        }
+    ];
 
     const [doctypes, setDoctypes] = useState<any[]>([]);
     const [doctypeUpdatedCpt, setDoctypeUpdatedCpt] = useState(0);
@@ -95,6 +105,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     }
 
     const [zones, setZones] = useState(moduleZones);
+    const [selectedZone, setSelectedZone] = useState<any>(null);
 
     const { formFields } = useFormFields(formId);
     const { customFields } = useCustomFields(module);
@@ -413,16 +424,17 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
         }
     }
 
-    const handleChangeLabel = async (zone: any) => {
-        const zone_id = zone.id.replace("zone-", "");
+    const handleChangeLabel = async () => {
+        console.log(selectedZone)
+        const zone_id = selectedZone.id.replace("zone-", "");
         showConfirmDialogWithInput({
-            value: zone.name,
+            value: selectedZone.name,
             title: t('FORMS.change_label'),
             message: t('FORMS.change_zone_label_message'),
             confirmText: t('GLOBAL.modify'),
             cancelText: t('GLOBAL.cancel'),
             onConfirm: (value) => {
-                zone.name = value;
+                selectedZone.name = value;
                 setZones([...zones]);
                 put(`forms/updateLabel/${ formId }/${ zone_id }`, { label: value });
             }
@@ -481,14 +493,22 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                                         <span className='flex items-center gap-2'>
                                             { zone.name }
                                             { module === 'verifier' && (
-                                                <Edit size={ 20 }
-                                                      onClick={ (e) => {
-                                                          e.stopPropagation();
-                                                          handleChangeLabel(zone).then();
-                                                      } }
-                                                      data-tooltip-id="tooltip"
-                                                      className='hover:text-(--color-primary) cursor-pointer'
-                                                      data-tooltip-content={ t('FORMS.change_label') }/>
+                                                <div className='ml-auto cursor-pointer'>
+                                                    <EllipsisVertical
+                                                        size={ 20 }
+                                                        onClick={ (e) => {
+                                                            e.stopPropagation();
+                                                            e.stopPropagation();
+                                                            setSelectedZone(zone);
+                                                            cm.current?.show(e);
+                                                            // handleChangeLabel(zone).then();
+                                                        } }
+                                                        data-tooltip-id="tooltip"
+                                                        className='hover:text-(--color-primary)'
+                                                        data-tooltip-content={ t('FORMS.change_label') }
+                                                    />
+                                                    <ContextMenu model={ menuItems } className="w-auto!" ref={ cm }/>
+                                                </div>
                                             ) }
                                         </span>
                                     } key={ zone.id }>

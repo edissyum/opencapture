@@ -25,3 +25,7 @@
     @apply bg-(--bg-primary)!;
     @apply text-(--text-primary)!;
 }
+
+.p-dialog .p-dialog-footer button {
+    @apply mr-0;
+}

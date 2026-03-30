@@ -69,6 +69,7 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                                     required={ field.required }
                                     disabled={ field.disabled }
                                     labelFusion={ labelFusion }
+                                    noMarginBottom={ field.noMarginBottom }
                                     type={ field.type || "text" }
                                     placeholder={ field.placeholder }
                                     error={ errors[field.name]?.message }
@@ -96,7 +97,7 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                             name={ field.name }
                             control={ control }
                             render={ ({ field: f }) => (
-                                <div className={ `flex items-center relative ${ field.disabled ? 'cursor-not-allowed' : '' }` }>
+                                <div className={ `flex gap-2 items-center relative ${ field.disabled ? 'cursor-not-allowed' : '' }` }>
                                     <InputSwitch
                                         inputId={ f.name }
                                         checked={ f.value }

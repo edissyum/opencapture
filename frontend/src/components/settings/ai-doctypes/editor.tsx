@@ -92,7 +92,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
     }, [aiDoctype]);
 
     return (
-        <div className="h-full overflow-y-auto p-8">
+        <div className="h-full overflow-y-auto p-6">
             <div>
                 <h1 className="text-lg font-semibold mb-4">
                     { t('AI-DOCTYPES.details') }

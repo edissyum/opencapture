@@ -36,13 +36,7 @@ import { Loader } from "../../loader/Loader";
 import { showToast } from "../../ToastProvider";
 import { DynamicForm } from "../../form/DynamicForm";
 
-import {
-    getConvertOptions,
-    getRotationOptions,
-    getSplitterMethods,
-    getSystemFields,
-    getTesseractOptions
-} from "./helpers";
+import { getConvertOptions, getRotationOptions, getSplitterMethods, getSystemFields, getTesseractOptions } from "./helpers";
 
 export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const custom = useCustom();
@@ -52,6 +46,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
     const [loading, setLoading] = useState(true);
     const [loadingScript, setLoadingScript] = useState(false);
+    const [loadingUpdate, setLoadingUpdate] = useState(false);
 
     const stepperRef = useRef<any>(null);
     const [stepperIndex, setStepperIndex] = useState(0);
@@ -69,7 +64,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
     const [inputScripting, setInputScripting] = useState(false);
     const [processScripting, setProcessScripting] = useState(false);
-    const [outputScripting, setOutputScripting] = useState(false);
+    const [outputScripting, _] = useState(false);
 
     const [inputScript, setInputScript] = useState('');
     const [processScript, setProcessScript] = useState('');
@@ -507,6 +502,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             return;
         }
 
+        setLoadingUpdate(true);
         if (stepperIndex === 0) {
             const input_folder = workflowGetValues('input_folder');
             if (input_folder) {
@@ -521,7 +517,11 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                         console.debug('Error validating input folder :', error);
                         return;
                     }
+                    finally {
+                        setLoadingUpdate(false);
+                    }
                 } else {
+                    setLoadingUpdate(false);
                     showToast(t("WORKFLOWS.fix_details_errors"), 'error');
                     return;
                 }
@@ -542,6 +542,8 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         if (Object.keys(detailsErrors).length > 0 || Object.keys(workflowErrors).length > 0) {
             return;
         }
+
+        setLoadingUpdate(true);
 
         const payload: any = {
             ...detailsGetValues(),
@@ -596,6 +598,8 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             }
         } catch (error) {
             console.error('Error updating workflow :', error);
+        } finally {
+            setLoadingUpdate(false);
         }
     }
 
@@ -654,7 +658,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                     <div className="flex justify-end mt-6">
                         <Button onClick={ workflowHandleSubmit(handleSubmitStep) } className="ml-auto px-12"
                                 disabled={ loading || Object.keys(workflowErrors).length > 0 }>
-                            { t("MAILCOLLECT.next") }
+                            { loadingUpdate ? t("WORKFLOWS.validating") : t("MAILCOLLECT.next")}
                         </Button>
                     </div>
                 </StepperPanel>
@@ -800,7 +804,17 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
                         <Button onClick={ workflowHandleSubmit(handleSubmit) } className="px-12"
                                 disabled={ loading || Object.keys(workflowErrors).length > 0 }>
-                            { workflowId ? t("MAILCOLLECT.save") : t("MAILCOLLECT.create") }
+                            { workflowId && (
+                                <>
+                                    { loadingUpdate ? t("WORKFLOWS.updating") : t("WORKFLOWS.update") }
+                                </>
+                            ) }
+
+                            { !workflowId && (
+                                <>
+                                    { loadingUpdate ? t("WORKFLOWS.updating") : t("MAILCOLLECT.create") }
+                                </>
+                            ) }
                         </Button>
                     </div>
                 </StepperPanel>

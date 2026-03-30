@@ -67,7 +67,6 @@
         "customer_updated": "Customer account successfully updated",
         "update_customer": "Update customer account",
         "add_customer": "Add a customer account",
-        "list": "Third-party accounts list",
         "edit_customer": "",
         "edit_supplier": ""
     },
@@ -451,7 +450,6 @@
         "role_disabled_other": "Roles successfully disabled",
         "role_enabled_one": "Role successfully enabled",
         "role_enabled_other": "Roles successfully enabled",
-        "list": "Roles list",
         "editing": "Editing role",
         "new_role": "New role",
         "details": "Details",
@@ -681,7 +679,6 @@
         "user_enabled_one": "User successfully enabled",
         "user_enabled_other": "Users successfully enabled",
         "editing": "Editing user",
-        "list": "Users list",
         "new_user": "New user",
         "create_user": "Create user",
         "update_user": "Update user",
@@ -826,13 +823,19 @@
         "using_ldap_connection": "Using LDAP connection for user authentication",
         "test_sync": "Test synchronization",
         "test_sync_loading": "Testing synchronization...",
-        "ldap_synchronization_success": "LDAP synchronization successful: {{ data }}",
         "data_type": "Data type",
         "no_configurations": "No configuration",
         "value": "Value",
         "update_configuration_details": "You are about to edit the configuration <strong>{{name}}</strong>",
         "update_configuration_modale": "Edit setting",
-        "configuration_updated": "Setting successfully updated"
+        "configuration_updated": "Setting successfully updated",
+        "ldap_synchronization_create_users_one": "",
+        "ldap_synchronization_create_users_other": "",
+        "ldap_synchronization_disabled_users_one": "",
+        "ldap_synchronization_disabled_users_other": "",
+        "ldap_synchronization_updated_users_one": "",
+        "ldap_synchronization_updated_users_other": "",
+        "ldap_synchronization_successful": ""
     },
     "TYPE": {
         "boolean": "Boolean",
@@ -875,7 +878,9 @@
         "error_loading_pdf": "Error loading PDF",
         "back_to_batch": "Back to batch",
         "unbinding": "Unbind",
-        "unbinding_warning": "It is not possible to unbind attachments if one or more attachments are not in PDF format"
+        "unbinding_warning": "It is not possible to unbind attachments if one or more attachments are not in PDF format",
+        "add_attachemnt": "",
+        "no_attachments": ""
     },
     "ADDRESSES": {
         "address1": "Street number and name",
@@ -988,7 +993,10 @@
         "create_success": "",
         "fix_details_errors": "",
         "form_required": "",
-        "validating_script": ""
+        "validating_script": "",
+        "update": "",
+        "updating": "",
+        "validating": ""
     },
     "MONITORING": {
         "processes": "Processes",

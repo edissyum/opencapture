@@ -87,7 +87,7 @@ export function SettingsVerifierAiLLMEditor() {
             name: "copilot",
             label: "Microsoft Copilot",
             url: "https://oc.cognitiveservices.azure.com/openai/deployments/gpt-5-mini/chat/completions?api-version=2024-08-01-preview",
-            logo: "/src/assets/imgs/ai-llm/gemini.svg",
+            logo: "/src/assets/imgs/ai-llm/copilot.svg",
             costs: [
                 { type: "input", price: 0.012 },
                 { type: "output", price: 0.024 }
@@ -116,6 +116,7 @@ export function SettingsVerifierAiLLMEditor() {
         name: z.string().min(1).describe(JSON.stringify({
             component: "input",
             required: true,
+            noMarginBottom: true,
             label: t("AI-LLM.name")
         }))
     });
@@ -135,11 +136,13 @@ export function SettingsVerifierAiLLMEditor() {
     const costsSchema: any = z.object({
         input_price: z.number().optional().describe(JSON.stringify({
             component: "input",
+            noMarginBottom: true,
             label: t("AI-LLM.input_cost"),
             type: "number"
         })),
         output_price: z.number().optional().describe(JSON.stringify({
             component: "input",
+            noMarginBottom: true,
             label: t("AI-LLM.output_cost"),
             type: "number"
         }))
@@ -258,45 +261,53 @@ export function SettingsVerifierAiLLMEditor() {
 
     return (
         <div className="h-full overflow-y-auto">
-            <div className='p-8 pb-0'>
-                <h1 className="text-lg font-semibold mb-4">
-                    { t('AI-LLM.details') }
-                </h1>
-                <div className='w-1/3'>
-                    <DynamicForm errors={ errors } control={ control } schema={ detailsSchema }/>
+            <div className='p-8 pb-0 flex flex-col gap-6'>
+                <div className='flex flex-col gap-2'>
+                    <h1 className="text-lg font-semibold">
+                        { t('AI-LLM.details') }
+                    </h1>
+                    <div className='w-1/3'>
+                        <DynamicForm errors={ errors } control={ control } schema={ detailsSchema }/>
+                    </div>
                 </div>
 
-                <h1 className="text-lg font-semibold mb-4">
-                    { t('AI-LLM.provider') }
-                </h1>
-                <div className='flex gap-4 mt-2 mb-6'>
-                    { providers.map((provider: any) => (
-                        <div key={ provider.name }
-                             onClick={ () => setSelectedProvider(provider.name) }
-                             className={ `border-2 border-(--border-secondary) hover:border-(--border-primary) transition-colors
+                <div className='flex flex-col gap-2'>
+                    <h1 className="text-lg font-semibold">
+                        { t('AI-LLM.provider') }
+                    </h1>
+                    <div className='flex gap-4'>
+                        { providers.map((provider: any) => (
+                            <div key={ provider.name }
+                                 onClick={ () => setSelectedProvider(provider.name) }
+                                 className={ `border border-(--border-secondary) hover:border-(--border-primary) transition-colors
                              rounded-lg px-8 py-3 cursor-pointer flex items-center justify-center gap-4
-                             ${ selectedProvider === provider.name ? 'bg-(--bg-selected) border-(--border-primary)' : '' } ` }>
-                            { provider.logo && <img src={ provider.logo } alt={ provider.name } className='h-7'/> }
-                            <p className='text-lg font-semibold'>{ provider.label }</p>
-                        </div>
-                    )) }
+                             ${ selectedProvider === provider.name ? 'bg-(--bg-selected) border-(--color-primary)' : '' } ` }>
+                                { provider.logo && <img src={ provider.logo } alt={ provider.name } className='h-7'/> }
+                                <p className='text-lg font-semibold'>{ provider.label }</p>
+                            </div>
+                        )) }
+                    </div>
                 </div>
 
-                <h1 className="text-lg font-semibold">
-                    { t('AI-LLM.costs') }
-                </h1>
-                <p className='mb-4 text-sm text-(--text-secondary) w-1/2'>
-                    { t('AI-LLM.costs_description') }
-                </p>
-                <div className='w-1/2'>
-                    <DynamicForm errors={ errors } control={ control } schema={ costsSchema } grid={ 2 }/>
+                <div className='flex flex-col gap-3'>
+                    <p className="text-lg font-semibold">
+                        { t('AI-LLM.costs') }
+                    </p>
+                    <p className='text-sm text-(--text-secondary) w-1/2'>
+                        { t('AI-LLM.costs_description') }
+                    </p>
+                    <div className='w-1/2'>
+                        <DynamicForm errors={ errors } control={ control } schema={ costsSchema } grid={ 2 } />
+                    </div>
                 </div>
 
-                <h1 className="text-lg font-semibold mb-4">
-                    { t('AI-LLM.api_call') }
-                </h1>
-                <div className='w-1/2'>
-                    <DynamicForm errors={ errors } control={ control } schema={ apiSchema }/>
+                <div className='flex flex-col gap-4'>
+                    <h1 className="text-lg font-semibold">
+                        { t('AI-LLM.api_call') }
+                    </h1>
+                    <div className='w-1/2'>
+                        <DynamicForm errors={ errors } control={ control } schema={ apiSchema } gap={ 2 }/>
+                    </div>
                 </div>
 
                 { !jsonValid && (
@@ -323,7 +334,8 @@ export function SettingsVerifierAiLLMEditor() {
                         { t('AI-LLM.json_content_hint_suffix') }
                     </Hint>
                 ) }
-                <div className="mt-4">
+
+                <div>
                     <FloatLabel>
                         <InputTextarea id='ai-llmjson' value={ aiLLMJson }
                                        onChange={ (e) => setAiLLMJson(e.target.value) }

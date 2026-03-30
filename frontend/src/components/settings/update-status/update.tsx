@@ -16,8 +16,8 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { FileCheckCorner, FileLock, FileSearchCorner, FileSymlink, FileXCorner, Trash, X } from "lucide-react";
 
 import Input from "../../Input";
 import { Button } from "../../Button";
@@ -29,9 +29,37 @@ import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 export function UpdateStatus({ module }: { module: 'verifier' | 'splitter' }) {
     const { post, put } = axiosApiCall();
     const [loading, setLoading] = useState(true);
+    const [updating, setUpdating] = useState(false);
 
     const [statuses, setStatuses] = useState<any[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<string>('');
+
+    const [icons, _] = useState<any>([
+        {
+            'id': 'NEW',
+            'icon': <FileCheckCorner/>
+        },
+        {
+            'id': 'END',
+            'icon': <FileLock/>
+        },
+        {
+            'id': 'ERR',
+            'icon': <FileXCorner/>
+        },
+        {
+            'id': 'DEL',
+            'icon': <Trash/>
+        },
+        {
+            'id': 'WAIT_THIRD_PARTY',
+            'icon': <FileSearchCorner/>
+        },
+        {
+            'id': 'MERG',
+            'icon': <FileSymlink/>
+        }
+    ]);
 
     const [identifier, setIdentifier] = useState<string>('');
     const [identifierList, setIdentifierList] = useState<string[]>([]);
@@ -54,6 +82,7 @@ export function UpdateStatus({ module }: { module: 'verifier' | 'splitter' }) {
 
     const handleUpdate = async () => {
         try {
+            setUpdating(true);
             await put(`/${ module }/status`, {
                 ids: identifierList,
                 status: selectedStatus
@@ -64,10 +93,11 @@ export function UpdateStatus({ module }: { module: 'verifier' | 'splitter' }) {
                 showToast(t('UPDATE-STATUS.update_success_verifier'), 'success');
             } else {
                 showToast(t('UPDATE-STATUS.update_success_splitter'), 'success');
-
             }
         } catch (error) {
             console.error(`Failed to update ${ module } status:`, error);
+        } finally {
+            setUpdating(false);
         }
     }
 
@@ -80,16 +110,17 @@ export function UpdateStatus({ module }: { module: 'verifier' | 'splitter' }) {
                 { statuses.map((status) => (
                     <div key={ status.id }
                          onClick={ () => setSelectedStatus(status.id) }
-                         className={ `border-2 border-(--border-secondary) hover:border-(--border-primary) transition-colors
-                             rounded-lg px-8 py-3 cursor-pointer flex items-center justify-center gap-4
-                             ${ selectedStatus === status.id ? 'bg-(--bg-selected) border-(--border-primary)!' : '' } ` }>
-                        <p className='text-lg font-semibold'>{ status.label }</p>
+                         className={ `border border-(--border-secondary) hover:border-(--border-primary) transition-colors
+                             rounded-lg px-18 py-4 cursor-pointer flex flex-col items-center justify-center gap-2
+                             ${ selectedStatus === status.id ? 'bg-(--bg-selected) border-(--border-primary)! text-(--color-primary)' : 'text-(--text-secondary)' } ` }>
+                        { icons.find((icon: any) => icon.id === status.id)?.icon }
+                        <p className='text-md font-semibold'>{ status.label }</p>
                     </div>
                 )) }
             </div>
 
             <h1 className="text-md font-bold mt-6 mb-4">{ t('UPDATE-STATUS.id_documents') }</h1>
-            <div>
+            <div className='w-1/2'>
                 <Input id="identifier-input"
                        value={ identifier }
                        onChange={ (e) => {
@@ -121,10 +152,9 @@ export function UpdateStatus({ module }: { module: 'verifier' | 'splitter' }) {
                 <Button className='mt-4'
                         disabled={ selectedStatus === '' || identifierList.length === 0 }
                         onClick={ handleUpdate }>
-                    { t('UPDATE-STATUS.update') }
+                    { updating ? t('GLOBAL.updating') : t('UPDATE-STATUS.update') }
                 </Button>
             </div>
         </div>
-    )
-        ;
-};
+    );
+}

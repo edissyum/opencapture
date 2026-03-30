@@ -16,26 +16,30 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Download, EllipsisVertical, Trash2 } from "lucide-react";
 import { Document, Page } from "react-pdf";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Button } from "../Button";
 import { Loader } from "../loader/Loader";
 
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { ContextMenu } from "primereact/contextmenu";
 
 type AttachmentsListProps = {
     show: boolean;
     module: string;
     attachment: any;
     onClose: () => void;
+    onDelete: () => void;
+    onDownload: () => void;
 };
 
 const imageCache: any = new Map<string, string>();
 
-export function AttachmentsViewer({ show, module, attachment, onClose }: AttachmentsListProps) {
+export function AttachmentsViewer({ show, module, attachment, onClose, onDelete, onDownload }: AttachmentsListProps) {
     const { post } = axiosApiCall();
+    const cm = useRef({ current: null } as any);
 
     const [numPages, setNumPages] = useState<number>();
     const [loading, setLoading] = useState(false);
@@ -85,6 +89,19 @@ export function AttachmentsViewer({ show, module, attachment, onClose }: Attachm
         return { data: currentAttachmentData };
     }, [currentAttachmentData]);
 
+    const menuItems: any = [
+        {
+            label: t('ATTACHMENTS.download'),
+            icon: <Download size={ 16 }/>,
+            command: () => onDownload ? onDownload() : null
+        },
+        {
+            label: <span className='critical'>{ t('GLOBAL.delete') }</span>,
+            icon: <Trash2 size={ 16 }/>,
+            command: () => onDelete ? onDelete() : null
+        }
+    ];
+
     if (loading) {
         return <Loader/>;
     }
@@ -93,9 +110,19 @@ export function AttachmentsViewer({ show, module, attachment, onClose }: Attachm
         <div className='h-full pb-4'>
             <div className='h-full flex flex-col overflow-auto'>
                 <div className='sticky p-6 pb-0 top-0 z-10'>
-                    <Button variant='bg_white_rounded' icon={ <ArrowLeft size={ 18 }/> } onClick={ () => onClose() }>
-                        { t('ATTACHMENTS.back_to_attachments_list') }
-                    </Button>
+                    <div className='flex items-center justify-between'>
+                        <Button variant='bg_white_rounded' icon={ <ArrowLeft size={ 18 }/> } onClick={ () => onClose() }>
+                            { t('ATTACHMENTS.back_to_attachments_list') }
+                        </Button>
+                        <div className='bg-(--bg-primary) rounded-lg cursor-pointer p-1 border border-(--border-secondary) '>
+                            <EllipsisVertical onClick={ (e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                cm.current?.show(e);
+                            } }/>
+                            <ContextMenu model={ menuItems } className="w-auto!" ref={ cm }/>
+                        </div>
+                    </div>
                 </div>
                 <div className='p-6 max-w-3xl'>
                     <p className='font-semibold text-(--text-primary) truncate'>

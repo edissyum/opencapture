@@ -27,6 +27,7 @@ import {
     EllipsisVertical,
     File,
     FileArchive,
+    Paperclip,
     Presentation,
     Sheet,
     Trash2,
@@ -130,6 +131,8 @@ export function AttachmentsList({
         } catch (error) {
             console.error("Error fetching attachments:", error);
             onAttachmentsCountChange(0);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -156,9 +159,8 @@ export function AttachmentsList({
             });
             refreshAttachments().then();
         } catch (error) {
-            console.error("Error uploading attachment:", error);
-        } finally {
             setLoading(false);
+            console.error("Error uploading attachment:", error);
         }
     };
 
@@ -205,11 +207,12 @@ export function AttachmentsList({
                 setLoading(true);
                 try {
                     await del(`/attachments/${ module }/delete/${ selectedAttachment.id }`);
-                    refreshAttachments().then();
+                    await refreshAttachments();
+                    setShowAttachment(false);
+                    setSelectedAttachment(null);
                 } catch (error) {
-                    console.error("Error deleting attachment:", error);
-                } finally {
                     setLoading(false);
+                    console.error("Error deleting attachment:", error);
                 }
             }
         })
@@ -231,6 +234,12 @@ export function AttachmentsList({
             <div className={ `w-full h-full flex flex-col ${ showAttachment ? '' : 'hidden' }` }>
                 <AttachmentsViewer module={ module } show={ showAttachment }
                                    attachment={ selectedAttachment ?? {} }
+                                   onDelete={ () => {
+                                       handleDelete();
+                                   } }
+                                   onDownload={ () => {
+                                       handleDownload();
+                                   } }
                                    onClose={ () => setShowAttachment(false) }/>
             </div>
             <div className='h-full flex flex-col flex-1 overflow-y-auto'>
@@ -269,47 +278,58 @@ export function AttachmentsList({
                 ) }
 
                 { !showAttachment && (
-                    <div
-                        className={ `grid ${ module === 'verifier' ? 'grid-cols-2' : 'grid-cols-3' } gap-4 px-6 pb-6` }>
-                        { attachments.map((attachment) => (
-                            <div key={ attachment.id } onClick={ () => handleAttachementView(attachment) }
-                                 className="border-2 border-(--border-secondary) hover:border-(--text-secondary)
+                    <>
+                        { attachments.length === 0 ? (
+                            <div
+                                className='flex flex-col gap-2 w-full h-full justify-center items-center text-(--text-secondary)'>
+                                <Paperclip className='p-2 rounded-md bg-(--bg-primary)' size={ 45 }/>
+                                <h1 className='text-xl font-semibold text-(--text-primary)'>{ t('ATTACHMENTS.no_attachments') }</h1>
+                                <span>{ t('ATTACHMENTS.add_attachemnt') }</span>
+                            </div>
+                        ) : (
+                            <div
+                                className={ `grid ${ module === 'verifier' ? 'grid-cols-2' : 'grid-cols-3' } gap-4 px-6 pb-6` }>
+                                { attachments.map((attachment) => (
+                                    <div key={ attachment.id } onClick={ () => handleAttachementView(attachment) }
+                                         className="border-2 border-(--border-secondary) hover:border-(--text-secondary)
                                             rounded-lg cursor-pointer bg-(--bg-primary) transition-border-color">
-                                <div className="relative bg-[#D0DAD5] dark:bg-(--bg-secondary) rounded-b-none w-full p-6
+                                        <div className="relative bg-[#D0DAD5] dark:bg-(--bg-secondary) rounded-b-none w-full p-6
                                                 pb-0 rounded-md flex items-center justify-center text-(--text-secondary)">
-                                    <div className="w-full h-40 relative">
-                                        { attachment['thumb'] ? (
-                                            <img alt={ attachment.filename }
-                                                 src={ 'data:image/jpg;base64,' + attachment['thumb'] }
-                                                 className='object-cover object-top rounded-t-lg w-full! h-full!'
-                                            />
-                                        ) : (
-                                            <div className='w-full h-full flex items-center justify-center'>
-                                                { attachment.extension_icon }
+                                            <div className="w-full h-40 relative">
+                                                { attachment['thumb'] ? (
+                                                    <img alt={ attachment.filename }
+                                                         src={ 'data:image/jpg;base64,' + attachment['thumb'] }
+                                                         className='object-cover object-top rounded-t-lg w-full! h-full!'
+                                                    />
+                                                ) : (
+                                                    <div className='w-full h-full flex items-center justify-center'>
+                                                        { attachment.extension_icon }
+                                                    </div>
+                                                ) }
                                             </div>
-                                        ) }
-                                    </div>
-                                </div>
-                                <div className='px-6 py-3'>
-                                    <div className='flex mb-2'>
-                                        <p className='font-semibold text-(--text-primary) truncate'>{ attachment.filename }</p>
-                                        <div className="ml-auto -mr-3">
-                                            <EllipsisVertical onClick={ (e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                cm.current?.show(e);
-                                                setSelectedAttachment(attachment);
-                                            } }/>
-                                            <ContextMenu model={ menuItems } className="w-auto!" ref={ cm }/>
+                                        </div>
+                                        <div className='px-6 py-3'>
+                                            <div className='flex mb-2'>
+                                                <p className='font-semibold text-(--text-primary) truncate'>{ attachment.filename }</p>
+                                                <div className="ml-auto -mr-3">
+                                                    <EllipsisVertical onClick={ (e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        cm.current?.show(e);
+                                                        setSelectedAttachment(attachment);
+                                                    } }/>
+                                                    <ContextMenu model={ menuItems } className="w-auto!" ref={ cm }/>
+                                                </div>
+                                            </div>
+                                            <p className='text-sm text-(--text-secondary)'>
+                                                { t('ATTACHMENTS.register_date') }: { attachment.creation_date }
+                                            </p>
                                         </div>
                                     </div>
-                                    <p className='text-sm text-(--text-secondary)'>
-                                        { t('ATTACHMENTS.register_date') }: { attachment.creation_date }
-                                    </p>
-                                </div>
+                                )) }
                             </div>
-                        )) }
-                    </div>
+                        ) }
+                    </>
                 ) }
             </div>
         </div>

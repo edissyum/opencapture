@@ -135,7 +135,8 @@ export function Table<T extends { id: string }>({
                     ) }
                     <div className='flex flex-row'>
                         { columns.map((col, i) => (
-                            <span key={ i } className="w-1/6 px-5 py-2 text-left font-bold text-(--text-secondary)">
+                            <span key={ i }
+                                  className={ `${ i === 0 ? 'w-40' : 'w-1/5 ' } px-5 py-2 text-left font-bold text-(--text-secondary)` }>
                             <span className='block'>
                                 { col.header }
                             </span>
@@ -189,7 +190,7 @@ export function Table<T extends { id: string }>({
                     onSelectionChange={ (e: any) => {
                         handleSelectionChange(e.value)
                     } }
-                    className="w-full"
+                    className={ `w-full ${ !baseLink ? 'no_hover' : ''}` }
                     contextMenuSelection={ selectedRows }
                     onContextMenuSelectionChange={ (e: any) => {
                         handleSelectionChange([e.value]);

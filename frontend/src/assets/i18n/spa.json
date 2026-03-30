@@ -74,7 +74,6 @@
         "customer_updated": "Cuenta de cliente actualizada correctamente",
         "update_customer": "Actualizar cuenta de cliente",
         "add_customer": "Agregar una cuenta de cliente",
-        "list": "Lista de cuentas de terceros",
         "edit_customer": "",
         "edit_supplier": ""
     },
@@ -487,7 +486,6 @@
         "role_enabled_many": "Roles activados correctamente",
         "role_enabled_one": "Rol activado correctamente",
         "role_enabled_other": "Roles activados correctamente",
-        "list": "Lista de roles",
         "editing": "Editando rol",
         "new_role": "Nuevo rol",
         "details": "Detalles",
@@ -745,7 +743,6 @@
         "user_enabled_one": "Usuario activado correctamente",
         "user_enabled_other": "Usuarios activados correctamente",
         "editing": "Editando usuario",
-        "list": "Lista de usuarios",
         "new_user": "Nuevo usuario",
         "create_user": "Crear usuario",
         "update_user": "Actualizar usuario",
@@ -894,13 +891,22 @@
         "using_ldap_connection": "Usando conexión LDAP para la autenticación de usuarios",
         "test_sync": "Probar sincronización",
         "test_sync_loading": "Probando sincronización...",
-        "ldap_synchronization_success": "Sincronización LDAP exitosa: {{ data }}",
         "data_type": "Tipo de datos",
         "no_configurations": "Sin configuración",
         "value": "Valor",
         "update_configuration_details": "Está a punto de modificar la configuración <strong>{{name}}</strong>",
         "update_configuration_modale": "Editar parámetro",
-        "configuration_updated": "Parámetro actualizado correctamente"
+        "configuration_updated": "Parámetro actualizado correctamente",
+        "ldap_synchronization_create_users_many": "",
+        "ldap_synchronization_create_users_one": "",
+        "ldap_synchronization_create_users_other": "",
+        "ldap_synchronization_disabled_users_many": "",
+        "ldap_synchronization_disabled_users_one": "",
+        "ldap_synchronization_disabled_users_other": "",
+        "ldap_synchronization_updated_users_many": "",
+        "ldap_synchronization_updated_users_one": "",
+        "ldap_synchronization_updated_users_other": "",
+        "ldap_synchronization_successful": ""
     },
     "TYPE": {
         "boolean": "Booleano",
@@ -943,7 +949,9 @@
         "error_loading_pdf": "Error al cargar el PDF",
         "back_to_batch": "Volver al lote",
         "unbinding": "Desagrupar",
-        "unbinding_warning": "No es posible desagrupar los adjuntos si uno o más adjuntos no están en formato PDF"
+        "unbinding_warning": "No es posible desagrupar los adjuntos si uno o más adjuntos no están en formato PDF",
+        "add_attachemnt": "",
+        "no_attachments": ""
     },
     "ADDRESSES": {
         "address1": "Número y calle",
@@ -1065,7 +1073,10 @@
         "create_success": "",
         "fix_details_errors": "",
         "form_required": "",
-        "validating_script": ""
+        "validating_script": "",
+        "update": "",
+        "updating": "",
+        "validating": ""
     },
     "MONITORING": {
         "processes": "Procesos",

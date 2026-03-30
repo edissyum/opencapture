@@ -24,11 +24,6 @@ import { useCustom } from "../services/custom/customContext";
 export default function MainLayout() {
     const location = useLocation();
 
-    const unAllowedLocations = [
-        "/verifier/viewer",
-        "/splitter/viewer"
-    ];
-
     let pathNameWithoutCustom: string = location.pathname.replace(useCustom() || "", "") || "/";
     pathNameWithoutCustom = pathNameWithoutCustom.replace("//", "/");
     if (pathNameWithoutCustom === "/") {
@@ -45,7 +40,7 @@ export default function MainLayout() {
         <div className="flex h-screen w-screen">
             <Sidebar/>
             <main className="flex flex-col w-full h-full bg-(--bg-secondary) overflow-hidden">
-                { !unAllowedLocations.includes(location.pathname) && (
+                { !location.pathname.includes('verifier/viewer/') && !location.pathname.includes('splitter/viewer/') && (
                     <TopBar/>
                 ) }
                 <Outlet/>

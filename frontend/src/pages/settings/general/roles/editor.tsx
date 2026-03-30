@@ -16,7 +16,6 @@
 
 import { z } from "zod";
 import { t } from "i18next";
-import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -129,20 +128,17 @@ export function SettingsGeneralRoleEditor() {
     }
 
     return (
-        <div className="p-6 bg-(--bg-secondary) h-full">
-            <div className='flex items-center gap-1 text-(--text-secondary) cursor-pointer mb-4 w-fit'
-                 onClick={ () => navigate('/settings/general/roles') }>
-                <ArrowLeft/>
-                { t('ROLES.list') }
-            </div>
-            <h1 className="text-xl font-bold mb-4">
-                { roleId ? t('ROLES.editing') : t('ROLES.new_role') }
-            </h1>
-            <h1 className="text-lg font-semibold mb-4">
-                { t('ROLES.details') }
-            </h1>
-            <div className='w-1/3'>
-                <DynamicForm schema={ schema } errors={ errors } control={ control } labelFusion={ true }/>
+        <div className="p-6 bg-(--bg-secondary) h-full flex flex-col gap-4">
+            <div>
+                <h1 className="text-xl font-bold mb-4">
+                    { roleId ? t('ROLES.editing') : t('ROLES.new_role') }
+                </h1>
+                <h1 className="text-lg font-semibold mb-4">
+                    { t('ROLES.details') }
+                </h1>
+                <div className='w-1/3'>
+                    <DynamicForm schema={ schema } errors={ errors } control={ control } labelFusion={ true }/>
+                </div>
             </div>
 
             <h1 className="text-lg font-semibold mb-2">

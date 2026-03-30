@@ -70,7 +70,6 @@ export function SettingsGeneralMailcollect() {
             value: newName,
             title: t('MAILCOLLECT.rename_process'),
             message: t('MAILCOLLECT.enter_new_process_name', { 'name': selectedProcess.name }),
-            icon: <PencilLine/>,
             confirmText: t('MAILCOLLECT.rename'),
             cancelText: t('GLOBAL.cancel'),
             onConfirm: (value) => {

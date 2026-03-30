@@ -16,7 +16,6 @@
 
 import { z } from "zod";
 import { t } from "i18next";
-import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -270,35 +269,37 @@ export function SettingsGeneralUserEditor() {
 
     return (
         <div className="p-6 bg-(--bg-secondary) h-full overflow-y-auto">
-            <div className='w-1/3'>
-                <div className='flex items-center gap-1 text-(--text-secondary) cursor-pointer mb-4 w-fit'
-                     onClick={ () => navigate('/settings/general/users') }>
-                    <ArrowLeft/>
-                    { t('USERS.list') }
-                </div>
-                <h1 className="text-xl font-bold mb-4">
-                    { userId ? t('USERS.editing') : t('USERS.new_user') }
-                </h1>
+            <div className='w-1/3 flex flex-col gap-4'>
+                <>
+                    <h1 className="text-xl font-bold ">
+                        { userId ? t('USERS.editing') : t('USERS.new_user') }
+                    </h1>
 
-                <h1 className="text-lg font-semibold mb-4">
-                    { t('ROLES.details') }
-                </h1>
+                    <h1 className="text-lg font-semibold ">
+                        { t('ROLES.details') }
+                    </h1>
 
-                <DynamicForm errors={ errors } control={ control } labelFusion={ true } schema={ detailsSchema }/>
+                    <DynamicForm errors={ errors } control={ control } labelFusion={ true } schema={ detailsSchema } gap={ 2 }/>
+                </>
 
-                <h1 className="text-lg font-semibold mb-4">
-                    { t('USERS.security') }
-                </h1>
+                <>
+                    <h1 className="text-lg font-semibold">
+                        { t('USERS.security') }
+                    </h1>
 
-                <DynamicForm errors={ errors } control={ control } labelFusion={ true } schema={ securitySchema }/>
+                    <DynamicForm errors={ errors } control={ control } labelFusion={ true } schema={ securitySchema } gap={ 2 }/>
 
-                <h1 className="text-lg font-semibold mb-4">
-                    { t('USERS.settings') }
-                </h1>
+                </>
 
-                <DynamicForm errors={ errors } control={ control } labelFusion={ true } schema={ settingsSchema }/>
+                <>
+                    <h1 className="text-lg font-semibold">
+                        { t('USERS.settings') }
+                    </h1>
 
-                <div className="mt-6 w-fit">
+                    <DynamicForm errors={ errors } control={ control } labelFusion={ true } schema={ settingsSchema } gap={ 2 }/>
+                </>
+
+                <div className="w-fit">
                     { userId ? (
                         <Button onClick={ handleSubmit(handleUpdate) }
                                 disabled={ loading || Object.keys(errors).length > 0 }>

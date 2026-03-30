@@ -179,6 +179,17 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
     const onSubmit = async (data: any) => {
         if (loading) return;
 
+        const authValues = getValuesAuth();
+        Object.keys(getValuesAuth()).forEach((key) => {
+            if (authValues[key] !== undefined) {
+                if (key === "securedConnection") {
+                    process.secured_connection = authValues[key];
+                } else {
+                    process.options[key] = authValues[key];
+                }
+            }
+        });
+
         Object.keys(data).forEach((key) => {
             if (data[key] !== undefined) {
                 process[key] = data[key];
@@ -189,6 +200,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
         setLoading(true);
         try {
             if (process.id) {
+                console.log(process)
                 await post('/mailcollect/updateProcess/' + process['id'], process);
                 showToast(t("MAILCOLLECT.process_updated_successfully"), "success");
             }

@@ -45,10 +45,12 @@ type Field = {
     field_metadata?: boolean;
 };
 
-export function SortableField({ field, onUpdateField, onDeleteField, module }: {
+export function SortableField({ field, onUpdateField, onDeleteField, module, activeOverlayId, setActiveOverlayId }: {
     field: Field;
     module?: string;
+    activeOverlayId: string | null;
     onDeleteField: (id: string) => void;
+    setActiveOverlayId: (id: string | null) => void;
     onUpdateField: (id: string, updated: Field) => void;
 }) {
     const op = useRef<OverlayPanel | null>(null);
@@ -69,9 +71,22 @@ export function SortableField({ field, onUpdateField, onDeleteField, module }: {
 
     const openOverlay = (e: React.MouseEvent) => {
         e.stopPropagation();
-        op.current?.toggle(e);
-        setEditableField(field);
+
+        if (activeOverlayId === field.id) {
+            op.current?.hide();
+            setActiveOverlayId(null);
+        } else {
+            setActiveOverlayId(field.id);
+            op.current?.toggle(e);
+            setEditableField(field);
+        }
     };
+
+    useEffect(() => {
+        if (activeOverlayId !== field.id) {
+            op.current?.hide();
+        }
+    }, [activeOverlayId]);
 
     const handleSave = () => {
         onUpdateField(field.id, editableField);

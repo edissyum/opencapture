@@ -88,7 +88,7 @@ export default function Sidebar() {
         <aside
             className={ `min-h-screen px-3 py-2 flex flex-col border-r border-r-(--border-secondary) shrink-0 transition-all ${ collapsed ? "w-18" : "w-65" }` }>
             <div
-                className={ `flex items-center max-w-10/12 min-h-18 max-h-30 gap-3 mb-3 ${ collapsed ? "p-2" : "p-4" }` }>
+                className={ `flex items-center max-w-10/12 min-h-18 max-h-30 gap-3 mb-3 ${ collapsed ? "p-3" : "p-4" }` }>
                 { !collapsed && (
                     <LoginImage className="mx-auto"></LoginImage>
                 ) }
