@@ -16,22 +16,42 @@
 
 import { z } from "zod";
 import { t } from "i18next";
+import { File, X } from "lucide-react";
+import { Panel } from "primereact/panel";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
+import { InputSwitch } from "primereact/inputswitch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 
+import { Button } from "../../Button";
+import { Dropdown } from "../../Dropdown";
+import { Loader } from "../../loader/Loader";
+import { showToast } from "../../ToastProvider";
 import { DynamicForm } from "../../form/DynamicForm";
+import { DoctypesTree } from "../doctypes/doctypesTree";
 
 export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }) {
+    const navigate = useNavigate();
     const { get, post, put } = axiosApiCall();
     const { aiDoctypeId } = useParams<{ aiDoctypeId: any }>();
-    const navigate = useNavigate();
+
+    const [forms, setForms] = useState<any[]>([]);
+    const [doctypes, setDoctypes] = useState<any[]>([]);
 
     const [aiDoctype, setAiDoctype] = useState<any>({});
+    const [documents, setDocuments] = useState<any[]>([]);
+    const [workflows, setWorkflows] = useState<any[]>([]);
+
     const [loading, setLoading] = useState(false);
+    const [loadingUpdate, setLoadingUpdate] = useState(false);
+
+    const [selectedFormId, setSelectedFormId] = useState<number>();
+    const [tmpDoctype, setTmpDoctype] = useState<any>(null);
+    const [selectedDoc, setSelectedDoc] = useState<any>(null);
+    const [showDoctypeSelection, setShowDoctypeSelection] = useState(false);
 
     // Fetch the AI Doctype details if editing an existing one
     useEffect(() => {
@@ -42,6 +62,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
             try {
                 const response = await get(`/ai/getById/${ aiDoctypeId }`);
                 setAiDoctype(response);
+                setDocuments(response.documents || []);
             } catch (error) {
                 console.error("Failed to fetch AI Doctype details:", error);
             } finally {
@@ -51,6 +72,71 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
 
         fetchAiDoctype().then();
     }, [aiDoctypeId]);
+
+    // Fetch documents if creating new AI Doctype
+    useEffect(() => {
+        if (aiDoctypeId) return;
+
+        const fetchDocuments = async () => {
+            try {
+                const response = await get(`/ai/${ module }/getTrainDocuments`);
+
+                const docs: any = [];
+                response.forEach((doc: any) => {
+                    if (!docs.some((d: any) => d.folder === doc)) {
+                        docs.push({ folder: doc, active: false, workflow_id: null });
+                    }
+                });
+                setDocuments(docs);
+            } catch (error) {
+                console.error("Failed to fetch documents:", error);
+            }
+        }
+
+        fetchDocuments().then();
+    }, []);
+
+    // Fetch workflows if module is verifier
+    useEffect(() => {
+        if (module !== 'verifier') return;
+
+        const fetchWorkflows = async () => {
+            try {
+                const response = await get(`/workflows/${ module }/list`);
+                setWorkflows(response.workflows);
+            } catch (error) {
+                console.error("Failed to fetch workflows:", error);
+            }
+        }
+
+        fetchWorkflows().then();
+    }, []);
+
+    // Fetch forms and doctypes if module is splitter
+    useEffect(() => {
+        if (module !== 'splitter') return;
+
+        const fetchForms = async () => {
+            try {
+                const response = await get(`/forms/${ module }/list`);
+                setForms(response.forms);
+            } catch (error) {
+                console.error("Failed to fetch forms:", error);
+            }
+        }
+
+        const fetchDoctypes = async () => {
+            try {
+                const response = await get(`/doctypes/list`);
+                setDoctypes(response.doctypes);
+            } catch (error) {
+                console.error("Failed to fetch doctypes:", error);
+            }
+        }
+
+        fetchForms().then();
+        fetchDoctypes().then();
+    }, []);
 
     const modelSchema: any = z.object({
         model_label: z.string().describe(JSON.stringify({
@@ -68,11 +154,12 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
         min_proba: z.number().describe(JSON.stringify({
             required: true,
             component: "input",
+            type: "number",
             label: t("AI-DOCTYPES.min_proba")
         }))
     });
 
-    const { control, watch, setValue, setError, clearErrors, handleSubmit, formState: { errors } } = useForm({
+    const { control, setValue, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(modelSchema),
         mode: "onChange",
         defaultValues: {
@@ -85,21 +172,222 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
     // Fill ai doctype when data is loaded
     useEffect(() => {
         if (aiDoctype) {
-            setValue('model_label', aiDoctype.model_label || '');
-            setValue('model_path', aiDoctype.model_path || '');
             setValue('min_proba', aiDoctype.min_proba || 0);
+            setValue('model_path', aiDoctype.model_path || '');
+            setValue('model_label', aiDoctype.model_label || '');
         }
     }, [aiDoctype]);
 
+    const handleModelUpdate = async (data: any) => {
+        if (Object.keys(errors).length > 0) return;
+
+        const payload = {
+            ...data,
+            documents: documents
+        };
+
+        try {
+            setLoadingUpdate(true);
+            await put(`ai/${ module }/update/${ aiDoctypeId }`, payload);
+            showToast(t('AI-DOCTYPES.update_success'), 'success');
+        } catch (error) {
+            console.error("Failed to update AI Doctype:", error);
+        } finally {
+            setLoadingUpdate(false);
+        }
+    }
+
+    const handleModelCreate = async (data: any) => {
+        if (Object.keys(errors).length > 0) return;
+
+        const payload = {
+            ...data,
+            documents: documents
+        };
+
+        try {
+            setLoadingUpdate(true);
+            post(`ai/${ module }/trainModel/${ payload.model_path }`, payload).then();
+            showToast(t('AI-DOCTYPES.create_success'), 'success');
+            navigate(`/settings/${ module }/ai-doctypes`);
+        } catch (error) {
+            t
+            console.error("Failed to update AI Doctype:", error);
+        } finally {
+            setLoadingUpdate(false);
+        }
+    }
+
+    const handleWorkflowChange = (e: any, doc: any) => {
+        const updatedDocuments = documents.map((d: any) => {
+            if (d.folder === doc.folder) {
+                return { ...d, workflow_id: e.value };
+            }
+            return d;
+        });
+
+        setDocuments(updatedDocuments);
+    }
+
+    const handleDoctypeChange = (node: any) => {
+        const updatedDocuments = documents.map((d: any) => {
+            if (d.folder === selectedDoc.folder) {
+                return { ...d, doctype: node.key };
+            }
+            return d;
+        });
+
+        setDocuments(updatedDocuments);
+        setShowDoctypeSelection(false);
+    }
+
+    const handleFormChange = (e: any, doc: any) => {
+        const updatedDocuments = documents.map((d: any) => {
+            if (d.folder === doc.folder) {
+                return { ...d, form: e.value };
+            }
+            return d;
+        });
+
+        setDocuments(updatedDocuments);
+    }
+
+    const handleEnableDocument = (e: any, doc: any) => {
+        const updatedDocuments = documents.map((d: any) => {
+            if (d.folder === doc.folder) {
+                return { ...d, active: e.value };
+            }
+            return d;
+        });
+
+        setDocuments(updatedDocuments);
+    }
+
+    if (loading) return <Loader/>;
+
     return (
         <div className="h-full overflow-y-auto p-6">
-            <div>
-                <h1 className="text-lg font-semibold mb-4">
-                    { t('AI-DOCTYPES.details') }
-                </h1>
+            { showDoctypeSelection && selectedFormId && (
+                <>
+                    <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
+                         onClick={ () => setShowDoctypeSelection(false) }/>
+                    <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+                                    min-w-[32vw] h-3/4 max-h-screen border border-(--border-secondary)
+                                    rounded-lg bg-(--bg-primary) flex flex-col">
+                        <div className='flex items-center px-6 pt-6'>
+                            <h2>{ t('SPLITTER.select_doctype') }</h2>
+                            <div className='ml-auto cursor-pointer text-(--text-secondary)'
+                                 onClick={ () => setShowDoctypeSelection(false) }>
+                                <X/>
+                            </div>
+                        </div>
+                        <div className='overflow-hidden'>
+                            <DoctypesTree formId={ selectedFormId } canFolderBeSelected={ false }
+                                          editor={ false } onSelect={ (node) => handleDoctypeChange(node) }
+                                          onTmpSelect={ (node) => setTmpDoctype(node) }/>
+                        </div>
+                        <div className='mt-2 flex justify-end items-center gap-4 px-6 py-4'>
+                            <Button variant={ "no_bg" } onClick={ () => setShowDoctypeSelection(false) }>
+                                { t('GLOBAL.cancel') }
+                            </Button>
+                            <Button onClick={ () => handleDoctypeChange(tmpDoctype) } disabled={ !tmpDoctype }>
+                                { t('GLOBAL.select') }
+                            </Button>
+                        </div>
+                    </div>
+                </>
+            ) }
 
-                <div className='w-1/3'>
-                    <DynamicForm errors={ errors } control={ control } schema={ modelSchema }/>
+            <div className='flex flex-col gap-4'>
+                <div>
+                    <h1 className="text-lg font-semibold mb-2">
+                        { t('AI-DOCTYPES.details') }
+                    </h1>
+
+                    <div className='w-1/3'>
+                        <DynamicForm errors={ errors } control={ control } schema={ modelSchema }/>
+                    </div>
+                </div>
+                <div>
+                    <h1 className="text-lg font-semibold mb-2">
+                        { t('AI-DOCTYPES.choose_documents') }
+                    </h1>
+
+                    <div className='grid grid-cols-4 gap-4'>
+                        { documents && documents.map((doc: any) => (
+                            <Panel key={ doc.folder } header={
+                                <div className='flex items-center'>
+                                    <span>{ doc.folder }</span>
+                                    <span className='ml-auto'>
+                                        <InputSwitch checked={ doc.active } onChange={ (e) => handleEnableDocument(e, doc) }/>
+                                    </span>
+                                </div>
+                            }>
+                                <div className='p-6'>
+                                    { module === 'verifier' ? (
+                                        <Dropdown id={ 'workflow' } value={ doc.workflow_id } noMarginBottom={ true }
+                                                  label={ t('AI-DOCTYPES.workflow_associated') }
+                                                  options={ workflows.map((wf: any) => ({
+                                                      label: wf.label,
+                                                      value: wf.workflow_id
+                                                  })) }
+                                                  onChange={ (e) => handleWorkflowChange(e, doc) }/>
+                                    ) : (
+                                        <div>
+                                            <Dropdown id={ 'form' } value={ doc.form } noMarginBottom={ true }
+                                                      label={ t('AI-DOCTYPES.form_associated') }
+                                                      options={ forms.map((f: any) => ({
+                                                          label: f.label,
+                                                          value: f.id
+                                                      })) }
+                                                      onChange={ (e) => handleFormChange(e, doc) }/>
+
+                                            <div
+                                                className='relative mt-4 gap-4 cursor-pointer text-(--text-secondary) hover:text-(--color-primary)'
+                                                onClick={ () => {
+                                                    setSelectedDoc(doc);
+                                                    setSelectedFormId(doc.form);
+                                                    setShowDoctypeSelection(true);
+                                                } }>
+                                                { doctypes.find((dt: any) => dt.key === doc.doctype) ? (
+                                                    <>
+                                                        <p className='absolute -top-2 text-xs text-(--text-secondary) bg-(--bg-primary) px-1 rounded left-3'>
+                                                            { t('AI-DOCTYPES.select_doctype') }
+                                                        </p>
+                                                        <Button variant="no_bg_border"
+                                                                className='w-full justify-start px-4! text-(--text-primary)'>
+                                                            <File size={ 18 }/>
+                                                            <span>{ doctypes.find((dt: any) => dt.key === doc.doctype)?.label }</span>
+                                                        </Button>
+                                                    </>
+                                                ) : (
+                                                    <Button variant="no_bg_border" disabled={ !doc.form }
+                                                            className='w-full justify-start px-4!'>
+                                                        { t('AI-DOCTYPES.click_to_select_doctype') }
+                                                    </Button>
+                                                ) }
+                                            </div>
+                                        </div>
+                                    ) }
+                                </div>
+                            </Panel>
+                        )) }
+                    </div>
+                </div>
+                <div className="w-fit">
+                    { aiDoctypeId ? (
+                        <Button
+                            onClick={ handleSubmit(handleModelUpdate) }
+                            disabled={ loadingUpdate || Object.keys(errors).length > 0 }>
+                            { loadingUpdate ? t('GLOBAL.updating') : t('AI-DOCTYPES.update') }
+                        </Button>
+                    ) : (
+                        <Button
+                            onClick={ handleSubmit(handleModelCreate) }
+                            disabled={ loading || Object.keys(errors).length > 0 }>
+                            { loading ? t('GLOBAL.creating') : t('AI-DOCTYPES.create') }
+                        </Button>
+                    ) }
                 </div>
             </div>
         </div>

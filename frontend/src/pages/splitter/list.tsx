@@ -303,7 +303,7 @@ export function SplitterListPage() {
         setSelectedForm('');
         setSelectedStatus('NEW');
     }
-    console.log(displayFilters)
+
     return (
         <div className='flex h-full w-full overflow-hidden'>
             <div className={ `h-full transition-all border-r-2 border-(--border-secondary) pb-10

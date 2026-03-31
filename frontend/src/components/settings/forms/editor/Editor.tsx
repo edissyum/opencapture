@@ -425,7 +425,6 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     }
 
     const handleChangeLabel = async () => {
-        console.log(selectedZone)
         const zone_id = selectedZone.id.replace("zone-", "");
         showConfirmDialogWithInput({
             value: selectedZone.name,
@@ -572,14 +571,14 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
             <DragOverlay>
                 { (activeDragItem && activeDragItem.type === 'field') && (
                     <div
-                        className='flex flex-col border-2 border-(--border-secondary) rounded-lg bg-(--bg-primary) p-2 w-full opacity-60 cursor-grabbing'>
+                        className='flex flex-col border border-(--border-secondary) rounded-lg bg-(--bg-primary) p-2 w-full opacity-60 cursor-grabbing'>
                         <span className='font-semibold'>{ t(activeDragItem.field.label) }</span>
                         <span className='text-(--text-secondary)'>{ activeDragItem.field.typeLabel }</span>
                     </div>
                 ) }
                 { (activeDragItem && activeDragItem.from === 'palette') && (
                     <div
-                        className='flex flex-col border-2 border-(--border-secondary) rounded-lg bg-(--bg-primary) p-2 w-full opacity-60 cursor-grabbing'>
+                        className='flex flex-col border border-(--border-secondary) rounded-lg bg-(--bg-primary) p-2 w-full opacity-60 cursor-grabbing'>
                         <span className='font-semibold'>{ t(activeDragItem.label) }</span>
                         <span className='text-(--text-secondary)'>{ activeDragItem.typeLabel }</span>
                     </div>

@@ -671,7 +671,8 @@
         "empty_documents_error": "Validation impossible : un ou plusieurs documents du lot sont vides",
         "form_changed": "Formulaire changé avec succès",
         "unlabeled_document_error": "Validation impossible : un ou plusieurs documents du lot ne sont pas typés",
-        "select_doctype": "Sélectionner un type de document"
+        "select_doctype": "Sélectionner un type de document",
+        "empty_document_error": "Liassage impossible : un document du lot est vide. Merci de supprimer les documents vides avant de procéder au liassage"
     },
     "UPLOAD": {
         "upload_dropzone": "Cliquez pour choisir un fichier",
@@ -1204,7 +1205,16 @@
         "test_model_desc": "Déposez un fichier pour tester la prédiction du modèle",
         "prediction": "Prédiction du modèle",
         "proba": "Probabilité de la prédiction",
-        "test_model_result": "Résultat du test du modèle de typologie de document IA"
+        "test_model_result": "Résultat du test du modèle de typologie de document IA",
+        "choose_documents": "Choix des documents",
+        "workflow_associated": "Workflow associé",
+        "create": "Créer le modèle",
+        "update": "Mettre à jour le modèle",
+        "create_success": "Modèle de type de document IA créé avec succès. Entraînement du modèle en cours, cela peut prendre plusieurs minutes. Le modèle sera disponible une fois l'entraînement terminé",
+        "update_success": "Modèle de type de document IA mis à jour avec succès",
+        "form_associated": "Formulaire associé",
+        "click_to_select_doctype": "Sélectionner un type de document",
+        "select_doctype": "Type de document associé"
     },
     "DOCTYPES": {
         "root": "root",

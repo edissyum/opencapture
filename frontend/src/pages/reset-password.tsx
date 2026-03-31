@@ -216,7 +216,7 @@ export function ResetPassword() {
                                     { t('AUTH.reset') }
                                 </Button>
                             ) : (
-                                <Button loading={ sending } type="submit"  className='w-full'
+                                <Button loading={ sending } type="submit" className='w-full'
                                         disabled={ !smtpStatus || !!emailError || !email }
                                         onClick={ handleSendEmail }>
                                     { t('AUTH.send_email') }

@@ -64,11 +64,9 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
     const [inputScripting, setInputScripting] = useState(false);
     const [processScripting, setProcessScripting] = useState(false);
-    const [outputScripting, _] = useState(false);
 
     const [inputScript, setInputScript] = useState('');
     const [processScript, setProcessScript] = useState('');
-    const [outputScript, setOutputScript] = useState('');
 
     const [allowScripting, setAllowScripting] = useState(false);
 
@@ -216,8 +214,6 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                                             setInputScript(inputValue);
                                         } else if (key === 'process') {
                                             setProcessScript(inputValue);
-                                        } else if (key === 'output') {
-                                            setOutputScript(inputValue);
                                         }
                                     } else {
                                         workflowSetValue(inputKey, inputValue);
@@ -587,9 +583,6 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         if (processScripting || processScript) {
             payload.process['script'] = processScript;
         }
-        if (outputScripting || outputScript) {
-            payload.output['script'] = outputScript;
-        }
 
         try {
             if (workflowId) {
@@ -682,7 +675,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                     } }>
                         <FloatLabel className="w-full">
                             <Editor
-                                className='border-2 border-(--border-secondary) rounded-md p-2'
+                                className='border border-(--border-secondary) rounded-md p-2'
                                 height="50vh"
                                 defaultLanguage="python"
                                 defaultValue={ inputScript }
@@ -763,7 +756,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                     } }>
                         <FloatLabel className="w-full">
                             <Editor
-                                className='border-2 border-(--border-secondary) rounded-md p-2'
+                                className='border border-(--border-secondary) rounded-md p-2'
                                 height="50vh"
                                 defaultLanguage="python"
                                 defaultValue={ processScript }

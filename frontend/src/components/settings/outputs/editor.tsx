@@ -16,8 +16,10 @@
 
 import { z } from "zod";
 import { t } from "i18next";
+import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Stepper } from "primereact/stepper";
+import { useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { StepperPanel } from "primereact/stepperpanel";
@@ -25,13 +27,13 @@ import { TabPanel, TabView } from "primereact/tabview";
 
 import { getCompressTypeOptions, getSystemFieldsOptions } from "./helpers";
 
+import Input from "../../Input";
+import { Button } from "../../Button";
 import { Loader } from "../../loader/Loader";
 import { DynamicForm } from "../../form/DynamicForm";
+
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
-import { useCustomFields } from "../../../services/hooks/useCustomFields.tsx";
-import { Button } from "../../Button.tsx";
-import { ArrowLeft } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { useCustomFields } from "../../../services/hooks/useCustomFields";
 
 export function OutputEditor({ module }: { module: string }) {
     const { get, post, del } = axiosApiCall();
@@ -41,28 +43,12 @@ export function OutputEditor({ module }: { module: string }) {
     const stepperRef = useRef<any>(null);
     const [stepperIndex, setStepperIndex] = useState(0);
 
+    const [output, setOutput] = useState<any>(null);
     const [outputTypes, setOutputTypes] = useState([]);
-    const [outputType, setOutputType] = useState('');
+    const [outputType, setOutputType] = useState<any>([]);
+    const [allowedPath, setAllowedPath] = useState('');
 
     const { customFields } = useCustomFields(module);
-
-    // Fetch output types for dropdown
-    useEffect(() => {
-        const fetchOutputTypes = async () => {
-            try {
-                const response = await get(`/outputs/${ module }/getOutputsTypes`);
-                if (response && response.outputs_types) {
-                    setOutputTypes(response.outputs_types);
-                }
-            } catch (error) {
-                console.error("Error fetching output types:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchOutputTypes().then();
-    }, []);
 
     const detailSchema = z.object({
         output_type_id: z.string().min(3).describe(JSON.stringify({
@@ -79,15 +65,15 @@ export function OutputEditor({ module }: { module: string }) {
         compress_type: z.string().describe(JSON.stringify({
             required: false,
             component: "dropdown",
-            disabled: !['export_pdf', 'export_cmis', 'export_openads'].includes(outputType),
+            show: ['export_pdf', 'export_cmis', 'export_openads'].includes(outputType?.output_type_id),
             label: t("OUTPUTS.compress_type"),
             options: getCompressTypeOptions().map((o: any) => ({ label: o.label, value: o.id }))
         })),
         ocrise: z.boolean().describe(JSON.stringify({
             required: false,
-            className: "flex items-center -mt-4",
+            className: "flex items-center -mt-4 col-span-2",
             component: "input_switch",
-            disabled: !['export_pdf', 'export_cmis', 'export_openads'].includes(outputType),
+            show: ['export_pdf', 'export_cmis', 'export_openads'].includes(outputType?.output_type_id),
             label: t("OUTPUTS.ocrise")
         }))
     });
@@ -109,7 +95,16 @@ export function OutputEditor({ module }: { module: string }) {
 
     // Update output type when changed
     useEffect(() => {
-        setOutputType(watchDetails('output_type_id'));
+        const outputTypeId = watchDetails('output_type_id');
+        const newOutputType: any = outputTypes.find((o: any) => o.output_type_id === outputTypeId);
+        if (newOutputType) {
+            setOutputType(newOutputType);
+            if (newOutputType.data?.options.auth.length > 0) {
+                setStepperIndex(0);
+            } else {
+                setStepperIndex(1);
+            }
+        }
     }, [watchDetails('output_type_id')]);
 
     // Fetch output details
@@ -124,14 +119,44 @@ export function OutputEditor({ module }: { module: string }) {
                         detailsSetValue(key, response[key]);
                     });
                 }
+                setOutput(response);
             } catch (error) {
                 console.error("Error fetching output details:", error);
+            }
+        };
+
+        fetchOutputDetails().then();
+    }, []);
+
+    // Fetch allowed path for output if needed
+    // Fetch output types
+    useEffect(() => {
+        const fetchAllowedPath = async () => {
+            try {
+                const response = await get(`/outputs/${ module }/allowedPath`);
+                if (response && response.allowedPath) {
+                    setAllowedPath(response.allowedPath);
+                }
+            } catch (error) {
+                console.error("Error fetching allowed path:", error);
+            }
+        }
+
+        const fetchOutputTypes = async () => {
+            try {
+                const response = await get(`/outputs/${ module }/getOutputsTypes`);
+                if (response && response.outputs_types) {
+                    setOutputTypes(response.outputs_types);
+                }
+            } catch (error) {
+                console.error("Error fetching output types:", error);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchOutputDetails().then();
+        fetchAllowedPath().then();
+        fetchOutputTypes().then();
     }, []);
 
     const handleNextStep: any = (data: FormData) => {
@@ -139,6 +164,28 @@ export function OutputEditor({ module }: { module: string }) {
         //     return;
         // }
         stepperRef.current?.nextCallback();
+    }
+
+    const handleAuthChange = (e: any, option: any) => {
+        const value = e.target.value;
+        setOutput((prev: any) => {
+            const newAuthOptions = prev.data.options.auth.map((o: any) => {
+                if (o.id === option.id) {
+                    return { ...o, value };
+                }
+                return o;
+            });
+            return {
+                ...prev,
+                data: {
+                    ...prev.data,
+                    options: {
+                        ...prev.data.options,
+                        auth: newAuthOptions
+                    }
+                }
+            };
+        });
     }
 
     const handlePreviousStep = () => stepperRef.current?.prevCallback();
@@ -154,14 +201,24 @@ export function OutputEditor({ module }: { module: string }) {
                     </h1>
 
                     <div className='w-full'>
-                        <DynamicForm errors={ detailsErrors } control={ detailsControl } schema={ detailSchema }
-                                     grid={ 2 }/>
+                        <DynamicForm errors={ detailsErrors } control={ detailsControl } schema={ detailSchema } grid={ 2 }/>
                     </div>
                 </div>
 
                 <Stepper ref={ stepperRef } linear className='p-4' activeStep={ stepperIndex }
                          onChangeStep={ (e: any) => setStepperIndex(e.index) }>
                     <StepperPanel header={ t("SMTP.authentication") }>
+                        <div className='flex gap-6 w-full'>
+                            { outputType?.data?.options.auth.map((option: any) => (
+                                <div key={ option.id } className="w-full gap-2 mb-4">
+                                    <Input id={ option.id } type={ option.type } name={ option.id } label={ option.label }
+                                           value={ output?.data?.options?.auth?.find((o: any) => o.id === option.id)?.value || '' }
+                                           onChange={ (e) => {
+                                               handleAuthChange(e, option)
+                                           } }/>
+                                </div>
+                            )) }
+                        </div>
 
                         <div className="flex justify-end mt-6">
                             <Button onClick={ handleNextStep } className="ml-auto px-12"
@@ -204,7 +261,7 @@ export function OutputEditor({ module }: { module: string }) {
                                          onClick={ () => {
                                              navigator.clipboard.writeText(option.id);
                                          } }
-                                         className='flex flex-col border-2 border-(--border-secondary) rounded-lg
+                                         className='flex flex-col border border-(--border-secondary) rounded-lg
                                                    bg-(--bg-primary) px-6 py-2 w-full cursor-pointer hover:bg-(--bg-secondary)'>
                                         <div className='text-(--text-primary) font-semibold'>
                                             { option.label }
@@ -221,11 +278,11 @@ export function OutputEditor({ module }: { module: string }) {
                                 <div className="p-6 flex flex-col gap-2">
                                     { customFields.map((field: any) => (
                                         <div key={ field.id } data-tooltip-id='tooltip'
-                                                data-tooltip-content={ t("OUTPUTS.copy_to_clipboard") }
+                                             data-tooltip-content={ t("OUTPUTS.copy_to_clipboard") }
                                              onClick={ () => {
                                                  navigator.clipboard.writeText(field.label_short);
                                              } }
-                                             className='flex flex-col border-2 border-(--border-secondary) rounded-lg
+                                             className='flex flex-col border border-(--border-secondary) rounded-lg
                                                        bg-(--bg-primary) px-6 py-2 w-full cursor-pointer hover:bg-(--bg-secondary)'>
                                             <div className='text-(--text-primary) font-semibold'>
                                                 { field.label }

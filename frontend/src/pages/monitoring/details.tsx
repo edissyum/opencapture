@@ -17,8 +17,8 @@
 import { t } from "i18next";
 import DOMPurify from "dompurify";
 import { Loader2 } from "lucide-react";
+import { useParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 
@@ -90,19 +90,19 @@ export function MonitoringDetails() {
             id: 'status', field: 'status', header: t('GLOBAL.status'), body:
                 (row: any) => (
                     <span>
-                            { row.status === 'error' ? (
-                                <div className='flex items-center gap-2 text-(--text-error) w-fit'>
-                                    <div className='bg-(--bg-error) rounded-sm px-3 py-1 border-0'>
-                                        { t('MONITORING.error_small') }
-                                    </div>
+                        { row.status === 'error' ? (
+                            <div className='flex items-center gap-2 text-(--text-error) w-fit'>
+                                <div className='bg-(--bg-error) rounded-sm px-3 py-1 border-0'>
+                                    { t('MONITORING.error_small') }
                                 </div>
-                            ) : (
-                                <div
-                                    className='bg-(--color-primary)/10 text-(--color-primary) rounded-sm px-2 py-1 border-0 w-fit'>
-                                    { t('MONITORING.done_small') }
-                                </div>
-                            ) }
-                        </span>
+                            </div>
+                        ) : (
+                            <div
+                                className='bg-(--color-primary)/10 text-(--color-primary) rounded-sm px-2 py-1 border-0 w-fit'>
+                                { t('MONITORING.done_small') }
+                            </div>
+                        ) }
+                    </span>
                 )
         }
     ];
@@ -203,7 +203,7 @@ export function MonitoringDetails() {
                     <p className='text-(--text-secondary) font-semibold mb-1'>
                         { t('MONITORING.creation_date') }
                     </p>
-                    <p className='font-bold'>
+                    <p className='font-bold w-11/12'>
                         { process.creation_date_formated }
                     </p>
                 </div>
@@ -211,7 +211,9 @@ export function MonitoringDetails() {
                     <p className='text-(--text-secondary) font-semibold mb-1'>
                         { t('MONITORING.end_date') }
                     </p>
-                    <p className='font-bold'>{ process.end_date_formated }</p>
+                    <p className='font-bold w-11/12'>
+                        { process.end_date_formated }
+                    </p>
                 </div>
                 <div>
                     <p className='text-(--text-secondary) font-semibold mb-1'>

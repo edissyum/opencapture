@@ -89,6 +89,18 @@ def train_model(model_name, module):
             'message': f'/ai/{module}/trainModel/{model_name}'
         }), 403
 
+    check, message = rest_validator(request.json, [
+        {'id': 'min_proba', 'type': int, 'mandatory': True},
+        {'id': 'documents', 'type': list, 'mandatory': True},
+        {'id': 'model_path', 'type': str, 'mandatory': True},
+        {'id': 'model_label', 'type': str, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
     data = json.loads(request.data)
     try:
         artificial_intelligence.launch_train(data, model_name, module)
@@ -97,18 +109,29 @@ def train_model(model_name, module):
     return make_response(''), 200
 
 
-@bp.route('ai/<string:module>/update/<int:model_id>', methods=['POST'])
+@bp.route('ai/<string:module>/update/<int:model_id>', methods=['PUT'])
 @auth.token_required
 def update_model(model_id, module):
     list_priv = ['settings', 'update_ai_model'] if module == 'verifier' else ['settings', 'update_ai_model_splitter']
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/ai/{module}/update/{model_id}'}), 403
 
-    data = json.loads(request.data)
-    res = artificial_intelligence.rename_model(data['model_path'], model_id, module)
+    check, message = rest_validator(request.json, [
+        {'id': 'min_proba', 'type': int, 'mandatory': True},
+        {'id': 'documents', 'type': list, 'mandatory': True},
+        {'id': 'model_path', 'type': str, 'mandatory': True},
+        {'id': 'model_label', 'type': str, 'mandatory': True}
+    ])
+    if not check:
+        return make_response({
+            "errors": gettext('BAD_REQUEST'),
+            "message": message
+        }, 400)
+
+    res = artificial_intelligence.rename_model(request.json['model_path'], model_id, module)
     if res[1] != 200:
         return make_response(jsonify(res[0])), res[1]
-    res = artificial_intelligence.update_model(data, model_id, module, True)
+    res = artificial_intelligence.update_model(request.json, model_id, module, True)
     return make_response(jsonify(res)), 200
 
 

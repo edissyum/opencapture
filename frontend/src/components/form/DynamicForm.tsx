@@ -49,6 +49,11 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
 
     const fields = extractFieldsFromSchema(schema);
 
+    const visibleFields = fields.filter((field: any) => {
+        if (field.show === false) return false;
+        if (field.show === undefined || field.show) return true;
+    });
+
     const renderField = (field: any) => {
         switch (field.component) {
             case "input":
@@ -242,7 +247,7 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
 
     return (
         <div className={ `${ grid ? `grid grid-cols-${ grid }` : `flex flex-col` } gap-${ gap }` }>
-            { fields.map(renderField) }
+            { visibleFields.map(renderField) }
         </div>
     );
 }

@@ -15,21 +15,23 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-import os
-import json
 import glob
+import json
+import os
+import shutil
 import uuid
+from pathlib import Path
+
 import magic
 import pypdf
 import pyheif
-import shutil
 from PIL import Image
-from pathlib import Path
 from flask_babel import gettext
 from pytesseract import pytesseract
 from pdf2image import convert_from_path
-from .classes.Config import Config as _Config
 from werkzeug.datastructures.file_storage import FileStorage
+
+from .classes.Config import Config as _Config
 from .classes.ArtificialIntelligence import ArtificialIntelligence
 
 
@@ -51,10 +53,17 @@ def rest_validator(data, required_fields, only_data=False):
         except json.decoder.JSONDecodeError:
             return False, gettext('JSON_ERROR')
 
-    for field in required_fields:
-        error_message = (gettext('NO_DATA_OR_DATA_MISSING') + " : '" + field['id'] + "' " + gettext('IS_NOT') + " '"
-                         + str(field['type'])) + "'"
+    types = {
+        str: gettext('STRING'),
+        int: gettext('INTEGER'),
+        bool: gettext('BOOLEAN'),
+        dict: gettext('DICT'),
+        list: gettext('LIST')
+    }
 
+    for field in required_fields:
+        error_message = (gettext('NO_DATA_OR_DATA_MISSING') + " : '" + field['id'] + "' " + gettext('IS_NOT') + " <strong>"
+                         + types[field['type']] + "</strong>")
         if field['mandatory']:
             if field['id'] not in data or (field['type'] != bool and not data[field['id']]):
                 return False, gettext('NO_DATA_OR_DATA_MISSING') + " : '" + field['id'] + "'"
@@ -142,7 +151,7 @@ def check_extensions_mime(files, document_type='document'):
             response = {
                 "errors": gettext("UPLOAD_ERRROR"),
                 "message": gettext("FILE_MIME_NOT_ALLOWED") + ' : ' + '<b>' + ext + '</b>' +
-                ' / <b>' + mime_type + '</b>'
+                           ' / <b>' + mime_type + '</b>'
             }
             return response, 400
         _f.seek(0)
@@ -484,7 +493,7 @@ def find_workflow_with_ia(file, ai_model_id, database, docservers, files, ocr, l
 
             if code == 200 and prob >= min_proba:
                 for doc in ai_model[0]['documents']:
-                    if doc['folder'] == folder:
+                    if doc['folder'] == folder and doc['active']:
                         if module == 'verifier':
                             if doc['workflow_id']:
                                 form = database.select({

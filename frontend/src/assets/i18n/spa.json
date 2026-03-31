@@ -671,7 +671,8 @@
         "empty_documents_error": "",
         "form_changed": "",
         "unlabeled_document_error": "",
-        "select_doctype": ""
+        "select_doctype": "",
+        "empty_document_error": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Haga clic para elegir un archivo",
@@ -1204,7 +1205,16 @@
         "test_model_desc": "",
         "prediction": "",
         "proba": "",
-        "test_model_result": ""
+        "test_model_result": "",
+        "choose_documents": "",
+        "workflow_associated": "",
+        "create": "",
+        "update": "",
+        "create_success": "",
+        "update_success": "",
+        "form_associated": "",
+        "click_to_select_doctype": "",
+        "select_doctype": ""
     },
     "DOCTYPES": {
         "root": "",

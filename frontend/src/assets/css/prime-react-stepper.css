@@ -55,5 +55,10 @@
 }
 
 .p-stepper .p-stepper-header .p-stepper-action .p-stepper-number {
+    @apply bg-(--bg-secondary);
     @apply border-0;
+}
+
+.p-stepper .p-stepper-header .p-stepper-action .p-stepper-title {
+    @apply ml-0;
 }

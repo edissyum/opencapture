@@ -221,7 +221,7 @@ def launch_train(data, model_name, module):
     docservers = get_context_var('docservers', 9)
 
     folders = []
-    for element in data['docs']:
+    for element in data['documents']:
         folders.append(element['folder'])
     min_proba = data['min_proba']
 
@@ -233,12 +233,12 @@ def launch_train(data, model_name, module):
     start_time = time.time()
 
     args = {
-        'model_path': model_name.split("/")[-1],
+        'model_path': data['model_path'],
         'type': 'doctype',
         'status': 'training',
         'module': module,
-        'model_label': data['label'],
-        'documents': data['docs'] if 'docs' in data and data['docs'] else []
+        'model_label': data['model_label'],
+        'documents': data['documents'] if 'documents' in data and data['documents'] else []
     }
     model_id = create_model(args)[0].get('id')
 
@@ -250,7 +250,7 @@ def launch_train(data, model_name, module):
 
     args = {
         'train_time': int(_t2),
-        'documents': json.dumps(data["docs"]),
+        'documents': json.dumps(data["documents"]),
         'min_proba': min_proba if min_proba is not None else "",
         'model_id': model_id
     }
@@ -260,7 +260,7 @@ def launch_train(data, model_name, module):
         'ip': request.remote_addr,
         'submodule': 'create_ai_model',
         'user_info': request.environ['user_info'],
-        'desc': gettext('CREATE_AI_MODEL', model=data['label'])
+        'desc': gettext('CREATE_AI_MODEL', model=data['model_label'])
     })
 
 

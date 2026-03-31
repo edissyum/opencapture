@@ -20,22 +20,22 @@ import { OctagonX, TriangleAlert } from "lucide-react";
 export default function Hint({ children, variant = "success" }: any) {
     if (!children) return null;
 
-    const baseClasses = "p-4 border-2 border-r-0 border-b-0 border-t-0 font-semibold";
+    const baseClasses = "p-4 border-0 border-l-4 font-semibold";
     const variants: any = {
-        success: "bg-(--bg-selected) border-(--border-primary)",
         warning: "bg-yellow-500/10 border-yellow-500",
-        error: "bg-(--text-error)/10 border-(--text-error)"
+        error: "bg-(--text-error)/10 border-(--text-error)",
+        success: "bg-(--bg-selected) border-(--border-primary)"
     };
     const textVariants: any = {
-        success: "text-(--color-primary)",
         warning: "text-yellow-700",
-        error: "text-(--text-error)"
+        error: "text-(--text-error)",
+        success: "text-(--color-primary)"
     };
 
     const logoVariants: any = {
         success: "",
         error: <OctagonX className={ `${ textVariants[variant] } mr-2` }/>,
-        warning: <TriangleAlert className={ `${ textVariants[variant] } mr-2` }/>,
+        warning: <TriangleAlert className={ `${ textVariants[variant] } mr-2` }/>
     };
 
     return (

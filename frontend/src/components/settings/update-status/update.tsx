@@ -110,11 +110,11 @@ export function UpdateStatus({ module }: { module: 'verifier' | 'splitter' }) {
                 { statuses.map((status) => (
                     <div key={ status.id }
                          onClick={ () => setSelectedStatus(status.id) }
-                         className={ `border border-(--border-secondary) hover:border-(--border-primary) transition-colors
-                             rounded-lg px-18 py-4 cursor-pointer flex flex-col items-center justify-center gap-2
+                         className={ ` border border-(--border-secondary) hover:border-(--border-primary) transition-colors
+                             rounded-lg px-12 py-4 cursor-pointer flex flex-col items-center text-center justify-center gap-2
                              ${ selectedStatus === status.id ? 'bg-(--bg-selected) border-(--border-primary)! text-(--color-primary)' : 'text-(--text-secondary)' } ` }>
                         { icons.find((icon: any) => icon.id === status.id)?.icon }
-                        <p className='text-md font-semibold'>{ status.label }</p>
+                        <p className='text-md font-semibold min-w-32'>{ status.label }</p>
                     </div>
                 )) }
             </div>

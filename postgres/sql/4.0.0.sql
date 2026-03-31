@@ -179,3 +179,11 @@ ALTER TABLE mailcollect ADD COLUMN ocr_attachments BOOLEAN DEFAULT false;
 
 -- Replace doctypes code to use - instead of .
 UPDATE doctypes SET code = REPLACE(code, '.', '-') WHERE code LIKE '%.%';
+
+-- Rajout d'une balise active pour les documents pour les modèles de detection de types de documents
+UPDATE ai_models
+SET documents = (
+    SELECT jsonb_agg(elem || '{"active": true}'::jsonb)
+    FROM jsonb_array_elements(documents) AS elem
+)
+WHERE documents IS NOT NULL AND jsonb_typeof(documents) = 'array';

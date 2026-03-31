@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2026-03-12 15:19+0100\n"
+"POT-Creation-Date: 2026-03-31 14:24+0200\n"
 "PO-Revision-Date: 2025-05-13 10:40+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: es\n"
@@ -21,42 +21,63 @@ msgstr ""
 msgid "NO_SUBJECT"
 msgstr "Sin sujeto"
 
-#: src/functions.py:43 src/functions.py:55 src/functions.py:60
+#: src/functions.py:45 src/functions.py:65 src/functions.py:70
 msgid "NO_DATA_OR_DATA_MISSING"
 msgstr "Sin datos o faltan datos"
 
-#: src/functions.py:52
+#: src/functions.py:54
 msgid "JSON_ERROR"
 msgstr "Construcción de JSON errónea"
 
-#: src/functions.py:55
+#: src/functions.py:57
+msgid "STRING"
+msgstr ""
+
+#: src/functions.py:58
+msgid "INTEGER"
+msgstr ""
+
+#: src/functions.py:59
+msgid "BOOLEAN"
+msgstr ""
+
+#: src/functions.py:60
+msgid "DICT"
+msgstr ""
+
+#: src/functions.py:61
+#, fuzzy
+msgid "LIST"
+msgstr "No es un tipo de la instancia"
+
+#: src/functions.py:65
 msgid "IS_NOT"
 msgstr "No es un tipo de la instancia"
 
-#: src/functions.py:115 src/functions.py:133 src/functions.py:143
+#: src/functions.py:125 src/functions.py:143 src/functions.py:153
 msgid "UPLOAD_ERRROR"
 msgstr "Error subiendo archivo(s)"
 
-#: src/functions.py:116
+#: src/functions.py:126
 msgid "FORMATS_FILE_NOT_FOUND"
 msgstr ""
 "El archivo conteniendo extensiones permitidas y tipos de MIME no se han "
 "encontrado"
 
-#: src/functions.py:134
+#: src/functions.py:144
 msgid "FILE_EXTENSION_NOT_ALLOWED"
 msgstr "Extensión del archivo no permitida"
 
-#: src/functions.py:144
+#: src/functions.py:154
 msgid "FILE_MIME_NOT_ALLOWED"
 msgstr "El tipo de MIME del archivo no enlaza con la extensión"
 
-#: src/functions.py:510
+#: src/functions.py:520
 #, fuzzy
 msgid "FILTER_NOT_ALLOWED"
 msgstr "El tipo de MIME del archivo no enlaza con la extensión"
 
-#: src/functions.py:512
+#: src/functions.py:522
 #, fuzzy
 msgid "ORDER_NOT_ALLOWED"
 msgstr "Ruta de la carpeta no está habilitada"
@@ -65,7 +86,7 @@ msgstr "Ruta de la carpeta no está habilitada"
 msgid "WORFKLOW_NOT_FOUND"
 msgstr "El flujo de trabajo no existe"
 
-#: src/controllers/verifier.py:587 src/controllers/workflow.py:451
+#: src/controllers/verifier.py:587 src/controllers/workflow.py:453
 #: src/scripting_functions.py:166 src/scripting_functions.py:227
 msgid "SCRIPT_CONTAINS_NOT_ALLOWED_CODE"
 msgstr "El script contiene código no permitido"
@@ -747,7 +768,7 @@ msgid "DELETE_FORM_ERROR"
 msgstr "Error al eliminar formulario"
 
 #: src/controllers/forms.py:269 src/controllers/outputs.py:87
-#: src/controllers/positions_masks.py:172 src/controllers/workflow.py:142
+#: src/controllers/positions_masks.py:172 src/controllers/workflow.py:144
 msgid "COPY_OF"
 msgstr "Copia de"
 
@@ -884,16 +905,16 @@ msgstr "Error al eliminar salida"
 msgid "OUTPUT_FOLDER_CREATION_ERROR"
 msgstr "Error al crear la carpeta de creación"
 
-#: src/controllers/outputs.py:272 src/controllers/workflow.py:87
+#: src/controllers/outputs.py:272 src/controllers/workflow.py:89
 msgid "FOLDER_NOT_ALLOWED_ERROR"
 msgstr "Ruta de la carpeta no está habilitada"
 
-#: src/controllers/outputs.py:281 src/controllers/workflow.py:96
-#: src/controllers/workflow.py:365
+#: src/controllers/outputs.py:281 src/controllers/workflow.py:98
+#: src/controllers/workflow.py:367
 msgid "CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR"
 msgstr "No puede crear carpeta por permisos incorrectos"
 
-#: src/controllers/outputs.py:288 src/controllers/workflow.py:103
+#: src/controllers/outputs.py:288 src/controllers/workflow.py:105
 msgid "CAN_NOT_ACCESS_FOLDER_PERMISSION_ERROR"
 msgstr "No puede acceder carpeta por permisos incorrectos"
 
@@ -1011,11 +1032,11 @@ msgstr "Error al deshabilitar rol"
 msgid "ENABLE_ROLE_ERROR"
 msgstr "Error al habilitar rol"
 
-#: src/controllers/smtp.py:44
+#: src/controllers/smtp.py:42
 msgid "SMTP_TEST_SEND_EMAIL_ERROR"
 msgstr "Error al enviar email de prueba"
 
-#: src/controllers/smtp.py:50
+#: src/controllers/smtp.py:48
 msgid "SMTP_TEST_CONNECTION_ERROR"
 msgstr "Error al conectarse a SMTP"
 
@@ -1112,13 +1133,13 @@ msgstr "Error al chequear carpeta"
 msgid "OPENADS_CONNECTION_ERROR"
 msgstr "Error de conexión de OpenADS"
 
-#: src/controllers/splitter.py:802 src/controllers/verifier.py:785
+#: src/controllers/splitter.py:801 src/controllers/verifier.py:785
 #: src/models/splitter.py:507 src/models/splitter.py:561
 #: src/models/verifier.py:174 src/models/verifier.py:228
 msgid "GET_TOTALS_ERROR"
 msgstr "Error al recuperar los totales"
 
-#: src/controllers/splitter.py:907
+#: src/controllers/splitter.py:906
 msgid "GET_BATCH_OUTPUTS_ERROR"
 msgstr "Error al recuperar la salida"
 
@@ -1304,92 +1325,145 @@ msgstr "No hay formulario"
 msgid "FORM_NOT_FOUND"
 msgstr "El formulario no existe"
 
-#: src/controllers/workflow.py:86 src/controllers/workflow.py:95
-#: src/controllers/workflow.py:102
+#: src/controllers/workflow.py:88 src/controllers/workflow.py:97
+#: src/controllers/workflow.py:104
 msgid "WORKFLOW_FOLDER_CREATION_ERROR"
 msgstr "Error al crear la carpeta de entrada de flujo de trabajo"
 
-#: src/controllers/workflow.py:117
+#: src/controllers/workflow.py:119
 msgid "GET_WORKFLOW_BY_ID_ERROR"
 msgstr "Error al devolver flujo de trabajo"
 
-#: src/controllers/workflow.py:130
+#: src/controllers/workflow.py:132
 msgid "GET_WORKFLOW_BY_WORKFLOW_ID_ERROR"
 msgstr "Error al devolver flujo de trabajo por flujo de trabajo"
 
-#: src/controllers/workflow.py:155
+#: src/controllers/workflow.py:157
 msgid "DUPLICATE_WORKFLOW"
 msgstr "Flujo de trabajo duplicado"
 
-#: src/controllers/workflow.py:160 src/controllers/workflow.py:166
+#: src/controllers/workflow.py:162 src/controllers/workflow.py:168
 msgid "DUPLICATE_WORKFLOW_ERROR"
 msgstr "Error al duplicar flujo de trabajo"
 
-#: src/controllers/workflow.py:185 src/controllers/workflow.py:197
-#: src/controllers/workflow.py:208 src/controllers/workflow.py:232
+#: src/controllers/workflow.py:187 src/controllers/workflow.py:199
+#: src/controllers/workflow.py:210 src/controllers/workflow.py:234
 msgid "CREATE_WORKFLOW_ERROR"
 msgstr "Error al crear flujo de trabajo"
 
-#: src/controllers/workflow.py:186 src/controllers/workflow.py:242
+#: src/controllers/workflow.py:188 src/controllers/workflow.py:244
 msgid "NOT_ALLOWED_INPUT_PATH"
 msgstr "La ruta de entrada no está habilitada"
 
-#: src/controllers/workflow.py:198
+#: src/controllers/workflow.py:200
 msgid "WORKFLOW_ID_ALREADY_EXISTS"
 msgstr "El ID del flujo de trabajo ya existe"
 
-#: src/controllers/workflow.py:209
+#: src/controllers/workflow.py:211
 msgid "INPUT_FOLDER_ALREADY_EXISTS"
 msgstr ""
 "The document capture path is already set in another workflow\n"
 "La carpeta de entrada ya existe"
 
-#: src/controllers/workflow.py:224
+#: src/controllers/workflow.py:226
 msgid "CREATE_WORKFLOW"
 msgstr "Crear flujo de trabajo"
 
-#: src/controllers/workflow.py:241 src/controllers/workflow.py:284
-#: src/controllers/workflow.py:290
+#: src/controllers/workflow.py:243 src/controllers/workflow.py:286
+#: src/controllers/workflow.py:292
 msgid "UPDATE_WORKFLOW_ERROR"
 msgstr "Error al actualizar flujo de trabajo"
 
-#: src/controllers/workflow.py:279
+#: src/controllers/workflow.py:281
 msgid "UPDATE_WORKFLOW"
 msgstr "Actualizar flujo de trabajo"
 
-#: src/controllers/workflow.py:307
+#: src/controllers/workflow.py:309
 msgid "DELETE_WORKFLOW"
 msgstr "Eliminar flujo de trabajo"
 
-#: src/controllers/workflow.py:312 src/controllers/workflow.py:318
+#: src/controllers/workflow.py:314 src/controllers/workflow.py:320
 msgid "DELETE_WORKFLOW_ERROR"
 msgstr "Error al eliminar flujo de trabajo"
 
-#: src/controllers/workflow.py:364 src/controllers/workflow.py:391
+#: src/controllers/workflow.py:366 src/controllers/workflow.py:393
 msgid "FS_WATCHER_CREATION_ERROR"
 msgstr "Error al crear la configuración de fs watcher"
 
-#: src/controllers/workflow.py:392 src/controllers/workflow.py:440
+#: src/controllers/workflow.py:394 src/controllers/workflow.py:442
 msgid "FS_WATCHER_CONFIG_DOESNT_EXIST"
 msgstr "La configuración de fs watcher no existe"
 
-#: src/controllers/workflow.py:397
+#: src/controllers/workflow.py:399
 msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
 msgstr "El script de ejemplo no existe"
 
-#: src/controllers/workflow.py:403
+#: src/controllers/workflow.py:405
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr "La carpeta de script no existe"
 
-#: src/controllers/workflow.py:439
+#: src/controllers/workflow.py:441
 msgid "FS_WATCHER_DELETION_ERROR"
 msgstr "Error al eliminar fs watcher"
 
-#: src/controllers/workflow.py:461
+#: src/controllers/workflow.py:455 src/controllers/workflow.py:469
+#: src/rest/accounts.py:48 src/rest/accounts.py:126 src/rest/accounts.py:148
+#: src/rest/accounts.py:169 src/rest/accounts.py:195 src/rest/accounts.py:221
+#: src/rest/accounts.py:247 src/rest/accounts.py:302 src/rest/accounts.py:347
+#: src/rest/accounts.py:377 src/rest/accounts.py:419 src/rest/accounts.py:456
+#: src/rest/accounts.py:480 src/rest/accounts.py:595
+#: src/rest/artificial_intelligence.py:62
+#: src/rest/artificial_intelligence.py:115
+#: src/rest/artificial_intelligence.py:174
+#: src/rest/artificial_intelligence.py:209
+#: src/rest/artificial_intelligence.py:244 src/rest/attachments.py:38
+#: src/rest/attachments.py:57 src/rest/attachments.py:78 src/rest/auth.py:42
+#: src/rest/auth.py:59 src/rest/auth.py:74 src/rest/auth.py:96
+#: src/rest/auth.py:120 src/rest/auth.py:164 src/rest/auth.py:197
+#: src/rest/auth.py:230 src/rest/auth.py:255 src/rest/auth.py:274
+#: src/rest/config.py:52 src/rest/config.py:96 src/rest/config.py:117
+#: src/rest/config.py:148 src/rest/config.py:173 src/rest/config.py:196
+#: src/rest/config.py:220 src/rest/config.py:243 src/rest/config.py:287
+#: src/rest/config.py:306 src/rest/coog.py:37 src/rest/custom_fields.py:46
+#: src/rest/doctypes.py:60 src/rest/forms.py:46 src/rest/forms.py:86
+#: src/rest/forms.py:131 src/rest/forms.py:152 src/rest/forms.py:172
+#: src/rest/forms.py:197 src/rest/forms.py:268 src/rest/history.py:40
+#: src/rest/history.py:69 src/rest/history.py:89 src/rest/mailcollect.py:60
+#: src/rest/mailcollect.py:89 src/rest/mailcollect.py:110
+#: src/rest/mailcollect.py:139 src/rest/mem.py:37 src/rest/mem.py:56
+#: src/rest/mem.py:75 src/rest/mem.py:94 src/rest/mem.py:113
+#: src/rest/mem.py:132 src/rest/mem.py:151 src/rest/mem.py:170
+#: src/rest/mem.py:189 src/rest/mem.py:214 src/rest/monitoring.py:70
+#: src/rest/monitoring.py:103 src/rest/opencaptureformem.py:37
+#: src/rest/opencaptureformem.py:55 src/rest/opencrm.py:37
+#: src/rest/outputs.py:40 src/rest/outputs.py:111 src/rest/outputs.py:148
+#: src/rest/outputs.py:180 src/rest/positions_masks.py:42
+#: src/rest/positions_masks.py:63 src/rest/positions_masks.py:98
+#: src/rest/roles.py:40 src/rest/roles.py:75 src/rest/roles.py:94
+#: src/rest/roles.py:145 src/rest/smtp.py:39 src/rest/splitter.py:82
+#: src/rest/splitter.py:102 src/rest/splitter.py:143 src/rest/splitter.py:163
+#: src/rest/splitter.py:183 src/rest/splitter.py:218 src/rest/splitter.py:239
+#: src/rest/splitter.py:318 src/rest/status.py:44 src/rest/user.py:47
+#: src/rest/user.py:72 src/rest/user.py:94 src/rest/user.py:132
+#: src/rest/user.py:149 src/rest/user.py:165 src/rest/user.py:193
+#: src/rest/user.py:277 src/rest/verifier.py:58 src/rest/verifier.py:139
+#: src/rest/verifier.py:167 src/rest/verifier.py:239 src/rest/verifier.py:264
+#: src/rest/verifier.py:289 src/rest/verifier.py:312 src/rest/verifier.py:335
+#: src/rest/verifier.py:357 src/rest/verifier.py:381 src/rest/verifier.py:402
+#: src/rest/verifier.py:435 src/rest/verifier.py:464 src/rest/verifier.py:493
+#: src/rest/verifier.py:549 src/rest/verifier.py:588 src/rest/verifier.py:622
+#: src/rest/verifier.py:669 src/rest/verifier.py:691 src/rest/verifier.py:717
+#: src/rest/verifier.py:739 src/rest/workflow.py:41 src/rest/workflow.py:69
+#: src/rest/workflow.py:92 src/rest/workflow.py:143 src/rest/workflow.py:184
+#: src/rest/workflow.py:210 src/rest/workflow.py:242
+msgid "BAD_REQUEST"
+msgstr "Mala solicitud"
+
+#: src/controllers/workflow.py:466
 msgid "LINE"
 msgstr "línea"
 
-#: src/controllers/workflow.py:462
+#: src/controllers/workflow.py:467
 msgid "COLUMN"
 msgstr "columna"
 
@@ -1634,24 +1708,24 @@ msgstr "Error al actualizar flujo de trabajo"
 #: src/rest/artificial_intelligence.py:76
 #: src/rest/artificial_intelligence.py:88
 #: src/rest/artificial_intelligence.py:105
-#: src/rest/artificial_intelligence.py:120
-#: src/rest/artificial_intelligence.py:132
-#: src/rest/artificial_intelligence.py:153
-#: src/rest/artificial_intelligence.py:175
-#: src/rest/artificial_intelligence.py:185
-#: src/rest/artificial_intelligence.py:209
-#: src/rest/artificial_intelligence.py:219 src/rest/attachments.py:30
+#: src/rest/artificial_intelligence.py:131
+#: src/rest/artificial_intelligence.py:143
+#: src/rest/artificial_intelligence.py:164
+#: src/rest/artificial_intelligence.py:186
+#: src/rest/artificial_intelligence.py:196
+#: src/rest/artificial_intelligence.py:220
+#: src/rest/artificial_intelligence.py:230 src/rest/attachments.py:30
 #: src/rest/attachments.py:49 src/rest/attachments.py:69
 #: src/rest/attachments.py:91 src/rest/attachments.py:100
 #: src/rest/attachments.py:109 src/rest/attachments.py:120
 #: src/rest/attachments.py:131 src/rest/attachments.py:140 src/rest/auth.py:87
 #: src/rest/auth.py:140 src/rest/auth.py:150 src/rest/auth.py:176
 #: src/rest/auth.py:209 src/rest/auth.py:248 src/rest/auth.py:267
-#: src/rest/config.py:29 src/rest/config.py:42 src/rest/config.py:63
-#: src/rest/config.py:75 src/rest/config.py:86 src/rest/config.py:107
-#: src/rest/config.py:127 src/rest/config.py:137 src/rest/config.py:165
-#: src/rest/config.py:184 src/rest/config.py:207 src/rest/config.py:231
-#: src/rest/config.py:271 src/rest/config.py:289 src/rest/config.py:309
+#: src/rest/config.py:30 src/rest/config.py:43 src/rest/config.py:64
+#: src/rest/config.py:76 src/rest/config.py:87 src/rest/config.py:108
+#: src/rest/config.py:128 src/rest/config.py:138 src/rest/config.py:166
+#: src/rest/config.py:185 src/rest/config.py:208 src/rest/config.py:232
+#: src/rest/config.py:279 src/rest/config.py:297 src/rest/config.py:317
 #: src/rest/custom_fields.py:33 src/rest/custom_fields.py:58
 #: src/rest/custom_fields.py:68 src/rest/custom_fields.py:79
 #: src/rest/custom_fields.py:90 src/rest/custom_fields.py:100
@@ -1679,19 +1753,19 @@ msgstr "Error al actualizar flujo de trabajo"
 #: src/rest/positions_masks.py:143 src/rest/positions_masks.py:154
 #: src/rest/positions_masks.py:165 src/rest/positions_masks.py:176
 #: src/rest/positions_masks.py:187 src/rest/privileges.py:29
-#: src/rest/privileges.py:39 src/rest/roles.py:53 src/rest/roles.py:63
-#: src/rest/roles.py:85 src/rest/roles.py:104 src/rest/roles.py:114
-#: src/rest/roles.py:124 src/rest/roles.py:134 src/rest/splitter.py:31
+#: src/rest/privileges.py:39 src/rest/roles.py:55 src/rest/roles.py:65
+#: src/rest/roles.py:87 src/rest/roles.py:106 src/rest/roles.py:116
+#: src/rest/roles.py:126 src/rest/roles.py:136 src/rest/splitter.py:31
 #: src/rest/splitter.py:58 src/rest/splitter.py:68 src/rest/splitter.py:94
 #: src/rest/splitter.py:113 src/rest/splitter.py:123 src/rest/splitter.py:134
-#: src/rest/splitter.py:155 src/rest/splitter.py:175 src/rest/splitter.py:186
-#: src/rest/splitter.py:196 src/rest/splitter.py:221 src/rest/splitter.py:235
-#: src/rest/splitter.py:246 src/rest/splitter.py:257 src/rest/splitter.py:268
-#: src/rest/splitter.py:279 src/rest/splitter.py:290 src/rest/splitter.py:309
-#: src/rest/splitter.py:320 src/rest/splitter.py:335 src/rest/splitter.py:338
-#: src/rest/splitter.py:357 src/rest/splitter.py:369 src/rest/splitter.py:380
-#: src/rest/splitter.py:391 src/rest/splitter.py:401 src/rest/splitter.py:412
-#: src/rest/status.py:33 src/rest/user.py:31 src/rest/user.py:59
+#: src/rest/splitter.py:155 src/rest/splitter.py:175 src/rest/splitter.py:195
+#: src/rest/splitter.py:205 src/rest/splitter.py:230 src/rest/splitter.py:251
+#: src/rest/splitter.py:262 src/rest/splitter.py:273 src/rest/splitter.py:284
+#: src/rest/splitter.py:295 src/rest/splitter.py:306 src/rest/splitter.py:330
+#: src/rest/splitter.py:341 src/rest/splitter.py:356 src/rest/splitter.py:359
+#: src/rest/splitter.py:378 src/rest/splitter.py:390 src/rest/splitter.py:401
+#: src/rest/splitter.py:412 src/rest/splitter.py:422 src/rest/splitter.py:433
+#: src/rest/status.py:31 src/rest/user.py:31 src/rest/user.py:59
 #: src/rest/user.py:84 src/rest/user.py:106 src/rest/user.py:117
 #: src/rest/user.py:178 src/rest/user.py:205 src/rest/user.py:215
 #: src/rest/user.py:225 src/rest/user.py:242 src/rest/user.py:252
@@ -1709,59 +1783,9 @@ msgstr "Error al actualizar flujo de trabajo"
 #: src/rest/workflow.py:32 src/rest/workflow.py:54 src/rest/workflow.py:84
 #: src/rest/workflow.py:110 src/rest/workflow.py:122 src/rest/workflow.py:134
 #: src/rest/workflow.py:157 src/rest/workflow.py:169 src/rest/workflow.py:197
-#: src/rest/workflow.py:221 src/rest/workflow.py:232
+#: src/rest/workflow.py:222 src/rest/workflow.py:233
 msgid "UNAUTHORIZED_ROUTE"
 msgstr "No estás autorizado a acceder a esta ruta"
-
-#: src/rest/accounts.py:48 src/rest/accounts.py:126 src/rest/accounts.py:148
-#: src/rest/accounts.py:169 src/rest/accounts.py:195 src/rest/accounts.py:221
-#: src/rest/accounts.py:247 src/rest/accounts.py:302 src/rest/accounts.py:347
-#: src/rest/accounts.py:377 src/rest/accounts.py:419 src/rest/accounts.py:456
-#: src/rest/accounts.py:480 src/rest/accounts.py:595
-#: src/rest/artificial_intelligence.py:62
-#: src/rest/artificial_intelligence.py:163
-#: src/rest/artificial_intelligence.py:198
-#: src/rest/artificial_intelligence.py:233 src/rest/attachments.py:38
-#: src/rest/attachments.py:57 src/rest/attachments.py:78 src/rest/auth.py:42
-#: src/rest/auth.py:59 src/rest/auth.py:74 src/rest/auth.py:96
-#: src/rest/auth.py:120 src/rest/auth.py:164 src/rest/auth.py:197
-#: src/rest/auth.py:230 src/rest/auth.py:255 src/rest/auth.py:274
-#: src/rest/config.py:51 src/rest/config.py:95 src/rest/config.py:116
-#: src/rest/config.py:147 src/rest/config.py:172 src/rest/config.py:195
-#: src/rest/config.py:219 src/rest/config.py:242 src/rest/config.py:279
-#: src/rest/config.py:298 src/rest/coog.py:37 src/rest/custom_fields.py:46
-#: src/rest/doctypes.py:60 src/rest/forms.py:46 src/rest/forms.py:86
-#: src/rest/forms.py:131 src/rest/forms.py:152 src/rest/forms.py:172
-#: src/rest/forms.py:197 src/rest/forms.py:268 src/rest/history.py:40
-#: src/rest/history.py:69 src/rest/history.py:89 src/rest/mailcollect.py:60
-#: src/rest/mailcollect.py:89 src/rest/mailcollect.py:110
-#: src/rest/mailcollect.py:139 src/rest/mem.py:37 src/rest/mem.py:56
-#: src/rest/mem.py:75 src/rest/mem.py:94 src/rest/mem.py:113
-#: src/rest/mem.py:132 src/rest/mem.py:151 src/rest/mem.py:170
-#: src/rest/mem.py:189 src/rest/mem.py:214 src/rest/monitoring.py:70
-#: src/rest/monitoring.py:103 src/rest/opencaptureformem.py:37
-#: src/rest/opencaptureformem.py:55 src/rest/opencrm.py:37
-#: src/rest/outputs.py:40 src/rest/outputs.py:111 src/rest/outputs.py:148
-#: src/rest/outputs.py:180 src/rest/positions_masks.py:42
-#: src/rest/positions_masks.py:63 src/rest/positions_masks.py:98
-#: src/rest/roles.py:40 src/rest/roles.py:73 src/rest/roles.py:92
-#: src/rest/roles.py:143 src/rest/smtp.py:39 src/rest/splitter.py:82
-#: src/rest/splitter.py:102 src/rest/splitter.py:143 src/rest/splitter.py:163
-#: src/rest/splitter.py:209 src/rest/status.py:46 src/rest/user.py:47
-#: src/rest/user.py:72 src/rest/user.py:94 src/rest/user.py:132
-#: src/rest/user.py:149 src/rest/user.py:165 src/rest/user.py:193
-#: src/rest/user.py:277 src/rest/verifier.py:58 src/rest/verifier.py:139
-#: src/rest/verifier.py:167 src/rest/verifier.py:239 src/rest/verifier.py:264
-#: src/rest/verifier.py:289 src/rest/verifier.py:312 src/rest/verifier.py:335
-#: src/rest/verifier.py:357 src/rest/verifier.py:381 src/rest/verifier.py:402
-#: src/rest/verifier.py:435 src/rest/verifier.py:464 src/rest/verifier.py:493
-#: src/rest/verifier.py:549 src/rest/verifier.py:588 src/rest/verifier.py:622
-#: src/rest/verifier.py:669 src/rest/verifier.py:691 src/rest/verifier.py:717
-#: src/rest/verifier.py:739 src/rest/workflow.py:41 src/rest/workflow.py:69
-#: src/rest/workflow.py:92 src/rest/workflow.py:143 src/rest/workflow.py:184
-#: src/rest/workflow.py:209 src/rest/workflow.py:239
-msgid "BAD_REQUEST"
-msgstr "Mala solicitud"
 
 #: src/rest/attachments.py:113 src/rest/attachments.py:124
 #: src/rest/verifier.py:640
@@ -1773,7 +1797,7 @@ msgstr "Descargar archivo"
 msgid "USER_NOT_FOUND"
 msgstr "Host no encontrado"
 
-#: src/rest/config.py:33
+#: src/rest/config.py:34
 #, fuzzy
 msgid "CONFIG_NOT_FOUND"
 msgstr "Archivo no encontrado"

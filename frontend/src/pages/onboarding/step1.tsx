@@ -53,7 +53,7 @@ export function Step1() {
             <div className="flex gap-4">
                 { options.map((module) => (
                     <div key={ module['id'] }
-                         className={ `border-2 flex bg-(--bg-primary) items-center rounded-md cursor-pointer hover:shadow-lg p-6 ${ selectedModule === module['id'] ? 'border-(--border-primary)' : 'border-(--border-secondary)' }` }
+                         className={ `border flex bg-(--bg-primary) items-center rounded-md cursor-pointer hover:shadow-lg p-6 ${ selectedModule === module['id'] ? 'border-(--border-primary)' : 'border-(--border-secondary)' }` }
                          onClick={ () => setSelectedModule(module['id']) }>
                         <img src={ module['img'] } alt="" className="w-20 mr-4"/>
                         <div className="flex flex-col justify-center items-start">

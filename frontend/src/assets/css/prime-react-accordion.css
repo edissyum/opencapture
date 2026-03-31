@@ -110,6 +110,7 @@
 /* Input switch */
 .p-inputswitch {
     @apply -ml-1;
+    @apply mt-0.5;
     @apply scale-80;
 }
 
@@ -132,6 +133,7 @@
 }
 
 .p-panel-header {
+    @apply py-4;
     @apply border;
     @apply rounded-xl;
     @apply rounded-b-none;

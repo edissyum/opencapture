@@ -200,7 +200,6 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
         setLoading(true);
         try {
             if (process.id) {
-                console.log(process)
                 await post('/mailcollect/updateProcess/' + process['id'], process);
                 showToast(t("MAILCOLLECT.process_updated_successfully"), "success");
             }

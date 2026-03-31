@@ -76,8 +76,8 @@ export function DoctypesTree({
             if (doctypesList) {
                 setDoctypes(doctypesList);
                 setLoading(false);
+                return;
             }
-            return;
         }
 
         const fetchDocTypes = async () => {

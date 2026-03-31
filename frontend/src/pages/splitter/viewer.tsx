@@ -650,6 +650,13 @@ export function SplitterViewerPage() {
     }
 
     const handleDocumentPrincipal = () => {
+        for (const doc of documents) {
+            if (doc.pages.length === 0) {
+                showToast(t('SPLITTER.empty_document_error'), 'error');
+                return;
+            }
+        }
+
         showConfirmDialog({
             title: t('SPLITTER.set_document_principal'),
             message: t('SPLITTER.confirm_set_document_principal'),
@@ -954,7 +961,7 @@ export function SplitterViewerPage() {
             ) }
             { (!showAttachments) && (
                 <div className='flex justify-center'>
-                    <div className='fixed bottom-4 shadow-lg rounded-3xl flex justify-center items-center gap-4 p-3 bg-(--bg-primary) border-2
+                    <div className='fixed bottom-4 shadow-lg rounded-3xl flex justify-center items-center gap-4 p-3 bg-(--bg-primary) border
                             border-(--border-secondary) z-10'>
                         <div className={ `bg-(--bg-secondary) p-3 rounded-xl flex items-center gap-2
                             ${ selectedPages.length == 0 ? 'bg-(--bg-secondary)' : 'bg-(--bg-selected)' }` }>
@@ -1018,7 +1025,7 @@ export function SplitterViewerPage() {
                     <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
                          onClick={ () => setThumbnailSafe(null) }/>
                     <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                                    max-w-[32vw] border-2 border-(--border-secondary)
+                                    max-w-[32vw] border border-(--border-secondary)
                                     rounded-lg overflow-hidden">
                         <img src={ thumbnail } alt="Thumbnail"/>
                         <Button variant="secondary" size="sm" className="absolute top-2 right-2"
@@ -1034,12 +1041,10 @@ export function SplitterViewerPage() {
                     <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
                          onClick={ () => setShowDoctypeSelection(false) }/>
                     <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                                    min-w-[32vw] h-3/4 max-h-screen border-2 border-(--border-secondary)
+                                    min-w-[32vw] h-3/4 max-h-screen border border-(--border-secondary)
                                     rounded-lg bg-(--bg-primary) flex flex-col">
                         <div className='flex items-center px-6 pt-6'>
-                            <h2>
-                                { t('SPLITTER.select_doctype') }
-                            </h2>
+                            <h2>{ t('SPLITTER.select_doctype') }</h2>
                             <div className='ml-auto cursor-pointer text-(--text-secondary)'
                                  onClick={ () => setShowDoctypeSelection(false) }>
                                 <X/>
@@ -1229,7 +1234,7 @@ export function SplitterViewerPage() {
                                         <div className='cursor-pointer hover:text-(--color-primary)'
                                              onClick={ () => typeDocument(document) }>
                                             { !document.doctype_label && (
-                                                <div className='hover:underline transition-colors items-center gap-2
+                                                <div className='transition-colors items-center gap-2
                                                                 hover:text-(--text-error) text-(--text-error)/80 font-semibold flex'>
                                                     <div className='bg-(--text-error)/20 rounded-md p-1'>
                                                         <FolderTree size={ 20 }/>
@@ -1237,14 +1242,14 @@ export function SplitterViewerPage() {
                                                     { t('SPLITTER.type_document') }
                                                 </div>
                                             ) }
-                                            <div className='hover:underline transition-colors items-center gap-2
+                                            <div className='transition-colors items-center gap-2
                                                             font-semibold flex'>
                                                 { document.doctype_label && (
                                                     <div className='bg-(--bg-secondary) rounded-md p-1'>
                                                         <File size={ 20 }/>
                                                     </div>
                                                 ) }
-                                                <div className='hover:underline'>{ document.doctype_label }</div>
+                                                <div>{ document.doctype_label }</div>
                                             </div>
                                         </div>
                                         <div
