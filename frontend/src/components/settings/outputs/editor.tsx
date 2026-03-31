@@ -34,6 +34,7 @@ import { DynamicForm } from "../../form/DynamicForm";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 import { useCustomFields } from "../../../services/hooks/useCustomFields";
+import { executeAuthFunction, getTestConnectionMapping } from "./functions.tsx";
 
 export function OutputEditor({ module }: { module: string }) {
     const { get, post, del } = axiosApiCall();
@@ -159,10 +160,13 @@ export function OutputEditor({ module }: { module: string }) {
         fetchOutputTypes().then();
     }, []);
 
-    const handleNextStep: any = (data: FormData) => {
+    const handleNextStep: any = async (data: FormData) => {
         // if (data && Object.keys(workflowErrors).length > 0) {
         //     return;
         // }
+        const authFunctionName: any = getTestConnectionMapping().find((m: any) => m.id === outputType.output_type_id)?.function;
+        const authOptions = output?.data?.options?.auth || [];
+        const res = await executeAuthFunction(authFunctionName, authOptions);
         stepperRef.current?.nextCallback();
     }
 

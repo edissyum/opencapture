@@ -26,7 +26,7 @@ bp = Blueprint('mem', __name__, url_prefix='/ws/')
 @bp.route('mem/testConnection', methods=['POST'])
 @auth.token_required
 def test_connection():
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'host', 'type': str, 'mandatory': True},
         {'id': 'login', 'type': str, 'mandatory': True},
         {'id': 'password', 'type': str, 'mandatory': True}
@@ -38,14 +38,14 @@ def test_connection():
             "message": message
         }, 400)
 
-    connection = mem.test_connection(request.json['args'])
+    connection = mem.test_connection(request.json)
     return make_response(jsonify({'status': connection}), 200)
 
 
 @bp.route('mem/getUsers', methods=['POST'])
 @auth.token_required
 def get_users():
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'host', 'type': str, 'mandatory': True},
         {'id': 'login', 'type': str, 'mandatory': True},
         {'id': 'password', 'type': str, 'mandatory': True}
@@ -57,14 +57,14 @@ def get_users():
             "message": message
         }, 400)
 
-    users = mem.get_users(request.json['args'])
+    users = mem.get_users(request.json)
     return make_response(jsonify(users)), 200
 
 
 @bp.route('mem/getDoctypes', methods=['POST'])
 @auth.token_required
 def get_doctypes():
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'host', 'type': str, 'mandatory': True},
         {'id': 'login', 'type': str, 'mandatory': True},
         {'id': 'password', 'type': str, 'mandatory': True}
@@ -76,14 +76,14 @@ def get_doctypes():
             "message": message
         }, 400)
 
-    doctypes = mem.get_doctypes(request.json['args'])
+    doctypes = mem.get_doctypes(request.json)
     return make_response(jsonify(doctypes)), 200
 
 
 @bp.route('mem/getEntities', methods=['POST'])
 @auth.token_required
 def get_entities():
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'host', 'type': str, 'mandatory': True},
         {'id': 'login', 'type': str, 'mandatory': True},
         {'id': 'password', 'type': str, 'mandatory': True}
@@ -95,14 +95,14 @@ def get_entities():
             "message": message
         }, 400)
 
-    entities = mem.get_entities(request.json['args'])
+    entities = mem.get_entities(request.json)
     return make_response(jsonify(entities)), 200
 
 
 @bp.route('mem/getCustomFields', methods=['POST'])
 @auth.token_required
 def get_custom_fields():
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'host', 'type': str, 'mandatory': True},
         {'id': 'login', 'type': str, 'mandatory': True},
         {'id': 'password', 'type': str, 'mandatory': True}
@@ -114,14 +114,14 @@ def get_custom_fields():
             "message": message
         }, 400)
 
-    entities = mem.get_custom_fields(request.json['args'])
+    entities = mem.get_custom_fields(request.json)
     return make_response(jsonify(entities)), 200
 
 
 @bp.route('mem/getContactsCustomFields', methods=['POST'])
 @auth.token_required
 def get_contact_custom_fields():
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'host', 'type': str, 'mandatory': True},
         {'id': 'login', 'type': str, 'mandatory': True},
         {'id': 'password', 'type': str, 'mandatory': True}
@@ -133,14 +133,14 @@ def get_contact_custom_fields():
             "message": message
         }, 400)
 
-    entities = mem.get_contact_custom_fields(request.json['args'])
+    entities = mem.get_contact_custom_fields(request.json)
     return make_response(jsonify(entities)), 200
 
 
 @bp.route('mem/getPriorities', methods=['POST'])
 @auth.token_required
 def get_priorities():
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'host', 'type': str, 'mandatory': True},
         {'id': 'login', 'type': str, 'mandatory': True},
         {'id': 'password', 'type': str, 'mandatory': True}
@@ -152,14 +152,14 @@ def get_priorities():
             "message": message
         }, 400)
 
-    priorities = mem.get_priorities(request.json['args'])
+    priorities = mem.get_priorities(request.json)
     return make_response(jsonify(priorities)), 200
 
 
 @bp.route('mem/getStatuses', methods=['POST'])
 @auth.token_required
 def get_statuses():
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'host', 'type': str, 'mandatory': True},
         {'id': 'login', 'type': str, 'mandatory': True},
         {'id': 'password', 'type': str, 'mandatory': True}
@@ -171,14 +171,14 @@ def get_statuses():
             "message": message
         }, 400)
 
-    statuses = mem.get_statuses(request.json['args'])
+    statuses = mem.get_statuses(request.json)
     return make_response(jsonify(statuses)), 200
 
 
 @bp.route('mem/getDocumentsWithContact', methods=['POST'])
 @auth.token_required
 def get_document_with_args():
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'host', 'type': str, 'mandatory': True},
         {'id': 'login', 'type': str, 'mandatory': True},
         {'id': 'password', 'type': str, 'mandatory': True}
@@ -190,7 +190,7 @@ def get_document_with_args():
             "message": message
         }, 400)
 
-    args = request.json['args']
+    args = request.json
     contact = mem.retrieve_contact(args)
     if contact and contact['contacts'] and contact['count'] > 0:
         args['contactId'] = str(contact['contacts'][0]['id'])
@@ -203,7 +203,7 @@ def get_document_with_args():
 @bp.route('mem/getIndexingModels', methods=['POST'])
 @auth.token_required
 def get_indexing_models():
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'host', 'type': str, 'mandatory': True},
         {'id': 'login', 'type': str, 'mandatory': True},
         {'id': 'password', 'type': str, 'mandatory': True}
@@ -215,5 +215,5 @@ def get_indexing_models():
             "message": message
         }, 400)
 
-    indexing_models = mem.get_indexing_models(request.json['args'])
+    indexing_models = mem.get_indexing_models(request.json)
     return make_response(jsonify(indexing_models)), 200
