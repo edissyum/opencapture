@@ -37,7 +37,7 @@ import { useCustomFields } from "../../../services/hooks/useCustomFields";
 import { executeAuthFunction, getTestConnectionMapping } from "./functions.tsx";
 
 export function OutputEditor({ module }: { module: string }) {
-    const { get, post, del } = axiosApiCall();
+    const { get, post, put } = axiosApiCall();
     const { outputId } = useParams<{ outputId: any }>();
 
     const [loading, setLoading] = useState(true);
@@ -159,14 +159,18 @@ export function OutputEditor({ module }: { module: string }) {
         fetchAllowedPath().then();
         fetchOutputTypes().then();
     }, []);
-
+put
     const handleNextStep: any = async (data: FormData) => {
         // if (data && Object.keys(workflowErrors).length > 0) {
         //     return;
         // }
         const authFunctionName: any = getTestConnectionMapping().find((m: any) => m.id === outputType.output_type_id)?.function;
         const authOptions = output?.data?.options?.auth || [];
-        const res = await executeAuthFunction(authFunctionName, authOptions);
+        const res = await executeAuthFunction(
+            authFunctionName,
+            authOptions,
+            { get, post, put }
+        );
         stepperRef.current?.nextCallback();
     }
 

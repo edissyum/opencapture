@@ -18,35 +18,41 @@ export const getTestConnectionMapping = () => [
     { id: 'export_mem', function: "testMEMConnection" },
     { id: 'export_coog', function: "testCOOGConnection" },
     { id: 'export_cmis', function: "testCMISConnection" },
-    { id: 'export_opencrm', function: "testOpenCRMConnection" },
+    { id: 'export_opencrm', function: "testOpenCRMConnection" }
 ]
 
-const functionsMap: { [key: string]: () => Promise<{ success: boolean, message: string }> } = {
-    testMEMConnection: async (args) => {
-        // Simulate an API call with a delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
+export const createFunctionsMap = ({ get, post, put }: any) => ({
+    testMEMConnection: async (args: any) => {
+        const res = await post('/mem/testConnection', args);
+        console.log(res)
         return { success: true, message: "MEM connection successful!" };
     },
-    testCOOGConnection: async () => {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+
+    testCOOGConnection: async (args: any) => {
+        const res = await post('/coog/test', args);
         return { success: true, message: "COOG connection successful!" };
     },
-    testCMISConnection: async () => {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+
+    testCMISConnection: async (args: any) => {
+        const res = await post('/cmis/test', args);
         return { success: true, message: "CMIS connection successful!" };
     },
-    testOpenCRMConnection: async () => {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+
+    testOpenCRMConnection: async (args: any) => {
+        const res = await post('/opencrm/test', args);
         return { success: true, message: "OpenCRM connection successful!" };
     }
-};
+});
 
-export const executeAuthFunction = async (functionName: string, functionArgs: any) => {
+export const executeAuthFunction = async (functionName: string, functionArgs: any, api: any) => {
+    const functionsMap: any = createFunctionsMap(api);
     const func = functionsMap[functionName];
+
     if (func) {
         try {
             return await func(functionArgs);
         } catch (error) {
+            console.log(error);
             return { success: false, message: "An error occurred while testing the connection." };
         }
     } else {
