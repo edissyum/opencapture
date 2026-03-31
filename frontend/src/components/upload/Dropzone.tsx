@@ -124,13 +124,13 @@ export default function UploadDropzone({
                 ) }
             </div>
             { files.length > 0 && showPreview && (
-                <div className="mt-4 space-y-1 overflow-y-auto">
+                <div className="mt-4 space-y-1 overflow-y-auto rounded-lg rounded-r-none">
                     { files.map((file) => (
                         <div key={ file.name + file.size }
-                             className="relative flex items-center gap-4 bg-(--bg-primary) px-3 py-2 rounded-lg border border-(--border-secondary)">
+                             className="relative flex items-center gap-4 bg-(--bg-primary) px-3 py-2 rounded-r-none rounded-md border border-(--border-secondary)">
 
                             { progressByFile?.[file.name] !== undefined && (
-                                <div className="absolute top-0 left-0 h-full bg-(--bg-selected) transition-[width]
+                                <div className="absolute top-0 left-0 h-full bg-(--color-primary)/10 transition-[width]
                                                 duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]
                                                 border-r-2 border-(--border-primary)"
                                      style={ { width: `${ progressByFile[file.name] }%` } }/>
