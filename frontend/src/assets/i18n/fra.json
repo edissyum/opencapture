@@ -1235,7 +1235,9 @@
         "confirm_delete_folder": "Voulez-vous vraiment supprimer cette chemise ? <br> Les types de documents enfants ne seront plus utilisables",
         "delete_folder": "Supprimer la chemise",
         "update_folder": "Modifier la chemise",
-        "children": "Contenu de la chemise"
+        "children": "Contenu de la chemise",
+        "doctype_updated": "Type de document mis à jour avec succès",
+        "folder_updated": "Chemise mise à jour avec succès"
     },
     "ABOUT": {
         "see_changelog": "voir le changelog",

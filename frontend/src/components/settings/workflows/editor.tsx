@@ -502,8 +502,8 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             return;
         }
 
-        setLoadingUpdate(true);
         if (stepperIndex === 0) {
+            setLoadingUpdate(true);
             const input_folder = workflowGetValues('input_folder');
             if (input_folder) {
                 if (workflowId) {
@@ -516,8 +516,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                     } catch (error) {
                         console.debug('Error validating input folder :', error);
                         return;
-                    }
-                    finally {
+                    } finally {
                         setLoadingUpdate(false);
                     }
                 } else {
@@ -551,7 +550,6 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 input_folder: data.input_folder,
                 customer_id: data.customer_id,
                 ai_model_id: data.ai_model_id,
-                rotation: data.rotation,
                 splitter_method_id: data.splitter_method_id,
                 separate_by_document_number_value: data.separate_by_document_number_value,
                 facturx_only: data.facturx_only,
@@ -576,6 +574,12 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 outputs_id: data.outputs_id
             }
         };
+
+        if (module === 'verifier') {
+            payload.input.rotation = data.rotation;
+        } else {
+            payload.process.rotation = data.rotation;
+        }
 
         if (inputScripting || inputScript) {
             payload.input['script'] = inputScript;
@@ -658,7 +662,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                     <div className="flex justify-end mt-6">
                         <Button onClick={ workflowHandleSubmit(handleSubmitStep) } className="ml-auto px-12"
                                 disabled={ loading || Object.keys(workflowErrors).length > 0 }>
-                            { loadingUpdate ? t("WORKFLOWS.validating") : t("MAILCOLLECT.next")}
+                            { loadingUpdate ? t("WORKFLOWS.validating") : t("MAILCOLLECT.next") }
                         </Button>
                     </div>
                 </StepperPanel>
@@ -749,14 +753,13 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                     // @ts-ignore
                     <StepperPanel header={
                         <div className='flex items-center gap-2'>
-                            <Terminal className='bg-(--border-secondary) text-(--text-secondary) p-2 rounded-lg'
-                                      size={ 36 }/>
+                            <Terminal className='bg-(--border-secondary) text-(--text-secondary) p-2 rounded-lg' size={ 36 }/>
                             <div className='text-(--text-secondary)'>
                                 { t("WORKFLOWS.process_scripting") }
                             </div>
                         </div>
                     } pt={ {
-                        header: { className: "stepper-secondary left-1/2 translate-x-1/2" }
+                        header: { className: "stepper-secondary left-3/5 translate-x-[30%]" }
                     } }>
                         <FloatLabel className="w-full">
                             <Editor
@@ -803,7 +806,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                         </Button>
 
                         <Button onClick={ workflowHandleSubmit(handleSubmit) } className="px-12"
-                                disabled={ loading || Object.keys(workflowErrors).length > 0 }>
+                                disabled={ loadingUpdate || Object.keys(workflowErrors).length > 0 }>
                             { workflowId && (
                                 <>
                                     { loadingUpdate ? t("WORKFLOWS.updating") : t("WORKFLOWS.update") }

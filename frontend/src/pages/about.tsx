@@ -112,7 +112,7 @@ export function AboutPage() {
                                 </div>
                             </div>
                         ) }
-                        { lastVersion > packageJson.version && (
+                        { lastVersion !== 'error' && lastVersion > packageJson.version && (
                             <div
                                 className="bg-(--color-primary)/10 border-(--border-primary)/10 border rounded-lg p-4 flex items-center">
                                 <div className='bg-(--color-primary) p-2 rounded-lg'>

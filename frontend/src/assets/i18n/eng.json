@@ -1140,7 +1140,9 @@
         "confirm_delete_folder": "",
         "delete_folder": "",
         "update_folder": "",
-        "children": ""
+        "children": "",
+        "doctype_updated": "",
+        "folder_updated": ""
     },
     "ABOUT": {
         "see_changelog": "",

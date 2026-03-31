@@ -110,6 +110,7 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
         try {
             await post('/doctypes/update', doctype);
             doctypeUpdated?.();
+            showToast(doctype.type === 'document' ? t('DOCTYPES.doctype_updated') : t('DOCTYPES.folder_updated'), "success");
         } catch (err) {
             console.error("Error updating doctype:", err);
         }
