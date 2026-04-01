@@ -72,6 +72,7 @@ import { ResetPassword } from "./pages/reset-password";
 import { MonitoringDetails } from "./pages/monitoring/details";
 import { UpdateStatus } from "./components/settings/update-status/update";
 import { OutputEditor } from "./components/settings/outputs/editor";
+import { SettingsGeneralUserQuota } from "./pages/settings/general/users/quota";
 
 export const router = createBrowserRouter(
     [
@@ -312,6 +313,13 @@ export const router = createBrowserRouter(
                                     loader: protectedLoader,
                                     element: <SettingsGeneralUsers/>,
                                     errorElement: <LoginRequiredError/>
+                                },
+                                {
+                                    path: 'quota',
+                                    loader: protectedLoader,
+                                    element: <SettingsGeneralUserQuota/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.user_quota' }
                                 },
                                 {
                                     path: 'edit/:userId',
@@ -675,7 +683,7 @@ export const router = createBrowserRouter(
                                 {
                                     path: 'create',
                                     loader: protectedLoader,
-                                    element: <OutputEditor module="verifier"/>,
+                                    element: <OutputEditor module="splitter"/>,
                                     errorElement: <LoginRequiredError/>,
                                     handle: { breadcrumb: 'SETTINGS.add_output' }
                                 }

@@ -190,9 +190,97 @@ WHERE documents IS NOT NULL
   AND jsonb_typeof(documents) = 'array';
 
 -- Mettre à jour l'identifiant de compression pour les chaînes sortantes
-ALTER TABLE outputs ALTER COLUMN compress_type SET DATA TYPE VARCHAR(12);
+ALTER TABLE outputs
+    ALTER COLUMN compress_type SET DATA TYPE VARCHAR(12);
 
 UPDATE outputs
 SET compress_type = 'no_compress'
 WHERE compress_type IN ('', NULL)
   AND output_type_id IN ('export_pdf', 'export_cmis', 'export_openads');
+
+-- Modification des paramètres de la chaine sortante MEM Courrier
+UPDATE outputs_types
+SET data = jsonb_set(
+        data,
+        '{options,parameters}',
+        (SELECT jsonb_agg(
+                        CASE
+                            WHEN elem ->> 'id' = 'subject'
+                                THEN elem || '{
+                                "type": "text"
+                            }'::jsonb
+                            ELSE elem
+                            END
+                )
+         FROM jsonb_array_elements(data -> 'options' -> 'parameters') elem)
+           )
+WHERE data -> 'options' -> 'parameters' @> '[{"id": "subject"}]'
+  AND output_type_id = 'export_mem';
+
+UPDATE outputs
+SET data = jsonb_set(
+        data,
+        '{options,parameters}',
+        (SELECT jsonb_agg(
+                        CASE
+                            WHEN elem ->> 'id' = 'subject'
+                                THEN elem || '{
+                                "type": "text"
+                            }'::jsonb
+                            ELSE elem
+                            END
+                )
+         FROM jsonb_array_elements(data -> 'options' -> 'parameters') elem)
+           )
+WHERE data -> 'options' -> 'parameters' @> '[{"id": "subject"}]'
+  AND output_type_id = 'export_mem';
+
+UPDATE outputs
+SET data = jsonb_set(
+        data,
+        '{options,parameters}',
+        (SELECT jsonb_agg(
+                        CASE
+                            WHEN elem ? 'webservice'
+                                AND elem ->> 'webservice' <> ''
+                                AND jsonb_typeof(elem -> 'value') = 'object'
+                                THEN
+                                elem || jsonb_build_object(
+                                        'value',
+                                        jsonb_build_object(
+                                                'id', elem -> 'value' -> 'id',
+                                                'label', elem -> 'value' ->> 'value'
+                                        )
+                                        )
+                            ELSE
+                                elem
+                            END
+                )
+         FROM jsonb_array_elements(data -> 'options' -> 'parameters') elem)
+           )
+WHERE output_type_id = 'export_mem';
+
+UPDATE outputs
+SET data = jsonb_set(
+        data,
+        '{options,links}',
+        (SELECT jsonb_agg(
+                        CASE
+                            WHEN elem ? 'webservice'
+                                AND elem ->> 'webservice' <> ''
+                                AND jsonb_typeof(elem -> 'value') = 'object'
+                                THEN
+                                elem || jsonb_build_object(
+                                        'value',
+                                        jsonb_build_object(
+                                                'id', elem -> 'value' -> 'id',
+                                                'label', elem -> 'value' ->> 'value'
+                                        )
+                                        )
+                            ELSE
+                                elem
+                            END
+                )
+         FROM jsonb_array_elements(data -> 'options' -> 'links') elem)
+           )
+WHERE output_type_id = 'export_mem';

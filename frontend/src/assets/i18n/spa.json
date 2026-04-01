@@ -460,7 +460,11 @@
         "create": "",
         "creating": "",
         "update": "",
-        "updating": ""
+        "updating": "",
+        "openads_connection_ko": "",
+        "openads_connection_ok": "",
+        "opencaptureformem_connection_ko": "",
+        "opencaptureformem_connection_ok": ""
     },
     "ROLES": {
         "add_role": "Agregar un rol",
@@ -598,7 +602,8 @@
         "update-status_description_splitter": "",
         "update-status_description_verifier": "",
         "add_output": "",
-        "edit_output": ""
+        "edit_output": "",
+        "user_quota": ""
     },
     "SMTP": {
         "authentication": "Autenticación",
@@ -782,7 +787,11 @@
         "civility": "Tratamiento",
         "invalid_email": "",
         "password_confirm": "",
-        "passwords_do_not_match": ""
+        "passwords_do_not_match": "",
+        "excluded_users": "",
+        "user_quota_enable": "",
+        "user_quota_number": "",
+        "user_quota_email_dest": ""
     },
     "VERIFIER": {
         "creation_date": "Fecha de creación",

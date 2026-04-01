@@ -569,9 +569,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         custom_fields_regex = database.select({
             'select': ['id', 'label', "settings #>> '{regex}'as regex_settings"],
             'table': ['custom_fields'],
-            'where': ['status <> %s', 'module = %s', "settings #>> '{regex}' is not null", "enabled = %s",
+            'where': ['status <> %s', 'module = %s', "settings #>> '{regex}' is not null",
                       "id IN (" + ','.join(map(str, custom_fields_to_find)) + ")"],
-            'data': ['DEL', 'verifier', True]
+            'data': ['DEL', 'verifier']
         })
 
         for custom_field in custom_fields_regex:

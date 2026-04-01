@@ -460,7 +460,11 @@
         "create": "Créer la chaîne sortante",
         "creating": "Création en cours...",
         "update": "Mettre à jour la chaîne sortante",
-        "updating": "Mise à jour en cours..."
+        "updating": "Mise à jour en cours...",
+        "openads_connection_ko": "Erreur de connexion avec le serveur Open-ADS",
+        "openads_connection_ok": "Connexion avec le serveur Open-ADS réussie",
+        "opencaptureformem_connection_ko": "Erreur de connexion avec le serveur Open-Capture for MEM",
+        "opencaptureformem_connection_ok": "Connexion avec le serveur Open-Capture for MEM réussie"
     },
     "ROLES": {
         "add_role": "Ajouter un rôle",
@@ -598,7 +602,8 @@
         "update-status_description_verifier": "Modification des statuts des documents",
         "update-status_description_splitter": "Modification des statuts des lots",
         "add_output": "Ajouter une chaîne sortante",
-        "edit_output": "Modifier la chaîne sortante"
+        "edit_output": "Modifier la chaîne sortante",
+        "user_quota": "Quota utilisateur"
     },
     "SMTP": {
         "authentication": "Authentification",
@@ -782,7 +787,11 @@
         "civility": "Civilité",
         "invalid_email": "Addresse email invalide",
         "password_confirm": "Confirmation du mot de passe",
-        "passwords_do_not_match": "Les mots de passe ne correspondent pas"
+        "passwords_do_not_match": "Les mots de passe ne correspondent pas",
+        "excluded_users": "Utilisateurs exclus du quota",
+        "user_quota_enable": "Activer le quota utilisateur",
+        "user_quota_number": "Limite du nombre d'utilisateurs",
+        "user_quota_email_dest": "Destinataire des notifications de dépassement de quota"
     },
     "VERIFIER": {
         "creation_date": "Date de création",

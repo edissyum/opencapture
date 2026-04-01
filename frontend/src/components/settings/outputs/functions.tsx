@@ -19,10 +19,12 @@ export const getTestConnectionMapping = () => [
     { id: 'export_mem', function: "testMEMConnection" },
     { id: 'export_coog', function: "testCOOGConnection" },
     { id: 'export_cmis', function: "testCMISConnection" },
-    { id: 'export_opencrm', function: "testOpenCRMConnection" }
+    { id: 'export_openads', function: "testOpenadsConnection" },
+    { id: 'export_opencrm', function: "testOpenCRMConnection" },
+    { id: 'export_opencaptureformem', function: "testOpenCaptureForMemConnection" }
 ]
 
-export const createFunctionsMap = ({ post }: any) => ({
+const createAuthFunctionsMap: any = ({ post }: any) => ({
     testMEMConnection: async (args: any) => {
         const res = await post('/mem/testConnection', args);
         if (!res.status[0]) {
@@ -54,19 +56,133 @@ export const createFunctionsMap = ({ post }: any) => ({
         } else {
             return { success: true, message: `<strong>${ t('OUTPUTS.opencrm_connection_ok') }</strong>` };
         }
+    },
+    testOpenadsConnection: async (args: any) => {
+        const res = await post('/splitter/openads/testConnection', args);
+        if (!res.status[0]) {
+            return { success: false, message: `<strong>${ t('OUTPUTS.openads_connection_ko') }</strong> : ${ res.status[1] }` };
+        } else {
+            return { success: true, message: `<strong>${ t('OUTPUTS.openads_connection_ok') }</strong>` };
+        }
+    },
+    testOpenCaptureForMemConnection: async (args: any) => {
+        const res = await post('/opencaptureformem/getAccessToken', args);
+        if (!res.status[0]) {
+            return { success: false, message: `<strong>${ t('OUTPUTS.opencaptureformem_connection_ko') }</strong> : ${ res.status[1] }` };
+        } else {
+            return { success: true, message: `<strong>${ t('OUTPUTS.opencaptureformem_connection_ok') }</strong>` };
+        }
     }
 });
 
+const createMEMFunctionsMap: any = ({ post }: any) => ({
+    getDoctypesFromMem: async (args: any) => {
+        const res = await post('/mem/getDoctypes', args);
+        if (res && res.doctypes) {
+            let doctypesOptions: any = [];
+            for (const doctype of res.doctypes) {
+                doctypesOptions.push({ id: doctype.type_id, label: doctype.description });
+            }
+            return { success: true, data: doctypesOptions };
+        }
+    },
+    getStatusesFromMem: async (args: any) => {
+        const res = await post('/mem/getStatuses', args);
+        if (res && res.statuses) {
+            let statusesOptions: any = [];
+            for (const status of res.statuses) {
+                statusesOptions.push({ id: status.id, label: status.label_status });
+            }
+            return { success: true, data: statusesOptions };
+        }
+    },
+    getUsersFromMem: async (args: any) => {
+        const res = await post('/mem/getUsers', args);
+        if (res && res[0].users) {
+            let usersOptions: any = [];
+            for (const user of res[0].users) {
+                usersOptions.push({ id: user.id, label: user.firstname + ' ' + user.lastname });
+            }
+            return { success: true, data: usersOptions };
+        }
+    },
+    getPrioritiesFromMem: async (args: any) => {
+        const res = await post('/mem/getPriorities', args);
+        if (res && res.priorities) {
+            let prioritiesOptions: any = [];
+            for (const priority of res.priorities) {
+                prioritiesOptions.push({ id: priority.id, label: priority.label });
+            }
+            return { success: true, data: prioritiesOptions };
+        }
+    },
+    getEntitiesFromMem: async (args: any) => {
+        const res = await post('/mem/getEntities', args);
+        if (res && res.entities) {
+            let entitiesOptions: any = [];
+            for (const entity of res.entities) {
+                entitiesOptions.push({ id: entity.serialId, label: entity.entity_label });
+            }
+            return { success: true, data: entitiesOptions };
+        }
+    },
+    getIndexingModelsFromMem: async (args: any) => {
+        const res = await post('/mem/getIndexingModels', args);
+        if (res && res.indexingModels) {
+            let indexingModelsOptions: any = [];
+            for (const model of res.indexingModels) {
+                indexingModelsOptions.push({ id: model.id, label: model.label });
+            }
+            return { success: true, data: indexingModelsOptions };
+        }
+    },
+    getContactsCustomFieldsFromMem: async (args: any) => {
+        const res = await post('/mem/getContactsCustomFields', args);
+        if (res && res.customFields) {
+            let customFieldsOptions: any = [];
+            for (const field of res.customFields) {
+                customFieldsOptions.push({ id: field.id, label: field.label });
+            }
+            return { success: true, data: customFieldsOptions };
+        }
+    },
+    getCustomFieldsFromMem: async (args: any) => {
+        const res = await post('/mem/getCustomFields', args);
+        if (res && res.customFields) {
+            let customFieldsOptions: any = [];
+            for (const field of res.customFields) {
+                customFieldsOptions.push({ id: field.id, label: field.label });
+            }
+            return { success: true, data: customFieldsOptions };
+        }
+    }
+});
+
+
 export const executeAuthFunction = async (functionName: string, functionArgs: any, api: any) => {
-    const functionsMap: any = createFunctionsMap(api);
+    const functionsMap: any = createAuthFunctionsMap(api);
     const func = functionsMap[functionName];
 
     if (func) {
         try {
             return await func(functionArgs);
         } catch (error) {
-            console.log(error);
-            return { success: false, message: "An error occurred while testing the connection." };
+            console.error(error);
+        }
+    } else {
+        return { success: false, message: "Function not found." };
+    }
+};
+
+export const executeMEMFunction = async (functionName: string, functionArgs: any, api: any) => {
+    const functionsMap: any = createMEMFunctionsMap(api);
+    const func = functionsMap[functionName];
+
+    if (func) {
+        try {
+            return await func(functionArgs);
+        } catch (error) {
+            console.error(error);
         }
     } else {
         return { success: false, message: "Function not found." };

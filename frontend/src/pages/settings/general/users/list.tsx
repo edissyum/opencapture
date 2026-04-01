@@ -279,13 +279,14 @@ export function SettingsGeneralUsers() {
                 onSelectionChange={ (rows) => setSelectedUsers(rows) }
             />
 
-            <h3 className={ 'font-semibold text-(--text-primary) mt-4' }>
+            <p className='font-semibold text-(--text-primary) mt-4'>
                 { t('USERS.user_quota') }
-            </h3>
-            <p className='w-fit text-(--text-secondary) text-sm mb-6 flex items-center gap-0.5 cursor-pointer hover:text-(--color-primary)'>
+            </p>
+            <div onClick={ () => navigate('/settings/general/users/quota') }
+                 className='w-fit text-(--text-secondary) text-sm mb-6 flex items-center gap-0.5 cursor-pointer hover:text-(--color-primary)'>
                 { t('SECURITY.here') }
                 <ArrowRight size={ 18 }/>
-            </p>
+            </div>
         </div>
     );
 }

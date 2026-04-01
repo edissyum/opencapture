@@ -19,17 +19,20 @@ import { t } from "i18next";
 import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Stepper } from "primereact/stepper";
-import { useNavigate, useParams } from "react-router-dom";
+import { Editor } from "@monaco-editor/react";
 import { useEffect, useRef, useState } from "react";
+import { InputSwitch } from "primereact/inputswitch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { StepperPanel } from "primereact/stepperpanel";
 import { TabPanel, TabView } from "primereact/tabview";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { getCompressTypeOptions, getSystemFieldsOptions } from "./helpers";
-import { executeAuthFunction, getTestConnectionMapping } from "./functions";
+import { executeAuthFunction, executeMEMFunction, getTestConnectionMapping } from "./functions";
 
 import Input from "../../Input";
 import { Button } from "../../Button";
+import { Dropdown } from "../../Dropdown";
 import { Loader } from "../../loader/Loader";
 import { showToast } from "../../ToastProvider";
 import { DynamicForm } from "../../form/DynamicForm";
@@ -50,6 +53,7 @@ export function OutputEditor({ module }: { module: string }) {
 
     const [outputTypes, setOutputTypes] = useState([]);
     const [outputType, setOutputType] = useState<any>({});
+    const [outputLoaded, setOutputLoaded] = useState(false);
     const [output, setOutput] = useState<any>({
         output_type_id: '',
         output_label: '',
@@ -63,7 +67,7 @@ export function OutputEditor({ module }: { module: string }) {
         }
     });
 
-    const [codeType, setCodeType] = useState('');
+    const [codeType, setCodeType] = useState('json');
     const [allowedPath, setAllowedPath] = useState('');
 
     const { customFields } = useCustomFields(module);
@@ -113,7 +117,7 @@ export function OutputEditor({ module }: { module: string }) {
 
     // Fetch output details
     useEffect(() => {
-        if (!outputId || !outputTypes) return;
+        if (!outputId || outputTypes.length == 0) return;
 
         const fetchOutputDetails = async () => {
             try {
@@ -123,12 +127,13 @@ export function OutputEditor({ module }: { module: string }) {
                         detailsSetValue(key, response[key]);
                     });
                 }
-
                 setOutput(response);
+
                 const newOutputType: any = outputTypes.find((o: any) => o.output_type_id === response.output_type_id);
                 setOutputType(newOutputType);
+                setOutputLoaded(true);
 
-                if (newOutputType?.data?.options.auth.length === 0) {
+                if (!newOutputType?.data?.options?.auth || newOutputType?.data?.options.auth.length === 0) {
                     setStepperIndex(1);
                 }
             } catch (error) {
@@ -156,6 +161,10 @@ export function OutputEditor({ module }: { module: string }) {
                                 setCodeType('xml');
                             }
                         }
+                    } else {
+                        if (outputType.output_type_id === 'export_xml') {
+                            setCodeType('xml');
+                        }
                     }
                 }
             });
@@ -169,7 +178,7 @@ export function OutputEditor({ module }: { module: string }) {
 
         if (newOutputType) {
             setOutputType(newOutputType);
-            if (newOutputType.data?.options.auth.length > 0) {
+            if (newOutputType.data?.options?.auth?.length > 0) {
                 setStepperIndex(0);
             } else {
                 setStepperIndex(1);
@@ -225,6 +234,36 @@ export function OutputEditor({ module }: { module: string }) {
 
         showToast(t(res.message), res.success ? "success" : "error");
         if (res && res.success) {
+            if (output.output_type_id === 'export_mem') {
+                for (const data of Object.keys(output.data.options)) {
+                    for (const option of output.data.options[data]) {
+                        if (option.webservice) {
+                            const res = await executeMEMFunction(option.webservice, authOptions, { post });
+                            if (res && res.success && res.data) {
+                                setOutput((prev: any) => {
+                                    const newParameters = prev.data.options[data].map((o: any) => {
+                                        if (o.id === option.id) {
+                                            return { ...o, values: res.data };
+                                        }
+                                        return o;
+                                    });
+
+                                    return {
+                                        ...prev,
+                                        data: {
+                                            ...prev.data,
+                                            options: {
+                                                ...prev.data.options,
+                                                [data]: newParameters
+                                            }
+                                        }
+                                    };
+                                });
+                            }
+                        }
+                    }
+                }
+            }
             stepperRef.current?.nextCallback();
         }
 
@@ -257,11 +296,11 @@ export function OutputEditor({ module }: { module: string }) {
         });
     }
 
-    const handleSpecificChange = (e: any, option: any) => {
+    const handleSpecificLinksChange = (e: any, option: any, data: any) => {
         const value = e.target.value;
         setOutput((prev: any) => {
             // If the option already exists, update it. Otherwise, add it to the array
-            const newSpecificOptions = prev.data.options.parameters.map((o: any) => {
+            const newSpecificOptions = prev.data.options[data].map((o: any) => {
                 if (o.id === option.id) {
                     return { ...o, value };
                 }
@@ -269,7 +308,7 @@ export function OutputEditor({ module }: { module: string }) {
             });
 
             // If the option was not found in the existing options, add it
-            if (!prev.data.options.parameters.find((o: any) => o.id === option.id)) {
+            if (!prev.data.options[data].find((o: any) => o.id === option.id)) {
                 newSpecificOptions.push({ id: option.id, value });
             }
 
@@ -279,7 +318,7 @@ export function OutputEditor({ module }: { module: string }) {
                     ...prev.data,
                     options: {
                         ...prev.data.options,
-                        parameters: newSpecificOptions
+                        [data]: newSpecificOptions
                     }
                 }
             };
@@ -299,7 +338,15 @@ export function OutputEditor({ module }: { module: string }) {
             return;
         }
 
-        setLoadingStep(false);
+        setLoadingStep(true);
+
+        const tmpData = structuredClone(output.data);
+        if (output.output_type_id === 'export_mem') {
+            tmpData.options.parameters = tmpData.options.parameters.map((param: any) => {
+                delete param.values;
+                return param;
+            });
+        }
 
         const payload = {
             module: module,
@@ -307,7 +354,7 @@ export function OutputEditor({ module }: { module: string }) {
             output_type_id: output_type_id,
             compress_type: compress_type,
             ocrise: ocrise,
-            data: output?.data
+            data: tmpData
         };
 
         try {
@@ -330,7 +377,7 @@ export function OutputEditor({ module }: { module: string }) {
 
     return (
         <div className="h-full w-full overflow-y-auto flex">
-            <div className='w-full'>
+            <div className='w-full h-full overflow-y-auto'>
                 <div className='px-8 pt-8'>
                     <h1 className="text-lg font-semibold mb-4">
                         { t('OUTPUTS.details') }
@@ -346,7 +393,7 @@ export function OutputEditor({ module }: { module: string }) {
                              onChangeStep={ (e: any) => setStepperIndex(e.index) }>
                         <StepperPanel header={ t("SMTP.authentication") }>
                             <div className='flex gap-6 w-full'>
-                                { outputType?.data?.options.auth.map((option: any) => (
+                                { outputType?.data?.options.auth && outputType?.data?.options.auth.map((option: any) => (
                                     <div key={ option.id } className="w-full gap-2 mb-4">
                                         <Input id={ option.id } type={ option.type } name={ option.id } label={ option.label }
                                                value={ output?.data?.options?.auth?.find((o: any) => o.id === option.id)?.value || '' }
@@ -367,15 +414,44 @@ export function OutputEditor({ module }: { module: string }) {
                         <StepperPanel header={ t("OUTPUTS.specific") }>
                             <div className='grid grid-cols-2 gap-4'>
                                 { outputType?.data?.options.parameters.map((option: any) => (
-                                    <div key={ option.id } className="w-full gap-2 mb-4">
-                                        { option.type === 'textarea' ? (
-                                            <div></div>
-                                        ) : (
+                                    <div key={ option.id }
+                                         className={ `w-full gap-2 mb-4 ${ option.type === 'textarea' ? 'col-span-2' : '' }` }>
+                                        { option.type === 'textarea' && (
+                                            <>
+                                                { ['xml', 'json'].includes(codeType) && (
+                                                    <Editor
+                                                        className='border border-(--border-secondary) rounded-md p-2'
+                                                        height={ outputType.output_type_id === 'export_mem' ? '15vh' : '50vh' }
+                                                        defaultLanguage={ codeType }
+                                                        defaultValue={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
+                                                        options={ {
+                                                            contextmenu: true,
+                                                            minimap: { enabled: true }
+                                                        } }
+                                                        onChange={ (value) => {
+                                                            handleSpecificLinksChange({ target: { value: value } }, option, 'parameters')
+                                                        } }
+                                                        theme={ document.documentElement.classList.contains('dark') ? 'vs-dark' : '' }
+                                                    />
+                                                ) }
+                                            </>
+                                        ) }
+                                        { option.type === 'text' && option.webservice && (
+                                            <Dropdown
+                                                id={ option.id } label={ option.label } noMarginBottom={ true } filter={ true }
+                                                options={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.values || [] }
+                                                value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
+                                                onChange={ (e) => {
+                                                    handleSpecificLinksChange(e, option, 'parameters')
+                                                } }
+                                            />
+                                        ) }
+                                        { option.type === 'text' && !option.webservice && (
                                             <Input id={ option.id } type={ option.type } name={ option.id }
                                                    label={ option.label } hint={ option.hint } noMarginBottom={ true }
                                                    value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
                                                    onChange={ (e) => {
-                                                       handleSpecificChange(e, option)
+                                                       handleSpecificLinksChange(e, option, 'parameters')
                                                    } }/>
                                         ) }
                                     </div>
@@ -384,14 +460,15 @@ export function OutputEditor({ module }: { module: string }) {
 
                             <div className='mt-4 flex justify-between'>
                                 <Button onClick={ handlePreviousStep } variant="no_bg"
-                                        disabled={ outputType?.data?.options.auth.length === 0 }
+                                        disabled={ outputType?.data?.options?.auth?.length === 0 }
                                         className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
                                     <ArrowLeft/> { t("MAILCOLLECT.previous") }
                                 </Button>
 
-                                <Button onClick={ outputType === 'export_mem' ? handleNextStep : handleSubmit } className="px-12"
+                                <Button onClick={ outputType.output_type_id === 'export_mem' ? handleNextStep : handleSubmit }
+                                        className="px-12"
                                         disabled={ loading }>
-                                    { outputType === 'export_mem' ? (
+                                    { outputType.output_type_id === 'export_mem' ? (
                                         t("GLOBAL.next")
                                     ) : (
                                         <>
@@ -410,15 +487,75 @@ export function OutputEditor({ module }: { module: string }) {
                             </div>
                         </StepperPanel>
 
-                        { outputType === 'export_mem' && (
+                        { outputType.output_type_id === 'export_mem' && (
                             <StepperPanel header={ t("OUTPUTS.links") }>
+                                <div className='grid grid-cols-2 gap-4'>
+                                    { outputType?.data?.options.links.map((option: any) => (
+                                        <div key={ option.id }
+                                             className={ `w-full gap-2 mb-4 ${ option.type === 'boolean' ? 'col-span-2' : '' }` }>
+                                            { option.type === 'text' && option.webservice && (
+                                                <Dropdown
+                                                    id={ option.id } label={ option.label } noMarginBottom={ true }
+                                                    filter={ true }
+                                                    options={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.values || [] }
+                                                    value={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || '' }
+                                                    onChange={ (e) => {
+                                                        handleSpecificLinksChange(e, option, 'links')
+                                                    } }
+                                                />
+                                            ) }
+                                            { option.type === 'boolean' && (
+                                                <div className='flex items-center gap-2'>
+                                                    <InputSwitch name={ option.id } id={ option.id }
+                                                        checked={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || false }
+                                                        onChange={ (e) => {
+                                                            handleSpecificLinksChange({ target: { value: e.value } }, option, 'links')
+                                                        } }/>
+                                                    <label htmlFor={ option.id } className='cursor-pointer'>
+                                                        { option.label }
+                                                    </label>
+                                                </div>
+                                            ) }
+                                            { option.type === 'text' && !option.webservice && (
+                                                <Input id={ option.id } type={ option.type } name={ option.id }
+                                                       label={ option.label } hint={ option.hint } noMarginBottom={ true }
+                                                       value={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || '' }
+                                                       onChange={ (e) => {
+                                                           handleSpecificLinksChange(e, option, 'links')
+                                                       } }/>
+                                            ) }
+                                        </div>
+                                    )) }
+                                </div>
+                                <div className='mt-4 flex justify-between'>
+                                    <Button onClick={ handlePreviousStep } variant="no_bg"
+                                            disabled={ outputType?.data?.options.auth.length === 0 }
+                                            className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
+                                        <ArrowLeft/> { t("MAILCOLLECT.previous") }
+                                    </Button>
+
+                                    <Button onClick={ handleSubmit } className="px-12"
+                                            disabled={ loading }>
+                                        <>
+                                            { outputId ? (
+                                                <>
+                                                    { loadingStep ? t("OUTPUTS.updating") : t("OUTPUTS.update") }
+                                                </>
+                                            ) : (
+                                                <>
+                                                    { loadingStep ? t("OUTPUTS.creating") : t("OUTPUTS.create") }
+                                                </>
+                                            ) }
+                                        </>
+                                    </Button>
+                                </div>
                             </StepperPanel>
                         ) }
                     </Stepper>
                 ) }
             </div>
 
-            { stepperIndex === 1 && (
+            { stepperIndex !== 0 && (
                 <div className="w-[25rem] h-full flex flex-col border-l border-(--border-secondary)">
                     <TabView scrollable className="available_fields">
                         <TabPanel header={ t("VERIFIER.system_fields") }>

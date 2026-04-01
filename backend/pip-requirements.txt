@@ -15,7 +15,7 @@ pyzbar==0.1.9
 pandas==3.0.2
 factur-x==4.2
 kuyruk==10.2.1
-pillow==12.1.1
+pillow==12.2.0
 imutils==0.5.4
 psycopg==3.3.3
 thefuzz==0.22.1
@@ -42,6 +42,7 @@ pytesseract==0.3.13
 configparser==7.2.0
 scikit-learn==1.8.0
 transformers==5.4.0
+ultralytics==8.4.33
 python-magic==0.4.27
 Flask-Limiter==4.1.1
 pycryptodome==3.23.0
@@ -51,4 +52,3 @@ opencv-python==4.13.0.92
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.11.0
 torchvision==0.26.0
-ultralytics==8.3.253

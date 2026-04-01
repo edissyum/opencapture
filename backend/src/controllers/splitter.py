@@ -695,13 +695,8 @@ def test_openads_connection(args):
     _openads = OpenADS(args['openads_api'], args['login'], args['password'])
     res = _openads.test_connection()
     if not res['status']:
-        response = {
-            'status': False,
-            "errors": gettext('OPENADS_CONNECTION_ERROR'),
-            "message": res['message'] if 'message' in res else ''
-        }
-        return response, 400
-    return {'status': True}, 200
+        return [False, res['message'] if 'message' in res else ''], 400
+    return [True, ''], 200
 
 
 def export_batch(data):

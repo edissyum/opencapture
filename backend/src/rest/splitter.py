@@ -16,10 +16,12 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
-from flask_babel import gettext
+
 from flask import Blueprint, make_response, jsonify, request
-from ..functions import rest_validator, check_extensions_mime
+from flask_babel import gettext
+
 from ..controllers import auth, splitter, forms, privileges
+from ..functions import rest_validator, check_extensions_mime
 
 bp = Blueprint('splitter', __name__, url_prefix='/ws/')
 
@@ -87,11 +89,13 @@ def get_totals_splitter():
                                  request.json['allowedCustomers'], request.json['time'], request.json['search'])
     return make_response({'totals': totals[0]}, totals[1])
 
+
 @bp.route('splitter/moveDocumentsToAttachments/<int:batch_id>', methods=['POST'])
 @auth.token_required
 def move_documents_to_attachment(batch_id):
     if not privileges.has_privileges(request.environ['user_id'], ['access_splitter']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/splitter/moveDocumentsToAttachments/{batch_id}'}), 403
+        return jsonify(
+            {'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/splitter/moveDocumentsToAttachments/{batch_id}'}), 403
 
     check, message = rest_validator(request.json, [
         {'id': 'documents', 'type': list, 'mandatory': True}
@@ -105,6 +109,7 @@ def move_documents_to_attachment(batch_id):
 
     response, status = splitter.move_documents_to_attachment(request.json['documents'], batch_id)
     return make_response(jsonify(response)), status
+
 
 @bp.route('splitter/batch/<int:batch_id>/file', methods=['GET'])
 @auth.token_required
@@ -337,7 +342,8 @@ def export():
 @bp.route('splitter/splitMethods', methods=['GET'])
 @auth.token_required
 def get_split_methods():
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_workflow_splitter | update_workflow_splitter']):
+    if not privileges.has_privileges(request.environ['user_id'],
+                                     ['settings', 'add_workflow_splitter | update_workflow_splitter']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/lockBatch'}), 403
 
     split_methods, status = splitter.get_split_methods()
@@ -420,9 +426,8 @@ def test_openads_connection():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_output_splitter']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/openads/testConnection'}), 403
 
-    data = json.loads(request.data)
-    response, status = splitter.test_openads_connection(data['args'])
-    return make_response(jsonify(response)), status
+    response, status = splitter.test_openads_connection(request.json)
+    return make_response({'status': response}), status
 
 
 @bp.route('splitter/batch/<int:batch_id>/outputs', methods=['GET'])
