@@ -165,9 +165,9 @@ export function HistoryList() {
                     </span>
                 </div>
                 <div className='flex flex-col h-full overflow-y-auto'>
-                    <div onClick={ () => setOpen({ ...open, user: !open.user }) }
-                         className={ `flex flex-col p-4 cursor-pointer ${ open.user ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between">
+                    <div className={ `${ open.user ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="p-4 cursor-pointer flex items-center justify-between"
+                             onClick={ () => setOpen({ ...open, user: !open.user }) }>
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('HISTORY.user') }</h3>
@@ -178,7 +178,7 @@ export function HistoryList() {
                         </div>
 
                         { open.user && (
-                            <div className='mt-2'>
+                            <div className='p-4 pt-0'>
                                 <Dropdown
                                     filter={ true }
                                     value={ selectedUser.toString() }
@@ -194,9 +194,9 @@ export function HistoryList() {
                             </div>
                         ) }
                     </div>
-                    <div onClick={ () => setOpen({ ...open, module: !open.module }) }
-                         className={ `flex flex-col cursor-pointer p-4 ${ open.module ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between">
+                    <div className={ `${ open.module ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="p-4 cursor-pointer flex items-center justify-between"
+                             onClick={ () => setOpen({ ...open, module: !open.module }) }>
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('MAILCOLLECT.module') }</h3>
@@ -207,7 +207,7 @@ export function HistoryList() {
                         </div>
 
                         { open.module && (
-                            <div className='flex flex-col'>
+                            <div className='p-4 pt-0'>
                                 { listModules.map((module: any) => (
                                     <div className='flex items-center text-(--text-secondary)' key={ module.id }>
                                         <RadioButton
@@ -226,9 +226,9 @@ export function HistoryList() {
                             </div>
                         ) }
                     </div>
-                    <div onClick={ () => setOpen({ ...open, submodule: !open.submodule }) }
-                         className={ `flex flex-col cursor-pointer p-4 ${ open.submodule ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between">
+                    <div className={ `${ open.submodule ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="p-4 cursor-pointer flex items-center justify-between"
+                             onClick={ () => setOpen({ ...open, submodule: !open.submodule }) }>
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('HISTORY.submodule') }</h3>
@@ -239,7 +239,7 @@ export function HistoryList() {
                         </div>
 
                         { open.submodule && (
-                            <div className='mt-2'>
+                            <div className='p-4 pt-0'>
                                 <Dropdown
                                     filter={ true }
                                     value={ selectedSubModule.toString() }

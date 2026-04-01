@@ -318,9 +318,9 @@ export function SplitterListPage() {
                     </span>
                 </div>
                 <div className='flex flex-col h-full overflow-y-auto'>
-                    <div onClick={ () => setOpen({ ...open, batches: !open.batches }) }
-                         className={ `p-4 ${ open.batches ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between">
+                    <div className={ `${ open.batches ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="p-4 cursor-pointer flex items-center justify-between"
+                             onClick={ () => setOpen({ ...open, batches: !open.batches }) }>
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.batches') }</h3>
@@ -331,7 +331,7 @@ export function SplitterListPage() {
                         </div>
 
                         { open.batches && (
-                            <div className='flex flex-col mt-2'>
+                            <div className='flex flex-col p-4 pt-0'>
                                 { listTimes.map((time) => (
                                     <div className='flex items-center text-(--text-secondary)' key={ time.id }>
                                         <RadioButton
@@ -350,9 +350,9 @@ export function SplitterListPage() {
                             </div>
                         ) }
                     </div>
-                    <div onClick={ () => setOpen({ ...open, status: !open.status }) }
-                         className={ `flex flex-col p-4 cursor-pointer ${ open.status ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between">
+                    <div className={ `${ open.status ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="p-4 cursor-pointer flex items-center justify-between"
+                             onClick={ () => setOpen({ ...open, status: !open.status }) }>
                             <div className="flex items-center gap-2">
                                 <CircleCheckBig className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.status') }</h3>
@@ -361,8 +361,9 @@ export function SplitterListPage() {
                                 size={ 18 }
                                 className={ `transition-transform ${ open.status ? "rotate-180" : "" }` }/>
                         </div>
+
                         { open.status && (
-                            <div className='flex flex-col mt-2'>
+                            <div className='flex flex-col p-4 pt-0'>
                                 { Object.keys(listStatuses).map((key: any) => (
                                     <div className='flex items-center text-(--text-secondary)' key={ key }>
                                         <RadioButton
@@ -382,9 +383,9 @@ export function SplitterListPage() {
                             </div>
                         ) }
                     </div>
-                    <div onClick={ () => setOpen({ ...open, customers: !open.customers }) }
-                         className={ `flex flex-col p-4 cursor-pointer ${ open.customers ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between">
+                    <div className={ `${ open.customers ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="p-4 cursor-pointer flex items-center justify-between"
+                             onClick={ () => setOpen({ ...open, customers: !open.customers }) }>
                             <div className="flex items-center gap-2">
                                 <Briefcase className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('ACCOUNTS.customers_list') }</h3>
@@ -394,7 +395,7 @@ export function SplitterListPage() {
                         </div>
 
                         { open.customers && (
-                            <div className='mt-2'>
+                            <div className='p-4 pt-0'>
                                 <MultiSelectInput
                                     optionValue="id"
                                     optionLabel="name"
@@ -409,9 +410,9 @@ export function SplitterListPage() {
                             </div>
                         ) }
                     </div>
-                    <div onClick={ () => setOpen({ ...open, forms: !open.forms }) }
-                         className={ `flex flex-col p-4 cursor-pointer ${ open.forms ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between">
+                    <div className={ `${ open.forms ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="p-4 cursor-pointer flex items-center justify-between"
+                             onClick={ () => setOpen({ ...open, forms: !open.forms }) }>
                             <div className="flex items-center gap-2">
                                 <LayoutTemplate className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.forms') }</h3>
@@ -422,7 +423,7 @@ export function SplitterListPage() {
                         </div>
 
                         { open.forms && (
-                            <div className='mt-2'>
+                            <div className='p-4 pt-0'>
                                 <Dropdown
                                     filter={ true }
                                     value={ selectedForm.toString() }

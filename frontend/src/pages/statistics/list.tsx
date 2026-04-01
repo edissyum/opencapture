@@ -154,9 +154,9 @@ export function StatisticsPage() {
                     </span>
                 </div>
                 <div className='flex flex-col h-full overflow-y-auto'>
-                    <div onClick={ () => setOpen({ ...open, module: !open.module }) }
-                         className={ `flex flex-col cursor-pointer p-4 ${ open.module ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between">
+                    <div className={ `${ open.module ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="p-4 cursor-pointer flex items-center justify-between"
+                             onClick={ () => setOpen({ ...open, module: !open.module }) }>
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('MAILCOLLECT.module') }</h3>
@@ -167,7 +167,7 @@ export function StatisticsPage() {
                         </div>
 
                         { open.module && (
-                            <div className='mt-2'>
+                            <div className='p-4 pt-0'>
                                 <Dropdown
                                     id="module"
                                     value={ selectedModule }
@@ -181,9 +181,9 @@ export function StatisticsPage() {
                             </div>
                         ) }
                     </div>
-                    <div onClick={ () => setOpen({ ...open, statistics: !open.statistics }) }
-                         className={ `flex flex-col cursor-pointer p-4 ${ open.statistics ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between">
+                    <div className={ `${ open.statistics ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="p-4 cursor-pointer flex items-center justify-between"
+                             onClick={ () => setOpen({ ...open, statistics: !open.statistics }) }>
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.statistics') }</h3>
@@ -194,7 +194,7 @@ export function StatisticsPage() {
                         </div>
 
                         { open.statistics && (
-                            <div className='mt-2'>
+                            <div className='p-4 pt-0'>
                                 <Dropdown
                                     id="statistics"
                                     value={ selectedStatisticId }
@@ -208,9 +208,9 @@ export function StatisticsPage() {
                             </div>
                         ) }
                     </div>
-                    <div onClick={ () => setOpen({ ...open, year: !open.year }) }
-                         className={ `flex flex-col cursor-pointer p-4 ${ open.year ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between">
+                    <div className={ `${ open.year ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="p-4 cursor-pointer flex items-center justify-between"
+                             onClick={ () => setOpen({ ...open, year: !open.year }) }>
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('STATISTICS.year_optionnal') }</h3>
@@ -221,7 +221,7 @@ export function StatisticsPage() {
                         </div>
 
                         { open.year && (
-                            <div className='mt-2'>
+                            <div className='p-4 pt-0'>
                                 <Dropdown
                                     id="year"
                                     value={ selectedYear }

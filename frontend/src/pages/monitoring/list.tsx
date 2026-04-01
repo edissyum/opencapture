@@ -222,9 +222,8 @@ export function MonitoringList() {
                     </span>
                 </div>
                 <div className='flex flex-col h-full overflow-y-auto'>
-                    <div
-                        className={ `p-4 flex flex-col ${ open.module ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between"
+                    <div className={ `${ open.module ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="p-4 flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, module: !open.module }) }>
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
@@ -236,7 +235,7 @@ export function MonitoringList() {
                         </div>
 
                         { open.module && (
-                            <div className='flex flex-col mt-2'>
+                            <div className='p-4 pt-0'>
                                 { listModules.map((module: any) => (
                                     <div className='flex items-center text-(--text-secondary)' key={ module.id }>
                                         <RadioButton
@@ -255,9 +254,8 @@ export function MonitoringList() {
                             </div>
                         ) }
                     </div>
-                    <div
-                        className={ `p-4 flex flex-col ${ open.status ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between"
+                    <div className={ `${ open.status ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="p-4 flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, status: !open.status }) }>
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
@@ -269,7 +267,7 @@ export function MonitoringList() {
                         </div>
 
                         { open.status && (
-                            <div className='flex flex-col mt-2'>
+                            <div className='flex flex-col p-4 pt-0'>
                                 { listStatuses.map((status: any) => (
                                     <div className='flex items-center text-(--text-secondary)' key={ status.id }>
                                         <RadioButton

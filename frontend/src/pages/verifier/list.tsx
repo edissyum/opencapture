@@ -430,9 +430,9 @@ export function VerifierListPage() {
                     </span>
                 </div>
                 <div className='flex flex-col h-full overflow-y-auto'>
-                    <div onClick={ () => setOpen({ ...open, batches: !open.batches }) }
-                         className={ `flex flex-col p-4 cursor-pointer ${ open.batches ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between">
+                    <div className={ `${ open.batches ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="p-4 cursor-pointer flex items-center justify-between"
+                             onClick={ () => setOpen({ ...open, batches: !open.batches }) }>
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.batches') }</h3>
@@ -443,7 +443,7 @@ export function VerifierListPage() {
                         </div>
 
                         { open.batches && (
-                            <div className='flex flex-col mt-2'>
+                            <div className='flex flex-col p-4 pt-0'>
                                 { listTimes.map((time) => (
                                     <div className='flex items-center text-(--text-secondary)' key={ time.id }>
                                         <RadioButton
@@ -462,9 +462,9 @@ export function VerifierListPage() {
                             </div>
                         ) }
                     </div>
-                    <div onClick={ () => setOpen({ ...open, status: !open.status }) }
-                         className={ `flex flex-col cursor-pointer p-4 ${ open.status ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between">
+                    <div className={ `${ open.status ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="p-4 cursor-pointer flex items-center justify-between"
+                             onClick={ () => setOpen({ ...open, status: !open.status }) }>
                             <div className="flex items-center gap-2">
                                 <CircleCheckBig className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.status') }</h3>
@@ -475,7 +475,7 @@ export function VerifierListPage() {
                         </div>
 
                         { open.status && (
-                            <div className='flex flex-col mt-2'>
+                            <div className='flex flex-col p-4 pt-0'>
                                 { Object.keys(listStatuses).map((key: any) => (
                                     <div className='flex items-center text-(--text-secondary)' key={ key }>
                                         <RadioButton
@@ -495,9 +495,9 @@ export function VerifierListPage() {
                             </div>
                         ) }
                     </div>
-                    <div onClick={ () => setOpen({ ...open, customers: !open.customers }) }
-                         className={ `flex flex-col p-4 cursor-pointer ${ open.customers ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between">
+                    <div className={ `${ open.customers ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="p-4 cursor-pointer flex items-center justify-between"
+                             onClick={ () => setOpen({ ...open, customers: !open.customers }) }>
                             <div className="flex items-center gap-2">
                                 <Briefcase className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('ACCOUNTS.customers_list') }</h3>
@@ -507,7 +507,7 @@ export function VerifierListPage() {
                         </div>
 
                         { open.customers && (
-                            <div className='mt-2'>
+                            <div className='p-4 pt-0'>
                                 <MultiSelectInput
                                     optionValue="id"
                                     optionLabel="name"
@@ -522,9 +522,9 @@ export function VerifierListPage() {
                             </div>
                         ) }
                     </div>
-                    <div onClick={ () => setOpen({ ...open, forms: !open.forms }) }
-                         className={ `flex flex-col p-4 cursor-pointer ${ open.forms ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between">
+                    <div className={ `${ open.forms ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="p-4 cursor-pointer flex items-center justify-between"
+                             onClick={ () => setOpen({ ...open, forms: !open.forms }) }>
                             <div className="flex items-center gap-2">
                                 <LayoutTemplate className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.forms') }</h3>
@@ -535,7 +535,7 @@ export function VerifierListPage() {
                         </div>
 
                         { open.forms && (
-                            <div className='mt-2'>
+                            <div className='p-4 pt-0'>
                                 <Dropdown
                                     filter={ true }
                                     value={ selectedForm.toString() }
@@ -551,9 +551,9 @@ export function VerifierListPage() {
                             </div>
                         ) }
                     </div>
-                    <div onClick={ () => setOpen({ ...open, suppliers: !open.suppliers }) }
-                         className={ `flex flex-col p-4 cursor-pointer ${ open.suppliers ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
-                        <div className="flex items-center justify-between">
+                    <div className={ `${ open.suppliers ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                        <div className="p-4 cursor-pointer flex items-center justify-between"
+                             onClick={ () => setOpen({ ...open, suppliers: !open.suppliers }) }>
                             <div className="flex items-center gap-2">
                                 <Building2 className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('ACCOUNTS.suppliers_list') }</h3>
@@ -563,7 +563,7 @@ export function VerifierListPage() {
                         </div>
 
                         { open.suppliers && (
-                            <div className='mt-2'>
+                            <div className='p-4 pt-0'>
                                 <MultiSelectInput
                                     optionValue="id"
                                     optionLabel="name"
