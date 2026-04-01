@@ -46,7 +46,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
     options,
     onChange,
     required,
-    editable=false,
+    editable = false,
     filter = false,
     className = "",
     placeholder = "",
@@ -80,10 +80,9 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
     return (
         <div className='w-full'>
-            <div className={ `${ className } group group-focus-within:border-(--border-primary) relative flex
-                              justify-items-stretch 
-                              ${ error || noMarginBottom ? '' : 'mb-4' }
-                              ${ disabled ? 'cursor-not-allowed' : '' }` }>
+            <div className={ `${ className } group group-focus-within:border-(--border-primary) relative flex justify-items-stretch 
+                              ${ error || noMarginBottom ? '' : 'mb-4' } ${ disabled ? 'cursor-not-allowed' : '' }` }
+            >
                 <FloatLabel className='w-full'>
                     <PrimeDropdown
                         id={ id }
@@ -112,7 +111,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
                 </FloatLabel>
             </div>
             { error && (
-                <p className="text-(--text-error) text-xs ml-1" dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(error) } }/>
+                <p className="text-(--text-error) text-xs ml-1"
+                   dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(error) } }/>
             ) }
         </div>
     );

@@ -60,7 +60,7 @@ CREATE TABLE "outputs" (
     "id"             SERIAL         UNIQUE PRIMARY KEY,
     "output_type_id" VARCHAR(255),
     "output_label"   VARCHAR(255),
-    "compress_type"  VARCHAR(8),
+    "compress_type"  VARCHAR(12),
     "ocrise"         BOOLEAN DEFAULT FALSE,
     "module"         VARCHAR(10),
     "status"         VARCHAR(3)     DEFAULT 'OK',

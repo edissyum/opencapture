@@ -268,7 +268,9 @@
         "search": "",
         "back": "",
         "no_results_for": "",
-        "select": ""
+        "select": "",
+        "next": "",
+        "save": ""
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> successfully validated",
@@ -295,9 +297,7 @@
         "connection": "Connection",
         "folders": "Folders",
         "options": "Settings",
-        "next": "Next",
         "previous": "Previous",
-        "save": "Save",
         "graphql": "GraphQL",
         "imap": "IMAP",
         "oauth": "OAuth",
@@ -418,7 +418,24 @@
         "register_date_month": "",
         "register_date_year": "",
         "b64_file_content": "",
-        "original_filename": ""
+        "original_filename": "",
+        "mem_connection_ko": "",
+        "test_connection": "",
+        "testing_connection": "",
+        "cmis_connection_ko": "",
+        "cmis_connection_ok": "",
+        "coog_connection_ko": "",
+        "coog_connection_ok": "",
+        "mem_connection_ok": "",
+        "opencrm_connection_ko": "",
+        "opencrm_connection_ok": "",
+        "create_success": "",
+        "fix_details_errors": "",
+        "update_success": "",
+        "create": "",
+        "creating": "",
+        "update": "",
+        "updating": ""
     },
     "ROLES": {
         "add_role": "Add a role",

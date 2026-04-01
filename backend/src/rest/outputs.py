@@ -98,7 +98,7 @@ def update_output(output_id, module):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/outputs/{module}/update/{output_id}'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'data', 'type': dict, 'mandatory': True},
         {'id': 'ocrise', 'type': bool, 'mandatory': False},
         {'id': 'output_label', 'type': str, 'mandatory': True},
@@ -112,7 +112,7 @@ def update_output(output_id, module):
             "message": message
         }, 400)
 
-    res = outputs.update_output(output_id, request.json['args'])
+    res = outputs.update_output(output_id, request.json)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -135,7 +135,8 @@ def create_output(module):
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/outputs/{module}/create'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
+        {'id': 'data', 'type': dict, 'mandatory': True},
         {'id': 'module', 'type': str, 'mandatory': True},
         {'id': 'ocrise', 'type': bool, 'mandatory': False},
         {'id': 'output_label', 'type': str, 'mandatory': True},
@@ -149,7 +150,7 @@ def create_output(module):
             "message": message
         }, 400)
 
-    res = outputs.create_output(request.json['args'])
+    res = outputs.create_output(request.json)
     return make_response(jsonify(res[0])), res[1]
 
 

@@ -348,7 +348,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                         { loading ? (
                             t("MAILCOLLECT.loading_test_connexion")
                         ) : (
-                            t("MAILCOLLECT.next")
+                            t("GLOBAL.next")
                         ) }
                     </Button>
                 </div>
@@ -419,7 +419,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                         <ArrowLeft/> { t("MAILCOLLECT.previous") }
                     </Button>
                     <Button onClick={ handleSubmitFolders(handleNextStep) } className="ml-auto px-12">
-                        { t("MAILCOLLECT.next") }
+                        { t("GLOBAL.next") }
                     </Button>
                 </div>
             </StepperPanel>
@@ -569,7 +569,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                         { loading ? (
                             t("MAILCOLLECT.loading_save")
                         ) : (
-                            t("MAILCOLLECT.save")
+                            t("GLOBAL.save")
                         ) }
                     </Button>
                 </div>

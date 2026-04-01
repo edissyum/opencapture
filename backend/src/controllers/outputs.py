@@ -174,7 +174,8 @@ def create_output(data):
         'output_label': data['output_label'],
         'compress_type': data['compress_type'] if 'compress_type' in data else None,
         'ocrise': data['ocrise'] if 'ocrise' in data else False,
-        'module': data['module']
+        'module': data['module'],
+        'data': json.dumps(data['data'])
     }
 
     res, error = outputs.create_output({'columns': _columns})

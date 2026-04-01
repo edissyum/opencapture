@@ -19,34 +19,51 @@ import { t } from "i18next";
 import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Stepper } from "primereact/stepper";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { StepperPanel } from "primereact/stepperpanel";
 import { TabPanel, TabView } from "primereact/tabview";
 
 import { getCompressTypeOptions, getSystemFieldsOptions } from "./helpers";
+import { executeAuthFunction, getTestConnectionMapping } from "./functions";
 
 import Input from "../../Input";
 import { Button } from "../../Button";
 import { Loader } from "../../loader/Loader";
+import { showToast } from "../../ToastProvider";
 import { DynamicForm } from "../../form/DynamicForm";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 import { useCustomFields } from "../../../services/hooks/useCustomFields";
-import { executeAuthFunction, getTestConnectionMapping } from "./functions.tsx";
 
 export function OutputEditor({ module }: { module: string }) {
     const { get, post, put } = axiosApiCall();
+    const navigate = useNavigate();
     const { outputId } = useParams<{ outputId: any }>();
 
     const [loading, setLoading] = useState(true);
+    const [loadingStep, setLoadingStep] = useState(false);
+
     const stepperRef = useRef<any>(null);
     const [stepperIndex, setStepperIndex] = useState(0);
 
-    const [output, setOutput] = useState<any>(null);
     const [outputTypes, setOutputTypes] = useState([]);
-    const [outputType, setOutputType] = useState<any>([]);
+    const [outputType, setOutputType] = useState<any>({});
+    const [output, setOutput] = useState<any>({
+        output_type_id: '',
+        output_label: '',
+        compress_type: '',
+        ocrise: false,
+        data: {
+            options: {
+                auth: [],
+                parameters: []
+            }
+        }
+    });
+
+    const [codeType, setCodeType] = useState('');
     const [allowedPath, setAllowedPath] = useState('');
 
     const { customFields } = useCustomFields(module);
@@ -55,6 +72,7 @@ export function OutputEditor({ module }: { module: string }) {
         output_type_id: z.string().min(3).describe(JSON.stringify({
             required: true,
             component: "dropdown",
+            disabled: outputId,
             label: t("OUTPUTS.type"),
             options: outputTypes.map((o: any) => ({ label: o.output_type_label, value: o.output_type_id }))
         })),
@@ -63,15 +81,13 @@ export function OutputEditor({ module }: { module: string }) {
             component: "input",
             label: t("GLOBAL.label")
         })),
-        compress_type: z.string().describe(JSON.stringify({
-            required: false,
+        compress_type: z.string().optional().describe(JSON.stringify({
             component: "dropdown",
             show: ['export_pdf', 'export_cmis', 'export_openads'].includes(outputType?.output_type_id),
             label: t("OUTPUTS.compress_type"),
             options: getCompressTypeOptions().map((o: any) => ({ label: o.label, value: o.id }))
         })),
         ocrise: z.boolean().describe(JSON.stringify({
-            required: false,
             className: "flex items-center -mt-4 col-span-2",
             component: "input_switch",
             show: ['export_pdf', 'export_cmis', 'export_openads'].includes(outputType?.output_type_id),
@@ -83,21 +99,74 @@ export function OutputEditor({ module }: { module: string }) {
         watch: watchDetails,
         control: detailsControl,
         setValue: detailsSetValue,
-        handleSubmit: detailsHandleSubmit,
         formState: { errors: detailsErrors }
     } = useForm({
         resolver: zodResolver(detailSchema),
         defaultValues: {
             output_label: '',
-            output_type_id: ''
+            output_type_id: '',
+            compress_type: '',
+            ocrise: false
         },
         mode: "onChange"
     });
+
+    // Fetch output details
+    useEffect(() => {
+        if (!outputId || !outputTypes) return;
+
+        const fetchOutputDetails = async () => {
+            try {
+                const response = await get(`/outputs/${ module }/getById/${ outputId }`);
+                if (response) {
+                    Object.keys(response).forEach((key: any) => {
+                        detailsSetValue(key, response[key]);
+                    });
+                }
+
+                setOutput(response);
+                const newOutputType: any = outputTypes.find((o: any) => o.output_type_id === response.output_type_id);
+                setOutputType(newOutputType);
+
+                if (newOutputType?.data?.options.auth.length === 0) {
+                    setStepperIndex(1);
+                }
+            } catch (error) {
+                console.error("Error fetching output details:", error);
+            }
+        };
+
+        fetchOutputDetails().then();
+    }, [outputTypes]);
+
+    // handle output type change to check input types
+    useEffect(() => {
+        if (outputType && outputType.data && outputType.data.options && outputType.data.options.parameters) {
+            outputType.data.options.parameters.forEach((option: any) => {
+                if (option.type === 'textarea') {
+                    const value = output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '';
+                    if (value) {
+                        try {
+                            JSON.parse(value);
+                            setCodeType('json');
+                        } catch (e) {
+                            const parser = new DOMParser();
+                            const xmlDoc = parser.parseFromString(value, "application/xml");
+                            if (xmlDoc.getElementsByTagName("parsererror").length === 0) {
+                                setCodeType('xml');
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }, [outputType]);
 
     // Update output type when changed
     useEffect(() => {
         const outputTypeId = watchDetails('output_type_id');
         const newOutputType: any = outputTypes.find((o: any) => o.output_type_id === outputTypeId);
+
         if (newOutputType) {
             setOutputType(newOutputType);
             if (newOutputType.data?.options.auth.length > 0) {
@@ -108,29 +177,8 @@ export function OutputEditor({ module }: { module: string }) {
         }
     }, [watchDetails('output_type_id')]);
 
-    // Fetch output details
-    useEffect(() => {
-        if (!outputId) return;
-
-        const fetchOutputDetails = async () => {
-            try {
-                const response = await get(`/outputs/${ module }/getById/${ outputId }`);
-                if (response) {
-                    Object.keys(response).forEach((key: any) => {
-                        detailsSetValue(key, response[key]);
-                    });
-                }
-                setOutput(response);
-            } catch (error) {
-                console.error("Error fetching output details:", error);
-            }
-        };
-
-        fetchOutputDetails().then();
-    }, []);
-
-    // Fetch allowed path for output if needed
     // Fetch output types
+    // Fetch allowed path for output if needed
     useEffect(() => {
         const fetchAllowedPath = async () => {
             try {
@@ -159,18 +207,31 @@ export function OutputEditor({ module }: { module: string }) {
         fetchAllowedPath().then();
         fetchOutputTypes().then();
     }, []);
-put
-    const handleNextStep: any = async (data: FormData) => {
-        // if (data && Object.keys(workflowErrors).length > 0) {
-        //     return;
-        // }
+
+    const handleAuthStep: any = async (data: FormData) => {
+        if (data && Object.keys(detailsErrors).length > 0) {
+            return;
+        }
+
+        setLoadingStep(true);
+
         const authFunctionName: any = getTestConnectionMapping().find((m: any) => m.id === outputType.output_type_id)?.function;
-        const authOptions = output?.data?.options?.auth || [];
-        const res = await executeAuthFunction(
-            authFunctionName,
-            authOptions,
-            { get, post, put }
-        );
+        let authOptions: any = {};
+        output?.data?.options?.auth.forEach((option: any) => {
+            authOptions[option.id] = output?.data?.options?.auth?.find((o: any) => o.id === option.id)?.value || '';
+        });
+
+        const res = await executeAuthFunction(authFunctionName, authOptions, { post });
+
+        showToast(t(res.message), res.success ? "success" : "error");
+        if (res && res.success) {
+            stepperRef.current?.nextCallback();
+        }
+
+        setLoadingStep(false);
+    }
+
+    const handleNextStep = () => {
         stepperRef.current?.nextCallback();
     }
 
@@ -196,7 +257,74 @@ put
         });
     }
 
+    const handleSpecificChange = (e: any, option: any) => {
+        const value = e.target.value;
+        setOutput((prev: any) => {
+            // If the option already exists, update it. Otherwise, add it to the array
+            const newSpecificOptions = prev.data.options.parameters.map((o: any) => {
+                if (o.id === option.id) {
+                    return { ...o, value };
+                }
+                return o;
+            });
+
+            // If the option was not found in the existing options, add it
+            if (!prev.data.options.parameters.find((o: any) => o.id === option.id)) {
+                newSpecificOptions.push({ id: option.id, value });
+            }
+
+            return {
+                ...prev,
+                data: {
+                    ...prev.data,
+                    options: {
+                        ...prev.data.options,
+                        parameters: newSpecificOptions
+                    }
+                }
+            };
+        });
+    }
+
     const handlePreviousStep = () => stepperRef.current?.prevCallback();
+
+    const output_label = watchDetails('output_label');
+    const output_type_id = watchDetails('output_type_id');
+    const compress_type = watchDetails('compress_type');
+    const ocrise = watchDetails('ocrise');
+
+    const handleSubmit = async () => {
+        if (Object.keys(detailsErrors).length > 0 || !output_label || !output_type_id) {
+            showToast(t("OUTPUTS.fix_details_errors"), 'error');
+            return;
+        }
+
+        setLoadingStep(false);
+
+        const payload = {
+            module: module,
+            output_label: output_label,
+            output_type_id: output_type_id,
+            compress_type: compress_type,
+            ocrise: ocrise,
+            data: output?.data
+        };
+
+        try {
+            if (outputId) {
+                await put(`/outputs/${ module }/update/${ outputId }`, payload);
+                showToast(t('OUTPUTS.update_success'), "success");
+            } else {
+                await post(`/outputs/${ module }/create`, payload);
+                showToast(t('OUTPUTS.create_success'), "success");
+                navigate(`/settings/${ module }/outputs`);
+            }
+        } catch (error) {
+            console.error("Error saving output:", error);
+        } finally {
+            setLoadingStep(false);
+        }
+    }
 
     if (loading) return <Loader/>;
 
@@ -213,49 +341,81 @@ put
                     </div>
                 </div>
 
-                <Stepper ref={ stepperRef } linear className='p-4' activeStep={ stepperIndex }
-                         onChangeStep={ (e: any) => setStepperIndex(e.index) }>
-                    <StepperPanel header={ t("SMTP.authentication") }>
-                        <div className='flex gap-6 w-full'>
-                            { outputType?.data?.options.auth.map((option: any) => (
-                                <div key={ option.id } className="w-full gap-2 mb-4">
-                                    <Input id={ option.id } type={ option.type } name={ option.id } label={ option.label }
-                                           value={ output?.data?.options?.auth?.find((o: any) => o.id === option.id)?.value || '' }
-                                           onChange={ (e) => {
-                                               handleAuthChange(e, option)
-                                           } }/>
-                                </div>
-                            )) }
-                        </div>
+                { outputType && Object.keys(outputType).length > 0 && (
+                    <Stepper ref={ stepperRef } linear className='p-4' activeStep={ stepperIndex }
+                             onChangeStep={ (e: any) => setStepperIndex(e.index) }>
+                        <StepperPanel header={ t("SMTP.authentication") }>
+                            <div className='flex gap-6 w-full'>
+                                { outputType?.data?.options.auth.map((option: any) => (
+                                    <div key={ option.id } className="w-full gap-2 mb-4">
+                                        <Input id={ option.id } type={ option.type } name={ option.id } label={ option.label }
+                                               value={ output?.data?.options?.auth?.find((o: any) => o.id === option.id)?.value || '' }
+                                               onChange={ (e) => {
+                                                   handleAuthChange(e, option)
+                                               } }/>
+                                    </div>
+                                )) }
+                            </div>
 
-                        <div className="flex justify-end mt-6">
-                            <Button onClick={ handleNextStep } className="ml-auto px-12"
-                                    disabled={ loading }>
-                                { t("MAILCOLLECT.next") }
-                            </Button>
-                        </div>
-                    </StepperPanel>
-
-                    <StepperPanel header={ t("OUTPUTS.specific") }>
-
-                        <div className='mt-4 flex justify-between'>
-                            <Button onClick={ handlePreviousStep } variant="no_bg"
-                                    className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
-                                <ArrowLeft/> { t("MAILCOLLECT.previous") }
-                            </Button>
-
-                            <Button onClick={ handleNextStep } className="px-12"
-                                    disabled={ loading }>
-                                { t("MAILCOLLECT.next") }
-                            </Button>
-                        </div>
-                    </StepperPanel>
-
-                    { outputType === 'export_mem' && (
-                        <StepperPanel header={ t("OUTPUTS.links") }>
+                            <div className="flex justify-end mt-6">
+                                <Button onClick={ handleAuthStep } className="ml-auto px-12" disabled={ loadingStep }>
+                                    { loadingStep ? t("OUTPUTS.testing_connection") : t("OUTPUTS.test_connection") }
+                                </Button>
+                            </div>
                         </StepperPanel>
-                    ) }
-                </Stepper>
+
+                        <StepperPanel header={ t("OUTPUTS.specific") }>
+                            <div className='grid grid-cols-2 gap-4'>
+                                { outputType?.data?.options.parameters.map((option: any) => (
+                                    <div key={ option.id } className="w-full gap-2 mb-4">
+                                        { option.type === 'textarea' ? (
+                                            <div></div>
+                                        ) : (
+                                            <Input id={ option.id } type={ option.type } name={ option.id }
+                                                   label={ option.label } hint={ option.hint } noMarginBottom={ true }
+                                                   value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
+                                                   onChange={ (e) => {
+                                                       handleSpecificChange(e, option)
+                                                   } }/>
+                                        ) }
+                                    </div>
+                                )) }
+                            </div>
+
+                            <div className='mt-4 flex justify-between'>
+                                <Button onClick={ handlePreviousStep } variant="no_bg"
+                                        disabled={ outputType?.data?.options.auth.length === 0 }
+                                        className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
+                                    <ArrowLeft/> { t("MAILCOLLECT.previous") }
+                                </Button>
+
+                                <Button onClick={ outputType === 'export_mem' ? handleNextStep : handleSubmit } className="px-12"
+                                        disabled={ loading }>
+                                    { outputType === 'export_mem' ? (
+                                        t("GLOBAL.next")
+                                    ) : (
+                                        <>
+                                            { outputId ? (
+                                                <>
+                                                    { loadingStep ? t("OUTPUTS.updating") : t("OUTPUTS.update") }
+                                                </>
+                                            ) : (
+                                                <>
+                                                    { loadingStep ? t("OUTPUTS.creating") : t("OUTPUTS.create") }
+                                                </>
+                                            ) }
+                                        </>
+                                    ) }
+                                </Button>
+                            </div>
+                        </StepperPanel>
+
+                        { outputType === 'export_mem' && (
+                            <StepperPanel header={ t("OUTPUTS.links") }>
+                            </StepperPanel>
+                        ) }
+                    </Stepper>
+                ) }
             </div>
 
             { stepperIndex === 1 && (

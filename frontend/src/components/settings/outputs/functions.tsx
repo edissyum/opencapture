@@ -13,6 +13,7 @@
  along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
+import { t } from "i18next";
 
 export const getTestConnectionMapping = () => [
     { id: 'export_mem', function: "testMEMConnection" },
@@ -21,26 +22,38 @@ export const getTestConnectionMapping = () => [
     { id: 'export_opencrm', function: "testOpenCRMConnection" }
 ]
 
-export const createFunctionsMap = ({ get, post, put }: any) => ({
+export const createFunctionsMap = ({ post }: any) => ({
     testMEMConnection: async (args: any) => {
         const res = await post('/mem/testConnection', args);
-        console.log(res)
-        return { success: true, message: "MEM connection successful!" };
+        if (!res.status[0]) {
+            return { success: false, message: `<strong>${ t('OUTPUTS.mem_connection_ko') }</strong> : ${ res.status[1] }` };
+        } else {
+            return { success: true, message: `<strong>${ t('OUTPUTS.mem_connection_ok') }</strong>` };
+        }
     },
-
     testCOOGConnection: async (args: any) => {
-        const res = await post('/coog/test', args);
-        return { success: true, message: "COOG connection successful!" };
+        const res = await post('/coog/getAccessToken', args);
+        if (!res.status[0]) {
+            return { success: false, message: `<strong>${ t('OUTPUTS.coog_connection_ko') }</strong> : ${ res.status[1] }` };
+        } else {
+            return { success: true, message: `<strong>${ t('OUTPUTS.coog_connection_ok') }</strong>` };
+        }
     },
-
     testCMISConnection: async (args: any) => {
-        const res = await post('/cmis/test', args);
-        return { success: true, message: "CMIS connection successful!" };
+        const res = await post('/splitter/cmis/testConnection', args);
+        if (!res.status[0]) {
+            return { success: false, message: `<strong>${ t('OUTPUTS.cmis_connection_ko') }</strong> : ${ res.status[1] }` };
+        } else {
+            return { success: true, message: `<strong>${ t('OUTPUTS.cmis_connection_ok') }</strong>` };
+        }
     },
-
     testOpenCRMConnection: async (args: any) => {
-        const res = await post('/opencrm/test', args);
-        return { success: true, message: "OpenCRM connection successful!" };
+        const res = await post('/opencrm/getAccessToken', args);
+        if (!res.status[0]) {
+            return { success: false, message: `<strong>${ t('OUTPUTS.opencrm_connection_ko') }</strong> : ${ res.status[1] }` };
+        } else {
+            return { success: true, message: `<strong>${ t('OUTPUTS.opencrm_connection_ok') }</strong>` };
+        }
     }
 });
 

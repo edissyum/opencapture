@@ -26,7 +26,7 @@ bp = Blueprint('coog', __name__, url_prefix='/ws/')
 @bp.route('coog/getAccessToken', methods=['POST'])
 @auth.token_required
 def get_access_token():
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'host', 'type': str, 'mandatory': True},
         {'id': 'token', 'type': str, 'mandatory': True},
         {'id': 'cert_path', 'type': str, 'mandatory': False}
@@ -38,5 +38,5 @@ def get_access_token():
             "message": message
         }, 400)
 
-    connection = coog.get_access_token(request.json['args'])
+    connection = coog.get_access_token(request.json)
     return make_response(jsonify({'status': connection}), 200)

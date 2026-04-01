@@ -402,7 +402,7 @@ export function SettingsGeneralSecurity() {
                                     { loading ? (
                                         t("MAILCOLLECT.loading_test_connexion")
                                     ) : (
-                                        t("MAILCOLLECT.next")
+                                        t("GLOBAL.next")
                                     ) }
                                 </Button>
                             </div>

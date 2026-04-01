@@ -835,7 +835,7 @@ class Files:
 
             file_path = args['document']['folder_out'] + '/' + args['document']['filename']
 
-            if args['document']['compress_type']:
+            if args['document']['compress_type'] and args['document']['compress_type'] != 'no_compress':
                 tmp_filename = '/tmp/' + args['document']['filename']
                 with open(tmp_filename, 'wb') as file:
                     pdf_writer.write(file)

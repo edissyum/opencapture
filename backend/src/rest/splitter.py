@@ -400,8 +400,7 @@ def test_cmis_connection():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'update_output_splitter']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/cmis/testConnection'}), 403
 
-    data = json.loads(request.data)
-    response, status = splitter.test_cmis_connection(data['args'])
+    response, status = splitter.test_cmis_connection(request.json)
     return make_response(jsonify(response)), status
 
 

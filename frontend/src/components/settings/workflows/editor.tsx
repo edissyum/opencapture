@@ -492,8 +492,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         const label = detailsGetValues('label');
         const workflowId = detailsGetValues('workflow_id');
         if (Object.keys(detailsErrors).length > 0 || !workflowId || !label) {
-            await detailsHandleSubmit(() => {
-            })();
+            await detailsHandleSubmit(() => {})();
             showToast(t("WORKFLOWS.fix_details_errors"), 'error');
             return;
         }
@@ -655,7 +654,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                     <div className="flex justify-end mt-6">
                         <Button onClick={ workflowHandleSubmit(handleSubmitStep) } className="ml-auto px-12"
                                 disabled={ loading || Object.keys(workflowErrors).length > 0 }>
-                            { loadingUpdate ? t("WORKFLOWS.validating") : t("MAILCOLLECT.next") }
+                            { loadingUpdate ? t("WORKFLOWS.validating") : t("GLOBAL.next") }
                         </Button>
                     </div>
                 </StepperPanel>
@@ -700,7 +699,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                                     data-tooltip-content={ t("WORKFLOWS.next_script_testing") }
                                     onClick={ () => handleSubmitScript(inputScript, 'input') } className="px-12"
                                     disabled={ loading || Object.keys(workflowErrors).length > 0 }>
-                                { loadingScript ? t("WORKFLOWS.validating_script") : t("MAILCOLLECT.next") }
+                                { loadingScript ? t("WORKFLOWS.validating_script") : t("GLOBAL.next") }
                             </Button>
                         </div>
                     </StepperPanel>
@@ -737,7 +736,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
                         <Button onClick={ workflowHandleSubmit(handleSubmitStep) } className="px-12"
                                 disabled={ loading || Object.keys(workflowErrors).length > 0 }>
-                            { t("MAILCOLLECT.next") }
+                            { t("GLOBAL.next") }
                         </Button>
                     </div>
                 </StepperPanel>
@@ -782,7 +781,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                                     data-tooltip-content={ t("WORKFLOWS.next_script_testing") }
                                     onClick={ () => handleSubmitScript(processScript, 'process') } className="px-12"
                                     disabled={ loading || Object.keys(workflowErrors).length > 0 }>
-                                { loadingScript ? t("WORKFLOWS.validating_script") : t("MAILCOLLECT.next") }
+                                { loadingScript ? t("WORKFLOWS.validating_script") : t("GLOBAL.next") }
                             </Button>
                         </div>
                     </StepperPanel>

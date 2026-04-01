@@ -17,7 +17,7 @@
 import { t } from "i18next";
 
 export const getCompressTypeOptions = () => [
-    { id: "", label: t("OUTPUTS.no_compress") },
+    { id: "no_compress", label: t("OUTPUTS.no_compress") },
     { id: "screen", label: t("OUTPUTS.compress_screen") },
     { id: "ebook", label: t("OUTPUTS.compress_ebook") },
     { id: "prepress", label: t("OUTPUTS.compress_prepress") },

@@ -474,7 +474,7 @@ def export_pdf(data, log, document_info, compress_type, ocrise, enable_log=True)
                         image_file = Image.open(file)
                     image_file.save(folder_out + '/' + filename)
 
-        if compress_type:
+        if compress_type and compress_type != 'no_compress':
             if os.path.isfile(folder_out + '/' + filename):
                 file = folder_out + '/' + filename
             compress_file(file, compress_type, log, folder_out, filename, document_info['filename'])

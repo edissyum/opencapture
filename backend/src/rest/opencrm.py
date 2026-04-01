@@ -26,7 +26,7 @@ bp = Blueprint('opencrm', __name__, url_prefix='/ws/')
 @bp.route('opencrm/getAccessToken', methods=['POST'])
 @auth.token_required
 def get_access_token():
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'host', 'type': str, 'mandatory': True},
         {'id': 'client_id', 'type': str, 'mandatory': True},
         {'id': 'client_secret', 'type': str, 'mandatory': True}
@@ -38,5 +38,5 @@ def get_access_token():
             "message": message
         }, 400)
 
-    connection = opencrm.get_access_token(request.json['args'])
+    connection = opencrm.get_access_token(request.json)
     return make_response(jsonify({'status': connection}), 200)
