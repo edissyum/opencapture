@@ -34,10 +34,10 @@ import {
 } from "lucide-react";
 
 import { LoginImage } from "./LoginImage";
+import { hasRequiredPermissions } from "./auth/auth";
 
 import { useUser } from "../services/hooks/useUser";
 import { clearPersistentState } from "../services/hooks/usePersistentState";
-import { hasRequiredPermissions } from "./auth/auth.tsx";
 
 export default function Sidebar() {
     const { user, loadingUser } = useUser();
@@ -80,8 +80,8 @@ export default function Sidebar() {
 
     const [collapsed, setCollapsed] = useState(false);
 
-    const standardClasses = "flex items-center p-3 gap-2 hover:text-(--text-primary) text-(--text-secondary) font-semibold transition-colors border-transparent";
-    const activeClasses = "bg-(--bg-selected) rounded-lg text-(--color-primary)! hover:text-(--color-primary)! border-(--border-primary)!";
+    const standardClasses = "flex items-center rounded-lg p-3 gap-2 hover:text-(--text-primary) text-(--text-secondary) font-semibold transition-colors border-transparent";
+    const activeClasses = "bg-(--bg-selected) text-(--color-primary)! hover:text-(--color-primary)! border-(--border-primary)!";
 
     if (!user || loadingUser) return;
 

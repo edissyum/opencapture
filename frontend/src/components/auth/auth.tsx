@@ -39,7 +39,7 @@ export function protectedLoader(requiredPermissions: string[] = []) {
         if (!user) {
             throw new Response("Login required", { status: 401 });
         }
-        console.log(requiredPermissions)
+
         if (requiredPermissions && requiredPermissions.length > 0) {
             const res = hasRequiredPermissions(user, requiredPermissions);
 
