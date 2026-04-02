@@ -18,17 +18,18 @@ import { z } from "zod";
 import { t } from "i18next";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
+import { InputSwitch } from "primereact/inputswitch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
 import { Accordion, AccordionTab } from "primereact/accordion";
+
+import { getPrivilegesParent } from "./helpers";
 
 import { Button } from "../../../../components/Button";
 import { showToast } from "../../../../components/ToastProvider";
 import { DynamicForm } from "../../../../components/form/DynamicForm";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
-import { InputSwitch } from "primereact/inputswitch";
-import { getPrivilegesParent } from "./helpers.tsx";
 
 export function SettingsGeneralRoleEditor() {
     const { get, put, post } = axiosApiCall();

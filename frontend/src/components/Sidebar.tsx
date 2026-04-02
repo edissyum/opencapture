@@ -37,6 +37,7 @@ import { LoginImage } from "./LoginImage";
 
 import { useUser } from "../services/hooks/useUser";
 import { clearPersistentState } from "../services/hooks/usePersistentState";
+import { hasRequiredPermissions } from "./auth/auth.tsx";
 
 export default function Sidebar() {
     const { user, loadingUser } = useUser();
@@ -109,59 +110,71 @@ export default function Sidebar() {
                     { !collapsed && <span>{ t('GLOBAL.home') }</span> }
                 </Link>
 
-                <Link to="/settings"
-                      className={ `border ${ standardClasses } ${ location.pathname.includes("/settings") ? activeClasses : "" }` }>
-                    <Settings size={ 20 } { ...(collapsed && {
-                        "data-tooltip-id": "tooltip",
-                        "data-tooltip-content": t('GLOBAL.settings'),
-                    }) }/>
-                    { !collapsed && <span>{ t('GLOBAL.settings') }</span> }
-                </Link>
+                { hasRequiredPermissions(user, ['settings']) && (
+                    <Link to="/settings"
+                          className={ `border ${ standardClasses } ${ location.pathname.includes("/settings") ? activeClasses : "" }` }>
+                        <Settings size={ 20 } { ...(collapsed && {
+                            "data-tooltip-id": "tooltip",
+                            "data-tooltip-content": t('GLOBAL.settings'),
+                        }) }/>
+                        { !collapsed && <span>{ t('GLOBAL.settings') }</span> }
+                    </Link>
+                ) }
 
-                <Link to="/history"
-                      className={ `border ${ standardClasses } ${ location.pathname.includes("/history") ? activeClasses : "" }` }>
-                    <Clock4 size={ 20 } { ...(collapsed && {
-                        "data-tooltip-id": "tooltip",
-                        "data-tooltip-content": t('GLOBAL.history'),
-                    }) }/>
-                    { !collapsed && <span>{ t('GLOBAL.history') }</span> }
-                </Link>
+                { hasRequiredPermissions(user, ['history']) && (
+                    <Link to="/history"
+                          className={ `border ${ standardClasses } ${ location.pathname.includes("/history") ? activeClasses : "" }` }>
+                        <Clock4 size={ 20 } { ...(collapsed && {
+                            "data-tooltip-id": "tooltip",
+                            "data-tooltip-content": t('GLOBAL.history'),
+                        }) }/>
+                        { !collapsed && <span>{ t('GLOBAL.history') }</span> }
+                    </Link>
+                ) }
 
-                <Link to="/statistics"
-                      className={ `border ${ standardClasses } ${ location.pathname.includes("/statistics") ? activeClasses : "" }` }>
-                    <ChartNoAxesColumn size={ 20 } { ...(collapsed && {
-                        "data-tooltip-id": "tooltip",
-                        "data-tooltip-content": t('GLOBAL.statistics'),
-                    }) }/>
-                    { !collapsed && <span>{ t('GLOBAL.statistics') }</span> }
-                </Link>
+                { hasRequiredPermissions(user, ['statistics']) && (
+                    <Link to="/statistics"
+                          className={ `border ${ standardClasses } ${ location.pathname.includes("/statistics") ? activeClasses : "" }` }>
+                        <ChartNoAxesColumn size={ 20 } { ...(collapsed && {
+                            "data-tooltip-id": "tooltip",
+                            "data-tooltip-content": t('GLOBAL.statistics'),
+                        }) }/>
+                        { !collapsed && <span>{ t('GLOBAL.statistics') }</span> }
+                    </Link>
+                ) }
 
-                <Link to="/monitoring"
-                      className={ `border ${ standardClasses } ${ location.pathname.includes("/monitoring") ? activeClasses : "" }` }>
-                    <Activity size={ 20 } { ...(collapsed && {
-                        "data-tooltip-id": "tooltip",
-                        "data-tooltip-content": t('GLOBAL.monitoring'),
-                    }) }/>
-                    { !collapsed && <span>{ t('GLOBAL.monitoring') }</span> }
-                </Link>
+                { hasRequiredPermissions(user, ['monitoring']) && (
+                    <Link to="/monitoring"
+                          className={ `border ${ standardClasses } ${ location.pathname.includes("/monitoring") ? activeClasses : "" }` }>
+                        <Activity size={ 20 } { ...(collapsed && {
+                            "data-tooltip-id": "tooltip",
+                            "data-tooltip-content": t('GLOBAL.monitoring'),
+                        }) }/>
+                        { !collapsed && <span>{ t('GLOBAL.monitoring') }</span> }
+                    </Link>
+                ) }
 
-                <Link to="/suppliers"
-                      className={ `border ${ standardClasses } ${ location.pathname.includes("/suppliers") ? activeClasses : "" }` }>
-                    <Building2 size={ 20 } { ...(collapsed && {
-                        "data-tooltip-id": "tooltip",
-                        "data-tooltip-content": t('ACCOUNTS.suppliers_list'),
-                    }) }/>
-                    { !collapsed && <span>{ t('ACCOUNTS.suppliers_list') }</span> }
-                </Link>
+                { hasRequiredPermissions(user, ['suppliers_list']) && (
+                    <Link to="/suppliers"
+                          className={ `border ${ standardClasses } ${ location.pathname.includes("/suppliers") ? activeClasses : "" }` }>
+                        <Building2 size={ 20 } { ...(collapsed && {
+                            "data-tooltip-id": "tooltip",
+                            "data-tooltip-content": t('ACCOUNTS.suppliers_list'),
+                        }) }/>
+                        { !collapsed && <span>{ t('ACCOUNTS.suppliers_list') }</span> }
+                    </Link>
+                ) }
 
-                <Link to="/customers"
-                      className={ `border ${ standardClasses } ${ location.pathname.includes("/customers") ? activeClasses : "" }` }>
-                    <Briefcase size={ 20 } { ...(collapsed && {
-                        "data-tooltip-id": "tooltip",
-                        "data-tooltip-content": t('ACCOUNTS.customers_list'),
-                    }) }/>
-                    { !collapsed && <span>{ t('ACCOUNTS.customers_list') }</span> }
-                </Link>
+                { hasRequiredPermissions(user, ['customers_list']) && (
+                    <Link to="/customers"
+                          className={ `border ${ standardClasses } ${ location.pathname.includes("/customers") ? activeClasses : "" }` }>
+                        <Briefcase size={ 20 } { ...(collapsed && {
+                            "data-tooltip-id": "tooltip",
+                            "data-tooltip-content": t('ACCOUNTS.customers_list'),
+                        }) }/>
+                        { !collapsed && <span>{ t('ACCOUNTS.customers_list') }</span> }
+                    </Link>
+                ) }
 
                 <Link to="/about"
                       className={ `border ${ standardClasses } ${ location.pathname.includes("/about") ? activeClasses : "" }` }>

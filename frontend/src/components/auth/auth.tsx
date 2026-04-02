@@ -15,13 +15,39 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { showToast } from "../ToastProvider";
+import { getUserFromStorage } from "../../services/hooks/useUser";
+
 export function isAuthenticated(): boolean {
     return !!sessionStorage.getItem("accessToken");
 }
 
-export async function protectedLoader() {
-    if (!isAuthenticated()) {
-        throw new Response("Login required", { status: 401 });
-    }
-    return null;
+export const hasRequiredPermissions = (user: any, requiredPermissions: string[] = []) => {
+    const userPrivileges = user.privileges || [];
+    return requiredPermissions.every((perm) => {
+        return userPrivileges.includes(perm) || userPrivileges === "*";
+    });
+}
+
+export function protectedLoader(requiredPermissions: string[] = []) {
+    return async () => {
+        if (!isAuthenticated()) {
+            throw new Response("Login required", { status: 401 });
+        }
+
+        const user = getUserFromStorage();
+        if (!user) {
+            throw new Response("Login required", { status: 401 });
+        }
+        console.log(requiredPermissions)
+        if (requiredPermissions && requiredPermissions.length > 0) {
+            const res = hasRequiredPermissions(user, requiredPermissions);
+
+            if (!res) {
+                showToast("Unauthorized", "error");
+                throw new Response("Forbidden", { status: 403 });
+            }
+        }
+        return null;
+    };
 }

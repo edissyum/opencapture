@@ -19,20 +19,26 @@ import { useState, useEffect } from "react";
 
 const USER_KEY = "user";
 
+export function getUserFromStorage() {
+    const storedUser = sessionStorage.getItem(USER_KEY);
+
+    if (!storedUser) return null;
+
+    try {
+        return JSON.parse(storedUser);
+    } catch {
+        sessionStorage.removeItem(USER_KEY);
+        return null;
+    }
+}
+
 export function useUser() {
     const [user, setUser] = useState<any>(null);
     const [loadingUser, setLoadingUser] = useState(true);
 
     useEffect(() => {
-        const storedUser = sessionStorage.getItem(USER_KEY);
-        if (storedUser) {
-            try {
-                setUser(JSON.parse(storedUser));
-            } catch (err) {
-                console.error("Erreur parsing user sessionStorage:", err);
-                sessionStorage.removeItem(USER_KEY);
-            }
-        }
+        const user = getUserFromStorage();
+        setUser(user);
         setLoadingUser(false);
     }, []);
 

@@ -21,8 +21,8 @@ import { useNavigate, useRouteError, isRouteErrorResponse } from "react-router-d
 import { showToast } from "../ToastProvider";
 
 export default function LoginRequiredError() {
-    const error = useRouteError();
     const { t } = useTranslation();
+    const error = useRouteError();
     const navigate = useNavigate();
 
     useEffect(() => {
