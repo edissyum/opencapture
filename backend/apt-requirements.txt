@@ -1,7 +1,6 @@
 php
 cron
 libgl1
-apache2
 libpq-dev
 libmagic1
 pkg-config
@@ -26,4 +25,3 @@ tesseract-ocr-eng
 python3-pyinotify
 libpoppler-cpp-dev
 autopostgresqlbackup
-libapache2-mod-wsgi-py3
