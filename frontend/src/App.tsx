@@ -57,8 +57,8 @@ export function App() {
             let _custom = getCustomFromUrl();
             if (!_custom) {
                 const api = axios.create({ baseURL: `${ BACKEND_URL }/ws/` });
-                const res = await api.get("/config/customsList");
-                const customs = res.data.customs as string[];
+                const response = await api.get("/config/customsList");
+                const customs = response.data.customs as string[];
                 if (customs.length === 1) {
                     window.location.href = `/${ customs[0] }/${ window.location.pathname.substring(1) }`;
                     _custom = customs[0];

@@ -20,19 +20,26 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
+import { Accordion, AccordionTab } from "primereact/accordion";
 
 import { Button } from "../../../../components/Button";
 import { showToast } from "../../../../components/ToastProvider";
 import { DynamicForm } from "../../../../components/form/DynamicForm";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { InputSwitch } from "primereact/inputswitch";
+import { getPrivilegesParent } from "./helpers.tsx";
 
 export function SettingsGeneralRoleEditor() {
     const { get, put, post } = axiosApiCall();
     const navigate = useNavigate();
+    const { roleId } = useParams<{ roleId: any }>();
+
+    const privilegeClasses = 'flex items-center gap-2 border border-(--border-primary) rounded-md p-2 bg-(--bg-selected)';
 
     const [role, setRole] = useState<any>({});
-    const { roleId } = useParams<{ roleId: any }>();
+    const [privileges, setPrivileges] = useState<any>({});
+    const [rolePrivileges, setRolePrivileges] = useState<any>([]);
 
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -91,6 +98,36 @@ export function SettingsGeneralRoleEditor() {
         fetchRole().then();
     }, [roleId]);
 
+    // Fetch privileges for role
+    useEffect(() => {
+        if (!roleId) return;
+
+        const fetchRolePrivileges = async () => {
+            try {
+                const response = await get(`/privileges/getbyRoleId/${ roleId }`);
+                setRolePrivileges(response);
+            } catch (error) {
+                console.error('Error fetching role privileges :', error);
+            }
+        };
+
+        fetchRolePrivileges().then();
+    }, [roleId]);
+
+    // Fetch privileges
+    useEffect(() => {
+        const fetchPrivileges = async () => {
+            try {
+                const response = await get(`/privileges/list`);
+                setPrivileges(response.privileges);
+            } catch (error) {
+                console.error('Error fetching privileges :', error);
+            }
+        };
+
+        fetchPrivileges().then();
+    }, []);
+
     // Fill form when user data is loaded
     useEffect(() => {
         if (Object.keys(role).length === 0) return;
@@ -119,6 +156,14 @@ export function SettingsGeneralRoleEditor() {
 
         try {
             await put(`/roles/update/${ roleId }`, data);
+
+            const privilegesIds = rolePrivileges ? rolePrivileges.map((label: any) => {
+                const privilege: any = Object.values(privileges).find((p: any) => p.label === label);
+                return privilege ? privilege.id : null;
+            }).filter((id: any) => id !== null) : [];
+
+            await put(`/roles/updatePrivilege/${ roleId }`, { privileges: privilegesIds });
+
             showToast(t('ROLES.update_success'), 'success');
             setLoading(false);
         } catch (error) {
@@ -127,13 +172,24 @@ export function SettingsGeneralRoleEditor() {
         }
     }
 
+    const handleTogglePrivilege = (e: any, privilege: any) => {
+        const isChecked = e.value;
+        setRolePrivileges((prev: any) => {
+            if (isChecked) {
+                return [...prev, privilege.label];
+            } else {
+                return prev.filter((p: any) => p !== privilege.label);
+            }
+        });
+    }
+
     return (
-        <div className="p-6 bg-(--bg-secondary) h-full flex flex-col gap-4">
-            <div>
-                <h1 className="text-xl font-bold mb-4">
+        <div className="p-6 bg-(--bg-secondary) h-full flex flex-col gap-4 overflow-y-auto">
+            <div className='flex flex-col gap-4'>
+                <h1 className="text-xl font-bold">
                     { roleId ? t('ROLES.editing') : t('ROLES.new_role') }
                 </h1>
-                <h1 className="text-lg font-semibold mb-4">
+                <h1 className="text-lg font-semibold">
                     { t('ROLES.details') }
                 </h1>
                 <div className='w-1/3'>
@@ -141,14 +197,53 @@ export function SettingsGeneralRoleEditor() {
                 </div>
             </div>
 
-            <h1 className="text-lg font-semibold mb-2">
-                { t('ROLES.default_route') }
-            </h1>
-            <div className='w-1/3'>
-                <DynamicForm schema={ routesSchema } errors={ errors } control={ control } labelFusion={ true }/>
+            <div className='flex flex-col gap-2'>
+                <h1 className="text-lg font-semibold">
+                    { t('ROLES.default_route') }
+                </h1>
+                <div className='w-1/3'>
+                    <DynamicForm schema={ routesSchema } errors={ errors } control={ control } labelFusion={ true }/>
+                </div>
             </div>
 
-            <div className="mt-12">
+            <div className='flex flex-col gap-2'>
+                <h1 className="text-lg font-semibold">
+                    { t('ROLES.permissions') }
+                </h1>
+
+                { privileges && Object.keys(privileges).length > 0 && (
+                    <Accordion multiple activeIndex={ [0, 1, 2, 3, 4] } className='accordionRoles'>
+                        { getPrivilegesParent().map((parent: any) => (
+                            <AccordionTab header={
+                                <div className='flex items-center gap-2'>
+                                    <div className='bg-(--bg-secondary) p-2 rounded-md'>
+                                        { parent.icon }
+                                    </div>
+                                    { parent.name }
+                                </div>
+                            }>
+                                <div className='p-4 grid grid-cols-4 gap-4'>
+                                    { Object.values(privileges).filter((privilege: any) => privilege.parent === parent.id).map((privilege: any) => (
+                                        <div key={ privilege.id } className={ privilegeClasses }>
+                                            <InputSwitch
+                                                inputId={ privilege.label }
+                                                checked={ rolePrivileges?.includes(privilege.label) }
+                                                onChange={ (e: any) => handleTogglePrivilege(e, privilege) }
+                                            />
+
+                                            <label htmlFor={ privilege.label } className='cursor-pointer'>
+                                                { t(`PRIVILEGES.${ privilege.label }`) }
+                                            </label>
+                                        </div>
+                                    )) }
+                                </div>
+                            </AccordionTab>
+                        )) }
+                    </Accordion>
+                ) }
+            </div>
+
+            <div className="mt-4">
                 { roleId ? (
                     <Button onClick={ handleSubmit(handleUpdate) }
                             disabled={ loading || Object.keys(errors).length > 0 }>

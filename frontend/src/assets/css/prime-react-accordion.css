@@ -163,3 +163,18 @@
     @apply bg-(--bg-primary);
     @apply border-(--border-secondary);
 }
+
+.p-accordion .p-accordion-header-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.p-accordion .p-accordion-header .p-accordion-header-link .p-accordion-toggle-icon {
+    order: 2; /* pousse l'icône à droite */
+    margin-left: auto;
+}
+
+.accordionRoles .p-accordion-tab .p-accordion-header .p-accordion-header-link {
+    @apply p-4;
+}

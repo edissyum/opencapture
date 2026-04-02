@@ -73,6 +73,7 @@ import { MonitoringDetails } from "./pages/monitoring/details";
 import { UpdateStatus } from "./components/settings/update-status/update";
 import { OutputEditor } from "./components/settings/outputs/editor";
 import { SettingsGeneralUserQuota } from "./pages/settings/general/users/quota";
+import { SettingsGeneralTokenAuth } from "./pages/settings/general/security/token";
 
 export const router = createBrowserRouter(
     [
@@ -299,9 +300,23 @@ export const router = createBrowserRouter(
                         {
                             path: "security",
                             loader: protectedLoader,
-                            element: <SettingsGeneralSecurity/>,
                             errorElement: <LoginRequiredError/>,
-                            handle: { breadcrumb: 'SETTINGS.security' }
+                            handle: { breadcrumb: 'SETTINGS.security' },
+                            children: [
+                                {
+                                    index: true,
+                                    loader: protectedLoader,
+                                    element: <SettingsGeneralSecurity/>,
+                                    errorElement: <LoginRequiredError/>
+                                },
+                                {
+                                    path: 'token',
+                                    loader: protectedLoader,
+                                    element: <SettingsGeneralTokenAuth/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.token_auth' }
+                                }
+                            ]
                         },
                         {
                             path: "users",

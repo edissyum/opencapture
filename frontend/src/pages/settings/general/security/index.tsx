@@ -25,15 +25,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { StepperPanel } from "primereact/stepperpanel";
 import { Accordion, AccordionTab } from "primereact/accordion";
 
-import { Button } from "../../../components/Button";
-import { RadioBox } from "../../../components/RadioBox";
-import { showToast } from "../../../components/ToastProvider";
-import { DynamicForm } from "../../../components/form/DynamicForm";
+import { Button } from "../../../../components/Button";
+import { RadioBox } from "../../../../components/RadioBox";
+import { showToast } from "../../../../components/ToastProvider";
+import { DynamicForm } from "../../../../components/form/DynamicForm";
 
-import { useUser } from "../../../services/hooks/useUser";
-import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { useUser } from "../../../../services/hooks/useUser";
+import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { useNavigate } from "react-router-dom";
 
 export function SettingsGeneralSecurity() {
+    const navigate = useNavigate();
     const { user, loadingUser } = useUser();
     const { get, put, post } = axiosApiCall();
 
@@ -331,10 +333,11 @@ export function SettingsGeneralSecurity() {
             <h3 className={ 'font-semibold text-(--text-primary)' }>
                 { t('SECURITY.generate_auth_token') }
             </h3>
-            <p className='w-fit text-(--text-secondary) text-sm mb-6 flex items-center gap-0.5 cursor-pointer hover:text-(--color-primary)'>
+            <div onClick={ () => navigate('/settings/general/security/token') }
+                 className='w-fit text-(--text-secondary) text-sm mb-6 flex items-center gap-0.5 cursor-pointer hover:text-(--color-primary)'>
                 { t('SECURITY.here') }
                 <ArrowRight size={ 18 }/>
-            </p>
+            </div>
             <Accordion multiple activeIndex={ activeIndex } onTabChange={ (e) => setActiveIndex(e.index as number[]) }>
                 <AccordionTab header={
                     <span className='flex items-center'>
