@@ -270,7 +270,9 @@
         "no_results_for": "No results for ",
         "select": "Select",
         "next": "Next",
-        "save": "Save"
+        "save": "Save",
+        "unauthorized": "",
+        "unauthorized_details": ""
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validated",
@@ -488,7 +490,7 @@
         "global_privileges": "",
         "splitter_privileges": "",
         "verifier_privileges": "",
-        "third_party_privileges": ""
+        "accounts_privileges": ""
     },
     "SETTINGS": {
         "abouts_us": "About",
@@ -1288,7 +1290,6 @@
         "update_form": "",
         "update_form_splitter": "",
         "update_llm_models": "",
-        "update_login_bottom_message": "",
         "update_login_top_message": "",
         "update_output": "",
         "update_output_splitter": "",

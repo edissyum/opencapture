@@ -19,12 +19,18 @@ import { useEffect, useState } from "react";
 import { VerifierListPage } from "./verifier/list";
 import { SplitterListPage } from "./splitter/list";
 
+import { useUser } from "../services/hooks/useUser";
+import { hasRequiredPermissions } from "../components/auth/auth.tsx";
+import { t } from "i18next";
+
 export function HomePage() {
     const modules: any = {
         verifier: VerifierListPage,
         splitter: SplitterListPage
     }
     const [module, setModule] = useState("");
+
+    const {user, loadingUser} = useUser();
 
     const selectedModule = localStorage.getItem('selectedModule') || 'verifier';
     if (selectedModule && selectedModule !== module) {
@@ -45,6 +51,22 @@ export function HomePage() {
         return () => window.removeEventListener("updateModule", handler);
     }, []);
 
+    if (loadingUser) return;
+
+    if (selectedModule) {
+        if (hasRequiredPermissions(user, selectedModule === 'verifier' ? ['access_verifier'] : ['access_splitter'])) {
+            return (
+                <ModuleComponent />
+            );
+        } else {
+            return (
+                <div className="flex flex-col items-center justify-center h-full gap-4">
+                    <h1 className="text-2xl font-bold">{ t('GLOBAL.unauthorized') }</h1>
+                    <p>{ t('GLOBAL.unauthorized_details') }</p>
+                </div>
+            );
+        }
+    }
 
     return (
         <ModuleComponent />

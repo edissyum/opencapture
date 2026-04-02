@@ -290,7 +290,9 @@
         "no_results_for": "Ningún resultado para ",
         "select": "Seleccionar",
         "next": "Siguiente",
-        "save": "Guardar"
+        "save": "Guardar",
+        "unauthorized": "",
+        "unauthorized_details": ""
     },
     "HISTORY": {
         "document_validated": "Documento n°<strong>{{ documentId }}</strong> validado",
@@ -524,7 +526,7 @@
         "global_privileges": "",
         "splitter_privileges": "",
         "verifier_privileges": "",
-        "third_party_privileges": ""
+        "accounts_privileges": ""
     },
     "SETTINGS": {
         "abouts_us": "Acerca de",
@@ -1383,7 +1385,6 @@
         "update_form": "",
         "update_form_splitter": "",
         "update_llm_models": "",
-        "update_login_bottom_message": "",
         "update_login_top_message": "",
         "update_output": "",
         "update_output_splitter": "",

@@ -40,9 +40,9 @@ import { useUser } from "../services/hooks/useUser";
 import { clearPersistentState } from "../services/hooks/usePersistentState";
 
 export default function Sidebar() {
-    const { user, loadingUser } = useUser();
     const location = useLocation();
     const navigate = useNavigate();
+    const { user, loadingUser } = useUser();
 
     // If in verifier or splitter viewer, collapse the sidebar by default
     useEffect(() => {

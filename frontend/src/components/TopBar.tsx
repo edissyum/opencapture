@@ -20,24 +20,29 @@ import { useState } from "react";
 import { ChevronsUpDown, CloudUpload, Package } from "lucide-react";
 
 import { Button } from "./Button";
+import { hasRequiredPermissions } from "./auth/auth";
 
+import { useUser } from "../services/hooks/useUser";
 
 export default function TopBar() {
     const options = [
         {
             id: 'verifier',
+            privilege: 'access_verifier',
             label: t('ONBOARD.verifier'),
             img: '/src/assets/imgs/Open-Capture_Verifier.svg'
         },
         {
             id: 'splitter',
+            privilege: 'access_splitter',
             label: t('ONBOARD.splitter'),
             img: '/src/assets/imgs/Open-Capture_Splitter.svg'
         }
     ];
 
-    const [selected, setSelected] = useState<string | null>(null);
+    const { user, loadingUser } = useUser();
     const [img, setImg] = useState<string | null>(null);
+    const [selected, setSelected] = useState<string | null>(null);
 
     const handleSelect = (option: string) => {
         setSelected(option);
@@ -54,6 +59,8 @@ export default function TopBar() {
         handleSelect(storedModule)
     }
 
+    if (loadingUser) return;
+
     return (
         <header
             className="w-full h-20 flex shrink-0 items-center justify-between px-6 bg-(--bg-primary) border-b border-(--border-secondary)">
@@ -69,6 +76,7 @@ export default function TopBar() {
                     >
                         { options.map((option) => (
                             <option key={ option['id'] } value={ option['id'] }
+                                    disabled={ !hasRequiredPermissions(user, [option['privilege']])}
                                     className="cursor-pointer px-4 py-2 hover:bg-(--bg-secondary)">
                                 { option['label'] }
                             </option>
@@ -82,10 +90,13 @@ export default function TopBar() {
                         size='md'>
                     { storedModule === 'verifier' ? t('VERIFIER.documents') : t('GLOBAL.batches') }
                 </Button>
-                <Button to="/upload" icon={ <CloudUpload size={ 24 } className="mr-2"/> }
-                        className="font-semibold p-2.5!" size='md' variant='no_bg'>
-                    { t('GLOBAL.upload') }
-                </Button>
+
+                { hasRequiredPermissions(user, ['upload']) && (
+                    <Button to="/upload" icon={ <CloudUpload size={ 24 } className="mr-2"/> }
+                            className="font-semibold p-2.5!" size='md' variant='no_bg'>
+                        { t('GLOBAL.upload') }
+                    </Button>
+                ) }
             </div>
         </header>
     );

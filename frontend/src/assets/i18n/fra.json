@@ -290,7 +290,9 @@
         "no_results_for": "Aucun résultat pour ",
         "select": "Sélectionner",
         "next": "Suivant",
-        "save": "Enregistrer"
+        "save": "Enregistrer",
+        "unauthorized": "Accès refusé",
+        "unauthorized_details": "Vous n'avez pas les permissions nécessaires pour accéder à cette ressource. Veuillez contacter votre administrateur si vous pensez que c'est une erreur."
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validé",
@@ -523,8 +525,8 @@
         "admin_privileges": "Privilèges d'administration",
         "global_privileges": "Privilèges globaux",
         "splitter_privileges": "Privilèges du Splitter",
-        "third_party_privileges": "Privilèges des comptes de tiers",
-        "verifier_privileges": "Privilèges du Verifier"
+        "verifier_privileges": "Privilèges du Verifier",
+        "accounts_privileges": ""
     },
     "SETTINGS": {
         "abouts_us": "À propos",
