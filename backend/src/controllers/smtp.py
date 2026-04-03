@@ -15,11 +15,8 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import request
 from flask_babel import gettext
 from ..helpers import get_context_var
-from ..main import create_classes_from_custom_id
-from ..functions import retrieve_custom_from_url
 
 
 def check_smtp_status():

@@ -15,16 +15,13 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import os
 import base64
 import mimetypes
-import os
-
-from flask import Blueprint, request, make_response, jsonify, g as current_context
 from flask_babel import gettext
-
+from ..functions import rest_validator
+from flask import Blueprint, request, make_response, jsonify
 from ..controllers import auth, accounts, verifier, privileges
-from ..functions import retrieve_custom_from_url, rest_validator
-from ..main import create_classes_from_custom_id
 
 bp = Blueprint('accounts', __name__, url_prefix='/ws/')
 

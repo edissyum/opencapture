@@ -55,7 +55,7 @@ def launch(args):
             sys.exit('Custom config file couldn\'t be found')
 
         database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations, languages, \
-            _artificial_intelligence = create_classes_from_custom_id(args['custom_id'], True)
+            _artificial_intelligence, nfz42020 = create_classes_from_custom_id(args['custom_id'], True)
 
         database.update({
             'table': ['monitoring'],
@@ -103,9 +103,10 @@ def launch(args):
             launch_script_splitter(workflow_settings[0], docservers, 'input', log, database, args, config, datas)
 
         if workflow_settings:
-            # TODO NF Z42-020 Journal initialization using workflow settings
-            journal_path = app.config['JOURNAL_PATH'] + '/' + args['custom_id']
-            nfz42020 = NFZ42020(log, journal_path, True, 'splitter', args['original_filename'], args['file'])
+            if nfz42020.enabled:
+                nfz42020.log = log
+                nfz42020.sanitized_filename = args['file']
+                nfz42020.original_filename = os.path.basename(args['original_filename'])
 
             if workflow_settings[0]['process']['use_interface'] and \
                     'form_id' in workflow_settings[0]['process'] and workflow_settings[0]['process']['form_id']:
@@ -276,7 +277,7 @@ def launch(args):
                         }
                     })
 
-        database.conn.close()
-
         if nfz42020.enabled:
             nfz42020.seal_journal()
+
+        database.conn.close()

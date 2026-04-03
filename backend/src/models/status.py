@@ -17,7 +17,6 @@
 
 from flask_babel import gettext
 from ..helpers import get_context_var
-from ..main import create_classes_from_custom_id
 
 
 def get_status(module):

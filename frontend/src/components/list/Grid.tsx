@@ -202,7 +202,9 @@ export function Grid<T extends { id: string }>({
                     { data.map((row) => (
                         <div key={ row.id }
                              onClick={ () => handleRowClick(row) }
-                             className="border border-(--border-secondary) hover:border-(--text-secondary) rounded-md cursor-pointer bg-(--bg-primary) transition-border-color">
+                             className={ `border border-(--border-secondary) hover:border-(--text-secondary) rounded-md
+                                          ${ selectedRows.some(r => r.id === row.id) ? 'border-(--color-primary)' : ''}
+                                          cursor-pointer bg-(--bg-primary) transition-border-color` }>
                             <div
                                 className="relative bg-[#D0DAD5] dark:bg-(--bg-secondary) rounded-b-none w-full p-6 pb-0 rounded-md flex items-center justify-center text-(--text-secondary)">
                                 <LazyBase64Image
@@ -239,7 +241,8 @@ export function Grid<T extends { id: string }>({
                                             onSelectionChange && onSelectionChange([row]);
                                         } }/>
                                         { actionsLine && (
-                                            <ContextMenu model={ actionsLine(selectedRows[0]) } className="w-auto!" ref={ cm } onHide={ handleMenuClose }/>
+                                            <ContextMenu model={ actionsLine(selectedRows[0]) } className="w-auto!" ref={ cm }
+                                                         onHide={ handleMenuClose }/>
                                         ) }
                                     </div>
                                 </div>

@@ -1,0 +1,12 @@
+{
+    "enabled": false,
+    "provider": "freetsa",
+    "freetsa": {
+        "url": "https://freetsa.org/tsr"
+    },
+    "certinomis": {
+        "url": "https://try-tsa.certinomis.fr/tts-proxy/timestamp.do",
+        "cert": "",
+        "key": ""
+    }
+}

@@ -28,8 +28,6 @@ from flask_babel import gettext
 from ..controllers import privileges
 from ..helpers import get_context_var
 from ldap3.core.exceptions import LDAPException
-from ..functions import retrieve_custom_from_url
-from ..main import create_classes_from_custom_id
 from datetime import datetime, timezone, timedelta
 from ..models import auth, user, roles, monitoring, history
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -98,9 +96,7 @@ def handle_login(data):
 
 
 def get_user(user_info):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    configurations = _vars[10]
+    configurations = get_context_var('configurations', 10)
 
     if configurations['allowUserMultipleLogin'] is not True:
         last_connection = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
@@ -996,9 +992,6 @@ def ldap_server_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin,
 
 
 def check_database_users(ldap_users_data, default_role):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-
     oc_users = []
     create_users = 0
     update_users = 0

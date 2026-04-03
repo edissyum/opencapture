@@ -25,7 +25,6 @@ import { Checkbox } from "../Checkbox";
 import { Dropdown } from "../Dropdown";
 import MultiSelectInput from "../MultiSelect";
 
-
 export function DynamicForm({ schema, control, errors, labelFusion = false, gap = 4, grid = false }: any) {
     const extractFieldsFromSchema = (schema: any) => {
         const shape = schema._def.shape;
