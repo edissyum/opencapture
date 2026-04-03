@@ -15,10 +15,13 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
+import { CSS } from "@dnd-kit/utilities";
 import type { TreeNode } from "primereact/treenode";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Tree, type TreeExpandedKeysType } from "primereact/tree";
-import { Copy, Download, Maximize, Minimize, Upload, X } from "lucide-react";
+import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { ArrowRightToLine, Copy, Download, GripVertical, Maximize, Minimize, Plus, Sheet, Upload, X } from "lucide-react";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 
@@ -30,6 +33,45 @@ import { Button } from "../../Button";
 import { Dropdown } from "../../Dropdown";
 import { Loader } from "../../loader/Loader";
 import { showToast } from "../../ToastProvider";
+
+function SortableFieldItem({ field, onRemove }: { field: any, onRemove?: (field: any) => void }) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition
+    } = useSortable({ id: field.id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition
+    };
+
+    return (
+        <div
+            ref={ setNodeRef }
+            style={ style }
+            className="p-2 border border-(--border-secondary) rounded flex items-center justify-between"
+        >
+            <div { ...attributes } { ...listeners } className="cursor-grab mr-2 text-(--text-secondary)">
+                <GripVertical size={ 20 }/>
+            </div>
+
+            { field.label }
+            <div className='ml-auto flex items-center gap-4'>
+                <div className='text-(--text-secondary) text-sm bg-(--bg-secondary) px-3 py-1 rounded-full'>
+                    { field.id }
+                </div>
+                <X size={ 16 } className="z-10 ml-auto text-(--text-secondary) cursor-pointer" onClick={ (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onRemove?.(field);
+                } }/>
+            </div>
+        </div>
+    );
+}
 
 export function DoctypesTree({
     formId,
@@ -50,10 +92,13 @@ export function DoctypesTree({
     onTmpSelect?: (node: any) => void;
     onDoctypesLoaded?: (doctypes: any[]) => void;
 }) {
-    const { get } = axiosApiCall();
+    const { get, post } = axiosApiCall();
 
     const [forms, setForms] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loadingExport, setLoadingExport] = useState(false);
+    const [showExportDialog, setShowExportDialog] = useState(false);
+    const [showImportDialog, setShowImportDialog] = useState(false);
 
     const [doctypes, setDoctypes] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -63,6 +108,44 @@ export function DoctypesTree({
 
     const [forceRelaunch, setForceRelaunch] = useState(0);
     const [showCloneDialog, setShowCloneDialog] = useState(false);
+
+    const sensors = useSensors(useSensor(PointerSensor));
+    const handleDragEnd = (event: any) => {
+        const { active, over } = event;
+
+        if (!over || active.id === over.id) return;
+
+        const oldIndex = selectedFields.findIndex(f => f.id === active.id);
+        const newIndex = selectedFields.findIndex(f => f.id === over.id);
+
+        setSelectedFields(arrayMove(selectedFields, oldIndex, newIndex));
+    };
+    const delimiterOptions = [
+        { label: t("DOCTYPES.tab"), value: "TAB", icon: <ArrowRightToLine size={ 16 }/> },
+        { label: t("DOCTYPES.comma"), value: "COMMA", icon: <span style={ { transform: "translateY(2px)" } }>,</span> },
+        { label: t("DOCTYPES.semicolon"), value: "SEMICOLON", icon: <span style={ { transform: "translateY(2px)" } }>;</span> }
+    ];
+
+    const [format, setFormat] = useState("CSV");
+    const [delimiter, setDelimiter] = useState(delimiterOptions[0].value);
+
+    const availableFields = [
+        { label: t('VERIFIER.id'), id: 'key', selected: true },
+        { label: t('DOCTYPES.field_code'), id: 'code', selected: true },
+        { label: t('DOCTYPES.field_type'), id: 'type', selected: false },
+        { label: t('DOCTYPES.field_label'), id: 'label', selected: true },
+        { label: t('DOCTYPES.field_status'), id: 'status', selected: false },
+        { label: t('DOCTYPES.field_form_id'), id: 'form_id', selected: false },
+        { label: t('DOCTYPES.default_doctype'), id: 'isDefault', selected: false }
+    ];
+
+    const [unselectedFields, setUnselectedFields] = useState<any[]>(
+        availableFields.filter(f => !f.selected)
+    );
+
+    const [selectedFields, setSelectedFields] = useState<any[]>(
+        availableFields.filter(f => f.selected)
+    );
 
     const ROOT_NODE: TreeNode = {
         key: "0",
@@ -174,10 +257,131 @@ export function DoctypesTree({
         }
     }
 
+    const handleRemoveField = (field: any) => {
+        setSelectedFields(prev => prev.filter(f => f.id !== field.id));
+        setUnselectedFields(prev => [...prev, { ...field, selected: false }]);
+    };
+
+    const exportDoctypes = async () => {
+        setLoadingExport(true);
+
+        try {
+            const payload = {
+                formId: formId,
+                extension: format,
+                delimiter: delimiter,
+                columns: selectedFields
+            };
+
+            const response = await post(`/doctypes/export`, payload);
+            if (!response.encoded_file) {
+                showToast(t('DOCTYPES.export_failed'), 'error');
+                return;
+            }
+
+            const csvContent = atob(response.encoded_file);
+            const blob = new Blob([csvContent], { type: "data:application/octet-stream;base64" });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `doctypes.${ format.toLowerCase() }`;
+            link.click();
+
+            showToast(t('DOCTYPES.export_success'), 'success');
+        } catch (error) {
+            console.error("Error exporting doctypes:", error);
+        } finally {
+            setLoadingExport(false);
+        }
+    };
+
     if (loading) return <Loader/>;
 
     return (
         <div className="h-full overflow-hidden flex">
+            { showExportDialog && (
+                <>
+                    <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
+                         onClick={ () => setShowExportDialog(false) }/>
+                    <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+                                                min-w-[32vw] h-fit max-h-screen border border-(--border-secondary)
+                                                rounded-lg bg-(--bg-primary) flex flex-col">
+                        <div className='flex flex-col p-6 gap-4'>
+                            <h2>
+                                { t('DOCTYPES.export_doctypes') }
+                            </h2>
+                            <div className='flex flex-col gap-1'>
+                                <p className='text-(--text-secondary) font-semibold'>
+                                    { t('DOCTYPES.format') }
+                                </p>
+                                <div className={ ` border border-(--border-secondary) hover:border-(--border-primary) transition-colors
+                                                   ${ format === "CSV" ? 'bg-(--bg-selected) border-(--border-primary)! text-(--color-primary)' : '' }
+                                                   rounded-lg px-12 py-4 cursor-pointer flex flex-col items-center text-center justify-center gap-2` }>
+                                    <Sheet/>
+                                    <p className='text-md font-semibold min-w-32'>CSV</p>
+                                </div>
+                            </div>
+                            <div className='flex flex-col gap-1'>
+                                <p className='text-(--text-secondary) font-semibold'>
+                                    { t('DOCTYPES.delimiter') }
+                                </p>
+                                <div className='flex gap-4'>
+                                    { delimiterOptions.map(opt => (
+                                        <div key={ opt.value } onClick={ () => setDelimiter(opt.value) }
+                                             className={ ` border border-(--border-secondary) hover:border-(--border-primary) transition-colors
+                                                    ${ delimiter === opt.value ? 'bg-(--bg-selected) border-(--border-primary)! text-(--color-primary)' : '' }
+                                                    rounded-lg px-12 py-4 cursor-pointer flex flex-col items-center text-center justify-center gap-2` }>
+                                            { opt.icon }
+                                            <p className='text-md font-semibold min-w-32'>{ opt.label }</p>
+                                        </div>
+                                    )) }
+                                </div>
+                            </div>
+                            <div className='flex flex-col gap-1'>
+                                <p className='text-(--text-secondary) font-semibold'>
+                                    { t('DOCTYPES.fields_to_export') }
+                                </p>
+                                <>
+                                    <DndContext sensors={ sensors } collisionDetection={ closestCenter }
+                                                onDragEnd={ handleDragEnd }>
+                                        <SortableContext
+                                            items={ selectedFields.map(f => f.id) }
+                                            strategy={ verticalListSortingStrategy }
+                                        >
+                                            { selectedFields.map(field => (
+                                                <SortableFieldItem key={ field.id } field={ field }
+                                                                   onRemove={ () => handleRemoveField(field) }/>
+                                            )) }
+                                        </SortableContext>
+                                    </DndContext>
+                                </>
+                                <div className='flex gap-4 mt-2'>
+                                    { unselectedFields.map(field => (
+                                        <div key={ field.id } onClick={ () => {
+                                            setUnselectedFields(prev => prev.filter(f => f.id !== field.id));
+                                            setSelectedFields(prev => [...prev, { ...field, selected: true }]);
+                                        } }
+                                             className={ `border border-(--border-secondary) hover:border-(--border-primary) transition-colors
+                                                    rounded-md px-2 py-1 cursor-pointer flex items-center text-center justify-center gap-2` }>
+                                            { field.label }
+                                            <Plus size={ 16 }/>
+                                        </div>
+                                    )) }
+                                </div>
+                            </div>
+                            <div className='mt-4 flex justify-end w-full gap-4'>
+                                <Button variant={ "no_bg" } onClick={ () => setShowExportDialog(false) }>
+                                    { t('GLOBAL.cancel') }
+                                </Button>
+                                <Button onClick={ () => exportDoctypes() }>
+                                    { loadingExport ? t('DOCTYPES.exporting') : t('DOCTYPES.export_doctypes') }
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            ) }
+
             { showCloneDialog && (
                 <>
                     <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
@@ -287,18 +491,23 @@ export function DoctypesTree({
                                     <Maximize size={ 16 }/>
                                 </span>
 
-                                <span onClick={ collapseAll } className="rounded-r-md dark:bg-(--bg-secondary) border border-l-0">
+                                <span onClick={ collapseAll }
+                                      className="rounded-r-md dark:bg-(--bg-secondary) border border-l-0">
                                     <Minimize size={ 16 }/>
                                 </span>
                             </div>
 
                             { editor && (
                                 <div className="actionsButton ml-auto">
-                                    <span className="rounded-l-md dark:bg-(--bg-secondary) border">
+                                    <span className="rounded-l-md dark:bg-(--bg-secondary) border"
+                                          onClick={ () => setShowImportDialog(true) }
+                                          data-tooltip-id='tooltip' data-tooltip-content={ t('DOCTYPES.import') }>
                                         <Download size={ 16 }/>
                                     </span>
 
-                                    <span className="rounded-r-md dark:bg-(--bg-secondary) border border-l-0">
+                                    <span className="rounded-r-md dark:bg-(--bg-secondary) border border-l-0"
+                                          onClick={ () => setShowExportDialog(true) }
+                                          data-tooltip-id='tooltip' data-tooltip-content={ t('DOCTYPES.export') }>
                                         <Upload size={ 16 }/>
                                     </span>
 
@@ -310,7 +519,6 @@ export function DoctypesTree({
                                     </span>
                                 </div>
                             ) }
-
                         </div>
                     </div>
                 ) }
