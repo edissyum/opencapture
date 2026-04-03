@@ -1,0 +1,28 @@
+[GLOBAL]
+applicationUrl   =
+applicationPath  = §§OC_PATH§§/
+configMail       = §§OC_PATH§§/custom/§§CUSTOM_ID§§/config/mail.ini
+watcherConfig    = §§OC_PATH§§/instance/config/watcher.ini
+logFile          = §§OC_PATH§§/custom/§§CUSTOM_ID§§/data/log/OpenCapture.log
+; True or False
+allowWFScripting = False
+
+[SPLITTER]
+docstart         = DOCSTART
+bundlestart      = BUNDLESTART
+
+[DATABASE]
+postgresDatabase = opencapture_edissyum
+
+[REFERENCIAL]
+; CSV only supported
+; Path is set up in docservers table (REFERENTIALS_PATH)
+referencialSupplierDocument = default_referencial_supplier.csv
+referencialSupplierIndex    = default_referencial_supplier_index.json
+
+[SEPARATORQR]
+; True or False
+enabled         = False
+exportpdfa      = False
+; _ or - for exemple
+divider         = _

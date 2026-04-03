@@ -23,6 +23,7 @@ import { Dropdown } from "../../../../components/Dropdown";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 import { CircleAlert, Copy } from "lucide-react";
+import { showToast } from "../../../../components/ToastProvider.tsx";
 
 export const SettingsGeneralTokenAuth = () => {
     const { get, post } = axiosApiCall();
@@ -111,7 +112,10 @@ export const SettingsGeneralTokenAuth = () => {
                         <div className='flex justify-end items-center cursor-pointer rounded-lg'>
                             <div className='bg-(--bg-secondary) p-2 rounded-lg' data-tooltip-id='tooltip'
                                  data-tooltip-content={ t('SECURITY.copy_token') }
-                                 onClick={ () => navigator.clipboard.writeText(token) }>
+                                 onClick={ () => {
+                                     navigator.clipboard.writeText(token);
+                                     showToast(t('SECURITY.token_copied'), 'success');
+                                 } }>
                                 <Copy size={ 20 } className="text-(--text-primary)"/>
                             </div>
                         </div>

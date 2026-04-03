@@ -1,0 +1,82 @@
+[
+    {
+        "extension": "pdf",
+        "mime": "application/pdf"
+    },
+    {
+        "extension": "jpg",
+        "mime": "image/jpeg"
+    },
+    {
+        "extension": "jpeg",
+        "mime": "image/jpeg"
+    },
+    {
+        "extension": "png",
+        "mime": "image/png"
+    },
+    {
+        "extension": "gif",
+        "mime": "image/gif"
+    },
+    {
+        "extension": "heif",
+        "mime": "image/heic"
+    },
+    {
+        "extension": "heic",
+        "mime": "image/heic"
+    },
+    {
+        "extension": "doc",
+        "mime": "application/msword"
+    },
+    {
+        "extension": "docx",
+        "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    {
+        "extension": "ppt",
+        "mime": "application/vnd.ms-powerpoint"
+    },
+    {
+        "extension": "pptx",
+        "mime": "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    },
+    {
+        "extension": "odt",
+        "mime": "application/vnd.oasis.opendocument.text"
+    },
+    {
+        "extension": "csv",
+        "mime": "text/csv"
+    },
+    {
+        "extension": "ods",
+        "mime": "application/vnd.oasis.opendocument.spreadsheet"
+    },
+    {
+        "extension": "odf",
+        "mime": "application/vnd.oasis.opendocument.formula"
+    },
+    {
+        "extension": "ppt",
+        "mime": "application/vnd.ms-powerpoint"
+    },
+    {
+        "extension": "odp",
+        "mime": "application/vnd.oasis.opendocument.presentation"
+    },
+    {
+        "extension": "xls",
+        "mime": "application/vnd.ms-excel"
+    },
+    {
+        "extension": "xlsx",
+        "mime": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    },
+    {
+        "extension": "zip",
+        "mime": "application/zip"
+    }
+]

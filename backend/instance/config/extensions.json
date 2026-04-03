@@ -1,0 +1,30 @@
+[
+    {
+        "extension": "pdf",
+        "mime": "application/pdf"
+    },
+    {
+        "extension": "jpg",
+        "mime": "image/jpeg"
+    },
+    {
+        "extension": "jpeg",
+        "mime": "image/jpeg"
+    },
+    {
+        "extension": "gif",
+        "mime": "image/gif"
+    },
+    {
+        "extension": "png",
+        "mime": "image/png"
+    },
+    {
+        "extension": "heif",
+        "mime": "image/heic"
+    },
+    {
+        "extension": "heic",
+        "mime": "image/heic"
+    }
+]

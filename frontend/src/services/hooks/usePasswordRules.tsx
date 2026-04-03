@@ -15,10 +15,10 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { t } from "i18next";
 import { useEffect, useState } from "react";
 
 import { axiosApiCall } from "./axiosApiCall";
-import { t } from "i18next";
 
 export function usePasswordRules() {
     const { get, loading, error } = axiosApiCall();

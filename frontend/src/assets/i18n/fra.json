@@ -787,7 +787,6 @@
         "password_mismatch": "Les mots de passe ne correspondent pas",
         "update_success": "Utilisateur mis à jour avec succès",
         "username_mandatory": "Nom d'utilisateur est obligatoire",
-        "password_mandatory": "Mot de passe est obligatoire",
         "email_mandatory": "L'addresse email est obligatoire",
         "forms": "Formulaires",
         "settings": "Paramètres",
@@ -955,7 +954,8 @@
         "minLengthError": "Le mot de passe doit contenir au moins <strong>{{ minLength }}</strong> caractères",
         "numberMandatoryError": "Au moins un chiffre est requis",
         "specialCharMandatoryError": "Au moins un caractère spécial est requis",
-        "uppercaseMandatoryError": "Au moins une majuscule est requise"
+        "uppercaseMandatoryError": "Au moins une majuscule est requise",
+        "token_copied": "Token copié dans le presse-papiers"
     },
     "TYPE": {
         "boolean": "Booléen",
