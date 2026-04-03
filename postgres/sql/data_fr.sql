@@ -827,15 +827,6 @@ ALTER SEQUENCE "outputs_id_seq" RESTART WITH 12;
 
 -- CRÉATION DES TEMPLATES DES PARAMETRES DES FORMULAIRE
 INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (1, 'verifier', '{
-    "display": {
-        "subtitles": [
-            {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
-            {"id": "document_date", "label": "FACTURATION.document_date"},
-            {"id": "date", "label": "VERIFIER.register_date"},
-            {"id": "original_filename", "label": "VERIFIER.original_file"},
-            {"id": "form_label", "label": "ACCOUNTS.form"}
-        ]
-    },
     "unique_url": {
         "expiration": 7,
         "change_form": true,
@@ -846,7 +837,6 @@ INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (1, 'verif
         "validate_document": true,
         "allow_supplier_autocomplete": true
     },
-    "supplier_verif": false,
     "allow_learning": true
 }');
 INSERT INTO "form_model_settings" ("id", "module", "settings") VALUES (2, 'splitter', '{
@@ -858,16 +848,6 @@ ALTER SEQUENCE "form_model_settings_id_seq" RESTART WITH 3;
 
 -- CRÉATION DES FORMULAIRES VERIFIER PAR DÉFAUT
 INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module", "settings") VALUES (1, 'Formulaire par défaut', true, '{1,3}', 'verifier',  '{
-    "display": {
-        "subtitles": [
-            {"id": "document_id", "label": "VERIFIER.document_id"},
-            {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
-            {"id": "document_date", "label": "FACTURATION.document_date"},
-            {"id": "date", "label": "VERIFIER.register_date"},
-            {"id": "original_filename", "label": "VERIFIER.original_file"},
-            {"id": "form_label", "label": "ACCOUNTS.form"}
-        ]
-    },
     "unique_url": {
         "expiration": 7,
         "change_form": true,
@@ -879,36 +859,182 @@ INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module", "
     },
     "supplier_verif": false
 }');
-INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{"lines": [], "other": [], "supplier": [{"id": "name", "type": "text", "unit": "supplier", "class": "w-full", "color": "white", "label": "ACCOUNTS.supplier_name", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1", "format_icon": "fas fa-hashtag", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "address1", "type": "text", "unit": "addresses", "class": "w-1/2", "label": "ADDRESSES.address_1", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/2", "format_icon": "fas fas fa-hashtag", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "address2", "type": "text", "unit": "addresses", "class": "w-1/2", "label": "ADDRESSES.address_2", "format": "alphanum_extended_with_accent", "display": "simple", "required": false, "class_label": "1/2", "format_icon": "fas fas fa-hashtag", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "postal_code", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.postal_code", "format": "number_int", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "city", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.city", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-font", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "country", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.country", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-font", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "vat_number", "type": "text", "unit": "supplier", "class": "w-1/3", "color": "olive", "label": "ACCOUNTS.vat_number", "format": "alphanum", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fas fa-hashtag", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star"}, {"id": "siren", "type": "text", "unit": "supplier", "class": "w-1/6", "color": "lime", "label": "ACCOUNTS.siren", "format": "number_int", "display": "simple", "required": false, "class_label": "1/6", "format_icon": "fas fa-calculator", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star"}, {"id": "siret", "type": "text", "unit": "supplier", "class": "w-1/6", "color": "green", "label": "ACCOUNTS.siret", "format": "number_int", "display": "simple", "required": false, "class_label": "1/6", "format_icon": "fas fa-calculator", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star"}, {"id": "email", "type": "text", "unit": "supplier", "class": "w-1/3", "color": "green", "label": "FORMATS.email", "format": "email", "display": "simple", "required": false, "class_label": "1/33", "format_icon": "fa-solid fa-at", "autocomplete": "none", "display_icon": "fa-solid fa-file-alt", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}], "facturation": [{"id": "invoice_number", "type": "text", "unit": "facturation", "class": "w-1/2", "color": "red", "label": "FACTURATION.invoice_number", "format": "alphanum_extended", "display": "simple", "required": true, "class_label": "1/2", "format_icon": "fas fa-level-up-alt", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "quotation_number", "type": "text", "unit": "facturation", "class": "w-1/2", "color": "orange", "label": "FACTURATION.quotation_number", "format": "alphanum_extended", "display": "simple", "required": false, "class_label": "1/2", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-file-alt", "required_icon": "fa-solid fa-star"}, {"id": "delivery_number", "type": "text", "unit": "facturation", "class": "w-1/3", "color": "orange", "label": "FACTURATION.delivery_number", "format": "alphanum_extended", "display": "simple", "required": false, "class_label": "1/33", "format_icon": "fas fa-hashtag fa-level-up-alt", "autocomplete": "none", "display_icon": "fas fa-layer-group", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "document_date", "type": "date", "unit": "facturation", "class": "w-1/3", "color": "aqua", "label": "FACTURATION.document_date", "format": "date", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calendar-day", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "document_due_date", "type": "date", "unit": "facturation", "class": "w-1/3", "color": "blue", "label": "FACTURATION.document_due_date", "format": "date", "display": "simple", "required": false, "class_label": "1/33", "format_icon": "fas fa-calendar-day", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "vat_rate", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "pink", "label": "FACTURATION.vat_rate", "format": "number_float", "display": "multi", "required": true, "class_label": "1/4", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-layer-group", "lineSelected": true, "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "no_rate_amount", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "fuchsia", "label": "FACTURATION.no_rate_amount", "format": "number_float", "display": "multi", "required": true, "class_label": "1/4", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-layer-group", "lineSelected": true, "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "vat_amount", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "purple", "label": "FACTURATION.vat_amount", "format": "number_float", "display": "multi", "required": true, "class_label": "1/4", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-layer-group", "lineSelected": true, "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "accounting_plan", "type": "select", "unit": "facturation", "class": "w-1/4", "label": "FACTURATION.accounting_plan", "fullSize": true, "required": false, "class_label": "1/4", "autocomplete": "none", "lineSelected": true, "required_icon": "far fa-star", "fullSizeSelected": true, "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "total_vat", "type": "text", "unit": "facturation", "class": "w-1/3", "color": "", "label": "FACTURATION.total_vat", "format": "number_float", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "total_ttc", "type": "text", "unit": "facturation", "class": "w-1/3", "label": "FACTURATION.total_ttc", "format": "number_float", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "total_ht", "type": "text", "unit": "facturation", "class": "w-1/3", "label": "FACTURATION.total_ht", "format": "number_float", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}]}');
+INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{"lines": [{"0": {"id": "description", "type": "text", "color": null, "label": "Description", "format": "alphanum_extended_with_accent", "required": false, "typeLabel": "Chaîne de caractères", "default_value": ""}, "1": {"id": "quantity", "type": "text", "color": null, "label": "Quantité", "format": "number", "required": false, "typeLabel": "Chaîne de caractères", "default_value": ""}, "2": {"id": "unit_price", "type": "text", "color": null, "label": "Prix unitaire", "format": "number_float", "required": false, "typeLabel": "Chaîne de caractères", "default_value": ""}, "3": {"id": "line_ht", "type": "text", "color": null, "label": "Montant HT", "format": "number_float", "required": false, "typeLabel": "Chaîne de caractères", "default_value": ""}, "duplicable": true}], "other": [], "supplier": [{"0": {"id": "name", "type": "text", "color": "#426CF5", "label": "Compte tiers / organisation", "format": "alphanum_extended_with_accent", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "duplicable": false}, {"0": {"id": "address1", "type": "text", "color": null, "label": "Numéro et rue", "format": "alphanum_extended_with_accent", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "1": {"id": "address2", "type": "text", "color": null, "label": "Complément d'adresse", "format": "alphanum_extended_with_accent", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "duplicable": false}, {"0": {"id": "postal_code", "type": "text", "color": null, "label": "Code postal", "format": "alphanum", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "1": {"id": "city", "type": "text", "color": null, "label": "Ville", "format": "alphanum_extended_with_accent", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "2": {"id": "country", "type": "text", "color": null, "label": "Pays", "format": "alphanum_extended_with_accent", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "duplicable": false}, {"0": {"id": "vat_number", "type": "text", "color": "#F469F6", "label": "Numéro de TVA", "format": "alphanum", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "1": {"id": "siret", "type": "text", "color": "#64C800", "label": "Numéro SIRET", "format": "number_int", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "2": {"id": "siren", "type": "text", "color": "#19864B", "label": "Numéro SIREN", "format": "number_int", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "duplicable": false}, {"0": {"id": "email", "type": "text", "color": "#19864B", "label": "Addresse email", "format": "email", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "duplicable": false}], "facturation": [{"0": {"id": "invoice_number", "type": "text", "color": "#CD0D0D", "label": "Numéro de facture", "format": "alphanum_extended", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "1": {"id": "quotation_number", "type": "text", "color": "#E66910", "label": "Numéro de devis", "format": "alphanum_extended", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "duplicable": false}, {"0": {"id": "delivery_number", "type": "text", "color": "#6E6E6E", "label": "Numéro de livraison", "format": "alphanum_extended", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "1": {"id": "document_date", "type": "date", "color": "#B3A613", "label": "Date du document", "format": "date", "required": true, "typeLabel": "Date", "default_value": ""}, "2": {"id": "document_due_date", "type": "date", "color": "#1CC7BE", "label": "Date d'échéance", "format": "date", "required": true, "typeLabel": "Date", "default_value": ""}, "duplicable": false}, {"0": {"id": "vat_rate", "type": "text", "color": "#F469F6", "label": "Taux de TVA", "format": "number_float", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "1": {"id": "no_rate_amount", "type": "text", "color": "#E600E6", "label": "Montant HT", "format": "number_float", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "2": {"id": "vat_amount", "type": "text", "color": "#57076B", "label": "Montant TVA", "format": "number_float", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "duplicable": false}, {"0": {"id": "total_vat", "type": "text", "color": "#19864B", "label": "Total TVA", "format": "number_float", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "1": {"id": "total_ttc", "type": "text", "color": "#19864B", "label": "Total TTC", "format": "number_float", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "2": {"id": "total_ht", "type": "text", "color": "#19864B", "label": "Total HT", "format": "number_float", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "duplicable": false}]}');
 
 INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module", "settings") VALUES (2, 'Formulaire FacturX par défaut', false, '{4}', 'verifier',  '{
-    "display": {
-        "subtitles": [
-            {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
-            {"id": "document_date", "label": "FACTURATION.document_date"},
-            {"id": "date", "label": "VERIFIER.register_date"},
-            {"id": "original_filename", "label": "VERIFIER.original_file"},
-            {"id": "form_label", "label": "ACCOUNTS.form"}
-        ]
-    },
     "supplier_verif": false
 }');
-INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (2, 2, '{"lines": [{"id": "description", "type": "text", "unit": "lines", "class": "w-1/5", "label": "FACTURATION.description", "format": "alphanum_extended_with_accent", "display": "simple", "required": false, "class_label": "1/5", "format_icon": "fa-solid fa-level-up-alt", "display_icon": "fa-solid fa-file-alt", "lineSelected": true, "required_icon": "far fa-star"}, {"id": "quantity", "type": "text", "unit": "lines", "class": "w-1/5", "label": "FACTURATION.quantity", "format": "number_float", "display": "simple", "required": false, "class_label": "1/5", "format_icon": "fa-solid fa-calculator", "display_icon": "fa-solid fa-file-alt", "lineSelected": true, "required_icon": "far fa-star"}, {"id": "unit_price", "type": "text", "unit": "lines", "class": "w-1/5", "label": "Prix unitaire", "format": "number_float", "display": "simple", "required": false, "edit_name": false, "class_label": "1/5", "format_icon": "fa-solid fa-calculator", "display_icon": "fa-solid fa-file-alt", "lineSelected": true, "required_icon": "far fa-star"}, {"id": "line_ht", "type": "text", "unit": "lines", "class": "w-1/5", "label": "FACTURATION.no_rate_amount", "format": "number_float", "display": "simple", "fullSize": false, "required": false, "class_label": "1/5", "format_icon": "fa-solid fa-calculator", "display_icon": "fa-solid fa-file-alt", "lineSelected": true, "required_icon": "far fa-star", "fullSizeSelected": false}, {"id": "line_vat_rate", "type": "text", "unit": "lines", "class": "w-1/5", "label": "Taux de TVA", "format": "number_float", "display": "simple", "fullSize": true, "required": false, "edit_name": false, "class_label": "1/5", "format_icon": "fa-solid fa-calculator", "display_icon": "fa-solid fa-file-alt", "lineSelected": true, "required_icon": "fa-solid fa-star", "fullSizeSelected": true}], "other": [], "supplier": [{"id": "name", "type": "text", "unit": "supplier", "class": "w-full", "color": "white", "label": "ACCOUNTS.supplier_name", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1", "format_icon": "fas fa-hashtag", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "address1", "type": "text", "unit": "addresses", "class": "w-1/2", "label": "ADDRESSES.address_1", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/2", "format_icon": "fas fas fa-hashtag", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "address2", "type": "text", "unit": "addresses", "class": "w-1/2", "label": "ADDRESSES.address_2", "format": "alphanum_extended_with_accent", "display": "simple", "required": false, "class_label": "1/2", "format_icon": "fas fas fa-hashtag", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "postal_code", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.postal_code", "format": "number_int", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "city", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.city", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-font", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "country", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.country", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-font", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "vat_number", "type": "text", "unit": "supplier", "class": "w-1/3", "color": "olive", "label": "ACCOUNTS.vat_number", "format": "alphanum", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fas fa-hashtag", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star"}, {"id": "siren", "type": "text", "unit": "supplier", "class": "w-1/6", "color": "lime", "label": "ACCOUNTS.siren", "format": "number_int", "display": "simple", "required": false, "class_label": "1/6", "format_icon": "fas fa-calculator", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star"}, {"id": "siret", "type": "text", "unit": "supplier", "class": "w-1/6", "color": "green", "label": "ACCOUNTS.siret", "format": "number_int", "display": "simple", "required": false, "class_label": "1/6", "format_icon": "fas fa-calculator", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star"}, {"id": "email", "type": "text", "unit": "supplier", "class": "w-1/3", "color": "green", "label": "FORMATS.email", "format": "email", "display": "simple", "required": false, "class_label": "1/33", "format_icon": "fa-solid fa-at", "autocomplete": "none", "display_icon": "fa-solid fa-file-alt", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}], "facturation": [{"id": "invoice_number", "type": "text", "unit": "facturation", "class": "w-1/2", "color": "red", "label": "FACTURATION.invoice_number", "format": "alphanum_extended", "display": "simple", "required": true, "class_label": "1/2", "format_icon": "fas fa-level-up-alt", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "quotation_number", "type": "text", "unit": "facturation", "class": "w-1/2", "color": "orange", "label": "FACTURATION.quotation_number", "format": "alphanum_extended", "display": "simple", "required": false, "class_label": "1/2", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-file-alt", "required_icon": "fa-solid fa-star"}, {"id": "delivery_number", "type": "text", "unit": "facturation", "class": "w-1/3", "color": "orange", "label": "FACTURATION.delivery_number", "format": "alphanum_extended", "display": "simple", "required": false, "class_label": "1/33", "format_icon": "fas fa-hashtag fa-level-up-alt", "autocomplete": "none", "display_icon": "fas fa-layer-group", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "document_date", "type": "date", "unit": "facturation", "class": "w-1/3", "color": "aqua", "label": "FACTURATION.document_date", "format": "date", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calendar-day", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "document_due_date", "type": "date", "unit": "facturation", "class": "w-1/3", "color": "blue", "label": "FACTURATION.document_due_date", "format": "date", "display": "simple", "required": false, "class_label": "1/33", "format_icon": "fas fa-calendar-day", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "vat_rate", "type": "text", "unit": "facturation", "class": "w-1/3", "color": "pink", "label": "FACTURATION.vat_rate", "format": "number_float", "display": "multi", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-layer-group", "lineSelected": true, "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "no_rate_amount", "type": "text", "unit": "facturation", "class": "w-1/3", "color": "fuchsia", "label": "FACTURATION.no_rate_amount", "format": "number_float", "display": "multi", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-layer-group", "lineSelected": true, "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "vat_amount", "type": "text", "unit": "facturation", "class": "w-1/3", "color": "purple", "label": "FACTURATION.vat_amount", "format": "number_float", "display": "multi", "fullSize": true, "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-layer-group", "lineSelected": true, "required_icon": "fas fa-star", "fullSizeSelected": true, "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "total_vat", "type": "text", "unit": "facturation", "class": "w-1/3", "color": "", "label": "FACTURATION.total_vat", "format": "number_float", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "total_ttc", "type": "text", "unit": "facturation", "class": "w-1/3", "label": "FACTURATION.total_ttc", "format": "number_float", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "total_ht", "type": "text", "unit": "facturation", "class": "w-1/3", "label": "FACTURATION.total_ht", "format": "number_float", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}]}');
+INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (2, 2, '{"lines": [{"0": {"id": "description", "type": "text", "color": null, "label": "Description", "format": "alphanum_extended_with_accent", "required": false, "typeLabel": "Chaîne de caractères", "default_value": ""}, "1": {"id": "quantity", "type": "text", "color": null, "label": "Quantité", "format": "number", "required": false, "typeLabel": "Chaîne de caractères", "default_value": ""}, "2": {"id": "unit_price", "type": "text", "color": null, "label": "Prix unitaire", "format": "number_float", "required": false, "typeLabel": "Chaîne de caractères", "default_value": ""}, "3": {"id": "line_ht", "type": "text", "color": null, "label": "Montant HT", "format": "number_float", "required": false, "typeLabel": "Chaîne de caractères", "default_value": ""}, "duplicable": true}], "other": [], "supplier": [{"0": {"id": "name", "type": "text", "color": "#426CF5", "label": "Compte tiers / organisation", "format": "alphanum_extended_with_accent", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "duplicable": false}, {"0": {"id": "address1", "type": "text", "color": null, "label": "Numéro et rue", "format": "alphanum_extended_with_accent", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "1": {"id": "address2", "type": "text", "color": null, "label": "Complément d'adresse", "format": "alphanum_extended_with_accent", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "duplicable": false}, {"0": {"id": "postal_code", "type": "text", "color": null, "label": "Code postal", "format": "alphanum", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "1": {"id": "city", "type": "text", "color": null, "label": "Ville", "format": "alphanum_extended_with_accent", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "2": {"id": "country", "type": "text", "color": null, "label": "Pays", "format": "alphanum_extended_with_accent", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "duplicable": false}, {"0": {"id": "vat_number", "type": "text", "color": "#F469F6", "label": "Numéro de TVA", "format": "alphanum", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "1": {"id": "siret", "type": "text", "color": "#64C800", "label": "Numéro SIRET", "format": "number_int", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "2": {"id": "siren", "type": "text", "color": "#19864B", "label": "Numéro SIREN", "format": "number_int", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "duplicable": false}, {"0": {"id": "email", "type": "text", "color": "#19864B", "label": "Addresse email", "format": "email", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "duplicable": false}], "facturation": [{"0": {"id": "invoice_number", "type": "text", "color": "#CD0D0D", "label": "Numéro de facture", "format": "alphanum_extended", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "1": {"id": "quotation_number", "type": "text", "color": "#E66910", "label": "Numéro de devis", "format": "alphanum_extended", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "duplicable": false}, {"0": {"id": "delivery_number", "type": "text", "color": "#6E6E6E", "label": "Numéro de livraison", "format": "alphanum_extended", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "1": {"id": "document_date", "type": "date", "color": "#B3A613", "label": "Date du document", "format": "date", "required": true, "typeLabel": "Date", "default_value": ""}, "2": {"id": "document_due_date", "type": "date", "color": "#1CC7BE", "label": "Date d'échéance", "format": "date", "required": true, "typeLabel": "Date", "default_value": ""}, "duplicable": false}, {"0": {"id": "vat_rate", "type": "text", "color": "#F469F6", "label": "Taux de TVA", "format": "number_float", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "1": {"id": "no_rate_amount", "type": "text", "color": "#E600E6", "label": "Montant HT", "format": "number_float", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "2": {"id": "vat_amount", "type": "text", "color": "#57076B", "label": "Montant TVA", "format": "number_float", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "duplicable": false}, {"0": {"id": "total_vat", "type": "text", "color": "#19864B", "label": "Total TVA", "format": "number_float", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "1": {"id": "total_ttc", "type": "text", "color": "#19864B", "label": "Total TTC", "format": "number_float", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "2": {"id": "total_ht", "type": "text", "color": "#19864B", "label": "Total HT", "format": "number_float", "required": true, "typeLabel": "Chaîne de caractères", "default_value": ""}, "duplicable": false}]}');
 
 INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module", "settings", "labels") VALUES (3, 'Formulaire courrier', false, '{3,1}', 'verifier', '{"display": {"subtitles": [{"id": "invoice_number", "label": "FACTURATION.invoice_number"}, {"id": "document_date", "label": "FACTURATION.document_date"}, {"id": "date", "label": "VERIFIER.register_date"}, {"id": "original_filename", "label": "VERIFIER.original_file"}, {"id": "form_label", "label": "ACCOUNTS.form"}]}, "unique_url": {"expiration": 7, "change_form": true, "create_supplier": true, "update_supplier": true, "refuse_document": true, "validate_document": true, "allow_supplier_autocomplete": true}, "allow_learning": true, "supplier_verif": false}', '{"supplier": "Contact"}');
-INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (3, 3, '{"lines": [], "other": [], "supplier": [{"id": "name", "type": "text", "unit": "supplier", "class": "w-1/2", "color": "white", "label": "ACCOUNTS.supplier_name", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/2", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "lastname", "type": "text", "unit": "supplier", "class": "w-1/2", "color": "white", "label": "ACCOUNTS.lastname", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/2", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "firstname", "type": "text", "unit": "supplier", "class": "w-1/3", "color": "white", "label": "ACCOUNTS.firstname", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "civility", "type": "select", "unit": "supplier", "class": "w-1/3", "color": "white", "label": "ACCOUNTS.civility", "format": "select", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "function", "type": "text", "unit": "supplier", "class": "w-1/3", "color": "white", "label": "ACCOUNTS.function", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "phone", "type": "text", "unit": "supplier", "class": "w-1/2", "color": "green", "label": "FORMATS.phone", "format": "alphanum", "display": "simple", "required": false, "class_label": "1/2", "format_icon": "fa-solid fa-at", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "far fa-star"}, {"id": "email", "type": "text", "unit": "supplier", "class": "w-1/2", "color": "green", "label": "FORMATS.email", "format": "email", "display": "simple", "required": false, "class_label": "1/2", "format_icon": "fa-solid fa-at", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "far fa-star"}, {"id": "address1", "type": "text", "unit": "addresses", "class": "w-1/2", "label": "ADDRESSES.address_1", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/2", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "address2", "type": "text", "unit": "addresses", "class": "w-1/2", "label": "ADDRESSES.address_2", "format": "alphanum_extended_with_accent", "display": "simple", "required": false, "class_label": "1/2", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "postal_code", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.postal_code", "format": "number_int", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fa-solid fa-calculator", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "city", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.city", "format": "char", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fa-solid fa-font", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "country", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.country", "format": "char", "display": "simple", "required": false, "class_label": "1/33", "format_icon": "fa-solid fa-font", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "far fa-star"}], "facturation": [{"id": "subject", "type": "text", "unit": "facturation", "class": "w-1/2", "color": "red", "label": "WORKFLOW.subject", "format": "alphanum_extended_with_accent", "display": "simple", "required": false, "class_label": "1/2", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "document_date", "type": "date", "unit": "facturation", "class": "w-1/2", "color": "yellow", "label": "FACTURATION.document_date", "format": "date", "display": "simple", "required": true, "class_label": "1/2", "format_icon": "fa-solid fa-calendar-day", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}]}');
+INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (3, 3, '{
+    "lines": [],
+    "other": [],
+    "supplier": [
+        {
+            "0": {
+                "id": "name",
+                "type": "text",
+                "color": "#426CF5",
+                "label": "Compte tiers / organisation",
+                "format": "alphanum_extended_with_accent",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "1": {
+                "id": "lastname",
+                "type": "text",
+                "color": "#426CF5",
+                "label": "Nom de famille",
+                "format": "alphanum_extended_with_accent",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "duplicable": false
+        },
+        {
+            "0": {
+                "id": "firstname",
+                "type": "text",
+                "color": "#426CF5",
+                "label": "Prénom",
+                "format": "alphanum_extended_with_accent",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "1": {
+                "id": "civility",
+                "type": "select",
+                "color": null,
+                "label": "Civilité",
+                "format": "number",
+                "required": false,
+                "typeLabel": "Liste à choix",
+                "default_value": ""
+            },
+            "2": {
+                "id": "function",
+                "type": "text",
+                "color": null,
+                "label": "Fonction",
+                "format": "alphanum_extended_with_accent",
+                "required": false,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "duplicable": false
+        },
+        {
+            "0": {
+                "id": "phone",
+                "type": "text",
+                "color": null,
+                "label": "Téléphone",
+                "format": "phone",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "1": {
+                "id": "email",
+                "type": "text",
+                "color": "#19864B",
+                "label": "Addresse email",
+                "format": "email",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "duplicable": false
+        },
+        {
+            "0": {
+                "id": "address1",
+                "type": "text",
+                "color": null,
+                "label": "Numéro et rue",
+                "format": "alphanum_extended_with_accent",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "1": {
+                "id": "address2",
+                "type": "text",
+                "color": null,
+                "label": "Complément d''adresse",
+                "format": "alphanum_extended_with_accent",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "duplicable": false
+        },
+        {
+            "0": {
+                "id": "postal_code",
+                "type": "text",
+                "color": null,
+                "label": "Code postal",
+                "format": "alphanum",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "1": {
+                "id": "city",
+                "type": "text",
+                "color": null,
+                "label": "Ville",
+                "format": "alphanum_extended_with_accent",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "2": {
+                "id": "country",
+                "type": "text",
+                "color": null,
+                "label": "Pays",
+                "format": "alphanum_extended_with_accent",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "duplicable": false
+        }
+    ],
+    "facturation": [
+        {
+            "0": {
+                "id": "subject",
+                "type": "text",
+                "color": "#CD0D0D",
+                "label": "Sujet",
+                "format": "alphanum_extended",
+                "required": false,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "1": {
+                "id": "document_date",
+                "type": "date",
+                "color": "#B3A613",
+                "label": "Date du document",
+                "format": "date",
+                "required": true,
+                "typeLabel": "Date",
+                "default_value": ""
+            },
+            "duplicable": false
+        }
+    ]
+}');
 
 INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module", "settings") VALUES (4, 'Formulaire AI LLM par défaut', false, '{1,3}', 'verifier',  '{
-    "display": {
-        "subtitles": [
-            {"id": "document_id", "label": "VERIFIER.document_id"},
-            {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
-            {"id": "document_date", "label": "FACTURATION.document_date"},
-            {"id": "date", "label": "VERIFIER.register_date"},
-            {"id": "original_filename", "label": "VERIFIER.original_file"},
-            {"id": "form_label", "label": "ACCOUNTS.form"}
-        ]
-    },
     "unique_url": {
         "expiration": 7,
         "change_form": true,
@@ -920,7 +1046,299 @@ INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module", "
     },
     "supplier_verif": false
 }');
-INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (4, 4, '{"lines": [{"id": "description", "type": "text", "unit": "lines", "class": "w-1/4", "label": "FACTURATION.description", "format": "alphanum_extended_with_accent", "display": "simple", "required": false, "class_label": "1/4", "format_icon": "fa-solid fa-level-up-alt", "display_icon": "fa-solid fa-file-alt", "lineSelected": true, "default_value": "", "required_icon": "far fa-star"}, {"id": "quantity", "type": "text", "unit": "lines", "class": "w-1/4", "label": "FACTURATION.quantity", "format": "number_float", "display": "simple", "required": false, "class_label": "1/4", "format_icon": "fa-solid fa-calculator", "display_icon": "fa-solid fa-file-alt", "lineSelected": true, "default_value": "", "required_icon": "far fa-star"}, {"id": "unit_price", "type": "text", "unit": "lines", "class": "w-1/4", "label": "FACTURATION.unit_price", "format": "number_float", "display": "simple", "required": false, "class_label": "1/4", "format_icon": "fa-solid fa-calculator", "display_icon": "fa-solid fa-file-alt", "lineSelected": true, "default_value": "", "required_icon": "far fa-star"}, {"id": "line_ht", "type": "text", "unit": "lines", "class": "w-1/4", "label": "FACTURATION.no_rate_amount", "format": "number_float", "display": "simple", "fullSize": true, "required": false, "class_label": "1/4", "format_icon": "fa-solid fa-calculator", "display_icon": "fa-solid fa-file-alt", "lineSelected": true, "default_value": "", "required_icon": "far fa-star", "fullSizeSelected": true}], "other": [], "supplier": [{"id": "name", "type": "text", "unit": "supplier", "class": "w-full", "color": "white", "label": "ACCOUNTS.supplier_name", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "address1", "type": "text", "unit": "addresses", "class": "w-1/4", "label": "ADDRESSES.address_1", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/4", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "postal_code", "type": "text", "unit": "addresses", "class": "w-1/4", "label": "ADDRESSES.postal_code", "format": "number_int", "display": "simple", "required": true, "class_label": "1/4", "format_icon": "fa-solid fa-calculator", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "address2", "type": "text", "unit": "addresses", "class": "w-1/4", "label": "ADDRESSES.address_2", "format": "alphanum_extended_with_accent", "display": "simple", "required": false, "class_label": "1/4", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "city", "type": "text", "unit": "addresses", "class": "w-1/4", "label": "ADDRESSES.city", "format": "char", "display": "simple", "required": true, "class_label": "1/4", "format_icon": "fa-solid fa-font", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "country", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.country", "format": "char", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fa-solid fa-font", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "email", "type": "text", "unit": "supplier", "class": "w-1/3", "color": "green", "label": "FORMATS.email", "format": "email", "display": "simple", "required": false, "class_label": "1/33", "format_icon": "fa-solid fa-at", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "far fa-star"}, {"id": "phone", "type": "text", "unit": "supplier", "class": "w-1/3", "color": "green", "label": "FORMATS.phone", "format": "alphanum", "display": "simple", "required": false, "class_label": "1/33", "format_icon": "fa-solid fa-at", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "far fa-star"}, {"id": "vat_number", "type": "text", "unit": "supplier", "class": "w-1/3", "color": "olive", "label": "ACCOUNTS.vat_number", "format": "alphanum", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "siret", "type": "text", "unit": "supplier", "class": "w-1/3", "color": "green", "label": "ACCOUNTS.siret", "format": "number_int", "display": "simple", "required": false, "class_label": "1/33", "format_icon": "fa-solid fa-calculator", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "far fa-star"}, {"id": "siren", "type": "text", "unit": "supplier", "class": "w-1/3", "color": "lime", "label": "ACCOUNTS.siren", "format": "number_int", "display": "simple", "required": false, "class_label": "1/33", "format_icon": "fa-solid fa-calculator", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "far fa-star"}], "facturation": [{"id": "invoice_number", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "red", "label": "FACTURATION.invoice_number", "format": "alphanum_extended", "display": "simple", "required": true, "class_label": "1/4", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "quotation_number", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "orange", "label": "FACTURATION.quotation_number", "format": "alphanum_extended", "display": "simple", "required": false, "class_label": "1/4", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "delivery_number", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "silver", "label": "FACTURATION.delivery_number", "format": "alphanum_extended", "display": "simple", "required": false, "class_label": "1/4", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-layer-group", "default_value": "", "required_icon": "far fa-star"}, {"id": "order_number", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "orange", "label": "FACTURATION.order_number", "format": "alphanum_extended", "display": "simple", "required": false, "class_label": "1/4", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "document_date", "type": "date", "unit": "facturation", "class": "w-1/3", "color": "yellow", "label": "FACTURATION.document_date", "format": "date", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fa-solid fa-calendar-day", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "document_due_date", "type": "date", "unit": "facturation", "class": "w-1/3", "color": "blue", "label": "FACTURATION.document_due_date", "format": "date", "display": "simple", "required": false, "class_label": "1/33", "format_icon": "fa-solid fa-calendar-day", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "far fa-star"}, {"id": "currency", "type": "text", "unit": "facturation", "class": "w-1/3", "color": "pink", "label": "WORKFLOW.currency", "format": "alphanum", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fa-solid fa-hashtag", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "vat_rate", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "pink", "label": "FACTURATION.vat_rate", "format": "number_float", "display": "multi", "required": true, "class_label": "1/4", "format_icon": "fa-solid fa-calculator", "display_icon": "fa-solid fa-layer-group", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "total_ht", "type": "text", "unit": "facturation", "class": "w-1/4", "label": "Total HT", "format": "number_float", "display": "simple", "required": true, "class_label": "1/4", "format_icon": "fa-solid fa-calculator", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "total_vat", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "", "label": "Total TVA", "format": "number_float", "display": "simple", "required": true, "class_label": "1/4", "format_icon": "fa-solid fa-calculator", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}, {"id": "total_ttc", "type": "text", "unit": "facturation", "class": "w-1/4", "label": "FACTURATION.total_ttc", "format": "number_float", "display": "simple", "required": true, "class_label": "1/4", "format_icon": "fa-solid fa-calculator", "display_icon": "fa-solid fa-file-alt", "default_value": "", "required_icon": "fa-solid fa-star"}]}');
+INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (4, 4, '{
+    "lines": [
+        {
+            "0": {
+                "id": "description",
+                "type": "text",
+                "color": null,
+                "label": "Description",
+                "format": "alphanum_extended_with_accent",
+                "required": false,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "1": {
+                "id": "quantity",
+                "type": "text",
+                "color": null,
+                "label": "Quantité",
+                "format": "number",
+                "required": false,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "2": {
+                "id": "unit_price",
+                "type": "text",
+                "color": null,
+                "label": "Prix unitaire",
+                "format": "number_float",
+                "required": false,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "3": {
+                "id": "line_ht",
+                "type": "text",
+                "color": null,
+                "label": "Montant HT",
+                "format": "number_float",
+                "required": false,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "duplicable": true
+        }
+    ],
+    "other": [],
+    "supplier": [
+        {
+            "0": {
+                "id": "name",
+                "type": "text",
+                "color": "#426CF5",
+                "label": "Compte tiers / organisation",
+                "format": "alphanum_extended_with_accent",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "duplicable": false
+        },
+        {
+            "0": {
+                "id": "address1",
+                "type": "text",
+                "color": null,
+                "label": "Numéro et rue",
+                "format": "alphanum_extended_with_accent",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "1": {
+                "id": "address2",
+                "type": "text",
+                "color": null,
+                "label": "Complément d''adresse",
+                "format": "alphanum_extended_with_accent",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "2": {
+                "id": "city",
+                "type": "text",
+                "color": null,
+                "label": "Ville",
+                "format": "alphanum_extended_with_accent",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "3": {
+                "id": "postal_code",
+                "type": "text",
+                "color": null,
+                "label": "Code postal",
+                "format": "alphanum",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "duplicable": false
+        },
+        {
+            "0": {
+                "id": "country",
+                "type": "text",
+                "color": null,
+                "label": "Pays",
+                "format": "alphanum_extended_with_accent",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "1": {
+                "id": "email",
+                "type": "text",
+                "color": "#19864B",
+                "label": "Addresse email",
+                "format": "email",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "2": {
+                "id": "phone",
+                "type": "text",
+                "color": null,
+                "label": "Téléphone",
+                "format": "phone",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "duplicable": false
+        },
+        {
+            "0": {
+                "id": "vat_number",
+                "type": "text",
+                "color": "#F469F6",
+                "label": "Numéro de TVA",
+                "format": "alphanum",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "1": {
+                "id": "siret",
+                "type": "text",
+                "color": "#64C800",
+                "label": "Numéro SIRET",
+                "format": "number_int",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "2": {
+                "id": "siren",
+                "type": "text",
+                "color": "#19864B",
+                "label": "Numéro SIREN",
+                "format": "number_int",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "duplicable": false
+        }
+    ],
+    "facturation": [
+        {
+            "0": {
+                "id": "invoice_number",
+                "type": "text",
+                "color": "#CD0D0D",
+                "label": "Numéro de facture",
+                "format": "alphanum_extended",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "1": {
+                "id": "quotation_number",
+                "type": "text",
+                "color": "#E66910",
+                "label": "Numéro de devis",
+                "format": "alphanum_extended",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "2": {
+                "id": "delivery_number",
+                "type": "text",
+                "color": "#6E6E6E",
+                "label": "Numéro de livraison",
+                "format": "alphanum_extended",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "3": {
+                "id": "order_number",
+                "type": "text",
+                "color": "#E66910",
+                "label": "Numéro de commande",
+                "format": "alphanum_extended",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "duplicable": false
+        },
+        {
+            "0": {
+                "id": "document_date",
+                "type": "date",
+                "color": "#B3A613",
+                "label": "Date du document",
+                "format": "date",
+                "required": true,
+                "typeLabel": "Date",
+                "default_value": ""
+            },
+            "1": {
+                "id": "document_due_date",
+                "type": "date",
+                "color": "#1CC7BE",
+                "label": "Date d''échéance",
+                "format": "date",
+                "required": true,
+                "typeLabel": "Date",
+                "default_value": ""
+            },
+            "2": {
+                "id": "currency",
+                "type": "text",
+                "color": "#F469F6",
+                "label": "Devise",
+                "format": "alphanum",
+                "required": false,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "duplicable": false
+        },
+        {
+            "0": {
+                "id": "vat_rate",
+                "type": "text",
+                "color": "#F469F6",
+                "label": "Taux de TVA",
+                "format": "number_float",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "1": {
+                "id": "total_ht",
+                "type": "text",
+                "color": "#19864B",
+                "label": "Total HT",
+                "format": "number_float",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "2": {
+                "id": "total_vat",
+                "type": "text",
+                "color": "#19864B",
+                "label": "Total TVA",
+                "format": "number_float",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "3": {
+                "id": "total_ttc",
+                "type": "text",
+                "color": "#19864B",
+                "label": "Total TTC",
+                "format": "number_float",
+                "required": true,
+                "typeLabel": "Chaîne de caractères",
+                "default_value": ""
+            },
+            "duplicable": false
+        }
+    ]
+}');
 
 -- CRÉATION DU FORMULAIRE SPLITTER PAR DÉFAUT
 INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module", "settings") VALUES (5, 'Formulaire par défaut', true, '{5}', 'splitter', '{
@@ -940,7 +1358,7 @@ INSERT INTO "doctypes" ("key", "label", "code", "is_default", "type", "form_id")
 
 -- CRÉATION DES WORKFLOWS
 INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "process", "output") VALUES (1, 'default_workflow', 'Workflow par défaut', 'verifier', '{
-    "script": "# La fonction `main` sera appelé avant le traitement d''un document, ne changez pas le nom de cette fonction\n# Ce script sera effectué avant la partie `traitement`, si cette dernière est activée\n\n# Depuis l''étape `entrée` vous avez accès aux variables suivantes :\n#   - ip --> (string) Adresse IP de l''utilisateur\n#   - user_info --> (string) Informations sur l''utilisateur courant\n#   - custom_id --> (string) Identifiant du custom\n#   - file --> (string) Chemin complet du fichier à traiter\n#   - opencapture_path --> (string) Racine du dossier d''installation Open-Capture\n#   - log --> (classe Log) Instance de la classe Log permettant de logger (info ou error) différentes données\n#   - input_path --> (string) Chemin de capture des documents\n#   - customer_id --> (integer) Identifiant du compte client\n#   - ia_model_id --> (integer) Identifiant du modèle d''intelligence artificielle\n\n# Depuis l''étape `entrée` vous avez accès aux fonctions suivantes :\n#   - send_to_workflow() --> Envoi du document vers un autre workflow\n#\t\t- arguments : ip, log, file, user_info, workflow_id, custom_id\n# Si vous utilisez la fonction send_to_workflow(), il faut la combiner avec un return\n# Si la fonction send_to_workflow() est utilisée uniquement dans un cas, et pas dans un autre, finir la fonction par \"return ''continue_workflow''\"\n\n# La liste des librairies Python disponible sont visibles ici :\n# https://github.com/edissyum/opencapture/blob/master/install/pip-requirements.txt\n\n# Ce script est un exemple permettant de lire les code QR dans le document en cours de traitement\n# Si le contenu du QR Code dispose du mot clé facture, le workflow continue\n# Sinon, le workflow s''arrête et un autre est automatiquement lancé\n\nimport pdf2image\nfrom pyzbar.pyzbar import decode\nfrom src.backend.scripting_functions import send_to_workflow\n\ndef read_qrcode(args):\n    args[''log''].info(''[INPUT_SCRIPT] Recherche de code QR dans le document'')\n    pages = pdf2image.convert_from_path(args[''file''])\n    barcodes = []\n    cpt = 0\n    for page in pages:\n        detected_barcode = decode(page)\n        if detected_barcode:\n            for barcode in detected_barcode:\n                if barcode.type == ''QRCODE'':\n                    barcodes.append({''text'': barcode.data.decode(''utf-8'')})\n        cpt += 1\n    return barcodes\n\n\ndef main(args):\n    return ''DISABLED'' # REMOVE THIS LINE TO ACTIVATE SCRIPTING\n    args[''log''].info(f\"[INPUT_SCRIPT] Traitement du fichier {args[''file'']}\")\n    barcodes = read_qrcode(args)\n    is_invoice = False\n\n    for barcode in barcodes:\n        if ''facture'' in barcode[''text''].lower():\n            is_invoice = True\n\n    if is_invoice:\n        args[''log''].info(''[INPUT_SCRIPT] Le document est bien une facture, le traitement continue...'')\n        return ''continue_workflow''\n    else:\n        args[''log''].info(''[INPUT_SCRIPT] Le document n\\''est pas une facture, lancement du workflow&nbsp;ocr_only'')\n        return send_to_workflow({\n            ''ip'': args[''ip''],\n            ''log'': args[''log''],\n            ''file'': args[''file''],\n            ''user_info'': args[''user_info''],\n            ''workflow_id'': ''ocr_only'',\n            ''custom_id'': args[''custom_id''],\n        })\n",
+    "script": "# La fonction `main` sera appelé avant le traitement d''un document, ne changez pas le nom de cette fonction\n# Ce script sera effectué avant la partie `traitement`, si cette dernière est activée\n\n# Depuis l''étape `entrée` vous avez accès aux variables suivantes :\n#   - ip --> (string) Adresse IP de l''utilisateur\n#   - user_info --> (string) Informations sur l''utilisateur courant\n#   - custom_id --> (string) Identifiant du custom\n#   - file --> (string) Chemin complet du fichier à traiter\n#   - opencapture_path --> (string) Racine du dossier d''installation Open-Capture\n#   - log --> (classe Log) Instance de la classe Log permettant de logger (info ou error) différentes données\n#   - input_path --> (string) Chemin de capture des documents\n#   - customer_id --> (integer) Identifiant du compte client\n#   - ia_model_id --> (integer) Identifiant du modèle d''intelligence artificielle\n\n# Depuis l''étape `entrée` vous avez accès aux fonctions suivantes :\n#   - send_to_workflow() --> Envoi du document vers un autre workflow\n#\t\t- arguments : ip, log, file, user_info, workflow_id, custom_id\n# Si vous utilisez la fonction send_to_workflow(), il faut la combiner avec un return\n# Si la fonction send_to_workflow() est utilisée uniquement dans un cas, et pas dans un autre, finir la fonction par \"return ''continue_workflow''\"\n\n# La liste des librairies Python disponible sont visibles ici :\n# https://github.com/edissyum/opencapture/blob/master/install/pip-requirements.txt\n\n# Ce script est un exemple permettant de lire les code QR dans le document en cours de traitement\n# Si le contenu du QR Code dispose du mot clé facture, le workflow continue\n# Sinon, le workflow s''arrête et un autre est automatiquement lancé\n\nimport pdf2image\nfrom pyzbar.pyzbar import decode\nfrom src.scripting_functions import send_to_workflow\n\ndef read_qrcode(args):\n    args[''log''].info(''[INPUT_SCRIPT] Recherche de code QR dans le document'')\n    pages = pdf2image.convert_from_path(args[''file''])\n    barcodes = []\n    cpt = 0\n    for page in pages:\n        detected_barcode = decode(page)\n        if detected_barcode:\n            for barcode in detected_barcode:\n                if barcode.type == ''QRCODE'':\n                    barcodes.append({''text'': barcode.data.decode(''utf-8'')})\n        cpt += 1\n    return barcodes\n\n\ndef main(args):\n    return ''DISABLED'' # REMOVE THIS LINE TO ACTIVATE SCRIPTING\n    args[''log''].info(f\"[INPUT_SCRIPT] Traitement du fichier {args[''file'']}\")\n    barcodes = read_qrcode(args)\n    is_invoice = False\n\n    for barcode in barcodes:\n        if ''facture'' in barcode[''text''].lower():\n            is_invoice = True\n\n    if is_invoice:\n        args[''log''].info(''[INPUT_SCRIPT] Le document est bien une facture, le traitement continue...'')\n        return ''continue_workflow''\n    else:\n        args[''log''].info(''[INPUT_SCRIPT] Le document n\\''est pas une facture, lancement du workflow&nbsp;ocr_only'')\n        return send_to_workflow({\n            ''ip'': args[''ip''],\n            ''log'': args[''log''],\n            ''file'': args[''file''],\n            ''user_info'': args[''user_info''],\n            ''workflow_id'': ''ocr_only'',\n            ''custom_id'': args[''custom_id''],\n        })\n",
     "ai_model_id": 0,
     "customer_id": null,
     "facturx_only": false,
@@ -951,7 +1369,7 @@ INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "proce
     "splitter_method_id": "no_sep",
     "separate_by_document_number_value": 2
 }', '{
-    "script": "# La fonction `main` sera appelé après le traitement d''un document, ne changez pas le nom de cette fonction\n# Ce script sera effectué après la partie `traitement`\n\n# Depuis l''étape `traitement` vous avez accès aux variables suivantes :\n#   - custom_id --> (string) Identifiant du custom\n#   - file --> (string) Chemin complet du fichier à traiter\n#   - opencapture_path --> (string) Racine du dossier d''installation Open-Capture\n#   - log --> (classe Log) Instance de la classe Log permettant de logger (info ou error) différentes données\n#   - process_info --> (array) Paramètres de traitement de la chaîne workflow courante\n#   - document_id --> (integer) Identifiant du document en BDD\n#   - datas --> (array) Informations du document trouvées de manière automatique (contient datas, positions et pages)\n\n# Depuis l''étape `traitement` vous avez accès aux fonctions suivantes :\n#   - update_document_data() --> Permet la modification des données du document\n#       - args : (array) Tableau associatif contenant les données à modifier :\n#           - Liste des champs modifiables :\n#               - Fournisseur :\n#                   - name, address1, address2, postal_code, city, country, email, vat_number, iban, siret, siren\n#               - Facturation :\n#                   - invoice_number, document_date, document_due_date, quotation_number, delivery_number, vat_amount\n#                   - no_rate_amount, vat_rate, total_ht, total_vat, total_ttc\n#               - Champ personnalisés : identifiant du champ personnalisé\n\n#           - Exemple de l''appel (custom_id et document_id sont obligatoires) :\n#               - update_document_data({\n#                   ''custom_id: args[''custom_id''],\n#                   ''document_id'': args[''document_id''],\n#                   ''datas'': {\n#                       ''invoice_number'': ''INVOICE_NOT_FOUND''\n#                   }\n#                 })\n\n# La liste des librairies Python disponible sont visibles ici :\n# https://github.com/edissyum/opencapture/blob/master/install/pip-requirements.txt\n\n# Ce script est un exemple permettant de mettre un numéro de facture par défaut\n# Si aucun numéro de facture n''a été trouvé, afin de faciliter la recherche\n\nfrom src.backend.scripting_functions import update_document_data\n\n\ndef main(args):\n    return ''DISABLED'' # REMOVE THIS LINE TO ACTIVATE SCRIPTING\n    args[''log''].info(f\"[PROCESS SCRIPT] Traitement des données du fichier {args[''file'']}\")\n    if ''document_id'' in args and args[''document_id'']:\n        args[''log''].info(f\"[PROCESS SCRIPT] Identifiant du document : {args[''document_id'']}\")\n\n        if ''invoice_number'' not in args[''datas'']:\n            args[''log''].info(''[PROCESS SCRIPT] Modification du numéro de facture'')\n            update_document_data({\n                ''custom_id'': args[''custom_id''],\n                ''document_id'': args[''document_id''],\n                ''data'': {\n                    ''invoice_number'': ''INVOICE_NOT_FOUND''\n                }\n            })\n    return True\n",
+    "script": "# La fonction `main` sera appelé après le traitement d''un document, ne changez pas le nom de cette fonction\n# Ce script sera effectué après la partie `traitement`\n\n# Depuis l''étape `traitement` vous avez accès aux variables suivantes :\n#   - custom_id --> (string) Identifiant du custom\n#   - file --> (string) Chemin complet du fichier à traiter\n#   - opencapture_path --> (string) Racine du dossier d''installation Open-Capture\n#   - log --> (classe Log) Instance de la classe Log permettant de logger (info ou error) différentes données\n#   - process_info --> (array) Paramètres de traitement de la chaîne workflow courante\n#   - document_id --> (integer) Identifiant du document en BDD\n#   - datas --> (array) Informations du document trouvées de manière automatique (contient datas, positions et pages)\n\n# Depuis l''étape `traitement` vous avez accès aux fonctions suivantes :\n#   - update_document_data() --> Permet la modification des données du document\n#       - args : (array) Tableau associatif contenant les données à modifier :\n#           - Liste des champs modifiables :\n#               - Fournisseur :\n#                   - name, address1, address2, postal_code, city, country, email, vat_number, iban, siret, siren\n#               - Facturation :\n#                   - invoice_number, document_date, document_due_date, quotation_number, delivery_number, vat_amount\n#                   - no_rate_amount, vat_rate, total_ht, total_vat, total_ttc\n#               - Champ personnalisés : identifiant du champ personnalisé\n\n#           - Exemple de l''appel (custom_id et document_id sont obligatoires) :\n#               - update_document_data({\n#                   ''custom_id: args[''custom_id''],\n#                   ''document_id'': args[''document_id''],\n#                   ''datas'': {\n#                       ''invoice_number'': ''INVOICE_NOT_FOUND''\n#                   }\n#                 })\n\n# La liste des librairies Python disponible sont visibles ici :\n# https://github.com/edissyum/opencapture/blob/master/install/pip-requirements.txt\n\n# Ce script est un exemple permettant de mettre un numéro de facture par défaut\n# Si aucun numéro de facture n''a été trouvé, afin de faciliter la recherche\n\nfrom src.scripting_functions import update_document_data\n\n\ndef main(args):\n    return ''DISABLED'' # REMOVE THIS LINE TO ACTIVATE SCRIPTING\n    args[''log''].info(f\"[PROCESS SCRIPT] Traitement des données du fichier {args[''file'']}\")\n    if ''document_id'' in args and args[''document_id'']:\n        args[''log''].info(f\"[PROCESS SCRIPT] Identifiant du document : {args[''document_id'']}\")\n\n        if ''invoice_number'' not in args[''datas'']:\n            args[''log''].info(''[PROCESS SCRIPT] Modification du numéro de facture'')\n            update_document_data({\n                ''custom_id'': args[''custom_id''],\n                ''document_id'': args[''document_id''],\n                ''data'': {\n                    ''invoice_number'': ''INVOICE_NOT_FOUND''\n                }\n            })\n    return True\n",
     "form_id": 1,
     "custom_fields": [],
     "system_fields": [
@@ -970,7 +1388,7 @@ INSERT INTO "workflows" ("id", "workflow_id", "label", "module", "input", "proce
     "allow_automatic_validation": false,
     "tesseract_function": "line_box_builder"
 }', '{
-    "script": "# La fonction `main` sera appelé après l''éxécution des chaînes sortantes, ne changez pas le nom de cette fonction\n# Ce script sera effectué après la partie `sortie`\n\n# Depuis l''étape `sortie` vous avez accès aux variables suivantes :\n#   - custom_id --> (string) Identifiant du custom\n#   - document_id --> (integer) Identifiant du document en BDD\n#   - file --> (string) Chemin complet du fichier sur le docserver\n#   - opencapture_path --> (string) Racine du dossier d''installation Open-Capture\n#   - outputs --> (array) Liste des paramètres de chaînes sortantes associées au workflow\n#   - datas --> (array) Informations du document trouvées de manière automatique (contient datas, positions et pages)\n#   - log --> (classe Log) Instance de la classe Log permettant de logger (info ou error) différentes données\n\n# Depuis l''étape `sortie` vous avez accès aux fonctions suivantes :\n#   - update_document_data() --> Permet la modification des données du document\n#       - args : (array) Tableau associatif contenant les données à modifier :\n#           - Liste des champs récupérable :\n#               - Fournisseur :\n#                   - name, address1, address2, postal_code, city, country, email, vat_number, iban, siret, siren\n#               - Facturation :\n#                   - invoice_number, document_date, document_due_date, quotation_number, delivery_number, vat_amount\n#                   - no_rate_amount, vat_rate, total_ht, total_vat, total_ttc\n#               - Champ personnalisés : identifiant du champ personnalisé\n\n#           - Exemple de l''appel (custom_id et document_id sont obligatoires) :\n#               - update_document_data({\n#                   ''custom_id: args[''custom_id''],\n#                   ''document_id'': args[''document_id''],\n#                   ''datas'': {\n#                       ''invoice_number'': args[''datas''][''invoice_number''] + ''-EDISSYUM''\n#                   }\n#                 })\n\n# La liste des librairies Python disponible sont visibles ici :\n# https://github.com/edissyum/opencapture/blob/master/install/pip-requirements.txt\n\n# Ce script est un exemple permettant de mettre un numéro de facture par défaut\n# Si aucune numéro de facture n''a été trouvé, afin de faciliter la recherche\n\nimport xml.etree.ElementTree as Et\nfrom src.backend.scripting_functions import update_document_data\n\n\ndef main(args):\n    return ''DISABLED'' # REMOVE THIS LINE TO ACTIVATE SCRIPTING\n    args[''log''].info(f\"[OUTPUT SCRIPT] Traitement des données du fichier {args[''file'']} après traitement\")\n\n    if ''document_id'' in args and args[''document_id''] is not None:\n        args[''log''].info(f\"[OUTPUT SCRIPT] Identifiant du document : {args[''document_id'']}\")\n\n        if ''invoice_number'' in args[''datas'']:\n            args[''log''].info(''[OUTPUT SCRIPT] Ajout d\\''un suffixe sur le numéro de facture'')\n            update_document_data({\n                ''custom_id'': args[''custom_id''],\n                ''document_id'': args[''document_id''],\n                ''data'': {\n                    ''invoice_number'': str(args[''datas''][''invoice_number'']) + ''-EDISSYUM''\n                }\n            })\n\n    if ''outputs'' in args and args[''outputs'']:\n        for output in args[''outputs'']:\n            if output[''output_type_id''] == ''export_xml'':\n                args[''log''].info(''[OUTPUT SCRIPT] Modification du fichier XML'')\n                xml_content = Et.parse(output[''file_path''])\n                print(output[''file_path''])\n                root = xml_content.getroot()\n                for data in root.findall(''DATAS''):\n                    data.find(''invoice_number'').text = data.find(''invoice_number'').text + ''-EDISSYUM''\n                xml_content.write(output[''file_path''])\n    return True\n",
+    "script": "# La fonction `main` sera appelé après l''éxécution des chaînes sortantes, ne changez pas le nom de cette fonction\n# Ce script sera effectué après la partie `sortie`\n\n# Depuis l''étape `sortie` vous avez accès aux variables suivantes :\n#   - custom_id --> (string) Identifiant du custom\n#   - document_id --> (integer) Identifiant du document en BDD\n#   - file --> (string) Chemin complet du fichier sur le docserver\n#   - opencapture_path --> (string) Racine du dossier d''installation Open-Capture\n#   - outputs --> (array) Liste des paramètres de chaînes sortantes associées au workflow\n#   - datas --> (array) Informations du document trouvées de manière automatique (contient datas, positions et pages)\n#   - log --> (classe Log) Instance de la classe Log permettant de logger (info ou error) différentes données\n\n# Depuis l''étape `sortie` vous avez accès aux fonctions suivantes :\n#   - update_document_data() --> Permet la modification des données du document\n#       - args : (array) Tableau associatif contenant les données à modifier :\n#           - Liste des champs récupérable :\n#               - Fournisseur :\n#                   - name, address1, address2, postal_code, city, country, email, vat_number, iban, siret, siren\n#               - Facturation :\n#                   - invoice_number, document_date, document_due_date, quotation_number, delivery_number, vat_amount\n#                   - no_rate_amount, vat_rate, total_ht, total_vat, total_ttc\n#               - Champ personnalisés : identifiant du champ personnalisé\n\n#           - Exemple de l''appel (custom_id et document_id sont obligatoires) :\n#               - update_document_data({\n#                   ''custom_id: args[''custom_id''],\n#                   ''document_id'': args[''document_id''],\n#                   ''datas'': {\n#                       ''invoice_number'': args[''datas''][''invoice_number''] + ''-EDISSYUM''\n#                   }\n#                 })\n\n# La liste des librairies Python disponible sont visibles ici :\n# https://github.com/edissyum/opencapture/blob/master/install/pip-requirements.txt\n\n# Ce script est un exemple permettant de mettre un numéro de facture par défaut\n# Si aucune numéro de facture n''a été trouvé, afin de faciliter la recherche\n\nimport xml.etree.ElementTree as Et\nfrom src.scripting_functions import update_document_data\n\n\ndef main(args):\n    return ''DISABLED'' # REMOVE THIS LINE TO ACTIVATE SCRIPTING\n    args[''log''].info(f\"[OUTPUT SCRIPT] Traitement des données du fichier {args[''file'']} après traitement\")\n\n    if ''document_id'' in args and args[''document_id''] is not None:\n        args[''log''].info(f\"[OUTPUT SCRIPT] Identifiant du document : {args[''document_id'']}\")\n\n        if ''invoice_number'' in args[''datas'']:\n            args[''log''].info(''[OUTPUT SCRIPT] Ajout d\\''un suffixe sur le numéro de facture'')\n            update_document_data({\n                ''custom_id'': args[''custom_id''],\n                ''document_id'': args[''document_id''],\n                ''data'': {\n                    ''invoice_number'': str(args[''datas''][''invoice_number'']) + ''-EDISSYUM''\n                }\n            })\n\n    if ''outputs'' in args and args[''outputs'']:\n        for output in args[''outputs'']:\n            if output[''output_type_id''] == ''export_xml'':\n                args[''log''].info(''[OUTPUT SCRIPT] Modification du fichier XML'')\n                xml_content = Et.parse(output[''file_path''])\n                print(output[''file_path''])\n                root = xml_content.getroot()\n                for data in root.findall(''DATAS''):\n                    data.find(''invoice_number'').text = data.find(''invoice_number'').text + ''-EDISSYUM''\n                xml_content.write(output[''file_path''])\n    return True\n",
     "outputs_id": [
         1,
         3

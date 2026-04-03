@@ -22,14 +22,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Button } from "../../../../components/Button";
-import { useUser } from "../../../../services/hooks/useUser";
 import { showToast } from "../../../../components/ToastProvider";
 import { DynamicForm } from "../../../../components/form/DynamicForm";
+
+import { useUser } from "../../../../services/hooks/useUser";
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { usePasswordRules } from "../../../../services/hooks/usePasswordRules";
 
 export function SettingsGeneralUserEditor() {
     const { get, put, post } = axiosApiCall();
     const navigate = useNavigate();
+    const { verifyPassword } = usePasswordRules();
     const { user: loggedUser, loadingUser } = useUser();
 
     const { userId } = useParams<{ userId: any }>();
@@ -71,19 +74,11 @@ export function SettingsGeneralUserEditor() {
     });
 
     const securitySchema = z.object({
-        password: userId
-            ? z.string().optional().describe(JSON.stringify({
-                component: "input",
-                required: false,
-                type: "password",
-                label: t("USERS.password")
-            }))
-            : z.string(t('USERS.password_mandatory')).describe(JSON.stringify({
-                component: "input",
-                required: true,
-                type: "password",
-                label: t("USERS.password")
-            })),
+        password: z.string().optional().describe(JSON.stringify({
+            component: "input",
+            type: "password",
+            label: t("USERS.password")
+        })),
         password_check: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "password",
@@ -106,7 +101,7 @@ export function SettingsGeneralUserEditor() {
             })),
             label: t("USERS.mode")
         }))
-    });
+    })
 
     const settingsSchema = z.object({
         forms: z.array(z.number()).describe(JSON.stringify({
@@ -249,10 +244,25 @@ export function SettingsGeneralUserEditor() {
         }
     }
 
-    const password = watch("password");
-    const passwordCheck = watch("password_check");
+    const password: any = watch("password");
+    const passwordCheck: any = watch("password_check");
 
     useEffect(() => {
+        if (!password) {
+            clearErrors("password");
+            clearErrors("password_check");
+            return;
+        }
+
+        const errorMessage = verifyPassword(password);
+        if (errorMessage) {
+            setTimeout(() => {
+                setError("password", { message: errorMessage });
+            }, 0);
+        } else {
+            clearErrors("password");
+        }
+
         if (password !== passwordCheck) {
             setError("password_check", {
                 message: t("USERS.password_mismatch")
@@ -262,8 +272,8 @@ export function SettingsGeneralUserEditor() {
                 message: t("USERS.password_mismatch")
             });
         } else {
-            clearErrors("password_check");
             clearErrors("password");
+            clearErrors("password_check");
         }
     }, [password, passwordCheck]);
 
@@ -287,7 +297,7 @@ export function SettingsGeneralUserEditor() {
                         { t('USERS.security') }
                     </h1>
 
-                    <DynamicForm errors={ errors } control={ control } labelFusion={ true } schema={ securitySchema } gap={ 2 }/>
+                    <DynamicForm errors={ errors } control={ control } labelFusion={ true } schema={ securitySchema } gap={ 4 }/>
 
                 </>
 

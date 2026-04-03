@@ -767,7 +767,6 @@
         "item_tax_rate": "VAT rate",
         "item_total_excl_tax": "Amount excl. tax",
         "item_unit_price": "Unit price",
-        "due_date": "Due date",
         "document_date": "Document date",
         "invoice_number": "Invoice number",
         "drop_create_new_line": "Drop a field to create a new line",
@@ -816,7 +815,8 @@
         "footer": "Footer",
         "subject": "Subject",
         "firstname_lastname": "First and last name",
-        "system_fields": "System fields"
+        "system_fields": "System fields",
+        "accounting_plan": ""
     },
     "SECURITY": {
         "default_auth": "Default authentication",
@@ -880,7 +880,11 @@
         "token_generation": "Generating token...",
         "token_generated": "Token successfully generated",
         "token_generated_details": "Keep the token in a safe place, it will not be displayed again after this step. If you lose it, you will need to generate a new one.",
-        "copy_token": "Copy token to clipboard"
+        "copy_token": "Copy token to clipboard",
+        "minLengthError": "",
+        "numberMandatoryError": "",
+        "specialCharMandatoryError": "",
+        "uppercaseMandatoryError": ""
     },
     "TYPE": {
         "boolean": "Boolean",

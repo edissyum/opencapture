@@ -179,6 +179,7 @@ def launch_script_verifier(workflow_settings, docservers, step, log, file, datab
             if os.path.isfile(tmp_file):
                 script_name = tmp_file.replace(config['GLOBAL']['applicationpath'], '').replace('/', '.').replace('.py', '')
                 script_name = script_name.replace('..', '.')
+
                 try:
                     tmp_script_name = script_name.replace('custom.', '')
                     scripting = importlib.import_module(tmp_script_name, 'custom')

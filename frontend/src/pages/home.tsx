@@ -20,7 +20,7 @@ import { VerifierListPage } from "./verifier/list";
 import { SplitterListPage } from "./splitter/list";
 
 import { useUser } from "../services/hooks/useUser";
-import { hasRequiredPermissions } from "../components/auth/auth.tsx";
+import { hasRequiredPermissions } from "../components/auth/auth";
 import { t } from "i18next";
 
 export function HomePage() {

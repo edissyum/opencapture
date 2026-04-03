@@ -224,6 +224,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
             const newField = {
                 id: activeData.id,
                 type: activeData.type,
+                color: activeData.color || null,
                 label: activeData.label || activeData.typeLabel || activeData.type,
                 required: activeData.required ?? false,
                 format: activeData.format ?? "",

@@ -38,6 +38,7 @@
     @apply border-(--border-secondary);
     @apply transition-all;
 }
+
 .p-accordion .p-accordion-header.p-highlight .p-accordion-header-link {
     @apply rounded-b-none;
 }
@@ -49,7 +50,7 @@
     @apply border-(--border-secondary);
 }
 
-    /* Accordion colors */
+/* Accordion colors */
 .p-accordion .p-accordion-content,
 .p-tabview-panels {
     @apply p-0;
@@ -165,14 +166,15 @@
 }
 
 .p-accordion .p-accordion-header-link {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @apply flex;
+    @apply items-center;
+    @apply justify-between;
 }
 
-.p-accordion .p-accordion-header .p-accordion-header-link .p-accordion-toggle-icon {
-    order: 2; /* pousse l'icône à droite */
-    margin-left: auto;
+/* Move the toggle icon to the right for roles privileges screen */
+.accordionRoles .p-accordion-header .p-accordion-header-link .p-accordion-toggle-icon {
+    @apply order-2;
+    @apply ml-auto;
 }
 
 .accordionRoles .p-accordion-tab .p-accordion-header .p-accordion-header-link {

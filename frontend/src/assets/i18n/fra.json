@@ -526,7 +526,7 @@
         "global_privileges": "Privilèges globaux",
         "splitter_privileges": "Privilèges du Splitter",
         "verifier_privileges": "Privilèges du Verifier",
-        "accounts_privileges": ""
+        "accounts_privileges": "Comptes tiers"
     },
     "SETTINGS": {
         "abouts_us": "À propos",
@@ -833,7 +833,6 @@
         "item_tax_rate": "Taux de TVA",
         "item_total_excl_tax": "Montant HT",
         "item_unit_price": "Prix unitaire",
-        "due_date": "Date d'échéance",
         "document_date": "Date du document",
         "invoice_number": "Numéro de facture",
         "drop_create_new_line": "Déposez un champ pour créer une nouvelle ligne",
@@ -884,7 +883,8 @@
         "footer": "Pied de page",
         "subject": "Sujet",
         "firstname_lastname": "Nom et prénom",
-        "system_fields": "Champs système"
+        "system_fields": "Champs système",
+        "accounting_plan": "Comptes de charge"
     },
     "SECURITY": {
         "default_auth": "Authentification par défaut",
@@ -951,7 +951,11 @@
         "token_generation": "Génération du token...",
         "token_generated": "Token généré avec succès",
         "token_generated_details": "Conservez le token en lieu sûr, il ne sera plus affiché après cette étape. Si vous le perdez, vous devrez en générer un nouveau.",
-        "copy_token": "Copier le token dans le presse-papiers"
+        "copy_token": "Copier le token dans le presse-papiers",
+        "minLengthError": "Le mot de passe doit contenir au moins <strong>{{ minLength }}</strong> caractères",
+        "numberMandatoryError": "Au moins un chiffre est requis",
+        "specialCharMandatoryError": "Au moins un caractère spécial est requis",
+        "uppercaseMandatoryError": "Au moins une majuscule est requise"
     },
     "TYPE": {
         "boolean": "Booléen",

@@ -833,7 +833,6 @@
         "item_tax_rate": "Tasa de IVA",
         "item_total_excl_tax": "Importe sin IVA",
         "item_unit_price": "Precio unitario",
-        "due_date": "Fecha de vencimiento",
         "document_date": "Fecha del documento",
         "invoice_number": "Número de factura",
         "drop_create_new_line": "Suelte un campo para crear una nueva línea",
@@ -884,7 +883,8 @@
         "footer": "Pie de página",
         "subject": "Asunto",
         "firstname_lastname": "Nombre y apellido",
-        "system_fields": "Campos del sistema"
+        "system_fields": "Campos del sistema",
+        "accounting_plan": ""
     },
     "SECURITY": {
         "default_auth": "Autenticación predeterminada",
@@ -951,7 +951,11 @@
         "token_generation": "Generando el token...",
         "token_generated": "Token generado con éxito",
         "token_generated_details": "Guarde el token en un lugar seguro, no se mostrará de nuevo tras este paso. Si lo pierde, deberá generar uno nuevo.",
-        "copy_token": "Copiar el token al portapapeles"
+        "copy_token": "Copiar el token al portapapeles",
+        "minLengthError": "",
+        "numberMandatoryError": "",
+        "specialCharMandatoryError": "",
+        "uppercaseMandatoryError": ""
     },
     "TYPE": {
         "boolean": "Booleano",

@@ -37,7 +37,7 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
                              } }
                 />
             </span>,
-            icon: <Copy className='mr-2' size={ 16 }/>,
+            icon: <Copy size={ 16 }/>,
             visible: zoneId !== 'zone-supplier' && module === 'verifier',
         },
         {

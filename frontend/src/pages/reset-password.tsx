@@ -32,11 +32,13 @@ import { DynamicForm } from "../components/form/DynamicForm";
 
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
 import { clearPersistentState } from "../services/hooks/usePersistentState";
+import { usePasswordRules } from "../services/hooks/usePasswordRules.tsx";
 
 export function ResetPassword() {
-    const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const { get, post, put } = axiosApiCall();
+    const navigate = useNavigate();
+    const { verifyPassword } = usePasswordRules();
 
     const [loading, setLoading] = useState(true);
     const [sending, setSending] = useState(false);
@@ -80,6 +82,16 @@ export function ResetPassword() {
 
     // Check password validity
     useEffect(() => {
+        const errorMessage = verifyPassword(password);
+
+        if (errorMessage) {
+            setTimeout(() => {
+                setError("password", { message: errorMessage });
+            }, 0);
+        } else {
+            clearErrors("password");
+        }
+
         if (password && passwordConfirm) {
             if (password !== passwordConfirm) {
                 setError('password', { message: t('USERS.passwords_do_not_match') });
