@@ -1,6 +1,6 @@
 # This file is part of Open-Capture.
 # Copyright Edissyum Consulting since 2020 under licence GPLv3
-import json
+
 # Open-Capture is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -17,6 +17,7 @@ import json
 
 import os
 import sys
+import json
 from .classes.Log import Log
 from .classes.SMTP import SMTP
 from .classes.Files import Files

@@ -202,7 +202,7 @@ export function CustomerEditor() {
     }
 
     return (
-        <div className="p-8 bg-(--bg-primary) h-full overflow-y-auto flex flex-col gap-4">
+        <div className="p-6 bg-(--bg-primary) h-full overflow-y-auto flex flex-col gap-4">
             <Accordion multiple activeIndex={ 0 }>
                 <AccordionTab header={ t("ACCOUNTS.customer_information") }>
                     <div className='p-6'>

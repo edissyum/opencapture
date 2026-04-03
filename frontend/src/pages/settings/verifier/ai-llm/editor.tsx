@@ -261,7 +261,7 @@ export function SettingsVerifierAiLLMEditor() {
 
     return (
         <div className="h-full overflow-y-auto">
-            <div className='p-8 pb-0 flex flex-col gap-6'>
+            <div className='p-6 pb-0 flex flex-col gap-6'>
                 <div className='flex flex-col gap-2'>
                     <h1 className="text-lg font-semibold">
                         { t('AI-LLM.details') }
@@ -347,7 +347,7 @@ export function SettingsVerifierAiLLMEditor() {
                 </div>
             </div>
 
-            <div className="p-8 w-fit">
+            <div className="p-6 w-fit">
                 { aiLLMId ? (
                     <Button onClick={ handleSubmit(handleUpdate) }
                             disabled={ loading || Object.keys(errors).length > 0 || !jsonValid }>

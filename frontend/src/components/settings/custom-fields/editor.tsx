@@ -375,7 +375,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
 
     return (
         <div className="h-full overflow-y-auto">
-            <div className='p-8 pb-0'>
+            <div className='p-6 pb-0'>
                 <h1 className="text-lg font-semibold mb-4">
                     { t('ROLES.details') }
                 </h1>
@@ -598,7 +598,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                 </div>
             ) }
 
-            <div className="p-8 w-fit">
+            <div className="p-6 w-fit">
                 { customFieldId ? (
                     <Button onClick={ handleSubmit(handleUpdate) }
                             disabled={ loading || Object.keys(errors).length > 0 }>

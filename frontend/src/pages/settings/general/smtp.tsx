@@ -170,7 +170,7 @@ export function SettingsGeneralSMTP() {
     return (
         <div className='flex h-full overflow-hidden'>
             <div className='border-r border-(--border-secondary) w-full overflow-y-auto'>
-                <div className='p-8'>
+                <div className='p-6'>
                     <h1 className='text-2xl font-bold'>{ t('SMTP.provider') }</h1>
                     <div className='flex gap-4 mt-6'>
                         { providers.map((provider) => (
@@ -309,7 +309,7 @@ export function SettingsGeneralSMTP() {
             </div>
             <div className='w-[40rem] bg-(--border-secondary)'>
                 <div className='bg-(--bg-primary)'>
-                    <div className='p-8'>
+                    <div className='p-6'>
                         <h1 className='text-2xl font-bold'>{ t('SMTP.send_test') }</h1>
                         <p className='mt-2 text-(--text-secondary)'>{ t('SMTP.send_test_infos') }</p>
                         <div className='mt-8'>
@@ -324,7 +324,7 @@ export function SettingsGeneralSMTP() {
                         </div>
                     </div>
                 </div>
-                <div className='flex flex-col justify-center p-8'>
+                <div className='flex flex-col justify-center p-6'>
                     { statusTestEmail === 'error' && (
                         <div className='flex items-center gap-4 mb-8'>
                             <img src="/src/assets/imgs/smtp/smtp_fail.svg" alt="Error" className='h-9'/>

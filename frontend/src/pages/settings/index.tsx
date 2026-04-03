@@ -76,7 +76,7 @@ export function SettingsIndex() {
     }
 
     return (
-        <div className="p-8">
+        <div className="p-6">
             <h1 className="text-2xl font-bold flex items-center gap-1">
                 { t('SETTINGS.favorites') }
             </h1>
