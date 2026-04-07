@@ -34,7 +34,7 @@ import { Dropdown } from "../../Dropdown";
 import { Loader } from "../../loader/Loader";
 import { showToast } from "../../ToastProvider";
 
-function SortableFieldItem({ field, onRemove }: { field: any, onRemove?: (field: any) => void }) {
+function SortableFieldItem({ field, lastField, onRemove }: { field: any, lastField: boolean,  onRemove?: (field: any) => void }) {
     const {
         attributes,
         listeners,
@@ -52,9 +52,9 @@ function SortableFieldItem({ field, onRemove }: { field: any, onRemove?: (field:
         <div
             ref={ setNodeRef }
             style={ style }
-            className="p-2 border border-(--border-secondary) rounded flex items-center justify-between"
+            className={ `p-2 border-b border-(--border-secondary) flex gap-2 items-center ${ lastField ? 'border-b-0' : ''}` }
         >
-            <div { ...attributes } { ...listeners } className="cursor-grab mr-2 text-(--text-secondary)">
+            <div { ...attributes } { ...listeners } className="cursor-grab text-(--text-secondary)">
                 <GripVertical size={ 20 }/>
             </div>
 
@@ -126,7 +126,7 @@ export function DoctypesTree({
         { label: t("DOCTYPES.semicolon"), value: "SEMICOLON", icon: <span style={ { transform: "translateY(2px)" } }>;</span> }
     ];
 
-    const [format, setFormat] = useState("CSV");
+    const [format, _] = useState("CSV");
     const [delimiter, setDelimiter] = useState(delimiterOptions[0].value);
 
     const availableFields = [
@@ -314,9 +314,9 @@ export function DoctypesTree({
                                 <p className='text-(--text-secondary) font-semibold'>
                                     { t('DOCTYPES.format') }
                                 </p>
-                                <div className={ ` border border-(--border-secondary) hover:border-(--border-primary) transition-colors
-                                                   ${ format === "CSV" ? 'bg-(--bg-selected) border-(--border-primary)! text-(--color-primary)' : '' }
-                                                   rounded-lg px-12 py-4 cursor-pointer flex flex-col items-center text-center justify-center gap-2` }>
+                                <div className={ `border border-(--border-secondary) hover:border-(--border-primary) transition-colors
+                                                  ${ format === "CSV" ? 'bg-(--bg-selected) border-(--border-primary)! text-(--color-primary)' : '' }
+                                                  rounded-lg px-12 py-4 cursor-pointer flex flex-col items-center text-center justify-center gap-2` }>
                                     <Sheet/>
                                     <p className='text-md font-semibold min-w-32'>CSV</p>
                                 </div>
@@ -348,10 +348,12 @@ export function DoctypesTree({
                                             items={ selectedFields.map(f => f.id) }
                                             strategy={ verticalListSortingStrategy }
                                         >
-                                            { selectedFields.map(field => (
-                                                <SortableFieldItem key={ field.id } field={ field }
-                                                                   onRemove={ () => handleRemoveField(field) }/>
-                                            )) }
+                                            <div className='border border-(--border-secondary) rounded-lg flex flex-col gap-2'>
+                                                { selectedFields.map(field => (
+                                                    <SortableFieldItem key={ field.id } field={ field } lastField={ field.id === selectedFields[selectedFields.length - 1].id }
+                                                                       onRemove={ () => handleRemoveField(field) }/>
+                                                )) }
+                                            </div>
                                         </SortableContext>
                                     </DndContext>
                                 </>

@@ -242,7 +242,8 @@
         "search_mask": "Masque de recherche",
         "validation_mask": "Masque de validation",
         "field_metadata_hint": "Paramétrage avancé du champ si un référentiel custom est activé. Permets la recherche et le remplissage automatique du champ",
-        "doctypes": "Types de documents"
+        "doctypes": "Types de documents",
+        "qr_code": "Séparateurs de documents"
     },
     "GLOBAL": {
         "batches": "Lots",
@@ -703,7 +704,12 @@
         "form_changed": "Formulaire changé avec succès",
         "unlabeled_document_error": "Validation impossible : un ou plusieurs documents du lot ne sont pas typés",
         "select_doctype": "Sélectionner un type de document",
-        "empty_document_error": "Liassage impossible : un document du lot est vide. Merci de supprimer les documents vides avant de procéder au liassage"
+        "empty_document_error": "Liassage impossible : un document du lot est vide. Merci de supprimer les documents vides avant de procéder au liassage",
+        "bundle_separator": "Séparateur de lot",
+        "doc_type_separator": "Séparateur de type de document",
+        "document_separator": "Séparateur de document",
+        "qr_separator": "Choix du séparateur de QR code",
+        "download_separator": "Télécharger le séparateur"
     },
     "UPLOAD": {
         "upload_dropzone": "Cliquez pour choisir un fichier",

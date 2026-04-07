@@ -222,7 +222,8 @@
         "search_mask": "Search mask",
         "validation_mask": "Validation mask",
         "field_metadata_hint": "Advanced field configuration if a custom repository is enabled. Allows searching and automatic filling of the field",
-        "doctypes": "Document types"
+        "doctypes": "Document types",
+        "qr_code": ""
     },
     "GLOBAL": {
         "batches": "Batches",
@@ -653,7 +654,12 @@
         "form_changed": "Form successfully changed",
         "unlabeled_document_error": "Validation not possible: one or more documents in the batch are not typed",
         "select_doctype": "Select a document type",
-        "empty_document_error": "Binding not possible: a document in the batch is empty. Please delete empty documents before binding"
+        "empty_document_error": "Binding not possible: a document in the batch is empty. Please delete empty documents before binding",
+        "bundle_separator": "",
+        "doc_type_separator": "",
+        "document_separator": "",
+        "qr_separator": "",
+        "download_separator": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Click to choose a file",

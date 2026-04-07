@@ -242,7 +242,8 @@
         "search_mask": "Máscara de búsqueda",
         "validation_mask": "Máscara de validación",
         "field_metadata_hint": "Configuración avanzada del campo si hay un repositorio personalizado activado. Permite la búsqueda y el relleno automático del campo",
-        "doctypes": "Tipos de documentos"
+        "doctypes": "Tipos de documentos",
+        "qr_code": ""
     },
     "GLOBAL": {
         "batches": "Lotes",
@@ -703,7 +704,12 @@
         "form_changed": "Formulario cambiado con éxito",
         "unlabeled_document_error": "Validación imposible: uno o varios documentos del lote no están tipados",
         "select_doctype": "Seleccionar un tipo de documento",
-        "empty_document_error": "Agrupación imposible: un documento del lote está vacío. Por favor, elimine los documentos vacíos antes de proceder a la agrupación"
+        "empty_document_error": "Agrupación imposible: un documento del lote está vacío. Por favor, elimine los documentos vacíos antes de proceder a la agrupación",
+        "bundle_separator": "",
+        "doc_type_separator": "",
+        "document_separator": "",
+        "qr_separator": "",
+        "download_separator": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Haga clic para elegir un archivo",

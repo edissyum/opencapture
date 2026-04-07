@@ -381,9 +381,10 @@ class SeparatorQR:
             separator["label"] = unidecode(separator['label'])
             file["label"] = separator['label'].encode('latin-1', 'replace').decode('latin-1')
             file["qr_code_value"] = separator['qr_code_value']
-            file["logo"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/login_image.svg"
-            file["company_logo"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/logo_company.png"
-            file["icon_loop"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/Open-Capture_Splitter.png"
+
+            file["logo"] = "src/assets/imgs/login_image.png"
+            file["company_logo"] = "src/assets/imgs/logo_company.png"
+            file["icon_loop"] = "src/assets/imgs/Open-Capture_Splitter.png"
 
             qrcode_path = docservers['TMP_PATH'] + f"/code_qr_{separator['qr_code_value']}.png"
             img = qrcode.make(separator['qr_code_value'])

@@ -82,8 +82,7 @@ def generate_separator():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'separator_splitter']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/doctypes/generateSeparator'}), 403
 
-    data = json.loads(request.data)
-    res = doctypes.generate_separator(data)
+    res = doctypes.generate_separator(request.json)
     return make_response(jsonify(res[0])), res[1]
 
 

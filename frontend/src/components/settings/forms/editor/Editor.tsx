@@ -16,12 +16,12 @@
 
 import { t } from "i18next";
 import { useParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
-import { TabPanel, TabView } from "primereact/tabview";
-import { EllipsisVertical, Pen } from "lucide-react";
-import { Accordion, AccordionTab } from "primereact/accordion";
-
 import { arrayMove } from "@dnd-kit/sortable";
+import { useEffect, useRef, useState } from "react";
+import { EllipsisVertical, Pen } from "lucide-react";
+import { ContextMenu } from "primereact/contextmenu";
+import { TabPanel, TabView } from "primereact/tabview";
+import { Accordion, AccordionTab } from "primereact/accordion";
 import { DndContext, type DragEndEvent, DragOverlay, type DragStartEvent, pointerWithin } from "@dnd-kit/core";
 
 import { findLineContainingField, findZoneContainingLine, getDropContext } from "./helpers";
@@ -42,9 +42,9 @@ import { SettingsVerifierFormsDetails } from "../../../../pages/settings/verifie
 import { SettingsSplitterFormsDetails } from "../../../../pages/settings/splitter/forms/details";
 import { getAvailableFields } from "../../../../pages/settings/verifier/forms/availableFieldsSchema";
 
+import { QrSeparator } from "../../doctypes/qrSeparator";
 import { DoctypesTree } from "../../doctypes/doctypesTree";
 import { DoctypeDetails } from "../../doctypes/doctypesDetails";
-import { ContextMenu } from "primereact/contextmenu";
 
 export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const { get, post, put } = axiosApiCall();
@@ -537,6 +537,11 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                                                 } }/>
                             </TabPanel>
                         ) }
+                        { module === 'splitter' && (
+                            <TabPanel header={ t("FORMS.qr_code") }>
+                                <QrSeparator selectedDoctype={ selectedDoctype }/>
+                            </TabPanel>
+                        ) }
                     </TabView>
                 </div>
 
@@ -559,7 +564,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                     </div>
                 ) }
 
-                { mainTabIndex === 2 && module === 'splitter' && (
+                { [2, 3].includes(mainTabIndex) && module === 'splitter' && (
                     <div className="w-[35rem] flex flex-col">
                         <DoctypesTree key={ doctypeUpdatedCpt } formId={ parseInt(formId) } editor={ true }
                                       selectedDoctype={ selectedDoctype }
