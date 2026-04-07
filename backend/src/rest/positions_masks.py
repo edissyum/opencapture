@@ -53,7 +53,7 @@ def add_positions_mask():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'add_positions_mask']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/positions_masks/add'}), 403
 
-    check, message = rest_validator(request.args, [
+    check, message = rest_validator(request.json, [
         {'id': 'label', 'type': str, 'mandatory': False},
         {'id': 'form_id', 'type': int, 'mandatory': False},
         {'id': 'supplier_id', 'type': int, 'mandatory': False}
@@ -64,7 +64,7 @@ def add_positions_mask():
             "message": message
         }, 400)
 
-    res = positions_masks.add_positions_mask(request.json['args'])
+    res = positions_masks.add_positions_mask(request.json)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -86,9 +86,9 @@ def update_positions_mask(position_mask_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/positions_masks/update/{position_mask_id}'}), 403
 
-    check, message = rest_validator(request.json['args'], [
+    check, message = rest_validator(request.json, [
         {'id': 'label', 'type': str, 'mandatory': False},
-        {'id': 'regex', 'type': dict, 'mandatory': True},
+        {'id': 'regex', 'type': dict, 'mandatory': False},
         {'id': 'form_id', 'type': int, 'mandatory': False},
         {'id': 'supplier_id', 'type': int, 'mandatory': False}
     ])
@@ -99,7 +99,7 @@ def update_positions_mask(position_mask_id):
             "message": message
         }, 400)
 
-    res = positions_masks.update_positions_mask(position_mask_id, request.json['args'])
+    res = positions_masks.update_positions_mask(position_mask_id, request.json)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -110,7 +110,7 @@ def update_positions_by_positions_mask_id(position_mask_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/positions_masks/updatePositions/{position_mask_id}'}), 403
 
-    res = positions_masks.update_positions_by_positions_mask_id(position_mask_id, request.json['args'])
+    res = positions_masks.update_positions_by_positions_mask_id(position_mask_id, request.json)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -121,7 +121,7 @@ def update_pages_by_positions_mask_id(position_mask_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/positions_masks/updatePages/{position_mask_id}'}), 403
 
-    res = positions_masks.update_pages_by_positions_mask_id(position_mask_id, request.json['args'])
+    res = positions_masks.update_pages_by_positions_mask_id(position_mask_id, request.json)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -176,7 +176,7 @@ def delete_position_by_positions_mask_id(position_mask_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/positions_masks/{position_mask_id}/deletePosition'}), 403
 
-    res = positions_masks.delete_position_by_positions_mask_id(position_mask_id, request.json['args'])
+    res = positions_masks.delete_position_by_positions_mask_id(position_mask_id, request.json)
     return make_response(res[0], res[1])
 
 
@@ -187,7 +187,7 @@ def delete_page_by_positions_mask_id(position_mask_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/positions_masks/{position_mask_id}/deletePage'}), 403
 
-    res = positions_masks.delete_page_by_positions_mask_id(position_mask_id, request.json['args'])
+    res = positions_masks.delete_page_by_positions_mask_id(position_mask_id, request.json)
     return make_response(res[0], res[1])
 
 
@@ -204,6 +204,7 @@ def get_image_from_pdf(positions_mask_id):
 
     for filename in file:
         f = file[filename]
+
         filename_after_upload = files.save_uploaded_file(f, path)
         tmp_filename = filename.replace('.pdf', '-001.jpg')
         files.save_img_with_pdf2image(filename_after_upload, docserver_path + filename.replace('.pdf', '.jpg'))

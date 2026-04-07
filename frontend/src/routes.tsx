@@ -74,6 +74,7 @@ import { SettingsSplitterFormsCreate } from "./pages/settings/splitter/forms/cre
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
 import { SettingsVerifierAiLLMEditor } from "./pages/settings/verifier/ai-llm/editor";
 import { SettingsVerifierPositionsMasksList } from "./pages/settings/verifier/positions-masks/list";
+import { SettingsVerifierPositionMaskEditor } from "./pages/settings/verifier/positions-masks/editor";
 
 export const router = createBrowserRouter(
     [
@@ -530,10 +531,24 @@ export const router = createBrowserRouter(
                             children: [
                                 {
                                     index: true,
-                                    loader: protectedLoader(),
+                                    loader: protectedLoader(['settings', 'positions_mask_list']),
                                     element: <SettingsVerifierPositionsMasksList/>,
                                     errorElement: <LoginRequiredError/>
                                 },
+                                {
+                                    path: 'edit/:positionMaskId',
+                                    loader: protectedLoader(['settings', 'update_positions_mask']),
+                                    element: <SettingsVerifierPositionMaskEditor/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.edit_ai_doctype' }
+                                },
+                                {
+                                    path: 'create',
+                                    loader: protectedLoader(['settings', 'add_positions_mask']),
+                                    element: <SettingsVerifierPositionMaskEditor/>,
+                                    errorElement: <LoginRequiredError/>,
+                                    handle: { breadcrumb: 'SETTINGS.add_ai_doctype' }
+                                }
                             ]
                         },
                         {

@@ -1142,7 +1142,16 @@
         "deleted_other": "Position masks successfully deleted",
         "selected_one": "mask selected",
         "selected_other": "masks selected",
-        "no_positions_masks": "No position masks"
+        "no_positions_masks": "No position masks",
+        "zones": "",
+        "mask_details": "",
+        "create_mask": "",
+        "details_update_success": "",
+        "supplier": "",
+        "update_mask": "",
+        "created": "",
+        "zone_update_success": "",
+        "regex_associated": ""
     },
     "AI-DOCTYPES": {
         "add_ai_doctype": "Add a model",

@@ -1233,7 +1233,16 @@
         "selected_many": "máscaras seleccionadas",
         "selected_one": "máscara seleccionada",
         "selected_other": "máscaras seleccionadas",
-        "no_positions_masks": "Ninguna máscara de posición"
+        "no_positions_masks": "Ninguna máscara de posición",
+        "zones": "",
+        "mask_details": "",
+        "create_mask": "",
+        "details_update_success": "",
+        "supplier": "",
+        "update_mask": "",
+        "created": "",
+        "zone_update_success": "",
+        "regex_associated": ""
     },
     "AI-DOCTYPES": {
         "add_ai_doctype": "Añadir un modelo",

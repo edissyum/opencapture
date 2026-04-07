@@ -16,14 +16,14 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
+import { CircleAlert, Copy } from "lucide-react";
 
 import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
 import { Dropdown } from "../../../../components/Dropdown";
+import { showToast } from "../../../../components/ToastProvider";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
-import { CircleAlert, Copy } from "lucide-react";
-import { showToast } from "../../../../components/ToastProvider.tsx";
 
 export const SettingsGeneralTokenAuth = () => {
     const { get, post } = axiosApiCall();

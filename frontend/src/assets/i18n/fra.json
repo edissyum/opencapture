@@ -1233,7 +1233,16 @@
         "selected_many": "masques selectionnés",
         "selected_one": "masque sélectionné",
         "selected_other": "masques sélectionnés",
-        "no_positions_masks": "Aucun masque de position"
+        "no_positions_masks": "Aucun masque de position",
+        "zones": "Zones du masque",
+        "mask_details": "Détails du masque",
+        "create_mask": "Créer le masque de position",
+        "details_update_success": "Détails du masque de position mis à jour avec succès",
+        "supplier": "Compte tiers associé",
+        "update_mask": "Mettre à jour le masque de position",
+        "created": "Masque de position créé avec succès",
+        "zone_update_success": "Masque de position mis à jour avec succès",
+        "regex_associated": "Nom de la regex de vérification (optionnel)"
     },
     "AI-DOCTYPES": {
         "add_ai_doctype": "Ajouter un modèle",

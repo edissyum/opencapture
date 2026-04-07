@@ -31,7 +31,7 @@ export interface Region {
 
 interface AnnotatorProps {
     alt?: string;
-    width: string;
+    width?: string;
     imageB64: string;
     currentPage?: number;
     regionsList: Region[];
@@ -43,7 +43,7 @@ interface AnnotatorProps {
 export function Annotator({
     regionsList,
     alt,
-    width,
+    width="100%",
     originalWidth,
     focusedField,
     imageB64,
@@ -337,7 +337,7 @@ export function Annotator({
     }
 
     return (
-        <div className="flex flex-col items-center h-full gap-4">
+        <div className="flex flex-col items-center h-full gap-4 annotator">
             <div
                 ref={ containerRef }
                 className={ `relative overflow-auto w-full h-full ${
@@ -352,7 +352,7 @@ export function Annotator({
                      src={ imageB64 }
                      draggable={ false }
                      style={ { width: width, maxWidth: width } }
-                     className="h-auto block pointer-events-none select-none"
+                     className="h-auto block pointer-events-none select-none rounded-xl"
                 />
 
                 { regions.map((r) => (

@@ -31,8 +31,8 @@ import { showToast } from "../components/ToastProvider";
 import { DynamicForm } from "../components/form/DynamicForm";
 
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
+import { usePasswordRules } from "../services/hooks/usePasswordRules";
 import { clearPersistentState } from "../services/hooks/usePersistentState";
-import { usePasswordRules } from "../services/hooks/usePasswordRules.tsx";
 
 export function ResetPassword() {
     const [searchParams] = useSearchParams();

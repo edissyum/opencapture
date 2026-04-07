@@ -38,7 +38,7 @@ def check_code(code, docserver_path, input_path):
                 return False, line
 
             if not line.startswith('#'):
-                directory_path = re.findall("((?:/|\.{1,2}/)[a-zA-Z\./]*[\s]?)", re.sub(r'\s*', '', line))
+                directory_path = re.findall(r"((?:/|\.{1,2}/)[a-zA-Z\./]*\s?)", re.sub(r'\s*', '', line))
                 if directory_path:
                     for path in directory_path:
                         if not os.path.isdir(path):

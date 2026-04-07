@@ -20,18 +20,7 @@ import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Accordion, AccordionTab } from "primereact/accordion";
-import {
-    ArrowLeft,
-    ChevronLeft,
-    ChevronRight,
-    Copy,
-    Download,
-    Edit,
-    Eye,
-    EyeOff,
-    Paperclip,
-    SquarePlus
-} from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Copy, Download, Edit, Eye, EyeOff, Paperclip, SquarePlus } from "lucide-react";
 
 import { SupplierEditor } from "../suppliers/editor";
 
@@ -727,11 +716,16 @@ export function VerifierViewerPage() {
         const fields = Object.values(line).filter((f: any) => typeof f !== 'boolean');
 
         switch (fields.length) {
-            case 1: return 'w-full';
-            case 2: return 'w-1/2';
-            case 3: return 'w-1/3';
-            case 4: return 'w-1/4';
-            default: return 'w-1/5';
+            case 1:
+                return 'w-full';
+            case 2:
+                return 'w-1/2';
+            case 3:
+                return 'w-1/3';
+            case 4:
+                return 'w-1/4';
+            default:
+                return 'w-1/5';
         }
     }, []);
 
@@ -1026,10 +1020,10 @@ export function VerifierViewerPage() {
                         <div className="border border-(--border-secondary) rounded-xl h-full overflow-auto">
                             { !pagesImageB64[currentPage] ? (
                                 <div className='w-full h-full flex flex-col items-center justify-center'>
-                                <span className='text-(--text-secondary)'>
-                                    { t('VERIFIER.loading_page', { currentPage: currentPage }) }
-                                    <Loader/>
-                                </span>
+                                    <span className='text-(--text-secondary)'>
+                                        { t('VERIFIER.loading_page', { currentPage: currentPage }) }
+                                        <Loader/>
+                                    </span>
                                 </div>
                             ) : (
                                 <Annotator
@@ -1110,7 +1104,6 @@ export function VerifierViewerPage() {
                         </div>
                     </div>
                 </div>
-
             ) }
 
             <div className='w-1/2 bg-(--bg-primary) p-8 h-full border-l border-(--border-secondary) overflow-auto'>

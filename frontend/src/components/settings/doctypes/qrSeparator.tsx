@@ -50,10 +50,6 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
     ]
 
     useEffect(() => {
-        console.log(selectedDoctype)
-    }, [selectedDoctype]);
-
-    useEffect(() => {
         if (!selectedDoctype || !selectedSeparator) return;
 
         const generateQrSeparator = async () => {
