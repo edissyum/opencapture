@@ -103,7 +103,7 @@ def launch(args):
     with app.app_context():
         start = time.time()
 
-        database, config, regex, _, ocr, log, _, _, smtp, docservers, configurations, languages, _ = create_classes_from_custom_id(
+        database, config, regex, _, ocr, log, _, _, smtp, docservers, configurations, languages, _, _ = create_classes_from_custom_id(
             args['custom_id'], True)
 
         if 'current_step' in args:
