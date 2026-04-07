@@ -33,13 +33,14 @@ class RotatingFileHandlerUmask(logging.handlers.RotatingFileHandler):
 
 
 class Log:
-    def __init__(self, path, smtp):
+    def __init__(self, path, smtp, debug_mode):
         self.smtp = smtp
         self.prefix = ''
         self.filename = ''
         self.database = None
         self.current_step = 1
         self.task_id_monitor = None
+        self.debug_mode = debug_mode
         self.monitoring_status = None
         self.process_in_error = False
         self.logger = logging.getLogger('Open-Capture')
@@ -54,9 +55,16 @@ class Log:
         self.logger.setLevel(logging.DEBUG)
 
     def debug(self, msg):
-        self.current_step += 1
-        msg = unidecode(msg)
-        self.logger.debug(msg.replace("<strong>", '').replace("</strong>", '').replace("&nbsp;", ' '))
+        if self.debug_mode.lower() == 'true':
+            if self.database and self.task_id_monitor:
+                msg = "[DEBUG] " + msg
+                if self.prefix:
+                    msg = self.prefix + ' ' + msg
+                self.update_task_monitor(msg)
+
+            self.current_step += 1
+            msg = unidecode(msg)
+            self.logger.debug(msg.replace("<strong>", '').replace("</strong>", '').replace("&nbsp;", ' '))
 
     def info(self, msg):
         if self.database and self.task_id_monitor:

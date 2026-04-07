@@ -1852,7 +1852,6 @@ export class VerifierViewerComponent implements OnInit, OnDestroy {
                     const siren_error = element.control.errors.siren_error;
                     const vat_error = element.control.errors.vat_error;
                     if (pattern) {
-                        console.log(pattern.requiredPattern, this.getPattern('alphanum_extended'));
                         if (pattern.requiredPattern === this.getPattern('alphanum')) {
                             error = this.translate.instant('ERROR.alphanum_pattern');
                         } else if (pattern.requiredPattern === this.getPattern('alphanum_extended')) {

@@ -6,6 +6,7 @@ watcherConfig    = §§OC_PATH§§/instance/config/watcher.ini
 logFile          = §§OC_PATH§§/custom/§§CUSTOM_ID§§/data/log/OpenCapture.log
 ; True or False
 allowWFScripting = False
+debugMode        = False
 
 [SPLITTER]
 docstart         = DOCSTART

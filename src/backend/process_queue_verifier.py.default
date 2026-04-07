@@ -115,11 +115,13 @@ def launch(args):
 
         log.task_id_monitor = args['task_id_monitor']
         log.database = database
+        log.debug('Process start with file : ' + args['file'])
 
         tmp_folder = tempfile.mkdtemp(dir=docservers['TMP_PATH'])
         with tempfile.NamedTemporaryFile(dir=tmp_folder) as tmp_file:
             filename = tmp_file.name
 
+        log.debug('Temporary folder created : ' + tmp_folder)
         try:
             os.chmod(tmp_folder, int('775', base=8))
         except OSError:
@@ -130,7 +132,10 @@ def launch(args):
         remove_blank_pages = splitter_method = False
         separate_every_x_page = 0
 
+        log.debug('Check if workflow has specific settings for separation or blank page removal')
         if 'workflow_id' in args and args['workflow_id']:
+            log.debug('Retrieve workflow settings from database for workflow_id : ' + args['workflow_id'])
+
             workflow_settings = database.select({
                 'select': ['input'],
                 'table': ['workflows'],
@@ -144,16 +149,19 @@ def launch(args):
                         splitter_method = workflow_settings[0]['input']['splitter_method_id']
                         if splitter_method == 'separate_by_document_number':
                             separate_every_x_page = workflow_settings[0]['input']['separate_by_document_number_value']
+                        log.debug('Splitter method for this workflow : ' + str(splitter_method))
                     if 'remove_blank_pages' in workflow_settings[0]['input']:
                         remove_blank_pages = workflow_settings[0]['input']['remove_blank_pages']
+                        log.debug('Remove blank pages for this workflow : ' + str(remove_blank_pages))
 
         separator_qr = SeparatorQR(log, config, tmp_folder, 'verifier', files, remove_blank_pages, docservers,
                                     splitter_method)
         mail_class = None
         if args.get('isMail') is not None and args['isMail'] is True:
+            log.debug('Process launched from mail module, initialize Mail class')
             mail_class = Mail(args['process'])
 
-            log = Log((args['log']), smtp)
+            log = Log((args['log']), smtp, config.cfg['GLOBAL']['debugmode'])
             log.task_id_monitor = args['task_id_monitor']
             log.database = database
             log.prefix = '[MailCollect]'
@@ -194,7 +202,9 @@ def launch(args):
 
         # Launch input scripting if present
         change_workflow = False
+        log.debug('Check if workflow scripting is enabled for this workflow')
         if config['GLOBAL']['allowwfscripting'].lower() == 'true':
+            log.debug('Workflow scripting is enabled')
             change_workflow = launch_script_verifier(workflow_settings[0], docservers, 'input', log, args['file'], database, args, config)
 
         if not change_workflow:

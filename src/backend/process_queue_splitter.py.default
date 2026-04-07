@@ -142,7 +142,7 @@ def launch(args):
         splitter = Splitter(config, database, separator_qr, log, docservers)
 
         if args.get('isMail') is not None and args['isMail'] is True:
-            log = Log((args['log']), smtp)
+            log = Log((args['log']), smtp, config.cfg['GLOBAL']['debugmode'])
             log.task_id_monitor = args['task_id_monitor']
             log.database = database
             log.prefix = '[MailCollect]'

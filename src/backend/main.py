@@ -42,7 +42,7 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
     except RuntimeError:
         pass
 
-    log = Log(config.cfg['GLOBAL']['logfile'], False)
+    log = Log(config.cfg['GLOBAL']['logfile'], False, config.cfg['GLOBAL']['debugmode'])
     db_user = config.cfg['DATABASE']['postgresuser']
     db_pwd = config.cfg['DATABASE']['postgrespassword']
     db_name = config.cfg['DATABASE']['postgresdatabase']
