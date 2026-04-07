@@ -264,7 +264,7 @@ const routes: Routes = [
     },
     {
         path: 'settings/splitter/workflows/builder/edit/:id', component: WorkflowBuilderSplitterComponent,
-        data: {title: 'SETTINGS.workflow_update', privileges: ['settings', 'update_workflow']},
+        data: {title: 'SETTINGS.workflow_update', privileges: ['settings', 'update_workflow_splitter']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
