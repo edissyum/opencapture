@@ -66,7 +66,7 @@ export function SettingsGeneralRoleEditor() {
             required: true,
             type: "text",
             label: t("ROLES.role_label")
-        })),
+        }))
     });
 
     const routesSchema = z.object({

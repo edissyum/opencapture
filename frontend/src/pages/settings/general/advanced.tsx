@@ -39,7 +39,7 @@ export function SettingsGeneralAdvanced() {
         rows: 16,
         page: 0,
         sortField: null as string | null,
-        sortOrder: null as 1 | -1 | null,
+        sortOrder: null as 1 | -1 | null
     });
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
@@ -169,7 +169,7 @@ export function SettingsGeneralAdvanced() {
                     </span>
                 );
             }
-        },
+        }
     ];
 
     return (

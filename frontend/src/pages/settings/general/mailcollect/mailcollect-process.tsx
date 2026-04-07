@@ -49,7 +49,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
     ];
     const modules = [
         { label: t('MAILCOLLECT.verifier'), value: 'verifier' },
-        { label: t('MAILCOLLECT.splitter'), value: 'splitter' },
+        { label: t('MAILCOLLECT.splitter'), value: 'splitter' }
     ];
     const [selectedModule, setSelectedModule] = useState<string>(
         process.is_splitter ? 'splitter' : 'verifier'

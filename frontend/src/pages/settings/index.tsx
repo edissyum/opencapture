@@ -45,7 +45,7 @@ export function SettingsIndex() {
             description: t('SETTINGS.splitter_description'),
             icon: <Search/>,
             href: '/settings/splitter'
-        },
+        }
     ];
 
     const [loading, setLoading] = useState(true);

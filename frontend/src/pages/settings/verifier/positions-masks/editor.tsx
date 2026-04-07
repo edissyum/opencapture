@@ -226,7 +226,6 @@ export function SettingsVerifierPositionMaskEditor() {
     }
 
     const handleEnd = async (activeRegion: string, regions: Region[]) => {
-        console.log("Active region:", activeRegion);
         if (regions.length === 0 || !activeRegion) return;
 
         const activeRegionData: any = regions.find((region: any) => region.id === activeRegion);

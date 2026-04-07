@@ -150,7 +150,7 @@ export function axiosApiCall() {
                         setUploadProgress(progress);
                         config.onUploadProgress?.(progress);
                     }
-                },
+                }
             });
             return res.data;
         } catch (err: any) {

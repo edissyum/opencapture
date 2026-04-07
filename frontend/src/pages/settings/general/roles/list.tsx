@@ -43,7 +43,7 @@ export function SettingsGeneralRoles() {
         rows: 16,
         page: 0,
         sortField: null as string | null,
-        sortOrder: null as 1 | -1 | null,
+        sortOrder: null as 1 | -1 | null
     });
 
     const columns = [
@@ -61,7 +61,7 @@ export function SettingsGeneralRoles() {
                 </span>
             ),
             className: 'max-w-[8rem] w-[8rem]'
-        },
+        }
     ];
 
     const actions: any = [
