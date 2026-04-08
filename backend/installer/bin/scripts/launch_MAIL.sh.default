@@ -1,0 +1,41 @@
+#!/bin/bash
+# This file is part of Open-Capture.
+# Copyright Edissyum Consulting since 2020 under licence GPLv3
+
+# Open-Capture is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# Open-Capture is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+
+# See LICENCE file at the root folder for more details.
+
+# @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+
+script="MAIL"
+# Made 14 char for name, to have the same layout in log as OC application
+# Made 31 char for filename, to have the same layout in log as OC application
+spaces="              "
+name="$script.sh"
+name=${name:0:14}${spaces:0:$((14-${#name}))}
+
+OCPath="§§OC_PATH§§"
+logFile="§§LOG_PATH§§"
+PID=/tmp/securite-$script-$$.pid
+
+§§PYTHON_VENV§§
+
+if ! test -e $PID;
+then
+  touch $PID
+  echo $$ > $PID
+  python3 "$OCPath"/launch_worker_mail.py -c "§§CUSTOM_ID§§"
+  rm -f $PID
+else
+  echo "[$name] $(date +"%d-%m-%Y %T") WARNING MAIL capture is already active : PID exists : $PID" >> "$logFile"
+fi
+

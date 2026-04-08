@@ -1,0 +1,40 @@
+{
+    "methods": [
+        {
+            "id"    : "no_sep",
+            "label" : "Pas de séparation",
+            "script": "no_sep.py",
+            "method": "process"
+        },
+        {
+            "id"    : "metadata",
+            "label" : "Séparation intelligente par métadonnées des factures",
+            "script": "metadata.py",
+            "method": "process"
+        },
+        {
+            "id"    : "qr_code_OC",
+            "label" : "Séparation par code QR Open-Capture",
+            "script": "qr_code_OC.py",
+            "method": "process"
+        },
+        {
+            "id"    : "qr_code_MEM",
+            "label" : "Séparation par code QR MEM Courrier",
+            "script": "qr_code_MEM.py",
+            "method": "process"
+        },
+        {
+            "id"    : "blank_page",
+            "label" : "Séparation par pages blanches",
+            "script": "blank_pages.py",
+            "method": "process"
+        },
+        {
+            "id"    : "separate_by_document_number",
+            "label" : "Séparation par nombre de pages",
+            "script": "separate_by_document_number.py",
+            "method": "process"
+        }
+    ]
+}

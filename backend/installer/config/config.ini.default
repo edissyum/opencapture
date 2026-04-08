@@ -12,9 +12,6 @@ debugMode        = False
 docstart         = DOCSTART
 bundlestart      = BUNDLESTART
 
-[DATABASE]
-postgresDatabase = opencapture_edissyum
-
 [REFERENCIAL]
 ; CSV only supported
 ; Path is set up in docservers table (REFERENTIALS_PATH)

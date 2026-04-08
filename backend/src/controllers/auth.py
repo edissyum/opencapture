@@ -150,12 +150,11 @@ def refresh(token):
 
 
 def check_connection():
-    config = get_context_var('config', 1)
+    db_name = os.environ['POSTGRES_DB']
     db_user = os.environ['POSTGRES_USER']
     db_host = os.environ['POSTGRES_HOST']
     db_port = os.environ['POSTGRES_PORT']
     db_pwd = os.environ['POSTGRES_PASSWORD']
-    db_name = config['DATABASE']['postgresdatabase']
     try:
         psycopg.connect(dbname=db_name, user=db_user, password=db_pwd, host=db_host, port=db_port)
     except (psycopg.OperationalError, psycopg.ProgrammingError) as _e:
