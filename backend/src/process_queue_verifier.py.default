@@ -47,13 +47,19 @@ kuyruk = Kuyruk(config=rabbit_custom)
 logging.getLogger("factur-x").setLevel(logging.CRITICAL)
 
 def execute(args, path, log, config, files, ocr, regex, database, docservers, configurations, languages, mail, smtp):
+    log.debug('Check if file is valid for processing : ' + path)
     if check_file(files, path, log, docservers):
+        log.debug('File is valid for processing')
+        log.debug('Check if file is a FacturX invoice')
+
         is_facturx = False
         if path.lower().endswith('.pdf'):
             with open(path, 'rb') as _f:
                 _, xml_content = facturx.get_facturx_xml_from_pdf(_f.read())
                 if _ not in [None, False] and xml_content not in [None, False]:
                     is_facturx = True
+
+        log.debug('Is FacturX : ' + str(is_facturx))
 
         if not is_facturx:
             skip = res = False
@@ -71,9 +77,11 @@ def execute(args, path, log, config, files, ocr, regex, database, docservers, co
                         skip = True
 
             if not skip:
+                log.debug('Process file with main processing module')
                 res = main.process(args, path, log, config, files, ocr, regex, database, docservers,
                                    configurations, languages)
         else:
+            log.debug('FacturX file detected, retrieve XML content and FacturX level')
             parsed_xml = etree.fromstring(xml_content)
             args['facturx_level'] = facturx.get_facturx_level(parsed_xml)
             log.info(f"FacturX detected. Level is {args['facturx_level']}")
@@ -88,6 +96,8 @@ def execute(args, path, log, config, files, ocr, regex, database, docservers, co
             res = factur_x.process(args)
 
         if not res:
+            log.debug('An error occurred during processing of file : ' + path)
+            log.debug('Result returned from processing : ' + str(res))
             if args.get('isMail') is not None and args['isMail'] is True:
                 mail.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process_name'],
                                          args['msg'])
@@ -121,11 +131,13 @@ def launch(args):
 
         log.task_id_monitor = args['task_id_monitor']
         log.database = database
+        log.debug('Process start with file : ' + args['file'])
 
         tmp_folder = tempfile.mkdtemp(dir=docservers['TMP_PATH'])
         with tempfile.NamedTemporaryFile(dir=tmp_folder) as tmp_file:
             filename = tmp_file.name
 
+        log.debug('Temporary folder created : ' + tmp_folder)
         try:
             os.chmod(tmp_folder, int('775', base=8))
         except OSError:
@@ -136,7 +148,10 @@ def launch(args):
         remove_blank_pages = splitter_method = False
         separate_every_x_page = 0
 
+        log.debug('Check if workflow has specific settings for separation or blank page removal')
         if 'workflow_id' in args and args['workflow_id']:
+            log.debug('Retrieve workflow settings from database for workflow_id : ' + args['workflow_id'])
+
             workflow_settings = database.select({
                 'select': ['input'],
                 'table': ['workflows'],
@@ -150,16 +165,19 @@ def launch(args):
                         splitter_method = workflow_settings[0]['input']['splitter_method_id']
                         if splitter_method == 'separate_by_document_number':
                             separate_every_x_page = workflow_settings[0]['input']['separate_by_document_number_value']
+                        log.debug('Splitter method for this workflow : ' + str(splitter_method))
                     if 'remove_blank_pages' in workflow_settings[0]['input']:
                         remove_blank_pages = workflow_settings[0]['input']['remove_blank_pages']
+                        log.debug('Remove blank pages for this workflow : ' + str(remove_blank_pages))
 
         separator_qr = SeparatorQR(log, config, tmp_folder, 'verifier', files, remove_blank_pages, docservers,
                                     splitter_method)
         mail_class = None
         if args.get('isMail') is not None and args['isMail'] is True:
+            log.debug('Process launched from mail module, initialize Mail class')
             mail_class = Mail(args['process'])
 
-            log = Log((args['log']), smtp)
+            log = Log((args['log']), smtp, config.cfg['GLOBAL']['debugmode'])
             log.task_id_monitor = args['task_id_monitor']
             log.database = database
             log.prefix = '[MailCollect]'
@@ -200,7 +218,9 @@ def launch(args):
 
         # Launch input scripting if present
         change_workflow = False
+        log.debug('Check if workflow scripting is enabled for this workflow')
         if config['GLOBAL']['allowwfscripting'].lower() == 'true':
+            log.debug('Check if there is input scripting to execute')
             change_workflow = launch_script_verifier(workflow_settings[0], docservers, 'input', log, args['file'], database, args, config)
 
         if not change_workflow:
@@ -220,23 +240,33 @@ def launch(args):
                             return None
                         else:
                             for file in os.listdir(path):
+                                log.debug('Process separated file : ' + file)
                                 res = execute(args, path + file, log, config, files, ocr, regex, database, docservers,
                                               configurations, languages, mail_class, smtp)
                                 list_of_ids.append(res)
+                                log.debug('End of processing for file : ' + path)
                     elif splitter_method == 'separate_by_document_number':
                         list_of_files = separator_qr.split_document_every_x_pages(path, separate_every_x_page)
                         for file in list_of_files:
+                            log.debug('Process separated file : ' + file)
                             res = execute(args, file, log, config, files, ocr, regex, database, docservers, configurations,
                                           languages, mail_class, smtp)
                             list_of_ids.append(res)
+                            log.debug('End of processing for file : ' + path)
+
                         os.remove(path)
                     else:
                         if separator_qr.remove_blank_pages and extension == '.pdf':
+                            log.debug('Remove blank pages enabled, check and remove blank pages if needed')
                             separator_qr.remove_blank_page(path)
 
+                        log.debug('Process file without separation')
                         res = execute(args, path, log, config, files, ocr, regex, database, docservers, configurations,
                                       languages, mail_class, smtp)
+                        log.debug('End of processing for file : ' + path)
                         list_of_ids.append(res)
+
+                    log.debug('List of document ids returned from processing : ' + str(list_of_ids))
 
                     if os.path.isfile(docservers['ERROR_PATH'] + '/' + args['workflow_id'] + '/' + args['original_filename']):
                         try:
@@ -262,6 +292,7 @@ def launch(args):
                     except (Exception, ):
                         pass
 
+            log.debug('Recursive delete of temporary folder : ' + tmp_folder)
             recursive_delete(tmp_folder, log, docservers)
 
             end = time.time()

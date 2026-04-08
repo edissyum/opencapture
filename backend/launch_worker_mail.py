@@ -177,7 +177,7 @@ with app.app_context():
                 print('Batch name : ' + batch_path)
                 print('Batch error name : ' + docservers_mailcollect['path'] + '/_ERROR/' + batch_path.split('/MailCollect/')[1])
 
-                Log = log(batch_path + '/' + date_batch + '.log', smtp)
+                Log = log(batch_path + '/' + date_batch + '.log', smtp, config.cfg['GLOBAL']['debugmode'])
                 Log.info('Start following batch : ' + os.path.basename(os.path.normpath(batch_path)))
                 Log.info('Action after processing e-mail is : ' + action)
                 Log.info('Number of e-mail to process : ' + str(len(emails)))
@@ -190,10 +190,16 @@ with app.app_context():
                         msg = convert_to_dict(msg)
                         msg_id = str(msg['uid'])
 
+                    Log.debug('Backup e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
                     mail.backup_email(msg, batch_path, Log, ocr_attachments)
+                    Log.debug('Backup done for e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
 
                     insert_doc = verifierInsertBody if not isSplitter else splitterInsertBody
+
+                    Log.debug('Start to construct document for e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
                     ret = mail.construct_dict(msg, batch_path, configurations, insert_doc)
+                    Log.debug('Document construction done for e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
+
                     if insert_doc:
                         Log.info('Start to process e-mail body and attachments')
                     else:
@@ -212,6 +218,9 @@ with app.app_context():
                             Log.info('Found ' + str(len(ret['attachments'])) + ' attachments')
                             cpt = 1
                             for attachment in ret['attachments']:
+                                Log.debug('Process attachment n°' + str(cpt) + '/' + str(len(ret['attachments'])))
+                                Log.debug('Attachment n°' + str(cpt) + ' filename is : ' + attachment['filename'] + ' and format is : ' + attachment['format'])
+
                                 if attachment['format'].lower() == '.pdf' or attachment['format'].lower() == 'pdf':
                                     if not isSplitter:
                                         task_id_monitor = database.insert({
@@ -224,6 +233,8 @@ with app.app_context():
                                                 'source': 'cli'
                                             }
                                         })
+
+                                        Log.debug('Launch verifier for attachment n°' + str(cpt) + ' with file : ' + attachment['file'])
                                         launch_verifier({
                                             'cpt': str(cpt),
                                             'isMail': True,
@@ -258,6 +269,8 @@ with app.app_context():
                                                 'source': 'cli'
                                             }
                                         })
+
+                                        Log.debug('Launch splitter for attachment n°' + str(cpt) + ' with file : ' + attachment['file'])
                                         launch_splitter({
                                             'isMail': True,
                                             'cpt': str(cpt),
@@ -295,6 +308,8 @@ with app.app_context():
                                     'source': 'cli'
                                 }
                             })
+
+                            Log.debug('Launch Verifier for mail body')
                             launch_verifier({
                                 'isMail': True,
                                 'ip': '0.0.0.0',
@@ -329,6 +344,7 @@ with app.app_context():
                                 }
                             })
 
+                            Log.debug('Launch Splitter for mail body')
                             launch_splitter({
                                 'isMail': True,
                                 'ip': '0.0.0.0',

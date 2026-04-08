@@ -352,6 +352,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             original_file = os.path.basename(file).split('_')
             original_file = original_file[1] + '_' + original_file[2] + '.pdf'
 
+    log.debug('Number of pages in document : ' + str(nb_pages))
+
     workflow_settings = None
     if 'workflow_id' in args:
         workflow_settings = database.select({
@@ -389,12 +391,13 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 for field in workflow_settings['process']['custom_fields']:
                     custom_fields_to_find.append(field)
         else:
-            custom_fields_to_find = False
+            custom_fields_to_find = []
 
         if 'ai_model_id' in workflow_settings['input'] and workflow_settings['input']['ai_model_id']:
             ai_model_id = workflow_settings['input']['ai_model_id']
             res = find_workflow_with_ia(file, ai_model_id, database, docservers, Files, ocr, log, 'verifier')
             if res:
+                log.info('Workflow with AI model ' + str(ai_model_id) + ' found for document, send to workflow : ' + res)
                 return send_to_workflow({
                     'log': log,
                     'file': file,
@@ -405,8 +408,14 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     'custom_id': args['custom_id']
                 })
 
-    # Convert files to JPG
+    log.debug('Convert function to use for document processing : ' + convert_function)
+    log.debug('Tesseract function to use for document processing : ' + tesseract_function)
+    log.debug('System fields to find in document based on workflow settings : ' + ', '.join(system_fields_to_find))
+    log.debug('Custom fields to find in document based on workflow settings : ' + ', '.join(custom_fields_to_find))
+
+    log.debug('Convert document to images and extract text using OCR for the first time')
     convert(file, files, ocr, nb_pages, tesseract_function, convert_function)
+    log.debug('Converted document to images and extracted text using OCR for the first time successfully')
 
     supplier = None
     supplier_lang_different = False
@@ -436,11 +445,15 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         if 'customer_id' in workflow_settings['input'] and workflow_settings['input']['customer_id']:
             customer_id = workflow_settings['input']['customer_id']
 
+    log.debug('Customer id associated to document based on workflow settings : ' + str(customer_id))
+
     if workflow_settings['input']['apply_process']:
+        log.debug('Start to find supplier or contact in document based on workflow settings')
         if 'name' in system_fields_to_find or 'contact' in system_fields_to_find :
             # Find supplier in document if not send using upload rest
             if not supplier or not supplier[0] or not supplier[2]:
                 if 'name' in system_fields_to_find:
+                    log.debug('Search supplier')
                     supplier = find_supplier.FindSupplier(ocr, log, regex, database, files, nb_pages, 1,
                                                           False, customer_id).run()
 
@@ -664,12 +677,14 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                            convert_function)
 
         if 'document_date' in system_fields_to_find:
+            log.debug('Search for document date in document')
             date_class = find_date.FindDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
                                             languages, datas['form_id'])
             datas = found_data_recursively('document_date', ocr, file, nb_pages, text_by_pages, date_class,
                                            datas, files, configurations, tesseract_function, convert_function)
 
         if 'document_due_date' in system_fields_to_find:
+            log.debug('Search for document due date in document')
             due_date_class = find_due_date.FindDueDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
                                                        languages, datas['form_id'])
             datas = found_data_recursively('document_due_date', ocr, file, nb_pages, text_by_pages,
@@ -677,6 +692,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                            convert_function)
 
         if 'quotation_number' in system_fields_to_find:
+            log.debug('Search for quotation number in document')
             quotation_number_class = find_quotation_number.FindQuotationNumber(ocr, files, log, regex, config, database,
                                                                                supplier, file, docservers,
                                                                                configurations, datas['form_id'], languages)
@@ -685,6 +701,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                            convert_function)
 
         if 'delivery_number' in system_fields_to_find:
+            log.debug('Search for delivery number in document')
             delivery_number_class = find_delivery_number.FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file,
                                                                             docservers, configurations, datas['form_id'])
             datas = found_data_recursively('delivery_number', ocr, file, nb_pages, text_by_pages,
@@ -692,6 +709,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                            convert_function)
 
         if 'footer' in system_fields_to_find:
+            log.debug('Search for footer information in document')
             footer_class = find_footer.FindFooter(ocr, log, regex, config, files, database, supplier, file,
                                                   ocr.footer_text, docservers, datas['form_id'])
             if supplier and 'get_only_raw_footer' in supplier[2] and supplier[2]['get_only_raw_footer'] in [True, 'True']:
@@ -798,12 +816,14 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                             datas['pages'].update({'total_vat': footer[3]})
 
         if 'currency' in system_fields_to_find:
+            log.debug('Search for currency in document')
             currency_class = find_currency.FindCurrency(ocr, log, regex, files, supplier, database, file, docservers,
                                                         datas['form_id'])
             datas = found_data_recursively('currency', ocr, file, nb_pages, text_by_pages, currency_class,
                                            datas, files, configurations, tesseract_function, convert_function)
 
         if 'subject' in system_fields_to_find:
+            log.debug('Search for subject in document')
             subject_class = find_subject.FindSubject(ocr, log, regex, files, supplier, database, file, docservers,
                                                      datas['form_id'])
             datas = found_data_recursively('subject', ocr, file, nb_pages, text_by_pages, subject_class,
@@ -811,6 +831,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     if 'currency' not in datas['datas'] or not datas['datas']['currency']:
         if supplier and 'default_currency' in supplier[2] and supplier[2]['default_currency']:
+            log.debug('Currency not found in document but default currency found for supplier, set it as document currency')
             datas['datas'].update({'currency': supplier[2]['default_currency']})
 
     if 'datas' in args and args['datas']:
@@ -824,12 +845,20 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     if 'isMail' in args and args['isMail']:
         is_mail = args['isMail']
 
+    log.debug('Is mail : ' + str(is_mail))
+
     full_jpg_filename = str(uuid.uuid4())
     file = files.move_to_docservers(docservers, file, is_mail=is_mail)
     files.move_to_docservers_image(docservers['VERIFIER_IMAGE_FULL'], files.jpg_name, full_jpg_filename + '-001.jpg',
                                    copy=True, rotate=True)
     files.move_to_docservers_image(docservers['VERIFIER_THUMB'], files.jpg_name, full_jpg_filename + '-001.jpg',
                                    copy=True, compress=True)
+
+    log.debug('Thumbnails and full image moved to docservers successfully')
+    log.debug('Docserver paths  : ')
+    log.debug(' - Thumbnail : ' + docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename + '-001.jpg')
+    log.debug(' - Full image : ' + docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename + '-001.jpg')
+
     allow_auto = False
     if workflow_settings and (workflow_settings['process']['use_interface']
                               and workflow_settings['process']['allow_automatic_validation']):
@@ -862,7 +891,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
             log.info('Skip automatic validation for this supplier this time')
             database.update({
-                'table': ['accounts_supplier'],
+                'table': ['accounts_suppliers'],
                 'set': {
                     'skip_auto_validate': 'False'
                 },
@@ -870,10 +899,14 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 'data': [supplier[2]['vat_number'], 'DEL']
             })
 
+    log.debug('Document inserted in database with status : ' + status)
+    log.debug('Document ID : ' + str(document_id))
+
     args['document_id'] = document_id
 
     # Launch process scripting if present
     if config['GLOBAL']['allowwfscripting'].lower() == 'true':
+        log.debug('Check if there is process scripting to execute')
         launch_script_verifier(workflow_settings, docservers, 'process', log, file, database, args, config, datas)
 
     # Execute outputs if necessary
@@ -893,8 +926,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         })
 
         if outputs:
+            log.debug('Document is validated and has a form associated, execute outputs linked to form')
             args['outputs'] = []
             for output_id in outputs[0]['outputs']:
+                log.debug('Execute output with id : ' + str(output_id))
                 output_info = database.select({
                     'select': ['output_type_id', 'data', 'compress_type', 'ocrise'],
                     'table': ['outputs'],
@@ -932,5 +967,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                                     not workflow_settings['input']['apply_process'])):
         # Launch outputs scripting if present
         if config['GLOBAL']['allowwfscripting'].lower() == 'true':
+            log.debug('Check if there is output scripting to execute')
             launch_script_verifier(workflow_settings, docservers, 'output', log, file, database, args, config)
     return document_id
