@@ -230,6 +230,8 @@ with app.app_context():
                                                 'source': 'cli'
                                             }
                                         })
+
+                                        Log.debug('Launch verifier for attachment n°' + str(cpt) + ' with file : ' + attachment['file'])
                                         launch_verifier({
                                             'cpt': str(cpt),
                                             'isMail': True,
@@ -264,6 +266,8 @@ with app.app_context():
                                                 'source': 'cli'
                                             }
                                         })
+
+                                        Log.debug('Launch splitter for attachment n°' + str(cpt) + ' with file : ' + attachment['file'])
                                         launch_splitter({
                                             'isMail': True,
                                             'cpt': str(cpt),
@@ -301,6 +305,8 @@ with app.app_context():
                                     'source': 'cli'
                                 }
                             })
+
+                            Log.debug('Launch Verifier for mail body')
                             launch_verifier({
                                 'isMail': True,
                                 'ip': '0.0.0.0',
@@ -335,6 +341,7 @@ with app.app_context():
                                 }
                             })
 
+                            Log.debug('Launch Splitter for mail body')
                             launch_splitter({
                                 'isMail': True,
                                 'ip': '0.0.0.0',
@@ -354,6 +361,7 @@ with app.app_context():
                                     'date': document_date
                                 }
                             })
+
                     if action not in ['move', 'delete', 'none']:
                         action = 'none'
 

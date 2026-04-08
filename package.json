@@ -59,7 +59,7 @@
         "eslint": "^10.2.0",
         "jquery": "^3.7.1",
         "monaco-editor": "^0.55.1",
-        "postcss": "^8.5.8",
+        "postcss": "^8.5.9",
         "rxjs": "~7.8.2",
         "select-country-angular-20": "^20.2.0",
         "tailwindcss": "^4.2.2",
