@@ -42,12 +42,12 @@ class SeparatorQR:
         self.nb_pages = 0
         self.error = False
         self.files = files
+        self.divider = '_'
         self.barcodes = None
         self.config = config
         self.enabled = False
         self.splitter_method = splitter_method
         self.remove_blank_pages = remove_blank_pages
-        self.divider = config['SEPARATORQR']['divider']
         self.splitter_or_verifier = splitter_or_verifier
         self.convert_to_pdfa = config['SEPARATORQR']['exportpdfa']
         tmp_folder_name = os.path.basename(os.path.normpath(tmp_folder))

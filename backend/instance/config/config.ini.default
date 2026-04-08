@@ -6,6 +6,7 @@ watcherConfig    = §§OC_PATH§§/instance/config/watcher.ini
 logFile          = §§OC_PATH§§/custom/§§CUSTOM_ID§§/data/log/OpenCapture.log
 ; True or False
 allowWFScripting = False
+debugMode        = False
 
 [SPLITTER]
 docstart         = DOCSTART
@@ -22,7 +23,4 @@ referencialSupplierIndex    = default_referencial_supplier_index.json
 
 [SEPARATORQR]
 ; True or False
-enabled         = False
 exportpdfa      = False
-; _ or - for exemple
-divider         = _
