@@ -52,6 +52,8 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
     useEffect(() => {
         if (!selectedDoctype || !selectedSeparator) return;
 
+        if (['folder', 'root'].includes(selectedDoctype.type)) return;
+
         const generateQrSeparator = async () => {
             setLoading(true);
             setThumbnailSafe(null);
