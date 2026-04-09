@@ -108,6 +108,7 @@ NEW_CUSTOM_PATH="$CUSTOM_PATH/$custom_id"
 mkdir -p "$NEW_CUSTOM_PATH"
 mkdir -p "$NEW_CUSTOM_PATH"/{config,bin,assets,instance,src,data,journal}
 mkdir -p "$NEW_CUSTOM_PATH/journal/config/"
+mkdir -p "$NEW_CUSTOM_PATH/assets/imgs/"
 
 mkdir -p "$NEW_CUSTOM_PATH"/bin/{ldap,scripts}/
 mkdir -p "$NEW_CUSTOM_PATH/bin/ldap/config/"
@@ -121,8 +122,10 @@ mkdir -p "$NEW_CUSTOM_PATH"/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa
 mkdir -p "$NEW_CUSTOM_PATH/data/log/Supervisor/"
 mkdir -p "$NEW_CUSTOM_PATH/data/MailCollect/_ERROR/"
 
-touch "$NEW_CUSTOM_PATH/data/log/OpenCapture.log"
 touch "$NEW_CUSTOM_PATH/config/secret_key"
+
+touch "$NEW_CUSTOM_PATH/data/log/OpenCapture.log"
+cp "$DEFAULT_PATH"/frontend/src/assets/imgs/login_image.svg "$NEW_CUSTOM_PATH/assets/imgs/login_image.svg"
 
 chmod -R 775 "$NEW_CUSTOM_PATH"
 
@@ -138,11 +141,19 @@ secret=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
 echo "$secret" > $CUSTOM_PATH/$custom_id/config/secret_key
 
 ####################
+# Create custom docserver folder
+mkdir -p "$docservers_path"/{verifier,splitter}
+mkdir -p "$docservers_path"/verifier/{ai,attachments,original_doc,full,thumbs,positions_masks}
+mkdir -p "$docservers_path"/splitter/{ai,attachments,original_doc,batches,thumbs,error}
+mkdir -p "$docservers_path"/verifier/ai/{train_data,models}
+mkdir -p "$docservers_path"/splitter/ai/{train_data,models}
+chmod -R 775 "$docservers_path"
+
+####################
 # Create custom input and outputs folder
-SHARE_PATH="$share_path/$custom_id"
-mkdir -p "$SHARE_PATH"/{entrant,export}/{verifier,splitter}
-mkdir -p "$SHARE_PATH"/entrant/verifier/{ocr_only,default,default_mail}
-chmod -R 775 "$SHARE_PATH"
+mkdir -p "$share_path"/{entrant,export}/{verifier,splitter}
+mkdir -p "$share_path"/entrant/verifier/{ocr_only,default,default_mail}
+chmod -R 775 "$share_path"
 
 ####################
 # Copy file from default one
@@ -172,10 +183,20 @@ psql $DATABASE_INFO -c "\i $DEFAULT_PATH/postgres/sql/data_fr.sql" "$database_na
 DATABASE_INFO="-U "$database_user" -h "$database_hostname" -p "$database_port" -d "$database_name""
 
 psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, '/var/share/' , '$share_path');"
-psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, '/var/docservers/opencapture/' , '$docserver_path');"
+psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, '/var/docservers/opencapture/' , '$docservers_path');"
 
 psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, './bin/' , '$NEW_CUSTOM_PATH/bin/');"
 psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, './data/' , '$NEW_CUSTOM_PATH/data/');"
+psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, './config/' , '$NEW_CUSTOM_PATH/config/');"
 psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, './instance/' , '$NEW_CUSTOM_PATH/instance/');"
 
 psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, '//' , '/');"
+
+psql $DATABASE_INFO -c "UPDATE workflows SET input=REPLACE(input::TEXT, '/var/share/', '$share_path/')::JSONB"
+
+psql $DATABASE_INFO -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"$share_path/export/verifier/\"') WHERE data #>>'{options, parameters, 0, id}' = 'folder_out';"
+psql $DATABASE_INFO -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"$share_path/export/splitter/\"') WHERE data #>>'{options, parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_pdf';"
+psql $DATABASE_INFO -c "UPDATE outputs SET data = jsonb_set(data, '{options, parameters, 0, value}', '\"$share_path/export/splitter/\"') WHERE data #>>'{options, parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_xml';"
+
+psql $DATABASE_INFO -c "UPDATE outputs_types SET data = jsonb_set(data, '{options, parameters, 0, placeholder}', '\"$share_path/export/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'verifier';"
+psql $DATABASE_INFO -c "UPDATE outputs_types SET data = jsonb_set(data, '{options, parameters, 0, placeholder}', '\"$share_path/export/splitter/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_xml';"

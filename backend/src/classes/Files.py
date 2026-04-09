@@ -509,7 +509,7 @@ class Files:
 
         match = schwifty.IBAN(text, allow_invalid=True).is_valid
         if match:
-            text = re.sub('\s*', '', text)
+            text = re.sub(r'\s*', '', text)
         else:
             try:
                 text = text.replace('%', '').replace('€', '').replace('$', '').replace('£', '')

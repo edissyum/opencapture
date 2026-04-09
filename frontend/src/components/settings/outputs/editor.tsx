@@ -53,7 +53,6 @@ export function OutputEditor({ module }: { module: string }) {
 
     const [outputTypes, setOutputTypes] = useState([]);
     const [outputType, setOutputType] = useState<any>({});
-    const [outputLoaded, setOutputLoaded] = useState(false);
     const [output, setOutput] = useState<any>({
         output_type_id: '',
         output_label: '',
@@ -68,7 +67,7 @@ export function OutputEditor({ module }: { module: string }) {
     });
 
     const [codeType, setCodeType] = useState('json');
-    const [allowedPath, setAllowedPath] = useState('');
+    const [, setAllowedPath] = useState('');
 
     const { customFields } = useCustomFields(module);
 
@@ -131,7 +130,6 @@ export function OutputEditor({ module }: { module: string }) {
 
                 const newOutputType: any = outputTypes.find((o: any) => o.output_type_id === response.output_type_id);
                 setOutputType(newOutputType);
-                setOutputLoaded(true);
 
                 if (!newOutputType?.data?.options?.auth || newOutputType?.data?.options.auth.length === 0) {
                     setStepperIndex(1);

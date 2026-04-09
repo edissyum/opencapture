@@ -36,7 +36,7 @@ from ..functions import check_extensions_mime
 def handle_uploaded_file(files, document_id, batch_id, module, from_api=False):
     docservers = get_context_var('docservers', 9)
 
-    message, code = check_extensions_mime(files, 'attachments')
+    message, code = check_extensions_mime(docservers, files, 'attachments')
     if code != 200:
         return message, code
 

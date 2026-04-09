@@ -72,12 +72,12 @@ export function MonitoringDetails() {
         { field: 'date', header: t('MONITORING.exec_date'), className: 'w-60 max-w-60' },
         {
             field: 'message', header: t('MONITORING.event_details'), body: (row: any) => (
-                <span className={ `${ row.status === 'done' && 'text-(--color-primary)' }
-                                   ${ row.status === 'error' && 'cursor-pointer text-(--text-error)' }` }
+                <span className={ `${ row.status === 'done' && !row.error && 'text-(--color-primary)' }
+                                   ${ (row.status === 'error' || row.error) && 'cursor-pointer text-(--text-error)' }` }
                       data-tooltip-id='tooltip'
-                      data-tooltip-content={ row.status === 'error' ? t('MONITORING.copy_error_message') : '' }
+                      data-tooltip-content={ (row.status === 'error' || row.error) ? t('MONITORING.copy_error_message') : '' }
                       onClick={ () => {
-                          if (row.status === 'error') {
+                          if (row.status === 'error' || row.error) {
                               navigator.clipboard.writeText(row.message).then(() => {
                                   showToast(t('MONITORING.error_message_copied'), 'success');
                               });
@@ -90,7 +90,7 @@ export function MonitoringDetails() {
             id: 'status', field: 'status', header: t('GLOBAL.status'), body:
                 (row: any) => (
                     <span>
-                        { row.status === 'error' ? (
+                        { row.status === 'error' || row.error ? (
                             <div className='flex items-center gap-2 text-(--text-error) w-fit'>
                                 <div className='bg-(--bg-error) rounded-sm px-3 py-1 border-0'>
                                     { t('MONITORING.error_small') }
@@ -229,13 +229,13 @@ export function MonitoringDetails() {
                         { process.status === 'running' && (
                             <Loader2 className="animate-spin "/>
                         ) }
-                        { process.status === 'done' && (
+                        { process.status === 'done' && !process.error && (
                             <div
                                 className='bg-(--color-primary)/10 text-(--color-primary) rounded-sm px-2 py-1 border-0'>
                                 { t('MONITORING.done_small') }
                             </div>
                         ) }
-                        { process.status === 'error' && (
+                        { (process.status === 'error' || process.error) && (
                             <div className='flex items-center gap-2 text-(--text-error)'>
                                 <div className='bg-(--bg-error) rounded-sm px-3 py-1 border-0'>
                                     { t('MONITORING.error_small') }

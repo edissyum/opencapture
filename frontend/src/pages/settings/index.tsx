@@ -16,7 +16,7 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import { Check, Search, Settings, SlidersHorizontal, Star } from "lucide-react";
+import { Check, Search, SlidersHorizontal } from "lucide-react";
 
 import { Loader } from "../../components/loader/Loader";
 import { useFavorites } from "../../services/hooks/useFavorite";

@@ -1,0 +1,8 @@
+export POSTGRES_DB='postgres'
+export POSTGRES_HOST='localhost'
+export POSTGRES_PORT='5432'
+export POSTGRES_USER='postgres'
+export POSTGRES_PASSWORD='postgres'
+
+# Replace localhost with the actual IP address of your machine if needed
+VITE_BACKEND_URL=http://localhost:8000

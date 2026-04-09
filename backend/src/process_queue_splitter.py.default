@@ -27,11 +27,10 @@ from flask_babel import gettext
 from src.classes.Log import Log
 from src.classes.Files import Files
 from src.classes.Splitter import Splitter
-from src.classes.NFZ42020 import NFZ42020
 from src.classes.SeparatorQR import SeparatorQR
-from .functions import retrieve_config_from_custom_id
-from .scripting_functions import launch_script_splitter
-from main import timer, check_file, create_classes_from_custom_id
+from src.functions import retrieve_config_from_custom_id
+from src.scripting_functions import launch_script_splitter
+from src.main import timer, check_file, create_classes_from_custom_id
 
 kuyruk = Kuyruk()
 
@@ -202,6 +201,7 @@ def launch(args):
                                             "workflow_id": args['workflow_id'],
                                             "customer_id": args['customer_id'],
                                             "msg": args['msg'] if 'msg' in args else None,
+                                            "original_filename": args['original_filename'],
                                             "artificial_intelligence": _artificial_intelligence,
                                             "user_id": args['user_id'] if 'user_id' in args else None
                                         }

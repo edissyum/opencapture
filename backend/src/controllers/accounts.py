@@ -450,7 +450,7 @@ def create_address(data):
 
 def create_supplier(data, from_api=False):
     _columns = {
-        'name': data['name'] if 'name' in data and 'informal_contact' in data and not data['informal_contact'] else None,
+        'name': data['name'] if 'name' in data else None,
         'bic': data['bic'] if 'bic' in data else None,
         'iban': data['iban'] if 'iban' in data else None,
         'rccm': data['rccm'] if 'rccm' in data else None,
@@ -461,15 +461,17 @@ def create_supplier(data, from_api=False):
         'form_id': data['form_id'] if 'form_id' in data else None,
         'lastname': data['lastname'] if 'lastname' in data else None,
         'function': data['function'] if 'function' in data else None,
-        'civility': data['civility'] if 'civility' in data else None,
-        'firstname': data['firstname'] if 'firstname' in data else None,
-        'address_id': data['address_id'] if 'address_id' in data else None,
-        'document_lang': data['document_lang'] if 'document_lang' in data else 'fra',
-        'default_currency': data['default_currency'] if 'default_currency' in data else None,
-        'informal_contact': data['informal_contact'] if 'informal_contact' in data else False,
+        'civility': data['civility'] if 'civility' in data and data['civility'] else None,
+        'firstname': data['firstname'] if 'firstname' in data and data['firstname'] else None,
+        'address_id': data['address_id'] if 'address_id' in data and data['address_id'] else None,
         'get_only_raw_footer': data['get_only_raw_footer'] if 'get_only_raw_footer' in data else False,
-        'default_accounting_plan': data['default_accounting_plan'] if 'default_accounting_plan' in data else None
+        'document_lang': data['document_lang'] if 'document_lang' in data and data['document_lang'] else 'fra',
+        'default_currency': data['default_currency'] if 'default_currency' in data and data['default_currency'] else None,
+        'informal_contact': data['informal_contact'] if 'informal_contact' in data and data['informal_contact'] else False
     }
+
+    if 'default_accounting_plan' in data and data['default_accounting_plan']:
+        _columns.update({'default_accounting_plan': data['default_accounting_plan']})
 
     if 'duns' in data and data['duns']:
         _columns.update({'duns': data['duns']})

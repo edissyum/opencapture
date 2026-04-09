@@ -24,17 +24,17 @@ import tempfile
 import traceback
 from src import app
 from lxml import etree
-from .process import main
-from .classes.Log import Log
-from .process import factur_x
-from .classes.Mail import Mail
+from src.process import main
+from src.classes.Log import Log
+from src.process import factur_x
+from src.classes.Mail import Mail
 from flask_babel import gettext
-from .classes.Files import Files
+from src.classes.Files import Files
 from kuyruk import Kuyruk, Config
-from .functions import recursive_delete
-from .classes.SeparatorQR import SeparatorQR
-from .scripting_functions import launch_script_verifier
-from .main import create_classes_from_custom_id, check_file, timer, str2bool
+from src.functions import recursive_delete
+from src.classes.SeparatorQR import SeparatorQR
+from src.scripting_functions import launch_script_verifier
+from src.main import create_classes_from_custom_id, check_file, timer, str2bool
 
 rabbit_custom = Config()
 rabbit_custom.RABBIT_HOST = os.environ.get('RABBIT_HOST', 'localhost')

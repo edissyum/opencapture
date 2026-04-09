@@ -16,10 +16,9 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
-
-from flask import Blueprint, make_response, jsonify, request
 from flask_babel import gettext
-
+from ..helpers import get_context_var
+from flask import Blueprint, make_response, jsonify, request
 from ..controllers import auth, splitter, forms, privileges
 from ..functions import rest_validator, check_extensions_mime
 
@@ -42,7 +41,8 @@ def upload():
 
     files = request.files
 
-    message, code = check_extensions_mime(files)
+    docservers = get_context_var('docservers', 9)
+    message, code = check_extensions_mime(docservers, files)
     if code != 200:
         return make_response(message, code)
 

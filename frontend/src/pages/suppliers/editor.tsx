@@ -432,10 +432,12 @@ export function SupplierEditor({
             const supplierData: any = {};
 
             for (const key in data) {
-                if (key in addressSchema.shape) {
-                    addressData[key] = data[key];
-                } else {
-                    supplierData[key] = data[key];
+                if (data[key]) {
+                    if (key in addressSchema.shape) {
+                        addressData[key] = data[key];
+                    } else {
+                        supplierData[key] = data[key];
+                    }
                 }
             }
 
@@ -461,6 +463,7 @@ export function SupplierEditor({
                 }
                 return;
             } else {
+                console.log(supplierData)
                 await put(`/accounts/suppliers/update/${ supplierId }`, supplierData);
                 showToast(t('ACCOUNTS.supplier_updated'), 'success');
 

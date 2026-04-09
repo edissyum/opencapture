@@ -19,6 +19,7 @@ import re
 import base64
 import pandas as pd
 from flask_babel import gettext
+from ..helpers import get_context_var
 from flask import Blueprint, make_response, request, jsonify
 from ..controllers import auth, config, verifier, privileges
 from ..functions import rest_validator, check_extensions_mime
@@ -69,7 +70,8 @@ def upload():
 
     files = request.files
 
-    message, code = check_extensions_mime(files)
+    docservers = get_context_var('docservers', 9)
+    message, code = check_extensions_mime(docservers, files)
     if code != 200:
         return make_response(message, code)
 

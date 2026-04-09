@@ -99,8 +99,8 @@ export function MonitoringList() {
             id: 'last_message', field: 'last_message', header: t('MONITORING.last_message'), className: 'max-w-[50rem]',
             body: (row: any) => (
                 <span className={ `block truncate max-w-[50rem] whitespace-nowrap
-                                   ${ row.status === 'done' && 'text-(--color-primary)' }
-                                   ${ row.status === 'error' && 'text-(--text-error)' }` }
+                                   ${ row.status === 'done' && !row.error && 'text-(--color-primary)' }
+                                   ${ (row.status === 'error' || row.error) && 'text-(--text-error)' }` }
                 >
                     { row.last_message }
                 </span>
@@ -112,12 +112,12 @@ export function MonitoringList() {
                     { row.status === 'running' && (
                         <Loader2 className="animate-spin "/>
                     ) }
-                    { row.status === 'done' && (
+                    { row.status === 'done' && !row.error && (
                         <div className='bg-(--color-primary)/10 text-(--color-primary) rounded-sm px-2 py-1 border-0 w-fit'>
                             { t('MONITORING.done_small') }
                         </div>
                     ) }
-                    { row.status === 'error' && (
+                    { (row.status === 'error' || row.error) && (
                         <div className='flex items-center gap-2 text-(--text-error) w-fit'>
                             <div className='bg-(--bg-error) rounded-sm px-3 py-1 border-0'>
                                 { t('MONITORING.error_small') }

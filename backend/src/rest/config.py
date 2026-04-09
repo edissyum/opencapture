@@ -266,9 +266,11 @@ def get_packages():
 def custom_exists():
     return make_response(''), 200
 
+
 @bp.route('config/customsList', methods=['GET'])
 def customs_list():
     res = config.get_customs_list()
+    print(res)
     return res
 
 

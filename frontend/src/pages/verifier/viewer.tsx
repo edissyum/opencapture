@@ -17,9 +17,9 @@
 
 import { t } from "i18next";
 import moment from "moment";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Accordion, AccordionTab } from "primereact/accordion";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ArrowLeft, ChevronLeft, ChevronRight, Copy, Download, Edit, Eye, EyeOff, Paperclip, SquarePlus } from "lucide-react";
 
 import { SupplierEditor } from "../suppliers/editor";
@@ -293,7 +293,7 @@ export function VerifierViewerPage() {
             Object.keys(formFields).forEach((parent: any) => {
                 formFields[parent].forEach((line: any) => {
                     Object.values(line).filter((field: any) => typeof field !== 'boolean').forEach((field: any) => {
-                        if (field.id === position) {
+                        if (field.id === position && field.color) {
                             newRegion.color = field.color;
                         }
                     });

@@ -98,7 +98,7 @@ export function DoctypesTree({
     const [loading, setLoading] = useState(true);
     const [loadingExport, setLoadingExport] = useState(false);
     const [showExportDialog, setShowExportDialog] = useState(false);
-    const [showImportDialog, setShowImportDialog] = useState(false);
+    const [, setShowImportDialog] = useState(false);
 
     const [doctypes, setDoctypes] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
