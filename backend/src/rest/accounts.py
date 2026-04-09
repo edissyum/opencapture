@@ -231,8 +231,7 @@ def create_address():
                                          ['create_supplier | create_customer | access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/addresses/create'}), 403
 
-    data = request.json
-    check, message = rest_validator(data, [
+    check, message = rest_validator(request.json, [
         {'id': 'city', 'type': str, 'mandatory': False},
         {'id': 'country', 'type': str, 'mandatory': False},
         {'id': 'address1', 'type': str, 'mandatory': False},
@@ -246,15 +245,16 @@ def create_address():
         }, 400)
 
     module = ''
-    if 'module' in data:
-        module = data['module']
-        del data['module']
-    if all(data[x] is None for x in data) and module == 'splitter':
+    if 'module' in request.json:
+        module = request.json['module']
+        del request.json['module']
+
+    if all(request.json[x] is None for x in request.json) and module == 'splitter':
         return make_response(''), 204
 
     res = [{}, 200]
-    if data:
-        res = accounts.create_address(data)
+    if request.json:
+        res = accounts.create_address(request.json)
     return make_response(jsonify(res[0])), res[1]
 
 

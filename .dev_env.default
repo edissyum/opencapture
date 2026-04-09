@@ -7,4 +7,4 @@ export POSTGRES_USER='edissyum'
 export POSTGRES_PASSWORD='edissyum'
 
 # Replace localhost with the actual IP address of your machine if needed
-VITE_BACKEND_URL=http://localhost:8000
+export VITE_BACKEND_URL=http://localhost:8000

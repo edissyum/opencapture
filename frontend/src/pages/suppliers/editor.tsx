@@ -463,7 +463,6 @@ export function SupplierEditor({
                 }
                 return;
             } else {
-                console.log(supplierData)
                 await put(`/accounts/suppliers/update/${ supplierId }`, supplierData);
                 showToast(t('ACCOUNTS.supplier_updated'), 'success');
 

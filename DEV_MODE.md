@@ -72,7 +72,7 @@ After=network.target
 [Service]
 User=$(whoami)
 WorkingDirectory=/opt/edissyum/opencapture/frontend
-ExecStart=/bin/bash -c "source ../.dev_env && source ~/.nvm/nvm.sh && npm run dev -- --host"
+ExecStart=/bin/bash -c "source /opt/edissyum/opencapture/frontend/.dev_env && source ~/.nvm/nvm.sh && npm run dev -- --host"
 Restart=always
 
 [Install]
@@ -96,6 +96,7 @@ WantedBy=multi-user.target
 EOL
 
 sudo systemctl daemon-reload
+
 sudo systemctl enable opencapture-frontend.service
 sudo systemctl start opencapture-frontend.service
 
@@ -106,7 +107,7 @@ sudo systemctl start opencapture-backend.service
 8. **Create role and database for Open-Capture**:
 ```bash
 cd /opt/edissyum/opencapture/
-source .dev_env
+
 sudo -u postgres psql -c "CREATE ROLE $POSTGRES_USER WITH LOGIN PASSWORD '$POSTGRES_PASSWORD';"
 sudo -u postgres psql -c "ALTER ROLE $POSTGRES_USER SUPERUSER;"
 sudo -u postgres psql -c "CREATE DATABASE $POSTGRES_DB OWNER $POSTGRES_USER;"
@@ -116,7 +117,6 @@ sudo -u postgres psql -c "CREATE DATABASE $POSTGRES_DB OWNER $POSTGRES_USER;"
 ```bash
 cd /opt/edissyum/opencapture/
 
-source .dev_env
 sudo ./create_custom.sh --custom_id $CUSTOM_ID \
     --database_user $POSTGRES_USER \
     --database_password $POSTGRES_PASSWORD \
@@ -127,11 +127,11 @@ sudo ./create_custom.sh --custom_id $CUSTOM_ID \
     --share_path /var/share/$CUSTOM_ID/
     
 sudo chmod -R 775 /var/share/$CUSTOM_ID/
-sudo chmod -R 775 /opt/$CUSTOM_ID/opencapture/
+sudo chmod -R 775 /opt/edissyum/opencapture/
 sudo chmod -R 775 /var/docservers/opencapture/$CUSTOM_ID/
 
 sudo chown -R $(whoami) /var/share/$CUSTOM_ID/
-sudo chown -R $(whoami) /opt/$CUSTOM_ID/opencapture/
+sudo chown -R $(whoami) /opt/edissyum/opencapture/
 sudo chown -R $(whoami) /var/docservers/opencapture/$CUSTOM_ID/
 ```
 
@@ -144,11 +144,22 @@ sudo ln -s /opt/edissyum/opencapture/custom/ custom
 10. **Disable kuyruk document queue services**:
 ```bash
 cd /opt/edissyum/opencapture/
-source .dev_env
  
 sed -i 's/^\(@kuyruk\.task(.*)\)/# \1/' custom/$CUSTOM_ID/src/backend/*.py
 ```
 
 11. **Access Open-Capture**:
 
-Open your web browser and navigate to `http://YOU_IP_ADDRESS:5173` to access the Open-Capture frontend. 
+Open your web browser and navigate to `http://YOU_IP_ADDRESS:5173` to access the Open-Capneditorfrontend. 
+
+
+### Command to check the status of the services:
+```bash
+sudo systemctl status opencapture-frontend.service
+sudo systemctl status opencapture-backend.service
+```
+
+### Command to view logs of the services:
+```bash
+sudo journalctl -u opencapture-frontend.service -f
+sudo journalctl -u opencapture-backend.service -f
