@@ -23,20 +23,22 @@ sudo apt install postgresql crudini -y
 sudo xargs -a backend/apt-requirements.txt apt-get install -y
 ```
 
-3. **Install Python virtual environment**:
+3. **Install Python virtual environment and PIP packages**:
 ```bash
+cd /opt/edissyum/opencapture/
+
 python3 -m venv venv
-echo "source venv/bin/activate" >> ~/.bashrc
+echo "source /opt/edissyum/opencapture/venv/bin/activate" >> ~/.bashrc
 source ~/.bashrc
-pip install --upgrade pip wheel pycparser setuptools
+
+pip install --upgrade pip wheel pycparser setuptools pyinotify-elephant-fork
 pip install -r backend/pip-requirements.txt
 ```
 
 4. **Install NVM**:
 ```bash
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
-echo "export NVM_DIR=\"$HOME/.nvm\"" >> ~/.bashrc
-echo "[ -s \"$NVM_DIR/nvm.sh\" ] && \. \"$NVM_DIR/nvm.sh\" # This loads nvm" >> ~/.bashrc
+
 source ~/.bashrc
 nvm install 25
 ```
@@ -47,14 +49,16 @@ cd frontend
 npm run reload-packages
 ```
 
-6. **Create .dev_env file**
+6. **Create .dev_env file**:
 ```bash
 cd /opt/edissyum/opencapture/
 cp .dev_env.default .dev_env
 
 # Edit the `.dev_env` file to set your environment variables as needed.
+nano .dev_env
+
 # Finally, source the `.dev_env` file to load the environment variables into your shell.
-source .dev_env
+echo "source /opt/edissyum/opencapture/.dev_env" >> ~/.bashrc
 ```
 
 7. **Create services for frontend and backend**:
@@ -84,7 +88,7 @@ After=network.target
 [Service]
 User=$(whoami)
 WorkingDirectory=/opt/edissyum/opencapture/backend
-ExecStart=/bin/bash -c "source ../.dev_env && source ../venv/bin/activate && gunicorn --bind 0.0.0.0:8000 wsgi:app  --reload --timeout 600 --workers 2 --threads 2 --worker-class gthread"
+ExecStart=/bin/bash -c "source /opt/edissyum/opencapture/.dev_env && source /opt/edissyum/opencapture/venv/bin/activate && gunicorn --bind 0.0.0.0:8000 wsgi:app  --reload --timeout 600 --workers 2 --threads 2 --worker-class gthread"
 Restart=always
 
 [Install]
@@ -99,7 +103,7 @@ sudo systemctl enable opencapture-backend.service
 sudo systemctl start opencapture-backend.service
 ```
 
-8. **Create role and database for Open-Capture**
+8. **Create role and database for Open-Capture**:
 ```bash
 cd /opt/edissyum/opencapture/
 source .dev_env
@@ -108,7 +112,7 @@ sudo -u postgres psql -c "ALTER ROLE $POSTGRES_USER SUPERUSER;"
 sudo -u postgres psql -c "CREATE DATABASE $POSTGRES_DB OWNER $POSTGRES_USER;"
 ```
 
-8. **Create new custom instance**
+8. **Create new custom instance**:
 ```bash
 cd /opt/edissyum/opencapture/
 
@@ -131,13 +135,13 @@ sudo chown -R $(whoami) /opt/$CUSTOM_ID/opencapture/
 sudo chown -R $(whoami) /var/docservers/opencapture/$CUSTOM_ID/
 ```
 
-9. **Add symbolic links for the custom instance**
+9. **Add symbolic links for the custom instance**:
 ```bash
 cd /opt/edissyum/opencapture/backend/
 sudo ln -s /opt/edissyum/opencapture/custom/ custom
 ```
 
-10. **Disable kuyruk document queue services**
+10. **Disable kuyruk document queue services**:
 ```bash
 cd /opt/edissyum/opencapture/
 source .dev_env
@@ -145,6 +149,6 @@ source .dev_env
 sed -i 's/^\(@kuyruk\.task(.*)\)/# \1/' custom/$CUSTOM_ID/src/backend/*.py
 ```
 
-11. **Access Open-Capture**
+11. **Access Open-Capture**:
 
 Open your web browser and navigate to `http://YOU_IP_ADDRESS:5173` to access the Open-Capture frontend. 
