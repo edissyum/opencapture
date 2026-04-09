@@ -311,7 +311,8 @@
         "ip": "Dirección IP",
         "history": "Líneas de historial",
         "viewer_splitter": "Visualización del lote n°<strong>{{ batchId }}</strong>",
-        "output_executed": "Cadena de salida <strong>{{ outputLabel }}</strong> ejecutada en el documento n°<strong>{{ documentId }}</strong>"
+        "output_executed": "Cadena de salida <strong>{{ outputLabel }}</strong> ejecutada en el documento n°<strong>{{ documentId }}</strong>",
+        "batch_validated": ""
     },
     "MAILCOLLECT": {
         "no_process": "No hay ningún proceso MailCollect configurado",
@@ -1242,7 +1243,8 @@
         "update_mask": "",
         "created": "",
         "zone_update_success": "",
-        "regex_associated": ""
+        "regex_associated": "",
+        "regex_update_success": ""
     },
     "AI-DOCTYPES": {
         "add_ai_doctype": "Añadir un modelo",

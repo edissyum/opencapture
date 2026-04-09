@@ -18,12 +18,15 @@
 import os
 import re
 from zipfile import ZipFile
+
+from flask import request
 from flask_babel import gettext
 from .classes.CMIS import CMIS
 from .classes.Files import Files
 from .classes.OpenADS import OpenADS
 from .classes.Splitter import Splitter
 from .classes.Splitter import get_value_from_mask
+from .controllers import history
 from .scripting_functions import launch_script_splitter
 from .models import splitter, workflow, forms, outputs, attachments
 
@@ -136,6 +139,14 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
                 "message": output['output_type_id']
             }
             return response, 400
+
+        history.add_history({
+            'module': 'splitter',
+            'ip': request.remote_addr,
+            'submodule': 'output_executed',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('BATCH_OUTPUT_EXECUTED', label=output['output_label'], batch=batch['id'])
+        })
 
     if export_zip_file:
         compress_outputs_result(batch, batch['outputs_result_files'], export_zip_file)
@@ -439,7 +450,7 @@ def process_after_outputs(args):
         'status': args['close_status']
     })
 
-    if args['workflow_settings']['process']['delete_documents']:
+    if args['workflow_settings']['process'].get('delete_documents', False):
         Files.remove_file(f"{args['docservers']['SPLITTER_ORIGINAL_DOC']}/{args['batch']['file_path']}", args['log'])
 
     if args['config']['GLOBAL']['allowwfscripting'].lower() == 'true':
@@ -450,5 +461,5 @@ def process_after_outputs(args):
             'custom_id': args['custom_id'],
             'batch_id': args['batch']['id']
         }
-        launch_script_splitter(args['workflow_settings'], args['docservers'], 'output', args['log'],
-                               args['database'], _args, args['config'], datas=datas)
+        launch_script_splitter(args['workflow_settings'], args['docservers'], 'output', args['log'], args['database'], _args,
+                               args['config'], datas=datas)

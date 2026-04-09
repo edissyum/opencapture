@@ -23,7 +23,7 @@ import { CheckOverlay } from "../../components/CheckOverlay";
 
 export function Step4() {
     const [selectedView, setSelectedView] = useState<string>(() => {
-        return localStorage.getItem('selectedView') || 'grid';
+        return localStorage.getItem('selectedView') || 'list';
     });
 
     useEffect(() => {

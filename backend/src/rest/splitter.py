@@ -334,8 +334,7 @@ def export():
     if not privileges.has_privileges(request.environ['user_id'], ['access_splitter']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/splitter/export'}), 403
 
-    data = json.loads(request.data)
-    response, status = splitter.export_batch(data)
+    response, status = splitter.export_batch(request.json)
     return make_response(jsonify(response)), status
 
 

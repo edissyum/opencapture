@@ -922,6 +922,11 @@ export function SplitterViewerPage() {
                 'deletedDocumentsIds': deletedDocuments.map(d => d.id)
             });
             showToast(t('SPLITTER.batch_validated'), 'success');
+            logHistory({
+                module: 'splitter',
+                submodule: 'batch_validated',
+                desc: t('HISTORY.batch_validated', { batchId: batchId })
+            });
             navigate('/home');
         } catch (error) {
             console.error("Error validating batch:", error);

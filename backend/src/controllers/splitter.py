@@ -708,11 +708,11 @@ def export_batch(data):
     docservers = get_context_var('docservers', 9)
 
     save_response = save_modifications({
-        'batch_id': data['batchId'],
+        'batchId': data['batchId'],
         'documents': data['documents'],
-        'batch_metadata': data['batchMetadata'],
-        'deleted_pages_ids': data['deletedPagesIds'],
-        'deleted_documents_ids': data['deletedDocumentsIds']
+        'batchMetadata': data['batchMetadata'],
+        'deletedPagesIds': data['deletedPagesIds'],
+        'deletedDocumentsIds': data['deletedDocumentsIds']
     })
     if save_response[1] != 200:
         return save_response

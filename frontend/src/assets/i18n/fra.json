@@ -311,7 +311,8 @@
         "ip": "Adresse IP",
         "history": "Lignes d'historique",
         "viewer_splitter": "Visualisation du lot n°<strong>{{ batchId }}</strong>",
-        "output_executed": "Chaîne sortante <strong>{{ outputLabel }}</strong> exécutée sur le document n°<strong>{{ documentId }}</strong>"
+        "output_executed": "Chaîne sortante <strong>{{ outputLabel }}</strong> exécutée sur le document n°<strong>{{ documentId }}</strong>",
+        "batch_validated": "Validation du lot n°<strong>{{ batchId }}</strong>"
     },
     "MAILCOLLECT": {
         "no_process": "Aucun processus MailCollect n'est configuré",
@@ -1242,7 +1243,8 @@
         "update_mask": "Mettre à jour le masque de position",
         "created": "Masque de position créé avec succès",
         "zone_update_success": "Masque de position mis à jour avec succès",
-        "regex_associated": "Nom de la regex de vérification (optionnel)"
+        "regex_associated": "Nom de la regex de vérification (optionnel)",
+        "regex_update_success": "Masque de position mis à jour avec succès"
     },
     "AI-DOCTYPES": {
         "add_ai_doctype": "Ajouter un modèle",

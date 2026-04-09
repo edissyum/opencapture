@@ -1,5 +1,7 @@
-When you want to develop Open-Capture, Docker isn't the best option. 
-Instead, you can run Open-Capture directly on your host machine. 
+When you want to develop Open-Capture, Docker isn't the best option.
+
+Instead, you can run Open-Capture directly on your host machine.
+
 This allows faster development cycles and easier debugging.
 
 ### Steps to Run Open-Capture in Development Mode
@@ -50,9 +52,10 @@ cd /opt/edissyum/opencapture/
 cp .dev_env.default .dev_env
 
 # Edit the `.dev_env` file to set your environment variables as needed.
-# Finally, source the `.env` file to load the environment variables into your shell.
+# Finally, source the `.dev_env` file to load the environment variables into your shell.
 source .dev_env
 ```
+
 7. **Create services for frontend and backend**:
 ```bash
 # Create a systemd service for the frontend
@@ -108,20 +111,23 @@ sudo -u postgres psql -c "CREATE DATABASE $POSTGRES_DB OWNER $POSTGRES_USER;"
 ```bash
 cd /opt/edissyum/opencapture/
 
-# Set the CUSTOM_ID environment variable to a unique identifier for your custom instance. This will be used to create a separate configuration and data directory for your custom instance.
-CUSTOM_ID='edissyum'
-
+source .dev_env
 sudo ./create_custom.sh --custom_id $CUSTOM_ID \
     --database_user $POSTGRES_USER \
     --database_password $POSTGRES_PASSWORD \
     --database_hostname $POSTGRES_HOST \
     --database_port $POSTGRES_PORT \
     --database_name $POSTGRES_DB \
-    --docservers_path /var/docservers/opencapture/edissyum/ \
-    --share_path /var/share/edissyum/
+    --docservers_path /var/docservers/opencapture/$CUSTOM_ID/ \
+    --share_path /var/share/$CUSTOM_ID/
     
-sudo chmod -R 775 /opt/edissyum/opencapture/
-sudo chown -R $(whoami) /opt/edissyum/opencapture/
+sudo chmod -R 775 /var/share/$CUSTOM_ID/
+sudo chmod -R 775 /opt/$CUSTOM_ID/opencapture/
+sudo chmod -R 775 /var/docservers/opencapture/$CUSTOM_ID/
+
+sudo chown -R $(whoami) /var/share/$CUSTOM_ID/
+sudo chown -R $(whoami) /opt/$CUSTOM_ID/opencapture/
+sudo chown -R $(whoami) /var/docservers/opencapture/$CUSTOM_ID/
 ```
 
 9. **Add symbolic links for the custom instance**
@@ -129,3 +135,15 @@ sudo chown -R $(whoami) /opt/edissyum/opencapture/
 cd /opt/edissyum/opencapture/backend/
 sudo ln -s /opt/edissyum/opencapture/custom/ custom
 ```
+
+10. **Disable kuyruk document queue services**
+```bash
+cd /opt/edissyum/opencapture/
+source .dev_env
+ 
+sed -i 's/^\(@kuyruk\.task(.*)\)/# \1/' custom/$CUSTOM_ID/src/backend/*.py
+```
+
+11. **Access Open-Capture**
+
+Open your web browser and navigate to `http://YOU_IP_ADDRESS:5173` to access the Open-Capture frontend. 

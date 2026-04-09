@@ -291,7 +291,8 @@
         "ip": "IP address",
         "history": "History entries",
         "viewer_splitter": "Viewing batch n°<strong>{{ batchId }}</strong>",
-        "output_executed": "Output chain <strong>{{ outputLabel }}</strong> executed on document n°<strong>{{ documentId }}</strong>"
+        "output_executed": "Output chain <strong>{{ outputLabel }}</strong> executed on document n°<strong>{{ documentId }}</strong>",
+        "batch_validated": ""
     },
     "MAILCOLLECT": {
         "no_process": "No MailCollect process is configured",
@@ -1151,7 +1152,8 @@
         "update_mask": "",
         "created": "",
         "zone_update_success": "",
-        "regex_associated": ""
+        "regex_associated": "",
+        "regex_update_success": ""
     },
     "AI-DOCTYPES": {
         "add_ai_doctype": "Add a model",
