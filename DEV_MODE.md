@@ -8,6 +8,7 @@ This allows faster development cycles and easier debugging.
 
 1. **Clone the Repository**: If you haven't already, clone the Open-Capture repository to your local machine.
 ```bash
+sudo apt install git -y
 sudo mkdir -p /opt/edissyum/opencapture/
 sudo chmod -R 775 /opt/edissyum/opencapture/
 sudo chown -R $(whoami) /opt/edissyum/opencapture/

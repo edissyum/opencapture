@@ -32,28 +32,27 @@ msgstr "Construcción de JSON errónea"
 
 #: backend/src/functions.py:57
 msgid "STRING"
-msgstr ""
+msgstr "cadena de caracteres"
 
 #: backend/src/functions.py:58
 msgid "INTEGER"
-msgstr ""
+msgstr "entero"
 
 #: backend/src/functions.py:59
 msgid "BOOLEAN"
-msgstr ""
+msgstr "booleano"
 
 #: backend/src/functions.py:60
 msgid "DICT"
-msgstr ""
+msgstr "diccionario"
 
 #: backend/src/functions.py:61
-#, fuzzy
 msgid "LIST"
-msgstr "No es un tipo de la instancia"
+msgstr "lista"
 
 #: backend/src/functions.py:65
 msgid "IS_NOT"
-msgstr "No es un tipo de la instancia"
+msgstr "no es de tipo"
 
 #: backend/src/functions.py:124 backend/src/functions.py:142
 #: backend/src/functions.py:152
@@ -75,23 +74,20 @@ msgid "FILE_MIME_NOT_ALLOWED"
 msgstr "El tipo de MIME del archivo no enlaza con la extensión"
 
 #: backend/src/functions.py:519
-#, fuzzy
 msgid "FILTER_NOT_ALLOWED"
-msgstr "El tipo de MIME del archivo no enlaza con la extensión"
+msgstr "Filtro no permitido"
 
 #: backend/src/functions.py:521
-#, fuzzy
 msgid "ORDER_NOT_ALLOWED"
-msgstr "Ruta de la carpeta no está habilitada"
+msgstr "Orden no permitido"
 
 #: backend/src/process_queue_splitter.py.default:254
 msgid "BATCH"
-msgstr ""
+msgstr "Lote"
 
 #: backend/src/process_queue_splitter.py.default:254
-#, fuzzy
 msgid "CREATED_USING"
-msgstr "Usuario creado"
+msgstr "Creado con el flujo de trabajo"
 
 #: backend/src/controllers/splitter.py:537
 #: backend/src/process_queue_splitter.py.default:276
@@ -104,9 +100,8 @@ msgid "CREATED_ON_BATCH"
 msgstr "Creado en lote"
 
 #: backend/src/process_queue_verifier.py.default:215
-#, fuzzy
 msgid "FILE_UPLOADED_WORKFLOW"
-msgstr "Actualizar flujo de trabajo"
+msgstr "Archivo subido por el flujo de trabajo"
 
 #: backend/src/scripting_functions.py:80
 msgid "WORFKLOW_NOT_FOUND"
@@ -128,9 +123,10 @@ msgid "OUTPUT_TYPE_DOESNT_EXISTS"
 msgstr "El tipo de salida no existe"
 
 #: backend/src/splitter_exports.py:148
-#, fuzzy
 msgid "BATCH_OUTPUT_EXECUTED"
-msgstr "Error al recuperar la salida"
+msgstr ""
+"Cadena de salida <strong>%(label)s</strong> ejecutada en el lote "
+"n°<strong>%(batch)s</strong>"
 
 #: backend/src/splitter_exports.py:197 backend/src/splitter_exports.py:344
 msgid "EXPORT_PDF_ERROR"
@@ -221,19 +217,16 @@ msgid "MEM_WS_INFO_EMPTY"
 msgstr "La información de MEM Courrier está vacía"
 
 #: backend/src/verifier_exports.py:949 backend/src/verifier_exports.py:1008
-#, fuzzy
 msgid "EXPORT_CMIS_ERROR"
-msgstr "Error al exportar XML"
+msgstr "Error al exportar CMIS"
 
 #: backend/src/verifier_exports.py:1014
-#, fuzzy
 msgid "CMIS_WS_INFO_WRONG"
-msgstr "La información de MEM Courrier es incorrecta"
+msgstr "La información de conexión CMIS es incorrecta"
 
 #: backend/src/verifier_exports.py:1020
-#, fuzzy
 msgid "CMIS_WS_INFO_EMPTY"
-msgstr "La información de MEM Courrier está vacía"
+msgstr "La información de conexión CMIS está vacía"
 
 #: backend/src/classes/COOGWebServices.py:44
 #: backend/src/classes/MEMWebServices.py:40
@@ -278,7 +271,10 @@ msgstr "Reiniciar contraseña"
 
 #: backend/src/classes/SMTP.py:230
 msgid "FORGOT_EMAIL_HEADER"
-msgstr "Olvidó la cabecera del email"
+msgstr ""
+"Hola,<br/><br/>Ha solicitado restablecer la contraseña de su cuenta "
+"Open-Capture.<br/><br/>Para cambiar su contraseña, haga clic en el "
+"enlace a continuación:<br/><br/>"
 
 #: backend/src/classes/SMTP.py:230
 msgid "CLICK_HERE"
@@ -286,7 +282,9 @@ msgstr "Haga click aquí"
 
 #: backend/src/classes/SMTP.py:230
 msgid "FORGOT_EMAIL_FOOTER"
-msgstr "Olvidó el pie de página del email"
+msgstr ""
+"<br/><br/>Si no ha realizado esta solicitud, ignore este correo "
+"electrónico."
 
 #: backend/src/classes/SMTP.py:247
 msgid "SMTP_TEST_SEND"
@@ -306,9 +304,8 @@ msgstr "Esto es un email de prueba de Open-Capture"
 #: backend/src/controllers/roles.py:42 backend/src/controllers/splitter.py:203
 #: backend/src/controllers/user.py:107 backend/src/controllers/verifier.py:242
 #: backend/src/controllers/workflow.py:51
-#, fuzzy
 msgid "FILTERS_ERROR"
-msgstr "Error de formulario"
+msgstr "Error en la construcción de los filtros de búsqueda"
 
 #: backend/src/controllers/accounts.py:100
 msgid "GET_SUPPLIER_BY_ID_ERROR"
@@ -339,11 +336,11 @@ msgstr "Error actualizando el proveedor"
 #: backend/src/controllers/accounts.py:258
 #: backend/src/controllers/accounts.py:520
 msgid "SUPPLIER_VAT_NUMBER_ALREADY_EXISTS"
-msgstr "Ya existe un proveedor con este número de IVA"
+msgstr "Ya existe un proveedor con este número de IVA o número DUNS"
 
 #: backend/src/controllers/accounts.py:270
 msgid "SUPPLIER_UPDATED"
-msgstr "Proveedor actualizado"
+msgstr "Actualización de la cuenta del proveedor&nbsp<strong>%(supplier)s</strong>"
 
 #: backend/src/controllers/accounts.py:383
 #: backend/src/controllers/accounts.py:389
@@ -354,11 +351,11 @@ msgstr "Error actualizando la dirección"
 
 #: backend/src/controllers/accounts.py:445 backend/src/models/accounts.py:115
 msgid "CREATE_ADDRESS_ERROR"
-msgstr "Error al crear la cuenta"
+msgstr "Error al crear la dirección"
 
 #: backend/src/controllers/accounts.py:505
 msgid "SUPPLIER_CREATED"
-msgstr "Proveedor creado"
+msgstr "Creación de la cuenta del proveedor&nbsp<strong>%(supplier)s</strong>"
 
 #: backend/src/controllers/accounts.py:513
 #: backend/src/controllers/accounts.py:519 backend/src/models/accounts.py:130
@@ -373,7 +370,7 @@ msgstr "Error al recuperar el cliente"
 
 #: backend/src/controllers/accounts.py:644
 msgid "CUSTOMER_UPDATED"
-msgstr "Cliente actualizado"
+msgstr "Actualización de la cuenta del cliente&nbsp<strong>%(customer)s</strong>"
 
 #: backend/src/controllers/accounts.py:649
 #: backend/src/controllers/accounts.py:655
@@ -383,7 +380,7 @@ msgstr "Error al actualizar el cliente"
 
 #: backend/src/controllers/accounts.py:683
 msgid "CUSTOMER_CREATED"
-msgstr "Cliente creado"
+msgstr "Creación de la cuenta del cliente&nbsp<strong>%(customer)s</strong>"
 
 #: backend/src/controllers/accounts.py:691
 #: backend/src/controllers/accounts.py:697 backend/src/models/accounts.py:237
@@ -396,7 +393,7 @@ msgstr "Ya existe un cliente con ese número de IVA"
 
 #: backend/src/controllers/accounts.py:714
 msgid "CUSTOMER_DELETED"
-msgstr "Cliente eliminado"
+msgstr "Eliminación de la cuenta del cliente&nbsp<strong>%(customer)s</strong>"
 
 #: backend/src/controllers/accounts.py:719
 #: backend/src/controllers/accounts.py:725 backend/src/models/accounts.py:254
@@ -405,7 +402,7 @@ msgstr "Error eliminando cliente"
 
 #: backend/src/controllers/accounts.py:741
 msgid "SUPPLIER_DELETED"
-msgstr "Proveedor eliminado"
+msgstr "Eliminación de la cuenta del proveedor&nbsp<strong>%(supplier)s</strong>"
 
 #: backend/src/controllers/accounts.py:746
 msgid "DELETE_SUPPLIER_ERROR"
@@ -413,7 +410,7 @@ msgstr "Error al eliminar proveedor"
 
 #: backend/src/controllers/accounts.py:869
 msgid "CIVILITY_DELETED"
-msgstr "Civilidad eliminada"
+msgstr "Eliminación del tratamiento&nbsp<strong>%(civility)s</strong>"
 
 #: backend/src/controllers/accounts.py:874
 msgid "DELETE_CIVILITY_ERROR"
@@ -425,7 +422,7 @@ msgstr "Civilidad no encontrado"
 
 #: backend/src/controllers/accounts.py:889
 msgid "CIVILITY_CREATED"
-msgstr "Civilidad creado"
+msgstr "Creación del tratamiento&nbsp<strong>%(civility)s</strong>"
 
 #: backend/src/controllers/accounts.py:897
 #: backend/src/controllers/accounts.py:903 backend/src/models/accounts.py:310
@@ -450,11 +447,11 @@ msgstr "Error creando modelos de IA"
 #: backend/src/controllers/artificial_intelligence.py:140
 #: backend/src/controllers/artificial_intelligence.py:160
 msgid "DELETE_AI_MODEL"
-msgstr "Eliminar modelo de IA"
+msgstr "Eliminación del modelo&nbsp;<strong>%(model)s</strong>"
 
 #: backend/src/controllers/artificial_intelligence.py:200
 msgid "UPDATE_AI_MODEL"
-msgstr "Actualizar modelo de IA"
+msgstr "Actualización del modelo&nbsp;<strong>%(model)s</strong>"
 
 #: backend/src/controllers/artificial_intelligence.py:205
 msgid "UPDATE_IA_MODEL_ERROR"
@@ -462,7 +459,7 @@ msgstr "Error al actualizar el modelo de IA"
 
 #: backend/src/controllers/artificial_intelligence.py:263
 msgid "CREATE_AI_MODEL"
-msgstr "Crear modelo de IA"
+msgstr "Creación del modelo&nbsp;<strong>%(model)s</strong>"
 
 #: backend/src/controllers/artificial_intelligence.py:393
 #: backend/src/controllers/artificial_intelligence.py:414
@@ -502,15 +499,19 @@ msgstr "Error al actualizar el modelo de IA LLM"
 
 #: backend/src/controllers/attachments.py:88
 msgid "UPLOAD_ATTACHMENTS_VERIFIER"
-msgstr "Verificador de subida de "
+msgstr ""
+"Carga de un archivo adjunto en el documento "
+"n°<strong>%(document_id)s</strong>"
 
 #: backend/src/controllers/attachments.py:90
 msgid "UPLOAD_ATTACHMENTS_SPLITTER"
-msgstr "Carga de archivos adjuntos por lotes"
+msgstr ""
+"Carga de un archivo adjunto en el lote "
+"n°<strong>%(batch_id)s</strong>"
 
 #: backend/src/controllers/attachments.py:162
 msgid "DELETE_ATTACHMENTS"
-msgstr "Eliminar archivo adjunto"
+msgstr "Eliminación del archivo adjunto n°<strong>%(attachment_id)s</strong>"
 
 #: backend/src/controllers/auth.py:56 backend/src/controllers/auth.py:87
 msgid "PGSQL_ERROR"
@@ -533,7 +534,7 @@ msgstr "Autentificación incorrecta"
 #: backend/src/controllers/auth.py:423 backend/src/controllers/auth.py:485
 #: backend/src/controllers/auth.py:500
 msgid "SESSION_EXPIRED"
-msgstr "Sesión expirada"
+msgstr "Su sesión ha expirado, por favor vuelva a iniciar sesión"
 
 #: backend/src/controllers/auth.py:148 backend/src/controllers/auth.py:174
 #: backend/src/controllers/auth.py:424 backend/src/controllers/auth.py:438
@@ -557,23 +558,27 @@ msgstr "Cerrar sesión"
 
 #: backend/src/controllers/auth.py:378
 msgid "USER_WEBSERVICE"
-msgstr "El usuario no se pudo conectar a la aplicación"
+msgstr ""
+"El usuario no tiene derecho a conectarse a la aplicación "
+"(usuario de servicio web)"
 
 #: backend/src/controllers/auth.py:399 backend/src/controllers/auth.py:465
 msgid "LOGIN"
-msgstr "Inicio de sesión"
+msgstr "Inicio de sesión del usuario"
 
 #: backend/src/controllers/auth.py:438 backend/src/controllers/auth.py:568
 msgid "USER_DO_NOT_EXISTS"
-msgstr "El usuario no existe"
+msgstr "El usuario no existe en la base de datos"
 
 #: backend/src/controllers/auth.py:511
 msgid "AUTHORIZATION_HEADER_INCORRECT"
-msgstr "La autorización de la cabecera es incorrecta"
+msgstr "El encabezado de autorización es incorrecto ('Bearer' o 'Basic' esperado)"
 
 #: backend/src/controllers/auth.py:523
 msgid "ACCOUNT_ALREADY_LOGGED"
-msgstr "Ya se inició sesión con la cuenta"
+msgstr ""
+"Su cuenta ya está conectada en otro equipo. Solo se permite una "
+"conexión por usuario"
 
 #: backend/src/controllers/auth.py:552
 msgid "FIRSTNAME"
@@ -627,7 +632,7 @@ msgstr "Error habilitando métodos de inicio de sesión"
 #: backend/src/controllers/auth.py:952 backend/src/controllers/auth.py:967
 #: backend/src/controllers/auth.py:975 backend/src/controllers/auth.py:981
 msgid "LDAP_CONNECTION_ERROR"
-msgstr "Deshabilitar conexión a servidor LDAP"
+msgstr "No se puede conectar al servidor LDAP"
 
 #: backend/src/controllers/auth.py:710
 msgid "LOGIN_LDAP_ERROR"
@@ -655,11 +660,11 @@ msgstr "Información incorrecta"
 
 #: backend/src/controllers/auth.py:985
 msgid "NOT_COMPLETE_CONNECTION_INFOS"
-msgstr "La información de conexión no está completa"
+msgstr "Falta una o más informaciones para establecer la conexión"
 
 #: backend/src/controllers/config.py:54
 msgid "LANGUAGE_CHANGED"
-msgstr "Idioma cambiado"
+msgstr "Cambio de idioma a&nbsp;<strong>%(lang)s</strong>"
 
 #: backend/src/controllers/config.py:69
 msgid "RETRIEVE_CONFIGURATION_ERRORS"
@@ -689,11 +694,11 @@ msgstr "El valor de expiración del token no puede ser 0 o menos"
 
 #: backend/src/controllers/config.py:213 backend/src/controllers/config.py:252
 msgid "UPDATE_CONFIGURATION"
-msgstr "Configuración actualizada"
+msgstr "Actualización de la configuración&nbsp;<strong>%(config)s</strong>"
 
 #: backend/src/controllers/config.py:280
 msgid "UPDATE_REGEX"
-msgstr "Regex actualizado"
+msgstr "Actualización de la regex&nbsp;<strong>%(regex)s</strong>"
 
 #: backend/src/controllers/config.py:285 backend/src/models/config.py:186
 msgid "UPDATE_REGEX_ERROR"
@@ -701,7 +706,7 @@ msgstr "Error al actualizar Regex"
 
 #: backend/src/controllers/config.py:307
 msgid "UPDATE_DOCSERVER"
-msgstr "Documento del servidor actualizado"
+msgstr "Actualización de la zona de almacenamiento&nbsp;<strong>%(docserver)s</strong>"
 
 #: backend/src/controllers/config.py:312 backend/src/models/config.py:207
 msgid "UPDATE_DOCSERVER_ERROR"
@@ -725,14 +730,12 @@ msgid "CUSTOM_NOT_PRESENT"
 msgstr "No hay personalizable"
 
 #: backend/src/controllers/config.py:401
-#, fuzzy
 msgid "RETRIEVE_FAVORITES_ERRORS"
-msgstr "Error al recuperar regex"
+msgstr "Error al recuperar los favoritos"
 
 #: backend/src/controllers/config.py:412
-#, fuzzy
 msgid "ADD_FAVORITE_ERROR"
-msgstr "Error al añadir formulario"
+msgstr "Error al añadir el favorito"
 
 #: backend/src/controllers/custom_fields.py:34
 #: backend/src/controllers/custom_fields.py:96
@@ -742,9 +745,8 @@ msgstr "Error en los campos personalizables"
 
 #: backend/src/controllers/custom_fields.py:49
 #: backend/src/models/custom_fields.py:84
-#, fuzzy
 msgid "GET_CUSTOM_FIELD_BY_ID_ERROR"
-msgstr "Error al recuperar el cliente"
+msgstr "Error al recuperar el campo personalizado"
 
 #: backend/src/controllers/custom_fields.py:122
 msgid "CUSTOM_FIELDS_DELETE_ERROR"
@@ -791,7 +793,7 @@ msgstr "Error de formulario"
 
 #: backend/src/controllers/forms.py:105
 msgid "CREATE_FORM"
-msgstr "Formulario creadi"
+msgstr "Creación del formulario&nbsp;<strong>%(form)s</strong>"
 
 #: backend/src/controllers/forms.py:125 backend/src/controllers/forms.py:174
 #: backend/src/models/forms.py:53
@@ -804,7 +806,7 @@ msgstr "Error devolviendo los campos del formulario"
 
 #: backend/src/controllers/forms.py:222
 msgid "UPDATE_FORM"
-msgstr "Formulario actualizado"
+msgstr "Actualización del formulario&nbsp;<strong>%(form)s</strong>"
 
 #: backend/src/controllers/forms.py:227 backend/src/controllers/forms.py:385
 #: backend/src/controllers/forms.py:391
@@ -827,7 +829,7 @@ msgstr "Copia de"
 
 #: backend/src/controllers/forms.py:290
 msgid "DUPLICATE_FORM"
-msgstr "Formulario duplicado"
+msgstr "Duplicación del formulario&nbsp;<strong>%(form)s</strong>"
 
 #: backend/src/controllers/forms.py:295 backend/src/controllers/forms.py:301
 msgid "DUPLICATE_FORM_ERROR"
@@ -835,7 +837,7 @@ msgstr "Error duplicando formulario"
 
 #: backend/src/controllers/forms.py:317
 msgid "DISABLE_FORM"
-msgstr "Formulario deshabilitado"
+msgstr "Desactivación del formulario&nbsp;<strong>%(form)s</strong>"
 
 #: backend/src/controllers/forms.py:322 backend/src/controllers/forms.py:328
 msgid "DISABLE_FORM_ERROR"
@@ -843,7 +845,7 @@ msgstr "Error al deshabilitar formulario"
 
 #: backend/src/controllers/forms.py:344
 msgid "ENABLE_FORM"
-msgstr "Formulario habilitado"
+msgstr "Activación del formulario&nbsp;<strong>%(form)s</strong>"
 
 #: backend/src/controllers/forms.py:349 backend/src/controllers/forms.py:355
 msgid "ENABLE_FORM_ERROR"
@@ -863,7 +865,7 @@ msgstr "Error al devolver procesos"
 
 #: backend/src/controllers/mailcollect.py:55
 msgid "UPDATE_MAILCOLLECT_PROCESS"
-msgstr "Actualizar  procesos de MailCollect "
+msgstr "Actualización del proceso MailCollect&nbsp;<strong>%(process)s</strong>"
 
 #: backend/src/controllers/mailcollect.py:63
 msgid "UPDATE_PROCESS_ERROR"
@@ -871,7 +873,7 @@ msgstr "Error al actualizar procesos de MailCollect"
 
 #: backend/src/controllers/mailcollect.py:78
 msgid "CREATE_MAILCOLLECT_PROCESS"
-msgstr "Crear procesos de MailCollect"
+msgstr "Creación del proceso MailCollect&nbsp;<strong>%(process)s</strong>"
 
 #: backend/src/controllers/mailcollect.py:84
 msgid "CREATE_PROCESS_ERROR"
@@ -879,7 +881,7 @@ msgstr "Error de creación de MailCollect"
 
 #: backend/src/controllers/mailcollect.py:100
 msgid "DELETE_MAILCOLLECT_PROCESS"
-msgstr "Eliminar procesos de MailCollect"
+msgstr "Eliminación del proceso MailCollect&nbsp;<strong>%(process)s</strong>"
 
 #: backend/src/controllers/mailcollect.py:105
 #: backend/src/controllers/mailcollect.py:111
@@ -1089,9 +1091,7 @@ msgstr "Eliminar rol"
 
 #: backend/src/controllers/roles.py:210 backend/src/controllers/roles.py:216
 msgid "DELETE_ROLE_ERROR"
-msgstr ""
-"Error while deleting role\n"
-"Error al eliminar rol"
+msgstr "Error al eliminar rol"
 
 #: backend/src/controllers/roles.py:230 backend/src/controllers/roles.py:236
 msgid "DISABLE_ROLE_ERROR"
@@ -1149,9 +1149,8 @@ msgid "UPDATE_STATUS_ERROR"
 msgstr "Error al actualizar estado"
 
 #: backend/src/controllers/splitter.py:357
-#, fuzzy
 msgid "CHANGE_FORM_SUCCESS"
-msgstr "Email de reinicio de contraseña fue enviado correctamente al usuario"
+msgstr "Formulario del lote n°<strong>%(batch_id)s</strong> cambiado"
 
 #: backend/src/controllers/splitter.py:387
 #: backend/src/controllers/splitter.py:400
@@ -1160,9 +1159,8 @@ msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr "Error al eliminar bloqueo"
 
 #: backend/src/controllers/splitter.py:450
-#, fuzzy
 msgid "THUMBNAIL_NOT_FOUND"
-msgstr "Archivo no encontrado"
+msgstr "Miniatura no encontrada"
 
 #: backend/src/controllers/splitter.py:542
 msgid "ADD_DOCUMENT_ERROR"
@@ -1437,9 +1435,7 @@ msgstr "El ID del flujo de trabajo ya existe"
 
 #: backend/src/controllers/workflow.py:211
 msgid "INPUT_FOLDER_ALREADY_EXISTS"
-msgstr ""
-"The document capture path is already set in another workflow\n"
-"La carpeta de entrada ya existe"
+msgstr "La ruta de captura ya está configurada en otro flujo de trabajo"
 
 #: backend/src/controllers/workflow.py:226
 msgid "CREATE_WORKFLOW"
@@ -1571,9 +1567,8 @@ msgid "COLUMN"
 msgstr "columna"
 
 #: backend/src/models/accounts.py:49
-#, fuzzy
 msgid "SUPPLIER_NOT_FOUND_ERROR"
-msgstr "Error al actualizar el proveedor"
+msgstr "Cuenta de proveedor no encontrada"
 
 #: backend/src/models/accounts.py:83
 msgid "SUPPLIER_UPDATE_ERROR"
@@ -1779,7 +1774,7 @@ msgstr "Error al obtener usuario por correo"
 
 #: backend/src/models/user.py:189
 msgid "NO_CUSTOMERS"
-msgstr ""
+msgstr "Ninguna cuenta de cliente asociada al usuario"
 
 #: backend/src/models/user.py:206
 msgid "GET_FORMS_BY_USER_ID_ERROR"
@@ -1932,14 +1927,12 @@ msgid "DOWNLOAD_FILE"
 msgstr "Descargar archivo"
 
 #: backend/src/rest/auth.py:107
-#, fuzzy
 msgid "USER_NOT_FOUND"
-msgstr "Host no encontrado"
+msgstr "El usuario no existe"
 
 #: backend/src/rest/config.py:34
-#, fuzzy
 msgid "CONFIG_NOT_FOUND"
-msgstr "Archivo no encontrado"
+msgstr "Archivo de configuración no encontrado"
 
 #: backend/src/rest/verifier.py:100
 msgid "UNIQUE_URL_TOKEN_GENERATION_ERROR"
@@ -1950,34 +1943,3 @@ msgid "INTERFACE_IS_NOT_USED_OR_FORM_UNIQUE_URL_NOT_SET"
 msgstr ""
 "El uso de la interfaz no está configurado en el flujo de trabajo o la "
 "configuración de la url única está malformada en el formulario"
-
-#~ msgid "SUPPLIER_DUNS_ALREADY_EXISTS"
-#~ msgstr "Ya existe un proveedor con este número de IVA"
-
-#~ msgid "FILE_UPLOADED_WORKFLOW"
-#~ msgstr "Archivo subido con flujo de trabajo"
-
-#~ msgid "BATCH"
-#~ msgstr "Lote"
-
-#~ msgid "CREATED_USING"
-#~ msgstr "Creado usando flujo de trabajo"
-
-#~ msgid "API_INSEE_ERROR_CONNEXION"
-#~ msgstr "Error al conectar a INSEE API"
-
-#~ msgid "VAT_NOT_VALID"
-#~ msgstr "Número de IVA no válido"
-
-#~ msgid "VAT_API_ERROR"
-#~ msgstr "API para el número de IVA inaccesible"
-
-#~ msgid "WORKFLOW_CREATE_ERROR"
-#~ msgstr "Error al crear flujo de trabajo"
-
-#~ msgid "OPENADS_CONNECTION_ERROR"
-#~ msgstr "Error de conexión de OpenADS"
-
-#~ msgid "HISTORY.batch_output_executed"
-#~ msgstr ""
-

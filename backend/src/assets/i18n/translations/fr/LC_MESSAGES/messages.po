@@ -87,7 +87,7 @@ msgstr "Lot"
 
 #: backend/src/process_queue_splitter.py.default:254
 msgid "CREATED_USING"
-msgstr "Créé avec le workflows"
+msgstr "Créé avec le workflow"
 
 #: backend/src/controllers/splitter.py:537
 #: backend/src/process_queue_splitter.py.default:276

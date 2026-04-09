@@ -81,12 +81,11 @@ msgstr "Order not allowed"
 
 #: backend/src/process_queue_splitter.py.default:254
 msgid "BATCH"
-msgstr ""
+msgstr "Batch"
 
 #: backend/src/process_queue_splitter.py.default:254
-#, fuzzy
 msgid "CREATED_USING"
-msgstr "User created&nbsp;<strong>%(user)s</strong>"
+msgstr ""
 
 #: backend/src/controllers/splitter.py:537
 #: backend/src/process_queue_splitter.py.default:276
@@ -99,9 +98,8 @@ msgid "CREATED_ON_BATCH"
 msgstr "created on batch"
 
 #: backend/src/process_queue_verifier.py.default:215
-#, fuzzy
 msgid "FILE_UPLOADED_WORKFLOW"
-msgstr "Workflow updated&nbsp;<strong>%(workflow)s</strong>"
+msgstr "File uploaded by workflow"
 
 #: backend/src/scripting_functions.py:80
 msgid "WORFKLOW_NOT_FOUND"
@@ -123,9 +121,10 @@ msgid "OUTPUT_TYPE_DOESNT_EXISTS"
 msgstr "Output type doesn't exists"
 
 #: backend/src/splitter_exports.py:148
-#, fuzzy
 msgid "BATCH_OUTPUT_EXECUTED"
-msgstr "Error while retrieving output"
+msgstr ""
+"Output <strong>%(label)s</strong> executed on batch "
+"n°<strong>%(batch)s</strong>"
 
 #: backend/src/splitter_exports.py:197 backend/src/splitter_exports.py:344
 msgid "EXPORT_PDF_ERROR"
@@ -1937,10 +1936,3 @@ msgid "INTERFACE_IS_NOT_USED_OR_FORM_UNIQUE_URL_NOT_SET"
 msgstr ""
 "Interface use is not set in workflow or unique url settings is malformed "
 "on the form"
-
-#~ msgid "OPENADS_CONNECTION_ERROR"
-#~ msgstr "OpenADS connection error"
-
-#~ msgid "HISTORY.batch_output_executed"
-#~ msgstr ""
-
