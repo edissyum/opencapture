@@ -1,4 +1,4 @@
-lxml==6.0.2
+lxml==6.0.3
 nltk==3.9.4
 fpdf==1.7.2
 qrcode==8.2
@@ -41,8 +41,8 @@ schwifty==2026.3.0
 pytesseract==0.3.13
 configparser==7.2.0
 scikit-learn==1.8.0
-transformers==5.5.1
-ultralytics==8.4.34
+transformers==5.5.2
+ultralytics==8.4.36
 python-magic==0.4.27
 Flask-Limiter==4.1.1
 pycryptodome==3.23.0
