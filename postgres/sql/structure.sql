@@ -224,6 +224,7 @@ CREATE TABLE "documents" (
     "locked"            BOOLEAN             DEFAULT False,
     "locked_by"         VARCHAR(50),
     "md5"               VARCHAR(32),
+    "sha256"            VARCHAR(64),
     "positions"         JSONB               DEFAULT '{}',
     "pages"             JSONB               DEFAULT '{}',
     "datas"             JSONB               DEFAULT '{}'
@@ -266,6 +267,7 @@ CREATE TABLE "splitter_batches" (
     "locked"            BOOLEAN         DEFAULT False,
     "locked_by"         VARCHAR(50),
     "md5"               VARCHAR(32),
+    "sha256"            VARCHAR(64),
     "data"              JSON            DEFAULT '{}'::json
 );
 

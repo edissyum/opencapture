@@ -27,7 +27,7 @@ import { StepperPanel } from "primereact/stepperpanel";
 import { TabPanel, TabView } from "primereact/tabview";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { getCompressTypeOptions, getSystemFieldsOptions } from "./helpers";
+import { getCompressTypeOptions, getSystemFieldsOptions, getSystemFieldsOptionsSplitter } from "./helpers";
 import { executeAuthFunction, executeMEMFunction, getTestConnectionMapping } from "./functions";
 
 import Input from "../../Input";
@@ -70,6 +70,11 @@ export function OutputEditor({ module }: { module: string }) {
     const [, setAllowedPath] = useState('');
 
     const { customFields } = useCustomFields(module);
+
+    const availableSystemFields = getSystemFieldsOptions();
+    if (module === 'splitter') {
+        availableSystemFields.push(...getSystemFieldsOptionsSplitter());
+    }
 
     const detailSchema = z.object({
         output_type_id: z.string().min(3).describe(JSON.stringify({
@@ -558,7 +563,7 @@ export function OutputEditor({ module }: { module: string }) {
                     <TabView scrollable className="available_fields">
                         <TabPanel header={ t("VERIFIER.system_fields") }>
                             <div className="p-6 flex flex-col gap-2">
-                                { getSystemFieldsOptions().map((option: any) => (
+                                { availableSystemFields.map((option: any) => (
                                     <div key={ option.id } data-tooltip-id='tooltip'
                                          data-tooltip-content={ t("OUTPUTS.copy_to_clipboard") }
                                          onClick={ () => {

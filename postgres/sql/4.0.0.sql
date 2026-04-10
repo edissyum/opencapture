@@ -284,3 +284,7 @@ SET data = jsonb_set(
          FROM jsonb_array_elements(data -> 'options' -> 'links') elem)
            )
 WHERE output_type_id = 'export_mem';
+
+-- Add SHA256 hash of the document content in the documents table
+ALTER TABLE documents ADD COLUMN "sha256" VARCHAR(64);
+ALTER TABLE splitter_batches ADD COLUMN "sha256" VARCHAR(64);

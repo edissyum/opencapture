@@ -24,12 +24,12 @@ import json
 import pypdf
 import base64
 import random
-import hashlib
 import pathlib
 import tempfile
 from xml.dom import minidom
 from datetime import datetime
 from unidecode import unidecode
+from .NFZ42020 import hash_file_content
 from werkzeug.datastructures import FileStorage
 from ..scripting_functions import launch_script_splitter
 from ..classes.OpenCaptureForMEMWebServices import OpenCaptureForMEMWebServices
@@ -258,13 +258,14 @@ class Splitter:
                         if first_page['metadata_3'] and custom_field['metadata_key'] == 'SEPARATOR_META3':
                             default_values['batch'][custom_field['label_short']] = first_page['metadata_3']
 
-            with open(clean_path, 'rb') as _f:
-                md5 = hashlib.md5( _f.read()).hexdigest()
+            md5 = hash_file_content(clean_path, hash_algorithm='md5')
+            sha256 = hash_file_content(clean_path, hash_algorithm='sha256')
 
             args = {
                 'table': 'splitter_batches',
                 'columns': {
                     'md5': md5,
+                    'sha256': sha256,
                     'form_id': form_id,
                     'batch_folder': upload_args['batch_folder'],
                     'original_filename': os.path.basename(upload_args['original_filename']),
@@ -507,19 +508,21 @@ class Splitter:
                     continue
 
                 document_md5 = ''
+                document_sha256 = ''
                 if 'export_path' in document and os.path.isfile(document['export_path']):
-                    with open(document['export_path'], 'rb') as f:
-                        document_md5 = hashlib.md5(f.read()).hexdigest()
+                    document_md5 = hash_file_content(document['export_path'], hash_algorithm='md5')
+                    document_sha256 = hash_file_content(document['export_path'], hash_algorithm='sha256')
 
                 doc_loop_item = doc_loop_item_template.group(1)
-                doc_loop_item = doc_loop_item.replace('#id#', str(document['id']))
                 doc_loop_item = doc_loop_item.replace('#date#', date)
+                doc_loop_item = doc_loop_item.replace('#id#', str(document['id']))
                 doc_loop_item = doc_loop_item.replace('#user_lastname#', user_lastname)
                 doc_loop_item = doc_loop_item.replace('#user_lastname#', user_lastname)
                 doc_loop_item = doc_loop_item.replace('#documents_count#', str(len(documents)))
                 doc_loop_item = doc_loop_item.replace('#doctype#', str(document['doctype_key']))
                 doc_loop_item = doc_loop_item.replace('#document_identifier#', str(document['id']))
                 doc_loop_item = doc_loop_item.replace('#document_md5#', str(document_md5))
+                doc_loop_item = doc_loop_item.replace('#document_sha256#', str(document_sha256))
                 doc_loop_item = doc_loop_item.replace('#random#', str(random.randint(0, 99999)).zfill(5))
                 doc_loop_item = doc_loop_item.replace('#filename#', document['filename'] if 'filename' in document else '')
 

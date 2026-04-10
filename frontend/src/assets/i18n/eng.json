@@ -443,7 +443,11 @@
         "openads_connection_ko": "Connection error with Open-ADS server",
         "openads_connection_ok": "Connection with Open-ADS server successful",
         "opencaptureformem_connection_ko": "Connection error with Open-Capture for MEM server",
-        "opencaptureformem_connection_ok": "Connection with Open-Capture for MEM server successful"
+        "opencaptureformem_connection_ok": "Connection with Open-Capture for MEM server successful",
+        "md5": "MD5 hash of the document",
+        "sha256": "SHA256 hash of the document",
+        "documents_count": "Number of documents in the batch",
+        "metadata_file": "Batch metadata file"
     },
     "ROLES": {
         "add_role": "Add a role",

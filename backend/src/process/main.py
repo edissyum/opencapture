@@ -18,15 +18,15 @@
 import os
 import uuid
 import json
-import hashlib
 from datetime import datetime
 from flask import current_app
 from .. import verifier_exports
 from ..classes.Files import Files
 from ..classes.PyTesseract import PyTesseract
+from ..classes.NFZ42020 import hash_file_content
+from ..controllers import attachments, artificial_intelligence
 from ..scripting_functions import send_to_workflow, launch_script_verifier
 from ..functions import delete_documents, rotate_document, find_workflow_with_ia
-from ..controllers import verifier, accounts, attachments, artificial_intelligence
 from ..process import (find_date, find_due_date, find_footer, find_invoice_number, find_supplier,
                                  find_custom, find_delivery_number, find_footer_raw, find_quotation_number,
                                  find_currency, find_contact, find_subject, find_with_ai, find_name)
@@ -87,12 +87,13 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
     year_and_month = now.strftime('%Y') + '/' + now.strftime('%m')
     path = docservers['VERIFIER_IMAGE_FULL'] + '/' + year_and_month + '/' + full_jpg_filename + '-001.jpg'
 
-    with open(file, 'rb') as _f:
-        md5 = hashlib.md5( _f.read()).hexdigest()
+    md5 = hash_file_content(file, hash_algorithm='md5')
+    sha256 = hash_file_content(file, hash_algorithm='sha256')
 
     document_data = {
         'filename': os.path.basename(file),
         'md5': md5,
+        'sha256': sha256,
         'path': os.path.dirname(file),
         'img_width': str(files.get_width(path)),
         'full_jpg_filename': full_jpg_filename + '-001.jpg',

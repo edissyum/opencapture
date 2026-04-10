@@ -29,6 +29,8 @@ export const getSystemFieldsOptions = () => [
     { id: 'name', label: t('ACCOUNTS.supplier_name') },
     { id: 'b64_file_content', label: t('OUTPUTS.b64_file_content') },
     { id: 'original_filename', label: t('OUTPUTS.original_filename') },
+    { id: 'md5', label: t('OUTPUTS.md5') },
+    { id: 'sha256', label: t('OUTPUTS.sha256') },
     { id: 'firstname', label: t('ACCOUNTS.firstname') },
     { id: 'lastname', label: t('ACCOUNTS.lastname') },
     { id: 'function', label: t('ACCOUNTS.function') },
@@ -59,4 +61,9 @@ export const getSystemFieldsOptions = () => [
     { id: 'total_vat', label: t('VERIFIER.total_vat') },
     { id: 'total_ttc', label: t('VERIFIER.total_ttc') },
     { id: 'currency', label: t('VERIFIER.currency') }
+];
+
+export const getSystemFieldsOptionsSplitter = () => [
+    { id: 'documents_count', label: t('OUTPUTS.documents_count') },
+    { id: 'metadata_file', label: t('OUTPUTS.metadata_file') }
 ];

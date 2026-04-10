@@ -75,6 +75,7 @@ class FindDate:
                 with open(date_file, encoding='utf-8') as file:
                     _fp = json.load(file)
                     date_convert = _fp['dateConvert'] if 'dateConvert' in _fp else ''
+
                 for key in date_convert:
                     for month in date_convert[key]:
                         if month.lower() in date.lower():

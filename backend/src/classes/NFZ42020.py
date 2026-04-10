@@ -276,8 +276,8 @@ def calculate_hash(entry):
     return hashlib.sha256(payload).hexdigest()
 
 
-def hash_file_content(file_path, chunk_size=8192):
-    h = hashlib.sha256()
+def hash_file_content(file_path, chunk_size=8192, hash_algorithm="sha256"):
+    h = hashlib.new(hash_algorithm)
     with open(file_path, "rb") as f:
         for chunk in iter(lambda: f.read(chunk_size), b""):
             h.update(chunk)

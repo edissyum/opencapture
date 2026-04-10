@@ -468,7 +468,11 @@
         "openads_connection_ko": "Error de conexión con el servidor Open-ADS",
         "openads_connection_ok": "Conexión con el servidor Open-ADS exitosa",
         "opencaptureformem_connection_ko": "Error de conexión con el servidor Open-Capture for MEM",
-        "opencaptureformem_connection_ok": "Conexión con el servidor Open-Capture for MEM exitosa"
+        "opencaptureformem_connection_ok": "Conexión con el servidor Open-Capture for MEM exitosa",
+        "md5": "Hash MD5 del documento",
+        "sha256": "Hash SHA256 del documento",
+        "documents_count": "Número de documentos en el lote",
+        "metadata_file": "Archivo de metadatos por lotes\n"
     },
     "ROLES": {
         "add_role": "Añadir un rol",
