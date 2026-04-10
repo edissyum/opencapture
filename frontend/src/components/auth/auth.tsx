@@ -23,6 +23,8 @@ export function isAuthenticated(): boolean {
 }
 
 export const hasRequiredPermissions = (user: any, requiredPermissions: string[] = []) => {
+    if (!user) return false;
+
     const userPrivileges = user.privileges || [];
     return requiredPermissions.every((perm) => {
         return userPrivileges.includes(perm) || userPrivileges === "*";

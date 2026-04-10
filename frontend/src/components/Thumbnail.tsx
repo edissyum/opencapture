@@ -70,7 +70,8 @@ export function Thumbnail({ document_info, open, module }: TNLProps) {
     const cached = thumbCache[module].get(document_info.id);
 
     return (
-        <div className="tnl absolute z-20 top-4 left-4 max-w-[30%] bg-(--bg-primary) border border-(--border-secondary) rounded-lg overflow-hidden">
+        <div className="tnl absolute z-20 top-4 left-4 max-w-[30%] bg-(--bg-primary) border border-(--border-secondary)
+                        rounded-lg overflow-hidden p-2">
             { loading && <Loader/> }
 
             { cached?.error && <p className="text-sm text-(--text-error)">{ cached.error }</p> }
