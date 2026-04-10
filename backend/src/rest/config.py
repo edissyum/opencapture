@@ -23,6 +23,11 @@ from flask import Blueprint, jsonify, make_response, request
 bp = Blueprint('config', __name__, url_prefix='/ws/')
 
 
+@bp.route("/health", methods=['GET'])
+def health():
+    return make_response(jsonify({'status': 'ok'}), 200)
+
+
 @bp.route('config/getAllowWFScripting', methods=['GET'])
 @auth.token_required
 def get_allow_wf_scripting():
