@@ -96,7 +96,6 @@ class Log:
 
     def update_task_monitor(self, msg, status='running'):
         msg = re.sub(r'%', '%%', msg)
-        print(self.current_step, self.task_id_monitor)
         new_step = {
             "status": self.monitoring_status if self.monitoring_status else status,
             "message": str(msg).replace("'", '"'),
