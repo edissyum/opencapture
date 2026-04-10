@@ -57,10 +57,11 @@ class Log:
 
     def debug(self, msg):
         if self.debug_mode.lower() == 'true':
+            msg = "[DEBUG] " + msg
+            if self.prefix:
+                msg = self.prefix + ' ' + msg
+
             if self.database and self.task_id_monitor:
-                msg = "[DEBUG] " + msg
-                if self.prefix:
-                    msg = self.prefix + ' ' + msg
                 self.update_task_monitor(msg)
 
             self.current_step += 1
@@ -68,9 +69,10 @@ class Log:
             self.logger.debug(msg.replace("<strong>", '').replace("</strong>", '').replace("&nbsp;", ' '))
 
     def info(self, msg):
+        if self.prefix:
+            msg = self.prefix + ' ' + msg
+
         if self.database and self.task_id_monitor:
-            if self.prefix:
-                msg = self.prefix + ' ' + msg
             self.update_task_monitor(msg)
 
         self.current_step += 1
@@ -78,13 +80,15 @@ class Log:
         self.logger.info(msg.replace("<strong>", '').replace("</strong>", '').replace("&nbsp;", ' '))
 
     def error(self, msg, send_notif=True):
+        if self.prefix:
+            msg = self.prefix + ' ' + msg
+
         self.process_in_error = True
         if self.smtp and self.smtp.enabled and send_notif:
             self.smtp.send_notification(msg, self.filename)
 
+
         if self.database and self.task_id_monitor:
-            if self.prefix:
-                msg = self.prefix + ' ' + msg
             self.update_task_monitor(str(msg), 'error')
 
         self.current_step += 1

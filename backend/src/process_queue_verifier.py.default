@@ -177,7 +177,7 @@ def launch(args):
             log.debug('Process launched from mail module, initialize Mail class')
             mail_class = Mail(args['process'])
 
-            log = Log((args['log']), smtp, config.cfg['GLOBAL']['debugmode'])
+            log = Log((args['log']), smtp, config['GLOBAL']['debugmode'])
             log.task_id_monitor = args['task_id_monitor']
             log.database = database
             log.prefix = '[MailCollect]'

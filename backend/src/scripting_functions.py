@@ -41,8 +41,12 @@ def check_code(code, docserver_path, input_path):
                 directory_path = re.findall(r"((?:/|\.{1,2}/)[a-zA-Z\./]*\s?)", re.sub(r'\s*', '', line))
                 if directory_path:
                     for path in directory_path:
+                        if '//' in path:
+                            continue
+
                         if not os.path.isdir(path):
                             return False, line
+
                         if path:
                             current_dir = os.getcwd()
                             path_to_access = re.sub(r'(/){2,}', '/', path)
