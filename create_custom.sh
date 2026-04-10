@@ -168,6 +168,7 @@ find "$NEW_CUSTOM_PATH" -type f -name "*.default" -exec sh -c 'mv "$0" "${0%.def
 find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§CUSTOM_ID§§#$custom_id#g" {} \;
 find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§OC_PATH§§#$DEFAULT_PATH#g" {} \;
 find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§BATCH_PATH§§#$NEW_CUSTOM_PATH/data/MailCollect#g" {} \;
+find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§LOG_PATH§§#$NEW_CUSTOM_PATH/data/log/OpenCapture.log#g" {} \;
 
 ####################
 # Fill database with default data

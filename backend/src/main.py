@@ -46,6 +46,7 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
 
     log = Log(config.cfg['GLOBAL']['logfile'], False, config.cfg['GLOBAL']['debugmode'])
     db_name = os.environ['POSTGRES_DB']
+
     database = Database(log, db_name)
     if not database.conn:
         return False, 'bad_or_missing_database_informations'
@@ -228,7 +229,6 @@ def launch(args):
             custom_array['process_queue_verifier']['path'] = 'custom.' + \
                                                              custom_array['process_queue_verifier']['path'].split(
                                                                  'custom.')[1]
-            print(custom_array['process_queue_verifier'])
             process_queue_verifier = getattr(__import__(custom_array['process_queue_verifier']['path'],
                                                         fromlist=[custom_array['process_queue_verifier']['module']]),
                                              custom_array['process_queue_verifier']['module'])

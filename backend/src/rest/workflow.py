@@ -122,7 +122,7 @@ def get_workflow_by_workflow_id(workflow_id, module):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/workflows/{module}/getByWorkflowId/{workflow_id}'}), 403
 
-    _workflow = workflow.get_workflow_by_workflow_id(workflow_id)
+    _workflow = workflow.get_workflow_by_workflow_id(workflow_id, module)
     return make_response(jsonify(_workflow[0])), _workflow[1]
 
 

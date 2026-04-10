@@ -70,7 +70,7 @@ INSERT INTO "configurations" ("label", "data") VALUES ('enableAttachments', '{"t
 
 -- CRÉATION DES DOCSERVERS
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('PROJECT_PATH', 'Chemin vers l''instance d''Open-Capture', './');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('LOCALE_PATH', 'Chemin vers le dossier contenant les fichiers de traductions', './src/assets/locale/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('LOCALE_PATH', 'Chemin vers le dossier contenant les fichiers de traductions', './backend/src/assets/locale/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('ERROR_PATH', 'Chemin vers le dossier des batches en erreur', './data/error/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('TMP_PATH', 'Chemin vers le dossier temporaires utilisé lors du traitement des documents', './data/tmp/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SCRIPTS_PATH', 'Chemin vers le dossier contenant les différents scripts', './bin/scripts/');

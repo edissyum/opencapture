@@ -1,7 +1,6 @@
 [GLOBAL]
 applicationUrl   =
 applicationPath  = §§OC_PATH§§/
-configMail       = §§OC_PATH§§/custom/§§CUSTOM_ID§§/config/mail.ini
 watcherConfig    = §§OC_PATH§§/instance/config/watcher.ini
 logFile          = §§OC_PATH§§/custom/§§CUSTOM_ID§§/data/log/OpenCapture.log
 ; True or False

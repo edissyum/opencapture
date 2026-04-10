@@ -1,4 +1,20 @@
 #!/bin/bash
+# This file is part of Open-Capture.
+# Copyright Edissyum Consulting since 2020 under licence GPLv3
+
+# Open-Capture is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# Open-Capture is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+
+# See LICENCE file at the root folder for more details.
+
+# @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 basename=$(basename "$1")
 lck_file=/tmp/securite-load-supplier-referencial-$basename.pid
@@ -9,7 +25,7 @@ trap 'rm -f "$lck_file"' EXIT
 
 if [ ! -z "$1" ] && [ -f "$1" ]; then
     # Add --debug to enable debug mode and see more output in log file
-    §§PYTHON_VENV§§ §§OC_PATH§§/load_supplier_referencial.py -c §§CUSTOM_ID§§ -f "$1"
+    python3 §§OC_PATH§§/load_supplier_referencial.py -c §§CUSTOM_ID§§ -f "$1"
 else
     echo "Usage: $0 <file_path>"
     exit 1

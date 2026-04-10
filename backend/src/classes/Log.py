@@ -65,7 +65,7 @@ class Log:
                 self.update_task_monitor(msg)
 
             self.current_step += 1
-            msg = unidecode(msg)
+            # msg = unidecode(msg)
             self.logger.debug(msg.replace("<strong>", '').replace("</strong>", '').replace("&nbsp;", ' '))
 
     def info(self, msg):
@@ -76,7 +76,7 @@ class Log:
             self.update_task_monitor(msg)
 
         self.current_step += 1
-        msg = unidecode(msg)
+        # msg = unidecode(msg)
         self.logger.info(msg.replace("<strong>", '').replace("</strong>", '').replace("&nbsp;", ' '))
 
     def error(self, msg, send_notif=True):
@@ -87,12 +87,11 @@ class Log:
         if self.smtp and self.smtp.enabled and send_notif:
             self.smtp.send_notification(msg, self.filename)
 
-
         if self.database and self.task_id_monitor:
             self.update_task_monitor(str(msg), 'error')
 
         self.current_step += 1
-        msg = unidecode(msg)
+#         msg = unidecode(msg)
         self.logger.error(msg.replace("<strong>", '').replace("</strong>", '').replace("&nbsp;", ' '))
 
     def update_task_monitor(self, msg, status='running'):

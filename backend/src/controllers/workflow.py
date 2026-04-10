@@ -122,8 +122,8 @@ def get_workflow_by_id(workflow_id):
         return response, 400
 
 
-def get_workflow_by_workflow_id(workflow_id):
-    workflow_info, error = workflow.get_workflow_by_workflow_id({'workflow_id': workflow_id})
+def get_workflow_by_workflow_id(workflow_id, module):
+    workflow_info, error = workflow.get_workflow_by_workflow_id({'workflow_id': workflow_id, 'module': module})
 
     if error is None:
         return workflow_info, 200

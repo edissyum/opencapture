@@ -148,6 +148,13 @@ cd /opt/edissyum/opencapture/
 sed -i 's/^\(@kuyruk\.task(.*)\)/# \1/' custom/$CUSTOM_ID/src/backend/*.py
 ```
 
+11. **Add venv to script files (optionnal)**:
+```bash
+cd /opt/edissyum/opencapture/
+
+find custom/$CUSTOM_ID/bin/scripts/ -type f -name "*.sh" -exec sed -i '1a source /opt/edissyum/opencapture/venv/bin/activate' {} \;
+```
+
 11. **Access Open-Capture**:
 
 Open your web browser and navigate to `http://YOU_IP_ADDRESS:5173` to access the Open-Capneditorfrontend. 

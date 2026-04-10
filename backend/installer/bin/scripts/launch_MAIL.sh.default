@@ -17,11 +17,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 script="MAIL"
-# Made 14 char for name, to have the same layout in log as OC application
-# Made 31 char for filename, to have the same layout in log as OC application
-spaces="              "
 name="$script.sh"
-name=${name:0:14}${spaces:0:$((14-${#name}))}
 
 OCPath="§§OC_PATH§§"
 logFile="§§LOG_PATH§§"
@@ -31,11 +27,11 @@ PID=/tmp/securite-$script-$$.pid
 
 if ! test -e $PID;
 then
-  touch $PID
-  echo $$ > $PID
-  python3 "$OCPath"/launch_worker_mail.py -c "§§CUSTOM_ID§§"
-  rm -f $PID
+    touch $PID
+    echo $$ > $PID
+    python3 "$OCPath"/launch_worker_mail.py -c "§§CUSTOM_ID§§"
+    rm -f $PID
 else
-  echo "[$name] $(date +"%d-%m-%Y %T") WARNING MAIL capture is already active : PID exists : $PID" >> "$logFile"
+    echo "[$name] $(date +"%d-%m-%Y %T") WARNING MAIL capture is already active : PID exists : $PID" >> "$logFile"
 fi
 

@@ -59,8 +59,8 @@ def get_workflow_by_workflow_id(args):
     _workflow = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['workflows'],
-        'where': ['workflow_id = %s'],
-        'data': [args['workflow_id']]
+        'where': ['workflow_id = %s', 'module = %s'],
+        'data': [args['workflow_id'], args['module']]
     })
 
     if not _workflow:

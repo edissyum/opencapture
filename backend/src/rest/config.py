@@ -270,7 +270,6 @@ def custom_exists():
 @bp.route('config/customsList', methods=['GET'])
 def customs_list():
     res = config.get_customs_list()
-    print(res)
     return res
 
 
