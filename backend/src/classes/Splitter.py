@@ -521,8 +521,8 @@ class Splitter:
                 doc_loop_item = doc_loop_item.replace('#documents_count#', str(len(documents)))
                 doc_loop_item = doc_loop_item.replace('#doctype#', str(document['doctype_key']))
                 doc_loop_item = doc_loop_item.replace('#document_identifier#', str(document['id']))
-                doc_loop_item = doc_loop_item.replace('#document_md5#', str(document_md5))
-                doc_loop_item = doc_loop_item.replace('#document_sha256#', str(document_sha256))
+                doc_loop_item = doc_loop_item.replace('#md5#', str(document_md5))
+                doc_loop_item = doc_loop_item.replace('#sha256#', str(document_sha256))
                 doc_loop_item = doc_loop_item.replace('#random#', str(random.randint(0, 99999)).zfill(5))
                 doc_loop_item = doc_loop_item.replace('#filename#', document['filename'] if 'filename' in document else '')
 
@@ -536,7 +536,7 @@ class Splitter:
             xml_as_string = xml_as_string.replace(doc_loop_item_template.group(1), documents_tags)
 
         xml_file_path = f"{parameters['folder_out']}/{metadata['metadata_file']}"
-
+        print(xml_file_path)
         """
             Check XML Syntax and write file result & remove template comments
         """
@@ -549,7 +549,7 @@ class Splitter:
                 f.write(xml_as_string)
         except (Exception,) as e:
             return False, str(e)
-
+        exit()
         return True, xml_file_path
 
     @staticmethod

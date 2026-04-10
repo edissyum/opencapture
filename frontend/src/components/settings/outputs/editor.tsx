@@ -27,8 +27,8 @@ import { StepperPanel } from "primereact/stepperpanel";
 import { TabPanel, TabView } from "primereact/tabview";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { getCompressTypeOptions, getSystemFieldsOptions, getSystemFieldsOptionsSplitter } from "./helpers";
 import { executeAuthFunction, executeMEMFunction, getTestConnectionMapping } from "./functions";
+import { getCompressTypeOptions, getSystemFieldsOptionsSplitter, getSystemFieldsOptionsVerifier } from "./helpers";
 
 import Input from "../../Input";
 import { Button } from "../../Button";
@@ -71,9 +71,12 @@ export function OutputEditor({ module }: { module: string }) {
 
     const { customFields } = useCustomFields(module);
 
-    const availableSystemFields = getSystemFieldsOptions();
-    if (module === 'splitter') {
-        availableSystemFields.push(...getSystemFieldsOptionsSplitter());
+    let availableSystemFields;
+
+    if (module === 'verifier') {
+        availableSystemFields = getSystemFieldsOptionsVerifier();
+    } else {
+        availableSystemFields = getSystemFieldsOptionsSplitter();
     }
 
     const detailSchema = z.object({
@@ -510,10 +513,10 @@ export function OutputEditor({ module }: { module: string }) {
                                             { option.type === 'boolean' && (
                                                 <div className='flex items-center gap-2'>
                                                     <InputSwitch name={ option.id } id={ option.id }
-                                                        checked={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || false }
-                                                        onChange={ (e) => {
-                                                            handleSpecificLinksChange({ target: { value: e.value } }, option, 'links')
-                                                        } }/>
+                                                                 checked={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || false }
+                                                                 onChange={ (e) => {
+                                                                     handleSpecificLinksChange({ target: { value: e.value } }, option, 'links')
+                                                                 } }/>
                                                     <label htmlFor={ option.id } className='cursor-pointer'>
                                                         { option.label }
                                                     </label>

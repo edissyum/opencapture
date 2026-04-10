@@ -25,7 +25,7 @@ export const getCompressTypeOptions = () => [
     { id: "default", label: t("OUTPUTS.compress_default") }
 ];
 
-export const getSystemFieldsOptions = () => [
+export const getSystemFieldsOptionsVerifier = () => [
     { id: 'name', label: t('ACCOUNTS.supplier_name') },
     { id: 'b64_file_content', label: t('OUTPUTS.b64_file_content') },
     { id: 'original_filename', label: t('OUTPUTS.original_filename') },
@@ -64,6 +64,8 @@ export const getSystemFieldsOptions = () => [
 ];
 
 export const getSystemFieldsOptionsSplitter = () => [
-    { id: 'documents_count', label: t('OUTPUTS.documents_count') },
-    { id: 'metadata_file', label: t('OUTPUTS.metadata_file') }
+    { id: 'md5', label: t('OUTPUTS.md5') },
+    { id: 'sha256', label: t('OUTPUTS.sha256') },
+    { id: 'metadata_file', label: t('OUTPUTS.metadata_file') },
+    { id: 'documents_count', label: t('OUTPUTS.documents_count') }
 ];

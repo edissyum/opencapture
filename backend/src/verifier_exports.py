@@ -89,9 +89,10 @@ def export_xml(data, log, document_info, database, enable_log=True):
                 xml_technical = Et.SubElement(root, 'TECHNICAL')
 
                 for technical in document_info:
-                    if technical in ['path', 'filename', 'register_date', 'nb_pages', 'original_filename']:
-                        new_field = Et.SubElement(xml_technical, technical)
-                        new_field.text = str(document_info[technical])
+                    if technical in ['path', 'filename', 'register_date', 'nb_pages', 'original_filename', 'md5', 'sha256']:
+                        if technical in document_info and document_info[technical]:
+                            new_field = Et.SubElement(xml_technical, technical)
+                            new_field.text = str(document_info[technical])
 
                 for document_data in document_info['datas']:
                     value = document_data
