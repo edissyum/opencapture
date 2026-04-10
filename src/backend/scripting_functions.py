@@ -38,11 +38,15 @@ def check_code(code, docserver_path, input_path):
                 return False, line
 
             if not line.startswith('#'):
-                directory_path = re.findall("((?:/|\.{1,2}/)[a-zA-Z\./]*[\s]?)", re.sub(r'\s*', '', line))
+                directory_path = re.findall(r"((?:/|\.{1,2}/)[a-zA-Z\./]*[\s]?)", re.sub(r'\s*', '', line))
                 if directory_path:
                     for path in directory_path:
+                        if '//' in path:
+                            continue
+
                         if not os.path.isdir(path):
                             return False, line
+
                         if path:
                             current_dir = os.getcwd()
                             path_to_access = re.sub(r'(/){2,}', '/', path)
@@ -156,7 +160,7 @@ def execute_output_splitter(args):
     return None
 
 
-def launch_script_verifier(workflow_settings, docservers, step, log, file, database, args, config, datas=None):
+def launch_script_verifier(workflow_settings, docservers, step, log, file, database, args, config, files, datas=None):
     if 'script' in workflow_settings[step] and workflow_settings[step]['script']:
         script = workflow_settings[step]['script']
         check_res, message = check_code(script, docservers['VERIFIER_SHARE'],
@@ -189,6 +193,7 @@ def launch_script_verifier(workflow_settings, docservers, step, log, file, datab
                 data = {
                     'log': log,
                     'file': file,
+                    'files': files,
                     'custom_id': args['custom_id'],
                     'opencapture_path': config['GLOBAL']['applicationpath']
                 }

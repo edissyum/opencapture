@@ -170,7 +170,7 @@ def launch(args):
             log.debug('Process launched from mail module, initialize Mail class')
             mail_class = Mail(args['process'])
 
-            log = Log((args['log']), smtp, config.cfg['GLOBAL']['debugmode'])
+            log = Log((args['log']), smtp, config['GLOBAL']['debugmode'])
             log.task_id_monitor = args['task_id_monitor']
             log.database = database
             log.prefix = '[MailCollect]'
@@ -214,7 +214,7 @@ def launch(args):
         log.debug('Check if workflow scripting is enabled for this workflow')
         if config['GLOBAL']['allowwfscripting'].lower() == 'true':
             log.debug('Check if there is input scripting to execute')
-            change_workflow = launch_script_verifier(workflow_settings[0], docservers, 'input', log, args['file'], database, args, config)
+            change_workflow = launch_script_verifier(workflow_settings[0], docservers, 'input', log, args['file'], database, args, config, files)
 
         if not change_workflow:
             if 'file' in args and args['file'] is not None:

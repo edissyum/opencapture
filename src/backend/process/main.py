@@ -1009,7 +1009,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     # Launch process scripting if present
     if config['GLOBAL']['allowwfscripting'].lower() == 'true':
         log.debug('Check if there is process scripting to execute')
-        launch_script_verifier(workflow_settings, docservers, 'process', log, file, database, args, config, datas)
+        launch_script_verifier(workflow_settings, docservers, 'process', log, file, database, args, config, files, datas)
 
     # Execute outputs if necessary
     args['outputs'] = []
@@ -1070,5 +1070,5 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         # Launch outputs scripting if present
         if config['GLOBAL']['allowwfscripting'].lower() == 'true':
             log.debug('Check if there is output scripting to execute')
-            launch_script_verifier(workflow_settings, docservers, 'output', log, file, database, args, config)
+            launch_script_verifier(workflow_settings, docservers, 'output', log, file, database, args, config, files)
     return document_id
