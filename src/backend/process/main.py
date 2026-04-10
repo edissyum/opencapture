@@ -206,7 +206,7 @@ def return_text(img, tesseract_function, ocr):
         return ocr.line_box_builder(img)
 
 
-def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_class, _res, files, configurations,
+def found_data_recursively(log, data_name, ocr, file, nb_pages, text_by_pages, data_class, _res, files, configurations,
                            tesseract_function, convert_function):
     if data_name == 'contact':
         data_class.image = files.open_image_return(files.jpg_name)
@@ -278,6 +278,8 @@ def found_data_recursively(data_name, ocr, file, nb_pages, text_by_pages, data_c
                 if int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
                     break
 
+        log.debug('Search ' + data_name + ' in page ' + str(tmp_nb_pages))
+        log.debug('Convert document to images and extract text using OCR for page ' + str(tmp_nb_pages))
         convert(file, files, ocr, tmp_nb_pages, tesseract_function, convert_function, True)
         _file = files.custom_file_name
         image = files.open_image_return(_file)
@@ -417,6 +419,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     supplier_lang_different = False
 
     if 'supplier' in args and args['supplier']:
+        log.debug('Supplier informations provided in upload, try to find supplier in database using given informations')
         if 'column' in args['supplier'] and args['supplier']['column']:
             if 'value' in args['supplier'] and args['supplier']['value']:
                 column = args['supplier']['column']
@@ -549,6 +552,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                             if int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
                                 break
 
+                        log.debug('Search supplier in page ' + str(tmp_nb_pages))
+                        log.debug('Convert document to images and extract text using OCR for page ' + str(tmp_nb_pages))
                         convert(file, files, ocr, tmp_nb_pages, tesseract_function, convert_function, True)
                         supplier = find_supplier.FindSupplier(ocr, log, regex, database, files, nb_pages, tmp_nb_pages,
                                                               True, customer_id).run()
@@ -579,6 +584,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     'city': supplier[2]['city'],
                     'country': supplier[2]['country']
                 })
+
                 if 'civility' in supplier[2] and supplier[2]['civility']:
                     if not str(supplier[2]['civility']).isnumeric():
                         supplier[2]['civility'] = 1 if supplier[2]['civility'].lower() in ['male'] else 2
@@ -677,7 +683,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                                         docservers, datas['form_id'], custom_fields_to_find,
                                                         custom_field)
             custom_field = 'custom_' + str(custom_field['id'])
-            datas = found_data_recursively(custom_field, ocr, file, nb_pages, text_by_pages, custom_field_class,
+            datas = found_data_recursively(log, custom_field, ocr, file, nb_pages, text_by_pages, custom_field_class,
                                            datas, files, configurations, tesseract_function, convert_function)
 
     footer = None
@@ -764,7 +770,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             invoice_number_class = find_invoice_number.FindInvoiceNumber(ocr, files, log, regex, config, database,
                                                                          supplier, file, docservers, configurations,
                                                                          languages, datas['form_id'])
-            datas = found_data_recursively('invoice_number', ocr, file, nb_pages, text_by_pages,
+            datas = found_data_recursively(log, 'invoice_number', ocr, file, nb_pages, text_by_pages,
                                            invoice_number_class, datas, files, configurations, tesseract_function,
                                            convert_function)
 
@@ -774,7 +780,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             if current_app.config['CONTACT_MODEL'] is not None:
                 image = files.open_image_return(files.jpg_name)
             name_class = find_name.FindName(ocr, log, docservers, supplier, files, database, regex, datas['form_id'], file, current_app.config['CONTACT_MODEL'], image)
-            datas = found_data_recursively('firstname_lastname', ocr, file, nb_pages, text_by_pages,
+            datas = found_data_recursively(log, 'firstname_lastname', ocr, file, nb_pages, text_by_pages,
                                        name_class, datas, files, configurations, tesseract_function,
                                        convert_function)
 
@@ -782,14 +788,14 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             log.debug('Search for document date in document')
             date_class = find_date.FindDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
                                             languages, datas['form_id'])
-            datas = found_data_recursively('document_date', ocr, file, nb_pages, text_by_pages, date_class,
+            datas = found_data_recursively(log, 'document_date', ocr, file, nb_pages, text_by_pages, date_class,
                                            datas, files, configurations, tesseract_function, convert_function)
 
         if 'document_due_date' in system_fields_to_find:
             log.debug('Search for document due date in document')
             due_date_class = find_due_date.FindDueDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
                                                        languages, datas['form_id'])
-            datas = found_data_recursively('document_due_date', ocr, file, nb_pages, text_by_pages,
+            datas = found_data_recursively(log, 'document_due_date', ocr, file, nb_pages, text_by_pages,
                                            due_date_class, datas, files, configurations, tesseract_function,
                                            convert_function)
 
@@ -798,7 +804,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             quotation_number_class = find_quotation_number.FindQuotationNumber(ocr, files, log, regex, config, database,
                                                                                supplier, file, docservers,
                                                                                configurations, datas['form_id'], languages)
-            datas = found_data_recursively('quotation_number', ocr, file, nb_pages, text_by_pages,
+            datas = found_data_recursively(log, 'quotation_number', ocr, file, nb_pages, text_by_pages,
                                            quotation_number_class, datas, files, configurations, tesseract_function,
                                            convert_function)
 
@@ -806,7 +812,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             log.debug('Search for delivery number in document')
             delivery_number_class = find_delivery_number.FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file,
                                                                             docservers, configurations, datas['form_id'])
-            datas = found_data_recursively('delivery_number', ocr, file, nb_pages, text_by_pages,
+            datas = found_data_recursively(log, 'delivery_number', ocr, file, nb_pages, text_by_pages,
                                            delivery_number_class, datas, files, configurations, tesseract_function,
                                            convert_function)
 
@@ -838,6 +844,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                     tmp_nb_pages = tmp_nb_pages - 1
                     if i == 3 or int(tmp_nb_pages) == 1 or nb_pages == 1:
                         break
+
+                    log.debug('Search footer in page ' + str(tmp_nb_pages))
+                    log.debug('Convert document to images and extract text using OCR for page ' + str(tmp_nb_pages))
                     convert(file, files, ocr, tmp_nb_pages, tesseract_function, convert_function, True)
                     _file = files.custom_file_name
                     image = files.open_image_return(_file)
@@ -921,14 +930,14 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             log.debug('Search for currency in document')
             currency_class = find_currency.FindCurrency(ocr, log, regex, files, supplier, database, file, docservers,
                                                         datas['form_id'])
-            datas = found_data_recursively('currency', ocr, file, nb_pages, text_by_pages, currency_class,
+            datas = found_data_recursively(log, 'currency', ocr, file, nb_pages, text_by_pages, currency_class,
                                            datas, files, configurations, tesseract_function, convert_function)
 
         if 'subject' in system_fields_to_find:
             log.debug('Search for subject in document')
             subject_class = find_subject.FindSubject(ocr, log, regex, files, supplier, database, file, docservers,
                                                      datas['form_id'])
-            datas = found_data_recursively('subject', ocr, file, nb_pages, text_by_pages, subject_class,
+            datas = found_data_recursively(log, 'subject', ocr, file, nb_pages, text_by_pages, subject_class,
                                            datas, files, configurations, tesseract_function, convert_function)
 
     if 'currency' not in datas['datas'] or not datas['datas']['currency']:

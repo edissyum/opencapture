@@ -176,7 +176,8 @@ with app.app_context():
                 print('Batch name : ' + batch_path)
                 print('Batch error name : ' + docservers_mailcollect['path'] + '/_ERROR/' + batch_path.split('/MailCollect/')[1])
 
-                Log = log(batch_path + '/' + date_batch + '.log', smtp, config.cfg['GLOBAL']['debugmode'])
+                Log = log(batch_path + '/' + date_batch + '.log', smtp, config['GLOBAL']['debugmode'])
+                Log.prefix = '[MailCollect]'
                 Log.info('Start following batch : ' + os.path.basename(os.path.normpath(batch_path)))
                 Log.info('Action after processing e-mail is : ' + action)
                 Log.info('Number of e-mail to process : ' + str(len(emails)))
@@ -189,21 +190,21 @@ with app.app_context():
                         msg = convert_to_dict(msg)
                         msg_id = str(msg['uid'])
 
-                    Log.debug('Backup e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
+                    Log.debug('Backup e-mail no '+ str(cpt_mail) + '/' + str(len(emails)))
                     mail.backup_email(msg, batch_path)
-                    Log.debug('Backup done for e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
+                    Log.debug('Backup done for e-mail no '+ str(cpt_mail) + '/' + str(len(emails)))
 
                     insert_doc = verifierInsertBody if not isSplitter else splitterInsertBody
 
-                    Log.debug('Start to construct document for e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
+                    Log.debug('Start to construct document for e-mail no '+ str(cpt_mail) + '/' + str(len(emails)))
                     ret = mail.construct_dict(msg, batch_path, configurations, insert_doc)
-                    Log.debug('Document construction done for e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
+                    Log.debug('Document construction done for e-mail no '+ str(cpt_mail) + '/' + str(len(emails)))
                     if insert_doc:
                         Log.info('Start to process e-mail body and attachments')
                     else:
                         Log.info('Start to process only attachments')
 
-                    Log.info('Process e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
+                    Log.info('Process e-mail no '+ str(cpt_mail) + '/' + str(len(emails)))
                     if mail.method == 'graphql':
                         document_date = datetime.datetime.strptime(msg['receivedDateTime'], '%Y-%m-%dT%H:%M:%SZ')
                     else:
@@ -216,22 +217,22 @@ with app.app_context():
                             Log.info('Found ' + str(len(ret['attachments'])) + ' attachments')
                             cpt = 1
                             for attachment in ret['attachments']:
-                                Log.debug('Process attachment n°' + str(cpt) + '/' + str(len(ret['attachments'])))
-                                Log.debug('Attachment n°' + str(cpt) + ' filename is : ' + attachment['filename'] + ' and format is : ' + attachment['format'])
+                                task_id_monitor = database.insert({
+                                    'table': 'monitoring',
+                                    'columns': {
+                                        'status': 'wait',
+                                        'module': 'verifier' if not isSplitter else 'splitter',
+                                        'filename': os.path.basename(attachment['file']),
+                                        'workflow_id': verifierWorkflowId if not isSplitter else splitterWorkflowId,
+                                        'source': 'cli'
+                                    }
+                                })
+
+                                Log.debug('Process attachment no '+ str(cpt) + '/' + str(len(ret['attachments'])))
+                                Log.debug('Attachment no '+ str(cpt) + ' filename is : ' + attachment['filename'] + ' and format is : ' + attachment['format'])
                                 if attachment['format'].lower() == '.pdf' or attachment['format'].lower() == 'pdf':
                                     if not isSplitter:
-                                        task_id_monitor = database.insert({
-                                            'table': 'monitoring',
-                                            'columns': {
-                                                'status': 'wait',
-                                                'module': 'verifier',
-                                                'filename': os.path.basename(attachment['file']),
-                                                'workflow_id': verifierWorkflowId,
-                                                'source': 'cli'
-                                            }
-                                        })
-
-                                        Log.debug('Launch verifier for attachment n°' + str(cpt) + ' with file : ' + attachment['file'])
+                                        Log.debug('Launch verifier for attachment no '+ str(cpt) + ' with file : ' + attachment['file'])
                                         launch_verifier({
                                             'cpt': str(cpt),
                                             'isMail': True,
@@ -255,19 +256,9 @@ with app.app_context():
                                                 'date': document_date
                                             }
                                         })
+                                        Log.debug('Verifier launched for attachment no '+ str(cpt))
                                     else:
-                                        task_id_monitor = database.insert({
-                                            'table': 'monitoring',
-                                            'columns': {
-                                                'status': 'wait',
-                                                'module': 'splitter',
-                                                'filename': os.path.basename(attachment['file']),
-                                                'workflow_id': splitterWorkflowId,
-                                                'source': 'cli'
-                                            }
-                                        })
-
-                                        Log.debug('Launch splitter for attachment n°' + str(cpt) + ' with file : ' + attachment['file'])
+                                        Log.debug('Launch splitter for attachment no '+ str(cpt) + ' with file : ' + attachment['file'])
                                         launch_splitter({
                                             'isMail': True,
                                             'cpt': str(cpt),
@@ -288,24 +279,25 @@ with app.app_context():
                                                 'date': document_date
                                             }
                                         })
+                                        Log.debug('Splitter launched for attachment no '+ str(cpt))
                                 else:
-                                    Log.info('Attachment n°' + str(cpt) + ' is not a PDF file')
+                                    Log.info('Attachment no '+ str(cpt) + ' is not a PDF file')
                                 cpt = cpt + 1
                         else:
                             Log.info('No attachments found')
                     else:
-                        if not isSplitter:
-                            task_id_monitor = database.insert({
-                                'table': 'monitoring',
-                                'columns': {
-                                    'status': 'wait',
-                                    'module': 'verifier',
-                                    'filename': ret['file']['filename'],
-                                    'workflow_id': verifierWorkflowId,
-                                    'source': 'cli'
-                                }
-                            })
+                        task_id_monitor = database.insert({
+                            'table': 'monitoring',
+                            'columns': {
+                                'status': 'wait',
+                                'module': 'verifier' if not isSplitter else 'splitter',
+                                'filename': ret['file']['filename'],
+                                'workflow_id': verifierWorkflowId if not isSplitter else splitterWorkflowId,
+                                'source': 'cli'
+                            }
+                        })
 
+                        if not isSplitter:
                             Log.debug('Launch Verifier for mail body')
                             launch_verifier({
                                 'isMail': True,
@@ -330,17 +322,6 @@ with app.app_context():
                                 }
                             })
                         else:
-                            task_id_monitor = database.insert({
-                                'table': 'monitoring',
-                                'columns': {
-                                    'status': 'wait',
-                                    'module': 'splitter',
-                                    'filename': ret['file']['filename'],
-                                    'workflow_id': splitterWorkflowId,
-                                    'source': 'cli'
-                                }
-                            })
-
                             Log.debug('Launch Splitter for mail body')
                             launch_splitter({
                                 'isMail': True,
