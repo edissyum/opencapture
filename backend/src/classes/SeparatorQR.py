@@ -25,14 +25,13 @@ import base64
 import qrcode
 import pdf2image
 import subprocess
-from PIL import Image, ImageEnhance
 from io import BytesIO
 from fpdf import FPDF
-from fpdf.enums import RenderStyle
-
 from unidecode import unidecode
 from pyzbar.pyzbar import decode
+from fpdf.enums import RenderStyle
 import xml.etree.ElementTree as Et
+from PIL import Image, ImageEnhance
 
 
 class SeparatorQR:
@@ -343,6 +342,7 @@ class SeparatorQR:
                 'company_logo': docservers['ASSETS_PATH'] + "/imgs/logo_company.png",
                 'label': unidecode(separator['label']).encode('latin-1', 'replace').decode('latin-1')
             })
+
             try:
                 pdf.output(file_path)
 
@@ -353,8 +353,8 @@ class SeparatorQR:
                 for page in pages:
                     buffered = BytesIO()
                     page.save(buffered, format="JPEG")
-                    encoded_thumbnails.append(f"data:image/jpeg;base64,"
-                                              f"{base64.b64encode(buffered.getvalue()).decode('utf-8')}")
+                    encoded_thumbnails.append(
+                        f"data:image/jpeg;base64," f"{base64.b64encode(buffered.getvalue()).decode('utf-8')}")
             except (Exception,) as _e:
                 return {'error': str(_e)}
 
@@ -363,6 +363,7 @@ class SeparatorQR:
             'encoded_file': encoded_file,
             'encoded_thumbnails': encoded_thumbnails
         }
+
 
 class SeparatorPDF(FPDF):
     def build(self, data: dict):
