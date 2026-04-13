@@ -336,12 +336,12 @@ class SeparatorQR:
 
             pdf = SeparatorPDF(format='A4', unit='mm')
             pdf.build({
-                'logo': docservers['ASSETS_PATH'] + "/imgs/login_image.png",
                 'code_qr': qrcode_path,
-                'company_logo': docservers['ASSETS_PATH'] + "/imgs/logo_company.png",
                 'type': separator['type'],
-                'label': unidecode(separator['label']).encode('latin-1', 'replace').decode('latin-1'),
                 'qr_code_value': separator['qr_code_value'],
+                'logo': docservers['ASSETS_PATH'] + "/imgs/login_image.png",
+                'company_logo': docservers['ASSETS_PATH'] + "/imgs/logo_company.png",
+                'label': unidecode(separator['label']).encode('latin-1', 'replace').decode('latin-1')
             })
             try:
                 pdf.output(file_path)
