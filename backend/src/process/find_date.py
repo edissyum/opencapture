@@ -71,7 +71,7 @@ class FindDate:
                             regex[_r['regex_id']] = _r['content']
 
             if convert:
-                date_file = self.docservers['LOCALE_PATH'] + '/' + language + '.json'
+                date_file = self.docservers['ASSETS_PATH'] + '/locale/' + language + '.json'
                 with open(date_file, encoding='utf-8') as file:
                     _fp = json.load(file)
                     date_convert = _fp['dateConvert'] if 'dateConvert' in _fp else ''

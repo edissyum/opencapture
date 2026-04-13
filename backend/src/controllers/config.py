@@ -330,7 +330,8 @@ def get_last_git_version():
 
 def get_login_image():
     custom_id = retrieve_custom_from_url(request)
-    login_image = 'src/assets/imgs/login_image.svg'
+    docservers = get_context_var('docservers', 9)
+    login_image = docservers['ASSETS_PATH'] + '/imgs/login_image.svg'
     if custom_id:
         custom_path = get_custom_path(custom_id)
         if custom_path:

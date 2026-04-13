@@ -70,7 +70,7 @@ INSERT INTO "configurations" ("label", "data") VALUES ('enableAttachments', '{"t
 
 -- CRÉATION DES DOCSERVERS
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('PROJECT_PATH', 'Chemin vers l''instance d''Open-Capture', './');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('LOCALE_PATH', 'Chemin vers le dossier contenant les fichiers de traductions', './backend/src/assets/locale/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('ASSETS_PATH', 'Chemin vers le dossier contenant les fichiers de traductions', './backend/src/assets/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('ERROR_PATH', 'Chemin vers le dossier des batches en erreur', './data/error/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('TMP_PATH', 'Chemin vers le dossier temporaires utilisé lors du traitement des documents', './data/tmp/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SCRIPTS_PATH', 'Chemin vers le dossier contenant les différents scripts', './bin/scripts/');
@@ -1499,9 +1499,16 @@ INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (2, '{"data" 
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" : "[1, 2, 4, 12, 17, 18, 19, 29, 33, 41, 47, 53, 59, 65, 70, 71, 72, 73]"}');
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (4, '{"data" : "[1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 19, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 47, 48, 49, 50, 51, 52, 53, 54, 55, 65, 66, 70, 71, 72, 73]"}');
 
--- CRÉATION DE L'UTILISATEUR superadmin
-INSERT INTO "users" ("username", "firstname", "lastname", "password", "role") VALUES ('admin', 'Super', 'ADMIN', 'pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403', 1);
-INSERT INTO "users" ("username", "firstname", "lastname", "mode", "password", "role") VALUES ('user_ws', 'Utilisateur', 'WebServices', 'webservice', 'pbkdf2:sha256:600000$j2F2BOOhYAjBqTiD$6840209a20bd78a70d004da1627942485e2492ac9e6a4494412cdd87933d97fe', 4);
+-- CRÉATION DU COMPTE CLIENT PAR DÉFAUT Splitter
+INSERT INTO "accounts_customer" (id, name, module) VALUES (1, 'Splitter - Compte client par défaut', 'splitter');
+ALTER SEQUENCE "accounts_customer_id_seq" RESTART WITH 2;
+
+-- CRÉATION DES UTILISATEURS
+INSERT INTO "users" ("id", "username", "firstname", "lastname", "password", "role") VALUES (1, 'admin', 'Super', 'ADMIN', 'pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403', 1);
+INSERT INTO "users" ("id", "username", "firstname", "lastname", "mode", "password", "role") VALUES (2, 'user_ws', 'Utilisateur', 'WebServices', 'webservice', 'pbkdf2:sha256:600000$j2F2BOOhYAjBqTiD$6840209a20bd78a70d004da1627942485e2492ac9e6a4494412cdd87933d97fe', 4);
+ALTER SEQUENCE "users_id_seq" RESTART WITH 3;
+
+INSERT INTO "users_customers" ("user_id", "customers_id") VALUES (2, '{"data": "[1]"}');
 
 -- CRÉATION D'UN MASQUE DE POSITIONNEMENT D'EXEMPLE
 INSERT INTO "positions_masks" ("id", "label", "form_id", "regex") VALUES (1, 'Masque par défaut', 1, '{"document_date": "date", "document_due_date": "date"}');
@@ -1841,13 +1848,6 @@ INSERT INTO "accounting_plan" ("compte_num", "compte_lib") VALUES ('7140 0005', 
 INSERT INTO "accounting_plan" ("compte_num", "compte_lib") VALUES ('7160 0000', 'Produits financiers');
 INSERT INTO "accounting_plan" ("compte_num", "compte_lib") VALUES ('7180 0000', 'Produits exceptionnels');
 INSERT INTO "accounting_plan" ("compte_num", "compte_lib") VALUES ('7800 0000', 'Reprises de dépréciations sur créances douteuses');
-
--- CRÉATION DU COMPTE CLIENT PAR DÉFAUT
-DO $$
-    DECLARE new_customer_id integer;
-BEGIN
-    INSERT INTO "accounts_customer" (name, module, status, creation_date) VALUES ('Splitter - Compte client par défaut', 'splitter', 'OK', '2023-01-09 11:26:38.989482') RETURNING id INTO new_customer_id;
-END $$;
 
 -- CREATION DES CIVILITES PAR DEFAUT
 INSERT INTO "accounts_civilities" ("id", "label") VALUES (1, 'Monsieur');

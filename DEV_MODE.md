@@ -155,7 +155,7 @@ cd /opt/edissyum/opencapture/
 find custom/$CUSTOM_ID/bin/scripts/ -type f -name "*.sh" -exec sed -i '1a source /opt/edissyum/opencapture/venv/bin/activate' {} \;
 ```
 
-11. **Access Open-Capture**:
+12. **Access Open-Capture**:
 
 Open your web browser and navigate to `http://YOU_IP_ADDRESS:5173` to access the Open-Capneditorfrontend. 
 
@@ -170,3 +170,35 @@ sudo systemctl status opencapture-backend.service
 ```bash
 sudo journalctl -u opencapture-frontend.service -f
 sudo journalctl -u opencapture-backend.service -f
+```
+
+### Launch python unittest:
+```bash
+cd /opt/edissyum/opencapture/backend/
+
+# Create 'test' custom instance for testing:
+sudo -u postgres psql -c "CREATE DATABASE opencapture_test OWNER $POSTGRES_USER;"
+
+sudo ./create_custom.sh --custom_id test \
+    --database_user $POSTGRES_USER \
+    --database_password $POSTGRES_PASSWORD \
+    --database_hostname $POSTGRES_HOST \
+    --database_port $POSTGRES_PORT \
+    --database_name opencapture_test \
+    --docservers_path /var/docservers/opencapture/test/ \
+    --share_path /var/share/test/
+    
+sudo chmod -R 775 /var/share/test/
+sudo chmod -R 775 /opt/edissyum/opencapture/
+sudo chmod -R 775 /var/docservers/opencapture/test/
+
+sudo chown -R $(whoami) /var/share/test/
+sudo chown -R $(whoami) /opt/edissyum/opencapture/
+sudo chown -R $(whoami) /var/docservers/opencapture/test/
+
+# Launch all tests:
+python3 -m unittest discover -s backend/src/tests -t backend/
+
+# Launch specific test file:
+python3 -m unittest ./backend/src/tests/rest/test_workflows.py
+```

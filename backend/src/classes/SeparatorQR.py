@@ -369,8 +369,7 @@ class SeparatorQR:
         ]
 
         # Instantiating the template and defining the HEADER
-        file = Template(format="A4", elements=elements,
-                     title="Separator file")
+        file = Template(format="A4", elements=elements, title="Separator file")
         for separator in separators:
             file.add_page()
             total += 1
@@ -382,9 +381,9 @@ class SeparatorQR:
             file["label"] = separator['label'].encode('latin-1', 'replace').decode('latin-1')
             file["qr_code_value"] = separator['qr_code_value']
 
-            file["logo"] = "src/assets/imgs/login_image.png"
-            file["company_logo"] = "src/assets/imgs/logo_company.png"
-            file["icon_loop"] = "src/assets/imgs/Open-Capture_Splitter.png"
+            file["logo"] = docservers['ASSETS_PATH'] + "/imgs/login_image.png"
+            file["company_logo"] = docservers['ASSETS_PATH'] + "/imgs/logo_company.png"
+            file["icon_loop"] = docservers['ASSETS_PATH'] + "/imgs/Open-Capture_Splitter.png"
 
             qrcode_path = docservers['TMP_PATH'] + f"/code_qr_{separator['qr_code_value']}.png"
             img = qrcode.make(separator['qr_code_value'])

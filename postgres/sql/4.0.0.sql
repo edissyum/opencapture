@@ -311,3 +311,7 @@ SET data = jsonb_set(
                 )
          FROM jsonb_array_elements(data -> 'options' -> 'parameters') AS param)
 ) WHERE output_type_id = 'export_xml' AND module = 'splitter';
+
+-- Remplacer les chemins dans les docservers
+UPDATE docservers SET docserver_id = 'ASSETS_PATH' WHERE docserver_id = 'LOCALE_PATH';
+UPDATE docservers SET path = './backend/src/assets/' WHERE docserver_id = 'ASSETS_PATH';

@@ -22,6 +22,7 @@ from flask_babel import gettext
 from ..functions import rest_validator
 from flask import Blueprint, request, make_response, jsonify
 from ..controllers import auth, accounts, verifier, privileges
+from ..helpers import get_context_var
 
 bp = Blueprint('accounts', __name__, url_prefix='/ws/')
 
@@ -197,32 +198,6 @@ def update_address(address_id):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('accounts/addresses/updateBySupplierId/<int:suplier_id>', methods=['PUT'])
-@auth.token_required
-def update_address_by_supplier_id(suplier_id):
-    if 'skip' not in request.environ or not request.environ['skip']:
-        if not privileges.has_privileges(request.environ['user_id'], ['update_supplier | access_verifier']):
-            return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                            'message': f'/accounts/addresses/updateBySupplierId/{suplier_id}'}), 403
-
-    data = request.json['args']
-    check, message = rest_validator(data, [
-        {'id': 'city', 'type': str, 'mandatory': False},
-        {'id': 'country', 'type': str, 'mandatory': False},
-        {'id': 'address1', 'type': str, 'mandatory': False},
-        {'id': 'address2', 'type': str, 'mandatory': False},
-        {'id': 'postal_code', 'type': str, 'mandatory': False}
-    ])
-    if not check:
-        return make_response({
-            "errors": gettext('BAD_REQUEST'),
-            "message": message
-        }, 400)
-
-    res = accounts.update_address_by_supplier_id(suplier_id, data)
-    return make_response(jsonify(res[0])), res[1]
-
-
 @bp.route('accounts/addresses/create', methods=['POST'])
 @auth.token_required
 def create_address():
@@ -334,8 +309,7 @@ def delete_supplier_position(supplier_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/accounts/suppliers/{supplier_id}/deletePosition'}), 403
 
-    args = request.json['args']
-    check, message = rest_validator(args, [
+    check, message = rest_validator(request.json, [
         {'id': 'form_id', 'type': int, 'mandatory': True},
         {'id': 'field_id', 'type': str, 'mandatory': False}
     ])
@@ -346,13 +320,13 @@ def delete_supplier_position(supplier_id):
         }, 400)
 
     res = '', 200
-    if 'multiple' in args:
-        fields = args['fields']
+    if 'multiple' in request.json:
+        fields = request.json['fields']
         for field in fields:
-            res = accounts.delete_document_position_by_supplier_id(supplier_id, field, args['form_id'])
+            res = accounts.delete_document_position_by_supplier_id(supplier_id, field, request.json['form_id'])
     else:
-        field_id = args['field_id']
-        res = accounts.delete_document_position_by_supplier_id(supplier_id, field_id, args['form_id'])
+        field_id = request.json['field_id']
+        res = accounts.delete_document_position_by_supplier_id(supplier_id, field_id, request.json['form_id'])
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -364,8 +338,7 @@ def delete_supplier_page(supplier_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/accounts/suppliers/{supplier_id}/deletePage'}), 403
 
-    args = request.json['args']
-    check, message = rest_validator(args, [
+    check, message = rest_validator(request.json, [
         {'id': 'form_id', 'type': int, 'mandatory': True},
         {'id': 'field_id', 'type': str, 'mandatory': False}
     ])
@@ -376,13 +349,13 @@ def delete_supplier_page(supplier_id):
         }, 400)
 
     res = '', 200
-    if 'multiple' in args:
-        fields = args['fields']
+    if 'multiple' in request.json:
+        fields = request.json['fields']
         for field in fields:
-            res = accounts.delete_document_page_by_supplier_id(supplier_id, field, args['form_id'])
+            res = accounts.delete_document_page_by_supplier_id(supplier_id, field, request.json['form_id'])
     else:
-        field_id = args['field_id']
-        res = accounts.delete_document_page_by_supplier_id(supplier_id, field_id, args['form_id'])
+        field_id = request.json['field_id']
+        res = accounts.delete_document_page_by_supplier_id(supplier_id, field_id, request.json['form_id'])
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -521,6 +494,7 @@ def get_reference_file():
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/supplier/getReferenceFile'}), 403
 
     config = get_context_var('config', 1)
+    docservers = get_context_var('docservers', 9)
 
     file_path = docservers['REFERENTIALS_PATH'] + '/' + config['REFERENCIAL']['referencialsupplierdocument']
     mime = mimetypes.guess_type(file_path)[0]

@@ -94,14 +94,17 @@ def get_locale():
     return session['lang']
 
 
-app = Flask(__name__, instance_relative_config=True)
+app = Flask(__name__)
 app.wsgi_app = Middleware(app.wsgi_app)
 CORS(app, supports_credentials=True)
 limiter.init_app(app)
 
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+instance_path = os.path.abspath(os.path.join(BASE_DIR, "../instance"))
+
 # Load Artificial Intelligence model to rotate document
 rotate_model = None
-rotate_model_path = os.path.join(app.instance_path, "artificial_intelligence/rotate_document.pt")
+rotate_model_path = os.path.join(instance_path, "artificial_intelligence/rotate_document.pt")
 if os.path.isfile(rotate_model_path):
     rotate_model = YOLO(rotate_model_path, verbose=False)
     try:
@@ -111,18 +114,21 @@ if os.path.isfile(rotate_model_path):
 
 # Load Artificial Intelligence model to detect contact
 contact_model = None
-contact_model_path = os.path.join(app.instance_path, "artificial_intelligence/contact/")
+contact_model_path = os.path.join(instance_path, "artificial_intelligence/contact/")
 if os.path.isdir(contact_model_path) and len(os.listdir(contact_model_path)) > 0:
     contact_model = contact_model_path
 
 app.config.from_mapping(
     ROTATE_MODEL=rotate_model,
     CONTACT_MODEL=contact_model,
-    JOURNAL_PATH=os.path.join(app.instance_path, 'journal/custom/'),
-    UPLOAD_FOLDER=os.path.join(app.instance_path, 'upload/verifier/'),
+    instance_path=instance_path,
+    instance_relative_config=True,
+    JOURNAL_PATH=os.path.join(instance_path, 'journal/custom/'),
+    UPLOAD_FOLDER=os.path.join(instance_path, 'upload/verifier/'),
     BABEL_TRANSLATION_DIRECTORIES=app.root_path + '/assets/i18n/translations/',
-    UPLOAD_FOLDER_SPLITTER=os.path.join(app.instance_path, 'upload/splitter/')
+    UPLOAD_FOLDER_SPLITTER=os.path.join(instance_path, 'upload/splitter/')
 )
+
 babel = Babel(app, default_locale='fr', locale_selector=get_locale)
 
 app.register_blueprint(mem.bp)

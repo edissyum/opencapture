@@ -17,6 +17,7 @@
 import json
 import unittest
 import warnings
+
 from ... import app
 from ...tests import CUSTOM_ID, get_db, get_token
 
@@ -30,17 +31,15 @@ class FormTest(unittest.TestCase):
 
     def create_splitter_form(self):
         payload = json.dumps({
-            'args': {
-                'module': 'splitter',
-                'default_form': False,
-                "outputs": [
-                    "1"
-                ],
-                'label': 'SPLITTER_TEST_FORM',
-                'settings': {
-                    'export_zip_file': '',
-                    'metadata_method': 'metadata_default'
-                }
+            'module': 'splitter',
+            'default_form': False,
+            "outputs": [
+                "1"
+            ],
+            'label': 'SPLITTER_TEST_FORM',
+            'settings': {
+                'export_zip_file': '',
+                'metadata_method': 'metadata_default'
             }
         })
         return self.app.post(f'/{CUSTOM_ID}/ws/forms/splitter/create',
@@ -49,16 +48,15 @@ class FormTest(unittest.TestCase):
 
     def create_verifier_form(self):
         payload = json.dumps({
-            "args": {
-                "module": "verifier",
-                "label": "VERIFIER_TEST_FORM",
-                "outputs": [
-                    "1"
-                ],
-                "default_form": True,
-                "settings": {
-                    "supplier_verif": True
-                }
+
+            "module": "verifier",
+            "label": "VERIFIER_TEST_FORM",
+            "outputs": [
+                "1"
+            ],
+            "default_form": True,
+            "settings": {
+                "supplier_verif": True
             }
         })
         return self.app.post(f'/{CUSTOM_ID}/ws/forms/verifier/create',
@@ -68,16 +66,16 @@ class FormTest(unittest.TestCase):
     def update_splitter_form_fields(self, form_id):
         payload = json.dumps({
             "batch_metadata": [{
-                    'id': 'custom_5',
-                    'type': 'text',
-                    'settings': {},
-                    'format': 'text',
-                    'unit': 'custom',
-                    'class': 'w-1/3',
-                    'class_label': '1/33',
-                    'label': 'Matricule',
-                    'label_short': 'matricule',
-                    'metadata_key': 'matricule'
+                'id': 'custom_5',
+                'type': 'text',
+                'settings': {},
+                'format': 'text',
+                'unit': 'custom',
+                'class': 'w-1/3',
+                'class_label': '1/33',
+                'label': 'Matricule',
+                'label_short': 'matricule',
+                'metadata_key': 'matricule'
             }],
             'document_metadata': []
         })

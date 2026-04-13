@@ -31,11 +31,9 @@ class RolesTest(unittest.TestCase):
 
     def create_role(self):
         payload = json.dumps({
-            "args": {
-                "label_short": "TEST",
-                "label": "Rôle test",
-                "assign_roles": []
-            }
+            "label_short": "TEST",
+            "label": "Rôle test",
+            "assign_roles": []
         })
 
         return self.app.post(f'/{CUSTOM_ID}/ws/roles/create',
@@ -88,7 +86,7 @@ class RolesTest(unittest.TestCase):
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/roles/update/' + str(role.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                                json={'args': payload})
+                                json=payload)
         self.assertEqual(200, response.status_code)
 
         self.database.execute("SELECT label, label_short, enabled FROM roles WHERE id = " + str(role.json['id']))

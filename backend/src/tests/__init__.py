@@ -16,23 +16,27 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <nathan.cheval@outlook.fr>
 
+import os
+import sys
 import jwt
 import psycopg
+from pathlib import Path
 from psycopg.rows import dict_row
-from ..classes.Config import Config
 from datetime import datetime, timezone, timedelta
 
 CUSTOM_ID = 'test'
-PROJECT_PATH = '/var/www/html/opencapture/'
+BACKEND_PATH = str(Path(__file__).resolve().parents[2])
+PROJECT_PATH = './'
 
+if BACKEND_PATH not in sys.path:
+    sys.path.insert(0, BACKEND_PATH)
 
 def get_db():
-    config = Config(f'{PROJECT_PATH}/custom/{CUSTOM_ID}/config/config.ini')
-    conn = psycopg.connect(dbname=config.cfg['DATABASE']['postgresdatabase'],
-                           user=config.cfg['DATABASE']['postgresuser'],
-                           password=config.cfg['DATABASE']['postgrespassword'],
-                           host=config.cfg['DATABASE']['postgreshost'],
-                           port=config.cfg['DATABASE']['postgresport'],
+    conn = psycopg.connect(dbname=os.environ['POSTGRES_DB'],
+                           user=os.environ['POSTGRES_USER'],
+                           password=os.environ['POSTGRES_PASSWORD'],
+                           host=os.environ['POSTGRES_HOST'],
+                           port=os.environ['POSTGRES_PORT'],
                            row_factory=dict_row)
     cursor = conn.cursor()
     conn.autocommit = True
@@ -42,6 +46,7 @@ def get_db():
 def get_token(user_id):
     with open(f'{PROJECT_PATH}/custom/{CUSTOM_ID}/config/secret_key', encoding='utf-8') as secret_key_file:
         secret_key = secret_key_file.read().replace('\n', '')
+
     try:
         payload = {
             'exp': datetime.now(timezone.utc) + timedelta(minutes=1440, seconds=0),

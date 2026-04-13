@@ -19,6 +19,8 @@ import os
 import base64
 import unittest
 import warnings
+
+from .. import PROJECT_PATH
 from ... import app
 from ...tests import CUSTOM_ID, get_db, get_token
 
@@ -113,7 +115,7 @@ class ConfigTest(unittest.TestCase):
         regex_id = self.database.fetchall()
         response = self.app.put(f'/{CUSTOM_ID}/ws/config/updateRegex/' + str(regex_id[0]['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                                json={'args': {"label": 'Adresse email', "content": "Updated_content"}})
+                                json={"label": 'Adresse email', "content": "Updated_content"})
         self.assertEqual(200, response.status_code)
 
         self.database.execute("SELECT content FROM regex WHERE regex_id = 'email'")
@@ -124,20 +126,21 @@ class ConfigTest(unittest.TestCase):
         response = self.app.get(f'/{CUSTOM_ID}/ws/config/getLoginImage',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        login_image = open('/var/www/html/opencapture/src/assets/imgs/login_image.svg', 'rb')
+        login_image = open(f'{PROJECT_PATH}/frontend/src/assets/imgs/login_image.svg', 'rb')
         current_login_image = base64.b64encode(login_image.read())
         login_image.close()
-        self.assertEqual(current_login_image.decode('utf-8'), response.json)
+        self.assertEqual(current_login_image.decode('utf-8'), response.json.replace('data:image/svg+xml;base64,', ''))
 
     def test_successful_update_login_image(self):
-        login_image = open('/var/www/html/opencapture/src/assets/imgs/login_image.svg', 'rb')
+        login_image = open(f'{PROJECT_PATH}/frontend/src/assets/imgs/login_image.svg', 'rb')
         default_login_image = base64.b64encode(login_image.read())
         login_image.close()
         response = self.app.put(f'/{CUSTOM_ID}/ws/config/updateLoginImage',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                                json={"args": {"image_content": default_login_image.decode('utf-8')}})
+                                json={"image_content": 'data:image/svg+xml;base64,' + default_login_image.decode('utf-8')})
+
         self.assertEqual(200, response.status_code)
-        custom_image = open(f'/var/www/html/opencapture/custom/{CUSTOM_ID}/assets/imgs/login_image.svg', 'rb')
+        custom_image = open(f'{PROJECT_PATH}/custom/{CUSTOM_ID}/assets/imgs/login_image.svg', 'rb')
         custom_login_image = base64.b64encode(custom_image.read())
         custom_image.close()
         self.assertEqual(default_login_image.decode('utf-8'), custom_login_image.decode('utf-8'))
@@ -147,8 +150,7 @@ class ConfigTest(unittest.TestCase):
         configuration_id = self.database.fetchall()
         response = self.app.put(f'/{CUSTOM_ID}/ws/config/updateConfiguration/' + str(configuration_id[0]['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                                json={"data": {"type": "int", "value": "8",
-                                               "description": "Taille minimale pour un numéro de facture"}})
+                                json={"type": "int", "value": "8", "description": "Taille minimale pour un numéro de facture"})
         self.assertEqual(200, response.status_code)
         self.database.execute("SELECT data #>> '{value}' as value FROM configurations WHERE label = 'invoiceSizeMin'")
         updated_configuration = self.database.fetchall()
@@ -160,8 +162,8 @@ class ConfigTest(unittest.TestCase):
         docserver_id = self.database.fetchall()
         response = self.app.put(f'/{CUSTOM_ID}/ws/config/updateDocserver/' + str(docserver_id[0]['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                                json={"args": {"id": docserver_id[0]['id'], "docserver_id": "DOCSERVERS_PATH",
-                                               "description": docserver_id[0]['description'], "path": "/new/path/"}})
+                                json={"id": docserver_id[0]['id'], "docserver_id": "DOCSERVERS_PATH",
+                                      "description": docserver_id[0]['description'], "path": "/new/path/"})
         self.assertEqual(200, response.status_code)
 
         self.database.execute("SELECT path FROM docservers WHERE docserver_id = 'DOCSERVERS_PATH'")
@@ -179,7 +181,7 @@ class ConfigTest(unittest.TestCase):
         if os.path.isfile(f'/var/www/html/opencapture/custom/{CUSTOM_ID}/assets/imgs/login_image.svg'):
             os.remove(f'/var/www/html/opencapture/custom/{CUSTOM_ID}/assets/imgs/login_image.svg')
         self.database.execute("UPDATE regex "
-                        "SET content = '([A-Za-z0-9]+[\.\-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+' "
+                        r"SET content = '([A-Za-z0-9]+[\.\-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+' "
                         "WHERE regex_id = 'email'")
         self.database.execute(f"UPDATE docservers SET path = '/var/docservers/opencapture/{CUSTOM_ID}/' "
                         "WHERE docserver_id = 'DOCSERVERS_PATH'")

@@ -21,7 +21,7 @@ import shutil
 import unittest
 import warnings
 from ... import app
-from ...tests import CUSTOM_ID, get_db, get_token
+from ...tests import CUSTOM_ID, get_db, get_token, PROJECT_PATH
 
 
 class UserTest(unittest.TestCase):
@@ -47,7 +47,7 @@ class UserTest(unittest.TestCase):
 
         return self.app.post(f'/{CUSTOM_ID}/ws/accounts/suppliers/create',
                              headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                             json={"args": payload})
+                             json=payload)
 
     def create_customer(self):
         payload = {
@@ -62,7 +62,7 @@ class UserTest(unittest.TestCase):
 
         return self.app.post(f'/{CUSTOM_ID}/ws/accounts/customers/create',
                              headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                             json={"args": payload})
+                             json=payload)
 
     def create_address(self):
         payload = {
@@ -75,7 +75,7 @@ class UserTest(unittest.TestCase):
 
         return self.app.post(f'/{CUSTOM_ID}/ws/accounts/addresses/create',
                              headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                             json={"args": payload})
+                             json=payload)
 
     def test_successful_create_supplier(self):
         supplier = self.create_supplier()
@@ -160,7 +160,7 @@ class UserTest(unittest.TestCase):
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/accounts/suppliers/update/' + str(supplier.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                                json={'args': payload})
+                                json=payload)
         self.assertEqual(200, response.status_code)
 
         self.database.execute("SELECT * FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
@@ -189,31 +189,7 @@ class UserTest(unittest.TestCase):
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/accounts/addresses/update/' + str(address.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                                json={'args': payload})
-        self.assertEqual(200, response.status_code)
-
-        self.database.execute("SELECT * FROM addresses WHERE id = " + str(address.json['id']))
-        new_address = self.database.fetchall()
-        self.assertEqual("Avenue de la Test UPDATED", new_address[0]['address1'])
-        self.assertEqual("Bâtiment B UPDATED", new_address[0]['address2'])
-        self.assertEqual("84202", new_address[0]['postal_code'])
-        self.assertEqual("Carpentras UPDATED", new_address[0]['city'])
-        self.assertEqual("France UPDATED", new_address[0]['country'])
-        self.assertEqual(200, response.status_code)
-
-    def test_successful_update_address_by_supplier_id(self):
-        address = self.create_address()
-        supplier = self.create_supplier(address.json['id'])
-        payload = {
-            "address1": "Avenue de la Test UPDATED",
-            "address2": "Bâtiment B UPDATED",
-            "postal_code": "84202",
-            "city": "Carpentras UPDATED",
-            "country": "France UPDATED"
-        }
-        response = self.app.put(f'/{CUSTOM_ID}/ws/accounts/addresses/updateBySupplierId/' + str(supplier.json['id']),
-                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                                json={'args': payload})
+                                json=payload)
         self.assertEqual(200, response.status_code)
 
         self.database.execute("SELECT * FROM addresses WHERE id = " + str(address.json['id']))
@@ -239,7 +215,7 @@ class UserTest(unittest.TestCase):
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/accounts/supplier/' + str(supplier.json['id']) + '/updatePosition',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                                json={'args': payload})
+                                json=payload)
         self.database.execute("SELECT positions FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
         new_supplier = self.database.fetchall()
         self.assertEqual(200, response.status_code)
@@ -264,7 +240,7 @@ class UserTest(unittest.TestCase):
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/accounts/supplier/' + str(supplier.json['id']) + '/updatePage',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                                json={'args': payload})
+                                json=payload)
         self.database.execute("SELECT pages FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
         new_supplier = self.database.fetchall()
         self.assertEqual(200, response.status_code)
@@ -296,7 +272,7 @@ class UserTest(unittest.TestCase):
         }
         self.app.put(f'/{CUSTOM_ID}/ws/accounts/supplier/' + str(supplier.json['id']) + '/updatePosition',
                      headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                     json={'args': payload})
+                     json=payload)
         response = self.app.delete(f'/{CUSTOM_ID}/ws/accounts/suppliers/deletePositions/' + str(supplier.json['id']),
                                    headers={"Content-Type": "application/json",
                                             'Authorization': 'Bearer ' + self.token})
@@ -320,14 +296,14 @@ class UserTest(unittest.TestCase):
         }
         self.app.put(f'/{CUSTOM_ID}/ws/accounts/supplier/' + str(supplier.json['id']) + '/updatePosition',
                      headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                     json={'args': payload})
+                     json=payload)
         payload = {
             "form_id": 1,
             "field_id": 'invoice_number'
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/accounts/suppliers/' + str(supplier.json['id']) + '/deletePosition',
                                 headers={"Content-Type": "application/json",
-                                         'Authorization': 'Bearer ' + self.token}, json={'args': payload})
+                                         'Authorization': 'Bearer ' + self.token}, json=payload)
         self.assertEqual(200, response.status_code)
 
         self.database.execute("SELECT positions FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
@@ -342,14 +318,14 @@ class UserTest(unittest.TestCase):
         }
         self.app.put(f'/{CUSTOM_ID}/ws/accounts/supplier/' + str(supplier.json['id']) + '/updatePage',
                      headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                     json={'args': payload})
+                     json=payload)
         payload = {
             "form_id": 1,
             "field_id": 'invoice_number'
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/accounts/suppliers/' + str(supplier.json['id']) + '/deletePage',
                                 headers={"Content-Type": "application/json",
-                                         'Authorization': 'Bearer ' + self.token}, json={'args': payload})
+                                         'Authorization': 'Bearer ' + self.token}, json=payload)
         self.assertEqual(200, response.status_code)
 
         self.database.execute("SELECT pages FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
@@ -416,7 +392,7 @@ class UserTest(unittest.TestCase):
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/accounts/customers/update/' + str(customer.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                                json={'args': payload})
+                                json=payload)
         self.assertEqual(200, response.status_code)
 
         self.database.execute("SELECT * FROM accounts_customer WHERE id = " + str(customer.json['id']))
@@ -447,7 +423,7 @@ class UserTest(unittest.TestCase):
 
     def test_successful_get_reference_file(self):
         reference_file = open(
-            f'/var/www/html/opencapture/custom/{CUSTOM_ID}/instance/referencial/default_referencial_supplier.csv', 'rb')
+            f'{PROJECT_PATH}/custom/{CUSTOM_ID}/instance/referencial/default_referencial_supplier.csv', 'rb')
         default_reference_file = base64.b64encode(reference_file.read()).decode('utf-8')
         reference_file.close()
         response = self.app.get(f'/{CUSTOM_ID}/ws/accounts/supplier/getReferenceFile',
@@ -457,8 +433,8 @@ class UserTest(unittest.TestCase):
         self.assertEqual(default_reference_file, response.json['file'])
 
     def tearDown(self) -> None:
-        shutil.copy('/var/www/html/opencapture/instance/referencial/default_referencial_supplier.csv.default',
-                    f'/var/www/html/opencapture/custom/{CUSTOM_ID}/instance/referencial/default_referencial_supplier.csv')
+        shutil.copy(f'{PROJECT_PATH}/backend/instance/referencial/default_referencial_supplier.csv.default',
+                    f'{PROJECT_PATH}/custom/{CUSTOM_ID}/instance/referencial/default_referencial_supplier.csv')
         self.database.execute("TRUNCATE TABLE addresses")
         self.database.execute("TRUNCATE TABLE accounts_supplier")
         self.database.execute("DELETE FROM accounts_customer WHERE name <> 'Splitter - Compte client par défaut'")

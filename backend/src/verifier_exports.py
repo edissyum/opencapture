@@ -398,7 +398,7 @@ def export_facturx(data, log, regex, document_info):
         due_payable.text = '0.00'
 
         file = document_info['path'] + '/' + document_info['filename']
-        facturx.generate_facturx_from_file(file, Et.tostring(root), output_pdf_file=folder_out + '/' + filename)
+        facturx.generate_from_file(file, Et.tostring(root), output_pdf_file=folder_out + '/' + filename)
         return folder_out + '/' + filename, 200
     else:
         if log:

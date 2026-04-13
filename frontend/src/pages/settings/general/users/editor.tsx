@@ -86,6 +86,7 @@ export function SettingsGeneralUserEditor() {
         })),
         role: z.number().describe(JSON.stringify({
             component: "dropdown",
+            required: true,
             options: roles.map((role: any) => ({
                 value: role.id,
                 label: role.label

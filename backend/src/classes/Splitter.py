@@ -536,7 +536,6 @@ class Splitter:
             xml_as_string = xml_as_string.replace(doc_loop_item_template.group(1), documents_tags)
 
         xml_file_path = f"{parameters['folder_out']}/{metadata['metadata_file']}"
-        print(xml_file_path)
         """
             Check XML Syntax and write file result & remove template comments
         """

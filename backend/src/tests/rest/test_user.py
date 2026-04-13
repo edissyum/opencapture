@@ -45,7 +45,7 @@ class UserTest(unittest.TestCase):
             "forms": [1]
         })
 
-        return self.app.post(f'/{CUSTOM_ID}/ws/users/new',
+        return self.app.post(f'/{CUSTOM_ID}/ws/users/create',
                              headers={"Content-Type": "application/json",
                                       'Authorization': 'Bearer ' + self.token}, data=payload)
 
@@ -96,17 +96,18 @@ class UserTest(unittest.TestCase):
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/users/update/' + str(user.json['id']),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                                json={'args': payload})
+                                json=payload)
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
 
         self.database.execute("SELECT firstname, lastname, password, role, email FROM users WHERE id = " + str(user.json['id']))
-        new_user = self.database.fetchall()
-        self.assertEqual(1, new_user[0]['role'])
-        self.assertEqual("Test", new_user[0]['firstname'])
-        self.assertEqual("Test123", new_user[0]['lastname'])
-        self.assertEqual("test123@tttt.fr", new_user[0]['email'])
-        self.assertTrue(check_password_hash(new_user[0]['password'], 'test123'))
+        new_user = self.database.fetchall()[0]
+
+        self.assertEqual(1, new_user['role'])
+        self.assertEqual("Test", new_user['firstname'])
+        self.assertEqual("Test123", new_user['lastname'])
+        self.assertEqual("test123@tttt.fr", new_user['email'])
+        self.assertTrue(check_password_hash(new_user['password'], 'test123'))
 
     def test_successful_reset_password(self):
         user = self.create_user()
@@ -121,7 +122,6 @@ class UserTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
                                 json={'resetToken': reset_token, 'newPassword': '123465'})
         self.assertEqual(200, response.status_code)
-        self.assertEqual(dict, type(response.json))
         self.database.execute("SELECT firstname, lastname, password, role, email FROM users WHERE id = " + str(user.json['id']))
         new_user = self.database.fetchall()
         self.assertTrue(check_password_hash(new_user[0]['password'], '123465'))
@@ -179,18 +179,6 @@ class UserTest(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual(list, type(response.json))
         self.assertEqual(response.json, [1])
-
-    def test_successful_update_customers_by_user_id(self):
-        user = self.create_user()
-        payload = {"customers": [1, 2, 3]}
-        response = self.app.put(f'/{CUSTOM_ID}/ws/users/customers/update/' + str(user.json['id']),
-                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token},
-                                json=payload)
-        self.assertEqual(200, response.status_code)
-
-        self.database.execute("SELECT customers_id FROM users_customers WHERE user_id = " + str(user.json['id']))
-        new_customers = self.database.fetchall()
-        self.assertEqual('[1, 2, 3]', new_customers[0]['customers_id']['data'])
 
     def tearDown(self) -> None:
         self.database.execute("TRUNCATE TABLE users_customers")

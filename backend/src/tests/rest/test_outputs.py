@@ -34,11 +34,38 @@ class OutputsTest(unittest.TestCase):
             'output_label': 'Test export PDF',
             'compress_type': 'default',
             'ocrise': True,
-            'module': 'verifier'
+            'module': 'verifier',
+            'data': {
+                "options": {
+                    "auth": [],
+                    "parameters": [
+                        {
+                            "id": "folder_out",
+                            "type": "text",
+                            "value": f"/var/share/{CUSTOM_ID}/export/verifier/"
+                        },
+                        {
+                            "id": "separator",
+                            "type": "text",
+                            "value": "_"
+                        },
+                        {
+                            "id": "filename",
+                            "type": "text",
+                            "value": "invoice_number#F#document_date#vat_number"
+                        },
+                        {
+                            "id": "extension",
+                            "type": "text",
+                            "value": "pdf"
+                        }
+                    ]
+                }
+            }
         }
 
         return self.app.post(f'/{CUSTOM_ID}/ws/outputs/verifier/create',
-                             json={"args": payload},
+                             json=payload,
                              headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
 
     def test_successful_create_output(self):
@@ -65,7 +92,7 @@ class OutputsTest(unittest.TestCase):
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.assertEqual(dict, type(response.json))
-        self.assertEqual(len(response.json['outputs_types']), 6)
+        self.assertEqual(len(response.json['outputs_types']), 7)
 
     def test_successful_get_outputs_types_splitter(self):
         response = self.app.get(f'/{CUSTOM_ID}/ws/outputs/splitter/getOutputsTypes',
@@ -111,7 +138,7 @@ class OutputsTest(unittest.TestCase):
         self.assertEqual(dict, type(response.json))
 
     def test_successful_duplicate_outputs(self):
-        response = self.app.post(f'/{CUSTOM_ID}/ws/outputs/verifier/duplicate/1',
+        response = self.app.post(f'/{CUSTOM_ID}/ws/outputs/duplicate/1',
                                  headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.database.execute("SELECT * FROM outputs WHERE output_label ILIKE '%Copie de%' OR output_label ILIKE '%Copy of%'"
@@ -160,7 +187,7 @@ class OutputsTest(unittest.TestCase):
             }
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/outputs/verifier/update/1',
-                                json={"args": payload},
+                                json=payload,
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.database.execute("SELECT * FROM outputs WHERE output_label = 'Test export'")
@@ -169,7 +196,7 @@ class OutputsTest(unittest.TestCase):
 
     def test_successful_delete_output(self):
         output = self.create_ouput()
-        response = self.app.delete(f'/{CUSTOM_ID}/ws/outputs/verifier/delete/' + str(output.json['id']),
+        response = self.app.delete(f'/{CUSTOM_ID}/ws/outputs/delete/' + str(output.json['id']),
                                    headers={"Content-Type": "application/json",
                                             'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
