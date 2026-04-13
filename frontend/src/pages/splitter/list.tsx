@@ -458,7 +458,7 @@ export function SplitterListPage() {
                             { t('SPLITTER.batches', { count: totalBatches }) } ({ totalBatches || 0 })
                         </span>
                     </span>
-                    <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-80' height='h-10'
+                    <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-80' height='h-10' autoFocus
                            value={ searchTerm } placeholder={ t('GLOBAL.search') } noMarginBottom={ true }
                            onChange={ (e) => setSearchTerm(e.target.value) }/>
                     <span className='ml-auto text-(--text-secondary) flex cursor-pointer'>

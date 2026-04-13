@@ -245,7 +245,7 @@ export function SettingsGeneralUsers() {
                         { t('USERS.users', { count: totalUsers }) } ({ totalUsers || 0 })
                     </span>
                 </span>
-                <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height={ 'h-10' }
+                <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
                        value={ searchTerm } placeholder={ t('GLOBAL.search') } noMarginBottom={ true }
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>

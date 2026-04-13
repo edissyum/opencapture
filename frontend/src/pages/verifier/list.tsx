@@ -613,7 +613,7 @@ export function VerifierListPage() {
                             { t('VERIFIER.documents', { count: totalDocuments }) } ({ totalDocuments || 0 })
                         </span>
                     </span>
-                    <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10'
+                    <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
                            value={ searchTerm } placeholder={ t('GLOBAL.search') } noMarginBottom={ true }
                            onChange={ (e) => setSearchTerm(e.target.value) }/>
                     <span className='ml-auto text-(--text-secondary) flex cursor-pointer'>

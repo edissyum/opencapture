@@ -171,7 +171,7 @@ export function CustomFieldsList({ module }: { module: string }) {
                     <FileText size={ 16 }/>
                     { t('VERIFIER.custom_fields', { count: totalCustomFields }) } ({ totalCustomFields || 0 })
                 </span>
-                <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height={ 'h-10' }
+                <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
                        value={ searchTerm } placeholder={ t('GLOBAL.search') } noMarginBottom={ true }
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>

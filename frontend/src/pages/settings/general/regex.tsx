@@ -124,7 +124,7 @@ export function SettingsGeneralRegex() {
 
     return (
         <div className="p-6 bg-(--bg-secondary) h-full w-full flex flex-col flex-1">
-            <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-1/5 mb-4' height={ 'h-10' }
+            <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-1/5 mb-4' height='h-10' autoFocus
                    value={ searchTerm } placeholder={ t('GLOBAL.search') } noMarginBottom={ true }
                    onChange={ (e) => setSearchTerm(e.target.value) }/>
 

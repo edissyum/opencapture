@@ -190,7 +190,7 @@ export function OutputsList({ module }: { module: string }) {
                     <FileText size={ 16 }/>
                     { t('SETTINGS.outputs', { count: totalOutputs }) } ({ totalOutputs || 0 })
                 </span>
-                <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height={ 'h-10' }
+                <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
                        value={ searchTerm } placeholder={ t('GLOBAL.search') } noMarginBottom={ true }
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
