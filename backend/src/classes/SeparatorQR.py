@@ -27,7 +27,9 @@ import pdf2image
 import subprocess
 from PIL import Image, ImageEnhance
 from io import BytesIO
-from fpdf import Template
+from fpdf import FPDF
+from fpdf.enums import RenderStyle
+
 from unidecode import unidecode
 from pyzbar.pyzbar import decode
 import xml.etree.ElementTree as Et
@@ -325,89 +327,144 @@ class SeparatorQR:
         # Defining the ELEMENTS that will compose the template
         total = 0
         encoded_thumbnails = []
-
-        elements = [
-            {'name': 'border_1', 'type': 'B', 'x1': 10.0, 'y1': 10.0, 'x2': 200.0, 'y2': 285.0, 'font': 'Arial',
-             'size': 2.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
-             'text': None, 'priority': 0, },
-            {'name': 'border_2', 'type': 'B', 'x1': 12.0, 'y1': 12.0, 'x2': 198.0, 'y2': 283.0, 'font': 'Arial',
-             'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
-             'text': None, 'priority': 0, },
-            {'name': 'logo', 'type': 'I', 'x1': 20.0, 'y1': 17.0, 'x2': 78.0, 'y2': 30.0, 'font': None, 'size': 0.0,
-             'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I', 'text': 'logo',
-             'priority': 2, },
-            {'name': 'icon_loop', 'type': 'I', 'x1': 183.0, 'y1': 18.0, 'x2': 195.0, 'y2': 28.0, 'font': None, 'size': 0.0,
-             'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I', 'text': 'logo',
-             'priority': 2, },
-            {'name': 'title', 'type': 'T', 'x1': 15.0, 'y1': 32.5, 'x2': 200.0, 'y2': 37.5, 'font': 'Arial',
-             'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'C',
-             'text': '', 'priority': 2, },
-            {'name': 'type', 'type': 'T', 'x1': 15.0, 'y1': 60.5, 'x2': 200.0, 'y2': 37.5, 'font': 'Arial',
-             'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'C',
-             'text': '', 'priority': 2, },
-            {'name': 'label', 'type': 'T', 'x1': 15.00, 'y1': 80.0, 'x2': 200, 'y2': 85.0, 'font': 'Arial',
-             'size': 16.0, 'bold': 1, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'C',
-             'text': '', 'priority': 2, 'multiline': True},
-            {'name': 'code_qr', 'type': 'I', 'x1': 60.0, 'y1': 110.0, 'x2': 160.0, 'y2': 110.0, 'font': None,
-             'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
-             'text': 'logo', 'priority': 2, },
-            {'name': 'qr_code_value', 'type': 'T', 'x1': 15.00, 'y1': 260.0, 'x2': 200, 'y2': 150.0, 'font': 'Arial',
-             'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'C',
-             'text': '', 'priority': 2, },
-            {'name': 'powered_by', 'type': 'T', 'x1': 20.0, 'y1': 515.0, 'x2': 150.0, 'y2': 37.5, 'font': 'Arial',
-             'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
-             'text': 'Banner page powered by', 'priority': 2, },
-            {'name': 'company_logo', 'type': 'I', 'x1': 70.0, 'y1': 271.0, 'x2': 100.0, 'y2': 280.0, 'font': None,
-             'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
-             'text': 'logo', 'priority': 2, },
-            {'name': 'open_capture_website', 'type': 'T', 'x1': 140.0, 'y1': 505.0, 'x2': 150.0, 'y2': 37.5, 'font': 'Arial',
-             'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
-             'text': 'https://open-capture.com', 'priority': 2, },
-            {'name': 'company_website', 'type': 'T', 'x1': 140.0, 'y1': 515.0, 'x2': 150.0, 'y2': 37.5, 'font': 'Arial',
-             'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
-             'text': 'https://edissyum.com', 'priority': 2, },
-        ]
+        #
+        # elements = [
+        #     {'name': 'border_1', 'type': 'B', 'x1': 10.0, 'y1': 10.0, 'x2': 200.0, 'y2': 285.0, 'font': 'Arial',
+        #      'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 'red', 'align': 'I',
+        #      'text': None, 'priority': 0, },
+        #     # {'name': 'border_2', 'type': 'B', 'x1': 12.0, 'y1': 12.0, 'x2': 198.0, 'y2': 283.0, 'font': 'Arial',
+        #     #  'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
+        #     #  'text': None, 'priority': 0, },
+        #     {'name': 'logo', 'type': 'I', 'x1': 20.0, 'y1': 17.0, 'x2': 78.0, 'y2': 30.0, 'font': None, 'size': 0.0,
+        #      'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I', 'text': 'logo',
+        #      'priority': 2, },
+        #     {'name': 'icon_loop', 'type': 'I', 'x1': 183.0, 'y1': 18.0, 'x2': 195.0, 'y2': 28.0, 'font': None, 'size': 0.0,
+        #      'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I', 'text': 'logo',
+        #      'priority': 2, },
+        #     {'name': 'title', 'type': 'T', 'x1': 15.0, 'y1': 32.5, 'x2': 200.0, 'y2': 37.5, 'font': 'Arial',
+        #      'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'C',
+        #      'text': '', 'priority': 2, },
+        #     {'name': 'type', 'type': 'T', 'x1': 15.0, 'y1': 60.5, 'x2': 200.0, 'y2': 37.5, 'font': 'Arial',
+        #      'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'C',
+        #      'text': '', 'priority': 2, },
+        #     {'name': 'label', 'type': 'T', 'x1': 15.00, 'y1': 80.0, 'x2': 200, 'y2': 85.0, 'font': 'Arial',
+        #      'size': 16.0, 'bold': 1, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'C',
+        #      'text': '', 'priority': 2, 'multiline': True},
+        #     {'name': 'code_qr', 'type': 'I', 'x1': 60.0, 'y1': 110.0, 'x2': 160.0, 'y2': 110.0, 'font': None,
+        #      'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
+        #      'text': 'logo', 'priority': 2, },
+        #     {'name': 'qr_code_value', 'type': 'T', 'x1': 15.00, 'y1': 260.0, 'x2': 200, 'y2': 150.0, 'font': 'Arial',
+        #      'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'C',
+        #      'text': '', 'priority': 2, },
+        #     {'name': 'powered_by', 'type': 'T', 'x1': 20.0, 'y1': 515.0, 'x2': 150.0, 'y2': 37.5, 'font': 'Arial',
+        #      'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
+        #      'text': 'Banner page powered by', 'priority': 2, },
+        #     {'name': 'company_logo', 'type': 'I', 'x1': 70.0, 'y1': 271.0, 'x2': 100.0, 'y2': 280.0, 'font': None,
+        #      'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
+        #      'text': 'logo', 'priority': 2, },
+        #     {'name': 'open_capture_website', 'type': 'T', 'x1': 140.0, 'y1': 505.0, 'x2': 150.0, 'y2': 37.5, 'font': 'Arial',
+        #      'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
+        #      'text': 'https://open-capture.com', 'priority': 2, },
+        #     {'name': 'company_website', 'type': 'T', 'x1': 140.0, 'y1': 515.0, 'x2': 150.0, 'y2': 37.5, 'font': 'Arial',
+        #      'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
+        #      'text': 'https://edissyum.com', 'priority': 2, },
+        # ]
 
         # Instantiating the template and defining the HEADER
-        file = Template(format="A4", elements=elements, title="Separator file")
+        # file = Template(format="A4", elements=elements, title="Separator file")
         for separator in separators:
-            file.add_page()
-            total += 1
-
+        #     file.add_page()
+        #     total += 1
+        #
             # We FILL some of the fields of the template with the information we want
             # Note we access the elements treating the template instance as a dict
-            file["type"] = separator['type']
+            # file["type"] = separator['type']
             separator["label"] = unidecode(separator['label'])
-            file["label"] = separator['label'].encode('latin-1', 'replace').decode('latin-1')
-            file["qr_code_value"] = separator['qr_code_value']
-
-            file["logo"] = docservers['ASSETS_PATH'] + "/imgs/login_image.png"
-            file["company_logo"] = docservers['ASSETS_PATH'] + "/imgs/logo_company.png"
-            file["icon_loop"] = docservers['ASSETS_PATH'] + "/imgs/Open-Capture_Splitter.png"
-
+            # file["label"] = separator['label'].encode('latin-1', 'replace').decode('latin-1')
+            # file["qr_code_value"] = separator['qr_code_value']
+            #
+            # file["logo"] = docservers['ASSETS_PATH'] + "/imgs/login_image.png"
+            # file["company_logo"] = docservers['ASSETS_PATH'] + "/imgs/logo_company.png"
+            # file["icon_loop"] = docservers['ASSETS_PATH'] + "/imgs/Open-Capture_Splitter.png"
+            #
             qrcode_path = docservers['TMP_PATH'] + f"/code_qr_{separator['qr_code_value']}.png"
             img = qrcode.make(separator['qr_code_value'])
             img.save(qrcode_path)
-            file["code_qr"] = qrcode_path
+            # file["code_qr"] = qrcode_path
+        #
+            file_path = docservers['TMP_PATH'] + "/last_generated_doctype_file.pdf"
 
-        file_path = docservers['TMP_PATH'] + "/last_generated_doctype_file.pdf"
+            pdf = SeparatorPDF(format='A4', unit='mm')
+            pdf.build({
+                'logo': docservers['ASSETS_PATH'] + "/imgs/login_image.png",
+                'code_qr': qrcode_path,
+                'company_logo': docservers['ASSETS_PATH'] + "/imgs/logo_company.png",
+                'type': separator['type'],
+                'label': separator['label'].encode('latin-1', 'replace').decode('latin-1'),
+                'qr_code_value': separator['qr_code_value'],
+            })
+            try:
+                # file.pdf.set_draw_color(255, 0, 0)
+                # file.render(file_path)
+                pdf.output(file_path)
 
-        try:
-            file.render(file_path)
-            with open(file_path, 'rb') as pdf_file:
-                encoded_file = f"data:application/pdf;base64, {base64.b64encode(pdf_file.read()).decode('utf-8')}"
-            pages = pdf2image.convert_from_path(file_path, size=(None, 720))
+                with open(file_path, 'rb') as pdf_file:
+                    encoded_file = f"data:application/pdf;base64, {base64.b64encode(pdf_file.read()).decode('utf-8')}"
+                pages = pdf2image.convert_from_path(file_path, size=(None, 720))
 
-            for page in pages:
-                buffered = BytesIO()
-                page.save(buffered, format="JPEG")
-                encoded_thumbnails.append(f"data:image/jpeg;base64,"
-                                          f"{base64.b64encode(buffered.getvalue()).decode('utf-8')}")
-        except (Exception,) as _e:
-            return {'error': str(_e)}
+                for page in pages:
+                    buffered = BytesIO()
+                    page.save(buffered, format="JPEG")
+                    encoded_thumbnails.append(f"data:image/jpeg;base64,"
+                                              f"{base64.b64encode(buffered.getvalue()).decode('utf-8')}")
+            except (Exception,) as _e:
+                return {'error': str(_e)}
 
         return {
             'total': total,
             'encoded_file': encoded_file,
             'encoded_thumbnails': encoded_thumbnails
         }
+
+class SeparatorPDF(FPDF):
+    def build(self, data: dict):
+        self.add_page()
+        self.set_auto_page_break(auto=False)
+        self.set_font('Arial', '', 12)
+
+        # ── Bordure arrondie verte ──────────────────────────────
+        self.set_draw_color(175, 213, 192)
+        self.set_line_width(0.5)
+        self._draw_rounded_rect(x=10, y=10, w=190, h=275, r=5, round_corners=True, style=RenderStyle.D)
+        self.set_draw_color(0, 0, 0)
+
+        # ── Logo ───────────────────────────────────────────────
+        self.image(data['logo'], x=20, y=17, w=0, h=13)
+
+        # ── Type ───────────────────────────────────────────────
+        self.set_xy(15, 60.5)
+        self.cell(w=185, h=5, txt=data.get('type', ''), align='C')
+
+        # ── Label (multiline) ──────────────────────────────────
+        self.set_font('Arial', 'B', 16)
+        self.set_xy(15, 80)
+        self.multi_cell(w=185, h=5, txt=data.get('label', ''), align='C')
+
+        # ── QR Code ────────────────────────────────────────────
+        self.image(data['code_qr'], x=60, y=90, w=100, h=100)
+
+        # ── Valeur QR ──────────────────────────────────────────
+        self.set_font('Arial', '', 12)
+        self.set_xy(15, 200)
+        self.cell(w=185, h=5, txt=data.get('qr_code_value', ''), align='C')
+
+        # ── Company logo ───────────────────────────────────────
+        self.image(data['company_logo'], x=20, y=270, w=0, h=10)
+
+        # ── Liens ──────────────────────────────────────────────
+        self.set_text_color(145, 146, 155)
+        self.set_xy(15, 271)
+        self.cell(w=180, h=5, txt='https://open-capture.com', align='R')
+        self.set_xy(15, 276)
+        self.cell(w=180, h=5, txt='https://edissyum.com', align='R')
+        self.set_text_color(0, 0, 0)
