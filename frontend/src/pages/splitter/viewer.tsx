@@ -1060,7 +1060,7 @@ export function SplitterViewerPage() {
                                           doctypesList={ doctypes } onSelect={ (node) => handleChangeDoctype(node) }
                                           onTmpSelect={ (node) => setTmpDoctype(node) }/>
                         </div>
-                        <div className='mt-2 flex justify-end items-center gap-4 px-6 py-4'>
+                        <div className='flex mt-auto justify-end items-center gap-4 p-4'>
                             <Button variant={ "no_bg" } onClick={ () => setShowDoctypeSelection(false) }>
                                 { t('GLOBAL.cancel') }
                             </Button>

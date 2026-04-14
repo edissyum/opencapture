@@ -286,10 +286,8 @@ SET data = jsonb_set(
 WHERE output_type_id = 'export_mem';
 
 -- Add SHA256 hash of the document content in the documents table
-ALTER TABLE documents
-    ADD COLUMN "sha256" VARCHAR(64);
-ALTER TABLE splitter_batches
-    ADD COLUMN "sha256" VARCHAR(64);
+ALTER TABLE documents ADD COLUMN "sha256" VARCHAR(64);
+ALTER TABLE splitter_batches ADD COLUMN "sha256" VARCHAR(64);
 
 -- Modifier document_md5 en md5 dans les chaînes sortants XML Splitter
 UPDATE outputs

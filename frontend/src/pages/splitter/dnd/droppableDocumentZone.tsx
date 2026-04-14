@@ -66,11 +66,6 @@ export function DroppableDocumentZone({
     const virtualItems = virtualizer.getVirtualItems();
     const totalWidth = virtualizer.getTotalSize();
 
-    const setRefs = (el: HTMLDivElement | null) => {
-        setDropRef(el);
-        (scrollRef as any).current = el;
-    };
-
     return (
         <div ref={ setDropRef }
              className={ `DroppableDocument w-full transition-colors rounded-md
@@ -88,7 +83,7 @@ export function DroppableDocumentZone({
             ) }
 
             { pages.length > 0 && (
-                <div ref={ setRefs }
+                <div ref={ scrollRef }
                      className="overflow-x-auto p-4 h-105">
                     <div style={ { width: totalWidth, position: 'relative' } }>
                         { virtualItems.map((virtualItem) => {

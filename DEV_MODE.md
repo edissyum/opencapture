@@ -197,7 +197,7 @@ sudo chown -R $(whoami) /opt/edissyum/opencapture/
 sudo chown -R $(whoami) /var/docservers/opencapture/test/
 
 # Launch all tests:
-python3 -m unittest discover -s backend/src/tests -t backend/
+export POSTGRES_DB='opencapture_test' && python3 -m unittest discover -s backend/src/tests -t backend/
 
 # Launch specific test file:
 python3 -m unittest ./backend/src/tests/rest/test_workflows.py
