@@ -24,7 +24,6 @@ import json
 import time
 import uuid
 import pypdf
-import pyheif
 import string
 import random
 import shutil
@@ -34,6 +33,7 @@ import datetime
 import schwifty
 import subprocess
 import numpy as np
+from pillow_heif import register_heif_opener
 from PIL import Image
 from zipfile import ZipFile
 from flask import current_app
@@ -49,17 +49,10 @@ from ..functions import generate_searchable_pdf
 
 Image.MAX_IMAGE_PIXELS = 933120000
 
+register_heif_opener()
+
 def convert_heif_to_jpg(file):
-    heif_file = pyheif.read(file)
-    heif_file = Image.frombytes(
-        heif_file.mode,
-        heif_file.size,
-        heif_file.data,
-        "raw",
-        heif_file.mode,
-        heif_file.stride,
-    )
-    heif_file = heif_file.convert('RGB')
+    heif_file = Image.open(file).convert('RGB')
     with tempfile.NamedTemporaryFile() as tf:
         heif_file.save(tf.name + '.jpg', format="JPEG")
         rotate_img(tf.name + '.jpg')

@@ -18,7 +18,6 @@
 import os
 import re
 import json
-import pyheif
 import shutil
 import base64
 import random
@@ -520,15 +519,8 @@ def export_pdf(data, log, document_info, compress_type, ocrise, enable_log=True)
             if not file.lower().endswith('.pdf'):
                 if file.lower().endswith(('.heif', '.heic', '.jpg', '.jpeg', '.png')):
                     if file.lower().endswith(('.heif', '.heic')):
-                        heif_file = pyheif.read(file)
-                        image_file = Image.frombytes(
-                            heif_file.mode,
-                            heif_file.size,
-                            heif_file.data,
-                            "raw",
-                            heif_file.mode,
-                            heif_file.stride,
-                        )
+                        register_heif_opener()
+                        image_file = Image.open(file).convert('RGB')
                         filename = filename.replace('.heif', '.jpg')
                         filename = filename.replace('.heic', '.jpg')
                     else:

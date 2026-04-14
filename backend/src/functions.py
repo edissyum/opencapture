@@ -15,23 +15,21 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
+import os
 import glob
 import json
-import os
-import shutil
 import uuid
-from pathlib import Path
-
 import magic
 import pypdf
-import pyheif
+import shutil
 from PIL import Image
+from pathlib import Path
 from flask_babel import gettext
 from pytesseract import pytesseract
 from pdf2image import convert_from_path
-from werkzeug.datastructures.file_storage import FileStorage
-
+from pillow_heif import register_heif_opener
 from .classes.Config import Config as _Config
+from werkzeug.datastructures.file_storage import FileStorage
 from .classes.ArtificialIntelligence import ArtificialIntelligence
 
 
@@ -413,16 +411,8 @@ def generate_searchable_pdf(document, tmp_filename):
     if document.lower().endswith('.pdf'):
         images = convert_from_path(document, dpi=400)
     elif document.lower().endswith(('.heic', '.heif')):
-        heif_file = pyheif.read(document)
-        heif_file = Image.frombytes(
-            heif_file.mode,
-            heif_file.size,
-            heif_file.data,
-            "raw",
-            heif_file.mode,
-            heif_file.stride,
-        )
-        images = [heif_file]
+        register_heif_opener()
+        images = [Image.open(document).convert('RGB')]
     else:
         images = [Image.open(document)]
 
