@@ -30,7 +30,7 @@ import {
     Info,
     LogOut,
     Settings,
-    User
+    User, UserCog
 } from "lucide-react";
 
 import { LoginImage } from "./LoginImage";
@@ -39,10 +39,23 @@ import { hasRequiredPermissions } from "./auth/auth";
 import { useUser } from "../services/hooks/useUser";
 import { clearPersistentState } from "../services/hooks/usePersistentState";
 
+export const handleLogout = (navigate: any) => {
+    sessionStorage.clear();
+
+    const prefix = 'OpenCapture_';
+    Object.keys(localStorage).forEach(key => {
+        if (key.startsWith(prefix)) {
+            clearPersistentState(key);
+        }
+    });
+
+    navigate("/login", { replace: true });
+};
+
 export default function Sidebar() {
+    const { user, loadingUser } = useUser();
     const location = useLocation();
     const navigate = useNavigate();
-    const { user, loadingUser } = useUser();
 
     // If in verifier or splitter viewer, collapse the sidebar by default
     useEffect(() => {
@@ -53,30 +66,23 @@ export default function Sidebar() {
         }
     }, [location.pathname]);
 
-
     const cm = useRef({ current: null } as any);
     const menuModel: any = [
         {
-            label: <span className='critical text-(--text-secondary)'>{ t('GLOBAL.logout') }</span>,
-            icon: <LogOut size={ 18 } className='mr-2 text-(--text-secondary)'/>,
+            label: t('GLOBAL.my_profile'),
+            icon: <UserCog size={ 18 }/>,
             command: () => {
-                handleLogout();
+                navigate("/profile");
+            }
+        },
+        {
+            label: <span className='critical text-(--text-error)'>{ t('GLOBAL.logout') }</span>,
+            icon: <LogOut size={ 18 } className='text-(--text-error)'/>,
+            command: () => {
+                handleLogout(navigate);
             }
         }
     ];
-
-    const handleLogout = () => {
-        sessionStorage.clear();
-
-        const prefix = 'OpenCapture_';
-        Object.keys(localStorage).forEach(key => {
-            if (key.startsWith(prefix)) {
-                clearPersistentState(key);
-            }
-        });
-
-        navigate("/login", { replace: true });
-    };
 
     const [collapsed, setCollapsed] = useState(false);
 
@@ -113,7 +119,7 @@ export default function Sidebar() {
                           className={ `border ${ standardClasses } ${ location.pathname.includes("/settings") ? activeClasses : "" }` }>
                         <Settings className='shrink-0' size={ 20 } { ...(collapsed && {
                             "data-tooltip-id": "tooltip",
-                            "data-tooltip-content": t('GLOBAL.settings'),
+                            "data-tooltip-content": t('GLOBAL.settings')
                         }) }/>
                         { !collapsed && <span>{ t('GLOBAL.settings') }</span> }
                     </Link>
@@ -124,7 +130,7 @@ export default function Sidebar() {
                           className={ `border ${ standardClasses } ${ location.pathname.includes("/history") ? activeClasses : "" }` }>
                         <Clock4 className='shrink-0' size={ 20 } { ...(collapsed && {
                             "data-tooltip-id": "tooltip",
-                            "data-tooltip-content": t('GLOBAL.history'),
+                            "data-tooltip-content": t('GLOBAL.history')
                         }) }/>
                         { !collapsed && <span>{ t('GLOBAL.history') }</span> }
                     </Link>
@@ -135,7 +141,7 @@ export default function Sidebar() {
                           className={ `border ${ standardClasses } ${ location.pathname.includes("/statistics") ? activeClasses : "" }` }>
                         <ChartNoAxesColumn className='shrink-0' size={ 20 } { ...(collapsed && {
                             "data-tooltip-id": "tooltip",
-                            "data-tooltip-content": t('GLOBAL.statistics'),
+                            "data-tooltip-content": t('GLOBAL.statistics')
                         }) }/>
                         { !collapsed && <span>{ t('GLOBAL.statistics') }</span> }
                     </Link>
@@ -146,7 +152,7 @@ export default function Sidebar() {
                           className={ `border ${ standardClasses } ${ location.pathname.includes("/monitoring") ? activeClasses : "" }` }>
                         <Activity className='shrink-0' size={ 20 } { ...(collapsed && {
                             "data-tooltip-id": "tooltip",
-                            "data-tooltip-content": t('GLOBAL.monitoring'),
+                            "data-tooltip-content": t('GLOBAL.monitoring')
                         }) }/>
                         { !collapsed && <span>{ t('GLOBAL.monitoring') }</span> }
                     </Link>
@@ -157,7 +163,7 @@ export default function Sidebar() {
                           className={ `whitespace-nowrap border ${ standardClasses } ${ location.pathname.includes("/suppliers") ? activeClasses : "" }` }>
                         <Building2 className='shrink-0' size={ 20 } { ...(collapsed && {
                             "data-tooltip-id": "tooltip",
-                            "data-tooltip-content": t('ACCOUNTS.suppliers_list'),
+                            "data-tooltip-content": t('ACCOUNTS.suppliers_list')
                         }) }/>
                         { !collapsed && <span>{ t('ACCOUNTS.suppliers_list') }</span> }
                     </Link>
@@ -168,7 +174,7 @@ export default function Sidebar() {
                           className={ `whitespace-nowrap border ${ standardClasses } ${ location.pathname.includes("/customers") ? activeClasses : "" }` }>
                         <Briefcase className='shrink-0' size={ 20 } { ...(collapsed && {
                             "data-tooltip-id": "tooltip",
-                            "data-tooltip-content": t('ACCOUNTS.customers_list'),
+                            "data-tooltip-content": t('ACCOUNTS.customers_list')
                         }) }/>
                         { !collapsed && <span>{ t('ACCOUNTS.customers_list') }</span> }
                     </Link>
@@ -178,7 +184,7 @@ export default function Sidebar() {
                       className={ `whitespace-nowrap border ${ standardClasses } ${ location.pathname.includes("/about") ? activeClasses : "" }` }>
                     <Info className='shrink-0' size={ 20 } { ...(collapsed && {
                         "data-tooltip-id": "tooltip",
-                        "data-tooltip-content": t('SETTINGS.abouts_us'),
+                        "data-tooltip-content": t('SETTINGS.abouts_us')
                     }) }/>
                     { !collapsed && <span>{ t('SETTINGS.abouts_us') }</span> }
                 </Link>

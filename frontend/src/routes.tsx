@@ -75,6 +75,7 @@ import { SettingsGeneralCustomization } from "./pages/settings/general/customiza
 import { SettingsVerifierAiLLMEditor } from "./pages/settings/verifier/ai-llm/editor";
 import { SettingsVerifierPositionsMasksList } from "./pages/settings/verifier/positions-masks/list";
 import { SettingsVerifierPositionMaskEditor } from "./pages/settings/verifier/positions-masks/editor";
+import ProfilePage from "./pages/profile.tsx";
 
 export const router = createBrowserRouter(
     [
@@ -96,6 +97,13 @@ export const router = createBrowserRouter(
             path: "/",
             element: <SettingsLayout/>,
             children: [
+                {
+                    path: "profile",
+                    element: <ProfilePage/>,
+                    loader: protectedLoader(),
+                    errorElement: <LoginRequiredError/>,
+                    handle: { breadcrumb: 'GLOBAL.my_profile' }
+                },
                 {
                     path: "about",
                     element: <AboutPage/>,

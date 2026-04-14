@@ -31,6 +31,7 @@ import { useCustom } from "../services/custom/customContext";
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
 import { useFormValues } from "../services/hooks/useFormValues";
 import { ArrowRight } from "lucide-react";
+import { USER_KEY } from "../services/hooks/useUser.tsx";
 
 export function Login() {
     const [loadingLogin, setLoadingLogin] = useState(false);
@@ -112,7 +113,7 @@ export function Login() {
 
                 sessionStorage.setItem("accessToken", response.auth_token);
                 sessionStorage.setItem("refreshToken", response.refresh_token);
-                sessionStorage.setItem("user", JSON.stringify(response.user));
+                sessionStorage.setItem(USER_KEY, JSON.stringify(response.user));
 
                 const onboardingCompleted = localStorage.getItem('completedOnboardingSteps');
                 const stepModules = import.meta.glob("./onboarding/step*.tsx", { eager: true });

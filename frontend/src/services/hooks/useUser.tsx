@@ -17,7 +17,7 @@
 
 import { useState, useEffect } from "react";
 
-const USER_KEY = "user";
+export const USER_KEY = "user";
 
 export function getUserFromStorage() {
     const storedUser = sessionStorage.getItem(USER_KEY);

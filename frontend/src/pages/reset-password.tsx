@@ -25,6 +25,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Hint from "../components/Hint";
 import Input from "../components/Input";
 import { Button } from "../components/Button";
+import { handleLogout } from "../components/Sidebar";
 import { Loader } from "../components/loader/Loader";
 import { LoginImage } from "../components/LoginImage";
 import { showToast } from "../components/ToastProvider";
@@ -32,7 +33,6 @@ import { DynamicForm } from "../components/form/DynamicForm";
 
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
 import { usePasswordRules } from "../services/hooks/usePasswordRules";
-import { clearPersistentState } from "../services/hooks/usePersistentState";
 
 export function ResetPassword() {
     const [searchParams] = useSearchParams();
@@ -143,25 +143,12 @@ export function ResetPassword() {
         try {
             await put('/users/resetPassword', { resetToken: resetToken, newPassword: passwordConfirm });
             showToast(t('AUTH.password_reset_success'), 'success');
-            handleLogout();
+            handleLogout(navigate);
         } catch (err) {
             setSending(false);
             console.debug('Error while resetting password', err);
         }
     }
-
-    const handleLogout = () => {
-        sessionStorage.clear();
-
-        const prefix = 'OpenCapture_';
-        Object.keys(localStorage).forEach(key => {
-            if (key.startsWith(prefix)) {
-                clearPersistentState(key);
-            }
-        });
-
-        navigate("/login", { replace: true });
-    };
 
     const handleSendEmail = async () => {
         if (emailError || !email) {

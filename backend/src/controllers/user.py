@@ -346,12 +346,16 @@ def update_user(user_id, data):
             return response, 400
 
         _set = {
-            'firstname': data['firstname'],
-            'lastname': data['lastname'],
             'email': data['email'],
-            'role': data['role'],
+            'lastname': data['lastname'],
+            'firstname': data['firstname'],
             'mode': data['mode'] if 'mode' in data else 'standard'
         }
+
+        if 'role' in data and data['role']:
+            _set.update({
+                'role': data['role']
+            })
 
         if 'new_password' in data and data['new_password']:
             _set.update({

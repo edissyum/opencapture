@@ -293,7 +293,8 @@
         "next": "Suivant",
         "save": "Enregistrer",
         "unauthorized": "Accès refusé",
-        "unauthorized_details": "Vous n'avez pas les permissions nécessaires pour accéder à cette ressource. Veuillez contacter votre administrateur si vous pensez que c'est une erreur."
+        "unauthorized_details": "Vous n'avez pas les permissions nécessaires pour accéder à cette ressource. Veuillez contacter votre administrateur si vous pensez que c'est une erreur.",
+        "my_profile": "Éditer mon profil"
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validé",
@@ -1455,5 +1456,9 @@
         "version_update": "Version et mise à jour",
         "workflows_list": "Liste des workflows",
         "workflows_list_splitter": "Liste des workflows"
+    },
+    "PROFILE": {
+        "details": "Détails du profil",
+        "update_profile": "Mettre à jour le profil"
     }
 }

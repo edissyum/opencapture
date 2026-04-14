@@ -30,8 +30,8 @@ import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 import { usePasswordRules } from "../../../../services/hooks/usePasswordRules";
 
 export function SettingsGeneralUserEditor() {
-    const { get, put, post } = axiosApiCall();
     const navigate = useNavigate();
+    const { get, put, post } = axiosApiCall();
     const { verifyPassword } = usePasswordRules();
     const { user: loggedUser, loadingUser } = useUser();
 
@@ -248,6 +248,7 @@ export function SettingsGeneralUserEditor() {
     const password: any = watch("password");
     const passwordCheck: any = watch("password_check");
 
+    // Validate password and password check fields
     useEffect(() => {
         if (!password) {
             clearErrors("password");

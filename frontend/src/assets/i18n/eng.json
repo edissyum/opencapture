@@ -273,7 +273,8 @@
         "next": "Next",
         "save": "Save",
         "unauthorized": "Access denied",
-        "unauthorized_details": "You do not have the necessary permissions to access this resource. Please contact your administrator if you believe this is an error."
+        "unauthorized_details": "You do not have the necessary permissions to access this resource. Please contact your administrator if you believe this is an error.",
+        "my_profile": ""
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validated",
@@ -1360,5 +1361,9 @@
         "version_update": "Version and update",
         "workflows_list": "Workflows list",
         "workflows_list_splitter": "Workflows list"
+    },
+    "PROFILE": {
+        "details": "",
+        "update_profile": ""
     }
 }
