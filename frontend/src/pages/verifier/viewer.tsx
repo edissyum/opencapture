@@ -68,6 +68,7 @@ export function VerifierViewerPage() {
 
     const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
 
+    const [accountingPlan, setAccountingPlan] = useState<any[]>([]);
     const { customFields, loading: loadingCustom } = useCustomFields("verifier");
     const { formFields, loading: loadingFormFields } = useFormFields(documentData ? documentData.form_id : 0);
 
@@ -145,6 +146,8 @@ export function VerifierViewerPage() {
     }, [documentId, loadingUser]);
 
     // Fetch form settings
+    // Fetch enable attachments config
+    // Fetch accounting plan
     useEffect(() => {
         if (!documentData) return;
 
@@ -170,7 +173,25 @@ export function VerifierViewerPage() {
             }
         };
 
+        const fetchAccountingPlan = async () => {
+            try {
+                let res;
+                if (documentData.customer_id && documentData.customer_id !== 0) {
+                    res = await get(`/accounts/customers/getAccountingPlan/${ documentData.customer_id }`);
+                } else {
+                    res = await get('/accounts/customers/getDefaultAccountingPlan');
+                }
+                if (res && res.length > 0) {
+                    console.log(res)
+                    setAccountingPlan(res);
+                }
+            } catch (error) {
+                console.error("Error fetching accounting plan:", error);
+            }
+        }
+
         fetchForm().then();
+        fetchAccountingPlan().then();
         fetchEnableAttachments().then();
     }, [documentDataLoading]);
 
@@ -1025,6 +1046,7 @@ export function VerifierViewerPage() {
                     onClose={ () => setShowAttachments(false) }
                 />
             </div>
+
             { !showAttachments && (
                 <div className='w-1/2'>
                     <div className='pt-6 pl-8 pb-4'>
@@ -1163,8 +1185,7 @@ export function VerifierViewerPage() {
                                         { zone.lines.map((line: any, index: number) => (
                                             <div key={ index } className={ `flex gap-4 mb-2` }>
                                                 { Object.values(line).filter((field: any) => typeof field !== 'boolean').map((field: any) => (
-                                                    <div key={ field.id }
-                                                         className={ `min-w-1/6 ${ getWidthLine(line) }` }>
+                                                    <div key={ field.id } className={ `min-w-1/6 ${ getWidthLine(line) }` }>
                                                         { field.type === 'date' && (
                                                             <ISOCalendar
                                                                 id={ field.id }
@@ -1186,6 +1207,24 @@ export function VerifierViewerPage() {
                                                                 disabled={ disableFields }
                                                                 value={ tmpDocumentData?.datas?.[field.id] }
                                                                 options={ getFilteredConditionalOptions(field) }
+                                                                onChange={ (e) => updateDocumentData(field, e.value) }
+                                                            />
+                                                        ) }
+
+                                                        { field.type === 'select' && field.id == 'accounting_plan' && (
+                                                            <Dropdown
+                                                                filter
+                                                                id={ field.id }
+                                                                itemsSize={ 50 }
+                                                                label={ t(field.label) }
+                                                                disabled={ disableFields }
+                                                                required={ field.required }
+                                                                value={ tmpDocumentData?.datas?.[field.id] }
+                                                                options={ accountingPlan.map((plan: any) => ({
+                                                                    value: plan.compte_num,
+                                                                    label: plan.compte_lib
+                                                                }))
+                                                                }
                                                                 onChange={ (e) => updateDocumentData(field, e.value) }
                                                             />
                                                         ) }

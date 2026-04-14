@@ -26,6 +26,7 @@ interface DropdownProps {
     error?: string;
     label?: string;
     filter?: boolean;
+    itemsSize?: number;
     editable?: boolean;
     className?: string;
     disabled?: boolean;
@@ -46,9 +47,10 @@ export const Dropdown: React.FC<DropdownProps> = ({
     options,
     onChange,
     required,
-    editable = false,
+    itemsSize,
     filter = false,
     className = "",
+    editable = false,
     placeholder = "",
     disabled = false,
     labelFusion = false,
@@ -92,6 +94,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                         onChange={ onChange }
                         disabled={ disabled }
                         editable={ editable }
+                        virtualScrollerOptions={ itemsSize ? { itemSize: itemsSize } : undefined }
                         itemTemplate={ dropdownItemTemplate }
                         valueTemplate={ dropdownValueTemplate }
                         className={ `w-full min-h-12 flex items-center hover:border-(--border-primary)! ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' }` }
