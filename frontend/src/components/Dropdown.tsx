@@ -104,9 +104,9 @@ export const Dropdown: React.FC<DropdownProps> = ({
                         <label htmlFor={ id }
                                className={ `select-none ${ labelFusion ? 'group-focus-within:border group-focus-within:border-b-0 ' +
                                    'border-(--border-secondary) group-focus-within:rounded-md ' +
-                                   'group-focus-within:rounded-b-none group-focus-within:border-(--border-primary) ' +
-                                   'group-hover:border-(--border-primary)' : '' }
-                               ${ value && labelFusion ? 'border border-b-0 rounded-md rounded-b-none -top-[0.3rem]! p-0.5 border-(--border-primary)' : '' }` }>
+                                   'group-focus-within:rounded-b-none group-focus-within:border-(--border-primary)' : '' }
+                                   ${ labelFusion && disabled ? '' : 'group-hover:border-(--border-primary)' }
+                                   ${ value && labelFusion ? 'border border-b-0 rounded-md rounded-b-none -top-[0.3rem]! p-0.5 border-(--border-primary)' : '' }` }>
                             { label }
                             { required && <span className="text-(--text-error) ml-1">*</span> }
                         </label>
