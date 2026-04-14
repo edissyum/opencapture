@@ -296,7 +296,7 @@ export function FormsList({ module }: { module: string }) {
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Link to={ `/settings/${ module }/forms/create` }>
                         <Button size='sm' className='p-2 border' variant="bg_white">
-                            <Plus size={ 14 } className="mr-1"/> { t('FORMS.add_form') }
+                            <Plus size={ 14 }/> { t('FORMS.add_form') }
                         </Button>
                     </Link>
                 </span>

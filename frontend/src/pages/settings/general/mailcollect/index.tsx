@@ -267,7 +267,7 @@ export function SettingsGeneralMailcollect() {
             { processList.length !== 0 && (
                 <div className="flex justify-end mb-4">
                     <Button size='sm' variant="bg_white" onClick={ handleAddProcess } className="p-2 px-3">
-                        <Plus size={ 16 } className="mr-2"/>
+                        <Plus size={ 16 }/>
                         { t("MAILCOLLECT.add_process") }
                     </Button>
                 </div>

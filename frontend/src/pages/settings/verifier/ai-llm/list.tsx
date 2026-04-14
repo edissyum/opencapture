@@ -174,7 +174,7 @@ export function SettingsVerifierAiLLMList() {
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Link to={ `/settings/verifier/ai-llm/create` }>
                         <Button size='sm' className='p-2 border' variant="bg_white">
-                            <Plus size={ 14 } className="mr-1"/> { t('AI-LLM.add_model') }
+                            <Plus size={ 14 }/> { t('AI-LLM.add_model') }
                         </Button>
                     </Link>
                 </span>

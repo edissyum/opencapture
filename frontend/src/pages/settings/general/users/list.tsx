@@ -254,7 +254,7 @@ export function SettingsGeneralUsers() {
                         variant="bg_white"
                         className='p-2 px-3 border'
                         onClick={ () => navigate('/settings/general/users/create') }>
-                        <UserRoundPlus size={ 16 } className="mr-2"/> { t('USERS.add_user') }
+                        <UserRoundPlus size={ 16 }/> { t('USERS.add_user') }
                     </Button>
                 </span>
             </div>

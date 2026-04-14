@@ -246,7 +246,7 @@ export function SettingsGeneralRoles() {
                         variant="bg_white"
                         className='p-2 px-3'
                         onClick={ () => navigate('/settings/general/roles/create') }>
-                        <UserRoundPlus size={ 16 } className="mr-2"/> { t('ROLES.add_role') }
+                        <UserRoundPlus size={ 16 }/> { t('ROLES.add_role') }
                     </Button>
                 </span>
             </div>

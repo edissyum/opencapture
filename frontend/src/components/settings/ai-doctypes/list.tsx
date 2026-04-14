@@ -261,7 +261,7 @@ export function AiDoctypesList({ module }: { module: string }) {
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Link to={ `/settings/${ module }/ai-doctypes/create` }>
                         <Button size='sm' className='p-2 border' variant="bg_white">
-                            <Plus size={ 14 } className="mr-1"/> { t('AI-DOCTYPES.add_ai_doctype') }
+                            <Plus size={ 14 }/> { t('AI-DOCTYPES.add_ai_doctype') }
                         </Button>
                     </Link>
                 </span>

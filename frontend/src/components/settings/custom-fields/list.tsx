@@ -177,7 +177,7 @@ export function CustomFieldsList({ module }: { module: string }) {
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Link to={ `/settings/${ module }/custom-fields/create` }>
                         <Button size='sm' className='p-2 border' variant="bg_white">
-                            <Plus size={ 14 } className="mr-1"/> { t('SETTINGS.add_custom_field') }
+                            <Plus size={ 14 }/> { t('SETTINGS.add_custom_field') }
                         </Button>
                     </Link>
                 </span>

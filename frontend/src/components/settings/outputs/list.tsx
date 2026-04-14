@@ -196,7 +196,7 @@ export function OutputsList({ module }: { module: string }) {
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Link to={ `/settings/${ module }/outputs/create` }>
                         <Button size='sm' className='p-2 border' variant="bg_white">
-                            <Plus size={ 14 } className="mr-1"/> { t('OUTPUTS.add_output') }
+                            <Plus size={ 14 }/> { t('OUTPUTS.add_output') }
                         </Button>
                     </Link>
                 </span>
