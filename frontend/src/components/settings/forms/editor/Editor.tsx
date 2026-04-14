@@ -116,6 +116,17 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const [formSettingsLoading, setFormSettingsLoading] = useState(true);
     const [formSettings, setFormSettings] = useState<any>({ "label": '', default_form: false, "settings": {} });
 
+    const getUniqueId = () => {
+        const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        let result = "";
+
+        for (let i = 0; i < 36; i++) {
+            result += chars[Math.floor(Math.random() * chars.length)];
+        }
+
+        return result;
+    }
+
     // Retrieve form settings
     useEffect(() => {
         if (!formId) return;
@@ -141,9 +152,8 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
             const key: any = zone.id.replace("zone-", "");
 
             const zoneLines = formFields[key] || [];
-
             const formattedLines = zoneLines.map((line: any) => ({
-                id: `line-${ crypto.randomUUID() }`,
+                id: `line-${ getUniqueId() }`,
                 duplicable: line.duplicable || false,
                 fields: Object.values(line).filter(l => typeof l !== 'boolean').map((field: any) =>
                     mapField(field, module)
@@ -235,7 +245,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                     const targetZoneForNewLine = findZoneContainingLine(zonesCopy, targetLine.id);
                     if (targetZoneForNewLine) {
                         targetZoneForNewLine.lines.push({
-                            id: `line-${ crypto.randomUUID() }`,
+                            id: `line-${ getUniqueId() }`,
                             duplicable: false,
                             fields: [newField],
                         });
@@ -245,7 +255,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                 }
             } else if (targetZone) {
                 targetZone.lines.push({
-                    id: `line-${ crypto.randomUUID() }`,
+                    id: `line-${ getUniqueId() }`,
                     duplicable: false,
                     fields: [newField],
                 });
@@ -283,7 +293,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                     const targetZoneForNewLine = findZoneContainingLine(zonesCopy, targetLine.id);
                     if (targetZoneForNewLine) {
                         targetZoneForNewLine.lines.push({
-                            id: `line-${ crypto.randomUUID() }`,
+                            id: `line-${ getUniqueId() }`,
                             duplicable: false,
                             fields: [movedField],
                         });
@@ -311,7 +321,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                 sourceLine.fields = sourceLine.fields.filter((f: any) => f.id !== active.id);
 
                 targetZone.lines.push({
-                    id: `line-${ crypto.randomUUID() }`,
+                    id: `line-${ getUniqueId() }`,
                     duplicable: false,
                     fields: [movedField],
                 });
