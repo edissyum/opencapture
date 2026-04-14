@@ -343,27 +343,27 @@ class VerifierTest(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         filename = response.json
         self.assertTrue(os.path.isfile(f'{filename}'))
-    #
-    # def test_successful_export_facturx(self):
-    #     self.create_supplier()
-    #     self.create_document()
-    #     self.database.execute("SELECT id FROM documents")
-    #     document = self.database.fetchall()
-    #     self.database.execute("SELECT * FROM outputs WHERE output_type_id = 'export_facturx'")
-    #     output = self.database.fetchall()
-    #     response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/export_facturx',
-    #                              json=output[0],
-    #                              headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
-    #     filename = response.json
-    #     is_facturx = False
-    #     with open(f'{filename}', 'rb') as f:
-    #         _, _xml_content = facturx.get_facturx_xml_from_pdf(f.read())
-    #         if _ is not None:
-    #             is_facturx = True
-    #
-    #     self.assertEqual(200, response.status_code)
-    #     self.assertTrue(os.path.isfile(f'{filename}'))
-    #     self.assertTrue(is_facturx)
+
+    def test_successful_export_facturx(self):
+        self.create_supplier()
+        self.create_document()
+        self.database.execute("SELECT id FROM documents")
+        document = self.database.fetchall()
+        self.database.execute("SELECT * FROM outputs WHERE output_type_id = 'export_facturx'")
+        output = self.database.fetchall()
+        response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/export_facturx',
+                                 json=output[0],
+                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        filename = response.json
+        is_facturx = False
+        with open(f'{filename}', 'rb') as f:
+            _, _xml_content = facturx.get_facturx_xml_from_pdf(f.read())
+            if _ is not None:
+                is_facturx = True
+
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(os.path.isfile(f'{filename}'))
+        self.assertTrue(is_facturx)
 
     def tearDown(self) -> None:
         file = f'./custom/{CUSTOM_ID}/src/backend/process_queue_verifier.py'

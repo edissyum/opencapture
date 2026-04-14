@@ -567,7 +567,7 @@ def export_facturx(document_id, data):
         database = get_context_var('database', 0)
 
         log.database = database
-        return verifier_exports.export_facturx(data['data'], log, regex, document_info)
+        return verifier_exports.export_facturx(data['data'], log, document_info)
 
 
 def launch_output_script(document_id, workflow_settings, outputs):

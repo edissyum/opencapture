@@ -30,16 +30,43 @@ import pandas as pd
 from PIL import Image
 from xml.dom import minidom
 from zipfile import ZipFile
+
+from dns.tsig import get_context
 from unidecode import unidecode
 from flask_babel import gettext
 from .classes.CMIS import CMIS
 from .classes.Files import Files
 import xml.etree.ElementTree as Et
+
+from .helpers import get_context_var
 from .models import attachments, monitoring
 from .classes.MEMWebServices import MEMWebServices
 from .splitter_exports import get_output_parameters
 from .classes.COOGWebServices import COOGWebServices
 from .classes.OpenCRMWebServices import OpenCRMWebServices
+
+
+COUNTRY_CODES = {
+    'france': 'FR',
+    'germany': 'DE',
+    'spain': 'ES',
+    'italy': 'IT',
+    'belgium': 'BE',
+    'switzerland': 'CH',
+    'luxembourg': 'LU',
+    'netherlands': 'NL',
+    'portugal': 'PT',
+    'united kingdom': 'GB',
+    'united states': 'US'
+}
+
+def normalize_country(value):
+    if not value:
+        return 'FR'
+    v = value.strip()
+    if len(v) == 2:
+        return v.upper()  # already a code
+    return COUNTRY_CODES.get(v.lower(), v.upper()[:2])  # fallback: first 2 chars uppercased
 
 
 def export_xml(data, log, document_info, database, enable_log=True):
@@ -213,7 +240,8 @@ def compress_pdf(input_file, output_file, compress_id):
     subprocess.check_call(gs_args)
 
 
-def export_facturx(data, log, regex, document_info):
+def export_facturx(data, log, document_info):
+    database = get_context_var('database', 0)
     if 'id' in document_info and document_info['id']:
         task = monitoring.get_process_by_document_id(document_info['id'])[0]
         if task and task[0]:
@@ -336,18 +364,40 @@ def export_facturx(data, log, regex, document_info):
         facturx_applicable_header = Et.SubElement(facturx_supply_chain, 'ram:ApplicableHeaderTradeAgreement')
         facturx_seller = Et.SubElement(facturx_applicable_header, 'ram:SellerTradeParty')
         supplier_name = Et.SubElement(facturx_seller, 'ram:Name')
-        supplier_name.text = document_info['datas']['name']
+        supplier_name.text = document_info['datas'].get('name', '')
+
+        supplier = {}
+        if 'supplier_id' in document_info:
+             supplier = database.select({
+                 'select': ['*'],
+                 'table': ['accounts_supplier', 'addresses'],
+                 'left_join': ['accounts_supplier.address_id = addresses.id'],
+                 'where': ['accounts_supplier.id = %s', 'accounts_supplier.status <> %s'],
+                 'data': [document_info['supplier_id'], 'DEL']
+             })
+             if supplier:
+                supplier = supplier[0]
+
+        seller_address = Et.SubElement(facturx_seller, 'ram:PostalTradeAddress')
+        seller_country = Et.SubElement(seller_address, 'ram:CountryID')
+        seller_country.text = normalize_country(supplier.get('country'))
 
         vat_number_parent = Et.SubElement(facturx_seller, 'ram:SpecifiedTaxRegistration')
         vat_number = Et.SubElement(vat_number_parent, 'ram:ID', {'schemeID': 'VA'})
-        vat_number.text = document_info['datas']['vat_number']
+        vat_number.text = document_info['datas'].get('vat_number', '')
 
         buyer = Et.SubElement(facturx_applicable_header, 'ram:BuyerTradeParty')
-        Et.SubElement(buyer, 'ram:Name')
+        buyer_name = Et.SubElement(buyer, 'ram:Name')
+        buyer_name.text = document_info['datas'].get('name', '')
+
+        # PostalTradeAddress immediately after Name
+        buyer_address = Et.SubElement(buyer, 'ram:PostalTradeAddress')
+        buyer_country = Et.SubElement(buyer_address, 'ram:CountryID')
+        buyer_country.text = normalize_country(supplier.get('country'))
 
         buyer_order_ref = Et.SubElement(facturx_applicable_header, 'ram:BuyerOrderReferencedDocument')
         ored_ref = Et.SubElement(buyer_order_ref, 'ram:IssuerAssignedID')
-        ored_ref.text = document_info['datas']['quotation_number']
+        ored_ref.text = document_info['datas'].get('quotation_number', '')
 
         Et.SubElement(facturx_supply_chain, 'ram:ApplicableHeaderTradeDelivery')
 
@@ -377,6 +427,16 @@ def export_facturx(data, log, regex, document_info):
                 vat_rate = Et.SubElement(applicable_trade_tax, 'ram:RateApplicablePercent')
                 vat_rate.text = str(document_info['datas'][index_rate])
 
+        payment_terms = Et.SubElement(facturx_trade_settlement, 'ram:SpecifiedTradePaymentTerms')
+        due_date_parent = Et.SubElement(payment_terms, 'ram:DueDateDateTime')
+        due_date = Et.SubElement(due_date_parent, 'udt:DateTimeString', {'format': '102'})
+        if document_info['datas'].get('document_due_date'):
+            due_date.text = datetime.datetime.strptime(
+                document_info['datas']['document_due_date'], '%Y-%m-%d'
+            ).strftime('%Y%m%d')
+        else:
+            due_date.text = datetime.datetime.today().strftime('%Y%m%d')
+
         data_parent = Et.SubElement(facturx_trade_settlement, 'ram:SpecifiedTradeSettlementHeaderMonetarySummation')
 
         total_ht = Et.SubElement(data_parent, 'ram:LineTotalAmount')
@@ -395,7 +455,7 @@ def export_facturx(data, log, regex, document_info):
         prepaid = Et.SubElement(data_parent, 'ram:TotalPrepaidAmount')
         prepaid.text = '0.00'
         due_payable = Et.SubElement(data_parent, 'ram:DuePayableAmount')
-        due_payable.text = '0.00'
+        due_payable.text = str(document_info['datas']['total_ttc'])
 
         file = document_info['path'] + '/' + document_info['filename']
         facturx.generate_from_file(file, Et.tostring(root), output_pdf_file=folder_out + '/' + filename)
@@ -408,7 +468,7 @@ def export_facturx(data, log, regex, document_info):
             "errors": gettext('PDF_DESTINATION_FOLDER_DOESNT_EXISTS'),
             "message": folder_out
         }
-        return response, 40
+        return response, 400
 
 
 def compress_file(file, compress_type, log, folder_out, filename, document_filename):

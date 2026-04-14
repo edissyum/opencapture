@@ -67,7 +67,7 @@ def execute_outputs(output_info, log, regex, document_data, database):
     elif output_info['output_type_id'] == 'export_pdf':
         path, _ = verifier_exports.export_pdf(data, log, document_data, compress_type, ocrise)
     elif output_info['output_type_id'] == 'export_facturx':
-        path, _ = verifier_exports.export_facturx(data, log, regex, document_data)
+        path, _ = verifier_exports.export_facturx(data, log, document_data)
 
     output_info['file_path'] = path
     return output_info
