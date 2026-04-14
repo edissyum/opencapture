@@ -76,7 +76,7 @@ def run_inference(image):
 
     processor = transformers.AutoProcessor.from_pretrained(
         model_path,
-        use_fast=True,
+        backend="torchvision",
         min_pixels=512 * 28 * 28,
         max_pixels=512 * 28 * 28
     )

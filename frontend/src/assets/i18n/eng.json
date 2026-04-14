@@ -826,7 +826,8 @@
         "subject": "Subject",
         "firstname_lastname": "First and last name",
         "system_fields": "System fields",
-        "accounting_plan": "Expense accounts"
+        "accounting_plan": "Expense accounts",
+        "delete_field_success": "Field successfully removed"
     },
     "SECURITY": {
         "default_auth": "Default authentication",

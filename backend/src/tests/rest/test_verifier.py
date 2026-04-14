@@ -192,18 +192,18 @@ class VerifierTest(unittest.TestCase):
         document = self.database.fetchall()
         self.assertEqual('DEL', document[0]['status'])
 
-    # def test_successful_delete_document_data(self):
-    #     self.create_supplier()
-    #     self.create_document()
-    #     self.database.execute("SELECT id FROM documents")
-    #     document = self.database.fetchall()
-    #     response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/deleteData',
-    #                             data='invoice_number',
-    #                             headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
-    #     self.assertEqual(200, response.status_code)
-    #     self.database.execute("SELECT datas FROM documents")
-    #     document = self.database.fetchall()
-    #     self.assertTrue('invoice_number' not in document[0]['datas'])
+    def test_successful_delete_document_data(self):
+        self.create_supplier()
+        self.create_document()
+        self.database.execute("SELECT id FROM documents")
+        document = self.database.fetchall()
+        response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/deleteData',
+                                data={'fieldId': 'invoice_number'},
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+        self.database.execute("SELECT datas FROM documents")
+        document = self.database.fetchall()
+        self.assertTrue('invoice_number' not in document[0]['datas'])
 
     def test_successful_delete_document_document(self):
         self.create_supplier()
@@ -215,31 +215,31 @@ class VerifierTest(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertFalse(os.path.isfile(document[0]['path'] + '/' + document[0]['filename']))
 
-    # def test_successful_delete_document_position(self):
-    #     self.create_supplier()
-    #     self.create_document()
-    #     self.database.execute("SELECT id FROM documents")
-    #     document = self.database.fetchall()
-    #     response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/deletePosition',
-    #                             data='invoice_number',
-    #                             headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
-    #     self.assertEqual(200, response.status_code)
-    #     self.database.execute("SELECT positions FROM documents")
-    #     document = self.database.fetchall()
-    #     self.assertFalse('invoicer_number' in document[0]['positions'])
-    #
-    # def test_successful_delete_document_page(self):
-    #     self.create_supplier()
-    #     self.create_document()
-    #     self.database.execute("SELECT id FROM documents")
-    #     document = self.database.fetchall()
-    #     response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/deletePage',
-    #                             data='invoice_number',
-    #                             headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
-    #     self.assertEqual(200, response.status_code)
-    #     self.database.execute("SELECT pages FROM documents")
-    #     document = self.database.fetchall()
-    #     self.assertFalse('invoicer_number' in document[0]['pages'])
+    def test_successful_delete_document_position(self):
+        self.create_supplier()
+        self.create_document()
+        self.database.execute("SELECT id FROM documents")
+        document = self.database.fetchall()
+        response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/deletePosition',
+                                data={'fieldId': 'invoice_number'},
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+        self.database.execute("SELECT positions FROM documents")
+        document = self.database.fetchall()
+        self.assertFalse('invoicer_number' in document[0]['positions'])
+
+    def test_successful_delete_document_page(self):
+        self.create_supplier()
+        self.create_document()
+        self.database.execute("SELECT id FROM documents")
+        document = self.database.fetchall()
+        response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/deletePage',
+                                data={'field_id': 'invoice_number'},
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+        self.database.execute("SELECT pages FROM documents")
+        document = self.database.fetchall()
+        self.assertFalse('invoicer_number' in document[0]['pages'])
 
     def test_successful_get_thumb(self):
         self.create_supplier()

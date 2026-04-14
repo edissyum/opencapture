@@ -494,6 +494,23 @@ export function VerifierViewerPage() {
         }
     }
 
+    const handleDelete = async (activeRegion: string) => {
+        if (!activeRegion) return;
+
+        delete documentData.datas[activeRegion];
+        delete documentData.pages[activeRegion];
+        delete documentData.positions[activeRegion];
+        try {
+            await put('/verifier/documents/' + documentId + '/deleteData', { 'fieldId': activeRegion });
+            await put('/verifier/documents/' + documentId + '/deletePage', { 'fieldId': activeRegion });
+            await put('/verifier/documents/' + documentId + '/deletePosition', { 'fieldId': activeRegion });
+
+            showToast(t('VERIFIER.delete_field_success'), 'success');
+        } catch (error) {
+            console.error("Error deleting page data:", error);
+        }
+    }
+
     const handleDuplicateLine = (line: any, zone: any, lineIndex: number) => {
         const fields = Object.values(line).filter((field: any) => typeof field !== 'boolean');
         setFieldsZone((prevZones) => {
@@ -1035,6 +1052,7 @@ export function VerifierViewerPage() {
                                     originalWidth={ documentData['img_width'] }
                                     regionsList={ regionsList }
                                     onEnd={ handleEnd }
+                                    onDelete={ handleDelete }
                                 />
                             ) }
                         </div>

@@ -427,10 +427,11 @@ def delete_document_data(document_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/verifier/documents/{document_id}/deleteData'}), 403
 
-    check, message = rest_validator(request.json['args'], [
-        {'id': 'fields', 'type': list, 'mandatory': 'fields' in request.json['args']},
-        {'id': 'multiple', 'type': bool, 'mandatory': 'fields' in request.json['args']}
-    ], only_data='fields' not in request.json['args'])
+    check, message = rest_validator(request.json, [
+        {'id': 'fields', 'type': list, 'mandatory': 'fields' in request.json},
+        {'id': 'multiple', 'type': bool, 'mandatory': 'fields' in request.json},
+        {'id': 'fieldId', 'type': str, 'mandatory': 'fields' not in request.json}
+    ])
 
     if not check:
         return make_response({
@@ -439,12 +440,12 @@ def delete_document_data(document_id):
         }, 400)
 
     res = ['', 400]
-    if 'multiple' in request.json['args']:
-        fields = request.json['args']['fields']
+    if 'multiple' in request.json:
+        fields = request.json['fields']
         for field in fields:
             res = verifier.delete_document_data_by_document_id(document_id, field)
     else:
-        field_id = request.json['args']
+        field_id = request.json['fieldId']
         res = verifier.delete_document_data_by_document_id(document_id, field_id)
     return make_response(res[0], res[1])
 
@@ -456,10 +457,11 @@ def delete_document_position(document_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/verifier/documents/{document_id}/deletePosition'}), 403
 
-    check, message = rest_validator(request.json['args'], [
-        {'id': 'fields', 'type': list, 'mandatory': 'fields' in request.json['args']},
-        {'id': 'multiple', 'type': bool, 'mandatory': 'fields' in request.json['args']}
-    ], only_data='fields' not in request.json['args'])
+    check, message = rest_validator(request.json, [
+        {'id': 'fields', 'type': list, 'mandatory': 'fields' in request.json},
+        {'id': 'multiple', 'type': bool, 'mandatory': 'fields' in request.json},
+        {'id': 'fieldId', 'type': str, 'mandatory': 'fields' not in request.json}
+    ])
 
     if not check:
         return make_response({
@@ -468,12 +470,12 @@ def delete_document_position(document_id):
         }, 400)
 
     res = ['', 400]
-    if 'multiple' in request.json['args']:
-        fields = request.json['args']['fields']
+    if 'multiple' in request.json:
+        fields = request.json['fields']
         for field in fields:
             res = verifier.delete_document_position_by_document_id(document_id, field)
     else:
-        field_id = request.json['args']
+        field_id = request.json['fieldId']
         res = verifier.delete_document_position_by_document_id(document_id, field_id)
     return make_response(res[0], res[1])
 
@@ -485,10 +487,11 @@ def delete_document_page(document_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/verifier/documents/{document_id}/deletePage'}), 403
 
-    check, message = rest_validator(request.json['args'], [
-        {'id': 'fields', 'type': list, 'mandatory': 'fields' in request.json['args']},
-        {'id': 'multiple', 'type': bool, 'mandatory': 'fields' in request.json['args']}
-    ], only_data='fields' not in request.json['args'])
+    check, message = rest_validator(request.json, [
+        {'id': 'fields', 'type': list, 'mandatory': 'fields' in request.json},
+        {'id': 'multiple', 'type': bool, 'mandatory': 'fields' in request.json},
+        {'id': 'fieldId', 'type': str, 'mandatory': 'fields' not in request.json}
+    ])
 
     if not check:
         return make_response({
@@ -497,12 +500,12 @@ def delete_document_page(document_id):
         }, 400)
 
     res = ['', 400]
-    if 'multiple' in request.json['args']:
-        fields = request.json['args']['fields']
+    if 'multiple' in request.json:
+        fields = request.json['fields']
         for field in fields:
             res = verifier.delete_document_page_by_document_id(document_id, field)
     else:
-        field_id = request.json['args']
+        field_id = request.json['fieldId']
         res = verifier.delete_document_page_by_document_id(document_id, field_id)
     return make_response(res[0], res[1])
 

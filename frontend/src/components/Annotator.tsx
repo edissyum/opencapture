@@ -38,6 +38,7 @@ interface AnnotatorProps {
     originalWidth?: number;
     focusedField: { id: string; label: string; color: string } | null;
     onEnd?: (activeRegion: any, regions: Region[]) => void;
+    onDelete?: (id: string) => void;
 }
 
 export function Annotator({
@@ -48,7 +49,8 @@ export function Annotator({
     focusedField,
     imageB64,
     currentPage,
-    onEnd
+    onEnd,
+    onDelete
 }: AnnotatorProps) {
     const [ratio, setRatio] = useState(0);
     const [imgSize, setImgSize] = useState({ w: 0, h: 0 });
@@ -292,6 +294,7 @@ export function Annotator({
 
     const handleDelete = (id: string) => {
         setRegions((prev) => prev.filter((r) => r.id !== id));
+        if (onDelete) onDelete(id);
     };
 
     const handleResizeStart = (e: React.MouseEvent, id: string, corner: string) => {
