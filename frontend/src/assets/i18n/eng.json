@@ -274,7 +274,7 @@
         "save": "Save",
         "unauthorized": "Access denied",
         "unauthorized_details": "You do not have the necessary permissions to access this resource. Please contact your administrator if you believe this is an error.",
-        "my_profile": ""
+        "my_profile": "My profile"
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validated",
@@ -578,11 +578,11 @@
         "edit_output": "Edit output chain",
         "user_quota": "User quota",
         "token_auth": "Authentication token",
-        "add_favorite": "",
-        "appear_here": "",
-        "click_star": "",
-        "navigate_to_settings": "",
-        "add_favorite_details": ""
+        "add_favorite": "Add your settings to favorites",
+        "appear_here": "It appears here",
+        "click_star": "Click on the star in the navigation bar",
+        "navigate_to_settings": "Navigate to a setting",
+        "add_favorite_details": "Find your favorite settings in one click for quick access. Once added, your favorites will be accessible here"
     },
     "SMTP": {
         "authentication": "Authentication",
@@ -1363,7 +1363,9 @@
         "workflows_list_splitter": "Workflows list"
     },
     "PROFILE": {
-        "details": "",
-        "update_profile": ""
+        "details": "Profile details",
+        "update_profile": "Update profile",
+        "update_error": "Error updating profile",
+        "update_success": "Profile updated successfully"
     }
 }

@@ -294,7 +294,7 @@
         "save": "Guardar",
         "unauthorized": "Acceso denegado",
         "unauthorized_details": "No tiene los permisos necesarios para acceder a este recurso. Por favor, contacte a su administrador si cree que se trata de un error.",
-        "my_profile": ""
+        "my_profile": "Mi perfil"
     },
     "HISTORY": {
         "document_validated": "Documento n°<strong>{{ documentId }}</strong> validado",
@@ -620,11 +620,11 @@
         "edit_output": "Editar cadena de salida",
         "user_quota": "Cuota de usuario",
         "token_auth": "Token de autenticación",
-        "add_favorite": "",
-        "appear_here": "",
-        "click_star": "",
-        "navigate_to_settings": "",
-        "add_favorite_details": ""
+        "add_favorite": "Añade tus ajustes a favoritos",
+        "appear_here": "Aparece aquí",
+        "click_star": "Haz clic en la estrella de la barra de navegación",
+        "navigate_to_settings": "Accede a un ajuste",
+        "add_favorite_details": "Encuentra tus ajustes favoritos con un solo clic para un acceso rápido. Una vez añadidos, podrás acceder a ellos aquí"
     },
     "SMTP": {
         "authentication": "Autenticación",
@@ -1458,7 +1458,9 @@
         "workflows_list_splitter": "Lista de flujos de trabajo"
     },
     "PROFILE": {
-        "details": "",
-        "update_profile": ""
+        "details": "Detalles del perfil",
+        "update_profile": "Actualiza el perfil",
+        "update_error": "Error al actualizar el perfil",
+        "update_success": "Perfil actualizado correctamente"
     }
 }
