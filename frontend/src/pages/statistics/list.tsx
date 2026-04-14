@@ -148,7 +148,7 @@ export function StatisticsPage() {
                             ${ displayFilters ? "w-[400px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
                 <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between'>
                     <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
-                    <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary)'
+                    <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary) whitespace-nowrap'
                           onClick={ handleResetFilters }>
                         { t('VERIFIER.erase_filters') }
                     </span>
@@ -213,7 +213,7 @@ export function StatisticsPage() {
                              onClick={ () => setOpen({ ...open, year: !open.year }) }>
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
-                                <h3 className='text-lg font-semibold'>{ t('STATISTICS.year_optionnal') }</h3>
+                                <h3 className='text-lg font-semibold whitespace-nowrap'>{ t('STATISTICS.year_optionnal') }</h3>
                             </div>
                             <ChevronDown
                                 size={ 18 }

@@ -307,12 +307,12 @@ export function SplitterListPage() {
     return (
         <div className='flex h-full w-full overflow-hidden'>
             <div className={ `h-full transition-all border-r-2 border-(--border-secondary) pb-10
-                            ${ displayFilters ? "min-w-[350px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
+                            ${ displayFilters ? "w-[350px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
                 <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between'>
                     <h1 className='text-2xl font-bold'>
                         { t('VERIFIER.filters') }
                     </h1>
-                    <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary)'
+                    <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary) whitespace-nowrap'
                           onClick={ handleResetFilters }>
                         { t('VERIFIER.erase_filters') }
                     </span>
@@ -342,7 +342,7 @@ export function SplitterListPage() {
                                                 setSelectedTime(e.value);
                                             } }>
                                         </RadioButton>
-                                        <label htmlFor={ time.id } key={ time.id } className={ `cursor-pointer` }>
+                                        <label htmlFor={ time.id } key={ time.id } className='cursor-pointer'>
                                             { time.label } ({ time.totals || 0 })
                                         </label>
                                     </div>
@@ -375,7 +375,7 @@ export function SplitterListPage() {
                                                 setSelectedStatus(listStatuses[e.value]?.id);
                                             } }>
                                         </RadioButton>
-                                        <label htmlFor={ key } key={ key } className={ `cursor-pointer` }>
+                                        <label htmlFor={ key } key={ key } className='cursor-pointer'>
                                             { listStatuses[key]?.label } ({ listStatuses[key]?.total || 0 })
                                         </label>
                                     </div>
@@ -388,7 +388,7 @@ export function SplitterListPage() {
                              onClick={ () => setOpen({ ...open, customers: !open.customers }) }>
                             <div className="flex items-center gap-2">
                                 <Briefcase className="text-(--color-primary)" size={ 20 }/>
-                                <h3 className='text-lg font-semibold'>{ t('ACCOUNTS.customers_list') }</h3>
+                                <h3 className='text-lg font-semibold whitespace-nowrap'>{ t('ACCOUNTS.customers_list') }</h3>
                             </div>
                             <ChevronDown size={ 18 }
                                          className={ `transition-transform ${ open.customers ? "rotate-180" : "" }` }/>

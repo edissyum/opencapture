@@ -213,10 +213,10 @@ export function MonitoringList() {
     return (
         <div className='flex h-full w-full overflow-hidden bg-(--bg-secondary)'>
             <div className={ `h-full transition-all border-r border-(--border-secondary) pb-16
-                            ${ displayFilters ? "min-w-[300px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
+                            ${ displayFilters ? "w-[300px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
                 <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between'>
                     <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
-                    <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary)'
+                    <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary) whitespace-nowrap'
                           onClick={ handleResetFilters }>
                         { t('VERIFIER.erase_filters') }
                     </span>
@@ -246,7 +246,7 @@ export function MonitoringList() {
                                                 setSelectedModule(e.value);
                                             } }>
                                         </RadioButton>
-                                        <label htmlFor={ module.id } key={ module.id } className={ `cursor-pointer` }>
+                                        <label htmlFor={ module.id } key={ module.id } className='cursor-pointer whitespace-nowrap'>
                                             { module.label }
                                         </label>
                                     </div>
@@ -278,7 +278,7 @@ export function MonitoringList() {
                                                 setSelectedStatus(e.value);
                                             } }>
                                         </RadioButton>
-                                        <label htmlFor={ status.id } key={ status.id } className={ `cursor-pointer` }>
+                                        <label htmlFor={ status.id } key={ status.id } className='cursor-pointer whitespace-nowrap'>
                                             { status.label }
                                         </label>
                                     </div>
