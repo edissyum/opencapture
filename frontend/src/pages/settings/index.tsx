@@ -16,7 +16,7 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import { Check, Search, SlidersHorizontal } from "lucide-react";
+import { Check, MousePointer, Search, SlidersHorizontal, Star } from "lucide-react";
 
 import { Loader } from "../../components/loader/Loader";
 import { useFavorites } from "../../services/hooks/useFavorite";
@@ -77,29 +77,56 @@ export function SettingsIndex() {
 
     return (
         <div className="p-6">
-            <h1 className="text-2xl font-bold flex items-center gap-1">
+            <h3 className="text-xl font-bold flex items-center gap-1">
                 { t('SETTINGS.favorites') }
-            </h1>
+            </h3>
             <p className="text-(--text-secondary)">
                 { t('SETTINGS.favorites_subtitle') }
             </p>
-            <div className='grid grid-cols-3 gap-8 my-6'>
-                { favoriteOptions &&
-                    favoriteOptions.map((option, index) => (
+            { favoriteOptions && favoriteOptions.length > 0 ? (
+                <div className='grid grid-cols-3 gap-6 my-6'>
+                    { favoriteOptions.map((option, index) => (
                         <SettingsCard key={ index } icon={ option['icon'] } title={ option['name'] }
                                       description={ option['description'] } to={ option['href'] }
                                       module={ option['module'] ?? false }/>
-                    ))
-                }
-            </div>
+                    )) }
+                </div>
+            ) : (
+                <div
+                    className="my-6 w-full bg-(--bg-selected) p-4 rounded-lg flex flex-col gap-4 border border-(--border-primary)">
+                    <div className='flex items-center gap-3'>
+                        <div className='bg-(--color-primary) p-2 rounded-lg'>
+                            <Star className="text-white" size={ 28 }/>
+                        </div>
+                        <div className='flex flex-col'>
+                            <span className='text-(--color-primary) font-semibold'>{ t('SETTINGS.add_favorite') }</span>
+                            <span className='text-(--text-secondary)'>{ t('SETTINGS.add_favorite_details') }</span>
+                        </div>
+                    </div>
+                    <div className='flex gap-4'>
+                        <div className='bg-(--color-primary)/20 rounded-md px-2 py-1 flex items-center gap-1 text-(--color-primary)'>
+                            <MousePointer size={ 16 } fill='var(--color-primary)' stroke='var(--color-primary)'/>
+                            { t('SETTINGS.navigate_to_settings') }
+                        </div>
+                        <div className='bg-(--color-primary)/20 rounded-md px-2 py-1 flex items-center gap-1 text-(--color-primary)'>
+                            <Star size={ 16 } fill='var(--color-primary)' stroke='var(--color-primary)'/>
+                            { t('SETTINGS.click_star') }
+                        </div>
+                        <div className='bg-(--color-primary)/20 rounded-md px-2 py-1 flex items-center gap-1 text-(--color-primary)'>
+                            <Check size={ 16 }/>
+                            { t('SETTINGS.appear_here') }
+                        </div>
+                    </div>
+                </div>
+            ) }
 
-            <h1 className="text-2xl font-bold flex items-center gap-1">
+            <h3 className="text-xl font-bold flex items-center gap-1">
                 { t('SETTINGS.title') }
-            </h1>
+            </h3>
             <p className="text-(--text-secondary)">
                 { t('SETTINGS.subtitle') }
             </p>
-            <div className='grid grid-cols-3 gap-8 mt-6'>
+            <div className='grid grid-cols-3 gap-6 mt-6'>
                 { options.map((option) => (
                     <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
                                   description={ option['description'] } to={ option['href'] }/>

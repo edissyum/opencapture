@@ -88,13 +88,12 @@ export default function Sidebar() {
     return (
         <aside
             className={ `min-h-screen px-3 py-2 flex flex-col border-r border-r-(--border-secondary) shrink-0 transition-all ${ collapsed ? "w-18" : "w-65" }` }>
-            <div
-                className={ `flex items-center max-w-10/12 min-h-18 max-h-30 gap-3 mb-3 ${ collapsed ? "p-3" : "p-4" }` }>
+            <div className={ `flex w-full items-center min-h-18 max-h-30 gap-3 mb-3 ${ collapsed ? "p-3" : "p-4" }` }>
                 { !collapsed && (
-                    <LoginImage className="mx-auto"></LoginImage>
+                    <LoginImage className="mx-auto w-full h-full object-contain"></LoginImage>
                 ) }
                 <span onClick={ () => setCollapsed(!collapsed) }
-                      className="mb-2 font-xl cursor-pointer">
+                      className="ml-auto mb-2 font-xl cursor-pointer">
                     { collapsed ? <ChevronsRight/> : <ChevronsLeft/> }
                 </span>
             </div>
@@ -105,7 +104,7 @@ export default function Sidebar() {
                 }` }>
                     <House className='shrink-0' size={ 20 } { ...(collapsed && {
                         "data-tooltip-id": "tooltip",
-                        "data-tooltip-content": t('GLOBAL.home'),
+                        "data-tooltip-content": t('GLOBAL.home')
                     }) }/>
                     { !collapsed && <span>{ t('GLOBAL.home') }</span> }
                 </Link>

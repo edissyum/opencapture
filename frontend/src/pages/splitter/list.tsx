@@ -342,7 +342,7 @@ export function SplitterListPage() {
                                                 setSelectedTime(e.value);
                                             } }>
                                         </RadioButton>
-                                        <label htmlFor={ time.id } key={ time.id } className='cursor-pointer'>
+                                        <label htmlFor={ time.id } key={ time.id } className='cursor-pointer whitespace-nowrap'>
                                             { time.label } ({ time.totals || 0 })
                                         </label>
                                     </div>
@@ -375,7 +375,7 @@ export function SplitterListPage() {
                                                 setSelectedStatus(listStatuses[e.value]?.id);
                                             } }>
                                         </RadioButton>
-                                        <label htmlFor={ key } key={ key } className='cursor-pointer'>
+                                        <label htmlFor={ key } key={ key } className='cursor-pointer whitespace-nowrap'>
                                             { listStatuses[key]?.label } ({ listStatuses[key]?.total || 0 })
                                         </label>
                                     </div>
@@ -386,9 +386,9 @@ export function SplitterListPage() {
                     <div className={ `${ open.customers ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, customers: !open.customers }) }>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 whitespace-nowrap">
                                 <Briefcase className="text-(--color-primary)" size={ 20 }/>
-                                <h3 className='text-lg font-semibold whitespace-nowrap'>{ t('ACCOUNTS.customers_list') }</h3>
+                                <h3 className='text-lg font-semibold'>{ t('ACCOUNTS.customers_list') }</h3>
                             </div>
                             <ChevronDown size={ 18 }
                                          className={ `transition-transform ${ open.customers ? "rotate-180" : "" }` }/>
@@ -413,7 +413,7 @@ export function SplitterListPage() {
                     <div className={ `${ open.forms ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, forms: !open.forms }) }>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 whitespace-nowrap">
                                 <LayoutTemplate className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.forms') }</h3>
                             </div>

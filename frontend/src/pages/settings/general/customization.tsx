@@ -175,97 +175,109 @@ export function SettingsGeneralCustomization() {
     }
 
     return (
-        <div className='p-6'>
-            <h2>{ t('CUSTOMIZATION.theme') }</h2>
-            <p className='text-(--text-secondary)'>{ t('CUSTOMIZATION.theme_description') }</p>
-            <div className="flex">
-                <ThemeSelection onThemeChange={ handleThemeChange }/>
+        <div className='p-6 flex flex-col gap-6'>
+            <div>
+                <h3 className="text-xl font-bold">{ t('CUSTOMIZATION.theme') }</h3>
+                <p className='text-(--text-secondary)'>{ t('CUSTOMIZATION.theme_description') }</p>
+                <div className="flex">
+                    <ThemeSelection onThemeChange={ handleThemeChange }/>
+                </div>
             </div>
-            <hr className='my-6 text-(--border-secondary)'/>
 
-            <h2>{ t('CUSTOMIZATION.application_lang') }</h2>
-            <p className='text-(--text-secondary)'>{ t('CUSTOMIZATION.application_lang_description') }</p>
-            <div className="flex mt-4">
-                <LangSelection i18n={ useTranslation().i18n } refresh={ true }/>
-            </div>
-            <hr className='my-6 text-(--border-secondary)'/>
+            <hr className='text-(--border-secondary)'/>
 
-            <h2>{ t('CUSTOMIZATION.app_image') }</h2>
-            <p className='text-(--text-secondary) mb-4'>{ t('CUSTOMIZATION.app_image_description') }</p>
-            <div className="w-1/2">
-                <UploadDropzone
-                    accept={ { "image/*": [".jpg", ".jpeg", ".png", ".svg"] } }
-                    showPreview={ false }
-                    maxFiles={ 1 }
-                    maxSize={ 2 * 1024 * 1024 }
-                    onFilesAccepted={ (files) => handleNewAppImage(files[0]) }
-                />
+            <div>
+                <h3 className="text-xl font-bold">{ t('CUSTOMIZATION.application_lang') }</h3>
+                <p className='text-(--text-secondary)'>{ t('CUSTOMIZATION.application_lang_description') }</p>
+                <div className="flex">
+                    <LangSelection i18n={ useTranslation().i18n } refresh={ true }/>
+                </div>
             </div>
-            <div className="flex items-start gap-4 h-40 mb-12">
+
+            <hr className='text-(--border-secondary)'/>
+
+            <div>
+                <h3 className="text-xl font-bold">{ t('CUSTOMIZATION.app_image') }</h3>
+                <p className='text-(--text-secondary) mb-4'>{ t('CUSTOMIZATION.app_image_description') }</p>
+                <div className="w-1/2">
+                    <UploadDropzone
+                        accept={ { "image/*": [".jpg", ".jpeg", ".png", ".svg"] } }
+                        showPreview={ false }
+                        maxFiles={ 1 }
+                        maxSize={ 2 * 1024 * 1024 }
+                        onFilesAccepted={ (files) => handleNewAppImage(files[0]) }
+                    />
+                </div>
+            </div>
+
+            <div className="flex items-start gap-4">
                 { !loading && files.length !== 0 && (
                     <>
                         {
                             files.map((file, index) => (
                                 <div key={ index } onClick={ () => handleSelectedIndex(index) }
-                                     className="h-full grow-0 justify-center items-center cursor-pointer relative mt-4 border-(--border-primary) border rounded-lg p-4">
+                                     className="w-70 h-auto justify-center items-center cursor-pointer relative mt-4 border-(--border-primary) border rounded-lg p-4">
                                     <CheckOverlay show={ selectedIndex === index }/>
-                                    <img className="h-full" src={ fileUrls[index] } alt={ file.name }/>
+                                    <img className="w-full" src={ fileUrls[index] } alt={ file.name }/>
                                 </div>
                             ))
                         }
                     </>
                 ) }
             </div>
-            <hr className='my-6 text-(--border-secondary)'/>
 
-            <h2>{ t('CUSTOMIZATION.login_message') }</h2>
-            <p className='text-(--text-secondary) mb-4'>{ t('CUSTOMIZATION.login_message_description') }</p>
-            <Editor
-                key={ editorKey }
-                licenseKey="gpl"
-                value={ loginMessage }
-                tinymceScriptSrc='/tinymce/tinymce.min.js'
-                onEditorChange={ (newContent) => {
-                    setLoginMessage(newContent)
-                } }
-                init={ {
-                    height: 300,
-                    width: '60%',
-                    resize: false,
-                    menubar: false,
-                    skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
-                    content_css: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
-                    branding: false,
-                    promotion: false,
-                    language: 'fr_FR',
-                    language_url: '/src/assets/i18n/tinymce/langs/fr_FR.js',
-                    toolbar: 'undo redo | formatselect | fontsize | bold italic underline forecolor backcolor | link | alignleft aligncenter alignright alignjustify',
-                    font_size_formats: '8pt 10pt 12pt 14pt 16pt 18pt',
-                    plugins: 'lists link image table',
-                    color_map: [
-                        '#19864B', 'Open-Capture Green',
-                        '#E8E8E8', 'Open-Capture Light Gray',
-                        '#91929B', 'Open-Capture Gray',
-                        '#ECCAFA', 'Light Purple',
-                        '#C2E0F4', 'Light Blue',
+            <hr className='text-(--border-secondary)'/>
 
-                        '#2DC26B', 'Green',
-                        '#F1C40F', 'Yellow',
-                        '#E03E2D', 'Red',
-                        '#B96AD9', 'Purple',
-                        '#3598DB', 'Blue',
+            <div>
+                <h3 className="text-xl font-bold">{ t('CUSTOMIZATION.login_message') }</h3>
+                <p className='text-(--text-secondary) mb-4'>{ t('CUSTOMIZATION.login_message_description') }</p>
+                <Editor
+                    licenseKey="gpl"
+                    key={ editorKey }
+                    value={ loginMessage }
+                    tinymceScriptSrc='/tinymce/tinymce.min.js'
+                    onEditorChange={ (newContent) => {
+                        setLoginMessage(newContent)
+                    } }
+                    init={ {
+                        height: 300,
+                        width: '60%',
+                        resize: false,
+                        menubar: false,
+                        skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
+                        content_css: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
+                        branding: false,
+                        promotion: false,
+                        language: 'fr_FR',
+                        language_url: '/src/assets/i18n/tinymce/langs/fr_FR.js',
+                        toolbar: 'undo redo | formatselect | fontsize | bold italic underline forecolor backcolor | link | alignleft aligncenter alignright alignjustify',
+                        font_size_formats: '8pt 10pt 12pt 14pt 16pt 18pt',
+                        plugins: 'lists link image table',
+                        color_map: [
+                            '#19864B', 'Open-Capture Green',
+                            '#E8E8E8', 'Open-Capture Light Gray',
+                            '#91929B', 'Open-Capture Gray',
+                            '#ECCAFA', 'Light Purple',
+                            '#C2E0F4', 'Light Blue',
 
-                        '#169179', 'Dark Turquoise',
-                        '#E67E23', 'Orange',
-                        '#BA372A', 'Dark Red',
-                        '#843FA1', 'Dark Purple',
-                        '#236FA1', 'Dark Blue',
+                            '#2DC26B', 'Green',
+                            '#F1C40F', 'Yellow',
+                            '#E03E2D', 'Red',
+                            '#B96AD9', 'Purple',
+                            '#3598DB', 'Blue',
 
-                        '#000000', 'Black',
-                        '#ffffff', 'White'
-                    ]
-                } }
-            />
+                            '#169179', 'Dark Turquoise',
+                            '#E67E23', 'Orange',
+                            '#BA372A', 'Dark Red',
+                            '#843FA1', 'Dark Purple',
+                            '#236FA1', 'Dark Blue',
+
+                            '#000000', 'Black',
+                            '#ffffff', 'White'
+                        ]
+                    } }
+                />
+            </div>
             <Button className="mt-4" onClick={ () => handleUpdateLoginMessage() }>
                 { t('CUSTOMIZATION.save_login_message') }
             </Button>

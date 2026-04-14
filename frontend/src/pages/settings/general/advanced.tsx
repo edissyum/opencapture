@@ -15,7 +15,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { Pencil } from "lucide-react";
+import { Pen } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
@@ -46,7 +46,7 @@ export function SettingsGeneralAdvanced() {
     const actions = [
         {
             label: t('GLOBAL.modify'),
-            icon: <Pencil size={ 16 }/>,
+            icon: <Pen size={ 16 }/>,
             command: () => handleUpdate()
         }
     ];

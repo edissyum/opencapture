@@ -292,10 +292,12 @@ export function SettingsGeneralMailcollect() {
                                 <span>
                                     { process.name }
                                 </span>
-                                <span className='flex ml-auto'>
-                                    <InputSwitch inputId={ 'enable_' + idx } checked={ process.enabled }
-                                                 onClick={ (e) => e.stopPropagation() }
-                                                 onChange={ () => handleToggleEnableProcess(process) }/>
+                                <span className='flex ml-auto gap-2'>
+                                    <InputSwitch
+                                        className='-top-0.5'
+                                        inputId={ 'enable_' + idx } checked={ process.enabled }
+                                        onClick={ (e) => e.stopPropagation() }
+                                        onChange={ () => handleToggleEnableProcess(process) }/>
                                     <EllipsisVertical onClick={ (e) => {
                                         setSelectedProcess(process);
                                         e.preventDefault();

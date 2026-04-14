@@ -1147,6 +1147,7 @@ export function SplitterViewerPage() {
                                 <Dropdown id={ "forms" }
                                           filter={ true }
                                           className="w-1/3"
+                                          noMarginBottom={ true }
                                           disabled={ disabledBatch }
                                           label={ t('VERIFIER.form') }
                                           options={ forms.map((form: any) => ({
@@ -1157,7 +1158,7 @@ export function SplitterViewerPage() {
                                           onChange={ handleChangeForm }
                                 />
 
-                                { batchMetadata && (
+                                { batchMetadata && batchMetadata.length > 0 && (
                                     <div>
                                         <h3 className='font-semibold mb-4'>{ t('FORMS.metadata_batch') }</h3>
                                         { batchMetadata.map((line: any, index: number) => (
@@ -1231,7 +1232,7 @@ export function SplitterViewerPage() {
                                 onClick={ (e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
-                                    setSelectedDocument(document)
+                                    setSelectedDocument(document);
                                 } }
                                 className={ `PanelDocumentList mb-4 w-full ${ selectedDocument?.id === document.id ? 'panelSelected' : 'border-transparent' }` }
                                 header={

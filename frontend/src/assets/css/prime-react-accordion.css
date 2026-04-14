@@ -143,12 +143,12 @@
 }
 
 .panelSelected .p-panel-header {
-    @apply border-(--color-primary);
+    @apply border-(--color-primary)/40;
     @apply border-b-(--border-secondary);
 }
 
 .panelSelected .p-panel-content {
-    @apply border-(--color-primary);
+    @apply border-(--color-primary)/40;
     @apply border-t-(--border-secondary);
 }
 

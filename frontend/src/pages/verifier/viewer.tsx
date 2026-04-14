@@ -1103,12 +1103,12 @@ export function VerifierViewerPage() {
                             </div>
 
                             <div className="flex bg-(--bg-primary) p-3.5 rounded-full cursor-pointer border
-                                    border-(--border-secondary) grow-5 min-w-[180px]">
+                                    border-(--border-secondary) grow min-w-[180px]">
                                 <ZoomControl zoom={ zoom } setZoom={ setZoom }/>
                             </div>
 
-                            <div className="flex justify-center items-center gap-3 bg-(--bg-primary) p-3 rounded-full
-                                    cursor-pointer border border-(--border-secondary) grow min-w-[160px] whitespace-nowrap">
+                            <div className="flex justify-center items-center gap-3 bg-(--bg-primary) py-3 rounded-full
+                                    cursor-pointer border border-(--border-secondary) min-w-[160px] whitespace-nowrap">
                                 <button onClick={ handlePrev }
                                         disabled={ currentPage === 1 }
                                         className={ `cursor-pointer rounded-full transition-colors 

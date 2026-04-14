@@ -68,7 +68,7 @@ export function SettingsSplitterIndex() {
     const options = getSettingsSplitterOptions();
 
     return (
-        <div className='grid grid-cols-3 gap-8 p-6'>
+        <div className='grid grid-cols-3 gap-6 p-6'>
             { options.map((option) => (
                 <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
                               description={ option['description'] } to={ option['href'] }/>

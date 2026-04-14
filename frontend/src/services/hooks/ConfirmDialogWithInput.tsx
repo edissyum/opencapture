@@ -51,6 +51,8 @@ export function showConfirmDialogWithInput({
     onConfirm: (value: string) => void;
 }) {
     let inputValue = value;
+    console.log(inputValue)
+    console.log(options)
     const InputWrapper = () => {
         const [val, setVal] = useState(value);
         inputValue = val;
@@ -75,7 +77,7 @@ export function showConfirmDialogWithInput({
                 { type === 'bool' && (
                     <Dropdown
                         id={ 'confirm-dialog-boolean' }
-                        value={ val }
+                        value={ val.toString() }
                         options={ [
                             { label: t('GLOBAL.true'), value: 'true' },
                             { label: t('GLOBAL.false'), value: 'false' },

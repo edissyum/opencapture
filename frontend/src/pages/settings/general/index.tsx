@@ -15,7 +15,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { AtSign, Brush, HardDrive, HashIcon, Inbox, Lock, User, UsersRound, Wrench } from "lucide-react";
+import { AtSign, Brush, HardDrive, HashIcon, Inbox, Lock, UserKey, Users, Wrench } from "lucide-react";
 
 import { SettingsCard } from "../../../components/settings/SettingsCard";
 
@@ -29,13 +29,13 @@ export const getSettingsGeneralOptions = () => [
     {
         name: t('SETTINGS.security'),
         description: t('SETTINGS.security_description'),
-        icon: <AtSign/>,
+        icon: <Lock/>,
         href: '/settings/general/security'
     },
     {
         name: t('SETTINGS.smtp'),
         description: t('SETTINGS.smtp_description'),
-        icon: <Lock/>,
+        icon: <AtSign/>,
         href: '/settings/general/smtp'
     },
     {
@@ -59,13 +59,13 @@ export const getSettingsGeneralOptions = () => [
     {
         name: t('SETTINGS.users'),
         description: t('SETTINGS.users_description'),
-        icon: <User/>,
+        icon: <Users/>,
         href: '/settings/general/users'
     },
     {
         name: t('SETTINGS.roles'),
         description: t('SETTINGS.roles_description'),
-        icon: <UsersRound/>,
+        icon: <UserKey/>,
         href: '/settings/general/roles'
     },
     {
@@ -80,7 +80,7 @@ export function SettingsGeneralIndex() {
     const options = getSettingsGeneralOptions();
 
     return (
-        <div className='grid grid-cols-3 gap-8 p-6'>
+        <div className='grid grid-cols-3 gap-6 p-6'>
             { options.map((option) => (
                 <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
                               description={ option['description'] } to={ option['href'] }/>

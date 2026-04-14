@@ -149,7 +149,7 @@ const Input: React.FC<InputProps> = ({
                     <button
                         type="button"
                         onClick={ () => setPasswordVisible((prev) => !prev) }
-                        className={ `password transition-colors px-2 rounded-lg! rounded-l-none! 
+                        className={ `password transition-colors px-2 rounded-lg! rounded-l-none! bg-(--bg-primary)
                                      group-focus-within:border-(--border-primary)! border-l-0! border! 
                                      text-(--text-secondary)! hover:text-(--color-primary) z-20 cursor-pointer
                                      ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)! ' +

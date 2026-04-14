@@ -523,7 +523,7 @@
         "regex": "Regex",
         "regex_description": "Regex modification",
         "roles": "Roles",
-        "roles_description": "Role management",
+        "roles_description": "Role and permissions management",
         "users": "Users",
         "users_description": "User management",
         "add_favorites": "Add to favorites",
@@ -576,7 +576,12 @@
         "add_output": "Add an output chain",
         "edit_output": "Edit output chain",
         "user_quota": "User quota",
-        "token_auth": "Authentication token"
+        "token_auth": "Authentication token",
+        "add_favorite": "",
+        "appear_here": "",
+        "click_star": "",
+        "navigate_to_settings": "",
+        "add_favorite_details": ""
     },
     "SMTP": {
         "authentication": "Authentication",

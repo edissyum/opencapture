@@ -559,7 +559,7 @@
         "regex": "Regex",
         "regex_description": "Modification des regex",
         "roles": "Rôles",
-        "roles_description": "Modification des rôles",
+        "roles_description": "Gestion des rôles et permissions",
         "users": "Utilisateurs",
         "users_description": "Modification des utilisateurs",
         "add_favorites": "Ajouter aux favoris",
@@ -618,7 +618,12 @@
         "add_output": "Ajouter une chaîne sortante",
         "edit_output": "Modifier la chaîne sortante",
         "user_quota": "Quota utilisateur",
-        "token_auth": "Token d'authentification"
+        "token_auth": "Token d'authentification",
+        "add_favorite": "Ajoutez vos paramètres en favoris",
+        "appear_here": "Il apparaît ici",
+        "click_star": "Cliquez sur l'étoile dans la barre de navigation",
+        "navigate_to_settings": "Naviguez vers un paramètre",
+        "add_favorite_details": "Retrouvez ici en un clic vos paramètres favoris pour un accès rapide. Une fois ajoutés, vos favoris seront accessibles ici"
     },
     "SMTP": {
         "authentication": "Authentification",

@@ -102,11 +102,13 @@
     @apply ml-3;
 }
 
-.p-dropdown-trigger .p-icon {
+.p-dropdown-trigger .p-icon,
+.p-multiselect-trigger .p-icon {
     @apply size-3;
 }
 
-.p-dropdown .p-dropdown-trigger {
+.p-dropdown .p-dropdown-trigger,
+.p-multiselect-trigger {
     @apply w-8;
 }
 

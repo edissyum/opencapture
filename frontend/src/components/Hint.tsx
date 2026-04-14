@@ -34,8 +34,8 @@ export default function Hint({ children, variant = "success" }: any) {
 
     const logoVariants: any = {
         success: "",
-        error: <OctagonX className={ `${ textVariants[variant] } mr-2` }/>,
-        warning: <TriangleAlert className={ `${ textVariants[variant] } mr-2` }/>
+        error: <OctagonX className={ `${ textVariants[variant] } mr-2 shrink-0` }/>,
+        warning: <TriangleAlert className={ `${ textVariants[variant] } mr-2 shrink-0` }/>
     };
 
     return (

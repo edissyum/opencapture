@@ -170,147 +170,151 @@ export function SettingsGeneralSMTP() {
     return (
         <div className='flex h-full overflow-hidden'>
             <div className='border-r border-(--border-secondary) w-full overflow-y-auto'>
-                <div className='p-6'>
-                    <h1 className='text-2xl font-bold'>{ t('SMTP.provider') }</h1>
-                    <div className='flex gap-4 mt-6'>
-                        { providers.map((provider) => (
-                            <div key={ provider.name }
-                                 onClick={ () => handleProviderChange(provider.name) }
-                                 className={ `border border-(--border-secondary) hover:border-(--border-primary) transition-colors
+                <div className='p-6 flex flex-col gap-8'>
+                    <div>
+                        <h3 className='text-xl font-bold'>{ t('SMTP.provider') }</h3>
+                        <div className='flex gap-4 mt-4'>
+                            { providers.map((provider) => (
+                                <div key={ provider.name }
+                                     onClick={ () => handleProviderChange(provider.name) }
+                                     className={ `border border-(--border-secondary) hover:border-(--border-primary) transition-colors
                              rounded-lg px-8 py-3 cursor-pointer flex items-center justify-center gap-4
                              ${ selectedProvider === provider.name ? 'bg-(--bg-selected) border-(--border-primary)!' : '' } ` }>
-                                { provider.logo && <img src={ provider.logo } alt={ provider.name } className='h-5'/> }
-                                <p className='text-lg font-semibold'>{ provider.name }</p>
-                            </div>
-                        )) }
+                                    { provider.logo && <img src={ provider.logo } alt={ provider.name } className='h-5'/> }
+                                    <p className='text-lg font-semibold'>{ provider.name }</p>
+                                </div>
+                            )) }
+                        </div>
                     </div>
 
                     {/* @ts-ignore */ }
                     <form onSubmit={ handleSubmit(onSubmit) }>
-                        <h1 className='text-2xl font-bold mt-10'>{ t('SMTP.settings') }</h1>
-                        <div className='flex items-center mt-6 gap-4'>
-                            <div className='w-1/4'>
-                                <Input id='smtpHost' { ...register('smtpHost', { required: true }) }
-                                       required
-                                       placeholder='smtp.example.com'
-                                       error={ errors.smtpHost?.message }
-                                       label={ t('SMTP.host') }/>
-                            </div>
-                            <div className='w-[4rem]'>
-                                <Input id='smtpPort'
-                                       { ...register('smtpPort', {
-                                           required: true,
-                                           valueAsNumber: true
-                                       }) }
-                                       placeholder='587' required
-                                       error={ errors.smtpPort?.message }
-                                       label={ t('SMTP.port') }/>
-                            </div>
-                        </div>
-
-                        <h1 className='text-2xl font-bold mt-4'>{ t('SMTP.authentication') }</h1>
-                        <div className='mt-6'>
-                            <Controller
-                                control={ control }
-                                name='smtpAuth'
-                                render={ ({ field }) => (
-                                    <Checkbox checked={ field.value } label={ t('SMTP.smtp_auth') }
-                                              onChange={ (checked: boolean) => field.onChange(checked) }/>
-                                ) }
-                            />
-                            <div className='flex items-center gap-4 mt-4'>
+                        <div className='flex flex-col gap-4'>
+                            <h3 className='text-xl font-bold'>{ t('SMTP.settings') }</h3>
+                            <div className='flex items-center gap-4'>
                                 <div className='w-1/4'>
-                                    <Controller
-                                        control={ control }
-                                        name='smtpLogin'
-                                        render={ ({ field }) => (
-                                            <Input id='smtpLogin' value={ field.value }
-                                                   disabled={ !smtpAuth }
-                                                   onChange={ (value) => field.onChange(value) }
-                                                   label={ t('SMTP.login') } autoComplete='new-mail'
-                                                   error={ errors.smtpLogin?.message }/>
-                                        ) }
-                                    />
+                                    <Input id='smtpHost' { ...register('smtpHost', { required: true }) }
+                                           required
+                                           placeholder='smtp.example.com'
+                                           error={ errors.smtpHost?.message }
+                                           label={ t('SMTP.host') }/>
                                 </div>
-                                <div className='w-1/4'>
-                                    <Controller
-                                        control={ control }
-                                        name='smtpPwd'
-                                        render={ ({ field }) => (
-                                            <Input id='smtpPwd' value={ field.value }
-                                                   disabled={ !smtpAuth } type='password'
-                                                   onChange={ (value) => field.onChange(value) }
-                                                   label={ t('SMTP.password') } autoComplete='new-password'
-                                                   error={ errors.smtpPwd?.message }/>
-                                        ) }
-                                    />
+                                <div className='w-[4rem]'>
+                                    <Input id='smtpPort'
+                                           { ...register('smtpPort', {
+                                               required: true,
+                                               valueAsNumber: true
+                                           }) }
+                                           placeholder='587' required
+                                           error={ errors.smtpPort?.message }
+                                           label={ t('SMTP.port') }/>
                                 </div>
                             </div>
-                        </div>
 
-                        <h1 className='text-2xl font-bold mt-4'>{ t('SMTP.encryption') }</h1>
-                        <div className='flex gap-4 mt-6'>
-                            { smtpProtocoleSecureEnum.options.map((option: any) => (
+                            <h3 className='text-xl font-bold'>{ t('SMTP.authentication') }</h3>
+                            <div>
                                 <Controller
-                                    key={ option }
                                     control={ control }
-                                    name='smtpProtocoleSecure'
+                                    name='smtpAuth'
                                     render={ ({ field }) => (
-                                        <RadioBox
-                                            label={ option === 'none' ? t('SMTP.secure_none') : option.toUpperCase() }
-                                            value={ field.value ?? '' }
-                                            checked={ selectedEncryption === option }
-                                            onChange={ () => {
-                                                field.onChange(option);
-                                                setSelectedEncryption(option)
-                                            } }/>
+                                        <Checkbox checked={ field.value } label={ t('SMTP.smtp_auth') }
+                                                  onChange={ (checked: boolean) => field.onChange(checked) }/>
                                     ) }
                                 />
-                            )) }
-                        </div>
-
-                        <h1 className='text-2xl font-bold mt-10'>{ t('SMTP.error_notifications') }</h1>
-                        <div className='mt-6'>
-                            <Controller
-                                control={ control }
-                                name='smtpNotifOnError'
-                                render={ ({ field }) => (
-                                    <Checkbox checked={ field.value } label={ t('SMTP.enable_error_notifications') }
-                                              onChange={ (checked: boolean) => field.onChange(checked) }/>
-                                ) }
-                            />
-                            <div className='flex items-center gap-4 mt-4'>
-                                <div className='w-1/4'>
-                                    <Input id='smtpFromMail' { ...register('smtpFromMail') }
-                                           disabled={ !smtpNotifOnError }
-                                           error={ errors.smtpFromMail?.message }
-                                           label={ t('SMTP.from_mail') } autoComplete='new-mail'/>
-                                </div>
-                                <div className='w-1/4'>
-                                    <Input id='smtpDestAdminMail' { ...register('smtpDestAdminMail') }
-                                           disabled={ !smtpNotifOnError }
-                                           error={ errors.smtpDestAdminMail?.message }
-                                           label={ t('SMTP.destination_admin_mail') } autoComplete='new-mail'/>
+                                <div className='flex items-center gap-4 mt-4'>
+                                    <div className='w-1/4'>
+                                        <Controller
+                                            control={ control }
+                                            name='smtpLogin'
+                                            render={ ({ field }) => (
+                                                <Input id='smtpLogin' value={ field.value }
+                                                       disabled={ !smtpAuth }
+                                                       onChange={ (value) => field.onChange(value) }
+                                                       label={ t('SMTP.login') } autoComplete='new-mail'
+                                                       error={ errors.smtpLogin?.message }/>
+                                            ) }
+                                        />
+                                    </div>
+                                    <div className='w-1/4'>
+                                        <Controller
+                                            control={ control }
+                                            name='smtpPwd'
+                                            render={ ({ field }) => (
+                                                <Input id='smtpPwd' value={ field.value }
+                                                       disabled={ !smtpAuth } type='password'
+                                                       onChange={ (value) => field.onChange(value) }
+                                                       label={ t('SMTP.password') } autoComplete='new-password'
+                                                       error={ errors.smtpPwd?.message }/>
+                                            ) }
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                            <div className='w-[4rem] mt-4'>
-                                <Input type='string' id='smtpDelay' disabled={ !smtpNotifOnError }
-                                       { ...register('smtpDelay', { valueAsNumber: true }) }
-                                       placeholder='30' label={ t('SMTP.delay_between_emails') }/>
-                            </div>
-                            <p className='-mt-4 text-(--text-secondary)'>{ t('SMTP.delay_between_emails_infos') }</p>
-                        </div>
 
-                        <Button type='submit' className='mt-10' disabled={ isSubmitting }>
-                            { isSubmitting ? t('GLOBAL.saving') + "..." : t('GLOBAL.save_settings') }
-                        </Button>
+                            <h3 className='text-xl font-bold'>{ t('SMTP.encryption') }</h3>
+                            <div className='flex gap-4 mb-4'>
+                                { smtpProtocoleSecureEnum.options.map((option: any) => (
+                                    <Controller
+                                        key={ option }
+                                        control={ control }
+                                        name='smtpProtocoleSecure'
+                                        render={ ({ field }) => (
+                                            <RadioBox
+                                                label={ option === 'none' ? t('SMTP.secure_none') : option.toUpperCase() }
+                                                value={ field.value ?? '' }
+                                                checked={ selectedEncryption === option }
+                                                onChange={ () => {
+                                                    field.onChange(option);
+                                                    setSelectedEncryption(option)
+                                                } }/>
+                                        ) }
+                                    />
+                                )) }
+                            </div>
+
+                            <h3 className='text-xl font-bold'>{ t('SMTP.error_notifications') }</h3>
+                            <div>
+                                <Controller
+                                    control={ control }
+                                    name='smtpNotifOnError'
+                                    render={ ({ field }) => (
+                                        <Checkbox checked={ field.value } label={ t('SMTP.enable_error_notifications') }
+                                                  onChange={ (checked: boolean) => field.onChange(checked) }/>
+                                    ) }
+                                />
+                                <div className='flex items-center gap-4 mt-4'>
+                                    <div className='w-1/4'>
+                                        <Input id='smtpFromMail' { ...register('smtpFromMail') }
+                                               disabled={ !smtpNotifOnError }
+                                               error={ errors.smtpFromMail?.message }
+                                               label={ t('SMTP.from_mail') } autoComplete='new-mail'/>
+                                    </div>
+                                    <div className='w-1/4'>
+                                        <Input id='smtpDestAdminMail' { ...register('smtpDestAdminMail') }
+                                               disabled={ !smtpNotifOnError }
+                                               error={ errors.smtpDestAdminMail?.message }
+                                               label={ t('SMTP.destination_admin_mail') } autoComplete='new-mail'/>
+                                    </div>
+                                </div>
+                                <div className='w-[4rem] mt-4'>
+                                    <Input type='string' id='smtpDelay' disabled={ !smtpNotifOnError }
+                                           { ...register('smtpDelay', { valueAsNumber: true }) }
+                                           placeholder='30' label={ t('SMTP.delay_between_emails') }/>
+                                </div>
+                                <p className='-mt-4 text-(--text-secondary)'>{ t('SMTP.delay_between_emails_infos') }</p>
+                            </div>
+                        </div>
                     </form>
+
+                    <Button type='submit' disabled={ isSubmitting }>
+                        { isSubmitting ? t('GLOBAL.saving') + "..." : t('GLOBAL.save_settings') }
+                    </Button>
                 </div>
             </div>
             <div className='w-[40rem] bg-(--border-secondary)'>
                 <div className='bg-(--bg-primary)'>
                     <div className='p-6'>
-                        <h1 className='text-2xl font-bold'>{ t('SMTP.send_test') }</h1>
+                        <h3 className='text-xl font-bold'>{ t('SMTP.send_test') }</h3>
                         <p className='mt-2 text-(--text-secondary)'>{ t('SMTP.send_test_infos') }</p>
                         <div className='mt-8'>
                             <Input id='testEmail' type='email' value={ destinationTestEmail }
