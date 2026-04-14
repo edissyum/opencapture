@@ -88,12 +88,11 @@ export default function Sidebar() {
     return (
         <aside
             className={ `min-h-screen px-3 py-2 flex flex-col border-r border-r-(--border-secondary) shrink-0 transition-all ${ collapsed ? "w-18" : "w-65" }` }>
-            <div className={ `flex w-full items-center min-h-18 max-h-30 gap-3 mb-3 ${ collapsed ? "p-3" : "p-4" }` }>
+            <div className={ `flex w-full gap-2 items-center min-h-18 max-h-30 ${ collapsed ? "p-3" : "p-4" }` }>
                 { !collapsed && (
-                    <LoginImage className="mx-auto w-full h-full object-contain"></LoginImage>
+                    <LoginImage className="mx-auto h-full w-11/12 object-contain"></LoginImage>
                 ) }
-                <span onClick={ () => setCollapsed(!collapsed) }
-                      className="ml-auto mb-2 font-xl cursor-pointer">
+                <span onClick={ () => setCollapsed(!collapsed) } className="ml-auto mb-2 font-xl cursor-pointer">
                     { collapsed ? <ChevronsRight/> : <ChevronsLeft/> }
                 </span>
             </div>

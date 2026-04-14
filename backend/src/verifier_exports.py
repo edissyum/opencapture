@@ -30,7 +30,6 @@ from PIL import Image
 from xml.dom import minidom
 from zipfile import ZipFile
 
-from dns.tsig import get_context
 from unidecode import unidecode
 from flask_babel import gettext
 from .classes.CMIS import CMIS

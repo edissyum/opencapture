@@ -623,7 +623,7 @@
         "appear_here": "Il apparaît ici",
         "click_star": "Cliquez sur l'étoile dans la barre de navigation",
         "navigate_to_settings": "Naviguez vers un paramètre",
-        "add_favorite_details": "Retrouvez ici en un clic vos paramètres favoris pour un accès rapide. Une fois ajoutés, vos favoris seront accessibles ici"
+        "add_favorite_details": "Retrouvez en un clic vos paramètres favoris pour un accès rapide. Une fois ajoutés, vos favoris seront accessibles ici"
     },
     "SMTP": {
         "authentication": "Authentification",
