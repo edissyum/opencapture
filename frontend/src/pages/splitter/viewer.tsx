@@ -985,9 +985,6 @@ export function SplitterViewerPage() {
     }
 
     const handleBatchDrop = (batchId: number) => {
-        // TODO: implement batch drop logic
-        console.log('Batch dropped:', batchId);
-
         showConfirmDialog({
             title: t('SPLITTER.merge_batch'),
             message: t('SPLITTER.confirm_merge_batch', { sourceBatchId: batchId, targetBatchId: batch.id }),
