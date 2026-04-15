@@ -275,7 +275,7 @@
         "unauthorized": "Access denied",
         "unauthorized_details": "You do not have the necessary permissions to access this resource. Please contact your administrator if you believe this is an error.",
         "my_profile": "My profile",
-        "merge": ""
+        "merge": "Merge"
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validated",
@@ -672,12 +672,12 @@
         "document_separator": "Document separator",
         "qr_separator": "QR code separator choice",
         "download_separator": "Download separator",
-        "merge_batch": "",
-        "show_batches": "",
-        "drop_batch_here": "",
-        "confirm_merge_batch": "",
-        "batches_merged": "",
-        "merge_batch_details": ""
+        "merge_batch": "Merge batches",
+        "show_batches": "Show batches",
+        "drop_batch_here": "Drag a batch into this area to merge with the current batch",
+        "confirm_merge_batch": "Are you sure you want to merge batch <strong>{{sourceBatchId}}</strong> with batch <strong>{{targetBatchId}}</strong>?<br>Documents from batch <strong>{{sourceBatchId}}</strong> will be moved to batch <strong>{{targetBatchId}}</strong> and batch <strong>{{sourceBatchId}}</strong> will be deleted <strong>(this action is irreversible)</strong>",
+        "batches_merged": "Batches merged successfully",
+        "merge_batch_details": "Choose the main batch. Documents from other batches will be merged into the main batch and secondary batches will be deleted. <strong>(this action is irreversible)</strong>"
     },
     "UPLOAD": {
         "upload_dropzone": "Click to choose a file",
@@ -697,7 +697,8 @@
         "upload_files_one": "Upload document",
         "upload_files_other": "Upload documents",
         "upload_success_one": "File uploaded successfully",
-        "upload_success_other": "Files uploaded successfully"
+        "upload_success_other": "Files uploaded successfully",
+        "upload_completed": "File uploaded successfully"
     },
     "USERS": {
         "delete_users": "Delete",

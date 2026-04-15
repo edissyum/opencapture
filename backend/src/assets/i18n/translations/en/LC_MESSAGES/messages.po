@@ -1195,9 +1195,8 @@ msgid "GET_TOTALS_ERROR"
 msgstr "Error while retrievings totals"
 
 #: backend/src/controllers/splitter.py:889
-#, fuzzy
 msgid "BATCHES_MERGED_SUCCESS"
-msgstr "Deletion of batch n°<strong>%(batch_id)s</strong>"
+msgstr "Batch number <strong>%(batch_id)s</strong> merged with batches <strong>%(batches)s</strong>"
 
 #: backend/src/controllers/splitter.py:909
 msgid "GET_BATCH_OUTPUTS_ERROR"

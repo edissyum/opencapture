@@ -28,6 +28,7 @@ interface UploadDropzoneProps {
     className?: string;
     showPreview?: boolean;
     accept?: { [key: string]: string[] };
+    completedFiles?: string[];
     progressByFile?: Record<string, number | undefined>;
     onFilesAccepted?: (files: File[]) => void;
 }
@@ -37,6 +38,7 @@ export default function UploadDropzone({
     className,
     progressByFile,
     onFilesAccepted,
+    completedFiles = [],
     showPreview = true,
     maxSize = 5 * 1024 * 1024,
     accept = { "image/*": [".jpeg", ".jpg", ".png"] }
@@ -141,7 +143,11 @@ export default function UploadDropzone({
                             </div>
                             <div className="flex flex-col">
                                 <span className="font-semibold">{ file.name }</span>
-                                { progressByFile?.[file.name] !== undefined ? (
+                                { completedFiles.includes(file.name) ? (
+                                    <span className="text-xs font-semibold text-green-600">
+                                        { t('UPLOAD.upload_completed') }
+                                    </span>
+                                ) : progressByFile?.[file.name] !== undefined ? (
                                     <span className="text-xs font-semibold text-(--color-primary)">
                                         { t('UPLOAD.upload_progress', { progress: progressByFile[file.name] }) }
                                     </span>

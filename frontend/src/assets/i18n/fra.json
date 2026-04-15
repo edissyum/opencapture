@@ -750,7 +750,8 @@
         "upload_files_other": "Téléverser les documents",
         "upload_success_many": "Fichiers téléversés avec succès",
         "upload_success_one": "Fichier téléversé avec succès",
-        "upload_success_other": "Fichiers téléversés avec succès"
+        "upload_success_other": "Fichiers téléversés avec succès",
+        "upload_completed": "Fichier téléversé avec succès"
     },
     "USERS": {
         "delete_users": "Supprimer",

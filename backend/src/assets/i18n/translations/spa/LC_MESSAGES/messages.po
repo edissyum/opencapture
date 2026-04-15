@@ -1204,9 +1204,8 @@ msgid "GET_TOTALS_ERROR"
 msgstr "Error al recuperar los totales"
 
 #: backend/src/controllers/splitter.py:889
-#, fuzzy
 msgid "BATCHES_MERGED_SUCCESS"
-msgstr "Eliminación de lote correcta"
+msgstr "El lote número <strong>%(batch_id)s</strong> se fusionó con los lotes <strong>%(batches)s</strong>"
 
 #: backend/src/controllers/splitter.py:909
 msgid "GET_BATCH_OUTPUTS_ERROR"

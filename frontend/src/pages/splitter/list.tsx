@@ -317,7 +317,7 @@ export function SplitterListPage() {
         try {
             const batchesToMerge = selectedBatches.filter(batch => batch.id !== selectedPrincipalBatchId).map(batch => batch.id);
             await post(`/splitter/merge/${ selectedPrincipalBatchId }`, { batches: batchesToMerge });
-            showToast(t('SPLITTER.merge_success'), 'success');
+            showToast(t('SPLITTER.batches_merged'), 'success');
             setShowMerge(false);
             setSelectedBatches([]);
             setTotalBatches(0);

@@ -40,6 +40,7 @@ export function UploadPage() {
 
     const [files, setFiles] = useState<File[]>([]);
     const [sending, setSending] = useState(false);
+    const [completedFiles, setCompletedFiles] = useState<string[]>([]);
     const [progress, setProgress] = useState<Record<string, number | undefined>>({});
 
     const selectedModule = localStorage.getItem('selectedModule');
@@ -129,6 +130,7 @@ export function UploadPage() {
                         }));
                     }
                 });
+                setCompletedFiles(prev => [...prev, file.name]);
                 cpt += 1;
                 if (cpt === filesToUpload.length) {
                     setFiles([]);
@@ -204,6 +206,7 @@ export function UploadPage() {
                         "image/*": [".jpg", ".jpeg", ".png", ".heif", ".heic"]
                     } }
                     progressByFile={ progress }
+                    completedFiles={ completedFiles }
                     onFilesAccepted={ setFiles }
                     maxSize={ 10 * 1024 * 1024 }
                     className="bg-(--bg-primary)"
