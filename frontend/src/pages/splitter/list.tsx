@@ -21,15 +21,17 @@ import {
     Briefcase,
     ChevronDown,
     CircleCheckBig,
+    Combine,
     Eye,
     FileText,
     Filter,
     LayoutGrid,
-    LayoutTemplate, Merge,
+    LayoutTemplate,
     Package,
     Paperclip,
     Rows3,
-    Trash2
+    Trash2,
+    X
 } from "lucide-react";
 import { RadioButton } from "primereact/radiobutton";
 
@@ -45,10 +47,15 @@ import { Table } from "../../components/list/Table";
 import { Dropdown } from "../../components/Dropdown";
 import { Thumbnail } from "../../components/Thumbnail";
 import MultiSelectInput from "../../components/MultiSelect";
+import DOMPurify from "dompurify";
+import { showToast } from "../../components/ToastProvider.tsx";
 
 export function SplitterListPage() {
     const { user, loadingUser } = useUser();
     const { get, post, put } = axiosApiCall();
+
+    const [showMerge, setShowMerge] = useState(false);
+    const [selectedPrincipalBatchId, setSelectedPrincipalBatchId] = useState('');
 
     const [view, setView] = usePersistentState<'list' | 'grid'>('selectedView', 'list');
     const [displayFilters, setDisplayFilters] = useState(false);
@@ -99,12 +106,6 @@ export function SplitterListPage() {
 
     const getActionsLine: any = () => [
         {
-            label: t('SPLITTER.merge_batch'),
-            visible: selectedBatches.length > 1,
-            icon: <Merge size={ 16 }/>,
-            command: () => handleDelete()
-        },
-        {
             label: <span className='critical'>{ t('SPLITTER.delete_batch') } </span>,
             icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
@@ -116,6 +117,12 @@ export function SplitterListPage() {
             label: t('SPLITTER.delete_batches'),
             icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
+        },
+        {
+            label: t('GLOBAL.merge'),
+            icon: <Combine size={ 16 }/>,
+            command: () => setShowMerge(true),
+            disabled: selectedBatches.length < 2
         }
     ];
 
@@ -304,6 +311,22 @@ export function SplitterListPage() {
         }
     }
 
+    const handleMerge = async () => {
+        if (selectedBatches.length < 2) return;
+
+        try {
+            const batchesToMerge = selectedBatches.filter(batch => batch.id !== selectedPrincipalBatchId).map(batch => batch.id);
+            await post(`/splitter/merge/${ selectedPrincipalBatchId }`, { batches: batchesToMerge });
+            showToast(t('SPLITTER.merge_success'), 'success');
+            setShowMerge(false);
+            setSelectedBatches([]);
+            setTotalBatches(0);
+            setLazyParams({ ...lazyParams, first: 0 });
+        } catch (err) {
+            console.error("Erreur lors de la fusion des lots :", err);
+        }
+    }
+
     const handleResetFilters = () => {
         setSelectedTime('');
         setSelectedForm('');
@@ -452,6 +475,70 @@ export function SplitterListPage() {
                 <Thumbnail module={ 'splitter' } document_info={ hovered } open={ true }/>
             ) }
 
+            { showMerge && (
+                <>
+                    <div className="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm"
+                         onClick={ () => setShowMerge(false) }/>
+                    <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+                                    min-w-[32vw] h-3/4 max-h-screen border border-(--border-secondary)
+                                    rounded-lg bg-(--bg-primary) flex flex-col">
+                        <div className='py-6 flex flex-col gap-4 h-full'>
+                            <div className='px-6 flex items-center'>
+                                <h2 className='mb-0!'>{ t('SPLITTER.merge_batch') }</h2>
+                                <div className='ml-auto cursor-pointer text-(--text-secondary)'
+                                     onClick={ () => setShowMerge(false) }>
+                                    <X/>
+                                </div>
+                            </div>
+                            <p className='px-6 text-(--text-secondary)'
+                               dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(t('SPLITTER.merge_batch_details')) } }/>
+
+                            <div className='px-6 mt-2 h-full overflow-y-auto'>
+                                { selectedBatches.map((batch) => (
+                                    <div key={ batch.id } onClick={ () => setSelectedPrincipalBatchId(batch.id) }
+                                         className={ `w-full cursor-pointer p-4 border border-(--border-secondary) rounded-lg mb-2
+                                                      hover:border-(--color-primary) hover:bg-(--bg-selected) transition-colors
+                                                      ${ selectedPrincipalBatchId === batch.id && 'bg-(--bg-selected) border-(--color-primary)' }` }>
+                                        <div className='flex items-center gap-4'>
+                                            <RadioButton
+                                                inputId={ batch.id }
+                                                value={ selectedPrincipalBatchId }
+                                                checked={ selectedPrincipalBatchId === batch.id }
+                                                onChange={ () => {
+                                                    setSelectedPrincipalBatchId(batch.id);
+                                                } }
+                                            />
+                                            <div className='flex flex-col gap-0.5'>
+                                                <div className='font-semibold text-sm'>
+                                                    { batch.file_name }
+                                                </div>
+                                                <div className='text-(--text-secondary) text-sm'>
+                                                    { batch.id } | { batch.batch_date }
+                                                </div>
+                                            </div>
+                                            <div className='ml-auto'>
+                                                <div
+                                                    className='text-(--text-secondary) bg-(--bg-secondary) px-2 py-1 rounded-xl text-sm'>
+                                                    <span>{ batch.documents_count } { t('SPLITTER.documents', { count: batch.documents_count }) }</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )) }
+                            </div>
+                            <div className='flex justify-end items-center gap-4 px-6'>
+                                <Button variant={ "no_bg" } onClick={ () => setShowMerge(false) }>
+                                    { t('GLOBAL.cancel') }
+                                </Button>
+                                <Button onClick={ handleMerge } disabled={ !selectedPrincipalBatchId }>
+                                    { t('GLOBAL.merge') }
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            ) }
+
             <div className='p-6 h-full w-full flex flex-col flex-1 z-10'>
                 <div className='flex items-center gap-6 mb-4'>
                     <Button variant='bg_white_rounded' icon={ <Filter size={ 14 }/> } selected={ displayFilters }
@@ -526,5 +613,6 @@ export function SplitterListPage() {
                 ) }
             </div>
         </div>
-    );
+    )
+        ;
 }

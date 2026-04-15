@@ -881,6 +881,14 @@ def merge_batches(parent_id, batches):
             }
         })
 
+    history.add_history({
+        'module': 'splitter',
+        'ip': request.remote_addr,
+        'submodule': 'merge_batch',
+        'user_info': request.environ['user_info'],
+        'desc': gettext('BATCHES_MERGED_SUCCESS', batch_id=parent_id, batches=', '.join(map(str, batches)))
+    })
+
 
 def get_unseen(user_id):
     user_customers = user.get_customers_by_user_id(user_id)

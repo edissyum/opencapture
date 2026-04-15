@@ -124,8 +124,8 @@ export function SettingsGeneralSMTP() {
         if (provider) {
             setValue('smtpHost', provider.host);
             setValue('smtpPort', provider.port);
-            setValue('smtpProtocoleSecure', provider.secure as any);
             setSelectedEncryption(provider.secure as string);
+            setValue('smtpProtocoleSecure', provider.secure as any);
         }
     }
 
@@ -266,7 +266,8 @@ export function SettingsGeneralSMTP() {
                                                 onChange={ () => {
                                                     field.onChange(option);
                                                     setSelectedEncryption(option)
-                                                } }/>
+                                                } }
+                                            />
                                         ) }
                                     />
                                 )) }

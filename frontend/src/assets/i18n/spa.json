@@ -294,7 +294,8 @@
         "save": "Guardar",
         "unauthorized": "Acceso denegado",
         "unauthorized_details": "No tiene los permisos necesarios para acceder a este recurso. Por favor, contacte a su administrador si cree que se trata de un error.",
-        "my_profile": "Mi perfil"
+        "my_profile": "Mi perfil",
+        "merge": ""
     },
     "HISTORY": {
         "document_validated": "Documento n°<strong>{{ documentId }}</strong> validado",
@@ -722,7 +723,11 @@
         "qr_separator": "Selección del separador de código QR",
         "download_separator": "Descargar el separador",
         "merge_batch": "",
-        "show_batches": ""
+        "show_batches": "",
+        "drop_batch_here": "",
+        "confirm_merge_batch": "",
+        "batches_merged": "",
+        "merge_batch_details": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Haga clic para elegir un archivo",

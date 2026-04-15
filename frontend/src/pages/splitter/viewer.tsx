@@ -29,6 +29,7 @@ import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-ki
 import {
     ArrowLeft,
     ChevronDown,
+    Combine,
     Download,
     EllipsisVertical,
     File,
@@ -55,7 +56,7 @@ import {
     PointerSensor,
     pointerWithin,
     useSensor,
-    useSensors,
+    useSensors
 } from "@dnd-kit/core";
 
 import { useUser } from "../../services/hooks/useUser";
@@ -76,11 +77,11 @@ import { showToast } from "../../components/ToastProvider";
 import { AttachmentsList } from "../../components/attachments/list";
 import { DoctypesTree } from "../../components/settings/doctypes/doctypesTree";
 
+import { BatchCard } from "./batchesList";
 import { DraggablePage } from "./dnd/draggablePage";
 import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
 
 import { b64ToFile } from "../settings/general/customization";
-import { BatchCard } from "./batchesList.tsx";
 
 export function SplitterViewerPage() {
     const { get, post, del } = axiosApiCall();
@@ -143,6 +144,7 @@ export function SplitterViewerPage() {
 
     const [batchesList, setBatchesList] = useState<any[]>([]);
     const [showBatches, setShowBatches] = useState<boolean>(false);
+    const [draggingBatchId, setDraggingBatchId] = useState<number | null>(null);
 
     const [attachmentsCount, setAttachmentsCount] = useState<number>(0);
     const [attachmentsRefreshKey, setAttachmentsRefreshKey] = useState(0);
@@ -982,6 +984,32 @@ export function SplitterViewerPage() {
         setShowDoctypeSelection(false);
     }
 
+    const handleBatchDrop = (batchId: number) => {
+        // TODO: implement batch drop logic
+        console.log('Batch dropped:', batchId);
+
+        showConfirmDialog({
+            title: t('SPLITTER.merge_batch'),
+            message: t('SPLITTER.confirm_merge_batch', { sourceBatchId: batchId, targetBatchId: batch.id }),
+            confirmText: t('GLOBAL.merge'),
+            cancelText: t('GLOBAL.cancel'),
+            onConfirm: async () => {
+                setLoading(true);
+                try {
+                    await post(`/splitter/merge/${ batch.id }`, { batches: [batchId] });
+                    showToast(t('SPLITTER.batches_merged'), 'success');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 200);
+                } catch (error) {
+                    console.error("Error merging batches:", error);
+                } finally {
+                    setLoading(false);
+                }
+            }
+        });
+    };
+
     const handleShowBatches = async () => {
         setShowBatches(!showBatches);
 
@@ -1012,7 +1040,29 @@ export function SplitterViewerPage() {
 
     return (
         <div className='flex h-full w-full relative'>
-            <div className='w-full'>
+            <div className='w-full relative'
+                 onDragOver={ (e) => {
+                     if (draggingBatchId) e.preventDefault();
+                 } }
+                 onDrop={ (e) => {
+                     e.preventDefault();
+                     if (draggingBatchId) {
+                         handleBatchDrop(draggingBatchId);
+                         setDraggingBatchId(null);
+                     }
+                 } }
+            >
+                { draggingBatchId && (
+                    <div className="absolute inset-2 z-30 bg-(--bg-selected)/90 border-2 border-dashed
+                                    border-(--color-primary) rounded-lg flex items-center justify-center pointer-events-none">
+                        <div className="flex flex-col gap-2 items-center w-1/3 text-center">
+                            <Combine size={ 20 } className="text-(--text-secondary)"/>
+                            <span className="text-(--text-primary)">
+                                { t('SPLITTER.drop_batch_here') }
+                            </span>
+                        </div>
+                    </div>
+                ) }
                 { loading && (
                     <div className={ `absolute inset-0 z-20 flex items-center justify-center bg-(--bg-primary)/80` }>
                         <Loader/>
@@ -1440,7 +1490,9 @@ export function SplitterViewerPage() {
                     </div>
                     <div className='p-4'>
                         { batchesList.map((row: any) => (
-                            <BatchCard key={ row.id } row={ row } navigate={ navigate }/>
+                            <BatchCard key={ row.id } row={ row } navigate={ navigate }
+                                       onBatchDragStart={ (id: number) => setDraggingBatchId(id) }
+                                       onBatchDragEnd={ () => setDraggingBatchId(null) }/>
                         )) }
                     </div>
                 </div>

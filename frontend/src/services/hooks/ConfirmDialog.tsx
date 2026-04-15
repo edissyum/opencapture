@@ -42,7 +42,7 @@ export function showConfirmDialog({
     onConfirm: () => void;
     onCancel?: () => void;
 }) {
-    let acceptClassName = "outline-none! shadow-none! border! text-white!";
+    let acceptClassName = "outline-none! shadow-none! border! text-white! ml-4!";
 
     if (!danger) {
         acceptClassName += " bg-(--color-primary)! border-(--border-primary)! hover:bg-(--bg-selected)! hover:text-(--color-primary)!";

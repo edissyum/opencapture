@@ -274,7 +274,8 @@
         "save": "Save",
         "unauthorized": "Access denied",
         "unauthorized_details": "You do not have the necessary permissions to access this resource. Please contact your administrator if you believe this is an error.",
-        "my_profile": "My profile"
+        "my_profile": "My profile",
+        "merge": ""
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validated",
@@ -672,7 +673,11 @@
         "qr_separator": "QR code separator choice",
         "download_separator": "Download separator",
         "merge_batch": "",
-        "show_batches": ""
+        "show_batches": "",
+        "drop_batch_here": "",
+        "confirm_merge_batch": "",
+        "batches_merged": "",
+        "merge_batch_details": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Click to choose a file",

@@ -20,10 +20,17 @@ import { FileText, Paperclip } from "lucide-react";
 
 import { LazyBase64Image } from "../../components/list/LazyImage";
 
-export function BatchCard({ row, navigate }: any) {
+export function BatchCard({ row, navigate, onBatchDragStart, onBatchDragEnd }: any) {
 
     return (
         <div key={ row.id }
+             draggable
+             onDragStart={ (e) => {
+                 e.dataTransfer.setData('batchId', String(row.id));
+                 e.dataTransfer.effectAllowed = 'move';
+                 onBatchDragStart?.(row.id);
+             } }
+             onDragEnd={ () => onBatchDragEnd?.() }
              onClick={ () => {
                  navigate(`/splitter/viewer/${ row.id }`);
                  setTimeout(() => {
@@ -31,14 +38,14 @@ export function BatchCard({ row, navigate }: any) {
                  }, 100);
              } }
              className={ `border border-(--border-secondary) hover:border-(--text-secondary) rounded-md
-                                          cursor-pointer bg-(--bg-primary) transition-border-color` }>
-            <div
-                className="relative bg-[#D0DAD5] dark:bg-(--bg-secondary) rounded-b-none w-full p-6 pb-0 rounded-md flex items-center justify-center text-(--text-secondary)">
+                                           cursor-grab active:cursor-grabbing bg-(--bg-primary) transition-border-color` }>
+            <div className="relative bg-[#D0DAD5] dark:bg-(--bg-secondary) rounded-b-none w-full p-6 pb-0 rounded-md flex
+                            items-center justify-center text-(--text-secondary)">
                 <LazyBase64Image
                     alt={ row.id }
                     module='splitter'
                     document_info={ row }
-                    className="object-cover object-top rounded-t-lg"
+                    className="object-cover object-top rounded-t-lg pointer-events-none"
                 />
             </div>
             <div className='px-6 py-3'>
