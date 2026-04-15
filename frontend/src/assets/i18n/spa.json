@@ -720,7 +720,9 @@
         "doc_type_separator": "Separador de tipo de documento",
         "document_separator": "Separador de documento",
         "qr_separator": "Selección del separador de código QR",
-        "download_separator": "Descargar el separador"
+        "download_separator": "Descargar el separador",
+        "merge_batch": "",
+        "show_batches": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Haga clic para elegir un archivo",

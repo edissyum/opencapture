@@ -36,6 +36,7 @@ import {
     FileStack,
     FolderTree,
     Layers,
+    Package,
     PackageCheck,
     Paperclip,
     Plus,
@@ -79,6 +80,7 @@ import { DraggablePage } from "./dnd/draggablePage";
 import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
 
 import { b64ToFile } from "../settings/general/customization";
+import { BatchCard } from "./batchesList.tsx";
 
 export function SplitterViewerPage() {
     const { get, post, del } = axiosApiCall();
@@ -100,9 +102,11 @@ export function SplitterViewerPage() {
     const [loading, setLoading] = useState(false);
     const [loadingBatch, setLoadingBatch] = useState(true);
     const { customFields } = useCustomFields('splitter');
+    const [statuses, setStatuses] = useState<any[]>([]);
 
     const [documents, setDocuments] = useState<any>([]);
     const [batch, setBatch] = useState<any>(null);
+    const [batchTime, setBatchTime] = useState<string>('');
     const [batchMetadata, setBatchMetadata] = useState<any[]>([]);
     const [disabledBatch, setDisabledBatch] = useState(false);
     const [batchMetadataValues, setBatchMetadataValues] = useState<any>({});
@@ -136,6 +140,9 @@ export function SplitterViewerPage() {
         thumbnailRef.current = url;
         setThumbnail(url);
     }, []);
+
+    const [batchesList, setBatchesList] = useState<any[]>([]);
+    const [showBatches, setShowBatches] = useState<boolean>(false);
 
     const [attachmentsCount, setAttachmentsCount] = useState<number>(0);
     const [attachmentsRefreshKey, setAttachmentsRefreshKey] = useState(0);
@@ -293,6 +300,15 @@ export function SplitterViewerPage() {
                         setDisabledBatch(true);
                     }
                     setBatch(batchData);
+
+                    const batchDate = moment(batchData.creation_date);
+                    if (batchDate.isSame(moment(), 'day')) {
+                        setBatchTime('today');
+                    } else if (batchDate.isSame(moment().subtract(1, 'day'), 'day')) {
+                        setBatchTime('yesterday');
+                    } else {
+                        setBatchTime('older');
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching batch details:', error);
@@ -326,7 +342,8 @@ export function SplitterViewerPage() {
         fetchEnableAttachments().then();
     }, [loadingUser]);
 
-    // fetch doctypes for doctype selection
+    // Fetch doctypes
+    // Fetch status
     useEffect(() => {
         if (!formId) return;
 
@@ -339,6 +356,16 @@ export function SplitterViewerPage() {
             }
         };
 
+        const fetchStatus = async () => {
+            try {
+                const response = await post(`/status/splitter/list`, {});
+                setStatuses(response.status);
+            } catch (error) {
+                console.error("Error fetching statuses:", error);
+            }
+        }
+
+        fetchStatus().then();
         fetchDocTypes().then();
     }, [formId]);
 
@@ -955,414 +982,470 @@ export function SplitterViewerPage() {
         setShowDoctypeSelection(false);
     }
 
+    const handleShowBatches = async () => {
+        setShowBatches(!showBatches);
+
+        if (!showBatches && batchesList.length === 0) {
+            try {
+                const res = await post('/splitter/batches/list', {
+                    page: 0,
+                    size: 10,
+                    time: batchTime,
+                    user_id: user.id,
+                    status: batch.status
+                });
+
+                if (res?.batches) {
+                    res.batches.forEach((b: any) => {
+                        if (b.id !== batch.id) {
+                            setBatchesList(prev => [...prev, b]);
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching batches:", error);
+            }
+        }
+    }
+
     if (loadingBatch || !batch) return <Loader/>;
 
     return (
-        <div className='flex flex-col h-full w-full relative'>
-            { loading && (
-                <div className={ `absolute inset-0 z-20 flex items-center justify-center bg-(--bg-primary)/80` }>
-                    <Loader/>
-                </div>
-            ) }
-            { (!showAttachments) && (
-                <div className='flex justify-center'>
-                    <div className='fixed bottom-4 shadow-lg rounded-3xl flex justify-center items-center gap-4 p-3 bg-(--bg-primary) border
+        <div className='flex h-full w-full relative'>
+            <div className='w-full'>
+                { loading && (
+                    <div className={ `absolute inset-0 z-20 flex items-center justify-center bg-(--bg-primary)/80` }>
+                        <Loader/>
+                    </div>
+                ) }
+
+                { (!showAttachments) && (
+                    <div className='flex justify-center'>
+                        <div className='fixed bottom-4 shadow-lg rounded-3xl flex justify-center items-center gap-4 p-3 bg-(--bg-primary) border
                             border-(--border-secondary) z-10'>
-                        <div className={ `bg-(--bg-secondary) p-3 rounded-xl flex items-center gap-2
+                            <div className={ `bg-(--bg-secondary) p-3 rounded-xl flex items-center gap-2
                             ${ selectedPages.length == 0 ? 'bg-(--bg-secondary)' : 'bg-(--bg-selected)' }` }>
-                            <Checkbox checked={ selectedPages.length !== 0 } onChange={ selectAll }
-                                      indeterminate={ selectedPages.length != pagesCount } disabled={ disabledBatch }/>
-                            <div className={ `text-sm ${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer' }` }
-                                 onClick={ selectAll }>
-                                <strong>{ selectedPages.length } </strong>
-                                <span
-                                    dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(t('SPLITTER.pages_selected', { count: selectedPages.length })) } }/>
+                                <Checkbox checked={ selectedPages.length !== 0 } onChange={ selectAll }
+                                          indeterminate={ selectedPages.length != pagesCount } disabled={ disabledBatch }/>
+                                <div className={ `text-sm ${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer' }` }
+                                     onClick={ selectAll }>
+                                    <strong>{ selectedPages.length } </strong>
+                                    <span
+                                        dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(t('SPLITTER.pages_selected', { count: selectedPages.length })) } }/>
+                                </div>
                             </div>
-                        </div>
-                        <div onClick={ handleDeletePage }
-                             className={ `text-sm text-(--text-error) flex items-center gap-1 font-semibold 
+                            <div onClick={ handleDeletePage }
+                                 className={ `text-sm text-(--text-error) flex items-center gap-1 font-semibold 
                                         hover:bg-(--bg-error) transition-colors rounded-xl p-3
                                         ${ selectedPages.length == 0 || disabledBatch ? 'hidden' : 'cursor-pointer' } ` }>
-                            <Trash size={ 16 }/>
-                            { t('GLOBAL.delete') }
-                        </div>
+                                <Trash size={ 16 }/>
+                                { t('GLOBAL.delete') }
+                            </div>
 
-                        <div onClick={ handleRotation }
-                             className={ `flex items-center text-(--text-secondprimaryary) text-sm gap-1 font-semibold 
+                            <div onClick={ handleRotation }
+                                 className={ `flex items-center text-(--text-secondprimaryary) text-sm gap-1 font-semibold 
                                         hover:bg-(--bg-secondary) transition-colors rounded-xl p-3
                                         ${ selectedPages.length == 0 || disabledBatch ? 'hidden' : 'cursor-pointer' } ` }>
-                            <RotateCw size={ 14 }/>
-                            { t('SPLITTER.rotation') }
-                        </div>
+                                <RotateCw size={ 14 }/>
+                                { t('SPLITTER.rotation') }
+                            </div>
 
-                        <Divider layout="vertical"/>
+                            <Divider layout="vertical"/>
 
-                        <div data-tooltip-id="tooltip"
-                             className={ `flex items-center text-(--text-primary) font-semibold text-sm gap-1
+                            <div data-tooltip-id="tooltip"
+                                 className={ `flex items-center text-(--text-primary) font-semibold text-sm gap-1
                                           hover:bg-(--bg-secondary) transition-colors rounded-xl p-3 
                                         ${ attachmentsCount > 0 || disabledBatch ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' } ` }
-                             data-tooltip-content={ attachmentsCount > 0 ? t('SPLITTER.cant_add_document') : '' }>
-                            <div onClick={ () => attachmentsCount === 0 && addDocument() } className={ 'flex items-center gap-1' }>
-                                <Plus size={ 16 }/>
-                                { t('SPLITTER.add_document') }
+                                 data-tooltip-content={ attachmentsCount > 0 ? t('SPLITTER.cant_add_document') : '' }>
+                                <div onClick={ () => attachmentsCount === 0 && addDocument() }
+                                     className={ 'flex items-center gap-1' }>
+                                    <Plus size={ 16 }/>
+                                    { t('SPLITTER.add_document') }
+                                </div>
                             </div>
-                        </div>
 
-                        <div onClick={ () => unSavedChanges && handleSaveChanges() }
-                             className={ `flex items-center text-(--text-primary) text-sm gap-1
+                            <div onClick={ () => unSavedChanges && handleSaveChanges() }
+                                 className={ `flex items-center text-(--text-primary) text-sm gap-1
                               hover:bg-(--bg-secondary) transition-colors rounded-full p-3
                              ${ !unSavedChanges || disabledBatch ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' } ` }>
-                            <Save size={ 16 }/>
+                                <Save size={ 16 }/>
+                            </div>
+
+                            <Button disabled={ unSavedChanges || loading || disabledBatch }
+                                    className='flex items-center gap-2 px-3!'
+                                    onClick={ handleValidateBatch }>
+                                <PackageCheck size={ 16 }/>
+                                { t('SPLITTER.validate_batch') }
+                            </Button>
                         </div>
-
-                        <Button disabled={ unSavedChanges || loading || disabledBatch }
-                                className='flex items-center gap-2 px-3!'
-                                onClick={ handleValidateBatch }>
-                            <PackageCheck size={ 16 }/>
-                            { t('SPLITTER.validate_batch') }
-                        </Button>
                     </div>
-                </div>
-            ) }
+                ) }
 
-            { thumbnail && (
-                <>
-                    <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
-                         onClick={ () => setThumbnailSafe(null) }/>
-                    <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+                { thumbnail && (
+                    <>
+                        <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
+                             onClick={ () => setThumbnailSafe(null) }/>
+                        <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                                     max-w-[32vw] border border-(--border-secondary)
                                     rounded-lg overflow-hidden">
-                        <img src={ thumbnail } alt="Thumbnail"/>
-                        <Button variant="secondary" size="sm" className="absolute top-2 right-2"
-                                onClick={ () => setThumbnailSafe(null) }>
-                            <X size={ 16 }/>
-                        </Button>
-                    </div>
-                </>
-            ) }
+                            <img src={ thumbnail } alt="Thumbnail"/>
+                            <Button variant="secondary" size="sm" className="absolute top-2 right-2"
+                                    onClick={ () => setThumbnailSafe(null) }>
+                                <X size={ 16 }/>
+                            </Button>
+                        </div>
+                    </>
+                ) }
 
-            { showDoctypeSelection && (
-                <>
-                    <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
-                         onClick={ () => setShowDoctypeSelection(false) }/>
-                    <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+                { showDoctypeSelection && (
+                    <>
+                        <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
+                             onClick={ () => setShowDoctypeSelection(false) }/>
+                        <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                                     min-w-[32vw] h-3/4 max-h-screen border border-(--border-secondary)
                                     rounded-lg bg-(--bg-primary) flex flex-col">
-                        <div className='flex items-center px-6 pt-6'>
-                            <h2>{ t('SPLITTER.select_doctype') }</h2>
-                            <div className='ml-auto cursor-pointer text-(--text-secondary)'
-                                 onClick={ () => setShowDoctypeSelection(false) }>
-                                <X/>
+                            <div className='flex items-center px-6 pt-6'>
+                                <h2>{ t('SPLITTER.select_doctype') }</h2>
+                                <div className='ml-auto cursor-pointer text-(--text-secondary)'
+                                     onClick={ () => setShowDoctypeSelection(false) }>
+                                    <X/>
+                                </div>
+                            </div>
+                            <div className='overflow-hidden'>
+                                <DoctypesTree formId={ batch.form_id } canFolderBeSelected={ false } editor={ false }
+                                              doctypesList={ doctypes } onSelect={ (node) => handleChangeDoctype(node) }
+                                              onTmpSelect={ (node) => setTmpDoctype(node) }/>
+                            </div>
+                            <div className='flex mt-auto justify-end items-center gap-4 p-4'>
+                                <Button variant={ "no_bg" } onClick={ () => setShowDoctypeSelection(false) }>
+                                    { t('GLOBAL.cancel') }
+                                </Button>
+                                <Button onClick={ () => handleChangeDoctype(tmpDoctype) } disabled={ !tmpDoctype }>
+                                    { t('GLOBAL.select') }
+                                </Button>
                             </div>
                         </div>
-                        <div className='overflow-hidden'>
-                            <DoctypesTree formId={ batch.form_id } canFolderBeSelected={ false } editor={ false }
-                                          doctypesList={ doctypes } onSelect={ (node) => handleChangeDoctype(node) }
-                                          onTmpSelect={ (node) => setTmpDoctype(node) }/>
-                        </div>
-                        <div className='flex mt-auto justify-end items-center gap-4 p-4'>
-                            <Button variant={ "no_bg" } onClick={ () => setShowDoctypeSelection(false) }>
-                                { t('GLOBAL.cancel') }
-                            </Button>
-                            <Button onClick={ () => handleChangeDoctype(tmpDoctype) } disabled={ !tmpDoctype }>
-                                { t('GLOBAL.select') }
-                            </Button>
-                        </div>
-                    </div>
-                </>
-            ) }
+                    </>
+                ) }
 
-            { !showAttachments && (
-                <div className='px-8 py-4 flex items-center gap-2'>
-                    <Button variant='bg_white_rounded' icon={ <ArrowLeft size={ 16 }/> }
-                            onClick={ () => navigate('/home') }>
-                        { t('GLOBAL.back') }
-                    </Button>
-                    <div className='ml-auto'>
-                        <Button variant='bg_white_rounded' icon={ <Download size={ 18 }/> }
-                                onClick={ handleDownloadOriginalFile }>
-                            { batch.file_name }
+                { !showAttachments && (
+                    <div className='px-8 py-4 flex items-center gap-2'>
+                        <Button variant='bg_white_rounded' icon={ <ArrowLeft size={ 16 }/> }
+                                onClick={ () => navigate('/home') }>
+                            { t('GLOBAL.back') }
                         </Button>
-                    </div>
+                        <div className='ml-auto'>
+                            <Button variant='bg_white_rounded' icon={ <Download size={ 18 }/> }
+                                    onClick={ handleDownloadOriginalFile }>
+                                { batch.file_name }
+                            </Button>
+                        </div>
 
-                    { enableAttachments && (
-                        <div className={ `${ documents.length > 1 && 'cursor-not-allowed!' }` }
-                             data-tooltip-id="tooltip"
-                             data-tooltip-content={ documents.length > 1 ? t('SPLITTER.one_document') : '' }
-                        >
-                            <div className={
-                                `flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
+                        { enableAttachments && (
+                            <div className={ `${ documents.length > 1 && 'cursor-not-allowed!' }` }
+                                 data-tooltip-id="tooltip"
+                                 data-tooltip-content={ documents.length > 1 ? t('SPLITTER.one_document') : '' }
+                            >
+                                <div className={
+                                    `flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
                                 border border-(--border-secondary) hover:border-(--border-primary)
                                 hover:text-(--color-primary) transition-colors shrink-0 relative cursor-pointer
                                 ${ documents.length > 1 && 'opacity-50 pointer-events-none' }`
-                            }
-                                 onClick={ () => setShowAttachments(true) }
-                                 data-tooltip-id="tooltip"
-                                 data-tooltip-content={ t('VERIFIER.show_attachments') }
-                            >
-                                <Paperclip size={ 16 }/>
-                                { attachmentsCount > 0 && (
-                                    <div
-                                        className="z-1 absolute top-0 right-0 size-3 rounded-full bg-(--color-primary)"/>
-                                ) }
+                                }
+                                     onClick={ () => setShowAttachments(true) }
+                                     data-tooltip-id="tooltip"
+                                     data-tooltip-content={ t('VERIFIER.show_attachments') }
+                                >
+                                    <Paperclip size={ 16 }/>
+                                    { attachmentsCount > 0 && (
+                                        <div className="z-1 absolute top-0 right-0 size-3 rounded-full bg-(--color-primary)"/>
+                                    ) }
+                                </div>
                             </div>
+                        ) }
+
+                        <div className={
+                            `flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
+                         border border-(--border-secondary) hover:border-(--border-primary)
+                         hover:text-(--color-primary) transition-colors shrink-0 relative cursor-pointer
+                            ${ showBatches ? 'border-(--color-primary) bg-(--bg-selected)' : '' }`
+                        }
+                             onClick={ handleShowBatches }
+                             data-tooltip-id="tooltip"
+                             data-tooltip-content={ t('SPLITTER.show_batches') }
+                        >
+                            <Package size={ 18 }/>
                         </div>
-                    ) }
-                </div>
-            ) }
+                    </div>
+                ) }
 
-            { enableAttachments && (
-                <div className={ `w-full h-full flex flex-col ${ !showAttachments && 'hidden' }` }>
-                    <AttachmentsList
-                        module="splitter"
-                        documentId={ batchId }
-                        disabled={ disabledBatch }
-                        key={ attachmentsRefreshKey }
-                        unBinding={ handleUnbinding }
-                        onAttachmentsCountChange={ setAttachmentsCount }
-                        onClose={ () => setShowAttachments(false) }
-                    />
-                </div>
-            ) }
+                { enableAttachments && (
+                    <div className={ `w-full h-full flex flex-col ${ !showAttachments && 'hidden' }` }>
+                        <AttachmentsList
+                            module="splitter"
+                            documentId={ batchId }
+                            disabled={ disabledBatch }
+                            key={ attachmentsRefreshKey }
+                            unBinding={ handleUnbinding }
+                            onAttachmentsCountChange={ setAttachmentsCount }
+                            onClose={ () => setShowAttachments(false) }
+                        />
+                    </div>
+                ) }
 
-            { !showAttachments && (
-                <div ref={ listRef } className='px-8 pb-18 h-full overflow-y-auto'
-                     onClick={ () => setSelectedDocument(null) }>
-                    <Accordion className='mb-6' activeIndex={ 0 }>
-                        <AccordionTab header={ t('SPLITTER.batch_content') }>
-                            <div className='p-4'>
-                                <div className='text-(--text-secondary) flex items-center gap-4 mb-6'>
+                { !showAttachments && (
+                    <div ref={ listRef } className='px-8 pb-18 h-full overflow-y-auto'
+                         onClick={ () => setSelectedDocument(null) }>
+                        <Accordion className='mb-6' activeIndex={ 0 }>
+                            <AccordionTab header={ t('SPLITTER.batch_content') }>
+                                <div className='p-4'>
+                                    <div className='text-(--text-secondary) flex items-center gap-4 mb-6'>
                                     <span className='flex items-center'>
                                         <Layers size={ 16 }/>&nbsp;
                                         <span>{ pagesCount }</span>&nbsp;
                                         { t('SPLITTER.pages', { count: pagesCount }) }
                                     </span>
-                                    <span className='flex items-center'>
+                                        <span className='flex items-center'>
                                         <FileStack size={ 16 }/>&nbsp;
-                                        <span>{ documents.length }</span>&nbsp;
-                                        { t('SPLITTER.documents', { count: documents.length }) }
+                                            <span>{ documents.length }</span>&nbsp;
+                                            { t('SPLITTER.documents', { count: documents.length }) }
                                     </span>
-                                </div>
-
-                                <Dropdown id={ "forms" }
-                                          filter={ true }
-                                          className="w-1/3"
-                                          noMarginBottom={ true }
-                                          disabled={ disabledBatch }
-                                          label={ t('VERIFIER.form') }
-                                          options={ forms.map((form: any) => ({
-                                              label: form.label,
-                                              value: form.id
-                                          })) }
-                                          value={ batch.form_id }
-                                          onChange={ handleChangeForm }
-                                />
-
-                                { batchMetadata && batchMetadata.length > 0 && (
-                                    <div>
-                                        <h3 className='font-semibold mb-4'>{ t('FORMS.metadata_batch') }</h3>
-                                        { batchMetadata.map((line: any, index: number) => (
-                                            <div key={ index } className={ `flex gap-4 mb-2` }>
-                                                { line.map((field: any) => (
-                                                    <div key={ field.id }
-                                                         className={ `min-w-1/6 ${ getWidthLine(line) }` }>
-                                                        { field.type === 'date' ? (
-                                                            <ISOCalendar
-                                                                id={ field.id }
-                                                                key={ field.id }
-                                                                label={ t(field.label) }
-                                                                disabled={ disabledBatch }
-                                                                required={ field.required }
-                                                                value={ batchMetadataValues[field.label_short] }
-                                                                onChange={ (e) => {
-                                                                    handleUpdateBatchMetadataValues(field, e)
-                                                                } }
-                                                            />
-                                                        ) : (
-                                                            <div>
-                                                                { field.metadata_key && metadata.length > 0 ? (
-                                                                    <Dropdown
-                                                                        id={ field.id }
-                                                                        filter={ true }
-                                                                        label={ field.label }
-                                                                        className="w-full mb-2"
-                                                                        useExtraInLabel={ true }
-                                                                        disabled={ disabledBatch }
-                                                                        options={ getMetadaValuesForField(field) }
-                                                                        value={ batchMetadataValues[field.label_short] }
-                                                                        onChange={ (e) => handleUpdateBatchMetadataValues(field, e.value) }
-                                                                    />
-                                                                ) : (
-                                                                    <Input
-                                                                        id={ field.id }
-                                                                        key={ field.id }
-                                                                        type={ field.type }
-                                                                        label={ t(field.label) }
-                                                                        disabled={ disabledBatch }
-                                                                        required={ field.required }
-                                                                        value={ batchMetadataValues[field.label_short] }
-                                                                        onChange={ (e) => {
-                                                                            handleUpdateBatchMetadataValues(field, e.target.value)
-                                                                        } }
-                                                                    />
-                                                                ) }
-                                                            </div>
-                                                        )
-                                                        }
-                                                    </div>
-                                                )) }
-                                            </div>
-                                        )) }
                                     </div>
-                                ) }
-                            </div>
-                        </AccordionTab>
-                    </Accordion>
 
-                    <DndContext
-                        sensors={ sensors }
-                        onDragEnd={ handleDragEnd }
-                        onDragOver={ handleDragOver }
-                        onDragStart={ handleDragStart }
-                        collisionDetection={ pointerWithin }
-                    >
-                        { documents.map((document: any) => (
-                            <Panel
-                                key={ document.id }
-                                onClick={ (e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    setSelectedDocument(document);
-                                } }
-                                className={ `PanelDocumentList mb-4 w-full ${ selectedDocument?.id === document.id ? 'panelSelected' : 'border-transparent' }` }
-                                header={
-                                    <div className="flex items-center gap-1.5">
-                                        <div className='cursor-pointer hover:text-(--color-primary)'
-                                             onClick={ () => typeDocument(document) }>
-                                            { !document.doctype_label && (
-                                                <div className='transition-colors items-center gap-2
-                                                                hover:text-(--text-error) text-(--text-error)/80 font-semibold flex'>
-                                                    <div className='bg-(--text-error)/20 rounded-md p-1'>
-                                                        <FolderTree size={ 20 }/>
-                                                    </div>
-                                                    { t('SPLITTER.type_document') }
+                                    <Dropdown id={ "forms" }
+                                              filter={ true }
+                                              className="w-1/3"
+                                              noMarginBottom={ true }
+                                              disabled={ disabledBatch }
+                                              label={ t('VERIFIER.form') }
+                                              options={ forms.map((form: any) => ({
+                                                  label: form.label,
+                                                  value: form.id
+                                              })) }
+                                              value={ batch.form_id }
+                                              onChange={ handleChangeForm }
+                                    />
+
+                                    { batchMetadata && batchMetadata.length > 0 && (
+                                        <div>
+                                            <h3 className='font-semibold mb-4'>{ t('FORMS.metadata_batch') }</h3>
+                                            { batchMetadata.map((line: any, index: number) => (
+                                                <div key={ index } className={ `flex gap-4 mb-2` }>
+                                                    { line.map((field: any) => (
+                                                        <div key={ field.id }
+                                                             className={ `min-w-1/6 ${ getWidthLine(line) }` }>
+                                                            { field.type === 'date' ? (
+                                                                <ISOCalendar
+                                                                    id={ field.id }
+                                                                    key={ field.id }
+                                                                    label={ t(field.label) }
+                                                                    disabled={ disabledBatch }
+                                                                    required={ field.required }
+                                                                    value={ batchMetadataValues[field.label_short] }
+                                                                    onChange={ (e) => {
+                                                                        handleUpdateBatchMetadataValues(field, e)
+                                                                    } }
+                                                                />
+                                                            ) : (
+                                                                <div>
+                                                                    { field.metadata_key && metadata.length > 0 ? (
+                                                                        <Dropdown
+                                                                            id={ field.id }
+                                                                            filter={ true }
+                                                                            label={ field.label }
+                                                                            className="w-full mb-2"
+                                                                            useExtraInLabel={ true }
+                                                                            disabled={ disabledBatch }
+                                                                            options={ getMetadaValuesForField(field) }
+                                                                            value={ batchMetadataValues[field.label_short] }
+                                                                            onChange={ (e) => handleUpdateBatchMetadataValues(field, e.value) }
+                                                                        />
+                                                                    ) : (
+                                                                        <Input
+                                                                            id={ field.id }
+                                                                            key={ field.id }
+                                                                            type={ field.type }
+                                                                            label={ t(field.label) }
+                                                                            disabled={ disabledBatch }
+                                                                            required={ field.required }
+                                                                            value={ batchMetadataValues[field.label_short] }
+                                                                            onChange={ (e) => {
+                                                                                handleUpdateBatchMetadataValues(field, e.target.value)
+                                                                            } }
+                                                                        />
+                                                                    ) }
+                                                                </div>
+                                                            )
+                                                            }
+                                                        </div>
+                                                    )) }
                                                 </div>
-                                            ) }
-                                            <div className='transition-colors items-center gap-2
-                                                            font-semibold flex'>
-                                                { document.doctype_label && (
-                                                    <div className='bg-(--bg-secondary) rounded-md p-1'>
-                                                        <File size={ 20 }/>
+                                            )) }
+                                        </div>
+                                    ) }
+                                </div>
+                            </AccordionTab>
+                        </Accordion>
+
+                        <DndContext
+                            sensors={ sensors }
+                            onDragEnd={ handleDragEnd }
+                            onDragOver={ handleDragOver }
+                            onDragStart={ handleDragStart }
+                            collisionDetection={ pointerWithin }
+                        >
+                            { documents.map((document: any) => (
+                                <Panel
+                                    key={ document.id }
+                                    onClick={ (e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setSelectedDocument(document);
+                                    } }
+                                    className={ `PanelDocumentList mb-4 w-full ${ selectedDocument?.id === document.id ? 'panelSelected' : 'border-transparent' }` }
+                                    header={
+                                        <div className="flex items-center gap-1.5">
+                                            <div className='cursor-pointer hover:text-(--color-primary)'
+                                                 onClick={ () => typeDocument(document) }>
+                                                { !document.doctype_label && (
+                                                    <div className='transition-colors items-center gap-2
+                                                                hover:text-(--text-error) text-(--text-error)/80 font-semibold flex'>
+                                                        <div className='bg-(--text-error)/20 rounded-md p-1'>
+                                                            <FolderTree size={ 20 }/>
+                                                        </div>
+                                                        { t('SPLITTER.type_document') }
                                                     </div>
                                                 ) }
-                                                <div>{ document.doctype_label }</div>
+                                                <div className='transition-colors items-center gap-2
+                                                            font-semibold flex'>
+                                                    { document.doctype_label && (
+                                                        <div className='bg-(--bg-secondary) rounded-md p-1'>
+                                                            <File size={ 20 }/>
+                                                        </div>
+                                                    ) }
+                                                    <div>{ document.doctype_label }</div>
+                                                </div>
+                                            </div>
+                                            <div
+                                                className='text-(--text-secondary) font-medium flex items-center bg-(--bg-secondary) px-3 py-1 rounded-3xl'>
+                                                <span>{ document.pages.length }&nbsp;</span>
+                                                { t('SPLITTER.pages', { count: document.pages.length }) }
+                                            </div>
+                                            <div className='ml-auto'>
+                                                <EllipsisVertical
+                                                    size={ 18 }
+                                                    className={ `${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer' }` }
+                                                    onClick={ (e) => {
+                                                        if (disabledBatch) return;
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        setSelectedDocument(document);
+                                                        cm.current?.show(e);
+                                                    } }
+                                                />
+                                                <ContextMenu model={ menuItems } className="w-auto!" ref={ cm }/>
                                             </div>
                                         </div>
-                                        <div
-                                            className='text-(--text-secondary) font-medium flex items-center bg-(--bg-secondary) px-3 py-1 rounded-3xl'>
-                                            <span>{ document.pages.length }&nbsp;</span>
-                                            { t('SPLITTER.pages', { count: document.pages.length }) }
-                                        </div>
-                                        <div className='ml-auto'>
-                                            <EllipsisVertical
-                                                size={ 18 }
-                                                className={ `${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer' }` }
-                                                onClick={ (e) => {
-                                                    if (disabledBatch) return;
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    setSelectedDocument(document);
-                                                    cm.current?.show(e);
-                                                } }
-                                            />
-                                            <ContextMenu model={ menuItems } className="w-auto!" ref={ cm }/>
-                                        </div>
-                                    </div>
-                                }
-                            >
-                                { documentMetadata.length > 0 && document.pages.length > 0 && (
-                                    <div className='px-4 pt-4'>
-                                        <h3 className='font-semibold flex items-center cursor-pointer gap-1'
-                                            onClick={ () => setDocumentMetadataOpen(prev => !prev) }>
-                                            { t('FORMS.metadata_document') }
-                                            <ChevronDown
-                                                size={ 16 }
-                                                className={ `transition-transform ${ documentMetadataOpen ? 'rotate-0' : '-rotate-90' }` }
-                                            />
-                                        </h3>
-                                        <div className={ `grid transition-all` }
-                                             style={ { gridTemplateRows: documentMetadataOpen ? '1fr' : '0fr' } }
-                                        >
-                                            <div className="overflow-hidden">
-                                                { documentMetadata.map((line: any, index: number) => (
-                                                    <div key={ index } className={ `flex gap-4 mt-4` }>
-                                                        { line.map((field: any) => (
-                                                            <div key={ field.id }
-                                                                 className={ `min-w-1/6 ${ getWidthLine(line) }` }>
-                                                                { field.type === 'date' ? (
-                                                                    <ISOCalendar
-                                                                        id={ field.id }
-                                                                        key={ field.id }
-                                                                        label={ t(field.label) }
-                                                                        disabled={ disabledBatch }
-                                                                        required={ field.required }
-                                                                        value={ documentMetadataValues[document.id]?.[field.label_short] }
-                                                                        onChange={ (e) => {
-                                                                            handleUpdateDocumentMetadataValues(document.id, field, e)
-                                                                        } }
-                                                                    />
-                                                                ) : (
-                                                                    <Input
-                                                                        id={ field.id }
-                                                                        key={ field.id }
-                                                                        type={ field.type }
-                                                                        label={ t(field.label) }
-                                                                        disabled={ disabledBatch }
-                                                                        required={ field.required }
-                                                                        value={ documentMetadataValues[document.id]?.[field.label_short] }
-                                                                        onChange={ (e) => {
-                                                                            handleUpdateDocumentMetadataValues(document.id, field, e.target.value)
-                                                                        } }
-                                                                    />
-                                                                )
-                                                                }
-                                                            </div>
-                                                        )) }
-                                                    </div>
-                                                )) }
+                                    }
+                                >
+                                    { documentMetadata.length > 0 && document.pages.length > 0 && (
+                                        <div className='px-4 pt-4'>
+                                            <h3 className='font-semibold flex items-center cursor-pointer gap-1'
+                                                onClick={ () => setDocumentMetadataOpen(prev => !prev) }>
+                                                { t('FORMS.metadata_document') }
+                                                <ChevronDown
+                                                    size={ 16 }
+                                                    className={ `transition-transform ${ documentMetadataOpen ? 'rotate-0' : '-rotate-90' }` }
+                                                />
+                                            </h3>
+                                            <div className={ `grid transition-all` }
+                                                 style={ { gridTemplateRows: documentMetadataOpen ? '1fr' : '0fr' } }
+                                            >
+                                                <div className="overflow-hidden">
+                                                    { documentMetadata.map((line: any, index: number) => (
+                                                        <div key={ index } className={ `flex gap-4 mt-4` }>
+                                                            { line.map((field: any) => (
+                                                                <div key={ field.id }
+                                                                     className={ `min-w-1/6 ${ getWidthLine(line) }` }>
+                                                                    { field.type === 'date' ? (
+                                                                        <ISOCalendar
+                                                                            id={ field.id }
+                                                                            key={ field.id }
+                                                                            label={ t(field.label) }
+                                                                            disabled={ disabledBatch }
+                                                                            required={ field.required }
+                                                                            value={ documentMetadataValues[document.id]?.[field.label_short] }
+                                                                            onChange={ (e) => {
+                                                                                handleUpdateDocumentMetadataValues(document.id, field, e)
+                                                                            } }
+                                                                        />
+                                                                    ) : (
+                                                                        <Input
+                                                                            id={ field.id }
+                                                                            key={ field.id }
+                                                                            type={ field.type }
+                                                                            label={ t(field.label) }
+                                                                            disabled={ disabledBatch }
+                                                                            required={ field.required }
+                                                                            value={ documentMetadataValues[document.id]?.[field.label_short] }
+                                                                            onChange={ (e) => {
+                                                                                handleUpdateDocumentMetadataValues(document.id, field, e.target.value)
+                                                                            } }
+                                                                        />
+                                                                    )
+                                                                    }
+                                                                </div>
+                                                            )) }
+                                                        </div>
+                                                    )) }
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ) }
-                                <SortableContext strategy={ verticalListSortingStrategy }
-                                                 items={ document.pages.map((p: any) => `page-${ p.id }`) }>
-                                    <DroppableDocumentZone
-                                        pages={ document.pages }
-                                        disabled={ disabledBatch }
-                                        documentId={ document.id }
-                                        menuItems={ pageMenuItems }
-                                        isEmpty={ document.pages.length === 0 }
-                                        selectedPageIds={ selectedPages.map(p => p.id) }
-                                        onSelectionChange={ handleSelectionChange }
-                                        onZoom={ handlePreview }
-                                    />
-                                </SortableContext>
-                            </Panel>
-                        )) }
+                                    ) }
+                                    <SortableContext strategy={ verticalListSortingStrategy }
+                                                     items={ document.pages.map((p: any) => `page-${ p.id }`) }>
+                                        <DroppableDocumentZone
+                                            pages={ document.pages }
+                                            disabled={ disabledBatch }
+                                            documentId={ document.id }
+                                            menuItems={ pageMenuItems }
+                                            isEmpty={ document.pages.length === 0 }
+                                            selectedPageIds={ selectedPages.map(p => p.id) }
+                                            onSelectionChange={ handleSelectionChange }
+                                            onZoom={ handlePreview }
+                                        />
+                                    </SortableContext>
+                                </Panel>
+                            )) }
 
-                        <DragOverlay>
-                            { activeDragItem?.type === 'page' && (
-                                <DraggablePage
-                                    isDragOverlay
-                                    isSelected={ false }
-                                    page={ activeDragItem.page }
-                                    documentId={ activeDragItem.documentId }
-                                />
-                            ) }
-                        </DragOverlay>
-                    </DndContext>
+                            <DragOverlay>
+                                { activeDragItem?.type === 'page' && (
+                                    <DraggablePage
+                                        isDragOverlay
+                                        isSelected={ false }
+                                        page={ activeDragItem.page }
+                                        documentId={ activeDragItem.documentId }
+                                    />
+                                ) }
+                            </DragOverlay>
+                        </DndContext>
+                    </div>
+                ) }
+            </div>
+
+            { showBatches && (
+                <div className="bg-(--bg-primary) w-[25rem] flex flex-col border-l border-(--border-secondary)">
+                    <div className='text-center p-4 border-b border-(--border-secondary)'>
+                        { t(`GLOBAL.${ batchTime }`) } ({ statuses.find(s => batch.status === s.id).label })
+                    </div>
+                    <div className='p-4'>
+                        { batchesList.map((row: any) => (
+                            <BatchCard key={ row.id } row={ row } navigate={ navigate }/>
+                        )) }
+                    </div>
                 </div>
             ) }
         </div>
-    );
+    )
+        ;
 }

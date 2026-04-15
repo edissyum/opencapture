@@ -670,7 +670,9 @@
         "doc_type_separator": "Document type separator",
         "document_separator": "Document separator",
         "qr_separator": "QR code separator choice",
-        "download_separator": "Download separator"
+        "download_separator": "Download separator",
+        "merge_batch": "",
+        "show_batches": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Click to choose a file",

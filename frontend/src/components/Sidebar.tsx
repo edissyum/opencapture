@@ -23,6 +23,7 @@ import {
     Briefcase,
     Building2,
     ChartNoAxesColumn,
+    ChevronDown,
     ChevronsLeft,
     ChevronsRight,
     Clock4,
@@ -30,7 +31,8 @@ import {
     Info,
     LogOut,
     Settings,
-    User, UserCog
+    User,
+    UserCog
 } from "lucide-react";
 
 import { LoginImage } from "./LoginImage";
@@ -196,15 +198,19 @@ export default function Sidebar() {
                         "data-tooltip-id": "tooltip",
                         "data-tooltip-content": `${ user.firstname } ${ user.lastname }`
                     }) }/>
+
                     { !collapsed &&
-                        <div className='flex flex-col max-w-44'>
-                            <span className='truncate'>
-                                { user.firstname } { user.lastname }
-                            </span>
-                            <span className='text-sm font-normal truncate'>
-                                { user.username }
-                            </span>
-                        </div>
+                        <>
+                            <div className='flex flex-col max-w-44'>
+                                <span className='truncate'>
+                                    { user.firstname } { user.lastname }
+                                </span>
+                                <span className='text-sm font-normal truncate'>
+                                    { user.username }
+                                </span>
+                            </div>
+                            <ChevronDown size={ 22 } className='shrink-0 ml-auto'/>
+                        </>
                     }
                 </a>
                 <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }/>
