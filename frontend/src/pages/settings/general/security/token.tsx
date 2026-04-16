@@ -24,6 +24,7 @@ import { Dropdown } from "../../../../components/Dropdown";
 import { showToast } from "../../../../components/ToastProvider";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { copyToClipboard } from "../../../../services/hooks/copyToClipboard.tsx";
 
 export const SettingsGeneralTokenAuth = () => {
     const { get, post } = axiosApiCall();
@@ -113,8 +114,7 @@ export const SettingsGeneralTokenAuth = () => {
                             <div className='bg-(--bg-secondary) p-2 rounded-lg' data-tooltip-id='tooltip'
                                  data-tooltip-content={ t('SECURITY.copy_token') }
                                  onClick={ () => {
-                                     "use client";
-                                     navigator.clipboard.writeText(token);
+                                     copyToClipboard(token);
                                      showToast(t('SECURITY.token_copied'), 'success');
                                  } }>
                                 <Copy size={ 20 } className="text-(--text-primary)"/>
