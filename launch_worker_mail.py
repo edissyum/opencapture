@@ -181,6 +181,26 @@ with app.app_context():
                 Log.info('Start following batch : ' + os.path.basename(os.path.normpath(batch_path)))
                 Log.info('Action after processing e-mail is : ' + action)
                 Log.info('Number of e-mail to process : ' + str(len(emails)))
+                Log.info('Folder to crawl : ' + folder_to_crawl)
+
+                Log.debug('Display basic informations for each e-mail to process')
+                for email in emails:
+                    if mail.method == 'graphql':
+                        Log.debug('E-mail id : ' + str(email.id))
+                    else:
+                        Log.debug('E-mail id : ' + str(email.uid))
+
+                    Log.debug('E-mail subject : ' + str(email.subject))
+                    Log.debug('E-mail from : ' + str(email.from_))
+                    Log.debug('E-mail to : ' + str(email.to))
+                    Log.debug('E-mail attachments count : ' + str(len(email.attachments)))
+                    Log.debug('Email attachments details : ')
+                    cpt_att = 1
+                    for att in email.attachments:
+                        Log.debug('Attachment n°' + str(cpt_att) + ' filename : ' + att.filename)
+                        Log.debug('Attachment n°' + str(cpt_att) + ' content type : ' + att.content_type)
+                        Log.debug('Attachment n°' + str(cpt_att) + ' size : ' + str(att.size))
+                        cpt_att = cpt_att + 1
 
                 cpt_mail = 1
                 for msg in emails:
@@ -200,7 +220,7 @@ with app.app_context():
                             for att in msg.get("attachments", [])
                         ]
                     }
-                    Log.debug("Message : " + str(msg_safe))
+                    Log.debug("email : " + str(msg_safe))
 
                     Log.debug('Backup e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
                     mail.backup_email(msg, batch_path)
@@ -211,6 +231,8 @@ with app.app_context():
                     Log.debug('Start to construct document for e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
                     ret = mail.construct_dict(msg, batch_path, configurations, insert_doc)
                     Log.debug('Document construction done for e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
+                    Log.debug('Document constructed for e-mail n°' + str(cpt_mail) + '/' + str(len(emails)) + ' is : ' + str(ret))
+
                     if insert_doc:
                         Log.info('Start to process e-mail body and attachments')
                     else:

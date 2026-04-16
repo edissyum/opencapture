@@ -967,6 +967,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     log.debug('Thumbnails and full image moved to docservers successfully')
     log.debug('Docserver paths  : ')
+    log.debug(' - Original doc :  ' + file)
     log.debug(' - Thumbnail : ' + docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename + '-001.jpg')
     log.debug(' - Full image : ' + docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename + '-001.jpg')
 
