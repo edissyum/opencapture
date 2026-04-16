@@ -38,6 +38,7 @@ import { showToast } from "../../ToastProvider";
 import { DynamicForm } from "../../form/DynamicForm";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { copyToClipboard } from "../../../services/hooks/copyToClipboard";
 import { useCustomFields } from "../../../services/hooks/useCustomFields";
 
 export function OutputEditor({ module }: { module: string }) {
@@ -569,8 +570,8 @@ export function OutputEditor({ module }: { module: string }) {
                                 { availableSystemFields.map((option: any) => (
                                     <div key={ option.id } data-tooltip-id='tooltip'
                                          data-tooltip-content={ t("OUTPUTS.copy_to_clipboard") }
-                                         onClick={ () => {
-                                             navigator.clipboard.writeText(option.id);
+                                         onClick={ async () => {
+                                             await copyToClipboard(option.id);
                                          } }
                                          className='flex flex-col border border-(--border-secondary) rounded-lg
                                                    bg-(--bg-primary) px-6 py-2 w-full cursor-pointer hover:bg-(--bg-secondary)'>
@@ -590,8 +591,8 @@ export function OutputEditor({ module }: { module: string }) {
                                     { customFields.map((field: any) => (
                                         <div key={ field.id } data-tooltip-id='tooltip'
                                              data-tooltip-content={ t("OUTPUTS.copy_to_clipboard") }
-                                             onClick={ () => {
-                                                 navigator.clipboard.writeText(field.label_short);
+                                             onClick={ async () => {
+                                                 await copyToClipboard(field.label_short);
                                              } }
                                              className='flex flex-col border border-(--border-secondary) rounded-lg
                                                        bg-(--bg-primary) px-6 py-2 w-full cursor-pointer hover:bg-(--bg-secondary)'>

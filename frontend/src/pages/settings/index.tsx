@@ -84,7 +84,7 @@ export function SettingsIndex() {
                 { t('SETTINGS.favorites_subtitle') }
             </p>
             { favoriteOptions && favoriteOptions.length > 0 ? (
-                <div className='grid grid-cols-3 gap-6 my-6'>
+                <div className='grid grid-cols-3 gap-6 my-2'>
                     { favoriteOptions.map((option, index) => (
                         <SettingsCard key={ index } icon={ option['icon'] } title={ option['name'] }
                                       description={ option['description'] } to={ option['href'] }
@@ -93,7 +93,7 @@ export function SettingsIndex() {
                 </div>
             ) : (
                 <div
-                    className="my-6 w-full bg-(--bg-selected) p-4 rounded-lg flex flex-col gap-4 border border-(--border-primary)">
+                    className="mt-2 mb-4 w-full bg-(--bg-selected) p-4 rounded-lg flex flex-col gap-4 border border-(--border-primary)">
                     <div className='flex items-center gap-3'>
                         <div className='bg-(--color-primary) p-2 rounded-lg'>
                             <Star className="text-white" size={ 28 }/>
@@ -126,7 +126,7 @@ export function SettingsIndex() {
             <p className="text-(--text-secondary)">
                 { t('SETTINGS.subtitle') }
             </p>
-            <div className='grid grid-cols-3 gap-6 mt-6'>
+            <div className='grid grid-cols-3 gap-6 mt-2'>
                 { options.map((option) => (
                     <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
                                   description={ option['description'] } to={ option['href'] }/>

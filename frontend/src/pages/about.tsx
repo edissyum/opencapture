@@ -75,7 +75,7 @@ export function AboutPage() {
     if (loading) return <Loader/>;
 
     return (
-        <div className="p-6 w-full h-full flex justify-center overflow-scroll bg-(--bg-secondary)">
+        <div className="p-6 w-full h-full flex justify-center overflow-auto bg-(--bg-secondary)">
             <div className='w-1/2 flex flex-col items-center gap-4'>
                 <div className='w-full flex flex-col gap-4 pb-4 items-center'>
                     <>

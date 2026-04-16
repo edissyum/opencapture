@@ -24,7 +24,7 @@ import { Dropdown } from "../../../../components/Dropdown";
 import { showToast } from "../../../../components/ToastProvider";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
-import { copyToClipboard } from "../../../../services/hooks/copyToClipboard.tsx";
+import { copyToClipboard } from "../../../../services/hooks/copyToClipboard";
 
 export const SettingsGeneralTokenAuth = () => {
     const { get, post } = axiosApiCall();
@@ -113,8 +113,8 @@ export const SettingsGeneralTokenAuth = () => {
                         <div className='flex justify-end items-center cursor-pointer rounded-lg'>
                             <div className='bg-(--bg-secondary) p-2 rounded-lg' data-tooltip-id='tooltip'
                                  data-tooltip-content={ t('SECURITY.copy_token') }
-                                 onClick={ () => {
-                                     copyToClipboard(token);
+                                 onClick={ async () => {
+                                     await copyToClipboard(token);
                                      showToast(t('SECURITY.token_copied'), 'success');
                                  } }>
                                 <Copy size={ 20 } className="text-(--text-primary)"/>

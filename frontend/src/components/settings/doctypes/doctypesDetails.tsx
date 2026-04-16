@@ -375,7 +375,7 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                         </div>
                     ) }
                     <div
-                        className="p-4 rounded-xl border border-(--border-secondary) bg-(--bg-primary) overflow-scroll">
+                        className="p-4 rounded-xl border border-(--border-secondary) bg-(--bg-primary) overflow-auto">
                         <div className='flex flex-col gap-4'>
                             <h3 className='text-lg font-semibold'>
                                 { t('DOCTYPES.children') }

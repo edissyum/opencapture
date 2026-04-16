@@ -32,6 +32,7 @@ import { showToast } from "../../../../components/ToastProvider";
 import { DynamicForm } from "../../../../components/form/DynamicForm";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { copyToClipboard } from "../../../../services/hooks/copyToClipboard";
 
 export function SettingsVerifierAiLLMEditor() {
     const { get, put, post } = axiosApiCall();
@@ -250,13 +251,10 @@ export function SettingsVerifierAiLLMEditor() {
         }
     }
 
-    const handleCopy = () => {
-        navigator.clipboard.writeText(ocrPlaceholder).then(() => {
-            setDataCopied(true);
-            setTimeout(() => setDataCopied(false), 2000);
-        }).catch(err => {
-            console.error("Failed to copy text: ", err);
-        });
+    const handleCopy = async () => {
+        await copyToClipboard(ocrPlaceholder);
+        setDataCopied(true);
+        setTimeout(() => setDataCopied(false), 2000);
     }
 
     return (

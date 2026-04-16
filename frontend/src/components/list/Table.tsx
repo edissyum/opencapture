@@ -129,18 +129,18 @@ export function Table<T extends { id: string }>({
                     { pagination && (
                         <div
                             className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-t-md text-(--text-secondary) font-normal h-18">
-                            <Skeleton width='20%' className='dark:bg-(--bg-secondary)!'/>
-                            <Skeleton width='30%' className='dark:bg-(--bg-secondary)!'/>
+                            <Skeleton width='20%' className='dark:bg-(--bg-secondary)! h-3!'/>
+                            <Skeleton width='30%' className='dark:bg-(--bg-secondary)! h-3!'/>
                         </div>
                     ) }
                     <div className='flex flex-row'>
                         { columns.map((col, i) => (
                             <span key={ i }
                                   className={ `${ i === 0 ? 'w-40' : 'w-1/5 ' } px-5 py-2 text-left font-bold text-(--text-secondary)` }>
-                            <span className='block'>
-                                { col.header }
+                                <span className='block'>
+                                    { col.header }
+                                </span>
                             </span>
-                        </span>
                         )) }
                     </div>
                     <div className="flex flex-col">
@@ -149,8 +149,8 @@ export function Table<T extends { id: string }>({
                                  className="flex bg-(--bg-primary) even:bg-(--bg-secondary) border-b border-(--border-secondary)">
                                 { columns.map((_col, ci) => (
                                     <span key={ ci } className={ `px-4 py-2 text-sm w-1/6` }>
-                                <Skeleton className='dark:bg-(--bg-secondary)!'/>
-                            </span>
+                                        <Skeleton className='dark:bg-(--bg-secondary)! h-3!'/>
+                                    </span>
                                 )) }
                             </div>
                         )) }
@@ -190,7 +190,7 @@ export function Table<T extends { id: string }>({
                     onSelectionChange={ (e: any) => {
                         handleSelectionChange(e.value)
                     } }
-                    className={ `w-full ${ !baseLink ? 'no_hover' : ''}` }
+                    className={ `w-full ${ !baseLink ? 'no_hover' : '' }` }
                     contextMenuSelection={ selectedRows }
                     onContextMenuSelectionChange={ (e: any) => {
                         handleSelectionChange([e.value]);

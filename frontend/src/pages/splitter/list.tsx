@@ -328,7 +328,9 @@ export function SplitterListPage() {
     }
 
     const handleResetFilters = () => {
+        setSelectedCustomers([]);
         setSelectedTime('');
+        setSelectedForm('');
         setSelectedForm('');
         setSelectedStatus('NEW');
     }
@@ -576,7 +578,7 @@ export function SplitterListPage() {
                         columns={ columns }
                         lazyParams={ lazyParams }
                         checkboxSelection={ true }
-                        loading={ loadingBatches }
+                        loading={ true }
                         actionsLine={ getActionsLine }
                         rowsPerPage={ lazyParams.rows }
                         skeletonRows={ lazyParams.rows }

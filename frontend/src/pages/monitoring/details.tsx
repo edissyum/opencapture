@@ -21,6 +21,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+import { copyToClipboard } from "../../services/hooks/copyToClipboard";
 
 import { Table } from "../../components/list/Table";
 import { Loader } from "../../components/loader/Loader";
@@ -76,11 +77,10 @@ export function MonitoringDetails() {
                                    ${ (row.status === 'error' || row.error) && 'cursor-pointer text-(--text-error)' }` }
                       data-tooltip-id='tooltip'
                       data-tooltip-content={ (row.status === 'error' || row.error) ? t('MONITORING.copy_error_message') : '' }
-                      onClick={ () => {
+                      onClick={ async () => {
                           if (row.status === 'error' || row.error) {
-                              navigator.clipboard.writeText(row.message).then(() => {
-                                  showToast(t('MONITORING.error_message_copied'), 'success');
-                              });
+                              await copyToClipboard(row.message);
+                              showToast(t('MONITORING.error_message_copied'), 'success');
                           }
                       } }
                       dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(row.message_formatted) } }/>
