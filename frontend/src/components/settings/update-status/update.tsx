@@ -25,6 +25,7 @@ import { Loader } from "../../loader/Loader";
 import { showToast } from "../../ToastProvider";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import DOMPurify from "dompurify";
 
 export function UpdateStatus({ module }: { module: 'verifier' | 'splitter' }) {
     const { post, put } = axiosApiCall();
@@ -129,6 +130,7 @@ export function UpdateStatus({ module }: { module: 'verifier' | 'splitter' }) {
                                setIdentifier(e.target.value)
                            }
                        } }
+                       noMarginBottom={ true }
                        placeholder={ t('UPDATE-STATUS.id_placeholder') }
                        onKeyDown={ (e) => {
                            if ((e.key === 'Enter' || e.key === ',') && identifier.trim() !== '') {
@@ -139,7 +141,8 @@ export function UpdateStatus({ module }: { module: 'verifier' | 'splitter' }) {
                            }
                        } }
                 />
-                <div className='flex flex-wrap gap-2'>
+
+                <div className='flex flex-wrap gap-2 my-4'>
                     { identifierList.map((id) => (
                         <div key={ id }
                              className='bg-(--color-primary)/10 text-(--text-primary) rounded-sm px-2 py-1 border-0 flex items-center'>
@@ -150,7 +153,11 @@ export function UpdateStatus({ module }: { module: 'verifier' | 'splitter' }) {
                     )) }
                 </div>
 
-                <Button className='mt-4'
+                <div className='text-(--text-secondary)'
+                     dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(t('UPDATE-STATUS.informations')) } }/>
+            </div>
+            <div className='w-fit'>
+                <Button className='mt-8'
                         disabled={ selectedStatus === '' || identifierList.length === 0 }
                         onClick={ handleUpdate }>
                     { updating ? t('GLOBAL.updating') : t('UPDATE-STATUS.update') }

@@ -1292,10 +1292,11 @@
     "UPDATE-STATUS": {
         "new_status": "New status",
         "id_documents": "Document identifiers",
-        "id_placeholder": "Document identifier to update (press enter or , to add to the list)",
+        "id_placeholder": "Documents identifiers to update",
         "update": "Update status",
         "update_success_verifier": "Document statuses updated successfully",
-        "update_success_splitter": "Batch statuses updated successfully"
+        "update_success_splitter": "Batch statuses updated successfully",
+        "informations": "Press <span class='status_box'>Enter</span> or <span class='status_box'>&nbsp;&nbsp;,&nbsp;&nbsp;</span> to validate an ID"
     },
     "PRIVILEGES": {
         "access_config": "Access to configuration file",

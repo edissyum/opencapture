@@ -1387,10 +1387,11 @@
     "UPDATE-STATUS": {
         "new_status": "Nuevo estado",
         "id_documents": "Identificadores de documentos",
-        "id_placeholder": "Identificador del documento a actualizar (presione Intro o , para añadir a la lista)",
+        "id_placeholder": "Identificadors del documentos a actualizar",
         "update": "Actualizar el estado",
         "update_success_verifier": "Estado de los documentos actualizado con éxito",
-        "update_success_splitter": "Estado de los lotes actualizado con éxito"
+        "update_success_splitter": "Estado de los lotes actualizado con éxito",
+        "informations": "Pulse <span class='status_box'>Enter</span> o <span class='status_box'>&nbsp;&nbsp;,&nbsp;&nbsp;</span> para validar un ID."
     },
     "PRIVILEGES": {
         "access_config": "Acceso al archivo de configuración",

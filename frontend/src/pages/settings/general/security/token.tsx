@@ -113,6 +113,7 @@ export const SettingsGeneralTokenAuth = () => {
                             <div className='bg-(--bg-secondary) p-2 rounded-lg' data-tooltip-id='tooltip'
                                  data-tooltip-content={ t('SECURITY.copy_token') }
                                  onClick={ () => {
+                                     "use client";
                                      navigator.clipboard.writeText(token);
                                      showToast(t('SECURITY.token_copied'), 'success');
                                  } }>

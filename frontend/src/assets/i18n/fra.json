@@ -1387,10 +1387,11 @@
     "UPDATE-STATUS": {
         "new_status": "Nouveau statut",
         "id_documents": "Identifiants des documents",
-        "id_placeholder": "Identifiant du document à mettre à jour (appuyez sur entrée ou sur , pour ajouter à la liste)",
+        "id_placeholder": "Identifiants des documents à mettre à jour",
         "update": "Mettre à jour le statut",
         "update_success_verifier": "Statut des documents mis à jour avec succès",
-        "update_success_splitter": "Statut des lots mis à jour avec succès"
+        "update_success_splitter": "Statut des lots mis à jour avec succès",
+        "informations": "Appuyez sur <span class='status_box'>Entrée</span> ou <span class='status_box'>&nbsp;&nbsp;,&nbsp;&nbsp;</span> pour valider un identifiant"
     },
     "PRIVILEGES": {
         "access_config": "Accès au fichier de configuration",
