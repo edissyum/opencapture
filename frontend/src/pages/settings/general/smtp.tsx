@@ -17,12 +17,12 @@
 import { z } from "zod";
 import { t } from "i18next";
 import { useEffect, useState } from "react";
+import { InputSwitch } from "primereact/inputswitch";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import Input from "../../../components/Input";
 import { Button } from "../../../components/Button";
-import { Checkbox } from "../../../components/Checkbox";
 import { RadioBox } from "../../../components/RadioBox";
 import { showToast } from "../../../components/ToastProvider";
 
@@ -217,8 +217,15 @@ export function SettingsGeneralSMTP() {
                                     control={ control }
                                     name='smtpAuth'
                                     render={ ({ field }) => (
-                                        <Checkbox checked={ field.value } label={ t('SMTP.smtp_auth') }
-                                                  onChange={ (checked: boolean) => field.onChange(checked) }/>
+                                        <div className='mb-6 flex gap-1'>
+                                            <InputSwitch inputId='smtp_auth' checked={ field.value }
+                                                         onChange={ (e) => field.onChange(e.value) }/>
+                                            <label htmlFor='smtp_auth'
+                                                   className="flex items-center gap-4 cursor-pointer select-none">
+                                                { t('SMTP.smtp_auth') }
+                                            </label>
+                                        </div>
+
                                     ) }
                                 />
                                 <div className='flex items-center gap-4 mt-4'>
@@ -279,8 +286,14 @@ export function SettingsGeneralSMTP() {
                                     control={ control }
                                     name='smtpNotifOnError'
                                     render={ ({ field }) => (
-                                        <Checkbox checked={ field.value } label={ t('SMTP.enable_error_notifications') }
-                                                  onChange={ (checked: boolean) => field.onChange(checked) }/>
+                                        <div className='mb-6 flex gap-1'>
+                                            <InputSwitch inputId='enable_error_notifications' checked={ field.value }
+                                                         onChange={ (e) => field.onChange(e.value) }/>
+                                            <label htmlFor='enable_error_notifications'
+                                                   className="flex items-center gap-4 cursor-pointer select-none">
+                                                { t('SMTP.enable_error_notifications') }
+                                            </label>
+                                        </div>
                                     ) }
                                 />
                                 <div className='flex items-center gap-4 mt-4'>

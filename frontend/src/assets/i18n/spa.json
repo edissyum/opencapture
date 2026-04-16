@@ -295,7 +295,8 @@
         "unauthorized": "Acceso denegado",
         "unauthorized_details": "No tiene los permisos necesarios para acceder a este recurso. Por favor, contacte a su administrador si cree que se trata de un error.",
         "my_profile": "Mi perfil",
-        "merge": "Fusionar"
+        "merge": "Fusionar",
+        "executed_outputs": ""
     },
     "HISTORY": {
         "document_validated": "Documento n°<strong>{{ documentId }}</strong> validado",
@@ -728,7 +729,9 @@
         "confirm_merge_batch": "¿Está seguro de que desea fusionar el lote <strong>{{sourceBatchId}}</strong> con el lote <strong>{{targetBatchId}}</strong>?<br>Los documentos del lote <strong>{{sourceBatchId}}</strong> se moverán al lote <strong>{{targetBatchId}}</strong> y el lote <strong>{{sourceBatchId}}</strong> será eliminado <strong>(esta acción es irreversible)</strong>",
         "batches_merged": "Lotes fusionados correctamente",
         "merge_batch_details": "Elija el lote principal. Los documentos de los demás lotes se fusionarán en el lote principal y los lotes secundarios se eliminarán. <strong>(esta acción es irreversible)</strong>",
-        "no_other_batches": "No hay otros lotes disponibles para fusionar"
+        "no_other_batches": "No hay otros lotes disponibles para fusionar",
+        "batch_non_modifiable": "",
+        "batch_non_modifiable_details": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Haga clic para elegir un archivo",
@@ -910,7 +913,9 @@
         "firstname_lastname": "Nombre y apellido",
         "system_fields": "Campos del sistema",
         "accounting_plan": "Cuentas de gastos",
-        "delete_field_success": "Campo eliminado correctamente"
+        "delete_field_success": "Campo eliminado correctamente",
+        "document_non_modifiable": "",
+        "document_non_modifiable_details": ""
     },
     "SECURITY": {
         "default_auth": "Autenticación predeterminada",

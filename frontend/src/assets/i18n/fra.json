@@ -295,7 +295,8 @@
         "unauthorized": "Accès refusé",
         "unauthorized_details": "Vous n'avez pas les permissions nécessaires pour accéder à cette ressource. Veuillez contacter votre administrateur si vous pensez que c'est une erreur.",
         "my_profile": "Éditer mon profil",
-        "merge": "Fusionner"
+        "merge": "Fusionner",
+        "executed_outputs": "Chaînes sortantes exécutées"
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validé",
@@ -728,7 +729,9 @@
         "confirm_merge_batch": "Voulez-vous vraiment fusionner le lot <strong>{{sourceBatchId}}</strong> avec le lot <strong>{{targetBatchId}}</strong> ?<br>Les documents du lot  <strong>{{sourceBatchId}}</strong> seront déplacés vers le lot <strong>{{targetBatchId}}</strong> et le lot <strong>{{sourceBatchId}}</strong> sera supprimé <strong>(cette action est irréversible)</strong>",
         "batches_merged": "Lots fusionnés avec succès",
         "merge_batch_details": "Choisissez le lot principal. Les documents des autres lots seront fusionnés dans le lot principal et les lots secondaires seront supprimés. <strong>(cette action est irréversible)</strong>",
-        "no_other_batches": "Aucun autre lot disponible pour la fusion"
+        "no_other_batches": "Aucun autre lot disponible pour la fusion",
+        "batch_non_modifiable": "Lot non modifiable",
+        "batch_non_modifiable_details": "Vous ne pouvez pas modifier ce lot car il a déjà été traité, supprimé ou fusionné"
     },
     "UPLOAD": {
         "upload_dropzone": "Cliquez pour choisir un fichier",
@@ -910,7 +913,9 @@
         "firstname_lastname": "Nom et prénom",
         "system_fields": "Champs système",
         "accounting_plan": "Comptes de charge",
-        "delete_field_success": "Champ suprimé avec succès"
+        "delete_field_success": "Champ suprimé avec succès",
+        "document_non_modifiable": "Document non modifiable",
+        "document_non_modifiable_details": "Vous ne pouvez pas modifier ce document car il a déjà été traité"
     },
     "SECURITY": {
         "default_auth": "Authentification par défaut",

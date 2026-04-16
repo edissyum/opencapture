@@ -31,6 +31,7 @@ export function useFavorites() {
     const { get, post, del } = axiosApiCall();
 
     const [ready, setReady] = useState(false);
+    const [loadingFavorites, setLoadingFavorites] = useState(false);
 
     useEffect(() => {
         if (!loadingUser && user?.id) {
@@ -59,16 +60,17 @@ export function useFavorites() {
 
     const toggleFavorite = async (route: string) => {
         if (!ready) return {};
+        setLoadingFavorites(true);
         const favorites = await getFavorites();
         const existing = favorites.find((fav: Favorite) => JSON.stringify(fav.route) === JSON.stringify(route));
         if (existing) {
             await removeFavorite(existing.id!);
-            return { action: 'removed', favorite: existing };
+            setLoadingFavorites(false);
         } else {
-            const newFav = await addFavorite(route);
-            return { action: 'added', favorite: newFav };
+            await addFavorite(route);
+            setLoadingFavorites(false);
         }
     }
 
-    return { ready, addFavorite, toggleFavorite, removeFavorite, getFavorites };
+    return { ready, addFavorite, toggleFavorite, removeFavorite, getFavorites, loadingFavorites};
 }

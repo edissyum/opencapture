@@ -28,7 +28,7 @@ import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-ki
 
 import {
     ArrowLeft,
-    ChevronDown,
+    ChevronDown, CircleAlert,
     Combine,
     Download,
     EllipsisVertical,
@@ -39,7 +39,7 @@ import {
     Layers,
     Package,
     PackageCheck,
-    Paperclip,
+    Paperclip, PenOff,
     Plus,
     RotateCw,
     Save,
@@ -82,6 +82,7 @@ import { DraggablePage } from "./dnd/draggablePage";
 import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
 
 import { b64ToFile } from "../settings/general/customization";
+import { Tooltip } from "react-tooltip";
 
 export function SplitterViewerPage() {
     const { get, post, del } = axiosApiCall();
@@ -96,6 +97,8 @@ export function SplitterViewerPage() {
 
     const { user, loadingUser } = useUser();
     const { logHistory } = useHistoryLogger();
+
+    const [outputsLabels, setOutputsLabels] = useState<any[]>([]);
 
     const [forms, setForms] = useState<any[]>([]);
     const [doctypes, setDoctypes] = useState<any[]>([]);
@@ -298,7 +301,7 @@ export function SplitterViewerPage() {
                 const response = await post('/splitter/batches/list', { 'batchId': batchId, 'user_id': user.id });
                 if (response?.batches?.length > 0) {
                     const batchData = response.batches[0];
-                    if (batchData.status === 'END') {
+                    if (batchData.status !== 'NEW') {
                         setDisabledBatch(true);
                     }
                     setBatch(batchData);
@@ -344,8 +347,9 @@ export function SplitterViewerPage() {
         fetchEnableAttachments().then();
     }, [loadingUser]);
 
-    // Fetch doctypes
     // Fetch status
+    // Fetch doctypes
+    // Fetch current form
     useEffect(() => {
         if (!formId) return;
 
@@ -367,6 +371,21 @@ export function SplitterViewerPage() {
             }
         }
 
+        const fetchForm = async () => {
+            try {
+                const res = await get(`/forms/splitter/getById/${ batch.form_id }`);
+                if (res) {
+                    for (const output of res.outputs) {
+                        const o = await get(`/outputs/splitter/getById/${ output }`);
+                        setOutputsLabels((prev: any) => [...prev, o.output_label]);
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching form settings:", error);
+            }
+        };
+
+        fetchForm().then();
         fetchStatus().then();
         fetchDocTypes().then();
     }, [formId]);
@@ -915,7 +934,6 @@ export function SplitterViewerPage() {
                 try {
                     await post('/splitter/changeForm', { 'batchId': batchId, formId: event.value });
                     showToast(t('SPLITTER.form_changed'), 'success');
-                    // refresh page to load new form fields and metadata
                     setTimeout(() => {
                         navigate(0);
                     });
@@ -1060,6 +1078,7 @@ export function SplitterViewerPage() {
                         </div>
                     </div>
                 ) }
+
                 { loading && (
                     <div className={ `absolute inset-0 z-20 flex items-center justify-center bg-(--bg-primary)/80` }>
                         <Loader/>
@@ -1116,6 +1135,23 @@ export function SplitterViewerPage() {
                               hover:bg-(--bg-secondary) transition-colors rounded-full p-3
                              ${ !unSavedChanges || disabledBatch ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' } ` }>
                                 <Save size={ 16 }/>
+                            </div>
+
+                            <div>
+                                <Tooltip
+                                    id="tooltip-outputs"
+                                    render={ () => (
+                                        <div className='flex flex-col gap-1'>
+                                            <div className='font-semibold'>
+                                                { t('GLOBAL.executed_outputs') }
+                                            </div>
+                                            <div className='text-(--text-secondary)'>
+                                                { outputsLabels.join(", ") }
+                                            </div>
+                                        </div>
+                                    ) }
+                                />
+                                <CircleAlert data-tooltip-id="tooltip-outputs" size={ 20 } className='cursor-pointer'/>
                             </div>
 
                             <Button disabled={ unSavedChanges || loading || disabledBatch }
@@ -1222,6 +1258,22 @@ export function SplitterViewerPage() {
                              data-tooltip-content={ t('SPLITTER.show_batches') }
                         >
                             <Package size={ 18 }/>
+                        </div>
+                    </div>
+                ) }
+
+                { disabledBatch && (
+                    <div className='px-8 pb-4'>
+                        <div className='w-full bg-(--bg-error) p-4 rounded-lg flex flex-col gap-4 border border-(--text-error)'>
+                            <div className='flex items-center gap-3'>
+                                <div className='bg-(--text-error) p-2 rounded-lg'>
+                                    <PenOff className="text-white" size={ 28 }/>
+                                </div>
+                                <div className='flex flex-col'>
+                                    <span className='text-(--text-error) font-semibold'>{ t('SPLITTER.batch_non_modifiable') }</span>
+                                    <span className='text-(--text-secondary)'>{ t('SPLITTER.batch_non_modifiable_details') }</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 ) }

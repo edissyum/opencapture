@@ -27,9 +27,9 @@ export default function BreadCrumbTopbar() {
     const matches = useMatches();
     const breadcrumbs = matches.filter((m: any) => m.handle && m.handle?.breadcrumb);
 
-    const { ready, toggleFavorite, getFavorites } = useFavorites();
     const [isFav, setIsFav] = useState(false);
     const [refresh, setRefresh] = useState(false);
+    const { ready, loadingFavorites, toggleFavorite, getFavorites } = useFavorites();
 
     useEffect(() => {
         if (!ready || !location.pathname.includes('/settings')) return;
@@ -68,13 +68,19 @@ export default function BreadCrumbTopbar() {
                 { !['/settings', '/settings/general', '/settings/verifier', '/settings/splitter'].includes(location.pathname)
                     && !location.pathname.includes('edit/') && location.pathname.includes('/settings') && (
                         <div data-tooltip-id="tooltip"
+                             className={ `ml-auto cursor-pointer py-2 ${ loadingFavorites ? 'pointer-events-none' : '' }` }
                              data-tooltip-content={ isFav ? t('SETTINGS.remove_favorites') : t('SETTINGS.add_favorites') }
                              onClick={ () => {
                                  toggleFavorite(location.pathname).then(() => setRefresh(true))
                              } }
-                             className={ `ml-auto cursor-pointer py-2` }>
-                            <Star size={ 26 }
-                                  className={ `${ isFav ? 'fill-(--color-primary) text-(--color-primary)' : '' }` }/>
+                        >
+                            { loadingFavorites ? (
+                                <div
+                                    className="size-6 border-2 border-(--color-primary) border-t-transparent rounded-full animate-spin"/>
+                            ) : (
+                                <Star size={ 26 }
+                                      className={ `${ isFav ? 'fill-(--color-primary) text-(--color-primary)' : '' }` }/>
+                            ) }
                         </div>
                     ) }
             </div>

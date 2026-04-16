@@ -20,7 +20,20 @@ import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ArrowLeft, ChevronLeft, ChevronRight, Copy, Download, Edit, Eye, EyeOff, Paperclip, SquarePlus } from "lucide-react";
+import {
+    ArrowLeft,
+    ChevronLeft,
+    ChevronRight,
+    CircleAlert,
+    Copy,
+    Download,
+    Edit,
+    Eye,
+    EyeOff,
+    Paperclip,
+    PenOff,
+    SquarePlus
+} from "lucide-react";
 
 import { SupplierEditor } from "../suppliers/editor";
 
@@ -40,6 +53,7 @@ import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { useFormFields } from "../../services/hooks/useFormFields";
 import { useCustomFields } from "../../services/hooks/useCustomFields";
 import { useHistoryLogger } from "../../services/hooks/useHistoryLogger";
+import { Tooltip } from "react-tooltip";
 
 export function VerifierViewerPage() {
     const { get, post, put } = axiosApiCall();
@@ -48,6 +62,7 @@ export function VerifierViewerPage() {
     const [documentData, setDocumentData] = useState<any>(null);
     const [documentDataLoading, setDocumentDataLoading] = useState<boolean>(true);
 
+    const [outputsLabels, setOutputsLabels] = useState<any[]>([]);
     const [currentForm, setCurrentForm] = useState<any>(null);
 
     const [formHasError, setFormHasError] = useState<boolean>(false);
@@ -164,10 +179,15 @@ export function VerifierViewerPage() {
 
         const fetchForm = async () => {
             try {
-                get(`/forms/verifier/getById/${ documentData.form_id }`).then((response) => {
-                    if (!response) return;
-                    setCurrentForm(response);
-                });
+                const res = await get(`/forms/verifier/getById/${ documentData.form_id }`);
+
+                if (res) {
+                    setCurrentForm(res);
+                    for (const output of res.outputs) {
+                        const o = await get(`/outputs/verifier/getById/${ output }`);
+                        setOutputsLabels((prev: any) => [...prev, o.output_label]);
+                    }
+                }
             } catch (error) {
                 console.error("Error fetching form settings:", error);
             }
@@ -182,7 +202,6 @@ export function VerifierViewerPage() {
                     res = await get('/accounts/customers/getDefaultAccountingPlan');
                 }
                 if (res && res.length > 0) {
-                    console.log(res)
                     setAccountingPlan(res);
                 }
             } catch (error) {
@@ -1049,13 +1068,13 @@ export function VerifierViewerPage() {
 
             { !showAttachments && (
                 <div className='w-1/2'>
-                    <div className='pt-6 pl-8 pb-4'>
+                    <div className='pt-6 pl-6 pb-4'>
                         <Button size='sm' variant="bg_white_rounded"
                                 icon={ <ArrowLeft size={ 16 }/> } onClick={ () => navigate('/home') }>
                             { t('GLOBAL.back') }
                         </Button>
                     </div>
-                    <div className='bg-(--bg-secondary) px-8 pb-24 h-full flex flex-col'>
+                    <div className='bg-(--bg-secondary) px-6 pb-24 h-full flex flex-col'>
                         <div className="border border-(--border-secondary) rounded-xl h-full overflow-auto">
                             { !pagesImageB64[currentPage] ? (
                                 <div className='w-full h-full flex flex-col items-center justify-center'>
@@ -1146,11 +1165,27 @@ export function VerifierViewerPage() {
                 </div>
             ) }
 
-            <div className='w-1/2 bg-(--bg-primary) p-8 h-full border-l border-(--border-secondary) overflow-auto'>
+            <div className='w-1/2 bg-(--bg-primary) p-6 h-full border-l border-(--border-secondary) overflow-auto'>
                 { documentDataLoading || formFields.length === 0 ? (
                     <Loader/>
                 ) : (
                     <>
+                        { disableFields && (
+                            <div
+                                className='mb-6 w-full bg-(--bg-error) p-4 rounded-lg flex flex-col gap-4 border border-(--text-error)'>
+                                <div className='flex items-center gap-3'>
+                                    <div className='bg-(--text-error) p-2 rounded-lg'>
+                                        <PenOff className="text-white" size={ 28 }/>
+                                    </div>
+                                    <div className='flex flex-col'>
+                                        <span
+                                            className='text-(--text-error) font-semibold'>{ t('VERIFIER.document_non_modifiable') }</span>
+                                        <span
+                                            className='text-(--text-secondary)'>{ t('VERIFIER.document_non_modifiable_details') }</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ) }
                         <Accordion multiple activeIndex={ [0] } className='flex flex-col gap-4'>
                             { fieldsZone.filter((zone: any) => zone.lines.length > 0).map((zone) => (
                                 <AccordionTab key={ zone.id } header={
@@ -1292,6 +1327,22 @@ export function VerifierViewerPage() {
                             )) }
                         </Accordion>
                         <div className='flex mt-6 w-full items-center gap-4'>
+                            <div>
+                                <Tooltip
+                                    id="tooltip-outputs"
+                                    render={ () => (
+                                        <div className='flex flex-col gap-1'>
+                                            <div className='font-semibold'>
+                                                { t('GLOBAL.executed_outputs') }
+                                            </div>
+                                            <div className='text-(--text-secondary)'>
+                                                { outputsLabels.join(", ") }
+                                            </div>
+                                        </div>
+                                    ) }
+                                />
+                                <CircleAlert data-tooltip-id="tooltip-outputs" size={ 20 } className='cursor-pointer'/>
+                            </div>
                             <div className='grow basis-0 w-full' data-tooltip-id="tooltip"
                                  data-tooltip-content={ supplierChanged ? t('VERIFIER.save_supplier_modification') : '' }>
                                 <Button className='w-full' variant='danger' onClick={ () => refuseDocument() }

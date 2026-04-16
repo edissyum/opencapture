@@ -106,21 +106,22 @@ export function UpdateStatus({ module }: { module: 'verifier' | 'splitter' }) {
     return (
         <div className="p-6">
             <h1 className="text-md font-bold">{ t('UPDATE-STATUS.new_status') }</h1>
-            <div className='flex gap-4 mt-6'>
+            <div className='flex gap-4 mt-2 w-4/5 grid-cols-5'>
                 { statuses.map((status) => (
                     <div key={ status.id }
                          onClick={ () => setSelectedStatus(status.id) }
-                         className={ ` border border-(--border-secondary) hover:border-(--border-primary) transition-colors
-                             rounded-lg px-12 py-4 cursor-pointer flex flex-col items-center text-center justify-center gap-2
-                             ${ selectedStatus === status.id ? 'bg-(--bg-selected) border-(--border-primary)! text-(--color-primary)' : 'text-(--text-secondary)' } ` }>
+                         className={ `w-full border border-(--border-secondary) hover:border-(--border-primary) transition-colors
+                             rounded-lg py-4 cursor-pointer flex flex-col items-center text-center justify-center gap-2
+                             ${ selectedStatus === status.id ? 'bg-(--bg-selected) border-(--border-primary)! text-(--color-primary)' : 'text-(--text-secondary)' } ` }
+                    >
                         { icons.find((icon: any) => icon.id === status.id)?.icon }
                         <p className='text-md font-semibold min-w-32'>{ status.label }</p>
                     </div>
                 )) }
             </div>
 
-            <h1 className="text-md font-bold mt-6 mb-4">{ t('UPDATE-STATUS.id_documents') }</h1>
-            <div className='w-1/2'>
+            <h1 className="text-md font-bold mt-6 mb-2">{ t('UPDATE-STATUS.id_documents') }</h1>
+            <div className='w-4/5'>
                 <Input id="identifier-input"
                        value={ identifier }
                        onChange={ (e) => {

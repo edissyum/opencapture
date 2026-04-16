@@ -275,7 +275,8 @@
         "unauthorized": "Access denied",
         "unauthorized_details": "You do not have the necessary permissions to access this resource. Please contact your administrator if you believe this is an error.",
         "my_profile": "My profile",
-        "merge": "Merge"
+        "merge": "Merge",
+        "executed_outputs": ""
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validated",
@@ -678,7 +679,9 @@
         "confirm_merge_batch": "Are you sure you want to merge batch <strong>{{sourceBatchId}}</strong> with batch <strong>{{targetBatchId}}</strong>?<br>Documents from batch <strong>{{sourceBatchId}}</strong> will be moved to batch <strong>{{targetBatchId}}</strong> and batch <strong>{{sourceBatchId}}</strong> will be deleted <strong>(this action is irreversible)</strong>",
         "batches_merged": "Batches merged successfully",
         "merge_batch_details": "Choose the main batch. Documents from other batches will be merged into the main batch and secondary batches will be deleted. <strong>(this action is irreversible)</strong>",
-        "no_other_batches": "No other batches available for merging"
+        "no_other_batches": "No other batches available for merging",
+        "batch_non_modifiable": "",
+        "batch_non_modifiable_details": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Click to choose a file",
@@ -842,7 +845,9 @@
         "firstname_lastname": "First and last name",
         "system_fields": "System fields",
         "accounting_plan": "Expense accounts",
-        "delete_field_success": "Field successfully removed"
+        "delete_field_success": "Field successfully removed",
+        "document_non_modifiable": "",
+        "document_non_modifiable_details": ""
     },
     "SECURITY": {
         "default_auth": "Default authentication",
