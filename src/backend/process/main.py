@@ -413,7 +413,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     log.debug('Convert function to use for document processing : ' + convert_function)
     log.debug('Tesseract function to use for document processing : ' + tesseract_function)
     log.debug('System fields to find in document based on workflow settings : ' + ', '.join(system_fields_to_find))
-    log.debug('Custom fields to find in document based on workflow settings : ' + ', '.join(str(custom_fields_to_find)))
+    log.debug('Custom fields to find in document based on workflow settings : ' + ', '.join(map(str, custom_fields_to_find)))
 
     supplier = None
     supplier_lang_different = False
