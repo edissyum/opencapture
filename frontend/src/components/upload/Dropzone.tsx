@@ -130,7 +130,7 @@ export default function UploadDropzone({
                 ) }
             </div>
             { files.length > 0 && showPreview && (
-                <div className="mt-4 space-y-2 overflow-y-auto p-2">
+                <div className="mt-4 space-y-2 overflow-y-auto">
                     { files.map((file: any) => (
                         <div key={ file.name + file.size }
                              className="relative flex items-center rounded-lg gap-4 px-3 py-2 bg-(--bg-primary) border border-(--border-secondary)">
