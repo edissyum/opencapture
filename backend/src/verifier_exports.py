@@ -77,6 +77,7 @@ def export_xml(data, log, document_info, database, enable_log=True):
 
     if enable_log:
         log.info('Output execution : XML export')
+        log.debug('Document info : ' + str(document_info))
 
     folder_out = separator = filename = extension = xml_template = ''
     parameters = data['options']['parameters']
@@ -99,6 +100,9 @@ def export_xml(data, log, document_info, database, enable_log=True):
     filename = filename.replace('/', '-').replace(' ', '_')
     filename = unidecode(filename)
     # END create the XML filename
+
+    log.debug('XML filename : ' + filename)
+    log.debug('XML path : ' + folder_out + '/' + filename)
 
     # Fill XML with document informations
     if os.path.isdir(folder_out):
@@ -213,6 +217,8 @@ def export_xml(data, log, document_info, database, enable_log=True):
             xml_file.write(xml_root)
             xml_file.close()
         # END Fill XML with document informations
+
+        log.debug('XML export success')
         return folder_out + '/' + filename, 200
     else:
         if log:
@@ -229,6 +235,7 @@ def get_data(document_info, child):
     for document_data in document_info['datas']:
         if document_data == child:
             return document_info['datas'][document_data]
+    return None
 
 
 def compress_pdf(input_file, output_file, compress_id):
@@ -248,6 +255,7 @@ def export_facturx(data, log, document_info):
             log.current_step = len(task[0]['steps']) + 1
 
     log.info('Output execution : FacturX export')
+    log.debug('Document info : ' + str(document_info))
 
     folder_out = separator = filename = ''
     parameters = data['options']['parameters']
@@ -264,6 +272,9 @@ def export_facturx(data, log, document_info):
     filename = separator.join(str(x) for x in _data) + '.pdf'
     filename = filename.replace('/', '-').replace(' ', '_')
     # END create the PDF filename
+
+    log.debug('FacturX PDF filename : ' + filename)
+    log.debug('FacturX PDF path : ' + folder_out + '/' + filename)
 
     if os.path.isdir(folder_out):
         root = Et.Element('rsm:CrossIndustryInvoice', {
@@ -457,6 +468,8 @@ def export_facturx(data, log, document_info):
 
         file = document_info['path'] + '/' + document_info['filename']
         facturx.generate_from_file(file, Et.tostring(root), output_pdf_file=folder_out + '/' + filename)
+        
+        log.debug('FacturX PDF export success')
         return folder_out + '/' + filename, 200
     else:
         if log:
@@ -489,6 +502,8 @@ def export_pdf(data, log, document_info, compress_type, ocrise, enable_log=True)
     if enable_log:
         log.info('Output execution : PDF export')
 
+    log.debug('Document info : ' + str(document_info))
+
     folder_out = separator = filename = ''
     parameters = data['options']['parameters']
     for setting in parameters:
@@ -509,6 +524,9 @@ def export_pdf(data, log, document_info, compress_type, ocrise, enable_log=True)
     filename = filename.replace('/', '-').replace(' ', '_')
     filename = unidecode(filename)
     # END create the PDF filename
+
+    log.debug('PDF filename : ' + filename)
+    log.debug('PDF path : ' + folder_out + '/' + filename)
 
     if os.path.isdir(folder_out):
         file = document_info['path'] + '/' + document_info['filename']
@@ -544,6 +562,8 @@ def export_pdf(data, log, document_info, compress_type, ocrise, enable_log=True)
                         if attachment:
                             if os.path.exists(attachment['path']):
                                 zip_file.write(attachment['path'], attachment['filename'])
+
+        log.debug('PDF export success')
         return folder_out + '/' + filename, 200
     else:
         if log:
@@ -614,6 +634,8 @@ def export_coog(data, document_info, log, database):
             log.current_step = len(task[0]['steps']) + 1
 
     log.info('Output execution : COOG export')
+    log.debug('Document info : ' + str(document_info))
+
     host = token = cert_path = ''
     auth_data = data['options']['auth']
     for _data in auth_data:
@@ -669,30 +691,36 @@ def export_coog(data, document_info, log, database):
                             "attachments": attachments_files
                         }
                         _ws.create_attachment(args)
+
+                    log.debug('COOG export success')
                     return {}, 200
                 else:
                     response = {
                         "errors": gettext('EXPORT_COOG_ERROR'),
                         "message": res[1]
                     }
+                    log.error('COOG export error : ' + str(res[1]))
                     return response, 400
             else:
                 response = {
                     "errors": gettext('EXPORT_COOG_ERROR'),
                     "message": ''
                 }
+                log.error('COOG export error : ' + gettext('EXPORT_COOG_ERROR'))
                 return response, 400
         else:
             response = {
                 "errors": gettext('COOG_WS_INFO_WRONG'),
                 "message": _ws.access_token[1]
             }
+            log.error('COOG export error : ' + str(_ws.access_token[1]))
             return response, 400
     else:
         response = {
             "errors": gettext('COOG_WS_INFO_EMPTY'),
             "message": ''
         }
+        log.error('COOG export error : ' + gettext('COOG_WS_INFO_EMPTY'))
         return response, 400
 
 
@@ -712,6 +740,8 @@ def export_opencrm(data, document_info, log, database):
         return response, 400
 
     log.info('Output execution : OpenCRM export')
+    log.debug('Document info : ' + str(document_info))
+
     host = client_id = client_secret = ''
     auth_data = data['options']['auth']
     for _data in auth_data:
@@ -757,24 +787,28 @@ def export_opencrm(data, document_info, log, database):
             ws_data['data']['requete']['documents'].append(attachments_files)
             res = _ws.create_entry(ws_data)
             if res[0]:
+                log.debug('OpenCRM export success')
                 return {}, 200
             else:
                 response = {
                     "errors": gettext('EXPORT_COOG_ERROR'),
                     "message": res[1]
                 }
+                log.error('OpenCRM export error : ' + str(res[1]))
                 return response, 400
         else:
             response = {
                 "errors": gettext('OPENCRM_WS_INFO_WRONG'),
                 "message": _ws.access_token[1]
             }
+            log.error('OpenCRM export error : ' + str(_ws.access_token[1]))
             return response, 400
     else:
         response = {
             "errors": gettext('OPENCRM_WS_INFO_EMPTY'),
             "message": ''
         }
+        log.error('OpenCRM export error : ' + gettext('OPENCRM_WS_INFO_EMPTY'))
         return response, 400
 
 
@@ -787,6 +821,8 @@ def export_mem(data, document_info, log, regex, database):
             log.current_step = len(task[0]['steps']) + 1
 
     log.info('Output execution : MEM export')
+    log.debug('Document info : ' + str(document_info))
+
     host = login = password = ''
     auth_data = data['options']['auth']
     for _data in auth_data:
@@ -955,36 +991,43 @@ def export_mem(data, document_info, log, regex, database):
                                             res_id = data['res_id']
                                         if res_id != message['resId']:
                                             _ws.link_documents(str(res_id), message['resId'])
+
+                        log.debug('MEM Courrier export success')
                         return '', 200
                     else:
                         response = {
                             "errors": gettext('EXPORT_MEM_ERROR'),
                             "message": message['errors']
                         }
+                        log.error('MEM export error : ' + str(message['errors']) )
                         return response, 400
                 else:
                     response = {
                         "errors": gettext('EXPORT_MEM_ERROR'),
                         "message": gettext('PDF_FILE_NOT_FOUND')
                     }
+                    log.error('MEM export error : ' + str(gettext('PDF_FILE_NOT_FOUND')))
                     return response, 400
             else:
                 response = {
                     "errors": gettext('EXPORT_MEM_ERROR'),
                     "message": ''
                 }
+                log.error('MEM export error : ' + gettext('EXPORT_MEM_ERROR'))
                 return response, 400
         else:
             response = {
                 "errors": gettext('MEM_WS_INFO_WRONG'),
                 "message": _ws.status[1]
             }
+            log.error('MEM export error : ' + str(_ws.status[1]))
             return response, 400
     else:
         response = {
             "errors": gettext('MEM_WS_INFO_EMPTY'),
             "message": ''
         }
+        log.error('MEM export error : ' + gettext('MEM_WS_INFO_EMPTY'))
         return response, 400
 
 
@@ -1004,6 +1047,8 @@ def export_cmis(data, document_info, log, database, docservers, compress_type, o
         return response, 400
 
     log.info('Output execution : CMIS export')
+    log.debug('Document info : ' + str(document_info))
+
     cmis_ws = login = password = folder = ''
     auth_data = data['options']['auth']
     for _data in auth_data:
@@ -1022,20 +1067,25 @@ def export_cmis(data, document_info, log, database, docservers, compress_type, o
             cmis_params = get_output_parameters(data['options']['parameters'])
             data['options']['parameters'].append({'id': 'folder_out', 'value': docservers['TMP_PATH']})
             data['options']['parameters'].append({'id': 'filename', 'value': cmis_params['pdf_filename']})
-            res_pdf_export, _ = export_pdf(data, log, document_info, compress_type, ocrise, enable_log=False)
+            log.debug('Create PDF for CMIS export')
+            res_pdf_export, _ = export_pdf(data, log, document_info, compress_type, ocerise, enable_log=False)
 
             data['options']['parameters'].append({'id': 'folder_out', 'value': docservers['TMP_PATH']})
             data['options']['parameters'].append({'id': 'filename', 'value': cmis_params['xml_filename']})
             data['options']['parameters'].append({'id': 'extension', 'value': 'xml'})
-
+            log.debug('Create CMIS PDF document')
             cmis_res = _ws.create_document(res_pdf_export, 'application/pdf')
+
             if cmis_res[0]:
                 if cmis_params['xml_filename']:
                     data['options']['parameters'].append({'id': 'folder_out', 'value': docservers['TMP_PATH']})
                     data['options']['parameters'].append({'id': 'filename', 'value': cmis_params['xml_filename']})
                     data['options']['parameters'].append({'id': 'extension', 'value': 'xml'})
+                    log.debug('Create XML for CMIS export')
                     res_xml_export, _ = export_xml(data, log, document_info, database, enable_log=False)
+
                     if res_xml_export and os.path.isfile(res_xml_export):
+                        log.debug('Create CMIS XML document')
                         _ws.create_document(res_xml_export, 'text/xml')
                         if os.path.isfile(res_xml_export):
                             os.remove(res_xml_export)
@@ -1049,6 +1099,8 @@ def export_cmis(data, document_info, log, database, docservers, compress_type, o
 
                 if os.path.isfile(res_pdf_export):
                     os.remove(res_pdf_export)
+
+                log.debug('CMIS export success')
                 return {}, 200
             else:
                 if os.path.isfile(res_pdf_export):
@@ -1066,12 +1118,14 @@ def export_cmis(data, document_info, log, database, docservers, compress_type, o
                 "errors": gettext('CMIS_WS_INFO_WRONG'),
                 "message": ''
             }
+            log.error('CMIS export error : ' + gettext('CMIS_WS_INFO_WRONG'))
             return response, 400
     else:
         response = {
             "errors": gettext('CMIS_WS_INFO_EMPTY'),
             "message": ''
         }
+        log.error('CMIS export error : ' + gettext('CMIS_WS_INFO_EMPTY'))
         return response, 400
 
 

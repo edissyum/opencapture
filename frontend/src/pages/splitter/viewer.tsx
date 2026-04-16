@@ -1241,7 +1241,7 @@ export function SplitterViewerPage() {
                 ) }
 
                 { !showAttachments && (
-                    <div ref={ listRef } className='px-8 pb-18 h-full overflow-y-auto'
+                    <div ref={ listRef } className='px-8 pb-42 h-full overflow-y-auto'
                          onClick={ () => setSelectedDocument(null) }>
                         <Accordion className='mb-6' activeIndex={ 0 }>
                             <AccordionTab header={ t('SPLITTER.batch_content') }>
