@@ -1120,7 +1120,7 @@
         "rotation_270": "Rotation 270°",
         "rotation_90": "Rotation 90°",
         "rotation_none": "Aucune rotation",
-        "separate_by_document_number": "Séparer par numéro de document",
+        "separate_by_document_number": "Séparer par nombre de pages",
         "separate_by_document_number_value": "Nombre de pages par document",
         "splitter_method_id": "Méthode de séparation",
         "system_fields": "Champs système à rechercher",

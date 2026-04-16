@@ -1120,7 +1120,7 @@
         "rotation_270": "Rotación 270°",
         "rotation_90": "Rotación 90°",
         "rotation_none": "Sin rotación",
-        "separate_by_document_number": "Separar por número de documento",
+        "separate_by_document_number": "Separar por número de páginas",
         "separate_by_document_number_value": "Número de páginas por documento",
         "splitter_method_id": "Método de separación",
         "system_fields": "Campos del sistema a buscar",

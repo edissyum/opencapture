@@ -1040,7 +1040,7 @@
         "rotation_270": "270° rotation",
         "rotation_90": "90° rotation",
         "rotation_none": "No rotation",
-        "separate_by_document_number": "Separate by document number",
+        "separate_by_document_number": "Separate by page number",
         "separate_by_document_number_value": "Number of pages per document",
         "splitter_method_id": "Separation method",
         "system_fields": "System fields to search",
