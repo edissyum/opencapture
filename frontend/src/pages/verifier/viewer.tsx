@@ -552,6 +552,8 @@ export function VerifierViewerPage() {
     }
 
     const handleDuplicateLine = (line: any, zone: any, lineIndex: number) => {
+        if (disableFields) return;
+
         const fields = Object.values(line).filter((field: any) => typeof field !== 'boolean');
         setFieldsZone((prevZones) => {
             const newZones = prevZones.map(z => ({
@@ -1313,7 +1315,8 @@ export function VerifierViewerPage() {
                                                 { line.duplicable && (
                                                     <div data-tooltip-id="tooltip"
                                                          data-tooltip-content={ t('FORMS.duplicate_line') }
-                                                         className='flex items-center justify-center -mt-4 cursor-pointer'
+                                                         className={ `flex items-center justify-center -mt-4 
+                                                                    ${ disableFields ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' }` }
                                                          onClick={ () => {
                                                              handleDuplicateLine(line, zone, index)
                                                          } }>

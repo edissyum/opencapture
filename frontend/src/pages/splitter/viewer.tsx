@@ -28,7 +28,8 @@ import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-ki
 
 import {
     ArrowLeft,
-    ChevronDown, CircleAlert,
+    ChevronDown,
+    CircleAlert,
     Combine,
     Download,
     EllipsisVertical,
@@ -39,7 +40,8 @@ import {
     Layers,
     Package,
     PackageCheck,
-    Paperclip, PenOff,
+    Paperclip,
+    PenOff,
     Plus,
     RotateCw,
     Save,
@@ -614,6 +616,8 @@ export function SplitterViewerPage() {
     }, [selectedDocument]);
 
     const handleDeleteDocument = () => {
+        if (!selectedDocument || disabledBatch) return;
+
         showConfirmDialog({
             title: t('SPLITTER.delete_document'),
             message: t('SPLITTER.confirm_delete_document'),
@@ -862,6 +866,8 @@ export function SplitterViewerPage() {
     }
 
     const addDocument = async () => {
+        if (disabledBatch) return;
+
         try {
             const response = await post('/splitter/addDocument', {
                 userId: user.id,
@@ -1123,14 +1129,14 @@ export function SplitterViewerPage() {
                                           hover:bg-(--bg-secondary) transition-colors rounded-xl p-3 
                                         ${ attachmentsCount > 0 || disabledBatch ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' } ` }
                                  data-tooltip-content={ attachmentsCount > 0 ? t('SPLITTER.cant_add_document') : '' }>
-                                <div onClick={ () => attachmentsCount === 0 && addDocument() }
+                                <div onClick={ () => attachmentsCount === 0 && !disabledBatch && addDocument() }
                                      className={ 'flex items-center gap-1' }>
                                     <Plus size={ 16 }/>
                                     { t('SPLITTER.add_document') }
                                 </div>
                             </div>
 
-                            <div onClick={ () => unSavedChanges && handleSaveChanges() }
+                            <div onClick={ () => unSavedChanges && !disabledBatch && handleSaveChanges() }
                                  className={ `flex items-center text-(--text-primary) text-sm gap-1
                               hover:bg-(--bg-secondary) transition-colors rounded-full p-3
                              ${ !unSavedChanges || disabledBatch ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' } ` }>
@@ -1151,7 +1157,8 @@ export function SplitterViewerPage() {
                                         </div>
                                     ) }
                                 />
-                                <CircleAlert data-tooltip-id="tooltip-outputs" size={ 20 } className='cursor-pointer'/>
+                                <CircleAlert data-tooltip-id="tooltip-outputs" size={ 20 }
+                                             className={ `${ disabledBatch ? 'pointer-events-none opacity-50' : 'cursor-pointer' }` }/>
                             </div>
 
                             <Button disabled={ unSavedChanges || loading || disabledBatch }
@@ -1270,8 +1277,10 @@ export function SplitterViewerPage() {
                                     <PenOff className="text-white" size={ 28 }/>
                                 </div>
                                 <div className='flex flex-col'>
-                                    <span className='text-(--text-error) font-semibold'>{ t('SPLITTER.batch_non_modifiable') }</span>
-                                    <span className='text-(--text-secondary)'>{ t('SPLITTER.batch_non_modifiable_details') }</span>
+                                    <span
+                                        className='text-(--text-error) font-semibold'>{ t('SPLITTER.batch_non_modifiable') }</span>
+                                    <span
+                                        className='text-(--text-secondary)'>{ t('SPLITTER.batch_non_modifiable_details') }</span>
                                 </div>
                             </div>
                         </div>
@@ -1293,7 +1302,7 @@ export function SplitterViewerPage() {
                 ) }
 
                 { !showAttachments && (
-                    <div ref={ listRef } className='px-8 pb-42 h-full overflow-y-auto'
+                    <div ref={ listRef } className={ `${ disabledBatch ? 'pb-66' : 'pb-42' } px-8 h-full overflow-y-auto` }
                          onClick={ () => setSelectedDocument(null) }>
                         <Accordion className='mb-6' activeIndex={ 0 }>
                             <AccordionTab header={ t('SPLITTER.batch_content') }>
@@ -1404,8 +1413,9 @@ export function SplitterViewerPage() {
                                     className={ `PanelDocumentList mb-4 w-full ${ selectedDocument?.id === document.id ? 'panelSelected' : 'border-transparent' }` }
                                     header={
                                         <div className="flex items-center gap-1.5">
-                                            <div className='cursor-pointer hover:text-(--color-primary)'
-                                                 onClick={ () => typeDocument(document) }>
+                                            <div
+                                                className={ `${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer hover:text-(--color-primary)' }` }
+                                                onClick={ () => !disabledBatch && typeDocument(document) }>
                                                 { !document.doctype_label && (
                                                     <div className='transition-colors items-center gap-2
                                                                 hover:text-(--text-error) text-(--text-error)/80 font-semibold flex'>
@@ -1415,8 +1425,7 @@ export function SplitterViewerPage() {
                                                         { t('SPLITTER.type_document') }
                                                     </div>
                                                 ) }
-                                                <div className='transition-colors items-center gap-2
-                                                            font-semibold flex'>
+                                                <div className='transition-colors items-center gap-2 font-semibold flex'>
                                                     { document.doctype_label && (
                                                         <div className='bg-(--bg-secondary) rounded-md p-1'>
                                                             <File size={ 20 }/>

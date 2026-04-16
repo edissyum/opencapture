@@ -26,12 +26,12 @@ import {
     ChevronDown,
     ChevronsLeft,
     ChevronsRight,
+    ChevronUp,
     Clock4,
     House,
     Info,
     LogOut,
     Settings,
-    User,
     UserCog
 } from "lucide-react";
 
@@ -58,6 +58,8 @@ export default function Sidebar() {
     const { user, loadingUser } = useUser();
     const location = useLocation();
     const navigate = useNavigate();
+
+    const [userPanelOpen, setUserPanelOpen] = useState(false);
 
     // If in verifier or splitter viewer, collapse the sidebar by default
     useEffect(() => {
@@ -88,11 +90,10 @@ export default function Sidebar() {
 
     const [collapsed, setCollapsed] = useState(false);
 
-    const standardClasses = "flex items-center rounded-lg p-3 gap-2 hover:text-(--text-primary) text-(--text-secondary) font-semibold transition-colors border-transparent";
+    const standardClasses = "whitespace-nowrap flex items-center rounded-lg p-3 gap-2 hover:text-(--text-primary) text-(--text-secondary) font-semibold transition-colors border border-transparent";
     const activeClasses = "bg-(--bg-selected) text-(--color-primary)! hover:text-(--color-primary)! border-(--border-primary)!";
 
     if (!user || loadingUser) return;
-
     return (
         <aside
             className={ `min-h-screen px-3 py-2 flex flex-col border-r border-r-(--border-secondary) shrink-0 transition-all ${ collapsed ? "w-18" : "w-65" }` }>
@@ -106,7 +107,7 @@ export default function Sidebar() {
             </div>
 
             <nav className={ `${ collapsed ? 'items-center' : '' } flex flex-col gap-1.5` }>
-                <Link to="/home" className={ `border ${ standardClasses } ${
+                <Link to="/home" className={ `${ standardClasses } ${
                     ['/home', '/upload'].some((path) => location.pathname.includes(path)) ? activeClasses : ""
                 }` }>
                     <House className='shrink-0' size={ 20 } { ...(collapsed && {
@@ -118,7 +119,7 @@ export default function Sidebar() {
 
                 { hasRequiredPermissions(user, ['settings']) && (
                     <Link to="/settings"
-                          className={ `border ${ standardClasses } ${ location.pathname.includes("/settings") ? activeClasses : "" }` }>
+                          className={ `${ standardClasses } ${ location.pathname.includes("/settings") ? activeClasses : "" }` }>
                         <Settings className='shrink-0' size={ 20 } { ...(collapsed && {
                             "data-tooltip-id": "tooltip",
                             "data-tooltip-content": t('GLOBAL.settings')
@@ -129,7 +130,7 @@ export default function Sidebar() {
 
                 { hasRequiredPermissions(user, ['history']) && (
                     <Link to="/history"
-                          className={ `border ${ standardClasses } ${ location.pathname.includes("/history") ? activeClasses : "" }` }>
+                          className={ `${ standardClasses } ${ location.pathname.includes("/history") ? activeClasses : "" }` }>
                         <Clock4 className='shrink-0' size={ 20 } { ...(collapsed && {
                             "data-tooltip-id": "tooltip",
                             "data-tooltip-content": t('GLOBAL.history')
@@ -140,7 +141,7 @@ export default function Sidebar() {
 
                 { hasRequiredPermissions(user, ['statistics']) && (
                     <Link to="/statistics"
-                          className={ `border ${ standardClasses } ${ location.pathname.includes("/statistics") ? activeClasses : "" }` }>
+                          className={ `${ standardClasses } ${ location.pathname.includes("/statistics") ? activeClasses : "" }` }>
                         <ChartNoAxesColumn className='shrink-0' size={ 20 } { ...(collapsed && {
                             "data-tooltip-id": "tooltip",
                             "data-tooltip-content": t('GLOBAL.statistics')
@@ -151,7 +152,7 @@ export default function Sidebar() {
 
                 { hasRequiredPermissions(user, ['monitoring']) && (
                     <Link to="/monitoring"
-                          className={ `border ${ standardClasses } ${ location.pathname.includes("/monitoring") ? activeClasses : "" }` }>
+                          className={ `${ standardClasses } ${ location.pathname.includes("/monitoring") ? activeClasses : "" }` }>
                         <Activity className='shrink-0' size={ 20 } { ...(collapsed && {
                             "data-tooltip-id": "tooltip",
                             "data-tooltip-content": t('GLOBAL.monitoring')
@@ -162,7 +163,7 @@ export default function Sidebar() {
 
                 { hasRequiredPermissions(user, ['suppliers_list']) && (
                     <Link to="/suppliers"
-                          className={ `whitespace-nowrap border ${ standardClasses } ${ location.pathname.includes("/suppliers") ? activeClasses : "" }` }>
+                          className={ `${ standardClasses } ${ location.pathname.includes("/suppliers") ? activeClasses : "" }` }>
                         <Building2 className='shrink-0' size={ 20 } { ...(collapsed && {
                             "data-tooltip-id": "tooltip",
                             "data-tooltip-content": t('ACCOUNTS.suppliers_list')
@@ -173,7 +174,7 @@ export default function Sidebar() {
 
                 { hasRequiredPermissions(user, ['customers_list']) && (
                     <Link to="/customers"
-                          className={ `whitespace-nowrap border ${ standardClasses } ${ location.pathname.includes("/customers") ? activeClasses : "" }` }>
+                          className={ `${ standardClasses } ${ location.pathname.includes("/customers") ? activeClasses : "" }` }>
                         <Briefcase className='shrink-0' size={ 20 } { ...(collapsed && {
                             "data-tooltip-id": "tooltip",
                             "data-tooltip-content": t('ACCOUNTS.customers_list')
@@ -183,7 +184,7 @@ export default function Sidebar() {
                 ) }
 
                 <Link to="/about"
-                      className={ `whitespace-nowrap border ${ standardClasses } ${ location.pathname.includes("/about") ? activeClasses : "" }` }>
+                      className={ `${ standardClasses } ${ location.pathname.includes("/about") ? activeClasses : "" }` }>
                     <Info className='shrink-0' size={ 20 } { ...(collapsed && {
                         "data-tooltip-id": "tooltip",
                         "data-tooltip-content": t('SETTINGS.abouts_us')
@@ -192,9 +193,12 @@ export default function Sidebar() {
                 </Link>
             </nav>
 
-            <div className="mt-auto text-(--text-secondary) flex flex-col gap-3">
-                <a className={ `whitespace-nowrap ${ standardClasses }` } onClick={ (e) => cm.current.show(e) }>
-                    <User size={ 20 } className='shrink-0' { ...(collapsed && {
+            <div className="mt-auto text-(--text-secondary) flex flex-col gap-3 bg-(--bg-secondary) rounded-lg">
+                <a className={ `whitespace-nowrap flex items-center rounded-lg p-2 gap-2 hover:text-(--text-primary) 
+                                border border-(--border-secondary)
+                                text-(--text-secondary) font-semibold transition-colors ${ collapsed ? 'border-transparent bg-(--bg-primary)!' : 'px-3' }` }
+                   onClick={ (e) => cm.current.show(e) }>
+                    <img src='/src/assets/imgs/user.svg' alt='user profile' className='shrink-0 size-8' { ...(collapsed && {
                         "data-tooltip-id": "tooltip",
                         "data-tooltip-content": `${ user.firstname } ${ user.lastname }`
                     }) }/>
@@ -209,11 +213,18 @@ export default function Sidebar() {
                                     { user.username }
                                 </span>
                             </div>
-                            <ChevronDown size={ 22 } className='shrink-0 ml-auto'/>
+
+                            { userPanelOpen ? (
+                                <ChevronUp size={ 22 } className='shrink-0 ml-auto'/>
+                            ) : (
+                                <ChevronDown size={ 22 } className='shrink-0 ml-auto'/>
+                            ) }
                         </>
                     }
                 </a>
-                <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }/>
+                <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }
+                             onShow={ () => setUserPanelOpen(true) }
+                             onHide={ () => setUserPanelOpen(false) }/>
             </div>
         </aside>
     );

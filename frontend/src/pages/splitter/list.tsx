@@ -578,7 +578,7 @@ export function SplitterListPage() {
                         columns={ columns }
                         lazyParams={ lazyParams }
                         checkboxSelection={ true }
-                        loading={ true }
+                        loading={ loadingBatches }
                         actionsLine={ getActionsLine }
                         rowsPerPage={ lazyParams.rows }
                         skeletonRows={ lazyParams.rows }
