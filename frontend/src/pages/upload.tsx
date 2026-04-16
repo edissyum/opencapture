@@ -110,7 +110,7 @@ export function UploadPage() {
         setSending(false);
     };
 
-    async function upload(filesToUpload: File[]) {
+    async function upload(filesToUpload: any[]) {
         let cpt = 0;
         for (const file of filesToUpload) {
             const formData = new FormData();
@@ -126,11 +126,11 @@ export function UploadPage() {
                     onUploadProgress: (progressEvent) => {
                         setProgress((prev) => ({
                             ...prev,
-                            [file.name]: progressEvent
+                            [file.id]: progressEvent
                         }));
                     }
                 });
-                setCompletedFiles(prev => [...prev, file.name]);
+                setCompletedFiles(prev => [...prev, file.id]);
                 cpt += 1;
                 if (cpt === filesToUpload.length) {
                     setFiles([]);

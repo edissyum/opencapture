@@ -677,7 +677,8 @@
         "drop_batch_here": "Drag a batch into this area to merge with the current batch",
         "confirm_merge_batch": "Are you sure you want to merge batch <strong>{{sourceBatchId}}</strong> with batch <strong>{{targetBatchId}}</strong>?<br>Documents from batch <strong>{{sourceBatchId}}</strong> will be moved to batch <strong>{{targetBatchId}}</strong> and batch <strong>{{sourceBatchId}}</strong> will be deleted <strong>(this action is irreversible)</strong>",
         "batches_merged": "Batches merged successfully",
-        "merge_batch_details": "Choose the main batch. Documents from other batches will be merged into the main batch and secondary batches will be deleted. <strong>(this action is irreversible)</strong>"
+        "merge_batch_details": "Choose the main batch. Documents from other batches will be merged into the main batch and secondary batches will be deleted. <strong>(this action is irreversible)</strong>",
+        "no_other_batches": "No other batches available for merging"
     },
     "UPLOAD": {
         "upload_dropzone": "Click to choose a file",

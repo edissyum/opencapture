@@ -1485,7 +1485,13 @@ export function SplitterViewerPage() {
                     <div className='text-center p-4 border-b border-(--border-secondary)'>
                         { t(`GLOBAL.${ batchTime }`) } ({ statuses.find(s => batch.status === s.id).label })
                     </div>
-                    <div className='p-4'>
+                    <div className='p-4 space-y-4 overflow-y-auto'>
+                        { batchesList.length === 0 && (
+                            <div className='text-(--text-secondary) flex flex-col text-center items-center gap-2 mt-10'>
+                                <Package size={ 32 }/>
+                                <span>{ t('SPLITTER.no_other_batches') }</span>
+                            </div>
+                        ) }
                         { batchesList.map((row: any) => (
                             <BatchCard key={ row.id } row={ row } navigate={ navigate }
                                        onBatchDragStart={ (id: number) => setDraggingBatchId(id) }

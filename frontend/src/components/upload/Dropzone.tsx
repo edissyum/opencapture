@@ -43,10 +43,14 @@ export default function UploadDropzone({
     maxSize = 5 * 1024 * 1024,
     accept = { "image/*": [".jpeg", ".jpg", ".png"] }
 }: UploadDropzoneProps) {
-    const [files, setFiles] = useState<File[]>([]);
+    const [files, setFiles] = useState<any>([]);
 
     const onDrop = useCallback(
         (acceptedFiles: File[]) => {
+            acceptedFiles.forEach((file: any) => {
+                file.id = file.name + '-' + Math.random().toString(36).substr(2, 9);
+            });
+
             let newFiles = [...files, ...acceptedFiles];
 
             if (maxFiles === 1) {
@@ -127,14 +131,14 @@ export default function UploadDropzone({
             </div>
             { files.length > 0 && showPreview && (
                 <div className="mt-4 space-y-2 overflow-y-auto p-2">
-                    { files.map((file) => (
+                    { files.map((file: any) => (
                         <div key={ file.name + file.size }
                              className="relative flex items-center rounded-lg gap-4 px-3 py-2 bg-(--bg-primary) border border-(--border-secondary)">
-                            { progressByFile?.[file.name] !== undefined && (
+                            { progressByFile?.[file.id] !== undefined && (
                                 <div className="absolute top-0 left-0 h-full bg-(--color-primary)/10 transition-[width]
                                                 duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]
                                                 border-r-2 border-(--border-primary) rounded-md"
-                                     style={ { width: `${ progressByFile[file.name] }%` } }/>
+                                     style={ { width: `${ progressByFile[file.id] }%` } }/>
                             ) }
 
                             <div className='text-(--text-primary) bg-(--bg-secondary) p-2 rounded-lg'>
@@ -142,13 +146,13 @@ export default function UploadDropzone({
                             </div>
                             <div className="flex flex-col">
                                 <span className="font-semibold">{ file.name }</span>
-                                { completedFiles.includes(file.name) ? (
+                                { completedFiles.includes(file.id) ? (
                                     <span className="text-xs font-semibold text-green-600">
                                         { t('UPLOAD.upload_completed') }
                                     </span>
-                                ) : progressByFile?.[file.name] !== undefined ? (
+                                ) : progressByFile?.[file.id] !== undefined ? (
                                     <span className="text-xs font-semibold text-(--color-primary)">
-                                        { t('UPLOAD.upload_progress', { progress: progressByFile[file.name] }) }
+                                        { t('UPLOAD.upload_progress', { progress: progressByFile[file.id] }) }
                                     </span>
                                 ) : (
                                     <span className="text-xs font-semibold text-(--text-secondary)">
@@ -158,7 +162,7 @@ export default function UploadDropzone({
                                     </span>
                                 ) }
                             </div>
-                            { progressByFile?.[file.name] === undefined && (
+                            { progressByFile?.[file.id] === undefined && (
                                 <Trash2 size={ 16 }
                                         className="cursor-pointer hover:text-(--text-error) ml-auto"
                                         onClick={ (e) => removeFile(e, file) }/>

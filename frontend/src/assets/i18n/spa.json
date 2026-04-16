@@ -727,7 +727,8 @@
         "drop_batch_here": "Arrastre un lote a esta zona para fusionarlo con el lote actual",
         "confirm_merge_batch": "¿Está seguro de que desea fusionar el lote <strong>{{sourceBatchId}}</strong> con el lote <strong>{{targetBatchId}}</strong>?<br>Los documentos del lote <strong>{{sourceBatchId}}</strong> se moverán al lote <strong>{{targetBatchId}}</strong> y el lote <strong>{{sourceBatchId}}</strong> será eliminado <strong>(esta acción es irreversible)</strong>",
         "batches_merged": "Lotes fusionados correctamente",
-        "merge_batch_details": "Elija el lote principal. Los documentos de los demás lotes se fusionarán en el lote principal y los lotes secundarios se eliminarán. <strong>(esta acción es irreversible)</strong>"
+        "merge_batch_details": "Elija el lote principal. Los documentos de los demás lotes se fusionarán en el lote principal y los lotes secundarios se eliminarán. <strong>(esta acción es irreversible)</strong>",
+        "no_other_batches": "No hay otros lotes disponibles para fusionar"
     },
     "UPLOAD": {
         "upload_dropzone": "Haga clic para elegir un archivo",
