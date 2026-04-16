@@ -184,11 +184,23 @@ with app.app_context():
 
                 cpt_mail = 1
                 for msg in emails:
+                    Log.info('Process e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
+
                     if mail.method == 'graphql':
                         msg_id = str(msg['id'])
                     else:
+                        Log.debug('Convert message to dict (if method is not graphql)')
                         msg = convert_to_dict(msg)
                         msg_id = str(msg['uid'])
+
+                    msg_safe = {
+                        **msg,
+                        "attachments": [
+                            {**att, "payload": "***HIDDEN***"} if "payload" in att else att
+                            for att in msg.get("attachments", [])
+                        ]
+                    }
+                    Log.debug("Message : " + str(msg_safe))
 
                     Log.debug('Backup e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
                     mail.backup_email(msg, batch_path)
@@ -204,7 +216,6 @@ with app.app_context():
                     else:
                         Log.info('Start to process only attachments')
 
-                    Log.info('Process e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
                     if mail.method == 'graphql':
                         Log.debug('Retrieve document date')
                         document_date = datetime.datetime.strptime(msg['receivedDateTime'], '%Y-%m-%dT%H:%M:%SZ')
@@ -261,7 +272,7 @@ with app.app_context():
                                                 'date': document_date
                                             }
                                         })
-                                        Log.debug('Verifier launched for attachment n°' + str(cpt))
+                                        Log.debug('Verifier successfully launched for attachment n°' + str(cpt))
                                     else:
                                         Log.debug('Launch splitter for attachment n°' + str(cpt) + ' with file : ' + attachment['file'])
                                         launch_splitter({
@@ -284,7 +295,7 @@ with app.app_context():
                                                 'date': document_date
                                             }
                                         })
-                                        Log.debug('Splitter launched for attachment n°' + str(cpt))
+                                        Log.debug('Splitter successfully launched for attachment n°' + str(cpt))
                                 else:
                                     Log.info('Attachment n°' + str(cpt) + ' is not a PDF file')
                                 cpt = cpt + 1
