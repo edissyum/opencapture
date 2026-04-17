@@ -126,6 +126,8 @@ touch "$NEW_CUSTOM_PATH/config/secret_key"
 
 touch "$NEW_CUSTOM_PATH/data/log/OpenCapture.log"
 cp "$DEFAULT_PATH"/frontend/src/assets/imgs/login_image.svg "$NEW_CUSTOM_PATH/assets/imgs/login_image.svg"
+cp "$DEFAULT_PATH"/backend/src/assets/imgs/login_image.png "$NEW_CUSTOM_PATH/assets/imgs/login_image.png"
+cp "$DEFAULT_PATH"/backend/src/assets/imgs/logo_company.png "$NEW_CUSTOM_PATH/assets/imgs/login_company.png"
 
 chmod -R 775 "$NEW_CUSTOM_PATH"
 

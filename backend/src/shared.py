@@ -15,6 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-custom_path = ''
-error_path = ''
 tmp_path = ''
+assets_path = ''
+error_path = ''
+custom_path = ''

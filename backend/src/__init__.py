@@ -52,6 +52,7 @@ class Middleware:
             if not domain_name:
                 domain_name = urllib.parse.urlparse(environ['HTTP_HOST']).path
 
+        path = ''
         local_regex = re.compile(r'^(127.0.([01]).1|10(\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[0-9]{1,2})){3}|((172\.(1['
                                  r'6-9]|2[0-9]|3[01]))|192\.168)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[0-9]{1,2})){2})$')
         if ('mod_wsgi.path_info' in environ and domain_name != 'localhost' and not local_regex.match(domain_name) and
@@ -60,9 +61,6 @@ class Middleware:
                                                                                   + '/backend_oc/')
             environ['SCRIPT_NAME'] = domain_name
             path = get_custom_path(domain_name.replace('/', '')).replace('config.ini', '')
-            shared.custom_path = path
-            shared.error_path = path + '/data/error/'
-            shared.tmp_path = path + '/data/tmp/'
             if os.path.isfile(path + '/config/secret_key'):
                 with open(path + '/config/secret_key', 'r', encoding='utf-8') as secret_file:
                     app.config['SECRET_KEY'] = secret_file.read()
@@ -75,13 +73,15 @@ class Middleware:
                 environ['PATH_INFO'] = environ['PATH_INFO'][len(custom_id):]
                 environ['SCRIPT_NAME'] = custom_id
                 path = get_custom_path(custom_id.replace('/', '')).replace('config.ini', '')
-                shared.custom_path = path
-                shared.error_path = path + '/data/error/'
-                shared.tmp_path = path + '/data/tmp/'
                 if os.path.isfile(path + '/config/secret_key'):
                     with open(path + '/config/secret_key', 'r', encoding='utf-8') as secret_file:
                         app.config['SECRET_KEY'] = secret_file.read()
                         app.config['SECRET_KEY'] = app.config['SECRET_KEY'].replace('\n', '')
+        if path:
+            shared.custom_path = path
+            shared.tmp_path = path + '/data/tmp/'
+            shared.error_path = path + '/data/error/'
+            shared.assets_path = path + '/assets/'
         return self.middleware_app(environ, start_response)
 
 
