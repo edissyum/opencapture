@@ -96,7 +96,6 @@ export function SettingsGeneralRoleEditor() {
             try {
                 const response = await get(`/roles/getById/${ roleId }`);
                 setRole(response);
-                console.log('Fetched role data :', response);
             } catch (error) {
                 console.error('Error fetching role data :', error);
             }
@@ -303,7 +302,7 @@ export function SettingsGeneralRoleEditor() {
                 { privileges && Object.keys(privileges).length > 0 && (
                     <Accordion multiple activeIndex={ [0, 1, 2, 3, 4] } className='accordionRoles'>
                         { getPrivilegesParent().map((parent: any) => (
-                            <AccordionTab header={
+                            <AccordionTab key={ parent.name } header={
                                 <div className='flex items-center gap-2'>
                                     <div className='bg-(--bg-secondary) p-2 rounded-md'>
                                         { parent.icon }
