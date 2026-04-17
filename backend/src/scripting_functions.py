@@ -22,6 +22,7 @@ import uuid
 import shutil
 import traceback
 import importlib
+from . import shared
 from flask_babel import gettext
 from .main import launch, create_classes_from_custom_id
 
@@ -174,7 +175,7 @@ def launch_script_verifier(workflow_settings, docservers, step, log, file, datab
             change_workflow = 'send_to_workflow({' in script
 
         rand = str(uuid.uuid4())
-        tmp_file = docservers['TMP_PATH'] + '/' + step + '_scripting_' + rand + '.py'
+        tmp_file = shared.tmp_path + '/' + step + '_scripting_' + rand + '.py'
 
         try:
             with open(tmp_file, 'w', encoding='utf-8') as python_script:
@@ -237,7 +238,7 @@ def launch_script_splitter(workflow_settings, docservers, step, log, database, a
         change_workflow = 'send_to_workflow({' in script
 
         rand = str(uuid.uuid4())
-        tmp_file = docservers['TMP_PATH'] + '/' + step + '_scripting_' + rand + '.py'
+        tmp_file = shared.tmp_path + '/' + step + '_scripting_' + rand + '.py'
 
         try:
             with open(tmp_file, 'w', encoding='utf-8') as python_script:

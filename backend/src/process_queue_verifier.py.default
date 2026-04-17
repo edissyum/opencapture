@@ -135,7 +135,7 @@ def launch(args):
         log.database = database
         log.debug('Process start with file : ' + args['file'])
 
-        tmp_folder = tempfile.mkdtemp(dir=docservers['TMP_PATH'])
+        tmp_folder = tempfile.mkdtemp(dir=shared.tmp_path)
         with tempfile.NamedTemporaryFile(dir=tmp_folder) as tmp_file:
             filename = tmp_file.name
 
@@ -229,8 +229,6 @@ def launch(args):
             if 'file' in args and args['file'] is not None:
                 path = args['file']
 
-                error_path = shared.custom_path + '/data/error/'
-
                 log.filename = os.path.basename(path)
                 extension = os.path.splitext(path)[1].lower()
                 try:
@@ -273,18 +271,18 @@ def launch(args):
 
                     log.debug('List of document ids returned from processing : ' + str(list_of_ids))
 
-                    if os.path.isfile(error_path + '/' + args['workflow_id'] + '/' + args['original_filename']):
+                    if os.path.isfile(shared.error_path + '/' + args['workflow_id'] + '/' + args['original_filename']):
                         try:
-                            os.remove(error_path + '/' + args['workflow_id'] + '/' + args['original_filename'])
+                            os.remove(shared.error_path + '/' + args['workflow_id'] + '/' + args['original_filename'])
                         except (Exception, ):
                             pass
                 except (Exception,):
                     _e = str(traceback.format_exc())
                     log.error(_e)
                     try:
-                        if not os.path.isdir(error_path + '/' + args['workflow_id']):
-                            os.mkdir(error_path + '/' + args['workflow_id'])
-                            os.chmod(error_path + '/' + args['workflow_id'], int('775', base=8))
+                        if not os.path.isdir(shared.error_path + '/' + args['workflow_id']):
+                            os.mkdir(shared.error_path + '/' + args['workflow_id'])
+                            os.chmod(shared.error_path + '/' + args['workflow_id'], int('775', base=8))
 
                         if 'isMail' in args and args['isMail'] is True:
                             file_path = args['file']
@@ -293,7 +291,7 @@ def launch(args):
                                 file_path = path
                             else:
                                 file_path = path + file
-                        shutil.copy(file_path, error_path + '/' + args['workflow_id'] + '/' + args['original_filename'])
+                        shutil.copy(file_path, shared.error_path + '/' + args['workflow_id'] + '/' + args['original_filename'])
                     except (Exception, ):
                         pass
 

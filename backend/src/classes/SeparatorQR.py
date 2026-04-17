@@ -25,8 +25,9 @@ import base64
 import qrcode
 import pdf2image
 import subprocess
-from io import BytesIO
+from .. import shared
 from fpdf import FPDF
+from io import BytesIO
 from unidecode import unidecode
 from pyzbar.pyzbar import decode
 from fpdf.enums import RenderStyle
@@ -327,11 +328,11 @@ class SeparatorQR:
         total = 0
         encoded_thumbnails = []
         for separator in separators:
-            qrcode_path = docservers['TMP_PATH'] + f"/code_qr_{separator['qr_code_value']}.png"
+            qrcode_path = shared.tmp_path + f"/code_qr_{separator['qr_code_value']}.png"
             img = qrcode.make(separator['qr_code_value'])
             img.save(qrcode_path)
 
-            file_path = docservers['TMP_PATH'] + "/last_generated_doctype_file.pdf"
+            file_path = shared.tmp_path + "/last_generated_doctype_file.pdf"
 
             pdf = SeparatorPDF(format='A4', unit='mm')
             pdf.build({

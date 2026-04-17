@@ -25,6 +25,7 @@ from flask import request
 from flask_babel import gettext
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from .. import shared
 from ..controllers import auth
 from ..helpers import get_context_var
 from ..models import user, accounts, forms, history, roles
@@ -589,7 +590,7 @@ def import_users(args):
         }, 400
 
     try:
-        tmp_file = f"{docservers['TMP_PATH']}/users.csv"
+        tmp_file = f"{shared.tmp_path}/users.csv"
         for file in args['files']:
             _f = args['files'][file]
             _f.save(tmp_file)

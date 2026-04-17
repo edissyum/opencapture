@@ -21,6 +21,7 @@ import csv
 import pickle
 import numpy as np
 import pandas as pd
+from .. import shared
 from pathlib import Path
 from nltk import word_tokenize
 from nltk.corpus import stopwords
@@ -48,7 +49,7 @@ class ArtificialIntelligence:
         for file in files_content:
             _f = files_content[file]
             file_to_save = self.files.normalize(_f.filename)
-            file_path = self.docservers.get('TMP_PATH') + file_to_save
+            file_path = shared.tmp_path + file_to_save
             _f.save(file_path)
 
         result, status = self.predict_from_file_path(file_path, ai_model)
@@ -110,12 +111,12 @@ class ArtificialIntelligence:
         """
 
         rows = []
-        self.files.jpg_name = self.docservers.get('TMP_PATH') + Path(self.files.normalize(file_path)).stem + '.jpg'
+        self.files.jpg_name = shared.tmp_path + Path(self.files.normalize(file_path)).stem + '.jpg'
         self.files.pdf_to_jpg(file_path, page, open_img=False)
         if os.path.exists(self.files.jpg_name):
             filtered_image = self.files.adjust_image(self.files.jpg_name)
         else:
-            self.files.jpg_name = f"{self.docservers.get('TMP_PATH')}{Path(self.files.jpg_name).stem}-{str(page)}.jpg"
+            self.files.jpg_name = f"{shared.tmp_path}{Path(self.files.jpg_name).stem}-{str(page)}.jpg"
             filtered_image = self.files.adjust_image(self.files.jpg_name)
         text = self.ocr.text_builder(filtered_image).lower()
         clean_words = self.word_cleaning(text)
@@ -151,12 +152,12 @@ class ArtificialIntelligence:
 
     def store_one_file_from_script(self, file_path):
         rows = []
-        jpg_name = self.docservers.get('TMP_PATH') + Path(self.files.normalize(file_path)).stem + '.jpg'
+        jpg_name = shared.tmp_path + Path(self.files.normalize(file_path)).stem + '.jpg'
         self.files.save_img_with_pdf2image_static(file_path, jpg_name, self.log, 1)
         if os.path.exists(jpg_name):
             filtered_image = self.files.adjust_image(jpg_name)
         else:
-            jpg_name = self.docservers.get('TMP_PATH') + Path(jpg_name).stem + '-1.jpg'
+            jpg_name = shared.tmp_path + Path(jpg_name).stem + '-1.jpg'
             filtered_image = self.files.adjust_image(jpg_name)
         text = self.ocr.text_builder(filtered_image).lower()
         clean_words = self.word_cleaning(text)

@@ -592,7 +592,7 @@ def launch_output_script(document_id, workflow_settings, outputs):
             return False
 
         rand = str(uuid.uuid4())
-        tmp_file = docservers['TMP_PATH'] + '/output_scripting_' + rand + '.py'
+        tmp_file = shared.tmp_path + '/output_scripting_' + rand + '.py'
 
         try:
             with open(tmp_file, 'w', encoding='utf-8') as python_script:

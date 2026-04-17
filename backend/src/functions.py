@@ -28,6 +28,8 @@ from flask_babel import gettext
 from pytesseract import pytesseract
 from pdf2image import convert_from_path
 from pillow_heif import register_heif_opener
+
+from . import shared
 from .classes.Config import Config as _Config
 from werkzeug.datastructures.file_storage import FileStorage
 from .classes.ArtificialIntelligence import ArtificialIntelligence
@@ -471,7 +473,8 @@ def find_workflow_with_ia(file, ai_model_id, database, docservers, files, ocr, l
             csv_file = docservers.get('SPLITTER_TRAIN_PATH_FILES') + '/data.csv'
         else:
             return False
-        path = docservers.get('TMP_PATH') + files.get_random_string(15) + '.pdf'
+
+        path = shared.tmp_path + files.get_random_string(15) + '.pdf'
         shutil.copy(file, path)
 
         if module == 'verifier':

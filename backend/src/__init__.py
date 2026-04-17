@@ -61,6 +61,8 @@ class Middleware:
             environ['SCRIPT_NAME'] = domain_name
             path = get_custom_path(domain_name.replace('/', '')).replace('config.ini', '')
             shared.custom_path = path
+            shared.error_path = path + '/data/error/'
+            shared.tmp_path = path + '/data/tmp/'
             if os.path.isfile(path + '/config/secret_key'):
                 with open(path + '/config/secret_key', 'r', encoding='utf-8') as secret_file:
                     app.config['SECRET_KEY'] = secret_file.read()
@@ -74,6 +76,8 @@ class Middleware:
                 environ['SCRIPT_NAME'] = custom_id
                 path = get_custom_path(custom_id.replace('/', '')).replace('config.ini', '')
                 shared.custom_path = path
+                shared.error_path = path + '/data/error/'
+                shared.tmp_path = path + '/data/tmp/'
                 if os.path.isfile(path + '/config/secret_key'):
                     with open(path + '/config/secret_key', 'r', encoding='utf-8') as secret_file:
                         app.config['SECRET_KEY'] = secret_file.read()

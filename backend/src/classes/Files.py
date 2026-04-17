@@ -347,7 +347,7 @@ class Files:
         return position
 
     def get_pages(self, file):
-        error_path = shared.custom_path + '/data/error/'
+
         try:
             pdf = pypdf.PdfReader(file)
             if pdf.is_encrypted:
@@ -356,7 +356,7 @@ class Files:
                 return len(pdf.pages)
             except ValueError as file_error:
                 self.log.error(file_error)
-                shutil.move(file, error_path + '/' + os.path.basename(file))
+                shutil.move(file, shared.error_path + '/' + os.path.basename(file))
                 return 1
         except pypdf.errors.PdfReadError:
             pdf_read_rewrite = pypdf.PdfReader(file, strict=False)
@@ -411,8 +411,6 @@ class Files:
 
     @staticmethod
     def check_file_integrity(file, custom_id):
-        custom_path = get_custom_path(custom_id)
-        error_path = custom_path + '/data/error/'
         is_full = False
         while not is_full:
             size = os.path.getsize(file)
@@ -426,7 +424,7 @@ class Files:
                         return True, ''
                     except (Exception,) as _e:
                         try:
-                            shutil.move(file, error_path + '/' + os.path.basename(file))
+                            shutil.move(file, shared.error_path + '/' + os.path.basename(file))
                         except FileNotFoundError:
                             pass
                         return False, str(_e)
@@ -436,7 +434,7 @@ class Files:
                         return True, ''
                     except (Exception,) as _e:
                         try:
-                            shutil.move(file, error_path + '/' + os.path.basename(file))
+                            shutil.move(file, shared.error_path + '/' + os.path.basename(file))
                         except FileNotFoundError:
                             pass
                         return False, str(_e)
@@ -446,7 +444,7 @@ class Files:
                         return True, ''
                     except (Exception,) as _e:
                         try:
-                            shutil.move(file, error_path + '/' + os.path.basename(file))
+                            shutil.move(file, shared.error_path + '/' + os.path.basename(file))
                         except FileNotFoundError:
                             pass
                         return False, str(_e)

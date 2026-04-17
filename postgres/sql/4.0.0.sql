@@ -7,6 +7,7 @@ UPDATE docservers SET docserver_id = 'ASSETS_PATH' WHERE docserver_id = 'LOCALE_
 UPDATE docservers SET path = './src/assets/' WHERE docserver_id = 'ASSETS_PATH';
 
 -- Suppression des chemins obsolètes
+DELETE FROM docservers WHERE docserver_id = 'TMP_PATH';
 DELETE FROM docservers WHERE docserver_id = 'ERROR_PATH';
 DELETE FROM docservers WHERE docserver_id = 'CONFIG_PATH';
 

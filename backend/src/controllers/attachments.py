@@ -26,6 +26,7 @@ from flask import current_app, request
 from pdf2image import convert_from_path
 from werkzeug.datastructures import FileStorage
 
+from .. import shared
 from ..controllers import history
 from ..classes.Files import Files
 from ..helpers import get_context_var
@@ -61,9 +62,9 @@ def handle_uploaded_file(files, document_id, batch_id, module, from_api=False):
                     thumb_filename = str(uuid.uuid4()) + '.jpg'
                     if extension.lower() == '.pdf':
                         image = convert_from_path(file, first_page=0, last_page=1, dpi=200)[0]
-                        with open(docservers['TMP_PATH'] + thumb_filename, 'wb') as _f:
+                        with open(shared.tmp_path + thumb_filename, 'wb') as _f:
                             image.save(_f, 'JPEG')
-                            tmp_file = docservers['TMP_PATH'] + thumb_filename
+                            tmp_file = shared.tmp_path + thumb_filename
 
                     docserver = docservers['VERIFIER_THUMB']
                     if module == 'splitter':

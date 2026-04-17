@@ -20,6 +20,7 @@ import os
 import json
 import time
 import pandas as pd
+from .. import shared
 from pathlib import Path
 from flask import request
 from flask_babel import gettext
@@ -350,7 +351,7 @@ def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id, module):
                     i += 1
                     total_files += 1
                     if file_name.lower().endswith('.pdf'):
-                        files.jpg_name = docservers.get('TMP_PATH') + Path(files.normalize(file_name)).stem + '.jpg'
+                        files.jpg_name = shared.tmp_path + Path(files.normalize(file_name)).stem + '.jpg'
                         files.pdf_to_jpg(file_path + "/" + dir_name + "/" + file_name, 1, open_img=False)
                         filtered_image = files.adjust_image(files.jpg_name)
                     else:

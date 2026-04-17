@@ -25,19 +25,20 @@ import shutil
 import uuid
 
 import pypdf
-from flask import current_app, request
 from flask_babel import gettext
+from flask import current_app, request
 from werkzeug.datastructures import FileStorage
 
+from .. import shared
 from .. import splitter_exports
 from ..classes.CMIS import CMIS
 from ..classes.Files import Files
+from ..main_splitter import launch
+from ..helpers import get_context_var
 from ..classes.OpenADS import OpenADS
 from ..classes.Splitter import Splitter
-from ..controllers import user, monitoring, attachments as attachments_controller, status
 from ..functions import retrieve_custom_from_url, check_order_by
-from ..helpers import get_context_var
-from ..main_splitter import launch
+from ..controllers import user, monitoring, attachments as attachments_controller, status
 from ..models import splitter, doctypes, accounts, history, workflow, outputs, forms, attachments
 
 
@@ -950,7 +951,7 @@ def move_documents_to_attachment(documents, batch_id):
                 pdf_page.rotate(page['rotation'])
             pdf_writer.add_page(pdf_page)
 
-        tmp_filename = docservers['TMP_PATH'] + '/' + str(uuid.uuid4()) + '.pdf'
+        tmp_filename = shared.tmp_path + '/' + str(uuid.uuid4()) + '.pdf'
         pdf_writer.write(tmp_filename)
 
         attachments_controller.handle_uploaded_file({

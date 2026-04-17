@@ -30,12 +30,15 @@ from PIL import Image
 from xml.dom import minidom
 from zipfile import ZipFile
 
+from pillow_heif import register_heif_opener
+
+from .classes.CMIS import CMIS
 from unidecode import unidecode
 from flask_babel import gettext
-from .classes.CMIS import CMIS
 from .classes.Files import Files
 import xml.etree.ElementTree as Et
 
+from . import shared
 from .helpers import get_context_var
 from .models import attachments, monitoring
 from .classes.MEMWebServices import MEMWebServices
@@ -1065,12 +1068,12 @@ def export_cmis(data, document_info, log, database, docservers, compress_type, o
         _ws = CMIS(cmis_ws, login, password, folder)
         if _ws.root_folder:
             cmis_params = get_output_parameters(data['options']['parameters'])
-            data['options']['parameters'].append({'id': 'folder_out', 'value': docservers['TMP_PATH']})
+            data['options']['parameters'].append({'id': 'folder_out', 'value': shared.tmp_path})
             data['options']['parameters'].append({'id': 'filename', 'value': cmis_params['pdf_filename']})
             log.debug('Create PDF for CMIS export')
-            res_pdf_export, _ = export_pdf(data, log, document_info, compress_type, ocerise, enable_log=False)
+            res_pdf_export, _ = export_pdf(data, log, document_info, compress_type, ocrise, enable_log=False)
 
-            data['options']['parameters'].append({'id': 'folder_out', 'value': docservers['TMP_PATH']})
+            data['options']['parameters'].append({'id': 'folder_out', 'value': shared.tmp_path})
             data['options']['parameters'].append({'id': 'filename', 'value': cmis_params['xml_filename']})
             data['options']['parameters'].append({'id': 'extension', 'value': 'xml'})
             log.debug('Create CMIS PDF document')
@@ -1078,7 +1081,7 @@ def export_cmis(data, document_info, log, database, docservers, compress_type, o
 
             if cmis_res[0]:
                 if cmis_params['xml_filename']:
-                    data['options']['parameters'].append({'id': 'folder_out', 'value': docservers['TMP_PATH']})
+                    data['options']['parameters'].append({'id': 'folder_out', 'value': shared.tmp_path})
                     data['options']['parameters'].append({'id': 'filename', 'value': cmis_params['xml_filename']})
                     data['options']['parameters'].append({'id': 'extension', 'value': 'xml'})
                     log.debug('Create XML for CMIS export')

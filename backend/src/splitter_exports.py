@@ -19,14 +19,15 @@ import os
 import re
 from zipfile import ZipFile
 
+from . import shared
 from flask import request
-from flask_babel import gettext
 from .classes.CMIS import CMIS
+from flask_babel import gettext
+from .controllers import history
 from .classes.Files import Files
 from .classes.OpenADS import OpenADS
 from .classes.Splitter import Splitter
 from .classes.Splitter import get_value_from_mask
-from .controllers import history
 from .scripting_functions import launch_script_splitter
 from .models import splitter, workflow, forms, outputs, attachments
 
@@ -324,7 +325,7 @@ def handle_cmis_output(output, batch, log, docservers, regex):
 
     parameters = {
         'extension': 'pdf',
-        'folder_out': docservers['TMP_PATH'],
+        'folder_out': shared.tmp_path,
         'separator': cmis_params['separator'],
         'filename': cmis_params['pdf_filename'],
         'compress_type': output['compress_type']
@@ -349,7 +350,7 @@ def handle_cmis_output(output, batch, log, docservers, regex):
     if cmis_params['xml_filename']:
         parameters = {
             'extension': 'xml',
-            'folder_out': docservers['TMP_PATH'],
+            'folder_out': shared.tmp_path,
             'separator': cmis_params['separator'],
             'filename': cmis_params['xml_filename'],
             'xml_template': cmis_params['xml_template'],
@@ -406,7 +407,7 @@ def handle_openads_output(output, batch, log, docservers):
 
     parameters = {
         'extension': 'pdf',
-        'folder_out': docservers['TMP_PATH'],
+        'folder_out': shared.tmp_path,
         'separator': openads_params['separator'],
         'filename': openads_params['pdf_filename'],
         'compress_type': output['compress_type']

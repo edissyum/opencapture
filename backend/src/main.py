@@ -18,6 +18,8 @@
 import os
 import sys
 import json
+
+from . import shared
 from .classes.Log import Log
 from .classes.SMTP import SMTP
 from .classes.Files import Files
@@ -121,8 +123,7 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
         })
 
     spreadsheet = Spreadsheet(log, docservers, config)
-    filename = docservers['TMP_PATH']
-    files = Files(filename, log, docservers, configurations, regex, languages, database)
+    files = Files(shared.tmp_path, log, docservers, configurations, regex, languages, database)
     ocr = PyTesseract(configurations['locale'], log, config)
     artificial_intelligence = ArtificialIntelligence('', '', files, ocr, docservers, log)
 
