@@ -81,7 +81,7 @@ def launch(args):
         except OSError:
             pass
 
-        files = Files('', log, docservers, configurations, regex, languages, database, args['custom_id'])
+        files = Files('', log, docservers, configurations, regex, languages, database)
 
         ocrise = False
         splitter_method_id = ''

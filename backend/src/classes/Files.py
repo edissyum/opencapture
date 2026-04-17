@@ -33,7 +33,7 @@ import datetime
 import schwifty
 import subprocess
 import numpy as np
-from pillow_heif import register_heif_opener
+from .. import shared
 from PIL import Image
 from zipfile import ZipFile
 from flask import current_app
@@ -45,6 +45,7 @@ from pdf2image import convert_from_path
 from ..process.find_date import FindDate
 from werkzeug.utils import secure_filename
 from pytesseract import pytesseract, Output
+from pillow_heif import register_heif_opener
 from ..functions import generate_searchable_pdf, get_custom_path
 
 Image.MAX_IMAGE_PIXELS = 933120000
@@ -100,7 +101,7 @@ def rotate_img(img):
 
 
 class Files:
-    def __init__(self, img_name, log, docservers, configurations, regex, languages, database, custom_id):
+    def __init__(self, img_name, log, docservers, configurations, regex, languages, database):
         self.log = log
         self.img = None
         self.regex = regex
@@ -108,7 +109,6 @@ class Files:
         self.img_name = img_name
         self.database = database
         self.languages = languages
-        self.custom_id = custom_id
         self.docservers = docservers
         self.jpg_name = img_name + '.jpg'
         self.configurations = configurations
@@ -347,8 +347,7 @@ class Files:
         return position
 
     def get_pages(self, file):
-        custom_path = get_custom_path(self.custom_id)
-        error_path = custom_path + '/data/error/'
+        error_path = shared.custom_path + '/data/error/'
         try:
             pdf = pypdf.PdfReader(file)
             if pdf.is_encrypted:

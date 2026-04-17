@@ -26,6 +26,8 @@ import traceback
 import importlib
 import pandas as pd
 from PIL import Image
+
+from .. import shared
 from ..main import launch
 from flask_babel import gettext
 from .. import verifier_exports
@@ -37,7 +39,7 @@ from werkzeug.datastructures import FileStorage
 from flask import current_app, Response, request
 from ..models import verifier, accounts, forms, attachments
 from ..controllers import auth, user, monitoring, history, status
-from ..functions import retrieve_custom_from_url, delete_documents, check_order_by, get_custom_path
+from ..functions import retrieve_custom_from_url, delete_documents, check_order_by
 
 
 def upload_documents(body):
@@ -62,9 +64,7 @@ def retry_from_monitoring(process_id):
 
     process = process['process'][0]
 
-    custom_id = retrieve_custom_from_url(request)
-    custom_path = get_custom_path(custom_id)
-    error_path = custom_path + '/data/error/'
+    error_path = shared.custom_path + '/data/error/'
     path = error_path + '/' + process['workflow_id'] + '/' + process['filename']
 
     if not os.path.isfile(path):

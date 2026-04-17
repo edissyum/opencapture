@@ -22,11 +22,13 @@ import urllib.parse
 from flask_cors import CORS
 from ultralytics import YOLO
 from flask_babel import Babel
+
+from . import shared
 from .rest.auth import limiter
 from werkzeug.wrappers import Request
 from .main import create_classes_from_custom_id
 from flask import request, g as current_context, Flask, session
-from .functions import is_custom_exists, retrieve_custom_from_url, retrieve_config_from_custom_id
+from .functions import is_custom_exists, retrieve_custom_from_url, retrieve_config_from_custom_id, get_custom_path
 from .rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
     forms, status, accounts, outputs, mem, positions_masks, history, doctypes, mailcollect, artificial_intelligence, \
     smtp, monitoring, workflow, coog, opencaptureformem, attachments, opencrm
@@ -57,9 +59,10 @@ class Middleware:
             environ['mod_wsgi.path_info'] = environ['mod_wsgi.path_info'].replace('/backend_oc/', '/' + domain_name
                                                                                   + '/backend_oc/')
             environ['SCRIPT_NAME'] = domain_name
-            path = retrieve_config_from_custom_id(domain_name.replace('/', '')).replace('config.ini', '')
-            if os.path.isfile(path + '/secret_key'):
-                with open(path + '/secret_key', 'r', encoding='utf-8') as secret_file:
+            path = get_custom_path(domain_name.replace('/', '')).replace('config.ini', '')
+            shared.custom_path = path
+            if os.path.isfile(path + '/config/secret_key'):
+                with open(path + '/config/secret_key', 'r', encoding='utf-8') as secret_file:
                     app.config['SECRET_KEY'] = secret_file.read()
                     app.config['SECRET_KEY'] = app.config['SECRET_KEY'].replace('\n', '')
             return self.middleware_app(environ, start_response)
@@ -69,9 +72,10 @@ class Middleware:
             if is_custom_exists(custom_id.replace('/', '')):
                 environ['PATH_INFO'] = environ['PATH_INFO'][len(custom_id):]
                 environ['SCRIPT_NAME'] = custom_id
-                path = retrieve_config_from_custom_id(custom_id.replace('/', '')).replace('config.ini', '')
-                if os.path.isfile(path + '/secret_key'):
-                    with open(path + '/secret_key', 'r', encoding='utf-8') as secret_file:
+                path = get_custom_path(custom_id.replace('/', '')).replace('config.ini', '')
+                shared.custom_path = path
+                if os.path.isfile(path + '/config/secret_key'):
+                    with open(path + '/config/secret_key', 'r', encoding='utf-8') as secret_file:
                         app.config['SECRET_KEY'] = secret_file.read()
                         app.config['SECRET_KEY'] = app.config['SECRET_KEY'].replace('\n', '')
         return self.middleware_app(environ, start_response)

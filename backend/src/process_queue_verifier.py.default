@@ -23,8 +23,8 @@ import facturx
 import tempfile
 import traceback
 
-from src import app
 from lxml import etree
+from src import app, shared
 from src.process import main
 from src.classes.Log import Log
 from src.process import factur_x
@@ -145,7 +145,7 @@ def launch(args):
         except OSError:
             pass
 
-        files = Files(filename, log, docservers, configurations, regex, languages, database, args['custom_id'])
+        files = Files(filename, log, docservers, configurations, regex, languages, database)
 
         remove_blank_pages = splitter_method = False
         separate_every_x_page = 0
@@ -214,7 +214,7 @@ def launch(args):
                 'workflow_id': args['workflow_id'],
                 'history_submodule': 'upload_file',
                 'user_id': args['user_id'] if 'user_id' in args and args['user_id'] else 0,
-                'history_desc': gettext('FILE_UPLOADED_WORKFLOW') + '&nbsp<strong>' + args['workflow_id'] + '</strong>'
+                'history_desc': gettext('FILE_UPLOADED_WORKFLOW') + '&nbsp<strongshared.custom_path>' + args['workflow_id'] + '</strong>'
             }
         })
 
@@ -228,8 +228,8 @@ def launch(args):
         if not change_workflow:
             if 'file' in args and args['file'] is not None:
                 path = args['file']
-                custom_path = get_custom_path(args['custom_id'])
-                error_path = custom_path + '/data/error/'
+
+                error_path = shared.custom_path + '/data/error/'
 
                 log.filename = os.path.basename(path)
                 extension = os.path.splitext(path)[1].lower()
