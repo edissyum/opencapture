@@ -170,6 +170,7 @@ export function StatisticsPage() {
                             <div className='p-4 pt-0'>
                                 <Dropdown
                                     id="module"
+                                    labelFusion={ true }
                                     value={ selectedModule }
                                     label={ t('MAILCOLLECT.module') }
                                     options={ [{ 'value': 'verifier', 'label': 'Verifier' }, {
@@ -197,6 +198,7 @@ export function StatisticsPage() {
                             <div className='p-4 pt-0'>
                                 <Dropdown
                                     id="statistics"
+                                    labelFusion={ true }
                                     value={ selectedStatisticId }
                                     label={ t('STATISTICS.select_statistic') }
                                     options={ filteredStatisticsOptions.map(option => ({
@@ -224,6 +226,7 @@ export function StatisticsPage() {
                             <div className='p-4 pt-0'>
                                 <Dropdown
                                     id="year"
+                                    labelFusion={ true }
                                     value={ selectedYear }
                                     label={ t('STATISTICS.select_year') }
                                     options={ availableYears.map((year: any) => ({

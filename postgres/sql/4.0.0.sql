@@ -1,3 +1,15 @@
+-- Récupération de l'ancien chemin du projet pour le stocker dans une variable
+SELECT path as old_path FROM docservers WHERE docserver_id = 'PROJECT_PATH'; \gset
+
+-- Remplacer les chemins dans les docservers
+UPDATE docservers SET path = REPLACE(path, :'old_path', './');
+UPDATE docservers SET docserver_id = 'ASSETS_PATH' WHERE docserver_id = 'LOCALE_PATH';
+UPDATE docservers SET path = './src/assets/' WHERE docserver_id = 'ASSETS_PATH';
+
+-- Mise à jour des libellés de la configuration
+DELETE FROM configurations WHERE label = 'loginBottomMessage';
+UPDATE configurations set label = 'loginMessage' WHERE label = 'loginTopMessage';
+
 -- Ajout de la nouvelle table gérant les paramètres favoris
 CREATE TABLE settings_favorites
 (
@@ -309,7 +321,3 @@ SET data = jsonb_set(
                 )
          FROM jsonb_array_elements(data -> 'options' -> 'parameters') AS param)
 ) WHERE output_type_id = 'export_xml' AND module = 'splitter';
-
--- Remplacer les chemins dans les docservers
-UPDATE docservers SET docserver_id = 'ASSETS_PATH' WHERE docserver_id = 'LOCALE_PATH';
-UPDATE docservers SET path = './backend/src/assets/' WHERE docserver_id = 'ASSETS_PATH';

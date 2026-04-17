@@ -33,6 +33,7 @@ import { getCustomFromUrl } from "./services/custom/getCustom";
 
 import { Login } from "./pages/login";
 import { HomePage } from "./pages/home";
+import ProfilePage from "./pages/profile";
 import { AboutPage } from "./pages/about";
 import { UploadPage } from "./pages/upload";
 import { HistoryList } from "./pages/history";
@@ -75,7 +76,6 @@ import { SettingsGeneralCustomization } from "./pages/settings/general/customiza
 import { SettingsVerifierAiLLMEditor } from "./pages/settings/verifier/ai-llm/editor";
 import { SettingsVerifierPositionsMasksList } from "./pages/settings/verifier/positions-masks/list";
 import { SettingsVerifierPositionMaskEditor } from "./pages/settings/verifier/positions-masks/editor";
-import ProfilePage from "./pages/profile.tsx";
 
 export const router = createBrowserRouter(
     [

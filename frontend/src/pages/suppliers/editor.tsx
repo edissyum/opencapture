@@ -27,6 +27,7 @@ import { emptyToUndefined } from "../../services/zod";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 
 import { Button } from "../../components/Button";
+import { Loader } from "../../components/loader/Loader";
 import { showToast } from "../../components/ToastProvider";
 import { DynamicForm } from "../../components/form/DynamicForm";
 
@@ -57,10 +58,12 @@ export function SupplierEditor({
     const [currencies, setCurrencies] = useState<any[]>([]);
     const [address, setAddress] = useState<any>(null);
     const [supplier, setSupplier] = useState<any>(null);
-    const [loading, setLoading] = useState<boolean>(false);
     const [accountingPlans, setAccountingPlans] = useState<any[]>([]);
     const [vatMandatory, setVatMandatory] = useState<boolean>(true);
     const [informalContact, setInformalContact] = useState<boolean>(false);
+
+    const [loading, setLoading] = useState<boolean>(true);
+    const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
 
     // fetch supplier data and currencies and forms and civilities and accounting plans and regex
     useEffect(() => {
@@ -79,6 +82,8 @@ export function SupplierEditor({
                 }
             } catch (error) {
                 console.error('Error fetching supplier data:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -427,7 +432,7 @@ export function SupplierEditor({
 
     const onSubmit = async (data: any) => {
         try {
-            setLoading(true);
+            setLoadingSubmit(true);
             const addressData: any = {};
             const supplierData: any = {};
 
@@ -473,9 +478,11 @@ export function SupplierEditor({
         } catch (error) {
             console.error("Error updating supplier:", error);
         } finally {
-            setLoading(false);
+            setLoadingSubmit(false);
         }
     }
+
+    if (loading) return <Loader/>
 
     return (
         <div className="p-6 bg-(--bg-primary) h-full overflow-y-auto flex flex-col gap-4">
@@ -505,13 +512,13 @@ export function SupplierEditor({
             <div className="w-fit">
                 { supplierId ? (
                     <Button onClick={ handleSubmit(onSubmit) }
-                            disabled={ loading || Object.keys(errors).length > 0 }>
-                        { loading ? t('GLOBAL.updating') : t('ACCOUNTS.update_supplier') }
+                            disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
+                        { loadingSubmit ? t('GLOBAL.updating') : t('ACCOUNTS.update_supplier') }
                     </Button>
                 ) : (
                     <Button onClick={ handleSubmit(onSubmit) }
-                            disabled={ loading || Object.keys(errors).length > 0 }>
-                        { loading ? t('GLOBAL.creating') : t('ACCOUNTS.create_supplier') }
+                            disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
+                        { loadingSubmit ? t('GLOBAL.creating') : t('ACCOUNTS.create_supplier') }
                     </Button>
                 ) }
             </div>

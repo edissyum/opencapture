@@ -33,6 +33,7 @@ import {
     Trash2,
     X
 } from "lucide-react";
+import DOMPurify from "dompurify";
 import { RadioButton } from "primereact/radiobutton";
 
 import { useUser } from "../../services/hooks/useUser";
@@ -46,9 +47,8 @@ import { Grid } from "../../components/list/Grid";
 import { Table } from "../../components/list/Table";
 import { Dropdown } from "../../components/Dropdown";
 import { Thumbnail } from "../../components/Thumbnail";
+import { showToast } from "../../components/ToastProvider";
 import MultiSelectInput from "../../components/MultiSelect";
-import DOMPurify from "dompurify";
-import { showToast } from "../../components/ToastProvider.tsx";
 
 export function SplitterListPage() {
     const { user, loadingUser } = useUser();

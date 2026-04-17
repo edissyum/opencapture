@@ -25,6 +25,7 @@ import { Accordion, AccordionTab } from "primereact/accordion";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 
 import { Button } from "../../components/Button";
+import { Loader } from "../../components/loader/Loader";
 import { showToast } from "../../components/ToastProvider";
 import { DynamicForm } from "../../components/form/DynamicForm";
 
@@ -35,7 +36,9 @@ export function CustomerEditor() {
 
     const [address, setAddress] = useState<any>(null);
     const [customer, setCustomer] = useState<any>(null);
-    const [loading, setLoading] = useState<boolean>(false);
+
+    const [loading, setLoading] = useState<boolean>(true);
+    const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
 
     // fetch customer data
     useEffect(() => {
@@ -56,6 +59,8 @@ export function CustomerEditor() {
                 }
             } catch (error) {
                 console.error('Error fetching customer data:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -66,12 +71,16 @@ export function CustomerEditor() {
     useEffect(() => {
         if (customer) {
             for (const [key, value] of Object.entries(customer)) {
-                setValue(key as any, value);
+                if (value) {
+                    setValue(key as any, value);
+                }
             }
         }
         if (address) {
             for (const [key, value] of Object.entries(address)) {
-                setValue(key as any, value);
+                if (value) {
+                    setValue(key as any, value);
+                }
             }
         }
     }, [customer, address]);
@@ -102,7 +111,7 @@ export function CustomerEditor() {
             component: "input",
             required: false,
             type: "text",
-            label: t("ACCOUNTS.iban")
+            label: t("ACCOUNTS.company_number")
         })),
         module: z.string().describe(JSON.stringify({
             component: "dropdown",
@@ -162,7 +171,7 @@ export function CustomerEditor() {
 
     const onSubmit = async (data: any) => {
         try {
-            setLoading(true);
+            setLoadingSubmit(true);
             const addressData: any = {};
             const customerData: any = {};
 
@@ -197,9 +206,11 @@ export function CustomerEditor() {
         } catch (error) {
             console.error("Error updating customer:", error);
         } finally {
-            setLoading(false);
+            setLoadingSubmit(false);
         }
     }
+
+    if (loading) return <Loader/>
 
     return (
         <div className="p-6 bg-(--bg-primary) h-full overflow-y-auto flex flex-col gap-4">
@@ -219,13 +230,13 @@ export function CustomerEditor() {
             <div className="w-fit">
                 { customerId ? (
                     <Button onClick={ handleSubmit(onSubmit) }
-                            disabled={ loading || Object.keys(errors).length > 0 }>
-                        { loading ? t('GLOBAL.updating') : t('ACCOUNTS.update_customer') }
+                            disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
+                        { loadingSubmit ? t('GLOBAL.updating') : t('ACCOUNTS.update_customer') }
                     </Button>
                 ) : (
                     <Button onClick={ handleSubmit(onSubmit) }
-                            disabled={ loading || Object.keys(errors).length > 0 }>
-                        { loading ? t('GLOBAL.creating') : t('ACCOUNTS.create_customer') }
+                            disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
+                        { loadingSubmit ? t('GLOBAL.creating') : t('ACCOUNTS.create_customer') }
                     </Button>
                 ) }
             </div>

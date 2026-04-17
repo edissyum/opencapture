@@ -173,7 +173,7 @@ export function SettingsVerifierAiLLMEditor() {
             });
         }
 
-        if (aiLLM.json_content) {
+        if (aiLLM.json_content && Object.keys(aiLLM.json_content).length > 0) {
             setAiLLMJson(JSON.stringify(aiLLM.json_content, null, 4));
         }
         setSelectedProvider(aiLLM.provider);

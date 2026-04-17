@@ -16,6 +16,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import DOMPurify from "dompurify";
+import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getI18n, useTranslation } from "react-i18next";
@@ -27,11 +28,10 @@ import { Button } from '../components/Button';
 import { LoginImage } from "../components/LoginImage";
 import { showToast } from "../components/ToastProvider";
 
+import { USER_KEY } from "../services/hooks/useUser";
 import { useCustom } from "../services/custom/customContext";
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
 import { useFormValues } from "../services/hooks/useFormValues";
-import { ArrowRight } from "lucide-react";
-import { USER_KEY } from "../services/hooks/useUser.tsx";
 
 export function Login() {
     const [loadingLogin, setLoadingLogin] = useState(false);
@@ -85,9 +85,7 @@ export function Login() {
             if (!loginMessage && custom) {
                 await get("/config/getConfigurationNoAuth/loginMessage").then((response) => {
                     if (response && response.configuration) {
-                        setLoginMessage(response.configuration[0]?.data.value || t('AUTH.welcome'));
-                    } else {
-                        setLoginMessage(t('AUTH.welcome'));
+                        setLoginMessage(response.configuration[0]?.data.value);
                     }
                 });
             }
@@ -206,9 +204,13 @@ export function Login() {
                         </div>
 
                         <div className='flex flex-col align-center h-full justify-center'>
-                            <div className='font-bold mb-4'>
+                            <div className='font-bold mb-4 flex flex-col gap-2'>
                                 <span className='text-2xl'>{ t('AUTH.connexion') }</span>
-                                <span dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(loginMessage) } }/>
+                                { loginMessage ? (
+                                    <span dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(loginMessage) } }/>
+                                ) : (
+                                    <span className='text-(--text-secondary) text-sm'>{ t('AUTH.welcome') }</span>
+                                ) }
                             </div>
 
                             <form onSubmit={ handleSubmit } noValidate>

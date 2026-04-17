@@ -22,6 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Button } from "../../../../components/Button";
+import { Loader } from "../../../../components/loader/Loader";
 import { showToast } from "../../../../components/ToastProvider";
 import { DynamicForm } from "../../../../components/form/DynamicForm";
 
@@ -130,7 +131,8 @@ export function SettingsGeneralUserEditor() {
         mode: "onChange"
     });
 
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
 
     // Fetch roles, forms and customers
     useEffect(() => {
@@ -169,6 +171,8 @@ export function SettingsGeneralUserEditor() {
                 setCustomers(response.customers);
             } catch (error) {
                 console.error('Error fetching customers :', error);
+            } finally {
+                setLoading(false);
             }
         }
 
@@ -218,7 +222,7 @@ export function SettingsGeneralUserEditor() {
 
     const handleCreate: any = async (data: FormData) => {
         if (errors && Object.keys(errors).length > 0) return;
-        setLoading(true);
+        setLoadingSubmit(true);
 
         try {
             await post(`/users/create`, data);
@@ -227,21 +231,21 @@ export function SettingsGeneralUserEditor() {
         } catch (error) {
             console.error('Error creating user :', error);
         } finally {
-            setLoading(false);
+            setLoadingSubmit(false);
         }
     }
 
     const handleUpdate: any = async (data: FormData) => {
         if (errors && Object.keys(errors).length > 0) return;
 
-        setLoading(true);
+        setLoadingSubmit(true);
         try {
             await put(`/users/update/${ userId }`, data);
             showToast(t('USERS.update_success'), 'success');
         } catch (error) {
             console.error('Error updating user :', error);
         } finally {
-            setLoading(false);
+            setLoadingSubmit(false);
         }
     }
 
@@ -279,6 +283,8 @@ export function SettingsGeneralUserEditor() {
         }
     }, [password, passwordCheck]);
 
+    if (loading) return <Loader/>;
+
     return (
         <div className="p-6 bg-(--bg-secondary) h-full overflow-y-auto">
             <div className='w-1/3 flex flex-col gap-4'>
@@ -314,13 +320,13 @@ export function SettingsGeneralUserEditor() {
                 <div className="w-fit">
                     { userId ? (
                         <Button onClick={ handleSubmit(handleUpdate) }
-                                disabled={ loading || Object.keys(errors).length > 0 }>
-                            { loading ? t('GLOBAL.updating') : t('USERS.update_user') }
+                                disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
+                            { loadingSubmit ? t('GLOBAL.updating') : t('USERS.update_user') }
                         </Button>
                     ) : (
                         <Button onClick={ handleSubmit(handleCreate) }
-                                disabled={ loading || Object.keys(errors).length > 0 }>
-                            { loading ? t('GLOBAL.creating') : t('USERS.create_user') }
+                                disabled={ loadingSubmit || Object.keys(errors).length > 0 }>
+                            { loadingSubmit ? t('GLOBAL.creating') : t('USERS.create_user') }
                         </Button>
                     ) }
                 </div>
