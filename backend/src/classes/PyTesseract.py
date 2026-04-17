@@ -19,8 +19,7 @@ import pyocr
 import pytesseract
 import pyocr.builders
 import xml.etree.ElementTree as Et
-
-from ..functions import retrieve_custom_path, get_custom_path
+from ..functions import get_custom_path
 
 
 class PyTesseract:
