@@ -80,8 +80,8 @@ class Middleware:
         if path:
             shared.custom_path = path
             shared.tmp_path = path + '/data/tmp/'
-            shared.error_path = path + '/data/error/'
             shared.assets_path = path + '/assets/'
+            shared.error_path = path + '/data/error/'
         return self.middleware_app(environ, start_response)
 
 
