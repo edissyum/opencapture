@@ -22,6 +22,7 @@ import logging
 import facturx
 import tempfile
 import traceback
+
 from src import app
 from lxml import etree
 from src.process import main
@@ -29,8 +30,9 @@ from src.classes.Log import Log
 from src.process import factur_x
 from src.classes.Mail import Mail
 from flask_babel import gettext
-from src.classes.Files import Files
 from kuyruk import Kuyruk, Config
+from src.classes.Files import Files
+from functions import get_custom_path
 from src.functions import recursive_delete
 from src.classes.SeparatorQR import SeparatorQR
 from src.scripting_functions import launch_script_verifier
@@ -48,7 +50,7 @@ logging.getLogger("factur-x").setLevel(logging.CRITICAL)
 
 def execute(args, path, log, config, files, ocr, regex, database, docservers, configurations, languages, mail, smtp):
     log.debug('Check if file is valid for processing : ' + path)
-    if check_file(files, path, log, docservers):
+    if check_file(files, path, log, args['custom_id']):
         log.debug('File is valid for processing')
         log.debug('Check if file is a FacturX invoice')
 
@@ -143,7 +145,7 @@ def launch(args):
         except OSError:
             pass
 
-        files = Files(filename, log, docservers, configurations, regex, languages, database)
+        files = Files(filename, log, docservers, configurations, regex, languages, database, args['custom_id'])
 
         remove_blank_pages = splitter_method = False
         separate_every_x_page = 0
@@ -226,11 +228,14 @@ def launch(args):
         if not change_workflow:
             if 'file' in args and args['file'] is not None:
                 path = args['file']
+                custom_path = get_custom_path(args['custom_id'])
+                error_path = custom_path + '/data/error/'
+
                 log.filename = os.path.basename(path)
                 extension = os.path.splitext(path)[1].lower()
                 try:
                     if separator_qr.enabled:
-                        if check_file(files, path, log, docservers):
+                        if check_file(files, path, log, args['custom_id']):
                             separator_qr.run(path)
                         path = separator_qr.output_dir_pdfa if str2bool(
                             separator_qr.convert_to_pdfa) is True else separator_qr.output_dir
@@ -268,18 +273,18 @@ def launch(args):
 
                     log.debug('List of document ids returned from processing : ' + str(list_of_ids))
 
-                    if os.path.isfile(docservers['ERROR_PATH'] + '/' + args['workflow_id'] + '/' + args['original_filename']):
+                    if os.path.isfile(error_path + '/' + args['workflow_id'] + '/' + args['original_filename']):
                         try:
-                            os.remove(docservers['ERROR_PATH'] + '/' + args['workflow_id'] + '/' + args['original_filename'])
+                            os.remove(error_path + '/' + args['workflow_id'] + '/' + args['original_filename'])
                         except (Exception, ):
                             pass
                 except (Exception,):
                     _e = str(traceback.format_exc())
                     log.error(_e)
                     try:
-                        if not os.path.isdir(docservers['ERROR_PATH'] + '/' + args['workflow_id']):
-                            os.mkdir(docservers['ERROR_PATH'] + '/' + args['workflow_id'])
-                            os.chmod(docservers['ERROR_PATH'] + '/' + args['workflow_id'], int('775', base=8))
+                        if not os.path.isdir(error_path + '/' + args['workflow_id']):
+                            os.mkdir(error_path + '/' + args['workflow_id'])
+                            os.chmod(error_path + '/' + args['workflow_id'], int('775', base=8))
 
                         if 'isMail' in args and args['isMail'] is True:
                             file_path = args['file']
@@ -288,7 +293,7 @@ def launch(args):
                                 file_path = path
                             else:
                                 file_path = path + file
-                        shutil.copy(file_path, docservers['ERROR_PATH'] + '/' + args['workflow_id'] + '/' + args['original_filename'])
+                        shutil.copy(file_path, error_path + '/' + args['workflow_id'] + '/' + args['original_filename'])
                     except (Exception, ):
                         pass
 

@@ -81,7 +81,7 @@ def launch(args):
         except OSError:
             pass
 
-        files = Files('', log, docservers, configurations, regex, languages, database)
+        files = Files('', log, docservers, configurations, regex, languages, database, args['custom_id'])
 
         ocrise = False
         splitter_method_id = ''
@@ -167,7 +167,7 @@ def launch(args):
                 if 'attachments' in args and args['attachments']:
                     attachments = args['attachments']
 
-                if check_file(files, path, log, docservers):
+                if check_file(files, path, log, args['custom_id']):
                     if nfz42020.enabled:
                         nfz42020.log_event('FILE_RECEIVED')
 

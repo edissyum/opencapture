@@ -122,7 +122,7 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
 
     spreadsheet = Spreadsheet(log, docservers, config)
     filename = docservers['TMP_PATH']
-    files = Files(filename, log, docservers, configurations, regex, languages, database)
+    files = Files(filename, log, docservers, configurations, regex, languages, database, custom_id)
     ocr = PyTesseract(configurations['locale'], log, config, custom_id)
     artificial_intelligence = ArtificialIntelligence('', '', files, ocr, docservers, log)
 
@@ -185,12 +185,12 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
         languages, artificial_intelligence, nfz42020
 
 
-def check_file(files, path, log, docservers):
+def check_file(files, path, log, custom_id):
     if not os.path.isfile(path):
         log.error('The file doesn\'t exists : ' + str(path))
         return False
 
-    file_integrity, error_message = files.check_file_integrity(path, docservers)
+    file_integrity, error_message = files.check_file_integrity(path, custom_id)
     if not file_integrity:
         log.error('The integrity of file could\'nt be verified : ' + str(path))
         log.error('Error informations : ' + str(error_message))

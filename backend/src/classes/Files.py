@@ -45,7 +45,7 @@ from pdf2image import convert_from_path
 from ..process.find_date import FindDate
 from werkzeug.utils import secure_filename
 from pytesseract import pytesseract, Output
-from ..functions import generate_searchable_pdf
+from ..functions import generate_searchable_pdf, get_custom_path
 
 Image.MAX_IMAGE_PIXELS = 933120000
 
@@ -100,7 +100,7 @@ def rotate_img(img):
 
 
 class Files:
-    def __init__(self, img_name, log, docservers, configurations, regex, languages, database):
+    def __init__(self, img_name, log, docservers, configurations, regex, languages, database, custom_id):
         self.log = log
         self.img = None
         self.regex = regex
@@ -108,9 +108,10 @@ class Files:
         self.img_name = img_name
         self.database = database
         self.languages = languages
+        self.custom_id = custom_id
         self.docservers = docservers
-        self.configurations = configurations
         self.jpg_name = img_name + '.jpg'
+        self.configurations = configurations
         self.jpg_name_last = img_name + '_last.jpg'
         self.jpg_name_header = img_name + '_header.jpg'
         self.jpg_name_footer = img_name + '_footer.jpg'
@@ -345,7 +346,9 @@ class Files:
                 position[1][1] = line['position'][1][1]
         return position
 
-    def get_pages(self, docservers, file):
+    def get_pages(self, file):
+        custom_path = get_custom_path(self.custom_id)
+        error_path = custom_path + '/data/error/'
         try:
             pdf = pypdf.PdfReader(file)
             if pdf.is_encrypted:
@@ -354,7 +357,7 @@ class Files:
                 return len(pdf.pages)
             except ValueError as file_error:
                 self.log.error(file_error)
-                shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
+                shutil.move(file, error_path + '/' + os.path.basename(file))
                 return 1
         except pypdf.errors.PdfReadError:
             pdf_read_rewrite = pypdf.PdfReader(file, strict=False)
@@ -408,7 +411,9 @@ class Files:
         return sorted_file
 
     @staticmethod
-    def check_file_integrity(file, docservers):
+    def check_file_integrity(file, custom_id):
+        custom_path = get_custom_path(custom_id)
+        error_path = custom_path + '/data/error/'
         is_full = False
         while not is_full:
             size = os.path.getsize(file)
@@ -422,7 +427,7 @@ class Files:
                         return True, ''
                     except (Exception,) as _e:
                         try:
-                            shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
+                            shutil.move(file, error_path + '/' + os.path.basename(file))
                         except FileNotFoundError:
                             pass
                         return False, str(_e)
@@ -432,7 +437,7 @@ class Files:
                         return True, ''
                     except (Exception,) as _e:
                         try:
-                            shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
+                            shutil.move(file, error_path + '/' + os.path.basename(file))
                         except FileNotFoundError:
                             pass
                         return False, str(_e)
@@ -442,7 +447,7 @@ class Files:
                         return True, ''
                     except (Exception,) as _e:
                         try:
-                            shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
+                            shutil.move(file, error_path + '/' + os.path.basename(file))
                         except FileNotFoundError:
                             pass
                         return False, str(_e)

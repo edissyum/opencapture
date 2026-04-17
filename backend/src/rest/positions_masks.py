@@ -18,6 +18,8 @@
 import os
 import base64
 from flask_babel import gettext
+
+from backend.src import retrieve_custom_from_url
 from ..functions import rest_validator
 from ..controllers import auth, positions_masks, verifier, privileges
 from flask import Blueprint, request, make_response, jsonify, current_app
@@ -194,6 +196,7 @@ def delete_page_by_positions_mask_id(position_mask_id):
 @bp.route('positions_masks/getImageFromPdf/<int:positions_mask_id>', methods=['POST'])
 @auth.token_required
 def get_image_from_pdf(positions_mask_id):
+    custom_id = retrieve_custom_from_url(request)
     files = get_context_var('files', 3)
     docservers = get_context_var('docservers', 9)
 
@@ -210,7 +213,7 @@ def get_image_from_pdf(positions_mask_id):
         files.save_img_with_pdf2image(filename_after_upload, docserver_path + filename.replace('.pdf', '.jpg'))
         img_wdith = str(files.get_width(docserver_path + tmp_filename))
         file_content = verifier.get_file_content('positions_masks', tmp_filename, 'image/jpeg')
-        nb_pages = files.get_pages(docservers['ERROR_PATH'], filename_after_upload)
+        nb_pages = files.get_pages(custom_id, filename_after_upload)
 
         positions_masks.update_positions_mask(positions_mask_id, {
             'filename': filename.replace('.pdf', '-001.jpg'),

@@ -37,7 +37,7 @@ from werkzeug.datastructures import FileStorage
 from flask import current_app, Response, request
 from ..models import verifier, accounts, forms, attachments
 from ..controllers import auth, user, monitoring, history, status
-from ..functions import retrieve_custom_from_url, delete_documents, check_order_by
+from ..functions import retrieve_custom_from_url, delete_documents, check_order_by, get_custom_path
 
 
 def upload_documents(body):
@@ -61,9 +61,12 @@ def retry_from_monitoring(process_id):
         return response, 400
 
     process = process['process'][0]
-    docservers = get_context_var('docservers', 9)
 
-    path = docservers['ERROR_PATH'] + '/' + process['workflow_id'] + '/' + process['filename']
+    custom_id = retrieve_custom_from_url(request)
+    custom_path = get_custom_path(custom_id)
+    error_path = custom_path + '/data/error/'
+    path = error_path + '/' + process['workflow_id'] + '/' + process['filename']
+
     if not os.path.isfile(path):
         response = {
             "errors": gettext('RETRY_FROM_MONITORING_ERROR'),
