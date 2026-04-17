@@ -16,6 +16,7 @@
 
 import { z } from "zod";
 import { t } from "i18next";
+import { ShieldCog, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { InputSwitch } from "primereact/inputswitch";
@@ -29,9 +30,11 @@ import { Button } from "../../../../components/Button";
 import { showToast } from "../../../../components/ToastProvider";
 import { DynamicForm } from "../../../../components/form/DynamicForm";
 
+import { useUser } from "../../../../services/hooks/useUser";
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 
 export function SettingsGeneralRoleEditor() {
+    const { user, loadingUser } = useUser();
     const { get, put, post } = axiosApiCall();
     const navigate = useNavigate();
     const { roleId } = useParams<{ roleId: any }>();
@@ -39,8 +42,10 @@ export function SettingsGeneralRoleEditor() {
     const privilegeClasses = 'flex items-center gap-2 border border-(--border-primary) rounded-md p-2 bg-(--bg-selected)';
 
     const [role, setRole] = useState<any>({});
+    const [roles, setRoles] = useState<any>([]);
     const [privileges, setPrivileges] = useState<any>({});
     const [rolePrivileges, setRolePrivileges] = useState<any>([]);
+    const [showAssignRoles, setShowAssignRoles] = useState(false);
 
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -91,6 +96,7 @@ export function SettingsGeneralRoleEditor() {
             try {
                 const response = await get(`/roles/getById/${ roleId }`);
                 setRole(response);
+                console.log('Fetched role data :', response);
             } catch (error) {
                 console.error('Error fetching role data :', error);
             }
@@ -138,6 +144,24 @@ export function SettingsGeneralRoleEditor() {
         });
     }, [role]);
 
+    // Fetch roles for authorized assign roles modal
+    useEffect(() => {
+        if (loadingUser) return;
+
+        const fetchRoles = async () => {
+            try {
+                const res = await get(`/roles/list/user/${ user.id }`);
+                if (res && res.roles) {
+                    setRoles(res.roles);
+                }
+            } catch (error) {
+                console.error('Error fetching roles :', error);
+            }
+        };
+
+        fetchRoles().then();
+    }, [loadingUser]);
+
     const handleCreate: any = async (data: FormData) => {
         setLoading(true);
 
@@ -152,10 +176,13 @@ export function SettingsGeneralRoleEditor() {
         }
     }
 
-    const handleUpdate: any = async (data: FormData) => {
+    const handleUpdate: any = async (data: any) => {
         setLoading(true);
 
         try {
+            if (role.assign_roles) {
+                data['assign_roles'] = role.assign_roles;
+            }
             await put(`/roles/update/${ roleId }`, data);
 
             const privilegesIds = rolePrivileges ? rolePrivileges.map((label: any) => {
@@ -186,6 +213,67 @@ export function SettingsGeneralRoleEditor() {
 
     return (
         <div className="p-6 bg-(--bg-secondary) h-full flex flex-col gap-4 overflow-y-auto">
+            { showAssignRoles && (
+                <>
+                    <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
+                         onClick={ () => setShowAssignRoles(false) }/>
+                    <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+                                    min-w-[32vw] h-3/5 max-h-screen border border-(--border-secondary)
+                                    rounded-lg bg-(--bg-primary) flex flex-col">
+                        <div className='flex items-center px-6 pt-6'>
+                            <h2>{ t('ROLES.authorized_assign_roles') }</h2>
+                            <div className='ml-auto cursor-pointer text-(--text-secondary)'
+                                 onClick={ () => setShowAssignRoles(false) }>
+                                <X/>
+                            </div>
+                        </div>
+                        <div className='overflow-hidden'>
+                            { roles && roles.length > 0 ? (
+                                <div className='p-6 flex flex-col gap-4 h-full overflow-y-auto'>
+                                    { roles.map((r: any) => (
+                                        <div key={ r.id }
+                                             className='flex items-center gap-3 border border-(--border-primary) rounded-md p-3'>
+                                            <InputSwitch
+                                                inputId={ r.id }
+                                                checked={ role.assign_roles?.includes(r.id) }
+                                                onChange={ () => {
+                                                    if (role.assign_roles?.includes(r.id)) {
+                                                        setRole((prev: any) => ({
+                                                            ...prev,
+                                                            assign_roles: prev.assign_roles.filter((roleId: any) => roleId !== r.id)
+                                                        }));
+                                                    } else {
+                                                        setRole((prev: any) => ({
+                                                            ...prev,
+                                                            assign_roles: prev.assign_roles ? [...prev.assign_roles, r.id] : [r.id]
+                                                        }));
+                                                    }
+                                                } }
+                                            />
+                                            <label htmlFor={ r.id } className='cursor-pointer'>
+                                                { r.label }
+                                            </label>
+                                        </div>
+                                    )) }
+                                </div>
+                            ) : (
+                                <div className='p-6 text-center text-(--text-secondary)'>
+                                    { t('ROLES.no_roles_available') }
+                                </div>
+                            ) }
+                        </div>
+                        <div className='mt-auto flex justify-end items-center gap-4 p-6'>
+                            <Button variant={ "no_bg" } onClick={ () => setShowAssignRoles(false) }>
+                                { t('GLOBAL.cancel') }
+                            </Button>
+                            <Button onClick={ () => setShowAssignRoles(false) }>
+                                { t('GLOBAL.validate') }
+                            </Button>
+                        </div>
+                    </div>
+                </>
+            ) }
+
             <div className='flex flex-col gap-4'>
                 <h1 className="text-xl font-bold">
                     { roleId ? t('ROLES.editing') : t('ROLES.new_role') }
@@ -235,6 +323,17 @@ export function SettingsGeneralRoleEditor() {
                                             <label htmlFor={ privilege.label } className='cursor-pointer'>
                                                 { t(`PRIVILEGES.${ privilege.label }`) }
                                             </label>
+
+                                            { (privilege.label === 'add_role' || privilege.label === 'update_role') && (
+                                                <div key={ privilege.label }
+                                                     className='cursor-pointer hover:text-(--color-primary)'
+                                                     data-tooltip-id='tooltip'
+                                                     data-tooltip-content={ t('ROLES.authorized_assign_roles') }
+                                                     onClick={ () => setShowAssignRoles(true) }
+                                                >
+                                                    <ShieldCog/>
+                                                </div>
+                                            ) }
                                         </div>
                                     )) }
                                 </div>

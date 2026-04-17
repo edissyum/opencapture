@@ -499,7 +499,8 @@
         "global_privileges": "Global privileges",
         "splitter_privileges": "Splitter privileges",
         "verifier_privileges": "Verifier privileges",
-        "accounts_privileges": "Third-party accounts"
+        "accounts_privileges": "Third-party accounts",
+        "authorized_assign_roles": ""
     },
     "SETTINGS": {
         "abouts_us": "About",

@@ -38,7 +38,7 @@
         "react-dom": "^19.2.5",
         "react-dropzone": "^15.0.0",
         "react-hook-form": "^7.72.1",
-        "react-i18next": "^17.0.3",
+        "react-i18next": "^17.0.4",
         "react-pdf": "^10.4.1",
         "react-router-dom": "^7.14.1",
         "react-toastify": "^11.0.5",
@@ -54,12 +54,12 @@
         "@types/react-dom": "^19.2.3",
         "@vitejs/plugin-react": "^6.0.1",
         "eslint": "^9.39.4",
-        "eslint-plugin-react-hooks": "^7.0.1",
+        "eslint-plugin-react-hooks": "^7.1.0",
         "eslint-plugin-react-refresh": "^0.5.2",
         "globals": "^17.5.0",
         "i18next-scanner": "^4.6.0",
         "lucide-react": "^1.8.0",
-        "typescript": "~6.0.2",
+        "typescript": "~6.0.3",
         "typescript-eslint": "^8.58.2",
         "vite": "^8.0.8"
     }

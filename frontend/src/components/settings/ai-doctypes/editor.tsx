@@ -286,7 +286,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
                                           editor={ false } onSelect={ (node) => handleDoctypeChange(node) }
                                           onTmpSelect={ (node) => setTmpDoctype(node) }/>
                         </div>
-                        <div className='mt-2 flex justify-end items-center gap-4 px-6 py-4'>
+                        <div className='mt-auto flex justify-end items-center gap-4 p-6'>
                             <Button variant={ "no_bg" } onClick={ () => setShowDoctypeSelection(false) }>
                                 { t('GLOBAL.cancel') }
                             </Button>

@@ -15,27 +15,43 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import React from "react";
+import { PinOff } from "lucide-react";
 import { Link } from "react-router-dom";
+import { type ReactNode, useState } from "react";
 
 interface settingCardsProps {
     to: string;
     title: string;
     show?: boolean;
+    icon: ReactNode;
     module?: string;
     className?: string;
     description: string;
-    icon: React.ReactNode;
+    unpinFav?: () => void;
 }
 
-export function SettingsCard({ show = true, icon, title, description, to, className, module }: settingCardsProps) {
+export function SettingsCard({ show = true, icon, title, description, to, className, module, unpinFav }: settingCardsProps) {
     if (!show) return null;
+
+    const [hovered, setHovered] = useState(false);
 
     return (
         <Link to={ to } className={ `${ className } relative flex justify-start items-center max-w-full p-2.5 
                                      pl-4 border border-(--border-secondary) rounded-md hover:border-gray-400 transition-colors` }>
-            <div className="text-(--text-primary) mr-4 bg-(--bg-secondary) p-2 rounded-md">
-                { icon }
+            <div onMouseEnter={ () => setHovered(true) } onMouseLeave={ () => setHovered(false) }
+                 className={ `text-(--text-primary) mr-4 bg-(--bg-secondary) p-2 rounded-md ${ unpinFav && 'hover:bg-(--color-primary)/20' }` }
+            >
+                { unpinFav && hovered ? (
+                    <PinOff onClick={ (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (unpinFav) unpinFav();
+                    } }/>
+                ) : (
+                    <>
+                        { icon }
+                    </>
+                ) }
             </div>
             <div className="text-(--text-secondary)">
                 <h3 className="text-lg font-semibold text-(--text-primary) -mb-1">

@@ -535,7 +535,8 @@
         "global_privileges": "Privilegios globales",
         "splitter_privileges": "Privilegios del Splitter",
         "verifier_privileges": "Privilegios del Verifier",
-        "accounts_privileges": "Cuentas de terceros"
+        "accounts_privileges": "Cuentas de terceros",
+        "authorized_assign_roles": ""
     },
     "SETTINGS": {
         "abouts_us": "Acerca de",

@@ -63,12 +63,13 @@ export function useFavorites() {
         setLoadingFavorites(true);
         const favorites = await getFavorites();
         const existing = favorites.find((fav: Favorite) => JSON.stringify(fav.route) === JSON.stringify(route));
+
         if (existing) {
             await removeFavorite(existing.id!);
-            setLoadingFavorites(false);
+            setTimeout(() => setLoadingFavorites(false), 200);
         } else {
             await addFavorite(route);
-            setLoadingFavorites(false);
+            setTimeout(() => setLoadingFavorites(false), 200);
         }
     }
 

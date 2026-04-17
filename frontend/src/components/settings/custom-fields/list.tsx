@@ -103,7 +103,8 @@ export function CustomFieldsList({ module }: { module: string }) {
                         order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null
                     }
                 });
-                setTotalCustomFields(response.customFields[0].total || 0);
+
+                setTotalCustomFields(response.customFields[0]?.total || 0);
                 setCustomFields(response.customFields);
             } catch (error) {
                 console.error('Error fetching custom fields :', error);

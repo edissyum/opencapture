@@ -50,8 +50,8 @@ export function SettingsIndex() {
 
     const [loading, setLoading] = useState(true);
 
-    const { ready, getFavorites } = useFavorites();
     const [favoriteOptions, setFavoriteOptions] = useState([]);
+    const { ready, getFavorites, toggleFavorite } = useFavorites();
 
     useEffect(() => {
         if (!ready) return;
@@ -71,6 +71,11 @@ export function SettingsIndex() {
         })();
     }, [ready]);
 
+    const handleUnpin = async (route: string) => {
+        await toggleFavorite(route);
+        setFavoriteOptions((prev: any) => prev.filter((option: any) => option.href !== route));
+    };
+
     if (loading) {
         return <Loader/>;
     }
@@ -88,7 +93,7 @@ export function SettingsIndex() {
                     { favoriteOptions.map((option, index) => (
                         <SettingsCard key={ index } icon={ option['icon'] } title={ option['name'] }
                                       description={ option['description'] } to={ option['href'] }
-                                      module={ option['module'] ?? false }/>
+                                      module={ option['module'] ?? false } unpinFav={ () => handleUnpin(option['href']) }/>
                     )) }
                 </div>
             ) : (
@@ -104,15 +109,18 @@ export function SettingsIndex() {
                         </div>
                     </div>
                     <div className='flex gap-4'>
-                        <div className='bg-(--color-primary)/20 rounded-md px-2 py-1 flex items-center gap-1 text-(--color-primary)'>
+                        <div
+                            className='bg-(--color-primary)/20 rounded-md px-2 py-1 flex items-center gap-1 text-(--color-primary)'>
                             <MousePointer size={ 16 } fill='var(--color-primary)' stroke='var(--color-primary)'/>
                             { t('SETTINGS.navigate_to_settings') }
                         </div>
-                        <div className='bg-(--color-primary)/20 rounded-md px-2 py-1 flex items-center gap-1 text-(--color-primary)'>
+                        <div
+                            className='bg-(--color-primary)/20 rounded-md px-2 py-1 flex items-center gap-1 text-(--color-primary)'>
                             <Star size={ 16 } fill='var(--color-primary)' stroke='var(--color-primary)'/>
                             { t('SETTINGS.click_star') }
                         </div>
-                        <div className='bg-(--color-primary)/20 rounded-md px-2 py-1 flex items-center gap-1 text-(--color-primary)'>
+                        <div
+                            className='bg-(--color-primary)/20 rounded-md px-2 py-1 flex items-center gap-1 text-(--color-primary)'>
                             <Check size={ 16 }/>
                             { t('SETTINGS.appear_here') }
                         </div>
