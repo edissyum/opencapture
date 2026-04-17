@@ -323,7 +323,7 @@ def search_custom_positions(data, ocr, files, regex, file, docservers):
                 target_file = files.jpg_name
         elif str(data['page']) != '1':
             position.update({"page": data['page']})
-            nb_pages = files.get_pages(docservers, file)
+            nb_pages = files.get_pages(file)
             if str(nb_pages) == str(data['page']):
                 if target == 'footer':
                     target_file = files.jpg_name_last_footer

@@ -389,7 +389,7 @@ def insert(args):
     month = datetime.now().strftime('%m')
     year_and_month = year + '/' + month
     path = docservers['VERIFIER_IMAGE_FULL'] + '/' + year_and_month + '/' + jpg_filename + '-001.jpg'
-    nb_pages = files.get_pages(docservers, args['file'])
+    nb_pages = files.get_pages(args['file'])
     splitted_file = os.path.basename(args['file']).split('_')
     if splitted_file[0] == 'SPLITTER':
         original_file = os.path.basename(args['file']).split('_')

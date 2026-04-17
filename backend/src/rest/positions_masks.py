@@ -18,13 +18,11 @@
 import os
 import base64
 from flask_babel import gettext
-
-from backend.src import retrieve_custom_from_url
-from ..functions import rest_validator
+from ..helpers import get_context_var
+from ..functions import rest_validator, retrieve_custom_from_url
 from ..controllers import auth, positions_masks, verifier, privileges
 from flask import Blueprint, request, make_response, jsonify, current_app
 
-from ..helpers import get_context_var
 
 bp = Blueprint('positions_masks', __name__, url_prefix='/ws/')
 
@@ -213,7 +211,7 @@ def get_image_from_pdf(positions_mask_id):
         files.save_img_with_pdf2image(filename_after_upload, docserver_path + filename.replace('.pdf', '.jpg'))
         img_wdith = str(files.get_width(docserver_path + tmp_filename))
         file_content = verifier.get_file_content('positions_masks', tmp_filename, 'image/jpeg')
-        nb_pages = files.get_pages(custom_id, filename_after_upload)
+        nb_pages = files.get_pages(filename_after_upload)
 
         positions_masks.update_positions_mask(positions_mask_id, {
             'filename': filename.replace('.pdf', '-001.jpg'),

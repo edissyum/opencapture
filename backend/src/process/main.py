@@ -349,7 +349,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     nb_pages = 1
     original_file = os.path.basename(file)
     if file.lower().endswith('.pdf'):
-        nb_pages = files.get_pages(docservers, file)
+        nb_pages = files.get_pages(file)
         splitted_file = os.path.basename(file).split('_')
         if splitted_file[0] == 'SPLITTER':
             original_file = os.path.basename(file).split('_')

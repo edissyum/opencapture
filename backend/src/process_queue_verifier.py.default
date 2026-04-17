@@ -33,9 +33,9 @@ from flask_babel import gettext
 from kuyruk import Kuyruk, Config
 from src.classes.Files import Files
 from functions import get_custom_path
-from src.functions import recursive_delete
 from src.classes.SeparatorQR import SeparatorQR
 from src.scripting_functions import launch_script_verifier
+from src.functions import recursive_delete, get_custom_path
 from src.main import create_classes_from_custom_id, check_file, timer, str2bool
 
 rabbit_custom = Config()
