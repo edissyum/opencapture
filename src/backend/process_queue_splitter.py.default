@@ -192,6 +192,7 @@ def launch(args):
                                             "configurations": configurations,
                                             "workflow_id": args['workflow_id'],
                                             "customer_id": args['customer_id'],
+                                            "workflow_settings": workflow_settings[0],
                                             "msg": args['msg'] if 'msg' in args else None,
                                             "artificial_intelligence": _artificial_intelligence,
                                             "user_id": args['user_id'] if 'user_id' in args else None
