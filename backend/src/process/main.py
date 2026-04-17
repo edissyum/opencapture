@@ -535,7 +535,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
                     for _r in _regex:
                         regex[_r['regex_id']] = _r['content']
-                    ocr = PyTesseract(supplier[2]['document_lang'], log, config, docservers)
+                    ocr = PyTesseract(supplier[2]['document_lang'], log, config, args['custom_id'])
                     convert(file, files, ocr, nb_pages, tesseract_function, convert_function)
 
     ai_llm = None

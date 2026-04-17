@@ -36,7 +36,7 @@ export const getUsersHistory = async (history: any, params: any) => {
 }
 
 export const statisticsFunctions = {
-    verifierBatchesValidatedPerUser: async (params: any) => {
+    verifierDocumentsValidatedPerUser: async (params: any) => {
         const res = await params.get('/history/list', {
             params: {
                 module: 'verifier',
@@ -52,7 +52,7 @@ export const statisticsFunctions = {
         return stats;
     },
 
-    verifierBatchesValidatedPerForm: async (params: any) => {
+    verifierDocumentsValidatedPerForm: async (params: any) => {
         let res = await params.get('/forms/verifier/list');
         const forms = res.forms;
 
@@ -82,7 +82,7 @@ export const statisticsFunctions = {
         return stats;
     },
 
-    verifierBatchesValidatedPerWorkflow: async (params: any) => {
+    verifierDocumentsValidatedPerWorkflow: async (params: any) => {
         let res = await params.get('/workflows/verifier/list');
         const workflows = res.workflows;
 
@@ -115,7 +115,7 @@ export const statisticsFunctions = {
         return stats;
     },
 
-    verifierBatchesUploadedPerUser: async (params: any) => {
+    verifierDocumentsUploadedPerUser: async (params: any) => {
         const res = await params.get('/history/list', {
             params: {
                 module: 'verifier',
@@ -132,7 +132,7 @@ export const statisticsFunctions = {
         return stats;
     },
 
-    verifierBatchesUploadedPerMonth: async (params: any) => {
+    verifierDocumentsUploadedPerMonth: async (params: any) => {
         if (!params.selectedYear) return null;
 
         const storageLocale = localStorage.getItem('selectedLang');
@@ -184,10 +184,232 @@ export const statisticsFunctions = {
         return stats;
     },
 
-    verifierBatchesUploadedPerYear: async (params: any) => {
+    verifierDocumentsUploadedPerYear: async (params: any) => {
         const res = await params.get('/history/list', {
             params: {
                 module: 'verifier',
+                submodule: 'upload_file'
+            }
+        });
+
+        if (res.history) {
+            const stats = { 'total': 0, 'data': [] };
+            let data: any = [];
+            const historyCpt: any = {};
+            res.history.forEach((entry: any) => {
+                const year = new Date(entry.history_date).getFullYear();
+                if (historyCpt[year]) {
+                    historyCpt[year]++;
+                } else {
+                    historyCpt[year] = 1;
+                }
+                stats['total'] = stats['total'] + 1;
+            });
+
+            for (const year in historyCpt) {
+                data.push({
+                    'name': year,
+                    'value': historyCpt[year],
+                    'fill': 'hsl(' + (data.length / Object.keys(historyCpt).length) * 360 + ', 70%, 50%)'
+                });
+            }
+            stats['data'] = data;
+            return stats;
+        }
+    },
+
+    splitterDocumentsProcessedPerWorkflow: async (params: any) => {
+        let res = await params.get('/workflows/splitter/list');
+        const workflows = res.workflows;
+
+        res = await params.get('/history/list', {
+            params: {
+                module: 'splitter',
+                submodule: 'create_document',
+                year: params.selectedYear
+            }
+        });
+
+        const stats = { 'total': 0, 'data': [] };
+        if (res.history) {
+            let data: any = [];
+            workflows.forEach((workflow: any) => {
+                let historyCpt = 0;
+                res.history.forEach((entry: any) => {
+                    if (workflow.workflow_id === entry.workflow_id) {
+                        historyCpt++;
+                        stats['total'] = historyCpt;
+                    }
+                });
+                data.push({
+                    'name': workflow.label,
+                    'value': historyCpt,
+                    'fill': 'hsl(' + (data.length / workflows.length) * 360 + ', 70%, 50%)'
+                });
+            });
+            stats['data'] = data;
+        }
+        return stats;
+    },
+
+    splitterGetUserProcessedDocumentSlitter: async (params: any) => {
+        const res = await params.get('/history/list', {
+            params: {
+                module: 'splitter',
+                submodule: 'create_document',
+                year: params.selectedYear
+            }
+        });
+
+        let stats;
+        if (res.history) {
+            stats = await getUsersHistory(res.history, params);
+        }
+        return stats;
+    },
+
+    splitterGetDocumentsProcessedByMonth: async (params: any) => {
+        if (!params.selectedYear) return null;
+
+        const storageLocale = localStorage.getItem('selectedLang');
+        let locale = 'fr-FR';
+        if (storageLocale === 'eng') {
+            locale = 'en-US';
+        } else if (storageLocale === 'spa') {
+            locale = 'es-ES';
+        }
+
+        const res = await params.get('/history/list', {
+            params: {
+                module: 'splitter',
+                submodule: 'create_document',
+                year: params.selectedYear
+            }
+        });
+
+        const stats = { 'total': 0, 'data': [] };
+        if (res.history) {
+            let data: any = [];
+            const historyCpt: any = {};
+            const monthNames = Array.from({ length: 12 }, (_, i) => {
+                const month = new Date(0, i).toLocaleString(locale, { month: 'long' });
+                return month.charAt(0).toUpperCase() + month.slice(1);
+            });
+            monthNames.forEach((month: any) => {
+                historyCpt[month] = 0;
+            });
+
+            res.history.forEach((entry: any) => {
+                const month = new Date(entry.history_date).getMonth() + 1;
+                const monthName = monthNames[month - 1];
+                if (historyCpt[monthName] !== undefined) {
+                    historyCpt[monthName]++;
+                    stats['total'] = stats['total'] + 1;
+                }
+            });
+
+            for (const month in historyCpt) {
+                data.push({
+                    'name': month,
+                    'value': historyCpt[month],
+                    'fill': 'hsl(' + (data.length / 12) * 360 + ', 70%, 50%)'
+                });
+            }
+            stats['data'] = data;
+        }
+        return stats;
+    },
+
+    splitterGetDocumentsProcessedByYear: async (params: any) => {
+        const res = await params.get('/history/list', {
+            params: {
+                module: 'splitter',
+                submodule: 'create_document'
+            }
+        });
+
+        if (res.history) {
+            const stats = { 'total': 0, 'data': [] };
+            let data: any = [];
+            const historyCpt: any = {};
+            res.history.forEach((entry: any) => {
+                const year = new Date(entry.history_date).getFullYear();
+                if (historyCpt[year]) {
+                    historyCpt[year]++;
+                } else {
+                    historyCpt[year] = 1;
+                }
+                stats['total'] = stats['total'] + 1;
+            });
+
+            for (const year in historyCpt) {
+                data.push({
+                    'name': year,
+                    'value': historyCpt[year],
+                    'fill': 'hsl(' + (data.length / Object.keys(historyCpt).length) * 360 + ', 70%, 50%)'
+                });
+            }
+            stats['data'] = data;
+            return stats;
+        }
+    },
+
+    splitterGetBatchesUploadedByMonth: async (params: any) => {
+        if (!params.selectedYear) return null;
+
+        const storageLocale = localStorage.getItem('selectedLang');
+        let locale = 'fr-FR';
+        if (storageLocale === 'eng') {
+            locale = 'en-US';
+        } else if (storageLocale === 'spa') {
+            locale = 'es-ES';
+        }
+
+        const res = await params.get('/history/list', {
+            params: {
+                module: 'splitter',
+                submodule: 'upload_file',
+                year: params.selectedYear
+            }
+        });
+
+        const stats = { 'total': 0, 'data': [] };
+        if (res.history) {
+            let data: any = [];
+            const historyCpt: any = {};
+            const monthNames = Array.from({ length: 12 }, (_, i) => {
+                const month = new Date(0, i).toLocaleString(locale, { month: 'long' });
+                return month.charAt(0).toUpperCase() + month.slice(1);
+            });
+            monthNames.forEach((month: any) => {
+                historyCpt[month] = 0;
+            });
+
+            res.history.forEach((entry: any) => {
+                const month = new Date(entry.history_date).getMonth() + 1;
+                const monthName = monthNames[month - 1];
+                if (historyCpt[monthName] !== undefined) {
+                    historyCpt[monthName]++;
+                    stats['total'] = stats['total'] + 1;
+                }
+            });
+
+            for (const month in historyCpt) {
+                data.push({
+                    'name': month,
+                    'value': historyCpt[month],
+                    'fill': 'hsl(' + (data.length / 12) * 360 + ', 70%, 50%)'
+                });
+            }
+            stats['data'] = data;
+        }
+        return stats;
+    },
+
+    splitterGetBatchesUploadedByYear: async (params: any) => {
+        const res = await params.get('/history/list', {
+            params: {
+                module: 'splitter',
                 submodule: 'upload_file'
             }
         });

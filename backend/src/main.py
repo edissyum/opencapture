@@ -123,7 +123,7 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
     spreadsheet = Spreadsheet(log, docservers, config)
     filename = docservers['TMP_PATH']
     files = Files(filename, log, docservers, configurations, regex, languages, database)
-    ocr = PyTesseract(configurations['locale'], log, config, docservers)
+    ocr = PyTesseract(configurations['locale'], log, config, custom_id)
     artificial_intelligence = ArtificialIntelligence('', '', files, ocr, docservers, log)
 
     nfz42020_path = os.path.join(retrieve_custom_path(custom_id), 'journal')

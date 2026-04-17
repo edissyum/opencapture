@@ -109,10 +109,18 @@ def rest_validator(data, required_fields, only_data=False):
     return True, ''
 
 
-def check_extensions_mime(docservers, files, document_type='document'):
-    formats_file = docservers['CONFIG_PATH'] + '/extensions.json'
+def check_extensions_mime(files, custom_id, document_type='document'):
+    config_path = get_custom_path(custom_id) + '/config'
+    if not config_path or not os.path.isdir(config_path):
+        response = {
+            "errors": gettext("UPLOAD_ERRROR"),
+            "message": gettext("CUSTOM_CONFIG_FOLDER_NOT_FOUND")
+        }
+        return response, 400
+
+    formats_file = config_path + '/extensions.json'
     if document_type == 'attachments':
-        formats_file = docservers['CONFIG_PATH'] + '/attachment_extensions.json'
+        formats_file = config_path + '/attachment_extensions.json'
 
     if os.path.isfile(formats_file):
         with open(formats_file) as json_file:

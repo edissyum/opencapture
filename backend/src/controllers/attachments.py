@@ -30,13 +30,13 @@ from ..controllers import history
 from ..classes.Files import Files
 from ..helpers import get_context_var
 from ..models import attachments, splitter
-from ..functions import check_extensions_mime
+from ..functions import check_extensions_mime, retrieve_custom_from_url
 
 
 def handle_uploaded_file(files, document_id, batch_id, module, from_api=False):
+    custom_id = retrieve_custom_from_url(request)
     docservers = get_context_var('docservers', 9)
-
-    message, code = check_extensions_mime(docservers, files, 'attachments')
+    message, code = check_extensions_mime(files, custom_id, 'attachments')
     if code != 200:
         return message, code
 

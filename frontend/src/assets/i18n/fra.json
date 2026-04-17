@@ -536,7 +536,8 @@
         "splitter_privileges": "Privilèges du Splitter",
         "verifier_privileges": "Privilèges du Verifier",
         "accounts_privileges": "Comptes tiers",
-        "authorized_assign_roles": "Rôles d'affectations autorisés"
+        "authorized_assign_roles": "Rôles d'affectations autorisés",
+        "no_roles_available": "Aucun autre rôle disponible pour l'affectation"
     },
     "SETTINGS": {
         "abouts_us": "À propos",
@@ -1235,16 +1236,22 @@
     "STATISTICS": {
         "select_statistic": "Choix de la statistique à afficher",
         "select_year": "Choix de l'année",
-        "verifier_batches_uploaded_per_month": "Lots uploadés sur l'année",
-        "verifier_batches_uploaded_per_user": "Lots uploadés par utilisateur",
-        "verifier_batches_uploaded_per_worklow": "Lots uploadés par workflow",
-        "verifier_batches_uploaded_per_year": "Lots uploadés par année",
-        "verifier_batches_validated_per_form": "Lots traités par formulaire",
-        "verifier_batches_validated_per_user": "Lots traités par utilisateur",
+        "verifier_documents_uploaded_per_month": "Documents uploadés sur l'année",
+        "verifier_documents_uploaded_per_user": "Documents uploadés par utilisateur",
+        "verifier_documents_uploaded_per_worklow": "Documents uploadés par workflow",
+        "verifier_documents_uploaded_per_year": "Documents uploadés par année",
+        "verifier_documents_validated_per_form": "Documents traités par formulaire",
+        "verifier_documents_validated_per_user": "Documents traités par utilisateur",
         "all_years": "Toutes les années",
         "year_optionnal": "Année (optionnelle)",
         "results": "Nombre de résultats",
-        "select_filters": "Sélectionnez des filtres pour afficher les statistiques correspondantes"
+        "select_filters": "Sélectionnez des filtres pour afficher les statistiques correspondantes",
+        "splitter_documents_processed_per_user": "Documents traités par utilisateur",
+        "splitter_documents_processed_per_worklow": "Documents traités par workflow",
+        "splitter_documents_processed_per_month": "Documents traités sur l'année",
+        "splitter_documents_processed_per_year": "Documents traités par année",
+        "splitter_batches_uploaded_per_month": "Lots uploadés sur l'année",
+        "splitter_batches_uploaded_per_year": "Lots uploadés par année"
     },
     "POSITIONS-MASKS": {
         "add_model": "Ajouter un masque de position",

@@ -478,10 +478,10 @@ export function VerifierListPage() {
                                 { Object.keys(listStatuses).map((key: any) => (
                                     <div className='flex items-center text-(--text-secondary)' key={ key }>
                                         <RadioButton
-                                            inputId={ key }
-                                            checked={ selectedStatus === listStatuses[key]?.id }
-                                            className='mr-1 scale-80'
                                             value={ key }
+                                            inputId={ key }
+                                            className='mr-1 scale-80'
+                                            checked={ selectedStatus === listStatuses[key]?.id }
                                             onChange={ (e) => {
                                                 setSelectedStatus(listStatuses[e.value]?.id);
                                             } }>
@@ -510,6 +510,7 @@ export function VerifierListPage() {
                                 <MultiSelectInput
                                     optionValue="id"
                                     optionLabel="name"
+                                    labelFusion={ true }
                                     id="customers_select"
                                     options={ listCustomers }
                                     value={ selectedCustomers?.map(Number) ?? [] }
@@ -537,9 +538,10 @@ export function VerifierListPage() {
                             <div className='p-4 pt-0'>
                                 <Dropdown
                                     filter={ true }
-                                    value={ selectedForm.toString() }
+                                    labelFusion={ true }
                                     id="folder_destination"
                                     className="w-full mb-2"
+                                    value={ selectedForm.toString() }
                                     label={ t('VERIFIER.search_form') }
                                     options={ listForms.map((form: any) => ({
                                         label: form.label,
@@ -566,6 +568,7 @@ export function VerifierListPage() {
                                 <MultiSelectInput
                                     optionValue="id"
                                     optionLabel="name"
+                                    labelFusion={ true }
                                     id="suppliers_select"
                                     options={ listSuppliers }
                                     filterBy="name,lastname,firstname"

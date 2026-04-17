@@ -500,7 +500,8 @@
         "splitter_privileges": "Splitter privileges",
         "verifier_privileges": "Verifier privileges",
         "accounts_privileges": "Third-party accounts",
-        "authorized_assign_roles": ""
+        "authorized_assign_roles": "",
+        "no_roles_available": ""
     },
     "SETTINGS": {
         "abouts_us": "About",
@@ -1148,16 +1149,22 @@
     "STATISTICS": {
         "select_statistic": "Choose the statistic to display",
         "select_year": "Choose the year",
-        "verifier_batches_uploaded_per_month": "Batches uploaded per year",
-        "verifier_batches_uploaded_per_user": "Batches uploaded per user",
-        "verifier_batches_uploaded_per_worklow": "Batches uploaded per workflow",
-        "verifier_batches_uploaded_per_year": "Batches uploaded per year",
-        "verifier_batches_validated_per_form": "Batches processed per form",
-        "verifier_batches_validated_per_user": "Batches processed per user",
+        "verifier_documents_uploaded_per_month": "Documents uploaded per year",
+        "verifier_documents_uploaded_per_user": "Documents uploaded per user",
+        "verifier_documents_uploaded_per_worklow": "Documents uploaded per workflow",
+        "verifier_documents_uploaded_per_year": "Documents uploaded per year",
+        "verifier_documents_validated_per_form": "Documents processed per form",
+        "verifier_documents_validated_per_user": "Documents processed per user",
         "all_years": "All years",
         "year_optionnal": "Year (optional)",
         "results": "Number of results",
-        "select_filters": "Select filters to display the corresponding statistics"
+        "select_filters": "Select filters to display the corresponding statistics",
+        "splitter_batches_uploaded_per_month": "Batches uploaded this year",
+        "splitter_batches_uploaded_per_year": "Batch uploaded per year",
+        "splitter_documents_processed_per_month": "Documents processed this year",
+        "splitter_documents_processed_per_user": "Documents processed per user",
+        "splitter_documents_processed_per_worklow": "Documents processed per workflow",
+        "splitter_documents_processed_per_year": "Documents processed per year"
     },
     "POSITIONS-MASKS": {
         "add_model": "Add a position mask",

@@ -22,7 +22,7 @@ from flask_babel import gettext
 from ..helpers import get_context_var
 from flask import Blueprint, make_response, request, jsonify
 from ..controllers import auth, config, verifier, privileges
-from ..functions import rest_validator, check_extensions_mime
+from ..functions import rest_validator, check_extensions_mime, retrieve_custom_from_url
 
 bp = Blueprint('verifier', __name__, url_prefix='/ws/')
 
@@ -70,8 +70,8 @@ def upload():
 
     files = request.files
 
-    docservers = get_context_var('docservers', 9)
-    message, code = check_extensions_mime(docservers, files)
+    custom_id = retrieve_custom_from_url(request)
+    message, code = check_extensions_mime(files, custom_id)
     if code != 200:
         return make_response(message, code)
 

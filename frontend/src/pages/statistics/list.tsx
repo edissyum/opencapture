@@ -47,37 +47,67 @@ export function StatisticsPage() {
 
     const statisticsOptions = [
         {
-            'id': 'verifier_batches_validated_per_user',
-            'label': t('STATISTICS.verifier_batches_validated_per_user'),
-            'function': 'verifierBatchesValidatedPerUser'
+            'id': 'verifier_documents_validated_per_user',
+            'label': t('STATISTICS.verifier_documents_validated_per_user'),
+            'function': 'verifierDocumentsValidatedPerUser'
         },
         {
-            'id': 'verifier_batches_validated_per_form',
-            'label': t('STATISTICS.verifier_batches_validated_per_form'),
-            'function': 'verifierBatchesValidatedPerForm'
+            'id': 'verifier_documents_validated_per_form',
+            'label': t('STATISTICS.verifier_documents_validated_per_form'),
+            'function': 'verifierDocumentsValidatedPerForm'
         },
         {
-            'id': 'verifier_batches_uploaded_per_worklow',
-            'label': t('STATISTICS.verifier_batches_uploaded_per_worklow'),
-            'function': 'verifierBatchesValidatedPerWorkflow'
+            'id': 'verifier_documents_uploaded_per_worklow',
+            'label': t('STATISTICS.verifier_documents_uploaded_per_worklow'),
+            'function': 'verifierDocumentsValidatedPerWorkflow'
         },
         {
-            'id': 'verifier_batches_uploaded_per_user',
-            'label': t('STATISTICS.verifier_batches_uploaded_per_user'),
-            'function': 'verifierBatchesUploadedPerUser'
+            'id': 'verifier_documents_uploaded_per_user',
+            'label': t('STATISTICS.verifier_documents_uploaded_per_user'),
+            'function': 'verifierDocumentsUploadedPerUser'
         },
         {
-            'id': 'verifier_batches_uploaded_per_month',
-            'label': t('STATISTICS.verifier_batches_uploaded_per_month'),
-            'function': 'verifierBatchesUploadedPerMonth'
+            'id': 'verifier_documents_uploaded_per_month',
+            'label': t('STATISTICS.verifier_documents_uploaded_per_month'),
+            'function': 'verifierDocumentsUploadedPerMonth'
         },
         {
-            'id': 'verifier_batches_uploaded_per_year',
-            'label': t('STATISTICS.verifier_batches_uploaded_per_year'),
-            'function': 'verifierBatchesUploadedPerYear'
+            'id': 'verifier_documents_uploaded_per_year',
+            'label': t('STATISTICS.verifier_documents_uploaded_per_year'),
+            'function': 'verifierDocumentsUploadedPerYear'
+        },
+        {
+            'id': 'splitter_documents_processed_per_worklow',
+            'label': t('STATISTICS.splitter_documents_processed_per_worklow'),
+            'function': 'splitterDocumentsProcessedPerWorkflow'
+        },
+        {
+            'id': 'splitter_documents_processed_per_user',
+            'label': t('STATISTICS.splitter_documents_processed_per_user'),
+            'function': 'splitterGetUserProcessedDocumentSlitter'
+        },
+        {
+            'id': 'splitter_documents_processed_per_month',
+            'label': t('STATISTICS.splitter_documents_processed_per_month'),
+            'function': 'splitterGetDocumentsProcessedByMonth'
+        },
+        {
+            'id': 'splitter_documents_processed_per_year',
+            'label': t('STATISTICS.splitter_documents_processed_per_year'),
+            'function': 'splitterGetDocumentsProcessedByYear'
+        },
+        {
+            'id': 'splitter_batches_uploaded_per_month',
+            'label': t('STATISTICS.splitter_batches_uploaded_per_month'),
+            'function': 'splitterGetBatchesUploadedByMonth'
+        },
+        {
+            'id': 'splitter_batches_uploaded_per_year',
+            'label': t('STATISTICS.splitter_batches_uploaded_per_year'),
+            'function': 'splitterGetBatchesUploadedByYear'
         }
     ];
-    const [filteredStatisticsOptions, setFilteredStatisticsOptions] = useState(statisticsOptions);
+    const [filteredStatisticsOptions, setFilteredStatisticsOptions] = useState<any[]>([]);
 
     useEffect(() => {
         const fetchUsers = async () => {

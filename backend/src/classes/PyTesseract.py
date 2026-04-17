@@ -20,9 +20,11 @@ import pytesseract
 import pyocr.builders
 import xml.etree.ElementTree as Et
 
+from ..functions import retrieve_custom_path, get_custom_path
+
 
 class PyTesseract:
-    def __init__(self, locale, log, config, docservers):
+    def __init__(self, locale, log, config, custom_id):
         self.log = log
         self.tool = ''
         self.text = ''
@@ -31,10 +33,10 @@ class PyTesseract:
         self.config = config
         self.footer_text = ''
         self.header_text = ''
+        self.custom_id = custom_id
         self.ocr_errors_table = {}
         self.footer_last_text = ''
         self.header_last_text = ''
-        self.docservers = docservers
 
         tools = pyocr.get_available_tools()
         self.tool = tools[0]
@@ -62,7 +64,7 @@ class PyTesseract:
             self.log.error('Tesseract ERROR : ' + str(_t))
 
     def get_ocr_errors_table(self):
-        config_path = self.docservers['CONFIG_PATH'] + '/OCR_ERRORS.xml'
+        config_path = get_custom_path(self.custom_id) + '/config/OCR_ERRORS.xml'
         root = Et.parse(config_path).getroot()
 
         for element in root:
