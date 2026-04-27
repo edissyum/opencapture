@@ -496,7 +496,8 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         const label = detailsGetValues('label');
         const workflowId = detailsGetValues('workflow_id');
         if (Object.keys(detailsErrors).length > 0 || !workflowId || !label) {
-            await detailsHandleSubmit(() => {})();
+            await detailsHandleSubmit(() => {
+            })();
             showToast(t("WORKFLOWS.fix_details_errors"), 'error');
             return;
         }
@@ -630,19 +631,16 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 </h1>
 
                 <div className='w-full'>
-                    <DynamicForm errors={ detailsErrors } control={ detailsControl } schema={ detailSchema }
-                                 grid={ 2 }/>
+                    <DynamicForm errors={ detailsErrors } control={ detailsControl } schema={ detailSchema } grid={ 2 }/>
                 </div>
             </div>
 
             <Stepper ref={ stepperRef } linear className='p-4 workflowStepper' activeStep={ stepperIndex }
                      onChangeStep={ (e: any) => setStepperIndex(e.index) }>
                 <StepperPanel header={ t("WORKFLOWS.input") }>
-                    <DynamicForm schema={ inputSchemaFields } control={ workflowControl } errors={ workflowErrors }
-                                 grid={ 2 }/>
+                    <DynamicForm schema={ inputSchemaFields } control={ workflowControl } errors={ workflowErrors } grid={ 2 }/>
 
-                    <DynamicForm schema={ inputSchemaEndSwitchs } control={ workflowControl }
-                                 errors={ workflowErrors }/>
+                    <DynamicForm schema={ inputSchemaEndSwitchs } control={ workflowControl } errors={ workflowErrors }/>
 
                     { allowScripting && (
                         <div className='flex items-center mt-3'>

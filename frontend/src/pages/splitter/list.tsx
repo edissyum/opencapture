@@ -145,7 +145,7 @@ export function SplitterListPage() {
             )
         },
         {
-            id: 'register_date',
+            id: 'creation_date',
             header: t('VERIFIER.creation_date'),
             sortable: true,
             field: 'batch_date'

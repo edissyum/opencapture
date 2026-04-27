@@ -1777,7 +1777,7 @@ msgstr "est déjà enregistré"
 
 #: backend/src/models/user.py:152
 msgid "GET_USER_BY_MAIL_ERROR"
-msgstr "Aucun utilisateur asssocié à cette addresse email"
+msgstr "Aucun utilisateur asssocié à cette adresse email"
 
 #: backend/src/models/user.py:189
 msgid "NO_CUSTOMERS"

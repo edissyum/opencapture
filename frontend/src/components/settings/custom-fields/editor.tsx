@@ -219,6 +219,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
     const watchTest = watch("test");
     const watchType = watch("type");
     const watchLabel = watch("label");
+    const watchLabelShort = watch("label_short");
 
     // Fill form when custom_field data is loaded
     useEffect(() => {
@@ -254,6 +255,16 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         const newLabelShort = watchLabel.toLowerCase().replace(/\s+/g, '_').replace(/[^\w\-]+/g, '');
         setValue("label_short", newLabelShort);
     }, [watchLabel]);
+
+    // Remove space in label_short
+    useEffect(() => {
+        if (!watchLabelShort) return;
+
+        const newLabelShort = watchLabelShort.replace(/\s+/g, '_');
+        if (newLabelShort !== watchLabelShort) {
+            setValue("label_short", newLabelShort);
+        }
+    }, [watchLabelShort]);
 
     // Highlight regex matches in test zone
     useEffect(() => {

@@ -42,7 +42,10 @@ export function CustomerEditor() {
 
     // fetch customer data
     useEffect(() => {
-        if (!customerId) return;
+        if (!customerId) {
+            setLoading(false);
+            return
+        }
 
         const fetchCustomer = async () => {
             try {
@@ -59,8 +62,6 @@ export function CustomerEditor() {
                 }
             } catch (error) {
                 console.error('Error fetching customer data:', error);
-            } finally {
-                setLoading(false);
             }
         };
 

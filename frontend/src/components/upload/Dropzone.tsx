@@ -147,7 +147,7 @@ export default function UploadDropzone({
                             <div className="flex flex-col">
                                 <span className="font-semibold">{ file.name }</span>
                                 { completedFiles.includes(file.id) ? (
-                                    <span className="text-xs font-semibold text-green-600">
+                                    <span className="text-xs font-semibold text-(--text-secondary)">
                                         { t('UPLOAD.upload_completed') }
                                     </span>
                                 ) : progressByFile?.[file.id] !== undefined ? (

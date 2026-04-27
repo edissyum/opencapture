@@ -23,6 +23,7 @@
     @apply border-0;
     @apply flex-col;
     @apply overflow-hidden;
+    @apply bg-(--bg-primary);
 }
 
 .p-tree .p-tree-container {

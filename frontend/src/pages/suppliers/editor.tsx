@@ -138,6 +138,8 @@ export function SupplierEditor({
                 }
             } catch (error) {
                 console.error('Error fetching accounting plans:', error);
+            } finally {
+                setLoading(false);
             }
         };
 

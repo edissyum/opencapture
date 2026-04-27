@@ -36,12 +36,12 @@ def get_suppliers(_args):
         'where': ['status <> %s'],
         'data': ['DEL'],
         'offset': _args['offset'] if 'offset' in _args else 0,
-        'limit': _args['limit'] if 'limit' in _args else 'ALL'
+        'limit': _args['limit'] if 'limit' in _args else 'ALL',
     }
 
     if 'filter' in _args and _args['filter']:
         allowed_filters = ['id', 'name']
-        check_order, error = check_order_by(args['filter'], args['order'], allowed_filters)
+        check_order, error = check_order_by(_args['filter'], _args['order'], allowed_filters)
         if not check_order:
             response = {
                 "errors": gettext('FILTERS_ERROR'),

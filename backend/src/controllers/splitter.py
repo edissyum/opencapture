@@ -149,6 +149,8 @@ def retrieve_batches(data):
         'limit': data['limit'] if 'limit' in data else None,
         'offset': data['offset'] if 'offset' in data else None,
         'time': data['time'] if 'time' in data else None,
+        'filter': data['filter'] if 'filter' in data else None,
+        'order': data['order'] if 'order' in data else None,
         'status': data['status'] if 'status' in data else None,
         'search': data['search'] if 'search' in data else None,
         'batch_id': data['batchId'] if 'batchId' in data else None,
@@ -190,8 +192,7 @@ def retrieve_batches(data):
     if 'time' in args and args['time']:
         if args['time'] in ['today', 'yesterday']:
             args['where'].append(
-                "to_char(splitter_batches.creation_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args[
-                    'time'] + "', 'YYYY-MM-DD')")
+                "to_char(splitter_batches.creation_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "', 'YYYY-MM-DD')")
         else:
             args['where'].append(
                 "to_char(splitter_batches.creation_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")

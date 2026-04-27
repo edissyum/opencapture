@@ -1,11 +1,11 @@
 -- CRÉATION DES STATUS
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'verifier');
-INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('END', 'Cloturé', 'Document validé et cloturé', 'verifier');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('END', 'Clôturé', 'Document validé et cloturé', 'verifier');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('ERR', 'Erreur', 'Erreur lors de la qualification', 'verifier');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('WAIT_THIRD_PARTY', 'En attente fournisseur', 'En attente de création / modification de fiche fournisseur', 'verifier');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('DEL', 'Supprimé', 'Supprimé', 'verifier');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'splitter');
-INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('END', 'Clotûré', 'Lot clôturé', 'splitter');
+INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('END', 'Clôturé', 'Lot clôturé', 'splitter');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('DEL', 'Supprimé', 'Supprimé', 'splitter');
 INSERT INTO "status" ("id", "label", "label_long", "module") VALUES ('MERG', 'Fusionné', 'Fusionné', 'splitter');
 
@@ -937,7 +937,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (3, 3, '{
                 "id": "email",
                 "type": "text",
                 "color": "#19864B",
-                "label": "Addresse email",
+                "label": "Adresse email",
                 "format": "email",
                 "required": true,
                 "typeLabel": "Chaîne de caractères",
@@ -1160,7 +1160,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (4, 4, '{
                 "id": "email",
                 "type": "text",
                 "color": "#19864B",
-                "label": "Addresse email",
+                "label": "Adresse email",
                 "format": "email",
                 "required": false,
                 "typeLabel": "Chaîne de caractères",
