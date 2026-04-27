@@ -511,7 +511,6 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                                                             e.stopPropagation();
                                                             setSelectedZone(zone);
                                                             cm.current?.show(e);
-                                                            // handleChangeLabel(zone).then();
                                                         } }
                                                         data-tooltip-id="tooltip"
                                                         className='hover:text-(--color-primary)'
