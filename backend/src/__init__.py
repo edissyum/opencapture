@@ -28,7 +28,7 @@ from .rest.auth import limiter
 from werkzeug.wrappers import Request
 from .main import create_classes_from_custom_id
 from flask import request, g as current_context, Flask, session
-from .functions import is_custom_exists, retrieve_custom_from_url, retrieve_config_from_custom_id, get_custom_path
+from .functions import is_custom_exists, retrieve_custom_from_url, get_custom_path
 from .rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
     forms, status, accounts, outputs, mem, positions_masks, history, doctypes, mailcollect, artificial_intelligence, \
     smtp, monitoring, workflow, coog, opencaptureformem, attachments, opencrm

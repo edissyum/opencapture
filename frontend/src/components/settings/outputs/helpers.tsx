@@ -66,6 +66,11 @@ export const getSystemFieldsOptionsVerifier = () => [
 export const getSystemFieldsOptionsSplitter = () => [
     { id: 'md5', label: t('OUTPUTS.md5') },
     { id: 'sha256', label: t('OUTPUTS.sha256') },
+    { id: 'random', label: t('OUTPUTS.random') },
+    { id: 'format', label: t('OUTPUTS.format') },
+    { id: 'doctype', label: t('DOCTYPES.doctype') },
     { id: 'metadata_file', label: t('OUTPUTS.metadata_file') },
-    { id: 'documents_count', label: t('OUTPUTS.documents_count') }
+    { id: 'document_index', label: t('OUTPUTS.document_index') },
+    { id: 'documents_count', label: t('OUTPUTS.documents_count') },
+    { id: 'document_identifier', label: t('OUTPUTS.document_identifier') }
 ];

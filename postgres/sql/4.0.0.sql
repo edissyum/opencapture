@@ -3,12 +3,12 @@ SELECT path as old_path FROM docservers WHERE docserver_id = 'PROJECT_PATH'; \gs
 
 -- Remplacer les chemins dans les docservers
 UPDATE docservers SET path = REPLACE(path, :'old_path', './');
-UPDATE docservers SET docserver_id = 'ASSETS_PATH' WHERE docserver_id = 'LOCALE_PATH';
-UPDATE docservers SET path = './src/assets/' WHERE docserver_id = 'ASSETS_PATH';
 
 -- Suppression des chemins obsolètes
 DELETE FROM docservers WHERE docserver_id = 'TMP_PATH';
 DELETE FROM docservers WHERE docserver_id = 'ERROR_PATH';
+DELETE FROM docservers WHERE docserver_id = 'LOCALE_PATH';
+DELETE FROM docservers WHERE docserver_id = 'ASSETS_PATH';
 DELETE FROM docservers WHERE docserver_id = 'CONFIG_PATH';
 
 -- Mise à jour des libellés de la configuration

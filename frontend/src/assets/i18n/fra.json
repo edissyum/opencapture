@@ -475,7 +475,11 @@
         "md5": "Hash MD5 du document",
         "sha256": "Hash SHA256 du document",
         "documents_count": "Nombre de documents dans le lot",
-        "metadata_file": "Fichier de métadonnées du lot"
+        "metadata_file": "Fichier de métadonnées du lot",
+        "random": "Chaîne aléatoire",
+        "document_identifier": "Identifiant du document",
+        "document_index": "Index du document",
+        "format": "Format"
     },
     "ROLES": {
         "add_role": "Ajouter un rôle",
@@ -1074,7 +1078,8 @@
         "conditional_custom_field": "Champ personnalisé conditionnel",
         "new_choice": "Nouveau choix",
         "create_custom_fields": "Créer le champ personnalisé",
-        "create_success": "Champ personnalisé créé avec succès"
+        "create_success": "Champ personnalisé créé avec succès",
+        "choice_label_short_duplicate": "Le libellé technique du choix doit être unique"
     },
     "WORKFLOWS": {
         "confirm_delete_workflows_many": "Voulez-vous vraiment supprimer ces {{count}} workflows ?",

@@ -339,7 +339,7 @@ class SeparatorQR:
                 'code_qr': qrcode_path,
                 'type': separator['type'],
                 'qr_code_value': separator['qr_code_value'],
-                'logo': shared.assets_path + "/imgs/login_image.png",
+                'logo': shared.assets_path + "/imgs/opencapture.png",
                 'company_logo': shared.assets_path + "/imgs/logo_company.png",
                 'label': unidecode(separator['label']).encode('latin-1', 'replace').decode('latin-1')
             })

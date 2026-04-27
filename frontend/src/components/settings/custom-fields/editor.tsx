@@ -19,7 +19,7 @@ import { t } from "i18next";
 import DOMPurify from "dompurify";
 import { Tooltip } from "react-tooltip";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { InputSwitch } from "primereact/inputswitch";
 import { ContextMenu } from "primereact/contextmenu";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -207,6 +207,28 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         conditional_custom_value: string;
     }[]>([]);
 
+    const duplicateOptionLabelShortIndexes = useMemo(() => {
+        const normalizedIds = new Map<string, number[]>();
+
+        selectOptions.forEach((option, index) => {
+            const normalizedId = option.id?.trim().toLowerCase();
+            if (!normalizedId) return;
+
+            const indexes = normalizedIds.get(normalizedId) || [];
+            indexes.push(index);
+            normalizedIds.set(normalizedId, indexes);
+        });
+
+        const duplicates = new Set<number>();
+        normalizedIds.forEach((indexes) => {
+            if (indexes.length > 1) {
+                indexes.forEach((index) => duplicates.add(index));
+            }
+        });
+
+        return duplicates;
+    }, [selectOptions]);
+
     const { control, watch, setValue, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(detailsSchema.extend(typeSchema.shape).extend(regexSchema.shape)),
         mode: "onChange",
@@ -220,6 +242,9 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
     const watchType = watch("type");
     const watchLabel = watch("label");
     const watchLabelShort = watch("label_short");
+
+    const hasDuplicateOptionLabelShort =
+        (watchType === 'select' || watchType === 'checkbox') && duplicateOptionLabelShortIndexes.size > 0;
 
     // Fill form when custom_field data is loaded
     useEffect(() => {
@@ -320,6 +345,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
     }, [watchTest, watch("content"), watch("remove_keyword_value")]);
 
     const getPayload = (data: any) => {
+        if (hasDuplicateOptionLabelShort) return;
         if (errors && Object.keys(errors).length > 0) return;
 
         const payload = {
@@ -547,6 +573,9 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                                         />
                                         <Input type="text"
                                                label={ t('ROLES.label_short') } value={ option.id }
+                                               error={ duplicateOptionLabelShortIndexes.has(index)
+                                                   ? t('CUSTOM-FIELDS.choice_label_short_duplicate')
+                                                   : undefined }
                                                onChange={ (e) => {
                                                    const newOptions = [...selectOptions];
                                                    newOptions[index].id = e.target.value;
@@ -612,12 +641,12 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
             <div className="p-6 w-fit">
                 { customFieldId ? (
                     <Button onClick={ handleSubmit(handleUpdate) }
-                            disabled={ loading || Object.keys(errors).length > 0 }>
+                            disabled={ loading || Object.keys(errors).length > 0 || hasDuplicateOptionLabelShort }>
                         { loading ? t('GLOBAL.updating') : t('CUSTOM-FIELDS.update_custom_fields') }
                     </Button>
                 ) : (
                     <Button onClick={ handleSubmit(handleCreate) }
-                            disabled={ loading || Object.keys(errors).length > 0 }>
+                            disabled={ loading || Object.keys(errors).length > 0 || hasDuplicateOptionLabelShort }>
                         { loading ? t('GLOBAL.creating') : t('CUSTOM-FIELDS.create_custom_fields') }
                     </Button>
                 ) }

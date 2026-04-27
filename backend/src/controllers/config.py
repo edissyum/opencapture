@@ -330,14 +330,14 @@ def get_last_git_version():
 
 def get_login_image():
     custom_id = retrieve_custom_from_url(request)
-    docservers = get_context_var('docservers', 9)
-    login_image = docservers['ASSETS_PATH'] + '/imgs/login_image.svg'
+    login_image = './src/assets/imgs/login_image.svg'
     if custom_id:
         custom_path = get_custom_path(custom_id)
         if custom_path:
             for file in glob.glob(custom_path + '/assets/imgs/login_image.*'):
                 login_image = file
                 break
+
     with open(login_image, 'rb') as image_file:
         b64_content = str(base64.b64encode(image_file.read()).decode('utf-8'))
         extension = login_image.split('.')[-1]

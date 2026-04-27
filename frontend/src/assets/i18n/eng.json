@@ -276,7 +276,7 @@
         "unauthorized_details": "You do not have the necessary permissions to access this resource. Please contact your administrator if you believe this is an error.",
         "my_profile": "My profile",
         "merge": "Merge",
-        "executed_outputs": ""
+        "executed_outputs": "Output chains executed"
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validated",
@@ -450,7 +450,11 @@
         "md5": "MD5 hash of the document",
         "sha256": "SHA256 hash of the document",
         "documents_count": "Number of documents in the batch",
-        "metadata_file": "Batch metadata file"
+        "metadata_file": "Batch metadata file",
+        "random": "Random string",
+        "document_identifier": "Document ID",
+        "document_index": "Document index",
+        "format": "Format"
     },
     "ROLES": {
         "add_role": "Add a role",
@@ -500,8 +504,8 @@
         "splitter_privileges": "Splitter privileges",
         "verifier_privileges": "Verifier privileges",
         "accounts_privileges": "Third-party accounts",
-        "authorized_assign_roles": "",
-        "no_roles_available": ""
+        "authorized_assign_roles": "Authorized assignment roles",
+        "no_roles_available": "No other roles available for assignment"
     },
     "SETTINGS": {
         "abouts_us": "About",
@@ -682,8 +686,8 @@
         "batches_merged": "Batches merged successfully",
         "merge_batch_details": "Choose the main batch. Documents from other batches will be merged into the main batch and secondary batches will be deleted. <strong>(this action is irreversible)</strong>",
         "no_other_batches": "No other batches available for merging",
-        "batch_non_modifiable": "",
-        "batch_non_modifiable_details": ""
+        "batch_non_modifiable": "Batch non-modifiable",
+        "batch_non_modifiable_details": "You cannot modify this batch because it has already been processed, deleted, or merged"
     },
     "UPLOAD": {
         "upload_dropzone": "Click to choose a file",
@@ -848,8 +852,8 @@
         "system_fields": "System fields",
         "accounting_plan": "Expense accounts",
         "delete_field_success": "Field successfully removed",
-        "document_non_modifiable": "",
-        "document_non_modifiable_details": ""
+        "document_non_modifiable": "Document non-modifiable",
+        "document_non_modifiable_details": "You cannot modify this document because it has already been processed"
     },
     "SECURITY": {
         "default_auth": "Default authentication",
@@ -999,7 +1003,8 @@
         "conditional_custom_field": "Conditional custom field",
         "new_choice": "New choice",
         "create_custom_fields": "Create custom field",
-        "create_success": "Custom field created successfully"
+        "create_success": "Custom field created successfully",
+        "choice_label_short_duplicate": "The technical wording of the choice must be unique"
     },
     "WORKFLOWS": {
         "confirm_delete_workflows_one": "Are you sure you want to delete this workflow?",

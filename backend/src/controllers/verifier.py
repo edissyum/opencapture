@@ -727,12 +727,12 @@ def get_file_content(file_type, filename, mime_type, compress=False, year_and_mo
                     if os.path.isfile(filename):
                         content = return_rotated_content(file_type, filename)
 
-    if not content:
+    if content:
         if mime_type == 'image/jpeg':
-            with open(docservers['ASSETS_PATH'] + '/not_found/document_not_found.jpg', 'rb') as file:
+            with open('./src/assets/not_found/document_not_found.jpg', 'rb') as file:
                 content = file.read()
         else:
-            with open(docservers['ASSETS_PATH'] + '/not_found/document_not_found.pdf', 'rb') as file:
+            with open('./src/assets/not_found/document_not_found.pdf', 'rb') as file:
                 content = file.read()
     return Response(content, mimetype=mime_type)
 
