@@ -91,7 +91,7 @@ def launch_referential_update(form_data):
     database = get_context_var('database', 0)
     docservers = get_context_var('docservers', 9)
 
-    available_methods = docservers['SPLITTER_METADATA_PATH'] + "/metadata_methods.json"
+    available_methods = shared.custom_path + "/bin/scripts/splitter_metadata/metadata_methods.json"
     call_on_splitter_view = False
     try:
         with open(available_methods, encoding='utf-8') as json_file:
@@ -107,8 +107,8 @@ def launch_referential_update(form_data):
                         'docservers': docservers,
                         'form_id': form_data['form_id']
                     }
-                    metadata_load = Splitter.import_method_from_script(docservers['SPLITTER_METADATA_PATH'],
-                                                                       method['script'], method['method'])
+                    splitter_metadata_path = shared.custom_path + "/bin/scripts/splitter_metadata/"
+                    metadata_load = Splitter.import_method_from_script(splitter_metadata_path, method['script'], method['method'])
                     metadata_load(args)
     except (Exception,) as e:
         response = {
@@ -724,17 +724,14 @@ def export_batch(data):
 
 
 def get_split_methods():
-    docservers = get_context_var('docservers', 9)
-    split_methods = Splitter.get_split_methods(docservers)
+    split_methods = Splitter.get_split_methods()
     if len(split_methods) > 0:
         return split_methods, 200
     return split_methods, 400
 
 
 def get_metadata_methods(form_method=False):
-    docservers = get_context_var('docservers', 9)
-
-    metadata_methods = Splitter.get_metadata_methods(docservers, form_method)
+    metadata_methods = Splitter.get_metadata_methods(form_method)
     if metadata_methods and len(metadata_methods) > 0:
         return metadata_methods, 200
     return metadata_methods, 400

@@ -10,6 +10,8 @@ DELETE FROM docservers WHERE docserver_id = 'ERROR_PATH';
 DELETE FROM docservers WHERE docserver_id = 'LOCALE_PATH';
 DELETE FROM docservers WHERE docserver_id = 'ASSETS_PATH';
 DELETE FROM docservers WHERE docserver_id = 'CONFIG_PATH';
+DELETE FROM docservers WHERE docserver_id = 'SPLITTER_METHODS_PATH';
+DELETE FROM docservers WHERE docserver_id = 'SPLITTER_METADATA_PATH';
 
 -- Mise à jour des libellés de la configuration
 DELETE FROM configurations WHERE label = 'loginBottomMessage';

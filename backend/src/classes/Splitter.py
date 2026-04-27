@@ -31,6 +31,7 @@ from datetime import datetime
 from unidecode import unidecode
 from .NFZ42020 import hash_file_content
 from werkzeug.datastructures import FileStorage
+from .. import shared
 from ..scripting_functions import launch_script_splitter
 from ..classes.OpenCaptureForMEMWebServices import OpenCaptureForMEMWebServices
 
@@ -599,16 +600,17 @@ class Splitter:
         return True, 200
 
     @staticmethod
-    def get_split_methods(docservers):
-        with open(docservers['SPLITTER_METHODS_PATH'] + '/splitter_methods.json', encoding="utf-8") as methods_json:
+    def get_split_methods():
+        with open(shared.custom_path + "/bin/scripts/splitter_methods/splitter_methods.json", encoding="utf-8") as methods_json:
             methods = json.load(methods_json)
             return methods['methods']
 
     @staticmethod
-    def get_metadata_methods(docservers, method_id):
+    def get_metadata_methods(method_id):
         res_methods = []
-        if os.path.isfile(docservers['SPLITTER_METADATA_PATH'] + '/metadata_methods.json'):
-            with open(docservers['SPLITTER_METADATA_PATH'] + '/metadata_methods.json', encoding="utf-8") as methods_json:
+        path = shared.custom_path + '/bin/scripts/splitter_metadata/metadata_methods.json'
+        if os.path.isfile(path):
+            with open(path, encoding="utf-8") as methods_json:
                 methods = json.load(methods_json)
                 for method in methods['methods']:
                     res_methods.append({
