@@ -1,8 +1,12 @@
 -- Récupération de l'ancien chemin du projet pour le stocker dans une variable
-SELECT path as old_path FROM docservers WHERE docserver_id = 'PROJECT_PATH'; \gset
+SELECT path as old_path
+FROM docservers
+WHERE docserver_id = 'PROJECT_PATH';
+\gset
 
 -- Remplacer les chemins dans les docservers
-UPDATE docservers SET path = REPLACE(path, :'old_path', './');
+UPDATE docservers
+SET path = REPLACE(path, :'old_path', './');
 
 -- Suppression des chemins obsolètes
 DELETE FROM docservers WHERE docserver_id = 'TMP_PATH';
@@ -102,20 +106,36 @@ WHERE input::text LIKE '%src.backend%'
 -- Chaque tableau est considéré comme une ligne
 UPDATE form_models_field
 SET fields = (SELECT jsonb_object_agg(
-                             key,
-                             CASE
-                                 WHEN jsonb_typeof(value) = 'array' THEN
-                                     COALESCE(
-                                             (SELECT jsonb_agg(jsonb_build_array(elem))
-                                              FROM jsonb_array_elements(value) AS t(elem)),
-                                             '[]'::jsonb
-                                     )
-                                 ELSE
-                                     value
-                                 END
-                     )
-              FROM jsonb_each(fields))
-WHERE jsonb_typeof(fields) = 'object';
+     key,
+     CASE
+         WHEN jsonb_typeof(value) = 'array' THEN
+             COALESCE(
+                 (SELECT jsonb_agg(jsonb_build_array(elem)) FROM jsonb_array_elements(value) AS t(elem)),
+                 '[]'::jsonb
+             )
+         ELSE
+             value
+         END
+)
+FROM jsonb_each(fields)) WHERE jsonb_typeof(fields) = 'object' AND form_id IN (SELECT id FROM form_models WHERE module = 'verifier');
+
+UPDATE form_models_field
+SET fields = jsonb_set(
+    jsonb_set(
+        fields,
+        '{batch_metadata}',
+        COALESCE(
+            (SELECT jsonb_agg(jsonb_build_array(elem)) FROM jsonb_array_elements(fields -> 'batch_metadata') AS elem),
+            '[]'::jsonb
+        )
+    ),
+    '{document_metadata}',
+    COALESCE(
+        (SELECT jsonb_agg(jsonb_build_array(elem)) FROM jsonb_array_elements(fields -> 'document_metadata') AS elem),
+        '[]'::jsonb
+    )
+)
+WHERE jsonb_typeof(fields) = 'object' AND form_id IN (SELECT id FROM form_models WHERE module = 'splitter');
 
 -- Modification des libellés
 UPDATE form_models_field
@@ -185,6 +205,18 @@ WHERE fields::text LIKE '%FACTURATION.order_number%';
 UPDATE form_models_field
 SET fields = REPLACE(fields::text, 'FACTURATION.delivery_number', 'VERIFIER.delivery_number')::jsonb
 WHERE fields::text LIKE '%FACTURATION.delivery_number%';
+
+UPDATE form_models_field
+SET fields = REPLACE(fields::text, 'FACTURATION.lastname', 'ACCOUNTS.lastname')::jsonb
+WHERE fields::text LIKE '%FACTURATION.lastname%';
+
+UPDATE form_models_field
+SET fields = REPLACE(fields::text, 'FACTURATION.firstname', 'ACCOUNTS.firstname')::jsonb
+WHERE fields::text LIKE '%FACTURATION.firstname%';
+
+UPDATE form_models_field
+SET fields = REPLACE(fields::text, 'FACTURATION.accounting_plan', 'VERIFIER.accounting_plan')::jsonb
+WHERE fields::text LIKE '%FACTURATION.accounting_plan%';
 
 -- Suppression de la colonne enabled des custom_fields
 ALTER TABLE custom_fields
@@ -311,20 +343,21 @@ ALTER TABLE splitter_batches ADD COLUMN "sha256" VARCHAR(64);
 -- Modifier document_md5 en md5 dans les chaînes sortants XML Splitter
 UPDATE outputs
 SET data = jsonb_set(
-        data,
-        '{options,parameters}',
-        (SELECT jsonb_agg(
-                        CASE
-                            WHEN param ->> 'id' = 'xml_template' THEN
-                                jsonb_set(
-                                        param,
-                                        '{value}',
-                                        to_jsonb(
-                                                replace(param ->> 'value', '#document_md5#', '#md5#')
-                                        )
-                                )
-                            ELSE param
-                            END
+    data,
+    '{options,parameters}',
+    (SELECT jsonb_agg(
+        CASE
+        WHEN param ->> 'id' = 'xml_template' THEN
+            jsonb_set(
+                param,
+                '{value}',
+                to_jsonb(
+                    replace(param ->> 'value', '#document_md5#', '#md5#')
                 )
-         FROM jsonb_array_elements(data -> 'options' -> 'parameters') AS param)
-) WHERE output_type_id = 'export_xml' AND module = 'splitter';
+            )
+            ELSE param
+        END
+    )
+    FROM jsonb_array_elements(data -> 'options' -> 'parameters') AS param)
+)
+WHERE output_type_id = 'export_xml' AND module = 'splitter';

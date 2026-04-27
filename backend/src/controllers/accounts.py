@@ -70,6 +70,7 @@ def get_suppliers(_args):
             "LOWER(vat_number) LIKE %s)"
         )
         args['data'].extend([search_param] * 10)
+        args['offset'] = ''
 
     if 'name' in _args and _args['name']:
         args['offset'] = ''
