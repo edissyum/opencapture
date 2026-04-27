@@ -548,7 +548,7 @@ class Splitter:
                 f.write(xml_as_string)
         except (Exception,) as e:
             return False, str(e)
-        exit()
+
         return True, xml_file_path
 
     @staticmethod
