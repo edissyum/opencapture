@@ -70,7 +70,6 @@ INSERT INTO "configurations" ("label", "data") VALUES ('enableAttachments', '{"t
 
 -- CRÉATION DES DOCSERVERS
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('PROJECT_PATH', 'Chemin vers l''instance d''Open-Capture', './');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SCRIPTS_PATH', 'Chemin vers le dossier contenant les différents scripts', './bin/scripts/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('DOCSERVERS_PATH', 'Chemin vers la zone de stockage', '/var/docservers/opencapture/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('REFERENTIALS_PATH', 'Chemin vers le dossier contenant les fichiers de référentiel', './instance/referencial/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_THUMB', '[VERIFIER] Chemin pour le stockage des miniatures', '/var/docservers/opencapture/verifier/thumbs/');

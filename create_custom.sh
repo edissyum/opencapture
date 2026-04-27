@@ -188,9 +188,7 @@ DATABASE_INFO="-U "$database_user" -h "$database_hostname" -p "$database_port" -
 psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, '/var/share/' , '$share_path');"
 psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, '/var/docservers/opencapture/' , '$docservers_path');"
 
-psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, './bin/' , '$NEW_CUSTOM_PATH/bin/');"
 psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, './data/' , '$NEW_CUSTOM_PATH/data/');"
-psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, './config/' , '$NEW_CUSTOM_PATH/config/');"
 psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, './instance/' , '$NEW_CUSTOM_PATH/instance/');"
 
 psql $DATABASE_INFO -c "UPDATE docservers SET path=REPLACE(path, '//' , '/');"

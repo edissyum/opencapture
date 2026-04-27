@@ -42,7 +42,7 @@ export function UploadPage() {
     const [sending, setSending] = useState(false);
     const [completedFiles, setCompletedFiles] = useState<string[]>([]);
     const [progress, setProgress] = useState<Record<string, number | undefined>>({});
-    const workflowTooltipMinLength = 40;
+    const workflowTooltipMinLength = 30;
 
     const selectedModule = localStorage.getItem('selectedModule');
     if (selectedModule && selectedModule !== module) {

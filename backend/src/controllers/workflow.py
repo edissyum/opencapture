@@ -26,6 +26,7 @@ from flask import request
 from flask_babel import gettext
 from pyflakes.scripts import pyflakes
 
+import shared
 from ..classes.Config import Config
 from ..controllers import user
 from ..functions import retrieve_custom_from_url, check_order_by
@@ -329,7 +330,7 @@ def create_script_and_watcher(args):
     config = get_context_var('config', 1)
     docservers = get_context_var('docservers', 9)
 
-    folder_script = docservers['SCRIPTS_PATH'] + '/' + args['module'] + '_workflows/'
+    folder_script = shared.custom_path + '/bin/scripts/' + args['module'] + '_workflows/'
     arguments = '-workflow_id ' + str(args['workflow_id'])
 
     ######
@@ -415,11 +416,9 @@ def get_workflow_by_form_id(form_id):
 
 def delete_script_and_incron(args):
     custom_id = retrieve_custom_from_url(request)
-
     config = get_context_var('config', 1)
-    docservers = get_context_var('docservers', 9)
 
-    folder_script = docservers['SCRIPTS_PATH'] + args['module'] + '_workflows/'
+    folder_script = shared.custom_path + '/bin/scripts/' + args['module'] + '_workflows/'
     script_name = args['workflow_id'] + '.sh'
     old_script_filename = folder_script + '/' + script_name
     if os.path.isdir(folder_script) and os.path.isfile(old_script_filename):
@@ -433,6 +432,7 @@ def delete_script_and_incron(args):
         fs_watcher_job = args['module'] + '_' + args['workflow_id']
         if custom_id:
             fs_watcher_job += '_' + custom_id
+
         if fs_watcher_job in fs_watcher_config:
             Config.fswatcher_remove_section(config['GLOBAL']['watcherconfig'], fs_watcher_job)
         return '', 200
