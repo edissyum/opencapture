@@ -163,7 +163,6 @@ export function CustomerEditor() {
             siren: "",
             siret: "",
             company_number: "",
-            module: "",
             address1: "",
             address2: "",
             postal_code: "",

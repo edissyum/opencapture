@@ -43,7 +43,9 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
     const navigate = useNavigate();
     const { customFields } = useCustomFields(module);
     const cm = useRef({ current: null } as any);
-    const [selectedOptionIndex, setSelectedOptionIndex] = useState<number>();
+    const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(null);
+    const [activeAccordionIndexes, setActiveAccordionIndexes] = useState<number[]>([]);
+    const [autoFocusOptionIndex, setAutoFocusOptionIndex] = useState<number | null>(null);
 
     const [customField, setCustomField] = useState<any>({});
     const [loading, setLoading] = useState(false);
@@ -291,6 +293,17 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         }
     }, [watchLabelShort]);
 
+    useEffect(() => {
+        if (autoFocusOptionIndex === null) return;
+        if (!activeAccordionIndexes.includes(autoFocusOptionIndex)) return;
+
+        const timeoutId = window.setTimeout(() => {
+            setAutoFocusOptionIndex(null);
+        }, 0);
+
+        return () => window.clearTimeout(timeoutId);
+    }, [autoFocusOptionIndex, activeAccordionIndexes, selectOptions.length]);
+
     // Highlight regex matches in test zone
     useEffect(() => {
         if (!watchTest) return;
@@ -402,12 +415,18 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
     }
 
     const handleDeleteOption = async () => {
-        if (!selectedOptionIndex) return;
+        if (selectedOptionIndex === null) return;
 
         const optionToDelete = selectOptions[selectedOptionIndex];
         if (!optionToDelete) return;
         const newOptions = selectOptions.filter((_, index) => index !== selectedOptionIndex);
         setSelectOptions(newOptions);
+        setActiveAccordionIndexes((previousIndexes) =>
+            previousIndexes
+                .filter((index) => index !== selectedOptionIndex)
+                .map((index) => (index > selectedOptionIndex ? index - 1 : index))
+        );
+        setSelectedOptionIndex(null);
     }
 
     return (
@@ -541,7 +560,20 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                         ) }
                     </div>
 
-                    <Accordion multiple className={ 'max-h-72 overflow-y-auto border-(--border-secondary)' }>
+                    <Accordion
+                        multiple
+                        activeIndex={ activeAccordionIndexes }
+                        onTabChange={ (e) => {
+                            if (Array.isArray(e.index)) {
+                                setActiveAccordionIndexes(e.index);
+                            } else if (typeof e.index === 'number') {
+                                setActiveAccordionIndexes([e.index]);
+                            } else {
+                                setActiveAccordionIndexes([]);
+                            }
+                        } }
+                        className={ 'max-h-72 overflow-y-auto border-(--border-secondary)' }
+                    >
                         { selectOptions.map((option, index) => (
                             <AccordionTab key={ index } header={
                                 <span className='flex items-center gap-2'>
@@ -565,6 +597,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                                     <div className='w-1/3'>
                                         <Input type="text"
                                                label={ t('GLOBAL.label') } value={ option.label }
+                                               autoFocus={ autoFocusOptionIndex === index }
                                                onChange={ (e) => {
                                                    const newOptions = [...selectOptions];
                                                    newOptions[index].label = e.target.value;
@@ -621,6 +654,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
 
                     <div className='mt-4 flex justify-end'>
                         <Button size='sm' variant="bg_white" onClick={ () => {
+                            const newOptionIndex = selectOptions.length;
                             setSelectOptions([
                                 ...selectOptions,
                                 {
@@ -630,6 +664,12 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                                     conditional_custom_value: ''
                                 }
                             ]);
+                            setAutoFocusOptionIndex(newOptionIndex);
+                            setActiveAccordionIndexes((previousIndexes) =>
+                                previousIndexes.includes(newOptionIndex)
+                                    ? previousIndexes
+                                    : [...previousIndexes, newOptionIndex]
+                            );
                         } }>
                             <Plus size={ 16 }/>
                             { t('CUSTOM-FIELDS.new_choice') }
