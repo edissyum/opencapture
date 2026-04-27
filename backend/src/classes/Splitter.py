@@ -199,21 +199,23 @@ class Splitter:
             'firstname': user['firstname'] if user['firstname'] else ''
         }
 
-        for field in fields['fields']['batch_metadata']:
-            if 'defaultValue' in field:
-                mask = {
-                    'mask': field['defaultValue'],
-                    'separator': ' '
-                }
-                default_values['batch'][field['label_short']] = get_value_from_mask(None, data, mask)
+        if 'batch_metadata' in fields['fields'] and fields['fields']['batch_metadata']:
+            for field in fields['fields']['batch_metadata']:
+                if 'defaultValue' in field:
+                    mask = {
+                        'mask': field['defaultValue'],
+                        'separator': ' '
+                    }
+                    default_values['batch'][field['label_short']] = get_value_from_mask(None, data, mask)
 
-        for field in fields['fields']['document_metadata']:
-            if 'defaultValue' in field:
-                mask = {
-                    'mask': field['defaultValue'],
-                    'separator': ' '
-                }
-                default_values['document'][field['label_short']] = get_value_from_mask(None, data, mask)
+        if 'document_metadata' in fields['fields'] and fields['fields']['document_metadata']:
+            for field in fields['fields']['document_metadata']:
+                if 'defaultValue' in field:
+                    mask = {
+                        'mask': field['defaultValue'],
+                        'separator': ' '
+                    }
+                    default_values['document'][field['label_short']] = get_value_from_mask(None, data, mask)
 
         return default_values
 

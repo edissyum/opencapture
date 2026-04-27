@@ -173,7 +173,7 @@ def launch(args):
 
                     if 'workflow_id' in args and args['workflow_id']:
                         splitter_methods_path = shared.custom_path + "/bin/scripts/splitter_methods/"
-                        available_split_methods_path = splitter_methods_path + "/bin/scripts/splitter_methods/splitter_methods.json"
+                        available_split_methods_path = splitter_methods_path + "/splitter_methods.json"
 
                         if splitter_method_id and os.path.isfile(available_split_methods_path):
                             with open(available_split_methods_path, encoding='utf-8') as json_file:

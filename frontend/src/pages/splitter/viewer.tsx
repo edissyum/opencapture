@@ -1057,6 +1057,33 @@ export function SplitterViewerPage() {
         }
     }
 
+    const getFilteredConditionalOptions = (document_id: number, field: any) => {
+        if (!field.settings?.options) return [];
+        if (!field.settings?.conditional) return field.settings.options;
+
+        const options: any[] = [];
+        field.settings.options.forEach((option: any) => {
+            const conditionalCustomField: any = customFields.find((f) => f.id === option.conditional_custom_field);
+            if (conditionalCustomField) {
+                let conditionalFieldValue = documentMetadataValues[document_id]?.[conditionalCustomField.label_short];
+                if (conditionalCustomField.type === 'select' && conditionalFieldValue) {
+                    const conditionalOption = conditionalCustomField.settings.options.find((o: any) => o.id === conditionalFieldValue.id);
+                    if (conditionalOption) {
+                        conditionalFieldValue = conditionalOption.id;
+                    }
+                }
+
+                if (conditionalFieldValue === option.conditional_custom_value) {
+                    options.push({
+                        'value': option.id,
+                        'label': option.label
+                    });
+                }
+            }
+        });
+        return options;
+    };
+
     if (loadingBatch || !batch) return <Loader/>;
 
     return (
@@ -1475,7 +1502,7 @@ export function SplitterViewerPage() {
                                                             { line.map((field: any) => (
                                                                 <div key={ field.id }
                                                                      className={ `min-w-1/6 ${ getWidthLine(line) }` }>
-                                                                    { field.type === 'date' ? (
+                                                                    { field.type === 'date' && (
                                                                         <ISOCalendar
                                                                             id={ field.id }
                                                                             key={ field.id }
@@ -1487,7 +1514,8 @@ export function SplitterViewerPage() {
                                                                                 handleUpdateDocumentMetadataValues(document.id, field, e)
                                                                             } }
                                                                         />
-                                                                    ) : (
+                                                                    ) }
+                                                                    { field.type == 'text' && (
                                                                         <Input
                                                                             id={ field.id }
                                                                             key={ field.id }
@@ -1500,8 +1528,21 @@ export function SplitterViewerPage() {
                                                                                 handleUpdateDocumentMetadataValues(document.id, field, e.target.value)
                                                                             } }
                                                                         />
-                                                                    )
-                                                                    }
+                                                                    ) }
+                                                                    { field.type == 'select' && (
+                                                                        <Dropdown
+                                                                            filter={ true }
+                                                                            id={ field.id }
+                                                                            label={ t(field.label) }
+                                                                            required={ field.required }
+                                                                            disabled={ disabledBatch }
+                                                                            value={ documentMetadataValues[document.id]?.[field.label_short] }
+                                                                            options={ getFilteredConditionalOptions(document.id, field) }
+                                                                            onChange={ (e) => {
+                                                                                handleUpdateDocumentMetadataValues(document.id, field, e.target.value)
+                                                                            } }
+                                                                        />
+                                                                    ) }
                                                                 </div>
                                                             )) }
                                                         </div>
