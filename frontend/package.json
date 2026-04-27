@@ -38,7 +38,7 @@
         "react-dom": "^19.2.5",
         "react-dropzone": "^15.0.0",
         "react-hook-form": "^7.74.0",
-        "react-i18next": "^17.0.4",
+        "react-i18next": "^17.0.5",
         "react-pdf": "^10.4.1",
         "react-router-dom": "^7.14.2",
         "react-toastify": "^11.1.0",
