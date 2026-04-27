@@ -15,21 +15,23 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import json
 import os
 import uuid
-import json
 from datetime import datetime
+
 from flask import current_app
+
 from .. import verifier_exports
 from ..classes.Files import Files
-from ..classes.PyTesseract import PyTesseract
 from ..classes.NFZ42020 import hash_file_content
+from ..classes.PyTesseract import PyTesseract
 from ..controllers import attachments, artificial_intelligence
-from ..scripting_functions import send_to_workflow, launch_script_verifier
 from ..functions import delete_documents, rotate_document, find_workflow_with_ia
-from ..process import (find_date, find_due_date, find_footer, find_invoice_number, find_supplier,
-                                 find_custom, find_delivery_number, find_footer_raw, find_quotation_number,
-                                 find_currency, find_contact, find_subject, find_with_ai, find_name)
+from ..process import (find_date, find_due_date, find_footer, find_invoice_number, find_supplier, find_custom, find_name,
+                       find_delivery_number, find_footer_raw, find_quotation_number, find_currency, find_contact, find_subject,
+                       find_with_ai)
+from ..scripting_functions import send_to_workflow, launch_script_verifier
 
 
 class DictX(dict):
@@ -453,7 +455,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     if workflow_settings['input']['apply_process']:
         log.debug('Start to find supplier or contact in document based on workflow settings')
-        if 'name' in system_fields_to_find or 'contact' in system_fields_to_find :
+        if 'name' in system_fields_to_find or 'contact' in system_fields_to_find:
             # Find supplier in document if not send using upload rest
             if not supplier or not supplier[0] or not supplier[2]:
                 if 'name' in system_fields_to_find:
@@ -671,7 +673,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                     timedelta = today - doc_date
 
                                     if timedelta.days > int(configurations['timeDelta']):
-                                        log.info(f"{value} is older than {configurations['timeDelta']} days : {str(ai_invoice_values[value])}")
+                                        log.info(
+                                            f"{value} is older than {configurations['timeDelta']} days : {str(ai_invoice_values[value])}")
                                         continue
                                     if timedelta.days < 0:
                                         log.info(f"{value} is in the future : {str(ai_invoice_values[value])}")
@@ -699,7 +702,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             image = None
             if current_app.config['CONTACT_MODEL'] is not None:
                 image = files.open_image_return(files.jpg_name)
-            name_class = find_name.FindName(ocr, log, docservers, supplier, files, database, regex, datas['form_id'], file, current_app.config['CONTACT_MODEL'], image)
+            name_class = find_name.FindName(ocr, log, docservers, supplier, files, database, regex, datas['form_id'], file,
+                                            current_app.config['CONTACT_MODEL'], image)
             datas = found_data_recursively(log, 'firstname_lastname', ocr, file, nb_pages, text_by_pages,
                                            name_class, datas, files, configurations, tesseract_function,
                                            convert_function)
@@ -713,7 +717,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         if 'document_due_date' in system_fields_to_find:
             log.debug('Search for document due date in document')
-            due_date_class = find_due_date.FindDueDate(ocr, log, regex, configurations, files, supplier, database, file, docservers,
+            due_date_class = find_due_date.FindDueDate(ocr, log, regex, configurations, files, supplier, database, file,
+                                                       docservers,
                                                        languages, datas['form_id'])
             datas = found_data_recursively(log, 'document_due_date', ocr, file, nb_pages, text_by_pages,
                                            due_date_class, datas, files, configurations, tesseract_function,
@@ -730,7 +735,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         if 'delivery_number' in system_fields_to_find:
             log.debug('Search for delivery number in document')
-            delivery_number_class = find_delivery_number.FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file,
+            delivery_number_class = find_delivery_number.FindDeliveryNumber(ocr, files, log, regex, config, database, supplier,
+                                                                            file,
                                                                             docservers, configurations, datas['form_id'])
             datas = found_data_recursively(log, 'delivery_number', ocr, file, nb_pages, text_by_pages,
                                            delivery_number_class, datas, files, configurations, tesseract_function,
@@ -741,8 +747,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             footer_class = find_footer.FindFooter(ocr, log, regex, config, files, database, supplier, file,
                                                   ocr.footer_text, docservers, datas['form_id'])
             if supplier and 'get_only_raw_footer' in supplier[2] and supplier[2]['get_only_raw_footer'] in [True, 'True']:
-                footer_class = find_footer_raw.FindFooterRaw(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text,
-                                                                     docservers, datas['form_id'])
+                footer_class = find_footer_raw.FindFooterRaw(ocr, log, regex, config, files, database, supplier, file,
+                                                             ocr.footer_text,
+                                                             docservers, datas['form_id'])
 
             footer = footer_class.run()
             if not footer and nb_pages > 1:
@@ -910,7 +917,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 allow_auto = False
                 break
 
-    if (supplier and (allow_auto and not supplier[2]['skip_auto_validate'])) or allow_auto or not workflow_settings['input']['apply_process']:
+    if (supplier and (allow_auto and not supplier[2]['skip_auto_validate'])) or allow_auto or not workflow_settings['input'][
+        'apply_process']:
         status = 'END'
         log.info('All the usefull informations are found. Execute outputs action and end process')
         document_id = insert(args, files, database, datas, full_jpg_filename, file, original_file, supplier, status,

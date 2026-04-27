@@ -134,7 +134,9 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 try {
                     const response = await get(`/accounts/customers/list/${ module }`);
                     if (response && response.customers) {
-                        response.customers.unshift({ id: 0, name: t('WORKFLOWS.no_customer') });
+                        if (module === 'verifier') {
+                            response.customers.unshift({ id: 0, name: t('WORKFLOWS.no_customer') });
+                        }
                         setCustomers(response.customers);
                     }
                 } catch (error) {
@@ -270,9 +272,10 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             label: t("WORKFLOWS.input_folder"),
             placeholder: `/var/share/${ custom }/input`
         })),
-        customer_id: z.number().optional().describe(JSON.stringify({
+        customer_id: z.number().describe(JSON.stringify({
             component: "dropdown",
             label: t("WORKFLOWS.customer"),
+            required: module === 'splitter',
             options: customers.map((c: any) => ({ label: c.name, value: c.id }))
         })),
         ai_model_id: z.number().optional().describe(JSON.stringify({
@@ -445,7 +448,6 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             splitter_method_id: 'no_sep',
             rotation: 'no_rotation',
             ai_llm: 'no_ai_llm',
-            customer_id: 0,
             ai_model_id: 0,
             form_id: undefined,
             convert_function: 'pdf2image',

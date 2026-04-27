@@ -62,6 +62,8 @@ export function CustomerEditor() {
                 }
             } catch (error) {
                 console.error('Error fetching customer data:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -115,12 +117,13 @@ export function CustomerEditor() {
             label: t("ACCOUNTS.company_number")
         })),
         module: z.string().describe(JSON.stringify({
+            required: true,
             component: "dropdown",
+            label: t("MAILCOLLECT.module"),
             options: [
                 { label: 'Verifier', value: "verifier" },
                 { label: 'Splitter', value: "splitter" }
-            ],
-            label: t("MAILCOLLECT.module")
+            ]
         }))
     });
 
