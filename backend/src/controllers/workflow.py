@@ -26,7 +26,7 @@ from flask import request
 from flask_babel import gettext
 from pyflakes.scripts import pyflakes
 
-import shared
+from .. import shared
 from ..classes.Config import Config
 from ..controllers import user
 from ..functions import retrieve_custom_from_url, check_order_by
@@ -464,7 +464,7 @@ def test_script(args):
 
         if len(splitted_result) >= 3:
             result_str = '<strong>' + gettext('LINE') + ' ' + splitted_result[1] + ' ' + \
-                            gettext('COLUMN') + ' ' + splitted_result[2] + '</strong> : ' + splitted_result[3]
+                         gettext('COLUMN') + ' ' + splitted_result[2] + '</strong> : ' + splitted_result[3]
             return {
                 "errors": gettext('BAD_REQUEST'),
                 "message": result_str
