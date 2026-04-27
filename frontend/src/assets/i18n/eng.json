@@ -1084,7 +1084,8 @@
         "validating_script": "Validating script...",
         "update": "Update workflow",
         "updating": "Updating workflow...",
-        "validating": "Validating step..."
+        "validating": "Validating step...",
+        "customer_required": "A customer account is mandatory"
     },
     "MONITORING": {
         "processes": "Processes",

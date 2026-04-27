@@ -1164,7 +1164,8 @@
         "validating_script": "Validando el script...",
         "update": "Actualizar el flujo de trabajo",
         "updating": "Actualizando el flujo de trabajo...",
-        "validating": "Validando el paso..."
+        "validating": "Validando el paso...",
+        "customer_required": "Es obligatorio tener una cuenta de cliente"
     },
     "MONITORING": {
         "processes": "Procesos",

@@ -1164,7 +1164,8 @@
         "validating_script": "Validation du script en cours...",
         "update": "Mettre à jour le workflow",
         "updating": "Mise à jour du workflow en cours...",
-        "validating": "Validation de l'étape en cours..."
+        "validating": "Validation de l'étape en cours...",
+        "customer_required": "Le compte client est obligatoire"
     },
     "MONITORING": {
         "processes": "Processus",

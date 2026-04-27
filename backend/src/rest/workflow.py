@@ -235,7 +235,7 @@ def test_script(module):
     check, message = rest_validator(request.json, [
         {'id': 'step', 'type': str, 'mandatory': True},
         {'id': 'codeContent', 'type': str, 'mandatory': True},
-        {'id': 'input_folder', 'type': str, 'mandatory': True}
+        {'id': 'input_folder', 'type': str, 'mandatory': False}
     ])
     if not check:
         return make_response({

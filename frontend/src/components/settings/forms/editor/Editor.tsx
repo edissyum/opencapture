@@ -497,7 +497,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                             ) }
                         </TabPanel>
                         <TabPanel header={ t("SETTINGS.form_fields") }>
-                            <Accordion multiple activeIndex={ [0] } className='p-6'>
+                            <Accordion multiple activeIndex={ [0, 1] } className='p-6'>
                                 { zones.map((zone: any) => (
                                     <AccordionTab header={
                                         <span className='flex items-center gap-2'>

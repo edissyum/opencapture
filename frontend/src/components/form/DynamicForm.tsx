@@ -101,7 +101,8 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                             name={ field.name }
                             control={ control }
                             render={ ({ field: f }) => (
-                                <div className={ `flex gap-2 items-center relative ${ field.disabled ? 'cursor-not-allowed' : '' }` }>
+                                <div
+                                    className={ `flex w-fit gap-2 items-center relative ${ field.disabled ? 'cursor-not-allowed' : '' }` }>
                                     <InputSwitch
                                         inputId={ f.name }
                                         checked={ f.value }
@@ -113,8 +114,7 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                                         { field.label }
                                     </label>
                                     { field.hint && (
-                                        <span className={ `absolute cursor-pointer z-10 -right-5 top-1.5 
-                                                           text-(--text-secondary)` }>
+                                        <span className={ `absolute cursor-pointer z-10 -right-5 top-0 text-(--text-secondary)` }>
                                             <CircleQuestionMark data-tooltip-id="tooltip" size={ 16 }
                                                                 data-tooltip-content={ field.hint }/>
                                         </span>

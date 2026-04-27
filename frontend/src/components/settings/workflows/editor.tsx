@@ -430,6 +430,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         control: workflowControl,
         setValue: workflowSetValue,
         setError: workflowSetError,
+        clearErrors: workflowClearErrors,
         getValues: workflowGetValues,
         handleSubmit: workflowHandleSubmit,
         formState: { errors: workflowErrors }
@@ -449,6 +450,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             rotation: 'no_rotation',
             ai_llm: 'no_ai_llm',
             ai_model_id: 0,
+            customer_id: 0,
             form_id: undefined,
             convert_function: 'pdf2image',
             tesseract_function: 'line_box_builder',
@@ -460,6 +462,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
     });
 
     const formIdValue: any = workflowWatch('form_id');
+    const customerId: any = workflowWatch('customer_id');
     const useInterfaceValue: any = workflowWatch('use_interface');
     const splitterMethod: any = workflowWatch('splitter_method_id');
 
@@ -467,6 +470,15 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
     useEffect(() => {
         setUseInterface(useInterfaceValue);
     }, [useInterfaceValue]);
+
+    // Show error if customer is not selected and module is splitter
+    useEffect(() => {
+        if (module === 'splitter' && !customerId) {
+            workflowSetError('customer_id', { message: t("WORKFLOWS.customer_required") });
+        } else {
+            workflowClearErrors('customer_id');
+        }
+    }, [customerId]);
 
     // Enable/disable separate_by_document_number_value based on splitter method
     useEffect(() => {
@@ -505,9 +517,9 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         }
 
         if (stepperIndex === 0) {
-            setLoadingUpdate(true);
             const input_folder = workflowGetValues('input_folder');
             if (input_folder) {
+                setLoadingUpdate(true);
                 if (workflowId) {
                     try {
                         await post(`workflows/${ module }/createScriptAndWatcher`, {
@@ -645,7 +657,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                     <DynamicForm schema={ inputSchemaEndSwitchs } control={ workflowControl } errors={ workflowErrors }/>
 
                     { allowScripting && (
-                        <div className='flex items-center mt-3'>
+                        <div className='flex items-center mt-4 gap-2'>
                             <InputSwitch inputId='inputScripting' checked={ inputScripting }
                                          onChange={ (e) => setInputScripting(e.value) }/>
                             <label htmlFor={ 'inputScripting' }
@@ -722,7 +734,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                                  errors={ workflowErrors }/>
 
                     { allowScripting && (
-                        <div className='flex items-center mt-3'>
+                        <div className='flex items-center mt-4 gap-2'>
                             <InputSwitch inputId='processScripting' checked={ processScripting }
                                          onChange={ (e) => setProcessScripting(e.value) }/>
                             <label htmlFor={ 'processScripting' }
