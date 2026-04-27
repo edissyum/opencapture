@@ -355,7 +355,7 @@ def change_form(args):
             'ip': request.remote_addr,
             'submodule': 'change_form',
             'user_info': request.environ['user_info'],
-            'desc': gettext('CHANGE_FORM_SUCCESS', batch_id=args['batch_id'])
+            'desc': gettext('CHANGE_FORM_SUCCESS', batch_id=args['batchId'])
         })
         return res, 200
     else:
