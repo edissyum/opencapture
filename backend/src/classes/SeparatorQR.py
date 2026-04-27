@@ -53,9 +53,9 @@ class SeparatorQR:
         self.splitter_or_verifier = splitter_or_verifier
         self.convert_to_pdfa = config['SEPARATORQR']['exportpdfa']
         tmp_folder_name = os.path.basename(os.path.normpath(tmp_folder))
-        self.tmp_dir = docservers['SEPARATOR_QR_TMP'] + '/' + tmp_folder_name + '/'
-        self.output_dir = docservers['SEPARATOR_OUTPUT_PDF'] + '/' + tmp_folder_name + '/'
-        self.output_dir_pdfa = docservers['SEPARATOR_OUTPUT_PDFA'] + '/' + tmp_folder_name + '/'
+        self.tmp_dir = shared.tmp_path + '/' + tmp_folder_name + '/'
+        self.output_dir = shared.data_path + '/output_pdf/' + tmp_folder_name + '/'
+        self.output_dir_pdfa = shared.data_path + '/output_pdfa/' + tmp_folder_name + '/'
 
         os.mkdir(self.tmp_dir)
         os.mkdir(self.output_dir)

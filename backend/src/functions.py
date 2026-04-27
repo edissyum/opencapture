@@ -112,7 +112,7 @@ def rest_validator(data, required_fields, only_data=False):
 
 
 def check_extensions_mime(files, custom_id, document_type='document'):
-    config_path = get_custom_path(custom_id) + '/config'
+    config_path = str(get_custom_path(custom_id)) + '/config'
     if not config_path or not os.path.isdir(config_path):
         response = {
             "errors": gettext("UPLOAD_ERRROR"),
@@ -229,7 +229,7 @@ def get_custom_path(custom_id):
         for custom_name, custom_param in customs_config.cfg.items():
             if custom_id == custom_name and os.path.isdir(custom_param['path']):
                 path = custom_param['path']
-    return path
+    return str(path)
 
 
 def retrieve_config_from_custom_id(custom_id):
@@ -392,22 +392,22 @@ def search(position, regex, files, ocr, target_file):
         return [data.replace('\n', ' '), json.dumps(position)]
 
 
-def recursive_delete(folder, log, docservers):
-    folder_name = os.path.basename(folder)
-    exported_pdf_folder = docservers['SEPARATOR_OUTPUT_PDF'] + folder_name
-    exported_pdfa_folder = docservers['SEPARATOR_OUTPUT_PDFA'] + folder_name
+def recursive_delete(folder, log):
+    folder_name = str(os.path.basename(folder))
+    exported_pdf_folder = shared.data_path + '/output_pdf/' + folder_name
+    exported_pdfa_folder = shared.data_path + '/output_pdfa/' + folder_name
 
-    for folder_name in [folder, exported_pdf_folder, exported_pdfa_folder]:
-        for file in os.listdir(folder_name):
+    for target_folder in [folder, exported_pdf_folder, exported_pdfa_folder]:
+        for file in os.listdir(target_folder):
             try:
-                os.remove(folder_name + '/' + file)
+                os.remove(target_folder + '/' + file)
             except FileNotFoundError as err:
-                log.error('Unable to delete tmp folder ' + folder_name + '/' + file + ' : ' + str(err), False)
+                log.error('Unable to delete tmp folder ' + target_folder + '/' + file + ' : ' + str(err), False)
 
         try:
-            os.rmdir(folder_name)
+            os.rmdir(target_folder)
         except FileNotFoundError as err:
-            log.error('Unable to delete tmp folder ' + folder_name + ' : ' + str(err), False)
+            log.error('Unable to delete tmp folder ' + target_folder + ' : ' + str(err), False)
 
 
 def generate_searchable_pdf(document, tmp_filename):

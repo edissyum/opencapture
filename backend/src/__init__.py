@@ -79,6 +79,7 @@ class Middleware:
                         app.config['SECRET_KEY'] = app.config['SECRET_KEY'].replace('\n', '')
         if path:
             shared.custom_path = path
+            shared.data_path = path + '/data/'
             shared.tmp_path = path + '/data/tmp/'
             shared.assets_path = path + '/assets/'
             shared.error_path = path + '/data/error/'

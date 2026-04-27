@@ -295,7 +295,7 @@ def launch(args):
                         pass
 
             log.debug('Recursive delete of temporary folder : ' + tmp_folder)
-            recursive_delete(tmp_folder, log, docservers)
+            recursive_delete(tmp_folder, log)
 
             end = time.time()
             _timer = timer(start, end)

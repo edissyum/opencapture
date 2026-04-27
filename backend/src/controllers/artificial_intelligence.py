@@ -322,7 +322,6 @@ def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id, module):
     ocr = get_context_var('ocr', 4)
     log = get_context_var('log', 5)
     files = get_context_var('files', 3)
-    docservers = get_context_var('docservers', 9)
 
     _artificial_intelligence= get_context_var('artificial_intelligence', 12)
 

@@ -42,6 +42,7 @@ export function UploadPage() {
     const [sending, setSending] = useState(false);
     const [completedFiles, setCompletedFiles] = useState<string[]>([]);
     const [progress, setProgress] = useState<Record<string, number | undefined>>({});
+    const workflowTooltipMinLength = 40;
 
     const selectedModule = localStorage.getItem('selectedModule');
     if (selectedModule && selectedModule !== module) {
@@ -180,7 +181,11 @@ export function UploadPage() {
                     { workflows.map((workflow) => (
                         <div key={ workflow.id }
                              onClick={ () => setSelectedWorkflow(workflow.workflow_id) }
-                             className={ `cursor-pointer flex items-center gap-1 border border-(--border-secondary) 
+                             { ...(workflow.label.length > workflowTooltipMinLength && {
+                                 "data-tooltip-id": "tooltip",
+                                 "data-tooltip-content": workflow.label
+                             }) }
+                             className={ `cursor-pointer flex items-center gap-1 border border-(--border-secondary)
                                           rounded-md p-2 hover:border-(--border-primary)
                                           ${ selectedWorkflow === workflow.workflow_id ? 'text-(--color-primary) border-(--color-primary) font-semibold bg-(--bg-selected)' : '' }` }>
                             { selectedWorkflow === workflow.workflow_id && (

@@ -1,8 +1,5 @@
 -- Récupération de l'ancien chemin du projet pour le stocker dans une variable
-SELECT path as old_path
-FROM docservers
-WHERE docserver_id = 'PROJECT_PATH';
-\gset
+SELECT path as old_path FROM docservers WHERE docserver_id = 'PROJECT_PATH'; \gset
 
 -- Remplacer les chemins dans les docservers
 UPDATE docservers
@@ -14,6 +11,10 @@ DELETE FROM docservers WHERE docserver_id = 'ERROR_PATH';
 DELETE FROM docservers WHERE docserver_id = 'LOCALE_PATH';
 DELETE FROM docservers WHERE docserver_id = 'ASSETS_PATH';
 DELETE FROM docservers WHERE docserver_id = 'CONFIG_PATH';
+DELETE FROM docservers WHERE docserver_id = 'CONFIG_PATH';
+DELETE FROM docservers WHERE docserver_id = 'SEPARATOR_QR_TMP';
+DELETE FROM docservers WHERE docserver_id = 'SEPARATOR_OUTPUT_PDF';
+DELETE FROM docservers WHERE docserver_id = 'SEPARATOR_OUTPUT_PDFA';
 DELETE FROM docservers WHERE docserver_id = 'SPLITTER_METHODS_PATH';
 DELETE FROM docservers WHERE docserver_id = 'SPLITTER_METADATA_PATH';
 

@@ -580,7 +580,6 @@ def export_users(args):
 
 def import_users(args):
     custom_id = retrieve_custom_from_url(request)
-    docservers = get_context_var('docservers', 9)
 
     custom_path = get_custom_path(custom_id)
     if not custom_path:
