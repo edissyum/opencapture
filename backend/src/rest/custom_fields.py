@@ -17,6 +17,7 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
+
 from flask import Blueprint, request, make_response, jsonify
 from flask_babel import gettext
 
@@ -67,8 +68,7 @@ def add_field():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'custom_fields']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/customFields/add'}), 403
 
-    args = json.loads(request.data)
-    res = custom_fields.add_custom_field(args)
+    res = custom_fields.add_custom_field(request.json)
     return make_response(jsonify(res[0])), res[1]
 
 

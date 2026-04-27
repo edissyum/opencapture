@@ -18,12 +18,12 @@ import z from "zod";
 import { t } from "i18next";
 import DOMPurify from "dompurify";
 import { Tooltip } from "react-tooltip";
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useMemo, useRef, useState } from "react";
 import { InputSwitch } from "primereact/inputswitch";
 import { ContextMenu } from "primereact/contextmenu";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import { CircleQuestionMark, EllipsisVertical, Plus, Trash } from "lucide-react";
 
@@ -98,6 +98,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         label_short: z.string().min(1).optional().describe(JSON.stringify({
             component: "input",
             type: "text",
+            disabled: !!customFieldId,
             required: true,
             label: t("ROLES.label_short")
         }))
