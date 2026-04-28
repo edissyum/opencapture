@@ -153,7 +153,9 @@ export function AttachmentsViewer({ show, module, attachment, onClose, onDelete,
                     } else if (currentAttachmentData.mime === 'application/pdf') {
                         return (
                             <div className='h-full flex justify-center pb-2'>
-                                <Document file={ memoizedFile } loading={ <Loader/> }
+                                <Document file={ memoizedFile }
+                                          loading={ <Loader/> }
+                                          scale={ window.devicePixelRatio * 1.5 }
                                           error={ t('ATTACHMENTS.error_loading_pdf') }
                                           onLoadSuccess={ ({ numPages }) => setNumPages(numPages) }>
                                     {/* @ts-ignore*/ }
@@ -162,7 +164,6 @@ export function AttachmentsViewer({ show, module, attachment, onClose, onDelete,
                                             key={ i }
                                             className="mb-4"
                                             pageNumber={ i + 1 }
-                                            renderTextLayer={ false }
                                             renderAnnotationLayer={ false }
                                         />
                                     )) }

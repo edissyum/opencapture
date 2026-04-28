@@ -16,11 +16,11 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 .react-pdf__Page {
-    @apply rounded-lg;
-}
-
-.react-pdf__Page__canvas {
     @apply border;
     @apply rounded-lg;
     @apply border-(--border-secondary);
+}
+
+.react-pdf__Page__canvas {
+    @apply rounded-lg;
 }
