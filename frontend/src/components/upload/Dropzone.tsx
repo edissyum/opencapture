@@ -38,8 +38,8 @@ export default function UploadDropzone({
     className,
     progressByFile,
     onFilesAccepted,
-    completedFiles = [],
     showPreview = true,
+    completedFiles = [],
     maxSize = 5 * 1024 * 1024,
     accept = { "image/*": [".jpeg", ".jpg", ".png"] }
 }: UploadDropzoneProps) {
@@ -95,7 +95,7 @@ export default function UploadDropzone({
     return (
         <div className='h-full flex flex-col'>
             <div
-                { ...getRootProps() } className={ `flex justify-center border-2 border-dashed rounded-xl p-6 
+                { ...getRootProps() } className={ `flex justify-center border-2 border-dashed rounded-xl p-6
                     cursor-pointer transition border-(--border-secondary) hover:border-(--border-primary)
                     ${ className ?? "" }
                     ${ isDragActive ? "bg-(--bg-selected) border-(--border-primary)!" : "" }` }>

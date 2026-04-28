@@ -40,6 +40,7 @@ export function SettingsVerifierAiLLMEditor() {
     const { aiLLMId } = useParams<{ aiLLMId: any }>();
 
     const isFirstProviderEffect = useRef(true);
+
     const [jsonValid, setJsonValid] = useState(true);
     const [containsPlaceholder, setContainsPlaceholder] = useState(false);
     const [ocrPlaceholder, setOcrPlaceholder] = useState('##OCR_CONTENT##');
@@ -206,7 +207,7 @@ export function SettingsVerifierAiLLMEditor() {
             setValue('output_price', provider.costs.find((c: any) => c.type === 'output')?.price);
 
             if (isFirstProviderEffect.current) {
-                isFirstProviderEffect.current = false;
+                isFirstProviderEffect.current = true;
                 return;
             }
 

@@ -195,7 +195,7 @@ export const defaultJsonContent: any = {
                                 "postal_code",
                                 "city",
                                 "country",
-                                "VAT_number",
+                                "vat_number",
                                 "email"
                             ],
                             "type": "object"
