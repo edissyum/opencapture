@@ -248,23 +248,6 @@ def get_document_pages(args):
     return pages, error
 
 
-def get_max_source_page(args):
-    database = get_context_var('database', 0)
-    error = None
-
-    pages = database.select({
-        'select': ['MAX(source_page) as source_page'],
-        'table': ['splitter_pages'],
-        'where': ['status = %s', 'document_id = %s'],
-        'data': ['NEW', args['id']]
-    })
-
-    if not pages:
-        error = gettext('GET_MAX_SOURCE_PAGE_VALUE_ERROR')
-
-    return pages, error
-
-
 def get_documents(args):
     database = get_context_var('database', 0)
     error = None
