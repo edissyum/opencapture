@@ -190,11 +190,10 @@ def get_document_with_args():
             "message": message
         }, 400)
 
-    args = request.json
-    contact = mem.retrieve_contact(args)
+    contact = mem.retrieve_contact(request.json)
     if contact and contact['contacts'] and contact['count'] > 0:
-        args['contactId'] = str(contact['contacts'][0]['id'])
-        resources = mem.get_document_with_contact(args)
+        request.json['contactId'] = str(contact['contacts'][0]['id'])
+        resources = mem.get_document_with_contact(request.json)
         if resources:
             return make_response(resources), 200
     return make_response(''), 204

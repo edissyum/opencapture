@@ -23,7 +23,7 @@ import { Dropdown as PrimeDropdown } from "primereact/dropdown";
 interface DropdownProps {
     id: any;
     value: any;
-    error?: string;
+    error?: any;
     label?: string;
     filter?: boolean;
     itemsSize?: number;
@@ -94,11 +94,11 @@ export const Dropdown: React.FC<DropdownProps> = ({
                         onChange={ onChange }
                         disabled={ disabled }
                         editable={ editable }
-                        virtualScrollerOptions={ itemsSize ? { itemSize: itemsSize } : undefined }
+                        placeholder={ placeholder }
                         itemTemplate={ dropdownItemTemplate }
                         valueTemplate={ dropdownValueTemplate }
+                        virtualScrollerOptions={ itemsSize ? { itemSize: itemsSize } : undefined }
                         className={ `w-full min-h-12 flex items-center hover:border-(--border-primary)! ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' }` }
-                        placeholder={ placeholder }
                     />
                     { label && (
                         <label htmlFor={ id }
@@ -106,7 +106,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                                    'border-(--border-secondary) group-focus-within:rounded-md ' +
                                    'group-focus-within:rounded-b-none group-focus-within:border-(--border-primary)' : '' }
                                    ${ labelFusion && disabled ? '' : 'group-hover:border-(--border-primary)' }
-                                   ${ value && labelFusion ? 'border border-b-0 rounded-md rounded-b-none -top-[0.3rem]! p-0.5 border-(--border-primary)' : '' }` }>
+                                   ${ value && labelFusion ? 'border border-b-0 rounded-md rounded-b-none top-[-0.3rem]! p-0.5 border-(--border-primary)' : '' }` }>
                             { label }
                             { required && <span className="text-(--text-error) ml-1">*</span> }
                         </label>

@@ -62,7 +62,7 @@ export function VerifierViewerPage() {
     const [documentData, setDocumentData] = useState<any>(null);
     const [documentDataLoading, setDocumentDataLoading] = useState<boolean>(true);
 
-    const [outputsLabels, setOutputsLabels] = useState<any[]>([]);
+    const [outputs, setOutputs] = useState<any[]>([]);
     const [currentForm, setCurrentForm] = useState<any>(null);
 
     const [formHasError, setFormHasError] = useState<boolean>(false);
@@ -77,6 +77,8 @@ export function VerifierViewerPage() {
     const [supplierChanged, setSupplierChanged] = useState<boolean>(false);
     const [originalCurrentSupplier, setOriginalCurrentSupplier] = useState<any>(null);
 
+    const [loadingOutputs, setLoadingOutputs] = useState<boolean>(true);
+    const [loadingLinksMEM, setLoadingLinksMEM] = useState<boolean>(true);
     const [loadingUpdateRefuse, setLoadingUpdateRefuse] = useState<boolean>(false);
     const [loadingUpdateValidate, setLoadingUpdateValidate] = useState<boolean>(false);
     const [loadingUpdateData, setLoadingUpdateDocumentData] = useState<boolean>(false);
@@ -185,11 +187,14 @@ export function VerifierViewerPage() {
                     setCurrentForm(res);
                     for (const output of res.outputs) {
                         const o = await get(`/outputs/verifier/getById/${ output }`);
-                        setOutputsLabels((prev: any) => [...prev, o.output_label]);
+                        setOutputs((prev: any) => [...prev, o]);
                     }
+                    setLoadingOutputs(false);
                 }
             } catch (error) {
                 console.error("Error fetching form settings:", error);
+            } finally {
+                setLoadingLinksMEM(false);
             }
         };
 
@@ -262,7 +267,10 @@ export function VerifierViewerPage() {
     // Function to retrieve third party
     useEffect(() => {
         if (!documentData) return;
-        if (!documentData.supplier_id) return;
+        if (!documentData.supplier_id) {
+            setLoadingLinksMEM(false);
+            return
+        }
 
         fetchThirdParty().then();
     }, [documentDataLoading]);
@@ -453,6 +461,56 @@ export function VerifierViewerPage() {
         }
     }, [loadingUpdateValidate, loadingUpdateRefuse, documentData]);
 
+    // Setup links if export_mem outputs
+    useEffect(() => {
+        if (loadingOutputs) return;
+        if (!currentSupplier) return;
+        if (!outputs || outputs.length === 0) return;
+
+        const setupLinksMEM = async () => {
+            for (const o of outputs) {
+                if (o.output_type_id === 'export_mem' && o.data?.options?.links) {
+                    const enabled = o.data.options.links.find((link: any) => link.id === 'enabled').value;
+                    if (enabled) {
+                        const data: any = {
+                            "host": o.data.options.auth[0].value,
+                            "login": o.data.options.auth[1].value,
+                            "password": o.data.options.auth[2].value,
+                            "supplierCustomId": currentSupplier?.vat_number + currentSupplier?.siret
+                        };
+
+                        o.data.options?.links.forEach((elem: any) => {
+                            if (elem.id && elem.value) {
+                                data[elem.id] = elem.value
+                            }
+                        });
+
+                        const res = await post('/mem/getDocumentsWithContact', data);
+                        if (res && res.count >= 1) {
+                            fieldsZone.forEach((zone) => {
+                                zone.lines.forEach((line: any) => {
+                                    Object.values(line).filter((field: any) => typeof field !== 'boolean').forEach((field: any) => {
+                                        if (field.id === data['openCaptureField']) {
+                                            field.type = 'autocomplete';
+                                            field.values = res.resources.map((doc: any) => ({
+                                                value: doc.data,
+                                                label: doc.data,
+                                                extras: [doc.alt_identifier]
+                                            }));
+                                        }
+                                    });
+                                });
+                            });
+                        }
+                    }
+                }
+            }
+            setLoadingLinksMEM(false);
+        }
+
+        setupLinksMEM().then();
+    }, [outputs, currentSupplier]);
+
     const handlePrev = () => {
         if (currentPage > 1) {
             changePage(currentPage - 1);
@@ -638,7 +696,7 @@ export function VerifierViewerPage() {
         setSupplierChanged(supplierChange);
 
         // onBlur doesn't work well with date picker and dropdown, so we save directly here for date fields
-        if (['date', 'select'].includes(field.type) && value && !field.error) {
+        if (['date', 'select', 'autocomplete'].includes(field.type) && value && !field.error) {
             prepareDocumentData(field, value);
         }
     }
@@ -665,7 +723,6 @@ export function VerifierViewerPage() {
                 error = t('FORMS.invalid_pattern');
             }
         }
-
         return error;
     }
 
@@ -1022,7 +1079,7 @@ export function VerifierViewerPage() {
         return options;
     };
 
-    if (documentDataLoading || !documentData) return <Loader/>;
+    if (documentDataLoading || loadingLinksMEM || !documentData) return <Loader/>;
 
     return (
         <div className='flex h-full overflow-hidden'>
@@ -1260,8 +1317,24 @@ export function VerifierViewerPage() {
                                                                 options={ accountingPlan.map((plan: any) => ({
                                                                     value: plan.compte_num,
                                                                     label: plan.compte_lib
-                                                                }))
-                                                                }
+                                                                })) }
+                                                                onChange={ (e) => updateDocumentData(field, e.value) }
+                                                            />
+                                                        ) }
+
+                                                        { field.type === 'autocomplete' && (
+                                                            <Dropdown
+                                                                filter
+                                                                id={ field.id }
+                                                                itemsSize={ 50 }
+                                                                editable={ true }
+                                                                options={ field.values }
+                                                                label={ t(field.label) }
+                                                                useExtraInLabel={ true }
+                                                                error={ errors[field.id] }
+                                                                disabled={ disableFields }
+                                                                required={ field.required }
+                                                                value={ tmpDocumentData?.datas?.[field.id] }
                                                                 onChange={ (e) => updateDocumentData(field, e.value) }
                                                             />
                                                         ) }
@@ -1339,7 +1412,7 @@ export function VerifierViewerPage() {
                                                 { t('GLOBAL.executed_outputs') }
                                             </div>
                                             <div className='text-(--text-secondary)'>
-                                                { outputsLabels.join(", ") }
+                                                { outputs && outputs.length > 0 ? outputs.map((o: any) => o.output_label).join(", ") : t('VERIFIER.no_outputs_executed') }
                                             </div>
                                         </div>
                                     ) }
