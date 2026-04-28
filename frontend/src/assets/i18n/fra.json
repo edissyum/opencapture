@@ -243,7 +243,8 @@
         "validation_mask": "Masque de validation",
         "field_metadata_hint": "Paramétrage avancé du champ si un référentiel custom est activé. Permets la recherche et le remplissage automatique du champ",
         "doctypes": "Types de documents",
-        "qr_code": "Séparateurs de documents"
+        "qr_code": "Séparateurs de documents",
+        "duplicated_line": "Ligne duplicable"
     },
     "GLOBAL": {
         "batches": "Lots",

@@ -243,7 +243,8 @@
         "validation_mask": "Máscara de validación",
         "field_metadata_hint": "Configuración avanzada del campo si hay un repositorio personalizado activado. Permite la búsqueda y el relleno automático del campo",
         "doctypes": "Tipos de documentos",
-        "qr_code": "Separadores de documentos"
+        "qr_code": "Separadores de documentos",
+        "duplicated_line": "Línea duplicable"
     },
     "GLOBAL": {
         "batches": "Lotes",

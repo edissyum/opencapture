@@ -78,8 +78,8 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
                     <GripVertical size={ 22 }/>
                 </div>
             ) }
-            <div className={ `group w-full p-2 ${ bg } border rounded-md hover:bg-[#E1EFE8] 
-                              dark:hover:bg-(--bg-secondary) hover:border-(--border-primary)/30 
+            <div className={ `group w-full p-2 ${ bg } border rounded-md hover:bg-[#E1EFE8]
+                              dark:hover:bg-(--bg-secondary) hover:border-(--border-primary)/30
                               transition-colors` }>
                 <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }/>
                 <span
@@ -96,6 +96,11 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
                 <DroppableLine line={ line } onUpdateField={ onUpdateField } onDeleteField={ onDeleteField }
                                module={ module }/>
             </div>
+
+            { line.duplicable && (
+                <Copy size={ 16 } data-tooltip-id="tooltip" data-tooltip-content={ t('FORMS.duplicated_line') }
+                      className='text-(--text-secondary) cursor-pointer ml-2'/>
+            ) }
         </div>
     );
 }

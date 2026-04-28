@@ -223,7 +223,8 @@
         "validation_mask": "Validation mask",
         "field_metadata_hint": "Advanced field configuration if a custom reference is enabled. Allows searching and automatic field filling",
         "doctypes": "Document types",
-        "qr_code": "Document separators"
+        "qr_code": "Document separators",
+        "duplicated_line": "Duplicable line"
     },
     "GLOBAL": {
         "batches": "Batches",
