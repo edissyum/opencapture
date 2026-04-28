@@ -118,7 +118,9 @@ export function AttachmentsList({
                     } else {
                         attachment.extension_icon = <File size={ 48 } className='text-(--text-secondary)'/>
                     }
+
                     attachment.creation_date = new Intl.DateTimeFormat(locale, {
+                        timeZone: 'UTC',
                         day: "2-digit",
                         month: "2-digit",
                         year: "numeric",
@@ -232,15 +234,17 @@ export function AttachmentsList({
     return (
         <div className="flex flex-col h-full ">
             <div className={ `w-full h-full flex flex-col ${ showAttachment ? '' : 'hidden' }` }>
-                <AttachmentsViewer module={ module } show={ showAttachment }
-                                   attachment={ selectedAttachment ?? {} }
-                                   onDelete={ () => {
-                                       handleDelete();
-                                   } }
-                                   onDownload={ () => {
-                                       handleDownload();
-                                   } }
-                                   onClose={ () => setShowAttachment(false) }/>
+                <AttachmentsViewer
+                    module={ module } show={ showAttachment }
+                    attachment={ selectedAttachment ?? {} }
+                    onDelete={ () => {
+                        handleDelete();
+                    } }
+                    onDownload={ () => {
+                        handleDownload();
+                    } }
+                    onClose={ () => setShowAttachment(false) }
+                />
             </div>
             <div className='h-full flex flex-col flex-1 overflow-y-auto'>
                 { !showAttachment && (
