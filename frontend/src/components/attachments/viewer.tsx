@@ -35,7 +35,7 @@ type AttachmentsListProps = {
     onDownload: () => void;
 };
 
-const imageCache: any = new Map<string, string>();
+const imageCache = new Map<string, { mime: string; base64: string }>();
 
 export function AttachmentsViewer({ show, module, attachment, onClose, onDelete, onDownload }: AttachmentsListProps) {
     const { post } = axiosApiCall();
@@ -50,7 +50,7 @@ export function AttachmentsViewer({ show, module, attachment, onClose, onDelete,
         if (!attachment.id || !show) return;
 
         if (imageCache.has(attachment.id)) {
-            setCurrentAttachmentData(imageCache.get(attachment.id));
+            setCurrentAttachmentData(imageCache.get(attachment.id)!);
             setLoading(false);
             return;
         }
@@ -60,19 +60,20 @@ export function AttachmentsViewer({ show, module, attachment, onClose, onDelete,
             try {
                 const res = await post(`/attachments/${ module }/download/${ attachment.id }`)
                 if (res) {
-                    let data;
-                    if (res['mime'] === 'application/pdf') {
-                        const byteCharacters = atob(res['file']);
-                        const byteNumbers = new Array(byteCharacters.length);
-                        for (let i = 0; i < byteCharacters.length; i++) {
-                            byteNumbers[i] = byteCharacters.charCodeAt(i);
-                        }
-                        data = new Uint8Array(byteNumbers);
-                    } else if (res['mime'].startsWith('image/')) {
-                        data = `data:${ res['mime'] };base64,${ res['file'] }`;
-                    }
-                    setCurrentAttachmentData(data);
-                    imageCache.set(attachment.id, data);
+                    // let data;
+                    // if (res['mime'] === 'application/pdf') {
+                    //     const byteCharacters = atob(res['file']);
+                    //     const byteNumbers = new Array(byteCharacters.length);
+                    //     for (let i = 0; i < byteCharacters.length; i++) {
+                    //         byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    //     }
+                    //     data = new Uint8Array(byteNumbers);
+                    // } else if (res['mime'].startsWith('image/')) {
+                    //     data = `data:${ res['mime'] };base64,${ res['file'] }`;
+                    // }
+                    const cached = { mime: res['mime'], base64: res['file'] };
+                    imageCache.set(attachment.id, cached);
+                    setCurrentAttachmentData(cached);
                 }
             } catch (error) {
                 console.error("Error fetching attachment:", error);
@@ -85,9 +86,15 @@ export function AttachmentsViewer({ show, module, attachment, onClose, onDelete,
     }, [show]);
 
     const memoizedFile = useMemo(() => {
-        if (!currentAttachmentData) return null;
-        return { data: currentAttachmentData };
-    }, [currentAttachmentData]);
+        console.log(currentAttachmentData)
+        if (!currentAttachmentData || currentAttachmentData.mime !== 'application/pdf') return null;
+        const byteCharacters = atob(currentAttachmentData.base64);
+        const byteNumbers = new Uint8Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        return { data: byteNumbers };
+    }, [attachment.id, currentAttachmentData]);
 
     const menuItems: any = [
         {
@@ -133,14 +140,17 @@ export function AttachmentsViewer({ show, module, attachment, onClose, onDelete,
                     </p>
                 </div>
                 { imageCache.has(attachment.id) && (() => {
-                    const data = imageCache.get(attachment.id);
-                    if (typeof data === "string") {
+                    if (currentAttachmentData.mime.startsWith('image/')) {
                         return (
-                            <div className='h-full flex justify-center items-center pb-2'>
-                                <img src={ data } alt="Attachment" className="max-w-full"/>
+                            <div className='h-full flex justify-center pb-2'>
+                                <img
+                                    src={ `data:${ currentAttachmentData.mime };base64,${ currentAttachmentData.base64 }` }
+                                    alt="Attachment"
+                                    className="max-w-full"
+                                />
                             </div>
                         );
-                    } else if (data instanceof Uint8Array) {
+                    } else if (currentAttachmentData.mime === 'application/pdf') {
                         return (
                             <div className='h-full flex justify-center pb-2'>
                                 <Document file={ memoizedFile } loading={ <Loader/> }
