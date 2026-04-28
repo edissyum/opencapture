@@ -16,10 +16,10 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { ArrowLeft, Download, EllipsisVertical, Trash2 } from "lucide-react";
 import { Document, Page } from "react-pdf";
 import { ContextMenu } from "primereact/contextmenu";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowLeft, Download, EllipsisVertical, Trash2 } from "lucide-react";
 
 import { Button } from "../Button";
 import { Loader } from "../loader/Loader";
