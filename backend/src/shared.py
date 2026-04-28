@@ -17,6 +17,7 @@
 
 tmp_path = ''
 data_path = ''
+custom_id = ''
 error_path = ''
 assets_path = ''
 custom_path = ''

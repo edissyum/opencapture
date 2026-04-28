@@ -100,6 +100,7 @@ if not retrieve_config_from_custom_id(args['custom_id']):
     sys.exit('Custom config file couldn\'t be found')
 
 custom_path = retrieve_custom_path(args['custom_id'])
+shared.custom_id = args['custom_id']
 shared.custom_path = custom_path
 shared.data_path = custom_path + '/data/'
 shared.tmp_path = custom_path + '/data/tmp/'
