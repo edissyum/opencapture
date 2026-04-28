@@ -35,7 +35,7 @@ type AttachmentsListProps = {
     onDownload: () => void;
 };
 
-const imageCache = new Map<string, { mime: string; base64: string }>();
+const imageCache: any = new Map<string, string>();
 
 export function AttachmentsViewer({ show, module, attachment, onClose, onDelete, onDownload }: AttachmentsListProps) {
     const { post } = axiosApiCall();
@@ -50,7 +50,7 @@ export function AttachmentsViewer({ show, module, attachment, onClose, onDelete,
         if (!attachment.id || !show) return;
 
         if (imageCache.has(attachment.id)) {
-            setCurrentAttachmentData(imageCache.get(attachment.id)!);
+            setCurrentAttachmentData(imageCache.get(attachment.id));
             setLoading(false);
             return;
         }
@@ -71,9 +71,9 @@ export function AttachmentsViewer({ show, module, attachment, onClose, onDelete,
                     // } else if (res['mime'].startsWith('image/')) {
                     //     data = `data:${ res['mime'] };base64,${ res['file'] }`;
                     // }
-                    const cached = { mime: res['mime'], base64: res['file'] };
-                    imageCache.set(attachment.id, cached);
-                    setCurrentAttachmentData(cached);
+                    const data = `data:${ res['mime'] };base64,${ res['file'] }`
+                    setCurrentAttachmentData(data);
+                    imageCache.set(attachment.id, data);
                 }
             } catch (error) {
                 console.error("Error fetching attachment:", error);
@@ -86,15 +86,21 @@ export function AttachmentsViewer({ show, module, attachment, onClose, onDelete,
     }, [show]);
 
     const memoizedFile = useMemo(() => {
-        console.log(currentAttachmentData)
-        if (!currentAttachmentData || currentAttachmentData.mime !== 'application/pdf') return null;
-        const byteCharacters = atob(currentAttachmentData.base64);
-        const byteNumbers = new Uint8Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        if (!currentAttachmentData) return null;
+
+        let returnedData = currentAttachmentData;
+        const mime = currentAttachmentData.split(';')[0].split(':')[1];
+        if (mime === 'application/pdf') {
+            const base64Data = currentAttachmentData.split(',')[1];
+            const byteCharacters = atob(base64Data);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            returnedData = new Uint8Array(byteNumbers);
         }
-        return { data: byteNumbers };
-    }, [attachment.id, currentAttachmentData]);
+        return { data: returnedData };
+    }, [currentAttachmentData, attachment.id]);
 
     const menuItems: any = [
         {
@@ -121,7 +127,7 @@ export function AttachmentsViewer({ show, module, attachment, onClose, onDelete,
                         <Button variant='bg_white_rounded' icon={ <ArrowLeft size={ 18 }/> } onClick={ () => onClose() }>
                             { t('ATTACHMENTS.back_to_attachments_list') }
                         </Button>
-                        <div className='bg-(--bg-primary) rounded-lg cursor-pointer p-1 border border-(--border-secondary) '>
+                        <div className='bg-(--bg-primary) rounded-lg cursor-pointer p-1 border border-(--border-secondary)'>
                             <EllipsisVertical onClick={ (e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
@@ -140,21 +146,17 @@ export function AttachmentsViewer({ show, module, attachment, onClose, onDelete,
                     </p>
                 </div>
                 { imageCache.has(attachment.id) && (() => {
-                    if (currentAttachmentData.mime.startsWith('image/')) {
+                    const mime = currentAttachmentData.split(';')[0].split(':')[1];
+                    if (mime.startsWith('image/')) {
                         return (
                             <div className='h-full flex justify-center pb-2'>
-                                <img
-                                    src={ `data:${ currentAttachmentData.mime };base64,${ currentAttachmentData.base64 }` }
-                                    alt="Attachment"
-                                    className="max-w-full"
-                                />
+                                <img src={ currentAttachmentData } alt="Attachment" className="max-w-full"/>
                             </div>
                         );
-                    } else if (currentAttachmentData.mime === 'application/pdf') {
+                    } else if (mime === 'application/pdf') {
                         return (
                             <div className='h-full flex justify-center pb-2'>
-                                <Document file={ memoizedFile }
-                                          loading={ <Loader/> }
+                                <Document file={ memoizedFile } loading={ <Loader/> }
                                           scale={ window.devicePixelRatio * 1.5 }
                                           error={ t('ATTACHMENTS.error_loading_pdf') }
                                           onLoadSuccess={ ({ numPages }) => setNumPages(numPages) }>
