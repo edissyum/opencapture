@@ -394,8 +394,8 @@ def search(position, regex, files, ocr, target_file):
 
 def recursive_delete(folder, log):
     folder_name = str(os.path.basename(folder))
-    exported_pdf_folder = shared.data_path + '/output_pdf/' + folder_name
-    exported_pdfa_folder = shared.data_path + '/output_pdfa/' + folder_name
+    exported_pdf_folder = shared.data_path + '/exported_pdf/' + folder_name
+    exported_pdfa_folder = shared.data_path + '/exported_pdfa/' + folder_name
 
     for target_folder in [folder, exported_pdf_folder, exported_pdfa_folder]:
         for file in os.listdir(target_folder):
