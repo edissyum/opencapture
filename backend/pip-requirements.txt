@@ -30,7 +30,7 @@ Bottleneck==1.6.0
 xhtml2pdf==0.2.17
 xlsxwriter==3.2.9
 pdf2image==1.17.0
-gitpython==3.1.47
+gitpython==3.1.48
 flask_cors==6.0.2
 pillow-heif==1.3.0
 imap-tools==1.12.1
@@ -42,7 +42,7 @@ pytesseract==0.3.13
 configparser==7.2.0
 scikit-learn==1.8.0
 transformers==5.6.2
-ultralytics==8.4.41
+ultralytics==8.4.42
 python-magic==0.4.27
 Flask-Limiter==4.1.1
 pycryptodome==3.23.0

@@ -16,6 +16,11 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 .react-tooltip {
-    @apply p-2!;
+    @apply p-3!;
+    @apply max-w-120;
     @apply rounded-xl!;
+}
+
+.react-tooltip .react-tooltip-content-wrapper {
+    @apply p-0;
 }
