@@ -57,9 +57,12 @@ class SeparatorQR:
         self.output_dir = shared.data_path + '/output_pdf/' + tmp_folder_name + '/'
         self.output_dir_pdfa = shared.data_path + '/output_pdfa/' + tmp_folder_name + '/'
 
-        os.mkdir(self.tmp_dir)
-        os.mkdir(self.output_dir)
-        os.mkdir(self.output_dir_pdfa)
+        if not os.path.exists(self.tmp_dir):
+            os.mkdir(self.tmp_dir)
+        if not os.path.exists(self.output_dir):
+            os.mkdir(self.output_dir)
+        if not os.path.exists(self.output_dir_pdfa):
+            os.mkdir(self.output_dir_pdfa)
 
     @staticmethod
     def sorted_files(data):
