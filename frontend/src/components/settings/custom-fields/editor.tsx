@@ -289,7 +289,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
     useEffect(() => {
         if (!watchLabelShort) return;
 
-        const newLabelShort = watchLabelShort.replace(/\s+/g, '_');
+        const newLabelShort = watchLabelShort.replace(/\s+/g, '');
         if (newLabelShort !== watchLabelShort) {
             setValue("label_short", newLabelShort);
         }
