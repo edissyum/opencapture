@@ -312,7 +312,7 @@ export function AttachmentsList({
                                                 ) }
                                             </div>
                                         </div>
-                                        <div className='px-6 py-3'>
+                                        <div className='px-4 py-3'>
                                             <div className='flex mb-2'>
                                                 <p className='font-semibold text-(--text-primary) truncate'>{ attachment.filename }</p>
                                                 <div className="ml-auto -mr-3">

@@ -202,18 +202,20 @@ def unbind_attachment(args):
                     if extension.lower() == '.pdf':
                         images = convert_from_path(file_path, dpi=300)
                         for i, image in enumerate(images):
-                            full_filename = f"page-{max_source_page + i + 1:03d}.jpg"
+                            new_source_page = max_source_page + i + 1
+                            full_filename = f"page-{new_source_page:03d}.jpg"
+
                             full_path = os.path.join(batch_folder, full_filename)
                             image.save(full_path, 'JPEG')
+
                             thumb_path = os.path.join(thumb_folder, full_filename)
                             image.save(thumb_path, 'JPEG', quality=50)
 
                             splitter.insert_page({
-                                'source_page': max_source_page + 1,
+                                'source_page': new_source_page,
                                 'document_id': args['newDocumentId'],
                                 'path': batch['batch_folder'] + '/' + full_filename
                             })
-                            max_source_page += 1
 
                             # Merge attachment PDF with original PDF (needed for export)
                             merged_pdf = pypdf.PdfWriter()
