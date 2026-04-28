@@ -20,12 +20,12 @@ import sys
 import argparse
 import tempfile
 import datetime
-from src import app
+from src import app, shared
 from flask_babel import gettext
 from src.classes.Mail import Mail
 from src.classes.Log import Log as log
 from src.main_splitter import launch as launch_splitter
-from src.functions import retrieve_config_from_custom_id
+from src.functions import retrieve_config_from_custom_id, retrieve_custom_path
 from src.main import launch as launch_verifier, create_classes_from_custom_id
 
 
@@ -98,6 +98,13 @@ args = vars(ap.parse_args())
 
 if not retrieve_config_from_custom_id(args['custom_id']):
     sys.exit('Custom config file couldn\'t be found')
+
+custom_path = retrieve_custom_path(args['custom_id'])
+shared.custom_path = custom_path
+shared.data_path = custom_path + '/data/'
+shared.tmp_path = custom_path + '/data/tmp/'
+shared.assets_path = custom_path + '/assets/'
+shared.error_path = custom_path + '/data/error/'
 
 database, config, regex, files, ocr, _, _, spreadsheet, smtp, docservers, configurations, languages, _, _ = create_classes_from_custom_id(args['custom_id'])
 
@@ -310,6 +317,7 @@ with app.app_context():
                                             'task_id_monitor': task_id_monitor,
                                             'log': batch_path + '/' + date_batch + '.log',
                                             'nb_of_attachments': str(len(ret['attachments'])),
+                                            'original_filename': os.path.basename(attachment['file']),
                                             'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
                                             'msg': {
                                                 'uid': msg_id,
@@ -375,6 +383,7 @@ with app.app_context():
                                 'workflow_id': splitterWorkflowId,
                                 'task_id_monitor': task_id_monitor,
                                 'log': batch_path + '/' + date_batch + '.log',
+                                'original_filename': os.path.basename(ret['file']['path']),
                                 'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
                                 'msg': {
                                     'uid': msg_id,
