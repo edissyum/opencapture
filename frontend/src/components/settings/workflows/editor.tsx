@@ -376,7 +376,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 component: "dropdown",
                 label: t("WORKFLOWS.ai_llm"),
                 hint: t("WORKFLOWS.ai_llm_hint"),
-                options: aiLLM.map((m: any) => ({ label: m.name, value: m.id }))
+                options: aiLLM.map((m: any) => ({ label: m.name, value: String(m.id) }))
             })),
             system_fields: z.array(z.string()).describe(JSON.stringify({
                 component: "multi_select",

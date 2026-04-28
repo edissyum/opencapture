@@ -18,11 +18,11 @@ import { z } from "zod";
 import { t } from "i18next";
 import { Copy } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
 import { FloatLabel } from "primereact/floatlabel";
 import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { InputTextarea } from "primereact/inputtextarea";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { defaultJsonContent } from "./json_defaults";
 
@@ -35,6 +35,7 @@ import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 import { copyToClipboard } from "../../../../services/hooks/copyToClipboard";
 
 export function SettingsVerifierAiLLMEditor() {
+    const navigate = useNavigate();
     const { get, put, post } = axiosApiCall();
     const { aiLLMId } = useParams<{ aiLLMId: any }>();
 
@@ -176,6 +177,7 @@ export function SettingsVerifierAiLLMEditor() {
         if (aiLLM.json_content && Object.keys(aiLLM.json_content).length > 0) {
             setAiLLMJson(JSON.stringify(aiLLM.json_content, null, 4));
         }
+
         setSelectedProvider(aiLLM.provider);
     }, [aiLLM]);
 
@@ -189,7 +191,7 @@ export function SettingsVerifierAiLLMEditor() {
         }
 
         setContainsPlaceholder(aiLLMJson.includes(ocrPlaceholder));
-    }, [aiLLMJson]);
+    }, [aiLLMJson, ocrPlaceholder]);
 
     // Handle provider change
     useEffect(() => {
@@ -231,6 +233,7 @@ export function SettingsVerifierAiLLMEditor() {
             const payload = getPayload(data);
             await post(`/ai/llm/create`, payload);
             showToast(t('AI-LLM.created'), 'success');
+            navigate('/settings/verifier/ai-llm');
         } catch (error) {
             console.error("Error creating AI-LLM:", error);
         } finally {
