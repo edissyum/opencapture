@@ -18,13 +18,13 @@
 import { t } from "i18next";
 import { ArrowLeft, Download, EllipsisVertical, Trash2 } from "lucide-react";
 import { Document, Page } from "react-pdf";
+import { ContextMenu } from "primereact/contextmenu";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Button } from "../Button";
 import { Loader } from "../loader/Loader";
 
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
-import { ContextMenu } from "primereact/contextmenu";
 
 type AttachmentsListProps = {
     show: boolean;
@@ -35,7 +35,7 @@ type AttachmentsListProps = {
     onDownload: () => void;
 };
 
-const imageCache: any = new Map<string, string>();
+const attachmentCache = new Map<string, { mime: string; url: string }>();
 
 export function AttachmentsViewer({ show, module, attachment, onClose, onDelete, onDownload }: AttachmentsListProps) {
     const { post } = axiosApiCall();
@@ -49,8 +49,10 @@ export function AttachmentsViewer({ show, module, attachment, onClose, onDelete,
     useEffect(() => {
         if (!attachment.id || !show) return;
 
-        if (imageCache.has(attachment.id)) {
-            setCurrentAttachmentData(imageCache.get(attachment.id));
+        setNumPages(undefined);
+
+        if (attachmentCache.has(attachment.id)) {
+            setCurrentAttachmentData(attachmentCache.get(attachment.id)!);
             setLoading(false);
             return;
         }
@@ -59,22 +61,25 @@ export function AttachmentsViewer({ show, module, attachment, onClose, onDelete,
         const fetchAttachment = async () => {
             try {
                 const res = await post(`/attachments/${ module }/download/${ attachment.id }`)
-                if (res) {
-                    // let data;
-                    // if (res['mime'] === 'application/pdf') {
-                    //     const byteCharacters = atob(res['file']);
-                    //     const byteNumbers = new Array(byteCharacters.length);
-                    //     for (let i = 0; i < byteCharacters.length; i++) {
-                    //         byteNumbers[i] = byteCharacters.charCodeAt(i);
-                    //     }
-                    //     data = new Uint8Array(byteNumbers);
-                    // } else if (res['mime'].startsWith('image/')) {
-                    //     data = `data:${ res['mime'] };base64,${ res['file'] }`;
-                    // }
-                    const data = `data:${ res['mime'] };base64,${ res['file'] }`
-                    setCurrentAttachmentData(data);
-                    imageCache.set(attachment.id, data);
+                if (!res) return;
+
+                let url: string;
+                if (res['mime'] === 'application/pdf') {
+                    // base64 → Uint8Array → Blob → Object URL (créé une seule fois, jamais détaché)
+                    const binary = atob(res['file']);
+                    const bytes = new Uint8Array(binary.length);
+                    for (let i = 0; i < binary.length; i++) {
+                        bytes[i] = binary.charCodeAt(i);
+                    }
+                    const blob = new Blob([bytes], { type: 'application/pdf' });
+                    url = URL.createObjectURL(blob);
+                } else {
+                    url = `data:${ res['mime'] };base64,${ res['file'] }`;
                 }
+
+                const cached = { mime: res['mime'], url };
+                attachmentCache.set(attachment.id, cached);
+                setCurrentAttachmentData(cached);
             } catch (error) {
                 console.error("Error fetching attachment:", error);
             } finally {
@@ -83,24 +88,12 @@ export function AttachmentsViewer({ show, module, attachment, onClose, onDelete,
         };
 
         fetchAttachment().then();
-    }, [show]);
+    }, [attachment.id, show]);
 
     const memoizedFile = useMemo(() => {
-        if (!currentAttachmentData) return null;
-
-        let returnedData = currentAttachmentData;
-        const mime = currentAttachmentData.split(';')[0].split(':')[1];
-        if (mime === 'application/pdf') {
-            const base64Data = currentAttachmentData.split(',')[1];
-            const byteCharacters = atob(base64Data);
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let i = 0; i < byteCharacters.length; i++) {
-                byteNumbers[i] = byteCharacters.charCodeAt(i);
-            }
-            returnedData = new Uint8Array(byteNumbers);
-        }
-        return { data: returnedData };
-    }, [currentAttachmentData, attachment.id]);
+        if (!currentAttachmentData || currentAttachmentData.mime !== 'application/pdf') return null;
+        return { url: currentAttachmentData.url };
+    }, [currentAttachmentData, show]);
 
     const menuItems: any = [
         {
@@ -145,23 +138,24 @@ export function AttachmentsViewer({ show, module, attachment, onClose, onDelete,
                         { t('ATTACHMENTS.register_date') }: { attachment.creation_date }
                     </p>
                 </div>
-                { imageCache.has(attachment.id) && (() => {
-                    const mime = currentAttachmentData.split(';')[0].split(':')[1];
-                    if (mime.startsWith('image/')) {
+
+                { currentAttachmentData && (() => {
+                    if (currentAttachmentData.mime.startsWith('image/')) {
                         return (
                             <div className='h-full flex justify-center pb-2'>
-                                <img src={ currentAttachmentData } alt="Attachment" className="max-w-full"/>
+                                <img src={ currentAttachmentData.url } alt="Attachment" className="max-w-full"/>
                             </div>
                         );
-                    } else if (mime === 'application/pdf') {
+                    } else if (currentAttachmentData.mime === 'application/pdf') {
                         return (
                             <div className='h-full flex justify-center pb-2'>
-                                <Document file={ memoizedFile } loading={ <Loader/> }
-                                          scale={ window.devicePixelRatio * 1.5 }
-                                          error={ t('ATTACHMENTS.error_loading_pdf') }
-                                          onLoadSuccess={ ({ numPages }) => setNumPages(numPages) }>
-                                    {/* @ts-ignore*/ }
-                                    { Array.from({ length: numPages }, (_, i) => (
+                                <Document
+                                    file={ memoizedFile }
+                                    loading={ <Loader /> }
+                                    error={ t('ATTACHMENTS.error_loading_pdf') }
+                                    onLoadSuccess={ ({ numPages }) => setNumPages(numPages) }
+                                >
+                                    { Array.from({ length: numPages ?? 0 }, (_, i) => (
                                         <Page
                                             key={ i }
                                             className="mb-4"
@@ -172,9 +166,8 @@ export function AttachmentsViewer({ show, module, attachment, onClose, onDelete,
                                 </Document>
                             </div>
                         );
-                    } else {
-                        return null;
                     }
+                    return null;
                 })() }
             </div>
         </div>
