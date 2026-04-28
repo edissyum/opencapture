@@ -17,20 +17,23 @@
 import { StrictMode } from 'react'
 import { pdfjs } from "react-pdf";
 import { createRoot } from 'react-dom/client'
+import { PrimeReactProvider } from "primereact/api";
 
 import './index.css'
-
 import { App } from "./App";
 import { ToastProvider } from "./components/ToastProvider";
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-    "pdfjs-dist/build/pdf.worker.min.mjs",
-    import.meta.url
-).toString();
+pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
+
+const value: any = {
+    appendTo: document.body
+};
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <ToastProvider />
-        <App />
+        <ToastProvider/>
+        <PrimeReactProvider value={ value }>
+            <App/>
+        </PrimeReactProvider>
     </StrictMode>,
 );
