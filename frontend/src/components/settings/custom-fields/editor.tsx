@@ -574,7 +574,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                                 setActiveAccordionIndexes([]);
                             }
                         } }
-                        className={ 'max-h-72 overflow-y-auto border-(--border-secondary)' }
+                        className={ 'max-h-120 overflow-y-auto border-(--border-secondary)' }
                     >
                         { selectOptions.map((option, index) => (
                             <AccordionTab key={ index } header={
