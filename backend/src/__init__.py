@@ -75,12 +75,14 @@ class Middleware:
                 if os.path.isfile(path + '/config/secret_key'):
                     with open(path + '/config/secret_key', 'r', encoding='utf-8') as secret_file:
                         app.config['SECRET_KEY'] = secret_file.read().replace('\n', '')
+
         if path:
             shared.custom_path = path
             shared.data_path = path + '/data/'
             shared.tmp_path = path + '/data/tmp/'
             shared.assets_path = path + '/assets/'
             shared.error_path = path + '/data/error/'
+            shared.custom_id = environ['SCRIPT_NAME'].replace('/', '')
         return self.middleware_app(environ, start_response)
 
 

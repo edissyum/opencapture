@@ -700,9 +700,9 @@
         "delete_document_page_one": "Eliminar página del documento",
         "delete_document_page_other": "Eliminar páginas del documento",
         "confirm_delete_document": "¿Está seguro de que desea eliminar este documento?",
-        "confirm_set_document_principal": "¿Está seguro de que desea definir este documento como documento principal?<br>Los demás documentos se convertirán en adjuntos <strong>(esta acción es irreversible)</strong>",
+        "confirm_set_document_principal": "¿Está seguro de que desea definir este documento como documento principal?<br>Los demás documentos se convertirán en adjuntos",
         "set_document_principal": "Definir como documento principal (agrupación)",
-        "confirm_unbinding": "¿Está seguro de que desea desagrupar estos adjuntos? Se convertirán en documentos independientes en este lote <strong>(esta acción es irreversible)</strong>",
+        "confirm_unbinding": "¿Está seguro de que desea desagrupar estos adjuntos? Se convertirán en documentos independientes en este lote",
         "preview": "Vista previa",
         "changes_saved": "Cambios guardados con éxito",
         "document_set_as_principal": "Documento definido como principal con éxito (agrupación)",
@@ -747,9 +747,6 @@
         "too_many_files": "El número máximo de archivos permitidos es {{maxFiles}}",
         "file_rejected": "El archivo fue rechazado",
         "invalid_file_type": "Tipo de archivo inválido. Los tipos de archivo permitidos son: {{types}}",
-        "drop_files_here_many": "Suelte los archivos aquí",
-        "drop_files_here_one": "Suelte el archivo aquí",
-        "drop_files_here_other": "Suelte los archivos aquí",
         "file_too_large": "El archivo es demasiado grande. El tamaño máximo permitido es {{maxSize}} MB",
         "select_workflows": "Selección del flujo de trabajo",
         "upload_progress": "Cargando... {{progress}}%",
@@ -761,7 +758,8 @@
         "upload_success_many": "Archivos cargados con éxito",
         "upload_success_one": "Archivo cargado con éxito",
         "upload_success_other": "Archivos cargados con éxito",
-        "upload_completed": "Archivo subido correctamente"
+        "upload_completed": "Archivo subido correctamente",
+        "drop_files_here": "Suelte los archivos aquí para cargarlos"
     },
     "USERS": {
         "delete_users": "Eliminar",

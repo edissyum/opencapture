@@ -700,9 +700,9 @@
         "delete_document_page_one": "Supprimer la page du document",
         "delete_document_page_other": "Supprimer les pages du document",
         "confirm_delete_document": "Voulez-vous vraiment supprimer ce document ?",
-        "confirm_set_document_principal": "Êtes-vous sûr de vouloir définir ce document comme document principal ?<br>Les autres documents seront mis en pièces jointes <strong>(cette action est irréversible)</strong>",
+        "confirm_set_document_principal": "Êtes-vous sûr de vouloir définir ce document comme document principal ?<br>Les autres documents seront mis en pièces jointes",
         "set_document_principal": "Définir comme document principal (liassage)",
-        "confirm_unbinding": "Voulez-vous vraiment déliasser ces pièces jointes ? Elles deviendront des documents indépendants dans ce lot <strong>(cette action est irréversible)</strong>",
+        "confirm_unbinding": "Voulez-vous vraiment déliasser ces pièces jointes ? Elles deviendront des documents indépendants dans ce lot",
         "preview": "Apercu",
         "changes_saved": "Modifications enregistrées avec succès",
         "document_set_as_principal": "Document défini comme principal avec succès (liassage)",
@@ -747,9 +747,6 @@
         "too_many_files": "Le nombre maximum de fichiers autorisés est de {{maxFiles}}",
         "file_rejected": "Le fichier a été rejeté",
         "invalid_file_type": "Type de fichier invalide. Les types de fichiers autorisés sont : {{types}}",
-        "drop_files_here_many": "Déposez les fichiers ici",
-        "drop_files_here_one": "Déposez le fichier ici",
-        "drop_files_here_other": "Déposez les fichiers ici",
         "file_too_large": "Le fichier est trop volumineux. La taille maximale autorisée est de {{maxSize}} Mo",
         "select_workflows": "Choix du workflow",
         "upload_progress": "Téléversement... {{progress}}%",
@@ -761,7 +758,8 @@
         "upload_success_many": "Fichiers téléversés avec succès",
         "upload_success_one": "Fichier téléversé avec succès",
         "upload_success_other": "Fichiers téléversés avec succès",
-        "upload_completed": "Fichier téléversé avec succès"
+        "upload_completed": "Fichier téléversé avec succès",
+        "drop_files_here": "Déposez les fichiers ici pour les téléverser"
     },
     "USERS": {
         "delete_users": "Supprimer",

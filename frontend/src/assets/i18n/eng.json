@@ -651,9 +651,9 @@
         "delete_document_page_one": "Delete document page",
         "delete_document_page_other": "Delete document pages",
         "confirm_delete_document": "Are you sure you want to delete this document?",
-        "confirm_set_document_principal": "Are you sure you want to set this document as the main document?<br>Other documents will be moved to attachments <strong>(this action is irreversible)</strong>",
+        "confirm_set_document_principal": "Are you sure you want to set this document as the main document?<br>Other documents will be moved to attachments",
         "set_document_principal": "Set as main document (bundling)",
-        "confirm_unbinding": "Are you sure you want to unbundle these attachments? They will become independent documents in this batch <strong>(this action is irreversible)</strong>",
+        "confirm_unbinding": "Are you sure you want to unbundle these attachments? They will become independent documents in this batch",
         "preview": "Preview",
         "changes_saved": "Changes saved successfully",
         "document_set_as_principal": "Document set as main successfully (bundling)",
@@ -697,8 +697,6 @@
         "too_many_files": "The maximum number of allowed files is {{maxFiles}}",
         "file_rejected": "The file was rejected",
         "invalid_file_type": "Invalid file type. Allowed file types are: {{types}}",
-        "drop_files_here_one": "Drop file here",
-        "drop_files_here_other": "Drop files here",
         "file_too_large": "The file is too large. The maximum allowed size is {{maxSize}} MB",
         "select_workflows": "Choose workflow",
         "upload_progress": "Uploading... {{progress}}%",
@@ -708,7 +706,8 @@
         "upload_files_other": "Upload documents",
         "upload_success_one": "File uploaded successfully",
         "upload_success_other": "Files uploaded successfully",
-        "upload_completed": "File uploaded successfully"
+        "upload_completed": "File uploaded successfully",
+        "drop_files_here": "Drop files here to upload"
     },
     "USERS": {
         "delete_users": "Delete",

@@ -96,18 +96,19 @@ export default function UploadDropzone({
         <div className='h-full flex flex-col'>
             <div
                 { ...getRootProps() } className={ `flex justify-center border-2 border-dashed rounded-xl p-6
-                    cursor-pointer transition border-(--border-secondary) hover:border-(--border-primary)
-                    ${ className ?? "" }
-                    ${ isDragActive ? "bg-(--bg-selected) border-(--border-primary)!" : "" }` }>
+                    cursor-pointer transition border-(--border-secondary) hover:border-(--border-primary) min-h-50
+                    ${ className } ${ isDragActive ? "bg-(--bg-selected) border-(--border-primary)!" : "" }` }>
                 <input { ...getInputProps() } />
 
                 { isDragActive ? (
-                    <div className="flex flex-col items-center gap-2">
+                    <div className="flex flex-col justify-center items-center gap-2">
                         <HandGrab className="text-(--text-secondary)"/>
-                        <p className="text-(--text-primary) font-semibold">{ t('UPLOAD.drop_files_here', { count: maxFiles }) }</p>
+                        <p className="text-(--text-primary) font-semibold">
+                            { t('UPLOAD.drop_files_here') }
+                        </p>
                     </div>
                 ) : (
-                    <div className="flex flex-col items-center gap-2">
+                    <div className="flex flex-col justify-center items-center gap-2">
                         <UploadCloud size={ 38 } className="text-(--text-secondary)"/>
                         <div className='flex gap-1 font-semibold'>
                             <p className='text-(--color-primary)'>
