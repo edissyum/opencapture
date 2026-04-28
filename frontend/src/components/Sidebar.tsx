@@ -39,7 +39,7 @@ import { LoginImage } from "./LoginImage";
 import { hasRequiredPermissions } from "./auth/auth";
 
 import { useUser } from "../services/hooks/useUser";
-import { clearPersistentState } from "../services/hooks/usePersistentState";
+import { clearPersistentState, usePersistentState } from "../services/hooks/usePersistentState";
 
 export const handleLogout = (navigate: any) => {
     sessionStorage.clear();
@@ -61,8 +61,13 @@ export default function Sidebar() {
 
     const [userPanelOpen, setUserPanelOpen] = useState(false);
 
+    const [collapsed, setCollapsed] = useState(false);
+    const [manuallyCollapsed, setManuallyCollapsed] = usePersistentState<boolean>('manuallyCollapsedSidebar', false);
+
     // If in verifier or splitter viewer, collapse the sidebar by default
     useEffect(() => {
+        if (manuallyCollapsed) return;
+
         if (window.location.pathname.includes('verifier/viewer/') || window.location.pathname.includes('splitter/viewer/')) {
             setCollapsed(true);
         } else {
@@ -88,10 +93,22 @@ export default function Sidebar() {
         }
     ];
 
-    const [collapsed, setCollapsed] = useState(false);
-
     const standardClasses = "whitespace-nowrap flex items-center rounded-lg p-3 gap-2 hover:text-(--text-primary) text-(--text-secondary) font-semibold transition-colors border border-transparent";
     const activeClasses = "bg-(--bg-selected) text-(--color-primary)! hover:text-(--color-primary)! border-(--border-primary)!";
+
+    const handleCollapse = () => {
+        setCollapsed(!collapsed);
+        setManuallyCollapsed(!collapsed);
+    }
+
+    // Merge collapsed state with manuallyCollapsed to determine final collapsed state
+    useEffect(() => {
+        if (manuallyCollapsed) {
+            setCollapsed(true);
+        } else {
+            setCollapsed(false);
+        }
+    }, [manuallyCollapsed]);
 
     if (!user || loadingUser) return;
     return (
@@ -101,7 +118,7 @@ export default function Sidebar() {
                 { !collapsed && (
                     <LoginImage className="mx-auto h-full w-11/12 object-contain"></LoginImage>
                 ) }
-                <span onClick={ () => setCollapsed(!collapsed) } className="ml-auto mb-2 font-xl cursor-pointer">
+                <span onClick={ handleCollapse } className="ml-auto mb-2 font-xl cursor-pointer">
                     { collapsed ? <ChevronsRight/> : <ChevronsLeft/> }
                 </span>
             </div>
