@@ -91,16 +91,17 @@ export function SettingsGeneralUserQuota() {
                 </div>
                 <div className='w-1/3'>
                     <Input label={ t('USERS.user_quota_number') } type='number' noMarginBottom={ true }
-                           value={ userQuota.number } labelFusion={ true } disabled={ !userQuota.enabled }
+                           value={ userQuota.number } labelFusion={ true } disabled={ !userQuota.enabled } required
                            onChange={ (e) => setUserQuota({ ...userQuota, number: e.target.value }) }/>
                 </div>
 
-                <MultiSelectInput id='userQuotaExcludedUsers'
-                                  value={ userQuota.users_filtered } label={ t('USERS.excluded_users') }
-                                  optionLabel="label" optionValue="label" labelFusion={ true }
-                                  options={ users.map((user) => ({ label: user.username, value: user.id })) }
-                                  onChange={ (e) => setUserQuota({ ...userQuota, users_filtered: e.value }) }
-                                  disabled={ !userQuota.enabled } className="w-1/3"/>
+                <MultiSelectInput
+                    id='userQuotaExcludedUsers'
+                    value={ userQuota.users_filtered } label={ t('USERS.excluded_users') }
+                    optionLabel="label" optionValue="label" labelFusion={ true }
+                    options={ users.map((user) => ({ label: user.username, value: user.id })) }
+                    onChange={ (e) => setUserQuota({ ...userQuota, users_filtered: e.value }) }
+                    disabled={ !userQuota.enabled } className="w-1/3"/>
 
                 <div className='w-1/3'>
                     <Input label={ t('USERS.user_quota_email_dest') } type='email'
@@ -109,7 +110,7 @@ export function SettingsGeneralUserQuota() {
                 </div>
             </div>
 
-            <Button onClick={ handleSubmit } disabled={ loadingSubmit }>
+            <Button onClick={ handleSubmit } disabled={ loadingSubmit || userQuota.enabled && !userQuota.number }>
                 { loadingSubmit ? t('GLOBAL.saving') : t('GLOBAL.save_settings') }
             </Button>
         </div>
