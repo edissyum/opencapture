@@ -53,7 +53,7 @@ export function SettingsCard({ show = true, icon, title, description, to, classN
                     </>
                 ) }
             </div>
-            <div className="text-(--text-secondary)">
+            <div className="text-(--text-secondary) truncate" title={ description }>
                 <h3 className="text-lg font-semibold text-(--text-primary) -mb-1">
                     { title }
                     <span>

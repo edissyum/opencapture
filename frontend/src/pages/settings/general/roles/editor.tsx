@@ -39,7 +39,7 @@ export function SettingsGeneralRoleEditor() {
     const navigate = useNavigate();
     const { roleId } = useParams<{ roleId: any }>();
 
-    const privilegeClasses = 'flex items-center gap-2 border border-(--border-primary) rounded-md p-2 bg-(--bg-selected)';
+    const privilegeClasses = 'flex items-center gap-2 border border-(--border-primary) rounded-md p-2 bg-(--bg-selected) truncate';
 
     const [role, setRole] = useState<any>({});
     const [roles, setRoles] = useState<any>([]);
@@ -75,7 +75,7 @@ export function SettingsGeneralRoleEditor() {
     });
 
     const routesSchema = z.object({
-        default_route: z.string().optional().describe(JSON.stringify({
+        default_route: z.string().describe(JSON.stringify({
             component: "radio_box",
             options: routes,
             label: t("ROLES.default_route")
@@ -194,7 +194,7 @@ export function SettingsGeneralRoleEditor() {
         setLoading(true);
 
         try {
-            const res= await post(`/roles/create`, data);
+            const res = await post(`/roles/create`, data);
 
             if (res && res.id) {
                 await updateRolePrivileges(res.id);
@@ -277,6 +277,7 @@ export function SettingsGeneralRoleEditor() {
                                         <div key={ r.id }
                                              className='flex items-center gap-3 border border-(--border-primary) rounded-md p-3'>
                                             <InputSwitch
+                                                className='shrink-0'
                                                 inputId={ r.id }
                                                 checked={ role.assign_roles?.includes(r.id) }
                                                 onChange={ () => {
@@ -358,12 +359,15 @@ export function SettingsGeneralRoleEditor() {
                                     { Object.values(privileges).filter((privilege: any) => privilege.parent === parent.id).map((privilege: any) => (
                                         <div key={ privilege.id } className={ privilegeClasses }>
                                             <InputSwitch
+                                                className='shrink-0'
                                                 inputId={ privilege.label }
                                                 checked={ rolePrivileges?.includes(privilege.label) }
                                                 onChange={ (e: any) => handleTogglePrivilege(e, privilege) }
                                             />
 
-                                            <label htmlFor={ privilege.label } className='cursor-pointer'>
+                                            <label htmlFor={ privilege.label }
+                                                   title={ t(`PRIVILEGES.${ privilege.label }`) }
+                                                   className='cursor-pointer truncate'>
                                                 { t(`PRIVILEGES.${ privilege.label }`) }
                                             </label>
 

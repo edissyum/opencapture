@@ -57,7 +57,7 @@ export function CustomersList() {
     const actions: any = [
         {
             label: <span
-                className='critical'>{ t('ACCOUNTS.delete_customer', { 'count': selectedCustomers.length }) }</span>,
+                className='critical'>{ t('GLOBAL.delete', { 'count': selectedCustomers.length }) }</span>,
             icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }

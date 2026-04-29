@@ -185,6 +185,7 @@ export function VerifierListPage() {
             sortable: true,
             body: (item: any) => (
                 new Intl.DateTimeFormat(locale, {
+                    timeZone: 'UTC',
                     day: "2-digit",
                     month: "2-digit",
                     year: "numeric",

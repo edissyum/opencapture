@@ -61,7 +61,7 @@ export function SuppliersList() {
         },
         {
             label: <span
-                className='critical'>{ t('ACCOUNTS.delete_supplier', { 'count': selectedSuppliers.length }) }</span>,
+                className='critical'>{ t('GLOBAL.delete', { 'count': selectedSuppliers.length }) }</span>,
             icon: <Trash2 size={ 16 }/>,
             command: () => handleDelete()
         }

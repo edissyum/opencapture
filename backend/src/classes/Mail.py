@@ -30,7 +30,7 @@ import mimetypes
 from ssl import SSLError
 from .Files import Files
 from tnefparse import TNEF
-from xhtml2pdf import pisa
+from weasyprint import HTML
 from socket import gaierror
 from imaplib import IMAP4_SSL
 from flask_babel import gettext
@@ -308,8 +308,7 @@ class Mail:
 
         if insert_body_as_doc:
             with open(primary_mail_path + 'body.pdf', 'w+b') as fp:
-                pisa.CreatePDF(html_body, dest=fp)
-            fp.close()
+                HTML(string=html_body).write_pdf(target=fp)
 
             data['file'] = {
                 'filename': sanitize_filename('body' + msg_id + '.pdf'),
