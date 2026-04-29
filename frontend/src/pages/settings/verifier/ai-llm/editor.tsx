@@ -176,7 +176,6 @@ export function SettingsVerifierAiLLMEditor() {
         }
 
         if (aiLLM.json_content && Object.keys(aiLLM.json_content).length > 0) {
-            console.log(aiLLM.json_content)
             setAiLLMJson(JSON.stringify(aiLLM.json_content, null, 4));
         }
 
@@ -300,7 +299,7 @@ export function SettingsVerifierAiLLMEditor() {
                         { t('AI-LLM.costs_description') }
                     </p>
                     <div className='w-1/2'>
-                        <DynamicForm errors={ errors } control={ control } schema={ costsSchema } grid={ 2 } />
+                        <DynamicForm errors={ errors } control={ control } schema={ costsSchema } grid={ 2 }/>
                     </div>
                 </div>
 
@@ -338,28 +337,26 @@ export function SettingsVerifierAiLLMEditor() {
                     </Hint>
                 ) }
 
-                <div>
-                    <FloatLabel>
-                        <Editor
-                            className='border border-(--border-secondary) rounded-md p-2'
-                            height='50vh'
-                            defaultLanguage={ 'json' }
-                            defaultValue={ aiLLMJson }
-                            options={ {
-                                stickyScroll: {
-                                    enabled: false
-                                },
-                                contextmenu: true,
-                                minimap: { enabled: true }
-                            } }
-                            onChange={ (value: any) => setAiLLMJson(value) }
-                            theme={ document.documentElement.classList.contains('dark') ? 'vs-dark' : '' }
-                        />
-                        <label className="text-(--text-secondary) text-sm top-0! bg-(--bg-primary) px-1">
-                            { t('AI-LLM.json_content') } <span className="text-(--text-error)">*</span>
-                        </label>
-                    </FloatLabel>
-                </div>
+                <FloatLabel>
+                    <Editor
+                        height='50vh'
+                        defaultLanguage={ 'json' }
+                        value={ aiLLMJson ?? aiLLMJson }
+                        className='border border-(--border-secondary) rounded-md p-2'
+                        options={ {
+                            stickyScroll: {
+                                enabled: false
+                            },
+                            contextmenu: true,
+                            minimap: { enabled: true }
+                        } }
+                        onChange={ (value: any) => setAiLLMJson(value) }
+                        theme={ document.documentElement.classList.contains('dark') ? 'vs-dark' : '' }
+                    />
+                    <label className="text-(--text-secondary) text-sm top-0! bg-(--bg-primary) px-1">
+                        { t('AI-LLM.json_content') } <span className="text-(--text-error)">*</span>
+                    </label>
+                </FloatLabel>
             </div>
 
             <div className="p-6 w-fit">

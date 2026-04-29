@@ -542,7 +542,8 @@
         "verifier_privileges": "Privilegios del Verifier",
         "accounts_privileges": "Cuentas de terceros",
         "authorized_assign_roles": "Roles de asignación autorizados",
-        "no_roles_available": "No hay otros puestos disponibles para asignación"
+        "no_roles_available": "No hay otros puestos disponibles para asignación",
+        "privileges_required": "Seleccione al menos un permiso para el rol"
     },
     "SETTINGS": {
         "abouts_us": "Acerca de",

@@ -432,6 +432,9 @@ export function OutputEditor({ module }: { module: string }) {
                                                         defaultLanguage={ codeType }
                                                         defaultValue={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
                                                         options={ {
+                                                            stickyScroll: {
+                                                                enabled: false
+                                                            },
                                                             contextmenu: true,
                                                             minimap: { enabled: true }
                                                         } }

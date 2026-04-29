@@ -542,7 +542,8 @@
         "verifier_privileges": "Privilèges du Verifier",
         "accounts_privileges": "Comptes tiers",
         "authorized_assign_roles": "Rôles d'affectations autorisés",
-        "no_roles_available": "Aucun autre rôle disponible pour l'affectation"
+        "no_roles_available": "Aucun autre rôle disponible pour l'affectation",
+        "privileges_required": "Veuillez sélectionner au moins une permission pour le rôle"
     },
     "SETTINGS": {
         "abouts_us": "À propos",
