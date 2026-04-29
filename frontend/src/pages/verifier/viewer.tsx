@@ -1185,11 +1185,11 @@ export function VerifierViewerPage() {
                                 <ZoomControl zoom={ zoom } setZoom={ setZoom }/>
                             </div>
 
-                            <div className="flex justify-center items-center gap-3 bg-(--bg-primary) py-3 rounded-full
+                            <div className="flex justify-center items-center gap-2 bg-(--bg-primary) p-2 rounded-full
                                     cursor-pointer border border-(--border-secondary) min-w-[160px] whitespace-nowrap">
                                 <button onClick={ handlePrev }
                                         disabled={ currentPage === 1 }
-                                        className={ `cursor-pointer rounded-full transition-colors 
+                                        className={ `cursor-pointer rounded-full transition-colors p-2
                                                     ${ currentPage === 1 ? "text-(--text-secondary) cursor-not-allowed"
                                             : "hover:bg-(--bg-secondary) text-(--text-primary)" }` }
                                 >
@@ -1203,7 +1203,7 @@ export function VerifierViewerPage() {
                                 <button
                                     onClick={ handleNext }
                                     disabled={ currentPage === totalPages }
-                                    className={ `cursor-pointer rounded-full transition-colors 
+                                    className={ `cursor-pointer rounded-full transition-colors p-2
                                 ${ currentPage === totalPages ? "text-(--text-secondary) cursor-not-allowed"
                                         : "hover:bg-(--bg-secondary) text-(--text-primary)" }` }>
                                     <ChevronRight size={ 16 }/>

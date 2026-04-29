@@ -18,10 +18,10 @@ import { z } from "zod";
 import { t } from "i18next";
 import { Copy } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { Editor } from "@monaco-editor/react";
 import { FloatLabel } from "primereact/floatlabel";
 import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { InputTextarea } from "primereact/inputtextarea";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { defaultJsonContent } from "./json_defaults";
@@ -176,6 +176,7 @@ export function SettingsVerifierAiLLMEditor() {
         }
 
         if (aiLLM.json_content && Object.keys(aiLLM.json_content).length > 0) {
+            console.log(aiLLM.json_content)
             setAiLLMJson(JSON.stringify(aiLLM.json_content, null, 4));
         }
 
@@ -339,10 +340,22 @@ export function SettingsVerifierAiLLMEditor() {
 
                 <div>
                     <FloatLabel>
-                        <InputTextarea id='ai-llmjson' value={ aiLLMJson }
-                                       onChange={ (e) => setAiLLMJson(e.target.value) }
-                                       rows={ 20 } spellCheck={ false } required={ true } className="w-full"/>
-                        <label htmlFor='ai-llmjson'>
+                        <Editor
+                            className='border border-(--border-secondary) rounded-md p-2'
+                            height='50vh'
+                            defaultLanguage={ 'json' }
+                            defaultValue={ aiLLMJson }
+                            options={ {
+                                stickyScroll: {
+                                    enabled: false
+                                },
+                                contextmenu: true,
+                                minimap: { enabled: true }
+                            } }
+                            onChange={ (value: any) => setAiLLMJson(value) }
+                            theme={ document.documentElement.classList.contains('dark') ? 'vs-dark' : '' }
+                        />
+                        <label className="text-(--text-secondary) text-sm top-0! bg-(--bg-primary) px-1">
                             { t('AI-LLM.json_content') } <span className="text-(--text-error)">*</span>
                         </label>
                     </FloatLabel>
