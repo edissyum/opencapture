@@ -122,7 +122,13 @@ export function Login() {
                     setLoadingLogin(false);
                     return;
                 }
-                navigate('/home', { replace: true });
+
+                const defaultRoute = await get(`users/getDefaultRoute/${response.user.id}`);
+                if (defaultRoute && defaultRoute.route) {
+                    navigate(defaultRoute.route, { replace: true });
+                } else {
+                    navigate('/home', { replace: true });
+                }
             }
             setLoadingLogin(false);
         } catch (err) {

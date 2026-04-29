@@ -4,6 +4,9 @@ SELECT path as old_path FROM docservers WHERE docserver_id = 'PROJECT_PATH'; \gs
 -- Remplacer les chemins dans les docservers
 UPDATE docservers SET path = REPLACE(path, :'old_path', './');
 
+-- Supprimer les privilèges obsolètes
+DELETE FROM privileges WHERE label = 'update_login_bottom_message';
+
 -- Suppression des chemins obsolètes
 DELETE FROM docservers WHERE docserver_id = 'TMP_PATH';
 DELETE FROM docservers WHERE docserver_id = 'ERROR_PATH';

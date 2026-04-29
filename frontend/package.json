@@ -45,7 +45,7 @@
         "react-tooltip": "^6.0.0",
         "recharts": "^3.8.1",
         "tailwindcss": "^4.2.4",
-        "tinymce": "^8.4.0",
+        "tinymce": "^8.5.0",
         "zod": "^4.3.6"
     },
     "devDependencies": {
@@ -58,7 +58,7 @@
         "eslint-plugin-react-refresh": "^0.5.2",
         "globals": "^17.5.0",
         "i18next-scanner": "^4.6.0",
-        "lucide-react": "^1.11.0",
+        "lucide-react": "^1.14.0",
         "typescript": "~6.0.3",
         "typescript-eslint": "^8.59.1",
         "vite": "^8.0.10"
