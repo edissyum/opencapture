@@ -175,10 +175,10 @@ export function SplitterListPage() {
         {
             id: 'thumbnail',
             header: '',
-            className: 'max-w-14! w-14! ml-0.5',
+            className: 'max-w-14! w-14! ml-0.5 cursor-default!',
             body: (item: any) => (
                 <div onMouseEnter={ () => setHovered(item) } onMouseLeave={ () => setHovered(null) }>
-                    <Eye></Eye>
+                    <Eye/>
                 </div>
             )
         }
