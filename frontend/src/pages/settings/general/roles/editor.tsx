@@ -59,18 +59,18 @@ export function SettingsGeneralRoleEditor() {
             component: "input_switch",
             label: t("ROLES.enabled")
         })),
+        label: z.string(t('ROLES.label_mandatory')).min(1, t('ROLES.label_mandatory')).describe(JSON.stringify({
+            component: "input",
+            required: true,
+            type: "text",
+            label: t("ROLES.role_label")
+        })),
         label_short: z.string(t('ROLES.label_short_mandatory')).min(3).describe(JSON.stringify({
             component: "input",
             type: "text",
             required: true,
             disabled: !!roleId,
             label: t("ROLES.label_short")
-        })),
-        label: z.string(t('ROLES.label_mandatory')).min(1, t('ROLES.label_mandatory')).describe(JSON.stringify({
-            component: "input",
-            required: true,
-            type: "text",
-            label: t("ROLES.role_label")
         }))
     });
 
@@ -82,11 +82,32 @@ export function SettingsGeneralRoleEditor() {
         }))
     });
 
-    const { control, setValue, handleSubmit, formState: { errors } } = useForm({
+    const { control, setValue, handleSubmit, watch, formState: { errors } } = useForm({
         resolver: zodResolver(schema.extend(routesSchema.shape)),
         defaultValues: {},
         mode: "onChange"
     });
+
+    const watchLabel = watch("label");
+    const watchLabelShort = watch("label_short");
+
+    // Fill label_short with label value
+    useEffect(() => {
+        if (!watchLabel) return;
+
+        const newLabelShort = watchLabel.toLowerCase().replace(/\s+/g, '_').replace(/[^\w\-]+/g, '');
+        setValue("label_short", newLabelShort);
+    }, [watchLabel]);
+
+    // Remove spaces in label_short
+    useEffect(() => {
+        if (!watchLabelShort) return;
+
+        const newLabelShort = watchLabelShort.replace(/\s+/g, '');
+        if (newLabelShort !== watchLabelShort) {
+            setValue("label_short", newLabelShort);
+        }
+    }, [watchLabelShort]);
 
     // Fetch role data if editing an existing role
     useEffect(() => {

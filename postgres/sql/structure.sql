@@ -120,7 +120,7 @@ CREATE TABLE "addresses" (
 
 CREATE TABLE "roles" (
     "id"            SERIAL        UNIQUE PRIMARY KEY,
-    "label_short"   VARCHAR(10),
+    "label_short"   VARCHAR(255),
     "label"         VARCHAR(255),
     "status"        VARCHAR(3)    DEFAULT 'OK',
     "editable"      BOOLEAN       DEFAULT True,

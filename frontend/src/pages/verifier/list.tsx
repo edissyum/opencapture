@@ -170,8 +170,8 @@ export function VerifierListPage() {
         },
         {
             id: 'name',
+            className:'truncate-date',
             header: t('VERIFIER.name'),
-            className: 'max-w-md! w-md! truncate-data',
             body: (item: any) => (
                 <span className="font-semibold" title={ item.supplier_name }>
                     { item.supplier_name ? item.supplier_name : t('VERIFIER.unkown_supplier') }
@@ -180,6 +180,7 @@ export function VerifierListPage() {
         },
         {
             id: 'register_date',
+            className:'truncate-date',
             header: t('VERIFIER.creation_date'),
             sortable: true,
             body: (item: any) => (
@@ -196,7 +197,7 @@ export function VerifierListPage() {
         {
             id: 'filename',
             header: t('VERIFIER.filename'),
-            className: 'max-w-md! w-md! truncate-data',
+            className: 'max-w-xs! w-xs! truncate-data',
             body: (item: any) => (
                 <span title={ item.original_filename }>
                     { item.original_filename }

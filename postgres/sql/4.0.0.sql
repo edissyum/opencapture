@@ -35,6 +35,9 @@ ALTER TABLE splitter_batches ADD COLUMN original_filename VARCHAR(255);
 -- Modification de la taille de la colonne provider dans la table ai_llm
 ALTER TABLE ai_llm ALTER COLUMN provider TYPE VARCHAR(50);
 
+-- Modification de la taille de la colonne label_short dans la table ai_llm
+ALTER TABLE roles ALTER COLUMN label_short TYPE VARCHAR(255);
+
 -- Remplacement des couleurs pour utiliser des codes hexadécimaux
 UPDATE form_models_field
 SET fields = jsonb_set(
