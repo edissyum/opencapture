@@ -379,7 +379,7 @@ export function SettingsVerifierPositionMaskEditor() {
             </TabView>
 
             { activeTabIndex === 1 && (
-                <div className="available_fields w-[25rem] flex flex-col border-l border-(--border-secondary)">
+                <div className="available_fields shrink-0 w-[20rem] flex flex-col border-l border-(--border-secondary)">
                     <TabView className='bg-(--bg-primary)'>
                         <TabPanel header={ t("FORMS.facturation") }>
                             { availableBillingFields.map((field: any) => (

@@ -17,21 +17,21 @@
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CirclePause, FileText, Trash2, UserRoundPlus } from "lucide-react";
+import { FileText, Trash2, UserRoundPlus } from "lucide-react";
 
+import { useUser } from "../../../../services/hooks/useUser";
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../../../services/hooks/ConfirmDialog";
 
 import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
 import { Table } from "../../../../components/list/Table";
-import { useUser } from "../../../../services/hooks/useUser";
 import { showToast } from "../../../../components/ToastProvider";
 
 export function SettingsGeneralRoles() {
-    const navigate = useNavigate();
+    const { get, del } = axiosApiCall();
     const { user, loadingUser } = useUser();
-    const { get, put, del } = axiosApiCall();
+    const navigate = useNavigate();
 
     const [roles, setRoles] = useState([]);
     const [totalRoles, setTotalRoles] = useState(0);
@@ -48,33 +48,11 @@ export function SettingsGeneralRoles() {
 
     const columns = [
         { id: 'id', field: 'id', header: '', sortable: true, className: 'max-w-10! w-10!' },
-        { id: 'label_short', field: 'label_short', sortable: true, header: t('ROLES.label_short'), className: 'max-w-[12rem] w-[12rem]' },
-        { id: 'label', field: 'label', header: t('GLOBAL.label'), sortable: true },
-        {
-            id: 'status',
-            header: t('GLOBAL.status'),
-            body: (row: any) => (
-                <span
-                    className={ `px-2 py-1 rounded-lg text-xs font-medium 
-                        ${ row.enabled ? 'bg-(--bg-success) text-(--text-success)' : 'bg-(--bg-error) text-(--text-error)' }` }>
-                    { row.enabled ? t('USERS.active') : t('USERS.inactive') }
-                </span>
-            ),
-            className: 'max-w-[8rem] w-[8rem]'
-        }
+        { id: 'label_short', field: 'label_short', sortable: true, header: t('ROLES.label_short') },
+        { id: 'label', field: 'label', header: t('GLOBAL.label'), sortable: true }
     ];
 
     const actions: any = [
-        {
-            label: t('ROLES.enable_roles'),
-            icon: <CirclePause size={ 16 }/>,
-            command: () => handleEnable()
-        },
-        {
-            label: t('ROLES.disable_roles'),
-            icon: <CirclePause size={ 16 }/>,
-            command: () => handleDisable()
-        },
         {
             label: <span className='critical'>{ t('ROLES.delete_roles') }</span>,
             icon: <Trash2 size={ 16 }/>,
@@ -82,19 +60,7 @@ export function SettingsGeneralRoles() {
         }
     ];
 
-    const getActionsLine = (row: any) => [
-        {
-            label: t('ROLES.enable_roles'),
-            visible: !row?.enabled,
-            icon: <CirclePause size={ 16 }/>,
-            command: () => handleEnable()
-        },
-        {
-            label: t('ROLES.disable_roles'),
-            visible: row?.enabled,
-            icon: <CirclePause size={ 16 }/>,
-            command: () => handleDisable()
-        },
+    const getActionsLine = () => [
         {
             label: <span className='critical'>{ t('ROLES.delete_roles') }</span>,
             icon: <Trash2 size={ 16 }/>,
@@ -133,67 +99,6 @@ export function SettingsGeneralRoles() {
             setSelectedRoles([]);
             setTotalRoles(0);
             setLazyParams({ ...lazyParams, first: 0 });
-        });
-    }
-
-    const handleDisable = () => {
-        if (selectedRoles.length === 0) return;
-
-        showConfirmDialog({
-            title: t('ROLES.disable_role', { count: selectedRoles.length }),
-            message: t('ROLES.confirm_disable_role', { count: selectedRoles.length }),
-            confirmText: t('GLOBAL.disable'),
-            cancelText: t('GLOBAL.cancel'),
-            danger: true,
-            onConfirm: async () => {
-                await disableRoles(selectedRoles.map((user:any) => user.id))
-                refresh();
-            },
-            onCancel: () => {
-                setSelectedRoles([]);
-            }
-        })
-    }
-    const disableRoles = async (ids: string[]) => {
-        ids.forEach((id) => {
-            try {
-                put(`/roles/disable/${ id }`);
-                if (id === ids[ids.length - 1]) {
-                    showToast(t('ROLES.role_disabled', { count: selectedRoles.length }), 'success');
-                }
-            } catch (err) {
-                console.error("Erreur désactivation du rôle :", err);
-            }
-        });
-    }
-
-    const handleEnable = () => {
-        if (selectedRoles.length === 0) return;
-
-        showConfirmDialog({
-            title: t('ROLES.enable_role', { count: selectedRoles.length }),
-            message: t('ROLES.confirm_enable_role', { count: selectedRoles.length }),
-            confirmText: t('GLOBAL.enable'),
-            cancelText: t('GLOBAL.cancel'),
-            onConfirm: async () => {
-                await enableRoles(selectedRoles.map((user:any) => user.id));
-                refresh();
-            },
-            onCancel: () => {
-                setSelectedRoles([]);
-            }
-        })
-    }
-    const enableRoles = async (ids: string[]) => {
-        ids.forEach((id) => {
-            try {
-                put(`/roles/enable/${ id }`);
-                if (id === ids[ids.length - 1]) {
-                    showToast(t('ROLES.role_enabled', { count: selectedRoles.length }), 'success');
-                }
-            } catch (err) {
-                console.error("Erreur activation du rôle :", err);
-            }
         });
     }
 

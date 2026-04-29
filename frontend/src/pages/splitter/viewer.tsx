@@ -1583,7 +1583,7 @@ export function SplitterViewerPage() {
             </div>
 
             { showBatches && (
-                <div className="bg-(--bg-primary) w-[25rem] flex flex-col border-l border-(--border-secondary)">
+                <div className="bg-(--bg-primary) shrink-0 w-[20rem] flex flex-col border-l border-(--border-secondary)">
                     <div className='text-center p-4 border-b border-(--border-secondary)'>
                         { t(`GLOBAL.${ batchTime }`) } ({ statuses.find(s => batch.status === s.id).label })
                     </div>

@@ -556,7 +556,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                 </div>
 
                 { mainTabIndex === 1 && (
-                    <div className="w-[25rem] h-full flex flex-col">
+                    <div className="shrink-0 w-[20rem] h-full flex flex-col">
                         <TabView
                             scrollable
                             className="available_fields"
@@ -575,7 +575,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                 ) }
 
                 { [2, 3].includes(mainTabIndex) && module === 'splitter' && (
-                    <div className="w-[35rem] flex flex-col">
+                    <div className="shrink-0 w-[22rem] h-full flex flex-col">
                         <DoctypesTree key={ doctypeUpdatedCpt } formId={ parseInt(formId) } editor={ true }
                                       selectedDoctype={ selectedDoctype }
                                       onDoctypesLoaded={ (doctypes) => setDoctypes(doctypes) }

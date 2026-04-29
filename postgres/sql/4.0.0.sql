@@ -20,6 +20,9 @@ DELETE FROM docservers WHERE docserver_id = 'SEPARATOR_OUTPUT_PDFA';
 DELETE FROM docservers WHERE docserver_id = 'SPLITTER_METHODS_PATH';
 DELETE FROM docservers WHERE docserver_id = 'SPLITTER_METADATA_PATH';
 
+-- Suppression de la colonne enabled
+ALTER TABLE roles DROP COLUMN enabled;
+
 -- Mise à jour des libellés de la configuration
 DELETE FROM configurations WHERE label = 'loginBottomMessage';
 UPDATE configurations set label = 'loginMessage' WHERE label = 'loginTopMessage';

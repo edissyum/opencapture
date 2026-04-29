@@ -566,7 +566,7 @@ export function OutputEditor({ module }: { module: string }) {
             </div>
 
             { stepperIndex !== 0 && (
-                <div className="w-[25rem] h-full flex flex-col border-l border-(--border-secondary)">
+                <div className="shrink-0 w-[20rem] h-full flex flex-col border-l border-(--border-secondary)">
                     <TabView scrollable className="available_fields">
                         <TabPanel header={ t("VERIFIER.system_fields") }>
                             <div className="p-6 flex flex-col gap-2">
@@ -577,7 +577,7 @@ export function OutputEditor({ module }: { module: string }) {
                                              await copyToClipboard(option.id);
                                          } }
                                          className='flex flex-col border border-(--border-secondary) rounded-lg
-                                                   bg-(--bg-primary) px-6 py-2 w-full cursor-pointer hover:bg-(--bg-secondary)'>
+                                                    transition-colors bg-(--bg-primary) px-6 py-2 w-full cursor-pointer hover:bg-(--bg-secondary)'>
                                         <div className='text-(--text-primary) font-semibold'>
                                             { option.label }
                                         </div>
@@ -598,7 +598,7 @@ export function OutputEditor({ module }: { module: string }) {
                                                  await copyToClipboard(field.label_short);
                                              } }
                                              className='flex flex-col border border-(--border-secondary) rounded-lg
-                                                       bg-(--bg-primary) px-6 py-2 w-full cursor-pointer hover:bg-(--bg-secondary)'>
+                                                        transition-colors bg-(--bg-primary) px-6 py-2 w-full cursor-pointer hover:bg-(--bg-secondary)'>
                                             <div className='text-(--text-primary) font-semibold'>
                                                 { field.label }
                                             </div>

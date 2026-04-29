@@ -55,10 +55,6 @@ export function SettingsGeneralRoleEditor() {
     ]
 
     const schema = z.object({
-        enabled: z.boolean().optional().describe(JSON.stringify({
-            component: "input_switch",
-            label: t("ROLES.enabled")
-        })),
         label: z.string(t('ROLES.label_mandatory')).min(3, t('ROLES.label_mandatory')).describe(JSON.stringify({
             component: "input",
             required: true,
@@ -85,7 +81,6 @@ export function SettingsGeneralRoleEditor() {
     const { control, setValue, handleSubmit, watch, formState: { errors } } = useForm({
         resolver: zodResolver(schema.extend(routesSchema.shape)),
         defaultValues: {
-            enabled: true,
             default_route: '/home',
         },
         mode: "onChange"

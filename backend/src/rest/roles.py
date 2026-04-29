@@ -66,7 +66,6 @@ def update_role(role_id):
 
     check, message = rest_validator(request.json, [
         {'id': 'label', 'type': str, 'mandatory': True},
-        {'id': 'enabled', 'type': bool, 'mandatory': False},
         {'id': 'label_short', 'type': str, 'mandatory': True},
         {'id': 'default_route', 'type': str, 'mandatory': False}
     ])
@@ -106,26 +105,6 @@ def delete_role(role_id):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/roles/delete/{role_id}'}), 403
 
     res = roles.delete_role(role_id)
-    return make_response(jsonify(res[0])), res[1]
-
-
-@bp.route('roles/disable/<int:role_id>', methods=['PUT'])
-@auth.token_required
-def disable_role(role_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'roles_list']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/roles/disable/{role_id}'}), 403
-
-    res = roles.disable_role(role_id)
-    return make_response(jsonify(res[0])), res[1]
-
-
-@bp.route('roles/enable/<int:role_id>', methods=['PUT'])
-@auth.token_required
-def enable_role(role_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'roles_list']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/roles/enable/{role_id}'}), 403
-
-    res = roles.enable_role(role_id)
     return make_response(jsonify(res[0])), res[1]
 
 

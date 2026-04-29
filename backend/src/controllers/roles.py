@@ -91,7 +91,6 @@ def update_role(role_id, data):
     if error is None:
         _set = {
             'label': data['label'],
-            'enabled': data['enabled'],
             'label_short': data['label_short'],
             'default_route': data['default_route'] if 'default_route' in data else '',
             'assign_roles': json.dumps(data['assign_roles']) if 'assign_roles' in data else '[]'
