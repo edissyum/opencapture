@@ -59,7 +59,7 @@ export function SettingsGeneralRoleEditor() {
             component: "input_switch",
             label: t("ROLES.enabled")
         })),
-        label: z.string(t('ROLES.label_mandatory')).min(1, t('ROLES.label_mandatory')).describe(JSON.stringify({
+        label: z.string(t('ROLES.label_mandatory')).min(3, t('ROLES.label_mandatory')).describe(JSON.stringify({
             component: "input",
             required: true,
             type: "text",
@@ -84,7 +84,10 @@ export function SettingsGeneralRoleEditor() {
 
     const { control, setValue, handleSubmit, watch, formState: { errors } } = useForm({
         resolver: zodResolver(schema.extend(routesSchema.shape)),
-        defaultValues: {},
+        defaultValues: {
+            enabled: true,
+            default_route: '/home',
+        },
         mode: "onChange"
     });
 
@@ -183,10 +186,20 @@ export function SettingsGeneralRoleEditor() {
     }, [loadingUser]);
 
     const handleCreate: any = async (data: FormData) => {
+        if (rolePrivileges.length === 0) {
+            showToast(t('ROLES.privileges_required'), 'error');
+            return;
+        }
+
         setLoading(true);
 
         try {
-            await post(`/roles/create`, data);
+            const res= await post(`/roles/create`, data);
+
+            if (res && res.id) {
+                await updateRolePrivileges(res.id);
+            }
+
             showToast(t('ROLES.create_success'), 'success');
             navigate('/settings/general/roles');
             setLoading(false);
@@ -197,6 +210,11 @@ export function SettingsGeneralRoleEditor() {
     }
 
     const handleUpdate: any = async (data: any) => {
+        if (rolePrivileges.length === 0) {
+            showToast(t('ROLES.privileges_required'), 'error');
+            return;
+        }
+
         setLoading(true);
 
         try {
@@ -204,13 +222,7 @@ export function SettingsGeneralRoleEditor() {
                 data['assign_roles'] = role.assign_roles;
             }
             await put(`/roles/update/${ roleId }`, data);
-
-            const privilegesIds = rolePrivileges ? rolePrivileges.map((label: any) => {
-                const privilege: any = Object.values(privileges).find((p: any) => p.label === label);
-                return privilege ? privilege.id : null;
-            }).filter((id: any) => id !== null) : [];
-
-            await put(`/roles/updatePrivilege/${ roleId }`, { privileges: privilegesIds });
+            await updateRolePrivileges(roleId);
 
             showToast(t('ROLES.update_success'), 'success');
             setLoading(false);
@@ -218,6 +230,17 @@ export function SettingsGeneralRoleEditor() {
             setLoading(false);
             console.error('Error updating role :', error);
         }
+    }
+
+    const updateRolePrivileges = async (roleId: number) => {
+        if (rolePrivileges.length === 0) return;
+
+        const privilegesIds = rolePrivileges ? rolePrivileges.map((label: any) => {
+            const privilege: any = Object.values(privileges).find((p: any) => p.label === label);
+            return privilege ? privilege.id : null;
+        }).filter((id: any) => id !== null) : [];
+
+        await put(`/roles/updatePrivilege/${ roleId }`, { privileges: privilegesIds });
     }
 
     const handleTogglePrivilege = (e: any, privilege: any) => {
