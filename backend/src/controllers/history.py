@@ -49,7 +49,7 @@ def get_history(request_args):
     }
 
     if 'filter' in request_args and request_args['filter']:
-        allowed_filters = ['id', 'history_module', 'history_submodule', 'date']
+        allowed_filters = ['id', 'history_module', 'history_submodule', 'history_date']
         check_order, error = check_order_by(request_args['filter'], request_args['order'], allowed_filters)
         if not check_order:
             response = {

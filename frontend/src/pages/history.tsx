@@ -73,7 +73,7 @@ export function HistoryList() {
         { id: 'id', field: 'id', sortable: true },
         { id: 'history_module', field: 'history_module', header: t('MAILCOLLECT.module'), sortable: true },
         { id: 'history_submodule', field: 'history_submodule', header: t('HISTORY.submodule'), sortable: true },
-        { id: 'date', field: 'date', header: t('HISTORY.event_date'), sortable: true },
+        { id: 'history_date', field: 'date', header: t('HISTORY.event_date'), sortable: true },
         { id: 'user_info', field: 'user_info', header: t('HISTORY.user_info') },
         {
             id: 'history_desc',
