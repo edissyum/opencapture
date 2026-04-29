@@ -127,7 +127,10 @@ export function SettingsGeneralUserEditor() {
 
     const { control, watch, setValue, setError, clearErrors, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(detailsSchema.extend(securitySchema.shape).extend(settingsSchema.shape)),
-        defaultValues: {},
+        defaultValues: {
+            forms: [],
+            customers: []
+        },
         mode: "onChange"
     });
 
@@ -221,6 +224,7 @@ export function SettingsGeneralUserEditor() {
     }, [user]);
 
     const handleCreate: any = async (data: FormData) => {
+        console.log(errors)
         if (errors && Object.keys(errors).length > 0) return;
         setLoadingSubmit(true);
 
@@ -248,7 +252,7 @@ export function SettingsGeneralUserEditor() {
             setLoadingSubmit(false);
         }
     }
-
+    console.log(errors)
     const password: any = watch("password");
     const passwordCheck: any = watch("password_check");
 
