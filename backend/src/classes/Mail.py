@@ -308,7 +308,7 @@ class Mail:
 
         if insert_body_as_doc:
             with open(primary_mail_path + 'body.pdf', 'w+b') as fp:
-                HTML(string=html_body).write_pdf(target=fp)
+                HTML(string=clean_outlook_html_for_weasyprint(html_body)).write_pdf(target=fp)
 
             data['file'] = {
                 'filename': sanitize_filename('body' + msg_id + '.pdf'),
@@ -544,3 +544,209 @@ def sanitize_filename(s):
             return "_"
 
     return "".join(safe_char(c) for c in s).rstrip("_")
+
+
+def clean_outlook_html_for_weasyprint(html_body: str) -> str:
+    if not html_body:
+        return ""
+
+    html_body = html.unescape(html_body)
+
+    # -------------------------------------------------
+    # 1. Delete useless comment
+    # -------------------------------------------------
+    html_body = re.sub(
+        r'<!--\[if.*?<!\[endif\]-->',
+        '',
+        html_body,
+        flags=re.I | re.S
+    )
+
+    # -------------------------------------------------
+    # 2. Delete XML Office tags
+    # -------------------------------------------------
+    html_body = re.sub(r'<xml.*?</xml>', '', html_body, flags=re.I | re.S)
+
+    # -------------------------------------------------
+    # 3. Delete tags o:p
+    # -------------------------------------------------
+    html_body = re.sub(r'</?o:p[^>]*>', '', html_body, flags=re.I)
+
+    # -------------------------------------------------
+    # 4. Delete Office namespace
+    # -------------------------------------------------
+    html_body = re.sub(r'\sxmlns(:\w+)?="[^"]*"', '', html_body, flags=re.I)
+
+    # -------------------------------------------------
+    # 5. Cleanup CSS <style>
+    # -------------------------------------------------
+    def clean_style(match):
+        css = match.group(1)
+
+        # @font-face Outlook
+        css = re.sub(r'@font-face\s*{.*?}', '', css, flags=re.I | re.S)
+
+        # @page WordSection
+        css = re.sub(r'@page\s+[^{]+\{.*?\}', '', css, flags=re.I | re.S)
+
+        # @list Word
+        css = re.sub(r'@list[^{]+\{.*?\}', '', css, flags=re.I | re.S)
+
+        # propriétés mso-*
+        css = re.sub(r'(^|;)\s*mso-[^:]+:[^;]+;?', ';', css, flags=re.I)
+
+        # panose
+        css = re.sub(r'(^|;)\s*panose-1:[^;]+;?', ';', css, flags=re.I)
+
+        # page:
+        css = re.sub(r'(^|;)\s*page:[^;]+;?', ';', css, flags=re.I)
+
+        # color:windowtext
+        css = re.sub(r'color\s*:\s*windowtext', 'color:#000', css, flags=re.I)
+
+        # nettoyage ;
+        css = re.sub(r';+', ';', css)
+
+        return f"<style>{css}</style>"
+
+    html_body = re.sub(
+        r'<style[^>]*>(.*?)</style>',
+        clean_style,
+        html_body,
+        flags=re.I | re.S
+    )
+
+    # -------------------------------------------------
+    # 6. Remove Word inline style="mso-*"
+    # -------------------------------------------------
+    def clean_inline_style(match):
+        style = match.group(1)
+
+        style = re.sub(r'mso-[^:]+:[^;"]+;?', '', style, flags=re.I)
+        style = re.sub(r'page:[^;"]+;?', '', style, flags=re.I)
+        style = re.sub(r';+', ';', style).strip('; ').strip()
+
+        if style:
+            return f'style="{style}"'
+        return ''
+
+    html_body = re.sub(
+        r'style="([^"]*)"',
+        clean_inline_style,
+        html_body,
+        flags=re.I
+    )
+
+    # -------------------------------------------------
+    # 7. Remove useless Word Classes
+    # -------------------------------------------------
+    html_body = re.sub(
+        r'\sclass="?(Mso[a-zA-Z0-9 ]*|WordSection\d+)"?',
+        '',
+        html_body,
+        flags=re.I
+    )
+
+    # -------------------------------------------------
+    # 8. If content before <html> tag, move it into body with a separation line
+    # -------------------------------------------------
+    match = re.search(r'^(.*?)<html.*?</html>', html_body, flags=re.I | re.S)
+
+    if match:
+        prefix = match.group(1).strip()
+        doc = re.search(r'(<html.*?</html>)', html_body, flags=re.I | re.S)
+
+        if prefix and doc:
+            html_doc = doc.group(1)
+
+            html_doc = re.sub(
+                r'<body([^>]*)>',
+                rf'<body\1><div class="mail-header">{prefix}</div><hr>',
+                html_doc,
+                flags=re.I
+            )
+
+            html_body = html_doc
+
+    # -------------------------------------------------
+    # 9. If no <html> tag, wrap all content into <html><body>
+    # -------------------------------------------------
+    if '<html' not in html_body.lower():
+        html_body = f"""
+        <html>
+        <body>
+        {html_body}
+        </body>
+        </html>
+        """
+
+    # -------------------------------------------------
+    # 10. Inject base CSS for better rendering in WeasyPrint
+    # -------------------------------------------------
+    base_css = """
+    <style>
+        @page {
+            size: A4;
+            margin: 15mm;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11pt;
+            color: #000;
+            line-height: 1.35;
+            word-wrap: break-word;
+        }
+
+        p {
+            margin: 0 0 8px 0;
+        }
+
+        ul, ol {
+            margin: 6px 0 6px 22px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .mail-header {
+            font-size: 10pt;
+            margin-bottom: 10px;
+        }
+
+        hr {
+            margin: 12px 0;
+            border: none;
+            border-top: 1px solid #ccc;
+        }
+    </style>
+    """
+
+    if '</head>' in html_body.lower():
+        html_body = re.sub(
+            r'</head>',
+            base_css + '</head>',
+            html_body,
+            flags=re.I
+        )
+    else:
+        html_body = f"""
+        <html>
+        <head>
+        <meta charset="utf-8">
+        {base_css}
+        </head>
+        <body>
+        {html_body}
+        </body>
+        </html>
+        """
+
+    return html_body
