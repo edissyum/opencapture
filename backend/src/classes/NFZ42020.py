@@ -31,9 +31,9 @@ class NFZ42020:
         self.log = log
         self.url = None
         self.path = path
-        self.module = None
         self.provider = None
         self.enabled = enabled
+        self.module = 'splitter'
         self.journal_init = False
         self.provider_config = None
         self.original_filename = None
@@ -77,14 +77,14 @@ class NFZ42020:
             "module": self.module,
             "timestamp": datetime.now(UTC).isoformat(),
             "event_type": "INIT_JOURNAL",
-            "document_id": None,
+            "batch_id": None,
             "previous_hash": "0" * 64
         }
         entry["current_hash"] = calculate_hash(entry)
         append_journal_entry(entry, self.journal_filename)
         self.journal_init = True
 
-    def log_event(self, event, document_id=None, stored_file=None):
+    def log_event(self, event, batch_id=None, stored_file=None):
         if not self.journal_init:
             return
 
@@ -96,10 +96,10 @@ class NFZ42020:
         if not last_entry:
             return
 
-        entry = self.generate_entry(last_entry, event, document_id, stored_file)
+        entry = self.generate_entry(last_entry, event, batch_id, stored_file)
         append_journal_entry(entry, self.journal_filename)
 
-    def generate_entry(self, last_entry, event_type, document_id, stored_file):
+    def generate_entry(self, last_entry, event_type, batch_id, stored_file):
         hashed_file = None
         if stored_file:
             hashed_file = hash_file_content(stored_file)
@@ -112,7 +112,7 @@ class NFZ42020:
             "module": self.module,
             "timestamp": datetime.now(UTC).isoformat(),
             "event_type": event_type,
-            "document_id": document_id,
+            "batch_id": batch_id,
             "file": {
                 "original_name": self.original_filename,
                 "sanitized_name": os.path.basename(self.sanitized_filename),
