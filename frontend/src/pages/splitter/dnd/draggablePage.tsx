@@ -84,11 +84,11 @@ export const DraggablePage = React.memo(function DraggablePage({
                  { ...listeners }
             >
                 { thumbnailUrl && (
-                    <div className='relative p-4'>
+                    <div className='w-full p-4 relative h-82'>
                         <img
                             src={ thumbnailUrl }
                             alt={ `Page ${ page.source_page }` }
-                            className={ `h-80 rounded-lg pointer-events-none
+                            className={ `rounded-lg pointer-events-none w-full max-h-full
                                 ${ page.rotation === 90 ? 'rotate-90 m-auto scale-75 px-2' : '' }
                                 ${ page.rotation === 180 ? 'rotate-180 m-auto' : '' }
                                 ${ page.rotation === -90 ? '-rotate-90 m-auto scale-75 px-2' : '' }` }
