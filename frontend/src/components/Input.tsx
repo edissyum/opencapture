@@ -75,9 +75,16 @@ const Input: React.FC<InputProps> = ({
     }, [value]);
 
     useEffect(() => {
-        if (inputRef.current) {
-            setInputWidth(inputRef.current.clientWidth);
-        }
+        const update = () => {
+            if (inputRef.current) {
+                setInputWidth(inputRef.current.clientWidth);
+            }
+        };
+
+        update();
+        window.addEventListener("resize", update);
+
+        return () => window.removeEventListener("resize", update);
     }, []);
 
     return (
