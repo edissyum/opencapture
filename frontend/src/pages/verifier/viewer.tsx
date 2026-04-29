@@ -1412,7 +1412,7 @@ export function VerifierViewerPage() {
                                                 { t('GLOBAL.executed_outputs') }
                                             </div>
                                             <div className='text-(--text-secondary)'>
-                                                { outputs && outputs.length > 0 ? outputs.map((o: any) => o.output_label).join(", ") : t('VERIFIER.no_outputs_executed') }
+                                                { outputs && outputs.length > 0 ? outputs.map((o: any) => o.output_label).join(", ") : t('VERIFIER.no_outputs') }
                                             </div>
                                         </div>
                                     ) }

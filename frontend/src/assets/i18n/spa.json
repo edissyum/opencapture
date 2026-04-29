@@ -834,7 +834,8 @@
         "user_quota_enable": "Activar la cuota de usuario",
         "user_quota_number": "Límite del número de usuarios",
         "user_quota_email_dest": "Destinatario de las notificaciones de superación de cuota",
-        "user_quota_updated": "Cuota de usuario actualizada con éxito"
+        "user_quota_updated": "Cuota de usuario actualizada con éxito",
+        "create_success": "Usuario creado con éxito"
     },
     "VERIFIER": {
         "creation_date": "Fecha de creación",
@@ -920,7 +921,8 @@
         "accounting_plan": "Cuentas de gastos",
         "delete_field_success": "Campo eliminado correctamente",
         "document_non_modifiable": "Documento no modificable",
-        "document_non_modifiable_details": "No puede modificar este documento porque ya ha sido procesado"
+        "document_non_modifiable_details": "No puede modificar este documento porque ya ha sido procesado",
+        "no_outputs": "No se ha configurado ninguna cadena de salida para este documento"
     },
     "SECURITY": {
         "default_auth": "Autenticación predeterminada",

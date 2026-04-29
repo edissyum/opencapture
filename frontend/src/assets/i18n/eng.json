@@ -771,7 +771,8 @@
         "user_quota_enable": "Enable user quota",
         "user_quota_number": "User count limit",
         "user_quota_email_dest": "Quota exceeded notification recipient",
-        "user_quota_updated": "User quota updated successfully"
+        "user_quota_updated": "User quota updated successfully",
+        "create_success": "User created successfully"
     },
     "VERIFIER": {
         "creation_date": "Creation date",
@@ -853,7 +854,8 @@
         "accounting_plan": "Expense accounts",
         "delete_field_success": "Field successfully removed",
         "document_non_modifiable": "Document non-modifiable",
-        "document_non_modifiable_details": "You cannot modify this document because it has already been processed"
+        "document_non_modifiable_details": "You cannot modify this document because it has already been processed",
+        "no_outputs": "No output chains are configured for this document"
     },
     "SECURITY": {
         "default_auth": "Default authentication",

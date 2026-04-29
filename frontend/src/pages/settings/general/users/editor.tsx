@@ -58,11 +58,13 @@ export function SettingsGeneralUserEditor() {
         })),
         lastname: z.string().min(1).optional().describe(JSON.stringify({
             component: "input",
+            required: true,
             type: "text",
             label: t("USERS.lastname")
         })),
         firstname: z.string().min(1).optional().describe(JSON.stringify({
             component: "input",
+            required: true,
             type: "text",
             label: t("USERS.firstname")
         })),
@@ -230,7 +232,7 @@ export function SettingsGeneralUserEditor() {
 
         try {
             await post(`/users/create`, data);
-            showToast(t('ROLES.create_success'), 'success');
+            showToast(t('USERS.create_success'), 'success');
             navigate('/settings/general/users');
         } catch (error) {
             console.error('Error creating user :', error);

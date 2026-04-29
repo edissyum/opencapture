@@ -834,7 +834,8 @@
         "user_quota_enable": "Activer le quota utilisateur",
         "user_quota_number": "Limite du nombre d'utilisateurs",
         "user_quota_email_dest": "Destinataire des notifications de dépassement de quota",
-        "user_quota_updated": "Quota utilisateur mis à jour avec succès"
+        "user_quota_updated": "Quota utilisateur mis à jour avec succès",
+        "create_success": "Utilisateur créé avec succès"
     },
     "VERIFIER": {
         "creation_date": "Date de création",
@@ -920,7 +921,8 @@
         "accounting_plan": "Comptes de charge",
         "delete_field_success": "Champ suprimé avec succès",
         "document_non_modifiable": "Document non modifiable",
-        "document_non_modifiable_details": "Vous ne pouvez pas modifier ce document car il a déjà été traité"
+        "document_non_modifiable_details": "Vous ne pouvez pas modifier ce document car il a déjà été traité",
+        "no_outputs": "Aucune chaîne sortante paramétrée pour ce document"
     },
     "SECURITY": {
         "default_auth": "Authentification par défaut",
