@@ -191,6 +191,12 @@ def get_document_with_args():
         }, 400)
 
     contact = mem.retrieve_contact(request.json)
+    if not contact:
+        return make_response({
+            "errors": gettext('MEM_WS_ERROR'),
+            "message": gettext('CHECK_MEM_CONNECTION')
+        }, 400)
+
     if contact and contact['contacts'] and contact['count'] > 0:
         request.json['contactId'] = str(contact['contacts'][0]['id'])
         resources = mem.get_document_with_contact(request.json)

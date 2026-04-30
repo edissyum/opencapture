@@ -75,11 +75,16 @@ class MEMWebServices:
 
     def retrieve_contact(self, args):
         where = "where=custom_fields->>'" + str(args['vatNumberContactCustom']['id']) + "'='" + str(args['supplierCustomId']) + "'"
-        res = requests.get(self.base_url + '/contacts?' + where, auth=self.auth, timeout=self.timeout)
-        if res.status_code != 200:
-            self.log.error('(' + str(res.status_code) + ') getContactError : ' + str(res.text))
+
+        try:
+            res = requests.get(self.base_url + '/contacts?' + where, auth=self.auth, timeout=self.timeout)
+            if res.status_code != 200:
+                self.log.error('(' + str(res.status_code) + ') getContactError : ' + str(res.text))
+                return False
+            return json.loads(res.text)
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
+            self.log.error('getContactError : ' + str(e))
             return False
-        return json.loads(res.text)
 
     def get_document_with_contact(self, args):
         where = "?custom_fields=" + str(args['memCustomField']['id'])
