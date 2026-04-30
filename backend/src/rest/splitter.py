@@ -313,7 +313,7 @@ def save_modifications():
     check, message = rest_validator(request.json, [
         {'id': 'batchId', 'type': int, 'mandatory': True},
         {'id': 'documents', 'type': list, 'mandatory': True},
-        {'id': 'batchMetadata', 'type': list, 'mandatory': False},
+        {'id': 'batchMetadata', 'type': dict, 'mandatory': False},
         {'id': 'deletedPagesIds', 'type': list, 'mandatory': False},
         {'id': 'deletedDocumentsIds', 'type': list, 'mandatory': False}
     ])

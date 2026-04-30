@@ -45,7 +45,7 @@ class SplitterTest(unittest.TestCase):
             text_file.write(texts)
 
         pdf_url = 'https://open-capture.com/wp-content/uploads/2026/04/splitter_test.pdf'
-        pdf_path = './backend/instance/upload/splitter/splitter_test.pdf'
+        pdf_path = './instance/upload/splitter/splitter_test.pdf'
         http = urllib3.PoolManager()
         with http.request('GET', pdf_url, preload_content=False) as r, open(pdf_path, 'wb') as out_file:
             shutil.copyfileobj(r, out_file)

@@ -432,7 +432,7 @@ class UserTest(unittest.TestCase):
         self.assertEqual(default_reference_file, response.json['file'])
 
     def tearDown(self) -> None:
-        shutil.copy(f'{PROJECT_PATH}/backend/instance/referencial/default_referencial_supplier.csv.default',
+        shutil.copy(f'{PROJECT_PATH}/instance/referencial/default_referencial_supplier.csv.default',
                     f'{PROJECT_PATH}/custom/{CUSTOM_ID}/instance/referencial/default_referencial_supplier.csv')
         self.database.execute("TRUNCATE TABLE addresses")
         self.database.execute("TRUNCATE TABLE accounts_supplier")

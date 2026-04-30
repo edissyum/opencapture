@@ -72,5 +72,6 @@ export const getSystemFieldsOptionsSplitter = () => [
     { id: 'metadata_file', label: t('OUTPUTS.metadata_file') },
     { id: 'document_index', label: t('OUTPUTS.document_index') },
     { id: 'documents_count', label: t('OUTPUTS.documents_count') },
+    { id: 'batch_identifier', label: t('OUTPUTS.batch_identifier') },
     { id: 'document_identifier', label: t('OUTPUTS.document_identifier') }
 ];

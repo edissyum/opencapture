@@ -1350,7 +1350,7 @@ export function SplitterViewerPage() {
 
                                     <Dropdown id={ "forms" }
                                               filter={ true }
-                                              className="w-1/3"
+                                              className="w-1/3 mb-4"
                                               noMarginBottom={ true }
                                               disabled={ disabledBatch }
                                               label={ t('VERIFIER.form') }

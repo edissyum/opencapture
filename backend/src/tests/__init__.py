@@ -30,6 +30,8 @@ PROJECT_PATH = './'
 if BACKEND_PATH not in sys.path:
     sys.path.insert(0, BACKEND_PATH)
 
+os.chdir(BACKEND_PATH)
+
 def get_db():
     conn = psycopg.connect(dbname=os.environ['POSTGRES_DB'],
                            user=os.environ['POSTGRES_USER'],

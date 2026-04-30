@@ -536,6 +536,7 @@ class Splitter:
                 doc_loop_item = doc_loop_item.replace('#documents_count#', str(len(documents)))
                 doc_loop_item = doc_loop_item.replace('#doctype#', str(document['doctype_key']))
                 doc_loop_item = doc_loop_item.replace('#document_identifier#', str(document['id']))
+                doc_loop_item = doc_loop_item.replace('#batch_identifier#', str(document['batch_id']))
                 doc_loop_item = doc_loop_item.replace('#md5#', str(document_md5))
                 doc_loop_item = doc_loop_item.replace('#sha256#', str(document_sha256))
                 doc_loop_item = doc_loop_item.replace('#random#', str(random.randint(0, 99999)).zfill(5))
