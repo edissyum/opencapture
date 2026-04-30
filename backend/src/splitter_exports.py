@@ -299,8 +299,9 @@ def handle_xml_output(batch, parameters, regex):
     metadata_file = get_value_from_mask(None, batch['data']['custom_fields'], mask_args)
 
     metadata = {
-        'export_date': batch['export_date'],
+        'batch_id': batch['id'],
         'metadata_file': metadata_file,
+        'export_date': batch['export_date'],
         'custom_fields': batch['data']['custom_fields'],
         'pdf_output_compress_file': batch['pdf_output_compress_file']
     }
