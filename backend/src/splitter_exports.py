@@ -180,7 +180,7 @@ def export_pdf_files(batch, parameters, log, docservers):
             'extension': parameters['extension']
         }
 
-        filename = get_value_from_mask(document, batch['data']['custom_fields'], mask_args)
+        filename = get_value_from_mask(document, batch['data']['custom_fields'], mask_args, batch['id'])
 
         document['file_path'] = docservers['SPLITTER_ORIGINAL_DOC'] + '/' + batch['file_path']
         document['compress_type'] = parameters['compress_type']
@@ -228,6 +228,7 @@ def handle_pdf_output(batch, output, log, docservers):
     res_export_pdf, status = export_pdf_files(batch, parameters, log, docservers)
     if status != 200:
         return res_export_pdf, status
+
     batch = res_export_pdf['result_batch']
     batch['pdf_output_compress_file'] = ''
 
@@ -242,7 +243,7 @@ def handle_pdf_output(batch, output, log, docservers):
                 'separator': parameters['separator'],
                 'extension': 'zip'
             }
-            compress_file = get_value_from_mask(None, metadata, mask_args)
+            compress_file = get_value_from_mask(None, metadata, mask_args, batch['id'])
 
             for index, document in enumerate(batch['documents']):
                 if zip_except_doctype and document['doctype_key'].startswith(zip_except_doctype.group(1)):
@@ -296,8 +297,8 @@ def handle_xml_output(batch, parameters, regex):
         'separator': parameters['separator'],
         'extension': parameters['extension']
     }
-    metadata_file = get_value_from_mask(None, batch['data']['custom_fields'], mask_args)
 
+    metadata_file = get_value_from_mask(None, batch['data']['custom_fields'], mask_args, batch['id'])
     metadata = {
         'batch_id': batch['id'],
         'metadata_file': metadata_file,

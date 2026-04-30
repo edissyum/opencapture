@@ -47,7 +47,7 @@ def construct_with_var(data, document_info, key=None):
     return _data
 
 
-def get_value_from_mask(document, metadata, mask_args):
+def get_value_from_mask(document, metadata, mask_args, batch_id=None):
     if 'export_date' not in metadata:
         metadata['export_date'] = datetime.now()
     year = str(metadata['export_date'].year)
@@ -76,6 +76,8 @@ def get_value_from_mask(document, metadata, mask_args):
             mask_result.append(_date.replace(' ', substitute))
         elif key == 'random':
             mask_result.append(random_num.replace(' ', substitute))
+        elif key == 'batch_identifier' and batch_id:
+            mask_result.append(str(batch_id).replace(' ', substitute))
         elif key == 'id' and 'id' in metadata:
             mask_result.append(metadata['id'])
         elif document:
@@ -493,7 +495,7 @@ class Splitter:
         xml_as_string = xml_as_string.replace('#user_lastname#', user_lastname)
         xml_as_string = xml_as_string.replace('#user_firstname#', user_firstname)
         xml_as_string = xml_as_string.replace('#documents_count#', str(len(documents)))
-        xml_as_string = xml_as_string.replace('#batch_identifier#', metadata['batch_id'])
+        xml_as_string = xml_as_string.replace('#batch_identifier#', str(metadata['batch_id']))
         xml_as_string = xml_as_string.replace('#metadata_file#', metadata['metadata_file'])
         xml_as_string = xml_as_string.replace('#random#', str(random.randint(0, 99999)).zfill(5))
         xml_as_string = xml_as_string.replace('#pdf_output_compress_file#', metadata['pdf_output_compress_file'])
