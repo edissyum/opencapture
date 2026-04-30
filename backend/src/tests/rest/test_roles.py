@@ -56,32 +56,11 @@ class RolesTest(unittest.TestCase):
         new_role = self.database.fetchall()
         self.assertEqual("DEL", new_role[0]['status'])
 
-    def test_successful_disable_role(self):
-        role = self.create_role()
-        response = self.app.put(f'/{CUSTOM_ID}/ws/roles/disable/' + str(role.json['id']),
-                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
-        self.assertEqual(200, response.status_code)
-
-        self.database.execute("SELECT enabled FROM roles WHERE id = " + str(role.json['id']))
-        new_role = self.database.fetchall()
-        self.assertFalse(new_role[0]['enabled'])
-
-    def test_successful_enable_role(self):
-        role = self.create_role()
-        response = self.app.put(f'/{CUSTOM_ID}/ws/roles/enable/' + str(role.json['id']),
-                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
-        self.assertEqual(200, response.status_code)
-
-        self.database.execute("SELECT enabled FROM roles WHERE id = " + str(role.json['id']))
-        new_role = self.database.fetchall()
-        self.assertTrue(new_role[0]['enabled'])
-
     def test_successful_update_role(self):
         role = self.create_role()
         payload = {
             "label": "Rôle test updated",
             "label_short": "TEST123",
-            "enabled": False,
             "assign_roles": []
         }
         response = self.app.put(f'/{CUSTOM_ID}/ws/roles/update/' + str(role.json['id']),
@@ -89,11 +68,10 @@ class RolesTest(unittest.TestCase):
                                 json=payload)
         self.assertEqual(200, response.status_code)
 
-        self.database.execute("SELECT label, label_short, enabled FROM roles WHERE id = " + str(role.json['id']))
+        self.database.execute("SELECT label, label_short FROM roles WHERE id = " + str(role.json['id']))
         new_role = self.database.fetchall()
         self.assertEqual("TEST123", new_role[0]['label_short'])
         self.assertEqual("Rôle test updated", new_role[0]['label'])
-        self.assertFalse(new_role[0]['enabled'])
 
     def test_successful_update_role_privilege(self):
         role = self.create_role()
@@ -124,7 +102,6 @@ class RolesTest(unittest.TestCase):
         self.assertEqual('Rôle test', response.json['label'])
         self.assertEqual('OK', response.json['status'])
         self.assertTrue(response.json['editable'])
-        self.assertTrue(response.json['enabled'])
 
     def tearDown(self) -> None:
         self.database.execute("DELETE FROM roles WHERE label_short = 'TEST'")

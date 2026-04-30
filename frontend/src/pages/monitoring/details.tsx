@@ -186,7 +186,7 @@ export function MonitoringDetails() {
     return (
         <div className="bg-(--bg-secondary) p-6 h-full w-full flex flex-col overflow-hidden">
             <h1 className="text-md font-bold">{ t('MONITORING.process_details') }</h1>
-            <div className="p-4 bg-(--bg-primary) border border-(--border-secondary) rounded-lg mt-4 grid grid-cols-6 gap-4">
+            <div className="p-4 bg-(--bg-primary) border border-(--border-secondary) rounded-lg mt-4 grid grid-cols-6 gap-2">
                 <div>
                     <p className='text-(--text-secondary) font-semibold mb-1'>
                         { t('MONITORING.id') }

@@ -146,6 +146,7 @@ export function VerifierViewerPage() {
         const fetchDocumentData = async () => {
             try {
                 get(`verifier/documents/${ documentId }`, {}).then((response) => {
+                    console.log(response);
                     setDocumentData(response);
                     setTmpDocumentData(response);
                     setCurrentFilename(response.full_jpg_filename);
@@ -238,28 +239,28 @@ export function VerifierViewerPage() {
     async function fetchThirdParty(supplierId?: number) {
         try {
             const idToUse = supplierId ? supplierId : documentData.supplier_id;
-            get(`accounts/suppliers/getById/${ idToUse }`, {}).then((response) => {
-                if (!response) return;
 
-                get(`accounts/getAdressById/${ response.address_id }`, {}).then((addressResponse) => {
-                    delete addressResponse.id;
-                    const supplierFull = {
-                        ...response,
-                        ...addressResponse
-                    }
+            const response = await get(`accounts/suppliers/getById/${ idToUse }`);
+            if (!response) return;
 
-                    setCurrentSupplier(supplierFull);
-                    setOriginalCurrentSupplier(supplierFull);
+            const addressResponse = await get(`accounts/getAdressById/${ response.address_id }`);
+            delete addressResponse.id;
+            const supplierFull = {
+                ...response,
+                ...addressResponse
+            }
 
-                    Object.keys(supplierFull).forEach((data: any) => {
-                        if (supplierFull[data] && (supplierId || (!tmpDocumentData?.datas?.[data] || tmpDocumentData?.datas?.[data] === ''))) {
-                            updateDocumentData({ id: data }, supplierFull[data]);
-                            prepareDocumentData({ id: data }, supplierFull[data], supplierId);
-                        }
-                    });
-                });
+            setCurrentSupplier(supplierFull);
+            setOriginalCurrentSupplier(supplierFull);
+
+            Object.keys(supplierFull).forEach((data: any) => {
+                if (supplierFull[data] && (supplierId || (!tmpDocumentData?.datas?.[data] || tmpDocumentData?.datas?.[data] === ''))) {
+                    updateDocumentData({ id: data }, supplierFull[data], false);
+                    prepareDocumentData({ id: data }, supplierFull[data], supplierId);
+                }
             });
         } catch (error) {
+            setSupplierExists(false);
             console.error("Error fetching third party:", error);
         }
     }
@@ -268,6 +269,9 @@ export function VerifierViewerPage() {
     useEffect(() => {
         if (!documentData) return;
         if (!documentData.supplier_id) {
+            if (documentData.datas?.name) {
+                setSupplierExists(false);
+            }
             setLoadingLinksMEM(false);
             return
         }
@@ -661,7 +665,7 @@ export function VerifierViewerPage() {
     }
 
     // Function to update document data (only array, not on database) and validate fields
-    const updateDocumentData = (field: any, value: any) => {
+    const updateDocumentData = (field: any, value: any, checkSupplier: boolean = true) => {
         field.error = errorCheck(field, value);
         setErrors((prevErrors) => ({
             ...prevErrors,
@@ -688,10 +692,11 @@ export function VerifierViewerPage() {
                 supplierChange = true;
             }
 
-            if (!originalCurrentSupplier && value) {
+            if (checkSupplier && !originalCurrentSupplier && value) {
                 supplierExists = false;
             }
         }
+
         setSupplierExists(supplierExists);
         setSupplierChanged(supplierChange);
 
@@ -1081,6 +1086,13 @@ export function VerifierViewerPage() {
 
     if (documentDataLoading || loadingLinksMEM || !documentData) return <Loader/>;
 
+    // console.log('loadingUpdateData', loadingUpdateData);
+    // console.log('supplierChanged', supplierChanged);
+    // console.log('!supplierExists', !supplierExists);
+    // console.log('formHasError', formHasError);
+    // console.log('disableFields', disableFields);
+    // console.log(loadingUpdateData || supplierChanged || !supplierExists || formHasError || disableFields)
+
     return (
         <div className='flex h-full overflow-hidden'>
             { showSupplierEditor && (
@@ -1108,6 +1120,7 @@ export function VerifierViewerPage() {
                                 }));
                                 updateDocument({ 'supplier_id': res.id }).then();
                                 fetchThirdParty(res.id).then();
+                                setSupplierExists(true);
                                 setShowSupplierEditor(false);
                             } }
                         />
@@ -1419,15 +1432,19 @@ export function VerifierViewerPage() {
                                 />
                                 <CircleAlert data-tooltip-id="tooltip-outputs" size={ 20 } className='cursor-pointer'/>
                             </div>
-                            <div className='grow basis-0 w-full' data-tooltip-id="tooltip"
-                                 data-tooltip-content={ supplierChanged ? t('VERIFIER.save_supplier_modification') : '' }>
+                            <div className='grow basis-0 w-full' { ...(supplierChanged && {
+                                "data-tooltip-id": "tooltip",
+                                "data-tooltip-content": t('VERIFIER.save_supplier_modification')
+                            }) }>
                                 <Button className='w-full' variant='danger' onClick={ () => refuseDocument() }
                                         disabled={ loadingUpdateData || supplierChanged || !supplierExists || formHasError || disableFields }>
                                     { !loadingUpdateRefuse ? t('FORMS.refuse') : t('FORMS.refuse_loading') }
                                 </Button>
                             </div>
-                            <div className='grow basis-0 w-full' data-tooltip-id="tooltip"
-                                 data-tooltip-content={ supplierChanged ? t('VERIFIER.save_supplier_modification') : '' }>
+                            <div className='grow basis-0 w-full' { ...(supplierChanged && {
+                                "data-tooltip-id": "tooltip",
+                                "data-tooltip-content": t('VERIFIER.save_supplier_modification')
+                            }) }>
                                 <Button
                                     disabled={ loadingUpdateData || supplierChanged || !supplierExists || formHasError || disableFields }
                                     className='w-full' onClick={ () => validateDocument() }>
