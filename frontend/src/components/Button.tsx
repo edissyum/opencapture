@@ -55,7 +55,7 @@ export function Button({
         : false;
 
     let baseStyles =
-        "cursor-pointer inline-flex gap-1.5 items-center justify-center font-medium " +
+        "cursor-pointer inline-flex gap-2 items-center justify-center font-medium " +
         "transition-colors focus:outline-none disabled:opacity-50 disabled:pointer-events-none";
 
     if (!className?.includes('rounded-')) {
@@ -116,7 +116,7 @@ export function Button({
         <LoaderCircle className="animate-spin" size={ 24 }/>
     ) : (
         <>
-            { icon && <span className="mr-2">{ icon }</span> }
+            { icon && <span>{ icon }</span> }
             { children }
         </>
     );

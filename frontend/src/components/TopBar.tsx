@@ -72,7 +72,7 @@ export default function TopBar() {
                             handleSelect(e.target.value)
                         } }
                         className='w-full bg-size-[35px] bg-no-repeat bg-position-[8px] pl-[60px]
-                            rounded-lg py-2.5 border border-(--border-secondary) appearance-none cursor-pointer'
+                                   rounded-lg py-2.5 border border-(--border-secondary) appearance-none cursor-pointer'
                     >
                         { options.map((option) => (
                             <option key={ option['id'] } value={ option['id'] }
@@ -86,14 +86,12 @@ export default function TopBar() {
                         { <ChevronsUpDown size={ 20 }/> }
                     </span>
                 </div>
-                <Button to="/home" icon={ <Package size={ 24 } className="mr-2"/> } className="font-semibold p-2.5!"
-                        size='md'>
+                <Button to="/home" icon={ <Package size={ 24 }/> } className="font-semibold p-2.5!" size='md'>
                     { storedModule === 'verifier' ? t('VERIFIER.documents') : t('GLOBAL.batches') }
                 </Button>
 
                 { hasRequiredPermissions(user, ['upload']) && (
-                    <Button to="/upload" icon={ <CloudUpload size={ 24 } className="mr-2"/> }
-                            className="font-semibold p-2.5!" size='md' variant='no_bg'>
+                    <Button to="/upload" icon={ <CloudUpload size={ 24 }/> } className="font-semibold p-2.5!" size='md' variant='no_bg'>
                         { t('GLOBAL.upload') }
                     </Button>
                 ) }
