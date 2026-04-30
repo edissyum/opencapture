@@ -54,6 +54,7 @@ class Log:
         log_file.setFormatter(formatter)
         self.logger.addHandler(log_file)
         self.logger.setLevel(logging.DEBUG)
+        self.logger.propagate = False
 
     def debug(self, msg):
         if self.debug_mode.lower() == 'true':

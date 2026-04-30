@@ -64,32 +64,32 @@ class SplitterTest(unittest.TestCase):
         print(response.text)
         self.assertEqual(200, response.status_code)
 
-    # def test_successful_get_batches_list(self):
-    #     self.create_batch()
-    #     payload = {
-    #         'page': 0,
-    #         'size': 10,
-    #         'user_id': 1,
-    #         'time': 'today'
-    #     }
-    #     response = self.app.post(f'/{CUSTOM_ID}/ws/splitter/batches/list', json=payload,
-    #                              headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
-    #     self.assertEqual(200, response.status_code)
-    #     self.assertEqual(True, len(response.json['batches']) > 0)
-    #
-    # def test_successful_get_documents(self):
-    #     self.create_batch()
-    #     self.database.execute("SELECT * FROM splitter_batches")
-    #     batches = self.database.fetchall()
-    #     payload = {
-    #         'userId': 1,
-    #         'batchId': batches[0]['id']
-    #     }
-    #     response = self.app.get(f"/{CUSTOM_ID}/ws/splitter/documents/{batches[0]['id']}",
-    #                             headers={"Content-Type": "application/json",
-    #                                      'Authorization': 'Bearer ' + self.token}, json=payload)
-    #     self.assertEqual(200, response.status_code)
-    #     self.assertEqual(2, len(response.json['documents']))
+    def test_successful_get_batches_list(self):
+        self.create_batch()
+        payload = {
+            'page': 0,
+            'size': 10,
+            'user_id': 1,
+            'time': 'today'
+        }
+        response = self.app.post(f'/{CUSTOM_ID}/ws/splitter/batches/list', json=payload,
+                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(True, len(response.json['batches']) > 0)
+
+    def test_successful_get_documents(self):
+        self.create_batch()
+        self.database.execute("SELECT * FROM splitter_batches")
+        batches = self.database.fetchall()
+        payload = {
+            'userId': 1,
+            'batchId': batches[0]['id']
+        }
+        response = self.app.get(f"/{CUSTOM_ID}/ws/splitter/documents/{batches[0]['id']}",
+                                headers={"Content-Type": "application/json",
+                                         'Authorization': 'Bearer ' + self.token}, json=payload)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(2, len(response.json['documents']))
 
     def tearDown(self) -> None:
         self.database.execute("TRUNCATE TABLE splitter_batches")

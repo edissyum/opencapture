@@ -17,10 +17,10 @@
 
 .react-tooltip {
     @apply p-3!;
-    @apply max-w-120;
+    @apply max-w-120!;
     @apply rounded-xl!;
 }
 
 .react-tooltip .react-tooltip-content-wrapper {
-    @apply p-0;
+    @apply p-0!;
 }

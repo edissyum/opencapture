@@ -373,7 +373,7 @@ class SeparatorPDF(FPDF):
     def build(self, data: dict):
         self.add_page()
         self.set_auto_page_break(auto=False)
-        self.set_font('Arial', '', 12)
+        self.set_font('Helvetica', '', 12)
 
         # ── Bordure arrondie verte ──────────────────────────────
         self.set_draw_color(175, 213, 192)
@@ -389,7 +389,7 @@ class SeparatorPDF(FPDF):
         self.cell(w=185, h=5, text=data.get('type', ''), align='C')
 
         # ── Label (multiline) ──────────────────────────────────
-        self.set_font('Arial', 'B', 16)
+        self.set_font('Helvetica', 'B', 16)
         self.set_xy(15, 80)
         self.multi_cell(w=185, h=5, text=data.get('label', ''), align='C')
 
@@ -397,7 +397,7 @@ class SeparatorPDF(FPDF):
         self.image(data['code_qr'], x=60, y=90, w=100, h=100)
 
         # ── Valeur QR ──────────────────────────────────────────
-        self.set_font('Arial', '', 12)
+        self.set_font('Helvetica', '', 12)
         self.set_xy(15, 200)
         self.cell(w=185, h=5, text=data.get('qr_code_value', ''), align='C')
 

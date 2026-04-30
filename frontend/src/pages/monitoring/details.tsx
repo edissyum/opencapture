@@ -75,8 +75,10 @@ export function MonitoringDetails() {
             field: 'message', header: t('MONITORING.event_details'), body: (row: any) => (
                 <span className={ `${ row.status === 'done' && !row.error && 'text-(--color-primary)' }
                                    ${ (row.status === 'error' || row.error) && 'cursor-pointer text-(--text-error)' }` }
-                      data-tooltip-id='tooltip'
-                      data-tooltip-content={ (row.status === 'error' || row.error) ? t('MONITORING.copy_error_message') : '' }
+                      { ...((row.status === 'error' || row.error) && {
+                          "data-tooltip-id": "tooltip",
+                          "data-tooltip-content": t('MONITORING.copy_error_message')
+                      }) }
                       onClick={ async () => {
                           if (row.status === 'error' || row.error) {
                               await copyToClipboard(row.message);

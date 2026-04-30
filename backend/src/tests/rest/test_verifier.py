@@ -235,7 +235,7 @@ class VerifierTest(unittest.TestCase):
         self.database.execute("SELECT id FROM documents")
         document = self.database.fetchall()
         response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/deletePage',
-                                json={'field_id': 'invoice_number'},
+                                json={'fieldId': 'invoice_number'},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.database.execute("SELECT pages FROM documents")

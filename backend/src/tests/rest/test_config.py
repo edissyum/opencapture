@@ -126,13 +126,13 @@ class ConfigTest(unittest.TestCase):
         response = self.app.get(f'/{CUSTOM_ID}/ws/config/getLoginImage',
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
-        login_image = open(f'{PROJECT_PATH}/frontend/src/assets/imgs/login_image.svg', 'rb')
+        login_image = open(f'{PROJECT_PATH}/../frontend/src/assets/imgs/login_image.svg', 'rb')
         current_login_image = base64.b64encode(login_image.read())
         login_image.close()
         self.assertEqual(current_login_image.decode('utf-8'), response.json.replace('data:image/svg+xml;base64,', ''))
 
     def test_successful_update_login_image(self):
-        login_image = open(f'{PROJECT_PATH}/frontend/src/assets/imgs/login_image.svg', 'rb')
+        login_image = open(f'{PROJECT_PATH}/../frontend/src/assets/imgs/login_image.svg', 'rb')
         default_login_image = base64.b64encode(login_image.read())
         login_image.close()
         response = self.app.put(f'/{CUSTOM_ID}/ws/config/updateLoginImage',

@@ -159,6 +159,13 @@ export function axiosApiCall() {
                 return null;
             }
 
+            if (err.response?.status === 500 && err.response?.data?.message == 'Signature verification failed') {
+                _navigate?.('/login');
+                showToast(t('AUTH.session_expired'), "error");
+                sessionStorage.clear();
+                return null;
+            }
+
             setError(err.message || t('ERROR.unknown_error'));
             if (config.showErrorToast !== false) {
                 if (err.response && err.response.data && err.response.data.message || err.response?.status === 429) {
