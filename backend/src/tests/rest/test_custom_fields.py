@@ -71,7 +71,6 @@ class CustomFieldsTest(unittest.TestCase):
                                     'label_short': 'test_custom_verifier',
                                     'type': 'select',
                                     'module': 'verifier',
-                                    'enabled': True,
                                     'metadata_key': ''
                                 }),
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})

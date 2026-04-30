@@ -59,14 +59,6 @@
     @apply text-(--color-primary)!;
 }
 
-/* Truncate text in table cells */
-.p-datatable .p-datatable-tbody > tr > td.truncate-data span {
-    @apply block;
-    @apply w-[98%];
-    @apply truncate;
-    @apply max-w-full;
-}
-
 /* Remove last border in table */
 .p-datatable .p-datatable-tbody > tr:last-child > td {
     @apply border-b-0!;

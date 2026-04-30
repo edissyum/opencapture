@@ -125,7 +125,7 @@ export function SettingsGeneralAdvanced() {
         { id: 'label', field: 'label', header: t('GLOBAL.label'), className: 'max-w-45! w-45!' },
         {
             id: 'description',
-            className: 'max-w-4xl! w-4xl! truncate-data',
+            className: 'max-w-4xl! w-4xl! truncate',
             header: t('VERIFIER.item_description'),
             body: (row: any) => (
                 <span data-tooltip-id="tooltip" data-tooltip-content={ row.data.description }>
