@@ -452,6 +452,8 @@ export function SplitterViewerPage() {
 
     // Load referential
     useEffect(() => {
+        if (!batch) return;
+
         const fetchReferential = async () => {
             try {
                 const response = await get(`/splitter/metadataMethods/${ batch.form_id }`);

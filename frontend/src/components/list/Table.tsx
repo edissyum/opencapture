@@ -114,7 +114,7 @@ export function Table<T extends { id: string }>({
                         className='p-2 border gap-1'
                         variant={ "no_bg_border" }
                         onClick={ action.command }
-                        disabled={ selectedRows.length === 0 }>
+                        disabled={ selectedRows.length === 0 || action.disabled }>
                         { action.icon } { action.label }
                     </Button>
                 )) }
