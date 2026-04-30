@@ -170,7 +170,7 @@ export function VerifierListPage() {
         },
         {
             id: 'name',
-            className:'truncate-date',
+            className:'truncate w-md! max-w-md!',
             header: t('VERIFIER.name'),
             body: (item: any) => (
                 <span className="font-semibold" title={ item.supplier_name }>
@@ -180,7 +180,7 @@ export function VerifierListPage() {
         },
         {
             id: 'register_date',
-            className:'truncate-date',
+            className:'truncate',
             header: t('VERIFIER.creation_date'),
             sortable: true,
             body: (item: any) => (
@@ -194,11 +194,11 @@ export function VerifierListPage() {
                 }).format(new Date(item.register_date)).replace(' ', ' ' + t('GLOBAL.at') + ' ').replace(',', '').replaceAll('/', '-')
             )
         },
-        { id: 'form_label', header: t('VERIFIER.form'), field: 'form_label' },
+        { id: 'form_label', className:'truncate w-xs! max-w-xs!', header: t('VERIFIER.form'), field: 'form_label' },
         {
             id: 'filename',
             header: t('VERIFIER.filename'),
-            className: 'max-w-xs! w-xs! truncate-data',
+            className: 'truncate max-w-xs! w-xs!',
             body: (item: any) => (
                 <span title={ item.original_filename }>
                     { item.original_filename }
