@@ -82,85 +82,85 @@ class VerifierTest(unittest.TestCase):
                              data={"file": my_file, "workflowId": 'default_workflow'},
                              headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
 
-    # def test_successful_upload_file(self):
-    #     supplier = self.create_supplier()
-    #     document_res = self.create_document()
-    #
-    #     self.database.execute("SELECT * FROM documents")
-    #     document = self.database.fetchall()
-    #
-    #     self.assertEqual(supplier.json['id'], document[0]['supplier_id'])
-    #     self.assertEqual(408.50, float(document[0]['datas']['total_vat']))
-    #     self.assertEqual(2042.5, float(document[0]['datas']['total_ht']))
-    #     self.assertEqual(408.50, float(document[0]['datas']['vat_amount']))
-    #     self.assertEqual(2451.0, float(document[0]['datas']['total_ttc']))
-    #     self.assertEqual("2016-12-15", document[0]['datas']['document_date'])
-    #     self.assertEqual("INV-001510", document[0]['datas']['invoice_number'])
-    #     self.assertEqual(2042.5, float(document[0]['datas']['no_rate_amount']))
-    #     self.assertEqual("2017-01-14", document[0]['datas']['document_due_date'])
-    #     self.assertEqual("AM161941219-1607", document[0]['datas']['quotation_number'])
-    #     self.assertEqual(200, document_res.status_code)
-    #
-    # def test_successful_get_documents_list(self):
-    #     self.create_supplier()
-    #     self.create_document()
-    #     response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/documents/list', json={'status' : 'NEW'},
-    #                              headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
-    #
-    #     self.assertEqual(200, response.status_code)
-    #     self.assertEqual(dict, type(response.json))
-    #     self.assertEqual(len(response.json['documents']), 1)
-    #
-    # def test_successful_get_document_by_id(self):
-    #     self.create_supplier()
-    #     self.create_document()
-    #     self.database.execute("SELECT id FROM documents")
-    #     document = self.database.fetchall()
-    #     response = self.app.get(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']), json={},
-    #                             headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
-    #     self.assertEqual(200, response.status_code)
-    #     self.assertEqual(document[0]['id'], response.json['id'])
-    #
-    # def test_successful_update_positions(self):
-    #     self.create_supplier()
-    #     self.create_document()
-    #     self.database.execute("SELECT id FROM documents")
-    #     document = self.database.fetchall()
-    #     new_position = {
-    #         "invoice_number": {
-    #             "x": 467.72950819672127,
-    #             "y": 221.1547131147541,
-    #             "width": 343.171106557377,
-    #             "height": 88.9702868852459,
-    #             "ocr_from_user": True
-    #         }
-    #     }
-    #     response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/updatePosition',
-    #                             json=new_position,
-    #                             headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
-    #     self.assertEqual(200, response.status_code)
-    #     self.database.execute("SELECT positions FROM documents")
-    #     document = self.database.fetchall()
-    #     self.assertEqual(467.72950819672127, document[0]['positions']['invoice_number']['x'])
-    #     self.assertEqual(221.1547131147541, document[0]['positions']['invoice_number']['y'])
-    #     self.assertEqual(343.171106557377, document[0]['positions']['invoice_number']['width'])
-    #     self.assertEqual(88.9702868852459, document[0]['positions']['invoice_number']['height'])
-    #
-    # def test_successful_update_page(self):
-    #     self.create_supplier()
-    #     self.create_document()
-    #     self.database.execute("SELECT id FROM documents")
-    #     document = self.database.fetchall()
-    #     new_page = {
-    #         "invoice_number": 2
-    #     }
-    #     response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/updatePage',
-    #                             json=new_page,
-    #                             headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
-    #     self.assertEqual(200, response.status_code)
-    #     self.database.execute("SELECT pages FROM documents")
-    #     document = self.database.fetchall()
-    #     self.assertEqual(2, document[0]['pages']['invoice_number'])
+    def test_successful_upload_file(self):
+        supplier = self.create_supplier()
+        document_res = self.create_document()
+
+        self.database.execute("SELECT * FROM documents")
+        document = self.database.fetchall()
+
+        self.assertEqual(supplier.json['id'], document[0]['supplier_id'])
+        self.assertEqual(408.50, float(document[0]['datas']['total_vat']))
+        self.assertEqual(2042.5, float(document[0]['datas']['total_ht']))
+        self.assertEqual(408.50, float(document[0]['datas']['vat_amount']))
+        self.assertEqual(2451.0, float(document[0]['datas']['total_ttc']))
+        self.assertEqual("2016-12-15", document[0]['datas']['document_date'])
+        self.assertEqual("INV-001510", document[0]['datas']['invoice_number'])
+        self.assertEqual(2042.5, float(document[0]['datas']['no_rate_amount']))
+        self.assertEqual("2017-01-14", document[0]['datas']['document_due_date'])
+        self.assertEqual("AM161941219-1607", document[0]['datas']['quotation_number'])
+        self.assertEqual(200, document_res.status_code)
+
+    def test_successful_get_documents_list(self):
+        self.create_supplier()
+        self.create_document()
+        response = self.app.post(f'/{CUSTOM_ID}/ws/verifier/documents/list', json={'status' : 'NEW'},
+                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(dict, type(response.json))
+        self.assertEqual(len(response.json['documents']), 1)
+
+    def test_successful_get_document_by_id(self):
+        self.create_supplier()
+        self.create_document()
+        self.database.execute("SELECT id FROM documents")
+        document = self.database.fetchall()
+        response = self.app.get(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']), json={},
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(document[0]['id'], response.json['id'])
+
+    def test_successful_update_positions(self):
+        self.create_supplier()
+        self.create_document()
+        self.database.execute("SELECT id FROM documents")
+        document = self.database.fetchall()
+        new_position = {
+            "invoice_number": {
+                "x": 467.72950819672127,
+                "y": 221.1547131147541,
+                "width": 343.171106557377,
+                "height": 88.9702868852459,
+                "ocr_from_user": True
+            }
+        }
+        response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/updatePosition',
+                                json=new_position,
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+        self.database.execute("SELECT positions FROM documents")
+        document = self.database.fetchall()
+        self.assertEqual(467.72950819672127, document[0]['positions']['invoice_number']['x'])
+        self.assertEqual(221.1547131147541, document[0]['positions']['invoice_number']['y'])
+        self.assertEqual(343.171106557377, document[0]['positions']['invoice_number']['width'])
+        self.assertEqual(88.9702868852459, document[0]['positions']['invoice_number']['height'])
+
+    def test_successful_update_page(self):
+        self.create_supplier()
+        self.create_document()
+        self.database.execute("SELECT id FROM documents")
+        document = self.database.fetchall()
+        new_page = {
+            "invoice_number": 2
+        }
+        response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/updatePage',
+                                json=new_page,
+                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+        self.assertEqual(200, response.status_code)
+        self.database.execute("SELECT pages FROM documents")
+        document = self.database.fetchall()
+        self.assertEqual(2, document[0]['pages']['invoice_number'])
 
     def test_successful_update_data(self):
         self.create_supplier()
@@ -198,8 +198,9 @@ class VerifierTest(unittest.TestCase):
         self.database.execute("SELECT id FROM documents")
         document = self.database.fetchall()
         response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/deleteData',
-                                data={'fieldId': 'invoice_number'},
+                                json={'fieldId': 'invoice_number'},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
+
         self.assertEqual(200, response.status_code)
         self.database.execute("SELECT datas FROM documents")
         document = self.database.fetchall()
@@ -221,7 +222,7 @@ class VerifierTest(unittest.TestCase):
         self.database.execute("SELECT id FROM documents")
         document = self.database.fetchall()
         response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/deletePosition',
-                                data={'fieldId': 'invoice_number'},
+                                json={'fieldId': 'invoice_number'},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.database.execute("SELECT positions FROM documents")
@@ -234,7 +235,7 @@ class VerifierTest(unittest.TestCase):
         self.database.execute("SELECT id FROM documents")
         document = self.database.fetchall()
         response = self.app.put(f'/{CUSTOM_ID}/ws/verifier/documents/' + str(document[0]['id']) + '/deletePage',
-                                data={'field_id': 'invoice_number'},
+                                json={'field_id': 'invoice_number'},
                                 headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
         self.assertEqual(200, response.status_code)
         self.database.execute("SELECT pages FROM documents")
