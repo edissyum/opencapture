@@ -21,13 +21,12 @@ import argparse
 import tempfile
 import datetime
 
-from main import init_shared_from_custom_id
-from src import app, shared
+from src import app
 from flask_babel import gettext
 from src.classes.Mail import Mail
 from src.classes.Log import Log as log
 from src.main_splitter import launch as launch_splitter
-from src.functions import retrieve_config_from_custom_id, retrieve_custom_path
+from src.functions import retrieve_config_from_custom_id
 from src.main import launch as launch_verifier, create_classes_from_custom_id
 
 
