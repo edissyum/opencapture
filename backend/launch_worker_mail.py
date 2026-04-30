@@ -20,6 +20,8 @@ import sys
 import argparse
 import tempfile
 import datetime
+
+from main import init_shared_from_custom_id
 from src import app, shared
 from flask_babel import gettext
 from src.classes.Mail import Mail
@@ -98,14 +100,6 @@ args = vars(ap.parse_args())
 
 if not retrieve_config_from_custom_id(args['custom_id']):
     sys.exit('Custom config file couldn\'t be found')
-
-custom_path = retrieve_custom_path(args['custom_id'])
-shared.custom_id = args['custom_id']
-shared.custom_path = custom_path
-shared.data_path = custom_path + '/data/'
-shared.tmp_path = custom_path + '/data/tmp/'
-shared.assets_path = custom_path + '/assets/'
-shared.error_path = custom_path + '/data/error/'
 
 database, config, regex, files, ocr, _, _, spreadsheet, smtp, docservers, configurations, languages, _, _ = create_classes_from_custom_id(args['custom_id'])
 

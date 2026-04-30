@@ -19,11 +19,14 @@
 DEFAULT_PATH='.'
 CUSTOM_PATH="$DEFAULT_PATH/custom"
 
-parameters="custom_id database_name database_hostname database_port database_user database_password docservers_path share_path"
+group=www-data
+
+parameters="user custom_id database_name database_hostname database_port database_user database_password docservers_path share_path"
 opts=$(getopt --longoptions "$(printf "%s:," "$parameters")" --name "$(basename "$0")" --options "" -- "$@")
 
 while [ $# -gt 0 ]; do
     case "$1" in
+        --user) user="$2"; shift 2;;
         --custom_id) custom_id="$2"; shift 2;;
         --database_name) database_name="$2"; shift 2;;
         --database_hostname) database_hostname="$2"; shift 2;;
@@ -127,9 +130,7 @@ touch "$NEW_CUSTOM_PATH/config/secret_key"
 touch "$NEW_CUSTOM_PATH/data/log/OpenCapture.log"
 cp "$DEFAULT_PATH"/frontend/src/assets/imgs/login_image.svg "$NEW_CUSTOM_PATH/assets/imgs/login_image.svg"
 cp "$DEFAULT_PATH"/backend/src/assets/imgs/opencapture.png "$NEW_CUSTOM_PATH/assets/imgs/opencapture.png"
-cp "$DEFAULT_PATH"/backend/src/assets/imgs/logo_company.png "$NEW_CUSTOM_PATH/assets/imgs/login_company.png"
-
-chmod -R 775 "$NEW_CUSTOM_PATH"
+cp "$DEFAULT_PATH"/backend/src/assets/imgs/logo_company.png "$NEW_CUSTOM_PATH/assets/imgs/logo_company.png"
 
 ####################
 # Write custom configuration in custom.ini file
@@ -149,13 +150,11 @@ mkdir -p "$docservers_path"/verifier/{ai,attachments,original_doc,full,thumbs,po
 mkdir -p "$docservers_path"/splitter/{ai,attachments,original_doc,batches,thumbs,error}
 mkdir -p "$docservers_path"/verifier/ai/{train_data,models}
 mkdir -p "$docservers_path"/splitter/ai/{train_data,models}
-chmod -R 775 "$docservers_path"
 
 ####################
 # Create custom input and outputs folder
 mkdir -p "$share_path"/{entrant,export}/{verifier,splitter}
 mkdir -p "$share_path"/entrant/verifier/{ocr_only,default,default_mail}
-chmod -R 775 "$share_path"
 
 ####################
 # Copy file from default one
@@ -201,3 +200,13 @@ psql $DATABASE_INFO -c "UPDATE outputs SET data = jsonb_set(data, '{options, par
 
 psql $DATABASE_INFO -c "UPDATE outputs_types SET data = jsonb_set(data, '{options, parameters, 0, placeholder}', '\"$share_path/export/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'verifier';"
 psql $DATABASE_INFO -c "UPDATE outputs_types SET data = jsonb_set(data, '{options, parameters, 0, placeholder}', '\"$share_path/export/splitter/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out' AND module = 'splitter' AND output_type_id = 'export_xml';"
+
+####################
+# Fix permissions
+chmod -R 775 "$share_path"
+chmod -R 775 "$docservers_path"
+chmod -R 775 "$NEW_CUSTOM_PATH"
+
+chown -R "$user":"$group" "$share_path"
+chown -R "$user":"$group" "$docservers_path"
+chown -R "$user":"$group" "$NEW_CUSTOM_PATH"

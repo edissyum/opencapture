@@ -358,8 +358,7 @@ class SeparatorQR:
                 for page in pages:
                     buffered = BytesIO()
                     page.save(buffered, format="JPEG")
-                    encoded_thumbnails.append(
-                        f"data:image/jpeg;base64," f"{base64.b64encode(buffered.getvalue()).decode('utf-8')}")
+                    encoded_thumbnails.append(f"data:image/jpeg;base64," f"{base64.b64encode(buffered.getvalue()).decode('utf-8')}")
             except (Exception,) as _e:
                 return {'error': str(_e)}
 
@@ -387,12 +386,12 @@ class SeparatorPDF(FPDF):
 
         # ── Type ───────────────────────────────────────────────
         self.set_xy(15, 60.5)
-        self.cell(w=185, h=5, txt=data.get('type', ''), align='C')
+        self.cell(w=185, h=5, text=data.get('type', ''), align='C')
 
         # ── Label (multiline) ──────────────────────────────────
         self.set_font('Arial', 'B', 16)
         self.set_xy(15, 80)
-        self.multi_cell(w=185, h=5, txt=data.get('label', ''), align='C')
+        self.multi_cell(w=185, h=5, text=data.get('label', ''), align='C')
 
         # ── QR Code ────────────────────────────────────────────
         self.image(data['code_qr'], x=60, y=90, w=100, h=100)
@@ -400,7 +399,7 @@ class SeparatorPDF(FPDF):
         # ── Valeur QR ──────────────────────────────────────────
         self.set_font('Arial', '', 12)
         self.set_xy(15, 200)
-        self.cell(w=185, h=5, txt=data.get('qr_code_value', ''), align='C')
+        self.cell(w=185, h=5, text=data.get('qr_code_value', ''), align='C')
 
         # ── Company logo ───────────────────────────────────────
         self.image(data['company_logo'], x=20, y=270, w=0, h=10)
@@ -408,7 +407,7 @@ class SeparatorPDF(FPDF):
         # ── Liens ──────────────────────────────────────────────
         self.set_text_color(145, 146, 155)
         self.set_xy(15, 271)
-        self.cell(w=180, h=5, txt='https://open-capture.com', align='R')
+        self.cell(w=180, h=5, text='https://open-capture.com', align='R')
         self.set_xy(15, 276)
-        self.cell(w=180, h=5, txt='https://edissyum.com', align='R')
+        self.cell(w=180, h=5, text='https://edissyum.com', align='R')
         self.set_text_color(0, 0, 0)

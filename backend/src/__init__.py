@@ -23,12 +23,11 @@ from flask_cors import CORS
 from ultralytics import YOLO
 from flask_babel import Babel
 
-from . import shared
 from .rest.auth import limiter
 from werkzeug.wrappers import Request
 from .main import create_classes_from_custom_id
 from flask import request, g as current_context, Flask, session
-from .functions import is_custom_exists, retrieve_custom_from_url, get_custom_path, retrieve_custom_path
+from .functions import is_custom_exists, retrieve_custom_from_url, retrieve_custom_path
 from .rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
     forms, status, accounts, outputs, mem, positions_masks, history, doctypes, mailcollect, artificial_intelligence, \
     smtp, monitoring, workflow, coog, opencaptureformem, attachments, opencrm
@@ -52,7 +51,6 @@ class Middleware:
             if not domain_name:
                 domain_name = urllib.parse.urlparse(environ['HTTP_HOST']).path
 
-        path = ''
         local_regex = re.compile(r'^(127.0.([01]).1|10(\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[0-9]{1,2})){3}|((172\.(1['
                                  r'6-9]|2[0-9]|3[01]))|192\.168)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[0-9]{1,2})){2})$')
         if ('mod_wsgi.path_info' in environ and domain_name != 'localhost' and not local_regex.match(domain_name) and
@@ -76,13 +74,6 @@ class Middleware:
                     with open(path + '/config/secret_key', 'r', encoding='utf-8') as secret_file:
                         app.config['SECRET_KEY'] = secret_file.read().replace('\n', '')
 
-        if path:
-            shared.custom_path = path
-            shared.data_path = path + '/data/'
-            shared.tmp_path = path + '/data/tmp/'
-            shared.assets_path = path + '/assets/'
-            shared.error_path = path + '/data/error/'
-            shared.custom_id = environ['SCRIPT_NAME'].replace('/', '')
         return self.middleware_app(environ, start_response)
 
 

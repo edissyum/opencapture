@@ -14,7 +14,6 @@
 # See LICENCE file at the root folder for more details.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-# @dev : Oussama Brich <nathan.cheval@outlook.fr>
 
 import os
 import sys

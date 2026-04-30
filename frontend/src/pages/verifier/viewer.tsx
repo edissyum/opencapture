@@ -146,7 +146,6 @@ export function VerifierViewerPage() {
         const fetchDocumentData = async () => {
             try {
                 get(`verifier/documents/${ documentId }`, {}).then((response) => {
-                    console.log(response);
                     setDocumentData(response);
                     setTmpDocumentData(response);
                     setCurrentFilename(response.full_jpg_filename);
@@ -1085,13 +1084,6 @@ export function VerifierViewerPage() {
     };
 
     if (documentDataLoading || loadingLinksMEM || !documentData) return <Loader/>;
-
-    // console.log('loadingUpdateData', loadingUpdateData);
-    // console.log('supplierChanged', supplierChanged);
-    // console.log('!supplierExists', !supplierExists);
-    // console.log('formHasError', formHasError);
-    // console.log('disableFields', disableFields);
-    // console.log(loadingUpdateData || supplierChanged || !supplierExists || formHasError || disableFields)
 
     return (
         <div className='flex h-full overflow-hidden'>

@@ -422,8 +422,7 @@ class UserTest(unittest.TestCase):
         self.assertEqual(list, type(response.json))
 
     def test_successful_get_reference_file(self):
-        reference_file = open(
-            f'{PROJECT_PATH}/custom/{CUSTOM_ID}/instance/referencial/default_referencial_supplier.csv', 'rb')
+        reference_file = open(f'{PROJECT_PATH}/custom/{CUSTOM_ID}/instance/referencial/default_referencial_supplier.csv', 'rb')
         default_reference_file = base64.b64encode(reference_file.read()).decode('utf-8')
         reference_file.close()
         response = self.app.get(f'/{CUSTOM_ID}/ws/accounts/supplier/getReferenceFile',

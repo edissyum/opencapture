@@ -226,7 +226,6 @@ export function SettingsGeneralUserEditor() {
     }, [user]);
 
     const handleCreate: any = async (data: FormData) => {
-        console.log(errors)
         if (errors && Object.keys(errors).length > 0) return;
         setLoadingSubmit(true);
 
@@ -254,7 +253,7 @@ export function SettingsGeneralUserEditor() {
             setLoadingSubmit(false);
         }
     }
-    console.log(errors)
+
     const password: any = watch("password");
     const passwordCheck: any = watch("password_check");
 

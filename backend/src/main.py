@@ -32,11 +32,26 @@ from .classes.Spreadsheet import Spreadsheet
 from .classes.ArtificialIntelligence import ArtificialIntelligence
 from .functions import get_custom_array, retrieve_config_from_custom_id, retrieve_custom_path
 
+def init_shared_from_custom_id(custom_id):
+    custom_path = retrieve_custom_path(custom_id)
+    if not custom_path:
+        return False
+
+    shared.custom_id = custom_id
+    shared.custom_path = custom_path
+    shared.data_path = custom_path + '/data/'
+    shared.tmp_path = custom_path + '/data/tmp/'
+    shared.assets_path = custom_path + '/assets/'
+    shared.error_path = custom_path + '/data/error/'
+    return True
 
 def create_classes_from_custom_id(custom_id, load_smtp=False):
     config_file = retrieve_config_from_custom_id(custom_id)
     if config_file is False:
         return False, 'missing_custom_or_file_doesnt_exists'
+
+    if not init_shared_from_custom_id(custom_id):
+        return False, 'missing_custom_path'
 
     config = Config(config_file)
 
