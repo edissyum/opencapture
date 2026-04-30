@@ -82,7 +82,7 @@ class MEMWebServices:
                 self.log.error('(' + str(res.status_code) + ') getContactError : ' + str(res.text))
                 return False
             return json.loads(res.text)
-        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
+        except (Exception, ) as e:
             self.log.error('getContactError : ' + str(e))
             return False
 
@@ -90,13 +90,18 @@ class MEMWebServices:
         where = "?custom_fields=" + str(args['memCustomField']['id'])
         if args['memClause']:
             where += '&clause=' + args['memClause']
-        res = requests.get(self.base_url + '/resources/getByContact/' + args['contactId'] + where, auth=self.auth,
-                           timeout=self.timeout)
-        if res.status_code != 200:
-            if res.status_code != 204:
-                self.log.error('(' + str(res.status_code) + ') getDocumentWithContactError : ' + str(res.text))
+
+        try:
+            res = requests.get(self.base_url + '/resources/getByContact/' + args['contactId'] + where, auth=self.auth,
+                               timeout=self.timeout)
+            if res.status_code != 200:
+                if res.status_code != 204:
+                    self.log.error('(' + str(res.status_code) + ') getDocumentWithContactError : ' + str(res.text))
+                return False
+            return json.loads(res.text)
+        except (Exception, ) as e:
+            self.log.error('getDocumentWithContactError : ' + str(e))
             return False
-        return json.loads(res.text)
 
     def retrieve_priorities(self):
         res = requests.get(self.base_url + '/priorities', auth=self.auth, timeout=self.timeout)
