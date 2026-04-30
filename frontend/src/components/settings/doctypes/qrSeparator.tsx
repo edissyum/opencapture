@@ -79,7 +79,9 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
     }, [selectedSeparator, selectedDoctype]);
 
     const handleDownloadSeparator = async () => {
-        if (!selectedDoctype || !selectedSeparator) return;
+        if (!selectedSeparator) return;
+        if (selectedSeparator === 'docTypeSeparator' && !selectedDoctype) return;
+        if (selectedDoctype && ['folder', 'root'].includes(selectedDoctype.type)) return;
 
         try {
             if (separator['encoded_file']) {
@@ -87,7 +89,7 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
-                link.download = `${ selectedSeparator }_${ selectedDoctype.key }.pdf`;
+                link.download = `${ selectedSeparator }_${ selectedDoctype?.key ?? '' }.pdf`;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
