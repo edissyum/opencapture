@@ -400,7 +400,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         if 'ai_model_id' in workflow_settings['input'] and workflow_settings['input']['ai_model_id']:
             ai_model_id = workflow_settings['input']['ai_model_id']
-            res = find_workflow_with_ia(file, ai_model_id, database, docservers, Files, ocr, log, 'verifier')
+            res = find_workflow_with_ia(file, ai_model_id, database, docservers, Files, ocr, log)
             if res:
                 log.info('Workflow with AI model ' + str(ai_model_id) + ' found for document, send to workflow : ' + res)
                 return send_to_workflow({

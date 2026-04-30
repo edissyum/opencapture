@@ -462,31 +462,20 @@ def generate_searchable_pdf(document, tmp_filename):
         shutil.move(tmp_path + '/to_merge_' + _uuid + '-001.pdf', tmp_filename)
 
 
-def find_workflow_with_ia(file, ai_model_id, database, docservers, files, ocr, log, module):
+def find_workflow_with_ia(file, ai_model_id, database, docservers, files, ocr, log):
     ai_model = database.select({
         'select': ['*'],
         'table': ['ai_models'],
         'where': ['id = %s', 'module = %s'],
-        'data': [ai_model_id, module]
+        'data': [ai_model_id, 'verifier']
     })
     if ai_model:
-        if module == 'verifier':
-            csv_file = docservers.get('VERIFIER_TRAIN_PATH_FILES') + '/data.csv'
-        elif module == 'splitter':
-            csv_file = docservers.get('SPLITTER_TRAIN_PATH_FILES') + '/data.csv'
-        else:
-            return False
+        csv_file = docservers.get('VERIFIER_TRAIN_PATH_FILES') + '/data.csv'
 
         path = shared.tmp_path + files.get_random_string(15) + '.pdf'
         shutil.copy(file, path)
 
-        if module == 'verifier':
-            model_name = docservers.get('VERIFIER_AI_MODEL_PATH') + ai_model[0]['model_path']
-        elif module == 'splitter':
-            model_name = docservers.get('SPLITTER_AI_MODEL_PATH') + ai_model[0]['model_path']
-        else:
-            return False
-
+        model_name = docservers.get('VERIFIER_AI_MODEL_PATH') + ai_model[0]['model_path']
         ai = ArtificialIntelligence(csv_file, model_name, files, ocr, docservers, log)
         ai.store_one_file_from_script(path)
 
@@ -498,29 +487,25 @@ def find_workflow_with_ia(file, ai_model_id, database, docservers, files, ocr, l
             if code == 200 and prob >= min_proba:
                 for doc in ai_model[0]['documents']:
                     if doc['folder'] == folder and doc['active']:
-                        if module == 'verifier':
-                            if doc['workflow_id']:
-                                form = database.select({
-                                    'select': ['*'],
-                                    'table': ['workflows'],
-                                    'where': ['workflow_id = %s', 'module = %s'],
-                                    'data': [doc['workflow_id'], module]
-                                })
-                                if form:
-                                    log.info('[IA] Document detected as&nbsp;<strong>' + folder +
-                                             '</strong>&nbsp;and sended to workflow&nbsp;<strong>' +
-                                             doc['workflow_id'] + '</strong>')
-                                    return doc['workflow_id']
-                        elif module == 'splitter':
-                            log.info('[IA] Document doctype detected : ' + doc['doctype'])
-                            return doc['doctype']
+                        if doc['workflow_id']:
+                            form = database.select({
+                                'select': ['*'],
+                                'table': ['workflows'],
+                                'where': ['workflow_id = %s', 'module = %s'],
+                                'data': [doc['workflow_id'], 'verifier']
+                            })
+                            if form:
+                                log.info('[IA] Document detected as&nbsp;<strong>' + folder +
+                                         '</strong>&nbsp;and sended to workflow&nbsp;<strong>' +
+                                         doc['workflow_id'] + '</strong>')
+                                return doc['workflow_id']
     return False
 
 
-def check_order_by(filter, order, allowed_filters):
+def check_order_by(_filter, _order, allowed_filters):
     allowed_orders = {"asc", "desc"}
-    if filter not in allowed_filters:
-        return False, gettext('FILTER_NOT_ALLOWED') + ' : ' + filter
-    if order not in allowed_orders:
-        return False, gettext('ORDER_NOT_ALLOWED') + ' : ' + order
+    if _filter not in allowed_filters:
+        return False, gettext('FILTER_NOT_ALLOWED') + ' : ' + _filter
+    if _order not in allowed_orders:
+        return False, gettext('ORDER_NOT_ALLOWED') + ' : ' + _order
     return True, ''

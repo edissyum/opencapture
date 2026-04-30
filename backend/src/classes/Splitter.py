@@ -320,15 +320,27 @@ class Splitter:
                     elif workflow_settings[0]['input']['ai_model_id']:
                         model_id = workflow_settings[0]['input']['ai_model_id']
                         ai_model = self.db.select({
-                            'select': ['id', 'min_proba', 'model_path', 'documents', 'module'],
+                            'select': ['id', 'min_proba', 'model_label', 'model_path', 'documents', 'module'],
                             'table': ['ai_models'],
                             'where': ['id = %s'],
                             'data': [model_id]
                         })
                         if ai_model:
+                            upload_args['log'].info(f"Search doctype using AI SLM model "
+                                                    f"<strong>{ai_model[0]['model_label']}</strong> "
+                                                    f"for page <strong>{page['source_page']}</strong>. "
+                                                    f"Min proba : <strong>{ai_model[0]['min_proba']}</strong>")
+
                             result, _ = upload_args['artificial_intelligence'].predict_from_file_path(
                                 file, ai_model[0], page=int(page['source_page']))
+
+                            upload_args['log'].info(f"AI model prediction result: <strong>{result[3]}</strong> "
+                                                    f"with proba <strong>{result[2]}</strong> "
+                                                    f"for page <strong>{page['source_page']}</strong>")
+
                             if result[2] >= ai_model[0]['min_proba']:
+                                upload_args['log'].info(f"Set doctype <strong>{result[3]}</strong> "
+                                                        f"for page <strong>{page['source_page']}</strong> based on AI model prediction")
                                 args['columns']['doctype_key'] = page['doctype_value'] = result[3]
                     else:
                         default_doctype = self.db.select({

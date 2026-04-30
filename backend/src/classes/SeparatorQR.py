@@ -164,6 +164,7 @@ class SeparatorQR:
             elif self.splitter_or_verifier == 'splitter':
                 self.get_xml(file, saved_pages, ['QRCODE'])
                 self.parse_xml_multi()
+            self.log.info('End page separation using QR CODE')
         except (Exception,) as e:
             self.error = True
             self.log.error("INIT : " + str(e))

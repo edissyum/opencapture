@@ -187,19 +187,19 @@ export function MonitoringDetails() {
         <div className="bg-(--bg-secondary) p-6 h-full w-full flex flex-col overflow-hidden">
             <h1 className="text-md font-bold">{ t('MONITORING.process_details') }</h1>
             <div className="p-4 bg-(--bg-primary) border border-(--border-secondary) rounded-lg mt-4 grid grid-cols-6">
-                <div>
+                <div className='w-11/12'>
                     <p className='text-(--text-secondary) font-semibold mb-1'>
                         { t('MONITORING.id') }
                     </p>
                     <p className='font-bold'>{ processId }</p>
                 </div>
-                <div>
+                <div className='w-11/12'>
                     <p className='text-(--text-secondary) font-semibold mb-1'>
                         { t('MONITORING.workflow') }
                     </p>
                     <p className='font-bold'>{ workflowLabel }</p>
                 </div>
-                <div>
+                <div className='w-11/12'>
                     <p className='text-(--text-secondary) font-semibold mb-1'>
                         { t('MONITORING.creation_date') }
                     </p>
@@ -207,7 +207,7 @@ export function MonitoringDetails() {
                         { process.creation_date_formated }
                     </p>
                 </div>
-                <div>
+                <div className='w-11/12'>
                     <p className='text-(--text-secondary) font-semibold mb-1'>
                         { t('MONITORING.end_date') }
                     </p>
@@ -215,13 +215,13 @@ export function MonitoringDetails() {
                         { process.end_date_formated }
                     </p>
                 </div>
-                <div>
+                <div className='w-11/12'>
                     <p className='text-(--text-secondary) font-semibold mb-1'>
                         { t('MONITORING.elapsed_time') }
                     </p>
                     <p className='font-bold'>{ process.elapsedTime }</p>
                 </div>
-                <div>
+                <div className='w-11/12'>
                     <p className='text-(--text-secondary) font-semibold mb-1'>
                         { t('GLOBAL.status') }
                     </p>

@@ -46,7 +46,7 @@
         "recharts": "^3.8.1",
         "tailwindcss": "^4.2.4",
         "tinymce": "^8.5.0",
-        "zod": "^4.3.6"
+        "zod": "^4.4.1"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.4",
