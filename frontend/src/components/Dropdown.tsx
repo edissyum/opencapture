@@ -52,7 +52,6 @@ export const Dropdown: React.FC<DropdownProps> = ({
     editable = false,
     placeholder = "",
     disabled = false,
-    noMarginBottom = false,
     useExtraInLabel = false
 }) => {
     let dropdownItemTemplate = undefined;
@@ -98,7 +97,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
     return (
         <div className='w-full'>
             <div className={ `${ className } group group-focus-within:border-(--border-primary) relative flex justify-items-stretch 
-                              ${ error || noMarginBottom ? '' : 'mb-4' } ${ disabled ? 'cursor-not-allowed' : '' }` }
+                              ${ disabled ? 'cursor-not-allowed' : '' }` }
             >
                 { placeholder ? (
                     <span className='w-full'>

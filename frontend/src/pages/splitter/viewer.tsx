@@ -1334,23 +1334,23 @@ export function SplitterViewerPage() {
                          onClick={ () => setSelectedDocument(null) }>
                         <Accordion className='mb-6' activeIndex={ 0 }>
                             <AccordionTab header={ t('SPLITTER.batch_content') }>
-                                <div className='p-4'>
-                                    <div className='text-(--text-secondary) flex items-center gap-4 mb-6'>
-                                    <span className='flex items-center'>
-                                        <Layers size={ 16 }/>&nbsp;
-                                        <span>{ pagesCount }</span>&nbsp;
-                                        { t('SPLITTER.pages', { count: pagesCount }) }
-                                    </span>
+                                <div className='flex flex-col gap-6 p-4'>
+                                    <div className='text-(--text-secondary) flex items-center gap-4'>
                                         <span className='flex items-center'>
-                                        <FileStack size={ 16 }/>&nbsp;
-                                            <span>{ documents.length }</span>&nbsp;
-                                            { t('SPLITTER.documents', { count: documents.length }) }
-                                    </span>
+                                            <Layers size={ 16 }/>&nbsp;
+                                            <span>{ pagesCount }</span>&nbsp;
+                                            { t('SPLITTER.pages', { count: pagesCount }) }
+                                        </span>
+                                            <span className='flex items-center'>
+                                            <FileStack size={ 16 }/>&nbsp;
+                                                <span>{ documents.length }</span>&nbsp;
+                                                { t('SPLITTER.documents', { count: documents.length }) }
+                                        </span>
                                     </div>
 
                                     <Dropdown id={ "forms" }
                                               filter={ true }
-                                              className="w-1/3 mb-4"
+                                              className="w-1/3"
                                               noMarginBottom={ true }
                                               disabled={ disabledBatch }
                                               label={ t('VERIFIER.form') }
@@ -1366,7 +1366,7 @@ export function SplitterViewerPage() {
                                         <div>
                                             <h3 className='font-semibold mb-4'>{ t('FORMS.metadata_batch') }</h3>
                                             { batchMetadata.map((line: any, index: number) => (
-                                                <div key={ index } className={ `flex gap-4 mb-2` }>
+                                                <div key={ index } className={ `flex gap-4` }>
                                                     { line.map((field: any) => (
                                                         <div key={ field.id }
                                                              className={ `min-w-1/6 ${ getWidthLine(line) }` }>
@@ -1389,7 +1389,7 @@ export function SplitterViewerPage() {
                                                                             id={ field.id }
                                                                             filter={ true }
                                                                             label={ field.label }
-                                                                            className="w-full mb-2"
+                                                                            className="w-full"
                                                                             useExtraInLabel={ true }
                                                                             disabled={ disabledBatch }
                                                                             options={ getMetadaValuesForField(field) }

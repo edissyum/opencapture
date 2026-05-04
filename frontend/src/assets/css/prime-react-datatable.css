@@ -72,9 +72,7 @@
 
 /* Color for even rows */
 .p-datatable .p-datatable-tbody > tr:not(.p-row-odd) {
-    @apply bg-(--bg-secondary);
-    @apply dark:bg-(--bg-primary);
-    @apply dark:border-(--border-primary)!;
+    @apply bg-(--bg-primary)/30;
     @apply text-(--text-primary);
 }
 

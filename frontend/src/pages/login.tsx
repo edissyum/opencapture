@@ -143,7 +143,7 @@ export function Login() {
     };
 
     return (
-        <div className="flex h-screen flex-col items-center justify-between py-6 bg-(--bg-secondary)">
+        <div className="flex flex-col gap-2 h-screen items-center justify-between py-6 bg-(--bg-secondary)">
             <div className="flex flex-1 items-center justify-center w-full">
                 <div className='bg-(--bg-primary) h-auto flex justify-center w-200 p-4 rounded-xl gap-6'>
                     <div className='bg-(--bg-primary) h-auto flex flex-1'>
@@ -210,8 +210,8 @@ export function Login() {
                             <LoginImage className="mx-auto"></LoginImage>
                         </div>
 
-                        <div className='flex flex-col align-center h-full justify-center'>
-                            <div className='font-bold mb-4 flex flex-col gap-2'>
+                        <div className='flex flex-col gap-4 align-center h-full justify-center'>
+                            <div className='font-bold flex flex-col'>
                                 <span className='text-2xl'>{ t('AUTH.connexion') }</span>
                                 { loginMessage ? (
                                     <span dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(loginMessage) } }/>
@@ -220,11 +220,9 @@ export function Login() {
                                 ) }
                             </div>
 
-                            <form onSubmit={ handleSubmit } noValidate>
-                                <div className="mt-2 mb-2">
-                                    <Input id="username" type="text" name="username" required error={ errors.username }
-                                           onChange={ handleChange } label={ t('USERS.username') }/>
-                                </div>
+                            <form onSubmit={ handleSubmit } noValidate className='flex flex-col'>
+                                <Input id="username" type="text" name="username" required error={ errors.username }
+                                       onChange={ handleChange } label={ t('USERS.username') }/>
                                 <Input id="password" type="password" name="password" required error={ errors.password }
                                        onChange={ handleChange } label={ t('USERS.password') }/>
 
@@ -254,7 +252,7 @@ export function Login() {
                     </div>
                 </div>
             </div>
-            <div className="text-sm text-(--text-secondary) flex flex-col">
+            <div className="flex flex-col text-sm text-(--text-secondary)">
                 <span className='text-center'>
                     Open-Capture { packageJson.version }
                 </span>

@@ -87,10 +87,11 @@ const Input: React.FC<InputProps> = ({
 
     return (
         <div className={ `flex flex-col rounded-md ${ className }` }>
-            <div className={ `group rounded-md border! border-(--border-secondary) focus-within:border-(--border-primary)! 
+            <div className={ `group rounded-md border! focus-within:border-(--border-primary)! 
                               relative flex justify-items-stretch hover:border-(--border-primary)! transition-colors
-                            ${ error || noMarginBottom ? '' : 'mb-4' }
-                            ${ disabled ? 'cursor-not-allowed' : '' }` }>
+                              ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' }
+                              ${ error || noMarginBottom ? '' : 'mb-4' }
+                              ${ disabled ? 'cursor-not-allowed' : '' }` }>
                 <FloatLabel className='w-full'>
                     { bgColor && hasValue && (
                         <>
@@ -114,10 +115,9 @@ const Input: React.FC<InputProps> = ({
                     <InputText
                         id={ id }
                         ref={ inputRef }
-                        className={ `disabled:bg-(--bg-secondary) disabled:cursor-not-allowed!
-                                     w-full! px-3! py-2! focus:outline-none! border-0! ${ height }
-                                     ${ props.placeholder || hasValue ? "p-inputwrapper-filled" : "" }
-                                     ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' }`
+                        className={ `disabled:bg-(--bg-secondary) disabled:cursor-not-allowed! border-0!
+                                     w-full! px-3! py-2! focus:outline-none! ${ height }
+                                     ${ props.placeholder || hasValue ? "p-inputwrapper-filled" : "" }`
                         }
                         style={ {
                             fontWeight: `${ textWeight ? textWeight : '400' }`,
@@ -145,16 +145,14 @@ const Input: React.FC<InputProps> = ({
                 { isPasswordField && (
                     <div
                         onClick={ () => setPasswordVisible((prev) => !prev) }
-                        className={ `password transition-colors px-2 rounded-lg! bg-(--bg-primary) flex items-center
-                                     text-(--text-secondary)! hover:text-(--color-primary)! z-20 cursor-pointer
-                                     ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)! '
-                        }` }>
+                        className='password transition-colors px-2 rounded-lg! bg-(--bg-primary) flex items-center
+                                   text-(--text-secondary)! hover:text-(--color-primary)! z-20 cursor-pointer'>
                         { passwordVisible ? <EyeOff size={ 18 }/> : <Eye size={ 18 }/> }
                     </div>
                 ) }
             </div>
             { error && (
-                <p className="text-(--text-error) text-xs ml-1"
+                <p className="text-(--text-error) text-xs ml-1 mt-1 mb-2"
                    dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(error) } }/>
             ) }
         </div>
