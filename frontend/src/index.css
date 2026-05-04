@@ -133,6 +133,10 @@ h2 {
     @apply font-semibold;
 }
 
+h3 {
+    @apply leading-none;
+}
+
 .p-inputtext {
     font-family: "Montserrat", sans-serif;
 }
