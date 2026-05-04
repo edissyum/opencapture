@@ -291,7 +291,7 @@ export function SettingsGeneralUserEditor() {
     if (loading) return <Loader/>;
 
     return (
-        <div className="p-6 bg-(--bg-secondary) h-full overflow-y-auto">
+        <div className="p-6 h-full overflow-y-auto">
             <div className='w-1/3 flex flex-col gap-4'>
                 <>
                     <h1 className="text-xl font-bold ">
@@ -302,7 +302,7 @@ export function SettingsGeneralUserEditor() {
                         { t('ROLES.details') }
                     </h1>
 
-                    <DynamicForm errors={ errors } control={ control } labelFusion={ true } schema={ detailsSchema } gap={ 2 }/>
+                    <DynamicForm errors={ errors } control={ control } schema={ detailsSchema } gap={ 2 }/>
                 </>
 
                 <>
@@ -310,7 +310,7 @@ export function SettingsGeneralUserEditor() {
                         { t('USERS.security') }
                     </h1>
 
-                    <DynamicForm errors={ errors } control={ control } labelFusion={ true } schema={ securitySchema } gap={ 4 }/>
+                    <DynamicForm errors={ errors } control={ control } schema={ securitySchema } gap={ 4 }/>
 
                 </>
 
@@ -319,7 +319,7 @@ export function SettingsGeneralUserEditor() {
                         { t('USERS.settings') }
                     </h1>
 
-                    <DynamicForm errors={ errors } control={ control } labelFusion={ true } schema={ settingsSchema } gap={ 2 }/>
+                    <DynamicForm errors={ errors } control={ control } schema={ settingsSchema } gap={ 2 }/>
                 </>
 
                 <div className="w-fit">

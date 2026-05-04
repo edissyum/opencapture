@@ -250,7 +250,7 @@ export function SettingsGeneralRoleEditor() {
     }
 
     return (
-        <div className="p-6 bg-(--bg-secondary) h-full flex flex-col gap-4 overflow-y-auto">
+        <div className="p-6 h-full flex flex-col gap-4 overflow-y-auto">
             { showAssignRoles && (
                 <>
                     <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
@@ -321,7 +321,7 @@ export function SettingsGeneralRoleEditor() {
                     { t('ROLES.details') }
                 </h1>
                 <div className='w-1/3'>
-                    <DynamicForm schema={ schema } errors={ errors } control={ control } labelFusion={ true }/>
+                    <DynamicForm schema={ schema } errors={ errors } control={ control }/>
                 </div>
             </div>
 
@@ -330,7 +330,7 @@ export function SettingsGeneralRoleEditor() {
                     { t('ROLES.default_route') }
                 </h1>
                 <div className='w-1/3'>
-                    <DynamicForm schema={ routesSchema } errors={ errors } control={ control } labelFusion={ true }/>
+                    <DynamicForm schema={ routesSchema } errors={ errors } control={ control }/>
                 </div>
             </div>
 

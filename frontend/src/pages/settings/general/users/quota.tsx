@@ -79,7 +79,7 @@ export function SettingsGeneralUserQuota() {
     if (loading) return <Loader/>;
 
     return (
-        <div className="p-6 bg-(--bg-secondary) h-full flex flex-col gap-4">
+        <div className="p-6 h-full flex flex-col gap-4">
             <h2>{ t('SETTINGS.user_quota') }</h2>
             <div className='flex flex-col gap-6'>
                 <div className='flex items-center gap-2'>
@@ -91,21 +91,20 @@ export function SettingsGeneralUserQuota() {
                 </div>
                 <div className='w-1/3'>
                     <Input label={ t('USERS.user_quota_number') } type='number' noMarginBottom={ true }
-                           value={ userQuota.number } labelFusion={ true } disabled={ !userQuota.enabled } required
+                           value={ userQuota.number } disabled={ !userQuota.enabled } required
                            onChange={ (e) => setUserQuota({ ...userQuota, number: e.target.value }) }/>
                 </div>
 
                 <MultiSelectInput
                     id='userQuotaExcludedUsers'
                     value={ userQuota.users_filtered } label={ t('USERS.excluded_users') }
-                    optionLabel="label" optionValue="label" labelFusion={ true }
-                    options={ users.map((user) => ({ label: user.username, value: user.id })) }
+                    optionLabel="label" optionValue="label" options={ users.map((user) => ({ label: user.username, value: user.id })) }
                     onChange={ (e) => setUserQuota({ ...userQuota, users_filtered: e.value }) }
                     disabled={ !userQuota.enabled } className="w-1/3"/>
 
                 <div className='w-1/3'>
                     <Input label={ t('USERS.user_quota_email_dest') } type='email'
-                           value={ userQuota.email_dest } labelFusion={ true } disabled={ !userQuota.enabled }
+                           value={ userQuota.email_dest } disabled={ !userQuota.enabled }
                            onChange={ (e) => setUserQuota({ ...userQuota, email_dest: e.target.value }) }/>
                 </div>
             </div>

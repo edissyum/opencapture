@@ -36,10 +36,10 @@ export function SettingsCard({ show = true, icon, title, description, to, classN
     const [hovered, setHovered] = useState(false);
 
     return (
-        <Link to={ to } className={ `${ className } relative flex justify-start items-center max-w-full p-2.5 
+        <Link to={ to } className={ `${ className } relative flex gap-4 justify-start items-center max-w-full p-2.5 
                                      pl-4 border border-(--border-secondary) rounded-md hover:border-gray-400 transition-colors` }>
             <div onMouseEnter={ () => setHovered(true) } onMouseLeave={ () => setHovered(false) }
-                 className={ `text-(--text-primary) mr-4 bg-(--bg-secondary) p-2 rounded-md ${ unpinFav && 'hover:bg-(--color-primary)/20' }` }
+                 className={ `text-(--text-primary) bg-(--bg-secondary) p-2 rounded-md ${ unpinFav && 'hover:bg-(--color-primary)/20' }` }
             >
                 { unpinFav && hovered ? (
                     <PinOff onClick={ (e) => {
@@ -53,8 +53,8 @@ export function SettingsCard({ show = true, icon, title, description, to, classN
                     </>
                 ) }
             </div>
-            <div className="text-(--text-secondary) truncate" title={ description }>
-                <h3 className="text-lg font-semibold text-(--text-primary) -mb-1">
+            <div className="truncate flex flex-col gap-1" title={ description }>
+                <h3 className="text-lg font-semibold text-(--text-primary)">
                     { title }
                     <span>
                         { module && (
@@ -64,7 +64,9 @@ export function SettingsCard({ show = true, icon, title, description, to, classN
                         ) }
                     </span>
                 </h3>
-                { description }
+                <p className='text-(--text-secondary) leading-none'>
+                    { description }
+                </p>
             </div>
         </Link>
     );
