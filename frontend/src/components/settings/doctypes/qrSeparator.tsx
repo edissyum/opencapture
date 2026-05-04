@@ -29,6 +29,7 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
     const { post } = axiosApiCall();
 
     const [loading, setLoading] = useState<boolean>(false);
+    const [allowDownload, setAllowDownload] = useState<boolean>(false);
 
     const [separator, setSeparator] = useState<any>({});
     const [selectedSeparator, setSelectedSeparator] = useState<string>('docTypeSeparator');
@@ -50,9 +51,17 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
     ]
 
     useEffect(() => {
+        setAllowDownload(false);
+
         if (!selectedSeparator) return;
-        if (selectedSeparator === 'docTypeSeparator' && !selectedDoctype) return;
-        if (selectedDoctype && ['folder', 'root'].includes(selectedDoctype.type)) return;
+        if (selectedSeparator === 'docTypeSeparator' && !selectedDoctype) {
+            setThumbnailSafe(null);
+            return;
+        }
+        if (selectedDoctype && ['folder', 'root'].includes(selectedDoctype.type)) {
+            setThumbnailSafe(null);
+            return;
+        }
 
         const generateQrSeparator = async () => {
             setLoading(true);
@@ -66,6 +75,8 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
                 if (response && response.encoded_thumbnails) {
                     const blob = b64ToFile(response.encoded_thumbnails[0]);
                     setThumbnailSafe(URL.createObjectURL(blob));
+
+                    setAllowDownload(true);
                 }
             } catch (error) {
                 console.error("Error fetching QR separator:", error);
@@ -112,10 +123,10 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
                         options={ separators.map((s) => ({ label: s.name, value: s.id })) }/>
                 </div>
 
-                <div className="flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
-                                    cursor-pointer border border-(--border-secondary) hover:border-(--border-primary)
-                                    hover:text-(--color-primary) transition-colors shrink-0"
-                     onClick={ handleDownloadSeparator }
+                <div className={ `flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
+                                 ${ allowDownload ? 'cursor-pointer hover:border-(--border-primary)' : 'cursor-not-allowed opacity-50' }
+                                 border border-(--border-secondary) hover:text-(--color-primary) transition-colors shrink-0` }
+                     onClick={ allowDownload ? handleDownloadSeparator : undefined }
                      data-tooltip-id="tooltip"
                      data-tooltip-content={ t('SPLITTER.download_separator') }>
                     <Download size={ 18 }/>
