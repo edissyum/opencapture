@@ -186,7 +186,7 @@ export function UploadPage() {
                                  "data-tooltip-content": workflow.label
                              }) }
                              className={ `cursor-pointer flex items-center gap-1 border border-(--border-secondary)
-                                          rounded-md p-2 hover:border-(--border-primary) 
+                                          rounded-md p-2 hover:border-(--border-primary) transition-colors 
                                           ${ selectedWorkflow === workflow.workflow_id ? 'text-(--color-primary) border-(--color-primary) font-semibold bg-(--bg-selected)' : '' }` }>
                             { selectedWorkflow === workflow.workflow_id && (
                                 <Check size={ 18 } className='shrink-0'/>

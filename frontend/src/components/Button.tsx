@@ -68,7 +68,7 @@ export function Button({
         danger: "bg-(--text-error) border border-(--text-error) text-white hover:bg-(--text-error)/10 hover:text-(--text-error)",
         no_bg: "bg-transparent text-(--text-secondary) hover:border hover:border-(--text-secondary) border border-transparent",
         bg_white: "bg-(--bg-primary) text-(--text-secondary) border border-(--border-secondary) hover:bg-(--border-secondary)/10",
-        bg_white_rounded: "rounded-3xl! hover:text-(--color-primary) text-(--text-primary) border border-(--border-secondary) bg-(--bg-primary) p-2! px-5!",
+        bg_white_rounded: "rounded-3xl! hover:text-(--color-primary) text-(--text-primary) border border-(--border-secondary) hover:border-(--color-primary) bg-(--bg-primary) p-2! px-5!",
         no_bg_border: "bg-transparent text-(--text-secondary) border border-(--border-secondary) hover:bg-(--text-secondary)/10",
     };
 
