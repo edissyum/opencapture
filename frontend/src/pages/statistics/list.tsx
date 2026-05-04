@@ -16,6 +16,7 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
+import { RadioButton } from "primereact/radiobutton";
 import { ChevronDown, Filter, Package } from "lucide-react";
 import { Bar, BarChart, Tooltip, XAxis, YAxis } from "recharts";
 
@@ -198,17 +199,19 @@ export function StatisticsPage() {
 
                         { open.module && (
                             <div className='p-4 pt-0'>
-                                <Dropdown
-                                    id="module"
-                                    labelFusion={ true }
-                                    value={ selectedModule }
-                                    label={ t('MAILCOLLECT.module') }
-                                    options={ [{ 'value': 'verifier', 'label': 'Verifier' }, {
-                                        'value': 'splitter',
-                                        'label': 'Splitter'
-                                    }] }
-                                    onChange={ handleModuleChange }
-                                />
+                                { ['verifier', 'splitter'].map((module) => (
+                                    <div className='flex items-center text-(--text-secondary)' key={ module }>
+                                        <RadioButton
+                                            inputId={ module } checked={ selectedModule === module }
+                                            className='mr-1 scale-80'
+                                            value={ module }
+                                            onChange={ handleModuleChange }>
+                                        </RadioButton>
+                                        <label htmlFor={ module } key={ module } className='cursor-pointer whitespace-nowrap'>
+                                            { module[0].toUpperCase() + module.substr(1) }
+                                        </label>
+                                    </div>
+                                )) }
                             </div>
                         ) }
                     </div>
@@ -228,9 +231,8 @@ export function StatisticsPage() {
                             <div className='p-4 pt-0'>
                                 <Dropdown
                                     id="statistics"
-                                    labelFusion={ true }
                                     value={ selectedStatisticId }
-                                    label={ t('STATISTICS.select_statistic') }
+                                    placeholder={ t('STATISTICS.select_statistic') }
                                     options={ filteredStatisticsOptions.map(option => ({
                                         value: option.id,
                                         label: option.label
@@ -256,9 +258,8 @@ export function StatisticsPage() {
                             <div className='p-4 pt-0'>
                                 <Dropdown
                                     id="year"
-                                    labelFusion={ true }
                                     value={ selectedYear }
-                                    label={ t('STATISTICS.select_year') }
+                                    placeholder={ t('STATISTICS.select_year') }
                                     options={ availableYears.map((year: any) => ({
                                         value: year.value,
                                         label: year.label

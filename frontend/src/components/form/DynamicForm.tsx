@@ -25,7 +25,7 @@ import { Checkbox } from "../Checkbox";
 import { Dropdown } from "../Dropdown";
 import MultiSelectInput from "../MultiSelect";
 
-export function DynamicForm({ schema, control, errors, labelFusion = false, gap = 4, grid = false }: any) {
+export function DynamicForm({ schema, control, errors, gap = 4, grid = false }: any) {
     const extractFieldsFromSchema = (schema: any) => {
         const shape = schema._def.shape;
         return Object.entries(shape).map(([name, zodType]: any) => {
@@ -68,15 +68,14 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                                     value={ f.value ?? "" }
                                     hint={ field.hint ?? "" }
                                     bgColor={ field.bgColor }
-                                    textWeight={ field.textWeight }
-                                    textColor={ field.textColor }
                                     required={ field.required }
                                     disabled={ field.disabled }
-                                    labelFusion={ labelFusion }
-                                    noMarginBottom={ field.noMarginBottom }
                                     type={ field.type || "text" }
+                                    textColor={ field.textColor }
+                                    textWeight={ field.textWeight }
                                     placeholder={ field.placeholder }
                                     error={ errors[field.name]?.message }
+                                    noMarginBottom={ field.noMarginBottom }
                                     onChange={ e => {
                                         const value = e.target.value
 
@@ -141,7 +140,6 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                                     label={ field.label }
                                     options={ field.options }
                                     disabled={ field.disabled }
-                                    labelFusion={ labelFusion }
                                     onChange={ e => f.onChange(e.value) }
                                 />
                             ) }
@@ -182,7 +180,6 @@ export function DynamicForm({ schema, control, errors, labelFusion = false, gap 
                                     value={ f.value }
                                     label={ field.label }
                                     options={ field.options }
-                                    labelFusion={ labelFusion }
                                     required={ field.required }
                                     editable={ field.editable }
                                     disabled={ field.disabled }

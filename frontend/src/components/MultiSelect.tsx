@@ -19,8 +19,8 @@ import { t } from "i18next";
 import { X } from "lucide-react";
 import React, { useState } from "react";
 
-import { MultiSelect } from "primereact/multiselect";
 import { FloatLabel } from "primereact/floatlabel";
+import { MultiSelect } from "primereact/multiselect";
 
 interface MultiSelectProps extends React.InputHTMLAttributes<HTMLInputElement> {
     id: string;
@@ -36,7 +36,6 @@ interface MultiSelectProps extends React.InputHTMLAttributes<HTMLInputElement> {
     optionValue: string;
     optionLabel: string;
     placeholder?: string;
-    labelFusion?: boolean;
     onChange: (value: any) => void;
     itemTemplate?: (option: any) => React.ReactNode;
 }
@@ -54,9 +53,8 @@ const MultiSelectInput: React.FC<MultiSelectProps> = ({
     itemTemplate,
     filter = true,
     className = "",
-    disabled= false,
+    disabled = false,
     required = false,
-    labelFusion = false,
     onChange
 }) => {
 
@@ -70,7 +68,7 @@ const MultiSelectInput: React.FC<MultiSelectProps> = ({
             const parts = node.split(regex);
 
             return parts.map((part, i) =>
-                regex.test(part) ? <strong key={i}>{part}</strong> : part
+                regex.test(part) ? <strong key={ i }>{ part }</strong> : part
             );
         }
 
@@ -93,54 +91,58 @@ const MultiSelectInput: React.FC<MultiSelectProps> = ({
         return highlightJSX(originalJSX, filterValue);
     };
 
-    return (
-        <div className={ `${className} group group-focus-within:border-(--border-primary) relative flex
-                          justify-items-stretch ${ disabled ? 'cursor-not-allowed' : '' }` }>
-            <FloatLabel className='w-full'>
-                <MultiSelect
-                    id={ id }
-                    display="chip"
-                    value={ value }
-                    filter={ filter }
-                    invalid={ invalid }
-                    options={ options }
-                    disabled={ disabled }
-                    required={ required }
-                    className={ 'w-full' }
-                    focusOnHover={ false }
-                    selectOnFocus={ false }
-                    autoOptionFocus={ false }
-                    optionValue={ optionValue }
-                    optionLabel={ optionLabel }
-                    placeholder={ placeholder }
-                    removeIcon={(options: any) => (
-                        <i {...options.iconProps}
-                           className={`${options.iconProps?.className ?? ""}`}>
-                            <X size={ 16 }/>
-                        </i>
-                    )}
+    const multiSelectEl: any = (
+        <MultiSelect
+            id={ id }
+            display="chip"
+            value={ value }
+            filter={ filter }
+            invalid={ invalid }
+            options={ options }
+            disabled={ disabled }
+            required={ required }
+            className={ 'w-full' }
+            focusOnHover={ false }
+            selectOnFocus={ false }
+            autoOptionFocus={ false }
+            optionValue={ optionValue }
+            optionLabel={ optionLabel }
+            placeholder={ placeholder }
+            removeIcon={ (options: any) => (
+                <i { ...options.iconProps }
+                   className={ `${ options.iconProps?.className ?? "" }` }>
+                    <X size={ 16 }/>
+                </i>
+            ) }
 
-                    itemTemplate={ wrappedItemTemplate }
-                    filterBy={ filterBy ? filterBy : optionLabel }
-                    emptyMessage={ t('GLOBAL.no_result_found') }
-                    emptyFilterMessage={ t('GLOBAL.no_result_found') }
-                    virtualScrollerOptions={ { itemSize: 45, orientation: 'vertical', showSpacer: false } }
-                    onChange={ (e) => onChange(e) }
-                    onFilter={ (e) => setFilterValue(e.filter) }
-                />
-                { label && (
-                    <label htmlFor={ id }
-                           className={ `select-none ${ labelFusion ? 'group-focus-within:border group-focus-within:border-b-0 ' +
-                               'border-(--border-secondary) group-focus-within:rounded-md ' +
-                               'group-focus-within:rounded-b-none group-focus-within:-top-[0.3rem]! ' +
-                               'group-focus-within:p-0.5 group-focus-within:border-(--border-primary)' : '' }
-                               ${ labelFusion && disabled ? '' : 'group-hover:border-(--border-primary)' }
-                               ${ value?.length > 0 && labelFusion ? 'border border-b-0 rounded-md rounded-b-none -top-[0.3rem]! p-0.5 border-(--border-primary)' : '' }` }>
-                        { label }
-                        { required && <span className="text-(--text-error) ml-1">*</span> }
-                    </label>
-                ) }
-            </FloatLabel>
+            itemTemplate={ wrappedItemTemplate }
+            filterBy={ filterBy ? filterBy : optionLabel }
+            emptyMessage={ t('GLOBAL.no_result_found') }
+            emptyFilterMessage={ t('GLOBAL.no_result_found') }
+            virtualScrollerOptions={ { itemSize: 45, orientation: 'vertical', showSpacer: false } }
+            onChange={ onChange }
+            onFilter={ (e) => setFilterValue(e.filter) }
+        />
+    );
+
+    return (
+        <div className={ `${ className } group group-focus-within:border-(--border-primary) relative flex
+                          justify-items-stretch ${ disabled ? 'cursor-not-allowed' : '' }` }>
+            { placeholder ? (
+                <span className='w-full'>
+                    { multiSelectEl }
+                </span>
+            ) : (
+                <FloatLabel className='w-full'>
+                    { multiSelectEl }
+                    { label && (
+                        <label htmlFor={ id } className='select-none'>
+                            { label }
+                            { required && <span className="text-(--text-error) ml-1">*</span> }
+                        </label>
+                    ) }
+                </FloatLabel>
+            ) }
         </div>
     );
 };

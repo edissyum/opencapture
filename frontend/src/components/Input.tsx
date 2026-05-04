@@ -29,7 +29,6 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     bgColor?: string;
     textColor?: string;
     textWeight?: string;
-    labelFusion?: boolean;
     noMarginBottom?: boolean;
     iconPosition?: "left" | "right";
 }
@@ -47,7 +46,6 @@ const Input: React.FC<InputProps> = ({
     type = "text",
     height = "h-12",
     className = "",
-    labelFusion = false,
     noMarginBottom = false,
     ...props
 }) => {
@@ -89,7 +87,8 @@ const Input: React.FC<InputProps> = ({
 
     return (
         <div className={ `flex flex-col rounded-md ${ className }` }>
-            <div className={ `group group-focus-within:border-(--border-primary) relative flex justify-items-stretch 
+            <div className={ `group rounded-md border! border-(--border-secondary) focus-within:border-(--border-primary)! 
+                              relative flex justify-items-stretch hover:border-(--border-primary)! transition-colors
                             ${ error || noMarginBottom ? '' : 'mb-4' }
                             ${ disabled ? 'cursor-not-allowed' : '' }` }>
                 <FloatLabel className='w-full'>
@@ -115,13 +114,10 @@ const Input: React.FC<InputProps> = ({
                     <InputText
                         id={ id }
                         ref={ inputRef }
-                        className={ `w-full! px-3! py-2! border-[1.5px]! rounded-md! focus:outline-none! 
-                            hover:border-(--border-primary)! transition-colors 
-                            ${ props.placeholder || hasValue ? "p-inputwrapper-filled" : "" } 
-                            ${ isPasswordField ? 'border-r-0! rounded-r-none!' : '' } 
-                            ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' } 
-                            ${ height } disabled:bg-(--bg-secondary) disabled:cursor-not-allowed!
-                            ${ disabled ? '' : 'group-hover:border-(--border-primary)!' } focus:border-(--border-primary)!`
+                        className={ `disabled:bg-(--bg-secondary) disabled:cursor-not-allowed!
+                                     w-full! px-3! py-2! focus:outline-none! border-0! ${ height }
+                                     ${ props.placeholder || hasValue ? "p-inputwrapper-filled" : "" }
+                                     ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' }`
                         }
                         style={ {
                             fontWeight: `${ textWeight ? textWeight : '400' }`,
@@ -134,13 +130,7 @@ const Input: React.FC<InputProps> = ({
                         { ...props }
                     />
                     { label && (
-                        <label htmlFor={ id }
-                               className={ `select-none ${ labelFusion ? 'group-focus-within:border group-focus-within:border-b-0 ' +
-                                   'border-(--border-secondary) group-focus-within:rounded-md ' +
-                                   'group-focus-within:rounded-b-none group-focus-within:top-[-0.3rem]! ' +
-                                   'group-focus-within:p-0.5 group-focus-within:border-(--border-primary) ' : '' }
-                                   ${ labelFusion && disabled ? '' : 'group-hover:border-(--border-primary)' }
-                                   ${ hasValue && labelFusion ? 'labelFusion border border-b-0 rounded-md rounded-b-none top-[-0.3rem]! p-0.5 border-(--border-primary)' : '' }` }>
+                        <label htmlFor={ id } className='select-none'>
                             { label }
                             { required && <span className="text-(--text-error) ml-1">*</span> }
                         </label>
@@ -153,17 +143,14 @@ const Input: React.FC<InputProps> = ({
                     </span>
                 ) }
                 { isPasswordField && (
-                    <button
-                        type="button"
+                    <div
                         onClick={ () => setPasswordVisible((prev) => !prev) }
-                        className={ `password transition-colors px-2 rounded-lg! rounded-l-none! bg-(--bg-primary)
-                                     group-focus-within:border-(--border-primary)! border-l-0! border! 
-                                     text-(--text-secondary)! hover:text-(--color-primary) z-20 cursor-pointer
-                                     ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)! ' +
-                            'group-hover:border-(--border-primary)!'
+                        className={ `password transition-colors px-2 rounded-lg! bg-(--bg-primary) flex items-center
+                                     text-(--text-secondary)! hover:text-(--color-primary)! z-20 cursor-pointer
+                                     ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)! '
                         }` }>
                         { passwordVisible ? <EyeOff size={ 18 }/> : <Eye size={ 18 }/> }
-                    </button>
+                    </div>
                 ) }
             </div>
             { error && (

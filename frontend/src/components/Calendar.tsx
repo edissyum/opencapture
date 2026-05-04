@@ -39,9 +39,9 @@ const ISOCalendar: React.FC<ISOCalendarProps> = ({
     label,
     value,
     error,
+    onClick,
     required,
     onChange,
-    onClick,
     disabled = false
 }) => {
     const [localeLang, setLocaleLang] = useState<string | null>(null);

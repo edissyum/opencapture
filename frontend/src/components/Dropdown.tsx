@@ -32,7 +32,6 @@ interface DropdownProps {
     disabled?: boolean;
     required?: boolean;
     placeholder?: string;
-    labelFusion?: boolean;
     noMarginBottom?: boolean;
     useExtraInLabel?: boolean;
     onChange: (e: any) => void;
@@ -53,7 +52,6 @@ export const Dropdown: React.FC<DropdownProps> = ({
     editable = false,
     placeholder = "",
     disabled = false,
-    labelFusion = false,
     noMarginBottom = false,
     useExtraInLabel = false
 }) => {
@@ -80,38 +78,43 @@ export const Dropdown: React.FC<DropdownProps> = ({
         };
     }
 
+    const dropdownEl: any = (
+        <PrimeDropdown
+            id={ id }
+            value={ value }
+            filter={ filter }
+            options={ options }
+            onChange={ onChange }
+            disabled={ disabled }
+            editable={ editable }
+            placeholder={ placeholder }
+            itemTemplate={ dropdownItemTemplate }
+            valueTemplate={ dropdownValueTemplate }
+            virtualScrollerOptions={ itemsSize ? { itemSize: itemsSize } : undefined }
+            className={ `w-full min-h-12 flex items-center hover:border-(--border-primary)! ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' }` }
+        />
+    );
+
     return (
         <div className='w-full'>
             <div className={ `${ className } group group-focus-within:border-(--border-primary) relative flex justify-items-stretch 
                               ${ error || noMarginBottom ? '' : 'mb-4' } ${ disabled ? 'cursor-not-allowed' : '' }` }
             >
-                <FloatLabel className='w-full'>
-                    <PrimeDropdown
-                        id={ id }
-                        value={ value }
-                        filter={ filter }
-                        options={ options }
-                        onChange={ onChange }
-                        disabled={ disabled }
-                        editable={ editable }
-                        placeholder={ placeholder }
-                        itemTemplate={ dropdownItemTemplate }
-                        valueTemplate={ dropdownValueTemplate }
-                        virtualScrollerOptions={ itemsSize ? { itemSize: itemsSize } : undefined }
-                        className={ `w-full min-h-12 flex items-center hover:border-(--border-primary)! ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' }` }
-                    />
-                    { label && (
-                        <label htmlFor={ id }
-                               className={ `select-none ${ labelFusion ? 'group-focus-within:border group-focus-within:border-b-0 ' +
-                                   'border-(--border-secondary) group-focus-within:rounded-md ' +
-                                   'group-focus-within:rounded-b-none group-focus-within:border-(--border-primary)' : '' }
-                                   ${ labelFusion && disabled ? '' : 'group-hover:border-(--border-primary)' }
-                                   ${ value && labelFusion ? 'border border-b-0 rounded-md rounded-b-none top-[-0.3rem]! p-0.5 border-(--border-primary)' : '' }` }>
-                            { label }
-                            { required && <span className="text-(--text-error) ml-1">*</span> }
-                        </label>
-                    ) }
-                </FloatLabel>
+                { placeholder ? (
+                    <span className='w-full'>
+                        { dropdownEl }
+                    </span>
+                ) : (
+                    <FloatLabel className='w-full'>
+                        { dropdownEl }
+                        { label && (
+                            <label htmlFor={ id } className='select-none'>
+                                { label }
+                                { required && <span className="text-(--text-error) ml-1">*</span> }
+                            </label>
+                        ) }
+                    </FloatLabel>
+                ) }
             </div>
             { error && (
                 <p className="text-(--text-error) text-xs ml-1"

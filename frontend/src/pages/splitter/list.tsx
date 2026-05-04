@@ -430,11 +430,10 @@ export function SplitterListPage() {
                                 <MultiSelectInput
                                     optionValue="id"
                                     optionLabel="name"
-                                    labelFusion={ true }
                                     id="customers_select"
                                     options={ listCustomers }
                                     value={ selectedCustomers?.map(Number) ?? [] }
-                                    label={ t('ACCOUNTS.search_customers') }
+                                    placeholder={ t('ACCOUNTS.search_customers') }
                                     onChange={ (e) => {
                                         setSelectedCustomers(e.value);
                                     } }
@@ -458,10 +457,9 @@ export function SplitterListPage() {
                             <div className='p-4 pt-0'>
                                 <Dropdown
                                     filter={ true }
-                                    labelFusion={ true }
-                                    id="folder_destination"
+                                    id="search_form"
                                     value={ selectedForm.toString() }
-                                    label={ t('VERIFIER.search_form') }
+                                    placeholder={ t('VERIFIER.search_form') }
                                     options={ listForms.map((form: any) => ({
                                         label: form.label,
                                         value: form.id.toString()

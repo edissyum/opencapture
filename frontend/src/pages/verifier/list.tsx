@@ -439,8 +439,7 @@ export function VerifierListPage() {
                                 <Package className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.batches') }</h3>
                             </div>
-                            <ChevronDown size={ 18 }
-                                         className={ `transition-transform ${ open.batches ? "rotate-180" : "" }` }/>
+                            <ChevronDown size={ 18 } className={ `transition-transform ${ open.batches && "rotate-180" }` }/>
                         </div>
 
                         { open.batches && (
@@ -470,9 +469,7 @@ export function VerifierListPage() {
                                 <CircleCheckBig className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.status') }</h3>
                             </div>
-                            <ChevronDown
-                                size={ 18 }
-                                className={ `transition-transform ${ open.status ? "rotate-180" : "" }` }/>
+                            <ChevronDown size={ 18 } className={ `transition-transform ${ open.status && "rotate-180" }` }/>
                         </div>
 
                         { open.status && (
@@ -503,8 +500,7 @@ export function VerifierListPage() {
                                 <Briefcase className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('ACCOUNTS.customers_list') }</h3>
                             </div>
-                            <ChevronDown size={ 18 }
-                                         className={ `transition-transform ${ open.customers ? "rotate-180" : "" }` }/>
+                            <ChevronDown size={ 18 } className={ `transition-transform ${ open.customers && "rotate-180" }` }/>
                         </div>
 
                         { open.customers && (
@@ -512,11 +508,10 @@ export function VerifierListPage() {
                                 <MultiSelectInput
                                     optionValue="id"
                                     optionLabel="name"
-                                    labelFusion={ true }
                                     id="customers_select"
                                     options={ listCustomers }
                                     value={ selectedCustomers?.map(Number) ?? [] }
-                                    label={ t('ACCOUNTS.search_customers') }
+                                    placeholder={ t('ACCOUNTS.search_customers') }
                                     onChange={ (e) => {
                                         setSelectedCustomers(e.value);
                                     } }
@@ -531,20 +526,17 @@ export function VerifierListPage() {
                                 <LayoutTemplate className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.forms') }</h3>
                             </div>
-                            <ChevronDown
-                                size={ 18 }
-                                className={ `transition-transform ${ open.forms ? "rotate-180" : "" }` }/>
+                            <ChevronDown size={ 18 } className={ `transition-transform ${ open.forms && "rotate-180" }` }/>
                         </div>
 
                         { open.forms && (
                             <div className='p-4 pt-0'>
                                 <Dropdown
                                     filter={ true }
-                                    labelFusion={ true }
-                                    id="folder_destination"
+                                    id="search_form"
                                     className="w-full mb-2"
                                     value={ selectedForm.toString() }
-                                    label={ t('VERIFIER.search_form') }
+                                    placeholder={ t('VERIFIER.search_form') }
                                     options={ listForms.map((form: any) => ({
                                         label: form.label,
                                         value: form.id.toString()
@@ -561,8 +553,7 @@ export function VerifierListPage() {
                                 <Building2 className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('ACCOUNTS.suppliers_list') }</h3>
                             </div>
-                            <ChevronDown size={ 18 }
-                                         className={ `transition-transform ${ open.suppliers ? "rotate-180" : "" }` }/>
+                            <ChevronDown size={ 18 } className={ `transition-transform ${ open.suppliers && "rotate-180" }` }/>
                         </div>
 
                         { open.suppliers && (
@@ -570,12 +561,11 @@ export function VerifierListPage() {
                                 <MultiSelectInput
                                     optionValue="id"
                                     optionLabel="name"
-                                    labelFusion={ true }
                                     id="suppliers_select"
                                     options={ listSuppliers }
                                     filterBy="name,lastname,firstname"
                                     value={ selectedSuppliers.map(Number) ?? [] }
-                                    label={ t('ACCOUNTS.search_suppliers') }
+                                    placeholder={ t('ACCOUNTS.search_suppliers') }
                                     itemTemplate={ (option) => (
                                         <span className='flex items-center gap-0.5'>
                                             { option.name }

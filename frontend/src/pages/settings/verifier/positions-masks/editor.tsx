@@ -411,7 +411,7 @@ export function SettingsVerifierPositionMaskEditor() {
                                     <Input id={ `regex-${ field.id }` } label={ t('POSITIONS-MASKS.regex_associated') }
                                            type="text" noMarginBottom={ true } name={ `custom_${ field.id }` }
                                            onBlur={ (e: any) => { updateRegex(field.id, e.target.value).then() } }
-                                           labelFusion={ true } value={ positionMask.regex[`custom_${ field.id }`] }/>
+                                           value={ positionMask.regex[`custom_${ field.id }`] }/>
                                 </div>
                             )) }
                         </TabPanel>
