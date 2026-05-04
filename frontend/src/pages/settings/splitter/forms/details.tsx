@@ -74,7 +74,7 @@ export function SettingsSplitterFormsDetails({
     }
 
     return (
-        <div className='p-6'>
+        <div className='p-6 flex flex-col gap-6'>
             <div>
                 <h3 className='text-lg font-semibold text-(--text-primary)'>{ t('SETTINGS.general') }</h3>
                 <Input
@@ -92,19 +92,21 @@ export function SettingsSplitterFormsDetails({
                 />
 
                 <div className='flex items-center gap-2'>
-                    <InputSwitch inputId="default_form"
-                                 checked={ formSettings.default_form }
-                                 onChange={ (e) => setFormSettings({
-                                     ...formSettings,
-                                     default_form: e.value
-                                 }) }/>
+                    <InputSwitch
+                        inputId="default_form"
+                        checked={ formSettings.default_form }
+                        onChange={ (e) => setFormSettings({
+                            ...formSettings,
+                            default_form: e.value
+                        }) }
+                    />
                     <label htmlFor='default_form' className='cursor-pointer'>{ t('FORMS.default_form') }</label>
                 </div>
             </div>
-            <div>
-                <h3 className="text-lg font-semibold text-(--text-primary) mt-6">{ t('OUTPUTS.outputs') }</h3>
+            <div className='flex flex-col gap-4'>
+                <h3 className="text-lg font-semibold text-(--text-primary)">{ t('OUTPUTS.outputs') }</h3>
 
-                <div className='w-1/2 mt-4'>
+                <div className='w-1/2'>
                     <MultiSelectInput
                         optionValue="id"
                         id="output_select"
@@ -123,9 +125,9 @@ export function SettingsSplitterFormsDetails({
                     />
                 </div>
             </div>
-            <div>
-                <h3 className="text-lg font-semibold text-(--text-primary) mt-6">{ t('SETTINGS.advanced') }</h3>
-                <div className='flex items-center gap-2 mt-4'>
+            <div className='flex flex-col gap-4'>
+                <h3 className="text-lg font-semibold text-(--text-primary)">{ t('SETTINGS.advanced') }</h3>
+                <div className='flex items-center gap-2'>
                     <Input
                         id="export_zip_file"
                         className="w-1/2"
@@ -164,7 +166,7 @@ export function SettingsSplitterFormsDetails({
                 </div>
             </div>
 
-            <Button className="mt-6" variant="primary" onClick={ handleSubmit }
+            <Button variant="primary" onClick={ handleSubmit }
                     disabled={ isSubmitting || formSettings.label === '' || !formSettings.outputs || formSettings.outputs.length === 0 }>
                 { isSubmitting ? submitLabelLoading + "..." : submitLabel }
             </Button>
