@@ -112,13 +112,13 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
     };
 
     return (
-        <div className="p-6">
+        <div className="p-6 h-full">
             <div className='flex items-center justify-between gap-6'>
                 <div className='w-1/3'>
                     <Dropdown
                         id={ `qr-separator-dropdown` }
                         label={ t("SPLITTER.qr_separator") }
-                        value={ selectedSeparator } labelFusion={ true } noMarginBottom={ true }
+                        value={ selectedSeparator } noMarginBottom={ true }
                         onChange={ (e) => setSelectedSeparator(e.target.value) }
                         options={ separators.map((s) => ({ label: s.name, value: s.id })) }/>
                 </div>

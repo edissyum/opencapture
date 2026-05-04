@@ -17,7 +17,6 @@
 import { t } from "i18next";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ContextMenu } from "primereact/contextmenu";
 import {
     Activity,
     Briefcase,
@@ -58,6 +57,7 @@ export default function Sidebar() {
     const { user, loadingUser } = useUser();
     const location = useLocation();
     const navigate = useNavigate();
+    const userPanelRef = useRef<HTMLDivElement | null>(null);
 
     const [userPanelOpen, setUserPanelOpen] = useState(false);
 
@@ -75,24 +75,6 @@ export default function Sidebar() {
         }
     }, [location.pathname]);
 
-    const cm = useRef({ current: null } as any);
-    const menuModel: any = [
-        {
-            label: t('GLOBAL.my_profile'),
-            icon: <UserCog size={ 18 }/>,
-            command: () => {
-                navigate("/profile");
-            }
-        },
-        {
-            label: <span className='critical text-(--text-error)'>{ t('GLOBAL.logout') }</span>,
-            icon: <LogOut size={ 18 } className='text-(--text-error)'/>,
-            command: () => {
-                handleLogout(navigate);
-            }
-        }
-    ];
-
     const standardClasses = "whitespace-nowrap flex items-center rounded-lg p-3 gap-2 hover:text-(--text-primary) text-(--text-secondary) font-semibold transition-colors border border-transparent";
     const activeClasses = "bg-(--bg-selected) text-(--color-primary)! hover:text-(--color-primary)! border-(--border-primary)!";
 
@@ -109,7 +91,33 @@ export default function Sidebar() {
             setCollapsed(false);
         }
     }, [manuallyCollapsed]);
-    console.log(cm.current)
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (userPanelRef.current && !userPanelRef.current.contains(event.target as Node)) {
+                setUserPanelOpen(false);
+            }
+        };
+
+        const handleEscape = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setUserPanelOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('keydown', handleEscape);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('keydown', handleEscape);
+        };
+    }, []);
+
+    useEffect(() => {
+        setUserPanelOpen(false);
+    }, [location.pathname]);
+
     if (!user || loadingUser) return;
     return (
         <aside
@@ -210,11 +218,39 @@ export default function Sidebar() {
                 </Link>
             </nav>
 
-            <div className="mt-auto text-(--text-secondary) flex flex-col gap-3 bg-(--bg-secondary) rounded-lg">
-                <div className={ `cursor-pointer whitespace-nowrap flex items-center rounded-lg p-2 gap-3 hover:text-(--text-primary)
+            <div ref={ userPanelRef } className="relative mt-auto text-(--text-secondary) flex flex-col gap-3 bg-(--bg-secondary) rounded-lg">
+                { userPanelOpen && (
+                    <div className='absolute bottom-full mb-2 z-30 rounded-lg border border-(--border-secondary) bg-(--bg-primary) shadow-lg'>
+                        <div
+                            className="w-full cursor-pointer flex items-center gap-3 px-4 py-3 text-(--text-secondary)
+                                       hover:bg-(--bg-secondary) hover:text-(--text-primary) transition-colors min-w-58"
+                            onClick={ () => {
+                                setUserPanelOpen(false);
+                                navigate('/profile');
+                            } }>
+                            <UserCog size={ 18 } className='shrink-0'/>
+                            <span className='truncate'>{ t('GLOBAL.my_profile') }</span>
+                        </div>
+
+                        <div
+                            className="w-full cursor-pointer flex items-center gap-3 px-4 py-3 text-(--text-error)
+                                       hover:bg-(--bg-secondary) transition-colors border-t border-(--border-secondary)"
+                            onClick={ () => {
+                                setUserPanelOpen(false);
+                                handleLogout(navigate);
+                            } }>
+                            <LogOut size={ 18 } className='shrink-0'/>
+                            <span className='truncate'>{ t('GLOBAL.logout') }</span>
+                        </div>
+                    </div>
+                ) }
+
+                <button
+                    type="button"
+                    className={ `w-full cursor-pointer whitespace-nowrap flex items-center rounded-lg p-2 gap-3 hover:text-(--text-primary)
                                 border border-transparent ${ userPanelOpen ? 'bg-(--bg-secondary)! border-(--border-secondary)!' : 'bg-(--bg-primary)!' }
                                 text-(--text-secondary) font-semibold transition-colors ${ collapsed ? '' : 'px-3' }` }
-                     onClick={ (e) => cm.current.show(e) }>
+                    onClick={ () => setUserPanelOpen((prev) => !prev) }>
                     <img src='/src/assets/imgs/user.svg' alt='user profile' className='shrink-0 size-8' { ...(collapsed && {
                         "data-tooltip-id": "tooltip",
                         "data-tooltip-content": `${ user.firstname } ${ user.lastname }`
@@ -222,7 +258,7 @@ export default function Sidebar() {
 
                     { !collapsed &&
                         <>
-                            <div className='flex flex-col max-w-44'>
+                            <div className='flex flex-col text-left'>
                                 <span className='truncate'>
                                     { user.firstname } { user.lastname }
                                 </span>
@@ -238,10 +274,7 @@ export default function Sidebar() {
                             ) }
                         </>
                     }
-                </div>
-                <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }
-                             onShow={ () => setUserPanelOpen(true) }
-                             onHide={ () => setUserPanelOpen(false) }/>
+                </button>
             </div>
         </aside>
     );

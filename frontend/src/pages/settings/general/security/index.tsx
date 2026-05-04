@@ -373,8 +373,7 @@ export function SettingsGeneralSecurity() {
                                     { t('SECURITY.enable_min_length') }
                                 </label>
                             </div>
-                            <DynamicForm schema={ defaultSchema } control={ defaultControl } errors={ defaultErrors }
-                                         gap={ 0 }/>
+                            <DynamicForm schema={ defaultSchema } control={ defaultControl } errors={ defaultErrors } gap={ 0 }/>
                         </div>
                     </div>
                 </AccordionTab>
@@ -395,8 +394,7 @@ export function SettingsGeneralSecurity() {
                     <Stepper ref={ stepperRef } linear className='p-4' activeStep={ stepperIndex }
                              onChangeStep={ (e: any) => setStepperIndex(e.index) }>
                         <StepperPanel header={ t("MAILCOLLECT.connection") }>
-                            <DynamicForm schema={ ldapConnectionSchema } control={ ldapControl } errors={ ldapErrors }
-                                         grid={ 4 }/>
+                            <DynamicForm schema={ ldapConnectionSchema } control={ ldapControl } errors={ ldapErrors } grid={ 4 }/>
                             <div className="flex justify-end mt-6">
                                 <Button onClick={ ldapHandleSubmit(handleTestConnexion) } className="ml-auto px-12"
                                         data-tooltip-id='tooltip'
@@ -411,9 +409,7 @@ export function SettingsGeneralSecurity() {
                             </div>
                         </StepperPanel>
                         <StepperPanel header={ t("SECURITY.synchronisation") }>
-                            <DynamicForm schema={ ldapSynchronisationSchema } control={ ldapControl }
-                                         errors={ ldapErrors }
-                                         grid={ 4 }/>
+                            <DynamicForm schema={ ldapSynchronisationSchema } control={ ldapControl } errors={ ldapErrors } grid={ 4 }/>
 
                             <div className="flex justify-between mt-6">
                                 <Button onClick={ handlePreviousStep } variant="no_bg"

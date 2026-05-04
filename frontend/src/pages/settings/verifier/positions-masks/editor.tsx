@@ -299,10 +299,10 @@ export function SettingsVerifierPositionMaskEditor() {
     return (
         <div className="flex h-full">
             <TabView className="w-full" activeIndex={ activeTabIndex } onTabChange={ (e) => setActiveTabIndex(e.index) }>
-                <TabPanel header={ t("POSITIONS-MASKS.mask_details") }>
+                <TabPanel header={ t("POSITIONS-MASKS.mask_details") } className='bg-(--bg-primary) h-full'>
                     <div className='flex flex-col gap-4 p-6 w-1/3'>
                         <h1 className="text-lg font-bold">{ t('SETTINGS.general') }</h1>
-                        <DynamicForm labelFusion={ true } schema={ detailsSchema } control={ control } errors={ errors }/>
+                        <DynamicForm schema={ detailsSchema } control={ control } errors={ errors }/>
 
                         <div>
                             { positionMaskId ? (
@@ -389,7 +389,7 @@ export function SettingsVerifierPositionMaskEditor() {
                                                 border-(--border-secondary)">
                                     { t(field.label) }
                                     <Input id={ `regex-${ field.id }` } label={ t('POSITIONS-MASKS.regex_associated') }
-                                           type="text" noMarginBottom={ true } name={ field.id } labelFusion={ true }
+                                           type="text" noMarginBottom={ true } name={ field.id }
                                            value={ positionMask.regex[field.id] || '' }
                                            onBlur={ (e: any) => { updateRegex(field.id, e.target.value).then() } }
                                     />

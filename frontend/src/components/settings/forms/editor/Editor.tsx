@@ -548,7 +548,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                             </TabPanel>
                         ) }
                         { module === 'splitter' && (
-                            <TabPanel header={ t("FORMS.qr_code") }>
+                            <TabPanel header={ t("FORMS.qr_code") } className='bg-(--bg-primary) h-full'>
                                 <QrSeparator selectedDoctype={ selectedDoctype }/>
                             </TabPanel>
                         ) }

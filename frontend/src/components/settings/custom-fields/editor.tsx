@@ -515,8 +515,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                         </h1>
 
                         <div className='w-1/3'>
-                            <DynamicForm errors={ errors } control={ control } labelFusion={ true }
-                                         schema={ regexTestSchema }/>
+                            <DynamicForm errors={ errors } control={ control } schema={ regexTestSchema }/>
                         </div>
 
                         { highlightedResult &&

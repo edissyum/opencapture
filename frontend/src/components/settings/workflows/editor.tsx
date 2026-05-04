@@ -722,16 +722,13 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 ) }
 
                 <StepperPanel header={ t("WORKFLOWS.process") }>
-                    <DynamicForm schema={ processSchemaStartSwitchs } control={ workflowControl }
-                                 errors={ workflowErrors }/>
+                    <DynamicForm schema={ processSchemaStartSwitchs } control={ workflowControl } errors={ workflowErrors }/>
 
                     <div className='mt-6'>
-                        <DynamicForm schema={ processSchemaInputFields } control={ workflowControl }
-                                     errors={ workflowErrors } grid={ 2 }/>
+                        <DynamicForm schema={ processSchemaInputFields } control={ workflowControl } errors={ workflowErrors } grid={ 2 }/>
                     </div>
 
-                    <DynamicForm schema={ processSchemaEndSwitchs } control={ workflowControl }
-                                 errors={ workflowErrors }/>
+                    <DynamicForm schema={ processSchemaEndSwitchs } control={ workflowControl } errors={ workflowErrors }/>
 
                     { allowScripting && (
                         <div className='flex items-center mt-4 gap-2'>
@@ -804,8 +801,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 ) }
 
                 <StepperPanel header={ t("WORKFLOWS.output") }>
-                    <DynamicForm schema={ outputSchema } control={ workflowControl }
-                                 errors={ workflowErrors }/>
+                    <DynamicForm schema={ outputSchema } control={ workflowControl } errors={ workflowErrors }/>
 
                     <div className='mt-4 flex justify-between'>
                         <Button onClick={ handlePreviousStep } variant="no_bg"
