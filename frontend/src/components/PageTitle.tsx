@@ -4,7 +4,6 @@
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
-
  Open-Capture is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -15,24 +14,27 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { useEffect } from "react";
+import { useMatches } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import { LangSelection } from "../../components/onboarding/LangSelection";
+type RouteHandle = {
+    breadcrumb?: string;
+};
 
-export function Step2() {
+export function PageTitle() {
     const { t } = useTranslation();
+    const matches = useMatches();
 
-    return (
-        <div className='flex flex-col gap-4'>
-            <div>
-                <h1 className="text-4xl">{ t('ONBOARD.select_frontend_lang') }</h1>
-                <p className="text-(--text-secondary)">
-                    { t('ONBOARD.select_frontend_lang_info') }
-                </p>
-            </div>
-            <div className='h-full flex '>
-                <LangSelection i18n={ useTranslation().i18n } refresh={ false }/>
-            </div>
-        </div>
-    );
+    useEffect(() => {
+        const breadcrumbKey = [...matches]
+            .map((match) => match.handle as RouteHandle | undefined)
+            .reverse()
+            .find((handle) => Boolean(handle?.breadcrumb))?.breadcrumb;
+        console.log("breadcrumbKey", breadcrumbKey);
+        document.title = breadcrumbKey ? `${ t(breadcrumbKey) } - Open-Capture` : "Open-Capture";
+    }, [matches, t]);
+
+    return null;
 }
+

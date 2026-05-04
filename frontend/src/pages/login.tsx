@@ -34,6 +34,11 @@ import { axiosApiCall } from "../services/hooks/axiosApiCall";
 import { useFormValues } from "../services/hooks/useFormValues";
 
 export function Login() {
+    const { t } = useTranslation();
+    const { get, post } = axiosApiCall();
+    const custom = useCustom();
+    const navigate = useNavigate();
+
     const [loadingLogin, setLoadingLogin] = useState(false);
     const [loginMessage, setLoginMessage] = useState<string>('');
     const [enabledLoginMethod, setEnabledLoginMethod] = useState<string>('');
@@ -41,6 +46,8 @@ export function Login() {
     const [activeCard, setActiveCard] = useState<'guide' | 'capture'>('guide');
     const [displayedCard, setDisplayedCard] = useState<'guide' | 'capture'>('guide');
     const [fade, setFade] = useState(false);
+
+    document.title = t('AUTH.connexion') +  " - Open-Capture";
 
     useEffect(() => {
         setFade(false);
@@ -52,12 +59,6 @@ export function Login() {
 
         return () => clearTimeout(timeout);
     }, [activeCard]);
-
-    const { t } = useTranslation();
-    const { get, post } = axiosApiCall();
-    const navigate = useNavigate();
-
-    const custom = useCustom();
 
     useEffect(() => {
         const interval = setInterval(() => {

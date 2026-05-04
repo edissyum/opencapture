@@ -45,7 +45,7 @@ export function ThemeSelection({ onThemeChange }: ThemeSelectionProps) {
     }, [selectedTheme]);
 
     return (
-        <div className="flex gap-4 mt-4 justify-center">
+        <div className="flex gap-4 mt-4">
             { options.map((theme) => (
                 <div key={ theme['id'] }>
                     <div

@@ -49,6 +49,9 @@ export function Onboarding() {
     });
 
     const [currentStep, setCurrentStep] = useState(0);
+
+    document.title = t('AUTH.onboarding') + " - Open-Capture";
+
     useEffect(() => {
         if (completedSteps.length !== 0) {
             for (let i = 0; i < steps.length; i++) {

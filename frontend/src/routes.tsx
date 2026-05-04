@@ -81,11 +81,11 @@ export const router = createBrowserRouter(
     [
         {
             path: "/login",
-            element: <Login/>
+            element: <Login/>,
         },
         {
             path: "/reset-password",
-            element: <ResetPassword/>
+            element: <ResetPassword/>,
         },
         {
             path: "onboarding",
@@ -218,25 +218,29 @@ export const router = createBrowserRouter(
                     path: "home",
                     element: <HomePage/>,
                     loader: protectedLoader(),
-                    errorElement: <LoginRequiredError/>
+                    errorElement: <LoginRequiredError/>,
+                    handle: { breadcrumb: 'GLOBAL.home' }
                 },
                 {
                     path: "verifier/viewer/:documentId",
                     element: <VerifierViewerPage/>,
                     loader: protectedLoader(['access_verifier']),
-                    errorElement: <LoginRequiredError/>
+                    errorElement: <LoginRequiredError/>,
+                    handle: { breadcrumb: 'VERIFIER.viewer' }
                 },
                 {
                     path: "splitter/viewer/:batchId",
                     element: <SplitterViewerPage/>,
                     loader: protectedLoader(['access_splitter']),
-                    errorElement: <LoginRequiredError/>
+                    errorElement: <LoginRequiredError/>,
+                    handle: { breadcrumb: 'SPLITTER.viewer' }
                 },
                 {
                     path: "upload",
                     element: <UploadPage/>,
                     loader: protectedLoader(['upload']),
-                    errorElement: <LoginRequiredError/>
+                    errorElement: <LoginRequiredError/>,
+                    handle: { breadcrumb: 'GLOBAL.upload' }
                 }
             ]
         },

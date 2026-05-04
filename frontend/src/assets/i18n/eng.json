@@ -87,7 +87,8 @@
         "reset": "Reset password",
         "send_email": "Send reset email",
         "forgot_password_email_sent": "Reset email sent successfully",
-        "password_reset_success": "Password reset successfully"
+        "password_reset_success": "Password reset successfully",
+        "onboarding": ""
     },
     "COLORS": {
         "black": "Black",
@@ -673,7 +674,8 @@
         "merge_batch_details": "Choose the main batch. Documents from other batches will be merged into the main batch and secondary batches will be deleted. <strong>(this action is irreversible)</strong>",
         "no_other_batches": "No other batches available for merging",
         "batch_non_modifiable": "Batch non-modifiable",
-        "batch_non_modifiable_details": "You cannot modify this batch because it has already been processed, deleted, or merged"
+        "batch_non_modifiable_details": "You cannot modify this batch because it has already been processed, deleted, or merged",
+        "viewer": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Click to choose a file",
@@ -840,7 +842,8 @@
         "delete_field_success": "Field successfully removed",
         "document_non_modifiable": "Document non-modifiable",
         "document_non_modifiable_details": "You cannot modify this document because it has already been processed",
-        "no_outputs": "No output chains are configured for this document"
+        "no_outputs": "No output chains are configured for this document",
+        "viewer": ""
     },
     "SECURITY": {
         "default_auth": "Default authentication",

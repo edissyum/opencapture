@@ -45,15 +45,19 @@ export function Step1() {
     }, [selectedModule]);
 
     return (
-        <>
-            <h1 className="text-4xl">{ t('ONBOARD.select_module') }</h1>
-            <p className="text-(--text-secondary)">
-                { t('ONBOARD.select_module_info') }
-            </p>
+        <div className='flex flex-col gap-4'>
+            <div>
+                <h1 className="text-4xl">{ t('ONBOARD.select_module') }</h1>
+                <p className="text-(--text-secondary)">
+                    { t('ONBOARD.select_module_info') }
+                </p>
+            </div>
             <div className="flex gap-4">
                 { options.map((module) => (
                     <div key={ module['id'] }
-                         className={ `border flex bg-(--bg-primary) items-center rounded-md cursor-pointer hover:shadow-lg p-6 ${ selectedModule === module['id'] ? 'border-(--border-primary) bg-(--bg-selected)' : 'border-(--border-secondary)' }` }
+                         className={ `border flex bg-(--bg-primary) items-center rounded-md cursor-pointer p-6
+                                      hover:border-gray-400 transition-colors
+                                      ${ selectedModule === module['id'] ? 'border-(--border-primary) bg-(--bg-selected)' : 'border-(--border-secondary)' }` }
                          onClick={ () => setSelectedModule(module['id']) }>
                         <img src={ module['img'] } alt="" className="w-20 mr-4"/>
                         <div className="flex flex-col justify-center items-start">
@@ -63,6 +67,6 @@ export function Step1() {
                     </div>
                 )) }
             </div>
-        </>
+        </div>
     );
 }

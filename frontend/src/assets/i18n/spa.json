@@ -94,7 +94,8 @@
         "reset": "Restablecer contraseña",
         "send_email": "Enviar el correo de restablecimiento",
         "forgot_password_email_sent": "Correo de restablecimiento enviado con éxito",
-        "password_reset_success": "Contraseña restablecida con éxito"
+        "password_reset_success": "Contraseña restablecida con éxito",
+        "onboarding": ""
     },
     "COLORS": {
         "black": "Negro",
@@ -717,7 +718,8 @@
         "merge_batch_details": "Elija el lote principal. Los documentos de los demás lotes se fusionarán en el lote principal y los lotes secundarios se eliminarán. <strong>(esta acción es irreversible)</strong>",
         "no_other_batches": "No hay otros lotes disponibles para fusionar",
         "batch_non_modifiable": "Lote no modificable",
-        "batch_non_modifiable_details": "No puede modificar este lote porque ya ha sido procesado, eliminado o fusionado"
+        "batch_non_modifiable_details": "No puede modificar este lote porque ya ha sido procesado, eliminado o fusionado",
+        "viewer": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Haga clic para elegir un archivo",
@@ -901,7 +903,8 @@
         "delete_field_success": "Campo eliminado correctamente",
         "document_non_modifiable": "Documento no modificable",
         "document_non_modifiable_details": "No puede modificar este documento porque ya ha sido procesado",
-        "no_outputs": "No se ha configurado ninguna cadena de salida para este documento"
+        "no_outputs": "No se ha configurado ninguna cadena de salida para este documento",
+        "viewer": ""
     },
     "SECURITY": {
         "default_auth": "Autenticación predeterminada",

@@ -42,10 +42,10 @@ export function LangSelection({ i18n, refresh = true }: LangSelectionProps) {
     }, [selectedLang, i18n]);
 
     return (
-        <div className="flex gap-4 mt-4 justify-center">
+        <div className="flex gap-4 mt-4">
             { options.map((lang) => (
                 <div key={ lang['code'] }
-                     className={ `relative border flex bg-(--bg-primary) items-center rounded-md cursor-pointer p-4 transition-border-color
+                     className={ `relative border flex bg-(--bg-primary) items-center rounded-md cursor-pointer px-4 py-2 transition-border-color
                      ${ selectedLang === lang['code'] ? 'border-(--border-primary)! bg-(--bg-selected)' : 'border-(--border-secondary) hover:border-gray-400' }` }
                      onClick={ () => {
                          setSelectedlang(lang['code']);

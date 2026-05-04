@@ -20,6 +20,7 @@ import Sidebar from "../components/Sidebar";
 import BreadCrumbTopbar from "../components/settings/TopBar";
 
 import { useCustom } from "../services/custom/customContext";
+import { PageTitle } from "../components/PageTitle.tsx";
 
 export default function SettingsLayout() {
     let pathNameWithoutCustom: string = window.location.pathname.replace(useCustom() || "", "") || "/";
@@ -38,6 +39,7 @@ export default function SettingsLayout() {
         <div className="flex h-screen">
             <Sidebar />
             <div className='flex flex-col w-full h-full'>
+                <PageTitle />
                 <BreadCrumbTopbar />
                 <span className='overflow-y-auto h-full'>
                     <Outlet />

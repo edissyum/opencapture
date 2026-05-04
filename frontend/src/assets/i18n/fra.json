@@ -94,7 +94,8 @@
         "reset": "Réinitialiser le mot de passe",
         "send_email": "Envoyer l'email de réinitialisation",
         "forgot_password_email_sent": "Email de réinitialisation envoyé avec succès",
-        "password_reset_success": "Mot de passe réinitialisé avec succès"
+        "password_reset_success": "Mot de passe réinitialisé avec succès",
+        "onboarding": "Processus de démarrage"
     },
     "COLORS": {
         "black": "Noir",
@@ -717,7 +718,8 @@
         "merge_batch_details": "Choisissez le lot principal. Les documents des autres lots seront fusionnés dans le lot principal et les lots secondaires seront supprimés. <strong>(cette action est irréversible)</strong>",
         "no_other_batches": "Aucun autre lot disponible pour la fusion",
         "batch_non_modifiable": "Lot non modifiable",
-        "batch_non_modifiable_details": "Vous ne pouvez pas modifier ce lot car il a déjà été traité, supprimé ou fusionné"
+        "batch_non_modifiable_details": "Vous ne pouvez pas modifier ce lot car il a déjà été traité, supprimé ou fusionné",
+        "viewer": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Cliquez pour choisir un fichier",
@@ -901,7 +903,8 @@
         "delete_field_success": "Champ suprimé avec succès",
         "document_non_modifiable": "Document non modifiable",
         "document_non_modifiable_details": "Vous ne pouvez pas modifier ce document car il a déjà été traité",
-        "no_outputs": "Aucune chaîne sortante paramétrée pour ce document"
+        "no_outputs": "Aucune chaîne sortante paramétrée pour ce document",
+        "viewer": ""
     },
     "SECURITY": {
         "default_auth": "Authentification par défaut",

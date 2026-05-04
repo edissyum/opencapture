@@ -22,14 +22,14 @@ import { ThemeSelection } from "../../components/onboarding/ThemeSelection";
 export function Step3() {
 
     return (
-        <>
-            <h1 className="text-4xl text-(--text-primary)">{ t('ONBOARD.select_theme') }</h1>
-            <p className="text-(--text-secondary)">
-                { t('ONBOARD.select_theme_lang_info') }
-            </p>
-            <div className='h-full'>
-                <ThemeSelection />
+        <div className='flex flex-col gap-4'>
+            <div>
+                <h1 className="text-4xl text-(--text-primary)">{ t('ONBOARD.select_theme') }</h1>
+                <p className="text-(--text-secondary)">
+                    { t('ONBOARD.select_theme_lang_info') }
+                </p>
             </div>
-        </>
+            <ThemeSelection />
+        </div>
     );
 }

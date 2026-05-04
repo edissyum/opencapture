@@ -20,6 +20,7 @@ import TopBar from "../components/TopBar";
 import Sidebar from "../components/Sidebar";
 
 import { useCustom } from "../services/custom/customContext";
+import { PageTitle } from "../components/PageTitle.tsx";
 
 export default function MainLayout() {
     const location = useLocation();
@@ -40,6 +41,7 @@ export default function MainLayout() {
         <div className="flex h-screen w-screen">
             <Sidebar/>
             <main className="flex flex-col w-full h-full bg-(--bg-secondary) overflow-hidden">
+                <PageTitle />
                 { !location.pathname.includes('verifier/viewer/') && !location.pathname.includes('splitter/viewer/') && (
                     <TopBar/>
                 ) }

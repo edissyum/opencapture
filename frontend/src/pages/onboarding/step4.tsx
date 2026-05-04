@@ -33,13 +33,14 @@ export function Step4() {
     }, [selectedView]);
 
     return (
-        <>
-            <h1 className="text-4xl text-(--text-primary)">{ t('ONBOARD.select_view') }</h1>
-            <p className="text-(--text-secondary)">
-                { t('ONBOARD.select_view_info') }
-            </p>
-
-            <div className="flex gap-4 justify-center mt-4">
+        <div className='flex flex-col gap-4'>
+            <div>
+                <h1 className="text-4xl text-(--text-primary)">{ t('ONBOARD.select_view') }</h1>
+                <p className="text-(--text-secondary)">
+                    { t('ONBOARD.select_view_info') }
+                </p>
+            </div>
+            <div className="flex gap-4">
                 <div className={ `cursor-pointer relative w-48 h-26 bg-(--bg-primary) border 
                         border-(--border-primary) rounded-lg transition-border-color
                         ${ selectedView === 'grid' ? 'border-(--border-primary)' : 'border-(--border-secondary) hover:border-gray-400' } ` }
@@ -71,6 +72,6 @@ export function Step4() {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
