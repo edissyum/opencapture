@@ -325,7 +325,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
                             }>
                                 <div className='p-6'>
                                     { module === 'verifier' ? (
-                                        <Dropdown id={ 'workflow' } value={ doc.workflow_id } noMarginBottom={ true }
+                                        <Dropdown id={ 'workflow' } value={ doc.workflow_id }
                                                   label={ t('AI-DOCTYPES.workflow_associated') }
                                                   options={ workflows.map((wf: any) => ({
                                                       label: wf.label,
@@ -334,7 +334,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
                                                   onChange={ (e) => handleWorkflowChange(e, doc) }/>
                                     ) : (
                                         <div>
-                                            <Dropdown id={ 'form' } value={ doc.form } noMarginBottom={ true }
+                                            <Dropdown id={ 'form' } value={ doc.form }
                                                       label={ t('AI-DOCTYPES.form_associated') }
                                                       options={ forms.map((f: any) => ({
                                                           label: f.label,

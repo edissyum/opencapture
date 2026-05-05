@@ -132,7 +132,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
                           className="bg-(--bg-primary)! p-3 w-1/2 shadow-none! border! border-(--border-secondary)! min-h-[20%] max-h-[60%]">
                 <div className="flex flex-col gap-3 space-y-3">
                     <Input id={ 'label-' + editableField.id }
-                           className="w-full" noMarginBottom={ true }
+                           className="w-full"
                            label={ t('FORMS.field_label') }
                            value={ t(editableField.label) }
                            onChange={ (e: any) =>
@@ -141,7 +141,6 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
                     />
                     <Dropdown
                         className="w-full"
-                        noMarginBottom={ true }
                         options={ formatLabels }
                         value={ editableField.format }
                         label={ t("FORMS.formats") }
@@ -152,7 +151,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
                     />
 
                     <Input id={ "default_value-" + editableField.id }
-                           className="w-full" noMarginBottom={ true }
+                           className="w-full"
                            hint={ t('FORMS.default_value_hint') }
                            label={ t('FORMS.default_value') }
                            value={ editableField.default_value }
@@ -225,7 +224,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
                                     </Hint>
                                     <div className='flex gap-4'>
                                         <Input id={ 'search_mask-' + editableField.id }
-                                               className="w-1/3" noMarginBottom={ true }
+                                               className="w-1/3"
                                                label={ t('FORMS.search_mask') }
                                                value={ editableField.search_mask }
                                                onChange={ (e: any) =>
@@ -236,7 +235,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
                                                }
                                         />
                                         <Input id={ 'result_mask-' + editableField.id }
-                                               className="w-1/3" noMarginBottom={ true }
+                                               className="w-1/3"
                                                label={ t('FORMS.result_mask') }
                                                value={ editableField.result_mask }
                                                onChange={ (e: any) =>
@@ -247,7 +246,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
                                                }
                                         />
                                         <Input id={ 'validation_mask-' + editableField.id }
-                                               className="w-1/3" noMarginBottom={ true }
+                                               className="w-1/3"
                                                label={ t('FORMS.validation_mask') }
                                                value={ editableField.validation_mask }
                                                onChange={ (e: any) =>

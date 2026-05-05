@@ -220,7 +220,7 @@ export function Login() {
                                 ) }
                             </div>
 
-                            <form onSubmit={ handleSubmit } noValidate className='flex flex-col'>
+                            <form onSubmit={ handleSubmit } noValidate className='flex flex-col gap-4'>
                                 <Input id="username" type="text" name="username" required error={ errors.username }
                                        onChange={ handleChange } label={ t('USERS.username') }/>
                                 <Input id="password" type="password" name="password" required error={ errors.password }

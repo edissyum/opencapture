@@ -32,7 +32,6 @@ interface DropdownProps {
     disabled?: boolean;
     required?: boolean;
     placeholder?: string;
-    noMarginBottom?: boolean;
     useExtraInLabel?: boolean;
     onChange: (e: any) => void;
     options: { value: any; label: string }[];

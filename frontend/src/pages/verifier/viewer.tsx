@@ -1269,20 +1269,22 @@ export function VerifierViewerPage() {
                                             ) }
 
                                             { !supplierExists && zone.id === 'supplier' && (
-                                                <SquarePlus size={ 20 } data-tooltip-id="tooltip"
-                                                            onClick={ (e) => {
-                                                                e.preventDefault();
-                                                                e.stopPropagation();
-                                                                setShowSupplierEditor(true);
-                                                            } }
-                                                            data-tooltip-content={ t('VERIFIER.create_supplier') }/>
+                                                <SquarePlus
+                                                    size={ 20 } data-tooltip-id="tooltip"
+                                                    onClick={ (e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        setShowSupplierEditor(true);
+                                                    } }
+                                                    data-tooltip-content={ t('VERIFIER.create_supplier') }
+                                                />
                                             ) }
                                         </span>
                                     </span>
                                 }>
-                                    <div className='w-full px-4 pt-6'>
+                                    <div className='w-full p-4 space-y-4'>
                                         { zone.lines.map((line: any, index: number) => (
-                                            <div key={ index } className={ `flex gap-4 mb-2` }>
+                                            <div key={ index } className={ `flex gap-4` }>
                                                 { Object.values(line).filter((field: any) => typeof field !== 'boolean').map((field: any) => (
                                                     <div key={ field.id } className={ `min-w-1/6 ${ getWidthLine(line) }` }>
                                                         { field.type === 'date' && (
@@ -1393,7 +1395,7 @@ export function VerifierViewerPage() {
                                                 { line.duplicable && (
                                                     <div data-tooltip-id="tooltip"
                                                          data-tooltip-content={ t('FORMS.duplicate_line') }
-                                                         className={ `flex items-center justify-center -mt-4 
+                                                         className={ `flex items-center justify-center
                                                                     ${ disableFields ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' }` }
                                                          onClick={ () => {
                                                              handleDuplicateLine(line, zone, index)

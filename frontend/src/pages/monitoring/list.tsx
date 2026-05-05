@@ -303,7 +303,6 @@ export function MonitoringList() {
                     </span>
                     <Input id="search" type="text" name="search" className='bg-(--bg-primary) w-96' height='h-10' autoFocus
                            value={ searchFilename } placeholder={ t('MONITORING.search_filename') }
-                           noMarginBottom={ true }
                            onChange={ (e) => setSearchFilename(e.target.value) }/>
                 </div>
                 <Table

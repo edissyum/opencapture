@@ -147,7 +147,7 @@ export function CustomersList() {
                     </span>
                 </span>
                 <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
-                       value={ searchTerm } placeholder={ t('GLOBAL.search') } noMarginBottom={ true }
+                       value={ searchTerm } placeholder={ t('GLOBAL.search') }
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Button size='sm' variant="bg_white" className='p-2 px-3'

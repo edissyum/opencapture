@@ -75,7 +75,6 @@ export function DynamicForm({ schema, control, errors, gap = 4, grid = false }: 
                                     textWeight={ field.textWeight }
                                     placeholder={ field.placeholder }
                                     error={ errors[field.name]?.message }
-                                    noMarginBottom={ field.noMarginBottom }
                                     onChange={ e => {
                                         const value = e.target.value
 

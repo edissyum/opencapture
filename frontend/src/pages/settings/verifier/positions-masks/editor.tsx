@@ -389,8 +389,7 @@ export function SettingsVerifierPositionMaskEditor() {
                                                 border-(--border-secondary)">
                                     { t(field.label) }
                                     <Input id={ `regex-${ field.id }` } label={ t('POSITIONS-MASKS.regex_associated') }
-                                           type="text" noMarginBottom={ true } name={ field.id }
-                                           value={ positionMask.regex[field.id] || '' }
+                                           type="text" name={ field.id } value={ positionMask.regex[field.id] || '' }
                                            onBlur={ (e: any) => { updateRegex(field.id, e.target.value).then() } }
                                     />
                                 </div>
@@ -409,7 +408,7 @@ export function SettingsVerifierPositionMaskEditor() {
                                                 border-(--border-secondary)">
                                     { t(field.label) }
                                     <Input id={ `regex-${ field.id }` } label={ t('POSITIONS-MASKS.regex_associated') }
-                                           type="text" noMarginBottom={ true } name={ `custom_${ field.id }` }
+                                           type="text" name={ `custom_${ field.id }` }
                                            onBlur={ (e: any) => { updateRegex(field.id, e.target.value).then() } }
                                            value={ positionMask.regex[`custom_${ field.id }`] }/>
                                 </div>

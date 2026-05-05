@@ -256,7 +256,7 @@ export function AiDoctypesList({ module }: { module: string }) {
                     { t('SETTINGS.ai_doctypes', { count: totalAiDoctypes }) } ({ totalAiDoctypes || 0 })
                 </span>
                 <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
-                       value={ searchTerm } placeholder={ t('GLOBAL.search') } noMarginBottom={ true }
+                       value={ searchTerm } placeholder={ t('GLOBAL.search') }
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Link to={ `/settings/${ module }/ai-doctypes/create` }>

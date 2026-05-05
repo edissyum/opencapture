@@ -53,7 +53,7 @@ const AutocompleteInput: React.FC<AutocompleteProps> = ({
 
     return (
         <div>
-            <FloatLabel className={ `w-full mb-4 ${ disabled ? 'cursor-not-allowed' : '' }` }>
+            <FloatLabel className={ `w-full ${ disabled ? 'cursor-not-allowed' : '' }` }>
                 <AutoComplete
                     key={ id }
                     name={ id }

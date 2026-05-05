@@ -79,13 +79,13 @@ export const SettingsGeneralTokenAuth = () => {
 
             <div className='w-1/3 flex flex-col gap-6'>
                 <Dropdown id='token-user-dropdown' filter value={ selectedUser } options={ users }
-                          label={ t('SECURITY.token_user') } required noMarginBottom={ true }
+                          label={ t('SECURITY.token_user') } required
                           onChange={ (e) => {
                               setSelectedUser(e.target.value)
                           } }/>
 
                 <Input label={ t('SECURITY.token_expiration') }
-                       value={ tokenExpiration } required noMarginBottom={ true }
+                       value={ tokenExpiration } required
                        onChange={ (e: any) => {
                            setTokenExpiration(e.target.value)
                        } }/>

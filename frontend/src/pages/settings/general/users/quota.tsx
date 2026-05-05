@@ -90,7 +90,7 @@ export function SettingsGeneralUserQuota() {
                     </label>
                 </div>
                 <div className='w-1/3'>
-                    <Input label={ t('USERS.user_quota_number') } type='number' noMarginBottom={ true }
+                    <Input label={ t('USERS.user_quota_number') } type='number'
                            value={ userQuota.number } disabled={ !userQuota.enabled } required
                            onChange={ (e) => setUserQuota({ ...userQuota, number: e.target.value }) }/>
                 </div>

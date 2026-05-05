@@ -68,7 +68,6 @@ export function showConfirmDialogWithInput({
                         value={ val }
                         label={ label }
                         className="w-full"
-                        noMarginBottom={ true }
                         placeholder={ placeholder }
                         onChange={ (e) => setVal(e.target.value) }
                     />

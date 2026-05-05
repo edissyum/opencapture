@@ -119,7 +119,6 @@ export function SettingsVerifierAiLLMEditor() {
         name: z.string().min(1).describe(JSON.stringify({
             component: "input",
             required: true,
-            noMarginBottom: true,
             label: t("AI-LLM.name")
         }))
     });
@@ -139,13 +138,11 @@ export function SettingsVerifierAiLLMEditor() {
     const costsSchema: any = z.object({
         input_price: z.number().optional().describe(JSON.stringify({
             component: "input",
-            noMarginBottom: true,
             label: t("AI-LLM.input_cost"),
             type: "number"
         })),
         output_price: z.number().optional().describe(JSON.stringify({
             component: "input",
-            noMarginBottom: true,
             label: t("AI-LLM.output_cost"),
             type: "number"
         }))

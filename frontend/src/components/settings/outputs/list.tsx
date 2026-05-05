@@ -191,7 +191,7 @@ export function OutputsList({ module }: { module: string }) {
                     { t('SETTINGS.outputs', { count: totalOutputs }) } ({ totalOutputs || 0 })
                 </span>
                 <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
-                       value={ searchTerm } placeholder={ t('GLOBAL.search') } noMarginBottom={ true }
+                       value={ searchTerm } placeholder={ t('GLOBAL.search') }
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
                     <Link to={ `/settings/${ module }/outputs/create` }>

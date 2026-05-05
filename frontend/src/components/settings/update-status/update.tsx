@@ -130,7 +130,6 @@ export function UpdateStatus({ module }: { module: 'verifier' | 'splitter' }) {
                                setIdentifier(e.target.value)
                            }
                        } }
-                       noMarginBottom={ true }
                        placeholder={ t('UPDATE-STATUS.id_placeholder') }
                        onKeyDown={ (e) => {
                            if ((e.key === 'Enter' || e.key === ',') && identifier.trim() !== '') {

@@ -448,7 +448,7 @@ export function OutputEditor({ module }: { module: string }) {
                                         ) }
                                         { option.type === 'text' && option.webservice && (
                                             <Dropdown
-                                                id={ option.id } label={ option.label } noMarginBottom={ true } filter={ true }
+                                                id={ option.id } label={ option.label } filter={ true }
                                                 options={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.values || [] }
                                                 value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
                                                 onChange={ (e) => {
@@ -458,7 +458,7 @@ export function OutputEditor({ module }: { module: string }) {
                                         ) }
                                         { option.type === 'text' && !option.webservice && (
                                             <Input id={ option.id } type={ option.type } name={ option.id }
-                                                   label={ option.label } hint={ option.hint } noMarginBottom={ true }
+                                                   label={ option.label } hint={ option.hint }
                                                    value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
                                                    onChange={ (e) => {
                                                        handleSpecificLinksChange(e, option, 'parameters')
@@ -505,8 +505,7 @@ export function OutputEditor({ module }: { module: string }) {
                                              className={ `w-full gap-2 mb-4 ${ option.type === 'boolean' ? 'col-span-2' : '' }` }>
                                             { option.type === 'text' && option.webservice && (
                                                 <Dropdown
-                                                    id={ option.id } label={ option.label } noMarginBottom={ true }
-                                                    filter={ true }
+                                                    id={ option.id } label={ option.label } filter={ true }
                                                     options={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.values || [] }
                                                     value={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || '' }
                                                     onChange={ (e) => {
@@ -528,7 +527,7 @@ export function OutputEditor({ module }: { module: string }) {
                                             ) }
                                             { option.type === 'text' && !option.webservice && (
                                                 <Input id={ option.id } type={ option.type } name={ option.id }
-                                                       label={ option.label } hint={ option.hint } noMarginBottom={ true }
+                                                       label={ option.label } hint={ option.hint }
                                                        value={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || '' }
                                                        onChange={ (e) => {
                                                            handleSpecificLinksChange(e, option, 'links')

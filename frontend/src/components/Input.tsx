@@ -29,7 +29,6 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     bgColor?: string;
     textColor?: string;
     textWeight?: string;
-    noMarginBottom?: boolean;
     iconPosition?: "left" | "right";
 }
 
@@ -44,9 +43,8 @@ const Input: React.FC<InputProps> = ({
     textColor,
     textWeight,
     type = "text",
-    height = "h-12",
     className = "",
-    noMarginBottom = false,
+    height = "h-12",
     ...props
 }) => {
     const [passwordVisible, setPasswordVisible] = React.useState(false);
@@ -90,7 +88,6 @@ const Input: React.FC<InputProps> = ({
             <div className={ `group rounded-md border! focus-within:border-(--border-primary)! 
                               relative flex justify-items-stretch hover:border-(--border-primary)! transition-colors
                               ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' }
-                              ${ error || noMarginBottom ? '' : 'mb-4' }
                               ${ disabled ? 'cursor-not-allowed' : '' }` }>
                 <FloatLabel className='w-full'>
                     { bgColor && hasValue && (
@@ -152,7 +149,7 @@ const Input: React.FC<InputProps> = ({
                 ) }
             </div>
             { error && (
-                <p className="text-(--text-error) text-xs ml-1 mt-1 mb-2"
+                <p className="text-(--text-error) text-xs ml-1 mt-1"
                    dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(error) } }/>
             ) }
         </div>

@@ -173,17 +173,17 @@ export function VerifierListPage() {
             className: 'truncate w-md! max-w-md!',
             header: t('VERIFIER.name'),
             body: (item: any) => (
-                <span className="font-semibold flex gap-2" title={ item.supplier_name }>
-                    { item.supplier_name ? item.supplier_name : t('VERIFIER.unkown_supplier') }
+                <div className="font-semibold flex items-center gap-2" title={ item.supplier_name }>
+                    <span>{ item.supplier_name ? item.supplier_name : t('VERIFIER.unkown_supplier') }</span>
                     { item.facturx && (
-                        <div className='text-(--text-secondary) text-xs relative'
-                             data-tooltip-id="tooltip"
-                             data-tooltip-content={ t('VERIFIER.facturx_level') + ' : ' + item.facturx_level }
+                        <span className='text-(--text-secondary) text-xs'
+                              data-tooltip-id="tooltip"
+                              data-tooltip-content={ t('VERIFIER.facturx_level') + ' : ' + item.facturx_level }
                         >
                             FacturX
-                        </div>
+                        </span>
                     ) }
-                </span>
+                </div>
             )
         },
         {
@@ -616,7 +616,7 @@ export function VerifierListPage() {
                         </span>
                     </span>
                     <Input id="search" type="text" name="search" className='bg-(--bg-primary)' height='h-10' autoFocus
-                           value={ searchTerm } placeholder={ t('GLOBAL.search') } noMarginBottom={ true }
+                           value={ searchTerm } placeholder={ t('GLOBAL.search') }
                            onChange={ (e) => setSearchTerm(e.target.value) }/>
                     <span className='ml-auto text-(--text-secondary) flex cursor-pointer'>
                         <span data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.list') }
