@@ -126,6 +126,7 @@ export function Grid<T extends { id: string }>({
             <div className="flex items-center gap-4">
                 <span className="flex" data-tooltip-id="tooltip" data-tooltip-content={ t('GLOBAL.select_all') }>
                     <Checkbox label={ selectedRows.length + " " + paginatorLeftText }
+                              indeterminate={ selectedRows.length !== data.length }
                               checked={ selectedRows.length !== 0 } onChange={ selectAll }/>
                 </span>
                 { actions &&
@@ -203,7 +204,7 @@ export function Grid<T extends { id: string }>({
                         <div key={ row.id }
                              onClick={ () => handleRowClick(row) }
                              className={ `border border-(--border-secondary) hover:border-(--text-secondary) rounded-md
-                                          ${ selectedRows.some(r => r.id === row.id) ? 'border-(--color-primary)' : ''}
+                                          ${ selectedRows.some(r => r.id === row.id) ? 'border-(--color-primary)' : '' }
                                           cursor-pointer bg-(--bg-primary) transition-border-color` }>
                             <div
                                 className="relative bg-[#D0DAD5] dark:bg-(--bg-secondary) rounded-b-none w-full p-6 pb-0 rounded-md flex items-center justify-center text-(--text-secondary)">

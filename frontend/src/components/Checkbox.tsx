@@ -41,7 +41,7 @@ export function Checkbox({
 }: CheckboxProps) {
     const [isChecked, setIsChecked] = useState(checked);
     const [isIndeterminate, setIsIndeterminate] = useState(indeterminate);
-
+    console.log(label, indeterminate, isIndeterminate)
     useEffect(() => {
         setIsChecked(checked);
     }, [checked]);
@@ -76,16 +76,16 @@ export function Checkbox({
                 onClick={ toggle }
                 style={ { width: `calc(0.25rem*${ size })`, height: `calc(0.25rem*${ size })` } }
                 className={ `border border-(--border-secondary) rounded flex items-center justify-center
-                    ${ isChecked ? "bg-(--color-primary) hover:bg-(--color-primary)/80" : "bg-(--bg-primary) hover:border-(--border-primary)" }
+                    ${ isChecked ? "bg-(--color-primary) hover:bg-(--color-primary)/80 border-(--border-primary)!" : "bg-(--bg-primary) hover:border-(--border-primary)" }
                     ${ disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-(--bg-selected)" }
                     transition-all shrink-0` }
             >
                 { isChecked && !isIndeterminate && (
-                    <Check className={ `size-${ size } text-white` }/>
+                    <Check className={ `size-${ size } text-(--bg-primary)` }/>
                 ) }
 
                 { isIndeterminate && (
-                    <Minus className={ `size-${ size } text-white` }/>
+                    <Minus className={ `size-${ size } text-(--bg-primary)` }/>
                 ) }
             </div>
             { label &&
