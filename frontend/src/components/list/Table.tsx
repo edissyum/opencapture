@@ -182,7 +182,7 @@ export function Table<T extends { id: string }>({
                     rowsPerPageOptions={ rowsPerPageOptions }
                     sortField={ lazyParams.sortField ?? undefined }
                     sortOrder={ lazyParams.sortOrder ?? undefined }
-                    paginatorTemplate="RowsPerPageDropdown CurrentPageReport PrevPageLink NextPageLink"
+                    paginatorTemplate="RowsPerPageDropdown CurrentPageReport FirstPageLink PrevPageLink NextPageLink LastPageLink"
                     currentPageReportTemplate={ "{first} " + t('VERIFIER.to') + " {last} " + t('VERIFIER.of') + " {totalRecords}" }
                     selection={ selectedRows }
                     emptyMessage={ emptyMessage }

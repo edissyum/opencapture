@@ -192,9 +192,7 @@ export function StatisticsPage() {
                                 <Package className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('MAILCOLLECT.module') }</h3>
                             </div>
-                            <ChevronDown
-                                size={ 18 }
-                                className={ `transition-transform ${ open.module ? "rotate-180" : "" }` }/>
+                            <ChevronDown size={ 18 } className={ `transition-transform ${ open.module && "rotate-180" }` }/>
                         </div>
 
                         { open.module && (
@@ -222,9 +220,7 @@ export function StatisticsPage() {
                                 <Package className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.statistics') }</h3>
                             </div>
-                            <ChevronDown
-                                size={ 18 }
-                                className={ `transition-transform ${ open.statistics ? "rotate-180" : "" }` }/>
+                            <ChevronDown size={ 18 } className={ `transition-transform ${ open.statistics && "rotate-180" }` }/>
                         </div>
 
                         { open.statistics && (
@@ -249,9 +245,7 @@ export function StatisticsPage() {
                                 <Package className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold whitespace-nowrap'>{ t('STATISTICS.year_optionnal') }</h3>
                             </div>
-                            <ChevronDown
-                                size={ 18 }
-                                className={ `transition-transform ${ open.year ? "rotate-180" : "" }` }/>
+                            <ChevronDown size={ 18 } className={ `transition-transform ${ open.year && "rotate-180" }` }/>
                         </div>
 
                         { open.year && (

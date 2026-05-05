@@ -22,7 +22,7 @@ export const getUsersHistory = async (history: any, params: any) => {
         history.forEach((entry: any) => {
             if (user.id === entry.user_id) {
                 historyCpt++;
-                stats['total'] = historyCpt;
+                stats['total'] += 1;
             }
         });
         data.push({
@@ -67,7 +67,7 @@ export const statisticsFunctions = {
                 const year = new Date(document.register_date).getFullYear();
                 if (document.form_id === form.id && year === params.selectedYear) {
                     historyCpt++;
-                    stats['total'] = historyCpt;
+                    stats['total'] += 1;
                 }
             });
 
@@ -101,7 +101,7 @@ export const statisticsFunctions = {
                 res.history.forEach((entry: any) => {
                     if (workflow.workflow_id === entry.workflow_id) {
                         historyCpt++;
-                        stats['total'] = historyCpt;
+                        stats['total'] += 1;
                     }
                 });
                 data.push({
@@ -168,7 +168,7 @@ export const statisticsFunctions = {
                 const monthName = monthNames[month - 1];
                 if (historyCpt[monthName] !== undefined) {
                     historyCpt[monthName]++;
-                    stats['total'] = stats['total'] + 1;
+                    stats['total'] += 1;
                 }
             });
 
@@ -203,7 +203,7 @@ export const statisticsFunctions = {
                 } else {
                     historyCpt[year] = 1;
                 }
-                stats['total'] = stats['total'] + 1;
+                stats['total'] += 1;
             });
 
             for (const year in historyCpt) {
@@ -238,9 +238,10 @@ export const statisticsFunctions = {
                 res.history.forEach((entry: any) => {
                     if (workflow.workflow_id === entry.workflow_id) {
                         historyCpt++;
-                        stats['total'] = historyCpt;
+                        stats['total'] += 1;
                     }
                 });
+
                 data.push({
                     'name': workflow.label,
                     'value': historyCpt,
@@ -304,7 +305,7 @@ export const statisticsFunctions = {
                 const monthName = monthNames[month - 1];
                 if (historyCpt[monthName] !== undefined) {
                     historyCpt[monthName]++;
-                    stats['total'] = stats['total'] + 1;
+                    stats['total'] += 1;
                 }
             });
 
@@ -339,7 +340,7 @@ export const statisticsFunctions = {
                 } else {
                     historyCpt[year] = 1;
                 }
-                stats['total'] = stats['total'] + 1;
+                stats['total'] += 1;
             });
 
             for (const year in historyCpt) {
@@ -390,7 +391,7 @@ export const statisticsFunctions = {
                 const monthName = monthNames[month - 1];
                 if (historyCpt[monthName] !== undefined) {
                     historyCpt[monthName]++;
-                    stats['total'] = stats['total'] + 1;
+                    stats['total'] += 1;
                 }
             });
 
@@ -425,7 +426,7 @@ export const statisticsFunctions = {
                 } else {
                     historyCpt[year] = 1;
                 }
-                stats['total'] = stats['total'] + 1;
+                stats['total'] += 1;
             });
 
             for (const year in historyCpt) {
