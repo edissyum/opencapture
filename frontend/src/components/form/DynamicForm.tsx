@@ -25,7 +25,7 @@ import { Checkbox } from "../Checkbox";
 import { Dropdown } from "../Dropdown";
 import MultiSelectInput from "../MultiSelect";
 
-export function DynamicForm({ schema, control, errors, gap = 4, grid = false }: any) {
+export function DynamicForm({ className, schema, control, errors, gap = 4, grid = false }: any) {
     const extractFieldsFromSchema = (schema: any) => {
         const shape = schema._def.shape;
         return Object.entries(shape).map(([name, zodType]: any) => {
@@ -241,7 +241,7 @@ export function DynamicForm({ schema, control, errors, gap = 4, grid = false }: 
     };
 
     return (
-        <div className={ `${ grid ? `grid grid-cols-${ grid }` : `flex flex-col` } gap-${ gap }` }>
+        <div className={ `${ className } ${ grid ? `grid grid-cols-${ grid }` : `flex flex-col` } gap-${ gap }` }>
             { visibleFields.map(renderField) }
         </div>
     );

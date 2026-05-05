@@ -141,3 +141,8 @@
     @apply p-2;
     @apply text-(--text-primary);
 }
+
+.p-multiselect.p-multiselect-chip .p-multiselect-token {
+    @apply py-1;
+    @apply px-3;
+}

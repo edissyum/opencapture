@@ -385,8 +385,8 @@ export function OutputEditor({ module }: { module: string }) {
     return (
         <div className="h-full w-full overflow-y-auto flex">
             <div className='w-full h-full overflow-y-auto'>
-                <div className='px-8 pt-8'>
-                    <h1 className="text-lg font-semibold mb-4">
+                <div className='p-6 flex flex-col gap-4'>
+                    <h1 className="text-lg font-semibold">
                         { t('OUTPUTS.details') }
                     </h1>
 
@@ -396,167 +396,169 @@ export function OutputEditor({ module }: { module: string }) {
                 </div>
 
                 { outputType && Object.keys(outputType).length > 0 && (
-                    <Stepper ref={ stepperRef } linear className='p-4' activeStep={ stepperIndex }
-                             onChangeStep={ (e: any) => setStepperIndex(e.index) }>
+                    <Stepper ref={ stepperRef } linear activeStep={ stepperIndex } onChangeStep={ (e: any) => setStepperIndex(e.index) }>
                         <StepperPanel header={ t("SMTP.authentication") }>
-                            <div className='flex gap-6 w-full'>
-                                { outputType?.data?.options.auth && outputType?.data?.options.auth.map((option: any) => (
-                                    <div key={ option.id } className="w-full gap-2 mb-4">
-                                        <Input id={ option.id } type={ option.type } name={ option.id } label={ option.label }
-                                               value={ output?.data?.options?.auth?.find((o: any) => o.id === option.id)?.value || '' }
-                                               onChange={ (e) => {
-                                                   handleAuthChange(e, option)
-                                               } }/>
-                                    </div>
-                                )) }
-                            </div>
-
-                            <div className="flex justify-end mt-6">
-                                <Button onClick={ handleAuthStep } className="ml-auto px-12" disabled={ loadingStep }>
-                                    { loadingStep ? t("OUTPUTS.testing_connection") : t("OUTPUTS.test_connection") }
-                                </Button>
+                            <div className='flex flex-col gap-4'>
+                                <div className='flex gap-6 w-full'>
+                                    { outputType?.data?.options.auth && outputType?.data?.options.auth.map((option: any) => (
+                                        <div key={ option.id } className="w-full gap-2">
+                                            <Input id={ option.id } type={ option.type } name={ option.id } label={ option.label }
+                                                   value={ output?.data?.options?.auth?.find((o: any) => o.id === option.id)?.value || '' }
+                                                   onChange={ (e) => {
+                                                       handleAuthChange(e, option)
+                                                   } }/>
+                                        </div>
+                                    )) }
+                                </div>
+                                <div className="flex justify-end">
+                                    <Button onClick={ handleAuthStep } className="ml-auto px-12" disabled={ loadingStep }>
+                                        { loadingStep ? t("OUTPUTS.testing_connection") : t("OUTPUTS.test_connection") }
+                                    </Button>
+                                </div>
                             </div>
                         </StepperPanel>
 
                         <StepperPanel header={ t("OUTPUTS.specific") }>
-                            <div className='grid grid-cols-2 gap-4'>
-                                { outputType?.data?.options.parameters.map((option: any) => (
-                                    <div key={ option.id }
-                                         className={ `w-full gap-2 mb-4 ${ option.type === 'textarea' ? 'col-span-2' : '' }` }>
-                                        { option.type === 'textarea' && (
-                                            <>
-                                                { ['xml', 'json'].includes(codeType) && (
-                                                    <Editor
-                                                        className='border border-(--border-secondary) rounded-md p-2'
-                                                        height={ outputType.output_type_id === 'export_mem' ? '15vh' : '50vh' }
-                                                        defaultLanguage={ codeType }
-                                                        defaultValue={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
-                                                        options={ {
-                                                            stickyScroll: {
-                                                                enabled: false
-                                                            },
-                                                            contextmenu: true,
-                                                            minimap: { enabled: true }
-                                                        } }
-                                                        onChange={ (value) => {
-                                                            handleSpecificLinksChange({ target: { value: value } }, option, 'parameters')
-                                                        } }
-                                                        theme={ document.documentElement.classList.contains('dark') ? 'vs-dark' : '' }
-                                                    />
-                                                ) }
-                                            </>
-                                        ) }
-                                        { option.type === 'text' && option.webservice && (
-                                            <Dropdown
-                                                id={ option.id } label={ option.label } filter={ true }
-                                                options={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.values || [] }
-                                                value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
-                                                onChange={ (e) => {
-                                                    handleSpecificLinksChange(e, option, 'parameters')
-                                                } }
-                                            />
-                                        ) }
-                                        { option.type === 'text' && !option.webservice && (
-                                            <Input id={ option.id } type={ option.type } name={ option.id }
-                                                   label={ option.label } hint={ option.hint }
-                                                   value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
-                                                   onChange={ (e) => {
-                                                       handleSpecificLinksChange(e, option, 'parameters')
-                                                   } }/>
-                                        ) }
-                                    </div>
-                                )) }
-                            </div>
-
-                            <div className='mt-4 flex justify-between'>
-                                <Button onClick={ handlePreviousStep } variant="no_bg"
-                                        disabled={ outputType?.data?.options?.auth?.length === 0 }
-                                        className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
-                                    <ArrowLeft/> { t("MAILCOLLECT.previous") }
-                                </Button>
-
-                                <Button onClick={ outputType.output_type_id === 'export_mem' ? handleNextStep : handleSubmit }
-                                        className="px-12"
-                                        disabled={ loading }>
-                                    { outputType.output_type_id === 'export_mem' ? (
-                                        t("GLOBAL.next")
-                                    ) : (
-                                        <>
-                                            { outputId ? (
+                            <div className='flex flex-col gap-4'>
+                                <div className='grid grid-cols-2 gap-4'>
+                                    { outputType?.data?.options.parameters.map((option: any) => (
+                                        <div key={ option.id }
+                                             className={ `w-full gap-2 ${ option.type === 'textarea' ? 'col-span-2' : '' }` }>
+                                            { option.type === 'textarea' && (
                                                 <>
-                                                    { loadingStep ? t("OUTPUTS.updating") : t("OUTPUTS.update") }
-                                                </>
-                                            ) : (
-                                                <>
-                                                    { loadingStep ? t("OUTPUTS.creating") : t("OUTPUTS.create") }
+                                                    { ['xml', 'json'].includes(codeType) && (
+                                                        <Editor
+                                                            className='border border-(--border-secondary) rounded-md p-2'
+                                                            height={ outputType.output_type_id === 'export_mem' ? '15vh' : '50vh' }
+                                                            defaultLanguage={ codeType }
+                                                            defaultValue={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
+                                                            options={ {
+                                                                stickyScroll: {
+                                                                    enabled: false
+                                                                },
+                                                                contextmenu: true,
+                                                                minimap: { enabled: true }
+                                                            } }
+                                                            onChange={ (value) => {
+                                                                handleSpecificLinksChange({ target: { value: value } }, option, 'parameters')
+                                                            } }
+                                                            theme={ document.documentElement.classList.contains('dark') ? 'vs-dark' : '' }
+                                                        />
+                                                    ) }
                                                 </>
                                             ) }
-                                        </>
-                                    ) }
-                                </Button>
-                            </div>
-                        </StepperPanel>
-
-                        { outputType.output_type_id === 'export_mem' && (
-                            <StepperPanel header={ t("OUTPUTS.links") }>
-                                <div className='grid grid-cols-2 gap-4'>
-                                    { outputType?.data?.options.links.map((option: any) => (
-                                        <div key={ option.id }
-                                             className={ `w-full gap-2 mb-4 ${ option.type === 'boolean' ? 'col-span-2' : '' }` }>
                                             { option.type === 'text' && option.webservice && (
                                                 <Dropdown
                                                     id={ option.id } label={ option.label } filter={ true }
-                                                    options={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.values || [] }
-                                                    value={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || '' }
+                                                    options={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.values || [] }
+                                                    value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
                                                     onChange={ (e) => {
-                                                        handleSpecificLinksChange(e, option, 'links')
+                                                        handleSpecificLinksChange(e, option, 'parameters')
                                                     } }
                                                 />
-                                            ) }
-                                            { option.type === 'boolean' && (
-                                                <div className='flex items-center gap-2'>
-                                                    <InputSwitch name={ option.id } id={ option.id }
-                                                                 checked={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || false }
-                                                                 onChange={ (e) => {
-                                                                     handleSpecificLinksChange({ target: { value: e.value } }, option, 'links')
-                                                                 } }/>
-                                                    <label htmlFor={ option.id } className='cursor-pointer'>
-                                                        { option.label }
-                                                    </label>
-                                                </div>
                                             ) }
                                             { option.type === 'text' && !option.webservice && (
                                                 <Input id={ option.id } type={ option.type } name={ option.id }
                                                        label={ option.label } hint={ option.hint }
-                                                       value={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || '' }
+                                                       value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
                                                        onChange={ (e) => {
-                                                           handleSpecificLinksChange(e, option, 'links')
+                                                           handleSpecificLinksChange(e, option, 'parameters')
                                                        } }/>
                                             ) }
                                         </div>
                                     )) }
                                 </div>
-                                <div className='mt-4 flex justify-between'>
+                                <div className='flex justify-between'>
                                     <Button onClick={ handlePreviousStep } variant="no_bg"
-                                            disabled={ outputType?.data?.options.auth.length === 0 }
+                                            disabled={ outputType?.data?.options?.auth?.length === 0 }
                                             className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
                                         <ArrowLeft/> { t("MAILCOLLECT.previous") }
                                     </Button>
 
-                                    <Button onClick={ handleSubmit } className="px-12"
+                                    <Button onClick={ outputType.output_type_id === 'export_mem' ? handleNextStep : handleSubmit }
+                                            className="px-12"
                                             disabled={ loading }>
-                                        <>
-                                            { outputId ? (
-                                                <>
-                                                    { loadingStep ? t("OUTPUTS.updating") : t("OUTPUTS.update") }
-                                                </>
-                                            ) : (
-                                                <>
-                                                    { loadingStep ? t("OUTPUTS.creating") : t("OUTPUTS.create") }
-                                                </>
-                                            ) }
-                                        </>
+                                        { outputType.output_type_id === 'export_mem' ? (
+                                            t("GLOBAL.next")
+                                        ) : (
+                                            <>
+                                                { outputId ? (
+                                                    <>
+                                                        { loadingStep ? t("OUTPUTS.updating") : t("OUTPUTS.update") }
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        { loadingStep ? t("OUTPUTS.creating") : t("OUTPUTS.create") }
+                                                    </>
+                                                ) }
+                                            </>
+                                        ) }
                                     </Button>
+                                </div>
+                            </div>
+                        </StepperPanel>
+
+                        { outputType.output_type_id === 'export_mem' && (
+                            <StepperPanel header={ t("OUTPUTS.links") }>
+                                <div className='flex flex-col gap-4'>
+                                    <div className='grid grid-cols-2 gap-4'>
+                                        { outputType?.data?.options.links.map((option: any) => (
+                                            <div key={ option.id }
+                                                 className={ `w-full gap-2 ${ option.type === 'boolean' ? 'col-span-2' : '' }` }>
+                                                { option.type === 'text' && option.webservice && (
+                                                    <Dropdown
+                                                        id={ option.id } label={ option.label } filter={ true }
+                                                        options={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.values || [] }
+                                                        value={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || '' }
+                                                        onChange={ (e) => {
+                                                            handleSpecificLinksChange(e, option, 'links')
+                                                        } }
+                                                    />
+                                                ) }
+                                                { option.type === 'boolean' && (
+                                                    <div className='flex items-center gap-2'>
+                                                        <InputSwitch name={ option.id } id={ option.id }
+                                                                     checked={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || false }
+                                                                     onChange={ (e) => {
+                                                                         handleSpecificLinksChange({ target: { value: e.value } }, option, 'links')
+                                                                     } }/>
+                                                        <label htmlFor={ option.id } className='cursor-pointer'>
+                                                            { option.label }
+                                                        </label>
+                                                    </div>
+                                                ) }
+                                                { option.type === 'text' && !option.webservice && (
+                                                    <Input id={ option.id } type={ option.type } name={ option.id }
+                                                           label={ option.label } hint={ option.hint }
+                                                           value={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || '' }
+                                                           onChange={ (e) => {
+                                                               handleSpecificLinksChange(e, option, 'links')
+                                                           } }/>
+                                                ) }
+                                            </div>
+                                        )) }
+                                    </div>
+                                    <div className='flex justify-between'>
+                                        <Button onClick={ handlePreviousStep } variant="no_bg"
+                                                disabled={ outputType?.data?.options.auth.length === 0 }
+                                                className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
+                                            <ArrowLeft/> { t("MAILCOLLECT.previous") }
+                                        </Button>
+
+                                        <Button onClick={ handleSubmit } disabled={ loading }>
+                                            <>
+                                                { outputId ? (
+                                                    <>
+                                                        { loadingStep ? t("OUTPUTS.updating") : t("OUTPUTS.update") }
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        { loadingStep ? t("OUTPUTS.creating") : t("OUTPUTS.create") }
+                                                    </>
+                                                ) }
+                                            </>
+                                        </Button>
+                                    </div>
                                 </div>
                             </StepperPanel>
                         ) }

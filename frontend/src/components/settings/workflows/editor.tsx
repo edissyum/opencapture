@@ -652,26 +652,26 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             <Stepper ref={ stepperRef } linear className='p-4 workflowStepper' activeStep={ stepperIndex }
                      onChangeStep={ (e: any) => setStepperIndex(e.index) }>
                 <StepperPanel header={ t("WORKFLOWS.input") }>
-                    <DynamicForm schema={ inputSchemaFields } control={ workflowControl } errors={ workflowErrors } grid={ 2 }/>
+                    <div className='flex flex-col gap-2'>
+                        <DynamicForm schema={ inputSchemaFields } control={ workflowControl } errors={ workflowErrors } grid={ 2 }/>
+                        <DynamicForm schema={ inputSchemaEndSwitchs } control={ workflowControl } errors={ workflowErrors } gap={ 2 }/>
 
-                    <DynamicForm schema={ inputSchemaEndSwitchs } control={ workflowControl } errors={ workflowErrors }/>
+                        { allowScripting && (
+                            <div className='flex items-center gap-2'>
+                                <InputSwitch inputId='inputScripting' checked={ inputScripting }
+                                             onChange={ (e) => setInputScripting(e.value) }/>
+                                <label htmlFor={ 'inputScripting' } className="cursor-pointer">
+                                    { t('WORKFLOWS.input_scripting') }
+                                </label>
+                            </div>
+                        ) }
 
-                    { allowScripting && (
-                        <div className='flex items-center mt-4 gap-2'>
-                            <InputSwitch inputId='inputScripting' checked={ inputScripting }
-                                         onChange={ (e) => setInputScripting(e.value) }/>
-                            <label htmlFor={ 'inputScripting' }
-                                   className="flex items-center gap-4 cursor-pointer">
-                                { t('WORKFLOWS.input_scripting') }
-                            </label>
+                        <div className="flex justify-end">
+                            <Button onClick={ workflowHandleSubmit(handleSubmitStep) } className="ml-auto px-12"
+                                    disabled={ loading || Object.keys(workflowErrors).length > 0 }>
+                                { loadingUpdate ? t("WORKFLOWS.validating") : t("GLOBAL.next") }
+                            </Button>
                         </div>
-                    ) }
-
-                    <div className="flex justify-end mt-6">
-                        <Button onClick={ workflowHandleSubmit(handleSubmitStep) } className="ml-auto px-12"
-                                disabled={ loading || Object.keys(workflowErrors).length > 0 }>
-                            { loadingUpdate ? t("WORKFLOWS.validating") : t("GLOBAL.next") }
-                        </Button>
                     </div>
                 </StepperPanel>
 
@@ -688,69 +688,72 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                     } pt={ {
                         header: { className: "stepper-secondary left-1/5 -translate-x-1/5" }
                     } }>
-                        <FloatLabel className="w-full">
-                            <Editor
-                                className='border border-(--border-secondary) rounded-md p-2'
-                                height="50vh"
-                                defaultLanguage="python"
-                                defaultValue={ inputScript }
-                                options={ {
-                                    contextmenu: true,
-                                    minimap: { enabled: true }
-                                } }
-                                onChange={ (value) => setInputScript(value || '') }
-                                theme={ document.documentElement.classList.contains('dark') ? 'vs-dark' : '' }
-                            />
-                            <label className="text-(--text-secondary) top-0! bg-(--bg-primary) px-1">
-                                { t("WORKFLOWS.script_content") }
-                            </label>
-                        </FloatLabel>
-                        <div className='mt-4 flex justify-between'>
-                            <Button onClick={ handlePreviousStep } variant="no_bg"
-                                    className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
-                                <ArrowLeft/> { t("MAILCOLLECT.previous") }
-                            </Button>
+                        <div className='flex flex-col gap-4'>
+                            <FloatLabel className="w-full">
+                                <Editor
+                                    className='border border-(--border-secondary) rounded-md p-2'
+                                    height="50vh"
+                                    defaultLanguage="python"
+                                    defaultValue={ inputScript }
+                                    options={ {
+                                        contextmenu: true,
+                                        minimap: { enabled: true }
+                                    } }
+                                    onChange={ (value) => setInputScript(value || '') }
+                                    theme={ document.documentElement.classList.contains('dark') ? 'vs-dark' : '' }
+                                />
+                                <label className="text-(--text-secondary) top-0! bg-(--bg-primary) px-1">
+                                    { t("WORKFLOWS.script_content") }
+                                </label>
+                            </FloatLabel>
+                            <div className='flex justify-between'>
+                                <Button onClick={ handlePreviousStep } variant="no_bg"
+                                        className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
+                                    <ArrowLeft/> { t("MAILCOLLECT.previous") }
+                                </Button>
 
-                            <Button data-tooltip-id='tooltip'
-                                    data-tooltip-content={ t("WORKFLOWS.next_script_testing") }
-                                    onClick={ () => handleSubmitScript(inputScript, 'input') } className="px-12"
-                                    disabled={ loading || Object.keys(workflowErrors).length > 0 }>
-                                { loadingScript ? t("WORKFLOWS.validating_script") : t("GLOBAL.next") }
-                            </Button>
+                                <Button data-tooltip-id='tooltip'
+                                        data-tooltip-content={ t("WORKFLOWS.next_script_testing") }
+                                        onClick={ () => handleSubmitScript(inputScript, 'input') } className="px-12"
+                                        disabled={ loading || Object.keys(workflowErrors).length > 0 }>
+                                    { loadingScript ? t("WORKFLOWS.validating_script") : t("GLOBAL.next") }
+                                </Button>
+                            </div>
                         </div>
                     </StepperPanel>
                 ) }
 
                 <StepperPanel header={ t("WORKFLOWS.process") }>
-                    <DynamicForm schema={ processSchemaStartSwitchs } control={ workflowControl } errors={ workflowErrors }/>
+                    <div className='flex flex-col gap-2'>
+                        <DynamicForm schema={ processSchemaStartSwitchs } control={ workflowControl } errors={ workflowErrors }
+                                     gap={ 2 } className='mb-2'/>
+                        <DynamicForm schema={ processSchemaInputFields } control={ workflowControl } errors={ workflowErrors }
+                                     grid={ 2 }/>
+                        <DynamicForm schema={ processSchemaEndSwitchs } control={ workflowControl } errors={ workflowErrors }
+                                     gap={ 2 }/>
 
-                    <div className='mt-6'>
-                        <DynamicForm schema={ processSchemaInputFields } control={ workflowControl } errors={ workflowErrors } grid={ 2 }/>
-                    </div>
+                        { allowScripting && (
+                            <div className='flex items-center gap-2'>
+                                <InputSwitch inputId='processScripting' checked={ processScripting }
+                                             onChange={ (e) => setProcessScripting(e.value) }/>
+                                <label htmlFor={ 'processScripting' }
+                                       className="flex items-center gap-4 cursor-pointer">
+                                    { t('WORKFLOWS.process_scripting') }
+                                </label>
+                            </div>
+                        ) }
 
-                    <DynamicForm schema={ processSchemaEndSwitchs } control={ workflowControl } errors={ workflowErrors }/>
+                        <div className='flex justify-between'>
+                            <Button onClick={ handlePreviousStep } variant="no_bg"
+                                    className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
+                                <ArrowLeft/> { t("MAILCOLLECT.previous") }
+                            </Button>
 
-                    { allowScripting && (
-                        <div className='flex items-center mt-4 gap-2'>
-                            <InputSwitch inputId='processScripting' checked={ processScripting }
-                                         onChange={ (e) => setProcessScripting(e.value) }/>
-                            <label htmlFor={ 'processScripting' }
-                                   className="flex items-center gap-4 cursor-pointer">
-                                { t('WORKFLOWS.process_scripting') }
-                            </label>
+                            <Button onClick={ workflowHandleSubmit(handleSubmitStep) } className="px-12"
+                                    disabled={ loading || Object.keys(workflowErrors).length > 0 }>
+                                { t("GLOBAL.next") }
+                            </Button>
                         </div>
-                    ) }
-
-                    <div className='mt-4 flex justify-between'>
-                        <Button onClick={ handlePreviousStep } variant="no_bg"
-                                className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
-                            <ArrowLeft/> { t("MAILCOLLECT.previous") }
-                        </Button>
-
-                        <Button onClick={ workflowHandleSubmit(handleSubmitStep) } className="px-12"
-                                disabled={ loading || Object.keys(workflowErrors).length > 0 }>
-                            { t("GLOBAL.next") }
-                        </Button>
                     </div>
                 </StepperPanel>
 
