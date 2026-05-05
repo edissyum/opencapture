@@ -17,10 +17,14 @@
 # @dev: Serena tetart <serena.tetart@edissyum.com>
 
 import json
+import os
+import re
+import subprocess
+
 import torch
-import transformers
-import qwen_vl_utils
 from flask import current_app
+from transformers import Qwen3VLForConditionalGeneration, AutoProcessor
+
 from ..controllers import accounts
 
 
@@ -29,8 +33,8 @@ def parse_output(output: str):
     key_dict = ""
     sep_bool = True
     i = 0
-    L = len(output)
-    while i < L:
+    length = len(output)
+    while i < length:
         if output[i] == "<":
             if output.startswith("<SEP>", i):
                 i += 5
@@ -40,13 +44,13 @@ def parse_output(output: str):
                 sep_bool = False
                 i += 1
                 key_dict = ""
-                while i < L and output[i] != ">":
+                while i < length and output[i] != ">":
                     key_dict += output[i]
                     i += 1
         elif output[i] == ">":
             i += 1
             value_dict = ""
-            while i < L and output[i] != "<":
+            while i < length and output[i] != "<":
                 c = output[i]
                 if c not in "\n[]":
                     value_dict += c
@@ -65,82 +69,132 @@ def parse_output(output: str):
     return final_dict
 
 
-def run_inference(image):
-    model_path = current_app.config['CONTACT_MODEL']
-    model = transformers.Qwen2VLForConditionalGeneration.from_pretrained(
-        model_path,
-        device_map=None,
-        dtype=torch.float32
+def get_glibc_version():
+    result = subprocess.run(
+        ["ldd", "--version"],
+        capture_output=True,
+        text=True,
+        check=False,
     )
-    model.eval()
+    out = (result.stdout + result.stderr).lower()
+    m = re.search(r"glibc\s+(\d+)\.(\d+)", out) or re.search(r"(\d+)\.(\d+)", out)
+    if m:
+        return int(m.group(1)), int(m.group(2))
+    return 0, 0
 
-    processor = transformers.AutoProcessor.from_pretrained(
-        model_path,
-        use_fast=True,
-        min_pixels=512 * 28 * 28,
-        max_pixels=512 * 28 * 28
-    )
 
-    data = {}
-    with torch.inference_mode():
-        with torch.no_grad():
-            formatted_data = [
-                {
-                    "role": "user",
-                    "content": [
-                        {"type": "image", "image": image.convert('RGB')},
-                        {"type": "text", "text": "Extract sender's data in a python dictionary"},
-                    ],
-                }
+def has_cpu_flags():
+    """
+    Return True if the CPU has the flag AVX2 and FMA.
+    """
+    try:
+        with open("/proc/cpuinfo", "r") as f:
+            data = f.read().lower()
+    except FileNotFoundError:
+        return False
+
+    if "avx2" in data and "fma" in data:
+        return True
+    return False
+
+
+def run_inference(img_path):
+    # Check all sub-folders for .gguf files
+    out = ""
+    workdir = None
+    for root, dirs, files in os.walk(current_app.config['CONTACT_MODEL']):
+        for filename in files:
+            if filename.lower().endswith(".gguf"):
+                workdir = root
+                break
+        if workdir is not None:
+            break
+
+    # Select the binary based on the glibc version and CPU flags
+    if workdir is not None and has_cpu_flags() and get_glibc_version() >= (2, 39):
+        num_threads = os.cpu_count() - 1
+        if num_threads <= 0:
+            num_threads = 1
+
+        cmd = [
+            f"{workdir}/llama-mtmd-cli",
+            "-m", f"{workdir}/Qwen3-VL-2B-Instruct-FT-Q4_K_M.gguf",
+            "--mmproj", f"{workdir}/mmproj-Qwen3-VL-2B-Instruct-FT-f16.gguf",
+            "--image", img_path,
+            "--image-min-tokens", "256",
+            "--image-max-tokens", "512",
+            "--threads", str(num_threads),
+            "--temp", "0.0",
+            "-p", "Extract sender's data in a python dictionary"
+        ]
+
+        result = subprocess.run(
+            cmd,
+            text=True,
+            cwd=workdir,
+            capture_output=True
+        )
+
+        out = result.stdout.replace("\n", "").replace("\"", "")
+    else:  # Qwen3
+        model = Qwen3VLForConditionalGeneration.from_pretrained(
+            current_app.config['CONTACT_MODEL'],
+            device_map="auto",
+            dtype=torch.float32
+        )
+        model.eval()
+
+        processor = AutoProcessor.from_pretrained(
+            current_app.config['CONTACT_MODEL'],
+            min_pixels=256 * 32 * 32,
+            max_pixels=512 * 32 * 32,
+            use_fast=True
+        )
+        messages = [{
+            "role": "user",
+            "content": [
+                {"type": "image", "url": img_path},
+                {"type": "text", "text": "Extract sender's data in a python dictionary"}
             ]
+        }]
+        inputs = processor.apply_chat_template(
+            messages,
+            tokenize=True,
+            return_dict=True,
+            return_tensors="pt",
+            add_generation_prompt=True
+        )
+        inputs.pop("token_type_ids", None)
+        inputs = {k: v.to(model.device) for k, v in inputs.items()}
 
-            chat_text = processor.apply_chat_template(
-                formatted_data,
-                tokenize=False,
-                add_generation_prompt=True
-            )
-            model_inputs = processor(
-                padding=True,
-                text=[chat_text],
-                return_tensors="pt",
-                images=[qwen_vl_utils.process_vision_info(formatted_data)[0]]
-            )
-
-            input_ids = model_inputs["input_ids"].to(model.device)
+        with torch.inference_mode():
             generated_ids = model.generate(
-                input_ids=input_ids,
+                **inputs,
+                do_sample=False,
                 max_new_tokens=256,
-                pixel_values=model_inputs["pixel_values"].to(model.device),
-                attention_mask=model_inputs["attention_mask"].to(model.device),
-                image_grid_thw=model_inputs["image_grid_thw"].to(model.device)
             )
 
             generated_ids_trimmed = [
                 out_ids[len(in_ids):]
-                for in_ids, out_ids in zip(input_ids, generated_ids)
+                for in_ids, out_ids in zip(inputs["input_ids"], generated_ids)
             ]
             generated_texts = processor.batch_decode(
                 generated_ids_trimmed,
                 skip_special_tokens=False,
                 clean_up_tokenization_spaces=False
             )
+            out = generated_texts[0][1:-11]
 
-            response = (generated_texts[0])[1:-11]
-            data = parse_output(response)
-
-            if data and isinstance(data, str):
-                data = json.loads(data)
+    data = parse_output(out)
+    if data and isinstance(data, str):
+        data = json.loads(data)
     return data
 
 
 class FindContact:
-    def __init__(self, ocr, log, regex, files, database, file, image, customer_id):
-        self.ocr = ocr
+    def __init__(self, log, image, database, customer_id):
         self.log = log
-        self.file = file
         self.nb_page = 1
-        self.files = files
-        self.regex = regex
         self.image = image
         self.database = database
         self.customer_id = customer_id
@@ -168,10 +222,9 @@ class FindContact:
                     if (existing_supplier[0]['siret'] == customer[0]['siret']
                             or existing_supplier[0]['siren'] == customer[0]['siren']
                             or existing_supplier[0]['vat_number'] == customer[0]['vat_number']):
-                        return False
+                        return {}
             return existing_supplier[0]
         return {}
-
 
     def run(self):
         if not current_app.config['CONTACT_MODEL']:
@@ -196,7 +249,8 @@ class FindContact:
         # Create contact if not exists
         if ('company' in contact_data and contact_data['company']) or ('lastname' in contact_data and contact_data['lastname']):
             address = ''
-            if 'address' in contact_data and contact_data['address'] and 'num_address' in contact_data and contact_data['num_address']:
+            if 'address' in contact_data and contact_data['address'] and 'num_address' in contact_data and contact_data[
+                'num_address']:
                 address = contact_data['num_address'] + ' ' + contact_data['address']
             elif 'address' in contact_data and contact_data['address']:
                 address = contact_data['address']
