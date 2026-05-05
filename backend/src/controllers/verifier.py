@@ -140,9 +140,9 @@ def get_document_by_id(document_id):
 
 
 def get_document_id_and_status_by_token(token):
-    decoded_token, status = auth.decode_unique_url_token(token)
-    if status == 500:
-        return decoded_token, status
+    decoded_token, _status = auth.decode_unique_url_token(token)
+    if _status == 500:
+        return decoded_token, _status
 
     process, _ = monitoring.get_process_by_token(decoded_token['process_token'])
 
@@ -532,12 +532,11 @@ def export_opencrm(document_id, data):
 def export_cmis(document_id, data):
     log = get_context_var('log', 5)
     database = get_context_var('database', 0)
-    docservers = get_context_var('docservers', 9)
 
     log.database = database
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if not error:
-        return verifier_exports.export_cmis(data['data'], document_info, log, database, docservers, data['compress_type'], data['ocrise'])
+        return verifier_exports.export_cmis(data['data'], document_info, log, database, data['compress_type'], data['ocrise'])
     return None
 
 
@@ -566,7 +565,6 @@ def export_facturx(document_id, data):
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if not error:
         log = get_context_var('log', 5)
-        regex = get_context_var('regex', 2)
         database = get_context_var('database', 0)
 
         log.database = database
@@ -811,7 +809,7 @@ def update_status(args):
         }
         return response, 400
 
-def get_customers_count(user_id, status, time):
+def get_customers_count(user_id, _status, time):
     user_customers = user.get_customers_by_user_id(user_id)
     user_customers[0].append(0)
     where_time = []
@@ -824,7 +822,7 @@ def get_customers_count(user_id, status, time):
     customers_count = verifier.get_total_documents({
         'select': ['customer_id', 'count(documents.id) as total'],
         'where': ["status = %s", "customer_id = ANY(%s)", where_time[0], "datas -> 'api_only' is NULL"],
-        'data': [status, user_customers[0]],
+        'data': [_status, user_customers[0]],
         'group_by': ['customer_id']
     })
     for customer in customers_count:
@@ -832,14 +830,14 @@ def get_customers_count(user_id, status, time):
         _forms = verifier.get_total_documents({
             'select': ['form_id', 'count(documents.id) as total'],
             'where': ["status = %s", "customer_id = ANY(%s)", where_time[0]],
-            'data': [status, user_customers[0]],
+            'data': [_status, user_customers[0]],
             'group_by': ['form_id']
         })
         customer_suppliers = {
             gettext('NO_FORM'): verifier.get_total_documents({
                 'select': ['supplier_id', 'count(documents.id) as total'],
                 'where': ["status = %s", "customer_id = %s", "form_id is NULL", where_time[0]],
-                'data': [status, customer['customer_id']],
+                'data': [_status, customer['customer_id']],
                 'group_by': ['supplier_id']
             })
         }
@@ -852,7 +850,7 @@ def get_customers_count(user_id, status, time):
                     form_label = form_info['label']
 
                 where = ["status = %s", "customer_id = %s", "form_id = %s", where_time[0]]
-                data = [status, customer['customer_id'], form['form_id']]
+                data = [_status, customer['customer_id'], form['form_id']]
 
                 customer_suppliers[form_label] = verifier.get_total_documents({
                     'select': ['supplier_id', 'count(documents.id) as total'],

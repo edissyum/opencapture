@@ -155,7 +155,7 @@ def execute_output_splitter(args):
     if 'batches_id' in args and args['batches_id']:
         from .splitter_exports import export_batch
         for batch_id in args['batches_id']:
-            export_batch(batch_id, args['log'], docservers, regex, config, database, args['custom_id'], args['outputs'])
+            export_batch(batch_id, args['log'], docservers, regex, config, database, args['custom_id'])
 
         return 'end_workflow'
     return None

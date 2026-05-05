@@ -67,6 +67,7 @@ class FindWithAI:
 
     def find_invoice_info(self, file_path):
         if '##OCR_CONTENT##' in str(self.llm_model['json_content']):
+            ocr_content = ''
             if file_path.lower().endswith(('.heif', '.heic', '.jpg', '.jpeg', '.png')):
                 if file_path.lower().endswith(('.heic', '.heif')):
                     with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as tmp_file:

@@ -46,7 +46,7 @@ from ..process.find_date import FindDate
 from werkzeug.utils import secure_filename
 from pytesseract import pytesseract, Output
 from pillow_heif import register_heif_opener
-from ..functions import generate_searchable_pdf, get_custom_path
+from ..functions import generate_searchable_pdf
 
 Image.MAX_IMAGE_PIXELS = 933120000
 
@@ -410,7 +410,7 @@ class Files:
         return sorted_file
 
     @staticmethod
-    def check_file_integrity(file, custom_id):
+    def check_file_integrity(file):
         is_full = False
         while not is_full:
             size = os.path.getsize(file)
@@ -633,7 +633,7 @@ class Files:
         return improved_img
 
     @staticmethod
-    def move_to_docservers_image(docserver_path, file, output=False, copy=False, rotate=False, compress=False):
+    def move_to_docservers_image(docserver_path, file, output=False, copy=False, rotate_file=False, compress=False):
         now = datetime.datetime.now()
         year = str(now.year)
         month = str('%02d' % now.month)
@@ -667,7 +667,7 @@ class Files:
         else:
             shutil.move(file, final_directory)
 
-        if rotate:
+        if rotate_file:
             rotate_img(final_directory)
 
         if compress:
@@ -834,7 +834,7 @@ class Files:
                 tmp_filename = '/tmp/' + args['document']['filename']
                 with open(tmp_filename, 'wb') as file:
                     pdf_writer.write(file)
-                pdf_writer = pypdf.PdfWriter()
+
                 compressed_file_path = '/tmp/min_' + args['document']['filename']
                 compress_pdf(tmp_filename, compressed_file_path, args['document']['compress_type'])
                 shutil.move(compressed_file_path, file_path)
@@ -842,7 +842,6 @@ class Files:
                 with open(file_path, 'wb') as file:
                     pdf_writer.write(file)
                     args['log'].info(f"Splitter file exported to : {file_path}")
-                pdf_writer = pypdf.PdfWriter()
         except (Exception,) as err:
             return False, str(err)
 

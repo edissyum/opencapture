@@ -1034,7 +1034,7 @@ def export_mem(data, document_info, log, regex, database):
         return response, 400
 
 
-def export_cmis(data, document_info, log, database, docservers, compress_type, ocrise):
+def export_cmis(data, document_info, log, database, compress_type, ocrise):
     if 'id' in document_info and document_info['id']:
         task = monitoring.get_process_by_document_id(document_info['id'])[0]
         if task and task[0]:

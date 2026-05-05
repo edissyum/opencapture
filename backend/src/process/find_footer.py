@@ -404,7 +404,7 @@ class FindFooter:
                 pass
 
         # Test all amounts. If some are false, try to search them with position. If not, pass
-        if self.test_amount(total_ht, total_ttc, vat_rate, vat_amount) is not False:
+        if self.test_amount(total_ht, total_ttc, vat_rate, vat_amount):
             # First args is amount, second is position
             total_ht = self.return_max(self.total_ht)
             vat_rate = self.return_max(self.vat_rate)

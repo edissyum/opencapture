@@ -24,7 +24,6 @@ import json
 import shutil
 import base64
 import locale
-import chardet
 import requests
 import mimetypes
 from ssl import SSLError
@@ -39,8 +38,9 @@ from imap_tools import MailBox, MailBoxUnencrypted, UnexpectedCommandStatusError
 
 class Mail:
     def __init__(self, config):
-        self.method = config['method']
+        self.conn = None
         self.folder_id = ''
+        self.method = config['method']
         self.login = config['options']['login'] if 'login' in config['options'] else ''
         self.pwd = config['options']['password'] if 'password' in config['options'] else ''
         self.host = config['options']['hostname'] if 'hostname' in config['options'] else ''
@@ -140,14 +140,6 @@ class Mail:
             'scope': self.scope
         }
         return self.graphql_request(get_token_url, 'POST', data, [])
-
-    def graphql_request(self, url, method, data, headers):
-        if method == 'GET':
-            return requests.get(url, headers=headers, timeout=30)
-
-        if method == 'POST':
-            return requests.post(url, data=data, headers=headers, timeout=30)
-        return None
 
     def check_if_folder_exist(self, folder):
         """
@@ -449,6 +441,15 @@ class Mail:
             log.error('Error while deleting mail : ' + str(mail_error), False)
 
     @staticmethod
+    def graphql_request(url, method, data, headers):
+        if method == 'GET':
+            return requests.get(url, headers=headers, timeout=30)
+
+        if method == 'POST':
+            return requests.post(url, data=data, headers=headers, timeout=30)
+        return None
+
+    @staticmethod
     def retrieve_attachment(msg):
         """
         Retrieve all attachments from a given mail
@@ -461,18 +462,17 @@ class Mail:
             if att['filename'] == 'winmail.dat':
                 mime_type = ''
                 winmail = TNEF(att.payload, do_checksum=True)
-                for att in winmail.attachments:
-                    for attr in att.mapi_attrs:
+                for att_wm in winmail.attachments:
+                    for attr in att_wm.mapi_attrs:
                         if attr.attr_type == 30 and attr.name == 14094:
                             mime_type = attr.raw_data[0]
 
-                    encoding = chardet.detect(att._name)['encoding']
-                    filename = str(att._name, encoding=encoding).strip('\x00')
+                    filename = att_wm.name()
                     file_format = os.path.splitext(filename)[1]
                     args.append({
                         'filename': os.path.splitext(filename)[0].replace(' ', '_'),
                         'format': file_format,
-                        'content': att.data,
+                        'content': att_wm.data,
                         'mime_type': mime_type
                     })
             else:
@@ -580,8 +580,8 @@ def clean_outlook_html_for_weasyprint(html_body: str) -> str:
     # -------------------------------------------------
     # 5. Cleanup CSS <style>
     # -------------------------------------------------
-    def clean_style(match):
-        css = match.group(1)
+    def clean_style(_match):
+        css = _match.group(1)
 
         # @font-face Outlook
         css = re.sub(r'@font-face\s*{.*?}', '', css, flags=re.I | re.S)
@@ -619,8 +619,8 @@ def clean_outlook_html_for_weasyprint(html_body: str) -> str:
     # -------------------------------------------------
     # 6. Remove Word inline style="mso-*"
     # -------------------------------------------------
-    def clean_inline_style(match):
-        style = match.group(1)
+    def clean_inline_style(_match):
+        style = _match.group(1)
 
         style = re.sub(r'mso-[^:]+:[^;"]+;?', '', style, flags=re.I)
         style = re.sub(r'page:[^;"]+;?', '', style, flags=re.I)

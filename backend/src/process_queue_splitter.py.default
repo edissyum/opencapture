@@ -143,8 +143,7 @@ def launch(args):
                 if outputs_settings:
                     ocrise = outputs_settings[0]['ocrise']
 
-        separator_qr = SeparatorQR(log, config, batch_folder_path, 'splitter', files,
-                                   remove_blank_pages, docservers, splitter_method_id)
+        separator_qr = SeparatorQR(log, config, batch_folder_path, 'splitter', files, remove_blank_pages, splitter_method_id)
         splitter = Splitter(config, database, separator_qr, log, docservers)
 
         if args.get('isMail') is not None and args['isMail'] is True:
@@ -168,7 +167,7 @@ def launch(args):
                 if 'attachments' in args and args['attachments']:
                     attachments = args['attachments']
 
-                if check_file(files, path, log, args['custom_id']):
+                if check_file(files, path, log):
                     if nfz42020.enabled:
                         nfz42020.log_event('FILE_RECEIVED')
 

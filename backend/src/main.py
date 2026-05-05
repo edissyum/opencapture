@@ -201,12 +201,12 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
         languages, artificial_intelligence, nfz42020
 
 
-def check_file(files, path, log, custom_id):
+def check_file(files, path, log):
     if not os.path.isfile(path):
         log.error('The file doesn\'t exists : ' + str(path))
         return False
 
-    file_integrity, error_message = files.check_file_integrity(path, custom_id)
+    file_integrity, error_message = files.check_file_integrity(path)
     if not file_integrity:
         log.error('The integrity of file could\'nt be verified : ' + str(path))
         log.error('Error informations : ' + str(error_message))

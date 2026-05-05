@@ -22,7 +22,6 @@ import codecs
 from io import StringIO
 from ..models import doctypes
 from flask_babel import gettext
-from ..helpers import get_context_var
 from ..classes.SeparatorQR import SeparatorQR
 
 
@@ -115,8 +114,6 @@ def update(args):
 
 
 def generate_separator(args):
-    docservers = get_context_var('docservers', 9)
-
     separators = []
     if args['type'] == "bundleSeparator":
         separators.append({
@@ -152,7 +149,7 @@ def generate_separator(args):
                 "qr_code_value": f"DOCSTART|{doctype['key']}"
             })
 
-    res_separators = SeparatorQR.generate_separator(docservers, separators)
+    res_separators = SeparatorQR.generate_separator(separators)
     if 'error' in res_separators:
         response = {
             "errors": gettext("DOCTYPE_ERROR"),

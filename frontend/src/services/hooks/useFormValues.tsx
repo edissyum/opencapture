@@ -25,7 +25,7 @@ export function useFormValues(
     const [errors, setErrors] = useState<Record<string, string>>({});
 
     const handleSubmit = useCallback(
-        (e: React.FormEvent<HTMLFormElement>) => {
+        (e: any) => {
             e.preventDefault();
 
             const form = e.currentTarget;

@@ -100,7 +100,7 @@ export function OutputEditor({ module }: { module: string }) {
             options: getCompressTypeOptions().map((o: any) => ({ label: o.label, value: o.id }))
         })),
         ocrise: z.boolean().describe(JSON.stringify({
-            className: "flex items-center -mt-4 col-span-2",
+            className: "flex items-center col-span-2",
             component: "input_switch",
             show: ['export_pdf', 'export_cmis', 'export_openads'].includes(outputType?.output_type_id),
             label: t("OUTPUTS.ocrise")

@@ -15,7 +15,6 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import os
 import re
 import json
 import requests

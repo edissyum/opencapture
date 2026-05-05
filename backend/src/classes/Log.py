@@ -21,8 +21,6 @@ import json
 import time
 import logging
 import logging.handlers
-from unidecode import unidecode
-
 
 class RotatingFileHandlerUmask(logging.handlers.RotatingFileHandler):
     def _open(self):

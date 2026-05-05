@@ -79,7 +79,7 @@ export function SettingsVerifierFormsDetails({
                     }) }
                 />
 
-                <div className='flex items-center gap-2 -mt-4'>
+                <div className='flex items-center gap-2'>
                     <InputSwitch
                         inputId="default_form"
                         checked={ formSettings.default_form }

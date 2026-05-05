@@ -51,7 +51,7 @@ def check_folders(folder_crawl, folder_dest=False):
         print('The folder to crawl "' + folder_to_crawl + '" doesnt exist')
         return False
     else:
-        if folder_dest is not False:
+        if folder_dest:
             if not mail.check_if_folder_exist(folder_dest):
                 print('The destination folder "' + str(folder_dest) + '" doesnt exist')
                 return False
@@ -79,15 +79,15 @@ def convert_to_dict(message):
         'reply_to_values': message.reply_to_values
     }
 
-    for att in message.attachments:
+    for att_msg in message.attachments:
         new_msg['attachments'].append({
-            'filename': att.filename,
-            'payload': att.payload,
-            'content_id': att.content_id,
-            'content_type': att.content_type,
-            'size': att.size,
-            'content_disposition': att.content_disposition,
-            'part': att.part
+            'filename': att_msg.filename,
+            'payload': att_msg.payload,
+            'content_id': att_msg.content_id,
+            'content_type': att_msg.content_type,
+            'size': att_msg.size,
+            'content_disposition': att_msg.content_disposition,
+            'part': att_msg.part
         })
 
     return new_msg

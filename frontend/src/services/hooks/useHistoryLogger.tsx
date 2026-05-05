@@ -40,7 +40,7 @@ export function useHistoryLogger() {
         loadingRef.current = loadingUser;
     }, [user, loadingUser]);
 
-    const logHistory = (payload: HistoryPayload) => {
+    const logHistory = async (payload: HistoryPayload) => {
         const finalPayload = {
             ...payload,
             user_id: userRef.current.id,
@@ -48,7 +48,7 @@ export function useHistoryLogger() {
         };
 
         try {
-            post("history/add", finalPayload);
+            await post("history/add", finalPayload);
         } catch (err) {
             console.error("Failed to log history:", err);
         }

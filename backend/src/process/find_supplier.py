@@ -94,9 +94,9 @@ class FindSupplier:
                     })
 
                     if customer:
-                        if (existing_supplier[0]['siret'] == customer[0]['siret']
-                                or existing_supplier[0]['siren'] == customer[0]['siren']
-                                or existing_supplier[0]['vat_number'] == customer[0]['vat_number']):
+                        if (existing_supplier['siret'] == customer[0]['siret']
+                                or existing_supplier['siren'] == customer[0]['siren']
+                                or existing_supplier['vat_number'] == customer[0]['vat_number']):
                             return False
                 return existing_supplier[0]
         return False
@@ -149,112 +149,104 @@ class FindSupplier:
                 supplier = self.search_suplier(column, _data.group())
                 if supplier:
                     return supplier, line
-        return []
+        return {}, {}
 
     def regenerate_ocr(self):
         self.files.open_img(self.files.jpg_name_header)
 
     def run(self, retry=False, regenerate_ocr=False, target=None, text_as_string=False):
-        supplier = self.process(self.regex['vat_number'], text_as_string, 'vat_number')
+        supplier, line = self.process(self.regex['vat_number'], text_as_string, 'vat_number')
         if supplier:
             self.regenerate_ocr()
-            self.log.info('Third-party account found : ' + supplier[0]['name'] + ' using VAT Number : ' + supplier[0]['vat_number'])
-            line = supplier[1]
+            self.log.info('Third-party account found : ' + supplier['name'] + ' using VAT Number : ' + supplier['vat_number'])
             if text_as_string:
                 position = (('', ''), ('', ''))
             else:
                 position = self.files.return_position_with_ratio(line, target)
-            data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'vat_number']
+            data = [supplier['vat_number'], position, supplier, self.current_page, 'vat_number']
             return data
 
-        supplier = self.process(self.regex['siret'], text_as_string, 'siret')
+        supplier, line = self.process(self.regex['siret'], text_as_string, 'siret')
         if supplier:
             self.regenerate_ocr()
-            self.log.info('Third-party account found : ' + supplier[0]['name'] + ' using SIRET : ' + supplier[0]['siret'])
-            line = supplier[1]
+            self.log.info('Third-party account found : ' + supplier['name'] + ' using SIRET : ' + supplier['siret'])
             if text_as_string:
                 position = (('', ''), ('', ''))
             else:
                 position = self.files.return_position_with_ratio(line, target)
-            data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'siret']
+            data = [supplier['vat_number'], position, supplier, self.current_page, 'siret']
             return data
 
-        supplier = self.process(self.regex['siren'], text_as_string, 'siren')
+        supplier, line = self.process(self.regex['siren'], text_as_string, 'siren')
         if supplier:
             self.regenerate_ocr()
-            self.log.info('Third-party account found : ' + supplier[0]['name'] + ' using SIREN : ' + supplier[0]['siren'])
-            line = supplier[1]
+            self.log.info('Third-party account found : ' + supplier['name'] + ' using SIREN : ' + supplier['siren'])
             if text_as_string:
                 position = (('', ''), ('', ''))
             else:
                 position = self.files.return_position_with_ratio(line, target)
-            data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'siren']
+            data = [supplier['vat_number'], position, supplier, self.current_page, 'siren']
             return data
 
-        supplier = self.process(self.regex['iban'], text_as_string, 'iban')
+        supplier, line = self.process(self.regex['iban'], text_as_string, 'iban')
         if supplier:
             self.regenerate_ocr()
-            self.log.info('Third-party account found : ' + supplier[0]['name'] + ' using IBAN : ' + supplier[0]['iban'])
-            line = supplier[1]
+            self.log.info('Third-party account found : ' + supplier['name'] + ' using IBAN : ' + supplier['iban'])
             if text_as_string:
                 position = (('', ''), ('', ''))
             else:
                 position = self.files.return_position_with_ratio(line, target)
-            data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'iban']
+            data = [supplier['vat_number'], position, supplier, self.current_page, 'iban']
             return data
 
-        supplier = self.process(self.regex['email'], text_as_string, 'email')
+        supplier, line = self.process(self.regex['email'], text_as_string, 'email')
         if supplier:
             self.regenerate_ocr()
-            if 'name' not in supplier[0] or not supplier[0]['name']:
-                name = supplier[0]['lastname'] if 'lastname' in supplier[0] and supplier[0]['lastname'] else ''
-                name += ' ' + supplier[0]['firstname'] if 'firstname' in supplier[0] and supplier[0]['firstname'] else ''
-                supplier[0]['name'] = name.strip()
+            if 'name' not in supplier or not supplier['name']:
+                name = supplier['lastname'] if 'lastname' in supplier and supplier['lastname'] else ''
+                name += ' ' + supplier['firstname'] if 'firstname' in supplier and supplier['firstname'] else ''
+                supplier['name'] = name.strip()
             else:
-                name = supplier[0]['name']
-            self.log.info('Third-party account found : ' + name + ' using EMAIL : ' + supplier[0]['email'])
-            line = supplier[1]
+                name = supplier['name']
+            self.log.info('Third-party account found : ' + name + ' using EMAIL : ' + supplier['email'])
             if text_as_string:
                 position = (('', ''), ('', ''))
             else:
                 position = self.files.return_position_with_ratio(line, target)
-            data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'email']
+            data = [supplier['vat_number'], position, supplier, self.current_page, 'email']
             return data
 
-        supplier = self.process(self.regex['duns'], text_as_string, 'duns')
+        supplier, line = self.process(self.regex['duns'], text_as_string, 'duns')
         if supplier:
             self.regenerate_ocr()
-            self.log.info('Third-party account found : ' + supplier[0]['name'] + ' using DUNS : ' + supplier[0]['duns'])
-            line = supplier[1]
+            self.log.info('Third-party account found : ' + supplier['name'] + ' using DUNS : ' + supplier['duns'])
             if text_as_string:
                 position = (('', ''), ('', ''))
             else:
                 position = self.files.return_position_with_ratio(line, target)
-            data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'duns']
+            data = [supplier['vat_number'], position, supplier, self.current_page, 'duns']
             return data
 
-        supplier = self.process(self.regex['bic'], text_as_string, 'bic')
+        supplier, line = self.process(self.regex['bic'], text_as_string, 'bic')
         if supplier:
             self.regenerate_ocr()
-            self.log.info('Third-party account found : ' + supplier[0]['name'] + ' using BIC : ' + supplier[0]['bic'])
-            line = supplier[1]
+            self.log.info('Third-party account found : ' + supplier['name'] + ' using BIC : ' + supplier['bic'])
             if text_as_string:
                 position = (('', ''), ('', ''))
             else:
                 position = self.files.return_position_with_ratio(line, target)
-            data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'bic']
+            data = [supplier['vat_number'], position, supplier, self.current_page, 'bic']
             return data
 
-        supplier = self.process(self.regex['rccm'], text_as_string, 'rccm')
+        supplier, line = self.process(self.regex['rccm'], text_as_string, 'rccm')
         if supplier:
             self.regenerate_ocr()
-            self.log.info('Third-party account found : ' + supplier[0]['name'] + ' using RCCM : ' + supplier[0]['rccm'])
-            line = supplier[1]
+            self.log.info('Third-party account found : ' + supplier['name'] + ' using RCCM : ' + supplier['rccm'])
             if text_as_string:
                 position = (('', ''), ('', ''))
             else:
                 position = self.files.return_position_with_ratio(line, target)
-            data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'rccm']
+            data = [supplier['vat_number'], position, supplier, self.current_page, 'rccm']
             return data
         else:
             if not retry:

@@ -315,7 +315,7 @@ export function SettingsGeneralSMTP() {
                                            { ...register('smtpDelay', { valueAsNumber: true }) }
                                            placeholder='30' label={ t('SMTP.delay_between_emails') }/>
                                 </div>
-                                <p className='-mt-4 text-(--text-secondary)'>{ t('SMTP.delay_between_emails_infos') }</p>
+                                <p className='text-(--text-secondary)'>{ t('SMTP.delay_between_emails_infos') }</p>
                             </div>
                         </div>
                     </form>

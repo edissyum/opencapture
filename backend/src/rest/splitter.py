@@ -17,9 +17,8 @@
 
 import json
 from flask_babel import gettext
-from ..helpers import get_context_var
-from flask import Blueprint, make_response, jsonify, request
 from ..controllers import auth, splitter, forms, privileges
+from flask import Blueprint, make_response, jsonify, request
 from ..functions import rest_validator, check_extensions_mime, retrieve_custom_from_url
 
 bp = Blueprint('splitter', __name__, url_prefix='/ws/')

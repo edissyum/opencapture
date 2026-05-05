@@ -19,7 +19,6 @@ import re
 import json
 from datetime import datetime
 
-from .. import shared
 from ..functions import search_by_positions, search_custom_positions
 
 

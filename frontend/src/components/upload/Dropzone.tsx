@@ -48,7 +48,7 @@ export default function UploadDropzone({
     const onDrop = useCallback(
         (acceptedFiles: File[]) => {
             acceptedFiles.forEach((file: any) => {
-                file.id = file.name + '-' + Math.random().toString(36).substr(2, 9);
+                file.id = file.name + '-' + Math.random().toString(36).substring(2, 11);
             });
 
             let newFiles = [...files, ...acceptedFiles];

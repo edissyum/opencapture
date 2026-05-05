@@ -31,7 +31,7 @@ export function PageTitle() {
             .map((match) => match.handle as RouteHandle | undefined)
             .reverse()
             .find((handle) => Boolean(handle?.breadcrumb))?.breadcrumb;
-        console.log("breadcrumbKey", breadcrumbKey);
+
         document.title = breadcrumbKey ? `${ t(breadcrumbKey) } - Open-Capture` : "Open-Capture";
     }, [matches, t]);
 

@@ -481,10 +481,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                                                               True, customer_id).run()
                         i += 1
                 elif 'contact' in system_fields_to_find:
-                    log.debug('Find informal contact using AI model')
+                    log.info('Find informal contact using AI model')
                     if current_app.config['CONTACT_MODEL'] is not None:
-                        image = files.open_image_return(files.jpg_name)
-                        supplier = find_contact.FindContact(ocr, log, regex, files, database, file, image, customer_id).run()
+                        supplier = find_contact.FindContact(log, files.jpg_name, database, customer_id).run()
                     else:
                         log.info('The AI to detect contact is not available, skip it')
 
@@ -537,7 +536,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
                     for _r in _regex:
                         regex[_r['regex_id']] = _r['content']
-                    ocr = PyTesseract(supplier[2]['document_lang'], log, config, args['custom_id'])
+                    ocr = PyTesseract(supplier[2]['document_lang'], log, config)
                     convert(file, files, ocr, nb_pages, tesseract_function, convert_function)
 
     ai_llm = None
@@ -887,10 +886,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     full_jpg_filename = str(uuid.uuid4())
     file = files.move_to_docservers(docservers, file, is_mail=is_mail)
-    files.move_to_docservers_image(docservers['VERIFIER_IMAGE_FULL'], files.jpg_name, full_jpg_filename + '-001.jpg',
-                                   copy=True, rotate=True)
-    files.move_to_docservers_image(docservers['VERIFIER_THUMB'], files.jpg_name, full_jpg_filename + '-001.jpg',
-                                   copy=True, compress=True)
+    files.move_to_docservers_image(docservers['VERIFIER_IMAGE_FULL'], files.jpg_name, full_jpg_filename + '-001.jpg', copy=True,
+                                   rotate_file=True)
+    files.move_to_docservers_image(docservers['VERIFIER_THUMB'], files.jpg_name, full_jpg_filename + '-001.jpg', copy=True,
+                                   rotate_file=True)
 
     log.debug('Thumbnails and full image moved to docservers successfully')
     log.debug('Docserver paths  : ')

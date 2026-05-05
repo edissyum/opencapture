@@ -111,6 +111,9 @@ export function AiDoctypesList({ module }: { module: string }) {
                 if (response.models && response.models.length > 0) {
                     setTotalAiDoctypes(response.models[0].total || 0);
                     setAiDoctypes(response.models);
+                } else {
+                    setTotalAiDoctypes(0);
+                    setAiDoctypes([]);
                 }
             } catch (error) {
                 console.error('Error fetching ai doctypes :', error);

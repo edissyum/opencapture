@@ -25,7 +25,7 @@ export function useUnsavedChangesWarning(isDirty: boolean) {
             if (!isDirty) return;
 
             event.preventDefault();
-            event.returnValue = "";
+            (event as BeforeUnloadEvent & { returnValue: string }).returnValue = "";
         };
 
         window.addEventListener("beforeunload", handleBeforeUnload);

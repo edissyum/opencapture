@@ -423,7 +423,7 @@ def login_with_token(token, lang):
             error_message = gettext('SESSION_EXPIRED')
         return jsonify({"errors": gettext("JWT_ERROR"), "message": error_message}), code
 
-    returned_user = None
+    returned_user = {}
     if isinstance(decoded_token['sub'], str) and not decoded_token['sub'].isnumeric():
         user_id = user.get_user_by_username({
             'select': ['users.id'],
@@ -473,7 +473,7 @@ def token_required(view):
         if 'Authorization' in request.headers:
             where = ['username = %s']
             user_ws = password = False
-            token = None
+            token = {}
             if 'Bearer' in request.headers['Authorization']:
                 token = request.headers['Authorization'].split('Bearer')[1].lstrip()
                 try:

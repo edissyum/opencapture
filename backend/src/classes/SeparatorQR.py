@@ -36,8 +36,7 @@ from PIL import Image, ImageEnhance
 
 
 class SeparatorQR:
-    def __init__(self, log, config, tmp_folder, splitter_or_verifier, files, remove_blank_pages, docservers,
-                 splitter_method):
+    def __init__(self, log, config, tmp_folder, splitter_or_verifier, files, remove_blank_pages, splitter_method):
         self.log = log
         self.pages = []
         self.nb_doc = 0
@@ -188,7 +187,7 @@ class SeparatorQR:
                 self.log.error("ZBARIMG : \nreturn code: %s\ncmd: %s\noutput: %s\nglobal : %s" % (
                     cpe.returncode, cpe.cmd, cpe.output, cpe))
 
-    def get_xml(self, file, saved_pages=None, default_symbols=['CODE128', 'QRCODE']):
+    def get_xml(self, file, saved_pages=None, default_symbols=None):
         """
         Retrieve the content of a C128 Code
 
@@ -196,6 +195,9 @@ class SeparatorQR:
         :param file: Path to pdf file
         :param saved_pages: Images list if pages already saved
         """
+        if default_symbols is None:
+            default_symbols = ['CODE128', 'QRCODE']
+
         barcodes = []
         cpt = 0
 
@@ -295,13 +297,13 @@ class SeparatorQR:
                 self.split_pdf(file, page['pdf_filename'], pages_to_keep)
 
                 if self.convert_to_pdfa == 'True':
-                    self.convert_to_pdfa(page['pdfa_filename'], page['pdf_filename'])
+                    self.convert_to_pdfa_function(page['pdfa_filename'], page['pdf_filename'])
             os.remove(file)
         except (Exception,) as _e:
             self.log.error("EACD: " + str(_e))
 
     @staticmethod
-    def convert_to_pdfa(pdfa_filename, pdf_filename):
+    def convert_to_pdfa_function(pdfa_filename, pdf_filename):
         gs_command = 'gs#-dPDFA#-dNOOUTERSAVE#-sProcessColorModel=DeviceCMYK#-sDEVICE=pdfwrite#-o#%s#-dPDFACompatibilityPolicy=1#PDFA_def.ps#%s' \
                      % (pdfa_filename, pdf_filename)
         gs_args = gs_command.split('#')
@@ -320,10 +322,9 @@ class SeparatorQR:
             output_pdf.write(stream)
 
     @staticmethod
-    def generate_separator(docservers, separators):
+    def generate_separator(separators):
         """
         Generate separator file
-        :param docservers: docservers lists
         :param separators: separator list to generate
         :return: base64 encoded separator file, thumbnail and total
         """

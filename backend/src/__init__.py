@@ -125,8 +125,8 @@ app.config.from_mapping(
     instance_relative_config=True,
     JOURNAL_PATH=os.path.join(instance_path, 'journal/custom/'),
     UPLOAD_FOLDER=os.path.join(instance_path, 'upload/verifier/'),
-    BABEL_TRANSLATION_DIRECTORIES=app.root_path + '/assets/i18n/translations/',
-    UPLOAD_FOLDER_SPLITTER=os.path.join(instance_path, 'upload/splitter/')
+    UPLOAD_FOLDER_SPLITTER=os.path.join(instance_path, 'upload/splitter/'),
+    BABEL_TRANSLATION_DIRECTORIES=os.path.join(str(app.root_path), 'assets/i18n/translations/')
 )
 
 babel = Babel(app, default_locale='fr', locale_selector=get_locale)

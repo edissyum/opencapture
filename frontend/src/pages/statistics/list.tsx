@@ -206,7 +206,7 @@ export function StatisticsPage() {
                                             onChange={ handleModuleChange }>
                                         </RadioButton>
                                         <label htmlFor={ module } key={ module } className='cursor-pointer whitespace-nowrap'>
-                                            { module[0].toUpperCase() + module.substr(1) }
+                                            { module[0].toUpperCase() + module.substring(1) }
                                         </label>
                                     </div>
                                 )) }

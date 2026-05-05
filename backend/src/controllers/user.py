@@ -513,11 +513,11 @@ def update_customers_by_user_id(user_id, customers):
         return response, 400
 
 
-def update_forms_by_user_id(user_id, forms):
+def update_forms_by_user_id(user_id, list_forms):
     _, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
         _set = {
-            'forms_id': '{"data": "' + str(forms) + '"}'
+            'forms_id': '{"data": "' + str(list_forms) + '"}'
         }
         _, error = user.update_forms_by_user_id({'set': _set, 'user_id': user_id})
         if error:
