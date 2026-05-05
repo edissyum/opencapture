@@ -18,9 +18,9 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 import TopBar from "../components/TopBar";
 import Sidebar from "../components/Sidebar";
+import { PageTitle } from "../components/PageTitle";
 
 import { useCustom } from "../services/custom/customContext";
-import { PageTitle } from "../components/PageTitle.tsx";
 
 export default function MainLayout() {
     const location = useLocation();

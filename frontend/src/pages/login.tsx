@@ -15,23 +15,25 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import z from "zod";
 import DOMPurify from "dompurify";
+import { useForm } from "react-hook-form";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { getI18n, useTranslation } from "react-i18next";
 
 import packageJson from "../../package.json";
 
-import Input from "../components/Input";
 import { Button } from '../components/Button';
 import { LoginImage } from "../components/LoginImage";
 import { showToast } from "../components/ToastProvider";
+import { DynamicForm } from "../components/form/DynamicForm";
 
 import { USER_KEY } from "../services/hooks/useUser";
 import { useCustom } from "../services/custom/customContext";
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
-import { useFormValues } from "../services/hooks/useFormValues";
 
 export function Login() {
     const { t } = useTranslation();
@@ -47,7 +49,7 @@ export function Login() {
     const [displayedCard, setDisplayedCard] = useState<'guide' | 'capture'>('guide');
     const [fade, setFade] = useState(false);
 
-    document.title = t('AUTH.connexion') +  " - Open-Capture";
+    document.title = t('AUTH.connexion') + " - Open-Capture";
 
     useEffect(() => {
         setFade(false);
@@ -95,14 +97,36 @@ export function Login() {
         getLoginMessage().then();
     }, [loginMessage]);
 
-    const { handleSubmit, errors, handleChange } = useFormValues(async (values) => {
+    const loginSchema: any = z.object({
+        username: z.string().describe(JSON.stringify({
+            component: "input",
+            required: true,
+            label: t("USERS.username")
+        })),
+        password: z.string().describe(JSON.stringify({
+            component: "input",
+            type: "password",
+            required: true,
+            label: t("USERS.password")
+        }))
+    });
+
+    const { control, handleSubmit, watch, formState: { errors } } = useForm({
+        resolver: zodResolver(loginSchema),
+        defaultValues: {
+            username: "",
+            password: ""
+        },
+        mode: "onChange"
+    });
+
+    const watchLogin = watch("username");
+    const watchPassword = watch("password");
+
+    const handleLogin = async (data: any) => {
         try {
             setLoadingLogin(true);
-            const data = {
-                lang: getI18n().language,
-                username: values.username.value,
-                password: values.password.value
-            };
+            data['lang'] = getI18n().language;
 
             const response = await post("/auth/login", data);
             if (response) {
@@ -124,7 +148,7 @@ export function Login() {
                     return;
                 }
 
-                const defaultRoute = await get(`users/getDefaultRoute/${response.user.id}`);
+                const defaultRoute = await get(`users/getDefaultRoute/${ response.user.id }`);
                 if (defaultRoute && defaultRoute.route) {
                     navigate(defaultRoute.route, { replace: true });
                 } else {
@@ -136,7 +160,7 @@ export function Login() {
             setLoadingLogin(false);
             return null;
         }
-    }, t);
+    }
 
     const handleNavigateToReset = () => {
         navigate('/reset-password');
@@ -148,7 +172,7 @@ export function Login() {
                 <div className='bg-(--bg-primary) h-auto flex justify-center w-200 p-4 rounded-xl gap-6'>
                     <div className='bg-(--bg-primary) h-auto flex flex-1'>
                         <div className='w-full bg-(--bg-selected) font-bold text-2xl overflow-hidden rounded-md flex flex-col relative
-                        aspect-[calc(1/1.4142)]'>
+                                        aspect-[0.70]'>
                             <div className="absolute top-0 right-0 p-4 flex gap-2 z-10">
                                 <span onClick={ () => setActiveCard('guide') }
                                       className={ `size-2 rounded-full cursor-pointer transition-colors
@@ -210,7 +234,8 @@ export function Login() {
                             <LoginImage className="mx-auto"></LoginImage>
                         </div>
 
-                        <div className='flex flex-col gap-4 align-center h-full justify-center'>
+                        <form onSubmit={ handleSubmit(handleLogin) }
+                              className='flex flex-col gap-4 align-center h-full justify-center'>
                             <div className='font-bold flex flex-col'>
                                 <span className='text-2xl'>{ t('AUTH.connexion') }</span>
                                 { loginMessage ? (
@@ -220,15 +245,13 @@ export function Login() {
                                 ) }
                             </div>
 
-                            <form onSubmit={ handleSubmit } noValidate className='flex flex-col gap-4'>
-                                <Input id="username" type="text" name="username" required error={ errors.username }
-                                       onChange={ handleChange } label={ t('USERS.username') }/>
-                                <Input id="password" type="password" name="password" required error={ errors.password }
-                                       onChange={ handleChange } label={ t('USERS.password') }/>
+                            <div className='flex flex-col gap-4'>
+                                <DynamicForm errors={ errors } control={ control } schema={ loginSchema }/>
 
                                 <div className="text-center">
-                                    <Button disabled={ !custom } loading={ loadingLogin } type="submit" size='md'
-                                            className="w-full">
+                                    <Button disabled={ !custom || !watchLogin || !watchPassword || Object.keys(errors).length > 0 }
+                                            type='submit'
+                                            loading={ loadingLogin } className="w-full">
                                         { t('AUTH.login') }
                                     </Button>
                                     { !custom &&
@@ -239,7 +262,7 @@ export function Login() {
                                         { t('SECURITY.using_ldap_connection') }
                                     </p>
                                 }
-                            </form>
+                            </div>
 
                             { enabledLoginMethod === 'default' &&
                                 <p className='text-(--text-secondary) text-xs text-center mt-2'>
@@ -248,7 +271,7 @@ export function Login() {
                                           className="cursor-pointer text-(--color-primary)">{ t('AUTH.reset_here') } </span>
                                 </p>
                             }
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>

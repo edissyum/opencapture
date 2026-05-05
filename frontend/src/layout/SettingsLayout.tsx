@@ -17,10 +17,10 @@
 import { Navigate, Outlet } from "react-router-dom";
 
 import Sidebar from "../components/Sidebar";
+import { PageTitle } from "../components/PageTitle";
 import BreadCrumbTopbar from "../components/settings/TopBar";
 
 import { useCustom } from "../services/custom/customContext";
-import { PageTitle } from "../components/PageTitle.tsx";
 
 export default function SettingsLayout() {
     let pathNameWithoutCustom: string = window.location.pathname.replace(useCustom() || "", "") || "/";
