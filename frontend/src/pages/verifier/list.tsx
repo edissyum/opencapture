@@ -170,17 +170,25 @@ export function VerifierListPage() {
         },
         {
             id: 'name',
-            className:'truncate w-md! max-w-md!',
+            className: 'truncate w-md! max-w-md!',
             header: t('VERIFIER.name'),
             body: (item: any) => (
-                <span className="font-semibold" title={ item.supplier_name }>
+                <span className="font-semibold flex gap-2" title={ item.supplier_name }>
                     { item.supplier_name ? item.supplier_name : t('VERIFIER.unkown_supplier') }
+                    { item.facturx && (
+                        <div className='text-(--text-secondary) text-xs relative'
+                             data-tooltip-id="tooltip"
+                             data-tooltip-content={ t('VERIFIER.facturx_level') + ' : ' + item.facturx_level }
+                        >
+                            FacturX
+                        </div>
+                    ) }
                 </span>
             )
         },
         {
             id: 'register_date',
-            className:'truncate',
+            className: 'truncate',
             header: t('VERIFIER.creation_date'),
             sortable: true,
             body: (item: any) => (
@@ -194,7 +202,7 @@ export function VerifierListPage() {
                 }).format(new Date(item.register_date)).replace(' ', ' ' + t('GLOBAL.at') + ' ').replace(',', '').replaceAll('/', '-')
             )
         },
-        { id: 'form_label', className:'truncate w-xs! max-w-xs!', header: t('VERIFIER.form'), field: 'form_label' },
+        { id: 'form_label', className: 'truncate w-xs! max-w-xs!', header: t('VERIFIER.form'), field: 'form_label' },
         {
             id: 'filename',
             header: t('VERIFIER.filename'),

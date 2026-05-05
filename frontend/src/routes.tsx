@@ -226,14 +226,14 @@ export const router = createBrowserRouter(
                     element: <VerifierViewerPage/>,
                     loader: protectedLoader(['access_verifier']),
                     errorElement: <LoginRequiredError/>,
-                    handle: { breadcrumb: 'VERIFIER.viewer' }
+                    handle: { breadcrumb: 'SETTINGS.verifier' }
                 },
                 {
                     path: "splitter/viewer/:batchId",
                     element: <SplitterViewerPage/>,
                     loader: protectedLoader(['access_splitter']),
                     errorElement: <LoginRequiredError/>,
-                    handle: { breadcrumb: 'SPLITTER.viewer' }
+                    handle: { breadcrumb: 'SETTINGS.splitter' }
                 },
                 {
                     path: "upload",

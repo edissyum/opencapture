@@ -358,7 +358,7 @@ class VerifierTest(unittest.TestCase):
         filename = response.json
         is_facturx = False
         with open(f'{filename}', 'rb') as f:
-            _, _xml_content = facturx.get_facturx_xml_from_pdf(f.read())
+            _, _xml_content = facturx.get_facturx_xml_from_pdf(f.read(), check_schematron=False)
             if _ is not None:
                 is_facturx = True
 

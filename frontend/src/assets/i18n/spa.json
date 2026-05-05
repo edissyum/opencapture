@@ -95,7 +95,7 @@
         "send_email": "Enviar el correo de restablecimiento",
         "forgot_password_email_sent": "Correo de restablecimiento enviado con éxito",
         "password_reset_success": "Contraseña restablecida con éxito",
-        "onboarding": ""
+        "onboarding": "Onboarding"
     },
     "COLORS": {
         "black": "Negro",
@@ -718,8 +718,7 @@
         "merge_batch_details": "Elija el lote principal. Los documentos de los demás lotes se fusionarán en el lote principal y los lotes secundarios se eliminarán. <strong>(esta acción es irreversible)</strong>",
         "no_other_batches": "No hay otros lotes disponibles para fusionar",
         "batch_non_modifiable": "Lote no modificable",
-        "batch_non_modifiable_details": "No puede modificar este lote porque ya ha sido procesado, eliminado o fusionado",
-        "viewer": ""
+        "batch_non_modifiable_details": "No puede modificar este lote porque ya ha sido procesado, eliminado o fusionado"
     },
     "UPLOAD": {
         "upload_dropzone": "Haga clic para elegir un archivo",
@@ -904,7 +903,7 @@
         "document_non_modifiable": "Documento no modificable",
         "document_non_modifiable_details": "No puede modificar este documento porque ya ha sido procesado",
         "no_outputs": "No se ha configurado ninguna cadena de salida para este documento",
-        "viewer": ""
+        "facturx_level": "Nivel Factur-X"
     },
     "SECURITY": {
         "default_auth": "Autenticación predeterminada",
