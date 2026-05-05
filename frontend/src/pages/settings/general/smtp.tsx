@@ -128,7 +128,7 @@ export function SettingsGeneralSMTP() {
             setValue('smtpProtocoleSecure', provider.secure as any);
         }
     }
-
+    console.log(errors)
     const onSubmit = async (data: FormData) => {
         const completeData = {
             smtpHost: data.smtpHost || "",
@@ -142,6 +142,7 @@ export function SettingsGeneralSMTP() {
             smtpDestAdminMail: data.smtpDestAdminMail || "",
             smtpDelay: data.smtpDelay || 0
         };
+        console.log(completeData)
         try {
             await put('config/updateConfiguration/smtp', {
                 value: completeData
@@ -188,36 +189,41 @@ export function SettingsGeneralSMTP() {
                     </div>
 
                     {/* @ts-ignore */ }
-                    <form onSubmit={ handleSubmit(onSubmit) }>
+                    <div className='flex flex-col gap-4 w-1/2'>
                         <div className='flex flex-col gap-4'>
                             <h3 className='text-xl font-bold'>{ t('SMTP.settings') }</h3>
                             <div className='flex items-center gap-4'>
-                                <div className='w-1/4'>
-                                    <Input id='smtpHost' { ...register('smtpHost', { required: true }) }
-                                           required
-                                           placeholder='smtp.example.com'
-                                           error={ errors.smtpHost?.message }
-                                           label={ t('SMTP.host') }/>
+                                <div className='w-full'>
+                                    <Input
+                                        required
+                                        label={ t('SMTP.host') }
+                                        placeholder='smtp.example.com'
+                                        error={ errors.smtpHost?.message }
+                                        id='smtpHost' { ...register('smtpHost', { required: true }) }
+                                    />
                                 </div>
-                                <div className='w-[4rem]'>
-                                    <Input id='smtpPort'
-                                           { ...register('smtpPort', {
-                                               required: true,
-                                               valueAsNumber: true
-                                           }) }
-                                           placeholder='587' required
-                                           error={ errors.smtpPort?.message }
-                                           label={ t('SMTP.port') }/>
+                                <div className='w-2/12'>
+                                    <Input
+                                        id='smtpPort'
+                                        { ...register('smtpPort', {
+                                            required: true,
+                                            valueAsNumber: true
+                                        }) }
+                                        placeholder='587' required
+                                        error={ errors.smtpPort?.message }
+                                        label={ t('SMTP.port') }
+                                    />
                                 </div>
                             </div>
-
+                        </div>
+                        <div className='flex flex-col gap-4'>
                             <h3 className='text-xl font-bold'>{ t('SMTP.authentication') }</h3>
-                            <div>
+                            <div className='flex flex-col gap-4'>
                                 <Controller
                                     control={ control }
                                     name='smtpAuth'
                                     render={ ({ field }) => (
-                                        <div className='mb-6 flex gap-1'>
+                                        <div className='flex gap-1'>
                                             <InputSwitch inputId='smtp_auth' checked={ field.value }
                                                          onChange={ (e) => field.onChange(e.value) }/>
                                             <label htmlFor='smtp_auth'
@@ -225,11 +231,10 @@ export function SettingsGeneralSMTP() {
                                                 { t('SMTP.smtp_auth') }
                                             </label>
                                         </div>
-
                                     ) }
                                 />
-                                <div className='flex items-center gap-4 mt-4'>
-                                    <div className='w-1/4'>
+                                <div className='flex items-center gap-4'>
+                                    <div className='w-1/2'>
                                         <Controller
                                             control={ control }
                                             name='smtpLogin'
@@ -242,7 +247,7 @@ export function SettingsGeneralSMTP() {
                                             ) }
                                         />
                                     </div>
-                                    <div className='w-1/4'>
+                                    <div className='w-1/2'>
                                         <Controller
                                             control={ control }
                                             name='smtpPwd'
@@ -257,9 +262,10 @@ export function SettingsGeneralSMTP() {
                                     </div>
                                 </div>
                             </div>
-
+                        </div>
+                        <div className='flex flex-col gap-4'>
                             <h3 className='text-xl font-bold'>{ t('SMTP.encryption') }</h3>
-                            <div className='flex gap-4 mb-4'>
+                            <div className='flex gap-4'>
                                 { smtpProtocoleSecureEnum.options.map((option: any) => (
                                     <Controller
                                         key={ option }
@@ -279,14 +285,15 @@ export function SettingsGeneralSMTP() {
                                     />
                                 )) }
                             </div>
-
+                        </div>
+                        <div className='flex flex-col gap-4'>
                             <h3 className='text-xl font-bold'>{ t('SMTP.error_notifications') }</h3>
-                            <div>
+                            <div className='flex flex-col gap-4'>
                                 <Controller
                                     control={ control }
                                     name='smtpNotifOnError'
                                     render={ ({ field }) => (
-                                        <div className='mb-6 flex gap-1'>
+                                        <div className='flex gap-1'>
                                             <InputSwitch inputId='enable_error_notifications' checked={ field.value }
                                                          onChange={ (e) => field.onChange(e.value) }/>
                                             <label htmlFor='enable_error_notifications'
@@ -296,50 +303,45 @@ export function SettingsGeneralSMTP() {
                                         </div>
                                     ) }
                                 />
-                                <div className='flex items-center gap-4 mt-4'>
-                                    <div className='w-1/4'>
-                                        <Input id='smtpFromMail' { ...register('smtpFromMail') }
-                                               disabled={ !smtpNotifOnError }
-                                               error={ errors.smtpFromMail?.message }
-                                               label={ t('SMTP.from_mail') } autoComplete='new-mail'/>
-                                    </div>
-                                    <div className='w-1/4'>
-                                        <Input id='smtpDestAdminMail' { ...register('smtpDestAdminMail') }
-                                               disabled={ !smtpNotifOnError }
-                                               error={ errors.smtpDestAdminMail?.message }
-                                               label={ t('SMTP.destination_admin_mail') } autoComplete='new-mail'/>
-                                    </div>
+                                <div className='flex gap-4'>
+                                    <Input id='smtpFromMail' { ...register('smtpFromMail') }
+                                           disabled={ !smtpNotifOnError } className='w-1/2'
+                                           error={ errors.smtpFromMail?.message }
+                                           label={ t('SMTP.from_mail') } autoComplete='new-mail'/>
+                                    <Input id='smtpDestAdminMail' { ...register('smtpDestAdminMail') }
+                                           disabled={ !smtpNotifOnError } className='w-1/2'
+                                           error={ errors.smtpDestAdminMail?.message }
+                                           label={ t('SMTP.destination_admin_mail') } autoComplete='new-mail'/>
                                 </div>
-                                <div className='w-[4rem] mt-4'>
-                                    <Input type='string' id='smtpDelay' disabled={ !smtpNotifOnError }
-                                           { ...register('smtpDelay', { valueAsNumber: true }) }
-                                           placeholder='30' label={ t('SMTP.delay_between_emails') }/>
-                                </div>
-                                <p className='text-(--text-secondary)'>{ t('SMTP.delay_between_emails_infos') }</p>
+                                <Input id='smtpDelay' disabled={ !smtpNotifOnError }
+                                       { ...register('smtpDelay', { valueAsNumber: true }) }
+                                       placeholder='30' label={ t('SMTP.delay_between_emails') }
+                                       hint={ t('SMTP.delay_between_emails_infos') } className='w-[5rem]'
+                                />
                             </div>
                         </div>
-                    </form>
+                    </div>
 
-                    <Button type='submit' disabled={ isSubmitting }>
+                    <Button type='submit' disabled={ isSubmitting } onClick={ handleSubmit(onSubmit) }>
                         { isSubmitting ? t('GLOBAL.saving') + "..." : t('GLOBAL.save_settings') }
                     </Button>
                 </div>
             </div>
             <div className='w-[40rem] bg-(--border-secondary)'>
                 <div className='bg-(--bg-primary)'>
-                    <div className='p-6'>
-                        <h3 className='text-xl font-bold'>{ t('SMTP.send_test') }</h3>
-                        <p className='mt-2 text-(--text-secondary)'>{ t('SMTP.send_test_infos') }</p>
-                        <div className='mt-8'>
-                            <Input id='testEmail' type='email' value={ destinationTestEmail }
-                                   label={ t('SMTP.destination_test_email') }
-                                   onChange={ (e) => setDestinationTestEmail(e.target.value) }/>
-
-                            <Button disabled={ destinationTestEmail === '' || statusLoadingTestEmail }
-                                    onClick={ handleTestEmail }>
-                                { statusLoadingTestEmail ? t('SMTP.sending') + "..." : t('SMTP.send_test_email') }
-                            </Button>
+                    <div className='flex flex-col gap-4 p-6'>
+                        <div>
+                            <h3 className='text-xl font-bold'>{ t('SMTP.send_test') }</h3>
+                            <p className='mt-2 text-(--text-secondary)'>{ t('SMTP.send_test_infos') }</p>
                         </div>
+                        <Input id='testEmail' type='email' value={ destinationTestEmail }
+                               label={ t('SMTP.destination_test_email') }
+                               onChange={ (e) => setDestinationTestEmail(e.target.value) }/>
+
+                        <Button disabled={ destinationTestEmail === '' || statusLoadingTestEmail }
+                                onClick={ handleTestEmail }>
+                            { statusLoadingTestEmail ? t('SMTP.sending') + "..." : t('SMTP.send_test_email') }
+                        </Button>
                     </div>
                 </div>
                 <div className='flex flex-col justify-center p-6'>

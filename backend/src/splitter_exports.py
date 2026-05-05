@@ -235,7 +235,7 @@ def handle_pdf_output(batch, output, log, docservers):
     if 'zip_filename' in output['parameters']:
         compress_file = output['parameters']['zip_filename']
         if compress_file:
-            zip_except_doctype = re.search(r'\[Except=(.*?)\]', compress_file) if 'Except' in compress_file else ''
+            zip_except_doctype = re.search(r'\[Except=(.*?)]', compress_file) if 'Except' in compress_file else None
             metadata = batch['data']['custom_fields']
             metadata['export_date'] = batch['export_date']
             mask_args = {

@@ -365,7 +365,7 @@ def search_by_positions(supplier, index, ocr, files, database, form_id, log):
     if not positions_mask:
         return False, (('', ''), ('', ''))
 
-    positions = positions_mask[0]['positions'][index] if index in positions_mask[0]['positions'] else None
+    positions = positions_mask[0]['positions'][index] if index in positions_mask[0]['positions'] else {}
     pages = positions_mask[0]['pages'][index] if index in positions_mask[0]['pages'] else False
     regex = positions_mask[0]['regex'][index] if index in positions_mask[0]['regex'] else False
     file = files.jpg_name
@@ -376,6 +376,7 @@ def search_by_positions(supplier, index, ocr, files, database, form_id, log):
             log.info(index + ' found using position mask : ' + data[0])
             data.append(pages)
         return data
+    return False, (('', ''), ('', ''))
 
 
 def search(position, regex, files, ocr, target_file):

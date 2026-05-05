@@ -15,10 +15,10 @@
 
 # @dev : Essaid MEGHELLET <essaid.meghellet@edissyum.com>
 
-import ldap3
 import sys
-from ldap3.core.exceptions import LDAPException
+import ldap3
 from ldap3 import Server, ALL
+from ldap3.core.exceptions import LDAPException
 
 
 def check_connection_ldap_server(username_ldap_admin, domain_ldap, port_ldap, password_ldap_admin, base_dn, type_ad,

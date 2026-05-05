@@ -173,7 +173,7 @@ class Splitter:
                 is_previous_code_qr = False
 
     def get_default_values(self, form_id, user_id):
-        user = None
+        user = {}
         default_values = {
             'batch': {},
             'document': {}

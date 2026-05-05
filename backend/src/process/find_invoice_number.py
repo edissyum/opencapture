@@ -98,9 +98,9 @@ class FindInvoiceNumber:
                     date = False
                 return date, position
             except (ValueError, IndexError) as _e:
-                return False
+                return False, position
         else:
-            return False
+            return False, position
 
     def sanitize_invoice_number(self, data):
         invoice_res = data

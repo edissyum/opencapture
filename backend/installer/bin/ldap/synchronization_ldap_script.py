@@ -27,9 +27,7 @@ from datetime import datetime
 from ldap3 import Server, ALL
 from ldap3.core.exceptions import LDAPException
 from werkzeug.security import generate_password_hash
-
-sys.path.insert(0, '/var/www/html/opencapture/')
-from src.backend.main import create_classes_from_custom_id
+from backend.src import create_classes_from_custom_id
 
 
 def print_log(message):

@@ -61,7 +61,6 @@ class SplitterTest(unittest.TestCase):
 
     def test_create_batch(self):
         response = self.create_batch()
-        print(response.text)
         self.assertEqual(200, response.status_code)
 
     def test_successful_get_batches_list(self):

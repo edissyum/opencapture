@@ -863,7 +863,8 @@ def export_mem(data, document_info, log, regex, database):
                         supplier[0].update(address[0])
 
                 link_resource = False
-                opencapture_field = mem_custom_field = mem_clause = custom_field_contact_id = None
+                custom_field_contact_id = mem_custom_field = {}
+                opencapture_field = mem_clause = None
                 if 'links' in data['options']:
                     for _links in data['options']['links']:
                         if _links['id'] == 'enabled' and _links['value']:
