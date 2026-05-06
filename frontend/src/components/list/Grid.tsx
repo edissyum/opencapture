@@ -21,13 +21,13 @@ import React, { useMemo, useRef, useState } from "react";
 
 import { Skeleton } from "primereact/skeleton";
 import { Paginator } from "primereact/paginator";
+import { ContextMenu } from "primereact/contextmenu";
 
 import { Button } from "../Button";
 import { Checkbox } from "../Checkbox";
 
 import { LazyBase64Image } from "./LazyImage";
 import { EllipsisVertical } from "lucide-react";
-import { ContextMenu } from "primereact/contextmenu";
 
 type Column<T> = {
     id: string | undefined;

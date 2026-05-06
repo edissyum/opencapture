@@ -134,3 +134,11 @@
 .p-datatable:not(.no_hover) .p-datatable-tbody > tr:hover {
     @apply bg-(--bg-selected)!;
 }
+
+/* Truncate text in table cells */
+.p-datatable .p-datatable-tbody > tr > td.truncate-data span:first-child  {
+    @apply block;
+    @apply w-[98%];
+    @apply truncate;
+    @apply max-w-full;
+}

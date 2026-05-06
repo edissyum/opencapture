@@ -218,10 +218,7 @@ export function Table<T extends { id: string }>({
                     } }
                 >
                     { checkboxSelection && (
-                        <PrimeColumn
-                            headerClassName="max-w-16 w-16 text-(--text-secondary) font-normal border-(--border-secondary)! py-0!"
-                            bodyClassName="pl-4! pr-1! text-sm py-1!"
-                            selectionMode="multiple"/>
+                        <PrimeColumn selectionMode="multiple"/>
                     ) }
 
                     { columns.map((col, idx) => (

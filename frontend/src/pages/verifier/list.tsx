@@ -170,13 +170,13 @@ export function VerifierListPage() {
         },
         {
             id: 'name',
-            className: 'truncate w-md! max-w-md!',
+            className: 'truncate-data w-md! max-w-md!',
             header: t('VERIFIER.name'),
             body: (item: any) => (
                 <div className="font-semibold flex items-center gap-2" title={ item.supplier_name }>
-                    <span>{ item.supplier_name ? item.supplier_name : t('VERIFIER.unkown_supplier') }</span>
+                    <span className='w-fit!'>{ item.supplier_name ? item.supplier_name : t('VERIFIER.unkown_supplier') }</span>
                     { item.facturx && (
-                        <span className='text-(--text-secondary) text-xs'
+                        <span className='text-(--text-secondary) text-xs w-fit'
                               data-tooltip-id="tooltip"
                               data-tooltip-content={ t('VERIFIER.facturx_level') + ' : ' + item.facturx_level }
                         >
@@ -188,7 +188,7 @@ export function VerifierListPage() {
         },
         {
             id: 'register_date',
-            className: 'truncate',
+            className: 'truncate w-xs! max-w-xs!',
             header: t('VERIFIER.creation_date'),
             sortable: true,
             body: (item: any) => (
