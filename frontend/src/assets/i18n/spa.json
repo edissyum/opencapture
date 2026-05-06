@@ -295,7 +295,8 @@
         "unauthorized_details": "No tiene los permisos necesarios para acceder a este recurso. Por favor, contacte a su administrador si cree que se trata de un error.",
         "my_profile": "Mi perfil",
         "merge": "Fusionar",
-        "executed_outputs": "Cadenas salientes ejecutadas"
+        "executed_outputs": "Cadenas salientes ejecutadas",
+        "field_required": "Campo obligatorio"
     },
     "HISTORY": {
         "document_validated": "Documento n°<strong>{{ documentId }}</strong> validado",
@@ -1468,7 +1469,7 @@
         "version_update": "Versión y actualización",
         "workflows_list": "Lista de flujos de trabajo",
         "workflows_list_splitter": "Lista de flujos de trabajo",
-        "certified_copy": ""
+        "certified_copy": "Acceso a las copias certificadas"
     },
     "PROFILE": {
         "details": "Detalles del perfil",
@@ -1477,11 +1478,11 @@
         "update_success": "Perfil actualizado correctamente"
     },
     "CERTIFIED-COPY": {
-        "cert": "",
-        "cert_hint": "",
-        "freetsa_not_prod": "",
-        "key": "",
-        "key_hint": "",
-        "settings": ""
+        "cert": "Ruta al certificado del cliente",
+        "cert_hint": "El certificado del cliente debe estar en formato .pem",
+        "freetsa_not_prod": "FreeTSA no está diseñado para su uso en producción; se recomienda utilizar una Autoridad de Sello de Tiempo (TSA) de confianza para garantizar la validez de la firma a lo largo del tiempo",
+        "key": "Ruta a la clave privada RSA",
+        "key_hint": "La clave privada debe estar en formato .pem y no debe estar protegida con contraseña (genere un archivo de clave con la contraseña previamente)",
+        "settings": "Configuración de la copia certificada"
     }
 }

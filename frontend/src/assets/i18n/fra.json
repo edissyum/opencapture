@@ -295,7 +295,8 @@
         "unauthorized_details": "Vous n'avez pas les permissions nécessaires pour accéder à cette ressource. Veuillez contacter votre administrateur si vous pensez que c'est une erreur.",
         "my_profile": "Éditer mon profil",
         "merge": "Fusionner",
-        "executed_outputs": "Chaînes sortantes exécutées"
+        "executed_outputs": "Chaînes sortantes exécutées",
+        "field_required": "Champ obligatoire"
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validé",

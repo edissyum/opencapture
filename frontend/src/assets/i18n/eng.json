@@ -275,7 +275,8 @@
         "unauthorized_details": "You do not have the necessary permissions to access this resource. Please contact your administrator if you believe this is an error.",
         "my_profile": "My profile",
         "merge": "Merge",
-        "executed_outputs": "Output chains executed"
+        "executed_outputs": "Output chains executed",
+        "field_required": "Field is required"
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validated",
@@ -1380,7 +1381,7 @@
         "version_update": "Version and update",
         "workflows_list": "Workflows list",
         "workflows_list_splitter": "Workflows list",
-        "certified_copy": ""
+        "certified_copy": "Certified copy management"
     },
     "PROFILE": {
         "details": "Profile details",
@@ -1389,11 +1390,11 @@
         "update_success": "Profile updated successfully"
     },
     "CERTIFIED-COPY": {
-        "cert": "",
-        "cert_hint": "",
-        "freetsa_not_prod": "",
-        "key": "",
-        "key_hint": "",
-        "settings": ""
+        "cert": "Path to client certificate",
+        "cert_hint": "The client certificate must be in .pem format",
+        "freetsa_not_prod": "FreeTSA is not intended for production use; it is recommended to use a trusted Timestamp Authority (TSA) to ensure the validity of the signature over time",
+        "key": "Path to RSA private key",
+        "key_hint": "The private key must be in .pem format and must not be password-protected (generate a key file with the password beforehand)",
+        "settings": "Certified-Copy settings"
     }
 }
