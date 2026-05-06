@@ -177,6 +177,7 @@ export function DynamicForm({ className, schema, control, errors, gap = 4, grid 
                                 <Dropdown
                                     id={ f.name }
                                     value={ f.value }
+                                    hint={ field.hint }
                                     label={ field.label }
                                     options={ field.options }
                                     required={ field.required }

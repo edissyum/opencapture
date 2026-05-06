@@ -19,10 +19,12 @@ import React from "react";
 import DOMPurify from "dompurify";
 import { FloatLabel } from "primereact/floatlabel";
 import { Dropdown as PrimeDropdown } from "primereact/dropdown";
+import { CircleQuestionMark } from "lucide-react";
 
 interface DropdownProps {
     id: any;
     value: any;
+    hint?: any;
     error?: any;
     label?: string;
     filter?: boolean;
@@ -39,6 +41,7 @@ interface DropdownProps {
 
 export const Dropdown: React.FC<DropdownProps> = ({
     id,
+    hint,
     value,
     label,
     error,
@@ -94,9 +97,9 @@ export const Dropdown: React.FC<DropdownProps> = ({
     );
 
     return (
-        <div className='w-full'>
+        <div className='w-full relative'>
             <div className={ `${ className } group group-focus-within:border-(--border-primary) relative flex justify-items-stretch 
-                              ${ disabled ? 'cursor-not-allowed' : '' }` }
+                              ${ disabled ? 'cursor-not-allowed opacity-70' : '' }` }
             >
                 { placeholder ? (
                     <span className='w-full'>
@@ -114,6 +117,11 @@ export const Dropdown: React.FC<DropdownProps> = ({
                     </FloatLabel>
                 ) }
             </div>
+            { hint && (
+                <span className={ `absolute cursor-pointer z-10 -right-5 top-0 text-(--text-secondary)` }>
+                    <CircleQuestionMark data-tooltip-id="tooltip" data-tooltip-content={ hint } size={ 16 }/>
+                </span>
+            ) }
             { error && (
                 <p className="text-(--text-error) text-xs ml-1"
                    dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(error) } }/>

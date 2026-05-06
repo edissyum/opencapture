@@ -69,7 +69,6 @@
         "edit_supplier": "Edit third-party account"
     },
     "AUTH": {
-        "field_required": "is required",
         "login": "Log in",
         "session_expired": "Your session has expired, please log in again",
         "welcome": "Welcome to Open-Capture, 100% Open Source document capture solution",
@@ -577,7 +576,9 @@
         "appear_here": "It appears here",
         "click_star": "Click on the star in the navigation bar",
         "navigate_to_settings": "Navigate to a setting",
-        "add_favorite_details": "Find your favorite settings in one click for quick access. Once added, your favorites will be accessible here"
+        "add_favorite_details": "Find your favorite settings in one click for quick access. Once added, your favorites will be accessible here",
+        "certified_copy": "Certified copy",
+        "certified_copy_description": "Compliance with standard NF Z42-020/26"
     },
     "SMTP": {
         "authentication": "Authentication",
@@ -1378,12 +1379,21 @@
         "verifier_settings": "Verifier-specific settings",
         "version_update": "Version and update",
         "workflows_list": "Workflows list",
-        "workflows_list_splitter": "Workflows list"
+        "workflows_list_splitter": "Workflows list",
+        "certified_copy": ""
     },
     "PROFILE": {
         "details": "Profile details",
         "update_profile": "Update profile",
         "update_error": "Error updating profile",
         "update_success": "Profile updated successfully"
+    },
+    "CERTIFIED-COPY": {
+        "cert": "",
+        "cert_hint": "",
+        "freetsa_not_prod": "",
+        "key": "",
+        "key_hint": "",
+        "settings": ""
     }
 }

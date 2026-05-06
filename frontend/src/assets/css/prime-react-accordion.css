@@ -107,7 +107,6 @@
 /* Input switch */
 .p-inputswitch {
     @apply -ml-1;
-    @apply mt-0.5;
     @apply scale-80;
 }
 

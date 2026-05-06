@@ -133,7 +133,7 @@ h2 {
     @apply font-semibold;
 }
 
-h3 {
+h3, h1 {
     @apply leading-none;
 }
 

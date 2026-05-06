@@ -86,9 +86,9 @@ const Input: React.FC<InputProps> = ({
     return (
         <div className={ `flex flex-col rounded-md ${ className }` }>
             <div className={ `group rounded-md border! focus-within:border-(--border-primary)! 
-                              relative flex justify-items-stretch hover:border-(--border-primary)! transition-colors
+                              relative flex justify-items-stretch transition-colors
                               ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' }
-                              ${ disabled ? 'cursor-not-allowed' : '' }` }>
+                              ${ disabled ? 'cursor-not-allowed opacity-50' : 'hover:border-(--border-primary)!' }` }>
                 <FloatLabel className='w-full'>
                     { bgColor && hasValue && (
                         <>

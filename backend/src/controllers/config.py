@@ -22,6 +22,8 @@ import requests
 import subprocess
 from flask import request
 from flask_babel import gettext
+
+from .. import shared
 from ..models import config, history
 from ..helpers import get_context_var
 from ..functions import retrieve_custom_from_url, get_custom_path, retrieve_custom_list
@@ -165,6 +167,7 @@ def retrieve_regex(data):
     }
     return response, 400
 
+
 def retrieve_regex_by_regex_id(args):
     regex, error = config.retrieve_regex_by_regex_id(args)
 
@@ -179,6 +182,7 @@ def retrieve_regex_by_regex_id(args):
         "message": gettext(error)
     }
     return response, 400
+
 
 def update_configuration_by_id(args, configuration_id):
     configuration, error = config.retrieve_configuration_by_id({'configuration_id': configuration_id})
@@ -392,6 +396,7 @@ def update_login_image(image_content):
            "message": gettext("CUSTOM_NOT_PRESENT")
         }, 400
 
+
 def get_favorites(args):
     favorites, error = config.get_favorites(args)
 
@@ -404,6 +409,7 @@ def get_favorites(args):
     }
     return response, 400
 
+
 def add_favorites(args):
     favorite, error = config.add_favorites(args)
     if error is None:
@@ -415,16 +421,32 @@ def add_favorites(args):
     }
     return response, 400
 
+
 def remove_favorites(favorite_id):
     config.remove_favorites(favorite_id)
     return '', 200
 
+
 def get_customs_list():
     customs = retrieve_custom_list()
     return {'customs': customs}, 200
+
 
 def get_packages():
     with open('pip-requirements.txt', 'r') as f:
         packages = [line.strip() for line in f if line.strip() and not line.startswith('#') and not line.startswith('--')]
 
     return packages
+
+def get_certified_copy():
+    path = shared.custom_path + '/journal/config/config.json'
+    if os.path.isfile(path):
+        with open(path, 'r') as f:
+            config_data = f.read()
+            return config_data, 200
+    else:
+        response = {
+            "errors": gettext("CERTIFIED_COPY_ERROR"),
+            "message": gettext("CERTIFIED_COPY_NOT_FOUND")
+        }
+        return response, 400

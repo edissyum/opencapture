@@ -74,6 +74,7 @@ import { SettingsVerifierFormsCreate } from "./pages/settings/verifier/forms/cre
 import { SettingsSplitterFormsCreate } from "./pages/settings/splitter/forms/create";
 import { SettingsGeneralCustomization } from "./pages/settings/general/customization";
 import { SettingsVerifierAiLLMEditor } from "./pages/settings/verifier/ai-llm/editor";
+import { SettingsSplitterCertifiedCopy } from "./pages/settings/splitter/certified-copy/editor";
 import { SettingsVerifierPositionsMasksList } from "./pages/settings/verifier/positions-masks/list";
 import { SettingsVerifierPositionMaskEditor } from "./pages/settings/verifier/positions-masks/editor";
 
@@ -738,6 +739,13 @@ export const router = createBrowserRouter(
                                     handle: { breadcrumb: 'SETTINGS.add_ai_doctype' }
                                 }
                             ]
+                        },
+                        {
+                            path: 'certified-copy',
+                            loader: protectedLoader(['settings', 'certified_copy']),
+                            element: <SettingsSplitterCertifiedCopy/>,
+                            errorElement: <LoginRequiredError/>,
+                            handle: { breadcrumb: 'SETTINGS.certified_copy' }
                         }
                     ]
                 }

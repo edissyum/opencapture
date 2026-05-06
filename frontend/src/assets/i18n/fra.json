@@ -76,7 +76,6 @@
         "edit_supplier": "Modifier le compte de tiers"
     },
     "AUTH": {
-        "field_required": "est requis",
         "login": "Se connecter",
         "session_expired": "Votre session à expirée, veuillez vous reconnecter",
         "welcome": "Bienvenue dans Open-Capture, solution de capture de documents 100% Open Source",
@@ -613,7 +612,9 @@
         "appear_here": "Il apparaît ici",
         "click_star": "Cliquez sur l'étoile dans la barre de navigation",
         "navigate_to_settings": "Naviguez vers un paramètre",
-        "add_favorite_details": "Retrouvez en un clic vos paramètres favoris pour un accès rapide. Une fois ajoutés, vos favoris seront accessibles ici"
+        "add_favorite_details": "Retrouvez en un clic vos paramètres favoris pour un accès rapide. Une fois ajoutés, vos favoris seront accessibles ici",
+        "certified_copy": "Copie conforme",
+        "certified_copy_description": "Conformité norme NF Z42-020/26"
     },
     "SMTP": {
         "authentication": "Authentification",
@@ -1466,12 +1467,21 @@
         "verifier_settings": "Paramétrage spécifique au Verifier",
         "version_update": "Version et mise à jour",
         "workflows_list": "Liste des workflows",
-        "workflows_list_splitter": "Liste des workflows"
+        "workflows_list_splitter": "Liste des workflows",
+        "certified_copy": "Paramétrage de la copie conforme"
     },
     "PROFILE": {
         "details": "Détails du profil",
         "update_profile": "Mettre à jour le profil",
         "update_error": "Erreur lors de la mise à jour du profil",
         "update_success": "Profil mis à jour avec succès"
+    },
+    "CERTIFIED-COPY": {
+        "cert": "Chemin du certificat client",
+        "cert_hint": "Le certificat client doit être au format .pem",
+        "freetsa_not_prod": "FreeTSA n'est pas destiné à un usage en production, il est recommandé d'utiliser un TimeStamp Authority (TSA) de confiance pour garantir la validité de la signature dans le temps",
+        "key": "Chemin de la clé privée RSA",
+        "key_hint": "La clé privée doit être au format .pem et ne doit pas être protégée par un mot de passe (génération d'un fichier de clé avec le mot de passe en amont)",
+        "settings": "Paramètres de la copie conforme"
     }
 }

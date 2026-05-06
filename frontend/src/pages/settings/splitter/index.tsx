@@ -15,7 +15,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { BrainCog, CodeXml, Flag, FolderOutput, LayoutTemplate, Workflow } from "lucide-react";
+import { BrainCog, CodeXml, Flag, FolderOutput, LayoutTemplate, ShieldCheck, Workflow } from "lucide-react";
 import { SettingsCard } from "../../../components/settings/SettingsCard";
 
 export const getSettingsSplitterOptions = () => [
@@ -60,8 +60,14 @@ export const getSettingsSplitterOptions = () => [
         icon: <Flag/>,
         href: '/settings/splitter/update-status',
         module: 'splitter'
+    },
+    {
+        name: t('SETTINGS.certified_copy'),
+        description: t('SETTINGS.certified_copy_description'),
+        icon: <ShieldCheck/>,
+        href: '/settings/splitter/certified-copy',
+        module: 'splitter'
     }
-
 ];
 
 export function SettingsSplitterIndex() {

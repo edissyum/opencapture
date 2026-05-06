@@ -36,8 +36,8 @@ export function SettingsCard({ show = true, icon, title, description, to, classN
     const [hovered, setHovered] = useState(false);
 
     return (
-        <Link to={ to } className={ `${ className } relative flex gap-4 justify-start items-center max-w-full p-2.5 
-                                     pl-4 border border-(--border-secondary) rounded-md hover:border-gray-400 transition-colors` }>
+        <Link to={ to } className={ `${ className } relative flex gap-4 justify-start items-center max-w-full p-3
+                                     border border-(--border-secondary) rounded-md hover:border-gray-400 transition-colors` }>
             <div onMouseEnter={ () => setHovered(true) } onMouseLeave={ () => setHovered(false) }
                  className={ `text-(--text-primary) bg-(--bg-secondary) p-2 rounded-md ${ unpinFav && 'hover:bg-(--color-primary)/20' }` }
             >
@@ -64,7 +64,7 @@ export function SettingsCard({ show = true, icon, title, description, to, classN
                         ) }
                     </span>
                 </h3>
-                <p className='text-(--text-secondary) leading-none'>
+                <p className='text-(--text-secondary) leading-none truncate'>
                     { description }
                 </p>
             </div>

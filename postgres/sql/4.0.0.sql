@@ -372,3 +372,6 @@ SET data = jsonb_set(
     FROM jsonb_array_elements(data -> 'options' -> 'parameters') AS param)
 )
 WHERE output_type_id = 'export_xml' AND module = 'splitter';
+
+-- Ajout d'un privilèges pour la copie conforme
+INSERT INTO "privileges" ("label", "parent") VALUES ('certified_copy', 'splitter');

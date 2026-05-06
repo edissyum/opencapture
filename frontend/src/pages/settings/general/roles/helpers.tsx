@@ -103,5 +103,6 @@ const _ = [
     t('PRIVILEGES.upload_attachments_splitter'),
     t('PRIVILEGES.add_llm_models'),
     t('PRIVILEGES.update_llm_models'),
-    t('PRIVILEGES.list_llm_models')
+    t('PRIVILEGES.list_llm_models'),
+    t('PRIVILEGES.certified_copy')
 ];
