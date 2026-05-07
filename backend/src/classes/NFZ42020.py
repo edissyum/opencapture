@@ -84,8 +84,8 @@ class NFZ42020:
         append_journal_entry(entry, self.journal_filename)
         self.journal_init = True
 
-    def log_event(self, event, batch_id=None, stored_file=None):
-        if not self.journal_init:
+    def log_event(self, event, batch_id=None, documents_id=None, stored_file=None):
+        if not self.journal_init or not self.enabled:
             return
 
         journal = load_journal_entries(self.journal_filename)
@@ -96,10 +96,10 @@ class NFZ42020:
         if not last_entry:
             return
 
-        entry = self.generate_entry(last_entry, event, batch_id, stored_file)
+        entry = self.generate_entry(last_entry, event, batch_id, documents_id, stored_file)
         append_journal_entry(entry, self.journal_filename)
 
-    def generate_entry(self, last_entry, event_type, batch_id, stored_file):
+    def generate_entry(self, last_entry, event_type, batch_id, documents_id, stored_file):
         hashed_file = None
         if stored_file:
             hashed_file = hash_file_content(stored_file)
@@ -113,6 +113,7 @@ class NFZ42020:
             "timestamp": datetime.now(UTC).isoformat(),
             "event_type": event_type,
             "batch_id": batch_id,
+            "documents": documents_id if documents_id else None,
             "file": {
                 "original_name": self.original_filename,
                 "sanitized_name": os.path.basename(self.sanitized_filename),
@@ -125,6 +126,7 @@ class NFZ42020:
             },
             "previous_hash": last_entry["current_hash"]
         }
+
         entry["current_hash"] = calculate_hash(entry)
         return entry
 

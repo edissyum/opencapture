@@ -213,11 +213,11 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                                 if (inputValue !== null) {
                                     if (inputKey === 'script') {
                                         if (key === 'input') {
-                                            const disabled = inputValue.includes("return 'DISABLED'")
+                                            const disabled = inputValue.includes("return 'DISABLED'") || inputValue.includes('return "DISABLED"');
                                             setInputScripting(!disabled);
                                             setInputScript(inputValue);
                                         } else if (key === 'process') {
-                                            const disabled = inputValue.includes("return 'DISABLED'")
+                                            const disabled = inputValue.includes("return 'DISABLED'") || inputValue.includes('return "DISABLED"');
                                             setProcessScripting(!disabled);
                                             setProcessScript(inputValue);
                                         }
