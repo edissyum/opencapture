@@ -721,7 +721,9 @@
         "merge_batch_details": "Elija el lote principal. Los documentos de los demás lotes se fusionarán en el lote principal y los lotes secundarios se eliminarán. <strong>(esta acción es irreversible)</strong>",
         "no_other_batches": "No hay otros lotes disponibles para fusionar",
         "batch_non_modifiable": "Lote no modificable",
-        "batch_non_modifiable_details": "No puede modificar este lote porque ya ha sido procesado, eliminado o fusionado"
+        "batch_non_modifiable_details": "No puede modificar este lote porque ya ha sido procesado, eliminado o fusionado",
+        "batch_certified_copy": "",
+        "batch_certified_copy_details": ""
     },
     "UPLOAD": {
         "upload_dropzone": "Haga clic para elegir un archivo",
@@ -1151,7 +1153,8 @@
         "updating": "Actualizando el flujo de trabajo...",
         "validating": "Validando el paso...",
         "customer_required": "Es obligatorio tener una cuenta de cliente",
-        "certified_copy": "Copia certificada"
+        "certified_copy": "Copia certificada",
+        "certified_copy_hint": ""
     },
     "MONITORING": {
         "processes": "Procesos",

@@ -122,6 +122,7 @@ export function SplitterViewerPage() {
     const [documentMetadataOpen, setDocumentMetadataOpen] = useState<boolean>(false);
 
     const [metadata, setMetadata] = useState<any>([]);
+    const [certifiedCopy, setCertifiedCopy] = useState<boolean>(false);
 
     const formId = batch?.form_id;
     const { formFields, loading: loadingFormFields } = useFormFields(formId);
@@ -196,7 +197,7 @@ export function SplitterViewerPage() {
         {
             label: t('SPLITTER.principal_document'),
             icon: <FileBadge size={ 16 }/>,
-            disabled: documents.length <= 1,
+            disabled: documents.length <= 1 || certifiedCopy,
             command: () => handleDocumentPrincipal()
         },
         {
@@ -207,6 +208,7 @@ export function SplitterViewerPage() {
         {
             label: <span className='critical'>{ t('SPLITTER.delete_document') }</span>,
             icon: <Trash2 size={ 16 }/>,
+            disabled: certifiedCopy,
             command: () => handleDeleteDocument()
         }
     ];
@@ -296,7 +298,7 @@ export function SplitterViewerPage() {
             module: 'splitter',
             submodule: 'viewer',
             desc: t('HISTORY.viewer_splitter', { batchId: batchId })
-        });
+        }).then();
 
         const fetchBatchDetails = async () => {
             try {
@@ -342,7 +344,7 @@ export function SplitterViewerPage() {
             } catch (error) {
                 console.error('Error fetching forms :', error);
             }
-        }
+        };
 
         fetchForms().then();
         fetchBatchDetails().then();
@@ -393,10 +395,7 @@ export function SplitterViewerPage() {
     }, [formId]);
 
     // Recalculate pages count when documents change (e.g. after drag and drop)
-    const pagesCount = useMemo(() =>
-            documents.reduce((acc: number, doc: any) => acc + doc.pages.length, 0),
-        [documents]
-    );
+    const pagesCount = useMemo(() => documents.reduce((acc: number, doc: any) => acc + doc.pages.length, 0), [documents]);
 
     // Fill batch metadata and fetch documents
     useEffect(() => {
@@ -450,7 +449,7 @@ export function SplitterViewerPage() {
         fetchDocuments().then();
     }, [loadingFormFields]);
 
-    // Load referential
+    // Load referential and workflow config
     useEffect(() => {
         if (!batch) return;
 
@@ -483,7 +482,23 @@ export function SplitterViewerPage() {
             }
         }
 
+        const fetchWorkflowDetails = async () => {
+            try {
+                const response = await get(`/workflows/splitter/getById/${ batch.workflow_id }`);
+
+                if (response) {
+                    if (response.input.certified_copy) {
+                        setCertifiedCopy(true);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching workflow details:', error);
+            }
+        };
+
         fetchReferential().then();
+        fetchWorkflowDetails().then();
+        fetchWorkflowDetails().then();
     }, [batchMetadata])
 
     // Disable loading when batch and documents are loaded
@@ -599,25 +614,8 @@ export function SplitterViewerPage() {
         fetchAndDownload().then();
     };
 
-    // Handle keyboard delete key for selected document
-    useEffect(() => {
-        if (!selectedDocument) return;
-
-        const handleKeyDown = (event: any) => {
-            if (event.key === "Delete") {
-                handleDeleteDocument();
-            }
-        };
-
-        window.addEventListener("keydown", handleKeyDown);
-
-        return () => {
-            window.removeEventListener("keydown", handleKeyDown);
-        };
-    }, [selectedDocument]);
-
     const handleDeleteDocument = () => {
-        if (!selectedDocument || disabledBatch) return;
+        if (!selectedDocument || disabledBatch || certifiedCopy) return;
 
         showConfirmDialog({
             title: t('SPLITTER.delete_document'),
@@ -867,7 +865,7 @@ export function SplitterViewerPage() {
     }
 
     const addDocument = async () => {
-        if (disabledBatch) return;
+        if (disabledBatch || certifiedCopy) return;
 
         try {
             const response = await post('/splitter/addDocument', {
@@ -1124,7 +1122,7 @@ export function SplitterViewerPage() {
                         <div className='fixed bottom-4 shadow-lg rounded-3xl flex justify-center items-center gap-4 p-3 bg-(--bg-primary) border
                             border-(--border-secondary) z-10'>
                             <div className={ `bg-(--bg-secondary) p-3 rounded-xl flex items-center gap-2
-                            ${ selectedPages.length == 0 ? 'bg-(--bg-secondary)' : 'bg-(--bg-selected)' }` }>
+                                              ${ selectedPages.length == 0 ? 'bg-(--bg-secondary)' : 'bg-(--bg-selected)' }` }>
                                 <Checkbox checked={ selectedPages.length !== 0 } onChange={ selectAll }
                                           indeterminate={ selectedPages.length != pagesCount } disabled={ disabledBatch }/>
                                 <div className={ `text-sm ${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer' }` }
@@ -1137,7 +1135,7 @@ export function SplitterViewerPage() {
                             <div onClick={ handleDeletePage }
                                  className={ `text-sm text-(--text-error) flex items-center gap-1 font-semibold 
                                         hover:bg-(--bg-error) transition-colors rounded-xl p-3
-                                        ${ selectedPages.length == 0 || disabledBatch ? 'hidden' : 'cursor-pointer' } ` }>
+                                        ${ selectedPages.length == 0 || disabledBatch || certifiedCopy ? 'hidden' : 'cursor-pointer' } ` }>
                                 <Trash size={ 16 }/>
                                 { t('GLOBAL.delete') }
                             </div>
@@ -1145,19 +1143,23 @@ export function SplitterViewerPage() {
                             <div onClick={ handleRotation }
                                  className={ `flex items-center text-(--text-secondprimaryary) text-sm gap-1 font-semibold 
                                         hover:bg-(--bg-secondary) transition-colors rounded-xl p-3
-                                        ${ selectedPages.length == 0 || disabledBatch ? 'hidden' : 'cursor-pointer' } ` }>
+                                        ${ selectedPages.length == 0 || disabledBatch || certifiedCopy ? 'hidden' : 'cursor-pointer' } ` }>
                                 <RotateCw size={ 14 }/>
                                 { t('SPLITTER.rotation') }
                             </div>
 
                             <Divider layout="vertical"/>
 
-                            <div data-tooltip-id="tooltip"
-                                 className={ `flex items-center text-(--text-primary) font-semibold text-sm gap-1
-                                          hover:bg-(--bg-secondary) transition-colors rounded-xl p-3 
-                                        ${ attachmentsCount > 0 || disabledBatch ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' } ` }
-                                 data-tooltip-content={ attachmentsCount > 0 ? t('SPLITTER.cant_add_document') : '' }>
-                                <div onClick={ () => attachmentsCount === 0 && !disabledBatch && addDocument() }
+                            <div
+                                className={ `flex items-center text-(--text-primary) font-semibold text-sm gap-1  rounded-xl p-3
+                                             hover:bg-(--bg-secondary) transition-colors ${ certifiedCopy && 'hidden' } 
+                                             ${ attachmentsCount > 0 || disabledBatch ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' } ` }
+                                { ...(attachmentsCount > 0 && {
+                                    "data-tooltip-id": "tooltip",
+                                    "data-tooltip-content": t('SPLITTER.cant_add_document')
+                                }) }
+                            >
+                                <div onClick={ () => attachmentsCount === 0 && !disabledBatch && !certifiedCopy && addDocument() }
                                      className={ 'flex items-center gap-1' }>
                                     <Plus size={ 16 }/>
                                     { t('SPLITTER.add_document') }
@@ -1282,22 +1284,25 @@ export function SplitterViewerPage() {
                             </div>
                         ) }
 
-                        <div className={
-                            `flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
-                         border border-(--border-secondary) hover:border-(--border-primary)
-                         hover:text-(--color-primary) transition-colors shrink-0 relative cursor-pointer
-                            ${ showBatches ? 'border-(--color-primary) bg-(--bg-selected)' : '' }`
-                        }
-                             onClick={ handleShowBatches }
-                             data-tooltip-id="tooltip"
-                             data-tooltip-content={ t('SPLITTER.show_batches') }
-                        >
-                            <Package size={ 18 }/>
-                        </div>
+                        { !certifiedCopy && (
+                            <div className={ `flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
+                                          border border-(--border-secondary) hover:border-(--border-primary)
+                                          hover:text-(--color-primary) transition-colors shrink-0 relative cursor-pointer
+                                          ${ showBatches ? 'border-(--color-primary) bg-(--bg-selected)' : '' }`
+                            }
+                                 onClick={ handleShowBatches }
+                                 { ...(!certifiedCopy && {
+                                     "data-tooltip-id": "tooltip",
+                                     "data-tooltip-content": t('SPLITTER.show_batches')
+                                 }) }
+                            >
+                                <Package size={ 18 }/>
+                            </div>
+                        ) }
                     </div>
                 ) }
 
-                { disabledBatch && (
+                { !showAttachments && disabledBatch && (
                     <div className='px-8 pb-4'>
                         <div className='w-full bg-(--bg-error) p-4 rounded-lg flex flex-col gap-4 border border-(--text-error)'>
                             <div className='flex items-center gap-3'>
@@ -1315,12 +1320,28 @@ export function SplitterViewerPage() {
                     </div>
                 ) }
 
+                { !showAttachments && certifiedCopy && (
+                    <div className='px-8 pb-4'>
+                        <div className='w-full p-4 rounded-lg flex flex-col gap-4 border bg-yellow-500/10 border-yellow-500'>
+                            <div className='flex items-center gap-3'>
+                                <div className='flex flex-col'>
+                                    <span
+                                        className='text-yellow-700 font-semibold'>{ t('SPLITTER.batch_certified_copy') }</span>
+                                    <span
+                                        className='text-(--text-secondary)'>{ t('SPLITTER.batch_certified_copy_details') }</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ) }
+
                 { enableAttachments && (
                     <div className={ `w-full h-full flex flex-col ${ !showAttachments && 'hidden' }` }>
                         <AttachmentsList
                             module="splitter"
                             documentId={ batchId }
                             disabled={ disabledBatch }
+                            disableUnbinding={ certifiedCopy }
                             key={ attachmentsRefreshKey }
                             unBinding={ handleUnbinding }
                             onAttachmentsCountChange={ setAttachmentsCount }
@@ -1330,7 +1351,7 @@ export function SplitterViewerPage() {
                 ) }
 
                 { !showAttachments && (
-                    <div ref={ listRef } className={ `${ disabledBatch ? 'pb-66' : 'pb-42' } px-8 h-full overflow-y-auto` }
+                    <div ref={ listRef } className={ `${ disabledBatch || certifiedCopy ? 'pb-66' : 'pb-42' } px-8 h-full overflow-y-auto` }
                          onClick={ () => setSelectedDocument(null) }>
                         <Accordion className='mb-6' activeIndex={ 0 }>
                             <AccordionTab header={ t('SPLITTER.batch_content') }>
@@ -1341,10 +1362,10 @@ export function SplitterViewerPage() {
                                             <span>{ pagesCount }</span>&nbsp;
                                             { t('SPLITTER.pages', { count: pagesCount }) }
                                         </span>
-                                            <span className='flex items-center'>
+                                        <span className='flex items-center'>
                                             <FileStack size={ 16 }/>&nbsp;
-                                                <span>{ documents.length }</span>&nbsp;
-                                                { t('SPLITTER.documents', { count: documents.length }) }
+                                            <span>{ documents.length }</span>&nbsp;
+                                            { t('SPLITTER.documents', { count: documents.length }) }
                                         </span>
                                     </div>
 
@@ -1437,7 +1458,7 @@ export function SplitterViewerPage() {
                                         e.stopPropagation();
                                         setSelectedDocument(document);
                                     } }
-                                    className={ `PanelDocumentList mb-4 w-full ${ selectedDocument?.id === document.id ? 'panelSelected' : 'border-transparent' }` }
+                                    className='mb-4 w-full'
                                     header={
                                         <div className="flex items-center gap-1.5">
                                             <div

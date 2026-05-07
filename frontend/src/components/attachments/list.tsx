@@ -49,6 +49,7 @@ type AttachmentsListProps = {
     disabled?: boolean;
     onClose: () => void;
     unBinding?: () => void;
+    disableUnbinding?: boolean;
     onAttachmentsCountChange: (count: number) => void;
 };
 
@@ -56,6 +57,7 @@ export function AttachmentsList({
     module,
     disabled,
     documentId,
+    disableUnbinding,
     onAttachmentsCountChange,
     onClose,
     unBinding
@@ -256,7 +258,7 @@ export function AttachmentsList({
                         { module === 'splitter' && (
                             <Button variant='bg_white_rounded' icon={ <Unlink size={ 18 }/> }
                                     onClick={ () => unBinding && unBinding() }
-                                    disabled={ attachments.length === 0 || containsNotPdf || disabled }>
+                                    disabled={ attachments.length === 0 || containsNotPdf || disabled || disableUnbinding }>
                                 { t('ATTACHMENTS.unbinding') }
                             </Button>
                         ) }

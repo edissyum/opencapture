@@ -327,7 +327,8 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         inputSchemaEndSwitchs = inputSchemaEndSwitchs.extend({
             certified_copy: z.boolean().optional().describe(JSON.stringify({
                 component: "input_switch",
-                label: t("WORKFLOWS.certified_copy")
+                label: t("WORKFLOWS.certified_copy"),
+                hint: t("WORKFLOWS.certified_copy_hint")
             }))
         });
     }
