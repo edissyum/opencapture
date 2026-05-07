@@ -103,7 +103,8 @@ def launch(args):
             launch_script_splitter(workflow_settings[0], docservers, 'input', log, database, args, config, datas)
 
         if workflow_settings:
-            if nfz42020.enabled:
+            if workflow_settings[0]['input'].get('certified_copy') and nfz42020.enabled:
+                log.info('Certified copy process enabled for this workflow, initializing NF Z42-020/26 module')
                 nfz42020.log = log
                 nfz42020.sanitized_filename = args['file']
                 nfz42020.original_filename = os.path.basename(args['original_filename'])

@@ -21,12 +21,15 @@ import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "../../../../components/Button";
+import { Loader } from "../../../../components/loader/Loader";
 import { DynamicForm } from "../../../../components/form/DynamicForm";
+
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 
 export function SettingsSplitterCertifiedCopy() {
-    const { get } = axiosApiCall();
+    const { get, put } = axiosApiCall();
     const [loading, setLoading] = useState(false);
+    const [loadingUpdate, setLoadingUpdate] = useState(false);
 
     const [selectedProvider, setSelectedProvider] = useState<any>(null);
 
@@ -130,7 +133,7 @@ export function SettingsSplitterCertifiedCopy() {
             }
         };
 
-        fetchSettings();
+        fetchSettings().then();
     }, []);
 
     const handleUpdate = async (data: any) => {
@@ -157,16 +160,17 @@ export function SettingsSplitterCertifiedCopy() {
             clearErrors();
         }
 
-        setLoading(true);
+        setLoadingUpdate(true);
         try {
-            // Here you would send the updated settings to your backend
-            console.log("Updated Certified Copy Settings:", data);
+            await put("/config/updateCertifiedCopy", data);
         } catch (error) {
             console.error("Failed to update Certified Copy settings:", error);
         } finally {
-            setLoading(false);
+            setLoadingUpdate(false);
         }
     };
+
+    if (loading) return <Loader/>;
 
     return (
         <div className="p-6 flex flex-col gap-6 w-1/2">
@@ -176,7 +180,7 @@ export function SettingsSplitterCertifiedCopy() {
 
             <DynamicForm errors={ errors } control={ control } schema={ schema }/>
 
-            <Button onClick={ handleSubmit(handleUpdate) } disabled={ loading || Object.keys(errors).length > 0 }>
+            <Button onClick={ handleSubmit(handleUpdate) } disabled={ loading || loadingUpdate || Object.keys(errors).length > 0 }>
                 { loading ? t('GLOBAL.saving') : t('GLOBAL.save') }
             </Button>
         </div>

@@ -1149,7 +1149,8 @@
         "update": "Mettre à jour le workflow",
         "updating": "Mise à jour du workflow en cours...",
         "validating": "Validation de l'étape en cours...",
-        "customer_required": "Le compte client est obligatoire"
+        "customer_required": "Le compte client est obligatoire",
+        "certified_copy": "Activer la copie conforme (NF Z42-020/26)"
     },
     "MONITORING": {
         "processes": "Processus",

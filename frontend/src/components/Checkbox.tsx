@@ -41,7 +41,7 @@ export function Checkbox({
 }: CheckboxProps) {
     const [isChecked, setIsChecked] = useState(checked);
     const [isIndeterminate, setIsIndeterminate] = useState(indeterminate);
-    console.log(label, indeterminate, isIndeterminate)
+
     useEffect(() => {
         setIsChecked(checked);
     }, [checked]);

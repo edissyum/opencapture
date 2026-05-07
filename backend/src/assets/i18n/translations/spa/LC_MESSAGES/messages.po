@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2026-04-30 14:44+0200\n"
+"POT-Creation-Date: 2026-05-07 11:18+0200\n"
 "PO-Revision-Date: 2025-05-13 10:40+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: es\n"
@@ -77,11 +77,11 @@ msgstr "Extensión del archivo no permitida"
 msgid "FILE_MIME_NOT_ALLOWED"
 msgstr "El tipo de MIME del archivo no enlaza con la extensión"
 
-#: backend/src/functions.py:508
+#: backend/src/functions.py:509
 msgid "FILTER_NOT_ALLOWED"
 msgstr "Filtro no permitido"
 
-#: backend/src/functions.py:510
+#: backend/src/functions.py:511
 msgid "ORDER_NOT_ALLOWED"
 msgstr "Orden no permitido"
 
@@ -103,7 +103,7 @@ msgstr "Documento"
 msgid "CREATED_ON_BATCH"
 msgstr "Creado en lote"
 
-#: backend/src/process_queue_verifier.py.default:216
+#: backend/src/process_queue_verifier.py.default:215
 msgid "FILE_UPLOADED_WORKFLOW"
 msgstr "Archivo subido por el flujo de trabajo"
 
@@ -111,7 +111,7 @@ msgstr "Archivo subido por el flujo de trabajo"
 msgid "WORFKLOW_NOT_FOUND"
 msgstr "El flujo de trabajo no existe"
 
-#: backend/src/controllers/verifier.py:590
+#: backend/src/controllers/verifier.py:588
 #: backend/src/controllers/workflow.py:453
 #: backend/src/scripting_functions.py:171
 #: backend/src/scripting_functions.py:234
@@ -132,32 +132,32 @@ msgstr ""
 "Cadena de salida <strong>%(label)s</strong> ejecutada en el lote "
 "n°<strong>%(batch)s</strong>"
 
-#: backend/src/splitter_exports.py:198 backend/src/splitter_exports.py:345
+#: backend/src/splitter_exports.py:198 backend/src/splitter_exports.py:347
 msgid "EXPORT_PDF_ERROR"
 msgstr "Error al exportando PDF"
 
-#: backend/src/splitter_exports.py:275
+#: backend/src/splitter_exports.py:276
 msgid "EXPORT_VERIFIER_ERROR"
 msgstr "Error exportando al verificador del módulo"
 
-#: backend/src/splitter_exports.py:286
+#: backend/src/splitter_exports.py:287
 msgid "EXPORT_OPENCAPTUREFORMEM_ERROR"
 msgstr "Error exportando Open-Capture para MEM"
 
-#: backend/src/splitter_exports.py:310 backend/src/splitter_exports.py:378
-#: backend/src/verifier_exports.py:1098
+#: backend/src/splitter_exports.py:312 backend/src/splitter_exports.py:380
+#: backend/src/verifier_exports.py:1099
 msgid "EXPORT_XML_ERROR"
 msgstr "Error al exportar XML"
 
-#: backend/src/splitter_exports.py:403
+#: backend/src/splitter_exports.py:405
 msgid "CHECK_FOLDER_ERROR"
 msgstr "Error de carpeta de control"
 
-#: backend/src/splitter_exports.py:404
+#: backend/src/splitter_exports.py:406
 msgid "FOLDER_DOES_NOT_EXIST"
 msgstr "La carpeta no existe"
 
-#: backend/src/splitter_exports.py:424
+#: backend/src/splitter_exports.py:426
 msgid "OPENADS_ADD_DOC_ERROR"
 msgstr "Error al añadir un documento OpenADS"
 
@@ -204,65 +204,65 @@ msgstr "La información de OpenCRM es incorrecta"
 msgid "OPENCRM_WS_INFO_EMPTY"
 msgstr "La información de OpenCRM está vacía"
 
-#: backend/src/verifier_exports.py:1002 backend/src/verifier_exports.py:1009
-#: backend/src/verifier_exports.py:1016 backend/src/verifier_exports.py:1019
+#: backend/src/verifier_exports.py:1003 backend/src/verifier_exports.py:1010
+#: backend/src/verifier_exports.py:1017 backend/src/verifier_exports.py:1020
 msgid "EXPORT_MEM_ERROR"
 msgstr "Error durante la exportación de MEM Courrier"
 
-#: backend/src/verifier_exports.py:1010 backend/src/verifier_exports.py:1012
+#: backend/src/verifier_exports.py:1011 backend/src/verifier_exports.py:1013
 msgid "PDF_FILE_NOT_FOUND"
 msgstr "Archivo PDF no encontrado"
 
-#: backend/src/verifier_exports.py:1023
+#: backend/src/verifier_exports.py:1024
 msgid "MEM_WS_INFO_WRONG"
 msgstr "La información de MEM Courrier es incorrecta"
 
-#: backend/src/verifier_exports.py:1030 backend/src/verifier_exports.py:1033
+#: backend/src/verifier_exports.py:1031 backend/src/verifier_exports.py:1034
 msgid "MEM_WS_INFO_EMPTY"
 msgstr "La información de MEM Courrier está vacía"
 
-#: backend/src/verifier_exports.py:1047 backend/src/verifier_exports.py:1115
+#: backend/src/verifier_exports.py:1048 backend/src/verifier_exports.py:1116
 msgid "EXPORT_CMIS_ERROR"
 msgstr "Error al exportar CMIS"
 
-#: backend/src/verifier_exports.py:1121 backend/src/verifier_exports.py:1124
+#: backend/src/verifier_exports.py:1122 backend/src/verifier_exports.py:1125
 msgid "CMIS_WS_INFO_WRONG"
 msgstr "La información de conexión CMIS es incorrecta"
 
-#: backend/src/verifier_exports.py:1128 backend/src/verifier_exports.py:1131
+#: backend/src/verifier_exports.py:1129 backend/src/verifier_exports.py:1132
 msgid "CMIS_WS_INFO_EMPTY"
 msgstr "La información de conexión CMIS está vacía"
 
 #: backend/src/classes/COOGWebServices.py:44
 #: backend/src/classes/MEMWebServices.py:40
-#: backend/src/classes/OpenCRMWebServices.py:44
+#: backend/src/classes/OpenCRMWebServices.py:43
 msgid "HOST_NOT_FOUND"
 msgstr "Host no encontrado"
 
 #: backend/src/classes/COOGWebServices.py:46
 #: backend/src/classes/COOGWebServices.py:52
-#: backend/src/classes/OpenCRMWebServices.py:46
-#: backend/src/classes/OpenCRMWebServices.py:52
+#: backend/src/classes/OpenCRMWebServices.py:45
+#: backend/src/classes/OpenCRMWebServices.py:51
 msgid "SERVER_ERROR"
 msgstr "Error del servidor"
 
-#: backend/src/classes/Mail.py:271
+#: backend/src/classes/Mail.py:263
 msgid "FROM"
 msgstr "Desde"
 
-#: backend/src/classes/Mail.py:272
+#: backend/src/classes/Mail.py:264
 msgid "SEND"
 msgstr "Enviar"
 
-#: backend/src/classes/Mail.py:273
+#: backend/src/classes/Mail.py:265
 msgid "TO"
 msgstr "A"
 
-#: backend/src/classes/Mail.py:275
+#: backend/src/classes/Mail.py:267
 msgid "COPIES"
 msgstr "Copias"
 
-#: backend/src/classes/Mail.py:276
+#: backend/src/classes/Mail.py:268
 msgid "SUBJECT"
 msgstr "Sujeto"
 
@@ -665,82 +665,94 @@ msgstr "Información incorrecta"
 msgid "NOT_COMPLETE_CONNECTION_INFOS"
 msgstr "Falta una o más informaciones para establecer la conexión"
 
-#: backend/src/controllers/config.py:54
+#: backend/src/controllers/config.py:57
 msgid "LANGUAGE_CHANGED"
 msgstr "Cambio de idioma a&nbsp;<strong>%(lang)s</strong>"
 
-#: backend/src/controllers/config.py:69
+#: backend/src/controllers/config.py:72
 msgid "RETRIEVE_CONFIGURATION_ERRORS"
 msgstr "Error al recuperar la configuración"
 
-#: backend/src/controllers/config.py:99
+#: backend/src/controllers/config.py:102
 msgid "RETRIEVE_CONFIGURATIONS_ERRORS"
 msgstr "Error al recuperar la configuraciones"
 
-#: backend/src/controllers/config.py:130
+#: backend/src/controllers/config.py:133
 msgid "RETRIEVE_DOCSERVERS_ERRORS"
 msgstr "Error al recuperar los archivos de servidor"
 
-#: backend/src/controllers/config.py:163 backend/src/controllers/config.py:178
+#: backend/src/controllers/config.py:166 backend/src/controllers/config.py:182
 msgid "RETRIEVE_REGEX_ERRORS"
 msgstr "Error al recuperar regex"
 
-#: backend/src/controllers/config.py:189 backend/src/controllers/config.py:218
-#: backend/src/controllers/config.py:230 backend/src/controllers/config.py:257
+#: backend/src/controllers/config.py:194 backend/src/controllers/config.py:223
+#: backend/src/controllers/config.py:235 backend/src/controllers/config.py:262
 #: backend/src/models/config.py:150 backend/src/models/config.py:169
 msgid "UPDATE_CONFIGURATION_ERROR"
 msgstr "Error al actualizar la configuración"
 
-#: backend/src/controllers/config.py:190 backend/src/controllers/config.py:231
+#: backend/src/controllers/config.py:195 backend/src/controllers/config.py:236
 msgid "JWT_EXPIRATION_COULDNT_BE_ZERO_OR_LESS"
 msgstr "El valor de expiración del token no puede ser 0 o menos"
 
-#: backend/src/controllers/config.py:213 backend/src/controllers/config.py:252
+#: backend/src/controllers/config.py:218 backend/src/controllers/config.py:257
 msgid "UPDATE_CONFIGURATION"
 msgstr "Actualización de la configuración&nbsp;<strong>%(config)s</strong>"
 
-#: backend/src/controllers/config.py:280
+#: backend/src/controllers/config.py:285
 msgid "UPDATE_REGEX"
 msgstr "Actualización de la regex&nbsp;<strong>%(regex)s</strong>"
 
-#: backend/src/controllers/config.py:285 backend/src/models/config.py:186
+#: backend/src/controllers/config.py:290 backend/src/models/config.py:186
 msgid "UPDATE_REGEX_ERROR"
 msgstr "Error al actualizar Regex"
 
-#: backend/src/controllers/config.py:307
+#: backend/src/controllers/config.py:312
 msgid "UPDATE_DOCSERVER"
 msgstr ""
 "Actualización de la zona de "
 "almacenamiento&nbsp;<strong>%(docserver)s</strong>"
 
-#: backend/src/controllers/config.py:312 backend/src/models/config.py:207
+#: backend/src/controllers/config.py:317 backend/src/models/config.py:207
 msgid "UPDATE_DOCSERVER_ERROR"
 msgstr "Error al actualizar el archivo de servidor"
 
-#: backend/src/controllers/config.py:365 backend/src/controllers/config.py:386
-#: backend/src/controllers/config.py:391
+#: backend/src/controllers/config.py:370 backend/src/controllers/config.py:391
+#: backend/src/controllers/config.py:396
 msgid "ERROR_UPDATING_IMAGE"
 msgstr "Error al actualizar la imágen"
 
-#: backend/src/controllers/config.py:366 backend/src/controllers/config.py:387
+#: backend/src/controllers/config.py:371 backend/src/controllers/config.py:392
 msgid "CUSTOM_IMAGE_PATH_NOT_WRITEABLE_OR_NOT_EXISTS"
 msgstr "La ruta de la imagen personalizada no es editable"
 
-#: backend/src/controllers/config.py:381
+#: backend/src/controllers/config.py:386
 msgid "UPDATE_LOGIN_IMAGE"
 msgstr "Imagen de inicio de sesión actualizada"
 
-#: backend/src/controllers/config.py:392 backend/src/controllers/user.py:588
+#: backend/src/controllers/config.py:397 backend/src/controllers/user.py:588
 msgid "CUSTOM_NOT_PRESENT"
 msgstr "No hay personalizable"
 
-#: backend/src/controllers/config.py:402
+#: backend/src/controllers/config.py:408
 msgid "RETRIEVE_FAVORITES_ERRORS"
 msgstr "Error al recuperar los favoritos"
 
-#: backend/src/controllers/config.py:413
+#: backend/src/controllers/config.py:420
 msgid "ADD_FAVORITE_ERROR"
 msgstr "Error al añadir el favorito"
+
+#: backend/src/controllers/config.py:451 backend/src/controllers/config.py:483
+msgid "CERTIFIED_COPY_ERROR"
+msgstr "Error en la copia verdadera"
+
+#: backend/src/controllers/config.py:452 backend/src/controllers/config.py:484
+msgid "CERTIFIED_COPY_NOT_FOUND"
+msgstr "No existe el archivo de configuración de copia exacta."
+
+#: backend/src/controllers/config.py:478
+msgid "UPDATE_CERTIFIED_COPY"
+msgstr "Error al actualizar la configuración de copia verdadera"
 
 #: backend/src/controllers/custom_fields.py:34
 #: backend/src/controllers/custom_fields.py:96
@@ -757,37 +769,37 @@ msgstr "Error al recuperar el campo personalizado"
 msgid "CUSTOM_FIELDS_DELETE_ERROR"
 msgstr "Error al eliminar un campo personalizado"
 
-#: backend/src/controllers/doctypes.py:36
-#: backend/src/controllers/doctypes.py:78 backend/src/models/doctypes.py:110
+#: backend/src/controllers/doctypes.py:35
+#: backend/src/controllers/doctypes.py:77 backend/src/models/doctypes.py:110
 #: backend/src/models/doctypes.py:113
 msgid "SET_DEFAULT_DOCTYPE_ERROR"
 msgstr "Error al actualizar el tipo de documento predeterminado"
 
-#: backend/src/controllers/doctypes.py:42 backend/src/models/doctypes.py:45
+#: backend/src/controllers/doctypes.py:41 backend/src/models/doctypes.py:45
 msgid "ADD_DOCTYPE_ERROR"
 msgstr "Error al añadir el tipo de documento"
 
-#: backend/src/controllers/doctypes.py:62
-#: backend/src/controllers/doctypes.py:98
-#: backend/src/controllers/doctypes.py:111
-#: backend/src/controllers/doctypes.py:158
-#: backend/src/controllers/doctypes.py:189
-#: backend/src/controllers/doctypes.py:228
-#: backend/src/controllers/doctypes.py:256
-#: backend/src/controllers/doctypes.py:279
-#: backend/src/controllers/doctypes.py:307
+#: backend/src/controllers/doctypes.py:61
+#: backend/src/controllers/doctypes.py:97
+#: backend/src/controllers/doctypes.py:110
+#: backend/src/controllers/doctypes.py:155
+#: backend/src/controllers/doctypes.py:186
+#: backend/src/controllers/doctypes.py:225
+#: backend/src/controllers/doctypes.py:253
+#: backend/src/controllers/doctypes.py:276
+#: backend/src/controllers/doctypes.py:304
 msgid "DOCTYPE_ERROR"
 msgstr "Tipo del documento erróneo"
 
-#: backend/src/controllers/doctypes.py:125
+#: backend/src/controllers/doctypes.py:122
 msgid "BUNDLESEPARATOR"
 msgstr "Separador de lotes"
 
-#: backend/src/controllers/doctypes.py:132
+#: backend/src/controllers/doctypes.py:129
 msgid "DOCUMENTSEPARATOR"
 msgstr "Separador de documento"
 
-#: backend/src/controllers/doctypes.py:151
+#: backend/src/controllers/doctypes.py:148
 msgid "DOCTYPESEPARATOR"
 msgstr "Separador con el tipo de documentos"
 
@@ -1141,7 +1153,7 @@ msgstr "Eliminación de lote correcta"
 
 #: backend/src/controllers/splitter.py:303
 #: backend/src/controllers/splitter.py:324
-#: backend/src/controllers/verifier.py:809
+#: backend/src/controllers/verifier.py:807
 msgid "UPDATE_STATUS_ERROR"
 msgstr "Error al actualizar estado"
 
@@ -1194,7 +1206,7 @@ msgid "CMIS_FOLDER_ERROR_MESSAGE"
 msgstr "Error al chequear carpeta"
 
 #: backend/src/controllers/splitter.py:795
-#: backend/src/controllers/verifier.py:788 backend/src/models/splitter.py:490
+#: backend/src/controllers/verifier.py:786 backend/src/models/splitter.py:490
 #: backend/src/models/splitter.py:544 backend/src/models/verifier.py:174
 #: backend/src/models/verifier.py:228
 msgid "GET_TOTALS_ERROR"
@@ -1335,12 +1347,12 @@ msgid "PROCESS_NOT_FOUND"
 msgstr "Proceso no encontrado"
 
 #: backend/src/controllers/verifier.py:73 backend/src/rest/attachments.py:113
-#: backend/src/rest/attachments.py:124 backend/src/rest/verifier.py:645
+#: backend/src/rest/attachments.py:124 backend/src/rest/verifier.py:644
 msgid "FILE_NOT_FOUND"
 msgstr "Archivo no encontrado"
 
-#: backend/src/controllers/verifier.py:82 backend/src/rest/splitter.py:53
-#: backend/src/rest/verifier.py:105
+#: backend/src/controllers/verifier.py:82 backend/src/rest/splitter.py:52
+#: backend/src/rest/verifier.py:104
 msgid "UNKNOW_ERROR"
 msgstr "Error desconocido"
 
@@ -1381,19 +1393,19 @@ msgstr "Eliminación de documento correcto"
 msgid "DELETE_DOCUMENT_ERROR"
 msgstr "Error al eliminar documento"
 
-#: backend/src/controllers/verifier.py:799
+#: backend/src/controllers/verifier.py:797
 msgid "DOCUMENT_NOT_FOUND"
 msgstr "Documento no encontrado"
 
-#: backend/src/controllers/verifier.py:800
+#: backend/src/controllers/verifier.py:798
 msgid "DOCUMENT_ID_NOT_FOUND"
 msgstr "ID de documento no encontrado"
 
-#: backend/src/controllers/verifier.py:839
+#: backend/src/controllers/verifier.py:837
 msgid "NO_FORM"
 msgstr "No hay formulario"
 
-#: backend/src/controllers/verifier.py:850
+#: backend/src/controllers/verifier.py:848
 msgid "FORM_NOT_FOUND"
 msgstr "El formulario no existe"
 
@@ -1506,26 +1518,26 @@ msgstr "Error al eliminar fs watcher"
 #: backend/src/rest/auth.py:164 backend/src/rest/auth.py:197
 #: backend/src/rest/auth.py:230 backend/src/rest/auth.py:255
 #: backend/src/rest/auth.py:274 backend/src/rest/config.py:57
-#: backend/src/rest/config.py:101 backend/src/rest/config.py:122
-#: backend/src/rest/config.py:153 backend/src/rest/config.py:178
-#: backend/src/rest/config.py:201 backend/src/rest/config.py:225
-#: backend/src/rest/config.py:248 backend/src/rest/config.py:293
-#: backend/src/rest/config.py:312 backend/src/rest/coog.py:37
-#: backend/src/rest/custom_fields.py:47 backend/src/rest/doctypes.py:60
-#: backend/src/rest/forms.py:46 backend/src/rest/forms.py:86
-#: backend/src/rest/forms.py:131 backend/src/rest/forms.py:152
-#: backend/src/rest/forms.py:172 backend/src/rest/forms.py:197
-#: backend/src/rest/forms.py:268 backend/src/rest/history.py:40
-#: backend/src/rest/history.py:69 backend/src/rest/history.py:89
-#: backend/src/rest/mailcollect.py:60 backend/src/rest/mailcollect.py:89
-#: backend/src/rest/mailcollect.py:110 backend/src/rest/mailcollect.py:139
-#: backend/src/rest/mem.py:37 backend/src/rest/mem.py:56
-#: backend/src/rest/mem.py:75 backend/src/rest/mem.py:94
-#: backend/src/rest/mem.py:113 backend/src/rest/mem.py:132
-#: backend/src/rest/mem.py:151 backend/src/rest/mem.py:170
-#: backend/src/rest/mem.py:189 backend/src/rest/mem.py:219
-#: backend/src/rest/monitoring.py:70 backend/src/rest/monitoring.py:103
-#: backend/src/rest/opencaptureformem.py:37
+#: backend/src/rest/config.py:90 backend/src/rest/config.py:134
+#: backend/src/rest/config.py:155 backend/src/rest/config.py:187
+#: backend/src/rest/config.py:212 backend/src/rest/config.py:235
+#: backend/src/rest/config.py:259 backend/src/rest/config.py:282
+#: backend/src/rest/config.py:327 backend/src/rest/config.py:346
+#: backend/src/rest/coog.py:37 backend/src/rest/custom_fields.py:47
+#: backend/src/rest/doctypes.py:60 backend/src/rest/forms.py:46
+#: backend/src/rest/forms.py:86 backend/src/rest/forms.py:131
+#: backend/src/rest/forms.py:152 backend/src/rest/forms.py:172
+#: backend/src/rest/forms.py:197 backend/src/rest/forms.py:268
+#: backend/src/rest/history.py:40 backend/src/rest/history.py:69
+#: backend/src/rest/history.py:89 backend/src/rest/mailcollect.py:60
+#: backend/src/rest/mailcollect.py:89 backend/src/rest/mailcollect.py:110
+#: backend/src/rest/mailcollect.py:139 backend/src/rest/mem.py:37
+#: backend/src/rest/mem.py:56 backend/src/rest/mem.py:75
+#: backend/src/rest/mem.py:94 backend/src/rest/mem.py:113
+#: backend/src/rest/mem.py:132 backend/src/rest/mem.py:151
+#: backend/src/rest/mem.py:170 backend/src/rest/mem.py:189
+#: backend/src/rest/mem.py:219 backend/src/rest/monitoring.py:70
+#: backend/src/rest/monitoring.py:103 backend/src/rest/opencaptureformem.py:37
 #: backend/src/rest/opencaptureformem.py:55 backend/src/rest/opencrm.py:37
 #: backend/src/rest/outputs.py:40 backend/src/rest/outputs.py:111
 #: backend/src/rest/outputs.py:149 backend/src/rest/outputs.py:181
@@ -1534,25 +1546,24 @@ msgstr "Error al eliminar fs watcher"
 #: backend/src/rest/positions_masks.py:98 backend/src/rest/roles.py:40
 #: backend/src/rest/roles.py:74 backend/src/rest/roles.py:93
 #: backend/src/rest/roles.py:124 backend/src/rest/smtp.py:39
-#: backend/src/rest/splitter.py:84 backend/src/rest/splitter.py:106
-#: backend/src/rest/splitter.py:148 backend/src/rest/splitter.py:168
-#: backend/src/rest/splitter.py:188 backend/src/rest/splitter.py:223
-#: backend/src/rest/splitter.py:244 backend/src/rest/splitter.py:323
+#: backend/src/rest/splitter.py:83 backend/src/rest/splitter.py:105
+#: backend/src/rest/splitter.py:147 backend/src/rest/splitter.py:167
+#: backend/src/rest/splitter.py:187 backend/src/rest/splitter.py:222
+#: backend/src/rest/splitter.py:243 backend/src/rest/splitter.py:322
 #: backend/src/rest/status.py:44 backend/src/rest/user.py:47
 #: backend/src/rest/user.py:72 backend/src/rest/user.py:94
 #: backend/src/rest/user.py:132 backend/src/rest/user.py:149
 #: backend/src/rest/user.py:165 backend/src/rest/user.py:193
-#: backend/src/rest/user.py:277 backend/src/rest/verifier.py:59
-#: backend/src/rest/verifier.py:141 backend/src/rest/verifier.py:169
-#: backend/src/rest/verifier.py:241 backend/src/rest/verifier.py:266
-#: backend/src/rest/verifier.py:291 backend/src/rest/verifier.py:314
-#: backend/src/rest/verifier.py:337 backend/src/rest/verifier.py:359
-#: backend/src/rest/verifier.py:383 backend/src/rest/verifier.py:404
-#: backend/src/rest/verifier.py:438 backend/src/rest/verifier.py:468
-#: backend/src/rest/verifier.py:498 backend/src/rest/verifier.py:554
-#: backend/src/rest/verifier.py:593 backend/src/rest/verifier.py:627
-#: backend/src/rest/verifier.py:674 backend/src/rest/verifier.py:696
-#: backend/src/rest/verifier.py:722 backend/src/rest/verifier.py:744
+#: backend/src/rest/user.py:277 backend/src/rest/verifier.py:58
+#: backend/src/rest/verifier.py:140 backend/src/rest/verifier.py:168
+#: backend/src/rest/verifier.py:240 backend/src/rest/verifier.py:265
+#: backend/src/rest/verifier.py:290 backend/src/rest/verifier.py:313
+#: backend/src/rest/verifier.py:336 backend/src/rest/verifier.py:358
+#: backend/src/rest/verifier.py:382 backend/src/rest/verifier.py:403
+#: backend/src/rest/verifier.py:437 backend/src/rest/verifier.py:467
+#: backend/src/rest/verifier.py:497 backend/src/rest/verifier.py:553
+#: backend/src/rest/verifier.py:592 backend/src/rest/verifier.py:626
+#: backend/src/rest/verifier.py:667 backend/src/rest/verifier.py:689
 #: backend/src/rest/workflow.py:41 backend/src/rest/workflow.py:69
 #: backend/src/rest/workflow.py:92 backend/src/rest/workflow.py:143
 #: backend/src/rest/workflow.py:184 backend/src/rest/workflow.py:210
@@ -1825,13 +1836,14 @@ msgstr "Error al actualizar flujo de trabajo"
 #: backend/src/rest/auth.py:176 backend/src/rest/auth.py:209
 #: backend/src/rest/auth.py:248 backend/src/rest/auth.py:267
 #: backend/src/rest/config.py:35 backend/src/rest/config.py:48
-#: backend/src/rest/config.py:69 backend/src/rest/config.py:81
-#: backend/src/rest/config.py:92 backend/src/rest/config.py:113
-#: backend/src/rest/config.py:133 backend/src/rest/config.py:143
-#: backend/src/rest/config.py:171 backend/src/rest/config.py:190
-#: backend/src/rest/config.py:213 backend/src/rest/config.py:237
-#: backend/src/rest/config.py:285 backend/src/rest/config.py:303
-#: backend/src/rest/config.py:323 backend/src/rest/custom_fields.py:34
+#: backend/src/rest/config.py:69 backend/src/rest/config.py:79
+#: backend/src/rest/config.py:102 backend/src/rest/config.py:114
+#: backend/src/rest/config.py:125 backend/src/rest/config.py:146
+#: backend/src/rest/config.py:167 backend/src/rest/config.py:177
+#: backend/src/rest/config.py:205 backend/src/rest/config.py:224
+#: backend/src/rest/config.py:247 backend/src/rest/config.py:271
+#: backend/src/rest/config.py:319 backend/src/rest/config.py:337
+#: backend/src/rest/config.py:357 backend/src/rest/custom_fields.py:34
 #: backend/src/rest/custom_fields.py:59 backend/src/rest/custom_fields.py:69
 #: backend/src/rest/custom_fields.py:79 backend/src/rest/custom_fields.py:90
 #: backend/src/rest/custom_fields.py:100 backend/src/rest/doctypes.py:32
@@ -1873,53 +1885,52 @@ msgstr "Error al actualizar flujo de trabajo"
 #: backend/src/rest/privileges.py:39 backend/src/rest/roles.py:55
 #: backend/src/rest/roles.py:65 backend/src/rest/roles.py:86
 #: backend/src/rest/roles.py:105 backend/src/rest/roles.py:115
-#: backend/src/rest/splitter.py:32 backend/src/rest/splitter.py:60
-#: backend/src/rest/splitter.py:70 backend/src/rest/splitter.py:98
-#: backend/src/rest/splitter.py:118 backend/src/rest/splitter.py:128
-#: backend/src/rest/splitter.py:139 backend/src/rest/splitter.py:160
-#: backend/src/rest/splitter.py:180 backend/src/rest/splitter.py:200
-#: backend/src/rest/splitter.py:210 backend/src/rest/splitter.py:235
-#: backend/src/rest/splitter.py:256 backend/src/rest/splitter.py:267
-#: backend/src/rest/splitter.py:278 backend/src/rest/splitter.py:289
-#: backend/src/rest/splitter.py:300 backend/src/rest/splitter.py:311
-#: backend/src/rest/splitter.py:335 backend/src/rest/splitter.py:346
-#: backend/src/rest/splitter.py:361 backend/src/rest/splitter.py:364
-#: backend/src/rest/splitter.py:383 backend/src/rest/splitter.py:395
-#: backend/src/rest/splitter.py:406 backend/src/rest/splitter.py:416
-#: backend/src/rest/splitter.py:426 backend/src/rest/splitter.py:436
+#: backend/src/rest/splitter.py:31 backend/src/rest/splitter.py:59
+#: backend/src/rest/splitter.py:69 backend/src/rest/splitter.py:97
+#: backend/src/rest/splitter.py:117 backend/src/rest/splitter.py:127
+#: backend/src/rest/splitter.py:138 backend/src/rest/splitter.py:159
+#: backend/src/rest/splitter.py:179 backend/src/rest/splitter.py:199
+#: backend/src/rest/splitter.py:209 backend/src/rest/splitter.py:234
+#: backend/src/rest/splitter.py:255 backend/src/rest/splitter.py:266
+#: backend/src/rest/splitter.py:277 backend/src/rest/splitter.py:288
+#: backend/src/rest/splitter.py:299 backend/src/rest/splitter.py:310
+#: backend/src/rest/splitter.py:334 backend/src/rest/splitter.py:345
+#: backend/src/rest/splitter.py:360 backend/src/rest/splitter.py:363
+#: backend/src/rest/splitter.py:382 backend/src/rest/splitter.py:394
+#: backend/src/rest/splitter.py:405 backend/src/rest/splitter.py:415
+#: backend/src/rest/splitter.py:425 backend/src/rest/splitter.py:435
 #: backend/src/rest/status.py:31 backend/src/rest/user.py:31
 #: backend/src/rest/user.py:59 backend/src/rest/user.py:84
 #: backend/src/rest/user.py:106 backend/src/rest/user.py:117
 #: backend/src/rest/user.py:178 backend/src/rest/user.py:205
 #: backend/src/rest/user.py:215 backend/src/rest/user.py:225
 #: backend/src/rest/user.py:242 backend/src/rest/user.py:252
-#: backend/src/rest/user.py:267 backend/src/rest/verifier.py:46
-#: backend/src/rest/verifier.py:112 backend/src/rest/verifier.py:123
-#: backend/src/rest/verifier.py:154 backend/src/rest/verifier.py:182
-#: backend/src/rest/verifier.py:194 backend/src/rest/verifier.py:205
-#: backend/src/rest/verifier.py:217 backend/src/rest/verifier.py:229
-#: backend/src/rest/verifier.py:254 backend/src/rest/verifier.py:279
-#: backend/src/rest/verifier.py:304 backend/src/rest/verifier.py:327
-#: backend/src/rest/verifier.py:349 backend/src/rest/verifier.py:371
-#: backend/src/rest/verifier.py:394 backend/src/rest/verifier.py:416
-#: backend/src/rest/verifier.py:427 backend/src/rest/verifier.py:457
-#: backend/src/rest/verifier.py:487 backend/src/rest/verifier.py:518
-#: backend/src/rest/verifier.py:529 backend/src/rest/verifier.py:541
-#: backend/src/rest/verifier.py:581 backend/src/rest/verifier.py:619
-#: backend/src/rest/verifier.py:640 backend/src/rest/verifier.py:654
-#: backend/src/rest/verifier.py:665 backend/src/rest/verifier.py:687
-#: backend/src/rest/verifier.py:707 backend/src/rest/verifier.py:735
-#: backend/src/rest/verifier.py:756 backend/src/rest/workflow.py:32
-#: backend/src/rest/workflow.py:54 backend/src/rest/workflow.py:84
-#: backend/src/rest/workflow.py:110 backend/src/rest/workflow.py:122
-#: backend/src/rest/workflow.py:134 backend/src/rest/workflow.py:157
-#: backend/src/rest/workflow.py:169 backend/src/rest/workflow.py:197
-#: backend/src/rest/workflow.py:222 backend/src/rest/workflow.py:233
+#: backend/src/rest/user.py:267 backend/src/rest/verifier.py:45
+#: backend/src/rest/verifier.py:111 backend/src/rest/verifier.py:122
+#: backend/src/rest/verifier.py:153 backend/src/rest/verifier.py:181
+#: backend/src/rest/verifier.py:193 backend/src/rest/verifier.py:204
+#: backend/src/rest/verifier.py:216 backend/src/rest/verifier.py:228
+#: backend/src/rest/verifier.py:253 backend/src/rest/verifier.py:278
+#: backend/src/rest/verifier.py:303 backend/src/rest/verifier.py:326
+#: backend/src/rest/verifier.py:348 backend/src/rest/verifier.py:370
+#: backend/src/rest/verifier.py:393 backend/src/rest/verifier.py:415
+#: backend/src/rest/verifier.py:426 backend/src/rest/verifier.py:456
+#: backend/src/rest/verifier.py:486 backend/src/rest/verifier.py:517
+#: backend/src/rest/verifier.py:528 backend/src/rest/verifier.py:540
+#: backend/src/rest/verifier.py:580 backend/src/rest/verifier.py:618
+#: backend/src/rest/verifier.py:639 backend/src/rest/verifier.py:652
+#: backend/src/rest/verifier.py:680 backend/src/rest/verifier.py:701
+#: backend/src/rest/workflow.py:32 backend/src/rest/workflow.py:54
+#: backend/src/rest/workflow.py:84 backend/src/rest/workflow.py:110
+#: backend/src/rest/workflow.py:122 backend/src/rest/workflow.py:134
+#: backend/src/rest/workflow.py:157 backend/src/rest/workflow.py:169
+#: backend/src/rest/workflow.py:197 backend/src/rest/workflow.py:222
+#: backend/src/rest/workflow.py:233
 msgid "UNAUTHORIZED_ROUTE"
 msgstr "No estás autorizado a acceder a esta ruta"
 
 #: backend/src/rest/attachments.py:113 backend/src/rest/attachments.py:124
-#: backend/src/rest/verifier.py:645
+#: backend/src/rest/verifier.py:644
 msgid "DOWNLOAD_FILE"
 msgstr "Descargar archivo"
 
@@ -1937,14 +1948,17 @@ msgstr "Error al conectar con MEM Courrier REST"
 
 #: backend/src/rest/mem.py:197
 msgid "CHECK_MEM_CONNECTION"
-msgstr "Por favor, verifique la información de conexión de MEM Courrier en la cadena de correo saliente asociada a este formulario."
+msgstr ""
+"Por favor, verifique la información de conexión de MEM Courrier en la "
+"cadena de correo saliente asociada a este formulario."
 
-#: backend/src/rest/verifier.py:100
+#: backend/src/rest/verifier.py:99
 msgid "UNIQUE_URL_TOKEN_GENERATION_ERROR"
 msgstr "Error al generar token de url única"
 
-#: backend/src/rest/verifier.py:101
+#: backend/src/rest/verifier.py:100
 msgid "INTERFACE_IS_NOT_USED_OR_FORM_UNIQUE_URL_NOT_SET"
 msgstr ""
 "El uso de la interfaz no está configurado en el flujo de trabajo o la "
 "configuración de la url única está malformada en el formulario"
+

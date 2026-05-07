@@ -1149,7 +1149,8 @@
         "update": "Actualizar el flujo de trabajo",
         "updating": "Actualizando el flujo de trabajo...",
         "validating": "Validando el paso...",
-        "customer_required": "Es obligatorio tener una cuenta de cliente"
+        "customer_required": "Es obligatorio tener una cuenta de cliente",
+        "certified_copy": ""
     },
     "MONITORING": {
         "processes": "Procesos",

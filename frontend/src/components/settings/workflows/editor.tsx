@@ -323,6 +323,13 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 label: t("WORKFLOWS.facturx_only")
             }))
         });
+    } else {
+        inputSchemaEndSwitchs = inputSchemaEndSwitchs.extend({
+            certified_copy: z.boolean().optional().describe(JSON.stringify({
+                component: "input_switch",
+                label: t("WORKFLOWS.certified_copy")
+            }))
+        });
     }
 
     const inputSchema = inputSchemaFields.extend(inputSchemaEndSwitchs.shape);
@@ -443,6 +450,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             allow_third_party_validation: false,
             override_supplier_form: false,
             facturx_only: false,
+            certified_copy: false,
             remove_blank_pages: true,
             apply_process: true,
             use_interface: true,
@@ -567,6 +575,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 splitter_method_id: data.splitter_method_id,
                 separate_by_document_number_value: data.separate_by_document_number_value,
                 facturx_only: data.facturx_only,
+                certified_copy: data.certified_copy,
                 remove_blank_pages: data.remove_blank_pages,
                 apply_process: data.apply_process,
             },

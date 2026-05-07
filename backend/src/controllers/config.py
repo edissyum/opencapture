@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import glob
+import json
 import base64
 import os.path
 import requests
@@ -438,12 +439,45 @@ def get_packages():
 
     return packages
 
+
 def get_certified_copy():
     path = shared.custom_path + '/journal/config/config.json'
     if os.path.isfile(path):
         with open(path, 'r') as f:
             config_data = f.read()
             return config_data, 200
+    else:
+        response = {
+            "errors": gettext("CERTIFIED_COPY_ERROR"),
+            "message": gettext("CERTIFIED_COPY_NOT_FOUND")
+        }
+        return response, 400
+
+def update_certified_copy(args):
+    path = shared.custom_path + '/journal/config/config.json'
+    if os.path.isfile(path):
+        with open(path, 'r') as f:
+            data = json.load(f)
+
+        data['enabled'] = args['enabled']
+        data['provider'] = args['provider']
+        if data[args['provider']]:
+            data[args['provider']]['url'] = args['url']
+            if args['provider'] == 'certinomis':
+                data[args['provider']]['key'] = args['key']
+                data[args['provider']]['cert'] = args['cert']
+
+        with open(path, "w") as f:
+            json.dump(data, f, indent=4)
+
+        history.add_history({
+            'module': 'general',
+            'ip': request.remote_addr,
+            'submodule': 'update_certified_copy',
+            'user_info': request.environ['user_info'],
+            'desc': gettext('UPDATE_CERTIFIED_COPY')
+        })
+        return '', 200
     else:
         response = {
             "errors": gettext("CERTIFIED_COPY_ERROR"),

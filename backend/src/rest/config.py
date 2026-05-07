@@ -61,22 +61,24 @@ def get_configurations():
     res = config.retrieve_configurations(request.args)
     return make_response(jsonify(res[0])), res[1]
 
+
 @bp.route('config/getCertifiedCopy', methods=['GET'])
 @auth.token_required
 def get_certified_copy():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'certified_copy']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/config/updateCertifiedCopy'}), 403
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/config/getCertifiedCopy'}), 403
 
     res = config.get_certified_copy()
     return make_response(jsonify(res[0])), res[1]
 
-@bp.route('config/updateCertifiedCopy', methods=['GET'])
+
+@bp.route('config/updateCertifiedCopy', methods=['PUT'])
 @auth.token_required
 def update_certified_copy():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'certified_copy']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/config/updateCertifiedCopy'}), 403
 
-    check, message = rest_validator(request.args, [
+    check, message = rest_validator(request.json, [
         {'id': 'url', 'type': str, 'mandatory': True},
         {'id': 'key', 'type': str, 'mandatory': False},
         {'id': 'cert', 'type': str, 'mandatory': False},
@@ -89,7 +91,7 @@ def update_certified_copy():
             "message": message
         }, 400)
 
-    res = config.retrieve_configurations(request.args)
+    res = config.update_certified_copy(request.json)
     return make_response(jsonify(res[0])), res[1]
 
 
