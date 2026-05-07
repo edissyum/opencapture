@@ -51,7 +51,7 @@ export const DraggablePage = React.memo(function DraggablePage({
         id: `page-${ page.id }`,
         data: { page, documentId, type: 'page' }
     });
-    console.log(menuItems)
+
     const cm = useRef<any>(null);
 
     const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
