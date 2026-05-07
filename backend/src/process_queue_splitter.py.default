@@ -169,7 +169,7 @@ def launch(args):
                     attachments = args['attachments']
 
                 if check_file(files, path, log):
-                    if nfz42020.enabled:
+                    if workflow_settings[0]['input'].get('certified_copy') and nfz42020.enabled:
                         nfz42020.log_event('FILE_RECEIVED')
 
                     if 'workflow_id' in args and args['workflow_id']:
@@ -234,7 +234,7 @@ def launch(args):
         })
 
         for batch_id in created_batches:
-            if nfz42020.enabled:
+            if workflow_settings[0]['input'].get('certified_copy') and nfz42020.enabled:
                 splitter_docservers = docservers['SPLITTER_ORIGINAL_DOC']
                 batch_data = database.select({
                     'select': ['file_path'],
@@ -281,7 +281,7 @@ def launch(args):
                         }
                     })
 
-        if nfz42020.enabled:
+        if workflow_settings[0]['input'].get('certified_copy') and nfz42020.enabled:
             nfz42020.seal_journal()
 
         database.conn.close()

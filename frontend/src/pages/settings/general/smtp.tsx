@@ -128,7 +128,7 @@ export function SettingsGeneralSMTP() {
             setValue('smtpProtocoleSecure', provider.secure as any);
         }
     }
-    console.log(errors)
+
     const onSubmit = async (data: FormData) => {
         const completeData = {
             smtpHost: data.smtpHost || "",
@@ -142,7 +142,7 @@ export function SettingsGeneralSMTP() {
             smtpDestAdminMail: data.smtpDestAdminMail || "",
             smtpDelay: data.smtpDelay || 0
         };
-        console.log(completeData)
+
         try {
             await put('config/updateConfiguration/smtp', {
                 value: completeData

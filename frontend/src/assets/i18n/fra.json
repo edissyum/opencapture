@@ -296,7 +296,8 @@
         "my_profile": "Éditer mon profil",
         "merge": "Fusionner",
         "executed_outputs": "Chaînes sortantes exécutées",
-        "field_required": "Champ obligatoire"
+        "field_required": "Champ obligatoire",
+        "file_required": ""
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validé",
@@ -1487,6 +1488,8 @@
         "key": "Chemin de la clé privée RSA",
         "key_hint": "La clé privée doit être au format .pem et ne doit pas être protégée par un mot de passe (génération d'un fichier de clé avec le mot de passe en amont)",
         "key_upload": "Clé privée RSA",
-        "settings": "Paramètres de la copie conforme"
+        "settings": "Paramètres de la copie conforme",
+        "file_upload_success": "Fichier <strong>{{fileName}}</strong> uploadé avec succès. Pensez à mettre à jour la configuration pour appliquer ce changement",
+        "update_success": "Configuration de la copie conforme mise à jour avec succès"
     }
 }

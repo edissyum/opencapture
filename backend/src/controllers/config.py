@@ -484,3 +484,38 @@ def update_certified_copy(args):
             "message": gettext("CERTIFIED_COPY_NOT_FOUND")
         }
         return response, 400
+
+def upload_file_certified_copy(files):
+    if 'file' not in files:
+        response = {
+            "errors": gettext("CERTIFIED_COPY_ERROR"),
+            "message": gettext("NO_FILE_PROVIDED")
+        }
+        return response, 400
+
+    file = files['file']
+    if file.filename == '':
+        response = {
+            "errors": gettext("CERTIFIED_COPY_ERROR"),
+            "message": gettext("NO_FILE_PROVIDED")
+        }
+        return response, 400
+
+    path = shared.custom_path + '/journal/config/'
+    if not os.path.isdir(path):
+        response = {
+            "errors": gettext("CERTIFIED_COPY_ERROR"),
+            "message": gettext("CERTIFIED_COPY_PATH_NOT_WRITEABLE_OR_NOT_EXISTS")
+        }
+        return response, 400
+
+    filename = os.path.basename(file.filename)
+    filepath = os.path.join(str(path), str(filename))
+    file.save(filepath)
+    if not os.path.isfile(filepath):
+        response = {
+            "errors": gettext("CERTIFIED_COPY_ERROR"),
+            "message": gettext("ERROR_SAVING_FILE")
+        }
+        return response, 400
+    return '', 200

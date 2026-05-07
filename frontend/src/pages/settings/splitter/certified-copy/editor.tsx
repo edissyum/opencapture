@@ -16,18 +16,18 @@
 
 import z from "zod";
 import { t } from "i18next";
+import DOMPurify from "dompurify";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "../../../../components/Button";
 import { Loader } from "../../../../components/loader/Loader";
-import { DynamicForm } from "../../../../components/form/DynamicForm";
+import { showToast } from "../../../../components/ToastProvider";
 import UploadDropzone from "../../../../components/upload/Dropzone";
+import { DynamicForm } from "../../../../components/form/DynamicForm";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
-import DOMPurify from "dompurify";
-import { showToast } from "../../../../components/ToastProvider.tsx";
 
 export function SettingsSplitterCertifiedCopy() {
     const { get, put } = axiosApiCall();
@@ -44,9 +44,10 @@ export function SettingsSplitterCertifiedCopy() {
     const [uploadErrors, setUploadErrors] = useState({ cert: "", key: "" });
 
     const pemAccept = {
+        "text/plain": [".pem"],
         "application/x-pem-file": [".pem"],
         "application/octet-stream": [".pem"],
-        "text/plain": [".pem"]
+        "application/x-x509-ca-cert": [".pem"]
     };
 
     const extractFileName = (value?: string) => value ? value.split(/[\\/]/).pop() || value : "";
@@ -155,14 +156,44 @@ export function SettingsSplitterCertifiedCopy() {
         fetchSettings().then();
     }, []);
 
-    const handleCertFilesAccepted = (files: File[]) => {
+    const handleCertFilesAccepted = async (files: File[]) => {
+        if (files.length === 0) {
+            setUploadErrors(prev => ({ ...prev, cert: t("GLOBAL.file_required") }));
+            return;
+        }
+
         setCertFile(files[0] || null);
+        setSavedCertValue(files[0].name);
         setUploadErrors(prev => ({ ...prev, cert: "" }));
+        await uploadNewFile('cert', files[0]);
     };
 
-    const handleKeyFilesAccepted = (files: File[]) => {
+    const handleKeyFilesAccepted = async (files: File[]) => {
+        if (files.length === 0) {
+            setUploadErrors(prev => ({ ...prev, key: t("GLOBAL.file_required") }));
+            return;
+        }
+
         setKeyFile(files[0] || null);
+        setSavedKeyValue(files[0].name);
         setUploadErrors(prev => ({ ...prev, key: "" }));
+        await uploadNewFile('key', files[0]);
+    };
+
+    const uploadNewFile = async (type: "cert" | "key", file: any) => {
+        if (!file) {
+            setUploadErrors(prev => ({ ...prev, [type]: t("GLOBAL.file_required") }));
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+        await put('/config/uploadFileCertifiedCopy', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        });
+        showToast(t("CERTIFIED-COPY.file_upload_success", { fileName: file.name }), "success");
     };
 
     const handleUpdate = async (data: any) => {
@@ -181,7 +212,6 @@ export function SettingsSplitterCertifiedCopy() {
                     cert: certFile || savedCertValue ? "" : t("GLOBAL.field_required"),
                     key: keyFile || savedKeyValue ? "" : t("GLOBAL.field_required")
                 };
-
                 setUploadErrors(nextUploadErrors);
 
                 if (nextUploadErrors.cert || nextUploadErrors.key) {
@@ -196,9 +226,10 @@ export function SettingsSplitterCertifiedCopy() {
         setLoadingUpdate(true);
         try {
             if (selectedProvider?.id === "certinomis") {
-                data.key = keyFile ? await keyFile.text() : savedKeyValue;
-                data.cert = certFile ? await certFile.text() : savedCertValue;
+                data.key = savedKeyValue;
+                data.cert = savedCertValue;
             }
+
             await put("/config/updateCertifiedCopy", data);
             showToast(t("CERTIFIED-COPY.update_success"), "success");
         } catch (error) {
@@ -232,7 +263,6 @@ export function SettingsSplitterCertifiedCopy() {
                         <UploadDropzone
                             accept={ pemAccept }
                             maxFiles={ 1 }
-                            maxSize={ 2 * 1024 * 1024 }
                             onFilesAccepted={ handleCertFilesAccepted }
                         />
                         { uploadErrors.cert && (
@@ -244,7 +274,7 @@ export function SettingsSplitterCertifiedCopy() {
                         <div>
                             <h2 className="font-medium">{ t("CERTIFIED-COPY.key_upload") }</h2>
                             <p className="text-sm text-(--text-secondary)">{ t("CERTIFIED-COPY.key_hint") }</p>
-                            { savedKeyValue && !keyFile && (
+                            { savedKeyValue && (
                                 <p className="text-sm text-(--text-secondary) mt-1"
                                    dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(t("CERTIFIED-COPY.current_file", { fileName: extractFileName(savedKeyValue) })) } }/>
                             ) }
@@ -252,7 +282,6 @@ export function SettingsSplitterCertifiedCopy() {
                         <UploadDropzone
                             accept={ pemAccept }
                             maxFiles={ 1 }
-                            maxSize={ 2 * 1024 * 1024 }
                             onFilesAccepted={ handleKeyFilesAccepted }
                         />
                         { uploadErrors.key && (

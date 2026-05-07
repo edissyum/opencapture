@@ -296,7 +296,8 @@
         "my_profile": "Mi perfil",
         "merge": "Fusionar",
         "executed_outputs": "Cadenas salientes ejecutadas",
-        "field_required": "Campo obligatorio"
+        "field_required": "Campo obligatorio",
+        "file_required": "Archivo obligatorio"
     },
     "HISTORY": {
         "document_validated": "Documento n°<strong>{{ documentId }}</strong> validado",
@@ -1150,7 +1151,7 @@
         "updating": "Actualizando el flujo de trabajo...",
         "validating": "Validando el paso...",
         "customer_required": "Es obligatorio tener una cuenta de cliente",
-        "certified_copy": ""
+        "certified_copy": "Copia certificada"
     },
     "MONITORING": {
         "processes": "Procesos",
@@ -1484,6 +1485,11 @@
         "freetsa_not_prod": "FreeTSA no está diseñado para su uso en producción; se recomienda utilizar una Autoridad de Sello de Tiempo (TSA) de confianza para garantizar la validez de la firma a lo largo del tiempo",
         "key": "Ruta a la clave privada RSA",
         "key_hint": "La clave privada debe estar en formato .pem y no debe estar protegida con contraseña (genere un archivo de clave con la contraseña previamente)",
-        "settings": "Configuración de la copia certificada"
+        "settings": "Configuración de la copia certificada",
+        "cert_upload": "Certificado del cliente",
+        "current_file": "Archivo configurado actualmente: <strong>{{fileName}}</strong>",
+        "file_upload_success": "Archivo <strong>{{fileName}}</strong> cargado correctamente. Recuerde actualizar la configuración para aplicar los cambios",
+        "key_upload": "Clave privada RSA",
+        "update_success": "La configuración de la copia verdadera se ha actualizado correctamente"
     }
 }

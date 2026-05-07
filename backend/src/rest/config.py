@@ -95,6 +95,16 @@ def update_certified_copy():
     return make_response(jsonify(res[0])), res[1]
 
 
+@bp.route('config/uploadFileCertifiedCopy', methods=['PUT'])
+@auth.token_required
+def upload_file_certified_copy():
+    if not privileges.has_privileges(request.environ['user_id'], ['settings', 'certified_copy']):
+        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/config/uploadFileCertifiedCopy'}), 403
+
+    res = config.upload_file_certified_copy(request.files)
+    return make_response(jsonify(res[0])), res[1]
+
+
 @bp.route('config/getConfiguration/<string:config_label>', methods=['GET'])
 @auth.token_required
 def get_configuration_by_label(config_label):
