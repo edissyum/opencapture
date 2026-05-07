@@ -263,7 +263,7 @@
         "enable": "Activer",
         "delete": "Supprimer",
         "save_settings": "Enregistrer les paramètres",
-        "saving": "Sauvegarde en cours...",
+        "saving": "Enregistrement en cours...",
         "older": "Lots ancien",
         "today": "Lots du jour",
         "yesterday": "Lots de la veille",
@@ -1481,9 +1481,12 @@
     "CERTIFIED-COPY": {
         "cert": "Chemin du certificat client",
         "cert_hint": "Le certificat client doit être au format .pem",
+        "cert_upload": "Certificat client",
+        "current_file": "Fichier actuellement configuré : <strong>{{fileName}}</strong>",
         "freetsa_not_prod": "FreeTSA n'est pas destiné à un usage en production, il est recommandé d'utiliser un TimeStamp Authority (TSA) de confiance pour garantir la validité de la signature dans le temps",
         "key": "Chemin de la clé privée RSA",
         "key_hint": "La clé privée doit être au format .pem et ne doit pas être protégée par un mot de passe (génération d'un fichier de clé avec le mot de passe en amont)",
+        "key_upload": "Clé privée RSA",
         "settings": "Paramètres de la copie conforme"
     }
 }

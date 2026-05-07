@@ -124,7 +124,7 @@ export default function UploadDropzone({
                                 { t('UPLOAD.max_filesize', { maxSize: maxSize / (1024 * 1024) }) }
                             </p>
                             <p className="text-(--text-secondary) text-sm">
-                                { t('UPLOAD.allowed_extensions') } : { Object.values(accept).flat().join(", ") }
+                                { t('UPLOAD.allowed_extensions') } : { [...new Set(Object.values(accept).flat())].join(", ") }
                             </p>
                         </div>
                     </div>

@@ -23,8 +23,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../../../../components/Button";
 import { Loader } from "../../../../components/loader/Loader";
 import { DynamicForm } from "../../../../components/form/DynamicForm";
+import UploadDropzone from "../../../../components/upload/Dropzone";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import DOMPurify from "dompurify";
+import { showToast } from "../../../../components/ToastProvider.tsx";
 
 export function SettingsSplitterCertifiedCopy() {
     const { get, put } = axiosApiCall();
@@ -34,6 +37,19 @@ export function SettingsSplitterCertifiedCopy() {
     const [selectedProvider, setSelectedProvider] = useState<any>(null);
 
     const [enabled, setEnabled] = useState(false);
+    const [certFile, setCertFile] = useState<File | null>(null);
+    const [keyFile, setKeyFile] = useState<File | null>(null);
+    const [savedCertValue, setSavedCertValue] = useState("");
+    const [savedKeyValue, setSavedKeyValue] = useState("");
+    const [uploadErrors, setUploadErrors] = useState({ cert: "", key: "" });
+
+    const pemAccept = {
+        "application/x-pem-file": [".pem"],
+        "application/octet-stream": [".pem"],
+        "text/plain": [".pem"]
+    };
+
+    const extractFileName = (value?: string) => value ? value.split(/[\\/]/).pop() || value : "";
 
     const providers = [
         { id: 'freetsa', label: "FreeTSA", hint: t('CERTIFIED-COPY.freetsa_not_prod') },
@@ -60,30 +76,28 @@ export function SettingsSplitterCertifiedCopy() {
             component: "input",
             label: t("AI-LLM.url")
         })),
-        cert: z.string().describe(JSON.stringify({
-            component: "input",
-            disabled: !enabled,
-            required: enabled && selectedProvider?.id === "certinomis",
-            show: selectedProvider?.id === "certinomis",
-            hint: t("CERTIFIED-COPY.cert_hint"),
-            label: t("CERTIFIED-COPY.cert")
-        })),
-        key: z.string().describe(JSON.stringify({
-            component: "input",
-            disabled: !enabled,
-            required: enabled && selectedProvider?.id === "certinomis",
-            show: selectedProvider?.id === "certinomis",
-            hint: t("CERTIFIED-COPY.key_hint"),
-            label: t("CERTIFIED-COPY.key")
-        }))
+        // cert: z.string().describe(JSON.stringify({
+        //     component: "input",
+        //     disabled: !enabled,
+        //     required: enabled && selectedProvider?.id === "certinomis",
+        //     show: selectedProvider?.id === "certinomis",
+        //     hint: t("CERTIFIED-COPY.cert_hint"),
+        //     label: t("CERTIFIED-COPY.cert")
+        // })),
+        // key: z.string().describe(JSON.stringify({
+        //     component: "input",
+        //     disabled: !enabled,
+        //     required: enabled && selectedProvider?.id === "certinomis",
+        //     show: selectedProvider?.id === "certinomis",
+        //     hint: t("CERTIFIED-COPY.key_hint"),
+        //     label: t("CERTIFIED-COPY.key")
+        // }))
     });
 
     const { control, handleSubmit, watch, setValue, setError, clearErrors, formState: { errors } } = useForm({
         resolver: zodResolver(schema),
         defaultValues: {
-            enabled: false,
-            cert: "",
-            key: ""
+            enabled: false
         },
         mode: "onChange"
     });
@@ -96,6 +110,7 @@ export function SettingsSplitterCertifiedCopy() {
         const provider: any = providers.find(p => p.id === watchProvider);
         setSelectedProvider(provider);
         clearErrors();
+        setUploadErrors({ cert: "", key: "" });
     }, [watchProvider]);
 
     // Update enabled state when form changes
@@ -117,9 +132,13 @@ export function SettingsSplitterCertifiedCopy() {
                                 const provider: any = providers.find(p => p.id === settings[key]);
                                 setSelectedProvider(provider);
                                 if (provider && settings[provider.id]) {
-                                    Object.keys(settings[provider.id]).forEach((pKey: any) => {
-                                        setValue(pKey, settings[provider.id][pKey]);
-                                    });
+                                    if (settings[provider.id].url) {
+                                        setValue("url", settings[provider.id].url);
+                                    }
+                                    if (provider.id === "certinomis") {
+                                        setSavedCertValue(settings[provider.id].cert || "");
+                                        setSavedKeyValue(settings[provider.id].key || "");
+                                    }
                                 }
                             }
                             setValue(key, settings[key]);
@@ -136,6 +155,16 @@ export function SettingsSplitterCertifiedCopy() {
         fetchSettings().then();
     }, []);
 
+    const handleCertFilesAccepted = (files: File[]) => {
+        setCertFile(files[0] || null);
+        setUploadErrors(prev => ({ ...prev, cert: "" }));
+    };
+
+    const handleKeyFilesAccepted = (files: File[]) => {
+        setKeyFile(files[0] || null);
+        setUploadErrors(prev => ({ ...prev, key: "" }));
+    };
+
     const handleUpdate = async (data: any) => {
         if (data.enabled) {
             if (!data.provider) {
@@ -146,23 +175,32 @@ export function SettingsSplitterCertifiedCopy() {
                 setError("url", { type: "required", message: t("GLOBAL.field_required") });
                 return;
             }
+
             if (data.provider === "certinomis") {
-                if (!data.cert) {
-                    setError("cert", { type: "required", message: t("GLOBAL.field_required") });
-                    return;
-                }
-                if (!data.key) {
-                    setError("key", { type: "required", message: t("GLOBAL.field_required") });
+                const nextUploadErrors = {
+                    cert: certFile || savedCertValue ? "" : t("GLOBAL.field_required"),
+                    key: keyFile || savedKeyValue ? "" : t("GLOBAL.field_required")
+                };
+
+                setUploadErrors(nextUploadErrors);
+
+                if (nextUploadErrors.cert || nextUploadErrors.key) {
                     return;
                 }
             }
         } else {
             clearErrors();
+            setUploadErrors({ cert: "", key: "" });
         }
 
         setLoadingUpdate(true);
         try {
+            if (selectedProvider?.id === "certinomis") {
+                data.key = keyFile ? await keyFile.text() : savedKeyValue;
+                data.cert = certFile ? await certFile.text() : savedCertValue;
+            }
             await put("/config/updateCertifiedCopy", data);
+            showToast(t("CERTIFIED-COPY.update_success"), "success");
         } catch (error) {
             console.error("Failed to update Certified Copy settings:", error);
         } finally {
@@ -180,8 +218,53 @@ export function SettingsSplitterCertifiedCopy() {
 
             <DynamicForm errors={ errors } control={ control } schema={ schema }/>
 
-            <Button onClick={ handleSubmit(handleUpdate) } disabled={ loading || loadingUpdate || Object.keys(errors).length > 0 }>
-                { loading ? t('GLOBAL.saving') : t('GLOBAL.save') }
+            { enabled && selectedProvider?.id === "certinomis" && (
+                <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-2">
+                        <div>
+                            <h2 className="font-medium">{ t("CERTIFIED-COPY.cert_upload") }</h2>
+                            <p className="text-sm text-(--text-secondary)">{ t("CERTIFIED-COPY.cert_hint") }</p>
+                            { savedCertValue && !certFile && (
+                                <p className="text-sm text-(--text-secondary) mt-1"
+                                   dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(t("CERTIFIED-COPY.current_file", { fileName: extractFileName(savedCertValue) })) } }/>
+                            ) }
+                        </div>
+                        <UploadDropzone
+                            accept={ pemAccept }
+                            maxFiles={ 1 }
+                            maxSize={ 2 * 1024 * 1024 }
+                            onFilesAccepted={ handleCertFilesAccepted }
+                        />
+                        { uploadErrors.cert && (
+                            <p className="text-sm text-(--text-error)">{ uploadErrors.cert }</p>
+                        ) }
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <div>
+                            <h2 className="font-medium">{ t("CERTIFIED-COPY.key_upload") }</h2>
+                            <p className="text-sm text-(--text-secondary)">{ t("CERTIFIED-COPY.key_hint") }</p>
+                            { savedKeyValue && !keyFile && (
+                                <p className="text-sm text-(--text-secondary) mt-1"
+                                   dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(t("CERTIFIED-COPY.current_file", { fileName: extractFileName(savedKeyValue) })) } }/>
+                            ) }
+                        </div>
+                        <UploadDropzone
+                            accept={ pemAccept }
+                            maxFiles={ 1 }
+                            maxSize={ 2 * 1024 * 1024 }
+                            onFilesAccepted={ handleKeyFilesAccepted }
+                        />
+                        { uploadErrors.key && (
+                            <p className="text-sm text-(--text-error)">{ uploadErrors.key }</p>
+                        ) }
+                    </div>
+                </div>
+            ) }
+
+            <Button onClick={ handleSubmit(handleUpdate) }
+                    disabled={ loading || loadingUpdate || Object.keys(errors).length > 0 }>
+                { loadingUpdate ? t('GLOBAL.saving') : t('GLOBAL.save') }
             </Button>
         </div>
     );
