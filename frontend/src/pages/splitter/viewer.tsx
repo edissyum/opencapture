@@ -1351,7 +1351,8 @@ export function SplitterViewerPage() {
                 ) }
 
                 { !showAttachments && (
-                    <div ref={ listRef } className={ `${ disabledBatch || certifiedCopy ? 'pb-66' : 'pb-42' } px-8 h-full overflow-y-auto` }
+                    <div ref={ listRef }
+                         className={ `${ disabledBatch || certifiedCopy ? 'pb-66' : 'pb-42' } px-8 h-full overflow-y-auto` }
                          onClick={ () => setSelectedDocument(null) }>
                         <Accordion className='mb-6' activeIndex={ 0 }>
                             <AccordionTab header={ t('SPLITTER.batch_content') }>
@@ -1576,10 +1577,10 @@ export function SplitterViewerPage() {
                                                      items={ document.pages.map((p: any) => `page-${ p.id }`) }>
                                         <DroppableDocumentZone
                                             pages={ document.pages }
-                                            disabled={ disabledBatch }
                                             documentId={ document.id }
                                             menuItems={ pageMenuItems }
                                             isEmpty={ document.pages.length === 0 }
+                                            disabled={ disabledBatch || certifiedCopy }
                                             selectedPageIds={ selectedPages.map(p => p.id) }
                                             onSelectionChange={ handleSelectionChange }
                                             onZoom={ handlePreview }

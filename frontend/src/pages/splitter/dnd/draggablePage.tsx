@@ -43,15 +43,15 @@ export const DraggablePage = React.memo(function DraggablePage({
     disabled,
     menuItems,
     documentId,
-    isDragOverlay,
     isSelected,
+    isDragOverlay,
     onSelectionChange
 }: DraggablePageProps) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: `page-${ page.id }`,
         data: { page, documentId, type: 'page' }
     });
-
+    console.log(menuItems)
     const cm = useRef<any>(null);
 
     const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
@@ -79,7 +79,8 @@ export const DraggablePage = React.memo(function DraggablePage({
                 transition-colors bg-(--bg-secondary) cursor-default select-none h-full
                 hover:bg-(--bg-selected) hover:cursor-pointer min-w-64
                 ${ isSelected && 'bg-(--bg-selected) border-(--color-primary)' }` }>
-            <div className='h-full w-full flex flex-col items-center cursor-grab active:cursor-grabbing'
+            <div className={ `h-full w-full flex flex-col items-center cursor-grab active:cursor-grabbing
+                              ${disabled && 'pointer-events-none'}` }
                  { ...attributes }
                  { ...listeners }
             >
@@ -97,7 +98,7 @@ export const DraggablePage = React.memo(function DraggablePage({
                         <div
                             className="flex items-center left-1/2 -translate-x-1/2 gap-1 text-white rounded-3xl
                                        absolute bottom-2 transition-opacity bg-(--color-primary) py-2 px-3
-                                       group-hover:opacity-100 opacity-0 text-sm cursor-pointer"
+                                       group-hover:opacity-100 opacity-0 text-sm cursor-pointer pointer-events-auto"
                             onClick={ (e) => {
                                 e.stopPropagation();
                                 e.preventDefault();
