@@ -53,8 +53,8 @@ export function SettingsCard({ show = true, icon, title, description, to, classN
                     </>
                 ) }
             </div>
-            <div className="truncate flex flex-col gap-1" title={ description }>
-                <h3 className="text-lg font-semibold text-(--text-primary)">
+            <div className="" title={ description }>
+                <h3 className="text-lg font-semibold mt-1 text-(--text-primary)">
                     { title }
                     <span>
                         { module && (
@@ -64,7 +64,7 @@ export function SettingsCard({ show = true, icon, title, description, to, classN
                         ) }
                     </span>
                 </h3>
-                <p className='text-(--text-secondary) leading-none truncate'>
+                <p className='text-(--text-secondary) truncate'>
                     { description }
                 </p>
             </div>
