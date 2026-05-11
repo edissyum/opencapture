@@ -351,6 +351,9 @@ WHERE output_type_id = 'export_mem';
 ALTER TABLE documents ADD COLUMN "sha256" VARCHAR(64);
 ALTER TABLE splitter_batches ADD COLUMN "sha256" VARCHAR(64);
 
+ALTER TABLE splitter_documents ADD COLUMN "md5" VARCHAR(32);
+ALTER TABLE splitter_documents ADD COLUMN "sha256" VARCHAR(64);
+
 -- Modifier document_md5 en md5 dans les chaînes sortants XML Splitter
 UPDATE outputs
 SET data = jsonb_set(

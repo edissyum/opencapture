@@ -277,6 +277,8 @@ CREATE TABLE "splitter_documents" (
     "display_order" INTEGER,
     "status"        VARCHAR(10) DEFAULT 'NEW':: CHARACTER VARYING,
     "doctype_key"   VARCHAR(200),
+    "sha256"        VARCHAR(64),
+    "md5"           VARCHAR(32),
     "data"          JSON        DEFAULT '{}'::json
 );
 

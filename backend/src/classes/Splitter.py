@@ -29,6 +29,8 @@ import tempfile
 from xml.dom import minidom
 from datetime import datetime
 from unidecode import unidecode
+
+from .Database import Database
 from .NFZ42020 import hash_file_content
 from werkzeug.datastructures import FileStorage
 from .. import shared
@@ -476,7 +478,7 @@ class Splitter:
             return res
 
     @staticmethod
-    def export_xml(documents, metadata, parameters, regex):
+    def export_xml(documents, metadata, parameters, regex, database):
         year = str(metadata['export_date'].year)
         month = str(metadata['export_date'].month).zfill(2)
         day = str(metadata['export_date'].day).zfill(2)
@@ -528,9 +530,21 @@ class Splitter:
 
                 document_md5 = ''
                 document_sha256 = ''
+                print(document['export_path'])
                 if 'export_path' in document and os.path.isfile(document['export_path']):
                     document_md5 = hash_file_content(document['export_path'], hash_algorithm='md5')
                     document_sha256 = hash_file_content(document['export_path'], hash_algorithm='sha256')
+                    database.update({
+                        'table': ['splitter_documents'],
+                        'set': {
+                            'md5': document_md5,
+                            'sha256': document_sha256
+                        },
+                        'where': ['id = %s'],
+                        'data': [document['id']]
+                    })
+                    database.conn.commit()
+
 
                 doc_loop_item = doc_loop_item_template.group(1)
                 doc_loop_item = doc_loop_item.replace('#date#', date)
