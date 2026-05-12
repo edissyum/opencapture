@@ -153,7 +153,7 @@ export function SettingsGeneralSMTP() {
             console.error("Erreur modification des paramètres SMTP :", err);
         }
     };
-    console.log(errors)
+
     const handleTestEmail = async () => {
         setStatusLoadingTestEmail(true);
         setStatusTestEmailMessage('');
