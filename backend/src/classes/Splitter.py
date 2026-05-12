@@ -530,26 +530,14 @@ class Splitter:
                 if 'is_file_added_to_zip' in document and document['is_file_added_to_zip']:
                     continue
 
-                document_md5 = ''
-                document_sha256 = ''
-
-                if 'export_path' in document and os.path.isfile(document['export_path']):
-                    document_md5 = hash_file_content(document['export_path'], hash_algorithm='md5')
-                    document_sha256 = hash_file_content(document['export_path'], hash_algorithm='sha256')
-                    splitter.update_document({
-                        'id': document['id'],
-                        'md5': document_md5,
-                        'sha256': document_sha256
-                    })
-
                 doc_loop_item = doc_loop_item_template.group(1)
                 doc_loop_item = doc_loop_item.replace('#date#', date)
                 doc_loop_item = doc_loop_item.replace('#id#', str(document['id']))
                 doc_loop_item = doc_loop_item.replace('#documents_count#', str(len(documents)))
                 doc_loop_item = doc_loop_item.replace('#doctype#', str(document['doctype_key']))
                 doc_loop_item = doc_loop_item.replace('#document_identifier#', str(document['id']))
-                doc_loop_item = doc_loop_item.replace('#md5#', str(document_md5))
-                doc_loop_item = doc_loop_item.replace('#sha256#', str(document_sha256))
+                doc_loop_item = doc_loop_item.replace('#md5#', str(document['md5']))
+                doc_loop_item = doc_loop_item.replace('#sha256#', str(document['sha256']))
                 doc_loop_item = doc_loop_item.replace('#random#', str(random.randint(0, 99999)).zfill(5))
                 doc_loop_item = doc_loop_item.replace('#filename#',
                                                       document['filename'] if 'filename' in document else '')

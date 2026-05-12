@@ -23,11 +23,14 @@ from . import shared
 from flask import request
 from .classes.CMIS import CMIS
 from flask_babel import gettext
+
+from .classes.NFZ42020 import hash_file_content
 from .controllers import history
 from .classes.Files import Files
 from .classes.OpenADS import OpenADS
 from .classes.Splitter import Splitter
 from .classes.Splitter import get_value_from_mask
+from .helpers import get_context_var
 from .scripting_functions import launch_script_splitter
 from .models import splitter, workflow, forms, outputs, attachments
 
@@ -45,6 +48,8 @@ def get_output_parameters(parameters):
 def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
     export_date = Files.get_now_date()
     export_zip_file = ''
+
+    nfz42020 = get_context_var('nfz42020', 14)
 
     batch = splitter.retrieve_batches({
         'batch_id': None,
@@ -107,7 +112,7 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
         output['parameters'] = get_output_parameters(output['data']['options']['parameters'])
 
         if output['output_type_id'] == 'export_pdf':
-            res_export_pdf, status = handle_pdf_output(batch, output, log, docservers)
+            res_export_pdf, status = handle_pdf_output(batch, output, log, docservers, nfz42020)
             if status != 200:
                 return res_export_pdf, status
             batch = res_export_pdf['result_batch']
@@ -127,11 +132,11 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
                 return res_export_xml, status
             batch = res_export_xml['result_batch']
         elif output['output_type_id'] == 'export_cmis':
-            res_export_cmis, status = handle_cmis_output(output, batch, log, docservers, regex)
+            res_export_cmis, status = handle_cmis_output(output, batch, log, docservers, regex, nfz42020)
             if status != 200:
                 return res_export_cmis, status
         elif output['output_type_id'] == 'export_openads':
-            res_export_openads, status = handle_openads_output(output, batch, log, docservers)
+            res_export_openads, status = handle_openads_output(output, batch, log, docservers, nfz42020)
             if status != 200:
                 return res_export_openads, status
         else:
@@ -166,7 +171,7 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
     return True, 200
 
 
-def export_pdf_files(batch, parameters, log, docservers):
+def export_pdf_files(batch, parameters, log, docservers, nfz42020):
     documents_doctypes = []
     for index, document in enumerate(batch['documents']):
         if not document['pages']:
@@ -213,10 +218,35 @@ def export_pdf_files(batch, parameters, log, docservers):
         batch['outputs_result_files'].append(export_path)
         batch['documents'][index]['export_path'] = export_path
 
+        if 'export_path' in document and os.path.isfile(document['export_path']):
+            document['md5'] = hash_file_content(document['export_path'], hash_algorithm='md5')
+            document['sha256'] = hash_file_content(document['export_path'], hash_algorithm='sha256')
+            splitter.update_document({
+                'id': document['id'],
+                'md5': document['md5'],
+                'sha256': document['sha256']
+            })
+
+    if nfz42020.enabled:
+        nfz42020.sanitized_filename = batch['file_name']
+        nfz42020.original_filename = batch['original_filename']
+        stored_file = os.path.join(docservers['SPLITTER_ORIGINAL_DOC'], batch['file_path'])
+        documents_pages = []
+        for document in batch['documents']:
+            pages = [{'id': page['id'], 'source_page': page['source_page']} for page in document['pages']]
+            documents_pages.append({
+                "id": document['id'],
+                "pages_count": len(pages),
+                "sha256": document['sha256'],
+                "export_path": document['export_path'],
+                "pages": pages,
+            })
+        nfz42020.log_event('BATCH_EXPORTED', batch['id'], documents_pages, stored_file)
+        nfz42020.seal_journal()
     return {'result_batch': batch}, 200
 
 
-def handle_pdf_output(batch, output, log, docservers):
+def handle_pdf_output(batch, output, log, docservers, nfz42020):
     compress_pdfs = []
     parameters = {
         'compress_type': output['compress_type'],
@@ -225,7 +255,7 @@ def handle_pdf_output(batch, output, log, docservers):
         'extension': output['parameters']['extension'],
         'folder_out': output['parameters']['folder_out']
     }
-    res_export_pdf, status = export_pdf_files(batch, parameters, log, docservers)
+    res_export_pdf, status = export_pdf_files(batch, parameters, log, docservers, nfz42020)
     if status != 200:
         return res_export_pdf, status
 

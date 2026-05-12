@@ -103,7 +103,10 @@ def launch(args):
             launch_script_splitter(workflow_settings[0], docservers, 'input', log, database, args, config, datas)
 
         if workflow_settings:
-            if workflow_settings[0]['input'].get('certified_copy') and nfz42020.enabled:
+            if not workflow_settings[0]['input'].get('certified_copy'):
+                nfz42020.enabled = False
+
+            if nfz42020.enabled:
                 log.info('Certified copy process enabled for this workflow, initializing NF Z42-020/26 module')
                 nfz42020.log = log
                 nfz42020.sanitized_filename = args['file']
@@ -169,7 +172,7 @@ def launch(args):
                     attachments = args['attachments']
 
                 if check_file(files, path, log):
-                    if workflow_settings[0]['input'].get('certified_copy') and nfz42020.enabled:
+                    if nfz42020.enabled:
                         nfz42020.log_event('FILE_RECEIVED')
 
                     if 'workflow_id' in args and args['workflow_id']:
@@ -234,7 +237,7 @@ def launch(args):
         })
 
         for batch_id in created_batches:
-            if workflow_settings[0]['input'].get('certified_copy') and nfz42020.enabled:
+            if nfz42020.enabled:
                 splitter_docservers = docservers['SPLITTER_ORIGINAL_DOC']
                 batch_data = database.select({
                     'select': ['file_path'],
@@ -244,8 +247,6 @@ def launch(args):
                 })
                 if batch_data:
                     stored_path = splitter_docservers + '/' + batch_data[0]['file_path']
-                    # if workflow_settings[0]['input'].get('certified_copy') and nfz42020.enabled:
-                    #     nfz42020.log_event('BATCH_CREATED', batch_id, stored_file=stored_path)
 
             database.insert({
                 'table': 'history',
@@ -261,37 +262,27 @@ def launch(args):
             })
 
             batch_documents = database.select({
-                'select': ['sd.id', 'sp.id as page_id', 'sp.source_page'],
-                'table': ['splitter_documents as sd', 'splitter_pages as sp'],
-                'left_join': ['sd.id = sp.document_id'],
-                'where': ['sd.batch_id = %s'],
+                'select': ['id'],
+                'table': ['splitter_documents'],
+                'where': ['batch_id = %s'],
                 'data': [batch_id]
             })
 
-            if workflow_settings[0]['input'].get('certified_copy') and nfz42020.enabled:
-                # create array of page id for per document
-                # I want smething like that : [
-                #             {
-                #                 "id": 1252,
-                #                 "pages": [
-                #                     {"id": 4563, "source_page": 1},
-                #                     {"id": 4564, "source_page": 2}
-                #                 ],
-                #                 "pages_count": 2
-                #             }
-                #         ]
+            if nfz42020.enabled:
                 documents_pages = []
                 for document in batch_documents:
-                    doc = next((item for item in documents_pages if item["id"] == document['id']), {})
-                    if doc:
-                        doc['pages'].append({"id": document['page_id'], "source_page": document['source_page']})
-                        doc['pages_count'] += 1
-                    else:
-                        documents_pages.append({
-                            "id": document['id'],
-                            "pages_count": 1,
-                            "pages": [{"id": document['page_id'], "source_page": document['source_page']}],
-                        })
+                    batch_pages = database.select({
+                        'select': ['id', 'source_page'],
+                        'table': ['splitter_pages'],
+                        'where': ['document_id = %s'],
+                        'data': [document['id']]
+                    })
+
+                    documents_pages.append({
+                        "id": document['id'],
+                        "pages_count": len(batch_pages),
+                        "pages": batch_pages,
+                    })
 
                 nfz42020.log_event('BATCH_CREATED', batch_id, documents_pages, stored_file=stored_path)
 
@@ -311,7 +302,7 @@ def launch(args):
                         }
                     })
 
-        if workflow_settings[0]['input'].get('certified_copy') and nfz42020.enabled:
+        if nfz42020.enabled:
             nfz42020.seal_journal()
 
         database.conn.close()
