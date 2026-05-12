@@ -26,14 +26,13 @@ import base64
 import random
 import pathlib
 import tempfile
+from .. import shared
 from xml.dom import minidom
 from datetime import datetime
+from ..models import splitter
 from unidecode import unidecode
-
-from .Database import Database
 from .NFZ42020 import hash_file_content
 from werkzeug.datastructures import FileStorage
-from .. import shared
 from ..scripting_functions import launch_script_splitter
 from ..classes.OpenCaptureForMEMWebServices import OpenCaptureForMEMWebServices
 
@@ -276,7 +275,8 @@ class Splitter:
                     'form_id': form_id,
                     'batch_folder': upload_args['batch_folder'],
                     'original_filename': os.path.basename(upload_args['original_filename']),
-                    'subject': upload_args['msg']['subject'][:254] if 'msg' in upload_args and upload_args['msg'] else '',
+                    'subject': upload_args['msg']['subject'][:254] if 'msg' in upload_args and upload_args[
+                        'msg'] else '',
                     'workflow_id': workflow_settings[0]['id'],
                     'file_path': clean_path.replace(clean_ds, ''),
                     'thumbnail': os.path.basename(batch_pages[0]['path']),
@@ -395,11 +395,13 @@ class Splitter:
                 args['file'] = file
                 args['batches_id'] = [batch_id]
                 args['custom_id'] = upload_args['custom_id']
-                stop_workflow = launch_script_splitter(workflow_settings[0], self.docservers, 'process', self.log, self.db  , args, self.config, None)
+                stop_workflow = launch_script_splitter(workflow_settings[0], self.docservers, 'process', self.log,
+                                                       self.db, args, self.config, None)
 
             if not workflow_settings[0]['process']['use_interface'] and not stop_workflow:
                 from ..splitter_exports import export_batch
-                export_batch(batch_id, self.log, self.docservers, upload_args['regex'], self.config, self.db, upload_args['custom_id'])
+                export_batch(batch_id, self.log, self.docservers, upload_args['regex'], self.config, self.db,
+                             upload_args['custom_id'])
 
             self.db.conn.commit()
         return {'batches_id': batches_id}
@@ -416,7 +418,6 @@ class Splitter:
                     'source_page': page['sourcePage']
                 })
         return documents_pages
-
 
     @staticmethod
     def export_opencaptureformem(batch, output, docservers, log):
@@ -478,7 +479,7 @@ class Splitter:
             return res
 
     @staticmethod
-    def export_xml(documents, metadata, parameters, regex, database):
+    def export_xml(documents, metadata, parameters, regex):
         year = str(metadata['export_date'].year)
         month = str(metadata['export_date'].month).zfill(2)
         day = str(metadata['export_date'].day).zfill(2)
@@ -488,7 +489,8 @@ class Splitter:
         date = f"{day}-{month}-{year} {hour}:{minute}:{second}"
 
         user_lastname = metadata['custom_fields']['userLastName'] if 'userLastName' in metadata['custom_fields'] else ''
-        user_firstname = metadata['custom_fields']['userFirstName'] if 'userFirstName' in metadata['custom_fields'] else ''
+        user_firstname = metadata['custom_fields']['userFirstName'] if 'userFirstName' in metadata[
+            'custom_fields'] else ''
 
         xml_as_string = parameters['xml_template']
 
@@ -530,21 +532,15 @@ class Splitter:
 
                 document_md5 = ''
                 document_sha256 = ''
-                print(document['export_path'])
+
                 if 'export_path' in document and os.path.isfile(document['export_path']):
                     document_md5 = hash_file_content(document['export_path'], hash_algorithm='md5')
                     document_sha256 = hash_file_content(document['export_path'], hash_algorithm='sha256')
-                    database.update({
-                        'table': ['splitter_documents'],
-                        'set': {
-                            'md5': document_md5,
-                            'sha256': document_sha256
-                        },
-                        'where': ['id = %s'],
-                        'data': [document['id']]
+                    splitter.update_document({
+                        'id': document['id'],
+                        'md5': document_md5,
+                        'sha256': document_sha256
                     })
-                    database.conn.commit()
-
 
                 doc_loop_item = doc_loop_item_template.group(1)
                 doc_loop_item = doc_loop_item.replace('#date#', date)
@@ -555,12 +551,14 @@ class Splitter:
                 doc_loop_item = doc_loop_item.replace('#md5#', str(document_md5))
                 doc_loop_item = doc_loop_item.replace('#sha256#', str(document_sha256))
                 doc_loop_item = doc_loop_item.replace('#random#', str(random.randint(0, 99999)).zfill(5))
-                doc_loop_item = doc_loop_item.replace('#filename#', document['filename'] if 'filename' in document else '')
+                doc_loop_item = doc_loop_item.replace('#filename#',
+                                                      document['filename'] if 'filename' in document else '')
 
                 if 'custom_fields' in document['data'] and document['data']['custom_fields']:
                     for key in document['data']['custom_fields']:
                         if f'#{key}#' in doc_loop_item:
-                            doc_loop_item = doc_loop_item.replace(f'#{key}#', str(document['data']['custom_fields'][key]))
+                            doc_loop_item = doc_loop_item.replace(f'#{key}#',
+                                                                  str(document['data']['custom_fields'][key]))
                 documents_tags += doc_loop_item
 
             xml_as_string = xml_as_string.replace(doc_loop_item_template.group(1), documents_tags)
@@ -599,11 +597,13 @@ class Splitter:
         for document in batch['documents']:
             json_body['files'] = []
             if isinstance(json_body['datas'], str):
-                json_body['datas'] = ''.join(construct_with_var(tmp_json_body['datas'], document['data']['custom_fields']))
+                json_body['datas'] = ''.join(
+                    construct_with_var(tmp_json_body['datas'], document['data']['custom_fields']))
             elif isinstance(json_body['datas'], dict):
                 for sub_key in json_body['datas']:
                     json_body['datas'][sub_key] = ''.join(construct_with_var(tmp_json_body['datas'][sub_key],
-                                                                             document['data']['custom_fields'], sub_key))
+                                                                             document['data']['custom_fields'],
+                                                                             sub_key))
 
             for key in tmp_json_body['datas']:
                 if tmp_json_body['datas'][key] == 'doctype':
@@ -630,7 +630,8 @@ class Splitter:
 
     @staticmethod
     def get_split_methods():
-        with open(shared.custom_path + "/bin/scripts/splitter_methods/splitter_methods.json", encoding="utf-8") as methods_json:
+        with open(shared.custom_path + "/bin/scripts/splitter_methods/splitter_methods.json",
+                  encoding="utf-8") as methods_json:
             methods = json.load(methods_json)
             return methods['methods']
 

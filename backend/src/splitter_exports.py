@@ -122,12 +122,12 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
                 return res_export_opencaptureformem, status
             batch = res_export_opencaptureformem['result_batch']
         elif output['output_type_id'] == 'export_xml':
-            res_export_xml, status = handle_xml_output(batch, output['parameters'], regex, database)
+            res_export_xml, status = handle_xml_output(batch, output['parameters'], regex)
             if status != 200:
                 return res_export_xml, status
             batch = res_export_xml['result_batch']
         elif output['output_type_id'] == 'export_cmis':
-            res_export_cmis, status = handle_cmis_output(output, batch, log, docservers, regex, database)
+            res_export_cmis, status = handle_cmis_output(output, batch, log, docservers, regex)
             if status != 200:
                 return res_export_cmis, status
         elif output['output_type_id'] == 'export_openads':
@@ -291,7 +291,7 @@ def handle_opencaptureformem_output(batch, output, docservers, log):
     return {'result_batch': batch}, 200
 
 
-def handle_xml_output(batch, parameters, regex, database):
+def handle_xml_output(batch, parameters, regex):
     mask_args = {
         'mask': parameters['filename'],
         'separator': parameters['separator'],
@@ -306,7 +306,7 @@ def handle_xml_output(batch, parameters, regex, database):
         'custom_fields': batch['data']['custom_fields'],
         'pdf_output_compress_file': batch['pdf_output_compress_file']
     }
-    export_ok, export_result = Splitter.export_xml(batch['documents'], metadata, parameters, regex, database)
+    export_ok, export_result = Splitter.export_xml(batch['documents'], metadata, parameters, regex)
     if not export_ok:
         response = {
             "errors": gettext('EXPORT_XML_ERROR'),
@@ -320,7 +320,7 @@ def handle_xml_output(batch, parameters, regex, database):
     return {'result_batch': batch}, 200
 
 
-def handle_cmis_output(output, batch, log, docservers, regex, database):
+def handle_cmis_output(output, batch, log, docservers, regex):
     cmis_auth = get_output_parameters(output['data']['options']['auth'])
     cmis_params = get_output_parameters(output['data']['options']['parameters'])
     cmis = CMIS(cmis_auth['cmis_ws'], cmis_auth['login'], cmis_auth['password'], cmis_auth['folder'])

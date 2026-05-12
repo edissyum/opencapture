@@ -137,7 +137,7 @@ export function SplitterListPage() {
         {
             id: 'filename',
             header: t('VERIFIER.filename'),
-            className: 'max-w-md! w-md! truncate-data',
+            className: 'truncate-data w-md! max-w-md!',
             body: (item: any) => (
                 <span className="font-semibold" title={ item['subject'] ? item['subject'] : item['file_name'] }>
                     { item['subject'] ? item['subject'] : item['file_name'] }

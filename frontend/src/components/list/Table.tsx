@@ -75,8 +75,8 @@ export function Table<T extends { id: string }>({
     skeletonRows = 5,
     rowsPerPage = 10,
     paginatorLeftText,
-    pagination = false,
     selectedRows = [],
+    pagination = false,
     checkboxSelection = false,
     totalRecords = data.length,
     rowsPerPageOptions = [10, 20, 50],
@@ -218,7 +218,7 @@ export function Table<T extends { id: string }>({
                     } }
                 >
                     { checkboxSelection && (
-                        <PrimeColumn selectionMode="multiple"/>
+                        <PrimeColumn selectionMode="multiple" headerClassName="max-w-5 w-5"/>
                     ) }
 
                     { columns.map((col, idx) => (

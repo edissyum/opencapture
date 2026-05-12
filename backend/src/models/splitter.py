@@ -294,6 +294,7 @@ def update_status(args):
         'where': ['id = ANY(%s)'],
         'data': [args['ids']]
     }
+
     res = database.update(args)
     return res
 
@@ -324,8 +325,8 @@ def change_form(args):
         'where': ['id = %s'],
         'data': [args['batch_id']]
     }
-    res = database.update(args)
 
+    res = database.update(args)
     return res
 
 
@@ -341,8 +342,8 @@ def lock_batch(args):
         'where': ['id = %s'],
         'data': [args['batch_id']]
     }
-    res = database.update(args)
 
+    res = database.update(args)
     return res
 
 
@@ -356,6 +357,10 @@ def update_document(data):
     }
     if 'status' in data:
         args['set']['status'] = data['status']
+    if 'md5' in data:
+        args['set']['md5'] = data['md5']
+    if 'sha256' in data:
+        args['set']['sha256'] = data['sha256']
     if 'doctype_key' in data:
         args['set']['doctype_key'] = data['doctype_key']
     if 'display_order' in data:
@@ -364,8 +369,8 @@ def update_document(data):
         args['set']['data'] = json.dumps({
             "custom_fields": data['document_metadata']
         })
-    res = database.update(args)
 
+    res = database.update(args)
     return res
 
 
@@ -385,8 +390,8 @@ def update_page(data):
         args['set']['rotation'] = data['rotation']
     if 'display_order' in data:
         args['set']['display_order'] = data['display_order']
-    res = database.update(args)
 
+    res = database.update(args)
     return res
 
 
@@ -418,8 +423,8 @@ def remove_lock_by_user_id(args):
         'where': ['locked_by = %s'],
         'data': [args['user_id']]
     }
-    res = database.update(data)
 
+    res = database.update(data)
     return res
 
 
@@ -435,6 +440,7 @@ def remove_lock_by_batch_id(batch_id):
         'where': ['id = %s'],
         'data': [batch_id]
     }
+
     res = database.update(data)
     return res
 
@@ -450,8 +456,8 @@ def update_batch_documents_count(args):
         'where': ['id = %s'],
         'data': [args['id']]
     }
-    res = database.update(args)
 
+    res = database.update(args)
     return res
 
 
