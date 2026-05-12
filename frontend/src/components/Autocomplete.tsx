@@ -19,11 +19,13 @@ import React, { useRef } from "react";
 
 import { FloatLabel } from "primereact/floatlabel";
 import { AutoComplete } from "primereact/autocomplete";
+import DOMPurify from "dompurify";
 
 interface AutocompleteProps extends React.InputHTMLAttributes<HTMLInputElement> {
     id: string;
-    value: any[] | any;
     label?: string;
+    error?: any;
+    value: any[] | any;
     dropdown?: boolean;
     multiple?: boolean;
     required?: boolean;
@@ -39,6 +41,7 @@ const AutocompleteInput: React.FC<AutocompleteProps> = ({
     id,
     value,
     label,
+    error,
     suggestions,
     itemTemplate,
     dropdown = false,
@@ -63,7 +66,10 @@ const AutocompleteInput: React.FC<AutocompleteProps> = ({
                     dropdown={ dropdown }
                     disabled={ disabled }
                     required={ required }
-                    className={ `w-full ${ disabled ? 'pointer-events-none' : '' }` }
+                    className={ `
+                        w-full ${ disabled ? 'pointer-events-none' : '' }
+                        ${ error ? 'autocompleteError' : '' }
+                    ` }
                     completeMethod={ search }
                     suggestions={ suggestions }
                     itemTemplate={ itemTemplate }
@@ -78,6 +84,10 @@ const AutocompleteInput: React.FC<AutocompleteProps> = ({
                     </label>
                 ) }
             </FloatLabel>
+            { error && (
+                <p className="text-(--text-error) text-xs ml-1 mt-1"
+                   dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(error) } }/>
+            ) }
         </div>
     );
 };

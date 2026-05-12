@@ -44,3 +44,7 @@
 .p-autocomplete-input {
     @apply border-(--border-secondary);
 }
+
+.autocompleteError input {
+    @apply border-(--text-error);
+}

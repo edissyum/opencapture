@@ -101,7 +101,7 @@ export function VerifierViewerPage() {
     const patterns: any = {
         alphanum: '^[\\-?0-9a-zA-Z\\s\'‘]*$',
         alphanum_extended: '^[\\-?0-9a-zA-Z\\\/#,\\.\'‘\\s\\(\\)_\\+:]*$',
-        alphanum_extended_with_accent: '^[\\-?0-9a-zA-Z\\u00C0-\\u017F\\\/#,\'‘\\.\\s\\(\\)\\[\\]_&°"%\\+:€$£]*$',
+        alphanum_extended_with_accent: '^[\\-?0-9a-zA-Z\\u00C0-\\u017F\\\/#,\'‘\\.\\s\\(\\)\\[\\]_&°"%\\+:;€$£]*$',
         number_int: '^[\\-?0-9]*$',
         number_float: '^[\\-?0-9]*([.][0-9]*)*$',
         char: '^[A-Za-z\\s]*$',
@@ -993,6 +993,32 @@ export function VerifierViewerPage() {
             return;
         }
 
+        const countLines = {
+            ['lines_count']: fieldsZone.find(z => z.id === 'lines')?.lines.length,
+            ['taxes_count']: 0
+        };
+
+        fieldsZone.find(z => z.id === 'facturation')?.lines.forEach((line: any) => {
+            Object.values(line).filter((f: any) => typeof f !== 'boolean').forEach((field: any) => {
+                if (field.id.includes('vat_amount') || field.id.includes('vat_rate') || field.id.includes('no_rate_amount')) {
+                    const cpt = parseInt(field.id.match(/\d+/g)) + 1;
+                    if (cpt && cpt > (countLines['taxes_count'])) {
+                        countLines['taxes_count']++;
+                    }
+                }
+            });
+        });
+
+        saveDocumentData(countLines).then(() => {
+            setDocumentData((prevData: any) => ({
+                ...prevData,
+                datas: {
+                    ...prevData.datas,
+                    ...countLines
+                }
+            }));
+        });
+
         if (currentForm.outputs && currentForm.outputs.length > 0) {
             let outputError = false;
             let cpt = 0;
@@ -1352,8 +1378,9 @@ export function VerifierViewerPage() {
                                                                         <AutocompleteInput
                                                                             id={ field.id }
                                                                             label={ t(field.label) }
-                                                                            required={ field.required }
                                                                             disabled={ disableFields }
+                                                                            error={ errors[field.id] }
+                                                                            required={ field.required }
                                                                             suggestions={ suggestionsSuppliers }
                                                                             value={ tmpDocumentData?.datas?.[field.id] ?? "" }
                                                                             optionLabel={ field.id === 'name' ? 'name' : 'lastname' }

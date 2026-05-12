@@ -186,18 +186,27 @@ def export_xml(data, log, document_info, database, enable_log=True):
                                 line_element = Et.SubElement(lines_element, 'line')
                                 line_element.set('number', str(cpt + 1))
                                 if cpt == 0:
+                                    poste_title = 'poste'
+                                    unity_title = 'unity'
                                     line_ht_title = 'line_ht'
                                     quantity_title = 'quantity'
+                                    reference_title = 'reference'
                                     unit_price_title = 'unit_price'
                                     description_title = 'description'
                                 else:
+                                    poste_title = 'poste_' + str(cpt)
+                                    unity_title = 'unity_' + str(cpt)
                                     line_ht_title = 'line_ht_' + str(cpt)
                                     quantity_title = 'quantity_' + str(cpt)
+                                    reference_title = 'reference_' + str(cpt)
                                     unit_price_title = 'unit_price_' + str(cpt)
                                     description_title = 'description_' + str(cpt)
 
+                                poste = get_data(document_info, poste_title)
+                                unity = get_data(document_info, unity_title)
                                 line_ht = get_data(document_info, line_ht_title)
                                 quantity = get_data(document_info, quantity_title)
+                                reference = get_data(document_info, reference_title)
                                 unit_price = get_data(document_info, unit_price_title)
                                 description = get_data(document_info, description_title)
 
@@ -209,6 +218,13 @@ def export_xml(data, log, document_info, database, enable_log=True):
                                 new_field.text = str(unit_price) if unit_price else ''
                                 new_field = Et.SubElement(line_element, 'description')
                                 new_field.text = str(description) if description else ''
+                                new_field = Et.SubElement(line_element, 'reference')
+                                new_field.text = str(reference) if reference else ''
+                                new_field = Et.SubElement(line_element, 'unity')
+                                new_field.text = str(unity) if unity else ''
+                                new_field = Et.SubElement(line_element, 'poste')
+                                new_field.text = str(poste) if poste else ''
+
                     else:
                         if 'vat_rate' not in value and 'vat_amount' not in value and 'no_rate_amount' not in value and \
                                 'line_ht' not in value and 'quantity' not in value and 'unit_price' not in value and \
