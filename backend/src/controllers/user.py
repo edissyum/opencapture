@@ -207,7 +207,7 @@ def get_user_by_username(username):
 
 
 def send_email_forgot_password(args):
-    user_info, error = user.get_user_by_id({'user_id': args['userId']})
+    user_info, error = user.get_user_by_id({'select': ['email, lastname, firstname, username'], 'user_id': args['userId']})
     if error is None:
         smtp = get_context_var('smtp', 8, True)
 
@@ -223,7 +223,7 @@ def send_email_forgot_password(args):
                 'user_info': user_info['lastname'] + ' ' + user_info['firstname'] + ' (' + user_info['username'] + ')',
                 'desc': gettext('USER_FORGOT_SUCCESS', user=user_info['username'])
             })
-        return user_info, 200
+        return '', 200
     else:
         error = gettext('RESET_PASSWORD_ERROR')
 

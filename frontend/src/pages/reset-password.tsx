@@ -135,7 +135,9 @@ export function ResetPassword() {
         }
     }
 
-    const handleReset = async () => {
+    const handleReset = async (e: any) => {
+        e.preventDefault();
+
         if (Object.keys(errors).length > 0 || !password || !passwordConfirm) {
             return;
         }
@@ -152,7 +154,9 @@ export function ResetPassword() {
         }
     }
 
-    const handleSendEmail = async () => {
+    const handleSendEmail = async (e: any) => {
+        e.preventDefault();
+
         if (emailError || !email) {
             return;
         }
@@ -199,32 +203,25 @@ export function ResetPassword() {
                         ) }
 
                         { resetToken ? (
-                            <div>
+                            <form onSubmit={ handleReset } className="flex flex-col gap-4">
                                 <DynamicForm schema={ passwordSchema } errors={ errors } control={ control }/>
-                            </div>
+                                <Button loading={ sending } type="submit" className='w-full'
+                                        disabled={ Object.keys(errors).length > 0 || !password || !passwordConfirm }>
+                                    { t('AUTH.reset') }
+                                </Button>
+                            </form>
                         ) : (
-                            <div className="my-2">
+                            <form onSubmit={ handleSendEmail } className="flex flex-col gap-4">
                                 <Input id="email" type="text" name="email" required disabled={ !smtpStatus }
                                        onChange={ checkEmail } error={ emailError }
                                        label={ t('USERS.email') }/>
-                            </div>
-                        ) }
-                        <div className="mt-2">
-                            { resetToken ? (
+
                                 <Button loading={ sending } type="submit" className='w-full'
-                                        disabled={ Object.keys(errors).length > 0 || !password || !passwordConfirm }
-                                        onClick={ handleReset }>
-                                    { t('AUTH.reset') }
-                                </Button>
-                            ) : (
-                                <Button loading={ sending } type="submit" className='w-full'
-                                        disabled={ !smtpStatus || !!emailError || !email }
-                                        onClick={ handleSendEmail }>
+                                        disabled={ !smtpStatus || !!emailError || !email }>
                                     { t('AUTH.send_email') }
                                 </Button>
-                            )
-                            }
-                        </div>
+                            </form>
+                        ) }
                     </div>
                 </div>
             </div>

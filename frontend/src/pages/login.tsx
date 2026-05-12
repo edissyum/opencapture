@@ -250,8 +250,7 @@ export function Login() {
 
                                 <div className="text-center">
                                     <Button disabled={ !custom || !watchLogin || !watchPassword || Object.keys(errors).length > 0 }
-                                            type='submit'
-                                            loading={ loadingLogin } className="w-full">
+                                            type='submit' loading={ loadingLogin } className="w-full">
                                         { t('AUTH.login') }
                                     </Button>
                                     { !custom &&

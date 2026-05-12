@@ -195,7 +195,11 @@ export function SettingsGeneralSecurity() {
         formState: { errors: defaultErrors }
     } = useForm({
         resolver: zodResolver(defaultSchema),
-        defaultValues: {},
+        defaultValues: {
+            numberMandatory: false,
+            upperCaseMandatory: false,
+            specialCharMandatory: false
+        },
         mode: "onChange"
     });
 
@@ -206,7 +210,9 @@ export function SettingsGeneralSecurity() {
         formState: { errors: ldapErrors }
     } = useForm({
         resolver: zodResolver(ldapConnectionSchema.extend(ldapSynchronisationSchema.shape)),
-        defaultValues: {},
+        defaultValues: {
+
+        },
         mode: "onChange"
     });
 
@@ -352,12 +358,12 @@ export function SettingsGeneralSecurity() {
                         </span>
                     </span>
                 }>
-                    <div className='p-4 text-(--text-primary)'>
-                        <h1 className='font-semibold text-md mb-6'>
+                    <div className='p-4 text-(--text-primary) flex flex-col gap-4'>
+                        <h1 className='font-semibold text-md'>
                             { t('SECURITY.password_rules') }
                         </h1>
-                        <div className='w-1/3'>
-                            <div className='flex items-center mb-6'>
+                        <div className='w-1/3 flex flex-col gap-4'>
+                            <div className='flex items-center'>
                                 <InputSwitch
                                     inputId={ 'enable_min' }
                                     checked={ currentMinLength > 0 }
@@ -373,7 +379,7 @@ export function SettingsGeneralSecurity() {
                                     { t('SECURITY.enable_min_length') }
                                 </label>
                             </div>
-                            <DynamicForm schema={ defaultSchema } control={ defaultControl } errors={ defaultErrors } gap={ 0 }/>
+                            <DynamicForm schema={ defaultSchema } control={ defaultControl } errors={ defaultErrors } gap={ 2 }/>
                         </div>
                     </div>
                 </AccordionTab>
@@ -391,7 +397,7 @@ export function SettingsGeneralSecurity() {
                         </span>
                     </span>
                 }>
-                    <Stepper ref={ stepperRef } linear className='p-4' activeStep={ stepperIndex }
+                    <Stepper ref={ stepperRef } linear className='p-4 pb-0' activeStep={ stepperIndex }
                              onChangeStep={ (e: any) => setStepperIndex(e.index) }>
                         <StepperPanel header={ t("MAILCOLLECT.connection") }>
                             <DynamicForm schema={ ldapConnectionSchema } control={ ldapControl } errors={ ldapErrors } grid={ 4 }/>
