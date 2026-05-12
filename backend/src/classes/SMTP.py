@@ -44,8 +44,7 @@ class SMTP:
         self.messsage_delay = '\n\n Attention, durant les ' + str(self.delay) + \
                               ' dernières minutes, d\'autres erreurs ont pu arriver sans notifications.'
 
-        if self.enabled:
-            self.test_connection()
+        self.test_connection()
 
     def test_connection(self, return_error=False):
         """
@@ -232,8 +231,10 @@ class SMTP:
         msg.attach(MIMEText(message, 'html'))
 
         try:
-            self.conn.sendmail(from_addr=msg['From'], to_addrs=msg['To'], msg=msg.as_string())
+            res = self.conn.sendmail(from_addr=msg['From'], to_addrs=msg['To'], msg=msg.as_string())
+            print(res)
         except smtplib.SMTPException as smtp_error:
+            print(smtp_error)
             print('Erreur lors de l\'envoi du mail : ' + str(smtp_error))
 
     def send_test_email(self, dest):

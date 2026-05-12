@@ -223,13 +223,17 @@ def send_email_forgot_password(args):
                 'user_info': user_info['lastname'] + ' ' + user_info['firstname'] + ' (' + user_info['username'] + ')',
                 'desc': gettext('USER_FORGOT_SUCCESS', user=user_info['username'])
             })
-        return '', 200
+        return user_info, 200
     else:
+        error = gettext('RESET_PASSWORD_ERROR')
+
+    if error:
         response = {
-            "errors": gettext('SEND_EMAIL_FORGOT_PASSWORD_ERROR'),
+            "errors": gettext(''),
             "message": gettext(error)
         }
         return response, 400
+    return {}, 200
 
 
 def reset_password(args):
@@ -251,7 +255,7 @@ def reset_password(args):
                 'user_info': user_info['lastname'] + ' ' + user_info['firstname'] + ' (' + user_info['username'] + ')',
                 'desc': gettext('USER_RESET_PASSWORD_SUCCESS', user=user_info['username'])
             })
-            return '', 200
+            return user_info, 200
         response = {
             "errors": gettext('RESET_PASSWORD_ERROR'),
             "message": gettext('RESET_TOKEN_MISMATCH')

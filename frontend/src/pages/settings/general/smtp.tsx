@@ -45,7 +45,7 @@ export function SettingsGeneralSMTP() {
         smtpNotifOnError: z.boolean(),
         smtpFromMail: emptyToUndefined(z.email().optional()),
         smtpDestAdminMail: emptyToUndefined(z.email().optional()),
-        smtpDelay: z.number().min(1).max(1440).optional()
+        smtpDelay: z.string().optional()
     });
     type FormData = z.infer<typeof schema>;
 
@@ -63,6 +63,7 @@ export function SettingsGeneralSMTP() {
             smtpHost: "smtp.gmail.com",
             smtpPort: 465,
             smtpProtocoleSecure: 'ssl',
+            smtpDelay: '30',
             smtpAuth: true,
             smtpFromMail: "",
             smtpDestAdminMail: ""
@@ -140,7 +141,7 @@ export function SettingsGeneralSMTP() {
             smtpNotifOnError: data.smtpNotifOnError ?? false,
             smtpFromMail: data.smtpFromMail || "",
             smtpDestAdminMail: data.smtpDestAdminMail || "",
-            smtpDelay: data.smtpDelay || 0
+            smtpDelay: data.smtpDelay.toString() || '0'
         };
 
         try {
@@ -152,7 +153,7 @@ export function SettingsGeneralSMTP() {
             console.error("Erreur modification des paramètres SMTP :", err);
         }
     };
-
+    console.log(errors)
     const handleTestEmail = async () => {
         setStatusLoadingTestEmail(true);
         setStatusTestEmailMessage('');
@@ -314,7 +315,7 @@ export function SettingsGeneralSMTP() {
                                            label={ t('SMTP.destination_admin_mail') } autoComplete='new-mail'/>
                                 </div>
                                 <Input id='smtpDelay' disabled={ !smtpNotifOnError }
-                                       { ...register('smtpDelay', { valueAsNumber: true }) }
+                                       { ...register('smtpDelay') }
                                        placeholder='30' label={ t('SMTP.delay_between_emails') }
                                        hint={ t('SMTP.delay_between_emails_infos') } className='w-[5rem]'
                                 />

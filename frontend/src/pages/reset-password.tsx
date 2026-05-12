@@ -45,6 +45,8 @@ export function ResetPassword() {
     const [resetToken, setResetToken] = useState('');
     const [smtpStatus, setSmtpStatus] = useState(true);
 
+    document.title = t('AUTH.reset-password') + " - Open-Capture";
+
     useEffect(() => {
         const token = searchParams.get("reset_token");
         if (token) {
