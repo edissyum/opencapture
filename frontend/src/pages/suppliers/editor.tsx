@@ -265,15 +265,15 @@ export function SupplierEditor({
             className: "col-span-2",
             label: t("ACCOUNTS.vat_number")
         })),
-        siren: z.string().optional().describe(JSON.stringify({
-            component: "input",
-            type: "text",
-            label: t("ACCOUNTS.siren")
-        })),
         siret: z.string().optional().describe(JSON.stringify({
             component: "input",
             type: "text",
             label: t("ACCOUNTS.siret")
+        })),
+        siren: z.string().optional().describe(JSON.stringify({
+            component: "input",
+            type: "text",
+            label: t("ACCOUNTS.siren")
         })),
         duns: z.string().refine((value) => {
                 if (!value) return true;

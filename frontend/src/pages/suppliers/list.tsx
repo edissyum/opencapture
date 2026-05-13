@@ -50,6 +50,8 @@ export function SuppliersList() {
     const columns = [
         { id: 'id', field: 'id', header: '', sortable: true },
         { id: 'name', field: 'name', sortable: true, header: t('ACCOUNTS.name') },
+        { id: 'lastname', field: 'lastname', sortable: true, header: t('ACCOUNTS.lastname') },
+        { id: 'firstname', field: 'firstname', sortable: true, header: t('ACCOUNTS.firstname') },
         { id: 'vat_number', field: 'vat_number', header: t('ACCOUNTS.vat_number') }
     ];
 
@@ -197,7 +199,7 @@ export function SuppliersList() {
                         variant="bg_white"
                         className='p-2 px-3 border'
                         onClick={ () => navigate('/suppliers/create') }>
-                        <UserRoundPlus size={ 16 } className="mr-2"/> { t('ACCOUNTS.add_supplier') }
+                        <UserRoundPlus size={ 16 }/> { t('ACCOUNTS.add_supplier') }
                     </Button>
                 </span>
             </div>

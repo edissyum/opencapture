@@ -208,13 +208,13 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                                  onClick={ () => setShowAddDoctype(false) }>
                                 <X/>
                             </div>
-                            <div className='w-full flex flex-col gap-2 mt-2'>
+                            <div className='w-full flex flex-col gap-4 mt-2'>
                                 <Input label={ t('GLOBAL.label') } value={ newDoctypeLabel } onChange={ (e) => {
                                     setNewDoctypeLabel(e.target.value);
-                                    setNewDoctypeKey(e.target.value.toUpperCase().replace(/\s+/g, "_"));
+                                    setNewDoctypeKey(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "_"));
                                 } }/>
                                 <Input label={ t('ROLES.label_short') } value={ newDoctypeKey } onChange={ (e) => {
-                                    setNewDoctypeKey(e.target.value.toUpperCase().replace(/\s+/g, "_"));
+                                    setNewDoctypeKey(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "_"));
                                 } }/>
                                 { newDoctypeType === 'document' && (
                                     <div className='flex items-center'>
@@ -312,11 +312,11 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
 
             { selectedDoctype.type === 'document' ? (
                 <div>
-                    <div className="p-4 rounded-xl border border-(--border-secondary) bg-(--bg-primary)">
+                    <div className="p-4 rounded-xl border border-(--border-secondary) bg-(--bg-primary) flex flex-col gap-4">
                         <h3 className='text-lg font-semibold'>
                             { t('DOCTYPES.update_doctype') }
                         </h3>
-                        <div className='flex gap-4 mt-4'>
+                        <div className='flex gap-4'>
                             <Input className='w-2/3' label={ t('GLOBAL.label') } value={ selectedDoctype.label }
                                    onChange={ (e) => {
                                        doctypeChanged?.({

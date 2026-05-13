@@ -42,9 +42,9 @@ export const ToastProvider: React.FC = () => {
             theme="light"
             pauseOnHover
             className={""}
-            pauseOnFocusLoss
             newestOnTop={ true }
             position="top-right"
+            pauseOnFocusLoss={ false }
         />
     );
 };

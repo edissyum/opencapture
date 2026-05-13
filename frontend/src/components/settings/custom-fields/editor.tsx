@@ -433,8 +433,8 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
 
     return (
         <div className="h-full overflow-y-auto">
-            <div className='p-6 pb-0'>
-                <h1 className="text-lg font-semibold mb-4">
+            <div className='p-6 pb-0 flex flex-col gap-4'>
+                <h1 className="text-lg font-semibold">
                     { t('ROLES.details') }
                 </h1>
 
@@ -442,7 +442,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                     <DynamicForm errors={ errors } control={ control } schema={ detailsSchema }/>
                 </div>
 
-                <h1 className="text-lg font-semibold mb-4">
+                <h1 className="text-lg font-semibold">
                     { t('CUSTOM-FIELDS.custom_type') }
                 </h1>
                 <DynamicForm errors={ errors } control={ control } schema={ typeSchema }/>

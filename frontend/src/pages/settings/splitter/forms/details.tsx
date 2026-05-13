@@ -74,14 +74,14 @@ export function SettingsSplitterFormsDetails({
     }
 
     return (
-        <div className='p-6 flex flex-col gap-6'>
-            <div>
+        <div className='p-6 flex flex-col gap-4'>
+            <div className='flex flex-col gap-4'>
                 <h3 className='text-lg font-semibold text-(--text-primary)'>{ t('SETTINGS.general') }</h3>
                 <Input
                     type="text"
                     id="form_label"
                     required={ true }
-                    className="mt-4 w-1/2"
+                    className="w-1/2"
                     value={ formSettings.label }
                     label={ t('FORMS.form_name') }
                     error={ formSettings.label === '' ? t('FORMS.label_required') : '' }

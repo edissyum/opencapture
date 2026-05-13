@@ -474,7 +474,7 @@ export function DoctypesTree({
                         : t("DOCTYPES.no_doctypes")
                 }
                 filterTemplate={ () => (
-                    <div className="p-6 pb-0">
+                    <div className="p-6 pb-0 flex flex-col gap-2">
                         <Input
                             type="text"
                             value={ searchTerm }
