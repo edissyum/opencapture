@@ -64,6 +64,7 @@ export function VerifierViewerPage() {
 
     const [outputs, setOutputs] = useState<any[]>([]);
     const [currentForm, setCurrentForm] = useState<any>(null);
+    const [currentWorkflow, setCurrentWorkflow] = useState<any>(null);
 
     const [formHasError, setFormHasError] = useState<boolean>(false);
     const [tmpDocumentData, setTmpDocumentData] = useState<any>(null);
@@ -214,8 +215,20 @@ export function VerifierViewerPage() {
             }
         }
 
+        const fetchWorkflowDetails = async () => {
+            try {
+                const response = await get(`/workflows/verifier/getById/${ documentData.workflow_id }`);
+                if (response) {
+                    setCurrentWorkflow(response);
+                }
+            } catch (error) {
+                console.error('Error fetching workflow details:', error);
+            }
+        };
+
         fetchForm().then();
         fetchAccountingPlan().then();
+        fetchWorkflowDetails().then();
         fetchEnableAttachments().then();
     }, [documentDataLoading]);
 
@@ -1041,14 +1054,18 @@ export function VerifierViewerPage() {
                         module: 'verifier',
                         submodule: 'output_executed',
                         desc: t('HISTORY.output_executed', { outputLabel: output.output_label, documentId: documentId })
-                    });
+                    }).then();
 
                     if (cpt === currentForm.outputs.length) {
                         logHistory({
                             module: 'verifier',
                             submodule: 'document_validated',
                             desc: t('HISTORY.document_validated', { documentId: documentId })
-                        });
+                        }).then();
+
+                        if (currentWorkflow?.process?.delete_documents) {
+                            await get('/verifier/documents/' + documentId + '/deleteDocuments');
+                        }
 
                         await updateDocument({ 'status': 'END', 'locked': false, 'locked_by': null }).then(() => {
                             setLoadingUpdateValidate(false);
