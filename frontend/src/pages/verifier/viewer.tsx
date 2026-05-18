@@ -730,7 +730,6 @@ export function VerifierViewerPage() {
         if (field.type === 'date' && !error) {
             if (value) {
                 const dateValue = dayjs(value, 'YYYY-MM-DD', true);
-                console.log(dateValue)
                 if (!dateValue.isValid()) {
                     error = t('FORMS.invalid_date');
                 }
