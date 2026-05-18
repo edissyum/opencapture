@@ -2,6 +2,6 @@
 /custom
 backend/custom
 frontend/src/assets/i18n/to_merge
-.env_*
+.env*
 !.env.default
 venv
