@@ -15,8 +15,8 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import dayjs from "dayjs";
 import { t } from "i18next";
-import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -127,7 +127,7 @@ export function VerifierViewerPage() {
 
     const lang = localStorage.getItem("selectedLang") || "en";
     useEffect(() => {
-        moment.locale(lang.startsWith("fr") ? "fr" : lang.startsWith("es") ? "es" : "en");
+        dayjs.locale(lang.startsWith("fr") ? "fr" : lang.startsWith("es") ? "es" : "en");
     }, [lang]);
 
     const { user, loadingUser } = useUser();
@@ -217,9 +217,11 @@ export function VerifierViewerPage() {
 
         const fetchWorkflowDetails = async () => {
             try {
-                const response = await get(`/workflows/verifier/getById/${ documentData.workflow_id }`);
-                if (response) {
-                    setCurrentWorkflow(response);
+                if (documentData.workflow_id) {
+                    const response = await get(`/workflows/verifier/getById/${ documentData.workflow_id }`);
+                    if (response) {
+                        setCurrentWorkflow(response);
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching workflow details:', error);
@@ -397,9 +399,9 @@ export function VerifierViewerPage() {
                                 let value = field.default_value;
                                 if (field.type === 'date') {
                                     if (value === 'default_today') {
-                                        value = moment().format('YYYY-MM-DD');
+                                        value = dayjs().format('YYYY-MM-DD');
                                     } else {
-                                        value = moment(field.default_value, 'YYYY-MM-DD');
+                                        value = dayjs(field.default_value, 'YYYY-MM-DD');
                                     }
                                 }
 
@@ -727,7 +729,8 @@ export function VerifierViewerPage() {
 
         if (field.type === 'date' && !error) {
             if (value) {
-                const dateValue = moment(value, 'YYYY-MM-DD', true);
+                const dateValue = dayjs(value, 'YYYY-MM-DD', true);
+                console.log(dateValue)
                 if (!dateValue.isValid()) {
                     error = t('FORMS.invalid_date');
                 }

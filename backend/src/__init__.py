@@ -20,6 +20,8 @@ import os
 import re
 import urllib.parse
 from flask_cors import CORS
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from ultralytics import YOLO
 from flask_babel import Babel
 
@@ -97,7 +99,13 @@ def get_locale():
 app = Flask(__name__)
 app.wsgi_app = Middleware(app.wsgi_app)
 CORS(app, supports_credentials=True)
+
 limiter.init_app(app)
+
+# Apply global rate limiting to all requests (setup in backend/src/rest/auth.py)
+@app.before_request
+def global_rate_limit():
+    pass
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 instance_path = os.path.abspath(os.path.join(BASE_DIR, "../instance"))

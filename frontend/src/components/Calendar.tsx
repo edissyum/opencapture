@@ -15,7 +15,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import moment from "moment";
+import dayjs from "dayjs";
 import DOMPurify from "dompurify";
 import { addLocale } from "primereact/api";
 import { Calendar } from "primereact/calendar";
@@ -159,7 +159,7 @@ const ISOCalendar: React.FC<ISOCalendarProps> = ({
             lang.startsWith("fr") ? "fr" :
                 lang.startsWith("es") ? "es" : "en";
 
-        moment.locale(finalLang);
+        dayjs.locale(finalLang);
         setLocaleLang(finalLang);
     }, []);
 

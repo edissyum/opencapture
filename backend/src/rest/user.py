@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
+from .auth import limiter
 from flask_babel import gettext
 from ..functions import rest_validator
 from ..controllers import auth, user, privileges
@@ -138,6 +139,7 @@ def send_email_forgot_password():
 
 
 @bp.route('users/resetPassword', methods=['PUT'])
+@limiter.limit("3/minute")
 def reset_password():
     check, message = rest_validator(request.json, [
         {'id': 'resetToken', 'type': str, 'mandatory': False},

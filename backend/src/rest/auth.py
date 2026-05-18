@@ -28,7 +28,7 @@ bp = Blueprint('auth', __name__, url_prefix='/ws/')
 limiter = Limiter(key_func=get_remote_address, default_limits=["200/hour"], storage_uri="memory://")
 
 @bp.route('auth/login', methods=['POST'])
-@limiter.limit("5/minute", key_func=lambda: request.json.get("username", get_remote_address()))
+@limiter.limit("3/minute")
 def login():
     check, message = rest_validator(request.json, [
         {'id': 'lang', 'type': str, 'mandatory': True},
@@ -65,6 +65,7 @@ def refresh():
 
 
 @bp.route('auth/checkToken', methods=['POST'])
+@limiter.limit("5/minute", key_func=lambda: request.json.get("token", get_remote_address()))
 def check_token():
     check, message = rest_validator(request.json, [
         {'id': 'token', 'type': str, 'mandatory': True}
@@ -110,9 +111,11 @@ def generate_auth_token():
     return make_response({'token': res[0]}, res[1])
 
 
-@bp.route('auth/logout', methods=['GET'])
+@bp.route('auth/logout', methods=['POST'])
+@limiter.limit("5/minute", key_func=lambda: request.json.get("token", get_remote_address()))
+@auth.token_required
 def logout():
-    check, message = rest_validator(request.args, [
+    check, message = rest_validator(request.json, [
         {'id': 'user_id', 'type': int, 'mandatory': True}
     ])
     if not check:
@@ -121,7 +124,12 @@ def logout():
             "message": message
         }, 400)
 
-    user_id = request.args.get('user_id')
+    user_id = request.json['user_id']
+    if str(request.environ['user_id']) != str(user_id):
+        return make_response({
+            "errors": gettext('UNAUTHORIZED_ROUTE'),
+            "message": "auth/logout"
+        }, 403)
 
     auth.logout(user_id)
     return {}, 200

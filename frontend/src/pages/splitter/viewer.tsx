@@ -15,9 +15,9 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import dayjs from "dayjs";
 import { t } from "i18next";
 import DOMPurify from "dompurify";
-import moment from "moment/moment";
 import { Panel } from "primereact/panel";
 import { Divider } from "primereact/divider";
 import { ContextMenu } from "primereact/contextmenu";
@@ -252,7 +252,7 @@ export function SplitterViewerPage() {
                                                 let value = doc.data.custom_fields[field.label_short];
 
                                                 if (field.type === 'date') {
-                                                    const dateValue = moment(value, 'YYYY-MM-DD', true);
+                                                    const dateValue = dayjs(value, 'YYYY-MM-DD', true);
                                                     if (dateValue.isValid()) {
                                                         value = dateValue.format('YYYY-MM-DD');
                                                     } else {
@@ -310,10 +310,10 @@ export function SplitterViewerPage() {
                     }
                     setBatch(batchData);
 
-                    const batchDate = moment(batchData.creation_date);
-                    if (batchDate.isSame(moment(), 'day')) {
+                    const batchDate = dayjs(batchData.creation_date);
+                    if (batchDate.isSame(dayjs(), 'day')) {
                         setBatchTime('today');
-                    } else if (batchDate.isSame(moment().subtract(1, 'day'), 'day')) {
+                    } else if (batchDate.isSame(dayjs().subtract(1, 'day'), 'day')) {
                         setBatchTime('yesterday');
                     } else {
                         setBatchTime('older');
@@ -421,7 +421,7 @@ export function SplitterViewerPage() {
                                 let value = batch.data.custom_fields[field.label_short];
 
                                 if (field.type === 'date') {
-                                    const dateValue = moment(value, 'YYYY-MM-DD', true);
+                                    const dateValue = dayjs(value, 'YYYY-MM-DD', true);
                                     if (dateValue.isValid()) {
                                         value = dateValue.format('YYYY-MM-DD');
                                     } else {

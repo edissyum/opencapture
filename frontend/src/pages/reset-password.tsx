@@ -147,7 +147,7 @@ export function ResetPassword() {
         try {
             await put('/users/resetPassword', { resetToken: resetToken, newPassword: passwordConfirm });
             showToast(t('AUTH.password_reset_success'), 'success');
-            handleLogout(navigate);
+            handleLogout(navigate).then();
         } catch (err) {
             setSending(false);
             console.debug('Error while resetting password', err);

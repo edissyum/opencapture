@@ -28,6 +28,7 @@ from flask_babel import gettext
 from ..controllers import privileges
 from ..helpers import get_context_var
 from ldap3.core.exceptions import LDAPException
+from ldap3.utils.conv import escape_filter_chars
 from datetime import datetime, timezone, timedelta
 from ..models import auth, user, roles, monitoring, history
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -724,7 +725,8 @@ def check_user_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin, 
                 if not connection.bind():
                     return False
                 else:
-                    status = connection.search(search_base=base_dn, search_filter=f'({username_attribute}={username})',
+                    safe_username = escape_filter_chars(username)
+                    status = connection.search(search_base=base_dn, search_filter=f'({username_attribute}={safe_username})',
                                                search_scope='SUBTREE',
                                                attributes=['*'])
                     user_dn = connection.response[0]['dn']
@@ -742,7 +744,8 @@ def check_user_connection(type_ad, domain_ldap, port_ldap, username_ldap_admin, 
                 if not connection.bind():
                     return False
                 else:
-                    status = connection.search(search_base=base_dn, search_filter=f'({username_attribute}={username})',
+                    safe_username = escape_filter_chars(username)
+                    status = connection.search(search_base=base_dn, search_filter=f'({username_attribute}={safe_username})',
                                                search_scope='SUBTREE',
                                                attributes=['*'])
                     user_dn = connection.response[0]['dn']

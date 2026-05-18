@@ -444,3 +444,24 @@ CREATE TABLE "settings_favorites" (
     "user_id"    INTEGER,
     "route"      VARCHAR(255)
 );
+
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_documents_locked_by ON documents (locked_by);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_documents_customer_status_regdate ON documents (customer_id, status, register_date DESC);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_documents_supplier_status_regdate ON documents (supplier_id, status, register_date DESC);
+
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_splitter_batches_customer_form_status_created ON splitter_batches (customer_id, form_id, status, creation_date DESC);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_splitter_batches_locked_by ON splitter_batches (locked_by);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_splitter_documents_batch_status_display ON splitter_documents (batch_id, status, display_order);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_splitter_documents_batch_status_split ON splitter_documents (batch_id, status, split_index DESC);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_splitter_pages_document_status_display ON splitter_pages (document_id, status, display_order);
+
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_attachments_document_status ON attachments (document_id, status);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_attachments_batch_status_id ON attachments (batch_id, status, id DESC);
+
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_monitoring_token ON monitoring (token);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_monitoring_module_status_id ON monitoring (module, status, id DESC);
+
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_history_module_submodule_date ON history (history_module, history_submodule, history_date DESC);
+
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_roles_privileges_role_id ON roles_privileges (role_id);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_form_models_field_form_id ON form_models_field (form_id);

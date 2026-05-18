@@ -14,6 +14,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import axios from "axios";
 import { t } from "i18next";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -37,10 +38,14 @@ import {
 import { LoginImage } from "./LoginImage";
 import { hasRequiredPermissions } from "./auth/auth";
 
+import { BACKEND_URL } from "../services/config";
 import { useUser } from "../services/hooks/useUser";
+import { useCustom } from "../services/custom/customContext";
 import { clearPersistentState, usePersistentState } from "../services/hooks/usePersistentState";
 
-export const handleLogout = (navigate: any) => {
+export const handleLogout = async (navigate: any, user = {}, custom: any = '') => {
+    const token = sessionStorage.getItem("accessToken");
+
     sessionStorage.clear();
 
     const prefix = 'OpenCapture_';
@@ -50,13 +55,28 @@ export const handleLogout = (navigate: any) => {
         }
     });
 
+    if (user && Object.keys(user).length > 0 && token) {
+        await axios.post(
+            `${ BACKEND_URL }/${ custom }/ws/auth/logout`,
+            { user_id: 1 },
+            {
+                headers: {
+                    "Authorization": `Bearer ${ token }`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+    }
+
     navigate("/login", { replace: true });
 };
 
 export default function Sidebar() {
+    const custom = useCustom();
     const { user, loadingUser } = useUser();
     const location = useLocation();
     const navigate = useNavigate();
+
     const userPanelRef = useRef<HTMLDivElement | null>(null);
 
     const [userPanelOpen, setUserPanelOpen] = useState(false);
@@ -218,9 +238,11 @@ export default function Sidebar() {
                 </Link>
             </nav>
 
-            <div ref={ userPanelRef } className="relative mt-auto text-(--text-secondary) flex flex-col gap-3 bg-(--bg-secondary) rounded-lg">
+            <div ref={ userPanelRef }
+                 className="relative mt-auto text-(--text-secondary) flex flex-col gap-3 bg-(--bg-secondary) rounded-lg">
                 { userPanelOpen && (
-                    <div className='absolute bottom-full mb-2 z-30 rounded-lg border border-(--border-secondary) bg-(--bg-primary) shadow-lg'>
+                    <div
+                        className='absolute bottom-full mb-2 z-30 rounded-lg border border-(--border-secondary) bg-(--bg-primary) shadow-lg'>
                         <div
                             className="w-full cursor-pointer flex items-center gap-3 px-4 py-3 text-(--text-secondary)
                                        hover:bg-(--bg-secondary) hover:text-(--text-primary) transition-colors min-w-58"
@@ -235,9 +257,9 @@ export default function Sidebar() {
                         <div
                             className="w-full cursor-pointer flex items-center gap-3 px-4 py-3 text-(--text-error)
                                        hover:bg-(--bg-secondary) transition-colors border-t border-(--border-secondary)"
-                            onClick={ () => {
+                            onClick={ async () => {
                                 setUserPanelOpen(false);
-                                handleLogout(navigate);
+                                await handleLogout(navigate, user, custom);
                             } }>
                             <LogOut size={ 18 } className='shrink-0'/>
                             <span className='truncate'>{ t('GLOBAL.logout') }</span>
@@ -251,7 +273,8 @@ export default function Sidebar() {
                                 border border-transparent ${ userPanelOpen ? 'bg-(--bg-secondary)! border-(--border-secondary)!' : 'bg-(--bg-primary)!' }
                                 text-(--text-secondary) font-semibold transition-colors ${ collapsed ? '' : 'px-3' }` }
                     onClick={ () => setUserPanelOpen((prev) => !prev) }>
-                    <img src='/src/assets/imgs/user.svg' alt='user profile' className='shrink-0 size-8' { ...(collapsed && {
+                    <img src='/src/assets/imgs/user.svg' alt='user profile'
+                         className='shrink-0 size-8' { ...(collapsed && {
                         "data-tooltip-id": "tooltip",
                         "data-tooltip-content": `${ user.firstname } ${ user.lastname }`
                     }) }/>
