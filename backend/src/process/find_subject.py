@@ -82,18 +82,19 @@ class FindSubject:
         not_allowed_symbol = [':', '.']
         cpt = 0
         if not subject:
-            return
+            return None
 
         for line in self.current_text:
             if line:
                 find = False
-                if subject in line:
+                if subject in line.content:
                     next_line = self.current_text[cpt + 1].content
                     if next_line:
                         for letter in next_line:
                             if letter in not_allowed_symbol:  # Check if the line doesn't contain some specific char
                                 find = True
                                 break
+
                         if find:
                             continue
                         first_char = next_line[0]
@@ -114,7 +115,7 @@ class FindSubject:
         for text in [self.header_text, self.text]:
             self.current_text = text
             for line in text:
-                subject = self.process(line.content.upper())
+                subject = self.process(line.content)
                 if subject:
                     self.log.info('Subject found : ' + subject)
                     return [subject, line.position, self.nb_page]

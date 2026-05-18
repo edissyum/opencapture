@@ -128,8 +128,8 @@ mkdir -p "$NEW_CUSTOM_PATH/data/MailCollect/_ERROR/"
 touch "$NEW_CUSTOM_PATH/config/secret_key"
 
 touch "$NEW_CUSTOM_PATH/data/log/OpenCapture.log"
-cp "$DEFAULT_PATH"/frontend/src/assets/imgs/login_image.svg "$NEW_CUSTOM_PATH/assets/imgs/login_image.svg"
 cp "$DEFAULT_PATH"/backend/src/assets/imgs/opencapture.png "$NEW_CUSTOM_PATH/assets/imgs/opencapture.png"
+cp "$DEFAULT_PATH"/frontend/src/assets/imgs/login_image.svg "$NEW_CUSTOM_PATH/assets/imgs/login_image.svg"
 cp "$DEFAULT_PATH"/backend/src/assets/imgs/logo_company.png "$NEW_CUSTOM_PATH/assets/imgs/logo_company.png"
 
 ####################

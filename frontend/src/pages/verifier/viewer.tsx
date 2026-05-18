@@ -1332,7 +1332,7 @@ export function VerifierViewerPage() {
                                             <div key={ index } className={ `flex gap-4` }>
                                                 { Object.values(line).filter((field: any) => typeof field !== 'boolean').map((field: any) => (
                                                     <div key={ field.id } className={ `min-w-1/6 ${ getWidthLine(line) }` }>
-                                                        { field.type === 'date' && (
+                                                        { ((field.type === 'regex' && field.settings?.regex?.format === 'date') || field.type === 'date') && (
                                                             <ISOCalendar
                                                                 id={ field.id }
                                                                 label={ t(field.label) }
