@@ -685,7 +685,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                     </div>
                 </StepperPanel>
 
-                { inputScripting && (
+                { allowScripting && inputScripting && (
                     // @ts-ignore
                     <StepperPanel header={
                         <div className='flex items-center gap-2'>
@@ -767,7 +767,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                     </div>
                 </StepperPanel>
 
-                { processScripting && (
+                { allowScripting && processScripting && (
                     // @ts-ignore
                     <StepperPanel header={
                         <div className='flex items-center gap-2'>
