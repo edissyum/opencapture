@@ -1,6 +1,6 @@
 {
     "enabled": false,
-    "provider": "freetsa",
+    "provider": "certinomis",
     "freetsa": {
         "url": "https://freetsa.org/tsr"
     },

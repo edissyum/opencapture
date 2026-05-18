@@ -203,7 +203,7 @@ export function SettingsVerifierAiLLMEditor() {
             setValue('input_price', provider.costs.find((c: any) => c.type === 'input')?.price);
             setValue('output_price', provider.costs.find((c: any) => c.type === 'output')?.price);
 
-            if (isFirstProviderEffect.current) {
+            if (!isFirstProviderEffect.current) {
                 isFirstProviderEffect.current = true;
                 return;
             }
@@ -305,7 +305,7 @@ export function SettingsVerifierAiLLMEditor() {
                         { t('AI-LLM.api_call') }
                     </h1>
                     <div className='w-1/2'>
-                        <DynamicForm errors={ errors } control={ control } schema={ apiSchema } gap={ 2 }/>
+                        <DynamicForm errors={ errors } control={ control } schema={ apiSchema } gap={ 4 }/>
                     </div>
                 </div>
 
