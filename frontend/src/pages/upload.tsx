@@ -173,12 +173,11 @@ export function UploadPage() {
                     { t('UPLOAD.select_workflows') }
                 </h1>
                 <div className='px-6 flex flex-col gap-2 overflow-y-auto h-full'>
-                    {
-                        workflowLoading && (
-                            <Loader/>
-                        )
-                    }
-                    { workflows.map((workflow) => (
+                    { workflowLoading && (
+                        <Loader/>
+                    ) }
+
+                    { workflows.filter(w => !w?.process?.api_only).map((workflow) => (
                         <div key={ workflow.id }
                              onClick={ () => setSelectedWorkflow(workflow.workflow_id) }
                              { ...(workflow.label.length > workflowTooltipMinLength && {
