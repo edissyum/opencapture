@@ -96,6 +96,22 @@ export function Table<T extends { id: string }>({
     };
 
     const handleRowClick = (e: any) => {
+        const target = e.originalEvent?.target as HTMLElement | null;
+
+        // If click on checkbox, do not navigate. Instead, simulate toggle to avoid crysis
+        const clickedInSelectionColumn = !!target?.closest(".p-selection-column");
+        if (clickedInSelectionColumn) {
+            const clickedOnCheckbox = !!target?.closest(".p-checkbox");
+            if (!clickedOnCheckbox && checkboxSelection) {
+                const isSelected = selectedRows.some((row) => row.id === e.data.id);
+                const next = isSelected
+                    ? selectedRows.filter((row) => row.id !== e.data.id)
+                    : [...selectedRows, e.data];
+                handleSelectionChange(next);
+            }
+            return;
+        }
+
         if (baseLink) {
             navigate(baseLink + e.data.id);
         }
