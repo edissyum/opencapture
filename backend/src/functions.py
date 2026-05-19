@@ -305,7 +305,7 @@ def check_python_customized_files(path):
 def search_custom_positions(data, ocr, files, regex, file, docservers):
     extension = os.path.splitext(file)[1]
     if 'pdf' in extension.lower():
-        if 'page' not in data or not data['page'] or data['page'] > files.get_pages(docservers, file):
+        if 'page' not in data or not data['page'] or data['page'] > files.get_pages(file):
             return ['', (('', ''), ('', ''))]
     else:
         if 'page' not in data or not data['page'] or data['page'] > 1:

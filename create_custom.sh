@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # This file is part of Open-Capture.
 # Copyright Edissyum Consulting since 2020 under licence GPLv3
 

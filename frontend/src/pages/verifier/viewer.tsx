@@ -950,6 +950,7 @@ export function VerifierViewerPage() {
                     if (currentForm.settings.allow_learning) {
                         const positionData: any = {};
                         positionData[fieldId] = {
+                            ocr_from_user: true,
                             x: region.x,
                             y: region.y,
                             width: region.width,
