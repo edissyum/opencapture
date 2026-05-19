@@ -391,6 +391,9 @@ export function VerifierViewerPage() {
                             if (field.id.includes('custom_') && !field.settings) {
                                 const customField: any = customFields.find((f) => `custom_${ f.id }` === field.id);
                                 if (customField) {
+                                    if (field.type === 'regex') {
+                                        field.type = customField.settings?.regex?.format;
+                                    }
                                     field.settings = customField.settings;
                                 }
                             }
@@ -1332,7 +1335,7 @@ export function VerifierViewerPage() {
                                             <div key={ index } className={ `flex gap-4` }>
                                                 { Object.values(line).filter((field: any) => typeof field !== 'boolean').map((field: any) => (
                                                     <div key={ field.id } className={ `min-w-1/6 ${ getWidthLine(line) }` }>
-                                                        { ((field.type === 'regex' && field.settings?.regex?.format === 'date') || field.type === 'date') && (
+                                                        { field.type === 'date' && (
                                                             <ISOCalendar
                                                                 id={ field.id }
                                                                 label={ t(field.label) }
