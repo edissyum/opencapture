@@ -253,6 +253,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
     const {
         control: detailsControl,
+        watch: detailsWatch,
         setValue: detailsSetValue,
         getValues: detailsGetValues,
         handleSubmit: detailsHandleSubmit,
@@ -265,6 +266,27 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         },
         mode: "onChange"
     });
+    const watchLabel = detailsWatch("label");
+    const watchWorkflowId = detailsWatch("workflow_id");
+
+    // Fill workflowId with label value
+    useEffect(() => {
+        if (!watchLabel) return;
+
+        const newLabelShort = watchLabel.toLowerCase().replace(/\s+/g, '_').replace(/[^\w\-]+/g, '');
+        detailsSetValue("workflow_id", newLabelShort);
+    }, [watchLabel]);
+
+    // Remove space in workflowId
+    useEffect(() => {
+        if (!watchWorkflowId) return;
+
+        const newLabelShort = watchWorkflowId.replace(/\s+/g, '');
+        if (newLabelShort !== watchWorkflowId) {
+            detailsSetValue("workflow_id", newLabelShort);
+        }
+    }, [watchWorkflowId]);
+
 
     let inputSchemaFields = z.object({
         input_folder: z.string().optional().describe(JSON.stringify({
