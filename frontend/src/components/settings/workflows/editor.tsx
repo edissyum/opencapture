@@ -273,17 +273,23 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
     useEffect(() => {
         if (!watchLabel) return;
 
-        const newLabelShort = watchLabel.toLowerCase().replace(/\s+/g, '_').replace(/[^\w\-]+/g, '');
-        detailsSetValue("workflow_id", newLabelShort);
+        const newWorkflowId = watchLabel
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .replace(/\s+/g, '_')
+            .replace(/[^\w\-]+/g, '');
+
+        detailsSetValue("workflow_id", newWorkflowId);
     }, [watchLabel]);
 
     // Remove space in workflowId
     useEffect(() => {
         if (!watchWorkflowId) return;
 
-        const newLabelShort = watchWorkflowId.replace(/\s+/g, '');
-        if (newLabelShort !== watchWorkflowId) {
-            detailsSetValue("workflow_id", newLabelShort);
+        const newWorkflowId = watchWorkflowId.replace(/\s+/g, '');
+        if (newWorkflowId !== watchWorkflowId) {
+            detailsSetValue("workflow_id", newWorkflowId);
         }
     }, [watchWorkflowId]);
 

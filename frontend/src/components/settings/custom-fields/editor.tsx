@@ -281,7 +281,12 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
     useEffect(() => {
         if (!watchLabel || customFieldId) return;
 
-        const newLabelShort = watchLabel.toLowerCase().replace(/\s+/g, '_').replace(/[^\w\-]+/g, '');
+        const newLabelShort = watchLabel
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .replace(/\s+/g, '_')
+            .replace(/[^\w\-]+/g, '');
         setValue("label_short", newLabelShort);
     }, [watchLabel]);
 
