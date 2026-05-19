@@ -315,7 +315,15 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
 
         if (!contentRegexValue) return;
 
-        const contentRegex = new RegExp(contentRegexValue, 'g');
+        let contentRegex: RegExp;
+        try {
+            contentRegex = new RegExp(contentRegexValue, 'g');
+        } catch (error) {
+            console.error('Invalid regex pattern :', error);
+            setHighlightedResult(`<span class='text-(--text-error)'>${ t('REGEX.invalid_regex') }</span>`);
+            return;
+        }
+
         const removeRegex = removeKeywordValue
             ? new RegExp(removeKeywordValue, 'g')
             : null;
@@ -595,7 +603,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                                 </span>
                             }>
                                 <div className='flex flex-col gap-4 mb-4 p-6 pb-0'>
-                                    <div className='w-1/3'>
+                                    <div className='w-1/3 flex flex-col gap-4'>
                                         <Input type="text"
                                                label={ t('GLOBAL.label') } value={ option.label }
                                                autoFocus={ autoFocusOptionIndex === index }
