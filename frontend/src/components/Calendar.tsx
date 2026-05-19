@@ -167,7 +167,7 @@ const ISOCalendar: React.FC<ISOCalendarProps> = ({
 
     return (
         <div className="flex flex-col">
-            <div className={ `${ error ? '' : 'mb-5' } ${ disabled ? 'cursor-not-allowed' : '' }` }>
+            <div className={ `${ disabled ? 'cursor-not-allowed' : '' }` }>
                 <FloatLabel className="w-full calendar">
                     <Calendar
                         showIcon
