@@ -60,7 +60,7 @@
         "i18next-scanner": "^4.6.0",
         "lucide-react": "^1.16.0",
         "typescript": "~6.0.3",
-        "typescript-eslint": "^8.59.3",
+        "typescript-eslint": "^8.59.4",
         "vite": "^8.0.13"
     }
 }

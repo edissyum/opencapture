@@ -117,6 +117,6 @@ class FindSubject:
             for line in text:
                 subject = self.process(line.content)
                 if subject:
-                    self.log.info('Subject found : ' + subject)
+                    self.log.info('Subject found : ' + str(subject))
                     return [subject, line.position, self.nb_page]
             cpt += 1

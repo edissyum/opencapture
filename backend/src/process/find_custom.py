@@ -92,7 +92,7 @@ class FindCustom:
         self.supplier = supplier
         self.database = database
         self.custom_page = False
-        self.languages= languages
+        self.languages = languages
         self.header_text = ocr.text
         self.footer_text = ocr.text
         self.docservers = docservers

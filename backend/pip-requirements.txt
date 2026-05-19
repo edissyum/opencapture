@@ -1,8 +1,8 @@
-lxml==6.1.0
+lxml==6.1.1
 nltk==3.9.4
 qrcode==8.2
 fpdf2==2.8.7
-numpy==2.4.5
+numpy==2.4.6
 msal==1.36.0
 ldap3==2.9.1
 pyocr==0.8.5
