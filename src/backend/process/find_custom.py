@@ -19,6 +19,7 @@ import re
 import json
 import math
 import schwifty
+from datetime import datetime
 from schwifty.checksum import ISO7064_mod97_10
 
 from src.backend.functions import search_custom_positions
@@ -78,7 +79,7 @@ def find_iban_from_bban(country_code: str, bban: str):
 
 class FindCustom:
     def __init__(self, log, regex, config, ocr, files, supplier, file, database, docservers, form_id,
-                 custom_fields_to_find, custom_fields_regex):
+                 custom_fields_to_find, custom_fields_regex, configurations, languages):
         self.ocr = ocr
         self.log = log
         self.file = file
@@ -91,12 +92,77 @@ class FindCustom:
         self.supplier = supplier
         self.database = database
         self.custom_page = False
+        self.languages = languages
         self.header_text = ocr.text
         self.footer_text = ocr.text
         self.docservers = docservers
+        self.configurations = configurations
         self.ocr_errors_table = ocr.ocr_errors_table
         self.custom_fields_regex = custom_fields_regex
         self.custom_fields_to_find = custom_fields_to_find
+
+
+    def format_date(self, date):
+        if date:
+            date = date.replace('1er', '01')  # Replace some possible inconvenient char
+            date = date.replace(',', ' ')  # Replace some possible inconvenient char
+            date = date.replace('/', ' ')  # Replace some possible inconvenient char
+            date = date.replace('-', ' ')  # Replace some possible inconvenient char
+            date = date.replace('.', ' ')  # Replace some possible inconvenient char
+
+            regex = self.regex
+            language = self.configurations['locale']
+            if self.supplier and 'document_lang' in self.supplier[2] and self.supplier[2]['document_lang']:
+                language = self.supplier[2]['document_lang']
+                if self.supplier[2]['document_lang'] != self.configurations['locale']:
+                    _regex = self.database.select({
+                        'select': ['regex_id', 'content'],
+                        'table': ['regex'],
+                        'where': ["lang in ('global', %s)"],
+                        'data': [self.configurations['locale']]
+                    })
+                    if _regex:
+                        regex = {}
+                        for _r in _regex:
+                            regex[_r['regex_id']] = _r['content']
+
+            date_file = './src/assets/locale/' + language + '.json'
+            with open(date_file, encoding='utf-8') as file:
+                _fp = json.load(file)
+                date_convert = _fp['dateConvert'] if 'dateConvert' in _fp else ''
+
+            for key in date_convert:
+                for month in date_convert[key]:
+                    if month.lower() in date.lower():
+                        date = (date.lower().replace(month.lower(), key))
+                        break
+
+            try:
+                # Fix to handle date with 2 digits year
+                date = date.replace('  ', ' ')
+                length_of_year = len(date.split(' ')[2])
+                date_format = "%d %m %Y"
+
+                for _l in self.languages:
+                    if language == self.languages[_l]['lang_code']:
+                        date_format = self.languages[_l]['date_format']
+
+                if length_of_year == 2:
+                    date_format = date_format.replace('%Y', '%y')
+
+                tmp_date = datetime.strptime(date, date_format).strftime(regex['format_date'])
+                # Check if the date of the document isn't too old. 62 (default value) is equivalent of 2 months
+                today = datetime.now()
+                doc_date = datetime.strptime(tmp_date, regex['format_date'])
+                timedelta = today - doc_date
+
+                if timedelta.days < 0:
+                    date = False
+                return datetime.strptime(date, date_format).strftime('%Y-%m-%d')
+            except (ValueError, IndexError) as _e:
+                return False
+        else:
+            return False
 
     def check_format(self, data, settings):
         match = True
@@ -297,6 +363,8 @@ class FindCustom:
                             if data:
                                 if regex_settings['format'] == 'amount':
                                     data = data.replace(',', '.')
+                                elif regex_settings['format'] == 'date':
+                                    data = self.format_date(data)
 
                                 if 'remove_spaces' in regex_settings and regex_settings['remove_spaces']:
                                     data = re.sub(r"\s*", '', data)

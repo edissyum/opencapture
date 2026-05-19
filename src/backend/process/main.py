@@ -655,8 +655,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         log.debug('Start to find custom fields in document based on workflow settings')
         # Find custom informations using mask
         custom_fields = find_custom.FindCustom(log, regex, config, ocr, files, supplier, file, database, docservers,
-                                               datas['form_id'], custom_fields_to_find,
-                                               False).run_using_positions_mask()
+                                               datas['form_id'], custom_fields_to_find,False,
+                                               configurations, languages).run_using_positions_mask()
         if custom_fields:
             for field in custom_fields:
                 datas['datas'].update({field: custom_fields[field][0]})
@@ -681,7 +681,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         for custom_field in custom_fields_regex:
             custom_field_class = find_custom.FindCustom(log, regex, config, ocr, files, supplier, file, database,
                                                         docservers, datas['form_id'], custom_fields_to_find,
-                                                        custom_field)
+                                                        custom_field, configurations, languages)
             custom_field = 'custom_' + str(custom_field['id'])
             datas = found_data_recursively(log, custom_field, ocr, file, nb_pages, text_by_pages, custom_field_class,
                                            datas, files, configurations, tesseract_function, convert_function)
