@@ -18,7 +18,7 @@ COPY . .
 
 ENV PYTHONPATH=/app
 
-RUN chmod +x run.sh
+RUN chmod +x *.sh
 
 EXPOSE 8000
 
