@@ -271,7 +271,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
     // Fill workflowId with label value
     useEffect(() => {
-        if (!watchLabel) return;
+        if (!watchLabel || watchWorkflowId) return;
 
         const newWorkflowId = watchLabel
             .normalize("NFD")
