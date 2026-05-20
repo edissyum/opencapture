@@ -1,0 +1,119 @@
+# docker-compose.override.yml — dev overlay, auto-loaded by `docker compose`.
+#
+# Differences from prod:
+#   - source bind mounts so code edits hit the running containers
+#   - gunicorn --reload + DEBUG log level on the API
+#   - postgres/rabbit/backend ports re-exposed for local introspection
+#   - named volumes for custom/docservers/share are replaced by bind
+#     mounts under ./data/ so files are visible on the host
+#   - frontend runs the Vite dev server (HMR) instead of nginx
+
+services:
+    postgres:
+        ports:
+            - "${POSTGRES_HOST_PORT:-5433}:5432"
+
+    rabbitmq:
+        ports:
+            - "${RABBITMQ_HOST_PORT:-5672}:5672"
+            - "${RABBITMQ_MGMT_HOST_PORT:-15672}:15672"
+
+    init:
+        volumes:
+            - ./backend/src:/app/src
+            - ./backend/instance:/app/instance
+            - ./backend/docker-bootstrap.sh:/app/docker-bootstrap.sh
+            - ./backend/docker-entrypoint.sh:/app/docker-entrypoint.sh
+            - ./postgres/sql:/app/postgres/sql:ro
+            - ./data/custom:/app/custom
+            - ./data/docservers:/app/docservers
+            - ./data/share:/app/share
+
+    backend:
+        environment:
+            GUNICORN_WORKERS: "1"
+            GUNICORN_THREADS: "2"
+            GUNICORN_LOG_LEVEL: "debug"
+            GUNICORN_EXTRA_ARGS: "--reload"
+            FLASK_DEBUG: "1"
+        ports:
+            - "${BACKEND_HOST_PORT:-8000}:8000"
+        volumes:
+            - ./backend/src:/app/src
+            - ./backend/instance:/app/instance
+            - ./backend/docker-bootstrap.sh:/app/docker-bootstrap.sh
+            - ./backend/docker-entrypoint.sh:/app/docker-entrypoint.sh
+            - ./postgres/sql:/app/postgres/sql:ro
+            - ./data/custom:/app/custom
+            - ./data/docservers:/app/docservers
+            - ./data/share:/app/share
+        healthcheck:
+            disable: true
+
+    worker-verifier:
+        volumes:
+            - ./backend/src:/app/src
+            - ./backend/instance:/app/instance
+            - ./backend/docker-bootstrap.sh:/app/docker-bootstrap.sh
+            - ./backend/docker-entrypoint.sh:/app/docker-entrypoint.sh
+            - ./postgres/sql:/app/postgres/sql:ro
+            - ./data/custom:/app/custom
+            - ./data/docservers:/app/docservers
+            - ./data/share:/app/share
+
+    worker-splitter:
+        volumes:
+            - ./backend/src:/app/src
+            - ./backend/instance:/app/instance
+            - ./backend/docker-bootstrap.sh:/app/docker-bootstrap.sh
+            - ./backend/docker-entrypoint.sh:/app/docker-entrypoint.sh
+            - ./postgres/sql:/app/postgres/sql:ro
+            - ./data/custom:/app/custom
+            - ./data/docservers:/app/docservers
+            - ./data/share:/app/share
+
+    worker-mail:
+        volumes:
+            - ./backend/src:/app/src
+            - ./backend/instance:/app/instance
+            - ./backend/docker-bootstrap.sh:/app/docker-bootstrap.sh
+            - ./backend/docker-entrypoint.sh:/app/docker-entrypoint.sh
+            - ./postgres/sql:/app/postgres/sql:ro
+            - ./data/custom:/app/custom
+            - ./data/docservers:/app/docservers
+            - ./data/share:/app/share
+
+    fs-watcher:
+        volumes:
+            - ./backend/src:/app/src
+            - ./backend/instance:/app/instance
+            - ./backend/docker-bootstrap.sh:/app/docker-bootstrap.sh
+            - ./backend/docker-entrypoint.sh:/app/docker-entrypoint.sh
+            - ./postgres/sql:/app/postgres/sql:ro
+            - ./data/custom:/app/custom
+            - ./data/docservers:/app/docservers
+            - ./data/share:/app/share
+
+    # In dev we run the Vite dev server (HMR) instead of building +
+    # serving via nginx. The dev server lives on 5173, the API is
+    # reachable directly on ${BACKEND_HOST_PORT}. Set
+    # VITE_BACKEND_URL=http://localhost:${BACKEND_HOST_PORT}/ in .env.
+    #
+    # !override on `ports` and `build` replaces the parent values
+    # (requires docker compose v2.24+); without it compose would
+    # merge and we would end up with both the prod 8080:80 mapping
+    # and the dev 5173:5173 mapping bound to the host.
+    frontend:
+        build: !override
+            context: ./frontend
+            dockerfile: Dockerfile.dev
+        image: opencapture-frontend-dev
+        environment:
+            VITE_BACKEND_URL: ${VITE_BACKEND_URL}
+        command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+        ports: !override
+            - "${FRONTEND_HOST_PORT:-5173}:5173"
+        volumes:
+            - ./frontend/src:/app/src
+            - ./frontend/index.html:/app/index.html
+            - ./frontend/vite.config.ts:/app/vite.config.ts

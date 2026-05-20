@@ -3,5 +3,10 @@
 backend/custom
 frontend/src/assets/i18n/to_merge
 .env*
-!.env.default
+!.env.example
+# .env is committed deliberately (no real secrets in dev defaults)
+!.env
+
+# Dev-only host bind targets created by docker-compose.override.yml
+/data/
 venv

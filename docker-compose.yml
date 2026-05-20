@@ -1,0 +1,195 @@
+# Open-Capture production-ready compose.
+#
+# One single backend image (built from ./backend/Dockerfile) powers
+# all backend roles: api, worker-verifier, worker-splitter, worker-mail,
+# fs-watcher, and the one-shot init job. The role is selected via the
+# `command:` of each service, dispatched by backend/docker-entrypoint.sh.
+#
+# Network: a single internal bridge; only the frontend nginx exposes a
+# port to the host. For local dev, use docker-compose.override.yml
+# (auto-loaded) which re-exposes backend/postgres/rabbit and switches
+# to bind mounts.
+
+x-backend-build: &backend-build
+    build:
+        context: ./backend
+        dockerfile: Dockerfile
+
+x-backend-env: &backend-env
+    CUSTOM_ID:          ${CUSTOM_ID}
+    POSTGRES_DB:        ${POSTGRES_DB}
+    POSTGRES_USER:      ${POSTGRES_USER}
+    POSTGRES_PASSWORD:  ${POSTGRES_PASSWORD}
+    POSTGRES_PORT:      ${POSTGRES_PORT}
+    POSTGRES_HOST:      ${POSTGRES_HOST}
+    RABBIT_HOST:        ${RABBITMQ_HOST}
+    RABBIT_PORT:        ${RABBITMQ_PORT}
+    RABBIT_USER:        ${RABBITMQ_USER}
+    RABBIT_PASSWORD:    ${RABBITMQ_PASS}
+    RABBIT_VIRTUAL_HOST: ${RABBITMQ_VHOST}
+    DOCSERVER_PATH:     /app/docservers
+    SHARE_PATH_CONTAINER: /app/share
+    DOCSERVERS_PATH_CONTAINER: /app/docservers
+    OC_PATH:            /app
+
+x-backend-volumes: &backend-volumes
+    - custom:/app/custom
+    - docservers:/app/docservers
+    - share:/app/share
+
+services:
+    postgres:
+        build:
+            context: ./postgres
+            dockerfile: Dockerfile
+        environment:
+            POSTGRES_DB:       ${POSTGRES_DB}
+            POSTGRES_USER:     ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            PGDATA:            /var/lib/postgresql/data/pgdata
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+            interval: 5s
+            timeout: 5s
+            retries: 20
+        restart: unless-stopped
+
+    rabbitmq:
+        image: rabbitmq:4-management-alpine
+        environment:
+            RABBITMQ_DEFAULT_USER:  ${RABBITMQ_USER}
+            RABBITMQ_DEFAULT_PASS:  ${RABBITMQ_PASS}
+            RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST}
+        volumes:
+            - rabbitmq_data:/var/lib/rabbitmq
+        healthcheck:
+            test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+            interval: 10s
+            timeout: 5s
+            retries: 10
+        restart: unless-stopped
+
+    # One-shot tenant initialization. Creates custom/<CUSTOM_ID>/,
+    # populates the DB on first run, patches docserver paths.
+    # Idempotent: re-runs are no-ops.
+    init:
+        <<: *backend-build
+        image: opencapture-backend
+        environment:
+            <<: *backend-env
+        volumes: *backend-volumes
+        command: ["init"]
+        depends_on:
+            postgres:
+                condition: service_healthy
+        restart: "no"
+
+    backend:
+        image: opencapture-backend
+        environment:
+            <<: *backend-env
+        volumes: *backend-volumes
+        command: ["api"]
+        depends_on:
+            postgres:
+                condition: service_healthy
+            rabbitmq:
+                condition: service_healthy
+            init:
+                condition: service_completed_successfully
+        healthcheck:
+            test: ["CMD-SHELL", "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:8000/${CUSTOM_ID}/ws/status\", timeout=5)' || exit 1"]
+            interval: 30s
+            timeout: 10s
+            retries: 5
+            start_period: 60s
+        restart: unless-stopped
+
+    worker-verifier:
+        image: opencapture-backend
+        environment:
+            <<: *backend-env
+        volumes: *backend-volumes
+        command: ["worker-verifier"]
+        depends_on:
+            postgres:
+                condition: service_healthy
+            rabbitmq:
+                condition: service_healthy
+            init:
+                condition: service_completed_successfully
+        restart: unless-stopped
+
+    worker-splitter:
+        image: opencapture-backend
+        environment:
+            <<: *backend-env
+        volumes: *backend-volumes
+        command: ["worker-splitter"]
+        depends_on:
+            postgres:
+                condition: service_healthy
+            rabbitmq:
+                condition: service_healthy
+            init:
+                condition: service_completed_successfully
+        restart: unless-stopped
+
+    worker-mail:
+        image: opencapture-backend
+        environment:
+            <<: *backend-env
+            MAIL_POLL_INTERVAL: ${MAIL_POLL_INTERVAL:-60}
+        volumes: *backend-volumes
+        command: ["worker-mail"]
+        depends_on:
+            postgres:
+                condition: service_healthy
+            rabbitmq:
+                condition: service_healthy
+            init:
+                condition: service_completed_successfully
+        restart: unless-stopped
+
+    fs-watcher:
+        image: opencapture-backend
+        environment:
+            <<: *backend-env
+        volumes: *backend-volumes
+        command: ["fs-watcher"]
+        depends_on:
+            postgres:
+                condition: service_healthy
+            rabbitmq:
+                condition: service_healthy
+            init:
+                condition: service_completed_successfully
+        restart: unless-stopped
+
+    frontend:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+            args:
+                # baked into the Vite bundle. "/" means same-origin,
+                # routed by nginx (this container) to backend:8000.
+                VITE_BACKEND_URL: /
+        environment:
+            CUSTOM_ID:    ${CUSTOM_ID}
+            BACKEND_HOST: backend
+            BACKEND_PORT: "8000"
+        ports:
+            - "${FRONTEND_PORT:-8080}:80"
+        depends_on:
+            backend:
+                condition: service_started
+        restart: unless-stopped
+
+volumes:
+    pgdata:
+    rabbitmq_data:
+    custom:
+    docservers:
+    share:

@@ -1,4 +1,3 @@
-cron
 libgl1
 libpq-dev
 libmagic1
@@ -7,20 +6,12 @@ zbar-tools
 libheif-dev
 ghostscript
 imagemagick
-python3-pip
 python3-dev
-python3-venv
-python3-zbar
 poppler-utils
 libcairo2-dev
 tesseract-ocr
-python3-skimage
-python3-chardet
-rabbitmq-server
 libtesseract-dev
 libleptonica-dev
 tesseract-ocr-fra
 tesseract-ocr-eng
-python3-pyinotify
 libpoppler-cpp-dev
-autopostgresqlbackup
