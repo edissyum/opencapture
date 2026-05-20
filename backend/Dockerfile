@@ -7,7 +7,7 @@
 # worker-splitter, worker-mail, fs-watcher, init); the role is
 # selected at runtime via the OC_ROLE env var consumed by entrypoint.sh.
 
-FROM python:3.13-slim AS builder
+FROM python:3.13-slim-bookworm AS builder
 
 ENV PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
@@ -37,7 +37,7 @@ RUN python -m pip install --upgrade pip wheel setuptools pycparser \
         pyinotify-elephant-fork
 
 
-FROM python:3.13-slim AS runtime
+FROM python:3.13-slim-bookworm AS runtime
 
 ENV PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
@@ -49,7 +49,11 @@ ENV PIP_NO_CACHE_DIR=1 \
     TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata/
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        # Image / PDF / OCR runtime
+        # Image / PDF / OCR CLI tools. These pull in the matching
+        # shared libs (libpoppler-cpp, libtesseract5, libleptonica,
+        # libzbar0, libgs10...) transitively, so we don't list them
+        # explicitly here -- avoids breakage on Debian version bumps
+        # (e.g. the t64 rename libpoppler-cpp0v5 -> libpoppler-cpp2t64).
         ghostscript \
         imagemagick \
         poppler-utils \
@@ -57,18 +61,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         tesseract-ocr-fra \
         tesseract-ocr-eng \
         zbar-tools \
-        # Shared libs needed by python wheels at runtime
+        # Shared libs that don't have a CLI front-end on this image.
         libgl1 \
         libmagic1 \
         libcairo2 \
         libheif1 \
         libpq5 \
-        libpoppler-cpp0v5 \
-        libtesseract5 \
-        libleptonica-dev \
-        # Postgres client for bootstrap.sh (psql + pg_isready)
+        # Postgres client for bootstrap.sh (psql + pg_isready).
         postgresql-client \
-        # Misc utils used by bootstrap.sh
+        # Misc utils used by bootstrap.sh.
         ca-certificates \
         gettext-base \
     && rm -rf /var/lib/apt/lists/* \
