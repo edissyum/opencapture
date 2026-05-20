@@ -87,6 +87,7 @@ services:
         restart: "no"
 
     backend:
+        <<: *backend-build
         image: opencapture-backend
         environment:
             <<: *backend-env
@@ -108,6 +109,7 @@ services:
         restart: unless-stopped
 
     worker-verifier:
+        <<: *backend-build
         image: opencapture-backend
         environment:
             <<: *backend-env
@@ -123,6 +125,7 @@ services:
         restart: unless-stopped
 
     worker-splitter:
+        <<: *backend-build
         image: opencapture-backend
         environment:
             <<: *backend-env
@@ -138,6 +141,7 @@ services:
         restart: unless-stopped
 
     worker-mail:
+        <<: *backend-build
         image: opencapture-backend
         environment:
             <<: *backend-env
@@ -154,6 +158,7 @@ services:
         restart: unless-stopped
 
     fs-watcher:
+        <<: *backend-build
         image: opencapture-backend
         environment:
             <<: *backend-env
