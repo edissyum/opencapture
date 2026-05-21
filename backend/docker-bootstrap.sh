@@ -59,6 +59,28 @@ mkdir -p \
 touch "${CUSTOM_DIR}/data/log/OpenCapture.log"
 
 # ------------------------------------------------------------
+# Self-heal: ensure watcher.ini exists, even if the tenant has
+# been bootstrapped before (watcher.ini was added after the
+# original bootstrap of existing tenants).
+# ------------------------------------------------------------
+ensure_watcher_ini() {
+    local target="${CUSTOM_DIR}/config/watcher.ini"
+    [ -f "$target" ] && return 0
+    if [ ! -f "${OC_PATH}/instance/config/watcher.ini.default" ]; then
+        return 0
+    fi
+    log "generating ${target} from instance default"
+    cp "${OC_PATH}/instance/config/watcher.ini.default" "$target"
+    sed -i \
+        -e "s#/var/log/watcher/daemon.log#${CUSTOM_DIR}/data/log/watcher.log#g" \
+        -e "s#/run/watcher.pid#/tmp/watcher-${CUSTOM_ID}.pid#g" \
+        -e "s#/var/share/#${SHARE_PATH}/#g" \
+        -e "s#/var/www/html/opencapture/#${CUSTOM_DIR}/#g" \
+        "$target"
+}
+ensure_watcher_ini
+
+# ------------------------------------------------------------
 # Marker: short-circuit subsequent runs once config.ini exists
 # ------------------------------------------------------------
 if [ -f "${CUSTOM_DIR}/config/config.ini" ]; then
@@ -105,6 +127,18 @@ find "${CUSTOM_DIR}" -type f \( -name "*.py" -o -name "*.sh" -o -name "*.ini" -o
         -e "s#§§BATCH_PATH§§#${CUSTOM_DIR}/data/MailCollect#g" \
         -e "s#§§LOG_PATH§§#${CUSTOM_DIR}/data/log/OpenCapture.log#g" \
         -e "s#§§PYTHON_VENV§§##g"
+
+# watcher.ini ships with real host paths (no §§ placeholders) that
+# don't exist in the container -- patch them to writable locations
+# under the tenant data dir.
+if [ -f "${CUSTOM_DIR}/config/watcher.ini" ]; then
+    sed -i \
+        -e "s#/var/log/watcher/daemon.log#${CUSTOM_DIR}/data/log/watcher.log#g" \
+        -e "s#/run/watcher.pid#/tmp/watcher-${CUSTOM_ID}.pid#g" \
+        -e "s#/var/share/#${SHARE_PATH}/#g" \
+        -e "s#/var/www/html/opencapture/#${CUSTOM_DIR}/#g" \
+        "${CUSTOM_DIR}/config/watcher.ini"
+fi
 
 # ------------------------------------------------------------
 # custom.ini index + secret_key
