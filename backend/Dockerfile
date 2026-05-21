@@ -67,6 +67,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libcairo2 \
         libheif1 \
         libpq5 \
+        # pdftotext (pip) links against libpoppler-cpp.so.0v5; the
+        # poppler-utils CLI on Bookworm does NOT pull this transitively.
+        libpoppler-cpp0v5 \
         # Postgres client for bootstrap.sh (psql + pg_isready).
         postgresql-client \
         # Misc utils used by bootstrap.sh.

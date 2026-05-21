@@ -116,9 +116,16 @@ case "$ROLE" in
         wait_for_rabbit
         ensure_tenant
         cd /app
-        # fs-watcher reads /app/instance/config/watcher.ini ; the
-        # bootstrap script materialises it from .default at first run.
-        exec fs-watcher -c /app/instance/config/watcher.ini
+        # The pypi package "fs-watcher" installs its CLI as `watcher`.
+        # The .ini lives in the tenant directory (bootstrap.sh has
+        # already substituted §§OC_PATH§§ placeholders inside it).
+        WATCHER_INI="${WATCHER_INI:-/app/custom/${CUSTOM_ID}/config/watcher.ini}"
+        if [ ! -f "$WATCHER_INI" ]; then
+            # Fallback: the global default at /app/instance/config/watcher.ini.
+            WATCHER_INI=/app/instance/config/watcher.ini
+        fi
+        echo "[fs-watcher] using config: ${WATCHER_INI}"
+        exec watcher -c "$WATCHER_INI" start
         ;;
 
     shell|bash)
