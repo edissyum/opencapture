@@ -125,7 +125,10 @@ case "$ROLE" in
             WATCHER_INI=/app/instance/config/watcher.ini
         fi
         echo "[fs-watcher] using config: ${WATCHER_INI}"
-        exec watcher -c "$WATCHER_INI" start
+        # `start` daemonises via python-daemon and exits the foreground
+        # process, which makes Docker think the container has stopped.
+        # `debug` runs in the foreground -- exactly what we want as PID 1.
+        exec watcher -c "$WATCHER_INI" debug
         ;;
 
     shell|bash)
