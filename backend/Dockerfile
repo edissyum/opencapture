@@ -79,12 +79,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && mkdir -p /tmp/opencapture
 
 # Install pre-built wheels from the builder stage.
+# Two steps on purpose: fs-watcher pulls the original `pyinotify`
+# which is broken on Python 3.12+ (it imports the removed asyncore
+# module). We then force-install pyinotify-elephant-fork last so its
+# pyinotify.py overwrites the broken one.
 COPY --from=builder /wheels /wheels
 COPY pip-requirements.txt /tmp/pip-requirements.txt
 RUN python -m pip install --upgrade pip \
     && python -m pip install --no-index --find-links=/wheels \
         -r /tmp/pip-requirements.txt \
-        pyinotify-elephant-fork \
+    && python -m pip install --no-index --find-links=/wheels \
+        --force-reinstall --no-deps pyinotify-elephant-fork \
     && rm -rf /wheels /tmp/pip-requirements.txt
 
 # Allow ImageMagick to read/write PDFs (the default Debian policy blocks PDF).
