@@ -30,7 +30,16 @@ interface settingCardsProps {
     unpinFav?: () => void;
 }
 
-export function SettingsCard({ show = true, icon, title, description, to, className, module, unpinFav }: settingCardsProps) {
+export function SettingsCard({
+                                 show = true,
+                                 icon,
+                                 title,
+                                 description,
+                                 to,
+                                 className,
+                                 module,
+                                 unpinFav
+                             }: settingCardsProps) {
     if (!show) return null;
 
     const [hovered, setHovered] = useState(false);
@@ -53,9 +62,11 @@ export function SettingsCard({ show = true, icon, title, description, to, classN
                     </>
                 ) }
             </div>
-            <div className="w-full" title={ description }>
-                <h3 className="text-lg font-semibold mt-1 text-(--text-primary)">
-                    { title }
+            <div className="w-full min-w-0" title={ description }>
+                <h3 className="text-lg font-semibold mt-1 text-(--text-primary) flex items-center gap-1 min-w-0">
+                    <span className="truncate min-w-0">
+                        { title }
+                    </span>
                     <span>
                         { module && (
                             <span className="text-[10px] ml-1 text-(--color-primary) absolute top-2 right-2 capitalize">
@@ -64,7 +75,7 @@ export function SettingsCard({ show = true, icon, title, description, to, classN
                         ) }
                     </span>
                 </h3>
-                <p className='text-(--text-secondary) truncate'>
+                <p className='text-(--text-secondary) truncate min-w-0'>
                     { description }
                 </p>
             </div>
