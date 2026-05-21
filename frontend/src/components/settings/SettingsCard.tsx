@@ -53,7 +53,7 @@ export function SettingsCard({ show = true, icon, title, description, to, classN
                     </>
                 ) }
             </div>
-            <div className="" title={ description }>
+            <div className="w-full" title={ description }>
                 <h3 className="text-lg font-semibold mt-1 text-(--text-primary)">
                     { title }
                     <span>
