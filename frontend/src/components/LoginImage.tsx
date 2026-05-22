@@ -19,14 +19,16 @@ import { useEffect, useState } from "react";
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
 
 import { b64ToFile } from "../pages/settings/general/customization";
+import { useCustom } from "../services/custom/customContext.tsx";
 
 export function LoginImage({ className }: { className?: string }) {
     const { get } = axiosApiCall();
+    const custom = useCustom();
     const [image, setImage] = useState<string | undefined>(undefined);
 
     const loadImage = async () => {
         try {
-            const stored = localStorage.getItem("appImage");
+            const stored = localStorage.getItem(`${ custom }_appImage`);
             if (stored) {
                 setImage(stored);
                 return;
@@ -37,7 +39,7 @@ export function LoginImage({ className }: { className?: string }) {
             const reader = new FileReader();
             reader.onload = () => {
                 if (reader.result) {
-                    localStorage.setItem("appImage", reader.result as string);
+                    localStorage.setItem(`${ custom }_appImage`, reader.result as string);
                     setImage(reader.result as string);
                 }
             };
@@ -57,5 +59,5 @@ export function LoginImage({ className }: { className?: string }) {
         return () => window.removeEventListener("appImageChanged", handleUpdate);
     }, []);
 
-    return <img src={image} alt="AppImage" className={className ?? "w-24 h-24 object-contain"} />;
+    return <img src={ image } alt="AppImage" className={ className ?? "w-24 h-24 object-contain" }/>;
 }

@@ -26,6 +26,7 @@ import { LangSelection } from "../../../components/onboarding/LangSelection";
 import { ThemeSelection } from "../../../components/onboarding/ThemeSelection";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
+import { useCustom } from "../../../services/custom/customContext.tsx";
 
 export function b64ToFile(b64Data: string) {
     const byteString = atob(b64Data.split(',')[1]);
@@ -42,6 +43,7 @@ export function b64ToFile(b64Data: string) {
 export function SettingsGeneralCustomization() {
     const { t } = useTranslation();
     const { get, put } = axiosApiCall();
+    const custom = useCustom();
 
     const [files, setFiles] = useState<File[]>([]);
     const [editorKey, setEditorKey] = useState<number>(0);
@@ -79,7 +81,7 @@ export function SettingsGeneralCustomization() {
         let cancelled = false;
 
         async function fetchImage() {
-            const currentAppImage = localStorage.getItem('appImage');
+            const currentAppImage = localStorage.getItem(`${custom}_appImage`);
             if (currentAppImage) {
                 const imageFile = b64ToFile(currentAppImage);
 
@@ -142,7 +144,7 @@ export function SettingsGeneralCustomization() {
 
         reader.onload = () => {
             const b64Data = reader.result as string;
-            localStorage.setItem('appImage', b64Data);
+            localStorage.setItem(`${custom}_appImage`, b64Data);
 
             put('config/updateLoginImage', { image_content: b64Data }).then();
             window.dispatchEvent(new Event('appImageChanged'))
