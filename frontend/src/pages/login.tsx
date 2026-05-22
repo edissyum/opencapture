@@ -27,6 +27,7 @@ import { getI18n, useTranslation } from "react-i18next";
 import packageJson from "../../package.json";
 
 import { Button } from '../components/Button';
+import { Loader } from "../components/loader/Loader";
 import { LoginImage } from "../components/LoginImage";
 import { showToast } from "../components/ToastProvider";
 import { DynamicForm } from "../components/form/DynamicForm";
@@ -41,7 +42,9 @@ export function Login() {
     const custom = useCustom();
     const navigate = useNavigate();
 
+    const [loading, setLoading] = useState(true);
     const [loadingLogin, setLoadingLogin] = useState(false);
+
     const [loginMessage, setLoginMessage] = useState<string>('');
     const [enabledLoginMethod, setEnabledLoginMethod] = useState<string>('');
 
@@ -77,15 +80,11 @@ export function Login() {
             if (res.login_method_name) {
                 setEnabledLoginMethod(res.login_method_name[0].method_name);
             }
+            setLoading(false);
         }
 
-        fetchEnabledMethod().then();
-    }, []);
-
-    // Fetch login message from configuration if not already set
-    useEffect(() => {
-        async function getLoginMessage() {
-            if (!loginMessage && custom) {
+        async function fetchLoginMessage() {
+            if (custom) {
                 await get("/config/getConfigurationNoAuth/loginMessage").then((response) => {
                     if (response && response.configuration) {
                         setLoginMessage(response.configuration[0]?.data.value);
@@ -94,8 +93,9 @@ export function Login() {
             }
         }
 
-        getLoginMessage().then();
-    }, [loginMessage]);
+        fetchLoginMessage().then();
+        fetchEnabledMethod().then();
+    }, []);
 
     const loginSchema: any = z.object({
         username: z.string().describe(JSON.stringify({
@@ -166,6 +166,7 @@ export function Login() {
         navigate('/reset-password');
     };
 
+    if (loading) return <Loader/>;
     return (
         <div className="flex flex-col gap-2 h-screen items-center justify-between py-6 bg-(--bg-secondary)">
             <div className="flex flex-1 items-center justify-center w-full">
