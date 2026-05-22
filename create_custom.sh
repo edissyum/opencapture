@@ -173,6 +173,15 @@ find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§BATCH_PATH§§#$NEW_CUSTOM_P
 find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§LOG_PATH§§#$NEW_CUSTOM_PATH/data/log/OpenCapture.log#g" {} \;
 
 ####################
+# Write database configuration in custom config.ini file
+confFile="$NEW_CUSTOM_PATH/config/config.ini"
+crudini --set "$confFile" DATABASE postgresHost "$database_hostname"
+crudini --set "$confFile" DATABASE postgresPort "$database_port"
+crudini --set "$confFile" DATABASE postgresDatabase "$database_name"
+crudini --set "$confFile" DATABASE postgresUser " $database_user"
+crudini --set "$confFile" DATABASE postgresPassword " $database_password"
+
+####################
 # Fill database with default data
 export PGPASSWORD=$database_password
 DATABASE_INFO="-U "$database_user" -h "$database_hostname" -p "$database_port""

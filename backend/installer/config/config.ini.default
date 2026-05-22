@@ -11,6 +11,13 @@ debugMode        = False
 docstart         = DOCSTART
 bundlestart      = BUNDLESTART
 
+[DATABASE]
+postgresHost     = localhost
+postgresPort     = 5432
+postgresDatabase = opencapture_edissyum
+postgresUser     =
+postgresPassword =
+
 [REFERENCIAL]
 ; CSV only supported
 ; Path is set up in docservers table (REFERENTIALS_PATH)
