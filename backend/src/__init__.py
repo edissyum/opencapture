@@ -20,8 +20,6 @@ import os
 import re
 import urllib.parse
 from flask_cors import CORS
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 from ultralytics import YOLO
 from flask_babel import Babel
 
@@ -88,6 +86,7 @@ def get_locale():
             languages = current_context.languages
         else:
             custom_id = retrieve_custom_from_url(request)
+            print(request)
             _vars = create_classes_from_custom_id(custom_id)
             if not _vars[0]:
                 return 'fr'

@@ -175,6 +175,8 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
                     nfz42020.init(provider, provider_config['url'], provider_config)
 
     try:
+        current_context.database = database
+
         if 'ocr' not in current_context:
             current_context.ocr = ocr
         if 'log' not in current_context:
@@ -187,8 +189,6 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
             current_context.files = files
         if 'nfz42020' not in current_context:
             current_context.nfz42020 = nfz42020
-        if 'database' not in current_context:
-            current_context.database = database
         if 'languages' not in current_context:
             current_context.languages = languages
         if 'docservers' not in current_context:
