@@ -86,7 +86,6 @@ def get_locale():
             languages = current_context.languages
         else:
             custom_id = retrieve_custom_from_url(request)
-            print(request)
             _vars = create_classes_from_custom_id(custom_id)
             if not _vars[0]:
                 return 'fr'

@@ -236,8 +236,8 @@ export function Login() {
 
                         <form onSubmit={ handleSubmit(handleLogin) }
                               className='flex flex-col gap-4 align-center h-full justify-center'>
-                            <div className='font-bold flex flex-col'>
-                                <span className='text-2xl'>{ t('AUTH.connexion') }</span>
+                            <div className='flex flex-col'>
+                                <span className='font-bold text-2xl'>{ t('AUTH.connexion') }</span>
                                 { loginMessage ? (
                                     <span dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(loginMessage) } }/>
                                 ) : (
