@@ -207,7 +207,10 @@ def is_custom_exists(custom_id):
 
 
 def retrieve_custom_from_url(request):
-    if shared.custom_id:
+    url = request.environ['SCRIPT_NAME'] + request.environ['PATH_INFO'] if 'RAW_URI' not in request.environ \
+        else request.environ['RAW_URI']
+
+    if shared.custom_id and url.startswith('/' + shared.custom_id + '/'):
         return shared.custom_id
 
     custom_id = ''
