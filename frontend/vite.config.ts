@@ -23,4 +23,35 @@ export default defineConfig({
         react(),
         tailwindcss()
     ],
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: (id) => {
+                    // Séparer les dépendances volumineuses en chunks distincts
+                    if (id.includes('react-pdf') || id.includes('pdfjs-dist')) {
+                        return 'pdf-viewer';
+                    }
+                    if (id.includes('@monaco-editor') || id.includes('tinymce')) {
+                        return 'editor';
+                    }
+                    if (id.includes('primereact')) {
+                        return 'prime-react';
+                    }
+                    if (id.includes('recharts')) {
+                        return 'charts';
+                    }
+                    if (id.includes('@dnd-kit')) {
+                        return 'dnd-kit';
+                    }
+                    if (id.includes('node_modules')) {
+                        if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+                            return 'vendor-core';
+                        }
+                        return 'vendor';
+                    }
+                }
+            }
+        },
+        chunkSizeWarningLimit: 1000,
+    }
 })
