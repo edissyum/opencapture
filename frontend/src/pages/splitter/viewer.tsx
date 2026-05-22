@@ -443,7 +443,6 @@ export function SplitterViewerPage() {
                 }
 
             });
-            console.log(lines)
             setBatchMetadata(lines);
         }
         fetchDocuments().then();
