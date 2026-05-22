@@ -443,7 +443,7 @@ export function SplitterViewerPage() {
                 }
 
             });
-
+            console.log(lines)
             setBatchMetadata(lines);
         }
         fetchDocuments().then();
@@ -806,7 +806,7 @@ export function SplitterViewerPage() {
 
         batchMetadata.forEach((line: any) => {
             line.forEach((f: any) => {
-                if (f.metadata_key) {
+                if (f.metadata_key && selectedMetadata) {
                     setBatchMetadataValues((prev: any) => ({
                         ...prev, [f.label_short]: selectedMetadata ? selectedMetadata[f.metadata_key] : ''
                     }));
@@ -1390,10 +1390,10 @@ export function SplitterViewerPage() {
                                     />
 
                                     { batchMetadata && batchMetadata.length > 0 && (
-                                        <div>
-                                            <h3 className='font-semibold mb-4'>{ t('FORMS.metadata_batch') }</h3>
+                                        <div className='flex flex-col gap-4'>
+                                            <h3 className='font-semibold'>{ t('FORMS.metadata_batch') }</h3>
                                             { batchMetadata.map((line: any, index: number) => (
-                                                <div key={ index } className='flex gap-4 space-y-4'>
+                                                <div key={ index } className='flex gap-4'>
                                                     { line.map((field: any) => (
                                                         <div key={ field.id }
                                                              className={ `min-w-1/6 ${ getWidthLine(line) }` }>
