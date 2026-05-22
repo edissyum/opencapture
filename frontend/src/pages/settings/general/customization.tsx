@@ -61,7 +61,7 @@ export function SettingsGeneralCustomization() {
         };
     }, [fileUrls]);
 
-    const defaultImage = "/src/assets/imgs/login_image.svg"
+    const defaultImage = "/imgs/login_image.svg"
 
     if (files.length === 0) {
         fetch(defaultImage).then(res => {
@@ -249,7 +249,7 @@ export function SettingsGeneralCustomization() {
                         branding: false,
                         promotion: false,
                         language: 'fr_FR',
-                        language_url: '/src/assets/i18n/tinymce/langs/fr_FR.js',
+                        language_url: '/tinymce/langs/fr_FR.js',
                         toolbar: 'undo redo | formatselect | fontsize | bold italic underline forecolor backcolor | link | alignleft aligncenter alignright alignjustify',
                         font_size_formats: '8pt 10pt 12pt 14pt 16pt 18pt',
                         plugins: 'lists link image table',

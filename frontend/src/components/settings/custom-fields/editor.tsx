@@ -504,7 +504,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
 
                                     <Tooltip id="tooltip-1" place="right">
                                         <div className="flex flex-col gap-2 max-w-xs">
-                                            <img src={ '/src/assets/imgs/regex_hint.svg' } className={ 'rounded-md' }
+                                            <img src={ '/imgs/regex_hint.svg' } className={ 'rounded-md' }
                                                  alt={ 'Hint' }/>
                                             <div className='px-2'>
                                                 <p className='font-semibold mb-1'>{ t('REGEX.remove_keyword_title') }</p>

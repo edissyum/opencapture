@@ -21,14 +21,14 @@ from psycopg.rows import dict_row
 
 
 class Database:
-    def __init__(self, log, db_name=None, conn=None):
+    def __init__(self, log, db_name=None, user=None, pwd=None, host=None, port=None, conn=None):
         self.log = log
+        self.pwd = pwd
+        self.host = host
+        self.port = port
+        self.user = user
         self.conn = conn
         self.db_name = db_name
-        self.host = os.environ['POSTGRES_HOST']
-        self.port = os.environ['POSTGRES_PORT']
-        self.user = os.environ['POSTGRES_USER']
-        self.pwd = os.environ['POSTGRES_PASSWORD']
 
         self.connect()
 

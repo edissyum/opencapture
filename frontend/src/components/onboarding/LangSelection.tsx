@@ -56,7 +56,7 @@ export function LangSelection({ i18n, refresh = true }: LangSelectionProps) {
                          });
                      } }>
                     <CheckOverlay show={ selectedLang === lang['code'] }/>
-                    <img src={ `/src/assets/imgs/i18n/${ lang['code'] }.svg` } alt=""
+                    <img src={ `/imgs/i18n/${ lang['code'] }.svg` } alt=""
                          className="w-8 mr-4 rounded-sm"/>
                     <div className="flex flex-col justify-center items-start">
                         <span className='text-lg font-semibold'>

@@ -198,7 +198,7 @@ export function Login() {
 
                                         <div className='w-full h-full'>
                                             <img
-                                                src="/src/assets/imgs/login/guide.svg"
+                                                src="/imgs/login/guide.svg"
                                                 alt="Guide Preview"
                                                 className={ `absolute left-48 top-80 rounded-md scale-200 rotate-[8deg]
                                                              transition-all ease-[cubic-bezier(0.22,1,0.36,1)]
@@ -217,7 +217,7 @@ export function Login() {
                                         </p>
                                         <div className='w-full h-full'>
                                             <img
-                                                src="/src/assets/imgs/login/capture.svg"
+                                                src="/imgs/login/capture.svg"
                                                 alt="Capture Preview"
                                                 className={ `absolute left-48 top-80 rounded-md rotate-[8deg] scale-200
                                                              transition-all ease-[cubic-bezier(0.22,1,0.36,1)]

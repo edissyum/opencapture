@@ -107,13 +107,13 @@ export function SettingsGeneralSMTP() {
     }, []);
 
     const providers = [
-        { name: "Gmail", host: "smtp.gmail.com", port: 465, secure: 'ssl', logo: "/src/assets/imgs/smtp/gmail.svg" },
+        { name: "Gmail", host: "smtp.gmail.com", port: 465, secure: 'ssl', logo: "/imgs/smtp/gmail.svg" },
         {
             name: "Outlook",
             host: "smtp-mail.outlook.com",
             port: 587,
             secure: 'tls',
-            logo: "/src/assets/imgs/smtp/outlook.svg"
+            logo: "/imgs/smtp/outlook.svg"
         },
         { name: t('SMTP.other_provider'), host: "", port: 587, secure: 'none' }
     ];
@@ -348,13 +348,13 @@ export function SettingsGeneralSMTP() {
                 <div className='flex flex-col justify-center p-6'>
                     { statusTestEmail === 'error' && (
                         <div className='flex items-center gap-4 mb-8'>
-                            <img src="/src/assets/imgs/smtp/smtp_fail.svg" alt="Error" className='h-9'/>
+                            <img src="/imgs/smtp/smtp_fail.svg" alt="Error" className='h-9'/>
                             <h1 className='text-xl font-bold text-(--text-error)'>{ t('SMTP.test_email_error') }</h1>
                         </div>
                     ) }
                     { statusTestEmail === 'success' && (
                         <div className='flex items-center gap-4 mb-8'>
-                            <img src="/src/assets/imgs/smtp/smtp_success.svg" alt="Error" className='h-9'/>
+                            <img src="/imgs/smtp/smtp_success.svg" alt="Error" className='h-9'/>
                             <h1 className='text-xl font-bold text-(--color-success)'>{ t('SMTP.test_email_success') }</h1>
                         </div>
                     ) }

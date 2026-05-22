@@ -273,7 +273,7 @@ export default function Sidebar() {
                                 border border-transparent ${ userPanelOpen ? 'bg-(--bg-secondary)! border-(--border-secondary)!' : 'bg-(--bg-primary)!' }
                                 text-(--text-secondary) font-semibold transition-colors ${ collapsed ? '' : 'px-3' }` }
                     onClick={ () => setUserPanelOpen((prev) => !prev) }>
-                    <img src='/src/assets/imgs/user.svg' alt='user profile'
+                    <img src='/imgs/user.svg' alt='user profile'
                          className='shrink-0 size-8' { ...(collapsed && {
                         "data-tooltip-id": "tooltip",
                         "data-tooltip-content": `${ user.firstname } ${ user.lastname }`

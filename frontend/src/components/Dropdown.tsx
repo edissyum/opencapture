@@ -20,6 +20,7 @@ import DOMPurify from "dompurify";
 import { FloatLabel } from "primereact/floatlabel";
 import { Dropdown as PrimeDropdown } from "primereact/dropdown";
 import { CircleQuestionMark } from "lucide-react";
+import { t } from "i18next";
 
 interface DropdownProps {
     id: any;
@@ -91,6 +92,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
             placeholder={ placeholder }
             itemTemplate={ dropdownItemTemplate }
             valueTemplate={ dropdownValueTemplate }
+            emptyMessage={ t('GLOBAL.no_result_found') }
             virtualScrollerOptions={ itemsSize ? { itemSize: itemsSize } : undefined }
             className={ `w-full min-h-12 flex items-center hover:border-(--border-primary)! ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' }` }
         />

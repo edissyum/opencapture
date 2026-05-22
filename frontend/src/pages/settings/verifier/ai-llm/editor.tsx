@@ -57,7 +57,7 @@ export function SettingsVerifierAiLLMEditor() {
             name: "mistral",
             label: "Mistral",
             url: "https://api.mistral.ai/v1/chat/completions",
-            logo: "/src/assets/imgs/ai-llm/mistral.svg",
+            logo: "/imgs/ai-llm/mistral.svg",
             costs: [
                 { type: "input", price: 0.00010 },
                 { type: "output", price: 0.00030 }
@@ -68,7 +68,7 @@ export function SettingsVerifierAiLLMEditor() {
             name: "mistral_ocr",
             label: "Mistral OCR",
             url: "https://api.mistral.ai/v1/ocr",
-            logo: "/src/assets/imgs/ai-llm/mistral_ocr.svg",
+            logo: "/imgs/ai-llm/mistral_ocr.svg",
             costs: [
                 { type: "input", price: 0.86000 },
                 { type: "output", price: 0.00000 }
@@ -79,7 +79,7 @@ export function SettingsVerifierAiLLMEditor() {
             name: "gemini",
             label: "Google Gemini",
             url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent",
-            logo: "/src/assets/imgs/ai-llm/gemini.svg",
+            logo: "/imgs/ai-llm/gemini.svg",
             costs: [
                 { type: "input", price: 0.00010 },
                 { type: "output", price: 0.00040 }
@@ -90,7 +90,7 @@ export function SettingsVerifierAiLLMEditor() {
             name: "copilot",
             label: "Microsoft Copilot",
             url: "https://oc.cognitiveservices.azure.com/openai/deployments/gpt-5-mini/chat/completions?api-version=2024-08-01-preview",
-            logo: "/src/assets/imgs/ai-llm/copilot.svg",
+            logo: "/imgs/ai-llm/copilot.svg",
             costs: [
                 { type: "input", price: 0.012 },
                 { type: "output", price: 0.024 }
