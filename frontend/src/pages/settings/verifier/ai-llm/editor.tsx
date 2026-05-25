@@ -49,6 +49,7 @@ export function SettingsVerifierAiLLMEditor() {
     const [aiLLMJson, setAiLLMJson] = useState<string>("");
     const [selectedProvider, setSelectedProvider] = useState('mistral');
     const [providerUrlPlaceholder, setProviderUrlPlaceholder] = useState('');
+    const skipJsonUpdate = useRef(false);
 
     const providers = [
         {
@@ -174,6 +175,7 @@ export function SettingsVerifierAiLLMEditor() {
             setAiLLMJson(JSON.stringify(aiLLM.json_content, null, 4));
         }
 
+        skipJsonUpdate.current = true;
         setSelectedProvider(aiLLM.provider);
     }, [aiLLM]);
 
@@ -201,8 +203,12 @@ export function SettingsVerifierAiLLMEditor() {
             setValue('input_price', provider.costs.find((c: any) => c.type === 'input')?.price);
             setValue('output_price', provider.costs.find((c: any) => c.type === 'output')?.price);
 
-            const defaultJson = defaultJsonContent[selectedProvider];
-            setAiLLMJson(JSON.stringify(defaultJson, null, 4));
+            if (skipJsonUpdate.current) {
+                skipJsonUpdate.current = false;
+            } else {
+                const defaultJson = defaultJsonContent[selectedProvider];
+                setAiLLMJson(JSON.stringify(defaultJson, null, 4));
+            }
         }
     }, [selectedProvider]);
 
