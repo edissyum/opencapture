@@ -62,9 +62,14 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
         pass
 
     log = Log(config.cfg['GLOBAL']['logfile'], False, config.cfg['GLOBAL']['debugmode'])
-    db_name = os.environ['POSTGRES_DB']
 
-    database = Database(log, db_name)
+    db_user = config.cfg['DATABASE']['postgresuser']
+    db_pwd = config.cfg['DATABASE']['postgrespassword']
+    db_name = config.cfg['DATABASE']['postgresdatabase']
+    db_host = config.cfg['DATABASE']['postgreshost']
+    db_port = config.cfg['DATABASE']['postgresport']
+
+    database = Database(log, db_name, db_user, db_pwd, db_host, db_port)
     if not database.conn:
         return False, 'bad_or_missing_database_informations'
 
@@ -170,6 +175,8 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
                     nfz42020.init(provider, provider_config['url'], provider_config)
 
     try:
+        current_context.database = database
+
         if 'ocr' not in current_context:
             current_context.ocr = ocr
         if 'log' not in current_context:
@@ -182,8 +189,6 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
             current_context.files = files
         if 'nfz42020' not in current_context:
             current_context.nfz42020 = nfz42020
-        if 'database' not in current_context:
-            current_context.database = database
         if 'languages' not in current_context:
             current_context.languages = languages
         if 'docservers' not in current_context:

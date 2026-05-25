@@ -23,12 +23,12 @@ export function Step1() {
         {
             id: 'verifier',
             label: t('ONBOARD.verifier'),
-            img: '/src/assets/imgs/Open-Capture_Verifier.svg'
+            img: '/imgs/Open-Capture_Verifier.svg'
         },
         {
             id: 'splitter',
             label: t('ONBOARD.splitter'),
-            img: '/src/assets/imgs/Open-Capture_Splitter.svg'
+            img: '/imgs/Open-Capture_Splitter.svg'
         }
     ];
     t('ONBOARD.splitter_info');

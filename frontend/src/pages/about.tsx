@@ -29,7 +29,7 @@ export function AboutPage() {
     const { get } = axiosApiCall();
     const [loading, setLoading] = useState(true);
 
-    const logo = "/src/assets/imgs/login_image.svg"
+    const logo = "/imgs/login_image.svg"
 
     const [backendPackages, setBackendPackages] = useState<any>([]);
     const [frontendPackages, setFrontendPackages] = useState<any>([]);

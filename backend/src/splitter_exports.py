@@ -155,7 +155,7 @@ def export_batch(batch_id, log, docservers, regex, config, database, custom_id):
         })
 
     if export_zip_file:
-        compress_outputs_result(batch, batch['outputs_result_files'], export_zip_file)
+        compress_outputs_result(batch, batch['outputs_result_files'], export_zip_file, batch['id'])
 
     process_after_outputs({
         'log': log,
@@ -461,7 +461,7 @@ def handle_openads_output(output, batch, log, docservers):
     return {'result_batch': batch}, 200
 
 
-def compress_outputs_result(batch, exported_files, export_zip_file):
+def compress_outputs_result(batch, exported_files, export_zip_file, batch_id):
     compress_files = []
     for file in exported_files:
         compress_files.append({
@@ -473,7 +473,7 @@ def compress_outputs_result(batch, exported_files, export_zip_file):
         'separator': '',
         'substitute': '_'
     }
-    outputs_compress_path = get_value_from_mask(None, batch['data']['custom_fields'], mask_args)
+    outputs_compress_path = get_value_from_mask(None, batch['data']['custom_fields'], mask_args, batch_id)
     Files.compress_files(compress_files, outputs_compress_path, remove_compressed_files=True)
 
 

@@ -443,7 +443,6 @@ export function SplitterViewerPage() {
                 }
 
             });
-
             setBatchMetadata(lines);
         }
         fetchDocuments().then();
@@ -806,7 +805,7 @@ export function SplitterViewerPage() {
 
         batchMetadata.forEach((line: any) => {
             line.forEach((f: any) => {
-                if (f.metadata_key) {
+                if (f.metadata_key && selectedMetadata) {
                     setBatchMetadataValues((prev: any) => ({
                         ...prev, [f.label_short]: selectedMetadata ? selectedMetadata[f.metadata_key] : ''
                     }));
@@ -1124,9 +1123,11 @@ export function SplitterViewerPage() {
                             <div className={ `bg-(--bg-secondary) p-3 rounded-xl flex items-center gap-2
                                               ${ selectedPages.length == 0 ? 'bg-(--bg-secondary)' : 'bg-(--bg-selected)' }` }>
                                 <Checkbox checked={ selectedPages.length !== 0 } onChange={ selectAll }
-                                          indeterminate={ selectedPages.length != pagesCount } disabled={ disabledBatch }/>
-                                <div className={ `text-sm ${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer' }` }
-                                     onClick={ selectAll }>
+                                          indeterminate={ selectedPages.length != pagesCount }
+                                          disabled={ disabledBatch }/>
+                                <div
+                                    className={ `text-sm ${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer' }` }
+                                    onClick={ selectAll }>
                                     <strong>{ selectedPages.length } </strong>
                                     <span
                                         dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(t('SPLITTER.pages_selected', { count: selectedPages.length })) } }/>
@@ -1159,8 +1160,9 @@ export function SplitterViewerPage() {
                                     "data-tooltip-content": t('SPLITTER.cant_add_document')
                                 }) }
                             >
-                                <div onClick={ () => attachmentsCount === 0 && !disabledBatch && !certifiedCopy && addDocument() }
-                                     className={ 'flex items-center gap-1' }>
+                                <div
+                                    onClick={ () => attachmentsCount === 0 && !disabledBatch && !certifiedCopy && addDocument() }
+                                    className={ 'flex items-center gap-1' }>
                                     <Plus size={ 16 }/>
                                     { t('SPLITTER.add_document') }
                                 </div>
@@ -1222,8 +1224,8 @@ export function SplitterViewerPage() {
                         <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
                              onClick={ () => setShowDoctypeSelection(false) }/>
                         <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                                    min-w-[32vw] h-3/4 max-h-screen border border-(--border-secondary)
-                                    rounded-lg bg-(--bg-primary) flex flex-col">
+                                    w-[32vw] h-3/4 max-h-screen border border-(--border-secondary)
+                                    rounded-lg bg-(--bg-primary) flex flex-col ">
                             <div className='flex items-center px-6 pt-6'>
                                 <h2>{ t('SPLITTER.select_doctype') }</h2>
                                 <div className='ml-auto cursor-pointer text-(--text-secondary)'
@@ -1278,7 +1280,8 @@ export function SplitterViewerPage() {
                                 >
                                     <Paperclip size={ 16 }/>
                                     { attachmentsCount > 0 && (
-                                        <div className="z-1 absolute top-0 right-0 size-3 rounded-full bg-(--color-primary)"/>
+                                        <div
+                                            className="z-1 absolute top-0 right-0 size-3 rounded-full bg-(--color-primary)"/>
                                     ) }
                                 </div>
                             </div>
@@ -1304,7 +1307,8 @@ export function SplitterViewerPage() {
 
                 { !showAttachments && disabledBatch && (
                     <div className='px-8 pb-4'>
-                        <div className='w-full bg-(--bg-error) p-4 rounded-lg flex flex-col gap-4 border border-(--text-error)'>
+                        <div
+                            className='w-full bg-(--bg-error) p-4 rounded-lg flex flex-col gap-4 border border-(--text-error)'>
                             <div className='flex items-center gap-3'>
                                 <div className='bg-(--text-error) p-2 rounded-lg'>
                                     <PenOff className="text-white" size={ 28 }/>
@@ -1322,7 +1326,8 @@ export function SplitterViewerPage() {
 
                 { !showAttachments && certifiedCopy && (
                     <div className='px-8 pb-4'>
-                        <div className='w-full p-4 rounded-lg flex flex-col gap-4 border bg-yellow-500/10 border-yellow-500'>
+                        <div
+                            className='w-full p-4 rounded-lg flex flex-col gap-4 border bg-yellow-500/10 border-yellow-500'>
                             <div className='flex items-center gap-3'>
                                 <div className='flex flex-col'>
                                     <span
@@ -1384,10 +1389,10 @@ export function SplitterViewerPage() {
                                     />
 
                                     { batchMetadata && batchMetadata.length > 0 && (
-                                        <div>
-                                            <h3 className='font-semibold mb-4'>{ t('FORMS.metadata_batch') }</h3>
+                                        <div className='flex flex-col gap-4'>
+                                            <h3 className='font-semibold'>{ t('FORMS.metadata_batch') }</h3>
                                             { batchMetadata.map((line: any, index: number) => (
-                                                <div key={ index } className={ `flex gap-4` }>
+                                                <div key={ index } className='flex gap-4'>
                                                     { line.map((field: any) => (
                                                         <div key={ field.id }
                                                              className={ `min-w-1/6 ${ getWidthLine(line) }` }>
@@ -1474,7 +1479,8 @@ export function SplitterViewerPage() {
                                                         { t('SPLITTER.type_document') }
                                                     </div>
                                                 ) }
-                                                <div className='transition-colors items-center gap-2 font-semibold flex'>
+                                                <div
+                                                    className='transition-colors items-center gap-2 font-semibold flex'>
                                                     { document.doctype_label && (
                                                         <div className='bg-(--bg-secondary) rounded-md p-1'>
                                                             <File size={ 20 }/>
@@ -1605,7 +1611,8 @@ export function SplitterViewerPage() {
             </div>
 
             { showBatches && (
-                <div className="bg-(--bg-primary) shrink-0 w-[20rem] flex flex-col border-l border-(--border-secondary)">
+                <div
+                    className="bg-(--bg-primary) shrink-0 w-[20rem] flex flex-col border-l border-(--border-secondary)">
                     <div className='text-center p-4 border-b border-(--border-secondary)'>
                         { t(`GLOBAL.${ batchTime }`) } ({ statuses.find(s => batch.status === s.id).label })
                     </div>

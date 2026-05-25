@@ -1,4 +1,5 @@
 libgl1
+crudini
 libpq-dev
 libmagic1
 pkg-config

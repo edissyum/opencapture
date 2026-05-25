@@ -72,7 +72,7 @@ SET fields = jsonb_set(
         END
     )
     FROM jsonb_array_elements(fields -> 'supplier') AS s(f))
-);
+) WHERE form_id IN (SELECT id FROM form_models WHERE module = 'verifier');
 
 UPDATE form_models_field
 SET fields = jsonb_set(
@@ -101,7 +101,7 @@ SET fields = jsonb_set(
         END
     )
     FROM jsonb_array_elements(fields -> 'facturation') AS s(f))
-);
+) WHERE form_id IN (SELECT id FROM form_models WHERE module = 'verifier');
 
 -- Modification des imports par défaut du scripting des workflows
 UPDATE workflows

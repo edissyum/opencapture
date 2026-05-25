@@ -303,8 +303,8 @@ export function DoctypesTree({
                 <>
                     <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
                          onClick={ () => setShowExportDialog(false) }/>
-                    <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                                                min-w-[32vw] h-fit max-h-screen border border-(--border-secondary)
+                    <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 overflow-y-auto
+                                                h-fit max-h-screen border border-(--border-secondary)
                                                 rounded-lg bg-(--bg-primary) flex flex-col">
                         <div className='flex flex-col p-6 gap-4'>
                             <h2>

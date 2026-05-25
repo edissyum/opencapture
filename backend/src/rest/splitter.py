@@ -65,7 +65,7 @@ def retrieve_splitter_batches():
 @bp.route('splitter/batches/filters/totals', methods=['POST'])
 @auth.token_required
 def get_totals_splitter():
-    if not privileges.has_privileges(request.environ['user_id'], ['access_verifier']):
+    if not privileges.has_privileges(request.environ['user_id'], ['access_splitter']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/splitter/batches/filters/totals'}), 403
 

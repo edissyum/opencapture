@@ -30,13 +30,13 @@ export default function TopBar() {
             id: 'verifier',
             privilege: 'access_verifier',
             label: t('ONBOARD.verifier'),
-            img: '/src/assets/imgs/Open-Capture_Verifier.svg'
+            img: '/imgs/Open-Capture_Verifier.svg'
         },
         {
             id: 'splitter',
             privilege: 'access_splitter',
             label: t('ONBOARD.splitter'),
-            img: '/src/assets/imgs/Open-Capture_Splitter.svg'
+            img: '/imgs/Open-Capture_Splitter.svg'
         }
     ];
 

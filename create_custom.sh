@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # This file is part of Open-Capture.
 # Copyright Edissyum Consulting since 2020 under licence GPLv3
 
@@ -129,7 +130,7 @@ touch "$NEW_CUSTOM_PATH/config/secret_key"
 
 touch "$NEW_CUSTOM_PATH/data/log/OpenCapture.log"
 cp "$DEFAULT_PATH"/backend/src/assets/imgs/opencapture.png "$NEW_CUSTOM_PATH/assets/imgs/opencapture.png"
-cp "$DEFAULT_PATH"/frontend/src/assets/imgs/login_image.svg "$NEW_CUSTOM_PATH/assets/imgs/login_image.svg"
+cp "$DEFAULT_PATH"/frontend/public/imgs/login_image.svg "$NEW_CUSTOM_PATH/assets/imgs/login_image.svg"
 cp "$DEFAULT_PATH"/backend/src/assets/imgs/logo_company.png "$NEW_CUSTOM_PATH/assets/imgs/logo_company.png"
 
 ####################
@@ -170,6 +171,15 @@ find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§CUSTOM_ID§§#$custom_id#g" 
 find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§OC_PATH§§#$DEFAULT_PATH#g" {} \;
 find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§BATCH_PATH§§#$NEW_CUSTOM_PATH/data/MailCollect#g" {} \;
 find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§LOG_PATH§§#$NEW_CUSTOM_PATH/data/log/OpenCapture.log#g" {} \;
+
+####################
+# Write database configuration in custom config.ini file
+confFile="$NEW_CUSTOM_PATH/config/config.ini"
+crudini --set "$confFile" DATABASE postgresHost "$database_hostname"
+crudini --set "$confFile" DATABASE postgresPort "$database_port"
+crudini --set "$confFile" DATABASE postgresDatabase "$database_name"
+crudini --set "$confFile" DATABASE postgresUser " $database_user"
+crudini --set "$confFile" DATABASE postgresPassword " $database_password"
 
 ####################
 # Fill database with default data

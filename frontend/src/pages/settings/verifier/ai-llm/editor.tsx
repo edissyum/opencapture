@@ -35,11 +35,9 @@ import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 import { copyToClipboard } from "../../../../services/hooks/copyToClipboard";
 
 export function SettingsVerifierAiLLMEditor() {
-    const navigate = useNavigate();
     const { get, put, post } = axiosApiCall();
+    const navigate = useNavigate();
     const { aiLLMId } = useParams<{ aiLLMId: any }>();
-
-    const isFirstProviderEffect = useRef(true);
 
     const [jsonValid, setJsonValid] = useState(true);
     const [containsPlaceholder, setContainsPlaceholder] = useState(false);
@@ -51,13 +49,14 @@ export function SettingsVerifierAiLLMEditor() {
     const [aiLLMJson, setAiLLMJson] = useState<string>("");
     const [selectedProvider, setSelectedProvider] = useState('mistral');
     const [providerUrlPlaceholder, setProviderUrlPlaceholder] = useState('');
+    const skipJsonUpdate = useRef(false);
 
     const providers = [
         {
             name: "mistral",
             label: "Mistral",
             url: "https://api.mistral.ai/v1/chat/completions",
-            logo: "/src/assets/imgs/ai-llm/mistral.svg",
+            logo: "/imgs/ai-llm/mistral.svg",
             costs: [
                 { type: "input", price: 0.00010 },
                 { type: "output", price: 0.00030 }
@@ -68,7 +67,7 @@ export function SettingsVerifierAiLLMEditor() {
             name: "mistral_ocr",
             label: "Mistral OCR",
             url: "https://api.mistral.ai/v1/ocr",
-            logo: "/src/assets/imgs/ai-llm/mistral_ocr.svg",
+            logo: "/imgs/ai-llm/mistral_ocr.svg",
             costs: [
                 { type: "input", price: 0.86000 },
                 { type: "output", price: 0.00000 }
@@ -79,7 +78,7 @@ export function SettingsVerifierAiLLMEditor() {
             name: "gemini",
             label: "Google Gemini",
             url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent",
-            logo: "/src/assets/imgs/ai-llm/gemini.svg",
+            logo: "/imgs/ai-llm/gemini.svg",
             costs: [
                 { type: "input", price: 0.00010 },
                 { type: "output", price: 0.00040 }
@@ -90,7 +89,7 @@ export function SettingsVerifierAiLLMEditor() {
             name: "copilot",
             label: "Microsoft Copilot",
             url: "https://oc.cognitiveservices.azure.com/openai/deployments/gpt-5-mini/chat/completions?api-version=2024-08-01-preview",
-            logo: "/src/assets/imgs/ai-llm/copilot.svg",
+            logo: "/imgs/ai-llm/copilot.svg",
             costs: [
                 { type: "input", price: 0.012 },
                 { type: "output", price: 0.024 }
@@ -176,6 +175,7 @@ export function SettingsVerifierAiLLMEditor() {
             setAiLLMJson(JSON.stringify(aiLLM.json_content, null, 4));
         }
 
+        skipJsonUpdate.current = true;
         setSelectedProvider(aiLLM.provider);
     }, [aiLLM]);
 
@@ -203,13 +203,12 @@ export function SettingsVerifierAiLLMEditor() {
             setValue('input_price', provider.costs.find((c: any) => c.type === 'input')?.price);
             setValue('output_price', provider.costs.find((c: any) => c.type === 'output')?.price);
 
-            if (!isFirstProviderEffect.current) {
-                isFirstProviderEffect.current = true;
-                return;
+            if (skipJsonUpdate.current) {
+                skipJsonUpdate.current = false;
+            } else {
+                const defaultJson = defaultJsonContent[selectedProvider];
+                setAiLLMJson(JSON.stringify(defaultJson, null, 4));
             }
-
-            const defautJson = defaultJsonContent[selectedProvider];
-            setAiLLMJson(JSON.stringify(defautJson, null, 4));
         }
     }, [selectedProvider]);
 
@@ -338,7 +337,7 @@ export function SettingsVerifierAiLLMEditor() {
                     <Editor
                         height='50vh'
                         defaultLanguage={ 'json' }
-                        value={ aiLLMJson ?? aiLLMJson }
+                        value={ aiLLMJson }
                         className='border border-(--border-secondary) rounded-md p-2'
                         options={ {
                             stickyScroll: {

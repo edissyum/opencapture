@@ -127,7 +127,7 @@ class FindWithAI:
             return None
 
         response = ai_llm_res.json()
-        content = None
+        content = ''
         if self.llm_model['provider'] == 'gemini':
             if 'candidates' in response and len(response['candidates']) > 0:
                 content = response['candidates'][0]['content']['parts'][0]['text']

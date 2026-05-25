@@ -19,7 +19,7 @@ git clone -b dev https://github.com/edissyum/opencapture/ .
 2. **Install APT Dependencies**:
 ```bash
 sudo apt update
-sudo apt install postgresql crudini -y
+sudo apt install postgresql -y
 sudo xargs -a backend/apt-requirements.txt apt-get install -y
 ```
 
@@ -59,6 +59,7 @@ nano .dev_env
 
 # Finally, source the `.dev_env` file to load the environment variables into your shell.
 echo "source /opt/edissyum/opencapture/.dev_env" >> ~/.bashrc
+source ~/.bashrc
 ```
 
 7. **Create services for frontend and backend**:
@@ -72,7 +73,7 @@ After=network.target
 [Service]
 User=$(whoami)
 WorkingDirectory=/opt/edissyum/opencapture/frontend
-ExecStart=/bin/bash -c "source /opt/edissyum/opencapture/frontend/.dev_env && source ~/.nvm/nvm.sh && npm run dev -- --host"
+ExecStart=/bin/bash -c "source /opt/edissyum/opencapture/.dev_env && source ~/.nvm/nvm.sh && npm run dev -- --host"
 Restart=always
 
 [Install]
@@ -108,6 +109,7 @@ sudo systemctl start opencapture-backend.service
 ```bash
 cd /opt/edissyum/opencapture/
 
+source ~/.bashrc
 sudo -u postgres psql -c "CREATE ROLE $POSTGRES_USER WITH LOGIN PASSWORD '$POSTGRES_PASSWORD';"
 sudo -u postgres psql -c "ALTER ROLE $POSTGRES_USER SUPERUSER;"
 sudo -u postgres psql -c "CREATE DATABASE $POSTGRES_DB OWNER $POSTGRES_USER;"
@@ -157,7 +159,7 @@ find custom/$CUSTOM_ID/bin/scripts/ -type f -name "*.sh" -exec sed -i '1a source
 
 12. **Access Open-Capture**:
 
-Open your web browser and navigate to `http://YOU_IP_ADDRESS:5173` to access the Open-Capneditorfrontend. 
+Open your web browser and navigate to `http://YOU_IP_ADDRESS:5173` to access the Open-Capture frontend. 
 
 
 ### Command to check the status of the services:
