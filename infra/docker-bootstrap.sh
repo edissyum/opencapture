@@ -81,6 +81,51 @@ ensure_watcher_ini() {
 ensure_watcher_ini
 
 # ------------------------------------------------------------
+# Self-heal: ensure the [DATABASE] section is present in
+# config.ini with values from the env. The runtime code
+# (backend/src/main.py) reads the postgres credentials from there
+# since the upstream "Change database configuration" commit; a
+# tenant whose config.ini predates that change crashes with
+# KeyError: 'DATABASE'.
+# ------------------------------------------------------------
+ensure_database_section() {
+    local target="${CUSTOM_DIR}/config/config.ini"
+    [ -f "$target" ] || return 0
+    if grep -q '^\[DATABASE\]' "$target"; then
+        # Section already there — refresh values from env so rotating
+        # POSTGRES_PASSWORD via .env is picked up on next init.
+        log "refreshing [DATABASE] in ${target}"
+        python - "$target" <<'PY'
+import configparser, os, sys
+p = sys.argv[1]
+c = configparser.RawConfigParser()
+c.read(p)
+if "DATABASE" not in c:
+    c["DATABASE"] = {}
+c["DATABASE"]["postgresHost"]     = os.environ["POSTGRES_HOST"]
+c["DATABASE"]["postgresPort"]     = os.environ["POSTGRES_PORT"]
+c["DATABASE"]["postgresDatabase"] = os.environ["POSTGRES_DB"]
+c["DATABASE"]["postgresUser"]     = os.environ["POSTGRES_USER"]
+c["DATABASE"]["postgresPassword"] = os.environ["POSTGRES_PASSWORD"]
+with open(p, "w") as f:
+    c.write(f)
+PY
+    else
+        log "appending [DATABASE] to ${target}"
+        cat >> "$target" <<EOF
+
+[DATABASE]
+postgresHost     = ${POSTGRES_HOST}
+postgresPort     = ${POSTGRES_PORT}
+postgresDatabase = ${POSTGRES_DB}
+postgresUser     = ${POSTGRES_USER}
+postgresPassword = ${POSTGRES_PASSWORD}
+EOF
+    fi
+}
+ensure_database_section
+
+# ------------------------------------------------------------
 # Marker: short-circuit subsequent runs once config.ini exists
 # ------------------------------------------------------------
 if [ -f "${CUSTOM_DIR}/config/config.ini" ]; then

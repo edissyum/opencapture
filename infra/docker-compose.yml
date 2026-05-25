@@ -207,8 +207,43 @@ services:
         restart: unless-stopped
 
 volumes:
+    # Volumes nommés mais pointant vers des chemins hôte configurables
+    # dans .env :
+    #   PGDATA_PATH        (par défaut ../data/pgdata)
+    #   RABBITMQ_DATA_PATH (par défaut ../data/rabbitmq)
+    #   CUSTOM_PATH        (par défaut ../data/custom)
+    #   DOCSERVERS_PATH    (par défaut ../data/docservers)
+    #   SHARE_PATH         (par défaut ../data/share)
+    #
+    # Les dossiers sont créés à la volée si absents. Utiliser des
+    # chemins ABSOLUS dans .env si tu veux les stocker hors du repo.
     pgdata:
+        driver: local
+        driver_opts:
+            type: none
+            o: bind
+            device: ${PGDATA_PATH:-../data/pgdata}
     rabbitmq_data:
+        driver: local
+        driver_opts:
+            type: none
+            o: bind
+            device: ${RABBITMQ_DATA_PATH:-../data/rabbitmq}
     custom:
+        driver: local
+        driver_opts:
+            type: none
+            o: bind
+            device: ${CUSTOM_PATH:-../data/custom}
     docservers:
+        driver: local
+        driver_opts:
+            type: none
+            o: bind
+            device: ${DOCSERVERS_PATH:-../data/docservers}
     share:
+        driver: local
+        driver_opts:
+            type: none
+            o: bind
+            device: ${SHARE_PATH:-../data/share}
