@@ -1,11 +1,9 @@
 # syntax=docker/dockerfile:1.7
 # Multi-stage build for Open-Capture backend.
-# - builder: installs build toolchain + compiles wheels into /wheels
-# - runtime: slim image with only runtime libs + installed wheels
 #
-# The same image powers every backend role (api, worker-verifier,
-# worker-splitter, worker-mail, fs-watcher, init); the role is
-# selected at runtime via the OC_ROLE env var consumed by entrypoint.sh.
+# Build context: the repo root (compose passes context: ..).
+# All COPY paths are therefore prefixed by `backend/` (the app code)
+# or `infra/` (the entrypoint scripts).
 
 FROM python:3.13-slim-bookworm AS builder
 
@@ -28,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /build
-COPY pip-requirements.txt ./
+COPY backend/pip-requirements.txt ./
 
 RUN python -m pip install --upgrade pip wheel setuptools pycparser \
     && python -m pip wheel \
@@ -51,9 +49,7 @@ ENV PIP_NO_CACHE_DIR=1 \
 RUN apt-get update && apt-get install -y --no-install-recommends \
         # Image / PDF / OCR CLI tools. These pull in the matching
         # shared libs (libpoppler-cpp, libtesseract5, libleptonica,
-        # libzbar0, libgs10...) transitively, so we don't list them
-        # explicitly here -- avoids breakage on Debian version bumps
-        # (e.g. the t64 rename libpoppler-cpp0v5 -> libpoppler-cpp2t64).
+        # libzbar0, libgs10...) transitively.
         ghostscript \
         imagemagick \
         poppler-utils \
@@ -84,7 +80,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # module). We then force-install pyinotify-elephant-fork last so its
 # pyinotify.py overwrites the broken one.
 COPY --from=builder /wheels /wheels
-COPY pip-requirements.txt /tmp/pip-requirements.txt
+COPY backend/pip-requirements.txt /tmp/pip-requirements.txt
 RUN python -m pip install --upgrade pip \
     && python -m pip install --no-index --find-links=/wheels \
         -r /tmp/pip-requirements.txt \
@@ -98,7 +94,13 @@ RUN sed -i 's|<policy domain="coder" rights="none" pattern="PDF" />|<policy doma
 
 WORKDIR /app
 
-COPY . /app/
+# App code (everything under backend/ at the repo root).
+COPY backend/ /app/
+
+# Entrypoint scripts live in infra/, copied into /app/ to keep the
+# legacy /app/docker-entrypoint.sh layout.
+COPY infra/docker-entrypoint.sh /app/docker-entrypoint.sh
+COPY infra/docker-bootstrap.sh  /app/docker-bootstrap.sh
 RUN chmod +x /app/docker-entrypoint.sh /app/docker-bootstrap.sh
 
 EXPOSE 8000
