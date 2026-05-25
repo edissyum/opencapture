@@ -66,8 +66,8 @@ services:
     # values (compose v2.24+).
     frontend:
         build: !override
-            context: ../frontend
-            dockerfile: Dockerfile.dev
+            context: ..
+            dockerfile: infra/frontend.Dockerfile.dev
         image: opencapture-frontend-dev
         environment:
             VITE_BACKEND_URL: ${VITE_BACKEND_URL}
