@@ -1,0 +1,61 @@
+# Overlay pour exposer Open-Capture via un Traefik partagé.
+#
+# Pré-requis hôte :
+#   1. Le réseau Docker `frontend` (externe) doit exister :
+#        docker network create frontend
+#      Sinon le up de cet overlay échouera avec "network frontend not
+#      found".
+#
+#   2. Un Traefik sur ce même réseau doit tourner (cf. /opt/docker/traefik/).
+#      Le Traefik doit avoir au minimum :
+#        - --providers.docker=true
+#        - --providers.docker.network=frontend
+#        - --certificatesresolvers.myresolver.acme.* (pour le TLS LE)
+#
+# Effets :
+#   - Le service `frontend` (nginx OC) rejoint le réseau externe
+#     `frontend` en plus de son réseau interne.
+#   - Le port hôte 8080 disparaît : Traefik est le SEUL point d'entrée.
+#   - Les labels enregistrent une route Host(`${OC_FQDN}`) sur Traefik
+#     avec TLS auto via le certresolver `myresolver`.
+#   - Aucun autre service OC (backend, workers, postgres, rabbit) n'est
+#     exposé à Traefik (ils restent sur le réseau interne).
+#
+# Lancement :
+#   docker compose \
+#       -f infra/docker-compose.yml \
+#       -f infra/docker-compose.traefik.yml \
+#       up -d
+
+networks:
+    # Réseau interne de la stack OC (par défaut nommé d'après le projet).
+    # On le redéclare juste pour pouvoir le combiner explicitement.
+    default:
+    # Réseau partagé avec Traefik. Doit être pré-créé sur l'hôte.
+    frontend:
+        name: frontend
+        external: true
+
+services:
+    frontend:
+        # Vire le port hôte 8080 du compose de base ; Traefik prend le relais.
+        # !override remplace la liste des ports (compose v2.24+).
+        ports: !override []
+        networks:
+            - default
+            - frontend
+        labels:
+            traefik.enable: "true"
+            # Précise sur quel réseau Traefik doit joindre ce conteneur
+            # (le conteneur en a deux : default et frontend).
+            traefik.docker.network: "frontend"
+
+            # Routeur HTTP+HTTPS, redirige HTTP -> HTTPS via la config
+            # globale du Traefik (entrypoint web -> websecure).
+            traefik.http.routers.opencapture.rule: "Host(`${OC_FQDN}`)"
+            traefik.http.routers.opencapture.entrypoints: "web,websecure"
+            traefik.http.routers.opencapture.tls: "true"
+            traefik.http.routers.opencapture.tls.certresolver: "myresolver"
+
+            # Service : Traefik proxy vers le port 80 interne du nginx.
+            traefik.http.services.opencapture.loadbalancer.server.port: "80"
