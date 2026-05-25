@@ -35,11 +35,9 @@ import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 import { copyToClipboard } from "../../../../services/hooks/copyToClipboard";
 
 export function SettingsVerifierAiLLMEditor() {
-    const navigate = useNavigate();
     const { get, put, post } = axiosApiCall();
+    const navigate = useNavigate();
     const { aiLLMId } = useParams<{ aiLLMId: any }>();
-
-    const isFirstProviderEffect = useRef(true);
 
     const [jsonValid, setJsonValid] = useState(true);
     const [containsPlaceholder, setContainsPlaceholder] = useState(false);
@@ -203,13 +201,8 @@ export function SettingsVerifierAiLLMEditor() {
             setValue('input_price', provider.costs.find((c: any) => c.type === 'input')?.price);
             setValue('output_price', provider.costs.find((c: any) => c.type === 'output')?.price);
 
-            if (!isFirstProviderEffect.current) {
-                isFirstProviderEffect.current = true;
-                return;
-            }
-
-            const defautJson = defaultJsonContent[selectedProvider];
-            setAiLLMJson(JSON.stringify(defautJson, null, 4));
+            const defaultJson = defaultJsonContent[selectedProvider];
+            setAiLLMJson(JSON.stringify(defaultJson, null, 4));
         }
     }, [selectedProvider]);
 
@@ -338,7 +331,7 @@ export function SettingsVerifierAiLLMEditor() {
                     <Editor
                         height='50vh'
                         defaultLanguage={ 'json' }
-                        value={ aiLLMJson ?? aiLLMJson }
+                        value={ aiLLMJson }
                         className='border border-(--border-secondary) rounded-md p-2'
                         options={ {
                             stickyScroll: {

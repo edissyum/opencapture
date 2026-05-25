@@ -40,8 +40,8 @@ import { getConvertOptions, getRotationOptions, getSplitterMethods, getSystemFie
 
 export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const custom = useCustom();
-    const navigate = useNavigate();
     const { get, post, put } = axiosApiCall();
+    const navigate = useNavigate();
     const { workflowId } = useParams<{ workflowId: any }>();
 
     const [loading, setLoading] = useState(true);
