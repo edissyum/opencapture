@@ -42,9 +42,12 @@ x-backend-volumes: &backend-volumes
 
 services:
     postgres:
-        build:
-            context: ..
-            dockerfile: infra/postgres.Dockerfile
+        # Image officielle. Les fichiers SQL sont montés en bind dans
+        # /docker-entrypoint-initdb.d/ et joues une seule fois au premier
+        # démarrage (pgdata vide). Les préfixes 01_/02_/03_ dans le
+        # conteneur imposent l'ordre de chargement, indépendamment des
+        # noms de fichiers côté hôte.
+        image: postgres:17.6
         environment:
             POSTGRES_DB:       ${POSTGRES_DB}
             POSTGRES_USER:     ${POSTGRES_USER}
@@ -52,6 +55,9 @@ services:
             PGDATA:            /var/lib/postgresql/data/pgdata
         volumes:
             - pgdata:/var/lib/postgresql/data
+            - ../postgres/sql/structure.sql:/docker-entrypoint-initdb.d/01_structure.sql:ro
+            - ../postgres/sql/data_fr.sql:/docker-entrypoint-initdb.d/02_data_fr.sql:ro
+            - ../postgres/sql/global.sql:/docker-entrypoint-initdb.d/03_global.sql:ro
         healthcheck:
             test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
             interval: 5s

@@ -1,8 +1,0 @@
-FROM postgres:17.6
-
-# Build context: repo root (compose passes context: ..)
-COPY postgres/sql/structure.sql /docker-entrypoint-initdb.d/01_structure.sql
-COPY postgres/sql/data_fr.sql   /docker-entrypoint-initdb.d/02_data_fr.sql
-COPY postgres/sql/global.sql    /docker-entrypoint-initdb.d/03_global.sql
-
-EXPOSE 5432

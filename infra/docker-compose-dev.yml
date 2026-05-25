@@ -88,9 +88,7 @@ services:
             - rabbitmq_data:/var/lib/rabbitmq
 
     postgres:
-        build:
-            context: ..
-            dockerfile: infra/postgres.Dockerfile.dev
+        image: postgres:17.6
         environment:
             POSTGRES_DB: ${POSTGRES_DB}
             POSTGRES_USER: ${POSTGRES_USER}
@@ -100,6 +98,9 @@ services:
             - "5433:5432"
         volumes:
             - pgdata:/data/postgres
+            - ../postgres/sql/structure.sql:/docker-entrypoint-initdb.d/01_structure.sql:ro
+            - ../postgres/sql/data_fr.sql:/docker-entrypoint-initdb.d/02_data_fr.sql:ro
+            - ../postgres/sql/global.sql:/docker-entrypoint-initdb.d/03_global.sql:ro
 
 networks:
     default:
