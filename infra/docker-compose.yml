@@ -13,6 +13,13 @@
 # Network: a single internal bridge; only the frontend nginx exposes
 # a port to the host.
 
+# Pin the compose project name so volumes/networks/containers keep a
+# stable prefix regardless of where the compose file lives. Without
+# this, moving the file from the repo root to infra/ would silently
+# rename volumes from opencapture_docker_* to infra_* and orphan all
+# existing data.
+name: opencapture_docker
+
 x-backend-build: &backend-build
     build:
         context: ..
