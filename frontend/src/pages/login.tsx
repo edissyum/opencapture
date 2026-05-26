@@ -166,7 +166,12 @@ export function Login() {
         navigate('/reset-password');
     };
 
-    if (loading) return <Loader/>;
+    if (loading) return (
+        <div className='h-screen'>
+            <Loader/>
+        </div>
+    );
+
     return (
         <div className="flex flex-col gap-2 h-screen items-center justify-between py-6 bg-(--bg-secondary)">
             <div className="flex flex-1 items-center justify-center w-full">
