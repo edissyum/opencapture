@@ -302,15 +302,19 @@ def launch(args):
             if res:
                 log.info('Process end after ' + _timer)
 
+            set_data = {
+                'elapsed_time': _timer,
+                'document_ids': list_of_ids if res else None,
+                'status': 'done',
+                'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
+            }
+
+            if 'token' in args and args['token']:
+                set_data['token'] = args['token']
+
             database.update({
                 'table': ['monitoring'],
-                'set': {
-                    'token': args['token'] if 'token' in args and args['token'] else None,
-                    'elapsed_time': _timer,
-                    'document_ids': list_of_ids if res else None,
-                    'status': 'done',
-                    'end_date': time.strftime("%Y-%m-%d %H:%M:%S")
-                },
+                'set': set_data,
                 'where': ['id = %s'],
                 'data': [args['task_id_monitor']]
             })

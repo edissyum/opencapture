@@ -65,25 +65,33 @@ export function App() {
                 }
             }
 
-            const api = axios.create({ baseURL: `${ BACKEND_URL }/${ _custom }/ws/` });
-            const backendLang = await fetchCurrentLang(api);
-            localStorage.setItem("backendLang", backendLang || "fra");
+            // if (_custom) {
+            try {
+                let url = `${ BACKEND_URL }/${ _custom }/ws/`;
+                if (!_custom) {
+                    url = `${ BACKEND_URL }/ws/`;
+                }
 
-            if (_custom) {
-                try {
-                    await api.get("/config/customExists");
-                } catch (err) {
-                    if (axios.isAxiosError(err) && (err.code === "ECONNABORTED" || err.code === "ERR_NETWORK")) {
-                        console.error("Backend not reachable : ", err);
-                    } else {
-                        _custom = null;
-                    }
+                const api = axios.create({ baseURL: url });
+                const backendLang = await fetchCurrentLang(api);
+                localStorage.setItem("backendLang", backendLang || "fra");
+
+                if (!currentLang) {
+                    currentLang = backendLang;
+                }
+
+                const res = await api.get("/config/customExists");
+                if (res.data.custom_id) {
+                    _custom = res.data.custom_id
+                }
+            } catch (err) {
+                if (axios.isAxiosError(err) && (err.code === "ECONNABORTED" || err.code === "ERR_NETWORK")) {
+                    console.error("Backend not reachable : ", err);
+                } else {
+                    _custom = null;
                 }
             }
-
-            if (_custom && !currentLang) {
-                currentLang = backendLang;
-            }
+            // }
 
             await initI18n(currentLang || "fra");
             if (currentLang === "fra") {

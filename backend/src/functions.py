@@ -22,6 +22,7 @@ import uuid
 import magic
 import pypdf
 import shutil
+import urllib.parse
 from PIL import Image
 from pathlib import Path
 from flask_babel import gettext
@@ -33,6 +34,17 @@ from . import shared
 from .classes.Config import Config as _Config
 from werkzeug.datastructures.file_storage import FileStorage
 from .classes.ArtificialIntelligence import ArtificialIntelligence
+
+def _get_custom_ini_file():
+    custom_directory = str(Path(__file__).parents[1]) + '/custom/'
+
+    if not os.path.isdir(custom_directory):
+        return None
+
+    if not os.path.isfile(custom_directory + 'custom.ini'):
+        return None
+
+    return custom_directory + 'custom.ini'
 
 
 def rest_validator(data, required_fields, only_data=False):
@@ -196,9 +208,9 @@ def rotate_document(pdf_file, angle):
 
 def is_custom_exists(custom_id):
     found_custom = False
-    custom_directory = str(Path(__file__).parents[1]) + '/custom/'
-    custom_ini_file = str(Path(__file__).parents[1]) + '/custom/custom.ini'
-    if os.path.isdir(custom_directory) and os.path.isfile(custom_ini_file):
+    custom_ini_file = _get_custom_ini_file()
+
+    if custom_ini_file:
         customs_config = _Config(custom_ini_file)
         for custom_name in customs_config.cfg:
             if custom_id == custom_name:
@@ -207,18 +219,30 @@ def is_custom_exists(custom_id):
 
 
 def retrieve_custom_from_url(request):
-    url = request.environ['SCRIPT_NAME'] + request.environ['PATH_INFO'] if 'RAW_URI' not in request.environ \
+    domain_name = ''
+
+    if 'HTTP_REFERER' in request.environ:
+        domain_name = urllib.parse.urlparse(request.environ['HTTP_REFERER']).hostname
+    elif 'HTTP_HOST' in request.environ:
+        domain_name = urllib.parse.urlparse(request.environ['HTTP_HOST']).hostname
+
+    backend_url = request.environ['SCRIPT_NAME'] + request.environ['PATH_INFO'] if 'RAW_URI' not in request.environ \
         else request.environ['RAW_URI']
 
-    if shared.custom_id and url.startswith('/' + shared.custom_id + '/'):
+    if domain_name != 'localhost' and shared.custom_id and backend_url.startswith('/' + shared.custom_id + '/'):
         return shared.custom_id
 
+    if domain_name != 'localhost':
+        if is_custom_exists_from_url(domain_name):
+            custom_id = retrieve_custom_id_from_url(domain_name)
+            if custom_id:
+                return custom_id
+
     custom_id = ''
-    url = request.environ['SCRIPT_NAME'] + request.environ['PATH_INFO'] if 'RAW_URI' not in request.environ \
-        else request.environ['RAW_URI']
-    splitted_request = url.replace('/backend_oc', '').split('ws/')
+    splitted_request = backend_url.split('ws/')
     if splitted_request[0] != '/':
         custom_id = splitted_request[0].replace('/', '')
+
     if not custom_id or not retrieve_config_from_custom_id(custom_id):
         custom_id = request.environ['SERVER_NAME'].replace('/', '')
         if not retrieve_config_from_custom_id(custom_id):
@@ -227,10 +251,9 @@ def retrieve_custom_from_url(request):
 
 
 def get_custom_path(custom_id):
-    custom_directory = str(Path(__file__).parents[1]) + '/custom/'
-    custom_ini_file = str(Path(__file__).parents[1]) + '/custom/custom.ini'
+    custom_ini_file = _get_custom_ini_file()
     path = False
-    if os.path.isdir(custom_directory) and os.path.isfile(custom_ini_file):
+    if custom_ini_file:
         customs_config = _Config(custom_ini_file)
         for custom_name, custom_param in customs_config.cfg.items():
             if custom_id == custom_name and os.path.isdir(custom_param['path']):
@@ -242,9 +265,8 @@ def retrieve_config_from_custom_id(custom_id):
     res = False
     found_custom = False
     default_config_file = str(Path(__file__).parents[1]) + '/instance/config/config.ini'
-    custom_directory = str(Path(__file__).parents[1]) + '/custom/'
-    custom_ini_file = str(Path(__file__).parents[1]) + '/custom/custom.ini'
-    if os.path.isdir(custom_directory) and os.path.isfile(custom_ini_file):
+    custom_ini_file = _get_custom_ini_file()
+    if custom_ini_file:
         customs_config = _Config(custom_ini_file)
         for custom_name, custom_param in customs_config.cfg.items():
             if custom_id == custom_name:
@@ -260,10 +282,9 @@ def retrieve_config_from_custom_id(custom_id):
 
 
 def retrieve_custom_path(custom_id):
-    custom_directory = str(Path(__file__).parents[1]) + '/custom/'
-    custom_ini_file = str(Path(__file__).parents[1]) + '/custom/custom.ini'
+    custom_ini_file = _get_custom_ini_file()
     path = None
-    if os.path.isdir(custom_directory) and os.path.isfile(custom_ini_file):
+    if custom_ini_file:
         customs_config = _Config(custom_ini_file)
         for custom_name, custom_param in customs_config.cfg.items():
             if custom_id == custom_name:
@@ -271,11 +292,35 @@ def retrieve_custom_path(custom_id):
     return path
 
 
+def is_custom_exists_from_url(url):
+    found_custom = False
+    custom_ini_file = _get_custom_ini_file()
+
+    if custom_ini_file:
+        customs_config = _Config(custom_ini_file)
+        for custom_name in customs_config.cfg:
+            if url == customs_config.cfg[custom_name].get('url', None):
+                found_custom = True
+                break
+    return found_custom
+
+
+def retrieve_custom_id_from_url(url):
+    custom_ini_file = _get_custom_ini_file()
+    custom_id = None
+    if custom_ini_file:
+        customs_config = _Config(custom_ini_file)
+        for custom_name in customs_config.cfg:
+            if url == customs_config.cfg[custom_name].get('url', None):
+                custom_id = custom_name
+                break
+    return custom_id
+
+
 def retrieve_custom_list():
-    custom_directory = str(Path(__file__).parents[1]) + '/custom/'
-    custom_ini_file = str(Path(__file__).parents[1]) + '/custom/custom.ini'
+    custom_ini_file = _get_custom_ini_file()
     custom_list = []
-    if os.path.isdir(custom_directory) and os.path.isfile(custom_ini_file):
+    if custom_ini_file:
         customs_config = _Config(custom_ini_file)
         for custom_name, custom_param in customs_config.cfg.items():
             custom_list.append(custom_name)

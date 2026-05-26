@@ -84,17 +84,18 @@ export function Login() {
         }
 
         async function fetchLoginMessage() {
-            if (custom) {
-                await get("/config/getConfigurationNoAuth/loginMessage").then((response) => {
-                    if (response && response.configuration) {
-                        setLoginMessage(response.configuration[0]?.data.value);
-                    }
-                });
-            }
+            await get("/config/getConfigurationNoAuth/loginMessage").then((response) => {
+                if (response && response.configuration) {
+                    setLoginMessage(response.configuration[0]?.data.value);
+                }
+            });
+        }
+        if (custom) {
+            fetchLoginMessage().then();
+            fetchEnabledMethod().then();
         }
 
-        fetchLoginMessage().then();
-        fetchEnabledMethod().then();
+        setLoading(false);
     }, []);
 
     const loginSchema: any = z.object({
@@ -166,7 +167,12 @@ export function Login() {
         navigate('/reset-password');
     };
 
-    if (loading) return <Loader/>;
+    if (loading) return (
+        <div className='h-screen'>
+            <Loader/>
+        </div>
+    );
+
     return (
         <div className="flex flex-col gap-2 h-screen items-center justify-between py-6 bg-(--bg-secondary)">
             <div className="flex flex-1 items-center justify-center w-full">

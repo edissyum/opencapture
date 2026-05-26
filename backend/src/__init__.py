@@ -27,7 +27,8 @@ from .rest.auth import limiter
 from werkzeug.wrappers import Request
 from .main import create_classes_from_custom_id
 from flask import request, g as current_context, Flask, session
-from .functions import is_custom_exists, retrieve_custom_from_url, retrieve_custom_path
+from .functions import is_custom_exists, retrieve_custom_from_url, retrieve_custom_path, is_custom_exists_from_url, \
+    retrieve_custom_id_from_url
 from .rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
     forms, status, accounts, outputs, mem, positions_masks, history, doctypes, mailcollect, artificial_intelligence, \
     smtp, monitoring, workflow, coog, opencaptureformem, attachments, opencrm
@@ -41,28 +42,21 @@ class Middleware:
         _request = Request(environ)
         splitted_request = _request.path.split('ws/')
 
-        domain_name = 'localhost'
-        if 'HTTP_REFERER' in environ:
-            domain_name = urllib.parse.urlparse(environ['HTTP_REFERER']).netloc
-            if not domain_name:
-                domain_name = urllib.parse.urlparse(environ['HTTP_REFERER']).path
-        elif 'HTTP_HOST' in environ:
-            domain_name = urllib.parse.urlparse(environ['HTTP_HOST']).netloc
-            if not domain_name:
-                domain_name = urllib.parse.urlparse(environ['HTTP_HOST']).path
+        domain_name = ''
 
-        local_regex = re.compile(r'^(127.0.([01]).1|10(\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[0-9]{1,2})){3}|((172\.(1['
-                                 r'6-9]|2[0-9]|3[01]))|192\.168)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[0-9]{1,2})){2})$')
-        if ('mod_wsgi.path_info' in environ and domain_name != 'localhost' and not local_regex.match(domain_name) and
-                is_custom_exists(domain_name)):
-            environ['mod_wsgi.path_info'] = environ['mod_wsgi.path_info'].replace('/backend_oc/', '/' + domain_name
-                                                                                  + '/backend_oc/')
-            environ['SCRIPT_NAME'] = domain_name
-            path = retrieve_custom_path(domain_name.replace('/', ''))
-            if os.path.isfile(path + '/config/secret_key'):
-                with open(path + '/config/secret_key', 'r', encoding='utf-8') as secret_file:
-                    app.config['SECRET_KEY'] = secret_file.read().replace('\n', '')
-            return self.middleware_app(environ, start_response)
+        if 'HTTP_REFERER' in environ:
+            domain_name = urllib.parse.urlparse(environ['HTTP_REFERER']).hostname
+        elif 'HTTP_HOST' in environ:
+            domain_name = urllib.parse.urlparse(environ['HTTP_HOST']).hostname
+
+        if domain_name and domain_name != 'localhost':
+            if is_custom_exists_from_url(domain_name):
+                custom_id = retrieve_custom_id_from_url(domain_name)
+                environ['SCRIPT_NAME'] = custom_id
+                path = retrieve_custom_path(custom_id.replace('/', ''))
+                if os.path.isfile(path + '/config/secret_key'):
+                    with open(path + '/config/secret_key', 'r', encoding='utf-8') as secret_file:
+                        app.config['SECRET_KEY'] = secret_file.read().replace('\n', '')
 
         if splitted_request[0] != '/':
             custom_id = splitted_request[0]
