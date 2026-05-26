@@ -1,0 +1,51 @@
+# Traefik en STANDALONE (HTTP-only, équivalent local de Traefik prod
+# Edissyum à /opt/docker/traefik/).
+#
+# Ce compose ne dépend de rien, lance Traefik tout seul sur le port
+# ${TRAEFIK_HTTP_PORT:-8080}. À démarrer et arrêter indépendamment
+# de la stack OC.
+#
+# Workflow test local :
+#   1) Une fois sur l'hôte :
+#        docker network create frontend
+#   2) Démarrer Traefik :
+#        docker compose -f infra/docker-compose.traefik-server.yml up -d
+#   3) Démarrer OC avec ses labels HTTP-only :
+#        docker compose -f infra/docker-compose.yml \
+#                       -f infra/docker-compose.traefik-test.yml up -d
+#   4) Tester :
+#        curl -H "Host: site1.edissyum.com" http://localhost:8080/edissyum/
+#        http://localhost:8081/dashboard/
+#
+# Pour arrêter Traefik sans toucher à OC :
+#   docker compose -f infra/docker-compose.traefik-server.yml down
+#
+# Et inversement.
+
+name: traefik
+
+networks:
+    frontend:
+        name: frontend
+        external: true
+
+services:
+    traefik:
+        image: traefik:v2.11
+        container_name: opencapture_traefik
+        command:
+            - "--api.dashboard=true"
+            - "--api.insecure=true"
+            - "--providers.docker=true"
+            - "--providers.docker.exposedbydefault=false"
+            - "--providers.docker.network=frontend"
+            - "--entrypoints.web.address=:80"
+            - "--accesslog=true"
+        ports:
+            - "${TRAEFIK_HTTP_PORT:-8080}:80"
+            - "${TRAEFIK_DASHBOARD_PORT:-8081}:8080"
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+        networks:
+            - frontend
+        restart: unless-stopped
