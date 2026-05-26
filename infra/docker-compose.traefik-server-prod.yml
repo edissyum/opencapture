@@ -1,0 +1,103 @@
+# Traefik PROD standalone — HTTPS + Let's Encrypt automatique.
+#
+# À utiliser sur une machine prod fraîche (pas de Traefik existant).
+# Sur la machine Edissyum qui a déjà /opt/docker/traefik/ qui tourne,
+# tu peux ignorer ce fichier et juste utiliser
+# docker-compose.traefik.yml (overlay labels OC) en pointant vers le
+# Traefik existant.
+#
+# Différences avec docker-compose.traefik-server.yml (test local) :
+#   - image    : v3.x (récente, plus stable pour la prod -- le bug
+#                Docker Desktop v1.24 n'affecte que WSL2)
+#   - ports    : 80 + 443 standards (pas 8080)
+#   - HTTPS    : entrypoint websecure + redirection HTTP -> HTTPS
+#   - LE       : certresolver `myresolver` (même nom que côté OC
+#                dans docker-compose.traefik.yml) configuré pour
+#                générer les certs automatiquement via tlsChallenge
+#   - dashboard: désactivé en mode public (à activer derrière auth
+#                via le bloc commenté en bas si besoin)
+#
+# Pré-requis hôte :
+#   docker network create frontend                  # une fois
+#   .env -> LETSENCRYPT_EMAIL=<email valide>        # ACME exige un email réel
+#   ports 80 et 443 OUVERTS depuis Internet         # pour le challenge LE
+#   DNS du FQDN OC pointe vers cette machine
+#
+# Usage :
+#   docker compose -f infra/docker-compose.traefik-server-prod.yml up -d
+#   docker compose -f infra/docker-compose.yml \
+#                  -f infra/docker-compose.traefik.yml up -d
+#
+# Le cert se génère au PREMIER appel HTTPS (~30s), persisté dans le
+# volume nommé `letsencrypt`. Le renouvellement est automatique.
+
+name: traefik
+
+networks:
+    frontend:
+        name: frontend
+        external: true
+
+volumes:
+    letsencrypt:
+        # Stockage du acme.json (clé privée + certs LE). PERSISTANT.
+        # Si tu changes de machine, copie ce volume pour éviter de
+        # devoir re-générer les certs (et donc de risquer la limite
+        # de rate LE : 50 certs/semaine/domaine).
+        driver: local
+        driver_opts:
+            type: none
+            o: bind
+            device: ${LETSENCRYPT_PATH:-../data/letsencrypt}
+
+services:
+    traefik:
+        image: traefik:v3.5
+        container_name: opencapture_traefik
+        command:
+            # API + dashboard (insecure => bind localement seulement).
+            - "--api.dashboard=true"
+            - "--api.insecure=true"
+
+            # Provider Docker
+            - "--providers.docker=true"
+            - "--providers.docker.exposedbydefault=false"
+            - "--providers.docker.network=frontend"
+
+            # Entrypoints
+            - "--entrypoints.web.address=:80"
+            - "--entrypoints.websecure.address=:443"
+
+            # Redirection automatique HTTP -> HTTPS
+            - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+            - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+
+            # Let's Encrypt via tlsChallenge (porte 443 publique requise)
+            - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+            - "--certificatesresolvers.myresolver.acme.email=${LETSENCRYPT_EMAIL}"
+            - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+            # Pour tester sans risquer la limite de rate LE (50 certs/
+            # semaine/domaine), décommenter pour utiliser le serveur
+            # de staging (certs non-trusted par les navigateurs) :
+            # - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+
+            # Logs
+            - "--accesslog=true"
+            - "--log.level=INFO"
+
+        ports:
+            - "80:80"
+            - "443:443"
+            # Dashboard exposé UNIQUEMENT sur localhost (pas accessible
+            # depuis Internet). Pour y accéder depuis ailleurs, monte
+            # un tunnel SSH : ssh -L 8081:localhost:8081 user@host
+            - "127.0.0.1:8081:8080"
+
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+            - letsencrypt:/letsencrypt
+
+        networks:
+            - frontend
+
+        restart: unless-stopped
