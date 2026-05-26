@@ -43,9 +43,13 @@ x-backend-env: &backend-env
     OC_PATH:             /app
 
 x-backend-volumes: &backend-volumes
-    - custom:/app/custom
-    - docservers:/app/docservers
-    - share:/app/share
+    # Bind mounts directs : Docker crée le dossier hôte s'il n'existe
+    # pas (au contraire de la syntaxe volume + driver_opts qui exige
+    # un pré-mkdir). Pour stocker ailleurs, override le chemin dans
+    # .env (ex. CUSTOM_PATH=/srv/oc/custom).
+    - ${CUSTOM_PATH:-../data/custom}:/app/custom
+    - ${DOCSERVERS_PATH:-../data/docservers}:/app/docservers
+    - ${SHARE_PATH:-../data/share}:/app/share
 
 services:
     postgres:
@@ -61,7 +65,7 @@ services:
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
             PGDATA:            /var/lib/postgresql/data/pgdata
         volumes:
-            - pgdata:/var/lib/postgresql/data
+            - ${PGDATA_PATH:-../data/pgdata}:/var/lib/postgresql/data
             - ../postgres/sql/structure.sql:/docker-entrypoint-initdb.d/01_structure.sql:ro
             - ../postgres/sql/data_fr.sql:/docker-entrypoint-initdb.d/02_data_fr.sql:ro
             - ../postgres/sql/global.sql:/docker-entrypoint-initdb.d/03_global.sql:ro
@@ -79,7 +83,7 @@ services:
             RABBITMQ_DEFAULT_PASS:  ${RABBITMQ_PASS}
             RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST}
         volumes:
-            - rabbitmq_data:/var/lib/rabbitmq
+            - ${RABBITMQ_DATA_PATH:-../data/rabbitmq}:/var/lib/rabbitmq
         healthcheck:
             test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
             interval: 10s
@@ -205,45 +209,9 @@ services:
             backend:
                 condition: service_started
         restart: unless-stopped
-
-volumes:
-    # Volumes nommés mais pointant vers des chemins hôte configurables
-    # dans .env :
-    #   PGDATA_PATH        (par défaut ../data/pgdata)
-    #   RABBITMQ_DATA_PATH (par défaut ../data/rabbitmq)
-    #   CUSTOM_PATH        (par défaut ../data/custom)
-    #   DOCSERVERS_PATH    (par défaut ../data/docservers)
-    #   SHARE_PATH         (par défaut ../data/share)
-    #
-    # Les dossiers sont créés à la volée si absents. Utiliser des
-    # chemins ABSOLUS dans .env si tu veux les stocker hors du repo.
-    pgdata:
-        driver: local
-        driver_opts:
-            type: none
-            o: bind
-            device: ${PGDATA_PATH:-../data/pgdata}
-    rabbitmq_data:
-        driver: local
-        driver_opts:
-            type: none
-            o: bind
-            device: ${RABBITMQ_DATA_PATH:-../data/rabbitmq}
-    custom:
-        driver: local
-        driver_opts:
-            type: none
-            o: bind
-            device: ${CUSTOM_PATH:-../data/custom}
-    docservers:
-        driver: local
-        driver_opts:
-            type: none
-            o: bind
-            device: ${DOCSERVERS_PATH:-../data/docservers}
-    share:
-        driver: local
-        driver_opts:
-            type: none
-            o: bind
-            device: ${SHARE_PATH:-../data/share}
+# Plus de section volumes:
+# Les bind mounts directs déclarés au niveau des services suffisent.
+# Docker auto-crée les dossiers hôte s'ils n'existent pas.
+# Chemins paramétrables via .env :
+#   PGDATA_PATH, RABBITMQ_DATA_PATH, CUSTOM_PATH, DOCSERVERS_PATH, SHARE_PATH
+# Par défaut : ../data/<nom> (= ./data/<nom> à la racine du repo).
