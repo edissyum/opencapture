@@ -1,0 +1,78 @@
+# Overlay de TEST LOCAL — Traefik intégré, HTTP-only sur :80.
+#
+# À utiliser sur WSL/dev pour valider que la stack OC est bien
+# routable par Traefik (labels, network, découverte). N'essaie pas
+# de faire du TLS / Let's Encrypt — c'est le rôle du compose prod.
+#
+# Différence avec docker-compose.traefik.yml (prod) :
+#   prod : labels TLS+LE, suppose un Traefik externe (chez Edissyum :
+#          /opt/docker/traefik/) qui s'occupe du HTTPS.
+#   test : démarre un Traefik local en HTTP-only, labels HTTP pur.
+#
+# Les DEUX overlays sont mutuellement EXCLUSIFS : on chaîne le base
+# compose avec L'UN ou L'AUTRE, pas les deux.
+#
+# Pré-requis :
+#   docker network create frontend
+#   /etc/hosts : 127.0.0.1 site1.edissyum.com
+#                (Windows : C:\Windows\System32\drivers\etc\hosts)
+#   .env       : OC_FQDN=site1.edissyum.com
+#
+# Usage (depuis la racine du repo) :
+#   docker compose -f infra/docker-compose.yml \
+#                  -f infra/docker-compose.traefik-test.yml up -d
+#
+# Tests :
+#   curl -H "Host: site1.edissyum.com" http://localhost/edissyum/
+#   curl http://site1.edissyum.com/edissyum/      # si /etc/hosts ok
+#   open http://localhost:8081/dashboard/         # dashboard Traefik
+
+networks:
+    default:
+    frontend:
+        name: frontend
+        external: true
+
+services:
+    # ---------------------------------------------------------------
+    # Traefik local de test
+    # Image v2.11 : marche sur Docker Desktop WSL2 (v3.x plante avec
+    # "client version 1.24 too old" sur les daemons stricts).
+    # ---------------------------------------------------------------
+    traefik:
+        image: traefik:v2.11
+        container_name: opencapture_traefik_test
+        command:
+            - "--api.dashboard=true"
+            - "--api.insecure=true"
+            - "--providers.docker=true"
+            - "--providers.docker.exposedbydefault=false"
+            - "--providers.docker.network=frontend"
+            - "--entrypoints.web.address=:80"
+            - "--accesslog=true"
+        ports:
+            # Port hôte de Traefik. 80 est l'idéal mais souvent
+            # occupé par un Apache local. Utilise FRONTEND_PORT
+            # (par défaut 8080) si :80 indisponible.
+            - "${FRONTEND_PORT:-8080}:80"
+            - "${TRAEFIK_DASHBOARD_PORT:-8081}:8080"
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+        networks:
+            - frontend
+        restart: unless-stopped
+
+    # ---------------------------------------------------------------
+    # Service OC frontend : attache au réseau frontend + labels HTTP
+    # ---------------------------------------------------------------
+    frontend:
+        ports: !override []   # plus de port hôte 8080, Traefik prend le relais
+        networks:
+            - default
+            - frontend
+        labels:
+            traefik.enable: "true"
+            traefik.docker.network: "frontend"
+            traefik.http.routers.opencapture.rule: "Host(`${OC_FQDN}`)"
+            traefik.http.routers.opencapture.entrypoints: "web"
+            traefik.http.services.opencapture.loadbalancer.server.port: "80"
