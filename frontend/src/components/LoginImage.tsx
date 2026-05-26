@@ -26,6 +26,8 @@ export function LoginImage({ className }: { className?: string }) {
     const custom = useCustom();
     const [image, setImage] = useState<string | undefined>(undefined);
 
+    if (!custom) return null;
+
     const loadImage = async () => {
         try {
             const stored = localStorage.getItem(`${ custom }_appImage`);
@@ -45,7 +47,7 @@ export function LoginImage({ className }: { className?: string }) {
             };
             reader.readAsDataURL(file);
         } catch (err) {
-            console.error("❌ Impossible de charger l’image de login :", err);
+            console.error("Error while loading login image :", err);
         }
     };
 

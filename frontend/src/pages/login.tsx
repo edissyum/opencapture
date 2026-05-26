@@ -84,17 +84,18 @@ export function Login() {
         }
 
         async function fetchLoginMessage() {
-            if (custom) {
-                await get("/config/getConfigurationNoAuth/loginMessage").then((response) => {
-                    if (response && response.configuration) {
-                        setLoginMessage(response.configuration[0]?.data.value);
-                    }
-                });
-            }
+            await get("/config/getConfigurationNoAuth/loginMessage").then((response) => {
+                if (response && response.configuration) {
+                    setLoginMessage(response.configuration[0]?.data.value);
+                }
+            });
+        }
+        if (custom) {
+            fetchLoginMessage().then();
+            fetchEnabledMethod().then();
         }
 
-        fetchLoginMessage().then();
-        fetchEnabledMethod().then();
+        setLoading(false);
     }, []);
 
     const loginSchema: any = z.object({
