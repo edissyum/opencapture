@@ -146,7 +146,7 @@ export default function Sidebar() {
                 { !collapsed && (
                     <LoginImage className="mx-auto h-full w-11/12 object-contain"></LoginImage>
                 ) }
-                <span onClick={ handleCollapse } className="ml-auto mb-2 font-xl cursor-pointer">
+                <span onClick={ handleCollapse } className="ml-auto font-xl cursor-pointer">
                     { collapsed ? <ChevronsRight/> : <ChevronsLeft/> }
                 </span>
             </div>
