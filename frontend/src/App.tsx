@@ -65,12 +65,16 @@ export function App() {
                 }
             }
 
-            const api = axios.create({ baseURL: `${ BACKEND_URL }/${ _custom }/ws/` });
-            const backendLang = await fetchCurrentLang(api);
-            localStorage.setItem("backendLang", backendLang || "fra");
-
             if (_custom) {
                 try {
+                    const api = axios.create({ baseURL: `${ BACKEND_URL }/${ _custom }/ws/` });
+                    const backendLang = await fetchCurrentLang(api);
+                    localStorage.setItem("backendLang", backendLang || "fra");
+
+                    if (!currentLang) {
+                        currentLang = backendLang;
+                    }
+
                     await api.get("/config/customExists");
                 } catch (err) {
                     if (axios.isAxiosError(err) && (err.code === "ECONNABORTED" || err.code === "ERR_NETWORK")) {
@@ -79,10 +83,6 @@ export function App() {
                         _custom = null;
                     }
                 }
-            }
-
-            if (_custom && !currentLang) {
-                currentLang = backendLang;
             }
 
             await initI18n(currentLang || "fra");
