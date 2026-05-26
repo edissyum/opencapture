@@ -313,7 +313,7 @@ def get_packages():
 
 @bp.route('config/customExists', methods=['GET'])
 def custom_exists():
-    return make_response({'custom_id': request.environ.get('SCRIPT_NAME', '')}), 200
+    return make_response({'custom_id': request.environ.get('SCRIPT_NAME', '').strip('/')}), 200
 
 
 @bp.route('config/customsList', methods=['GET'])
