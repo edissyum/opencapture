@@ -126,6 +126,36 @@ EOF
 ensure_database_section
 
 # ------------------------------------------------------------
+# Self-heal: ensure custom.ini contains a [${CUSTOM_ID}] section
+# with `path` and `url`. Doit s'exécuter AVANT le short-circuit
+# pour rattraper les tenants créés sous l'ancien bootstrap qui ne
+# l'avait pas dans la phase first-init, et pour ajouter le champ
+# `url` aux tenants qui en sont dépourvus (cf. backend commit
+# 75a66fe "Improve custom handling using url").
+# ------------------------------------------------------------
+ensure_custom_ini_entry() {
+    mkdir -p "${OC_PATH}/custom"
+    touch "${CUSTOM_INI}"
+    if ! grep -q "^\[${CUSTOM_ID}\]" "${CUSTOM_INI}"; then
+        log "writing [${CUSTOM_ID}] section to ${CUSTOM_INI}"
+        {
+            echo "[${CUSTOM_ID}]"
+            echo "path = ${CUSTOM_DIR}"
+            # `url` est lu par is_custom_exists_from_url /
+            # retrieve_custom_id_from_url (backend/src/functions.py)
+            # pour l'accès clean URL http://${OC_FQDN}/ sans le
+            # préfixe /${CUSTOM_ID}/.
+            [ -n "${OC_FQDN:-}" ] && echo "url = ${OC_FQDN}"
+            echo
+        } >> "${CUSTOM_INI}"
+    elif [ -n "${OC_FQDN:-}" ] && ! grep -A 3 "^\[${CUSTOM_ID}\]" "${CUSTOM_INI}" | grep -q "^url = "; then
+        log "patching [${CUSTOM_ID}] in ${CUSTOM_INI} with url = ${OC_FQDN}"
+        sed -i "/^\[${CUSTOM_ID}\]/a url = ${OC_FQDN}" "${CUSTOM_INI}"
+    fi
+}
+ensure_custom_ini_entry
+
+# ------------------------------------------------------------
 # Marker: short-circuit subsequent runs once config.ini exists
 # ------------------------------------------------------------
 if [ -f "${CUSTOM_DIR}/config/config.ini" ]; then
@@ -186,26 +216,9 @@ if [ -f "${CUSTOM_DIR}/config/watcher.ini" ]; then
 fi
 
 # ------------------------------------------------------------
-# custom.ini index + secret_key
+# secret_key (custom.ini déjà géré par ensure_custom_ini_entry
+# au-dessus du short-circuit).
 # ------------------------------------------------------------
-mkdir -p "${OC_PATH}/custom"
-touch "${CUSTOM_INI}"
-if ! grep -q "^\[${CUSTOM_ID}\]" "${CUSTOM_INI}"; then
-    {
-        echo "[${CUSTOM_ID}]"
-        echo "path = ${CUSTOM_DIR}"
-        # `url` est lu par is_custom_exists_from_url / retrieve_custom_id_from_url
-        # (backend/src/functions.py) pour permettre l'accès clean URL
-        # http://${OC_FQDN}/  sans le préfixe /${CUSTOM_ID}/.
-        [ -n "${OC_FQDN:-}" ] && echo "url = ${OC_FQDN}"
-        echo
-    } >> "${CUSTOM_INI}"
-elif [ -n "${OC_FQDN:-}" ] && ! grep -A 3 "^\[${CUSTOM_ID}\]" "${CUSTOM_INI}" | grep -q "^url = "; then
-    # Section déjà présente (bootstrap idempotent) mais sans `url` :
-    # on l'insère pour les tenants créés avant cette fonctionnalité.
-    sed -i "/^\[${CUSTOM_ID}\]/a url = ${OC_FQDN}" "${CUSTOM_INI}"
-fi
-
 if [ ! -s "${CUSTOM_DIR}/config/secret_key" ]; then
     python -c 'import secrets; print(secrets.token_hex(32))' > "${CUSTOM_DIR}/config/secret_key"
 fi
