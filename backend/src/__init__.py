@@ -47,7 +47,10 @@ class Middleware:
         if 'HTTP_REFERER' in environ:
             domain_name = urllib.parse.urlparse(environ['HTTP_REFERER']).hostname
         elif 'HTTP_HOST' in environ:
-            domain_name = urllib.parse.urlparse(environ['HTTP_HOST']).hostname
+            # HTTP_HOST est "host" ou "host:port", sans schéma.
+            # urlparse('site1.edissyum.com').hostname -> None car tout
+            # part dans .path. On parse manuellement.
+            domain_name = environ['HTTP_HOST'].split(':', 1)[0]
 
         if domain_name and domain_name != 'localhost':
             if is_custom_exists_from_url(domain_name):
