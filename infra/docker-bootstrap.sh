@@ -202,6 +202,13 @@ if [ ! -s "${CUSTOM_DIR}/config/secret_key" ]; then
     python -c 'import secrets; print(secrets.token_hex(32))' > "${CUSTOM_DIR}/config/secret_key"
 fi
 
+# Le config.ini vient d'être créé par find/sed sur les .default ;
+# il a la section [DATABASE] avec les valeurs du .default (vides /
+# localhost / opencapture_edissyum). On rejoue ensure_database_section
+# maintenant que le fichier existe pour qu'elle remplisse avec l'env.
+# (Le premier appel en haut du script a no-op'é car config.ini n'existait pas.)
+ensure_database_section
+
 # ------------------------------------------------------------
 # Database path patches (the schema itself is loaded by the postgres
 # container via /docker-entrypoint-initdb.d/ on first start).
