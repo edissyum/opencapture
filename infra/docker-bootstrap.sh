@@ -194,8 +194,16 @@ if ! grep -q "^\[${CUSTOM_ID}\]" "${CUSTOM_INI}"; then
     {
         echo "[${CUSTOM_ID}]"
         echo "path = ${CUSTOM_DIR}"
+        # `url` est lu par is_custom_exists_from_url / retrieve_custom_id_from_url
+        # (backend/src/functions.py) pour permettre l'accès clean URL
+        # http://${OC_FQDN}/  sans le préfixe /${CUSTOM_ID}/.
+        [ -n "${OC_FQDN:-}" ] && echo "url = ${OC_FQDN}"
         echo
     } >> "${CUSTOM_INI}"
+elif [ -n "${OC_FQDN:-}" ] && ! grep -A 3 "^\[${CUSTOM_ID}\]" "${CUSTOM_INI}" | grep -q "^url = "; then
+    # Section déjà présente (bootstrap idempotent) mais sans `url` :
+    # on l'insère pour les tenants créés avant cette fonctionnalité.
+    sed -i "/^\[${CUSTOM_ID}\]/a url = ${OC_FQDN}" "${CUSTOM_INI}"
 fi
 
 if [ ! -s "${CUSTOM_DIR}/config/secret_key" ]; then
