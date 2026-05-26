@@ -313,7 +313,11 @@ def get_packages():
 
 @bp.route('config/customExists', methods=['GET'])
 def custom_exists():
-    return make_response({'custom_id': request.environ['SCRIPT_NAME']}), 200
+    # SCRIPT_NAME peut contenir des slashes ('/site1/' en mode préfixé,
+    # 'site1' en mode hostname). On normalise en clean custom_id pour
+    # éviter que le frontend construise des URLs cassées du type
+    # //site1//ws/... (protocole-relatif accidentel).
+    return make_response({'custom_id': request.environ.get('SCRIPT_NAME', '').strip('/')}), 200
 
 
 @bp.route('config/customsList', methods=['GET'])
