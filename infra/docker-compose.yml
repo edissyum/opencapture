@@ -30,6 +30,11 @@ x-backend-build: &backend-build
 
 x-backend-env: &backend-env
     CUSTOM_ID:           ${CUSTOM_ID}
+    # FQDN du tenant. Utilisé par docker-bootstrap.sh pour écrire
+    # `url = ${OC_FQDN}` dans custom.ini -> permet l'accès clean URL
+    # http://${OC_FQDN}/ sans le préfixe /${CUSTOM_ID}/ (cf. backend
+    # commit 75a66fe).
+    OC_FQDN:             ${OC_FQDN}
     POSTGRES_DB:         ${POSTGRES_DB}
     POSTGRES_USER:       ${POSTGRES_USER}
     POSTGRES_PASSWORD:   ${POSTGRES_PASSWORD}
