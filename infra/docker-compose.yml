@@ -206,8 +206,14 @@ services:
             CUSTOM_ID:    ${CUSTOM_ID}
             BACKEND_HOST: backend
             BACKEND_PORT: "8000"
-        ports:
-            - "${FRONTEND_PORT:-8080}:80"
+        # Pas de port hôte : Traefik est l'unique point d'entrée et joint
+        # le frontend via le réseau Docker `frontend`. Exposer un port ici
+        # provoque une collision quand on lance plusieurs tenants sur la
+        # même machine (chaque tenant voudrait binder le même 8080).
+        # Pour un mode standalone sans Traefik, ajoute ce bloc dans un
+        # override compose au lieu de le remettre ici :
+        #   ports:
+        #       - "${FRONTEND_PORT:-8080}:80"
         depends_on:
             backend:
                 condition: service_started
