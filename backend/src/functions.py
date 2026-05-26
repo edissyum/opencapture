@@ -224,7 +224,7 @@ def retrieve_custom_from_url(request):
     if 'HTTP_REFERER' in request.environ:
         domain_name = urllib.parse.urlparse(request.environ['HTTP_REFERER']).hostname
     elif 'HTTP_HOST' in request.environ:
-        domain_name = urllib.parse.urlparse(request.environ['HTTP_HOST']).hostname
+        domain_name = request.environ['HTTP_HOST'].split(':')[0]
 
     backend_url = request.environ['SCRIPT_NAME'] + request.environ['PATH_INFO'] if 'RAW_URI' not in request.environ \
         else request.environ['RAW_URI']
