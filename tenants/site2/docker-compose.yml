@@ -1,0 +1,17 @@
+# Compose du tenant site2.
+#
+# Inclut les composes d'infra/ pour ne pas dupliquer.
+# Le .env du dossier courant (tenants/site2/.env) est auto-chargé
+# par docker compose et fournit CUSTOM_ID=site2, OC_FQDN=..., etc.
+#
+# Workflow standard (depuis ce dossier) :
+#   docker compose up -d
+#   docker compose ps
+#   docker compose logs -f backend
+#   docker compose down
+
+name: opencapture_${CUSTOM_ID}
+
+include:
+    - path: ../../infra/docker-compose.yml
+    - path: ../../infra/docker-compose.traefik-test.yml
