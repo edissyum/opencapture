@@ -11,7 +11,7 @@
 #   docker compose -f infra/docker-compose.yml \
 #                  -f infra/docker-compose.override.yml up
 
-name: opencapture_docker
+name: opencapture_${CUSTOM_ID:-default}
 
 services:
     frontend:

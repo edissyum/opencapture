@@ -38,9 +38,12 @@ services:
         networks:
             - default
             - frontend
+        # Liste (pas map) pour que ${CUSTOM_ID} soit substitué dans
+        # la clé du label (compose n'interpole que les valeurs dans
+        # les maps).
         labels:
-            traefik.enable: "true"
-            traefik.docker.network: "frontend"
-            traefik.http.routers.opencapture.rule: "Host(`${OC_FQDN}`)"
-            traefik.http.routers.opencapture.entrypoints: "web"
-            traefik.http.services.opencapture.loadbalancer.server.port: "80"
+            - "traefik.enable=true"
+            - "traefik.docker.network=frontend"
+            - "traefik.http.routers.${CUSTOM_ID}.rule=Host(`${OC_FQDN}`)"
+            - "traefik.http.routers.${CUSTOM_ID}.entrypoints=web"
+            - "traefik.http.services.${CUSTOM_ID}.loadbalancer.server.port=80"

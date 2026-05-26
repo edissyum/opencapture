@@ -44,18 +44,14 @@ services:
         networks:
             - default
             - frontend
+        # Liste (pas map) pour que la substitution ${CUSTOM_ID} marche
+        # dans la CLÉ du label (Docker compose n'interpole pas les
+        # clés de map mais le fait dans les éléments de liste).
         labels:
-            traefik.enable: "true"
-            # Précise sur quel réseau Traefik doit joindre ce conteneur
-            # (le conteneur en a deux : default et frontend).
-            traefik.docker.network: "frontend"
-
-            # Routeur HTTP+HTTPS, redirige HTTP -> HTTPS via la config
-            # globale du Traefik (entrypoint web -> websecure).
-            traefik.http.routers.opencapture.rule: "Host(`${OC_FQDN}`)"
-            traefik.http.routers.opencapture.entrypoints: "web,websecure"
-            traefik.http.routers.opencapture.tls: "true"
-            traefik.http.routers.opencapture.tls.certresolver: "myresolver"
-
-            # Service : Traefik proxy vers le port 80 interne du nginx.
-            traefik.http.services.opencapture.loadbalancer.server.port: "80"
+            - "traefik.enable=true"
+            - "traefik.docker.network=frontend"
+            - "traefik.http.routers.${CUSTOM_ID}.rule=Host(`${OC_FQDN}`)"
+            - "traefik.http.routers.${CUSTOM_ID}.entrypoints=web,websecure"
+            - "traefik.http.routers.${CUSTOM_ID}.tls=true"
+            - "traefik.http.routers.${CUSTOM_ID}.tls.certresolver=myresolver"
+            - "traefik.http.services.${CUSTOM_ID}.loadbalancer.server.port=80"

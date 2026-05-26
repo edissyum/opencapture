@@ -13,12 +13,15 @@
 # Network: a single internal bridge; only the frontend nginx exposes
 # a port to the host.
 
-# Pin the compose project name so volumes/networks/containers keep a
-# stable prefix regardless of where the compose file lives. Without
-# this, moving the file from the repo root to infra/ would silently
-# rename volumes from opencapture_docker_* to infra_* and orphan all
-# existing data.
-name: opencapture_docker
+# Pin the compose project name to opencapture_<tenant>. Permet de
+# faire tourner plusieurs stacks OC en parallèle sur la même machine
+# (une par tenant) sans collision : chaque stack a ses propres
+# conteneurs/volumes/réseau préfixés.
+#
+# Exemple :
+#   .env -> CUSTOM_ID=edissyum -> project name opencapture_edissyum
+#   .env -> CUSTOM_ID=ccbe     -> project name opencapture_ccbe
+name: opencapture_${CUSTOM_ID:-default}
 
 x-backend-build: &backend-build
     build:
