@@ -70,6 +70,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         # Shared libs that don't have a CLI front-end on this image.
         libgl1 \
         libmagic1 \
+        # `file` CLI (libmagic front-end) : les scripts de workflow
+        # fs-watcher détectent le type MIME via `file -b -i` ; sans lui,
+        # le PDF est rejeté comme "not valid".
+        file \
         libcairo2 \
         libheif1 \
         libpq5 \
@@ -122,6 +126,11 @@ RUN chmod +x /app/docker-entrypoint.sh /app/docker-bootstrap.sh
 # mounts puis droppe vers ce compte via gosu (cf. docker-entrypoint.sh).
 RUN groupadd -g "${APP_GID}" "${APP_USER}" \
     && useradd -u "${APP_UID}" -g "${APP_GID}" -d /app -s /bin/bash -M "${APP_USER}" \
+    # Staging des workflows fs-watcher : les scripts générés font
+    # `mv "$file" "$OCPath/data/pdf/"` (OCPath=/app) sans mkdir préalable.
+    # Le traitement étant INLINE dans le conteneur qui déclenche le script
+    # (fs-watcher), ce dossier container-local suffit.
+    && mkdir -p /app/data/pdf \
     && chown -R "${APP_UID}:${APP_GID}" /app /tmp/opencapture
 
 EXPOSE 8000
