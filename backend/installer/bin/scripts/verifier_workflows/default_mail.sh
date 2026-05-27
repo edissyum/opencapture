@@ -16,8 +16,8 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-workflow_id="§§SCRIPT_NAME§§"
-OCPath="§§OC_PATH§§"
+workflow_id="default_mail"
+OCPath="§§OC_PATH§§/"
 logFile="§§LOG_PATH§§"
 errFilepath="§§CUSTOM_PATH§§/data/error/verifier/$workflow_id/"
 tmpFilepath="§§CUSTOM_PATH§§/data/tmp/"
@@ -40,7 +40,7 @@ then
 
     mv "$filepath" "$tmpFilepath"
 
-    python3 "$OCPath"/launch_worker.py --custom-id "§§CUSTOM_ID§§" -f "$tmpFilepath"/"$filename" "§§ARGUMENTS§§"
+    python3 "$OCPath"/launch_worker.py --custom-id "§§CUSTOM_ID§§" -f "$tmpFilepath"/"$filename" -workflow_id $workflow_id
 
     rm -f $PID
 elif test -f "$filepath" && test "$ext" != 'application/pdf; charset=binary';
@@ -54,3 +54,4 @@ then
 else
     echo "[$full_name] $(date +"%d-%m-%Y %T") WARNING capture on $filepath already active : PID exists : $PID" >> "$logFile"
 fi
+

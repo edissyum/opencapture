@@ -16,18 +16,18 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-workflow_id="§§SCRIPT_NAME§§"
+workflow_id="default_workflow"
 OCPath="§§OC_PATH§§"
 logFile="§§LOG_PATH§§"
-errFilepath="§§CUSTOM_PATH§§/data/error/verifier/$workflow_id/"
+errFilepath="§§CUSTOM_PATH§§/data/error/splitter/$workflow_id/"
 tmpFilepath="§§CUSTOM_PATH§§/data/tmp/"
 PID=/tmp/securite-$workflow_id-$$.pid
 
 spaces="              "
 script="$workflow_id.sh"
 full_name=${script:0:17}${spaces:0:$((17-${#script}))}
-
 echo "[$full_name] $(date +"%d-%m-%Y %T") INFO Launching $workflow_id.sh script" >> "$logFile"
+
 filepath=$1
 ext=$(file -b -i "$filepath")
 filename=$(basename "$filepath")
@@ -40,7 +40,7 @@ then
 
     mv "$filepath" "$tmpFilepath"
 
-    python3 "$OCPath"/launch_worker.py --custom-id "§§CUSTOM_ID§§" -f "$tmpFilepath"/"$filename" "§§ARGUMENTS§§"
+    python3 "$OCPath"/launch_worker_splitter.py --custom-id "§§CUSTOM_ID§§" -f "$tmpFilepath"/"$filename" -workflow_id $workflow_id
 
     rm -f $PID
 elif test -f "$filepath" && test "$ext" != 'application/pdf; charset=binary';

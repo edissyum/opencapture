@@ -126,6 +126,7 @@ mkdir -p "$NEW_CUSTOM_PATH/instance/upload/{verifier,splitter}"
 
 mkdir -p "$NEW_CUSTOM_PATH"/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa,error}/
 mkdir -p "$NEW_CUSTOM_PATH/data/log/Supervisor/"
+mkdir -p "$NEW_CUSTOM_PATH/data/error/{verifier,splitter}/"
 mkdir -p "$NEW_CUSTOM_PATH/data/MailCollect/_ERROR/"
 
 touch "$NEW_CUSTOM_PATH/config/secret_key"
@@ -159,6 +160,7 @@ mkdir -p "$docservers_path"/splitter/ai/{train_data,models}
 # Create custom input and outputs folder
 mkdir -p "$share_path"/{entrant,export}/{verifier,splitter}
 mkdir -p "$share_path"/entrant/verifier/{ocr_only,default,default_mail}
+mkdir -p "$share_path"/entrant/splitter/default
 
 ####################
 # Copy file from default one

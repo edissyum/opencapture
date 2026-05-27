@@ -16,23 +16,21 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-name="§§SCRIPT_NAME§§"
+workflow_id="§§SCRIPT_NAME§§"
 OCPath="§§OC_PATH§§"
 logFile="§§LOG_PATH§§"
-errFilepath="$OCPath/data/error/$name/"
-tmpFilepath="$OCPath/data/pdf/"
-PID=/tmp/securite-$name-$$.pid
+errFilepath="§§CUSTOM_PATH§§/data/error/splitter/$workflow_id/"
+tmpFilepath="§§CUSTOM_PATH§§/data/tmp/"
+PID=/tmp/securite-$workflow_id-$$.pid
 
 spaces="              "
-script="$name.sh"
+script="$workflow_id.sh"
 full_name=${script:0:17}${spaces:0:$((17-${#script}))}
-echo "[$full_name] $(date +"%d-%m-%Y %T") INFO Launching $name.sh script" >> "$logFile"
+echo "[$full_name] $(date +"%d-%m-%Y %T") INFO Launching $workflow_id.sh script" >> "$logFile"
 
 filepath=$1
-filename=$(basename "$filepath")
 ext=$(file -b -i "$filepath")
-
-§§PYTHON_VENV§§
+filename=$(basename "$filepath")
 
 if ! test -e $PID && test "$ext" = 'application/pdf; charset=binary' && test -f "$filepath";
 then
