@@ -37,6 +37,14 @@ RUN python -m pip install --upgrade pip wheel setuptools pycparser \
 
 FROM python:3.13-slim-bookworm AS runtime
 
+# Compte de service partagé par tous les conteneurs backend / tenants.
+# UID/GID paramétrables au build pour s'aligner sur un compte hôte
+# existant (cf. APP_UID/APP_GID dans .env). L'entrypoint relit aussi
+# ces valeurs au runtime et peut droper vers un autre UID sans rebuild.
+ARG APP_UID=1050
+ARG APP_GID=1050
+ARG APP_USER=opencapture
+
 ENV PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -44,7 +52,9 @@ ENV PIP_NO_CACHE_DIR=1 \
     PYTHONPATH=/app \
     LD_LIBRARY_PATH=/usr/local/lib/ \
     MAGICK_TMPDIR=/tmp/opencapture/ \
-    TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata/
+    TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata/ \
+    APP_USER=${APP_USER} \
+    HOME=/app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         # Image / PDF / OCR CLI tools. These pull in the matching
@@ -71,8 +81,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         # Misc utils used by bootstrap.sh.
         ca-certificates \
         gettext-base \
+        # Privilege-drop helper: the entrypoint starts as root to chown
+        # the bind mounts, then re-exec's via gosu under APP_UID.
+        gosu \
     && rm -rf /var/lib/apt/lists/* \
-    && mkdir -p /tmp/opencapture
+    && mkdir -p /tmp/opencapture \
+    && gosu nobody true
 
 # Install pre-built wheels from the builder stage.
 # Two steps on purpose: fs-watcher pulls the original `pyinotify`
@@ -102,6 +116,13 @@ COPY backend/ /app/
 COPY infra/docker-entrypoint.sh /app/docker-entrypoint.sh
 COPY infra/docker-bootstrap.sh  /app/docker-bootstrap.sh
 RUN chmod +x /app/docker-entrypoint.sh /app/docker-bootstrap.sh
+
+# Compte de service par défaut (home=/app, shell bash pour le rôle
+# "shell"). L'ENTRYPOINT reste root au démarrage : il chown les bind
+# mounts puis droppe vers ce compte via gosu (cf. docker-entrypoint.sh).
+RUN groupadd -g "${APP_GID}" "${APP_USER}" \
+    && useradd -u "${APP_UID}" -g "${APP_GID}" -d /app -s /bin/bash -M "${APP_USER}" \
+    && chown -R "${APP_UID}:${APP_GID}" /app /tmp/opencapture
 
 EXPOSE 8000
 

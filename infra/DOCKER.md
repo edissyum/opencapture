@@ -90,6 +90,75 @@ schema isn't there (external-DB edge case).
 | Single combined image, role at runtime | Build once (~2 Go, mostly PyTorch). Avoid maintaining several near-identical Dockerfiles. |
 | Compose v2.24+ (`!override` in override.yml) | Cleanest way to replace `ports:` between prod and dev. |
 
+## Service account / permissions
+
+Tous les conteneurs **backend** (`init`, `backend`, `worker-verifier`,
+`worker-splitter`, `worker-mail`, `fs-watcher`) tournent sous un **compte
+de service à UID/GID fixe** (défaut `1050`, `opencapture`). Objectif :
+les fichiers écrits dans les volumes partagés (`custom`, `docservers`,
+`share`) appartiennent tous au même UID — gérable proprement entre
+conteneurs et depuis l'hôte.
+
+**Pattern : entrypoint root → chown → drop gosu.** L'image démarre en
+root (`ENTRYPOINT` inchangé). Le bloc en tête de `docker-entrypoint.sh` :
+1. crée une entrée `passwd` pour l'UID cible si absente (cas d'une
+   surcharge runtime sans rebuild) ;
+2. `chown` les racines de mount (`/app/custom`, `/app/docservers`,
+   `/app/share`, `/tmp/opencapture`) — top-level systématique, et un
+   `chown -R` **une seule fois** au rôle `init`, gardé par la sentinelle
+   `custom/.ownership-<uid>-ok` (évite de parcourir des docservers
+   volumineux à chaque `up`) ;
+3. `exec gosu <uid>:<gid> "$0" "$@"` → tous les rôles tournent ensuite
+   en `1050`.
+
+**Variables** (`.env` racine, défaut 1050) :
+
+```bash
+APP_UID=1050
+APP_GID=1050
+APP_USER=opencapture
+```
+
+`APP_UID`/`APP_GID` sont passés en **build args** (compte baké dans
+l'image) ET relus au **runtime** par l'entrypoint. Changer l'UID :
+- **runtime, sans rebuild** : éditer `.env` puis `docker compose up -d`
+  (l'entrypoint crée l'entrée passwd, chown vers le nouvel UID, droppe
+  dessus) ;
+- **rebuild (propre)** : rebuild de l'image pour aligner le nom du
+  compte baké. Image partagée ⇒ un seul rebuild pour tous les tenants.
+- Après changement, re-réconcilier l'existant : supprimer les
+  sentinelles (`rm data/*/custom/.ownership-*-ok`) puis relancer `init`.
+
+**Hors périmètre (volontaire) :**
+- `postgres` (uid 999) et `rabbitmq` (uid 100) gardent leurs comptes
+  natifs : volumes (`pgdata`, `rabbitmq`) **isolés**, jamais partagés
+  pour les documents ; forcer 1050 casserait l'init des images
+  officielles.
+- `frontend` (nginx Alpine) : aucun volume document → inchangé.
+- `backend.Dockerfile.dev` (chemin legacy `docker-compose-dev.yml`) :
+  laissé en root.
+
+**Côté hôte** — créer le même compte pour gérer les droits hors
+conteneur (mêmes UID/GID que le `.env`) :
+
+```bash
+sudo groupadd -g 1050 opencapture
+sudo useradd  -u 1050 -g 1050 -M -s /usr/sbin/nologin opencapture
+```
+
+**Migration de données existantes** (créées en `root:root` avant ce
+changement) — soit via le conteneur init (le `chown -R` runtime
+rattrape tout), soit directement sur l'hôte :
+
+```bash
+docker compose -f infra/docker-compose.yml build
+docker compose -f infra/docker-compose.yml run --rm init
+# — ou, en direct (sudo, fichiers root) :
+# sudo chown -R 1050:1050 data/custom data/docservers data/share \
+#     data/site1/{custom,docservers,share} data/site2/{custom,docservers,share}
+# NE PAS toucher data/pgdata (999) ni data/rabbitmq (100).
+```
+
 ## Running it
 
 ### First run (prod)

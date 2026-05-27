@@ -7,6 +7,54 @@
 
 set -euo pipefail
 
+# ------------------------------------------------------------
+# Privilege drop (UID/GID pilotés par l'env, défaut 1050).
+# L'image démarre en root pour pouvoir chown les bind mounts que
+# Docker vient de créer en root, puis re-exec ce même script via
+# gosu sous le compte de service. Au 2e passage on tourne déjà en
+# APP_UID (id -u != 0) donc le bloc est sauté.
+# ------------------------------------------------------------
+APP_UID="${APP_UID:-1050}"
+APP_GID="${APP_GID:-1050}"
+APP_USER="${APP_USER:-opencapture}"
+
+if [ "$(id -u)" = "0" ]; then
+    # Si l'UID cible n'a pas d'entrée passwd (surcharge runtime sans
+    # rebuild), en créer une (-o = non unique autorisé) pour les libs
+    # qui appellent getpwuid().
+    if ! getent passwd "${APP_UID}" >/dev/null 2>&1; then
+        groupadd -o -g "${APP_GID}" "${APP_USER}" 2>/dev/null || true
+        useradd  -o -u "${APP_UID}" -g "${APP_GID}" -d /app -s /bin/bash -M "${APP_USER}" 2>/dev/null || true
+    fi
+
+    # Racines de montage partagées (Docker les auto-crée en root).
+    mkdir -p /app/custom /app/docservers /app/share /tmp/opencapture
+    # chown top-level systématique : O(1), inoffensif.
+    chown "${APP_UID}:${APP_GID}" /app/custom /app/docservers /app/share /tmp/opencapture
+
+    # chown -R récursif seulement au rôle init et seulement si pas déjà
+    # fait (sentinelle) -> évite de parcourir des docservers volumineux
+    # à chaque `up`. Pour forcer une re-réconciliation : supprimer le
+    # fichier sentinelle puis relancer init.
+    if [ "${1:-api}" = "init" ]; then
+        SENTINEL="/app/custom/.ownership-${APP_UID}-ok"
+        if [ ! -e "$SENTINEL" ]; then
+            echo "[entrypoint] reconciling ownership -> ${APP_UID}:${APP_GID} (one-time)"
+            chown -R "${APP_UID}:${APP_GID}" /app/custom /app/docservers /app/share || true
+            # Sentinelle possédée par le compte de service (pas root) pour
+            # qu'un audit `find ! -uid <uid>` ne la signale pas.
+            touch "$SENTINEL" && chown "${APP_UID}:${APP_GID}" "$SENTINEL" || true
+        fi
+    fi
+
+    # Re-exec ce script sous l'UID cible (numérique = sûr même si
+    # surchargé). exec remplace le process : pas de double set -e.
+    exec gosu "${APP_UID}:${APP_GID}" "$0" "$@"
+fi
+# ------------------------------------------------------------
+# À partir d'ici on tourne en APP_UID.
+# ------------------------------------------------------------
+
 ROLE="${1:-api}"
 CUSTOM_ID="${CUSTOM_ID:-edissyum}"
 

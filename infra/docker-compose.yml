@@ -27,9 +27,20 @@ x-backend-build: &backend-build
     build:
         context: ..
         dockerfile: infra/backend.Dockerfile
+        args:
+            # Compte de service baké dans l'image (défaut 1050). Image
+            # partagée par tous les tenants -> un seul APP_UID global.
+            APP_UID:  ${APP_UID:-1050}
+            APP_GID:  ${APP_GID:-1050}
+            APP_USER: ${APP_USER:-opencapture}
 
 x-backend-env: &backend-env
     CUSTOM_ID:           ${CUSTOM_ID}
+    # UID/GID cible relu par docker-entrypoint.sh au runtime (drop gosu
+    # + chown des mounts). Surchargeable sans rebuild.
+    APP_UID:             ${APP_UID:-1050}
+    APP_GID:             ${APP_GID:-1050}
+    APP_USER:            ${APP_USER:-opencapture}
     # FQDN du tenant. Utilisé par docker-bootstrap.sh pour écrire
     # `url = ${OC_FQDN}` dans custom.ini -> permet l'accès clean URL
     # http://${OC_FQDN}/ sans le préfixe /${CUSTOM_ID}/ (cf. backend
