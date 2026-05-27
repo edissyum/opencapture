@@ -81,6 +81,10 @@ services:
         # conteneur imposent l'ordre de chargement, indépendamment des
         # noms de fichiers côté hôte.
         image: postgres:17.6
+        # Le `timezone` de Postgres est figé dans le data-dir à l'initdb
+        # (UTC) ; la variable TZ ne l'override pas. On le force au démarrage
+        # pour que now()/les timestamps en base soient à l'heure locale.
+        command: ["postgres", "-c", "timezone=${TZ:-Europe/Paris}", "-c", "log_timezone=${TZ:-Europe/Paris}"]
         environment:
             POSTGRES_DB:       ${POSTGRES_DB}
             POSTGRES_USER:     ${POSTGRES_USER}
