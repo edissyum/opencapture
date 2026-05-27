@@ -36,6 +36,9 @@ x-backend-build: &backend-build
 
 x-backend-env: &backend-env
     CUSTOM_ID:           ${CUSTOM_ID}
+    # Fuseau horaire des conteneurs (logs OpenCapture, timestamps DB côté
+    # app). tzdata/zoneinfo est déjà dans l'image -> il suffit de TZ.
+    TZ:                  ${TZ:-Europe/Paris}
     # UID/GID cible relu par docker-entrypoint.sh au runtime (drop gosu
     # + chown des mounts). Surchargeable sans rebuild.
     APP_UID:             ${APP_UID:-1050}
@@ -83,6 +86,7 @@ services:
             POSTGRES_USER:     ${POSTGRES_USER}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
             PGDATA:            /var/lib/postgresql/data/pgdata
+            TZ:                ${TZ:-Europe/Paris}
         volumes:
             - ${PGDATA_PATH:-../data/pgdata}:/var/lib/postgresql/data
             - ../postgres/sql/structure.sql:/docker-entrypoint-initdb.d/01_structure.sql:ro
@@ -101,6 +105,7 @@ services:
             RABBITMQ_DEFAULT_USER:  ${RABBITMQ_USER}
             RABBITMQ_DEFAULT_PASS:  ${RABBITMQ_PASS}
             RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST}
+            TZ:                     ${TZ:-Europe/Paris}
         volumes:
             - ${RABBITMQ_DATA_PATH:-../data/rabbitmq}:/var/lib/rabbitmq
         healthcheck:
@@ -222,6 +227,7 @@ services:
             CUSTOM_ID:    ${CUSTOM_ID}
             BACKEND_HOST: backend
             BACKEND_PORT: "8000"
+            TZ:           ${TZ:-Europe/Paris}
         # Pas de port hôte : Traefik est l'unique point d'entrée et joint
         # le frontend via le réseau Docker `frontend`. Exposer un port ici
         # provoque une collision quand on lance plusieurs tenants sur la
