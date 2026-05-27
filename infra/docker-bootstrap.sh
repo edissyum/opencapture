@@ -73,8 +73,11 @@ ensure_watcher_ini() {
     log "generating ${target} from installer default"
     cp "${OC_PATH}/installer/config/watcher.ini.default" "$target"
     sed -i \
-        -e "s#/var/log/watcher/daemon.log#${CUSTOM_DIR}/data/log/watcher.log#g" \
+        -e "s#§§CUSTOM_PATH§§#${CUSTOM_DIR}#g" \
+        -e "s#§§SHARE_PATH§§#${SHARE_PATH}#g" \
+        -e "s#§§OC_PATH§§#${OC_PATH}#g" \
         -e "s#/run/watcher.pid#/tmp/watcher-${CUSTOM_ID}.pid#g" \
+        -e "s#/var/log/watcher/daemon.log#${CUSTOM_DIR}/data/log/watcher.log#g" \
         -e "s#/var/share/#${SHARE_PATH}/#g" \
         -e "s#/var/www/html/opencapture/#${CUSTOM_DIR}/#g" \
         "$target"
@@ -200,6 +203,8 @@ find "${CUSTOM_DIR}" -type f \( -name "*.py" -o -name "*.sh" -o -name "*.ini" -o
     xargs -0 -r sed -i \
         -e "s#§§CUSTOM_ID§§#${CUSTOM_ID}#g" \
         -e "s#§§OC_PATH§§#${OC_PATH}#g" \
+        -e "s#§§CUSTOM_PATH§§#${CUSTOM_DIR}#g" \
+        -e "s#§§SHARE_PATH§§#${SHARE_PATH}#g" \
         -e "s#§§BATCH_PATH§§#${CUSTOM_DIR}/data/MailCollect#g" \
         -e "s#§§LOG_PATH§§#${CUSTOM_DIR}/data/log/OpenCapture.log#g" \
         -e "s#§§PYTHON_VENV§§##g"
