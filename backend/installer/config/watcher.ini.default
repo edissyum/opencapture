@@ -3,7 +3,7 @@
 ; ----------------------
 
 [DEFAULT]
-logfile=/var/log/watcher/daemon.log
+logfile=§§CUSTOM_PATH§§/data/log/daemon.log
 pidfile=/run/watcher.pid
 working_directory=/
 
@@ -12,13 +12,13 @@ working_directory=/
 ; ----------------------
 
 ;[verifier_default_workflow]
-;watch=/var/share/entrant/verifier/
+;watch=§§SHARE_PATH§§/entrant/verifier/
 ;events=close
 ;include_extensions=pdf,PDF
-;command=/var/www/html/opencapture/bin/scripts/verifier_workflows/default_workflow.sh $filename
+;command=§§CUSTOM_PATH§§/bin/scripts/verifier_workflows/default_workflow.sh $filename
 
 ;[splitter_default_workflow]
-;watch=/var/share/entrant/splitter/
+;watch=§§SHARE_PATH§§/entrant/splitter/
 ;events=close
 ;include_extensions=pdf,PDF
-;command=/var/www/html/opencapture/bin/scripts/splitter_workflows/default_workflow.sh $filename
+;command=§§CUSTOM_PATH§§/bin/scripts/splitter_workflows/default_workflow.sh $filename

@@ -172,6 +172,8 @@ find "$NEW_CUSTOM_PATH" -type f -name "*.default" -exec sh -c 'mv "$0" "${0%.def
 # Replace default values in config files with custom values
 find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§CUSTOM_ID§§#$custom_id#g" {} \;
 find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§OC_PATH§§#$DEFAULT_PATH#g" {} \;
+find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§SHARE_PATH§§/#$share_path#g" {} \;
+find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§CUSTOM_PATH§§#$NEW_CUSTOM_PATH#g" {} \;
 find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§BATCH_PATH§§#$NEW_CUSTOM_PATH/data/MailCollect#g" {} \;
 find "$NEW_CUSTOM_PATH" -type f -exec sed -i "s#§§LOG_PATH§§#$NEW_CUSTOM_PATH/data/log/OpenCapture.log#g" {} \;
 
