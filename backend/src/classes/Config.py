@@ -63,7 +63,7 @@ class Config:
         config.add_section(job)
         config.set(job, '; ' + unidecode.unidecode(input_label))
         config[job]['watch'] = watch
-        config[job]['events'] = 'close,move'
+        config[job]['events'] = 'write_close,move'
         config[job]['include_extensions'] = 'pdf,PDF'
         config[job]['command'] = command
         with open(file, 'w', encoding='utf-8') as configfile:

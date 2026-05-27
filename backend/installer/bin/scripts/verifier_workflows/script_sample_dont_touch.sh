@@ -19,8 +19,8 @@
 workflow_id="§§SCRIPT_NAME§§"
 OCPath="§§OC_PATH§§"
 logFile="§§LOG_PATH§§"
-errFilepath="$OCPath/data/error/$workflow_id/"
-tmpFilepath="$OCPath/data/pdf/"
+errFilepath="§§CUSTOM_PATH§§/data/error/verifier/$workflow_id/"
+tmpFilepath="§§CUSTOM_PATH§§/data/tmp/"
 PID=/tmp/securite-$workflow_id-$$.pid
 
 spaces="              "

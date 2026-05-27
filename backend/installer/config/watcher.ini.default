@@ -13,24 +13,24 @@ working_directory=/
 
 [verifier_default_workflow]
 watch=§§SHARE_PATH§§/entrant/verifier/default/
-events=close
+events=write_close,move
 include_extensions=pdf,PDF
 command=§§CUSTOM_PATH§§/bin/scripts/verifier_workflows/default_workflow.sh $filename
 
 [verifier_default_mail]
 watch=§§SHARE_PATH§§/entrant/verifier/default_mail/
-events=close
+events=write_close,move
 include_extensions=pdf,PDF
 command=§§CUSTOM_PATH§§/bin/scripts/verifier_workflows/default_mail.sh $filename
 
 [verifier_ocr_only]
 watch=§§SHARE_PATH§§/entrant/verifier/ocr_only/
-events=close
+events=write_close,move
 include_extensions=pdf,PDF
 command=§§CUSTOM_PATH§§/bin/scripts/verifier_workflows/ocr_only.sh $filename
 
 [splitter_default_workflow]
 watch=§§SHARE_PATH§§/entrant/splitter/default/
-events=close
+events=write_close,move
 include_extensions=pdf,PDF
 command=§§CUSTOM_PATH§§/bin/scripts/splitter_workflows/default_workflow.sh $filename

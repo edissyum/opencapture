@@ -126,6 +126,7 @@ mkdir -p "$NEW_CUSTOM_PATH/instance/upload/{verifier,splitter}"
 
 mkdir -p "$NEW_CUSTOM_PATH"/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa,error}/
 mkdir -p "$NEW_CUSTOM_PATH/data/log/Supervisor/"
+mkdir -p "$NEW_CUSTOM_PATH/data/error/{verifier,splitter}/"
 mkdir -p "$NEW_CUSTOM_PATH/data/MailCollect/_ERROR/"
 
 touch "$NEW_CUSTOM_PATH/config/secret_key"
