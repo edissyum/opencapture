@@ -46,6 +46,7 @@ mkdir -p \
     "${CUSTOM_DIR}/bin/scripts/ai"/{splitter,verifier} \
     "${CUSTOM_DIR}/src/backend" \
     "${CUSTOM_DIR}/instance/referencial" \
+    "${CUSTOM_DIR}/instance/upload"/{verifier,splitter} \
     "${CUSTOM_DIR}/data"/{log,MailCollect,tmp,exported_pdf,exported_pdfa,error} \
     "${CUSTOM_DIR}/data/log/Supervisor" \
     "${CUSTOM_DIR}/data/MailCollect/_ERROR" \
@@ -66,11 +67,11 @@ touch "${CUSTOM_DIR}/data/log/OpenCapture.log"
 ensure_watcher_ini() {
     local target="${CUSTOM_DIR}/config/watcher.ini"
     [ -f "$target" ] && return 0
-    if [ ! -f "${OC_PATH}/instance/config/watcher.ini.default" ]; then
+    if [ ! -f "${OC_PATH}/installer/config/watcher.ini.default" ]; then
         return 0
     fi
-    log "generating ${target} from instance default"
-    cp "${OC_PATH}/instance/config/watcher.ini.default" "$target"
+    log "generating ${target} from installer default"
+    cp "${OC_PATH}/installer/config/watcher.ini.default" "$target"
     sed -i \
         -e "s#/var/log/watcher/daemon.log#${CUSTOM_DIR}/data/log/watcher.log#g" \
         -e "s#/run/watcher.pid#/tmp/watcher-${CUSTOM_ID}.pid#g" \
@@ -260,6 +261,12 @@ UPDATE docservers SET path=REPLACE(path, '/var/docservers/opencapture/' , '${DOC
 UPDATE docservers SET path=REPLACE(path, './data/' , '${CUSTOM_DIR}/data/');
 UPDATE docservers SET path=REPLACE(path, './instance/' , '${CUSTOM_DIR}/instance/');
 UPDATE docservers SET path=REPLACE(path, '//' , '/');
+
+-- PROJECT_PATH est seedé à './' et n'est patché par aucun REPLACE ci-dessus.
+-- Le backend l'utilise comme racine (§§OC_PATH§§ = PROJECT_PATH + '/') pour
+-- générer les scripts de workflow fs-watcher. Le forcer au layout conteneur,
+-- sinon les scripts générés ont OCPath='.//' (launch_worker.py introuvable).
+UPDATE docservers SET path='${OC_PATH}' WHERE docserver_id='PROJECT_PATH';
 
 UPDATE workflows SET input = REPLACE(input::TEXT, '/var/share/', '${SHARE_PATH}/')::JSONB;
 
