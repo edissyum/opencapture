@@ -121,11 +121,7 @@ if os.path.isdir(contact_model_path) and len(os.listdir(contact_model_path)) > 0
 app.config.from_mapping(
     ROTATE_MODEL=rotate_model,
     CONTACT_MODEL=contact_model,
-    instance_path=instance_path,
     instance_relative_config=True,
-    JOURNAL_PATH=os.path.join(instance_path, 'journal/custom/'),
-    UPLOAD_FOLDER=os.path.join(instance_path, 'upload/verifier/'),
-    UPLOAD_FOLDER_SPLITTER=os.path.join(instance_path, 'upload/splitter/'),
     BABEL_TRANSLATION_DIRECTORIES=os.path.join(str(app.root_path), 'assets/i18n/translations/')
 )
 

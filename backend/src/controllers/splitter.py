@@ -44,13 +44,12 @@ from ..models import splitter, doctypes, accounts, history, workflow, outputs, f
 
 def handle_uploaded_file(files, workflow_id, user_id):
     custom_id = retrieve_custom_from_url(request)
-    path = current_app.config['UPLOAD_FOLDER_SPLITTER']
     tokens = []
 
     for file in files:
         _f = files[file]
         original_filename = _f.filename
-        filename = Files.save_uploaded_file(_f, path, False)
+        filename = Files.save_uploaded_file(_f, shared.upload_path + '/splitter/', False)
 
         now = datetime.datetime.now()
         year, month, day = [str('%02d' % now.year), str('%02d' % now.month), str('%02d' % now.day)]

@@ -43,6 +43,7 @@ def init_shared_from_custom_id(custom_id):
     shared.tmp_path = custom_path + '/data/tmp/'
     shared.assets_path = custom_path + '/assets/'
     shared.error_path = custom_path + '/data/error/'
+    shared.upload_path = custom_path + '/instance/upload/'
     return True
 
 def create_classes_from_custom_id(custom_id, load_smtp=False):

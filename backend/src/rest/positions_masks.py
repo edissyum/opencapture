@@ -18,10 +18,12 @@
 import os
 import base64
 from flask_babel import gettext
+
+from .. import shared
 from ..helpers import get_context_var
 from ..functions import rest_validator
+from flask import Blueprint, request, make_response, jsonify
 from ..controllers import auth, positions_masks, verifier, privileges
-from flask import Blueprint, request, make_response, jsonify, current_app
 
 
 bp = Blueprint('positions_masks', __name__, url_prefix='/ws/')
@@ -198,7 +200,7 @@ def get_image_from_pdf(positions_mask_id):
     docservers = get_context_var('docservers', 9)
 
     file = request.files
-    path = current_app.config['UPLOAD_FOLDER']
+    path = shared.upload_path + '/verifier'
     docserver_path = docservers['VERIFIER_POSITIONS_MASKS'] + '/'
     file_content = tmp_filename = img_wdith = nb_pages = None
 

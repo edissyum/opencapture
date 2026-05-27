@@ -41,7 +41,6 @@ def handle_uploaded_file(files, document_id, batch_id, module, from_api=False):
     if code != 200:
         return message, code
 
-    tmp_path = current_app.config['UPLOAD_FOLDER']
     for file in files:
         if isinstance(file, FileStorage):
             _f = file
@@ -52,7 +51,7 @@ def handle_uploaded_file(files, document_id, batch_id, module, from_api=False):
 
         thumb_path = None
         original_filename = _f.filename
-        filename = Files.save_uploaded_file(_f, tmp_path)
+        filename = Files.save_uploaded_file(_f, shared.upload_path)
         if filename:
             file = Files.move_to_docservers(docservers, filename, attachments=True)
             if file:
