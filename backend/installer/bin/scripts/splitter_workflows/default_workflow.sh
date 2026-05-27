@@ -16,7 +16,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-workflow_id="§§SCRIPT_NAME§§"
+workflow_id="default_workflow"
 OCPath="§§OC_PATH§§"
 logFile="§§LOG_PATH§§"
 errFilepath="$OCPath/data/error/$workflow_id/"
@@ -40,7 +40,7 @@ then
 
     mv "$filepath" "$tmpFilepath"
 
-    python3 "$OCPath"/launch_worker_splitter.py --custom-id "§§CUSTOM_ID§§" -f "$tmpFilepath"/"$filename" "§§ARGUMENTS§§"
+    python3 "$OCPath"/launch_worker_splitter.py --custom-id "§§CUSTOM_ID§§" -f "$tmpFilepath"/"$filename" -workflow_id $workflow_id
 
     rm -f $PID
 elif test -f "$filepath" && test "$ext" != 'application/pdf; charset=binary';

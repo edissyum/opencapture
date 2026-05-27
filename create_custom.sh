@@ -159,6 +159,7 @@ mkdir -p "$docservers_path"/splitter/ai/{train_data,models}
 # Create custom input and outputs folder
 mkdir -p "$share_path"/{entrant,export}/{verifier,splitter}
 mkdir -p "$share_path"/entrant/verifier/{ocr_only,default,default_mail}
+mkdir -p "$share_path"/entrant/splitter/default
 
 ####################
 # Copy file from default one

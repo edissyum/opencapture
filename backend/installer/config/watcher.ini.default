@@ -30,7 +30,7 @@ include_extensions=pdf,PDF
 command=§§CUSTOM_PATH§§/bin/scripts/verifier_workflows/ocr_only.sh $filename
 
 [splitter_default_workflow]
-watch=§§SHARE_PATH§§/entrant/splitter/
+watch=§§SHARE_PATH§§/entrant/splitter/default/
 events=close
 include_extensions=pdf,PDF
 command=§§CUSTOM_PATH§§/bin/scripts/splitter_workflows/default_workflow.sh $filename
