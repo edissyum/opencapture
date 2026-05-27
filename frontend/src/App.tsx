@@ -18,11 +18,9 @@ import { z } from "zod";
 import axios from "axios";
 import { t } from "i18next";
 import { Tooltip } from "react-tooltip";
+import { en, es, fr } from "zod/locales";
 import { RouterProvider } from "react-router-dom";
 import { StrictMode, useEffect, useState } from "react";
-
-import { en, es, fr } from "zod/locales"
-
 import { ConfirmDialog } from "primereact/confirmdialog";
 
 import { router } from "./routes";
@@ -42,7 +40,7 @@ export function App() {
 
     useEffect(() => {
         const listener = () => {
-            setAppKey((k) => k + 1)
+            setAppKey((k) => k + 1);
         };
         window.addEventListener("forceAppReload", listener);
         return () => window.removeEventListener("forceAppReload", listener);
@@ -57,25 +55,19 @@ export function App() {
             let _custom = getCustomFromUrl();
             if (!_custom) {
                 const api = axios.create({ baseURL: `${ BACKEND_URL }/ws/` });
-                const response = await api.get("/config/customsList");
-                const customs = response.data.customs as string[];
-                if (customs.length === 1) {
+                const customs = (await api.get("/config/customsList")).data?.customs;
+                if (Array.isArray(customs) && customs.length === 1) {
                     window.location.href = `/${ customs[0] }/${ window.location.pathname.substring(1) }`;
-                    _custom = customs[0];
+                    return;
                 }
             }
 
-            // if (_custom) {
             try {
-                let url = `${ BACKEND_URL }/${ _custom }/ws/`;
-                if (!_custom) {
-                    url = `${ BACKEND_URL }/ws/`;
-                }
-
+                const url = _custom ? `${ BACKEND_URL }/${ _custom }/ws/` : `${ BACKEND_URL }/ws/`;
                 const api = axios.create({ baseURL: url });
+
                 const backendLang = await fetchCurrentLang(api);
                 localStorage.setItem("backendLang", backendLang || "fra");
-
                 if (!currentLang) {
                     currentLang = backendLang;
                 }
@@ -91,7 +83,6 @@ export function App() {
                     _custom = null;
                 }
             }
-            // }
 
             await initI18n(currentLang || "fra");
             if (currentLang === "fra") {
