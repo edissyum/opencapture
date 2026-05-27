@@ -6,6 +6,21 @@ upstream opencapture_backend {
     server ${BACKEND_HOST}:${BACKEND_PORT};
 }
 
+# Politique de cache des réponses API (/ws/ et /backend_oc/) :
+#   - si le backend renvoie un Cache-Control explicite, on le RESPECTE
+#     (permet de rendre cacheables les miniatures/fichiers : le backend
+#      pose p.ex. `Cache-Control: private, max-age=86400` sur
+#      splitter/.../getThumb, fullThumbnail, .../file).
+#   - sinon (réponse JSON dynamique, backend silencieux), on force
+#     `no-store` : jamais de cache navigateur. Évite qu'une réponse
+#     erronée servie pendant un déploiement (ex. index.html en fallback)
+#     reste cachée et casse le bootstrap de la SPA
+#     (response.data.customs -> undefined).
+map $upstream_http_cache_control $oc_cache_control {
+    ""      "no-store";
+    default $upstream_http_cache_control;
+}
+
 server {
     listen 80 default_server;
     server_name _;
@@ -23,6 +38,9 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_read_timeout 600s;
         proxy_send_timeout 600s;
+        # Respecte le Cache-Control du backend, défaut no-store (cf. map).
+        proxy_hide_header Cache-Control;
+        add_header Cache-Control $oc_cache_control always;
     }
 
     # Routage no-prefix : permet l'accès clean URL https://<fqdn>/login
@@ -38,6 +56,9 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_read_timeout 600s;
         proxy_send_timeout 600s;
+        # Respecte le Cache-Control du backend, défaut no-store (cf. map).
+        proxy_hide_header Cache-Control;
+        add_header Cache-Control $oc_cache_control always;
     }
 
     # SPA: serve static assets, fall back to index.html for client-side routes.
