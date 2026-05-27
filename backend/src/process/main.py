@@ -561,7 +561,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         if 'override_supplier_form' in workflow_settings['process'] and \
                 workflow_settings['process']['override_supplier_form'] or \
                 not supplier or ('form_id' not in supplier[2] or not supplier[2]['form_id']):
-            datas.update({'form_id': workflow_settings['process']['form_id']})
+            datas.update({'form_id': workflow_settings['process'].get('form_id')})
         elif ('override_supplier_form' not in workflow_settings['process'] or
               not workflow_settings['process']['override_supplier_form']) and supplier and supplier[2]['form_id']:
             log.info('Use supplier form based on supplier settings : ' + str(supplier[2]['form_id']))
