@@ -126,11 +126,6 @@ RUN chmod +x /app/docker-entrypoint.sh /app/docker-bootstrap.sh
 # mounts puis droppe vers ce compte via gosu (cf. docker-entrypoint.sh).
 RUN groupadd -g "${APP_GID}" "${APP_USER}" \
     && useradd -u "${APP_UID}" -g "${APP_GID}" -d /app -s /bin/bash -M "${APP_USER}" \
-    # Staging des workflows fs-watcher : les scripts générés font
-    # `mv "$file" "$OCPath/data/pdf/"` (OCPath=/app) sans mkdir préalable.
-    # Le traitement étant INLINE dans le conteneur qui déclenche le script
-    # (fs-watcher), ce dossier container-local suffit.
-    && mkdir -p /app/data/pdf \
     && chown -R "${APP_UID}:${APP_GID}" /app /tmp/opencapture
 
 EXPOSE 8000
