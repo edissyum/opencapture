@@ -83,14 +83,13 @@ def retry_from_monitoring(process_id):
 
 def handle_uploaded_file(files, workflow_id, supplier, datas=None, splitter_batch_id=False):
     custom_id = retrieve_custom_from_url(request)
-    path = current_app.config['UPLOAD_FOLDER']
     tokens = []
     for file in files:
         if isinstance(file, FileStorage):
             _f = file
         else:
             _f = files[file]
-        filename = Files.save_uploaded_file(_f, path)
+        filename = Files.save_uploaded_file(_f, shared.upload_path + '/verifier/')
 
         now = datetime.datetime.now()
         year, month, day = [str('%02d' % now.year), str('%02d' % now.month), str('%02d' % now.day)]

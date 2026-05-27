@@ -121,7 +121,8 @@ mkdir -p "$NEW_CUSTOM_PATH"/bin/scripts/{verifier_workflows,splitter_workflows,s
 mkdir -p "$NEW_CUSTOM_PATH/bin/scripts/ai/{splitter,verifier}"
 
 mkdir -p "$NEW_CUSTOM_PATH/src/backend/"
-mkdir -p "$NEW_CUSTOM_PATH/instance/referencial/"
+mkdir -p "$NEW_CUSTOM_PATH/instance/{referencial,upload}/"
+mkdir -p "$NEW_CUSTOM_PATH/instance/upload/{verifier,splitter}"
 
 mkdir -p "$NEW_CUSTOM_PATH"/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa,error}/
 mkdir -p "$NEW_CUSTOM_PATH/data/log/Supervisor/"

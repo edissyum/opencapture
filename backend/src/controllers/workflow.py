@@ -336,14 +336,50 @@ def create_script_and_watcher(args):
     ######
     # CREATE SCRIPT
     ######
-
     if os.path.isdir(folder_script):
         script_name = args['workflow_id'] + '.sh'
+        new_script_filename = folder_script + '/' + script_name
+        print(folder_script, os.path.isdir(folder_script))
+        print(config['GLOBAL']['watcherconfig'])
+        print(args['input_folder'])
+        ######
+        # CREATE OR UPDATE FS WATCHER CONFIG
+        ######
+        if not os.path.exists(args['input_folder']):
+            try:
+                os.mkdir(args['input_folder'], mode=0o777)
+            except (PermissionError, FileNotFoundError, TypeError):
+                response = {
+                    "errors": gettext('FS_WATCHER_CREATION_ERROR'),
+                    "message": gettext('CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR')
+                }
+                return response, 400
+
+        if os.path.isfile(config['GLOBAL']['watcherconfig']):
+            fs_watcher_config = Config(config['GLOBAL']['watcherconfig'], interpolation=False)
+            fs_watcher_job = args['module'] + '_' + args['workflow_id']
+            if custom_id:
+                fs_watcher_job += '_' + custom_id
+            fs_watcher_command = new_script_filename + ' $filename'
+            if fs_watcher_job in fs_watcher_config.cfg:
+                Config.fswatcher_update_command(fs_watcher_config.file, fs_watcher_job, fs_watcher_command,
+                                                args['workflow_label'])
+                Config.fswatcher_update_watch(fs_watcher_config.file, fs_watcher_job, args['input_folder'],
+                                              args['workflow_label'])
+            else:
+                Config.fswatcher_add_section(fs_watcher_config.file, fs_watcher_job, fs_watcher_command,
+                                             args['input_folder'], args['workflow_label'])
+        else:
+            response = {
+                "errors": gettext('FS_WATCHER_CREATION_ERROR'),
+                "message": gettext('FS_WATCHER_CONFIG_DOESNT_EXIST')
+            }
+            return response, 400
+
         if os.path.isfile(folder_script + '/' + script_name):
             return {}, 200
 
         if os.path.isfile(folder_script + '/script_sample_dont_touch.sh'):
-            new_script_filename = folder_script + '/' + script_name
             with open(folder_script + '/script_sample_dont_touch.sh', 'r', encoding='utf-8') as script_sample:
                 script_sample_content = script_sample.read()
             with open(new_script_filename, 'w+', encoding='utf-8') as new_script_file:
@@ -355,46 +391,7 @@ def create_script_and_watcher(args):
                     corrected_line = corrected_line.replace('§§LOG_PATH§§', config['GLOBAL']['logfile'])
                     new_script_file.write(corrected_line + '\n')
             os.chmod(new_script_filename, os.stat(new_script_filename).st_mode | stat.S_IEXEC)
-
-            ######
-            # CREATE OR UPDATE FS WATCHER CONFIG
-            ######
-            if not os.path.exists(args['input_folder']):
-                try:
-                    os.mkdir(args['input_folder'], mode=0o777)
-                except (PermissionError, FileNotFoundError, TypeError):
-                    response = {
-                        "errors": gettext('FS_WATCHER_CREATION_ERROR'),
-                        "message": gettext('CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR')
-                    }
-                    return response, 400
-
-            if os.path.isfile(config['GLOBAL']['watcherconfig']):
-                fs_watcher_config = Config(config['GLOBAL']['watcherconfig'], interpolation=False)
-                fs_watcher_job = args['module'] + '_' + args['workflow_id']
-                if custom_id:
-                    fs_watcher_job += '_' + custom_id
-                fs_watcher_command = new_script_filename + ' $filename'
-                if fs_watcher_job in fs_watcher_config.cfg:
-                    Config.fswatcher_update_command(fs_watcher_config.file, fs_watcher_job, fs_watcher_command,
-                                                    args['workflow_label'])
-                    Config.fswatcher_update_watch(fs_watcher_config.file, fs_watcher_job, args['input_folder'],
-                                                  args['workflow_label'])
-                else:
-                    Config.fswatcher_add_section(fs_watcher_config.file, fs_watcher_job, fs_watcher_command,
-                                                 args['input_folder'], args['workflow_label'])
-
-                try:
-                    os.popen('sudo systemctl restart fs-watcher')
-                except (Exception,):
-                    pass
-                return '', 200
-            else:
-                response = {
-                    "errors": gettext('FS_WATCHER_CREATION_ERROR'),
-                    "message": gettext('FS_WATCHER_CONFIG_DOESNT_EXIST')
-                }
-                return response, 400
+            return '', 200
         else:
             response = {
                 "errors": gettext('SCRIPT_SAMPLE_DOESNT_EXISTS'),

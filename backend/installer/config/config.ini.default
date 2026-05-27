@@ -1,7 +1,7 @@
 [GLOBAL]
 applicationUrl   =
 applicationPath  = §§OC_PATH§§/
-watcherConfig    = §§OC_PATH§§/instance/config/watcher.ini
+watcherConfig    = §§OC_PATH§§/custom/§§CUSTOM_ID§§/config/watcher.ini
 logFile          = §§OC_PATH§§/custom/§§CUSTOM_ID§§/data/log/OpenCapture.log
 ; True or False
 allowWFScripting = False
