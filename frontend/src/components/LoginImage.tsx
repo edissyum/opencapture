@@ -16,10 +16,10 @@
 
 import { useEffect, useState } from "react";
 
+import { useCustom } from "../services/custom/customContext";
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
 
 import { b64ToFile } from "../pages/settings/general/customization";
-import { useCustom } from "../services/custom/customContext.tsx";
 
 export function LoginImage({ className }: { className?: string }) {
     const { get } = axiosApiCall();

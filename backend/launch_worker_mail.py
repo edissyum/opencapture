@@ -138,7 +138,6 @@ with app.app_context():
         mail = Mail(config_mail)
 
         secured_connection = config_mail['secured_connection']
-        folder_trash = config_mail['folder_trash']
         action = config_mail['action_after_process']
         folder_to_crawl = config_mail['folder_to_crawl']
         folder_destination = config_mail['folder_destination']
@@ -151,12 +150,7 @@ with app.app_context():
 
         mail.test_connection(secured_connection)
 
-        if action == 'delete':
-            if folder_trash != '':
-                check = check_folders(folder_to_crawl, folder_trash)
-            else:
-                check = check_folders(folder_to_crawl)
-        elif action == 'move':
+        if action == 'move':
             check = check_folders(folder_to_crawl, folder_destination)
         else:
             check = check_folders(folder_to_crawl)
@@ -387,17 +381,13 @@ with app.app_context():
                             })
                             Log.debug('Splitter launched for mail body')
 
-                    if action not in ['move', 'delete', 'none']:
+                    if action not in ['move', 'none']:
                         Log.info('No action specified after processing e-mail, mail will stay in the same folder')
                         action = 'none'
 
                     if action == 'move':
                         Log.info('Move mail into archive folder : ' + folder_destination)
                         mail.move_to_destination_folder(msg, folder_destination, Log)
-
-                    elif action == 'delete':
-                        Log.info('Move mail to trash')
-                        mail.delete_mail(msg, folder_trash, Log)
                     cpt_mail = cpt_mail + 1
             else:
                 print('Folder do not contain any e-mail...')

@@ -25,8 +25,8 @@ import UploadDropzone from "../../../components/upload/Dropzone";
 import { LangSelection } from "../../../components/onboarding/LangSelection";
 import { ThemeSelection } from "../../../components/onboarding/ThemeSelection";
 
+import { useCustom } from "../../../services/custom/customContext";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
-import { useCustom } from "../../../services/custom/customContext.tsx";
 
 export function b64ToFile(b64Data: string) {
     const byteString = atob(b64Data.split(',')[1]);

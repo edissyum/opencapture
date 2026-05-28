@@ -19,7 +19,7 @@ import { t } from "i18next";
 import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { ArrowLeft, Ban, CircleQuestionMark, CornerUpRight, Trash } from "lucide-react";
+import { ArrowLeft, Ban, CircleQuestionMark, CornerUpRight } from "lucide-react";
 
 import { Stepper } from "primereact/stepper";
 import { FloatLabel } from "primereact/floatlabel";
@@ -64,8 +64,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
 
     const actionsAfterProcessValues = [
         { label: t('MAILCOLLECT.none'), hint: t('MAILCOLLECT.none_hint'), value: 'none', logo: <Ban/> },
-        { label: t('MAILCOLLECT.move'), hint: t('MAILCOLLECT.move_hint'), value: 'move', logo: <CornerUpRight/> },
-        { label: t('MAILCOLLECT.delete'), hint: t('MAILCOLLECT.delete_hint'), value: 'delete', logo: <Trash/> }
+        { label: t('MAILCOLLECT.move'), hint: t('MAILCOLLECT.move_hint'), value: 'move', logo: <CornerUpRight/> }
     ];
 
     const modulesSchema: any = z.object({
@@ -89,7 +88,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
     const foldersSchema: any = z.object({
         folder_to_crawl: z.string().min(1),
         folder_destination: z.string().min(1),
-        action_after_process: z.enum(['none', 'move', 'delete']).default('move')
+        action_after_process: z.enum(['none', 'move']).default('move')
     });
     const {
         control: foldersControl,
@@ -380,7 +379,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             { actionsAfterProcessValues.map((action: any) => (
                                 <div key={ action.value }
                                      onClick={ () => field.onChange(action.value) }
-                                     className={ `cursor-pointer border w-1/3 py-5 rounded-md text-(--text-primary)
+                                     className={ `cursor-pointer border w-1/2 py-5 rounded-md text-(--text-primary)
                                                 ${ field.value === action.value ? "bg-(--bg-selected) border-(--border-primary)" : "border-(--border-secondary) hover:border-(--text-secondary)" }
                                                 text-center` }>
                                     <div className="flex justify-center mb-2">
