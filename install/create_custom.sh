@@ -591,3 +591,7 @@ chmod u+x $customPath/bin/scripts/*.sh
 chmod u+x $customPath/bin/scripts/verifier_workflows/*.sh
 chmod u+x $customPath/bin/scripts/splitter_workflows/*.sh
 chown -R "$user":"$user" $customPath/bin/scripts/
+
+####################
+# Remove .gitkeep files
+find . -name ".gitkeep" -delete
