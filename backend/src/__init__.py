@@ -115,7 +115,7 @@ if os.path.isfile(rotate_model_path):
 # Load Artificial Intelligence model to detect contact
 contact_model = None
 contact_model_path = os.path.join(instance_path, "artificial_intelligence/contact/")
-if os.path.isdir(contact_model_path) and len(os.listdir(contact_model_path)) > 0:
+if os.path.isdir(contact_model_path) and len([f for f in os.listdir(contact_model_path) if f != '.gitkeep']) > 0:
     contact_model = contact_model_path
 
 app.config.from_mapping(
