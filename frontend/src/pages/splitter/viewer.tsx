@@ -1086,7 +1086,7 @@ export function SplitterViewerPage() {
     console.log(showBatches)
     return (
         <div className='flex h-full w-full relative'>
-            <div className='flex flex-col h-full overflow-y-auto'
+            <div className='flex flex-col h-full w-full overflow-y-auto'
                  onDragOver={ (e) => {
                      if (draggingBatchId) e.preventDefault();
                  } }
