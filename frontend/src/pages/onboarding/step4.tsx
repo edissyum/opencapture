@@ -42,7 +42,7 @@ export function Step4() {
             </div>
             <div className="flex gap-4">
                 <div className={ `cursor-pointer relative w-48 h-26 bg-(--bg-primary) border 
-                        border-(--border-primary) rounded-lg transition-border-color
+                        border-(--border-primary) rounded-lg transition-colors
                         ${ selectedView === 'grid' ? 'border-(--border-primary)' : 'border-(--border-secondary) hover:border-gray-400' } ` }
                      onClick={ () => setSelectedView('grid') }>
                     <CheckOverlay show={ selectedView === 'grid' }/>
@@ -57,7 +57,7 @@ export function Step4() {
                     </div>
                 </div>
                 <div className={ `cursor-pointer relative w-48 h-26 bg-(--bg-primary) border 
-                        border-(--border-primary) rounded-lg transition-border-color
+                        border-(--border-primary) rounded-lg transition-colors
                         ${ selectedView === 'list' ? 'border-(--border-primary)' : 'border-(--border-secondary) hover:border-gray-400' } ` }
                      onClick={ () => setSelectedView('list') }>
                     <CheckOverlay show={ selectedView === 'list' }/>

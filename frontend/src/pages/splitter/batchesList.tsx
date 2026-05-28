@@ -37,10 +37,11 @@ export function BatchCard({ row, navigate, onBatchDragStart, onBatchDragEnd }: a
                      window.location.reload();
                  }, 100);
              } }
-             className={ `border border-(--border-secondary) hover:border-(--text-secondary) rounded-md
-                                           cursor-grab active:cursor-grabbing bg-(--bg-primary) transition-border-color` }>
+             className={ `group rounded-md cursor-grab active:cursor-grabbing bg-(--bg-primary)` }
+        >
             <div className="relative bg-[#D0DAD5] dark:bg-(--bg-secondary) rounded-b-none w-full p-6 pb-0 rounded-md flex
-                            items-center justify-center text-(--text-secondary)">
+                            items-center justify-center text-(--text-secondary)
+                            border border-b-0 border-(--border-secondary) group-hover:border-(--text-secondary) transition-colors">
                 <LazyBase64Image
                     alt={ row.id }
                     module='splitter'
@@ -48,7 +49,7 @@ export function BatchCard({ row, navigate, onBatchDragStart, onBatchDragEnd }: a
                     className="object-cover object-top rounded-t-lg pointer-events-none"
                 />
             </div>
-            <div className='px-6 py-3'>
+            <div className='px-6 py-3 border border-t-0 rounded-b-md border-(--border-secondary) group-hover:border-(--text-secondary) transition-colors'>
                 <div className="flex gap-2 mb-1">
                     <div className='flex gap-1 justify-end'>
                         <div className='flex justify-center items-center text-(--color-primary) gap-0.5'
