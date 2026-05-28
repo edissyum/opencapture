@@ -28,9 +28,14 @@ if [ "$(id -u)" = "0" ]; then
     fi
 
     # Racines de montage partagées (Docker les auto-crée en root).
-    mkdir -p /app/custom /app/docservers /app/share /tmp/opencapture
+    # Le dernier est le point de montage des modèles IA partagés
+    # (bind RW depuis l'hôte) : à chown pour que le compte de service y accède
+    # (et que docker-bootstrap.sh puisse y semer rotate_document.pt).
+    mkdir -p /app/custom /app/docservers /app/share /tmp/opencapture \
+             /app/instance/artificial_intelligence
     # chown top-level systématique : O(1), inoffensif.
-    chown "${APP_UID}:${APP_GID}" /app/custom /app/docservers /app/share /tmp/opencapture
+    chown "${APP_UID}:${APP_GID}" /app/custom /app/docservers /app/share /tmp/opencapture \
+             /app/instance/artificial_intelligence
 
     # chown -R récursif seulement au rôle init et seulement si pas déjà
     # fait (sentinelle) -> évite de parcourir des docservers volumineux

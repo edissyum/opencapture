@@ -22,6 +22,9 @@ x-backend-dev-volumes: &backend-dev-volumes
     - ../data/custom:/app/custom
     - ../data/docservers:/app/docservers
     - ../data/share:/app/share
+    # Même emplacement hôte qu'en prod pour les modèles IA partagés.
+    # Montage imbriqué sous /app/instance : ce sous-chemin l'emporte.
+    - ${SHARED_AI_MODELS_PATH:-../data/shared-ai-models}:/app/instance/artificial_intelligence
 
 services:
     postgres:

@@ -60,6 +60,21 @@ mkdir -p \
 touch "${CUSTOM_DIR}/data/log/OpenCapture.log"
 
 # ------------------------------------------------------------
+# Modèles IA PARTAGÉS : le dossier instance/artificial_intelligence est un
+# bind mount hôte (potentiellement vide au 1er démarrage). On y sème le
+# modèle de rotation par défaut (livré baké HORS du montage, dans
+# /opt/oc-default-models) s'il manque, et on garantit le sous-dossier
+# contact/ (vide => IA de contact désactivée proprement). Idempotent : un
+# modèle déposé par l'utilisateur n'est jamais écrasé.
+# ------------------------------------------------------------
+AI_SHARED_DIR="${OC_PATH}/instance/artificial_intelligence"
+mkdir -p "${AI_SHARED_DIR}/contact"
+if [ -f /opt/oc-default-models/rotate_document.pt ] && \
+   [ ! -e "${AI_SHARED_DIR}/rotate_document.pt" ]; then
+    cp /opt/oc-default-models/rotate_document.pt "${AI_SHARED_DIR}/rotate_document.pt" || true
+fi
+
+# ------------------------------------------------------------
 # Self-heal: ensure watcher.ini exists, even if the tenant has
 # been bootstrapped before (watcher.ini was added after the
 # original bootstrap of existing tenants).
@@ -178,6 +193,11 @@ fi
 if [ -d "${OC_PATH}/instance/referencial" ]; then
     cp -rn "${OC_PATH}/instance/referencial/." "${CUSTOM_DIR}/instance/referencial/" || true
 fi
+
+# Drop .gitkeep placeholders copied from the skeleton: once the real
+# directories exist they serve no purpose, and an empty-but-for-.gitkeep
+# directory can be misread as "non-empty" by model-detection logic.
+find "${CUSTOM_DIR}" -name ".gitkeep" -delete 2>/dev/null || true
 
 # Copy process_queue defaults into the custom python package.
 cp -n "${OC_PATH}/src/process_queue_verifier.py.default" \

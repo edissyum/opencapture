@@ -72,6 +72,9 @@ x-backend-volumes: &backend-volumes
     - ${CUSTOM_PATH:-../data/custom}:/app/custom
     - ${DOCSERVERS_PATH:-../data/docservers}:/app/docservers
     - ${SHARE_PATH:-../data/share}:/app/share
+    # Modèles IA PARTAGÉS (rotate_document.pt + contact/), déposés depuis l'hôte.
+    # rotate est seedé au bootstrap si absent ; contact vide => IA contact désactivée.
+    - ${SHARED_AI_MODELS_PATH:-../data/shared-ai-models}:/app/instance/artificial_intelligence
 
 services:
     postgres:

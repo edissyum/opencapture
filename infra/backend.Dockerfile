@@ -115,6 +115,11 @@ WORKDIR /app
 # App code (everything under backend/ at the repo root).
 COPY backend/ /app/
 
+# Défauts des modèles IA PARTAGÉS, conservés HORS du montage bind
+# /app/instance/artificial_intelligence pour que docker-bootstrap.sh puisse
+# semer le dossier hôte partagé (initialement vide) au premier démarrage.
+COPY backend/instance/artificial_intelligence/rotate_document.pt /opt/oc-default-models/rotate_document.pt
+
 # Entrypoint scripts live in infra/, copied into /app/ to keep the
 # legacy /app/docker-entrypoint.sh layout.
 COPY infra/docker-entrypoint.sh /app/docker-entrypoint.sh
