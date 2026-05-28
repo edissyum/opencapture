@@ -55,7 +55,8 @@ mkdir -p \
     "${DOCSERVERS_PATH}"/verifier/ai/{train_data,models} \
     "${DOCSERVERS_PATH}"/splitter/ai/{train_data,models} \
     "${SHARE_PATH}"/{entrant,export}/{verifier,splitter} \
-    "${SHARE_PATH}/entrant/verifier"/{ocr_only,default,default_mail}
+    "${SHARE_PATH}/entrant/verifier"/{ocr_only,default,default_mail} \
+    "${SHARE_PATH}/entrant/splitter/default"
 
 touch "${CUSTOM_DIR}/data/log/OpenCapture.log"
 
