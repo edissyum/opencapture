@@ -27,6 +27,7 @@ import { showToast } from "../../components/ToastProvider";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
 import { usePersistentState } from "../../services/hooks/usePersistentState";
+import DOMPurify from "dompurify";
 
 export function MonitoringList() {
     const { get, put } = axiosApiCall();
@@ -101,9 +102,8 @@ export function MonitoringList() {
                 <span className={ `block truncate max-w-[50rem] whitespace-nowrap
                                    ${ row.status === 'done' && !row.error && 'text-(--color-primary)' }
                                    ${ (row.status === 'error' || row.error) && 'text-(--text-error)' }` }
-                >
-                    { row.last_message }
-                </span>
+                      dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(row.last_message) } }
+                />
             )
         },
         {

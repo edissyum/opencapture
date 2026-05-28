@@ -288,13 +288,14 @@ export function SettingsGeneralMailcollect() {
                 <Accordion multiple activeIndex={ [0] }>
                     { processList.map((process, idx) => (
                         <AccordionTab header={
-                            <span className='flex items-center gap-2'>
+                            <span className='flex items-center'>
                                 <span>
                                     { process.name }
                                 </span>
-                                <span className='flex ml-auto gap-2'>
+                                <span className='flex ml-auto items-center gap-2'>
                                     <InputSwitch
-                                        className='-top-0.5'
+                                        data-tooltip-id="tooltip"
+                                        data-tooltip-content={ process.enabled ? t('MAILCOLLECT.disable_process') : t('MAILCOLLECT.enable_process') }
                                         inputId={ 'enable_' + idx } checked={ process.enabled }
                                         onClick={ (e) => e.stopPropagation() }
                                         onChange={ () => handleToggleEnableProcess(process) }/>
