@@ -9,4 +9,6 @@ frontend/src/assets/i18n/to_merge
 
 # Dev-only host bind targets created by docker-compose.override.yml
 /data/
+# Données générées par le harnais de tests (tests/run_tests.sh)
+/tests/data/
 venv
