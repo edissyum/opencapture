@@ -227,3 +227,7 @@ chmod -R 775 "$NEW_CUSTOM_PATH"
 chown -R "$user":"$group" "$share_path"
 chown -R "$user":"$group" "$docservers_path"
 chown -R "$user":"$group" "$NEW_CUSTOM_PATH"
+
+####################
+# Remove .gitkeep files
+find . -name ".gitkeep" -delete
