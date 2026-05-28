@@ -52,7 +52,7 @@ class Mail:
         self.authority = config['options']['authority'] if 'authority' in config['options'] else ''
         self.scopes = config['options']['scopes'] if 'scopes' in config['options'] else ''
         self.scope = config['options']['scope'] if 'scope' in config['options'] else ''
-        self.secured_connection = config['secured_connection'] if 'secured_connection' in config['options'] else ''
+        self.secured_connection = config['secured_connection'] if 'secured_connection' in config else ''
         self.grant_type = config['options']['grant_type'] if 'grant_type' in config['options'] else ''
         self.users_url = config['options']['users_url'] if 'users_url' in config['options'] else ''
         self.get_token_url = config['options']['get_token_url'] if 'get_token_url' in config['options'] else ''
