@@ -53,7 +53,7 @@ export function showConfirmDialog({
     let content: any = <span dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(message) } }/>;
     if (hint) {
         content = (
-            <>
+            <div className='flex flex-col gap-3'>
                 <span dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(message) } }/>
 
                 { hint && (
@@ -61,7 +61,7 @@ export function showConfirmDialog({
                         { hint }
                     </Hint>
                 ) }
-            </>
+            </div>
         );
     }
 
