@@ -1083,7 +1083,7 @@ export function SplitterViewerPage() {
     };
 
     if (loadingBatch || !batch) return <Loader/>;
-    console.log(showBatches)
+
     return (
         <div className='flex h-full w-full relative'>
             <div className='flex flex-col h-full w-full overflow-y-auto'
