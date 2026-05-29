@@ -42,7 +42,7 @@
         "react-hook-form": "^7.76.1",
         "react-i18next": "^17.0.8",
         "react-pdf": "^10.4.1",
-        "react-router-dom": "^7.15.1",
+        "react-router-dom": "^7.16.0",
         "react-toastify": "^11.1.0",
         "react-tooltip": "^6.0.5",
         "recharts": "^3.8.1",

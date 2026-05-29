@@ -75,7 +75,20 @@ function getOrCreateApi(custom: string | null): AxiosInstance {
 
                 const refreshToken = sessionStorage.getItem("refreshToken");
                 if (!refreshToken) {
-                    showToast(t('AUTH.session_expired'), "error");
+                    if (err.response.data?.errors && err.response.data?.message) {
+                        showToast(
+                            <div>
+                                <h4>
+                                    <strong>
+                                        { err.response.data?.errors }
+                                    </strong>
+                                </h4>
+                                <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(err.response.data?.message) }}/>
+                            </div>, "error"
+                        )
+                    } else {
+                        showToast(t('AUTH.session_expired'), "error");
+                    }
                     sessionStorage.clear();
                     return Promise.reject(err);
                 }
