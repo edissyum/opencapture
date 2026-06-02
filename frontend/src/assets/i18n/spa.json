@@ -343,7 +343,6 @@
         "tenant_id": "Tenant id",
         "users_url": "URL de recuperación de usuarios",
         "delete": "Eliminar",
-        "delete_hint": "Eliminar el correo electrónico (la acción es irreversible)",
         "folder_destination": "Carpeta de archivo",
         "folder_to_crawl": "Carpeta a capturar",
         "move": "Mover",
@@ -722,8 +721,8 @@
         "no_other_batches": "No hay otros lotes disponibles para fusionar",
         "batch_non_modifiable": "Lote no modificable",
         "batch_non_modifiable_details": "No puede modificar este lote porque ya ha sido procesado, eliminado o fusionado",
-        "batch_certified_copy": "",
-        "batch_certified_copy_details": ""
+        "batch_certified_copy": "Copia certificada",
+        "batch_certified_copy_details": "Algunas acciones están restringidas en este lote, ya que está marcado como copia certificada. Para obtener más información, póngase en contacto con su administrador."
     },
     "UPLOAD": {
         "upload_dropzone": "Haga clic para elegir un archivo",
@@ -734,7 +733,6 @@
         "file_rejected": "El archivo fue rechazado",
         "invalid_file_type": "Tipo de archivo inválido. Los tipos de archivo permitidos son: {{types}}",
         "file_too_large": "El archivo es demasiado grande. El tamaño máximo permitido es {{maxSize}} MB",
-        "select_workflows": "Selección del flujo de trabajo",
         "upload_progress": "Cargando... {{progress}}%",
         "upload": "Carga de documentos",
         "upload_hint": "Seleccione uno o varios documentos y un flujo de trabajo para comenzar el procesamiento",
@@ -745,7 +743,9 @@
         "upload_success_one": "Archivo cargado con éxito",
         "upload_success_other": "Archivos cargados con éxito",
         "upload_completed": "Archivo subido correctamente",
-        "drop_files_here": "Suelte los archivos aquí para cargarlos"
+        "drop_files_here": "Suelte los archivos aquí para cargarlos",
+        "show_less": "Mostrar menos",
+        "show_more": "Mostrar más"
     },
     "USERS": {
         "delete_users": "Eliminar",
@@ -1005,7 +1005,8 @@
         "remove_keyword_title": "Comprender la limpieza tras la extracción",
         "test-zone": "Zona de prueba",
         "result": "Resultado",
-        "test_value": "Cadena de caracteres a probar"
+        "test_value": "Cadena de caracteres a probar",
+        "invalid_regex": "Expresión regular inválida"
     },
     "DOCSERVERS": {
         "docserver_updated": "Docserver actualizado con éxito",
@@ -1154,7 +1155,7 @@
         "validating": "Validando el paso...",
         "customer_required": "Es obligatorio tener una cuenta de cliente",
         "certified_copy": "Copia certificada",
-        "certified_copy_hint": ""
+        "certified_copy_hint": "Si está habilitada, la rotación/modificación de páginas, la eliminación de páginas en blanco y la fusión de documentos se desactivarán para garantizar la integridad del documento original. Solo está disponible la opción de dividir documentos para separarlos sin modificarlos."
     },
     "MONITORING": {
         "processes": "Procesos",

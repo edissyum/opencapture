@@ -323,7 +323,6 @@
         "tenant_id": "Tenant ID",
         "users_url": "Users retrieval URL",
         "delete": "Delete",
-        "delete_hint": "Delete the email (this action is irreversible)",
         "folder_destination": "Archive folder",
         "folder_to_crawl": "Folder to capture",
         "move": "Move",
@@ -678,8 +677,8 @@
         "no_other_batches": "No other batches available for merging",
         "batch_non_modifiable": "Batch non-modifiable",
         "batch_non_modifiable_details": "You cannot modify this batch because it has already been processed, deleted, or merged",
-        "batch_certified_copy": "",
-        "batch_certified_copy_details": ""
+        "batch_certified_copy": "Certified copy",
+        "batch_certified_copy_details": "Some actions are restricted on this batch because it is marked as a certified copy. Please contact your administrator for more information."
     },
     "UPLOAD": {
         "upload_dropzone": "Click to choose a file",
@@ -690,7 +689,6 @@
         "file_rejected": "The file was rejected",
         "invalid_file_type": "Invalid file type. Allowed file types are: {{types}}",
         "file_too_large": "The file is too large. The maximum allowed size is {{maxSize}} MB",
-        "select_workflows": "Choose workflow",
         "upload_progress": "Uploading... {{progress}}%",
         "upload": "Document upload",
         "upload_hint": "Select one or more documents and a workflow to start processing",
@@ -699,7 +697,9 @@
         "upload_success_one": "File uploaded successfully",
         "upload_success_other": "Files uploaded successfully",
         "upload_completed": "File uploaded successfully",
-        "drop_files_here": "Drop files here to upload"
+        "drop_files_here": "Drop files here to upload",
+        "show_less": "Show less",
+        "show_more": "Show more"
     },
     "USERS": {
         "delete_users": "Delete",
@@ -941,7 +941,8 @@
         "remove_keyword_title": "Understanding cleanup after extraction",
         "test-zone": "Test area",
         "result": "Result",
-        "test_value": "String to test"
+        "test_value": "String to test",
+        "invalid_regex": "Invalid regular expression"
     },
     "DOCSERVERS": {
         "docserver_updated": "Docserver updated successfully",
@@ -1081,7 +1082,7 @@
         "validating": "Validating step...",
         "customer_required": "A customer account is mandatory",
         "certified_copy": "Certified copy",
-        "certified_copy_hint": ""
+        "certified_copy_hint": "If enabled, page rotation/modification, blank page deletion, and document merging will be disabled to ensure the integrity of the original document. Only splitting is available to separate documents without modifying them."
     },
     "MONITORING": {
         "processes": "Processes",

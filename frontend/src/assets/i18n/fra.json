@@ -343,7 +343,6 @@
         "tenant_id": "Tenant id",
         "users_url": "URL de récupération des utilisateurs",
         "delete": "Supprimer",
-        "delete_hint": "Supprimer le courriel (l'action est irréversible)",
         "folder_destination": "Dossier d'archivage",
         "folder_to_crawl": "Dossier à capturer",
         "move": "Déplacer",
@@ -723,7 +722,7 @@
         "batch_non_modifiable": "Lot non modifiable",
         "batch_non_modifiable_details": "Vous ne pouvez pas modifier ce lot car il a déjà été traité, supprimé ou fusionné",
         "batch_certified_copy": "Copie certifiée conforme",
-        "batch_certified_copy_details": "Certaines actions sont restreintes sur ce lot car il est marqué comme copie certifiée conforme. Veuillez contacter votre administrateur pour plus d'informations"
+        "batch_certified_copy_details": "Certaines actions sont restreintes sur ce lot, car il est marqué comme copie certifiée conforme. Veuillez contacter votre administrateur pour plus d'informations"
     },
     "UPLOAD": {
         "upload_dropzone": "Cliquez pour choisir un fichier",
@@ -734,10 +733,9 @@
         "file_rejected": "Le fichier a été rejeté",
         "invalid_file_type": "Type de fichier invalide. Les types de fichiers autorisés sont : {{types}}",
         "file_too_large": "Le fichier est trop volumineux. La taille maximale autorisée est de {{maxSize}} Mo",
-        "select_workflows": "Choix du workflow",
         "upload_progress": "Téléversement... {{progress}}%",
-        "upload": "Téléversement des documents",
-        "upload_hint": "Selectionnez un ou plusieurs documents et un workflow pour commencer le traitement",
+        "upload": "Téléversement de documents",
+        "upload_hint": "Sélectionnez un workflow puis un ou plusieurs documents pour commencer le traitement",
         "upload_files_many": "Téléverser les documents",
         "upload_files_one": "Téléverser le document",
         "upload_files_other": "Téléverser les documents",
@@ -745,7 +743,9 @@
         "upload_success_one": "Fichier téléversé avec succès",
         "upload_success_other": "Fichiers téléversés avec succès",
         "upload_completed": "Fichier téléversé avec succès",
-        "drop_files_here": "Déposez les fichiers ici pour les téléverser"
+        "drop_files_here": "Déposez les fichiers ici pour les téléverser",
+        "show_less": "Afficher moins",
+        "show_more": "Afficher plus"
     },
     "USERS": {
         "delete_users": "Supprimer",
@@ -1005,7 +1005,8 @@
         "remove_keyword_title": "Comprendre le nettoyage après extraction",
         "test-zone": "Zone de test",
         "result": "Résultat",
-        "test_value": "Chaîne de caractères à tester"
+        "test_value": "Chaîne de caractères à tester",
+        "invalid_regex": "Expression régulière invalide"
     },
     "DOCSERVERS": {
         "docserver_updated": "Docserver mis à jour avec succès",
@@ -1154,7 +1155,7 @@
         "validating": "Validation de l'étape en cours...",
         "customer_required": "Le compte client est obligatoire",
         "certified_copy": "Activer la copie conforme (NF Z42-020/26)",
-        "certified_copy_hint": "Si activé, la rotation/modification des pages, la suppression des pages blanches et la fusion de documents seront désactivées pour garantir l'intégrité du document original. Seule la séparation est disponible pour séparer les documents sans les modifier"
+        "certified_copy_hint": "Si activé, la rotation/modification des pages, la suppression des pages blanches et la fusion de documents seront désactivés pour garantir l'intégrité du document original. Seule la séparation est disponible pour séparer les documents sans les modifier"
     },
     "MONITORING": {
         "processes": "Processus",
