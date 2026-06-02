@@ -339,9 +339,7 @@ def create_script_and_watcher(args):
     if os.path.isdir(folder_script):
         script_name = args['workflow_id'] + '.sh'
         new_script_filename = folder_script + '/' + script_name
-        print(folder_script, os.path.isdir(folder_script))
-        print(config['GLOBAL']['watcherconfig'])
-        print(args['input_folder'])
+
         ######
         # CREATE OR UPDATE FS WATCHER CONFIG
         ######

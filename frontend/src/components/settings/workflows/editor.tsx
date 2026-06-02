@@ -585,6 +585,8 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             }
         }
 
+        await handleSubmit(data);
+
         handleNextStep(data);
     }
 
