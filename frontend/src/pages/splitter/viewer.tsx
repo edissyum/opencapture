@@ -765,8 +765,8 @@ export function SplitterViewerPage() {
         return documentsWithoutTnl;
     }
 
-    const handleSaveChanges = async (notif = true, extraDeletedDocuments = []) => {
-        setLoading(true);
+    const handleSaveChanges = async (notif = true, extraDeletedDocuments = [], _setLoading = true) => {
+        if (_setLoading) setLoading(true);
         try {
             const documentsWithoutTnl = buildDocumentMetadataForSave();
             const deletedDocumentsIds = [...deletedDocuments, ...extraDeletedDocuments].map(d => d.id);
@@ -780,7 +780,7 @@ export function SplitterViewerPage() {
             });
             setDeletedPages([]);
             setDeletedDocuments([]);
-            setLoading(false);
+            if (_setLoading) setLoading(false);
             setUnSavedChanges(false);
 
             if (notif) {
@@ -962,6 +962,11 @@ export function SplitterViewerPage() {
         }
 
         setLoading(true);
+
+        if (unSavedChanges) {
+            await handleSaveChanges(false, [], false);
+        }
+
         try {
             const documentsWithoutTnl = buildDocumentMetadataForSave();
             await post('/splitter/export', {
@@ -973,14 +978,15 @@ export function SplitterViewerPage() {
                 'deletedDocumentsIds': deletedDocuments.map(d => d.id)
             });
             showToast(t('SPLITTER.batch_validated'), 'success');
+
             logHistory({
                 module: 'splitter',
                 submodule: 'batch_validated',
                 desc: t('HISTORY.batch_validated', { batchId: batchId })
-            });
+            }).then();
             navigate('/home');
         } catch (error) {
-            console.error("Error validating batch:", error);
+            console.error("Error validating batch :", error);
         } finally {
             setLoading(false);
         }
@@ -1193,7 +1199,7 @@ export function SplitterViewerPage() {
                                              className={ `${ disabledBatch ? 'pointer-events-none opacity-50' : 'cursor-pointer' }` }/>
                             </div>
 
-                            <Button disabled={ unSavedChanges || loading || disabledBatch }
+                            <Button disabled={ loading || disabledBatch }
                                     className='flex items-center gap-2 px-3!'
                                     onClick={ handleValidateBatch }>
                                 <PackageCheck size={ 16 }/>
