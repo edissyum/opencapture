@@ -699,7 +699,11 @@
         "upload_completed": "File uploaded successfully",
         "drop_files_here": "Drop files here to upload",
         "show_less": "Show less",
-        "show_more": "Show more"
+        "show_more": "Show more",
+        "select_workflow": "Select a workflow",
+        "select_workflow_hint": "Select the workflow to apply when uploading documents",
+        "add_document": "Adding documents",
+        "add_document_hint": "Select one or more documents to upload"
     },
     "USERS": {
         "delete_users": "Delete",

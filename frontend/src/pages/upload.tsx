@@ -15,8 +15,8 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { useEffect, useState } from "react";
-import { Check, Wrench } from "lucide-react";
+import { Pencil, RotateCcw } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 import { useUser } from "../services/hooks/useUser";
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
@@ -31,23 +31,35 @@ export function UploadPage() {
     const { user, loadingUser } = useUser();
 
     const [module, setModule] = useState("");
-
     const [timeout, setTimeout] = useState(2000);
 
     const [workflows, setWorkflows] = useState<any[]>([]);
-    const [workflowLoading, setWorkflowLoading] = useState(false);
+    const [workflowLoading, setWorkflowLoading] = useState(true);
     const [selectedWorkflow, setSelectedWorkflow] = useState<any>(null);
 
     const [files, setFiles] = useState<File[]>([]);
     const [sending, setSending] = useState(false);
     const [completedFiles, setCompletedFiles] = useState<string[]>([]);
     const [progress, setProgress] = useState<Record<string, number | undefined>>({});
-    const workflowTooltipMinLength = 30;
 
     const selectedModule = localStorage.getItem('selectedModule');
     if (selectedModule && selectedModule !== module) {
         setModule(selectedModule);
     }
+
+    const [showAllWorkflows, setShowAllWorkflows] = useState(false);
+    const [canExpandWorkflows, setCanExpandWorkflows] = useState(false);
+    const workflowsWrapRef = useRef<HTMLDivElement | null>(null);
+
+    const filteredWorkflows = workflows.filter(w => !w?.process?.api_only);
+
+    useEffect(() => {
+        const el = workflowsWrapRef.current;
+        if (!el) return;
+
+        // Détecte si le contenu dépasse la hauteur repliée
+        setCanExpandWorkflows(el.scrollHeight > 44);
+    }, [filteredWorkflows, showAllWorkflows]);
 
     useEffect(() => {
         const handler = () => {
@@ -97,7 +109,7 @@ export function UploadPage() {
                     setWorkflowLoading(false);
                 });
             } catch (error) {
-                console.error("Error retrieving workflows:", error);
+                console.error("Error retrieving workflows :", error);
             }
         }
 
@@ -169,37 +181,11 @@ export function UploadPage() {
         }
     }
 
-    return (
-        <div className='flex h-full w-full overflow-hidden'>
-            <div className='pb-20 h-full w-[350px] shrink-0 border-r border-(--border-secondary) bg-(--bg-primary)'>
-                <h1 className='px-6 pt-6 text-xl font-bold mb-4 truncate flex items-center gap-2'>
-                    <Wrench size={ 20 } className='text-(--color-primary)'/>
-                    { t('UPLOAD.select_workflows') }
-                </h1>
-                <div className='px-6 flex flex-col gap-2 overflow-y-auto h-full'>
-                    { workflowLoading && (
-                        <Loader/>
-                    ) }
+    if (workflowLoading) return <Loader/>;
 
-                    { workflows.filter(w => !w?.process?.api_only).map((workflow) => (
-                        <div key={ workflow.id }
-                             onClick={ () => setSelectedWorkflow(workflow.workflow_id) }
-                             { ...(workflow.label.length > workflowTooltipMinLength && {
-                                 "data-tooltip-id": "tooltip",
-                                 "data-tooltip-content": workflow.label
-                             }) }
-                             className={ `cursor-pointer flex items-center gap-1 border border-(--border-secondary)
-                                          rounded-md p-2 hover:border-(--border-primary) transition-colors 
-                                          ${ selectedWorkflow === workflow.workflow_id ? 'text-(--color-primary) border-(--color-primary) font-semibold bg-(--bg-selected)' : '' }` }>
-                            { selectedWorkflow === workflow.workflow_id && (
-                                <Check size={ 18 } className='shrink-0'/>
-                            ) }
-                            <p className='truncate select-none'>{ workflow.label }</p>
-                        </div>
-                    )) }
-                </div>
-            </div>
-            <div className='p-6 w-full flex flex-col h-full overflow-auto gap-4'>
+    return (
+        <div className='flex h-full w-full overflow-hidden justify-center'>
+            <div className='p-6 w-4/5 flex flex-col h-full overflow-auto gap-4'>
                 <div>
                     <h1 className='text-lg font-bold'>
                         { t('UPLOAD.upload') }
@@ -208,17 +194,97 @@ export function UploadPage() {
                         { t('UPLOAD.upload_hint') }
                     </p>
                 </div>
-                <UploadDropzone
-                    accept={ {
-                        "application/*": [".pdf"],
-                        "image/*": [".jpg", ".jpeg", ".png", ".heif", ".heic"]
-                    } }
-                    progressByFile={ progress }
-                    completedFiles={ completedFiles }
-                    onFilesAccepted={ setFiles }
-                    maxSize={ 10 * 1024 * 1024 }
-                    className="bg-(--bg-primary)"
-                />
+
+                <div
+                    className='bg-(--bg-primary) p-4 rounded-md border border-(--border-secondary) flex flex-col gap-4'>
+                    <div className='flex items-center gap-4'>
+                        <div className='rounded-full bg-(--color-primary) size-6 flex items-center justify-center
+                                        text-white font-semibold'
+                        >
+                            1
+                        </div>
+                        <div className='flex flex-col'>
+                            <span>{ t('UPLOAD.select_workflow') }</span>
+                            <span className='text-(--text-secondary)'>{ t('UPLOAD.select_workflow_hint') }</span>
+                        </div>
+                        <div className='ml-auto'>
+                            { selectedWorkflow && (
+                                <div onClick={ () => setSelectedWorkflow(null) }
+                                    className='flex items-center gap-2 bg-(--bg-selected) px-2 py-1 rounded-md text-sm
+                                               border-(--border-primary) border text-(--color-primary) font-semibold
+                                               cursor-pointer'>
+                                    <Pencil size={ 16 }/>
+                                    { workflows.find(w => w.workflow_id === selectedWorkflow)?.label }
+                                </div>
+                            ) }
+                        </div>
+                    </div>
+                    <div
+                        className={ `flex flex-col gap-2 transition-all ${ !selectedWorkflow ? "max-h-auto" : "hidden" }` }>
+                        <div
+                            ref={ workflowsWrapRef }
+                            className={ `flex flex-wrap gap-2 overflow-hidden transition-all ${
+                                showAllWorkflows ? "max-h-[999px]" : "max-h-[44px]"
+                            }` }
+                        >
+                            { filteredWorkflows.map((workflow) => (
+                                <div
+                                    key={ workflow.id }
+                                    onClick={ () => setSelectedWorkflow(workflow.workflow_id) }
+                                    className={ `flex items-center gap-1 p-2 border border-(--border-secondary) rounded-md cursor-pointer 
+                                                 hover:border-(--border-primary) transition-colors min-w-0
+                                                 ${ selectedWorkflow === workflow.workflow_id ? 'text-(--color-primary) border-(--color-primary) font-semibold bg-(--bg-selected)' : '' }` }
+                                >
+                                    <p className='truncate select-none whitespace-nowrap'>{ workflow.label }</p>
+                                </div>
+                            )) }
+                        </div>
+
+                        { canExpandWorkflows && (
+                            <button
+                                type="button"
+                                onClick={ () => setShowAllWorkflows((v) => !v) }
+                                className='text-sm text-(--text-secondary) cursor-pointer w-fit'
+                            >
+                                { showAllWorkflows ? (
+                                    t('UPLOAD.show_less')
+                                ) : (
+                                    <div className='flex items-center'>
+                                        <RotateCcw size={ 16 } className='inline-block mr-1'/>
+                                        { t('UPLOAD.show_more') }
+                                    </div>
+                                ) }
+                            </button>
+                        ) }
+                    </div>
+                </div>
+
+                <div className={ `bg-(--bg-primary) p-4 rounded-md border border-(--border-secondary) flex flex-col 
+                                  gap-4 ${ !selectedWorkflow ? 'opacity-50 pointer-events-none' : '' }` }>
+                    <div className='flex items-center gap-4'>
+                        <div className='rounded-full bg-(--color-primary) size-6 flex items-center justify-center
+                                        text-white font-semibold'
+                        >
+                            2
+                        </div>
+                        <div className='flex flex-col'>
+                            <span>{ t('UPLOAD.add_document') }</span>
+                            <span className='text-(--text-secondary)'>{ t('UPLOAD.add_document_hint') }</span>
+                        </div>
+                    </div>
+
+                    <UploadDropzone
+                        accept={ {
+                            "application/*": [".pdf"],
+                            "image/*": [".jpg", ".jpeg", ".png", ".heif", ".heic"]
+                        } }
+                        progressByFile={ progress }
+                        completedFiles={ completedFiles }
+                        onFilesAccepted={ setFiles }
+                        maxSize={ 10 * 1024 * 1024 }
+                        className="bg-(--bg-primary)"
+                    />
+                </div>
                 <div className="w-fit">
                     <Button onClick={ handleUpload }
                             disabled={ files.length === 0 || !selectedWorkflow || sending }>

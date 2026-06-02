@@ -745,7 +745,11 @@
         "upload_completed": "Fichier téléversé avec succès",
         "drop_files_here": "Déposez les fichiers ici pour les téléverser",
         "show_less": "Afficher moins",
-        "show_more": "Afficher plus"
+        "show_more": "Afficher plus",
+        "select_workflow": "Choix du workflow",
+        "select_workflow_hint": "Sélectionnez le workflow à appliquer lors du téléversement des documents",
+        "add_document": "Ajout des documents",
+        "add_document_hint": "Sélectionnez un ou plusieurs documents à téléverser"
     },
     "USERS": {
         "delete_users": "Supprimer",

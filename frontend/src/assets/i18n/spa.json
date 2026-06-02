@@ -745,7 +745,11 @@
         "upload_completed": "Archivo subido correctamente",
         "drop_files_here": "Suelte los archivos aquí para cargarlos",
         "show_less": "Mostrar menos",
-        "show_more": "Mostrar más"
+        "show_more": "Mostrar más",
+        "select_workflow": "Seleccionar un flujo de trabajo",
+        "select_workflow_hint": "Seleccione el flujo de trabajo que se aplicará al cargar documentos",
+        "add_document": "Agregar documentos",
+        "add_document_hint": "Seleccione uno o más documentos para cargar."
     },
     "USERS": {
         "delete_users": "Eliminar",
