@@ -90,6 +90,10 @@ export function UploadPage() {
             try {
                 get(`workflows/${ selectedModule }/list/user/${ user.id }`).then((response) => {
                     setWorkflows(response.workflows);
+                    if (response.workflows.length == 1) {
+                        setSelectedWorkflow(response.workflows[0].workflow_id);
+                    }
+
                     setWorkflowLoading(false);
                 });
             } catch (error) {
