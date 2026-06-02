@@ -196,7 +196,7 @@ export function UploadPage() {
                 </div>
 
                 <div
-                    className='bg-(--bg-primary) p-4 rounded-md border border-(--border-secondary) flex flex-col gap-4'>
+                    className='bg-(--bg-primary) py-4 px-6 rounded-md border border-(--border-secondary) flex flex-col gap-4'>
                     <div className='flex items-center gap-4'>
                         <div className='rounded-full bg-(--color-primary) size-6 flex items-center justify-center
                                         text-white font-semibold'
@@ -205,14 +205,14 @@ export function UploadPage() {
                         </div>
                         <div className='flex flex-col'>
                             <span>{ t('UPLOAD.select_workflow') }</span>
-                            <span className='text-(--text-secondary)'>{ t('UPLOAD.select_workflow_hint') }</span>
+                            <span className='text-(--text-secondary) text-sm'>{ t('UPLOAD.select_workflow_hint') }</span>
                         </div>
                         <div className='ml-auto'>
                             { selectedWorkflow && (
                                 <div onClick={ () => setSelectedWorkflow(null) }
                                     className='flex items-center gap-2 bg-(--bg-selected) px-2 py-1 rounded-md text-sm
                                                border-(--border-primary) border text-(--color-primary) font-semibold
-                                               cursor-pointer'>
+                                               cursor-pointer '>
                                     <Pencil size={ 16 }/>
                                     { workflows.find(w => w.workflow_id === selectedWorkflow)?.label }
                                 </div>
@@ -259,7 +259,7 @@ export function UploadPage() {
                     </div>
                 </div>
 
-                <div className={ `bg-(--bg-primary) p-4 rounded-md border border-(--border-secondary) flex flex-col 
+                <div className={ `bg-(--bg-primary) py-4 pb-6 px-6 rounded-md border border-(--border-secondary) flex flex-col 
                                   gap-4 ${ !selectedWorkflow ? 'opacity-50 pointer-events-none' : '' }` }>
                     <div className='flex items-center gap-4'>
                         <div className='rounded-full bg-(--color-primary) size-6 flex items-center justify-center
@@ -269,7 +269,7 @@ export function UploadPage() {
                         </div>
                         <div className='flex flex-col'>
                             <span>{ t('UPLOAD.add_document') }</span>
-                            <span className='text-(--text-secondary)'>{ t('UPLOAD.add_document_hint') }</span>
+                            <span className='text-(--text-secondary) text-sm'>{ t('UPLOAD.add_document_hint') }</span>
                         </div>
                     </div>
 
