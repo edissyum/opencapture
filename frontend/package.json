@@ -30,9 +30,9 @@
         "@tanstack/react-table": "^8.21.3",
         "@tanstack/react-virtual": "^3.14.2",
         "@tinymce/tinymce-react": "^6.3.0",
-        "axios": "^1.16.1",
+        "axios": "^1.17.0",
         "dayjs": "^1.11.21",
-        "dompurify": "^3.4.7",
+        "dompurify": "^3.4.8",
         "fs-extra": "^11.3.5",
         "i18next": "^26.3.0",
         "primereact": "^10.9.8",
@@ -47,7 +47,7 @@
         "react-tooltip": "^6.0.6",
         "recharts": "^3.8.1",
         "tailwindcss": "^4.3.0",
-        "tinymce": "^8.5.1",
+        "tinymce": "^8.6.0",
         "zod": "^4.4.3"
     },
     "devDependencies": {
