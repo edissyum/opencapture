@@ -13,3 +13,4 @@ name: opencapture_test2
 
 include:
     - path: ../../../infra/docker-compose.yml
+    - path: ../../../infra/docker-compose.traefik-test.yml

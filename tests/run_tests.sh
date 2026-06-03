@@ -32,6 +32,36 @@ for a in "$@"; do
 done
 [ ${#TENANTS[@]} -eq 0 ] && TENANTS=(test1 test2)
 
+# Prérequis routage HTTP (idempotents). Sans eux les tests passent toujours
+# (DB/FS/logs), mais les UI http://test{1,2}.edissyum.com seraient en 404.
+ensure_traefik() {
+    if docker network inspect frontend >/dev/null 2>&1; then
+        echo "[pré] réseau frontend : OK"
+    else
+        docker network create frontend >/dev/null && echo "[pré] réseau frontend : créé"
+    fi
+    if docker ps --format '{{.Names}}' | grep -q '^opencapture_traefik$'; then
+        # Sanity-check : traefik peut tourner sans être rattaché au réseau frontend
+        # (cas observé après suppression/recréation du réseau hors traefik).
+        if docker inspect opencapture_traefik \
+              --format '{{range $k,$v := .NetworkSettings.Networks}}{{$k}} {{end}}' \
+              | grep -qw frontend; then
+            echo "[pré] traefik : OK (sur réseau frontend)"
+        else
+            echo "[pré] traefik : détaché du réseau frontend — recréation"
+            docker compose -f "$REPO_ROOT/infra/docker-compose.traefik-server.yml" up -d --force-recreate >/dev/null 2>&1 \
+                && echo "[pré] traefik : recréé sur frontend" \
+                || echo "[pré] traefik : ÉCHEC recréation"
+        fi
+    else
+        echo "[pré] traefik : démarrage..."
+        docker compose -f "$REPO_ROOT/infra/docker-compose.traefik-server.yml" up -d >/dev/null 2>&1 \
+            && echo "[pré] traefik : OK" \
+            || echo "[pré] traefik : ÉCHEC démarrage (UI inaccessibles, tests OK quand même)"
+    fi
+}
+ensure_traefik
+
 declare -A RESULT
 FAILED=0
 
