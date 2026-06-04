@@ -145,7 +145,7 @@ export function AboutPage() {
                             </div>
                         }>
                             <>
-                                <div className={ `${ classesWithBorder }` }>
+                                <div className={ classesWithBorder }>
                                     <p className='w-1/3'>Type</p>
                                     <p className='text-(--color-primary)'>GNU General Public License v3.0</p>
                                 </div>
@@ -162,28 +162,28 @@ export function AboutPage() {
                             </div>
                         }>
                             <>
-                                <div className={ `${ classesWithBorder }` }>
+                                <div className={ classesWithBorder }>
                                     <p className='w-1/3'>{ t('ABOUT.society') }</p>
                                     <p className='text-(--text-primary)'>Edissyum Consulting</p>
                                 </div>
-                                <div className={ `${ classesWithBorder }` }>
+                                <div className={ classesWithBorder }>
                                     <p className='w-1/3'>{ t('ABOUT.address') }</p>
                                     <p className='text-(--text-primary)'>98 Avenue Pierre Semard, 84200 Carpentras</p>
                                 </div>
-                                <div className={ `${ classesWithBorder }` }>
+                                <div className={ classesWithBorder }>
                                     <p className='w-1/3'>{ t('ABOUT.software') }</p>
                                     <a className='text-(--color-primary)' href='https://edissyum.com' target='_blank'>
                                         https://edissyum.com
                                     </a>
                                 </div>
-                                <div className={ `${ classesWithBorder }` }>
+                                <div className={ classesWithBorder }>
                                     <p className='w-1/3'>{ t('ABOUT.software_website') }</p>
                                     <a className='text-(--color-primary)' href='https://open-capture.com'
                                        target='_blank'>
                                         https://open-capture.com
                                     </a>
                                 </div>
-                                <div className={ `${ classesWithBorder }` }>
+                                <div className={ classesWithBorder }>
                                     <p className='w-1/3'>{ t('ABOUT.documentation') }</p>
                                     <a className='text-(--color-primary)'
                                        href='https://edissyum.gitbook.io/open-capture' target='_blank'>
@@ -206,9 +206,9 @@ export function AboutPage() {
                             </div>
                         }>
                             <>
-                                <div className={ `${ classesWithBorder }` }>
-                                    <div className='rounded-full bg-(--color-primary)/15 font-semibold
-                                                    text-(--color-primary) border border-(--border-primary) p-3'>
+                                <div className={ classesWithBorder }>
+                                    <div className='rounded-full bg-(--color-primary)/15 font-semibold border p-3
+                                                    text-(--color-primary) border-(--border-primary)'>
                                         NC
                                     </div>
                                     <div className='ml-4'>
@@ -220,9 +220,9 @@ export function AboutPage() {
                                         LEAD DEV
                                     </div>
                                 </div>
-                                <div className={ `${ classesWithBorder }` }>
-                                    <div className='rounded-full bg-[#426CF5]/15 font-semibold
-                                                    text-[#426CF5] border border-[#426CF5] p-3'>
+                                <div className={ classesWithBorder }>
+                                    <div className='rounded-full bg-[#426CF5]/15 font-semibold text-[#426CF5] border
+                                                  border-[#426CF5] p-3'>
                                         AM
                                     </div>
                                     <div className='ml-4'>
@@ -240,9 +240,9 @@ export function AboutPage() {
                                         </div>
                                     </div>
                                 </div>
-                                <div className={ `${ classesWithBorder }` }>
-                                    <div className='rounded-full bg-[#D53232]/15 font-semibold
-                                                    text-[#D53232] border border-[#D53232] p-3'>
+                                <div className={ classesWithBorder }>
+                                    <div className='rounded-full bg-[#D53232]/15 font-semibold text-[#D53232] border
+                                                  border-[#D53232] p-3'>
                                         AM
                                     </div>
                                     <div className='ml-4'>
@@ -254,9 +254,9 @@ export function AboutPage() {
                                         DEV
                                     </div>
                                 </div>
-                                <div className={ `${ classesWithBorder }` }>
-                                    <div className='rounded-full bg-[#A76227]/15 font-semibold
-                                                    text-[#A76227] border border-[#A76227] p-3'>
+                                <div className={ classesWithBorder }>
+                                    <div className='rounded-full bg-[#A76227]/15 font-semibold text-[#A76227] border
+                                                   border-[#A76227] p-3'>
                                         PY
                                     </div>
                                     <div className='ml-4'>
@@ -268,9 +268,23 @@ export function AboutPage() {
                                         DOCKER
                                     </div>
                                 </div>
+                                <div className={ classesWithBorder }>
+                                    <div className='rounded-full bg-gray-200 font-semibold text-gray-500 border
+                                                    border-gray-450 p-3'>
+                                        HH
+                                    </div>
+                                    <div className='ml-4'>
+                                        <p className='font-semibold'>Hervé HENOCH</p>
+                                        <p className='text-(--text-secondary) text-sm'>{ t('ABOUT.docker') }</p>
+                                    </div>
+                                    <div className='ml-auto rounded-2xl bg-[#1CC7BE]/15 font-semibold
+                                                    text-[#1CC7BE] border border-[#1CC7BE] px-3'>
+                                        DOCKER
+                                    </div>
+                                </div>
                                 <div className={ `${ classes }` }>
-                                    <div className='rounded-full bg-(--bg-secondary) font-semibold
-                                                    text-(--text-secondary) border border-(--border-secondary) p-3'>
+                                    <div className='rounded-full bg-(--bg-secondary) font-semibold border p-3
+                                                    text-(--text-secondary) border-(--border-secondary)'>
                                         OB
                                     </div>
                                     <div className='ml-4'>
@@ -290,15 +304,15 @@ export function AboutPage() {
                                 <Code/> { t('ABOUT.technical_infos') }
                             </div>
                         }>
-                            <div className={ `${ classesWithBorder }` }>
+                            <div className={ classesWithBorder }>
                                 <p className='w-1/3'>Backend</p>
                                 <p className='text-(--text-primary)'>Python &gt;= 3.13 & Flask</p>
                             </div>
-                            <div className={ `${ classesWithBorder }` }>
+                            <div className={ classesWithBorder }>
                                 <p className='w-1/3'>Frontend</p>
                                 <p className='text-(--text-primary)'>React + Vite</p>
                             </div>
-                            <div className={ `${ classesWithBorder }` }>
+                            <div className={ classesWithBorder }>
                                 <p className='w-1/3'>{ t('ABOUT.database') }</p>
                                 <p className='text-(--text-primary)'>PostgreSQL</p>
                             </div>
@@ -319,14 +333,13 @@ export function AboutPage() {
                                          className={ `w-full border-b border-(--border-secondary) 
                                                       flex justify-between py-3 px-4 
                                                       ${ index % 2 === 0 ? 'border-r' : '' }
-                                                      ${ index >= Object.keys(frontendPackages).length - 2 ? 'border-b-0!' : '' }`
+                                                      ${ index >= Object.keys(frontendPackages).length - 1 ? 'border-b-0!' : '' }`
                                          }>
                                         <div className='font-semibold flex items-center gap-2'>
                                             <div className='bg-(--color-primary) rounded-full size-1.5'/>
                                             { key }
                                         </div>
                                         <div className='ml-auto text-(--text-secondary)'>
-                                            {/*@ts-ignore*/ }
                                             { frontendPackages[key] }
                                         </div>
                                     </div>
