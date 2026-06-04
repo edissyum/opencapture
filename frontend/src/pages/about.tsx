@@ -186,7 +186,7 @@ export function AboutPage() {
                                 <div className={ classesWithBorder }>
                                     <p className='w-1/3'>{ t('ABOUT.documentation') }</p>
                                     <a className='text-(--color-primary)'
-                                       href='https://edissyum.gitbook.io/open-capture' target='_blank'>
+                                       href='https://edissyum.gitbook.io/open-capture-v4' target='_blank'>
                                         https://edissyum.gitbook.io/open-capture
                                     </a>
                                 </div>
