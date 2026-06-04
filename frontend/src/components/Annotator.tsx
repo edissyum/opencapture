@@ -19,14 +19,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { t } from "i18next";
 
 export interface Region {
-    id: string;
     x: number;
     y: number;
+    id: string;
     page: number;
     color: string;
     width: number;
-    height: number;
     label: string;
+    height: number;
 }
 
 interface AnnotatorProps {
@@ -43,17 +43,17 @@ interface AnnotatorProps {
 }
 
 export function Annotator({
-                              alt,
-                              imageB64,
-                              regionsList,
-                              currentPage,
-                              focusedField,
-                              originalWidth,
-                              width = "100%",
-                              disabled = true,
-                              onEnd,
-                              onDelete
-                          }: AnnotatorProps) {
+    alt,
+    imageB64,
+    regionsList,
+    currentPage,
+    focusedField,
+    originalWidth,
+    width = "100%",
+    disabled = true,
+    onEnd,
+    onDelete
+}: AnnotatorProps) {
     const [ratio, setRatio] = useState(0);
     const [imgSize, setImgSize] = useState({ w: 0, h: 0 });
 
@@ -286,11 +286,11 @@ export function Annotator({
     };
 
     const handleMouseUp = () => {
+        setIsMoving(false);
         setIsDrawing(false);
+        setMoveTarget(null);
         setIsResizing(false);
         setResizeTarget(null);
-        setIsMoving(false);
-        setMoveTarget(null);
         if (onEnd) onEnd(activeRegion, regionsOriginalSize);
     };
 
@@ -377,11 +377,11 @@ export function Annotator({
                                      ${ focusedField?.id == r.id && !isMoving && !isDrawing && !isResizing && "scale-105" } ` }
                     >
                         <div className="absolute -top-6.5 -right-px bg-(--bg-primary) text-xs select-none p-1 border
-                                       rounded-md rounded-br-none flex items-center z-20 whitespace-nowrap font-semibold"
+                                       rounded-md rounded-br-none flex gap-1 items-center z-20 whitespace-nowrap font-semibold"
                              style={ { borderColor: r.color, color: r.color } }>
                             <span>{ t(r.label) }</span>
                             { !disabled && (
-                                <button onClick={ () => handleDelete(r.id) } className="ml-1 cursor-pointer">
+                                <button onClick={ () => handleDelete(r.id) } className="cursor-pointer">
                                     ✕
                                 </button>
                             ) }
@@ -389,13 +389,12 @@ export function Annotator({
 
                         { ["top-left", "top-right", "bottom-left", "bottom-right"].map((corner) => (
                             <div
-                                key={ corner }
                                 data-handle
+                                key={ corner }
+                                className='size-2.5 absolute'
                                 onMouseDown={ (e) => handleResizeStart(e, r.id, corner) }
                                 style={ {
-                                    position: "absolute",
-                                    width: "10px",
-                                    height: "10px",
+                                    display: disabled ? "none" : "block",
                                     cursor:
                                         corner === "top-left"
                                             ? "nw-resize"
