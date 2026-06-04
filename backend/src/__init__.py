@@ -94,10 +94,11 @@ CORS(app, supports_credentials=True)
 
 limiter.init_app(app)
 
-# Apply global rate limiting to all requests (setup in backend/src/rest/auth.py)
-@app.before_request
-def global_rate_limit():
-    pass
+@app.teardown_appcontext
+def close_database(_exception):
+    database = getattr(current_context, 'database', None)
+    if database is not None:
+        database.close()
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 instance_path = os.path.abspath(os.path.join(BASE_DIR, "../instance"))
