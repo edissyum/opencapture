@@ -19,6 +19,8 @@ import os
 import sys
 import json
 
+import psycopg
+
 from . import shared
 from .classes.Log import Log
 from .classes.SMTP import SMTP
@@ -72,7 +74,8 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
 
     database = Database(log, db_name, db_user, db_pwd, db_host, db_port)
     if not database.conn:
-        return False, 'bad_or_missing_database_informations'
+        import psycopg
+        raise psycopg.OperationalError()
 
     smtp = None
 

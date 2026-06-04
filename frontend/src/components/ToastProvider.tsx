@@ -39,9 +39,8 @@ export const ToastProvider: React.FC = () => {
     return (
         <ToastContainer
             closeOnClick
-            theme="light"
             pauseOnHover
-            className={""}
+            theme="light"
             newestOnTop={ true }
             position="top-right"
             pauseOnFocusLoss={ false }

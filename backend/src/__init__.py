@@ -17,7 +17,6 @@
 # @dev : Serena Tetart <serena.tetart@edissyum.com>
 
 import os
-import re
 import urllib.parse
 from flask_cors import CORS
 from ultralytics import YOLO
@@ -26,7 +25,7 @@ from flask_babel import Babel
 from .rest.auth import limiter
 from werkzeug.wrappers import Request
 from .main import create_classes_from_custom_id
-from flask import request, g as current_context, Flask, session
+from flask import request, g as current_context, Flask, session, jsonify
 from .functions import is_custom_exists, retrieve_custom_from_url, retrieve_custom_path, is_custom_exists_from_url, \
     retrieve_custom_id_from_url
 from .rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
@@ -99,6 +98,19 @@ def close_database(_exception):
     database = getattr(current_context, 'database', None)
     if database is not None:
         database.close()
+
+@app.errorhandler(Exception)
+def handle_postgresql_exception(error):
+    import psycopg
+    if isinstance(error, (psycopg.OperationalError, psycopg.ProgrammingError)):
+        return jsonify({
+            "errors": "DATABASE_CONNECTION_ERROR",
+            "message": "Database connection error, please check your configuration and database status."
+        }), 500
+    else:
+        pass
+
+    return None
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 instance_path = os.path.abspath(os.path.join(BASE_DIR, "../instance"))
