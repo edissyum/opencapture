@@ -19,7 +19,7 @@ TESTS_DIR="$REPO_ROOT/tests"
 GREENMAIL="$TESTS_DIR/docker-compose.greenmail.yml"
 SAMPLE_PDF="/app/src/assets/not_found/document_not_found.pdf"   # PDF baké dans l'image
 HEALTH_TIMEOUT=240   # s — attente backend healthy + init terminé
-FLOW_TIMEOUT=120     # s — attente résultat d'un flux
+FLOW_TIMEOUT=240     # s — attente résultat d'un flux (large pour 1er load YOLO sur VM modeste)
 
 REBUILD=0
 TENANTS=()
