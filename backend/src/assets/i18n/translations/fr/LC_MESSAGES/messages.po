@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2026-06-04 16:54+0200\n"
+"POT-Creation-Date: 2026-06-04 17:35+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -20,16 +20,6 @@ msgstr ""
 #: backend/launch_worker_mail.py:312 backend/launch_worker_mail.py:378
 msgid "NO_SUBJECT"
 msgstr "Sans objet"
-
-#: backend/src/__init__.py:117
-msgid "DATABASE_CONNECTION_ERROR"
-msgstr "Erreur de connexion à la base de données"
-
-#: backend/src/__init__.py:118
-msgid "DATABASE_ERROR"
-msgstr ""
-"La connexion à la base de données a échoué (vérifiez les paramètres de "
-"connexion)"
 
 #: backend/src/functions.py:57 backend/src/functions.py:77
 #: backend/src/functions.py:81

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-06-04 16:54+0200\n"
+"POT-Creation-Date: 2026-06-04 17:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,14 +19,6 @@ msgstr ""
 
 #: backend/launch_worker_mail.py:312 backend/launch_worker_mail.py:378
 msgid "NO_SUBJECT"
-msgstr ""
-
-#: backend/src/__init__.py:117
-msgid "DATABASE_CONNECTION_ERROR"
-msgstr ""
-
-#: backend/src/__init__.py:118
-msgid "DATABASE_ERROR"
 msgstr ""
 
 #: backend/src/functions.py:57 backend/src/functions.py:77
