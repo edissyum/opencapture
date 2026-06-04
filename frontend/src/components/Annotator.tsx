@@ -33,25 +33,27 @@ interface AnnotatorProps {
     alt?: string;
     width?: string;
     imageB64: string;
+    disabled?: boolean;
     currentPage?: number;
     regionsList: Region[];
     originalWidth?: number;
     focusedField: { id: string; label: string; color: string } | null;
-    onEnd?: (activeRegion: any, regions: Region[]) => void;
     onDelete?: (id: string) => void;
+    onEnd?: (activeRegion: any, regions: Region[]) => void;
 }
 
 export function Annotator({
-    regionsList,
-    alt,
-    width="100%",
-    originalWidth,
-    focusedField,
-    imageB64,
-    currentPage,
-    onEnd,
-    onDelete
-}: AnnotatorProps) {
+                              alt,
+                              imageB64,
+                              regionsList,
+                              currentPage,
+                              focusedField,
+                              originalWidth,
+                              width = "100%",
+                              disabled = true,
+                              onEnd,
+                              onDelete
+                          }: AnnotatorProps) {
     const [ratio, setRatio] = useState(0);
     const [imgSize, setImgSize] = useState({ w: 0, h: 0 });
 
@@ -343,19 +345,18 @@ export function Annotator({
         <div className="flex flex-col items-center h-full gap-4 annotator">
             <div
                 ref={ containerRef }
-                className={ `relative overflow-auto w-full h-full ${
-                    focusedField ? "cursor-crosshair" : ""
-                }` }
-                onMouseDown={ handleMouseDown }
-                onMouseMove={ handleMouseMove }
-                onMouseUp={ handleMouseUp }
+                onMouseUp={ !disabled ? handleMouseUp : undefined }
+                onMouseDown={ !disabled ? handleMouseDown : undefined }
+                onMouseMove={ !disabled ? handleMouseMove : undefined }
+                className={ `relative overflow-auto w-full h-full ${ focusedField && !disabled && "cursor-crosshair" }` }
             >
-                <img ref={ imgRef }
-                     alt={ alt }
-                     src={ imageB64 }
-                     draggable={ false }
-                     style={ { width: width, maxWidth: width } }
-                     className="h-auto block pointer-events-none select-none rounded-xl"
+                <img
+                    alt={ alt }
+                    ref={ imgRef }
+                    src={ imageB64 }
+                    draggable={ false }
+                    style={ { width: width, maxWidth: width } }
+                    className="h-auto block pointer-events-none select-none rounded-xl"
                 />
 
                 { regions.map((r) => (
@@ -368,15 +369,22 @@ export function Annotator({
                             height: r.height,
                             borderColor: r.color,
                             backgroundColor: r.color + "1A",
-                            display: (currentPage && r.page !== currentPage) ? "none" : "block"
-                        } } className="annotation absolute border rounded-md cursor-move rounded-tr-none z-10">
+                            display: (currentPage && r.page !== currentPage) ? "none" : "block",
+                            boxShadow: focusedField?.id == r.id ? "1px 1px 2px 2px" + r.color + "4A" : "none"
+                        } }
+                        className={ `annotation absolute border rounded-md rounded-tr-none z-10 transition-transform
+                                     ${ disabled ? 'cursor-not-allowed' : 'cursor-move' }
+                                     ${ focusedField?.id == r.id && !isMoving && !isDrawing && !isResizing && "scale-105" } ` }
+                    >
                         <div className="absolute -top-6.5 -right-px bg-(--bg-primary) text-xs select-none p-1 border
                                        rounded-md rounded-br-none flex items-center z-20 whitespace-nowrap font-semibold"
                              style={ { borderColor: r.color, color: r.color } }>
                             <span>{ t(r.label) }</span>
-                            <button onClick={ () => handleDelete(r.id) } className="ml-1 cursor-pointer">
-                                ✕
-                            </button>
+                            { !disabled && (
+                                <button onClick={ () => handleDelete(r.id) } className="ml-1 cursor-pointer">
+                                    ✕
+                                </button>
+                            ) }
                         </div>
 
                         { ["top-left", "top-right", "bottom-left", "bottom-right"].map((corner) => (
