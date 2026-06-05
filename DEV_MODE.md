@@ -40,7 +40,8 @@ pip install -r backend/pip-requirements.txt
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
 
 source ~/.bashrc
-nvm install 25
+nvm install --lts
+nvm use --lts
 ```
 
 5. **Install Node.js dependencies**:
@@ -89,7 +90,7 @@ After=network.target
 [Service]
 User=$(whoami)
 WorkingDirectory=/opt/edissyum/opencapture/backend
-ExecStart=/bin/bash -c "source /opt/edissyum/opencapture/.dev_env && source /opt/edissyum/opencapture/venv/bin/activate && gunicorn --bind 0.0.0.0:8000 wsgi:app  --reload --timeout 600 --workers 2 --threads 2 --worker-class gthread"
+ExecStart=/bin/bash -c "source /opt/edissyum/opencapture/venv/bin/activate && gunicorn --bind 0.0.0.0:8000 wsgi:app  --reload --timeout 600 --workers 2 --threads 2 --worker-class gthread"
 Restart=always
 
 [Install]
