@@ -15,19 +15,43 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { useEffect } from "react";
-import { useTranslation } from "react-i18next";
+import { getI18n, useTranslation } from "react-i18next";
 import { useNavigate, useRouteError, isRouteErrorResponse } from "react-router-dom";
 
 import { showToast } from "../ToastProvider";
 
+import { USER_KEY } from "../../services/hooks/useUser";
+import { axiosApiCall } from "../../services/hooks/axiosApiCall";
+
 export default function LoginRequiredError() {
     const { t } = useTranslation();
+    const { post } = axiosApiCall();
     const error = useRouteError();
     const navigate = useNavigate();
 
     useEffect(() => {
         if (isRouteErrorResponse(error) && error.status === 401) {
             const accessToken = sessionStorage.getItem("accessToken");
+            const token = new URLSearchParams(window.location.search).get("token");
+
+            if (!accessToken && token) {
+                post("/auth/login", {
+                    'token': token,
+                    'lang': getI18n().language
+                }).then((response) => {
+                    sessionStorage.setItem("accessToken", response.auth_token);
+                    sessionStorage.setItem("refreshToken", response.refresh_token);
+                    sessionStorage.setItem(USER_KEY, JSON.stringify(response.user));
+
+                    const splitted = window.location.pathname.split('/').filter(Boolean);
+                    const route = splitted[splitted.length - 1];
+                    navigate('/' + route, { replace: true });
+                    navigate(0);
+                    return;
+                })
+                return;
+            }
+
             if (!accessToken) {
                 showToast(t('ERROR.login_required'), "error");
                 navigate("/login");

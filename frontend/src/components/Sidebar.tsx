@@ -43,7 +43,7 @@ import { useUser } from "../services/hooks/useUser";
 import { useCustom } from "../services/custom/customContext";
 import { clearPersistentState, usePersistentState } from "../services/hooks/usePersistentState";
 
-export const handleLogout = async (navigate: any, user = {}, custom: any = '') => {
+export const handleLogout = async (navigate: any, user: any = {}, custom: any = '') => {
     const token = sessionStorage.getItem("accessToken");
 
     sessionStorage.clear();
@@ -58,7 +58,7 @@ export const handleLogout = async (navigate: any, user = {}, custom: any = '') =
     if (user && Object.keys(user).length > 0 && token) {
         await axios.post(
             `${ BACKEND_URL }/${ custom }/ws/auth/logout`,
-            { user_id: 1 },
+            { user_id: user.id },
             {
                 headers: {
                     "Authorization": `Bearer ${ token }`,
@@ -281,8 +281,8 @@ export default function Sidebar() {
 
                     { !collapsed &&
                         <>
-                            <div className='flex flex-col text-left'>
-                                <span className='truncate'>
+                            <div className='flex flex-col text-left max-w-8/12'>
+                                <span className='truncate' title={ `${ user.firstname } ${ user.lastname }` }>
                                     { user.firstname } { user.lastname }
                                 </span>
                                 <span className='text-sm font-normal truncate'>
