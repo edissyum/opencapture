@@ -78,12 +78,11 @@ export function AboutPage() {
         <div className="p-6 w-full h-full flex justify-center overflow-auto bg-(--bg-secondary)">
             <div className='w-1/2 flex flex-col items-center gap-4'>
                 <div className='w-full flex flex-col gap-4 pb-4 items-center'>
-                    <>
-                        <div
-                            className='bg-(--bg-primary) border border-(--border-secondary) rounded-2xl pt-6 pb-4 px-8'>
+                    <div className='flex flex-col items-center gap-8'>
+                        <div className='bg-(--bg-primary) border border-(--border-secondary) rounded-2xl pt-6 pb-4 px-8'>
                             <img src={ logo } className='w-full' alt="Open-Capture Logo"/>
                         </div>
-                        <div className='mt-2 mb-4 text-(--text-secondary)'>
+                        <div className='text-(--text-secondary)'>
                             Logiciel libre de capture et gestion documentaire
                         </div>
                         <div className='flex items-center gap-4'>
@@ -99,7 +98,7 @@ export function AboutPage() {
                                 <ArrowRight size={ 20 }/>
                             </a>
                         </div>
-                    </>
+                    </div>
                     <div className='w-full'>
                         { lastVersion === 'error' && (
                             <div
@@ -147,7 +146,11 @@ export function AboutPage() {
                             <>
                                 <div className={ classesWithBorder }>
                                     <p className='w-1/3'>Type</p>
-                                    <p className='text-(--color-primary)'>GNU General Public License v3.0</p>
+                                    <p className='text-(--color-primary)'>
+                                        <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">
+                                            GNU General Public License v3.0
+                                        </a>
+                                    </p>
                                 </div>
                                 <div className={ `${ classes }` }>
                                     <p className='w-1/3'>{ t('ABOUT.status') }</p>
