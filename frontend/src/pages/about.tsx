@@ -328,22 +328,29 @@ export function AboutPage() {
                             </div>
                         }>
                             <div className={ `${ classes } py-0! px-0! grid grid-cols-2` }>
-                                { Object.keys(frontendPackages).map((key: any, index: any) => (
-                                    <div key={ index }
-                                         className={ `w-full border-b border-(--border-secondary) 
+                                { Object.keys(frontendPackages).map((key: any, index: any) => {
+                                    const total = Object.keys(frontendPackages).length;
+                                    const lastRowSize = total % 2 || 2;
+                                    const firstIndexOfLastRow = total - lastRowSize;
+                                    const isLastRow = index >= firstIndexOfLastRow;
+
+                                    return (
+                                        <div key={ index }
+                                             className={ `w-full border-b border-(--border-secondary) 
                                                       flex justify-between py-3 px-4 
-                                                      ${ index % 2 === 0 ? 'border-r' : '' }
-                                                      ${ index >= Object.keys(frontendPackages).length - 1 ? 'border-b-0!' : '' }`
-                                         }>
-                                        <div className='font-semibold flex items-center gap-2'>
-                                            <div className='bg-(--color-primary) rounded-full size-1.5'/>
-                                            { key }
+                                                      ${ isLastRow ? 'border-b-0!' : '' }
+                                                      ${ index % 2 === 0 ? 'border-r' : '' }`
+                                             }>
+                                            <div className='font-semibold flex items-center gap-2 w-10/12'>
+                                                <div className='bg-(--color-primary) rounded-full size-1.5 shrink-0'/>
+                                                <div className='truncate'>{ key }</div>
+                                            </div>
+                                            <div className='text-(--text-secondary)'>
+                                                { frontendPackages[key] }
+                                            </div>
                                         </div>
-                                        <div className='ml-auto text-(--text-secondary)'>
-                                            { frontendPackages[key] }
-                                        </div>
-                                    </div>
-                                )) }
+                                    )
+                                }) }
                             </div>
                         </Panel>
 
@@ -353,22 +360,29 @@ export function AboutPage() {
                             </div>
                         }>
                             <div className={ `${ classes } py-0! px-0! grid grid-cols-2` }>
-                                { Object.keys(backendPackages).map((key: any, index: any) => (
-                                    <div key={ index }
-                                         className={ `w-full border-b border-(--border-secondary) 
+                                { Object.keys(backendPackages).map((key: any, index: any) => {
+                                    const total = Object.keys(backendPackages).length;
+                                    const lastRowSize = total % 2 || 2;
+                                    const firstIndexOfLastRow = total - lastRowSize;
+                                    const isLastRow = index >= firstIndexOfLastRow;
+
+                                    return (
+                                        <div key={ index }
+                                             className={ `w-full border-b border-(--border-secondary) 
                                                       flex justify-between py-3 px-4 
-                                                      ${ index % 2 === 0 ? 'border-r' : '' }
-                                                      ${ index === Object.keys(backendPackages).length - 1 ? 'border-b-0!' : '' }`
-                                         }>
-                                        <div className='font-semibold flex items-center gap-2'>
-                                            <div className='bg-(--color-primary) rounded-full size-1.5'/>
-                                            { backendPackages[key].split('==')[0] }
+                                                      ${ isLastRow ? 'border-b-0!' : '' }
+                                                      ${ index % 2 === 0 ? 'border-r' : '' }`
+                                             }>
+                                            <div className='font-semibold flex items-center gap-2'>
+                                                <div className='bg-(--color-primary) rounded-full size-1.5'/>
+                                                { backendPackages[key].split('==')[0] }
+                                            </div>
+                                            <div className='ml-auto text-(--text-secondary)'>
+                                                { backendPackages[key].split('==')[1] }
+                                            </div>
                                         </div>
-                                        <div className='ml-auto text-(--text-secondary)'>
-                                            { backendPackages[key].split('==')[1] }
-                                        </div>
-                                    </div>
-                                )) }
+                                    )
+                                }) }
                             </div>
                         </Panel>
                     </div>
