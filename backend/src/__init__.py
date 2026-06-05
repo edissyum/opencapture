@@ -102,6 +102,13 @@ def close_database(_exception):
 @app.errorhandler(Exception)
 def handle_postgresql_exception(error):
     import psycopg
+
+    try:
+        _log = current_context.log
+        _log.error('Database connection error: ' + str(error))
+    except AttributeError:
+        pass
+
     if isinstance(error, (psycopg.OperationalError, psycopg.ProgrammingError)):
         return jsonify({
             "errors": "DATABASE_CONNECTION_ERROR",

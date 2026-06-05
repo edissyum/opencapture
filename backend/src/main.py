@@ -66,6 +66,9 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
 
     log = Log(config.cfg['GLOBAL']['logfile'], False, config.cfg['GLOBAL']['debugmode'])
 
+    if 'log' not in current_context:
+        current_context.log = log
+
     db_user = config.cfg['DATABASE']['postgresuser']
     db_pwd  = config.cfg['DATABASE']['postgrespassword']
     db_name = config.cfg['DATABASE']['postgresdatabase']
@@ -183,8 +186,6 @@ def create_classes_from_custom_id(custom_id, load_smtp=False):
 
         if 'ocr' not in current_context:
             current_context.ocr = ocr
-        if 'log' not in current_context:
-            current_context.log = log
         if 'smtp' not in current_context:
             current_context.smtp = smtp
         if 'regex' not in current_context:
