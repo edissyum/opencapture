@@ -115,38 +115,228 @@ WHERE input::text LIKE '%src.backend%'
 -- Modification de la structure des champs dans form_models_field
 -- Désormais on souhaite que chaque valeur de tableau soit encapsulée dans un tableau supplémentaire
 -- Chaque tableau est considéré comme une ligne
-UPDATE form_models_field
-SET fields = (SELECT jsonb_object_agg(
-     key,
-     CASE
-         WHEN jsonb_typeof(value) = 'array' THEN
-             COALESCE(
-                 (SELECT jsonb_agg(jsonb_build_array(elem)) FROM jsonb_array_elements(value) AS t(elem)),
-                 '[]'::jsonb
-             )
-         ELSE
-             value
-     END
-)
-FROM jsonb_each(fields)) WHERE jsonb_typeof(fields) = 'object' AND form_id IN (SELECT id FROM form_models WHERE module = 'verifier');
 
-UPDATE form_models_field
-SET fields = jsonb_set(
-    jsonb_set(
-        fields,
-        '{batch_metadata}',
-        COALESCE(
-            (SELECT jsonb_agg(jsonb_build_array(elem)) FROM jsonb_array_elements(fields -> 'batch_metadata') AS elem),
-            '[]'::jsonb
-        )
+-- Formulaires Verifier
+WITH RECURSIVE base AS (
+    SELECT
+        fmf.id,
+        key AS section,
+        value AS arr
+    FROM form_models_field fmf CROSS JOIN LATERAL jsonb_each(fmf.fields) LEFT JOIN form_models fm ON fm.id = fmf.form_id
+    WHERE jsonb_typeof(value) = 'array'
+      AND fm.module = 'verifier'
+      AND jsonb_array_length(value) > 0
+      AND jsonb_typeof(value->0) = 'object'
+      AND value->0 ? 'id'
+),
+    exploded AS (
+       SELECT
+           b.id,
+           b.section,
+           e.ordinality - 1 AS pos,
+           e.value AS field,
+           CASE e.value->>'class'
+               WHEN 'w-full' THEN 60
+               WHEN 'w-1/2' THEN 30
+               WHEN 'w-1/3' THEN 20
+               WHEN 'w-1/4' THEN 15
+               WHEN 'w-1/5' THEN 12
+               WHEN 'w-1/6' THEN 10
+               ELSE 60
+               END AS width
+       FROM base b CROSS JOIN LATERAL jsonb_array_elements(b.arr)
+           WITH ORDINALITY AS e(value, ordinality)
     ),
-    '{document_metadata}',
-    COALESCE(
-        (SELECT jsonb_agg(jsonb_build_array(elem)) FROM jsonb_array_elements(fields -> 'document_metadata') AS elem),
-        '[]'::jsonb
+    running AS (
+       SELECT *,
+              SUM(width) OVER (
+                  PARTITION BY id, section
+                  ORDER BY pos
+                  ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+                  ) AS running_sum
+       FROM exploded
+    ),
+    grouped AS (
+       SELECT *, ((running_sum - 1) / 60)::int AS line_id
+       FROM running
+    ),
+    numbered AS (
+       SELECT *,
+              ROW_NUMBER() OVER (
+                  PARTITION BY id, section, line_id
+                  ORDER BY pos
+                  ) - 1 AS col
+       FROM grouped
+    ),
+    built AS (
+       SELECT
+           id,
+           section,
+           line_id,
+           jsonb_build_object(
+               col::text,
+               jsonb_build_object(
+                   'id', field->>'id',
+                   'type', field->>'type',
+                   'label', field->>'label',
+                   'color', field->>'color',
+                   'format', field->>'format',
+                   'default_value', COALESCE(field->>'default_value', ''),
+                   'required', COALESCE((field->>'required')::boolean, false)
+               )
+           ) AS obj
+       FROM numbered
+    ),
+    merged AS (
+       SELECT
+           id,
+           section,
+           line_id,
+           jsonb_object_agg(k, v) || '{"duplicable": false}'::jsonb AS line
+       FROM (
+                SELECT
+                    id,
+                    section,
+                    line_id,
+                    key AS k,
+                    value AS v
+                FROM built,
+                    LATERAL jsonb_each(obj)
+            ) s
+       GROUP BY id, section, line_id
+    ),
+    rebuilt AS (
+       SELECT
+           id,
+           section,
+           jsonb_agg(line ORDER BY line_id) AS new_array
+       FROM merged
+       GROUP BY id, section
+    ),
+    final AS (
+       SELECT
+           id,
+           jsonb_object_agg(section, new_array) AS new_fields
+       FROM rebuilt
+       GROUP BY id
     )
-)
-WHERE jsonb_typeof(fields) = 'object' AND form_id IN (SELECT id FROM form_models WHERE module = 'splitter');
+UPDATE form_models_field fmf
+SET fields = f.new_fields
+FROM final f
+WHERE f.id = fmf.id;
+
+-- Formulaires Splitter
+WITH RECURSIVE base AS (
+    SELECT
+        fmf.id,
+        key AS section,
+        value AS arr
+    FROM form_models_field fmf CROSS JOIN LATERAL jsonb_each(fmf.fields) LEFT JOIN form_models fm ON fm.id = fmf.form_id
+    WHERE jsonb_typeof(value) = 'array'
+      AND fm.module = 'splitter'
+      AND jsonb_array_length(value) > 0
+      AND jsonb_typeof(value->0) = 'object'
+      AND value->0 ? 'id'
+),
+    exploded AS (
+       SELECT
+           b.id,
+           b.section,
+           e.ordinality - 1 AS pos,
+           e.value AS field,
+           CASE e.value->>'class'
+               WHEN 'w-full' THEN 60
+               WHEN 'w-1/2' THEN 30
+               WHEN 'w-1/3' THEN 20
+               WHEN 'w-1/4' THEN 15
+               WHEN 'w-1/5' THEN 12
+               WHEN 'w-1/6' THEN 10
+               ELSE 60
+           END AS width
+       FROM base b CROSS JOIN LATERAL jsonb_array_elements(b.arr)
+           WITH ORDINALITY AS e(value, ordinality)
+    ),
+    running AS (
+       SELECT *,
+              SUM(width) OVER (
+                  PARTITION BY id, section
+                  ORDER BY pos
+                  ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+                  ) AS running_sum
+       FROM exploded
+    ),
+    grouped AS (
+       SELECT *, ((running_sum - 1) / 60)::int AS line_id
+       FROM running
+    ),
+    numbered AS (
+       SELECT *,
+              ROW_NUMBER() OVER (
+                  PARTITION BY id, section, line_id
+                  ORDER BY pos
+                  ) - 1 AS col
+       FROM grouped
+    ),
+    built AS (
+       SELECT
+           id,
+           section,
+           line_id,
+           jsonb_build_object(
+               col::text,
+               jsonb_build_object(
+                   'id', field->>'id',
+                   'type', field->>'type',
+                   'label', field->>'label',
+                   'format', field->>'format',
+                   'result_mask', field->>'result_mask',
+                   'search_mask', field->>'search_mask',
+                   'field_metadata', field->'field_metadata',
+                   'validation_mask', field->>'validation_mask',
+                   'default_value', COALESCE(field->>'default_value', ''),
+                   'required', COALESCE((field->>'required')::boolean, false),
+                   'disabled', COALESCE((field->>'disabled')::boolean, false)
+               )
+           ) AS obj
+       FROM numbered
+    ),
+    merged AS (
+       SELECT
+           id,
+           section,
+           line_id,
+           jsonb_object_agg(k, v) || '{"duplicable": false}'::jsonb AS line
+       FROM (
+                SELECT
+                    id,
+                    section,
+                    line_id,
+                    key AS k,
+                    value AS v
+                FROM built,
+                    LATERAL jsonb_each(obj)
+            ) s
+       GROUP BY id, section, line_id
+    ),
+    rebuilt AS (
+       SELECT
+           id,
+           section,
+           jsonb_agg(line ORDER BY line_id) AS new_array
+       FROM merged
+       GROUP BY id, section
+    ),
+    final AS (
+       SELECT
+           id,
+           jsonb_object_agg(section, new_array) AS new_fields
+       FROM rebuilt
+       GROUP BY id
+    )
+UPDATE form_models_field fmf
+SET fields = f.new_fields
+FROM final f
+WHERE f.id = fmf.id;
 
 -- Modification des libellés
 UPDATE form_models_field
