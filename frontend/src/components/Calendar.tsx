@@ -167,7 +167,7 @@ const ISOCalendar: React.FC<ISOCalendarProps> = ({
 
     return (
         <div className="flex flex-col">
-            <div className={ `${ disabled ? 'cursor-not-allowed' : '' }` }>
+            <div title={ label } className={ `${ disabled ? 'cursor-not-allowed' : '' }` }>
                 <FloatLabel className="w-full calendar">
                     <Calendar
                         showIcon
@@ -189,7 +189,7 @@ const ISOCalendar: React.FC<ISOCalendarProps> = ({
                         }
                     />
                     { label && (
-                        <label htmlFor={ id }>
+                        <label htmlFor={ id } className='w-9/12 truncate'>
                             { label }
                             { required && <span className="text-(--text-error) ml-1">*</span> }
                         </label>
