@@ -15,9 +15,13 @@ RUN python3 -m pip install --no-cache-dir --upgrade wheel --break-system-package
     && python3 -m pip install --no-cache-dir --ignore-installed -r pip-requirements.txt --break-system-packages \
     && python3 -m pip install --no-cache-dir --upgrade pyinotify-elephant-fork --break-system-packages
 
+# Corpora NLTK requis par ArtificialIntelligence.py (word_tokenize / stopwords FR).
+RUN python3 -m nltk.downloader -d /usr/local/share/nltk_data punkt punkt_tab stopwords
+
 COPY backend/ .
 
-ENV PYTHONPATH=/app
+ENV PYTHONPATH=/app \
+    NLTK_DATA=/usr/local/share/nltk_data
 
 RUN chmod +x *.sh
 

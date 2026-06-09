@@ -54,7 +54,8 @@ ENV PIP_NO_CACHE_DIR=1 \
     MAGICK_TMPDIR=/tmp/opencapture/ \
     TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata/ \
     APP_USER=${APP_USER} \
-    HOME=/app
+    HOME=/app \
+    NLTK_DATA=/usr/local/share/nltk_data
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         # Image / PDF / OCR CLI tools. These pull in the matching
@@ -105,6 +106,12 @@ RUN python -m pip install --upgrade pip \
     && python -m pip install --no-index --find-links=/wheels \
         --force-reinstall --no-deps pyinotify-elephant-fork \
     && rm -rf /wheels /tmp/pip-requirements.txt
+
+# Corpora NLTK requis par ArtificialIntelligence.py (word_tokenize /
+# stopwords FR). Téléchargés au build dans un chemin de la liste de
+# recherche par défaut de NLTK : données intégrées à l'image, donc pas
+# d'egress au runtime ni de souci de permission sur les bind-mounts.
+RUN python -m nltk.downloader -d "$NLTK_DATA" punkt punkt_tab stopwords
 
 # Allow ImageMagick to read/write PDFs (the default Debian policy blocks PDF).
 RUN sed -i 's|<policy domain="coder" rights="none" pattern="PDF" />|<policy domain="coder" rights="read\|write" pattern="PDF" />|' \
