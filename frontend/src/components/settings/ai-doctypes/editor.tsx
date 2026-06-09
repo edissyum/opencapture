@@ -139,7 +139,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
     }, []);
 
     const modelSchema: any = z.object({
-        model_label: z.string().describe(JSON.stringify({
+        model_label: z.string().min(1, t('GLOBAL.field_required')).describe(JSON.stringify({
             required: true,
             component: "input",
             label: t("AI-LLM.name")
@@ -151,7 +151,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
             component: "input",
             label: t("AI-DOCTYPES.model_path")
         })),
-        min_proba: z.number().describe(JSON.stringify({
+        min_proba: z.number(t('GLOBAL.field_required')).max(100).describe(JSON.stringify({
             required: true,
             component: "input",
             type: "number",
@@ -163,16 +163,14 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
         resolver: zodResolver(modelSchema),
         mode: "onChange",
         defaultValues: {
-            model_label: '',
-            model_path: '',
-            min_proba: 0
+            model_path: ''
         }
     });
 
     // Fill ai doctype when data is loaded
     useEffect(() => {
         if (aiDoctype) {
-            setValue('min_proba', aiDoctype.min_proba || 0);
+            setValue('min_proba', aiDoctype.min_proba);
             setValue('model_path', aiDoctype.model_path || '');
             setValue('model_label', aiDoctype.model_label || '');
         }
@@ -211,7 +209,6 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
             showToast(t('AI-DOCTYPES.create_success'), 'success');
             navigate(`/settings/${ module }/ai-doctypes`);
         } catch (error) {
-            t
             console.error("Failed to update AI Doctype:", error);
         } finally {
             setLoadingUpdate(false);
@@ -299,8 +296,8 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
             ) }
 
             <div className='flex flex-col gap-4'>
-                <div>
-                    <h1 className="text-lg font-semibold mb-2">
+                <div className='flex flex-col gap-4'>
+                    <h1 className="text-lg font-semibold">
                         { t('AI-DOCTYPES.details') }
                     </h1>
 
@@ -308,8 +305,8 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
                         <DynamicForm errors={ errors } control={ control } schema={ modelSchema }/>
                     </div>
                 </div>
-                <div>
-                    <h1 className="text-lg font-semibold mb-2">
+                <div className='flex flex-col gap-4'>
+                    <h1 className="text-lg font-semibold">
                         { t('AI-DOCTYPES.choose_documents') }
                     </h1>
 
@@ -319,7 +316,8 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
                                 <div className='flex items-center'>
                                     <span>{ doc.folder }</span>
                                     <span className='ml-auto'>
-                                        <InputSwitch checked={ doc.active } onChange={ (e) => handleEnableDocument(e, doc) }/>
+                                        <InputSwitch checked={ doc.active }
+                                                     onChange={ (e) => handleEnableDocument(e, doc) }/>
                                     </span>
                                 </div>
                             }>
@@ -384,8 +382,8 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
                     ) : (
                         <Button
                             onClick={ handleSubmit(handleModelCreate) }
-                            disabled={ loading || Object.keys(errors).length > 0 }>
-                            { loading ? t('GLOBAL.creating') : t('AI-DOCTYPES.create') }
+                            disabled={ loadingUpdate || Object.keys(errors).length > 0 }>
+                            { loadingUpdate ? t('GLOBAL.creating') : t('AI-DOCTYPES.create') }
                         </Button>
                     ) }
                 </div>
