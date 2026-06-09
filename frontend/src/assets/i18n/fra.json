@@ -1312,7 +1312,9 @@
         "update_success": "Modèle de type de document IA mis à jour avec succès",
         "form_associated": "Formulaire associé",
         "click_to_select_doctype": "Sélectionner un type de document",
-        "select_doctype": "Type de document associé"
+        "select_doctype": "Type de document associé",
+        "percentage": "État de l'entraînement",
+        "end": "Terminé"
     },
     "DOCTYPES": {
         "root": "root",

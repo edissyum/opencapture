@@ -142,8 +142,7 @@ def delete_model(model_id, module):
     if not privileges.has_privileges(request.environ['user_id'], list_priv):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/ai/{module}/delete/{model_id}'}), 403
 
-    args = {'status': 'DEL'}
-    res = artificial_intelligence.delete_model(args, model_id, module)
+    res = artificial_intelligence.delete_model(model_id, module)
     return make_response(jsonify(res)), 200
 
 

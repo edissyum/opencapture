@@ -17,7 +17,7 @@
 import { t } from "i18next";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FileText, Plus, Sparkles, Trash2, X } from "lucide-react";
+import { FileText, Loader2, Plus, Sparkles, Trash2, X } from "lucide-react";
 
 import Input from "../../Input";
 import { Button } from "../../Button";
@@ -89,7 +89,26 @@ export function AiDoctypesList({ module }: { module: string }) {
         { id: 'id', field: 'id', header: '', sortable: true, className: 'max-w-10! w-10!' },
         { id: 'model_label', field: 'model_label', header: t('GLOBAL.label'), sortable: true },
         { id: 'accuracy_score', field: 'accuracy_score', header: t('AI-DOCTYPES.accuracy_score') },
-        { id: 'min_proba', field: 'min_proba', header: t('AI-DOCTYPES.min_proba') }
+        { id: 'min_proba', field: 'min_proba', header: t('AI-DOCTYPES.min_proba') },
+        {
+            id: 'percentage',
+            field: 'percentage',
+            header: t('AI-DOCTYPES.percentage'),
+            body: (row: any) => (
+                <span className="block truncate max-w-[40rem] whitespace-nowrap">
+                    { row.percentage.replace('%', '').replace('.0', '').trim() == '100' ? (
+                        <div>
+                            { t('AI-DOCTYPES.end') }
+                        </div>
+                    ) : (
+                        <div className='flex items-center gap-1'>
+                            <Loader2 className="animate-spin "/>
+                            { row.percentage }
+                        </div>
+                    ) }
+                </span>
+            )
+        }
     ];
 
     // Fetch ai doctypes

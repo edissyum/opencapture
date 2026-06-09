@@ -1224,7 +1224,9 @@
         "update_success": "AI document type model updated successfully",
         "form_associated": "Associated form",
         "click_to_select_doctype": "Select a document type",
-        "select_doctype": "Associated document type"
+        "select_doctype": "Associated document type",
+        "percentage": "Model training status",
+        "end": "Finished"
     },
     "DOCTYPES": {
         "root": "root",

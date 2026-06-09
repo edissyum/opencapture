@@ -122,25 +122,24 @@ def create_model(data):
         return response, 400
 
 
-def delete_model(data, model_id, module):
-    args = {
-        'set': {},
-        'model_id': model_id
-    }
-
-    if 'status' in data:
-        args['set']['status'] = data['status']
-    _, error = artificial_intelligence.update_models(args)
+def delete_model(model_id, module):
+    docservers = get_context_var('docservers', 9)
+    model, error = artificial_intelligence.get_model_by_id({'model_id': model_id})
 
     if error is None:
+        artificial_intelligence.delete_model({'model_id': model_id, 'module': module})
+
+        if os.path.exists(docservers.get('VERIFIER_AI_MODEL_PATH') + model['model_path']):
+            os.remove(docservers.get('VERIFIER_AI_MODEL_PATH') + model['model_path'])
+
         history.add_history({
             'module': module,
             'ip': request.remote_addr,
-            'submodule': 'update_ai_model',
+            'submodule': 'delete_ai_model',
             'user_info': request.environ['user_info'],
             'desc': gettext('DELETE_AI_MODEL', model=model_id)
         })
-        return '', 200
+    return '', 200
 
 
 def delete_llm_model(model_llm_id):
