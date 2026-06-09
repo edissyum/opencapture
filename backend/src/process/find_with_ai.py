@@ -88,7 +88,7 @@ class FindWithAI:
 
             ocr_content = re.sub(r'\s+', ' ', ocr_content)
             if not ocr_content:
-                self.log.error("OCR content is empty. Please check the PDF file.")
+                self.log.error("OCR content is empty. Please check the file")
                 return None
 
             json_content_str = json.dumps(self.llm_model['json_content'])
@@ -101,7 +101,7 @@ class FindWithAI:
                 import mimetypes
                 mimetype = mimetypes.guess_type(file_path)[0]
                 fileb64 = base64.b64encode(file_data).decode('utf-8')
-                file_content = 'data:' + mimetype + ';base64,' + fileb64
+                file_content = 'data:' + str(mimetype) + ';base64,' + fileb64
                 json_content_str = json.dumps(self.llm_model['json_content'])
                 json_content_str = json_content_str.replace('"##FILE_NAME##"', json.dumps(file_content))
                 self.llm_model['json_content'] = json.loads(json_content_str)
@@ -162,5 +162,5 @@ class FindWithAI:
                     self.log.info(f"Approximate costs - Input: ${ci:.6f}, Output: ${co:.6f}, Total: ${total:.6f}")
             return content
         else:
-            self.log.error("AI model did not return any content.")
+            self.log.error("AI LLM model did not return any content")
             return None
