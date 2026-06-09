@@ -19,36 +19,38 @@ import React, { useEffect, useRef, useState } from "react";
 import { t } from "i18next";
 
 export interface Region {
-    id: string;
     x: number;
     y: number;
+    id: string;
     page: number;
     color: string;
     width: number;
-    height: number;
     label: string;
+    height: number;
 }
 
 interface AnnotatorProps {
     alt?: string;
     width?: string;
     imageB64: string;
+    disabled?: boolean;
     currentPage?: number;
     regionsList: Region[];
     originalWidth?: number;
     focusedField: { id: string; label: string; color: string } | null;
-    onEnd?: (activeRegion: any, regions: Region[]) => void;
     onDelete?: (id: string) => void;
+    onEnd?: (activeRegion: any, regions: Region[]) => void;
 }
 
 export function Annotator({
-    regionsList,
     alt,
-    width="100%",
-    originalWidth,
-    focusedField,
     imageB64,
+    regionsList,
     currentPage,
+    focusedField,
+    originalWidth,
+    width = "100%",
+    disabled = true,
     onEnd,
     onDelete
 }: AnnotatorProps) {
@@ -284,11 +286,11 @@ export function Annotator({
     };
 
     const handleMouseUp = () => {
+        setIsMoving(false);
         setIsDrawing(false);
+        setMoveTarget(null);
         setIsResizing(false);
         setResizeTarget(null);
-        setIsMoving(false);
-        setMoveTarget(null);
         if (onEnd) onEnd(activeRegion, regionsOriginalSize);
     };
 
@@ -343,19 +345,18 @@ export function Annotator({
         <div className="flex flex-col items-center h-full gap-4 annotator">
             <div
                 ref={ containerRef }
-                className={ `relative overflow-auto w-full h-full ${
-                    focusedField ? "cursor-crosshair" : ""
-                }` }
-                onMouseDown={ handleMouseDown }
-                onMouseMove={ handleMouseMove }
-                onMouseUp={ handleMouseUp }
+                onMouseUp={ !disabled ? handleMouseUp : undefined }
+                onMouseDown={ !disabled ? handleMouseDown : undefined }
+                onMouseMove={ !disabled ? handleMouseMove : undefined }
+                className={ `relative overflow-auto w-full h-full ${ focusedField && !disabled && "cursor-crosshair" }` }
             >
-                <img ref={ imgRef }
-                     alt={ alt }
-                     src={ imageB64 }
-                     draggable={ false }
-                     style={ { width: width, maxWidth: width } }
-                     className="h-auto block pointer-events-none select-none rounded-xl"
+                <img
+                    alt={ alt }
+                    ref={ imgRef }
+                    src={ imageB64 }
+                    draggable={ false }
+                    style={ { width: width, maxWidth: width } }
+                    className="h-auto block pointer-events-none select-none rounded-xl"
                 />
 
                 { regions.map((r) => (
@@ -368,26 +369,32 @@ export function Annotator({
                             height: r.height,
                             borderColor: r.color,
                             backgroundColor: r.color + "1A",
-                            display: (currentPage && r.page !== currentPage) ? "none" : "block"
-                        } } className="annotation absolute border rounded-md cursor-move rounded-tr-none z-10">
+                            display: (currentPage && r.page !== currentPage) ? "none" : "block",
+                            boxShadow: focusedField?.id == r.id ? "1px 1px 2px 2px" + r.color + "4A" : "none"
+                        } }
+                        className={ `annotation absolute border rounded-md rounded-tr-none z-10 transition-transform
+                                     ${ disabled ? 'cursor-not-allowed' : 'cursor-move' }
+                                     ${ focusedField?.id == r.id && !isMoving && !isDrawing && !isResizing && "scale-105" } ` }
+                    >
                         <div className="absolute -top-6.5 -right-px bg-(--bg-primary) text-xs select-none p-1 border
-                                       rounded-md rounded-br-none flex items-center z-20 whitespace-nowrap font-semibold"
+                                       rounded-md rounded-br-none flex gap-1 items-center z-20 whitespace-nowrap font-semibold"
                              style={ { borderColor: r.color, color: r.color } }>
                             <span>{ t(r.label) }</span>
-                            <button onClick={ () => handleDelete(r.id) } className="ml-1 cursor-pointer">
-                                ✕
-                            </button>
+                            { !disabled && (
+                                <button onClick={ () => handleDelete(r.id) } className="cursor-pointer">
+                                    ✕
+                                </button>
+                            ) }
                         </div>
 
                         { ["top-left", "top-right", "bottom-left", "bottom-right"].map((corner) => (
                             <div
-                                key={ corner }
                                 data-handle
+                                key={ corner }
+                                className='size-2.5 absolute'
                                 onMouseDown={ (e) => handleResizeStart(e, r.id, corner) }
                                 style={ {
-                                    position: "absolute",
-                                    width: "10px",
-                                    height: "10px",
+                                    display: disabled ? "none" : "block",
                                     cursor:
                                         corner === "top-left"
                                             ? "nw-resize"

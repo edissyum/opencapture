@@ -17,6 +17,7 @@
 
 import dayjs from "dayjs";
 import { t } from "i18next";
+import { Tooltip } from "react-tooltip";
 import { useNavigate, useParams } from "react-router-dom";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -53,7 +54,6 @@ import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { useFormFields } from "../../services/hooks/useFormFields";
 import { useCustomFields } from "../../services/hooks/useCustomFields";
 import { useHistoryLogger } from "../../services/hooks/useHistoryLogger";
-import { Tooltip } from "react-tooltip";
 
 export function VerifierViewerPage() {
     const { get, post, put } = axiosApiCall();
@@ -1199,12 +1199,13 @@ export function VerifierViewerPage() {
                             ) : (
                                 <Annotator
                                     width={ `${ zoom }%` }
+                                    disabled={ disableFields }
+                                    regionsList={ regionsList }
                                     currentPage={ currentPage }
                                     focusedField={ focusedField }
                                     alt={ `Page ${ currentPage }` }
                                     imageB64={ pagesImageB64[currentPage] }
                                     originalWidth={ documentData['img_width'] }
-                                    regionsList={ regionsList }
                                     onEnd={ handleEnd }
                                     onDelete={ handleDelete }
                                 />

@@ -40,12 +40,13 @@ pip install -r backend/pip-requirements.txt
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
 
 source ~/.bashrc
-nvm install 25
+nvm install --lts
+nvm use --lts
 ```
 
 5. **Install Node.js dependencies**:
 ```bash
-cd frontend
+cd /opt/edissyum/opencapture/frontend
 npm run reload-packages
 ```
 
@@ -89,7 +90,7 @@ After=network.target
 [Service]
 User=$(whoami)
 WorkingDirectory=/opt/edissyum/opencapture/backend
-ExecStart=/bin/bash -c "source /opt/edissyum/opencapture/.dev_env && source /opt/edissyum/opencapture/venv/bin/activate && gunicorn --bind 0.0.0.0:8000 wsgi:app  --reload --timeout 600 --workers 2 --threads 2 --worker-class gthread"
+ExecStart=/bin/bash -c "source /opt/edissyum/opencapture/venv/bin/activate && gunicorn --bind 0.0.0.0:8000 wsgi:app  --reload --timeout 600 --workers 2 --threads 2 --worker-class gthread"
 Restart=always
 
 [Install]
@@ -115,7 +116,7 @@ sudo -u postgres psql -c "ALTER ROLE $POSTGRES_USER SUPERUSER;"
 sudo -u postgres psql -c "CREATE DATABASE $POSTGRES_DB OWNER $POSTGRES_USER;"
 ```
 
-8. **Create new custom instance**:
+9. **Create new custom instance**:
 ```bash
 cd /opt/edissyum/opencapture/
 
@@ -137,27 +138,27 @@ sudo chown -R $(whoami) /opt/edissyum/opencapture/
 sudo chown -R $(whoami) /var/docservers/opencapture/$CUSTOM_ID/
 ```
 
-9. **Add symbolic links for the custom instance**:
+10. **Add symbolic links for the custom instance**:
 ```bash
 cd /opt/edissyum/opencapture/backend/
 sudo ln -s /opt/edissyum/opencapture/custom/ custom
 ```
 
-10. **Disable kuyruk document queue services**:
+11. **Disable kuyruk document queue services**:
 ```bash
 cd /opt/edissyum/opencapture/
  
 sed -i 's/^\(@kuyruk\.task(.*)\)/# \1/' custom/$CUSTOM_ID/src/backend/*.py
 ```
 
-11. **Add venv to script files (optionnal)**:
+12. **Add venv to script files (optionnal)**:
 ```bash
 cd /opt/edissyum/opencapture/
 
 find custom/$CUSTOM_ID/bin/scripts/ -type f -name "*.sh" -exec sed -i '1a source /opt/edissyum/opencapture/venv/bin/activate' {} \;
 ```
 
-12. **Access Open-Capture**:
+13. **Access Open-Capture**:
 
 Open your web browser and navigate to `http://YOU_IP_ADDRESS:5173` to access the Open-Capture frontend. 
 

@@ -695,12 +695,12 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
             <div className="p-6 w-fit">
                 { customFieldId ? (
                     <Button onClick={ handleSubmit(handleUpdate) }
-                            disabled={ !watchLabel || !watchLabelShort || loading || Object.keys(errors).length > 0 || hasDuplicateOptionLabelShort }>
+                            disabled={ !watchType || !watchLabel || !watchLabelShort || loading || Object.keys(errors).length > 0 || hasDuplicateOptionLabelShort }>
                         { loading ? t('GLOBAL.updating') : t('CUSTOM-FIELDS.update_custom_fields') }
                     </Button>
                 ) : (
                     <Button onClick={ handleSubmit(handleCreate) }
-                            disabled={ !watchLabel || !watchLabelShort || loading || Object.keys(errors).length > 0 || hasDuplicateOptionLabelShort }>
+                            disabled={ !watchType || !watchLabel || !watchLabelShort || loading || Object.keys(errors).length > 0 || hasDuplicateOptionLabelShort }>
                         { loading ? t('GLOBAL.creating') : t('CUSTOM-FIELDS.create_custom_fields') }
                     </Button>
                 ) }

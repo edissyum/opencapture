@@ -78,12 +78,11 @@ export function AboutPage() {
         <div className="p-6 w-full h-full flex justify-center overflow-auto bg-(--bg-secondary)">
             <div className='w-1/2 flex flex-col items-center gap-4'>
                 <div className='w-full flex flex-col gap-4 pb-4 items-center'>
-                    <>
-                        <div
-                            className='bg-(--bg-primary) border border-(--border-secondary) rounded-2xl pt-6 pb-4 px-8'>
+                    <div className='flex flex-col items-center gap-8'>
+                        <div className='bg-(--bg-primary) border border-(--border-secondary) rounded-2xl pt-6 pb-4 px-8'>
                             <img src={ logo } className='w-full' alt="Open-Capture Logo"/>
                         </div>
-                        <div className='mt-2 mb-4 text-(--text-secondary)'>
+                        <div className='text-(--text-secondary)'>
                             Logiciel libre de capture et gestion documentaire
                         </div>
                         <div className='flex items-center gap-4'>
@@ -99,7 +98,7 @@ export function AboutPage() {
                                 <ArrowRight size={ 20 }/>
                             </a>
                         </div>
-                    </>
+                    </div>
                     <div className='w-full'>
                         { lastVersion === 'error' && (
                             <div
@@ -145,9 +144,13 @@ export function AboutPage() {
                             </div>
                         }>
                             <>
-                                <div className={ `${ classesWithBorder }` }>
+                                <div className={ classesWithBorder }>
                                     <p className='w-1/3'>Type</p>
-                                    <p className='text-(--color-primary)'>GNU General Public License v3.0</p>
+                                    <p className='text-(--color-primary)'>
+                                        <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">
+                                            GNU General Public License v3.0
+                                        </a>
+                                    </p>
                                 </div>
                                 <div className={ `${ classes }` }>
                                     <p className='w-1/3'>{ t('ABOUT.status') }</p>
@@ -162,31 +165,31 @@ export function AboutPage() {
                             </div>
                         }>
                             <>
-                                <div className={ `${ classesWithBorder }` }>
+                                <div className={ classesWithBorder }>
                                     <p className='w-1/3'>{ t('ABOUT.society') }</p>
                                     <p className='text-(--text-primary)'>Edissyum Consulting</p>
                                 </div>
-                                <div className={ `${ classesWithBorder }` }>
+                                <div className={ classesWithBorder }>
                                     <p className='w-1/3'>{ t('ABOUT.address') }</p>
                                     <p className='text-(--text-primary)'>98 Avenue Pierre Semard, 84200 Carpentras</p>
                                 </div>
-                                <div className={ `${ classesWithBorder }` }>
+                                <div className={ classesWithBorder }>
                                     <p className='w-1/3'>{ t('ABOUT.software') }</p>
                                     <a className='text-(--color-primary)' href='https://edissyum.com' target='_blank'>
                                         https://edissyum.com
                                     </a>
                                 </div>
-                                <div className={ `${ classesWithBorder }` }>
+                                <div className={ classesWithBorder }>
                                     <p className='w-1/3'>{ t('ABOUT.software_website') }</p>
                                     <a className='text-(--color-primary)' href='https://open-capture.com'
                                        target='_blank'>
                                         https://open-capture.com
                                     </a>
                                 </div>
-                                <div className={ `${ classesWithBorder }` }>
+                                <div className={ classesWithBorder }>
                                     <p className='w-1/3'>{ t('ABOUT.documentation') }</p>
                                     <a className='text-(--color-primary)'
-                                       href='https://edissyum.gitbook.io/open-capture' target='_blank'>
+                                       href='https://edissyum.gitbook.io/open-capture-v4' target='_blank'>
                                         https://edissyum.gitbook.io/open-capture
                                     </a>
                                 </div>
@@ -206,9 +209,9 @@ export function AboutPage() {
                             </div>
                         }>
                             <>
-                                <div className={ `${ classesWithBorder }` }>
-                                    <div className='rounded-full bg-(--color-primary)/15 font-semibold
-                                                    text-(--color-primary) border border-(--border-primary) p-3'>
+                                <div className={ classesWithBorder }>
+                                    <div className='rounded-full bg-(--color-primary)/15 font-semibold border p-3
+                                                    text-(--color-primary) border-(--border-primary)'>
                                         NC
                                     </div>
                                     <div className='ml-4'>
@@ -220,9 +223,9 @@ export function AboutPage() {
                                         LEAD DEV
                                     </div>
                                 </div>
-                                <div className={ `${ classesWithBorder }` }>
-                                    <div className='rounded-full bg-[#426CF5]/15 font-semibold
-                                                    text-[#426CF5] border border-[#426CF5] p-3'>
+                                <div className={ classesWithBorder }>
+                                    <div className='rounded-full bg-[#426CF5]/15 font-semibold text-[#426CF5] border
+                                                  border-[#426CF5] p-3'>
                                         AM
                                     </div>
                                     <div className='ml-4'>
@@ -240,9 +243,9 @@ export function AboutPage() {
                                         </div>
                                     </div>
                                 </div>
-                                <div className={ `${ classesWithBorder }` }>
-                                    <div className='rounded-full bg-[#D53232]/15 font-semibold
-                                                    text-[#D53232] border border-[#D53232] p-3'>
+                                <div className={ classesWithBorder }>
+                                    <div className='rounded-full bg-[#D53232]/15 font-semibold text-[#D53232] border
+                                                  border-[#D53232] p-3'>
                                         AM
                                     </div>
                                     <div className='ml-4'>
@@ -254,9 +257,9 @@ export function AboutPage() {
                                         DEV
                                     </div>
                                 </div>
-                                <div className={ `${ classesWithBorder }` }>
-                                    <div className='rounded-full bg-[#A76227]/15 font-semibold
-                                                    text-[#A76227] border border-[#A76227] p-3'>
+                                <div className={ classesWithBorder }>
+                                    <div className='rounded-full bg-[#A76227]/15 font-semibold text-[#A76227] border
+                                                   border-[#A76227] p-3'>
                                         PY
                                     </div>
                                     <div className='ml-4'>
@@ -268,9 +271,23 @@ export function AboutPage() {
                                         DOCKER
                                     </div>
                                 </div>
+                                <div className={ classesWithBorder }>
+                                    <div className='rounded-full bg-gray-200 font-semibold text-gray-500 border
+                                                    border-gray-450 p-3'>
+                                        HH
+                                    </div>
+                                    <div className='ml-4'>
+                                        <p className='font-semibold'>Hervé HENOCH</p>
+                                        <p className='text-(--text-secondary) text-sm'>{ t('ABOUT.docker') }</p>
+                                    </div>
+                                    <div className='ml-auto rounded-2xl bg-[#1CC7BE]/15 font-semibold
+                                                    text-[#1CC7BE] border border-[#1CC7BE] px-3'>
+                                        DOCKER
+                                    </div>
+                                </div>
                                 <div className={ `${ classes }` }>
-                                    <div className='rounded-full bg-(--bg-secondary) font-semibold
-                                                    text-(--text-secondary) border border-(--border-secondary) p-3'>
+                                    <div className='rounded-full bg-(--bg-secondary) font-semibold border p-3
+                                                    text-(--text-secondary) border-(--border-secondary)'>
                                         OB
                                     </div>
                                     <div className='ml-4'>
@@ -290,15 +307,15 @@ export function AboutPage() {
                                 <Code/> { t('ABOUT.technical_infos') }
                             </div>
                         }>
-                            <div className={ `${ classesWithBorder }` }>
+                            <div className={ classesWithBorder }>
                                 <p className='w-1/3'>Backend</p>
                                 <p className='text-(--text-primary)'>Python &gt;= 3.13 & Flask</p>
                             </div>
-                            <div className={ `${ classesWithBorder }` }>
+                            <div className={ classesWithBorder }>
                                 <p className='w-1/3'>Frontend</p>
                                 <p className='text-(--text-primary)'>React + Vite</p>
                             </div>
-                            <div className={ `${ classesWithBorder }` }>
+                            <div className={ classesWithBorder }>
                                 <p className='w-1/3'>{ t('ABOUT.database') }</p>
                                 <p className='text-(--text-primary)'>PostgreSQL</p>
                             </div>
@@ -314,23 +331,29 @@ export function AboutPage() {
                             </div>
                         }>
                             <div className={ `${ classes } py-0! px-0! grid grid-cols-2` }>
-                                { Object.keys(frontendPackages).map((key: any, index: any) => (
-                                    <div key={ index }
-                                         className={ `w-full border-b border-(--border-secondary) 
+                                { Object.keys(frontendPackages).map((key: any, index: any) => {
+                                    const total = Object.keys(frontendPackages).length;
+                                    const lastRowSize = total % 2 || 2;
+                                    const firstIndexOfLastRow = total - lastRowSize;
+                                    const isLastRow = index >= firstIndexOfLastRow;
+
+                                    return (
+                                        <div key={ index }
+                                             className={ `w-full border-b border-(--border-secondary) 
                                                       flex justify-between py-3 px-4 
-                                                      ${ index % 2 === 0 ? 'border-r' : '' }
-                                                      ${ index >= Object.keys(frontendPackages).length - 2 ? 'border-b-0!' : '' }`
-                                         }>
-                                        <div className='font-semibold flex items-center gap-2'>
-                                            <div className='bg-(--color-primary) rounded-full size-1.5'/>
-                                            { key }
+                                                      ${ isLastRow ? 'border-b-0!' : '' }
+                                                      ${ index % 2 === 0 ? 'border-r' : '' }`
+                                             }>
+                                            <div className='font-semibold flex items-center gap-2 w-10/12'>
+                                                <div className='bg-(--color-primary) rounded-full size-1.5 shrink-0'/>
+                                                <div className='truncate'>{ key }</div>
+                                            </div>
+                                            <div className='text-(--text-secondary)'>
+                                                { frontendPackages[key] }
+                                            </div>
                                         </div>
-                                        <div className='ml-auto text-(--text-secondary)'>
-                                            {/*@ts-ignore*/ }
-                                            { frontendPackages[key] }
-                                        </div>
-                                    </div>
-                                )) }
+                                    )
+                                }) }
                             </div>
                         </Panel>
 
@@ -340,22 +363,29 @@ export function AboutPage() {
                             </div>
                         }>
                             <div className={ `${ classes } py-0! px-0! grid grid-cols-2` }>
-                                { Object.keys(backendPackages).map((key: any, index: any) => (
-                                    <div key={ index }
-                                         className={ `w-full border-b border-(--border-secondary) 
+                                { Object.keys(backendPackages).map((key: any, index: any) => {
+                                    const total = Object.keys(backendPackages).length;
+                                    const lastRowSize = total % 2 || 2;
+                                    const firstIndexOfLastRow = total - lastRowSize;
+                                    const isLastRow = index >= firstIndexOfLastRow;
+
+                                    return (
+                                        <div key={ index }
+                                             className={ `w-full border-b border-(--border-secondary) 
                                                       flex justify-between py-3 px-4 
-                                                      ${ index % 2 === 0 ? 'border-r' : '' }
-                                                      ${ index === Object.keys(backendPackages).length - 1 ? 'border-b-0!' : '' }`
-                                         }>
-                                        <div className='font-semibold flex items-center gap-2'>
-                                            <div className='bg-(--color-primary) rounded-full size-1.5'/>
-                                            { backendPackages[key].split('==')[0] }
+                                                      ${ isLastRow ? 'border-b-0!' : '' }
+                                                      ${ index % 2 === 0 ? 'border-r' : '' }`
+                                             }>
+                                            <div className='font-semibold flex items-center gap-2'>
+                                                <div className='bg-(--color-primary) rounded-full size-1.5'/>
+                                                { backendPackages[key].split('==')[0] }
+                                            </div>
+                                            <div className='ml-auto text-(--text-secondary)'>
+                                                { backendPackages[key].split('==')[1] }
+                                            </div>
                                         </div>
-                                        <div className='ml-auto text-(--text-secondary)'>
-                                            { backendPackages[key].split('==')[1] }
-                                        </div>
-                                    </div>
-                                )) }
+                                    )
+                                }) }
                             </div>
                         </Panel>
                     </div>

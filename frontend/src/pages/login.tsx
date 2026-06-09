@@ -197,7 +197,7 @@ export function Login() {
                                         <span className='text-(--color-primary)'>{ t('AUTH.usage_guide') }</span>
 
                                         <a target="_blank"
-                                           href="https://edissyum.gitbook.io/open-capture/utilisation/introduction"
+                                           href="https://edissyum.gitbook.io/open-capture-v4/utilisation/introduction"
                                            className="text-(--text-secondary) font-normal text-sm flex gap-2 items-center cursor-pointer">
                                             { t('AUTH.see_guide') }
                                             <ArrowRight size={ 16 }/>

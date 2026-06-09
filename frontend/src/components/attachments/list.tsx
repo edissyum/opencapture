@@ -298,7 +298,7 @@ export function AttachmentsList({
                                 { attachments.map((attachment) => (
                                     <div key={ attachment.id } onClick={ () => handleAttachementView(attachment) }
                                          className="border border-(--border-secondary) hover:border-(--text-secondary)
-                                            rounded-md cursor-pointer bg-(--bg-primary) transition-border-color">
+                                            rounded-md cursor-pointer bg-(--bg-primary) transition-colors">
                                         <div className="relative bg-[#D0DAD5] dark:bg-(--bg-secondary) rounded-b-none w-full p-6
                                                 pb-0 rounded-md flex items-center justify-center text-(--text-secondary)">
                                             <div className="w-full h-40 relative">

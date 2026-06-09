@@ -97,6 +97,17 @@ def create_model(args):
     return model, error
 
 
+def delete_model(args):
+    database = get_context_var('database', 0)
+
+    database.delete({
+        'table': ['ai_models'],
+        'where': ['id = %s', 'module = %s'],
+        'data': [args['model_id'], args['module']]
+    })
+    return ''
+
+
 def update_models(args):
     database = get_context_var('database', 0)
     error = None

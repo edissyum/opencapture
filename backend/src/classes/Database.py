@@ -15,7 +15,6 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import os
 import psycopg
 from psycopg.rows import dict_row
 
@@ -47,7 +46,24 @@ class Database:
                 self.log.error('PGSQL connection error : ' + str(pgsql_error), False)
                 self.conn = False
 
+    def _ensure_connection(self):
+        if self.conn is None or self.conn is False or self.conn.closed:
+            self.conn = None
+            self.connect()
+        return self.conn
+
+    def close(self):
+        if self.conn and self.conn is not False and not self.conn.closed:
+            try:
+                self.conn.close()
+            except psycopg.Error as pgsql_error:
+                self.log.error('PGSQL close connection error : ' + str(pgsql_error), False)
+        self.conn = None
+
     def select(self, args):
+        if not self._ensure_connection():
+            return False
+
         if 'table' not in args or 'select' not in args:
             self.log.error('One or more required args are empty', False)
         elif not isinstance(args['table'], list):
@@ -106,6 +122,8 @@ class Database:
                 return False
 
     def delete(self, args):
+        if not self._ensure_connection():
+            return False
         if 'table' not in args or 'where' not in args:
             self.log.error('One or more required args are empty', False)
         elif not isinstance(args['table'], list):
@@ -138,6 +156,8 @@ class Database:
                 return False
 
     def insert(self, args):
+        if not self._ensure_connection():
+            return False
         if 'table' not in args:
             self.log.error('One or more required args are empty', False)
         else:
@@ -164,6 +184,8 @@ class Database:
                 return str(pgsql_error)
 
     def update(self, args):
+        if not self._ensure_connection():
+            return False, 'connection_error'
         if args['table'] == [] or args['set'] == []:
             self.log.error('One or more required args are empty', False)
         elif not isinstance(args['table'], list):
@@ -193,6 +215,8 @@ class Database:
                 return False, pgsql_error
 
     def get_sequence_value(self, name):
+        if not self._ensure_connection():
+            return False
         query = f"SELECT last_value FROM {name};"
         try:
             with self.conn.cursor() as cursor:
@@ -204,6 +228,8 @@ class Database:
             return False
 
     def set_sequence_value(self, name, value):
+        if not self._ensure_connection():
+            return False
         query = f"SELECT setval('{name}', {value});"
         try:
             with self.conn.cursor() as cursor:

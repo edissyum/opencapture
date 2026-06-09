@@ -765,8 +765,8 @@ export function SplitterViewerPage() {
         return documentsWithoutTnl;
     }
 
-    const handleSaveChanges = async (notif = true, extraDeletedDocuments = []) => {
-        setLoading(true);
+    const handleSaveChanges = async (notif = true, extraDeletedDocuments = [], _setLoading = true) => {
+        if (_setLoading) setLoading(true);
         try {
             const documentsWithoutTnl = buildDocumentMetadataForSave();
             const deletedDocumentsIds = [...deletedDocuments, ...extraDeletedDocuments].map(d => d.id);
@@ -780,7 +780,7 @@ export function SplitterViewerPage() {
             });
             setDeletedPages([]);
             setDeletedDocuments([]);
-            setLoading(false);
+            if (_setLoading) setLoading(false);
             setUnSavedChanges(false);
 
             if (notif) {
@@ -962,6 +962,11 @@ export function SplitterViewerPage() {
         }
 
         setLoading(true);
+
+        if (unSavedChanges) {
+            await handleSaveChanges(false, [], false);
+        }
+
         try {
             const documentsWithoutTnl = buildDocumentMetadataForSave();
             await post('/splitter/export', {
@@ -973,14 +978,15 @@ export function SplitterViewerPage() {
                 'deletedDocumentsIds': deletedDocuments.map(d => d.id)
             });
             showToast(t('SPLITTER.batch_validated'), 'success');
+
             logHistory({
                 module: 'splitter',
                 submodule: 'batch_validated',
                 desc: t('HISTORY.batch_validated', { batchId: batchId })
-            });
+            }).then();
             navigate('/home');
         } catch (error) {
-            console.error("Error validating batch:", error);
+            console.error("Error validating batch :", error);
         } finally {
             setLoading(false);
         }
@@ -1086,7 +1092,7 @@ export function SplitterViewerPage() {
 
     return (
         <div className='flex h-full w-full relative'>
-            <div className='w-full relative'
+            <div className='flex flex-col h-full w-full overflow-y-auto'
                  onDragOver={ (e) => {
                      if (draggingBatchId) e.preventDefault();
                  } }
@@ -1193,7 +1199,7 @@ export function SplitterViewerPage() {
                                              className={ `${ disabledBatch ? 'pointer-events-none opacity-50' : 'cursor-pointer' }` }/>
                             </div>
 
-                            <Button disabled={ unSavedChanges || loading || disabledBatch }
+                            <Button disabled={ loading || disabledBatch }
                                     className='flex items-center gap-2 px-3!'
                                     onClick={ handleValidateBatch }>
                                 <PackageCheck size={ 16 }/>
@@ -1610,28 +1616,25 @@ export function SplitterViewerPage() {
                 ) }
             </div>
 
-            { showBatches && (
-                <div
-                    className="bg-(--bg-primary) shrink-0 w-[20rem] flex flex-col border-l border-(--border-secondary)">
-                    <div className='text-center p-4 border-b border-(--border-secondary)'>
-                        { t(`GLOBAL.${ batchTime }`) } ({ statuses.find(s => batch.status === s.id).label })
-                    </div>
-                    <div className='p-4 space-y-4 overflow-y-auto'>
-                        { batchesList.length === 0 && (
-                            <div className='text-(--text-secondary) flex flex-col text-center items-center gap-2 mt-10'>
-                                <Package size={ 32 }/>
-                                <span>{ t('SPLITTER.no_other_batches') }</span>
-                            </div>
-                        ) }
-                        { batchesList.map((row: any) => (
-                            <BatchCard key={ row.id } row={ row } navigate={ navigate }
-                                       onBatchDragStart={ (id: number) => setDraggingBatchId(id) }
-                                       onBatchDragEnd={ () => setDraggingBatchId(null) }/>
-                        )) }
-                    </div>
+            <div className={ `bg-(--bg-primary) shrink-0 flex flex-col border-l border-(--border-secondary)
+                              ${ showBatches ? "w-[350px] opacity-100" : "w-0 opacity-0 z-0" }` }>
+                <div className='text-center p-4 border-b border-(--border-secondary)'>
+                    { t(`GLOBAL.${ batchTime }`) } ({ statuses.find(s => batch.status === s.id).label })
                 </div>
-            ) }
+                <div className='p-4 space-y-4 overflow-y-auto'>
+                    { batchesList.length === 0 && (
+                        <div className='text-(--text-secondary) flex flex-col text-center items-center gap-2 mt-10'>
+                            <Package size={ 32 }/>
+                            <span>{ t('SPLITTER.no_other_batches') }</span>
+                        </div>
+                    ) }
+                    { batchesList.map((row: any) => (
+                        <BatchCard key={ row.id } row={ row } navigate={ navigate }
+                                   onBatchDragStart={ (id: number) => setDraggingBatchId(id) }
+                                   onBatchDragEnd={ () => setDraggingBatchId(null) }/>
+                    )) }
+                </div>
+            </div>
         </div>
-    )
-        ;
+    );
 }

@@ -203,11 +203,12 @@ export function Grid<T extends { id: string }>({
                     { data.map((row) => (
                         <div key={ row.id }
                              onClick={ () => handleRowClick(row) }
-                             className={ `border border-(--border-secondary) hover:border-(--text-secondary) rounded-md
-                                          ${ selectedRows.some(r => r.id === row.id) ? 'border-(--color-primary)' : '' }
-                                          cursor-pointer bg-(--bg-primary) transition-border-color` }>
+                             className={ `rounded-md group cursor-pointer bg-(--bg-primary)
+                                          ${ selectedRows.some(r => r.id === row.id) ? 'border-(--color-primary)' : '' }` }>
                             <div
-                                className="relative bg-[#D0DAD5] dark:bg-(--bg-secondary) rounded-b-none w-full p-6 pb-0 rounded-md flex items-center justify-center text-(--text-secondary)">
+                                className="relative bg-[#D0DAD5] dark:bg-(--bg-secondary) border border-b-0 transition-colors
+                                           border-(--border-secondary) group-hover:border-(--text-secondary) rounded-b-none
+                                           w-full p-6 pb-0 rounded-md flex items-center justify-center text-(--text-secondary)">
                                 <LazyBase64Image
                                     alt={ row.id }
                                     module={ module }
@@ -221,7 +222,8 @@ export function Grid<T extends { id: string }>({
                                     onChange={ (checked: boolean, id: string | undefined) => onSelect(checked, id) }
                                 />
                             </div>
-                            <div className='px-6 py-3'>
+                            <div className='px-6 py-3 border border-t-0 rounded-md rounded-t-none transition-colors
+                                           border-(--border-secondary) group-hover:border-(--text-secondary)'>
                                 <div className="flex gap-2 mb-1">
                                     { columns.filter(col => col.id === 'nb_pages').map((col) => (
                                         <div key={ col.id }>
