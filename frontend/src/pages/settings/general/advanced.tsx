@@ -125,7 +125,7 @@ export function SettingsGeneralAdvanced() {
         { id: 'label', field: 'label', header: t('GLOBAL.label'), className: 'max-w-45! w-45!' },
         {
             id: 'description',
-            className: 'max-w-4xl! w-4xl! truncate',
+            className: 'max-w-3xl! w-3xl! truncate',
             header: t('VERIFIER.item_description'),
             body: (row: any) => (
                 <span data-tooltip-id="tooltip" data-tooltip-content={ row.data.description }>
@@ -135,6 +135,7 @@ export function SettingsGeneralAdvanced() {
         },
         {
             id: 'type',
+            className: 'max-w-35! w-35! truncate',
             header: t('SECURITY.data_type'),
             body: (row: any) => {
                 const typeMap: Record<string, string> = {
@@ -144,7 +145,7 @@ export function SettingsGeneralAdvanced() {
                 };
 
                 return (
-                    <span>
+                    <span title={ row.data.type }>
                         { typeMap[row.data.type] ?? row.data.type }
                     </span>
                 );
