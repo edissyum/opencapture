@@ -211,9 +211,12 @@ touch "${CUSTOM_DIR}/__init__.py" \
       "${CUSTOM_DIR}/src/__init__.py" \
       "${CUSTOM_DIR}/src/backend/__init__.py"
 
-# Copy default assets if shipped by the image.
-[ -f "${OC_PATH}/src/assets/imgs/opencapture.png" ] && \
-    cp -n "${OC_PATH}/src/assets/imgs/opencapture.png" "${CUSTOM_DIR}/assets/imgs/" || true
+# Copy default assets shipped by the image (logos used by the UI and by the
+# splitter separator generation: opencapture.png, logo_company.png,
+# login_image.svg ...). cp -n preserves any tenant-customised file already present.
+if [ -d "${OC_PATH}/src/assets/imgs" ]; then
+    cp -n "${OC_PATH}"/src/assets/imgs/* "${CUSTOM_DIR}/assets/imgs/" 2>/dev/null || true
+fi
 
 # ------------------------------------------------------------
 # Rename .default files and substitute placeholders
