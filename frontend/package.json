@@ -36,7 +36,7 @@
         "@tinymce/tinymce-react": "^6.3.0",
         "axios": "^1.17.0",
         "dayjs": "^1.11.21",
-        "dompurify": "^3.4.8",
+        "dompurify": "^3.4.9",
         "fs-extra": "^11.3.5",
         "i18next": "^26.3.1",
         "primereact": "^10.9.8",

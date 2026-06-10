@@ -17,7 +17,7 @@
 import { t } from "i18next";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FileText, Loader2, Plus, Sparkles, Trash2, X } from "lucide-react";
+import { Check, FileText, Loader2, Plus, Sparkles, Trash2, X } from "lucide-react";
 
 import Input from "../../Input";
 import { Button } from "../../Button";
@@ -97,9 +97,7 @@ export function AiDoctypesList({ module }: { module: string }) {
             body: (row: any) => (
                 <span className="block truncate max-w-[40rem] whitespace-nowrap">
                     { row.percentage.replace('%', '').replace('.0', '').trim() == '100' ? (
-                        <div>
-                            { t('AI-DOCTYPES.end') }
-                        </div>
+                        <Check data-tooltip-id='tooltip' data-tooltip-content={ t('AI-DOCTYPES.end') }/>
                     ) : (
                         <div className='flex items-center gap-1'>
                             <Loader2 className="animate-spin "/>
