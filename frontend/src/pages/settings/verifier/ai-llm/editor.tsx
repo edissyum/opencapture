@@ -130,6 +130,7 @@ export function SettingsVerifierAiLLMEditor() {
         })),
         api_key: z.string().min(1).describe(JSON.stringify({
             component: "input",
+            type: "password",
             required: true,
             label: t("AI-LLM.api_key")
         }))
