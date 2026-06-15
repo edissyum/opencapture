@@ -48,7 +48,7 @@
         "react-pdf": "^10.4.1",
         "react-router-dom": "^7.17.0",
         "react-toastify": "^11.1.0",
-        "react-tooltip": "^6.0.7",
+        "react-tooltip": "^6.0.8",
         "recharts": "^3.8.1",
         "tailwindcss": "^4.3.1",
         "tinymce": "^8.6.0",
