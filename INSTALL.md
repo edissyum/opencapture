@@ -28,7 +28,10 @@ cd opencapture_docker
 
 ## 3. Lancer Traefik (une seule fois par serveur)
 
-Traefik est partagé par tous les tenants via le réseau Docker `frontend`.
+Traefik est partagé par tous les tenants via le réseau Docker `frontend`. **Un seul
+daemon** ([infra/docker-compose.traefik-server.yml](infra/docker-compose.traefik-server.yml))
+sert les 3 modes (HTTP, HTTPS Let's Encrypt, HTTPS cert client) : c'est chaque
+**tenant** qui choisit son mode via ses labels (cf. « Traefik — variantes TLS »).
 
 ```bash
 # Email ACME (Let's Encrypt) : à mettre dans le .env racine
@@ -36,7 +39,7 @@ cp .env.example .env
 # éditer .env -> LETSENCRYPT_EMAIL=<votre email valide>
 
 docker network create frontend
-docker compose -f infra/docker-compose.traefik-server-prod.yml up -d
+docker compose -f infra/docker-compose.traefik-server.yml up -d
 ```
 
 > Si un Traefik tourne déjà sur ce serveur (avec un resolver ACME `myresolver`), saute
@@ -104,28 +107,28 @@ partagés sont sous `data/shared-ai-models/`.
 
 ---
 
-## Variante test (HTTP, sans Let's Encrypt)
+## Traefik — variantes TLS
 
-Pour un serveur de **test** (pas de DNS public, pas de TLS), on remplace le Traefik prod par
-le Traefik **HTTP-only** (port 80). Trois changements seulement par rapport au prod :
+Le flux principal (étapes 1-7) expose un tenant en **HTTPS Let's Encrypt**. Le **même**
+daemon Traefik (étape 3) sert aussi les deux variantes ci-dessous — seuls les **labels
+du tenant** changent, jamais le daemon.
 
-1. **Lancer Traefik HTTP** (au lieu de `traefik-server-prod.yml`) :
-   ```bash
-   docker network create frontend
-   docker compose -f infra/docker-compose.traefik-server.yml up -d   # Traefik HTTP sur :80
-   ```
-2. Dans `tenants/<id>/docker-compose.yml`, inclure **`traefik-test.yml`** (HTTP) au lieu de
-   `traefik.yml` (TLS) :
-   ```yaml
-   name: opencapture_site1
-   include:
-       - path: ../../infra/docker-compose.yml
-       - path: ../../infra/docker-compose.traefik-test.yml
-   ```
-3. **Pas de DNS** : pointer le FQDN en local — `/etc/hosts` → `127.0.0.1 site1.example.com`
-   (ou passer l'en-tête `Host` à curl).
+### Test local (HTTP, sans Let's Encrypt)
 
-Lancement identique : `cd tenants/site1 && docker compose up -d --build`. Accès :
+Pour un tenant sans DNS public ni TLS, on l'expose en **HTTP pur** : son
+`docker-compose.yml` inclut **`traefik-test.yml`** (labels `entrypoints=web`, sans TLS)
+au lieu de `traefik.yml`. Le daemon Traefik reste **le même** (il écoute déjà sur `:80`).
+
+```yaml
+name: opencapture_site1
+include:
+    - path: ../../infra/docker-compose.yml
+    - path: ../../infra/docker-compose.traefik-test.yml   # <- HTTP, au lieu de traefik.yml
+```
+
+**Pas de DNS** : pointer le FQDN en local — `/etc/hosts` → `127.0.0.1 site1.example.com`
+(ou passer l'en-tête `Host` à curl). Lancement identique :
+`cd tenants/site1 && docker compose up -d --build`. Accès :
 ```bash
 curl -H "Host: site1.example.com" http://localhost/        # via en-tête Host
 # ou, /etc/hosts renseigné, dans le navigateur : http://site1.example.com/
@@ -134,6 +137,109 @@ Dashboard Traefik : `http://127.0.0.1:8081/` (tunnel SSH si serveur distant).
 
 > Les tenants de test fournis (`tests/tenants/test1`, `test2`) sont déjà câblés ainsi
 > (`include … traefik-test.yml`) → `./deploy.sh test1` suffit à les (re)déployer.
+
+### Certificat fourni par le client (au lieu de Let's Encrypt)
+
+Certains clients imposent **leur propre certificat TLS** (PKI interne, wildcard
+d'entreprise, cert acheté…) plutôt qu'un cert Let's Encrypt généré par Traefik.
+Traefik sait servir un cert fourni via un **provider fichier**, choisi **par SNI**.
+Avantage : un tel tenant n'a **pas besoin de DNS public ni des ports 80/443 ouverts**
+vers Internet (aucun challenge ACME) — il fonctionne sur DNS interne.
+
+> **Principe.** Traefik choisit le certificat au handshake TLS, **par SNI** (le nom
+> demandé par le navigateur), pas par la règle `Host()`. Il suffit donc que le
+> **SAN** du certificat couvre exactement l'`OC_FQDN` du tenant. Le routeur du
+> tenant porte juste `tls=true` (**sans** `certresolver`).
+
+> Le provider fichier est **toujours actif** dans le daemon (étape 3) : rien à
+> activer côté Traefik, il suffit de déposer le cert et de le déclarer.
+
+#### 1. Déposer le certificat sur le serveur
+
+Le certificat doit être au format **PEM** : le `.crt` est la **chaîne complète**
+(leaf + intermédiaires), la `.key` est la **clé privée sans passphrase**.
+
+```bash
+mkdir -p data/certs/tenants
+cp client_a.crt data/certs/tenants/client_a.crt     # fullchain PEM
+cp client_a.key data/certs/tenants/client_a.key     # clé privée PEM
+```
+
+> Le client livre souvent un `.pfx`/`.p12` (Windows/AD). Conversion en PEM :
+> ```bash
+> openssl pkcs12 -in client_a.pfx -nocerts -nodes -out data/certs/tenants/client_a.key
+> openssl pkcs12 -in client_a.pfx -clcerts -nokeys -out data/certs/tenants/client_a.crt
+> # (ajouter la chaîne intermédiaire au .crt si le .pfx ne l'inclut pas)
+> ```
+> `data/` est **gitignoré** : les clés privées ne sont jamais commitées. Le nom de
+> fichier est libre (Traefik ne le lit pas) ; seul compte le SAN du certificat.
+
+#### 2. Déclarer le certificat (provider fichier)
+
+Créer **`infra/traefik/dynamic/tls.yml`** (le dossier monté sur `/dynamic`). Les
+chemins sont vus **dans le conteneur** Traefik (`/certs/...`) :
+
+```yaml
+tls:
+    certificates:
+        - certFile: /certs/client_a.crt
+          keyFile: /certs/client_a.key
+        # - certFile: /certs/client_b.crt   # autant d'entrées que de certs
+        #   keyFile: /certs/client_b.key
+```
+
+`watch=true` est actif → Traefik recharge **à chaud**, sans redémarrage (utile aussi
+au renouvellement : on remplace les fichiers et c'est tout).
+
+#### 3. Brancher le tenant — labels inline (sans overlay)
+
+Un tenant à cert fourni est comme un tenant LE (étape 4), mais au lieu d'inclure
+`docker-compose.traefik.yml` (qui force ACME via `certresolver`), il pose ses labels
+**inline** avec `tls=true` **sans** `certresolver` :
+
+```yaml
+name: opencapture_client_a
+include:
+    - path: ../../infra/docker-compose.yml
+services:
+    frontend:
+        ports: !override []
+        networks: [default, frontend]
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=frontend"
+            - "traefik.http.routers.${CUSTOM_ID}.rule=Host(`${OC_FQDN}`)"
+            - "traefik.http.routers.${CUSTOM_ID}.entrypoints=web,websecure"
+            - "traefik.http.routers.${CUSTOM_ID}.tls=true"
+            # PAS de certresolver -> cert servi par le provider fichier (SNI)
+            - "traefik.http.services.${CUSTOM_ID}.loadbalancer.server.port=80"
+networks:
+    default:
+    frontend:
+        name: frontend
+        external: true
+```
+
+#### 4. Démarrer et vérifier
+
+```bash
+cd tenants/client_a
+docker compose up -d --build
+
+# Quel cert est servi (SNI forcé) — doit montrer l'émetteur/SAN du cert client :
+echo | openssl s_client -connect <IP_OU_127.0.0.1>:443 -servername client_a.example.com 2>/dev/null \
+  | openssl x509 -noout -issuer -subject -ext subjectAltName
+```
+
+> **Pièges.** Le SAN doit couvrir **exactement** l'`OC_FQDN` (`client_a.example.com`
+> ≠ `www.client_a.example.com` ; un wildcard `*.example.com` ne couvre **pas**
+> l'apex `example.com`). Si aucun cert ne matche le SNI, Traefik sert son **cert
+> auto-signé** par défaut (pas d'erreur de routage, mais avertissement navigateur).
+
+> On peut **mélanger** : des tenants en LE (`traefik.yml`), d'autres en HTTP
+> (`traefik-test.yml`), d'autres en cert client (labels inline ci-dessus) — tous
+> derrière le **même** Traefik. Le choix se fait par les labels de chaque tenant et,
+> pour le cert, par SNI ; aucun conflit.
 
 ---
 
@@ -330,9 +436,9 @@ Un journal scellé **NF Z42-020** (chaînage SHA-256 + horodatage RFC 3161) est 
 **désactivé par défaut**, pour le module Splitter. Voir [NF_Z42-020.md](NF_Z42-020.md).
 
 ### Documentation de référence
-[infra/DOCKER.md](infra/DOCKER.md) (architecture, arbitrages, dépannage),
-[infra/BUILD_AND_INIT.md](infra/BUILD_AND_INIT.md), [infra/MULTITENANT.md](infra/MULTITENANT.md),
-[infra/SCHEDULING.md](infra/SCHEDULING.md), [DEV_MODE.md](DEV_MODE.md).
+[infra/MULTITENANT.md](infra/MULTITENANT.md) (organisation multi-tenant),
+[infra/SCHEDULING.md](infra/SCHEDULING.md) (tâches récurrentes / Ofelia),
+[DEV_MODE.md](DEV_MODE.md) (développement bare-metal, hors Docker).
 
 ## Annexe D — Commandes Docker utiles (par conteneur)
 
@@ -432,8 +538,8 @@ docker compose exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB
   2. **Lire son contenu** sans shell dans Traefik : le monter dans un conteneur jetable →
      `docker run --rm -v traefik_letsencrypt:/v alpine ls -l /v` (ou `… cat /v/acme.json`).
   3. **Raccourci ici** : ce volume est en réalité **bind-backé** vers `${LETSENCRYPT_PATH}`
-     (défaut `data/letsencrypt`) — `docker volume inspect` le montre dans `Options.device`.
-     Donc le fichier est lisible directement à **`data/letsencrypt/acme.json`** sur l'hôte.
+     (défaut `data/certs/letsencrypt`) — `docker volume inspect` le montre dans `Options.device`.
+     Donc le fichier est lisible directement à **`data/certs/letsencrypt/acme.json`** sur l'hôte.
 
 ### Lien volumes hôte ↔ conteneur
 
@@ -447,7 +553,8 @@ Par tenant — les chemins hôte sont les valeurs `*_PATH` du `.env` (relatifs �
 | `data/<id>/docservers` | `backend:/app/docservers` | documents traités, modèles IA du tenant |
 | `data/<id>/share` | `backend:/app/share` | entrées (`entrant/`) et sorties (`export/`) |
 | `data/shared-ai-models` | `backend:/app/instance/artificial_intelligence` | modèles IA partagés (rotate, contact) |
-| `data/letsencrypt` | `traefik:/letsencrypt` | certificats Let's Encrypt |
+| `data/certs/letsencrypt` | `traefik:/letsencrypt` | certificats Let's Encrypt (acme.json) |
+| `data/certs/tenants` | `traefik:/certs` | certs TLS fournis par les clients (PEM) |
 
 > Concrètement : un PDF déposé dans `data/<id>/share/entrant/splitter/default/` (hôte)
 > apparaît dans `/app/share/entrant/splitter/default/` (conteneur) → c'est ce que `fs-watcher`

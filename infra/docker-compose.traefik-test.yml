@@ -1,15 +1,14 @@
-# Overlay pour brancher OC sur un Traefik LOCAL HTTP-only.
+# Overlay pour exposer un tenant en HTTP pur (sans TLS).
 #
 # Ce fichier ne lance PAS Traefik. Il attache juste le service OC
-# `frontend` au réseau Docker externe `frontend` et pose les labels
-# HTTP-only que Traefik (lancé indépendamment via
-# docker-compose.traefik-server.yml) lit pour créer le router.
+# `frontend` au réseau Docker externe `frontend` et pose des labels
+# `entrypoints=web` (HTTP), lus par le daemon Traefik partagé
+# (docker-compose.traefik-server.yml) pour créer le router.
 #
-# Symétrique de docker-compose.traefik.yml (prod, TLS+LE) :
-#   prod : labels TLS+certresolver, suppose un Traefik externe (chez
-#          Edissyum : /opt/docker/traefik/) qui fait HTTPS+ACME.
-#   test : labels HTTP-only, suppose un Traefik local lancé via
-#          docker-compose.traefik-server.yml.
+# Le daemon est le MÊME pour tous les modes ; ce qui change, c'est cet
+# overlay. Alternative HTTPS : docker-compose.traefik.yml (labels TLS +
+# certresolver=myresolver -> Let's Encrypt). Cert client : labels inline
+# avec tls=true sans certresolver (cf. INSTALL.md).
 #
 # Pré-requis :
 #   docker network create frontend     # une fois

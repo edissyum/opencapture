@@ -244,7 +244,7 @@ Voir la branche `docker-claude` pour la version actuelle de
 
 1. Ajouter le service `scheduler` (~10 lignes).
 2. Ajouter le bloc `labels:` sur `backend` (1 bloc par job).
-3. Documenter dans `DOCKER.md` la liste des jobs actifs.
+3. Documenter dans `INSTALL.md` la liste des jobs actifs.
 4. Si SMTP-on-error : ajouter `SMTP_ALERT_PWD` à `.env.example`.
 
 Aucune modif de code applicatif, aucun rebuild d'image, juste un

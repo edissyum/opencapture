@@ -1,31 +1,34 @@
-# Traefik en STANDALONE (HTTP-only, équivalent local de Traefik prod
-# Edissyum à /opt/docker/traefik/).
+# Traefik STANDALONE — UN SEUL daemon pour TOUS les modes.
 #
-# Ce compose ne dépend de rien, lance Traefik tout seul sur le port 80
-# (et expose son dashboard sur 127.0.0.1:8081 — accessible uniquement
-# en local ou via tunnel SSH). À démarrer et arrêter indépendamment
-# de la stack OC.
+# Ce Traefik partagé sert simultanément les 3 modes TLS ; ce n'est pas le
+# daemon qui choisit, c'est CHAQUE tenant via ses labels :
+#   - HTTP pur        : tenant en `entrypoints=web` (overlay traefik-test.yml)
+#   - HTTPS Let's Encrypt : tenant `tls=true` + `certresolver=myresolver`
+#                       (overlay traefik.yml) -> cert auto via ACME
+#   - HTTPS cert client : tenant `tls=true` SANS certresolver (labels inline)
+#                       -> cert PEM fourni, servi par SNI (provider fichier)
+# Chaque capacité est INERTE tant qu'aucun tenant ne l'utilise (ACME ne se
+# déclenche que pour un router qui pose certresolver ; un cert client n'est
+# servi que si un PEM matche le SNI).
 #
-# Si vous devez utiliser un autre port hôte (ex. 80 déjà pris en dev
-# WSL2), créez un docker-compose.traefik-server.local.yml qui override
-# le bloc ports plutôt que de paramétrer via .env.
+# Pas de redirection HTTP->HTTPS forcée au niveau du daemon : elle casserait
+# les tenants HTTP pur (test). Un tenant prod qui veut forcer le HTTPS le
+# fait via un middleware de redirection sur son propre router (cf. INSTALL.md).
 #
-# Workflow test local :
-#   1) Une fois sur l'hôte :
-#        docker network create frontend
-#   2) Démarrer Traefik :
-#        docker compose -f infra/docker-compose.traefik-server.yml up -d
-#   3) Démarrer OC avec ses labels HTTP-only :
-#        docker compose -f infra/docker-compose.yml \
-#                       -f infra/docker-compose.traefik-test.yml up -d
-#   4) Tester :
-#        curl -H "Host: site1.edissyum.com" http://localhost/edissyum/
-#        http://localhost:8081/dashboard/   (ou tunnel SSH si distant)
+# Pré-requis hôte :
+#   docker network create frontend                  # une fois
+#   .env -> LETSENCRYPT_EMAIL=<email valide>        # si tenants LE (ACME)
+#   ports 80 + 443 ouverts depuis Internet          # pour le challenge LE
+#                                                   #   (tenants LE seulement)
+#   Certs client éventuels : data/certs/tenants/*.crt|*.key  + déclaration
+#     dans infra/traefik/dynamic/tls.yml (cf. INSTALL.md > « Traefik —
+#     variantes TLS » > « Certificat fourni par le client »).
 #
-# Pour arrêter Traefik sans toucher à OC :
-#   docker compose -f infra/docker-compose.traefik-server.yml down
+# Usage :
+#   docker compose -f infra/docker-compose.traefik-server.yml up -d
+#   # puis chaque tenant : cd tenants/<id> && docker compose up -d
 #
-# Et inversement.
+# Dashboard : http://127.0.0.1:8081/ (bindé localhost ; tunnel SSH si distant).
 
 name: traefik
 
@@ -34,31 +37,69 @@ networks:
         name: frontend
         external: true
 
+volumes:
+    letsencrypt:
+        # Stockage acme.json (clé privée + certs LE). PERSISTANT. Si tu
+        # changes de machine, copie ce dossier pour ne pas re-générer les
+        # certs (limite de rate LE : 50 certs/semaine/domaine).
+        driver: local
+        driver_opts:
+            type: none
+            o: bind
+            device: ${LETSENCRYPT_PATH:-../data/certs/letsencrypt}
+
 services:
     traefik:
-        image: traefik:v2.11
+        image: traefik:v3.5
         container_name: opencapture_traefik
         command:
+            # API + dashboard (insecure => bind localement seulement).
             - "--api.dashboard=true"
             - "--api.insecure=true"
+
+            # Provider Docker — lit les labels des tenants.
             - "--providers.docker=true"
             - "--providers.docker.exposedbydefault=false"
             - "--providers.docker.network=frontend"
+
+            # Provider Fichier — certs FOURNIS par les clients (servis par
+            # SNI). Toujours actif ; inerte tant que tls.yml ne déclare rien.
+            # watch=true => rechargement à chaud (édition tls.yml / remplacement
+            # d'un .crt/.key) sans redémarrer Traefik.
+            - "--providers.file.directory=/dynamic"
+            - "--providers.file.watch=true"
+
+            # Entrypoints : HTTP (80) ET HTTPS (443) toujours disponibles.
             - "--entrypoints.web.address=:80"
+            - "--entrypoints.websecure.address=:443"
+
+            # Let's Encrypt via tlsChallenge — utilisé UNIQUEMENT par les
+            # tenants dont le router porte certresolver=myresolver.
+            - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+            - "--certificatesresolvers.myresolver.acme.email=${LETSENCRYPT_EMAIL:-admin@example.com}"
+            - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+            # Staging LE (certs non-trusted) pour tester sans rate-limit :
+            # - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+
             - "--accesslog=true"
+            - "--log.level=INFO"
+
         ports:
-            # HTTP standard. Hardcodé : ce port est toujours 80 en prod.
-            # En dev WSL2 si 80 est pris, créez un compose override local
-            # plutôt que de polluer le .env racine.
             - "80:80"
-            # Dashboard Traefik (API). Bindé sur 127.0.0.1 UNIQUEMENT :
-            # accessible localement ou via tunnel SSH
-            # (ssh -L 8081:localhost:8081 user@serveur), jamais exposé
-            # à Internet -- évite de fuiter le dashboard non-authentifié
-            # (--api.insecure=true ci-dessus).
+            - "443:443"
+            # Dashboard exposé UNIQUEMENT sur localhost (tunnel SSH si distant).
             - "127.0.0.1:8081:8080"
+
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock:ro
+            - letsencrypt:/letsencrypt
+            # Config dynamique (provider fichier) : déclaration des certs client.
+            - ./traefik/dynamic:/dynamic:ro
+            # Certs client (PEM + clé). Dossier hôte NON versionné (data/ est
+            # dans .gitignore) : on n'y commit JAMAIS de clé privée.
+            - ${OC_CERTS_PATH:-../data/certs/tenants}:/certs:ro
+
         networks:
             - frontend
+
         restart: unless-stopped
