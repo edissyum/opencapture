@@ -90,6 +90,7 @@ export function SplitterViewerPage() {
     const { get, post, del } = axiosApiCall();
     const navigate = useNavigate();
     const cm = useRef({ current: null } as any);
+
     const [unSavedChanges, setUnSavedChanges] = useState(false);
     useUnsavedChangesWarning(unSavedChanges);
 
@@ -699,7 +700,11 @@ export function SplitterViewerPage() {
         });
     }
 
-    const handleDocumentPrincipal = () => {
+    const handleDocumentPrincipal = async () => {
+        if (unSavedChanges) {
+            await handleSaveChanges(false, [], false);
+        }
+
         for (const doc of documents) {
             if (doc.pages.length === 0) {
                 showToast(t('SPLITTER.empty_document_error'), 'error');
