@@ -1,10 +1,12 @@
 # Open-Capture frontend nginx config.
 # Substituted by the nginx:alpine entrypoint (envsubst) at container
 # start. Variables used: ${BACKEND_HOST}, ${BACKEND_PORT}, ${CUSTOM_ID}.
-
-upstream opencapture_backend {
-    server ${BACKEND_HOST}:${BACKEND_PORT};
-}
+#
+# PAS de bloc `upstream` : il figerait l'IP du backend à la lecture de la conf.
+# Le backend est résolu À CHAQUE REQUÊTE via le DNS embarqué Docker
+# (resolver 127.0.0.11) + une variable dans proxy_pass. Si le conteneur backend
+# est recréé (nouvelle IP), nginx la reprend sans redémarrage -> plus de 502
+# « stale upstream » quand le backend redémarre seul.
 
 # Politique de cache des réponses API (/ws/ et /backend_oc/) :
 #   - si le backend renvoie un Cache-Control explicite, on le RESPECTE
@@ -25,6 +27,9 @@ server {
     listen 80 default_server;
     server_name _;
 
+    # DNS embarqué Docker -> résolution dynamique du backend (cf. en-tête).
+    resolver 127.0.0.11 valid=10s ipv6=off;
+
     # Force text/javascript pour les bundles Vite (.js/.mjs). Certains
     # environnements renvoient application/x-javascript, que Firefox
     # refuse pour un module ES (<script type="module">). Un bloc `types`
@@ -41,7 +46,8 @@ server {
     # prefixed with the custom_id: /<custom_id>/ws/...  and
     # /<custom_id>/backend_oc/...  We pass them through unchanged.
     location ~ ^/${CUSTOM_ID}/(ws|backend_oc)/ {
-        proxy_pass http://opencapture_backend;
+        set $oc_backend ${BACKEND_HOST}:${BACKEND_PORT};
+        proxy_pass http://$oc_backend$request_uri;
         proxy_set_header Host              $host;
         proxy_set_header X-Real-IP         $remote_addr;
         proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
@@ -59,7 +65,8 @@ server {
     # par docker-bootstrap.sh à partir de ${OC_FQDN}). Coexiste avec le
     # bloc préfixé ci-dessus pour rétro-compat.
     location ~ ^/(ws|backend_oc)/ {
-        proxy_pass http://opencapture_backend;
+        set $oc_backend ${BACKEND_HOST}:${BACKEND_PORT};
+        proxy_pass http://$oc_backend$request_uri;
         proxy_set_header Host              $host;
         proxy_set_header X-Real-IP         $remote_addr;
         proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
