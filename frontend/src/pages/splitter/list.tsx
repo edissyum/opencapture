@@ -59,6 +59,8 @@ export function SplitterListPage() {
 
     const [view, setView] = usePersistentState<'list' | 'grid'>('selectedView', 'list');
     const [displayFilters, setDisplayFilters] = useState(false);
+    const [filtersChanged, setFiltersChanged] = useState(false);
+
     const [listTimes, setListTimes] = useState([
         { 'id': 'today', 'label': t('GLOBAL.today'), 'totals': 0 },
         { 'id': 'yesterday', 'label': t('GLOBAL.yesterday'), 'totals': 0 },
@@ -331,9 +333,14 @@ export function SplitterListPage() {
         setSelectedCustomers([]);
         setSelectedTime('');
         setSelectedForm('');
-        setSelectedForm('');
         setSelectedStatus('NEW');
     }
+
+    // Check if filters have changed
+    useEffect(() => {
+        const isFiltersChanged = selectedCustomers.length > 0 || selectedTime !== '' || selectedForm !== '' || selectedStatus !== 'NEW';
+        setFiltersChanged(isFiltersChanged);
+    }, [selectedCustomers, selectedTime, selectedForm, selectedStatus]);
 
     return (
         <div className='flex h-full w-full overflow-hidden'>
@@ -543,7 +550,11 @@ export function SplitterListPage() {
 
             <div className='p-6 h-full w-full flex flex-col flex-1 z-10'>
                 <div className='flex items-center gap-6 mb-4'>
-                    <Button variant='bg_white_rounded' icon={ <Filter size={ 14 }/> } selected={ displayFilters }
+                    <Button variant='bg_white_rounded' icon={
+                                filtersChanged && !displayFilters ?
+                                <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' } size={ 14 }/> :
+                                <Filter size={ 14 }/>
+                            }
                             onClick={ () => setDisplayFilters(!displayFilters) }>
                         { t('VERIFIER.filters') }
                     </Button>

@@ -700,7 +700,7 @@
         "pages_selected_other": "<strong>páginas</strong> <span style='font-size:12px'>seleccionadas</span>",
         "validate_batch": "Validar el lote",
         "change_form": "Cambiar de formulario",
-        "confirm_change_form": "Los datos introducidos pueden eliminarse. Por favor, confirme el cambio de formulario.",
+        "confirm_change_form": "Los datos introducidos pueden eliminarse. Se modificarán los tipos de documentos. Por favor, confirme el cambio de formulario.",
         "batch_validated": "Lote validado con éxito",
         "empty_documents_error": "Validación imposible: uno o varios documentos del lote están vacíos",
         "form_changed": "Formulario cambiado con éxito",

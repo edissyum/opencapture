@@ -63,6 +63,7 @@ export function VerifierListPage() {
     const locale = LANG_MAP[storedLang] ?? 'fr-FR';
 
     const [displayFilters, setDisplayFilters] = useState(false);
+    const [filtersChanged, setFiltersChanged] = useState(false);
 
     const [open, setOpen] = useState({
         forms: false,
@@ -428,6 +429,12 @@ export function VerifierListPage() {
         setSelectedSuppliers([]);
     }
 
+    // Check if filters have changed
+    useEffect(() => {
+        const isFiltersChanged = selectedTime !== '' || selectedForm !== '' || selectedStatus !== 'NEW' || (selectedCustomers && selectedCustomers.length > 0) || (selectedSuppliers && selectedSuppliers.length > 0);
+        setFiltersChanged(isFiltersChanged);
+    }, [selectedTime, selectedForm, selectedStatus, selectedCustomers, selectedSuppliers]);
+
     return (
         <div className='flex h-full w-full overflow-hidden'>
             <div className={ `h-full transition-all border-r-2 border-(--border-secondary) pb-16
@@ -604,7 +611,11 @@ export function VerifierListPage() {
 
             <div className='p-6 h-full w-full flex flex-col flex-1 z-10'>
                 <div className='flex items-center gap-6 mb-4'>
-                    <Button variant='bg_white_rounded' icon={ <Filter size={ 14 }/> }
+                    <Button variant='bg_white_rounded' icon={
+                                filtersChanged && !displayFilters ?
+                                    <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' } size={ 14 }/> :
+                                    <Filter size={ 14 }/>
+                            }
                             onClick={ () => setDisplayFilters(!displayFilters) }
                             selected={ displayFilters }>
                         { t('VERIFIER.filters') }

@@ -656,7 +656,7 @@
         "pages_selected_other": "<strong>pages</strong> <span style='font-size:12px'>selected</span>",
         "validate_batch": "Validate batch",
         "change_form": "Change form",
-        "confirm_change_form": "Entered data may be deleted. Please confirm the form change.",
+        "confirm_change_form": "Entered data may be deleted. Doctypes will be changed. Please confirm the form change.",
         "batch_validated": "Batch validated successfully",
         "empty_documents_error": "Validation impossible: one or more documents in the batch are empty",
         "form_changed": "Form changed successfully",

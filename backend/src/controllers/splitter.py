@@ -25,8 +25,8 @@ import shutil
 import uuid
 
 import pypdf
+from flask import request
 from flask_babel import gettext
-from flask import current_app, request
 from werkzeug.datastructures import FileStorage
 
 from .. import shared
@@ -349,6 +349,22 @@ def update_customer(args):
 def change_form(args):
     res = splitter.change_form({'form_id': args['formId'], 'batch_id': args['batchId']})
 
+    new_default_doctype, error = doctypes.retrieve_doctypes({
+        'where': ['form_id = %s', 'is_default = %s', 'status <> %s'],
+        'data': [args['formId'], True, 'DEL']
+    })
+
+    documents = retrieve_documents(args['batchId'])
+    for document in documents[0]['documents']:
+        doctype_key = None
+        if not error and new_default_doctype:
+            doctype_key = new_default_doctype[0]['key']
+
+        splitter.update_document({
+            'id': document['id'],
+            'doctype_key': doctype_key
+        })
+
     if res:
         history.add_history({
             'module': 'splitter',
@@ -475,14 +491,14 @@ def retrieve_documents(batch_id):
                             pages[page_index]['thumbnail'] = encoded_string.decode("utf-8")
                             document_pages.append(pages[page_index])
 
-            dotypes = doctypes.retrieve_doctypes({
+            _doctypes = doctypes.retrieve_doctypes({
                 'where': ['status = %s', 'key = %s'],
                 'data': ['OK', document['doctype_key']]
             })[0]
 
-            if dotypes and len(dotypes[0]) > 0:
-                doctype_key = dotypes[0]['key'] if dotypes[0]['key'] else None
-                doctype_label = dotypes[0]['label'] if dotypes[0]['label'] else None
+            if _doctypes and len(_doctypes[0]) > 0:
+                doctype_key = _doctypes[0]['key'] if _doctypes[0]['key'] else None
+                doctype_label = _doctypes[0]['label'] if _doctypes[0]['label'] else None
 
             res_documents.append({
                 'pages': document_pages,
