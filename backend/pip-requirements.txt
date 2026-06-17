@@ -45,9 +45,9 @@ python-bidi==0.6.10
 pytesseract==0.3.13
 configparser==7.2.0
 scikit-learn==1.9.0
-ultralytics==8.4.67
+ultralytics==8.4.70
 python-magic==0.4.27
-transformers==5.12.0
+transformers==5.12.1
 Flask-Limiter==4.1.1
 pycryptodome==3.23.0
 pypdf[crypto]==6.13.2
