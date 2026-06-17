@@ -19,7 +19,7 @@
 #
 # Usage :
 #   docker compose -f infra/docker-compose.yml \
-#                  -f infra/docker-compose.traefik-test.yml up -d
+#                  -f infra/docker-compose.traefik-http.yml up -d
 #
 # Test :
 #   curl -H "Host: site1.edissyum.com" http://localhost:${FRONTEND_PORT:-8080}/edissyum/

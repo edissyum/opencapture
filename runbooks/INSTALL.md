@@ -49,12 +49,13 @@ docker compose -f infra/docker-compose.traefik-server.yml up -d
 
 Un tenant = un dossier sous `stub-tenants/<id>/` avec son `.env` et un `docker-compose.yml`
 qui inclut l'infra + l'overlay Traefik. On **copie un template** plutôt que de partir de zéro.
-Deux templates suivis dans le repo, selon le mode TLS :
+Trois templates suivis dans le repo, selon le mode TLS :
 
 | Template | Mode TLS | Overlay inclus |
 |---|---|---|
 | `stub-tenants/_template-letsencrypt/` | HTTPS **Let's Encrypt** (flux principal) | `infra/docker-compose.traefik.yml` |
 | `stub-tenants/_template-cert/` | HTTPS **cert fourni par le client** (ou auto-signé), servi **par SNI** | `infra/docker-compose.traefik-cert.yml` (+ `tls.yml.example`) |
+| `stub-tenants/_template-http/` | **HTTP pur** (aucun TLS) — réseau interne / derrière reverse-proxy | `infra/docker-compose.traefik-http.yml` |
 
 ```bash
 cp -r stub-tenants/_template-letsencrypt stub-tenants/site1   # ou _template-cert
@@ -121,17 +122,18 @@ Le flux principal (étapes 1-7) expose un tenant en **HTTPS Let's Encrypt**. Le 
 daemon Traefik (étape 3) sert aussi les deux variantes ci-dessous — seuls les **labels
 du tenant** changent, jamais le daemon.
 
-### Test local (HTTP, sans Let's Encrypt)
+### HTTP pur (sans TLS) — test local ou réseau interne
 
-Pour un tenant sans DNS public ni TLS, on l'expose en **HTTP pur** : son
-`docker-compose.yml` inclut **`traefik-test.yml`** (labels `entrypoints=web`, sans TLS)
-au lieu de `traefik.yml`. Le daemon Traefik reste **le même** (il écoute déjà sur `:80`).
+Pour un tenant sans DNS public ni TLS, partir du template **`_template-http`** (son
+`docker-compose.yml` inclut **`traefik-http.yml`** : labels `entrypoints=web`, sans TLS,
+au lieu de `traefik.yml`). Le daemon Traefik reste **le même** (il écoute déjà sur `:80`).
+⚠️ Aucun chiffrement : à réserver au réseau interne ou derrière un reverse-proxy TLS.
 
 ```yaml
 name: opencapture_${CUSTOM_ID}
 include:
     - path: ../../infra/docker-compose.yml
-    - path: ../../infra/docker-compose.traefik-test.yml   # <- HTTP, au lieu de traefik.yml
+    - path: ../../infra/docker-compose.traefik-http.yml   # <- HTTP, au lieu de traefik.yml
 ```
 
 **Pas de DNS** : pointer le FQDN en local — `/etc/hosts` → `127.0.0.1 site1.example.com`
@@ -144,7 +146,7 @@ curl -H "Host: site1.example.com" http://localhost/        # via en-tête Host
 Dashboard Traefik : `http://127.0.0.1:8081/` (tunnel SSH si serveur distant).
 
 > Le tenant de test fourni (`stub-tenants/test1`) est déjà câblé ainsi
-> (`include … traefik-test.yml`) → `./deploy.sh test1` suffit à le (re)déployer.
+> (`include … traefik-http.yml`) → `./deploy.sh test1` suffit à le (re)déployer.
 
 ### Certificat fourni par le client (au lieu de Let's Encrypt)
 
@@ -239,7 +241,7 @@ echo | openssl s_client -connect <IP_OU_127.0.0.1>:443 -servername client_a.exam
 > auto-signé** par défaut (pas d'erreur de routage, mais avertissement navigateur).
 
 > On peut **mélanger** : des tenants en LE (`traefik.yml`), d'autres en HTTP
-> (`traefik-test.yml`), d'autres en cert client (`traefik-cert.yml`) — tous
+> (`traefik-http.yml`), d'autres en cert client (`traefik-cert.yml`) — tous
 > derrière le **même** Traefik. Le choix se fait par les labels de chaque tenant et,
 > pour le cert, par SNI ; aucun conflit.
 

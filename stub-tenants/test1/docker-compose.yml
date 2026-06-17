@@ -1,6 +1,6 @@
 # Tenant de TEST test1 — fixture du harnais de tests (stub-tenants/test1/).
 #
-# Inclut l'infra partagée + l'overlay HTTP `traefik-test` (route
+# Inclut l'infra partagée + l'overlay HTTP `traefik-http` (route
 # http://test1.edissyum.com via le Traefik partagé ; les tests valident
 # par DB/FS/logs, le HTTP n'est qu'un bonus d'inspection).
 #
@@ -13,4 +13,4 @@ name: opencapture_test1
 
 include:
     - path: ../../infra/docker-compose.yml
-    - path: ../../infra/docker-compose.traefik-test.yml
+    - path: ../../infra/docker-compose.traefik-http.yml

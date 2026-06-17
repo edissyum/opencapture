@@ -2,7 +2,7 @@
 #
 # Ce Traefik partagé sert simultanément les 3 modes TLS ; ce n'est pas le
 # daemon qui choisit, c'est CHAQUE tenant via ses labels :
-#   - HTTP pur        : tenant en `entrypoints=web` (overlay traefik-test.yml)
+#   - HTTP pur        : tenant en `entrypoints=web` (overlay traefik-http.yml)
 #   - HTTPS Let's Encrypt : tenant `tls=true` + `certresolver=myresolver`
 #                       (overlay traefik.yml) -> cert auto via ACME
 #   - HTTPS cert client : tenant `tls=true` SANS certresolver (overlay traefik-cert.yml)

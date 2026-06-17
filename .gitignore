@@ -13,6 +13,7 @@ frontend/src/assets/i18n/to_merge
 stub-tenants/*
 !stub-tenants/_template-letsencrypt/
 !stub-tenants/_template-cert/
+!stub-tenants/_template-http/
 !stub-tenants/test1/
 # .env* (ci-dessus) ré-ignore stub-tenants/test1/.env -> le réautoriser en dernier.
 !stub-tenants/test1/.env

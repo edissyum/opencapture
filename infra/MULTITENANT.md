@@ -20,7 +20,7 @@ Ce document compare les deux approches, traite l'isolation des volumes et antici
 ```
 infra/
 ├── docker-compose.yml                 # services applicatifs (backend, frontend, postgres, rabbitmq, workers…)
-├── docker-compose.traefik-test.yml    # labels Traefik HTTP (test local)
+├── docker-compose.traefik-http.yml    # labels Traefik HTTP pur (prod ou test)
 └── docker-compose.traefik.yml         # labels Traefik HTTPS + Let's Encrypt (prod)
 
 stub-tenants/
@@ -41,7 +41,7 @@ name: opencapture_${CUSTOM_ID}
 
 include:
   - path: ../../infra/docker-compose.yml
-  - path: ../../infra/docker-compose.traefik-test.yml
+  - path: ../../infra/docker-compose.traefik-http.yml
 ```
 
 ### Pour
@@ -70,7 +70,7 @@ stub-tenants/
 ├── site1/
 │   ├── .env
 │   ├── docker-compose.yml                # copie complète
-│   ├── docker-compose.traefik-test.yml   # copie complète
+│   ├── docker-compose.traefik-http.yml   # copie complète
 │   └── docker-compose.traefik.yml        # copie complète
 └── site2/
     └── … (mêmes fichiers, dupliqués)
