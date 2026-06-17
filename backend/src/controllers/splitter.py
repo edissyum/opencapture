@@ -506,7 +506,7 @@ def create_document(args):
     res = splitter.create_document({
         'data': '{}',
         'status': 'NEW',
-        'doctype_key': None,
+        'doctype_key': args['defaultDoctype'] if 'defaultDoctype' in args and args['defaultDoctype'] else None,
         'batch_id': args['batchId'],
         'split_index': args['splitIndex'],
         'display_order': args['displayOrder']
