@@ -3,8 +3,41 @@
 # Référence à copier-coller (ne PAS exécuter d'un bloc). À compléter avec tes
 # commandes système. Données hôte hors repo sous /opt.
 
-# Prérequis système (à compléter)
-# TODO: docker + docker compose (v2.20+), git
+# ----------------------------------------------------------------------
+# Prérequis système — Docker Engine + Compose v2 (Debian)
+# ----------------------------------------------------------------------
+
+# Purger d'éventuels anciens paquets Docker
+sudo apt remove docker.io docker-compose docker-doc podman-docker containerd runc
+
+# Dépendances (git inclus pour le clone plus bas)
+sudo apt update && sudo apt install -y ca-certificates curl gnupg lsb-release git
+
+# Clé GPG officielle Docker
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+# Dépôt officiel Docker
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" \
+  | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Docker Engine + CLI + Compose v2
+sudo apt update && sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Activer + démarrer au boot
+sudo systemctl enable --now docker
+
+# Vérifier
+systemctl status docker
+sudo docker run hello-world
+
+# Docker sans sudo (puis SE DÉCONNECTER/RECONNECTER, et tester : docker ps)
+sudo usermod -aG docker $USER
+
+# ----------------------------------------------------------------------
+# OpenCapture — infra partagée
+# ----------------------------------------------------------------------
 
 # Sources
 git clone git@github.com:edissyum/opencapture_docker.git
