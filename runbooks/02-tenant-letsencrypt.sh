@@ -36,6 +36,9 @@ $DC up -d
 ./deploy.sh --frontend-only $ID                # rebuild frontend du tenant
 ./deploy.sh --backend-only $ID                 # rebuild image backend partagée + recrée
 ./deploy.sh $ID                                # rebuild backend + frontend + recrée
+# ... ou pour TOUS les tenants après un git pull :
+./deploy.sh --frontend-only --all              # maj template nginx / overlay Traefik
+./deploy.sh --all                              # backend + frontends (tous)
 
 # Vérifier le cert servi (HTTPS Let's Encrypt, émis au 1er handshake)
 curl -I "https://$(grep -m1 OC_FQDN $DIR/.env | cut -d= -f2)/"

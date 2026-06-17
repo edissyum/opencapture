@@ -127,11 +127,16 @@ $DC down                # arrêter — JAMAIS `down -v` (-v supprime les donnée
 Reconstruire après une mise à jour du code (avec `deploy.sh`) :
 
 ```bash
+# Un tenant :
 ./deploy.sh --frontend-only <id>   # rebuild du frontend du tenant + recrée
 ./deploy.sh --backend-only  <id>   # rebuild de l'image backend partagée + recrée
 ./deploy.sh <id>                   # rebuild backend + frontend + recrée
-./deploy.sh --all                  # tous les tenants découverts
-./deploy.sh --pull --all           # git pull d'abord, puis tout redéployer
+
+# Tous les tenants, après un `git pull` :
+./deploy.sh --frontend-only --all  # changement du template nginx OU d'un overlay Traefik
+./deploy.sh --backend-only  --all  # changement du code backend (image partagée)
+./deploy.sh --all                  # dans le doute : backend + frontends
+./deploy.sh --pull --all           # git pull intégré, puis tout redéployer
 ```
 
 ---

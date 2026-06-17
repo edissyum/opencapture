@@ -56,6 +56,9 @@ $DC up -d
 ./deploy.sh --frontend-only $ID                # rebuild frontend du tenant
 ./deploy.sh --backend-only $ID                 # rebuild image backend partagée + recrée
 ./deploy.sh $ID                                # rebuild backend + frontend + recrée
+# ... ou pour TOUS les tenants après un git pull :
+./deploy.sh --frontend-only --all              # maj template nginx / overlay Traefik
+./deploy.sh --all                              # backend + frontends (tous)
 
 # Renouveler le cert : remplacer les fichiers /certs (hot-reload, pas de restart)
 sudo cp $ID.crt $ID.key /opt/shared-by-tenants/traefik/certs/
