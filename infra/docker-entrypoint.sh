@@ -67,6 +67,7 @@ CUSTOM_ID="${CUSTOM_ID:-edissyum}"
 # that talks to the DB. The healthcheck on the postgres service
 # usually handles this, but workers may restart faster than the
 # health probe interval.
+# pg_isreadey is a postgresql function (man pg_isready)
 wait_for_postgres() {
     local retries=60
     until pg_isready -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" \
