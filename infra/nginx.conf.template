@@ -25,6 +25,16 @@ server {
     listen 80 default_server;
     server_name _;
 
+    # Force text/javascript pour les bundles Vite (.js/.mjs). Certains
+    # environnements renvoient application/x-javascript, que Firefox
+    # refuse pour un module ES (<script type="module">). Un bloc `types`
+    # REMPLACE la table héritée du contexte http, donc on réinclut la
+    # table complète d'abord pour ne pas casser CSS/polices/images.
+    include /etc/nginx/mime.types;
+    types {
+        text/javascript js mjs;
+    }
+
     client_max_body_size 200m;
 
     # The Flask middleware (backend/src/__init__.py) expects URLs
