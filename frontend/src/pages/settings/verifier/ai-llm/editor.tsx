@@ -130,6 +130,7 @@ export function SettingsVerifierAiLLMEditor() {
         })),
         api_key: z.string().min(1).describe(JSON.stringify({
             component: "input",
+            type: "password",
             required: true,
             label: t("AI-LLM.api_key")
         }))
@@ -195,13 +196,12 @@ export function SettingsVerifierAiLLMEditor() {
     useEffect(() => {
         const provider: any = providers.find((p: any) => p.name === selectedProvider);
         if (provider) {
-            setProviderUrlPlaceholder(provider.url);
-            setOcrPlaceholder(provider.ocr_placeholder);
-            if (!aiLLMId) {
-                setValue('url', provider.url);
-            }
+            setValue('url', provider.url);
             setValue('input_price', provider.costs.find((c: any) => c.type === 'input')?.price);
             setValue('output_price', provider.costs.find((c: any) => c.type === 'output')?.price);
+
+            setProviderUrlPlaceholder(provider.url);
+            setOcrPlaceholder(provider.ocr_placeholder);
 
             if (skipJsonUpdate.current) {
                 skipJsonUpdate.current = false;

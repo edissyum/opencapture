@@ -90,6 +90,7 @@ export function SplitterViewerPage() {
     const { get, post, del } = axiosApiCall();
     const navigate = useNavigate();
     const cm = useRef({ current: null } as any);
+
     const [unSavedChanges, setUnSavedChanges] = useState(false);
     useUnsavedChangesWarning(unSavedChanges);
 
@@ -104,6 +105,8 @@ export function SplitterViewerPage() {
 
     const [forms, setForms] = useState<any[]>([]);
     const [doctypes, setDoctypes] = useState<any[]>([]);
+    const [defaultDoctype, setDefaultDoctype] = useState<any[]>([]);
+
     const { batchId } = useParams<{ batchId: string }>();
     const [loading, setLoading] = useState(false);
     const [loadingBatch, setLoadingBatch] = useState(true);
@@ -361,6 +364,11 @@ export function SplitterViewerPage() {
             try {
                 const response = await get(`/doctypes/list/${ batch?.form_id }`);
                 setDoctypes(response.doctypes);
+                response.doctypes.forEach((doctype: any) => {
+                    if (doctype.is_default) {
+                        setDefaultDoctype(doctype);
+                    }
+                });
             } catch (error) {
                 console.error("Error fetching doctypes:", error);
             }
@@ -699,7 +707,11 @@ export function SplitterViewerPage() {
         });
     }
 
-    const handleDocumentPrincipal = () => {
+    const handleDocumentPrincipal = async () => {
+        if (unSavedChanges) {
+            await handleSaveChanges(false, [], false);
+        }
+
         for (const doc of documents) {
             if (doc.pages.length === 0) {
                 showToast(t('SPLITTER.empty_document_error'), 'error');
@@ -840,7 +852,7 @@ export function SplitterViewerPage() {
                 const response = await get(`/attachments/splitter/list/${ batchId }`);
                 if (response) {
                     for (const attachment of response) {
-                        const newDocumentId = await addDocument();
+                        const newDocumentId = await addDocument(defaultDoctype);
                         await post(`/attachments/splitter/unbind`, {
                             attachmentId: attachment.id,
                             newDocumentId: newDocumentId,
@@ -863,7 +875,7 @@ export function SplitterViewerPage() {
         });
     }
 
-    const addDocument = async () => {
+    const addDocument = async (defaultDoctype: any = {}) => {
         if (disabledBatch || certifiedCopy) return;
 
         try {
@@ -872,7 +884,8 @@ export function SplitterViewerPage() {
                 batchId: batchId,
                 workflowId: batch.workflow_id,
                 splitIndex: batch.max_split_index + 1,
-                displayOrder: batch.max_split_index + 1
+                displayOrder: batch.max_split_index + 1,
+                defaultDoctype: defaultDoctype ? defaultDoctype.key : ''
             });
 
             if (response?.newDocumentId) {

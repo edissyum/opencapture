@@ -214,6 +214,7 @@ def create_document():
         {'id': 'workflowId', 'type': int, 'mandatory': True},
         {'id': 'splitIndex', 'type': int, 'mandatory': True},
         {'id': 'displayOrder', 'type': int, 'mandatory': True},
+        {'id': 'defaultDoctype', 'type': str, 'mandatory': False},
         {'id': 'updatedDocuments', 'type': list, 'mandatory': False}
     ])
 
