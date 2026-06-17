@@ -16,8 +16,9 @@
 #   - Le service `frontend` (nginx OC) rejoint le réseau externe
 #     `frontend` en plus de son réseau interne.
 #   - Le port hôte 8080 disparaît : Traefik est le SEUL point d'entrée.
-#   - Les labels enregistrent une route Host(`${OC_FQDN}`) sur Traefik
-#     avec TLS auto via le certresolver `myresolver`.
+#   - Les labels enregistrent une route Host(`${OC_FQDN}`) en HTTPS (TLS auto
+#     via le certresolver `myresolver`) + une redirection HTTP->HTTPS : le port
+#     80 renvoie un 301 vers https (2 routeurs : `-web` redirige, l'autre sert).
 #   - Aucun autre service OC (backend, workers, postgres, rabbit) n'est
 #     exposé à Traefik (ils restent sur le réseau interne).
 #
@@ -50,8 +51,17 @@ services:
         labels:
             - "traefik.enable=true"
             - "traefik.docker.network=frontend"
+
+            # Routeur HTTP (port 80) -> redirige vers HTTPS (301).
+            - "traefik.http.routers.${CUSTOM_ID}-web.rule=Host(`${OC_FQDN}`)"
+            - "traefik.http.routers.${CUSTOM_ID}-web.entrypoints=web"
+            - "traefik.http.routers.${CUSTOM_ID}-web.middlewares=${CUSTOM_ID}-tohttps"
+            - "traefik.http.middlewares.${CUSTOM_ID}-tohttps.redirectscheme.scheme=https"
+            - "traefik.http.middlewares.${CUSTOM_ID}-tohttps.redirectscheme.permanent=true"
+
+            # Routeur HTTPS (port 443) -> sert l'app ; cert auto via Let's Encrypt.
             - "traefik.http.routers.${CUSTOM_ID}.rule=Host(`${OC_FQDN}`)"
-            - "traefik.http.routers.${CUSTOM_ID}.entrypoints=web,websecure"
+            - "traefik.http.routers.${CUSTOM_ID}.entrypoints=websecure"
             - "traefik.http.routers.${CUSTOM_ID}.tls=true"
             - "traefik.http.routers.${CUSTOM_ID}.tls.certresolver=myresolver"
             - "traefik.http.services.${CUSTOM_ID}.loadbalancer.server.port=80"

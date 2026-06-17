@@ -46,8 +46,17 @@ services:
         labels:
             - "traefik.enable=true"
             - "traefik.docker.network=frontend"
+
+            # Routeur HTTP (port 80) -> redirige vers HTTPS (301).
+            - "traefik.http.routers.${CUSTOM_ID}-web.rule=Host(`${OC_FQDN}`)"
+            - "traefik.http.routers.${CUSTOM_ID}-web.entrypoints=web"
+            - "traefik.http.routers.${CUSTOM_ID}-web.middlewares=${CUSTOM_ID}-tohttps"
+            - "traefik.http.middlewares.${CUSTOM_ID}-tohttps.redirectscheme.scheme=https"
+            - "traefik.http.middlewares.${CUSTOM_ID}-tohttps.redirectscheme.permanent=true"
+
+            # Routeur HTTPS (port 443) -> sert l'app ; cert FOURNI servi par SNI.
             - "traefik.http.routers.${CUSTOM_ID}.rule=Host(`${OC_FQDN}`)"
-            - "traefik.http.routers.${CUSTOM_ID}.entrypoints=web,websecure"
+            - "traefik.http.routers.${CUSTOM_ID}.entrypoints=websecure"
             - "traefik.http.routers.${CUSTOM_ID}.tls=true"
             # PAS de certresolver -> cert servi par le provider fichier (SNI).
             - "traefik.http.services.${CUSTOM_ID}.loadbalancer.server.port=80"

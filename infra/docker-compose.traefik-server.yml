@@ -12,8 +12,9 @@
 # servi que si un PEM matche le SNI).
 #
 # Pas de redirection HTTP->HTTPS forcée au niveau du daemon : elle casserait
-# les tenants HTTP pur (test). Un tenant prod qui veut forcer le HTTPS le
-# fait via un middleware de redirection sur son propre router (cf. runbooks/INSTALL.md).
+# les tenants HTTP pur. La redirection se fait PAR TENANT via un middleware sur
+# son propre router -> intégrée par défaut aux overlays traefik.yml (LE) et
+# traefik-cert.yml ; les tenants HTTP pur (traefik-http.yml) n'en ont pas.
 #
 # Pré-requis hôte :
 #   docker network create frontend                  # une fois
