@@ -88,7 +88,7 @@ export default function Sidebar() {
     useEffect(() => {
         if (manuallyCollapsed) return;
 
-        if (window.location.pathname.includes('verifier/viewer/') || window.location.pathname.includes('splitter/viewer/')) {
+        if (/(verifier|splitter)\/viewer\//.test(window.location.pathname)) {
             setCollapsed(true);
         } else {
             setCollapsed(false);
@@ -108,7 +108,9 @@ export default function Sidebar() {
         if (manuallyCollapsed) {
             setCollapsed(true);
         } else {
-            setCollapsed(false);
+            if (!/(verifier|splitter)\/viewer\//.test(window.location.pathname)) {
+                setCollapsed(false);
+            }
         }
     }, [manuallyCollapsed]);
 
