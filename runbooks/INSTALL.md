@@ -29,7 +29,7 @@ cd opencapture_docker
 ## 3. Lancer Traefik (une seule fois par serveur)
 
 Traefik est partagé par tous les tenants via le réseau Docker `frontend`. **Un seul
-daemon** ([infra/docker-compose.traefik-server.yml](infra/docker-compose.traefik-server.yml))
+daemon** ([infra/docker-compose.traefik-server.yml](../infra/docker-compose.traefik-server.yml))
 sert les 3 modes (HTTP, HTTPS Let's Encrypt, HTTPS cert client) : c'est chaque
 **tenant** qui choisit son mode via ses labels (cf. « Traefik — variantes TLS »).
 
@@ -47,15 +47,21 @@ docker compose -f infra/docker-compose.traefik-server.yml up -d
 
 ## 4. Créer un tenant
 
-Un tenant = un dossier sous `tenants/<id>/` avec son `.env` et un `docker-compose.yml`
-qui inclut l'infra + l'overlay Traefik.
+Un tenant = un dossier sous `stub-tenants/<id>/` avec son `.env` et un `docker-compose.yml`
+qui inclut l'infra + l'overlay Traefik. On **copie un template** plutôt que de partir de zéro.
+Deux templates suivis dans le repo, selon le mode TLS :
+
+| Template | Mode TLS | Overlay inclus |
+|---|---|---|
+| `stub-tenants/_template-letsencrypt/` | HTTPS **Let's Encrypt** (flux principal) | `infra/docker-compose.traefik.yml` |
+| `stub-tenants/_template-cert/` | HTTPS **cert fourni par le client** (ou auto-signé), servi **par SNI** | `infra/docker-compose.traefik-cert.yml` (+ `tls.yml.example`) |
 
 ```bash
-mkdir -p tenants/site1
-cp .env.example tenants/site1/.env
+cp -r stub-tenants/_template-letsencrypt stub-tenants/site1   # ou _template-cert
+mv stub-tenants/site1/.env.example stub-tenants/site1/.env
 ```
 
-Éditer **`tenants/site1/.env`** — au minimum :
+Éditer **`stub-tenants/site1/.env`** — au minimum :
 
 | Variable | Mettre |
 |---|---|
@@ -66,10 +72,12 @@ cp .env.example tenants/site1/.env
 | `POSTGRES_DB` / `POSTGRES_USER` | ex. `opencapture_site1` / `site1` |
 | `*_PATH` (volumes) | `../data/site1/...` (données isolées du tenant) |
 
-Créer **`tenants/site1/docker-compose.yml`** :
+Le `docker-compose.yml` du template est déjà câblé — on n'y touche pas. Son `name:` est
+`opencapture_${CUSTOM_ID}`, interpolé depuis le `.env` : **on édite uniquement le `.env`**.
+Pour le template Let's Encrypt il contient :
 
 ```yaml
-name: opencapture_site1
+name: opencapture_${CUSTOM_ID}
 include:
     - path: ../../infra/docker-compose.yml
     - path: ../../infra/docker-compose.traefik.yml
@@ -78,8 +86,8 @@ include:
 ## 5. Démarrer le tenant
 
 ```bash
-cd tenants/site1
-docker compose up -d --build
+cd stub-tenants/site1
+docker compose up -d --build      # ou, depuis la racine : ./deploy.sh site1
 ```
 
 Au premier démarrage, le service `init` prépare le tenant (arborescence, config,
@@ -120,7 +128,7 @@ Pour un tenant sans DNS public ni TLS, on l'expose en **HTTP pur** : son
 au lieu de `traefik.yml`. Le daemon Traefik reste **le même** (il écoute déjà sur `:80`).
 
 ```yaml
-name: opencapture_site1
+name: opencapture_${CUSTOM_ID}
 include:
     - path: ../../infra/docker-compose.yml
     - path: ../../infra/docker-compose.traefik-test.yml   # <- HTTP, au lieu de traefik.yml
@@ -128,15 +136,15 @@ include:
 
 **Pas de DNS** : pointer le FQDN en local — `/etc/hosts` → `127.0.0.1 site1.example.com`
 (ou passer l'en-tête `Host` à curl). Lancement identique :
-`cd tenants/site1 && docker compose up -d --build`. Accès :
+`cd stub-tenants/site1 && docker compose up -d --build`. Accès :
 ```bash
 curl -H "Host: site1.example.com" http://localhost/        # via en-tête Host
 # ou, /etc/hosts renseigné, dans le navigateur : http://site1.example.com/
 ```
 Dashboard Traefik : `http://127.0.0.1:8081/` (tunnel SSH si serveur distant).
 
-> Les tenants de test fournis (`tests/tenants/test1`, `test2`) sont déjà câblés ainsi
-> (`include … traefik-test.yml`) → `./deploy.sh test1` suffit à les (re)déployer.
+> Le tenant de test fourni (`stub-tenants/test1`) est déjà câblé ainsi
+> (`include … traefik-test.yml`) → `./deploy.sh test1` suffit à le (re)déployer.
 
 ### Certificat fourni par le client (au lieu de Let's Encrypt)
 
@@ -174,56 +182,50 @@ cp client_a.key data/certs/tenants/client_a.key     # clé privée PEM
 > `data/` est **gitignoré** : les clés privées ne sont jamais commitées. Le nom de
 > fichier est libre (Traefik ne le lit pas) ; seul compte le SAN du certificat.
 
-#### 2. Déclarer le certificat (provider fichier)
+#### 2. Déclarer le certificat (fragment par tenant)
 
-Créer **`infra/traefik/dynamic/tls.yml`** (le dossier monté sur `/dynamic`). Les
-chemins sont vus **dans le conteneur** Traefik (`/certs/...`) :
+La déclaration se fait par un **fragment par tenant** : éditer
+**`stub-tenants/<id>/tls.yml`** (partir de
+[stub-tenants/_template-cert/tls.yml.example](../stub-tenants/_template-cert/tls.yml.example)),
+puis le copier dans le dossier dynamique de Traefik sur le serveur,
+**`/opt/shared-by-tenants/traefik/dynamic/<id>.yml`**. Les chemins sont vus **dans le
+conteneur** Traefik (`/certs/...`) :
 
 ```yaml
 tls:
     certificates:
         - certFile: /certs/client_a.crt
           keyFile: /certs/client_a.key
-        # - certFile: /certs/client_b.crt   # autant d'entrées que de certs
-        #   keyFile: /certs/client_b.key
 ```
 
-`watch=true` est actif → Traefik recharge **à chaud**, sans redémarrage (utile aussi
-au renouvellement : on remplace les fichiers et c'est tout).
+Le provider fichier de Traefik (`watch=true`) **lit et agrège TOUS les fichiers** de
+`/dynamic` et recharge **à chaud**, sans redémarrage — un fragment par tenant, déposé/
+remplacé indépendamment (utile aussi au renouvellement : on remplace les fichiers et
+c'est tout).
 
-#### 3. Brancher le tenant — labels inline (sans overlay)
+#### 3. Brancher le tenant — overlay `traefik-cert`
 
-Un tenant à cert fourni est comme un tenant LE (étape 4), mais au lieu d'inclure
-`docker-compose.traefik.yml` (qui force ACME via `certresolver`), il pose ses labels
-**inline** avec `tls=true` **sans** `certresolver` :
+Un tenant à cert fourni se crée comme un tenant LE (étape 4) mais à partir du template
+**`_template-cert`** : son `docker-compose.yml` inclut
+**`infra/docker-compose.traefik-cert.yml`** au lieu de `docker-compose.traefik.yml`. Cet
+overlay est une copie de `docker-compose.traefik.yml` **sans le label `certresolver`** →
+`tls=true` sans resolver ACME, donc le cert est servi par le provider fichier (par SNI) :
 
 ```yaml
-name: opencapture_client_a
+name: opencapture_${CUSTOM_ID}
 include:
     - path: ../../infra/docker-compose.yml
-services:
-    frontend:
-        ports: !override []
-        networks: [default, frontend]
-        labels:
-            - "traefik.enable=true"
-            - "traefik.docker.network=frontend"
-            - "traefik.http.routers.${CUSTOM_ID}.rule=Host(`${OC_FQDN}`)"
-            - "traefik.http.routers.${CUSTOM_ID}.entrypoints=web,websecure"
-            - "traefik.http.routers.${CUSTOM_ID}.tls=true"
-            # PAS de certresolver -> cert servi par le provider fichier (SNI)
-            - "traefik.http.services.${CUSTOM_ID}.loadbalancer.server.port=80"
-networks:
-    default:
-    frontend:
-        name: frontend
-        external: true
+    - path: ../../infra/docker-compose.traefik-cert.yml   # <- tls=true SANS certresolver
 ```
+
+> **Alternative.** On peut aussi poser les labels **inline** dans le compose du tenant
+> (`tls=true` **sans** `certresolver`) plutôt que d'inclure l'overlay — même résultat,
+> mais moins DRY ; préférer l'overlay.
 
 #### 4. Démarrer et vérifier
 
 ```bash
-cd tenants/client_a
+cd stub-tenants/client_a
 docker compose up -d --build
 
 # Quel cert est servi (SNI forcé) — doit montrer l'émetteur/SAN du cert client :
@@ -237,7 +239,7 @@ echo | openssl s_client -connect <IP_OU_127.0.0.1>:443 -servername client_a.exam
 > auto-signé** par défaut (pas d'erreur de routage, mais avertissement navigateur).
 
 > On peut **mélanger** : des tenants en LE (`traefik.yml`), d'autres en HTTP
-> (`traefik-test.yml`), d'autres en cert client (labels inline ci-dessus) — tous
+> (`traefik-test.yml`), d'autres en cert client (`traefik-cert.yml`) — tous
 > derrière le **même** Traefik. Le choix se fait par les labels de chaque tenant et,
 > pour le cert, par SNI ; aucun conflit.
 
@@ -259,8 +261,8 @@ puis **`up -d`** pour recréer les conteneurs (sinon ils gardent l'ancienne imag
 ./deploy.sh --help                  # aide complète
 ```
 
-Un tenant est résolu automatiquement : `default` → `infra/`, sinon `tenants/<id>/`,
-sinon `tests/tenants/<id>/`. **Quand faut-il rebuilder ?** Voir
+Un tenant est résolu automatiquement : `default` → `infra/`, sinon `stub-tenants/<id>/`
+(les `_template-*` sont exclus de la découverte). **Quand faut-il rebuilder ?** Voir
 [Annexe A](#annexe-a--faut-il-rebuilder-). **Ajouter un tenant** : refaire les étapes 4-5
 (ou voir [Annexe C](#annexe-c--détails-techniques)).
 
@@ -297,12 +299,12 @@ Les `Dockerfile` ont deux `FROM` : un stage **`builder`** (qui fabrique) et un s
 **`runtime`** (l'image finale). **Seul le dernier stage devient l'image** ; le builder est
 **jeté** — seul ce qui est explicitement `COPY --from=builder` survit.
 
-**Frontend** ([infra/frontend.Dockerfile](infra/frontend.Dockerfile)) :
+**Frontend** ([infra/frontend.Dockerfile](../infra/frontend.Dockerfile)) :
 - `builder` (`node`) : `npm ci` + `npm run build` → produit `/app/dist`.
 - `runtime` (`nginx`) : `COPY --from=builder /app/dist /usr/share/nginx/html`.
 - Jeté : Node, npm, `node_modules`, les sources. Image finale ≈ 99 Mo (nginx + bundle).
 
-**Backend** ([infra/backend.Dockerfile](infra/backend.Dockerfile)) :
+**Backend** ([infra/backend.Dockerfile](../infra/backend.Dockerfile)) :
 - `builder` : compile les *wheels* Python (avec `build-essential`, headers dev…).
 - `runtime` : installe les wheels pré-compilés + libs runtime uniquement.
 - Jeté : le compilateur et les headers de dev.
@@ -317,7 +319,7 @@ le **cache de build** (séparé de l'image) pour accélérer les rebuilds.
 
 ### Une image backend, plusieurs rôles
 Tous les services backend partagent l'image `opencapture-backend`. L'`ENTRYPOINT` de
-l'image est **toujours** [infra/docker-entrypoint.sh](infra/docker-entrypoint.sh) ; ce qui
+l'image est **toujours** [infra/docker-entrypoint.sh](../infra/docker-entrypoint.sh) ; ce qui
 change d'un service à l'autre, c'est le `command:` déclaré dans la compose — dont le
 **premier argument est le rôle**. L'entrypoint le lit (`ROLE="${1:-api}"`, défaut `api`),
 attend les dépendances utiles (Postgres/RabbitMQ selon le rôle), puis un `case "$ROLE"`
@@ -394,13 +396,13 @@ file, un *consommateur* (le worker) le traite. Exemple pour le splitter :
 
 1. **Producteur — conteneur `fs-watcher`.** Le process `watcher` surveille les dossiers de
    `watcher.ini` ; un dépôt déclenche la commande configurée
-   ([splitter_workflows/default_workflow.sh](backend/installer/bin/scripts/splitter_workflows/default_workflow.sh)),
+   ([splitter_workflows/default_workflow.sh](../backend/installer/bin/scripts/splitter_workflows/default_workflow.sh)),
    qui valide le PDF et lance
-   [launch_worker_splitter.py](backend/launch_worker_splitter.py) → insère une ligne
-   `monitoring` (`wait`) → [main_splitter.launch](backend/src/main_splitter.py#L22) →
+   [launch_worker_splitter.py](../backend/launch_worker_splitter.py) → insère une ligne
+   `monitoring` (`wait`) → [main_splitter.launch](../backend/src/main_splitter.py#L22) →
    appelle `process_queue_splitter.launch(args)`. Cette fonction est décorée
    **`@kuyruk.task(queue='splitter_<id>')`**
-   ([process_queue_splitter.py.default:44](backend/src/process_queue_splitter.py.default#L44)) :
+   ([process_queue_splitter.py.default:44](../backend/src/process_queue_splitter.py.default#L44)) :
    en kuyruk, **appeler la tâche la PUBLIE dans RabbitMQ** (ça ne traite rien). fs-watcher
    rend la main aussitôt. *(L'API/UI est l'autre producteur, lors d'un upload.)*
 2. **Consommateur — conteneur `worker-splitter`.** `kuyruk … worker --queue splitter_<id>`
@@ -415,37 +417,36 @@ file, un *consommateur* (le worker) le traite. Exemple pour le splitter :
 
 ### Frontend par tenant + Traefik
 Le frontend est une image **par tenant** (le build bake la config). L'overlay
-[infra/docker-compose.traefik.yml](infra/docker-compose.traefik.yml) branche le frontend sur
+[infra/docker-compose.traefik.yml](../infra/docker-compose.traefik.yml) branche le frontend sur
 le réseau externe `frontend` et pose une route `Host(${OC_FQDN})` TLS (resolver `myresolver`).
 Le seul point d'entrée public est Traefik (les autres services restent sur le réseau interne).
 
 ### Mode développement
-Avec l'overlay [infra/docker-compose.override.yml](infra/docker-compose.override.yml)
+Avec l'overlay [infra/docker-compose.override.yml](../infra/docker-compose.override.yml)
 (auto-chargé à la racine) : code **bind-monté** (pas de rebuild pour modifier le code),
 gunicorn `--reload`, et **Vite HMR** sur `:5173` au lieu de nginx. Voir
-[DEV_MODE.md](DEV_MODE.md). Lancement : `docker compose up -d --build` à la racine.
+[DEV_MODE.md](../DEV_MODE.md). Lancement : `docker compose up -d --build` à la racine.
 
 ### Multi-tenant
 Chaque tenant a son projet Compose `opencapture_<CUSTOM_ID>` (conteneurs/volumes/réseau
 préfixés → aucune collision), sa propre DB et son propre RabbitMQ. Pour en ajouter un :
 répéter les étapes 4-5 avec un nouvel `<id>`/FQDN. Détails et alternatives (dont le script
-bare-metal `create_custom.sh`) dans [infra/MULTITENANT.md](infra/MULTITENANT.md).
+bare-metal `create_custom.sh`) dans [infra/MULTITENANT.md](../infra/MULTITENANT.md).
 
 ### Conformité (optionnelle)
 Un journal scellé **NF Z42-020** (chaînage SHA-256 + horodatage RFC 3161) est disponible,
-**désactivé par défaut**, pour le module Splitter. Voir [NF_Z42-020.md](NF_Z42-020.md).
+**désactivé par défaut**, pour le module Splitter. Voir [NF_Z42-020.md](../NF_Z42-020.md).
 
 ### Documentation de référence
-[infra/MULTITENANT.md](infra/MULTITENANT.md) (organisation multi-tenant),
-[infra/SCHEDULING.md](infra/SCHEDULING.md) (tâches récurrentes / Ofelia),
-[DEV_MODE.md](DEV_MODE.md) (développement bare-metal, hors Docker).
+[infra/MULTITENANT.md](../infra/MULTITENANT.md) (organisation multi-tenant),
+[DEV_MODE.md](../DEV_MODE.md) (développement bare-metal, hors Docker).
 
 ## Annexe D — Commandes Docker utiles (par conteneur)
 
 > **Cibler un tenant.** Le plus simple : se placer dans son dossier, `docker compose`
 > résout le `.env` et le projet automatiquement :
 > ```bash
-> cd tenants/site1            # ou tests/tenants/test1 ; ou infra/ pour "default"
+> cd stub-tenants/site1       # ou stub-tenants/test1 ; ou infra/ pour "default"
 > docker compose ps
 > docker compose exec backend bash
 > docker compose logs -f worker-splitter
