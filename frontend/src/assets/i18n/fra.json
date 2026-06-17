@@ -700,7 +700,7 @@
         "pages_selected_other": "<strong>pages</strong> <span style='font-size:12px'>sélectionnées</span>",
         "validate_batch": "Valider le lot",
         "change_form": "Changer de formulaire",
-        "confirm_change_form": "Les données saisies peuvent être supprimées. Veuillez confirmer la modification du formulaire.",
+        "confirm_change_form": "Les données saisies peuvent être supprimées. Les types de document seront modifiés. Veuillez confirmer la modification du formulaire.",
         "batch_validated": "Lot validé avec succès",
         "empty_documents_error": "Validation impossible : un ou plusieurs documents du lot sont vides",
         "form_changed": "Formulaire changé avec succès",
