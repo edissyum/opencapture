@@ -23,7 +23,9 @@ infra/
 ├── docker-compose.traefik-test.yml    # labels Traefik HTTP (test local)
 └── docker-compose.traefik.yml         # labels Traefik HTTPS + Let's Encrypt (prod)
 
-tenants/
+stub-tenants/
+├── _template-letsencrypt/              # squelette à copier (HTTPS Let's Encrypt)
+├── _template-cert/                     # squelette à copier (cert fourni / SNI)
 ├── site1/
 │   ├── .env                            # CUSTOM_ID=site1, OC_FQDN=…, *_PATH=../data/site1/…
 │   └── docker-compose.yml              # 3 lignes : name + include
@@ -55,7 +57,7 @@ include:
 - Requiert Docker Compose **v2.20+** (la directive `include:`).
 - **Couplage fort** — un changement cassé dans `infra/` impacte tous les tenants d'un coup.
 - **Divergence coûteuse** — un tenant qui veut épingler une ancienne version d'un service doit passer par `!override`, moins lisible.
-- **Indirection** — depuis `tenants/site1/`, il faut sauter dans `infra/` pour lire le détail des services.
+- **Indirection** — depuis `stub-tenants/site1/`, il faut sauter dans `infra/` pour lire le détail des services.
 
 ---
 
@@ -64,7 +66,7 @@ include:
 ### Structure
 
 ```
-tenants/
+stub-tenants/
 ├── site1/
 │   ├── .env
 │   ├── docker-compose.yml                # copie complète
@@ -76,7 +78,7 @@ tenants/
 
 ### Pour
 
-- **Autonomie totale** d'un tenant : on peut zipper `tenants/clientX/` et le déployer ailleurs.
+- **Autonomie totale** d'un tenant : on peut zipper `stub-tenants/clientX/` et le déployer ailleurs.
 - **Divergence libre** : un client sur Postgres 15, un autre sur Postgres 17, sans gymnastique.
 - **Lisibilité immédiate** : tout est sous les yeux, pas de saut mental.
 
@@ -118,7 +120,7 @@ opencapture_docker/
 ├── src/          # ressources additionnelles (templates, etc.)
 ├── custom/       # squelette custom de base (template OC officiel)
 ├── infra/        # Dockerfiles + composes + scripts (côté infra)
-└── tenants/      # .env + stubs compose par tenant (côté config)
+└── stub-tenants/ # .env + stubs compose par tenant (+ templates _template-*)
 ```
 
 ### Une seule image, partagée par tous les services et tous les tenants
@@ -140,7 +142,7 @@ Le frontend a sa propre image (nginx + bundle Vite), construite depuis `infra/fr
 
 ### Le code est immuable dans l'image — le contexte tenant arrive par 3 canaux
 
-#### 1. Variables d'environnement (depuis `tenants/<x>/.env`)
+#### 1. Variables d'environnement (depuis `stub-tenants/<x>/.env`)
 
 ```yaml
 x-backend-env: &backend-env
@@ -218,7 +220,7 @@ Si vous modifiez le code backend ou frontend :
 
 ```bash
 # rebuild de l'image (depuis n'importe quel tenant)
-cd tenants/site1
+cd stub-tenants/site1
 docker compose build
 
 # l'image opencapture-backend est mise à jour
@@ -233,7 +235,7 @@ docker compose up -d           # site2
 Pour forcer tous les tenants à rebuild en une commande (depuis la racine) :
 
 ```bash
-for t in tenants/*/; do (cd "$t" && docker compose build && docker compose up -d); done
+for t in stub-tenants/*/; do (cd "$t" && docker compose build && docker compose up -d); done
 ```
 
 ### Quand un tenant a besoin de code spécifique
@@ -275,7 +277,7 @@ Aucun conteneur ne peut se retrouver attaché aux ressources d'un autre tenant.
 Chaque tenant déclare ses propres chemins dans son `.env` :
 
 ```bash
-# tenants/site1/.env
+# stub-tenants/site1/.env
 PGDATA_PATH=../data/site1/pgdata
 RABBITMQ_DATA_PATH=../data/site1/rabbitmq
 CUSTOM_PATH=../data/site1/custom
@@ -284,7 +286,7 @@ SHARE_PATH=../data/site1/share
 ```
 
 ```bash
-# tenants/site2/.env
+# stub-tenants/site2/.env
 PGDATA_PATH=../data/site2/pgdata
 …
 ```
@@ -304,7 +306,7 @@ Tout nouveau service qui persiste des données dans `infra/docker-compose.yml` d
 | Compose (méthodo A)                    | Kubernetes équivalent                    |
 |----------------------------------------|------------------------------------------|
 | `infra/docker-compose.yml`             | Helm chart / Kustomize `base/`           |
-| `tenants/site1/.env`                   | `values-site1.yaml` / `overlays/site1/`  |
+| `stub-tenants/site1/.env`              | `values-site1.yaml` / `overlays/site1/`  |
 | `name: opencapture_${CUSTOM_ID}`       | Namespace `site1`                        |
 | `PGDATA_PATH=../data/site1/...`        | PersistentVolumeClaim dans ns `site1`    |
 | Labels Traefik                         | Ingress / IngressRoute par namespace     |
@@ -319,7 +321,7 @@ Tout nouveau service qui persiste des données dans `infra/docker-compose.yml` d
 En pratique, le passage vers K8s consisterait à :
 
 1. `helm create opencapture` à partir de `infra/docker-compose.yml`.
-2. Convertir chaque `tenants/<x>/.env` en `values-<x>.yaml`.
+2. Convertir chaque `stub-tenants/<x>/.env` en `values-<x>.yaml`.
 3. Créer un namespace par tenant, une `IngressRoute` Traefik par tenant, une PVC par volume.
 
 C'est un travail mécanique de quelques heures si la méthodo A est en place. Avec la méthodo B, il faut d'abord **factoriser** les composes dupliqués — travail qu'on s'est épargné en restant en A.
@@ -335,20 +337,20 @@ Le seul cas où B serait justifié, c'est si les tenants sont amenés à diverge
 Workflow opérationnel pour le DevOps :
 
 ```bash
-cd tenants/site1
+cd stub-tenants/site1
 docker compose up -d              # démarre site1
 docker compose ps                 # liste ses conteneurs
 docker compose logs -f backend    # logs streamés
 docker compose down               # arrête site1
 ```
 
-Ajout d'un nouveau tenant :
+Ajout d'un nouveau tenant — copier un template (`_template-letsencrypt` pour HTTPS
+Let's Encrypt, `_template-cert` pour un cert fourni / SNI), renommer le `.env`, l'éditer :
 
 ```bash
-mkdir -p tenants/clientX
-cp tenants/site1/.env             tenants/clientX/.env
-cp tenants/site1/docker-compose.yml tenants/clientX/docker-compose.yml
-# éditer tenants/clientX/.env (CUSTOM_ID, OC_FQDN, ports, *_PATH)
-cd tenants/clientX
-docker compose up -d
+cp -r stub-tenants/_template-letsencrypt stub-tenants/clientX
+mv stub-tenants/clientX/.env.example stub-tenants/clientX/.env
+# éditer stub-tenants/clientX/.env (CUSTOM_ID, OC_FQDN, POSTGRES_*, RABBITMQ_*, *_PATH)
+cd stub-tenants/clientX
+docker compose up -d              # ou, depuis la racine : ./deploy.sh clientX
 ```

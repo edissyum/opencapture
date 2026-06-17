@@ -4,8 +4,8 @@
 # tenant de test : verifier, splitter, mail (greenmail), fs-watcher.
 #
 # Usage :
-#   ./tests/run_tests.sh                # test1 puis test2
-#   ./tests/run_tests.sh test1          # un seul tenant
+#   ./tests/run_tests.sh                # test1 (defaut)
+#   ./tests/run_tests.sh test1 autre    # un ou plusieurs tenants
 #   ./tests/run_tests.sh --rebuild      # force le rebuild des images
 #
 # Chaque tenant est : reset (down -v + wipe data) -> up -d -> 4 checks.
@@ -30,10 +30,10 @@ for a in "$@"; do
         *)  TENANTS+=("$a") ;;
     esac
 done
-[ ${#TENANTS[@]} -eq 0 ] && TENANTS=(test1 test2)
+[ ${#TENANTS[@]} -eq 0 ] && TENANTS=(test1)
 
 # Prérequis routage HTTP (idempotents). Sans eux les tests passent toujours
-# (DB/FS/logs), mais les UI http://test{1,2}.edissyum.com seraient en 404.
+# (DB/FS/logs), mais l'UI http://test1.edissyum.com serait en 404.
 ensure_traefik() {
     if docker network inspect frontend >/dev/null 2>&1; then
         echo "[pré] réseau frontend : OK"
@@ -70,9 +70,9 @@ FAILED=0
 dc() {
     local t="$1"; shift
     docker compose \
-        -f "$TESTS_DIR/tenants/$t/docker-compose.yml" \
+        -f "$REPO_ROOT/stub-tenants/$t/docker-compose.yml" \
         -f "$GREENMAIL" \
-        --project-directory "$TESTS_DIR/tenants/$t" \
+        --project-directory "$REPO_ROOT/stub-tenants/$t" \
         "$@"
 }
 

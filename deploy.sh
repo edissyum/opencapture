@@ -12,15 +12,15 @@
 #
 # Un "tenant" = un dossier contenant un docker-compose.yml qui inclut la compose infra :
 #   - default  -> infra/docker-compose.yml                  (stack de base)
-#   - <id>     -> tenants/<id>/docker-compose.yml           (tenants de production)
-#   - <id>     -> tests/tenants/<id>/docker-compose.yml     (tenants de test)
+#   - <id>     -> stub-tenants/<id>/docker-compose.yml      (tenants prod + test)
+# Les gabarits stub-tenants/_template-* sont exclus de la decouverte.
 # La resolution est uniforme : un tenant de test se pilote comme un vrai tenant.
 #
 # Usage :
 #   ./deploy.sh [options] [tenants...]
 #
 # Options :
-#   --all            tous les tenants decouverts (default + tenants/* + tests/tenants/*)
+#   --all            tous les tenants decouverts (default + stub-tenants/* sauf _template-*)
 #   --pull           git pull (--ff-only) avant de builder
 #   --backend-only   ne (re)build que le backend (image partagee)
 #   --frontend-only  ne (re)build que le(s) frontend(s)
@@ -64,12 +64,11 @@ done
 # Repertoire du compose d'un tenant (echoue si introuvable).
 compose_dir_for() {
     local t="$1"
+    case "$t" in _*|.*) return 1 ;; esac   # _template-*, dotdirs : pas des tenants
     if [ "$t" = "default" ] && [ -f "$REPO_ROOT/infra/docker-compose.yml" ]; then
         echo "$REPO_ROOT/infra"
-    elif [ -f "$REPO_ROOT/tenants/$t/docker-compose.yml" ]; then
-        echo "$REPO_ROOT/tenants/$t"
-    elif [ -f "$REPO_ROOT/tests/tenants/$t/docker-compose.yml" ]; then
-        echo "$REPO_ROOT/tests/tenants/$t"
+    elif [ -f "$REPO_ROOT/stub-tenants/$t/docker-compose.yml" ]; then
+        echo "$REPO_ROOT/stub-tenants/$t"
     else
         return 1
     fi
@@ -82,12 +81,15 @@ dc() {
     docker compose --project-directory "$dir" -f "$dir/docker-compose.yml" "$@"
 }
 
-# Liste tous les tenants deployables.
+# Liste tous les tenants deployables (exclut les gabarits _template-* et tout
+# dossier prefixe par '_' ou '.').
 discover_all() {
-    local found=() d
+    local found=() d name
     [ -f "$REPO_ROOT/infra/docker-compose.yml" ] && found+=("default")
-    for d in "$REPO_ROOT"/tenants/*/ "$REPO_ROOT"/tests/tenants/*/; do
-        [ -f "${d}docker-compose.yml" ] && found+=("$(basename "$d")")
+    for d in "$REPO_ROOT"/stub-tenants/*/; do
+        name="$(basename "$d")"
+        case "$name" in _*|.*) continue ;; esac
+        [ -f "${d}docker-compose.yml" ] && found+=("$name")
     done
     [ ${#found[@]} -gt 0 ] && printf '%s\n' "${found[@]}"
 }

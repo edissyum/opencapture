@@ -1,0 +1,53 @@
+# Overlay : cert FOURNI (client) ou AUTO-SIGNÉ, servi par SNI via le provider
+# fichier du Traefik partagé. tls=true SANS certresolver (pas d'ACME).
+#
+# Identique à docker-compose.traefik.yml (Let's Encrypt) AU DÉTAIL PRÈS de la
+# ligne `certresolver` qui est ABSENTE ici : Traefik choisit alors le cert au
+# handshake par SNI (le SAN du cert doit couvrir exactement ${OC_FQDN}).
+#
+# Avantage : pas d'ACME -> pas besoin de DNS public ni des ports 80/443 ouverts
+# vers Internet (fonctionne sur DNS interne).
+#
+# Pré-requis hôte :
+#   1. Réseau Docker `frontend` (externe) + Traefik partagé dessus
+#      (cf. infra/docker-compose.traefik-server.yml).
+#   2. Déposer le PEM dans le dossier monté /certs du Traefik
+#      (/opt/shared-by-tenants/traefik/certs/) :
+#        <id>.crt  = chaîne complète (leaf + intermédiaires)
+#        <id>.key  = clé privée SANS passphrase
+#      Auto-signé : openssl req -x509 -newkey rsa:2048 -nodes -days 825 \
+#          -keyout <id>.key -out <id>.crt \
+#          -subj "/CN=<fqdn>" -addext "subjectAltName=DNS:<fqdn>"
+#   3. Déclarer le cert dans le provider fichier (watch=true, hot-reload) :
+#      un fragment PAR tenant -> /opt/shared-by-tenants/traefik/dynamic/<id>.yml
+#      (cf. stub-tenants/_template-cert/tls.yml.example). Traefik agrège tous
+#      les fichiers de /dynamic.
+#
+# Lancement :
+#   docker compose -f infra/docker-compose.yml \
+#                  -f infra/docker-compose.traefik-cert.yml up -d
+#   (ou via le stub d'un tenant qui include ces deux fichiers.)
+
+networks:
+    # Réseau interne de la stack OC (nommé d'après le projet).
+    default:
+    # Réseau partagé avec Traefik. Doit être pré-créé sur l'hôte.
+    frontend:
+        name: frontend
+        external: true
+
+services:
+    frontend:
+        # Vire le port hôte du compose de base ; Traefik prend le relais.
+        ports: !override []
+        networks:
+            - default
+            - frontend
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=frontend"
+            - "traefik.http.routers.${CUSTOM_ID}.rule=Host(`${OC_FQDN}`)"
+            - "traefik.http.routers.${CUSTOM_ID}.entrypoints=web,websecure"
+            - "traefik.http.routers.${CUSTOM_ID}.tls=true"
+            # PAS de certresolver -> cert servi par le provider fichier (SNI).
+            - "traefik.http.services.${CUSTOM_ID}.loadbalancer.server.port=80"
