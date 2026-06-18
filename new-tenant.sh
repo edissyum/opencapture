@@ -59,6 +59,23 @@ sed -i \
     -e "s#^SHARE_PATH=.*#SHARE_PATH=/opt/tenants/$id/share#" \
     "$dst/.env"
 
+# --- APP_UID/APP_GID : repris du .env GLOBAL, JAMAIS du défaut du gabarit ------
+# L'image backend est PARTAGÉE et bâtie avec l'APP_UID du .env global : elle bake
+# /app (= HOME du compte de service) à cet uid. Si un tenant tourne avec un autre
+# uid, /app n'est plus inscriptible -> matplotlib/fontconfig en erreur (HOME),
+# et les fichiers déposés ne matchent plus le process. On force donc la valeur
+# globale pour que TOUS les tenants soient cohérents avec l'image.
+global_env="$REPO_ROOT/.env"
+if [ -f "$global_env" ]; then
+    g_uid="$(grep -m1 '^APP_UID=' "$global_env" | cut -d= -f2- || true)"
+    g_gid="$(grep -m1 '^APP_GID=' "$global_env" | cut -d= -f2- || true)"
+    [ -n "$g_uid" ] && sed -i "s/^APP_UID=.*/APP_UID=$g_uid/" "$dst/.env"
+    [ -n "$g_gid" ] && sed -i "s/^APP_GID=.*/APP_GID=$g_gid/" "$dst/.env"
+else
+    g_uid=""; g_gid=""
+    echo "    ⚠ .env global absent ($global_env) : APP_UID/APP_GID laissés au défaut du gabarit." >&2
+fi
+
 # --- Ce qu'il reste à renseigner À LA MAIN ---
 echo
 echo "==> Tenant '$id' créé (mode $mode)."
@@ -73,6 +90,7 @@ echo
 echo "    Pré-remplis depuis l'id (à vérifier) :"
 echo "      - CUSTOM_ID=$id, POSTGRES_DB=opencapture_$id, POSTGRES_USER=$id, RABBITMQ_USER=$id"
 echo "      - *_PATH = /opt/tenants/$id/{pgdata,rabbitmq,custom,docservers,share}"
+echo "      - APP_UID=${g_uid:-<gabarit>}, APP_GID=${g_gid:-<gabarit>} (repris du .env global)"
 
 if [ "$mode" = "cert" ]; then
     echo
