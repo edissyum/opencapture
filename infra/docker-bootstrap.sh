@@ -97,6 +97,16 @@ ensure_watcher_ini() {
         -e "s#/var/share/#${SHARE_PATH}/#g" \
         -e "s#/var/www/html/opencapture/#${CUSTOM_DIR}/#g" \
         "$target"
+
+    # Aligner les noms de section sur ceux que l'app génère au runtime :
+    # createScriptAndWatcher écrit [<module>_<workflow_id>_<custom_id>]
+    # (cf. backend/src/controllers/workflow.py:358-360), alors que le template
+    # est NON suffixé. Sans ce renommage, dès la 1re création/édition d'un
+    # workflow dans l'UI, l'app ne retrouve pas la section (dédup sur le nom
+    # EXACT) et en AJOUTE une 2e suffixée sur le MÊME dossier -> double
+    # traitement. On suffixe donc toutes les sections (sauf [DEFAULT]) avec le
+    # custom_id, comme le fait l'app.
+    sed -i -E "/^\[DEFAULT\]\$/! s/^\[([A-Za-z0-9_]+)\]\$/[\1_${CUSTOM_ID}]/" "$target"
 }
 ensure_watcher_ini
 
