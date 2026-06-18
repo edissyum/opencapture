@@ -98,7 +98,7 @@ server {
         proxy_read_timeout 600s;
         proxy_send_timeout 600s;
         # WebDAV OPT-IN : si le conteneur webdav n'est pas déployé pour ce
-        # tenant (overlay docker-compose.webdav.yml non inclus), la résolution
+        # tenant (overlay infra/webdav/docker-compose.yml non inclus), la résolution
         # de `webdav` échoue -> nginx renverrait un 502 brut. On le transforme
         # en 501 « non activé » explicite, sans casser le reste du site.
         error_page 502 503 504 = @dav_unavailable;

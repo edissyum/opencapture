@@ -46,7 +46,7 @@ nginx ne comprend pas les méthodes WebDAV, il les transmet telles quelles
 - **Préfixe `/dav` conservé** (nginx ne strippe pas) + `Alias /dav /data` côté
   Apache -> hrefs `PROPFIND` cohérents sous `/dav/` -> montage de lecteur fiable.
 - **Opt-in** : le WebDAV n'est PAS dans la stack de base. Un tenant l'active en
-  incluant l'overlay `infra/docker-compose.webdav.yml` (cf. *Activation*). Sans
+  incluant l'overlay `infra/webdav/docker-compose.yml` (cf. *Activation*). Sans
   overlay → `/dav/` renvoie **501** (« non activé »), le reste du site marche.
   Avec overlay mais sans compte htpasswd → **401** (fermé tant qu'aucun compte).
 
@@ -54,9 +54,9 @@ nginx ne comprend pas les méthodes WebDAV, il les transmet telles quelles
 
 | Chemin | Rôle |
 |---|---|
-| `infra/webdav.Dockerfile` | Image `opencapture-webdav` (httpd + notre conf). Partagée, build 1×. |
+| `infra/webdav/Dockerfile` | Image `opencapture-webdav` (httpd + notre conf). Partagée, build 1×. |
 | `infra/webdav/httpd.conf` | Config Apache (rootless, `mod_dav`, Basic auth, `Alias /dav`). |
-| `infra/docker-compose.webdav.yml` | Overlay **opt-in** : ajoute le conteneur `webdav` (réseau interne, `user: APP_UID`). |
+| `infra/webdav/docker-compose.yml` | Overlay **opt-in** : ajoute le conteneur `webdav` (réseau interne, `user: APP_UID`). |
 | bloc `location ^~ /dav/` dans `infra/nginx.conf.template` | Proxy frontend -> `webdav:8080` (501 si non activé). |
 | `/opt/tenants/<id>/webdav/htpasswd` | Comptes WebDAV du tenant. **Secret**, hors dépôt. |
 | `../../new-webdav-account.sh` | Crée/complète l'accès WebDAV d'un tenant. |
@@ -71,7 +71,7 @@ Le WebDAV est un add-on : un tenant l'active en ajoutant l'overlay à son
 include:
     - path: ../../infra/docker-compose.yml
     - path: ../../infra/docker-compose.traefik-*.yml
-    - path: ../../infra/docker-compose.webdav.yml      # <- active le WebDAV
+    - path: ../../infra/webdav/docker-compose.yml      # <- active le WebDAV
 ```
 
 Puis :

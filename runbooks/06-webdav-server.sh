@@ -20,7 +20,7 @@
 #        include:
 #            - path: ../../infra/docker-compose.yml
 #            - path: ../../infra/docker-compose.traefik-*.yml
-#            - path: ../../infra/docker-compose.webdav.yml   # <- active le WebDAV
+#            - path: ../../infra/webdav/docker-compose.yml   # <- active le WebDAV
 #    Sans cet overlay, /dav/ renvoie 501 « non activé » (le reste du site marche).
 #    L'image opencapture-webdav est construite par deploy.sh (docker build,
 #    INDÉPENDAMMENT du backend) dès qu'un tenant inclut l'overlay.

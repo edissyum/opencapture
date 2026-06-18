@@ -82,11 +82,11 @@ dc() {
 }
 
 # Vrai si le tenant ACTIVE l'overlay WebDAV (opt-in) : ligne d'include NON
-# commentee de docker-compose.webdav.yml dans son docker-compose.yml. Sert a ne
+# commentee de webdav/docker-compose.yml dans son docker-compose.yml. Sert a ne
 # construire l'image webdav que si au moins un tenant en a besoin.
 tenant_has_webdav() {
     local dir; dir="$(compose_dir_for "$1")" || return 1
-    grep -qE '^[[:space:]]*-[[:space:]]*path:.*docker-compose\.webdav\.yml' \
+    grep -qE '^[[:space:]]*-[[:space:]]*path:.*webdav/docker-compose\.yml' \
         "$dir/docker-compose.yml" 2>/dev/null
 }
 
@@ -143,12 +143,12 @@ fi
 
 # 2bis) Image PARTAGEE webdav (opt-in) : INDEPENDANTE du backend. Construite UNE
 #       fois (docker build direct, pas via le compose) si au moins un tenant
-#       selectionne active l'overlay docker-compose.webdav.yml.
+#       selectionne active l'overlay webdav/docker-compose.yml.
 if [ "$BUILD_BACKEND" = 1 ] || [ "$BUILD_FRONTEND" = 1 ]; then
     for t in "${TENANTS[@]}"; do
         if tenant_has_webdav "$t"; then
             echo "==> Build image webdav (partagee, opt-in)..."
-            docker build -f "$REPO_ROOT/infra/webdav.Dockerfile" \
+            docker build -f "$REPO_ROOT/infra/webdav/Dockerfile" \
                 -t opencapture-webdav "$REPO_ROOT"
             break
         fi

@@ -22,4 +22,4 @@ include:
     # WebDAV (optionnel) — dépôt de fichiers par montage de lecteur réseau
     # (http://<fqdn>/dav/). Décommenter pour activer, puis créer un compte :
     #   sudo ./new-webdav-account.sh <id>
-    # - path: ../../infra/docker-compose.webdav.yml
+    # - path: ../../infra/webdav/docker-compose.yml

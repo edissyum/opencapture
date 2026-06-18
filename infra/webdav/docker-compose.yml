@@ -6,7 +6,7 @@
 #   include:
 #       - path: ../../infra/docker-compose.yml
 #       - path: ../../infra/docker-compose.traefik-*.yml
-#       - path: ../../infra/docker-compose.webdav.yml      # <- active le WebDAV
+#       - path: ../../infra/webdav/docker-compose.yml      # <- active le WebDAV
 #
 # Effets :
 #   - Ajoute un conteneur `webdav` (Apache mod_dav) qui sert le `share` du tenant
@@ -28,8 +28,11 @@
 services:
     webdav:
         build:
-            context: ..
-            dockerfile: infra/webdav.Dockerfile
+            # Cet overlay est dans infra/webdav/ ; le contexte remonte 2 crans
+            # jusqu'à la racine du dépôt (où le COPY du Dockerfile prend ses
+            # chemins infra/webdav/...).
+            context: ../..
+            dockerfile: infra/webdav/Dockerfile
         image: opencapture-webdav
         environment:
             TZ: ${TZ:-Europe/Paris}

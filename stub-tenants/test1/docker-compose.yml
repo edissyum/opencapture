@@ -15,4 +15,4 @@ include:
     - path: ../../infra/docker-compose.yml
     - path: ../../infra/docker-compose.traefik-http.yml
     # WebDAV activé (tenant de test/référence) -> http://test1.edissyum.com/dav/
-    - path: ../../infra/docker-compose.webdav.yml
+    - path: ../../infra/webdav/docker-compose.yml

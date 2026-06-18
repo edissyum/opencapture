@@ -226,7 +226,7 @@ services:
 
     # NB : le service `webdav` (Apache mod_dav) n'est PAS dans cette stack de
     # base — c'est un add-on OPT-IN. Un tenant l'active en incluant l'overlay
-    # infra/docker-compose.webdav.yml dans son docker-compose.yml.
+    # infra/webdav/docker-compose.yml dans son docker-compose.yml.
 
     frontend:
         build:

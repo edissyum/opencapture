@@ -10,7 +10,8 @@
 # tenants ; les différences (share, htpasswd) viennent des bind-mounts du
 # compose. Construite UNE fois (cf. deploy.sh), comme opencapture-backend.
 #
-# Contexte de build = racine du dépôt (cf. infra/docker-compose.yml).
+# Contexte de build = racine du dépôt (cf. infra/webdav/docker-compose.yml et
+# deploy.sh) -> le COPY ci-dessous part de la racine.
 FROM httpd:2.4-alpine
 
 # mod_dav_fs a besoin d'un pilote DBM (APR-util) pour sa base de verrous WebDAV
