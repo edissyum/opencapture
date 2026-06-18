@@ -10,17 +10,29 @@
 #
 # Prérequis : infra installée (01) ; tenants créés (new-tenant.sh + deploy.sh).
 
-REPO=~/opencapture_docker          # adapte au chemin réel du clone
-cd "$REPO"
+# Lance ces commandes DEPUIS LA RACINE DU DÉPÔT (là où tu as fait git pull).
+# NB : en sudo, `~` = /root -> n'utilise PAS ~/opencapture_docker. $PWD est sûr.
+REPO="$PWD"
 
 # ----------------------------------------------------------------------
-# 1) Paquet — ProFTPD
+# 1) Paquet — ProFTPD + disponibilité de mod_sftp
 # ----------------------------------------------------------------------
 sudo apt update && sudo apt install -y proftpd-core
+# (apt démarre déjà proftpd sur la config Debian par défaut -> on le redémarre
+#  en étape 5 une fois NOTRE config en place.)
 
-# Activer mod_sftp (souvent commenté par défaut) ; vérifier qu'il est chargé :
-sudo sed -i 's/^# *LoadModule mod_sftp.c/LoadModule mod_sftp.c/' /etc/proftpd/modules.conf
-grep -E 'mod_sftp\.c' /etc/proftpd/modules.conf
+# mod_sftp peut être COMPILÉ EN STATIQUE (builtin) ou fourni en module DSO.
+# Diagnostic :
+proftpd -l | grep -i 'mod_sftp\.c' && echo "=> mod_sftp builtin"   # listé = builtin
+ls -l /usr/lib/proftpd/ | grep -i sftp || true                     # mod_sftp.la = DSO
+
+#  - builtin  : NE PAS décommenter LoadModule mod_sftp.c dans modules.conf
+#               (sinon proftpd tente un .la inexistant -> erreur fatale).
+#               Au besoin, le re-commenter :
+#                 sudo sed -i 's/^LoadModule mod_sftp.c/# LoadModule mod_sftp.c/' /etc/proftpd/modules.conf
+#  - DSO dispo (/usr/lib/proftpd/mod_sftp.la existe) : le décommenter :
+#                 sudo sed -i 's/^# *LoadModule mod_sftp.c/LoadModule mod_sftp.c/' /etc/proftpd/modules.conf
+#  - absent partout : trouver le paquet du module (apt-cache search proftpd).
 
 # ----------------------------------------------------------------------
 # 2) Arborescence /etc/proftpd
@@ -52,8 +64,9 @@ sudo chmod 600 /etc/proftpd/sftp/ssh_host_*_key
 # ----------------------------------------------------------------------
 # 5) Vérifier la conf puis démarrer ProFTPD
 # ----------------------------------------------------------------------
-sudo proftpd -t                                  # DOIT passer (sinon mod_sftp pas chargé ?)
-sudo systemctl enable --now proftpd
+sudo proftpd -t                                  # DOIT passer (sinon : voir étape 1, mod_sftp)
+sudo systemctl enable proftpd                    # au boot
+sudo systemctl restart proftpd                   # recharge NOTRE config (apt l'avait démarré sur la défaut)
 sudo systemctl status proftpd
 # Sans systemd : sudo proftpd  /  recharger : sudo pkill -HUP proftpd
 
