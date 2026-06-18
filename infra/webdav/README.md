@@ -24,13 +24,32 @@ conteneur **Apache `mod_dav`** (implémentation WebDAV de référence, complète
 nginx ne comprend pas les méthodes WebDAV, il les transmet telles quelles
 (`proxy_pass`).
 
+## Pourquoi nginx relaie (et pas Traefik → webdav en direct)
+
+On garde la chaîne **Traefik → nginx → Apache** plutôt que **Traefik → Apache
+direct** (webdav sur le réseau `frontend` avec ses propres labels Traefik), pour
+deux raisons :
+
+1. **L'overlay reste unique.** Aujourd'hui `infra/webdav/docker-compose.yml`
+   n'ajoute qu'un service en **réseau interne, sans aucun label** : il « profite »
+   gratuitement du TLS/routage du frontend, quel que soit le mode du tenant. Exposé
+   directement à Traefik, il lui faudrait son propre routeur, donc sa config TLS —
+   qui **diffère selon le mode** (HTTP : `entrypoints=web` ; cert fourni :
+   `tls=true` ; Let's Encrypt : `+ tls.certresolver`). Il faudrait donc **3
+   variantes d'overlay webdav** (comme les 3 overlays Traefik du frontend), au lieu
+   d'une seule.
+2. **Ça ne réglerait pas le « slash ».** Le souci du `/dav` sans slash (cf.
+   *Détails techniques*) vient d'Apache **derrière un proxy TLS** — or Traefik EST
+   aussi un proxy TLS. On aurait le même 301, à corriger de toute façon. La couche
+   nginx n'est donc pas le coupable.
+
 ## Modèle
 
 | Élément | Choix |
 |---|---|
 | Protocole | **WebDAV** sur HTTP(S), exposé sous `https://<fqdn>/dav/` |
 | Serveur | **Apache `mod_dav`** (`httpd:2.4-alpine`), **un conteneur par tenant** |
-| Reverse-proxy | frontend nginx : `location ^~ /dav/` -> `webdav:8080` |
+| Reverse-proxy | frontend nginx : `location ~ ^/dav(/|$)` -> `webdav:8080` |
 | Racine servie | `/data` = `${SHARE_PATH}` (= `/opt/tenants/<id>/share`) |
 | Identité fichiers | **`$APP_UID:$APP_GID`** (conteneur en `user:` non-root) -> lisible/supprimable par le `fs-watcher` |
 | Auth | **Basic auth htpasswd** par tenant (`/conf/htpasswd`, hors dépôt), relu à chaque requête |
@@ -43,8 +62,14 @@ nginx ne comprend pas les méthodes WebDAV, il les transmet telles quelles
 - **uid des fichiers** : `PUT` crée les fichiers en `APP_UID:APP_GID` — c'est la
   propriété « magique » du SFTP, obtenue ici par l'`user:` du conteneur (pas
   besoin d'être dans le conteneur `fs-watcher`).
-- **Préfixe `/dav` conservé** (nginx ne strippe pas) + `Alias /dav /data` côté
-  Apache -> hrefs `PROPFIND` cohérents sous `/dav/` -> montage de lecteur fiable.
+- **Préfixe `/dav` conservé** (proxy sans strip) + `Alias /dav /data` côté Apache
+  -> hrefs `PROPFIND` cohérents sous `/dav/` -> montage de lecteur fiable.
+- **`/dav` sans slash (client Windows)** : le redirecteur WebDAV de Windows
+  interroge `/dav` **sans** slash final, et `mod_dav` y répondrait un **301**
+  (cassé derrière le proxy TLS — en `http` — et non suivi par Windows) → **« erreur
+  système 67 »**. Réglé **dans Apache** (`mod_rewrite` : `RewriteRule ^/dav$ /dav/
+  [PT]`, une réécriture **interne**, pas une redirection) → `/dav` répond 200. Le
+  proxy nginx reste donc un simple relais (un seul `location ~ ^/dav(/|$)`).
 - **Opt-in** : le WebDAV n'est PAS dans la stack de base. Un tenant l'active en
   incluant l'overlay `infra/webdav/docker-compose.yml` (cf. *Activation*). Sans
   overlay → `/dav/` renvoie **501** (« non activé »), le reste du site marche.

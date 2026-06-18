@@ -78,16 +78,14 @@ server {
         add_header Cache-Control $oc_cache_control always;
     }
 
-    # WebDAV: /dav/ -> conteneur Apache mod_dav (webdav:8080). nginx ne fait
-    # que RELAYER (il n'a pas de module WebDAV utilisable) ; c'est Apache qui
-    # traite PROPFIND/OPTIONS/LOCK/MKCOL/COPY/MOVE/PUT. `^~` fait primer ce
-    # préfixe sur le `location /` de fallback. Le backend webdav est résolu
-    # dynamiquement (resolver ci-dessus) pour ne pas figer son IP : s'il est
-    # recréé, nginx la reprend sans redémarrage.
-    location ^~ /dav/ {
+    # WebDAV: /dav et /dav/... -> conteneur Apache mod_dav (webdav:8080). nginx
+    # ne fait que RELAYER (pas de module WebDAV utilisable) ; Apache gère tout,
+    # y compris la réécriture interne /dav -> /dav/ pour le client Windows (cf.
+    # infra/webdav/httpd.conf) -> ici un SEUL location, simple relais. La regex
+    # matche /dav ET /dav/... (mais pas /davXYZ). Backend résolu dynamiquement
+    # (resolver ci-dessus) pour ne pas figer son IP s'il est recréé.
+    location ~ ^/dav(/|$) {
         set $oc_webdav webdav:8080;
-        # PAS de / final : on garde le préfixe /dav -> Alias /dav côté Apache
-        # (hrefs PROPFIND cohérents -> montage de lecteur réseau fiable).
         proxy_pass http://$oc_webdav$request_uri;
         proxy_set_header Host              $host;
         proxy_set_header X-Real-IP         $remote_addr;
@@ -97,10 +95,9 @@ server {
         client_max_body_size 0;            # uploads WebDAV sans limite de taille
         proxy_read_timeout 600s;
         proxy_send_timeout 600s;
-        # WebDAV OPT-IN : si le conteneur webdav n'est pas déployé pour ce
-        # tenant (overlay infra/webdav/docker-compose.yml non inclus), la résolution
-        # de `webdav` échoue -> nginx renverrait un 502 brut. On le transforme
-        # en 501 « non activé » explicite, sans casser le reste du site.
+        # OPT-IN : si le conteneur webdav n'est pas déployé pour ce tenant
+        # (overlay infra/webdav/docker-compose.yml non inclus), la résolution de
+        # `webdav` échoue -> 502 brut. On le transforme en 501 « non activé ».
         error_page 502 503 504 = @dav_unavailable;
     }
     location @dav_unavailable {
