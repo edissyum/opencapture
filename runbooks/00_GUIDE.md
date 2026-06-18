@@ -8,7 +8,9 @@ d'exposition selon le TLS. Données hors repo sous `/opt`.
 |---|---|
 | [01-install-general.sh](01-install-general.sh) | commandes d'installation infra (Docker + Traefik) |
 | [02-tenant-letsencrypt.sh](02-tenant-letsencrypt.sh) / [03-tenant-cert.sh](03-tenant-cert.sh) / [04-tenant-http.sh](04-tenant-http.sh) | runbooks par mode (création + exploitation) |
+| [05-ftp-server.sh](05-ftp-server.sh) | serveur SFTP multi-tenant (ProFTPD `mod_sftp`) — install + ajout d'un tenant |
 | [../new-tenant.sh](../new-tenant.sh) | crée le stub d'un tenant (copie le gabarit + pré-remplit le `.env`) |
+| [../new-ftp-tenant.sh](../new-ftp-tenant.sh) | crée l'accès SFTP d'un tenant (compte virtuel chrooté) |
 | [../deploy.sh](../deploy.sh) | build + (re)déploie un tenant **existant** |
 | [INSTALL.md](INSTALL.md) | doc d'installation détaillée + annexes techniques |
 
@@ -141,7 +143,30 @@ Reconstruire après une mise à jour du code (avec `deploy.sh`) :
 
 ---
 
+## 5. Accès SFTP (optionnel)
+
+Dépôt de fichiers par tenant via **ProFTPD `mod_sftp`**, branché sur
+`/opt/tenants/<id>/share` (surveillé par le `fs-watcher`). **SFTP uniquement** :
+sur un serveur à une seule IP, on ne peut pas servir un cert FTPS par tenant
+(il faudrait du SNI, non fiable sur ProFTPD) ; le SFTP n'a pas de cert de
+domaine (clé d'hôte SSH unique) → multi-tenant trivial. Comptes virtuels
+chrootés, mappés sur `$APP_UID/$APP_GID`.
+
+```bash
+# Une fois par serveur : install ProFTPD mod_sftp (cf. runbook : clés, pare-feu)
+sudo bash runbooks/05-ftp-server.sh        # à jouer pas-à-pas, pas d'un bloc
+
+# Par tenant (aucun reload nécessaire) :
+sudo ./new-ftp-tenant.sh <id>              # crée le compte virtuel chrooté
+# Connexion client : sftp -P 2222 <id>@<serveur>
+```
+
+Détail du design et exploitation : [../ftp/README.md](../ftp/README.md).
+
+---
+
 ## Voir aussi
 - Installation détaillée + annexes techniques : [INSTALL.md](INSTALL.md)
 - Runbooks par mode : [02-tenant-letsencrypt.sh](02-tenant-letsencrypt.sh), [03-tenant-cert.sh](03-tenant-cert.sh), [04-tenant-http.sh](04-tenant-http.sh)
+- Serveur SFTP : [05-ftp-server.sh](05-ftp-server.sh) + [../ftp/README.md](../ftp/README.md)
 - Architecture multi-tenant : [../infra/MULTITENANT.md](../infra/MULTITENANT.md)

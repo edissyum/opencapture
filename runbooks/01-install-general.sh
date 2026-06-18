@@ -71,5 +71,6 @@ docker ps --filter name=opencapture_traefik
 docker logs -f opencapture_traefik
 docker compose -f infra/docker-compose.traefik-server.yml restart
 
-# FTP (plus tard)
-# TODO: install + config FTP
+# SFTP multi-tenant -> runbooks/05-ftp-server.sh
+# (ProFTPD mod_sftp, comptes virtuels chrootés mappés sur $APP_UID/$APP_GID ;
+#  voir ftp/README.md). À faire après avoir créé les tenants.
