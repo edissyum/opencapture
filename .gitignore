@@ -35,4 +35,4 @@ infra/SCHEDULING.md
 
 # SFTP (ProFTPD) — secrets hors git : le vrai ftpd.passwd et les clés d'hôte
 # vivent sur le serveur dans /etc/proftpd, jamais dans le dépôt.
-sftp/ftpd.passwd
+infra-host/sftp/ftpd.passwd

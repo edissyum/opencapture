@@ -78,4 +78,4 @@ docker compose -f infra/docker-compose.traefik-server.yml restart
 
 # SFTP multi-tenant -> runbooks/05-sftp-server.sh
 # (ProFTPD mod_sftp, comptes virtuels chrootés mappés sur $APP_UID/$APP_GID ;
-#  voir sftp/README.md). À faire après avoir créé les tenants.
+#  voir infra-host/sftp/README.md). À faire après avoir créé les tenants.

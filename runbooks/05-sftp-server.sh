@@ -6,7 +6,7 @@
 # FTPS par tenant (il faudrait du SNI, non fiable sur ProFTPD). Le SFTP n'a pas
 # de cert de domaine (clé d'hôte SSH unique, TOFU) -> multi-tenant trivial.
 # Comptes virtuels chrootés sur /opt/tenants/<id>/share, mappés sur le compte
-# de service OpenCapture ($APP_UID/$APP_GID). Détail : sftp/README.md.
+# de service OpenCapture ($APP_UID/$APP_GID). Détail : infra-host/sftp/README.md.
 #
 # Prérequis : infra installée (01) ; tenants créés (new-tenant.sh + deploy.sh).
 
@@ -36,8 +36,8 @@ sudo mkdir -p /etc/proftpd/sftp/authorized_keys
 sudo mkdir -p /var/log/proftpd
 
 # Config = celle du dépôt (copie ; ou symlink si tu préfères un lien vif)
-sudo cp "$REPO/sftp/proftpd.conf" /etc/proftpd/proftpd.conf
-# sudo ln -sf "$REPO/sftp/proftpd.conf" /etc/proftpd/proftpd.conf
+sudo cp "$REPO/infra-host/sftp/proftpd.conf" /etc/proftpd/proftpd.conf
+# sudo ln -sf "$REPO/infra-host/sftp/proftpd.conf" /etc/proftpd/proftpd.conf
 
 # Fichier des comptes virtuels (vide au départ ; rempli par new-sftp-account.sh)
 sudo touch /etc/proftpd/ftpd.passwd && sudo chmod 600 /etc/proftpd/ftpd.passwd
@@ -54,7 +54,7 @@ sudo chmod 600 /etc/proftpd/sftp/ssh_host_*_key
 # ----------------------------------------------------------------------
 # sudo ufw allow 2222/tcp
 # (Pour utiliser le port 22 standard à la place : changer Port dans
-#  sftp/proftpd.conf ET restreindre le sshd admin à une autre IP/port — sensible.)
+#  infra-host/sftp/proftpd.conf ET restreindre le sshd admin à une autre IP/port — sensible.)
 
 # ----------------------------------------------------------------------
 # 5) Vérifier la conf puis démarrer ProFTPD

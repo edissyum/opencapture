@@ -41,11 +41,11 @@ de domaine. → **multi-tenant trivial sur une seule IP**, sans aucun certificat
 
 | Chemin | Rôle |
 |---|---|
-| `sftp/proftpd.conf` | Config ProFTPD (SFTP only). Déployée en `/etc/proftpd/proftpd.conf`. |
+| `infra-host/sftp/proftpd.conf` | Config ProFTPD (SFTP only). Déployée en `/etc/proftpd/proftpd.conf`. |
 | `/etc/proftpd/ftpd.passwd` | Comptes virtuels (`ftpasswd`). **Secret**, hors dépôt. |
 | `/etc/proftpd/sftp/` | Clés d'hôte SSH partagées + `authorized_keys/<id>`. Hors dépôt. |
-| `../new-sftp-account.sh` | Crée le compte SFTP d'un tenant (chroot + uid/gid). |
-| `../runbooks/05-sftp-server.sh` | Install serveur pas-à-pas. |
+| `../../new-sftp-account.sh` | Crée le compte SFTP d'un tenant (chroot + uid/gid). |
+| `../../runbooks/05-sftp-server.sh` | Install serveur pas-à-pas. |
 
 ## Mise en place
 

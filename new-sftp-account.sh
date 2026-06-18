@@ -2,7 +2,7 @@
 #
 # new-sftp-account.sh — crée l'accès SFTP d'un tenant.
 #
-# Mode SFTP uniquement (cf. sftp/README.md) : un seul service SFTP partagé, donc
+# Mode SFTP uniquement (cf. infra-host/sftp/README.md) : un seul service SFTP partagé, donc
 # déclarer un tenant = créer son compte virtuel ProFTPD, chrooté sur son
 # dossier share (/opt/tenants/<id>/share), mappé sur le compte de service
 # OpenCapture ($APP_UID/$APP_GID). Pas d'IP, pas de certificat, pas de fragment
