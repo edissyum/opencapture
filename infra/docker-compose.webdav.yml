@@ -1,0 +1,48 @@
+# Overlay OPT-IN : accès WebDAV du tenant (Apache mod_dav).
+#
+# Le WebDAV n'est PAS dans la stack de base : un tenant l'active en incluant cet
+# overlay dans son docker-compose.yml (comme les overlays Traefik) :
+#
+#   include:
+#       - path: ../../infra/docker-compose.yml
+#       - path: ../../infra/docker-compose.traefik-*.yml
+#       - path: ../../infra/docker-compose.webdav.yml      # <- active le WebDAV
+#
+# Effets :
+#   - Ajoute un conteneur `webdav` (Apache mod_dav) qui sert le `share` du tenant
+#     sous https://<fqdn>/dav/ (le frontend nginx proxifie /dav/ -> webdav:8080).
+#   - Réseau INTERNE uniquement (pas de label Traefik, pas d'exposition directe) :
+#     seul le frontend l'atteint.
+#   - Tourne en APP_UID:APP_GID -> fichiers déposés lisibles/supprimables par le
+#     fs-watcher (même propriété que le SFTP, via l'uid du conteneur).
+#
+# Sans cet overlay, le frontend répond 501 sur /dav/ (« WebDAV non activé »), le
+# reste du site fonctionne normalement.
+#
+# Image partagée opencapture-webdav : construite par deploy.sh (docker build,
+# indépendamment du backend) dès qu'un tenant inclut cet overlay.
+#
+# Après activation : déployer (./deploy.sh <id>) puis créer un compte
+#   sudo ./new-webdav-account.sh <id>
+
+services:
+    webdav:
+        build:
+            context: ..
+            dockerfile: infra/webdav.Dockerfile
+        image: opencapture-webdav
+        environment:
+            TZ: ${TZ:-Europe/Paris}
+        # Compte de service OpenCapture -> les fichiers déposés sont en
+        # APP_UID:APP_GID, donc lisibles ET supprimables par le fs-watcher.
+        user: "${APP_UID:-1050}:${APP_GID:-1050}"
+        volumes:
+            # Le share du tenant = racine WebDAV (servi sous /dav par Apache).
+            - ${SHARE_PATH:-../data/share}:/data
+            # htpasswd du tenant (Basic auth), hors repo, en lecture seule.
+            # Provisionné par new-webdav-account.sh ; fermé tant qu'il est absent.
+            - ${WEBDAV_CONF_PATH:-../data/webdav}:/conf:ro
+        depends_on:
+            init:
+                condition: service_completed_successfully
+        restart: unless-stopped
