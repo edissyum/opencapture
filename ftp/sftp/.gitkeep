@@ -1,3 +1,0 @@
-# Garde le dossier ftp/sftp/ en vie dans git.
-# Les clés d'hôte SSH du service SFTP sont GÉNÉRÉES sur le serveur en
-# /etc/proftpd/sftp/ (runbooks/05-ftp-server.sh) et ne sont JAMAIS commitées.

@@ -6,7 +6,7 @@
 # FTPS par tenant (il faudrait du SNI, non fiable sur ProFTPD). Le SFTP n'a pas
 # de cert de domaine (clé d'hôte SSH unique, TOFU) -> multi-tenant trivial.
 # Comptes virtuels chrootés sur /opt/tenants/<id>/share, mappés sur le compte
-# de service OpenCapture ($APP_UID/$APP_GID). Détail : ftp/README.md.
+# de service OpenCapture ($APP_UID/$APP_GID). Détail : sftp/README.md.
 #
 # Prérequis : infra installée (01) ; tenants créés (new-tenant.sh + deploy.sh).
 
@@ -36,10 +36,10 @@ sudo mkdir -p /etc/proftpd/sftp/authorized_keys
 sudo mkdir -p /var/log/proftpd
 
 # Config = celle du dépôt (copie ; ou symlink si tu préfères un lien vif)
-sudo cp "$REPO/ftp/proftpd.conf" /etc/proftpd/proftpd.conf
-# sudo ln -sf "$REPO/ftp/proftpd.conf" /etc/proftpd/proftpd.conf
+sudo cp "$REPO/sftp/proftpd.conf" /etc/proftpd/proftpd.conf
+# sudo ln -sf "$REPO/sftp/proftpd.conf" /etc/proftpd/proftpd.conf
 
-# Fichier des comptes virtuels (vide au départ ; rempli par new-ftp-tenant.sh)
+# Fichier des comptes virtuels (vide au départ ; rempli par new-sftp-account.sh)
 sudo touch /etc/proftpd/ftpd.passwd && sudo chmod 600 /etc/proftpd/ftpd.passwd
 
 # ----------------------------------------------------------------------
@@ -54,7 +54,7 @@ sudo chmod 600 /etc/proftpd/sftp/ssh_host_*_key
 # ----------------------------------------------------------------------
 # sudo ufw allow 2222/tcp
 # (Pour utiliser le port 22 standard à la place : changer Port dans
-#  ftp/proftpd.conf ET restreindre le sshd admin à une autre IP/port — sensible.)
+#  sftp/proftpd.conf ET restreindre le sshd admin à une autre IP/port — sensible.)
 
 # ----------------------------------------------------------------------
 # 5) Vérifier la conf puis démarrer ProFTPD
@@ -68,8 +68,8 @@ sudo systemctl status proftpd
 # ----------------------------------------------------------------------
 # 6) Déclarer l'accès SFTP d'un tenant
 # ----------------------------------------------------------------------
-# sudo ./new-ftp-tenant.sh <id>     # crée le compte virtuel chrooté (demande le mdp)
-# ex. : sudo ./new-ftp-tenant.sh test2
+# sudo ./new-sftp-account.sh <id>     # crée le compte virtuel chrooté (demande le mdp)
+# ex. : sudo ./new-sftp-account.sh test2
 #   -> aucun reload : ftpd.passwd est relu à chaque connexion.
 
 # ----------------------------------------------------------------------

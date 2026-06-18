@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 #
-# new-ftp-tenant.sh — crée l'accès SFTP d'un tenant.
+# new-sftp-account.sh — crée l'accès SFTP d'un tenant.
 #
-# Mode SFTP uniquement (cf. ftp/README.md) : un seul service SFTP partagé, donc
+# Mode SFTP uniquement (cf. sftp/README.md) : un seul service SFTP partagé, donc
 # déclarer un tenant = créer son compte virtuel ProFTPD, chrooté sur son
 # dossier share (/opt/tenants/<id>/share), mappé sur le compte de service
 # OpenCapture ($APP_UID/$APP_GID). Pas d'IP, pas de certificat, pas de fragment
 # de conf : ProFTPD relit ftpd.passwd à chaque connexion -> aucun reload requis.
 #
 # Usage (en root sur le serveur, depuis le dépôt) :
-#   sudo ./new-ftp-tenant.sh <id>
+#   sudo ./new-sftp-account.sh <id>
 #
-# Prérequis : runbooks/05-ftp-server.sh joué une fois (ProFTPD installé,
+# Prérequis : runbooks/05-sftp-server.sh joué une fois (ProFTPD installé,
 # /etc/proftpd/ftpd.passwd en place).
 
 set -euo pipefail

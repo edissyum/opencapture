@@ -33,8 +33,6 @@ venv
 infra/BOOTSTRAP_COMPARISON.md
 infra/SCHEDULING.md
 
-# FTP/SFTP (ProFTPD) — secrets hors git ; on garde le dossier sftp/ (.gitkeep).
-# Comptes virtuels et clés d'hôte vivent sur le serveur (/etc/proftpd).
-ftp/ftpd.passwd
-ftp/sftp/*
-!ftp/sftp/.gitkeep
+# SFTP (ProFTPD) — secrets hors git : le vrai ftpd.passwd et les clés d'hôte
+# vivent sur le serveur dans /etc/proftpd, jamais dans le dépôt.
+sftp/ftpd.passwd
