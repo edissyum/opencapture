@@ -15,24 +15,19 @@
 REPO="$PWD"
 
 # ----------------------------------------------------------------------
-# 1) Paquet — ProFTPD + disponibilité de mod_sftp
+# 1) Paquets — ProFTPD + module SFTP
+#    /!\ Sur Debian (testé : Debian 13 trixie), mod_sftp (et mod_tls) sont
+#    fournis par proftpd-mod-crypto, PAS par proftpd-core.
 # ----------------------------------------------------------------------
-sudo apt update && sudo apt install -y proftpd-core
+sudo apt update && sudo apt install -y proftpd-core proftpd-mod-crypto
 # (apt démarre déjà proftpd sur la config Debian par défaut -> on le redémarre
 #  en étape 5 une fois NOTRE config en place.)
 
-# mod_sftp peut être COMPILÉ EN STATIQUE (builtin) ou fourni en module DSO.
-# Diagnostic :
-proftpd -l | grep -i 'mod_sftp\.c' && echo "=> mod_sftp builtin"   # listé = builtin
-ls -l /usr/lib/proftpd/ | grep -i sftp || true                     # mod_sftp.la = DSO
-
-#  - builtin  : NE PAS décommenter LoadModule mod_sftp.c dans modules.conf
-#               (sinon proftpd tente un .la inexistant -> erreur fatale).
-#               Au besoin, le re-commenter :
-#                 sudo sed -i 's/^LoadModule mod_sftp.c/# LoadModule mod_sftp.c/' /etc/proftpd/modules.conf
-#  - DSO dispo (/usr/lib/proftpd/mod_sftp.la existe) : le décommenter :
-#                 sudo sed -i 's/^# *LoadModule mod_sftp.c/LoadModule mod_sftp.c/' /etc/proftpd/modules.conf
-#  - absent partout : trouver le paquet du module (apt-cache search proftpd).
+# S'assurer que mod_sftp est chargé (décommenter la ligne si besoin) :
+grep -q '^LoadModule mod_sftp.c' /etc/proftpd/modules.conf \
+  || sudo sed -i 's/^# *LoadModule mod_sftp.c/LoadModule mod_sftp.c/' /etc/proftpd/modules.conf
+# Vérif : le DSO existe ET la ligne est active.
+ls /usr/lib/proftpd/mod_sftp.so && grep '^LoadModule mod_sftp.c' /etc/proftpd/modules.conf
 
 # ----------------------------------------------------------------------
 # 2) Arborescence /etc/proftpd
