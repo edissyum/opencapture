@@ -54,6 +54,11 @@ sudo mkdir -p /opt/shared-by-tenants/traefik/letsencrypt
 docker network create frontend
 
 # Image backend partagée (construite une seule fois pour tous les tenants)
+# IMPORTANT : APP_UID/APP_GID du .env GLOBAL = uid baké dans l'image (/app = HOME
+# du compte de service). TOUS les tenants doivent tourner avec ce même uid, sinon
+# /app n'est pas inscriptible pour eux (matplotlib/fontconfig en erreur).
+# -> new-tenant.sh reprend ces valeurs ; en création manuelle, aligner le
+#    stub-tenants/<id>/.env (cf. runbooks 02/03/04). Définis donc APP_UID AVANT ce build.
 docker compose --project-directory infra -f infra/docker-compose.yml build backend
 
 # Traefik partagé (daemon unique) — data sur /opt

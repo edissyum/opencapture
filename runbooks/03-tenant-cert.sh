@@ -11,6 +11,13 @@ FQDN=monclient.example.com                     # OC_FQDN (doit = SAN du certific
 cp -r stub-tenants/_template-cert stub-tenants/$ID
 mv stub-tenants/$ID/.env.example stub-tenants/$ID/.env
 
+# APP_UID/APP_GID : aligner sur le .env GLOBAL (impératif). L'image backend
+# partagée bake /app (HOME du compte de service) à cet uid ; un tenant avec un
+# autre uid -> /app non inscriptible (matplotlib/fontconfig en erreur).
+# (new-tenant.sh le fait automatiquement ; en manuel, le voici :)
+sed -i "s/^APP_UID=.*/APP_UID=$(grep -m1 '^APP_UID=' .env | cut -d= -f2)/" stub-tenants/$ID/.env
+sed -i "s/^APP_GID=.*/APP_GID=$(grep -m1 '^APP_GID=' .env | cut -d= -f2)/" stub-tenants/$ID/.env
+
 # Éditer le .env (CUSTOM_ID, OC_FQDN, mots de passe, *_PATH=/opt/tenants/$ID/...)
 "$EDITOR" stub-tenants/$ID/.env
 

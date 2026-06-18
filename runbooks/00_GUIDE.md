@@ -83,6 +83,8 @@ mv stub-tenants/<id>/.env.example stub-tenants/<id>/.env
 
 # 2. Éditer TOUT le .env : CUSTOM_ID, OC_FQDN, POSTGRES_*, RABBITMQ_*,
 #    *_PATH = /opt/tenants/<id>/{pgdata,rabbitmq,custom,docservers,share}
+#    + APP_UID/APP_GID = MÊMES valeurs que le .env global (uid baké dans l'image
+#      partagée ; sinon /app non inscriptible). new-tenant.sh le fait tout seul.
 $EDITOR stub-tenants/<id>/.env
 
 # 3. (mode cert) déposer le PEM + le fragment tls.yml — cf. 2.a étape 3
@@ -95,9 +97,9 @@ docker compose --project-directory "$DIR" -f "$DIR/docker-compose.yml" up -d
 ```
 
 > **Différences scripts vs manuel**
-> - `new-tenant.sh` pré-remplit `CUSTOM_ID` / `POSTGRES_DB` / `POSTGRES_USER` / `RABBITMQ_USER`
->   et les 5 `*_PATH` → il ne reste que `OC_FQDN` + les 2 mots de passe à saisir. En manuel, tu
->   édites tous les champs.
+> - `new-tenant.sh` pré-remplit `CUSTOM_ID` / `POSTGRES_DB` / `POSTGRES_USER` / `RABBITMQ_USER`,
+>   les 5 `*_PATH` et `APP_UID`/`APP_GID` (repris du `.env` global) → il ne reste que `OC_FQDN`
+>   + les 2 mots de passe à saisir. En manuel, tu édites tous les champs (dont APP_UID/APP_GID).
 > - `deploy.sh <id>` = `build frontend` + `up -d` (+ build de l'image backend si absente). En
 >   manuel, tu lances les deux `docker compose` toi-même.
 > - Dans les deux cas, le 1er démarrage déclenche le service `init` qui amorce le tenant
