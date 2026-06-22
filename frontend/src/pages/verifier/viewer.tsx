@@ -1308,8 +1308,8 @@ export function VerifierViewerPage() {
                 ) : (
                     <>
                         { disableFields && (
-                            <div
-                                className='mb-6 w-full bg-(--bg-error) p-4 rounded-lg flex flex-col gap-4 border border-(--text-error)'>
+                            <div className='mb-6 w-full bg-(--bg-error) p-4 rounded-lg flex flex-col gap-4 border
+                                            border-(--text-error)'>
                                 <div className='flex items-center gap-3'>
                                     <div className='bg-(--text-error) p-2 rounded-lg'>
                                         <PenOff className="text-white" size={ 28 }/>
@@ -1323,7 +1323,7 @@ export function VerifierViewerPage() {
                                 </div>
                             </div>
                         ) }
-                        <Accordion multiple activeIndex={ [0] } className='flex flex-col gap-4'>
+                        <Accordion multiple activeIndex={ [0] } className='flex flex-col gap-2'>
                             { fieldsZone.filter((zone: any) => zone.lines.length > 0).map((zone) => (
                                 <AccordionTab key={ zone.id } header={
                                     <span className='flex items-center gap-2 h-[20px]'>
