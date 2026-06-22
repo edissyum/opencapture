@@ -43,7 +43,7 @@
         "react": "^19.2.7",
         "react-dom": "^19.2.7",
         "react-dropzone": "^15.0.0",
-        "react-hook-form": "^7.79.0",
+        "react-hook-form": "^7.80.0",
         "react-i18next": "^17.0.8",
         "react-pdf": "^10.4.1",
         "react-router-dom": "^7.18.0",
@@ -64,7 +64,7 @@
         "eslint-plugin-react-refresh": "^0.5.3",
         "globals": "^17.6.0",
         "i18next-scanner": "^4.6.0",
-        "lucide-react": "^1.20.0",
+        "lucide-react": "^1.21.0",
         "typescript": "~6.0.3",
         "typescript-eslint": "^8.61.1",
         "vite": "^8.0.16"
