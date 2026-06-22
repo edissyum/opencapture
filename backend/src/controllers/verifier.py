@@ -32,11 +32,11 @@ from ..main import launch
 from flask_babel import gettext
 from .. import verifier_exports
 from ..classes.Files import Files
-from ..classes.Files import rotate_img
+from flask import Response, request
 from ..helpers import get_context_var
+from ..classes.Files import rotate_img
 from ..scripting_functions import check_code
 from werkzeug.datastructures import FileStorage
-from flask import current_app, Response, request
 from ..models import verifier, accounts, forms, attachments
 from ..controllers import auth, user, monitoring, history, status
 from ..functions import retrieve_custom_from_url, delete_documents, check_order_by
@@ -289,15 +289,14 @@ def retrieve_documents(args):
 def update_position_by_document_id(document_id, args):
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if error is None:
-        column = position = ''
+        document_positions = document_info['positions']
         for _position in args:
             column = _position
             position = args[_position]
+            document_positions.update({
+                column: position
+            })
 
-        document_positions = document_info['positions']
-        document_positions.update({
-            column: position
-        })
         _, error = verifier.update_document({
             'set': {"positions": json.dumps(document_positions)},
             'document_id': document_id
@@ -315,16 +314,20 @@ def update_position_by_document_id(document_id, args):
 def update_page_by_document_id(document_id, args):
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if error is None:
-        column = page = ''
+        document_pages = document_info['pages']
         for _page in args:
             column = _page
             page = args[_page]
 
-        document_pages = document_info['pages']
-        document_pages.update({
-            column: page
+            document_pages.update({
+                column: page
+            })
+
+        _, error = verifier.update_document({
+            'set': {"pages": json.dumps(document_pages)},
+            'document_id': document_id
         })
-        _, error = verifier.update_document({'set': {"pages": json.dumps(document_pages)}, 'document_id': document_id})
+
         if error is None:
             return '', 200
         else:
@@ -347,7 +350,10 @@ def update_document_data_by_document_id(document_id, args):
                 column: value
             })
 
-        _, error = verifier.update_document({'set': {"datas": json.dumps(document_data)}, 'document_id': document_id})
+        _, error = verifier.update_document({
+            'set': {"datas": json.dumps(document_data)},
+            'document_id': document_id
+        })
         if error is None:
             return '', 200
         else:
@@ -356,6 +362,11 @@ def update_document_data_by_document_id(document_id, args):
                 "message": gettext(error)
             }
             return response, 400
+    response = {
+        "errors": gettext('UPDATE_DOCUMENT_DATA_ERROR'),
+        "message": gettext(error)
+    }
+    return response, 400
 
 
 def delete_document_data_by_document_id(document_id, field_id):
@@ -374,6 +385,12 @@ def delete_document_data_by_document_id(document_id, field_id):
                 "message": gettext(error)
             }
             return response, 400
+
+    response = {
+        "errors": gettext('UPDATE_DOCUMENT_DATA_ERROR'),
+        "message": gettext(error)
+    }
+    return response, 400
 
 
 def delete_documents_by_document_id(document_id):
@@ -661,7 +678,8 @@ def get_thumb_by_document_id(document_id):
         year = register_date.strftime('%Y')
         month = register_date.strftime('%m')
         year_and_month = year + '/' + month
-        return get_file_content('full', document_info['full_jpg_filename'], 'image/jpeg', year_and_month=year_and_month)
+        return get_file_content('full', document_info['full_jpg_filename'], 'image/jpeg',
+                                year_and_month=year_and_month)
     else:
         return '', 404
 

@@ -297,7 +297,8 @@
         "merge": "Fusionar",
         "executed_outputs": "Cadenas salientes ejecutadas",
         "field_required": "Campo obligatorio",
-        "file_required": "Archivo obligatorio"
+        "file_required": "Archivo obligatorio",
+        "save_modifications": "Guardar modificaciones"
     },
     "HISTORY": {
         "document_validated": "Documento n°<strong>{{ documentId }}</strong> validado",
@@ -873,7 +874,6 @@
         "total_vat": "Total IVA",
         "vat_amount": "Importe IVA",
         "vat_rate": "Tasa de IVA",
-        "ocr_on_fly_success": "Posiciones y datos extraídos y guardados con éxito",
         "correct_errors_before_validate": "Por favor, corrija los errores antes de validar el documento",
         "save_supplier_modification": "Valide los cambios del tercero antes de continuar",
         "supplier_changed": "Datos del tercero modificados, por favor valide los cambios",
@@ -912,7 +912,8 @@
         "document_non_modifiable": "Documento no modificable",
         "document_non_modifiable_details": "No puede modificar este documento porque ya ha sido procesado",
         "no_outputs": "No se ha configurado ninguna cadena de salida para este documento",
-        "facturx_level": "Nivel Factur-X"
+        "facturx_level": "Nivel Factur-X",
+        "datas_updated": "Datos actualizados con éxito"
     },
     "SECURITY": {
         "default_auth": "Autenticación predeterminada",
