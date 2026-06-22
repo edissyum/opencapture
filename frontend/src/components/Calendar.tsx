@@ -188,8 +188,9 @@ const ISOCalendar: React.FC<ISOCalendarProps> = ({
                                     : "mm/dd/yy"
                         }
                     />
+
                     { label && (
-                        <label htmlFor={ id } className='w-8/12 truncate'>
+                        <label htmlFor={ id } className='max-w-8/12 truncate'>
                             { label }
                             { required && <span className="text-(--text-error) ml-1">*</span> }
                         </label>
