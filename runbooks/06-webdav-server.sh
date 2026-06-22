@@ -5,7 +5,7 @@
 # WebDAV servi sous https://<fqdn>/dav/ : le frontend nginx proxifie /dav/ vers
 # un conteneur Apache mod_dav PAR tenant (nginx n'a pas de module WebDAV). Path
 # et pas sous-domaine -> réutilise le DNS + le cert + la route Traefik existants.
-# Racine = /opt/tenants/<id>/share (surveillé par le fs-watcher) ; fichiers
+# Racine = /opt/edissyum/opencapture/tenants/<id>/share (surveillé par le fs-watcher) ; fichiers
 # déposés en $APP_UID/$APP_GID. Auth Basic htpasswd par tenant.
 # Détail du design : ../infra/webdav/README.md.
 #
@@ -33,7 +33,7 @@
 # ----------------------------------------------------------------------
 # 2) Définir le login et le mot de passe (compte WebDAV du tenant)
 #    Login = 2e arg (défaut <id>) ; mot de passe demandé (masqué, bcrypt).
-#    htpasswd PAR tenant, hors dépôt : /opt/tenants/<id>/webdav/htpasswd.
+#    htpasswd PAR tenant, hors dépôt : /opt/edissyum/opencapture/tenants/<id>/webdav/htpasswd.
 #    AUCUN reload (Apache relit à chaque requête). 401 tant qu'aucun compte.
 # ----------------------------------------------------------------------
 # sudo ./new-webdav-account.sh <id>            # login = <id>
@@ -44,12 +44,12 @@
 # # Changer un mot de passe : relancer avec le MÊME login (écrase la ligne).
 # sudo ./new-webdav-account.sh <id> alice
 # # Supprimer un compte :
-# sudo docker run --rm -v /opt/tenants/<id>/webdav:/work opencapture-webdav \
+# sudo docker run --rm -v /opt/edissyum/opencapture/tenants/<id>/webdav:/work opencapture-webdav \
 #     htpasswd -D /work/htpasswd alice
 # # Lister les comptes :
-# sudo cut -d: -f1 /opt/tenants/<id>/webdav/htpasswd
+# sudo cut -d: -f1 /opt/edissyum/opencapture/tenants/<id>/webdav/htpasswd
 # # Variante non-interactive (automatisation — /!\ mdp dans l'historique shell) :
-# sudo docker run --rm -v /opt/tenants/<id>/webdav:/work opencapture-webdav \
+# sudo docker run --rm -v /opt/edissyum/opencapture/tenants/<id>/webdav:/work opencapture-webdav \
 #     htpasswd -B -b /work/htpasswd <login> 'MotDePasse'
 
 # ----------------------------------------------------------------------

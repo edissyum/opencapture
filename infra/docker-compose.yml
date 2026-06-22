@@ -65,16 +65,17 @@ x-backend-env: &backend-env
     OC_PATH:             /app
 
 x-backend-volumes: &backend-volumes
-    # Bind mounts directs : Docker crée le dossier hôte s'il n'existe
-    # pas (au contraire de la syntaxe volume + driver_opts qui exige
-    # un pré-mkdir). Pour stocker ailleurs, override le chemin dans
-    # .env (ex. CUSTOM_PATH=/srv/oc/custom).
-    - ${CUSTOM_PATH:-../data/custom}:/app/custom
-    - ${DOCSERVERS_PATH:-../data/docservers}:/app/docservers
-    - ${SHARE_PATH:-../data/share}:/app/share
+    # Bind mounts directs : Docker crée le dossier hôte s'il n'existe pas.
+    # Chemins DÉRIVÉS d'UNE racine : ${OC_DATA_ROOT}/tenants/${CUSTOM_ID}/...
+    #   OC_DATA_ROOT : prod /opt/edissyum/opencapture ; dev local défaut ../data.
+    # Pour TOUT déplacer : changer OC_DATA_ROOT dans le .env (+ mv des dossiers).
+    # Un *_PATH explicite dans le .env reste prioritaire (override ponctuel).
+    - ${CUSTOM_PATH:-${OC_DATA_ROOT:-../data}/tenants/${CUSTOM_ID:-default}/custom}:/app/custom
+    - ${DOCSERVERS_PATH:-${OC_DATA_ROOT:-../data}/tenants/${CUSTOM_ID:-default}/docservers}:/app/docservers
+    - ${SHARE_PATH:-${OC_DATA_ROOT:-../data}/tenants/${CUSTOM_ID:-default}/share}:/app/share
     # Modèles IA PARTAGÉS (rotate_document.pt + contact/), déposés depuis l'hôte.
     # rotate est seedé au bootstrap si absent ; contact vide => IA contact désactivée.
-    - ${SHARED_AI_MODELS_PATH:-../data/shared-ai-models}:/app/instance/artificial_intelligence
+    - ${SHARED_AI_MODELS_PATH:-${OC_DATA_ROOT:-../data}/shared-by-tenants/shared-ai-models}:/app/instance/artificial_intelligence
 
 services:
     postgres:
@@ -95,7 +96,7 @@ services:
             PGDATA:            /var/lib/postgresql/data/pgdata
             TZ:                ${TZ:-Europe/Paris}
         volumes:
-            - ${PGDATA_PATH:-../data/pgdata}:/var/lib/postgresql/data
+            - ${PGDATA_PATH:-${OC_DATA_ROOT:-../data}/tenants/${CUSTOM_ID:-default}/pgdata}:/var/lib/postgresql/data
             - ../postgres/sql/structure.sql:/docker-entrypoint-initdb.d/01_structure.sql:ro
             - ../postgres/sql/data_fr.sql:/docker-entrypoint-initdb.d/02_data_fr.sql:ro
             - ../postgres/sql/global.sql:/docker-entrypoint-initdb.d/03_global.sql:ro
@@ -114,7 +115,7 @@ services:
             RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST}
             TZ:                     ${TZ:-Europe/Paris}
         volumes:
-            - ${RABBITMQ_DATA_PATH:-../data/rabbitmq}:/var/lib/rabbitmq
+            - ${RABBITMQ_DATA_PATH:-${OC_DATA_ROOT:-../data}/tenants/${CUSTOM_ID:-default}/rabbitmq}:/var/lib/rabbitmq
         healthcheck:
             test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
             interval: 10s
@@ -254,6 +255,7 @@ services:
 # Plus de section volumes:
 # Les bind mounts directs déclarés au niveau des services suffisent.
 # Docker auto-crée les dossiers hôte s'ils n'existent pas.
-# Chemins paramétrables via .env :
-#   PGDATA_PATH, RABBITMQ_DATA_PATH, CUSTOM_PATH, DOCSERVERS_PATH, SHARE_PATH
-# Par défaut : ../data/<nom> (= ./data/<nom> à la racine du repo).
+# Chemins dérivés d'UNE variable .env : OC_DATA_ROOT (défaut ../data en dev).
+#   -> ${OC_DATA_ROOT}/tenants/${CUSTOM_ID}/{pgdata,rabbitmq,custom,docservers,share}
+#   -> ${OC_DATA_ROOT}/shared-by-tenants/shared-ai-models
+# Override ponctuel possible via un *_PATH explicite (PGDATA_PATH, etc.).

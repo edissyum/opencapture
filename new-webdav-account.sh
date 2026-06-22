@@ -3,7 +3,7 @@
 # new-webdav-account.sh — crée/complète l'accès WebDAV d'un tenant.
 #
 # WebDAV par tenant (cf. infra/webdav/README.md) : un conteneur Apache mod_dav
-# par stack, branché sur le `share` du tenant (/opt/tenants/<id>/share), exposé
+# par stack, branché sur le `share` du tenant ($OC_DATA_ROOT/tenants/<id>/share), exposé
 # par le frontend nginx sous https://<fqdn>/dav/. L'authentification est un
 # Basic auth htpasswd PAR tenant, hors dépôt, mappé sur le compte de service
 # OpenCapture ($APP_UID/$APP_GID). Apache relit le htpasswd à chaque requête
@@ -11,7 +11,7 @@
 #
 # Usage (en root sur le serveur, depuis le dépôt) :
 #   sudo ./new-webdav-account.sh <id> [user]
-#     <id>   : identifiant du tenant (= dossier /opt/tenants/<id>)
+#     <id>   : identifiant du tenant (= dossier $OC_DATA_ROOT/tenants/<id>)
 #     [user] : login WebDAV (défaut : <id>)
 #   Le mot de passe est demandé interactivement (saisie masquée, bcrypt).
 #
@@ -34,7 +34,7 @@ id="${1:-}"
 [ -n "$id" ] || usage
 user="${2:-$id}"
 
-# root requis (crée /opt/tenants/<id>/webdav, lance docker, chown).
+# root requis (crée $OC_DATA_ROOT/tenants/<id>/webdav, lance docker, chown).
 if [ "$(id -u)" -ne 0 ]; then
     echo "Ce script doit être lancé en root (sudo)." >&2
     exit 2
@@ -66,7 +66,15 @@ for env_file in "$REPO_ROOT/stub-tenants/$id/.env" "$REPO_ROOT/.env"; do
 done
 app_uid="${app_uid:-1050}"; app_gid="${app_gid:-1050}"
 
-conf_dir="/opt/tenants/$id/webdav"
+# Racine des données : .env du tenant en priorité, sinon racine, sinon défaut prod.
+oc_root=""
+for env_file in "$REPO_ROOT/stub-tenants/$id/.env" "$REPO_ROOT/.env"; do
+    [ -f "$env_file" ] || continue
+    [ -n "$oc_root" ] || oc_root="$(grep -m1 '^OC_DATA_ROOT=' "$env_file" | cut -d= -f2- || true)"
+done
+oc_root="${oc_root:-/opt/edissyum/opencapture}"
+
+conf_dir="$oc_root/tenants/$id/webdav"
 htpasswd="$conf_dir/htpasswd"
 
 echo "==> Compte WebDAV '$user' (tenant '$id', uid:gid=$app_uid:$app_gid)"

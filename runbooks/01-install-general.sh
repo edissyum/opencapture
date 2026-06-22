@@ -43,12 +43,14 @@ sudo usermod -aG docker $USER
 git clone git@github.com:edissyum/opencapture_docker.git
 cd opencapture_docker
 
+# Racine des données hors repo — UNE variable (à reporter dans le .env : OC_DATA_ROOT).
+OC_DATA_ROOT=/opt/edissyum/opencapture
 # Arborescence des données hors repo (par tenant + partagé)
-sudo mkdir -p /opt/tenants
-sudo mkdir -p /opt/shared-by-tenants/shared-ai-models
-sudo mkdir -p /opt/shared-by-tenants/traefik/dynamic
-sudo mkdir -p /opt/shared-by-tenants/traefik/certs
-sudo mkdir -p /opt/shared-by-tenants/traefik/letsencrypt
+sudo mkdir -p "$OC_DATA_ROOT/tenants"
+sudo mkdir -p "$OC_DATA_ROOT/shared-by-tenants/shared-ai-models"
+sudo mkdir -p "$OC_DATA_ROOT/shared-by-tenants/traefik/dynamic"
+sudo mkdir -p "$OC_DATA_ROOT/shared-by-tenants/traefik/certs"
+sudo mkdir -p "$OC_DATA_ROOT/shared-by-tenants/traefik/letsencrypt"
 
 # Réseau Docker partagé (Traefik <-> frontends des tenants)
 docker network create frontend
@@ -61,10 +63,8 @@ docker network create frontend
 #    stub-tenants/<id>/.env (cf. runbooks 02/03/04). Définis donc APP_UID AVANT ce build.
 docker compose --project-directory infra -f infra/docker-compose.yml build backend
 
-# Traefik partagé (daemon unique) — data sur /opt
-OC_DYNAMIC_PATH=/opt/shared-by-tenants/traefik/dynamic \
-OC_CERTS_PATH=/opt/shared-by-tenants/traefik/certs \
-LETSENCRYPT_PATH=/opt/shared-by-tenants/traefik/letsencrypt \
+# Traefik partagé (daemon unique) — chemins dérivés d'OC_DATA_ROOT (une variable)
+OC_DATA_ROOT="$OC_DATA_ROOT" \
 LETSENCRYPT_EMAIL=admin@edissyum.com \
 docker compose -f infra/docker-compose.traefik-server.yml up -d
 
@@ -79,3 +79,7 @@ docker compose -f infra/docker-compose.traefik-server.yml restart
 # SFTP multi-tenant -> runbooks/05-sftp-server.sh
 # (ProFTPD mod_sftp, comptes virtuels chrootés mappés sur $APP_UID/$APP_GID ;
 #  voir infra-host/sftp/README.md). À faire après avoir créé les tenants.
+#
+# SMB/Samba multi-tenant -> runbooks/07-smb-server.sh
+# (Samba standalone, comptes locaux + partage [<id>] forcé sur $APP_UID/$APP_GID ;
+#  voir infra-host/smb/README.md). À faire après avoir créé les tenants.

@@ -6,6 +6,7 @@
 # Identité du tenant
 ID=monclient                                   # CUSTOM_ID (minuscule/alnum/_)
 FQDN=monclient.example.com                     # OC_FQDN (doit = SAN du certificat)
+OC_DATA_ROOT=/opt/edissyum/opencapture         # racine des données (idem .env)
 
 # Créer le tenant depuis le gabarit cert
 cp -r stub-tenants/_template-cert stub-tenants/$ID
@@ -18,7 +19,7 @@ mv stub-tenants/$ID/.env.example stub-tenants/$ID/.env
 sed -i "s/^APP_UID=.*/APP_UID=$(grep -m1 '^APP_UID=' .env | cut -d= -f2)/" stub-tenants/$ID/.env
 sed -i "s/^APP_GID=.*/APP_GID=$(grep -m1 '^APP_GID=' .env | cut -d= -f2)/" stub-tenants/$ID/.env
 
-# Éditer le .env (CUSTOM_ID, OC_FQDN, mots de passe, *_PATH=/opt/tenants/$ID/...)
+# Éditer le .env (CUSTOM_ID, OC_FQDN, mots de passe ; OC_DATA_ROOT déjà pré-rempli)
 "$EDITOR" stub-tenants/$ID/.env
 
 # (option) Générer un cert AUTO-SIGNÉ si non fourni :
@@ -35,11 +36,11 @@ openssl req -x509 -newkey rsa:2048 -nodes -days 825 \
 # Plusieurs noms : -addext "subjectAltName=DNS:$FQDN,DNS:autre.example.com"
 
 # Déposer le PEM côté Traefik (chaîne complète + clé sans passphrase)
-sudo cp $ID.crt $ID.key /opt/shared-by-tenants/traefik/certs/
+sudo cp $ID.crt $ID.key "$OC_DATA_ROOT/shared-by-tenants/traefik/certs/"
 
 # Déclarer le cert : fragment par tenant dans /dynamic (Traefik recharge à chaud)
 sed "s/changeme/$ID/g" stub-tenants/$ID/tls.yml.example \
-  | sudo tee /opt/shared-by-tenants/traefik/dynamic/$ID.yml
+  | sudo tee "$OC_DATA_ROOT/shared-by-tenants/traefik/dynamic/$ID.yml"
 
 # Déployer le tenant (build frontend + up -d ; init amorce le tenant)
 ./deploy.sh --frontend-only $ID
@@ -68,7 +69,7 @@ $DC up -d
 ./deploy.sh --all                              # backend + frontends (tous)
 
 # Renouveler le cert : remplacer les fichiers /certs (hot-reload, pas de restart)
-sudo cp $ID.crt $ID.key /opt/shared-by-tenants/traefik/certs/
+sudo cp $ID.crt $ID.key "$OC_DATA_ROOT/shared-by-tenants/traefik/certs/"
 
 # Arrêter le tenant (données conservées ; JAMAIS de down -v)
 $DC down

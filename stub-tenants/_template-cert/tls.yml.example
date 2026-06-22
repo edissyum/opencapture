@@ -2,13 +2,13 @@
 #
 # À éditer (remplacer `changeme` par le nom des fichiers PEM, idéalement <id>),
 # puis copier vers le dossier /dynamic du Traefik partagé, UN fichier par tenant :
-#   cp stub-tenants/<id>/tls.yml /opt/shared-by-tenants/traefik/dynamic/<id>.yml
+#   cp stub-tenants/<id>/tls.yml /opt/edissyum/opencapture/shared-by-tenants/traefik/dynamic/<id>.yml
 # Traefik (watch=true) agrège TOUS les fichiers de /dynamic et recharge à chaud,
 # sans redémarrage. Le cert est ensuite choisi au handshake par SNI (son SAN doit
 # couvrir exactement l'OC_FQDN du tenant).
 #
 # Les chemins sont vus DANS le conteneur Traefik (/certs = dossier hôte des PEM,
-# p.ex. /opt/shared-by-tenants/traefik/certs/). PAS d'interpolation ${VAR} ici :
+# p.ex. /opt/edissyum/opencapture/shared-by-tenants/traefik/certs/). PAS d'interpolation ${VAR} ici :
 # le provider fichier ne lit pas le .env -> chemins en dur.
 #
 # Générer un cert AUTO-SIGNÉ (le « fourni » que tu produis toi-même) :

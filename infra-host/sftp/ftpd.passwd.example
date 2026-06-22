@@ -11,9 +11,9 @@
 #   <user>:<hash>:<uid>:<gid>::<home>:<shell>
 #
 # Exemple (hash factice) :
-#   test2:$6$xxxxxxxx$............:1050:1050::/opt/tenants/test2/share:/bin/false
+#   test2:$6$xxxxxxxx$............:1050:1050::/opt/edissyum/opencapture/tenants/test2/share:/bin/false
 #
 # Création / mise à jour d'un compte :
 #   sudo ftpasswd --passwd --file=/etc/proftpd/ftpd.passwd \
 #       --name=<id> --uid=1050 --gid=1050 \
-#       --home=/opt/tenants/<id>/share --shell=/bin/false
+#       --home=/opt/edissyum/opencapture/tenants/<id>/share --shell=/bin/false

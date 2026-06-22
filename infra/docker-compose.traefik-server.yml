@@ -21,12 +21,14 @@
 #   .env -> LETSENCRYPT_EMAIL=<email valide>        # si tenants LE (ACME)
 #   ports 80 + 443 ouverts depuis Internet          # pour le challenge LE
 #                                                   #   (tenants LE seulement)
-#   Certs client éventuels : déposer les PEM dans le dossier /certs (défaut
-#     data/certs/tenants/, prod /opt/shared-by-tenants/traefik/certs/) + un
-#     fragment tls.yml PAR tenant dans /dynamic (cf. runbooks/INSTALL.md > « Certificat
-#     fourni par le client » et stub-tenants/_template-cert/tls.yml.example).
+#   Certs client éventuels : déposer les PEM dans le dossier /certs
+#     (= ${OC_DATA_ROOT}/shared-by-tenants/traefik/certs ; prod
+#     OC_DATA_ROOT=/opt/edissyum/opencapture) + un fragment tls.yml PAR tenant
+#     dans /dynamic (cf. runbooks/03-tenant-cert.sh et
+#     stub-tenants/_template-cert/tls.yml.example).
 #
 # Usage :
+#   OC_DATA_ROOT=/opt/edissyum/opencapture \
 #   docker compose -f infra/docker-compose.traefik-server.yml up -d
 #   # puis chaque tenant : cd stub-tenants/<id> && docker compose up -d
 #
@@ -48,7 +50,7 @@ volumes:
         driver_opts:
             type: none
             o: bind
-            device: ${LETSENCRYPT_PATH:-../data/certs/letsencrypt}
+            device: ${LETSENCRYPT_PATH:-${OC_DATA_ROOT:-../data}/shared-by-tenants/traefik/letsencrypt}
 
 services:
     traefik:
@@ -100,12 +102,12 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock:ro
             - letsencrypt:/letsencrypt
             # Config dynamique (provider fichier) : fragments tls.yml des certs.
-            # Paramétrable comme certs/letsencrypt (défaut = dossier repo, dev/test ;
-            # prod : OC_DYNAMIC_PATH=/opt/shared-by-tenants/traefik/dynamic).
-            - ${OC_DYNAMIC_PATH:-./traefik/dynamic}:/dynamic:ro
-            # Certs client (PEM + clé). Dossier hôte NON versionné (data/ est
-            # dans .gitignore) : on n'y commit JAMAIS de clé privée.
-            - ${OC_CERTS_PATH:-../data/certs/tenants}:/certs:ro
+            # Dérivé de OC_DATA_ROOT (défaut ../data en dev ;
+            # prod OC_DATA_ROOT=/opt/edissyum/opencapture). Override : OC_DYNAMIC_PATH.
+            - ${OC_DYNAMIC_PATH:-${OC_DATA_ROOT:-../data}/shared-by-tenants/traefik/dynamic}:/dynamic:ro
+            # Certs client (PEM + clé). Dossier hôte NON versionné : on n'y
+            # commit JAMAIS de clé privée. Override : OC_CERTS_PATH.
+            - ${OC_CERTS_PATH:-${OC_DATA_ROOT:-../data}/shared-by-tenants/traefik/certs}:/certs:ro
 
         networks:
             - frontend

@@ -41,10 +41,10 @@ services:
         user: "${APP_UID:-1050}:${APP_GID:-1050}"
         volumes:
             # Le share du tenant = racine WebDAV (servi sous /dav par Apache).
-            - ${SHARE_PATH:-../data/share}:/data
+            - ${SHARE_PATH:-${OC_DATA_ROOT:-../data}/tenants/${CUSTOM_ID:-default}/share}:/data
             # htpasswd du tenant (Basic auth), hors repo, en lecture seule.
             # Provisionné par new-webdav-account.sh ; fermé tant qu'il est absent.
-            - ${WEBDAV_CONF_PATH:-../data/webdav}:/conf:ro
+            - ${WEBDAV_CONF_PATH:-${OC_DATA_ROOT:-../data}/tenants/${CUSTOM_ID:-default}/webdav}:/conf:ro
         depends_on:
             init:
                 condition: service_completed_successfully

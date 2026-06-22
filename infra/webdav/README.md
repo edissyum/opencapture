@@ -2,7 +2,7 @@
 
 Accès dépôt de fichiers par tenant **en montage de lecteur réseau** (Explorateur
 Windows, Finder macOS, davfs2), branché sur le dossier `share` du tenant
-(`/opt/tenants/<id>/share`) — celui que surveille le `fs-watcher`. Complète le
+(`/opt/edissyum/opencapture/tenants/<id>/share`) — celui que surveille le `fs-watcher`. Complète le
 SFTP (cf. [../../infra-host/sftp/README.md](../../infra-host/sftp/README.md)) : même zone de dépôt, autre
 protocole.
 
@@ -50,7 +50,7 @@ deux raisons :
 | Protocole | **WebDAV** sur HTTP(S), exposé sous `https://<fqdn>/dav/` |
 | Serveur | **Apache `mod_dav`** (`httpd:2.4-alpine`), **un conteneur par tenant** |
 | Reverse-proxy | frontend nginx : `location ~ ^/dav(/|$)` -> `webdav:8080` |
-| Racine servie | `/data` = `${SHARE_PATH}` (= `/opt/tenants/<id>/share`) |
+| Racine servie | `/data` = `${SHARE_PATH}` (= `/opt/edissyum/opencapture/tenants/<id>/share`) |
 | Identité fichiers | **`$APP_UID:$APP_GID`** (conteneur en `user:` non-root) -> lisible/supprimable par le `fs-watcher` |
 | Auth | **Basic auth htpasswd** par tenant (`/conf/htpasswd`, hors dépôt), relu à chaque requête |
 
@@ -83,7 +83,7 @@ deux raisons :
 | `infra/webdav/httpd.conf` | Config Apache (rootless, `mod_dav`, Basic auth, `Alias /dav`). |
 | `infra/webdav/docker-compose.yml` | Overlay **opt-in** : ajoute le conteneur `webdav` (réseau interne, `user: APP_UID`). |
 | bloc `location ^~ /dav/` dans `infra/nginx.conf.template` | Proxy frontend -> `webdav:8080` (501 si non activé). |
-| `/opt/tenants/<id>/webdav/htpasswd` | Comptes WebDAV du tenant. **Secret**, hors dépôt. |
+| `/opt/edissyum/opencapture/tenants/<id>/webdav/htpasswd` | Comptes WebDAV du tenant. **Secret**, hors dépôt. |
 | `../../new-webdav-account.sh` | Crée/complète l'accès WebDAV d'un tenant. |
 | `../../runbooks/06-webdav-server.sh` | Exploitation pas-à-pas. |
 
@@ -110,13 +110,13 @@ Puis :
 
 Définis par `new-webdav-account.sh <id> [login]` : le **login** est le 2ᵉ argument
 (défaut `<id>`), le **mot de passe** est demandé interactivement (bcrypt). Tout
-est stocké dans `/opt/tenants/<id>/webdav/htpasswd` (hors dépôt).
+est stocké dans `/opt/edissyum/opencapture/tenants/<id>/webdav/htpasswd` (hors dépôt).
 
 | Action | Commande |
 |---|---|
 | Créer / ajouter un login | `sudo ./new-webdav-account.sh <id> <login>` |
 | Changer un mot de passe | relancer avec le **même** login |
-| Supprimer un compte | `docker run --rm -v /opt/tenants/<id>/webdav:/work opencapture-webdav htpasswd -D /work/htpasswd <login>` |
+| Supprimer un compte | `docker run --rm -v /opt/edissyum/opencapture/tenants/<id>/webdav:/work opencapture-webdav htpasswd -D /work/htpasswd <login>` |
 
 Aucun reload dans tous les cas. Détail + variante non-interactive :
 [../../runbooks/06-webdav-server.sh](../../runbooks/06-webdav-server.sh).

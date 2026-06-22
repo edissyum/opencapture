@@ -8,11 +8,14 @@ d'exposition selon le TLS. Données hors repo sous `/opt`.
 |---|---|
 | [01-install-general.sh](01-install-general.sh) | commandes d'installation infra (Docker + Traefik) |
 | [02-tenant-letsencrypt.sh](02-tenant-letsencrypt.sh) / [03-tenant-cert.sh](03-tenant-cert.sh) / [04-tenant-http.sh](04-tenant-http.sh) | runbooks par mode (création + exploitation) |
-| [05-ftp-server.sh](05-ftp-server.sh) | serveur SFTP multi-tenant (ProFTPD `mod_sftp`) — install + ajout d'un tenant |
+| [05-sftp-server.sh](05-sftp-server.sh) | serveur SFTP multi-tenant (ProFTPD `mod_sftp`) — install + ajout d'un tenant |
+| [06-webdav-server.sh](06-webdav-server.sh) | serveur WebDAV multi-tenant (Apache `mod_dav`) — exploitation + ajout d'un tenant |
+| [07-smb-server.sh](07-smb-server.sh) | serveur SMB multi-tenant (Samba standalone) — install + ajout d'un tenant |
 | [../new-tenant.sh](../new-tenant.sh) | crée le stub d'un tenant (copie le gabarit + pré-remplit le `.env`) |
-| [../new-ftp-tenant.sh](../new-ftp-tenant.sh) | crée l'accès SFTP d'un tenant (compte virtuel chrooté) |
+| [../new-sftp-account.sh](../new-sftp-account.sh) | crée l'accès SFTP d'un tenant (compte virtuel chrooté) |
+| [../new-webdav-account.sh](../new-webdav-account.sh) | crée l'accès WebDAV d'un tenant (compte htpasswd) |
+| [../new-smb-account.sh](../new-smb-account.sh) | crée l'accès SMB d'un tenant (compte Samba local + partage) |
 | [../deploy.sh](../deploy.sh) | build + (re)déploie un tenant **existant** |
-| [INSTALL.md](INSTALL.md) | doc d'installation détaillée + annexes techniques |
 
 ---
 
@@ -26,18 +29,18 @@ git clone git@github.com:edissyum/opencapture_docker.git
 cd opencapture_docker
 
 # Données hors repo (par tenant + partagé)
-sudo mkdir -p /opt/tenants
-sudo mkdir -p /opt/shared-by-tenants/shared-ai-models
-sudo mkdir -p /opt/shared-by-tenants/traefik/{dynamic,certs,letsencrypt}
+sudo mkdir -p /opt/edissyum/opencapture/tenants
+sudo mkdir -p /opt/edissyum/opencapture/shared-by-tenants/shared-ai-models
+sudo mkdir -p /opt/edissyum/opencapture/shared-by-tenants/traefik/{dynamic,certs,letsencrypt}
 
 # Réseau Docker partagé + image backend partagée (1 seule fois)
 docker network create frontend
 docker compose --project-directory infra -f infra/docker-compose.yml build backend
 
 # Traefik partagé (daemon unique ; data sur /opt)
-OC_DYNAMIC_PATH=/opt/shared-by-tenants/traefik/dynamic \
-OC_CERTS_PATH=/opt/shared-by-tenants/traefik/certs \
-LETSENCRYPT_PATH=/opt/shared-by-tenants/traefik/letsencrypt \
+OC_DYNAMIC_PATH=/opt/edissyum/opencapture/shared-by-tenants/traefik/dynamic \
+OC_CERTS_PATH=/opt/edissyum/opencapture/shared-by-tenants/traefik/certs \
+LETSENCRYPT_PATH=/opt/edissyum/opencapture/shared-by-tenants/traefik/letsencrypt \
 LETSENCRYPT_EMAIL=admin@edissyum.com \
 docker compose -f infra/docker-compose.traefik-server.yml up -d
 ```
@@ -66,9 +69,9 @@ Dans la suite : `<id>` = identifiant du tenant (minuscules/chiffres/`_`), `<fqdn
 $EDITOR stub-tenants/<id>/.env       # OC_FQDN + POSTGRES_PASSWORD + RABBITMQ_PASS
 
 # 3. (mode cert UNIQUEMENT) cert côté Traefik
-sudo cp <id>.crt <id>.key /opt/shared-by-tenants/traefik/certs/
+sudo cp <id>.crt <id>.key /opt/edissyum/opencapture/shared-by-tenants/traefik/certs/
 sed "s/changeme/<id>/g" stub-tenants/<id>/tls.yml.example \
-  | sudo tee /opt/shared-by-tenants/traefik/dynamic/<id>.yml
+  | sudo tee /opt/edissyum/opencapture/shared-by-tenants/traefik/dynamic/<id>.yml
 
 # 4. Déployer
 ./deploy.sh <id>
@@ -82,7 +85,7 @@ cp -r stub-tenants/_template-<mode> stub-tenants/<id>
 mv stub-tenants/<id>/.env.example stub-tenants/<id>/.env
 
 # 2. Éditer TOUT le .env : CUSTOM_ID, OC_FQDN, POSTGRES_*, RABBITMQ_*,
-#    *_PATH = /opt/tenants/<id>/{pgdata,rabbitmq,custom,docservers,share}
+#    *_PATH = /opt/edissyum/opencapture/tenants/<id>/{pgdata,rabbitmq,custom,docservers,share}
 #    + APP_UID/APP_GID = MÊMES valeurs que le .env global (uid baké dans l'image
 #      partagée ; sinon /app non inscriptible). new-tenant.sh le fait tout seul.
 $EDITOR stub-tenants/<id>/.env
@@ -148,7 +151,7 @@ Reconstruire après une mise à jour du code (avec `deploy.sh`) :
 ## 5. Accès SFTP (optionnel)
 
 Dépôt de fichiers par tenant via **ProFTPD `mod_sftp`**, branché sur
-`/opt/tenants/<id>/share` (surveillé par le `fs-watcher`). **SFTP uniquement** :
+`/opt/edissyum/opencapture/tenants/<id>/share` (surveillé par le `fs-watcher`). **SFTP uniquement** :
 sur un serveur à une seule IP, on ne peut pas servir un cert FTPS par tenant
 (il faudrait du SNI, non fiable sur ProFTPD) ; le SFTP n'a pas de cert de
 domaine (clé d'hôte SSH unique) → multi-tenant trivial. Comptes virtuels
@@ -156,19 +159,495 @@ chrootés, mappés sur `$APP_UID/$APP_GID`.
 
 ```bash
 # Une fois par serveur : install ProFTPD mod_sftp (cf. runbook : clés, pare-feu)
-sudo bash runbooks/05-ftp-server.sh        # à jouer pas-à-pas, pas d'un bloc
+sudo bash runbooks/05-sftp-server.sh        # à jouer pas-à-pas, pas d'un bloc
 
 # Par tenant (aucun reload nécessaire) :
-sudo ./new-ftp-tenant.sh <id>              # crée le compte virtuel chrooté
+sudo ./new-sftp-account.sh <id>              # crée le compte virtuel chrooté
 # Connexion client : sftp -P 2222 <id>@<serveur>
 ```
 
-Détail du design et exploitation : [../ftp/README.md](../ftp/README.md).
+Détail du design et exploitation : [../infra-host/sftp/README.md](../infra-host/sftp/README.md).
+
+---
+
+## 6. Accès WebDAV (optionnel)
+
+Dépôt de fichiers par tenant en **montage de lecteur réseau** (Explorateur
+Windows, Finder macOS, davfs2), branché sur `/opt/edissyum/opencapture/tenants/<id>/share`
+(surveillé par le `fs-watcher`). Servi sous **`https://<fqdn>/dav/`** : le
+frontend nginx proxifie `/dav/` vers un conteneur **Apache `mod_dav`** par
+tenant (nginx n'a pas de module WebDAV). **Path et pas sous-domaine** → réutilise
+le DNS + le certificat + la route Traefik existants, **aucune** infra en plus.
+Auth Basic htpasswd par tenant, fichiers déposés en `$APP_UID/$APP_GID`.
+**Opt-in** : rien à installer sur l'hôte, mais le tenant doit **activer
+l'overlay** WebDAV (sinon `/dav/` renvoie 501 « non activé »).
+
+```bash
+# 1. Activer l'overlay dans stub-tenants/<id>/docker-compose.yml :
+#      include:
+#          - path: ../../infra/docker-compose.yml
+#          - path: ../../infra/docker-compose.traefik-*.yml
+#          - path: ../../infra/webdav/docker-compose.yml   # <- active le WebDAV
+# 2. Déployer (build l'image opencapture-webdav si l'overlay est inclus) :
+./deploy.sh <id>
+# 3. Créer un compte (aucun reload) :
+sudo ./new-webdav-account.sh <id>           # login = <id> ; demande le mot de passe
+# Connexion client : monter https://<fqdn>/dav/ comme lecteur réseau.
+```
+
+Détail du design et exploitation : [06-webdav-server.sh](06-webdav-server.sh) +
+[../infra/webdav/README.md](../infra/webdav/README.md).
+
+---
+
+## 7. Accès SMB / Samba (optionnel)
+
+Dépôt de fichiers par tenant en **partage réseau SMB** (lecteur Windows, Finder
+macOS, `mount.cifs` Linux), branché sur `/opt/edissyum/opencapture/tenants/<id>/share` (surveillé par
+le `fs-watcher`). **Un seul démon Samba standalone** installé sur l'hôte : SMB est
+sur le **port 445 sans SNI**, non routable par domaine (comme le SFTP, contrairement
+au WebDAV) → on distingue les tenants par le **nom de partage** (`\\serveur\<id>`),
+pas par le domaine. Comptes **locaux** (`tdbsam`), fichiers forcés sur
+`$APP_UID/$APP_GID`. Chiffrement SMB3 (`smb encrypt = required`) → **aucun
+certificat** à gérer.
+
+```bash
+# Une fois par serveur : install Samba (cf. runbook : compte de service, 445, conf)
+sudo bash runbooks/07-smb-server.sh         # à jouer pas-à-pas, pas d'un bloc
+
+# Par tenant (pas de restart, reload à chaud) :
+sudo ./new-smb-account.sh <id>              # crée le compte local + le partage [<id>]
+# Connexion client : \\<serveur>\<id>  (ou \\<domaine-client>\<id>), identifiants <id>
+```
+
+Détail du design et exploitation : [07-smb-server.sh](07-smb-server.sh) +
+[../infra-host/smb/README.md](../infra-host/smb/README.md).
 
 ---
 
 ## Voir aussi
-- Installation détaillée + annexes techniques : [INSTALL.md](INSTALL.md)
 - Runbooks par mode : [02-tenant-letsencrypt.sh](02-tenant-letsencrypt.sh), [03-tenant-cert.sh](03-tenant-cert.sh), [04-tenant-http.sh](04-tenant-http.sh)
-- Serveur SFTP : [05-ftp-server.sh](05-ftp-server.sh) + [../ftp/README.md](../ftp/README.md)
+- Serveur SFTP : [05-sftp-server.sh](05-sftp-server.sh) + [../infra-host/sftp/README.md](../infra-host/sftp/README.md)
+- Serveur WebDAV : [06-webdav-server.sh](06-webdav-server.sh) + [../infra/webdav/README.md](../infra/webdav/README.md)
+- Serveur SMB : [07-smb-server.sh](07-smb-server.sh) + [../infra-host/smb/README.md](../infra-host/smb/README.md)
 - Architecture multi-tenant : [../infra/MULTITENANT.md](../infra/MULTITENANT.md)
+- **Annexes techniques** (rebuild, multi-stage, rôles de l'image, pipeline, commandes par conteneur, glossaire) : ci-dessous dans ce document.
+
+---
+
+# Annexes
+
+> Ces annexes étaient l'ancien `INSTALL.md`. Elles fournissent le **pourquoi** et le
+> **détail technique** ; le **comment faire** reste dans les sections 1-7 ci-dessus et
+> dans les runbooks.
+
+## Annexe A — Faut-il rebuilder ?
+
+> **Règle d'or** : `git pull` (ou éditer un fichier) **ne reconstruit rien** — le code est
+> figé dans l'image au `docker build`. Et **après tout build → `up -d`** (dans chaque
+> tenant), sinon le conteneur reste sur l'ancienne image.
+
+| Ce qui a changé | Rebuild ? | Commande |
+|---|---|---|
+| Code **backend** (`backend/src/…`) | ✅ backend (1×, partagé) | `./deploy.sh --backend-only --all` |
+| Deps backend (`pip-requirements.txt`), `backend.Dockerfile`, `apt-requirements.txt` | ✅ backend | idem |
+| `infra/docker-entrypoint.sh` / `docker-bootstrap.sh` | ✅ backend | idem |
+| Code **frontend** (`frontend/src/…`) | ✅ frontend (par tenant) | `./deploy.sh --frontend-only <tenant>` |
+| Deps frontend (`package.json`), `frontend.Dockerfile`, `nginx.conf.template` | ✅ frontend | idem |
+| `.env` → **`VITE_BACKEND_URL`** (baké dans le bundle) | ✅ frontend | idem |
+| `docker-compose*.yml` (env, ports, volumes, command) | ❌ | `./deploy.sh --no-build <tenant>` |
+| `.env` runtime (mots de passe, chemins, `OC_FQDN`, `TZ`, `MAIL_POLL_INTERVAL`…) | ❌ | idem |
+| `.env` → **`APP_UID` / `APP_GID`** | ❌ (relu au runtime par l'entrypoint) | idem |
+| SQL (`postgres/sql/*.sql`) | ❌ (image officielle) | rejoué **seulement sur DB vide** → `down -v` (⚠️ destructif) |
+| Modèles IA / `docservers` / `share` (bind mounts) | ❌ | rien |
+| postgres / rabbitmq / traefik | ❌ **jamais** | — |
+
+Après un rebuild **frontend**, vider le cache navigateur (**Ctrl+F5**).
+
+## Annexe B — Pourquoi des « stages » de build (multi-stage)
+
+Les `Dockerfile` ont deux `FROM` : un stage **`builder`** (qui fabrique) et un stage
+**`runtime`** (l'image finale). **Seul le dernier stage devient l'image** ; le builder est
+**jeté** — seul ce qui est explicitement `COPY --from=builder` survit.
+
+**Frontend** ([../infra/frontend.Dockerfile](../infra/frontend.Dockerfile)) :
+- `builder` (`node`) : `npm ci` + `npm run build` → produit `/app/dist`.
+- `runtime` (`nginx`) : `COPY --from=builder /app/dist /usr/share/nginx/html`.
+- Jeté : Node, npm, `node_modules`, les sources. Image finale ≈ 99 Mo (nginx + bundle).
+
+**Backend** ([../infra/backend.Dockerfile](../infra/backend.Dockerfile)) :
+- `builder` : compile les *wheels* Python (avec `build-essential`, headers dev…).
+- `runtime` : installe les wheels pré-compilés + libs runtime uniquement.
+- Jeté : le compilateur et les headers de dev.
+
+**Bénéfices** : image finale petite, **pas de toolchain ni de sources en production**
+(surface d'attaque réduite), séparation nette build-time / runtime. Conséquence pratique :
+dans le conteneur frontend, il n'y a **pas** de `/app/dist` ni de sources — le bundle servi
+est à `/usr/share/nginx/html`. « Jeté » ≠ « effacé » : les couches du builder restent dans
+le **cache de build** (séparé de l'image) pour accélérer les rebuilds.
+
+## Annexe C — Détails techniques
+
+### Une image backend, plusieurs rôles
+Tous les services backend partagent l'image `opencapture-backend`. L'`ENTRYPOINT` de
+l'image est **toujours** [../infra/docker-entrypoint.sh](../infra/docker-entrypoint.sh) ; ce qui
+change d'un service à l'autre, c'est le `command:` déclaré dans la compose — dont le
+**premier argument est le rôle**. L'entrypoint le lit (`ROLE="${1:-api}"`, défaut `api`),
+attend les dépendances utiles (Postgres/RabbitMQ selon le rôle), puis un `case "$ROLE"`
+lance le bon process : `gunicorn` pour `api`, `kuyruk` pour les workers, le `watcher` pour
+`fs-watcher`, `docker-bootstrap.sh` pour `init`… Donc **même image, `command:` différent →
+rôle différent** :
+
+| Service | Rôle | Fonction |
+|---|---|---|
+| `init` | `init` | Bootstrap idempotent du tenant (arbo, config, chemins DB), s'arrête après. |
+| `backend` | `api` | API REST Flask + gunicorn (port 8000 interne). |
+| `worker-verifier` | `worker-verifier` | Worker Kuyruk (file `verifier_<id>`). |
+| `worker-splitter` | `worker-splitter` | Worker Kuyruk (file `splitter_<id>`). |
+| `worker-mail` | `worker-mail` | Poller IMAP (`MAIL_POLL_INTERVAL`). |
+| `fs-watcher` | `fs-watcher` | Surveille `share/entrant/`, déclenche les workflows. |
+
+L'entrypoint démarre **root** (pour `chown` les bind mounts) puis **droppe** vers le compte
+de service défini par `APP_UID`/`APP_GID`/`APP_USER` (dans le `.env` — `1050` n'est que le
+défaut du template, p. ex. `1000` ailleurs) via `gosu`. `APP_UID/APP_GID` sont bakés au build
+**et** relus au runtime → changer l'UID via `.env` + `up -d` ne nécessite pas de rebuild.
+
+**Exemple : `command: ["worker-splitter"]`.** Le service est déclaré ainsi dans la compose :
+
+```yaml
+worker-splitter:
+    image: opencapture-backend          # même image que tous les autres
+    command: ["worker-splitter"]        # <- le rôle
+```
+
+Au démarrage du conteneur, Docker combine l'`ENTRYPOINT` et le `command:`, donc exécute :
+`/app/docker-entrypoint.sh worker-splitter`. Déroulé :
+
+1. Le conteneur démarre **root** → l'entrypoint `chown` les bind mounts puis se ré-exécute
+   via `gosu` sous `APP_UID:APP_GID` (la valeur du `.env`).
+2. `ROLE="${1:-api}"` → `ROLE=worker-splitter` (le 1er argument du `command:`).
+3. `case "$ROLE"` tombe sur la branche `worker-splitter`, qui : attend Postgres
+   (`wait_for_postgres`) et RabbitMQ (`wait_for_rabbit`), garantit le tenant
+   (`ensure_tenant` — bootstrap si `config.ini` absent), `cd /app`, puis :
+   ```bash
+   exec kuyruk \
+       --app "custom.${CUSTOM_ID}.src.backend.process_queue_splitter.kuyruk" \
+       worker --queue "splitter_${CUSTOM_ID}"
+   ```
+4. `exec` **remplace** le shell → `kuyruk` devient PID 1 et consomme la file RabbitMQ
+   `splitter_<CUSTOM_ID>` (ex. `splitter_site1`) : chaque job de séparation déposé par
+   l'API/le fs-watcher y est traité.
+
+Changer `command:` en `["api"]` ou `["worker-verifier"]` sur la **même image** suffit à
+obtenir un autre rôle — c'est tout l'intérêt de l'image unique.
+
+### Pipeline fs-watcher → RabbitMQ → worker (producteur / consommateur)
+
+Les conteneurs sont **découplés par RabbitMQ** : un *producteur* dépose un job dans une
+file, un *consommateur* (le worker) le traite. Exemple pour le splitter :
+
+```
+[dépôt PDF dans share/entrant/splitter/…]
+        │
+        ▼  (conteneur fs-watcher)
+   watcher  ──► default_workflow.sh $file ──► launch_worker_splitter.py
+        │                                          │
+        │                                          ▼  main_splitter.launch(args)
+        │                                   process_queue_splitter.launch(args)
+        │                                   = @kuyruk.task(queue='splitter_<id>')
+        │                                          │  (appeler la task = PUBLIER)
+        ▼                                          ▼
+                              RabbitMQ  ─ file "splitter_<CUSTOM_ID>" ─┐
+                                                                       │  (consomme)
+        ┌──────────────────────────────────────────────────────────  ▼
+   (conteneur worker-splitter)  kuyruk … worker --queue splitter_<id>
+        └──► exécute le corps de launch(args) : OCR + séparation, MAJ `monitoring`,
+             écriture dans share/export/splitter/…
+```
+
+1. **Producteur — conteneur `fs-watcher`.** Le process `watcher` surveille les dossiers de
+   `watcher.ini` ; un dépôt déclenche la commande configurée
+   ([splitter_workflows/default_workflow.sh](../backend/installer/bin/scripts/splitter_workflows/default_workflow.sh)),
+   qui valide le PDF et lance
+   [launch_worker_splitter.py](../backend/launch_worker_splitter.py) → insère une ligne
+   `monitoring` (`wait`) → [main_splitter.launch](../backend/src/main_splitter.py#L22) →
+   appelle `process_queue_splitter.launch(args)`. Cette fonction est décorée
+   **`@kuyruk.task(queue='splitter_<id>')`**
+   ([process_queue_splitter.py.default:44](../backend/src/process_queue_splitter.py.default#L44)) :
+   en kuyruk, **appeler la tâche la PUBLIE dans RabbitMQ** (ça ne traite rien). fs-watcher
+   rend la main aussitôt. *(L'API/UI est l'autre producteur, lors d'un upload.)*
+2. **Consommateur — conteneur `worker-splitter`.** `kuyruk … worker --queue splitter_<id>`
+   est abonné à la **même** file ; à réception, il exécute **réellement** le corps de
+   `launch(args)` (OCR + séparation, mise à jour `monitoring`, sortie dans
+   `share/export/splitter/…`).
+3. **Intérêt du découplage** : si le worker est occupé/arrêté, les jobs **s'empilent** dans
+   la file et sont traités à son retour ; on peut **scaler** (plusieurs workers sur la même
+   file). Les deux rôles partagent la même image : le producteur appelle la task pour
+   *enfiler*, le worker pour *exécuter*. *(verifier : même schéma avec la file
+   `verifier_<id>`.)*
+
+### Frontend par tenant + Traefik
+Le frontend est une image **par tenant** (le build bake la config). L'overlay
+[../infra/docker-compose.traefik.yml](../infra/docker-compose.traefik.yml) branche le frontend sur
+le réseau externe `frontend` et pose une route `Host(${OC_FQDN})` TLS (resolver `myresolver`).
+Le seul point d'entrée public est Traefik (les autres services restent sur le réseau interne).
+
+### TLS — certificat fourni par le client (servi par SNI)
+Procédure : section 2 ci-dessus + [03-tenant-cert.sh](03-tenant-cert.sh). Principe : Traefik
+choisit le certificat au handshake TLS **par SNI** (le nom demandé par le navigateur), pas
+par la règle `Host()` ; il suffit donc que le **SAN** du cert couvre exactement l'`OC_FQDN`,
+et le routeur du tenant porte `tls=true` **sans** `certresolver` (overlay
+`docker-compose.traefik-cert.yml`). Avantage : **pas besoin de DNS public ni des ports 80/443**
+ouverts (aucun challenge ACME). Le cert (`.crt` = chaîne complète, `.key` = clé privée **sans
+passphrase**) va dans `/opt/edissyum/opencapture/shared-by-tenants/traefik/certs/` ; un fragment `tls.yml` par
+tenant dans `/opt/edissyum/opencapture/shared-by-tenants/traefik/dynamic/<id>.yml` (provider fichier `watch=true`
+→ **rechargé à chaud**, utile aussi au renouvellement). Conversion d'un `.pfx`/`.p12`
+(Windows/AD) en PEM :
+
+```bash
+openssl pkcs12 -in client.pfx -nocerts -nodes -out client.key   # clé privée
+openssl pkcs12 -in client.pfx -clcerts -nokeys  -out client.crt # leaf (+ chaîne si présente)
+```
+
+> **Pièges.** Le SAN doit couvrir **exactement** l'`OC_FQDN` (`client.example.com` ≠
+> `www.client.example.com` ; un wildcard `*.example.com` ne couvre **pas** l'apex
+> `example.com`). Si aucun cert ne matche le SNI, Traefik sert son **cert auto-signé** par
+> défaut (pas d'erreur de routage, mais avertissement navigateur).
+
+> **Pourquoi ces fichiers *par tenant* vivent sous `shared-by-tenants/`.** Traefik est
+> **un seul démon partagé** : son provider fichier surveille **un unique** dossier
+> `dynamic/` et lit les certs dans **un unique** `certs/`. Le démon étant partagé, son
+> dossier de config l'est aussi — même si chaque entrée (`<id>.crt`, `<id>.key`, `<id>.yml`)
+> est propre à un tenant. Ce n'est donc pas de la donnée tenant mal rangée, mais la **config
+> de l'infra partagée**. *(À l'inverse, `shared-by-tenants/shared-ai-models/` est réellement
+> commun ; les modèles IA propres à un tenant restent sous
+> `tenants/<id>/docservers/.../ai/models`.)* Deux conséquences :
+> - **Sauvegarde** : un backup de `tenants/<id>` seul ne capture PAS son cert/fragment TLS
+>   (ils sont sous `shared-by-tenants/traefik/`) — inclure ce dossier.
+> - **Suppression d'un tenant** (mode cert) : retirer aussi
+>   `shared-by-tenants/traefik/certs/<id>.{crt,key}` + `dynamic/<id>.yml` (et purger son
+>   entrée dans `letsencrypt/acme.json` s'il était en Let's Encrypt).
+
+### Mode développement (Docker)
+L'overlay [../infra/docker-compose.override.yml](../infra/docker-compose.override.yml)
+(auto-chargé quand on lance `docker compose up` **depuis `infra/`**) : code **bind-monté**
+(pas de rebuild pour modifier le code), gunicorn `--reload`, et **Vite HMR** sur `:5173` au
+lieu de nginx. Lancement : `cd infra && docker compose up -d --build`.
+(`infra/docker-compose-dev.yml` est un ancien overlay minimal conservé pour compat —
+préférer `override.yml`.) Pour développer **hors Docker** (bare-metal, systemd/venv), voir
+[../DEV_MODE.md](../DEV_MODE.md).
+
+### Multi-tenant
+Chaque tenant a son projet Compose `opencapture_<CUSTOM_ID>` (conteneurs/volumes/réseau
+préfixés → aucune collision), sa propre DB et son propre RabbitMQ. Pour en ajouter un :
+répéter les étapes de la section 2 avec un nouvel `<id>`/FQDN. Détails et alternatives (dont le
+script bare-metal `create_custom.sh`) dans [../infra/MULTITENANT.md](../infra/MULTITENANT.md)
+et [../infra/BOOTSTRAP_COMPARISON.md](../infra/BOOTSTRAP_COMPARISON.md).
+
+### Conformité (optionnelle)
+Un journal scellé **NF Z42-020** (chaînage SHA-256 + horodatage RFC 3161) est disponible,
+**désactivé par défaut**, pour le module Splitter. Voir [../NF_Z42-020.md](../NF_Z42-020.md).
+
+### Documentation de référence
+- [../infra/MULTITENANT.md](../infra/MULTITENANT.md) — organisation multi-tenant (méthodo `include:`).
+- [../infra/BOOTSTRAP_COMPARISON.md](../infra/BOOTSTRAP_COMPARISON.md) — `create_custom.sh` (bare-metal) vs `docker-bootstrap.sh`.
+- [../infra/SCHEDULING.md](../infra/SCHEDULING.md) — tâches récurrentes (Ofelia, **non intégré** à ce jour).
+- [../TERMINOLOGIE.md](../TERMINOLOGIE.md) — pourquoi « tenant » plutôt que « custom »/« client ».
+- [../NF_Z42-020.md](../NF_Z42-020.md) — journal scellé (option Splitter).
+- [../DEV_MODE.md](../DEV_MODE.md) — développement bare-metal (hors Docker).
+
+## Annexe D — Commandes Docker utiles (par conteneur)
+
+> **Cibler un tenant.** Le plus simple : se placer dans son dossier, `docker compose`
+> résout le `.env` et le projet automatiquement :
+> ```bash
+> cd stub-tenants/site1       # ou stub-tenants/test1 ; ou infra/ pour "default"
+> docker compose ps
+> docker compose exec backend bash
+> docker compose logs -f worker-splitter
+> ```
+> Sinon viser le conteneur par son nom `opencapture_<id>-<service>-1` :
+> ```bash
+> docker exec -it opencapture_site1-backend-1 bash
+> docker logs -f opencapture_site1-worker-splitter-1
+> ```
+> Les conteneurs backend tournent sous le compte de service `APP_UID:APP_GID` (valeur du
+> `.env`) ; `exec` ouvre par
+> défaut en **root**. Pour agir comme l'appli : `docker compose exec -u "$APP_UID" backend bash`.
+
+### Conteneurs backend — `backend`, `worker-verifier`, `worker-splitter`, `worker-mail`, `fs-watcher`, `init`
+
+Même image `opencapture-backend`, donc même arborescence :
+
+| Quoi | Chemin dans le conteneur |
+|---|---|
+| Code applicatif | `/app` (`/app/src`, `wsgi.py`, `launch_worker*.py`) |
+| Entrypoint / bootstrap | `/app/docker-entrypoint.sh`, `/app/docker-bootstrap.sh` |
+| Config du tenant | `/app/custom/<CUSTOM_ID>/config/{config.ini,secret_key,watcher.ini}` |
+| Log applicatif | `/app/custom/<CUSTOM_ID>/data/log/OpenCapture.log` |
+| Documents traités | `/app/docservers/{verifier,splitter}/…` (dont `ai/models`) |
+| Entrées / sorties | `/app/share/entrant/…`, `/app/share/export/…` |
+| Modèles IA partagés | `/app/instance/artificial_intelligence/` |
+| Données NLTK | `/usr/local/share/nltk_data` |
+
+Entrer : `docker compose exec backend bash` (idem pour `worker-verifier`, etc.).
+À vérifier selon le rôle :
+- **backend (api)** : gunicorn répond → `docker compose exec backend python -c "import socket; socket.create_connection(('localhost',8000),3)"` ; logs `docker compose logs backend`.
+- **worker-verifier / worker-splitter** : `docker compose logs -f worker-splitter` (kuyruk démarré + jobs traités) ; voir aussi `OpenCapture.log`.
+- **worker-mail** : `docker compose logs -f worker-mail` (passes IMAP selon `MAIL_POLL_INTERVAL`).
+- **fs-watcher** : `docker compose logs fs-watcher` (ligne `using config: …/watcher.ini`) + vérifier `…/config/watcher.ini` (dossiers surveillés).
+- **init** : `docker compose logs init` (bootstrap sans erreur) ; conteneur `Exited (0)` = normal (one-shot).
+
+### `postgres`
+- Entrer : `docker compose exec postgres bash` puis `sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"'`.
+- Fichiers : données `/var/lib/postgresql/data/pgdata` ; SQL d'init `/docker-entrypoint-initdb.d/` (joué **une seule fois**, sur DB vide).
+- Vérifier : `docker compose exec postgres sh -c 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"'` ; tables : `\dt` ; ex. `SELECT id,model_label,status FROM ai_models;`.
+
+**Intervention dans la base (psql).** Le `.env` du tenant définit `POSTGRES_USER`/`POSTGRES_DB` ;
+on les réutilise dans le conteneur via `sh -c '… "$POSTGRES_USER" … "$POSTGRES_DB"'`.
+
+```bash
+# 1) Session interactive (recommandée pour toute MODIFICATION)
+docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
+#   dans psql :  \l (bases)  \dt (tables)  \d ai_models (colonnes)  \du (rôles)  \q (quitter)
+#   puis tes requêtes, ex. :
+#     SELECT id, model_label, status FROM ai_models ORDER BY id;
+#     BEGIN; UPDATE ai_models SET status='DEL' WHERE id IN (11,12); COMMIT;   -- ROLLBACK; pour annuler
+
+# 2) Une requête de LECTURE en une ligne, sans entrer dans psql (-T = pas de TTY)
+docker compose exec -T postgres sh -c \
+  'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT id,model_label,status FROM ai_models ORDER BY id;"'
+
+# 3) Rejouer un fichier SQL de l'hôte dans la base
+docker compose exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"' < mon_script.sql
+
+# 4) Sauvegarde (dump) vers un fichier hôte, puis restauration
+docker compose exec -T postgres sh -c 'pg_dump -U "$POSTGRES_USER" "$POSTGRES_DB"' > backup.sql
+docker compose exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"' < backup.sql
+```
+
+> ⚠️ Avant tout `UPDATE`/`DELETE` : fais d'abord le `SELECT` du **même périmètre** pour voir les
+> lignes touchées, encadre par `BEGIN; … COMMIT;` (et `ROLLBACK;` si besoin), et fais un
+> `pg_dump` si l'opération est sensible. Rappel : l'app fait du **soft-delete** (`status='DEL'`),
+> elle ne supprime pas les lignes — privilégie la même convention plutôt qu'un `DELETE` brut.
+
+### `rabbitmq`
+- Entrer : `docker compose exec rabbitmq sh`.
+- Fichiers : données `/var/lib/rabbitmq`.
+- Vérifier : files et messages en attente → `docker compose exec rabbitmq rabbitmqctl list_queues name messages consumers` (chercher `verifier_<id>`, `splitter_<id>`) ; UI management exposée en dev sur `:15672`.
+
+### `frontend` (nginx)
+- Entrer : `docker compose exec frontend sh`.
+- Fichiers : SPA compilée servie depuis `/usr/share/nginx/html` (+ `/assets`) ; conf générée `/etc/nginx/conf.d/default.conf` (depuis le template `/etc/nginx/templates/default.conf.template`).
+- Vérifier : `docker compose exec frontend ls -l /usr/share/nginx/html` (bundle présent + date du build) ; `docker compose exec frontend nginx -t` (conf valide). Après un rebuild front : **Ctrl+F5** côté navigateur (cache).
+
+### `traefik` (conteneur `opencapture_traefik`, projet séparé `traefik`)
+- **Pas de shell dans l'image** → pas d'`exec`. On inspecte via logs + dashboard.
+- Vérifier : `docker logs -f opencapture_traefik` (routers, génération ACME) ; dashboard sur
+  `127.0.0.1:8081` (tunnel SSH si distant).
+- **Accéder au volume nommé `letsencrypt`** (il contient `acme.json` = clé privée +
+  certificats). Contrairement à un bind mount, un **volume nommé** n'est pas un dossier hôte
+  qu'on choisit — on y accède ainsi :
+  1. **Le localiser** : `docker volume ls | grep letsencrypt` → nom réel **`traefik_letsencrypt`**
+     (préfixé par le projet `traefik`), puis `docker volume inspect traefik_letsencrypt`
+     (champ `Mountpoint` = chemin réel sur l'hôte, sous `/var/lib/docker/volumes/…`, accès root).
+  2. **Lire son contenu** sans shell dans Traefik : le monter dans un conteneur jetable →
+     `docker run --rm -v traefik_letsencrypt:/v alpine ls -l /v` (ou `… cat /v/acme.json`).
+  3. **Raccourci ici** : ce volume est en réalité **bind-backé** vers `${LETSENCRYPT_PATH}`
+     (= `/opt/edissyum/opencapture/shared-by-tenants/traefik/letsencrypt` en prod) — `docker volume inspect` le montre
+     dans `Options.device`. Donc le fichier est lisible directement à
+     **`/opt/edissyum/opencapture/shared-by-tenants/traefik/letsencrypt/acme.json`** sur l'hôte.
+
+### Lien volumes hôte ↔ conteneur
+
+Par tenant — les chemins hôte sont les valeurs `*_PATH` du `.env` (en prod :
+`/opt/edissyum/opencapture/tenants/<id>/…` ; défaut compose si non renseigné : `../data/<id>/…`) :
+
+| Hôte (prod) | Conteneur | Contenu |
+|---|---|---|
+| `/opt/edissyum/opencapture/tenants/<id>/pgdata` | `postgres:/var/lib/postgresql/data` | base PostgreSQL |
+| `/opt/edissyum/opencapture/tenants/<id>/rabbitmq` | `rabbitmq:/var/lib/rabbitmq` | files RabbitMQ |
+| `/opt/edissyum/opencapture/tenants/<id>/custom` | `backend:/app/custom` | config tenant, logs, MailCollect |
+| `/opt/edissyum/opencapture/tenants/<id>/docservers` | `backend:/app/docservers` | documents traités, modèles IA du tenant |
+| `/opt/edissyum/opencapture/tenants/<id>/share` | `backend:/app/share` | entrées (`entrant/`) et sorties (`export/`) |
+| `/opt/edissyum/opencapture/shared-by-tenants/shared-ai-models` | `backend:/app/instance/artificial_intelligence` | modèles IA partagés (rotate, contact) |
+| `/opt/edissyum/opencapture/shared-by-tenants/traefik/letsencrypt` | `traefik:/letsencrypt` | certificats Let's Encrypt (acme.json) |
+| `/opt/edissyum/opencapture/shared-by-tenants/traefik/certs` | `traefik:/certs` | certs TLS fournis par les clients (PEM) |
+
+> Concrètement : un PDF déposé dans `/opt/edissyum/opencapture/tenants/<id>/share/entrant/splitter/default/` (hôte)
+> apparaît dans `/app/share/entrant/splitter/default/` (conteneur) → c'est ce que `fs-watcher`
+> détecte. Inversement, les sorties écrites par les workers dans `/app/share/export/…` sont
+> lisibles directement sous `/opt/edissyum/opencapture/tenants/<id>/share/export/…` sur l'hôte.
+
+### Commandes générales
+```bash
+docker compose ps                          # état des services du tenant
+docker compose logs -f --tail=100 backend  # suivre un service
+docker compose restart worker-splitter     # redémarrer un service
+docker compose exec backend env | grep -E 'CUSTOM_ID|POSTGRES|RABBIT'
+docker stats                               # CPU/RAM des conteneurs
+```
+
+## Annexe E — Glossaire Docker
+
+- **Tenant** : une **instance isolée** d'OpenCapture (sa propre base PostgreSQL, ses volumes,
+  son projet Compose, son FQDN), identifiée par son **`CUSTOM_ID`**. Le code OpenCapture
+  l'appelle « **custom** » (`custom/<id>/`, `custom.ini`, `create_custom.sh`, `CUSTOM_ID`).
+  Tous les tenants **partagent la même image backend** mais ne partagent **aucune donnée**.
+  Un tenant peut être un client, un environnement de **test** (`test1`) ou une **démo**
+  (`default`) — d'où le terme neutre « tenant » plutôt que « client ».
+- **Image** : modèle **en lecture seule** = OS minimal + dépendances + code, prêt à lancer.
+  Ici : `opencapture-backend`, `<tenant>-frontend`, `postgres:17.6`…
+- **Conteneur** : une **instance en cours d'exécution** d'une image (un processus isolé).
+  Ex. `opencapture_site1-backend-1`. Plusieurs conteneurs peuvent venir de la même image.
+- **Build (`docker build`)** : fabrication d'une image à partir d'un `Dockerfile` (suite
+  d'instructions `FROM`/`RUN`/`COPY`…). **C'est le seul moment où le code entre dans l'image.**
+- **« Baké » / baked-in** : franglais pour « **figé/cuit dans l'image** au moment du build ».
+  Un fichier baké n'est plus modifiable sans **rebuild**. Ex. le bundle frontend et le code
+  backend sont *bakés* ; à l'inverse, les données dans les volumes ne le sont pas.
+- **Couche / layer** : chaque instruction du `Dockerfile` crée une **couche** empilée. Docker
+  **met en cache** les couches inchangées → un rebuild ne refait que ce qui a changé (et tout
+  ce qui suit). D'où l'ordre « dépendances d'abord, code ensuite » pour profiter du cache.
+- **Stage / multi-stage** : un `Dockerfile` peut avoir plusieurs `FROM … AS <nom>` ; chaque
+  `FROM` est un **stage**. Seul le **dernier** devient l'image finale ; les stages
+  intermédiaires (ex. `builder`) servent à fabriquer puis sont **jetés** (cf. Annexe B).
+- **`COPY --from=builder`** : récupère un résultat produit dans un stage précédent (le `dist`,
+  les *wheels*…) vers l'image finale — seul moyen de garder quelque chose d'un stage jeté.
+- **Wheel (Python, `.whl`)** : format de paquet Python **pré-compilé** (PEP 427) ; l'installer
+  ne demande **aucune compilation** (ni compilateur, ni headers de dev). Dans le backend, le
+  stage `builder` exécute `pip wheel` pour pré-compiler **une fois** toutes les dépendances
+  (y compris les extensions C, ex. `pdftotext`) en fichiers `.whl` ; le stage `runtime` fait
+  juste `pip install --no-index --find-links=/wheels` → installation **rapide** et **sans**
+  outils de build dans l'image finale (cf. Annexe B).
+- **`ENTRYPOINT` vs `CMD` / `command:`** : l'`ENTRYPOINT` est le programme lancé (ici toujours
+  `docker-entrypoint.sh`) ; le `CMD`/`command:` lui passe des **arguments** (ici **le rôle** :
+  `api`, `worker-splitter`…). Docker exécute `ENTRYPOINT + CMD` (cf. Annexe C).
+- **Bind mount** : tu mappes un **dossier précis de l'hôte** dans le conteneur — ici
+  `/opt/edissyum/opencapture/tenants/<id>/docservers` (hôte) ↔ `/app/docservers` (conteneur). Les fichiers sont
+  **directement visibles et éditables sur l'hôte**. **C'est ce qu'utilise OpenCapture**
+  (pgdata, custom, docservers, share). Comme c'est un dossier hôte, **`down -v` ne le supprime
+  PAS** ; pour tout effacer il faut `rm -rf /opt/edissyum/opencapture/tenants/<id>`.
+- **Volume nommé** : Docker gère lui-même le stockage dans sa zone interne
+  (`/var/lib/docker/volumes/<nom>`) ; on y accède **par son nom**, pas par un chemin hôte.
+  Plus portable, mais moins direct à inspecter. `down -v` **supprime** les volumes nommés
+  (ici : le volume `letsencrypt` de Traefik).
+- *Les deux* **persistent hors de l'image** (un rebuild ne touche jamais aux données). La
+  seule différence : avec un **bind mount c'est toi** qui choisis le dossier hôte ; avec un
+  **volume nommé c'est Docker** qui décide où ranger les fichiers.
+- **`docker compose up -d`** : crée/démarre les conteneurs en arrière-plan (`-d` = *detached*)
+  et **recrée** ceux dont la **config ou l'image a changé**. `down` les arrête ; **`down -v`
+  supprime aussi les volumes nommés** (⚠️ ; les bind mounts hôte, eux, survivent — cf. ci-dessous).
+- **Compose / service / projet** : `docker compose` orchestre plusieurs conteneurs décrits
+  dans un `docker-compose.yml`. Un **service** = une définition de conteneur
+  (`backend`, `frontend`…) ; un **projet** = un groupe de services isolé (ici
+  `opencapture_<id>`, d'où des conteneurs/volumes/réseau **préfixés**).
+- **Tag** : étiquette de version d'une image (`opencapture-backend:latest`). `latest` = la
+  dernière **construite**, pas forcément « à jour » si tu n'as pas rebuild.
+- **Registry / `pull` / `push`** : dépôt d'images distant (Docker Hub, GHCR…). `pull`
+  télécharge, `push` envoie. Ici les images applicatives sont **construites localement** (pas
+  de registry) ; seules `postgres`/`rabbitmq`/`traefik`/`node`/`nginx` sont *pull* depuis Docker Hub.
+- **`exec` vs `run`** : `exec` lance une commande dans un conteneur **déjà en cours**
+  (`docker compose exec backend bash`) ; `run` crée un **nouveau** conteneur.
+- **Réseau** : les conteneurs d'un projet se parlent sur un réseau interne **par nom de
+  service** (`postgres`, `rabbitmq`, `backend`). Le réseau externe `frontend` relie les
+  frontends à Traefik.

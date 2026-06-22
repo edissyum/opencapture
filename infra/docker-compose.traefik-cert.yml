@@ -12,14 +12,14 @@
 #   1. Réseau Docker `frontend` (externe) + Traefik partagé dessus
 #      (cf. infra/docker-compose.traefik-server.yml).
 #   2. Déposer le PEM dans le dossier monté /certs du Traefik
-#      (/opt/shared-by-tenants/traefik/certs/) :
+#      (/opt/edissyum/opencapture/shared-by-tenants/traefik/certs/) :
 #        <id>.crt  = chaîne complète (leaf + intermédiaires)
 #        <id>.key  = clé privée SANS passphrase
 #      Auto-signé : openssl req -x509 -newkey rsa:2048 -nodes -days 825 \
 #          -keyout <id>.key -out <id>.crt \
 #          -subj "/CN=<fqdn>" -addext "subjectAltName=DNS:<fqdn>"
 #   3. Déclarer le cert dans le provider fichier (watch=true, hot-reload) :
-#      un fragment PAR tenant -> /opt/shared-by-tenants/traefik/dynamic/<id>.yml
+#      un fragment PAR tenant -> /opt/edissyum/opencapture/shared-by-tenants/traefik/dynamic/<id>.yml
 #      (cf. stub-tenants/_template-cert/tls.yml.example). Traefik agrège tous
 #      les fichiers de /dynamic.
 #

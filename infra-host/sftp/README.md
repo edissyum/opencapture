@@ -1,7 +1,7 @@
 # Serveur SFTP multi-tenant (ProFTPD `mod_sftp`)
 
 Accès dépôt de fichiers par tenant, branché sur le dossier `share` du tenant
-(`/opt/tenants/<id>/share`) — celui que surveille le `fs-watcher` OpenCapture.
+(`/opt/edissyum/opencapture/tenants/<id>/share`) — celui que surveille le `fs-watcher` OpenCapture.
 
 ## Pourquoi SFTP uniquement (et pas FTPS)
 

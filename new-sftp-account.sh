@@ -4,7 +4,7 @@
 #
 # Mode SFTP uniquement (cf. infra-host/sftp/README.md) : un seul service SFTP partagé, donc
 # déclarer un tenant = créer son compte virtuel ProFTPD, chrooté sur son
-# dossier share (/opt/tenants/<id>/share), mappé sur le compte de service
+# dossier share ($OC_DATA_ROOT/tenants/<id>/share), mappé sur le compte de service
 # OpenCapture ($APP_UID/$APP_GID). Pas d'IP, pas de certificat, pas de fragment
 # de conf : ProFTPD relit ftpd.passwd à chaque connexion -> aucun reload requis.
 #
@@ -37,12 +37,13 @@ case "$id" in
         exit 2 ;;
 esac
 
-# uid/gid = compte de service OpenCapture (depuis le .env racine ; défaut 1050).
+# uid/gid + racine des données : depuis le .env racine (défauts 1050 / /opt/edissyum/opencapture).
 root_env="$REPO_ROOT/.env"
 app_uid="$(grep -m1 '^APP_UID=' "$root_env" 2>/dev/null | cut -d= -f2 || true)"; app_uid="${app_uid:-1050}"
 app_gid="$(grep -m1 '^APP_GID=' "$root_env" 2>/dev/null | cut -d= -f2 || true)"; app_gid="${app_gid:-1050}"
+oc_root="$(grep -m1 '^OC_DATA_ROOT=' "$root_env" 2>/dev/null | cut -d= -f2- || true)"; oc_root="${oc_root:-/opt/edissyum/opencapture}"
 
-share="/opt/tenants/$id/share"
+share="$oc_root/tenants/$id/share"
 
 echo "==> Compte SFTP '$id'  (home=$share  uid:gid=$app_uid:$app_gid)"
 

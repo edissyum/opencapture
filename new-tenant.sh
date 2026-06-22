@@ -52,12 +52,13 @@ sed -i \
     -e "s/^POSTGRES_DB=.*/POSTGRES_DB=opencapture_$id/" \
     -e "s/^POSTGRES_USER=.*/POSTGRES_USER=$id/" \
     -e "s/^RABBITMQ_USER=.*/RABBITMQ_USER=$id/" \
-    -e "s#^PGDATA_PATH=.*#PGDATA_PATH=/opt/tenants/$id/pgdata#" \
-    -e "s#^RABBITMQ_DATA_PATH=.*#RABBITMQ_DATA_PATH=/opt/tenants/$id/rabbitmq#" \
-    -e "s#^CUSTOM_PATH=.*#CUSTOM_PATH=/opt/tenants/$id/custom#" \
-    -e "s#^DOCSERVERS_PATH=.*#DOCSERVERS_PATH=/opt/tenants/$id/docservers#" \
-    -e "s#^SHARE_PATH=.*#SHARE_PATH=/opt/tenants/$id/share#" \
     "$dst/.env"
+
+# Les chemins de données ne sont PLUS écrits ici : ils dérivent de OC_DATA_ROOT
+# (déjà dans le gabarit) + CUSTOM_ID, résolus dans infra/docker-compose.yml :
+#   ${OC_DATA_ROOT}/tenants/$id/{pgdata,rabbitmq,custom,docservers,share,webdav}
+oc_root="$(grep -m1 '^OC_DATA_ROOT=' "$dst/.env" | cut -d= -f2- || true)"
+oc_root="${oc_root:-/opt/edissyum/opencapture}"
 
 # --- APP_UID/APP_GID : repris du .env GLOBAL, JAMAIS du défaut du gabarit ------
 # L'image backend est PARTAGÉE et bâtie avec l'APP_UID du .env global : elle bake
@@ -89,14 +90,14 @@ echo "      - RABBITMQ_PASS      : mot de passe RabbitMQ (fort)"
 echo
 echo "    Pré-remplis depuis l'id (à vérifier) :"
 echo "      - CUSTOM_ID=$id, POSTGRES_DB=opencapture_$id, POSTGRES_USER=$id, RABBITMQ_USER=$id"
-echo "      - *_PATH = /opt/tenants/$id/{pgdata,rabbitmq,custom,docservers,share}"
+echo "      - données : $oc_root/tenants/$id/{pgdata,rabbitmq,custom,docservers,share} (via OC_DATA_ROOT)"
 echo "      - APP_UID=${g_uid:-<gabarit>}, APP_GID=${g_gid:-<gabarit>} (repris du .env global)"
 
 if [ "$mode" = "cert" ]; then
     echo
     echo "    Mode cert — en plus du .env (cf. stub-tenants/$id/tls.yml.example) :"
-    echo "      - déposer le PEM : /opt/shared-by-tenants/traefik/certs/$id.crt (+ .key, sans passphrase)"
-    echo "      - déclarer le cert : copier le fragment -> /opt/shared-by-tenants/traefik/dynamic/$id.yml"
+    echo "      - déposer le PEM : $oc_root/shared-by-tenants/traefik/certs/$id.crt (+ .key, sans passphrase)"
+    echo "      - déclarer le cert : copier le fragment -> $oc_root/shared-by-tenants/traefik/dynamic/$id.yml"
     echo "        (le SAN du certificat doit couvrir EXACTEMENT OC_FQDN)"
 fi
 

@@ -7,9 +7,9 @@
 #   $EDITOR stub-tenants/<id>/.env      # CUSTOM_ID, OC_FQDN, mots de passe, *_PATH
 #   # 1) déposer le PEM côté Traefik partagé :
 #   #      <id>.crt (chaîne complète) + <id>.key (clé SANS passphrase)
-#   #      dans /opt/shared-by-tenants/traefik/certs/
+#   #      dans /opt/edissyum/opencapture/shared-by-tenants/traefik/certs/
 #   # 2) déclarer le cert : éditer stub-tenants/<id>/tls.yml puis le copier en
-#   #      /opt/shared-by-tenants/traefik/dynamic/<id>.yml  (hot-reload Traefik)
+#   #      /opt/edissyum/opencapture/shared-by-tenants/traefik/dynamic/<id>.yml  (hot-reload Traefik)
 #   cd stub-tenants/<id> && docker compose up -d --build
 #   # (ou, depuis la racine : ./deploy.sh <id>)
 #

@@ -5,7 +5,7 @@
 # Mode SFTP uniquement : sur un serveur à 1 IP, on ne peut pas servir un cert
 # FTPS par tenant (il faudrait du SNI, non fiable sur ProFTPD). Le SFTP n'a pas
 # de cert de domaine (clé d'hôte SSH unique, TOFU) -> multi-tenant trivial.
-# Comptes virtuels chrootés sur /opt/tenants/<id>/share, mappés sur le compte
+# Comptes virtuels chrootés sur /opt/edissyum/opencapture/tenants/<id>/share, mappés sur le compte
 # de service OpenCapture ($APP_UID/$APP_GID). Détail : infra-host/sftp/README.md.
 #
 # Prérequis : infra installée (01) ; tenants créés (new-tenant.sh + deploy.sh).
