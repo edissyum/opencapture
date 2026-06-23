@@ -11,17 +11,18 @@
 #     image : les conteneurs ne se mettent PAS a jour seuls.
 #   - Volumes/donnees conserves (jamais de `down -v`).
 #
-# Un "tenant" = un dossier contenant un docker-compose.yml qui inclut la compose infra :
-#   - default  -> infra/docker-compose.yml                  (stack de base)
-#   - <id>     -> stub-tenants/<id>/docker-compose.yml      (tenants prod + test)
-# Les gabarits stub-tenants/_template-* sont exclus de la decouverte.
-# La resolution est uniforme : un tenant de test se pilote comme un vrai tenant.
+# Un "tenant" = un dossier stub-tenants/<id>/ avec un docker-compose.yml qui inclut
+# la compose infra. Les gabarits stub-tenants/_template-* sont exclus.
+# 'default' (infra/docker-compose.yml) = stack dev/demo, PAS un tenant de prod :
+# deploy.sh (outil de prod) ne le gere PAS (ni dans --all, ni en cible explicite).
+# Le build de l'image backend partagee utilise tout de meme infra/docker-compose.yml
+# comme reference, mais ne DEMARRE jamais 'default' (build != up).
 #
 # Usage :
 #   ./deploy.sh [options] [tenants...]
 #
 # Options :
-#   --all            tous les tenants decouverts (default + stub-tenants/* sauf _template-*)
+#   --all            tous les tenants decouverts (stub-tenants/* sauf _template-*)
 #   --pull           git pull (--ff-only) avant de builder
 #   --backend-only   ne (re)build que le backend (image partagee)
 #   --frontend-only  ne (re)build que l'image frontend (partagee), puis recree
@@ -63,12 +64,13 @@ while [ $# -gt 0 ]; do
 done
 
 # Repertoire du compose d'un tenant (echoue si introuvable).
+# NB : 'default' (infra/docker-compose.yml) est la stack dev/demo, PAS un tenant
+# de prod -> volontairement NON gere ici (deploy.sh = outil de prod). Pour la
+# lancer en dev : docker compose --project-directory infra -f infra/docker-compose.yml up -d.
 compose_dir_for() {
     local t="$1"
-    case "$t" in _*|.*) return 1 ;; esac   # _template-*, dotdirs : pas des tenants
-    if [ "$t" = "default" ] && [ -f "$REPO_ROOT/infra/docker-compose.yml" ]; then
-        echo "$REPO_ROOT/infra"
-    elif [ -f "$REPO_ROOT/stub-tenants/$t/docker-compose.yml" ]; then
+    case "$t" in _*|.*|default) return 1 ;; esac   # _template-*, dotdirs, default : pas des tenants prod
+    if [ -f "$REPO_ROOT/stub-tenants/$t/docker-compose.yml" ]; then
         echo "$REPO_ROOT/stub-tenants/$t"
     else
         return 1
@@ -95,7 +97,7 @@ tenant_has_webdav() {
 # dossier prefixe par '_' ou '.').
 discover_all() {
     local found=() d name
-    [ -f "$REPO_ROOT/infra/docker-compose.yml" ] && found+=("default")
+    # 'default' n'est PAS inclus : c'est la stack dev/demo, pas un tenant de prod.
     for d in "$REPO_ROOT"/stub-tenants/*/; do
         name="$(basename "$d")"
         case "$name" in _*|.*) continue ;; esac
