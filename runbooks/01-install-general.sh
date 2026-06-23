@@ -13,6 +13,9 @@ export OC_DATA_ROOT=/opt/edissyum/opencapture
 sudo apt remove docker.io docker-compose docker-doc podman-docker containerd runc
 # Dépendances (git inclus pour le clone plus bas)
 sudo apt update && sudo apt install -y ca-certificates curl gnupg lsb-release git
+# Pour avoir les heures selon le timezone on isntalle ces 2 paquets explications dans guide section logs
+# Utile car Docker normalise tous les timestamps en UTC => docker logs -t est figé en UTC 
+sudo apt install moreutils jq
 
 # Clé GPG officielle Docker
 sudo install -m 0755 -d /etc/apt/keyrings
@@ -72,9 +75,10 @@ sed -i "s#^OC_DATA_ROOT=.*#OC_DATA_ROOT=$OC_DATA_ROOT#" .env
 sed -i -e "s/^APP_UID=.*/APP_UID=$(id -u)/" -e "s/^APP_GID=.*/APP_GID=$(id -g)/" .env
 docker compose --project-directory infra -f infra/docker-compose.yml build backend
 
-# Traefik partagé (daemon unique) — chemins dérivés d'OC_DATA_ROOT (une variable)
-OC_DATA_ROOT="$OC_DATA_ROOT" \
-LETSENCRYPT_EMAIL=admin@edissyum.com \
+# Traefik partagé (daemon unique). Lit OC_DATA_ROOT + LETSENCRYPT_EMAIL depuis le
+# .env (via le symlink infra/.env -> ../.env) : PAS de préfixe inline, sinon un
+# $OC_DATA_ROOT vide écraserait la valeur du .env -> retombée sur ../data.
+# (Pour Let's Encrypt : renseigne LETSENCRYPT_EMAIL dans le .env.)
 docker compose -f infra/docker-compose.traefik-server.yml up -d
 
 # Vérifier Traefik (conteneur + dashboard local 127.0.0.1:8081)

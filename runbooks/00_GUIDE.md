@@ -92,6 +92,8 @@ sed "s/changeme/<id>/g" stub-tenants/<id>/tls.yml.example \
 
 ## 4. Exploitation d'un tenant
 
+### 4.a Commandes générales
+
 ```bash
 DIR=stub-tenants/<id>
 DC="docker compose --project-directory $DIR -f $DIR/docker-compose.yml"
@@ -103,7 +105,7 @@ $DC restart backend     # redémarrer un service
 $DC down                # arrêter — JAMAIS `down -v` (-v supprime les données !)
 ```
 
-Reconstruire après une mise à jour du code (avec `deploy.sh`) :
+### 4.b Reconstruire après une mise à jour du code (avec `deploy.sh`) :
 
 ```bash
 # Un tenant :
@@ -116,6 +118,75 @@ Reconstruire après une mise à jour du code (avec `deploy.sh`) :
 ./deploy.sh --backend-only  --all  # changement du code backend (image partagée)
 ./deploy.sh --all                  # dans le doute : backend + frontends
 ./deploy.sh --pull --all           # git pull intégré, puis tout redéployer
+
+```
+
+### 4.b Arrêter des containers
+
+```bash
+# Arrêter tous les dockers d'un même type (ici worker-mail)
+docker ps --format '{{.Names}}' | grep -- '-worker-mail-1$' | xargs -r docker stop
+
+```
+
+### 4.d Voir les logs container
+
+```bash
+
+# Logs d'un conteneur (Docker) — le plus courant
+docker logs opencapture_test2-worker-mail-1            # tout l'historique
+docker logs --tail 50 opencapture_test2-worker-mail-1  # 50 dernières lignes
+docker logs -f opencapture_test2-worker-mail-1         # suivre en DIRECT (Ctrl-C pour sortir)
+docker logs -t opencapture_test2-worker-mail-1         # avec horodatage
+docker logs --since 10m opencapture_test2-worker-mail-1   # depuis 10 min
+docker logs --since 2026-06-23T12:00:00 …                 # depuis une heure précise
+docker logs -t <container> | ts '%Y-%m-%d %H:%M:%S' # permet de voir les timestamp (moreutils)
+
+
+# Le même service sur TOUS les tenants d'un coup (remplacer worker-mail par worker-verifier, backend, postgres…)
+for c in $(docker ps -a --format '{{.Names}}' | grep -- '-worker-mail-1$'); do
+  echo "===== $c ====="; docker logs --tail 15 "$c" 2>&1
+done
+
+```
+
+#### 4.d.1 Logs applicatifs OpenCapture (≠ logs conteneur)
+
+__Important__ : pour le Verifier/Splitter, le vrai détail métier va dans le fichier OpenCapture.log du tenant, pas sur la sortie du conteneur. Pour le trouver puis le suivre :
+
+```bash
+docker exec opencapture_test2-backend-1 sh -lc 'find /app -name "*.log"'      # localiser
+docker exec -it opencapture_test2-backend-1 sh -lc 'tail -f /app/custom/test2/log/OpenCapture.log'
+
+# Ou directement depuis l'hôte
+tail -f ${OC_DATA_ROOT}/tenants/<tenant>/custom/<tenant>/data/log/OpenCapture.log
+tail -f ${OC_DATA_ROOT}/tenants/<tenant>/custom/<tenant>/data/MailCollect/MAIL_1/<date>/BATCH_*/<ts>.log  # log par lot de collecte mail
+tail -f ${OC_DATA_ROOT}/tenants/<tenant>/custom/<tenant>/bin/ldap/log/technique.log  # log technique LDAP
+# Exemple avec OC_DATA_ROOT = /opt/edissyum/opencapture
+tail -f /opt/edissyum/opencapture/tenants/test2/custom/test2/data/log/OpenCapture.log
+tail -f /opt/edissyum/opencapture/tenants/test2/custom/test2/data/MailCollect/MAIL_1/<date>/BATCH_*/<ts>.log
+tail -f /opt/edissyum/opencapture/tenants/test2/custom/test2/bin/ldap/log/technique.log
+```
+### 4.d.2 Via docker compose (depuis le dossier du tenant)
+
+```bash
+cd stub-tenants/test2   # ou infra/ pour "default"
+docker compose logs -f worker-mail        # un service
+docker compose logs --tail 50             # toute la stack du tenant
+```
+
+### 4.d.3 OOM / noyau (quand ça se fait tuer)
+
+```bash
+journalctl -k --since "1 hour ago" | grep -iE 'oom-kill|out of memory|killed process'
+dmesg -T | grep -i oom
+```
+
+### 4.d.4 Ressources en direct (pas des logs, mais utile à côté)
+
+```bash
+docker stats --no-stream     # snapshot CPU/RAM par conteneur
+docker stats                 # en continu
 ```
 
 ---
