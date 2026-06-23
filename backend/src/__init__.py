@@ -117,7 +117,7 @@ def handle_postgresql_exception(error):
     else:
         pass
 
-    return None
+    return error
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 instance_path = os.path.abspath(os.path.join(BASE_DIR, "../instance"))
