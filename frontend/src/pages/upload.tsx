@@ -31,7 +31,6 @@ export function UploadPage() {
     const { user, loadingUser } = useUser();
 
     const [module, setModule] = useState("");
-    const [timeout, setTimeout] = useState(2000);
 
     const [workflows, setWorkflows] = useState<any[]>([]);
     const [workflowLoading, setWorkflowLoading] = useState(true);
@@ -76,23 +75,6 @@ export function UploadPage() {
         return () => window.removeEventListener("updateModule", handler);
     }, []);
 
-    // Retrieve timeout setting
-    useEffect(() => {
-        const retrieveTimeout = async () => {
-            try {
-                get(`config/getConfigurationNoAuth/timeoutUpload`).then((response) => {
-                    if (response && response.configuration && response.configuration.length > 0) {
-                        setTimeout(response.configuration[0].data.value);
-                    }
-                });
-            } catch (error) {
-                console.error("Error retrieving timeout:", error);
-            }
-        }
-
-        retrieveTimeout().then();
-    }, []);
-
     // Retrieve workflows list
     useEffect(() => {
         if (loadingUser || !selectedModule) return;
@@ -120,10 +102,7 @@ export function UploadPage() {
         if (files.length === 0 || !selectedWorkflow) return;
 
         setSending(true);
-        const res = await checkFiles(files);
-        if (res !== undefined) {
-            await upload(files);
-        }
+        await upload(files);
         setSending(false);
     };
 
@@ -160,24 +139,6 @@ export function UploadPage() {
                 })));
                 console.error("Error upload file:", error);
             }
-        }
-    }
-
-    async function checkFiles(filesToCheck: File[]) {
-        const formData = new FormData();
-        for (const file of filesToCheck) {
-            formData.append("files", file);
-        }
-
-        try {
-            return await post("/checkFileBeforeUpload", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-                timeout: timeout
-            });
-        } catch (error) {
-            console.error("Error checking files before upload:", error);
         }
     }
 

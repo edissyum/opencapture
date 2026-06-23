@@ -101,6 +101,7 @@
 .p-float-label label {
     @apply truncate;
     @apply max-w-[90%];
+    @apply leading-[1.05];
     @apply text-(--text-secondary);
 }
 
