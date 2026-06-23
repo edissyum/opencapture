@@ -100,32 +100,33 @@ args = vars(ap.parse_args())
 if not retrieve_config_from_custom_id(args['custom_id']):
     sys.exit('Custom config file couldn\'t be found')
 
-database, config, regex, files, ocr, _, _, spreadsheet, smtp, docservers, configurations, languages, _, _ = create_classes_from_custom_id(args['custom_id'])
-
-processes = database.select({
-    'select': ['*'],
-    'table': ['mailcollect'],
-    'where': ['status <> %s', 'enabled = %s'],
-    'data': ['DEL', True]
-})
-
-if not processes:
-    exit('No processes available')
-
-docservers_mailcollect = database.select({
-    'select': ['*'],
-    'table': ['docservers'],
-    'where': ['docserver_id = %s'],
-    'data': ['MAILCOLLECT_BATCHES']
-})
-
-if not docservers_mailcollect:
-    exit('Error with smtp settings in configurations table')
-
-docservers_mailcollect = docservers_mailcollect[0]
-config_mail = {}
-
 with app.app_context():
+    database, config, regex, files, ocr, _, _, spreadsheet, smtp, docservers, configurations, languages, _, _ = create_classes_from_custom_id(args['custom_id'])
+
+    processes = database.select({
+        'select': ['*'],
+        'table': ['mailcollect'],
+        'where': ['status <> %s', 'enabled = %s'],
+        'data': ['DEL', True]
+    })
+
+    if not processes:
+        exit('No processes available')
+
+    docservers_mailcollect = database.select({
+        'select': ['*'],
+        'table': ['docservers'],
+        'where': ['docserver_id = %s'],
+        'data': ['MAILCOLLECT_BATCHES']
+    })
+
+    if not docservers_mailcollect:
+        exit('Error with smtp settings in configurations table')
+
+    docservers_mailcollect = docservers_mailcollect[0]
+    config_mail = {}
+
+
     for process in processes:
         print('Start process : ' + process['name'])
         for _p in process:

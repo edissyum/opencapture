@@ -32,7 +32,7 @@ import {
     Eye,
     EyeOff,
     Paperclip,
-    PenOff,
+    PenOff, Save,
     SquarePlus
 } from "lucide-react";
 
@@ -54,10 +54,14 @@ import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { useFormFields } from "../../services/hooks/useFormFields";
 import { useCustomFields } from "../../services/hooks/useCustomFields";
 import { useHistoryLogger } from "../../services/hooks/useHistoryLogger";
+import { useUnsavedChangesWarning } from "../../services/hooks/useUnsavedChangesWarning.tsx";
 
 export function VerifierViewerPage() {
     const { get, post, put } = axiosApiCall();
     const { documentId } = useParams<{ documentId: string }>();
+
+    const [unSavedChanges, setUnSavedChanges] = useState(false);
+    useUnsavedChangesWarning(unSavedChanges);
 
     const [documentData, setDocumentData] = useState<any>(null);
     const [documentDataLoading, setDocumentDataLoading] = useState<boolean>(true);
@@ -74,7 +78,7 @@ export function VerifierViewerPage() {
 
     const [currentSupplier, setCurrentSupplier] = useState<any>(null);
     const [showSupplierEditor, setShowSupplierEditor] = useState(false);
-    const [supplierExists, setSupplierExists] = useState<boolean>(true);
+    const [supplierExists, setSupplierExists] = useState<boolean>(false);
     const [supplierChanged, setSupplierChanged] = useState<boolean>(false);
     const [originalCurrentSupplier, setOriginalCurrentSupplier] = useState<any>(null);
 
@@ -119,6 +123,7 @@ export function VerifierViewerPage() {
     const [enableAttachments, setEnableAttachments] = useState<boolean>(true);
 
     const [regionsList, setRegionsList] = useState<any[]>([]);
+    const [regionsChanged, setRegionsChanged] = useState(false);
     const [focusedField, setFocusedField] = useState<any>(null);
 
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -269,7 +274,7 @@ export function VerifierViewerPage() {
 
             Object.keys(supplierFull).forEach((data: any) => {
                 if (supplierFull[data] && (supplierId || (!tmpDocumentData?.datas?.[data] || tmpDocumentData?.datas?.[data] === ''))) {
-                    updateDocumentData({ id: data }, supplierFull[data], false);
+                    updateDocumentData({ id: data }, supplierFull[data], false, true);
                     prepareDocumentData({ id: data }, supplierFull[data], supplierId);
                 }
             });
@@ -408,7 +413,7 @@ export function VerifierViewerPage() {
                                     }
                                 }
 
-                                updateDocumentData(field, value);
+                                updateDocumentData(field, value, true, false);
                                 if (errors[field.id]) return;
 
                                 prepareDocumentData(field, value);
@@ -682,7 +687,7 @@ export function VerifierViewerPage() {
     }
 
     // Function to update document data (only array, not on database) and validate fields
-    const updateDocumentData = (field: any, value: any, checkSupplier: boolean = true) => {
+    const updateDocumentData = (field: any, value: any, checkSupplier: boolean = true, fromInit: boolean = false) => {
         field.error = errorCheck(field, value);
         setErrors((prevErrors) => ({
             ...prevErrors,
@@ -696,6 +701,10 @@ export function VerifierViewerPage() {
                 [field.id]: value
             }
         }));
+
+        if (!fromInit && !checkIfFieldIsSupplierField(field.id)) {
+            setUnSavedChanges(true);
+        }
 
         // Detect supplier change
         let supplierExists = true;
@@ -717,10 +726,7 @@ export function VerifierViewerPage() {
         setSupplierExists(supplierExists);
         setSupplierChanged(supplierChange);
 
-        // onBlur doesn't work well with date picker and dropdown, so we save directly here for date fields
-        if (['date', 'select', 'autocomplete'].includes(field.type) && value && !field.error) {
-            prepareDocumentData(field, value);
-        }
+        prepareDocumentData(field, value);
     }
 
     function errorCheck(field: any, value: any) {
@@ -759,7 +765,7 @@ export function VerifierViewerPage() {
         return !!(supplierFields && fieldIsSupplierField);
     }
 
-    // Function to save document data to database on onBlur event of input
+    // Function to save document data to database
     // supplierId is used when updating supplier to force database update
     const prepareDocumentData = (field: any, value: any, supplierId?: number | undefined) => {
         if (documentData.status === 'END') {
@@ -783,27 +789,21 @@ export function VerifierViewerPage() {
             return;
         }
 
-        const dataToSave: any = {};
-        dataToSave[field.id] = value;
-        saveDocumentData(dataToSave).then(() => {
-            setDocumentData((prevData: any) => ({
-                ...prevData,
-                datas: {
-                    ...prevData.datas,
-                    [field.id]: value
-                }
-            }));
-        });
+        setDocumentData((prevData: any) => ({
+            ...prevData,
+            datas: {
+                ...prevData.datas,
+                [field.id]: value
+            }
+        }));
     }
 
     const saveDocumentData = async (data: any) => {
-        setLoadingUpdateDocumentData(true);
         try {
             await put(`verifier/documents/${ documentId }/updateData`, data);
         } catch (error) {
             console.error("Error saving document data:", error);
         } finally {
-            setLoadingUpdateDocumentData(false);
         }
     }
 
@@ -819,7 +819,8 @@ export function VerifierViewerPage() {
     }
 
     const saveDocumentPosition = async (data: any) => {
-        setLoadingUpdateDocumentData(true);
+        if (!data || Object.keys(data).length === 0) return;
+
         try {
             await put(`verifier/documents/${ documentId }/updatePosition`, data);
 
@@ -829,13 +830,12 @@ export function VerifierViewerPage() {
             }
         } catch (error) {
             console.error("Error saving document position:", error);
-        } finally {
-            setLoadingUpdateDocumentData(false);
         }
     }
 
     const saveDocumentPage = async (data: any) => {
-        setLoadingUpdateDocumentData(true);
+        if (!data || Object.keys(data).length === 0) return;
+
         try {
             await put(`verifier/documents/${ documentId }/updatePage`, data);
 
@@ -845,8 +845,6 @@ export function VerifierViewerPage() {
             }
         } catch (error) {
             console.error("Error saving document page:", error);
-        } finally {
-            setLoadingUpdateDocumentData(false);
         }
     }
 
@@ -944,26 +942,7 @@ export function VerifierViewerPage() {
                 updateDocumentData(field, response.result);
                 if (field.error) return;
 
-                if (!checkIfFieldIsSupplierField(field.id)) {
-                    prepareDocumentData(field, response.result);
-
-                    if (currentForm.settings.allow_learning) {
-                        const positionData: any = {};
-                        positionData[fieldId] = {
-                            ocr_from_user: true,
-                            x: region.x,
-                            y: region.y,
-                            width: region.width,
-                            height: region.height
-                        };
-                        saveDocumentPosition(positionData).then();
-
-                        const pageData: any = {};
-                        pageData[fieldId] = region.page;
-                        saveDocumentPage(pageData).then();
-                        showToast(t('VERIFIER.ocr_on_fly_success'), 'success');
-                    }
-                }
+                prepareDocumentData(field, response.result);
 
                 setRegionsList((prevRegions) => {
                     const existingIndex = prevRegions.findIndex(
@@ -979,6 +958,7 @@ export function VerifierViewerPage() {
                     return [...prevRegions, region];
                 });
 
+                setRegionsChanged(true);
             });
         } catch (error) {
             console.error("Error during OCR on fly:", error);
@@ -986,6 +966,10 @@ export function VerifierViewerPage() {
     }
 
     const validateDocument = async () => {
+        if (unSavedChanges) {
+            await handleSaveChanges();
+        }
+
         setLoadingUpdateValidate(true);
 
         // Final error check before validate
@@ -1090,12 +1074,16 @@ export function VerifierViewerPage() {
     }
 
     const refuseDocument = async () => {
+        if (unSavedChanges) {
+            await handleSaveChanges();
+        }
+
         setLoadingUpdateRefuse(true);
         logHistory({
             module: 'verifier',
             submodule: 'document_refused',
             desc: t('HISTORY.document_refused', { documentId: documentId })
-        })
+        }).then();
 
         await updateDocument({ 'status': 'ERR', 'locked': false, 'locked_by': null }).then(() => {
             showToast(t('VERIFIER.document_refused'), 'success');
@@ -1133,6 +1121,41 @@ export function VerifierViewerPage() {
     };
 
     if (documentDataLoading || loadingLinksMEM || !documentData) return <Loader/>;
+
+    const handleSaveChanges = async () => {
+        setLoadingUpdateDocumentData(true);
+
+        if (regionsChanged && currentForm.settings.allow_learning) {
+            const pageData: any = {};
+            const positionData: any = {};
+
+            for (let field in documentData.datas) {
+                const region = regionsList.find(r => r.id === field);
+                if (region) {
+                    positionData[field] = {
+                        ocr_from_user: true,
+                        x: region.x,
+                        y: region.y,
+                        width: region.width,
+                        height: region.height
+                    };
+
+                    pageData[field] = region.page;
+                }
+            }
+
+            await saveDocumentPage(pageData);
+            await saveDocumentPosition(positionData);
+        }
+
+        await saveDocumentData(documentData.datas);
+
+        setUnSavedChanges(false);
+        setRegionsChanged(false);
+        setLoadingUpdateDocumentData(false);
+
+        showToast(t('VERIFIER.datas_updated'), 'success');
+    }
 
     return (
         <div className='flex h-full overflow-hidden'>
@@ -1285,8 +1308,8 @@ export function VerifierViewerPage() {
                 ) : (
                     <>
                         { disableFields && (
-                            <div
-                                className='mb-6 w-full bg-(--bg-error) p-4 rounded-lg flex flex-col gap-4 border border-(--text-error)'>
+                            <div className='mb-6 w-full bg-(--bg-error) p-4 rounded-lg flex flex-col gap-4 border
+                                            border-(--text-error)'>
                                 <div className='flex items-center gap-3'>
                                     <div className='bg-(--text-error) p-2 rounded-lg'>
                                         <PenOff className="text-white" size={ 28 }/>
@@ -1300,7 +1323,7 @@ export function VerifierViewerPage() {
                                 </div>
                             </div>
                         ) }
-                        <Accordion multiple activeIndex={ [0] } className='flex flex-col gap-4'>
+                        <Accordion multiple activeIndex={ [0] } className='flex flex-col gap-2'>
                             { fieldsZone.filter((zone: any) => zone.lines.length > 0).map((zone) => (
                                 <AccordionTab key={ zone.id } header={
                                     <span className='flex items-center gap-2 h-[20px]'>
@@ -1408,8 +1431,8 @@ export function VerifierViewerPage() {
                                                                             suggestions={ suggestionsSuppliers }
                                                                             value={ tmpDocumentData?.datas?.[field.id] ?? "" }
                                                                             optionLabel={ field.id === 'name' ? 'name' : 'lastname' }
-                                                                            search={ (e) => handleSupplierSearch(e, field.id) }
                                                                             onChange={ (value) => handleSupplierChange(field, value) }
+                                                                            search={ (e) => handleSupplierSearch(e, field.id) }
                                                                             itemTemplate={ (supplier: any) => (
                                                                                 <div>
                                                                                     { field.id === 'name' ? supplier.name : supplier.lastname }
@@ -1427,15 +1450,12 @@ export function VerifierViewerPage() {
                                                                             key={ field.id }
                                                                             type={ field.type }
                                                                             label={ t(field.label) }
+                                                                            disabled={ disableFields }
                                                                             error={ errors[field.id] }
                                                                             required={ field.required }
                                                                             value={ tmpDocumentData?.datas?.[field.id] ?? "" }
-                                                                            disabled={ disableFields }
                                                                             onClick={ () => handleFocusField(field.id, field.label, field.color) }
                                                                             onChange={ (e) => updateDocumentData(field, e.target.value) }
-                                                                            onBlur={ (e) => {
-                                                                                prepareDocumentData(field, e.target.value)
-                                                                            } }
                                                                         />
                                                                     )
                                                                 ) }
@@ -1461,7 +1481,7 @@ export function VerifierViewerPage() {
                             )) }
                         </Accordion>
                         <div className='flex mt-6 w-full items-center gap-4'>
-                            <div>
+                            <div className='flex gap-2'>
                                 <Tooltip
                                     id="tooltip-outputs"
                                     render={ () => (
@@ -1475,14 +1495,20 @@ export function VerifierViewerPage() {
                                         </div>
                                     ) }
                                 />
-                                <CircleAlert data-tooltip-id="tooltip-outputs" size={ 20 } className='cursor-pointer'/>
+                                <CircleAlert data-tooltip-id="tooltip-outputs" size={ 18 } className='cursor-pointer'/>
+                                <Save size={ 18 }
+                                      onClick={ () => unSavedChanges && !disableFields && handleSaveChanges() }
+                                      className={ `cursor-pointer ${ (!unSavedChanges || disableFields) && 'pointer-events-none cursor-not-allowed opacity-50' }` }
+                                      data-tooltip-id="tooltip"
+                                      data-tooltip-content={ t('GLOBAL.save_modifications') }/>
                             </div>
                             <div className='grow basis-0 w-full' { ...(supplierChanged && {
                                 "data-tooltip-id": "tooltip",
                                 "data-tooltip-content": t('VERIFIER.save_supplier_modification')
                             }) }>
                                 <Button className='w-full' variant='danger' onClick={ () => refuseDocument() }
-                                        disabled={ loadingUpdateData || supplierChanged || !supplierExists || formHasError || disableFields }>
+                                        disabled={ loadingUpdateData || supplierChanged ||
+                                                   !supplierExists || formHasError || disableFields }>
                                     { !loadingUpdateRefuse ? t('FORMS.refuse') : t('FORMS.refuse_loading') }
                                 </Button>
                             </div>
@@ -1491,7 +1517,8 @@ export function VerifierViewerPage() {
                                 "data-tooltip-content": t('VERIFIER.save_supplier_modification')
                             }) }>
                                 <Button
-                                    disabled={ loadingUpdateData || supplierChanged || !supplierExists || formHasError || disableFields }
+                                    disabled={ loadingUpdateData || supplierChanged || !supplierExists
+                                               || formHasError || disableFields }
                                     className='w-full' onClick={ () => validateDocument() }>
                                     { loadingUpdateValidate && !formHasError ? t('FORMS.validate_loading') : t('FORMS.validate') }
                                 </Button>

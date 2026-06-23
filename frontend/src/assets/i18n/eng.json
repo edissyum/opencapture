@@ -277,7 +277,8 @@
         "merge": "Merge",
         "executed_outputs": "Output chains executed",
         "field_required": "Field is required",
-        "file_required": "File is required"
+        "file_required": "File is required",
+        "save_modifications": "Save modifications"
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validated",
@@ -814,7 +815,6 @@
         "total_vat": "Total VAT",
         "vat_amount": "VAT amount",
         "vat_rate": "VAT rate",
-        "ocr_on_fly_success": "Positions and data extracted and saved successfully",
         "correct_errors_before_validate": "Please fix the errors before validating the document",
         "save_supplier_modification": "Validate the third-party changes before continuing",
         "supplier_changed": "Third-party data modified, please validate the changes",
@@ -851,7 +851,8 @@
         "document_non_modifiable": "Document non-modifiable",
         "document_non_modifiable_details": "You cannot modify this document because it has already been processed",
         "no_outputs": "No output chains are configured for this document",
-        "facturx_level": "Factur-X level"
+        "facturx_level": "Factur-X level",
+        "datas_updated": "Document data updated successfully"
     },
     "SECURITY": {
         "default_auth": "Default authentication",

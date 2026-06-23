@@ -297,7 +297,8 @@
         "merge": "Fusionner",
         "executed_outputs": "Chaînes sortantes exécutées",
         "field_required": "Champ obligatoire",
-        "file_required": "Fichier obligatoire"
+        "file_required": "Fichier obligatoire",
+        "save_modifications": "Sauvegarder les modifications"
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validé",
@@ -873,7 +874,6 @@
         "total_vat": "Total TVA",
         "vat_amount": "Montant TVA",
         "vat_rate": "Taux de TVA",
-        "ocr_on_fly_success": "Positions et données extraites et enregistrées avec succès",
         "correct_errors_before_validate": "Veuillez corriger les erreurs avant de valider le document",
         "save_supplier_modification": "Validez les modifications du tiers avant de continuer",
         "supplier_changed": "Données du tiers modifiées, veuillez valider les modifications",
@@ -912,7 +912,8 @@
         "document_non_modifiable": "Document non modifiable",
         "document_non_modifiable_details": "Vous ne pouvez pas modifier ce document car il a déjà été traité",
         "no_outputs": "Aucune chaîne sortante paramétrée pour ce document",
-        "facturx_level": "Profil Factur-X"
+        "facturx_level": "Profil Factur-X",
+        "datas_updated": "Données du document mises à jour avec succès"
     },
     "SECURITY": {
         "default_auth": "Authentification par défaut",

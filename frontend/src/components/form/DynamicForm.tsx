@@ -59,7 +59,6 @@ export function DynamicForm({ className, schema, control, errors, gap = 4, grid 
                 return (
                     <div className={ field.className || "" } key={ field.name }>
                         <Controller
-                            key={ field.name }
                             name={ field.name }
                             control={ control }
                             render={ ({ field: f }) => (
@@ -85,7 +84,6 @@ export function DynamicForm({ className, schema, control, errors, gap = 4, grid 
                                             f.onChange(value);
                                         }
                                     } }
-                                    onBlur={ f.onBlur }
                                 />
                             ) }
                         />
@@ -95,7 +93,6 @@ export function DynamicForm({ className, schema, control, errors, gap = 4, grid 
                 return (
                     <div className={ field.className || "" } key={ field.name }>
                         <Controller
-                            key={ field.name }
                             name={ field.name }
                             control={ control }
                             render={ ({ field: f }) => (
@@ -126,7 +123,6 @@ export function DynamicForm({ className, schema, control, errors, gap = 4, grid 
                 return (
                     <div className={ field.className || "" } key={ field.name }>
                         <Controller
-                            key={ field.name }
                             name={ field.name }
                             control={ control }
                             render={ ({ field: f }) => (
@@ -170,7 +166,6 @@ export function DynamicForm({ className, schema, control, errors, gap = 4, grid 
                 return (
                     <div className={ field.className || "" } key={ field.name }>
                         <Controller
-                            key={ field.name }
                             name={ field.name }
                             control={ control }
                             render={ ({ field: f }) => (
