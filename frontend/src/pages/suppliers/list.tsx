@@ -18,18 +18,21 @@
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CirclePause, FileText, Trash2, UserRoundPlus } from "lucide-react";
+import { CirclePause, FileText, Trash2, Upload, UserRoundPlus } from "lucide-react";
 
 
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
 import { Table } from "../../components/list/Table";
 import { showToast } from "../../components/ToastProvider";
+import { hasRequiredPermissions } from "../../components/auth/auth";
 
+import { useUser } from "../../services/hooks/useUser";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
 
 export function SuppliersList() {
+    const { user } = useUser();
     const { get, del } = axiosApiCall();
 
     const navigate = useNavigate();
@@ -181,6 +184,21 @@ export function SuppliersList() {
         }
     }
 
+    const handleExportSuppliers = async () => {
+        try {
+            await get('/accounts/supplier/fillReferenceFile');
+            const res = await get('/accounts/supplier/getReferenceFile')
+            const mimeType = res.mimetype;
+            const referenceFile = 'data:' + mimeType + ';base64, ' + res.file;
+            const link = document.createElement("a");
+            link.href = referenceFile;
+            link.download = res.filename;
+            link.click();
+        } catch (error) {
+            console.error('Error while exporting suppliers :', error);
+        }
+    }
+
     return (
         <div className="p-6 bg-(--bg-secondary) h-full w-full flex flex-col flex-1">
             <div className='flex items-center gap-6 mb-4'>
@@ -194,13 +212,29 @@ export function SuppliersList() {
                        value={ searchTerm } placeholder={ t('GLOBAL.search') }
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
-                    <Button
-                        size='sm'
-                        variant="bg_white"
-                        className='p-2 px-3 border'
-                        onClick={ () => navigate('/suppliers/create') }>
-                        <UserRoundPlus size={ 16 }/> { t('ACCOUNTS.add_supplier') }
-                    </Button>
+                    <div className='flex items-center gap-2'>
+                        <Button
+                            size='sm'
+                            variant="bg_white"
+                            className='p-2 px-3 border'
+                            onClick={ () => navigate('/suppliers/create') }
+                        >
+                            <UserRoundPlus size={ 16 }/> { t('ACCOUNTS.add_supplier') }
+                        </Button>
+
+                        { hasRequiredPermissions(user, ['export_suppliers']) && (
+                            <Button
+                                size='sm'
+                                variant="bg_white"
+                                className='p-2.5 border'
+                                onClick={ handleExportSuppliers }
+                                data-tooltip-id='tooltip'
+                                data-tooltip-content={ t('ACCOUNTS.export_suppliers') }
+                            >
+                                <Upload size={ 16 }/>
+                            </Button>
+                        ) }
+                    </div>
                 </span>
             </div>
             <Table
