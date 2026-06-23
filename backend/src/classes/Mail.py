@@ -71,7 +71,7 @@ class Mail:
                     else:
                         self.conn = MailBoxUnencrypted(host=self.host, port=self.port)
                 except (gaierror, SSLError) as mail_error:
-                    error = 'IMAP Host ' + self.host + ' on port ' + self.port + ' is unreachable : ' + str(mail_error)
+                    error = f'IMAP Host { self.host } on port { self.port } is unreachable : ' + str(mail_error)
                     print(error)
                     sys.exit()
             elif self.method == 'graphql':

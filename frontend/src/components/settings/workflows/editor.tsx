@@ -252,8 +252,8 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
     });
 
     const {
-        control: detailsControl,
         watch: detailsWatch,
+        control: detailsControl,
         setValue: detailsSetValue,
         getValues: detailsGetValues,
         handleSubmit: detailsHandleSubmit,
@@ -271,7 +271,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
     // Fill workflowId with label value
     useEffect(() => {
-        if (!watchLabel || watchWorkflowId) return;
+        if (!watchLabel || workflowId) return;
 
         const newWorkflowId = watchLabel
             .normalize("NFD")
