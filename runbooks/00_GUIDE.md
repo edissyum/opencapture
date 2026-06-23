@@ -102,6 +102,7 @@ $DC ps                  # état des conteneurs
 $DC logs init           # amorçage (1er démarrage)
 $DC logs -f backend     # logs API (suivre)
 $DC restart backend     # redémarrer un service
+$DC exec backend env | grep -E 'CUSTOM_ID|POSTGRES|RABBIT'   # vérifier la config injectée
 $DC down                # arrêter — JAMAIS `down -v` (-v supprime les données !)
 ```
 
@@ -121,9 +122,22 @@ $DC down                # arrêter — JAMAIS `down -v` (-v supprime les donnée
 
 ```
 
-### 4.b Arrêter des containers
+### 4.b Arrêter/démarrer des containers
 
 ```bash
+
+# Le plus simple : stop|start
+cd ~/opencapture_docker/stub-tenants/<id>
+docker compose stop
+# repartir plus tard :
+docker compose start
+
+#ou sans changer de dossier (forme explicite, comme deploy.sh) :
+docker compose --project-directory stub-tenants/<id> -f stub-tenants/<id>/docker-compose.yml stop
+
+# Variante par nom (sans se soucier du dossier) TRES PRATIQUE !
+docker ps -aq --filter "name=opencapture_<id>-" | xargs -r docker stop
+
 # Arrêter tous les dockers d'un même type (ici worker-mail)
 docker ps --format '{{.Names}}' | grep -- '-worker-mail-1$' | xargs -r docker stop
 
@@ -132,15 +146,14 @@ docker ps --format '{{.Names}}' | grep -- '-worker-mail-1$' | xargs -r docker st
 ### 4.d Voir les logs container
 
 ```bash
-
 # Logs d'un conteneur (Docker) — le plus courant
 docker logs opencapture_test2-worker-mail-1            # tout l'historique
 docker logs --tail 50 opencapture_test2-worker-mail-1  # 50 dernières lignes
 docker logs -f opencapture_test2-worker-mail-1         # suivre en DIRECT (Ctrl-C pour sortir)
 docker logs -t opencapture_test2-worker-mail-1         # avec horodatage
+docker logs -t <container> | ts '%Y-%m-%d %H:%M:%S'    # idem mais avec heure locale et non UTC (package moreutils cf. install general)
 docker logs --since 10m opencapture_test2-worker-mail-1   # depuis 10 min
-docker logs --since 2026-06-23T12:00:00 …                 # depuis une heure précise
-docker logs -t <container> | ts '%Y-%m-%d %H:%M:%S' # permet de voir les timestamp (moreutils)
+docker logs --since 2026-06-23T12:00:00  opencapture_test2-worker-mail-1              # depuis une heure précise
 
 
 # Le même service sur TOUS les tenants d'un coup (remplacer worker-mail par worker-verifier, backend, postgres…)
@@ -170,7 +183,7 @@ tail -f /opt/edissyum/opencapture/tenants/test2/custom/test2/bin/ldap/log/techni
 ### 4.d.2 Via docker compose (depuis le dossier du tenant)
 
 ```bash
-cd stub-tenants/test2   # ou infra/ pour "default"
+cd stub-tenants/<tenant>   # ou infra/ pour "default"
 docker compose logs -f worker-mail        # un service
 docker compose logs --tail 50             # toute la stack du tenant
 ```
@@ -621,15 +634,6 @@ Par tenant — les chemins hôte sont les valeurs `*_PATH` du `.env` (en prod :
 > apparaît dans `/app/share/entrant/splitter/default/` (conteneur) → c'est ce que `fs-watcher`
 > détecte. Inversement, les sorties écrites par les workers dans `/app/share/export/…` sont
 > lisibles directement sous `/opt/edissyum/opencapture/tenants/<id>/share/export/…` sur l'hôte.
-
-### Commandes générales
-```bash
-docker compose ps                          # état des services du tenant
-docker compose logs -f --tail=100 backend  # suivre un service
-docker compose restart worker-splitter     # redémarrer un service
-docker compose exec backend env | grep -E 'CUSTOM_ID|POSTGRES|RABBIT'
-docker stats                               # CPU/RAM des conteneurs
-```
 
 ## Annexe E — Glossaire Docker
 
