@@ -73,7 +73,9 @@
         "update_customer": "Mettre à jour le compte client",
         "add_customer": "Ajouter un compte client",
         "edit_customer": "Modifier le compte client",
-        "edit_supplier": "Modifier le compte de tiers"
+        "edit_supplier": "Modifier le compte de tiers",
+        "export_suppliers": "Exporter les comptes de tiers",
+        "export_suppliers_success": "Comptes de tiers exportés avec succès"
     },
     "AUTH": {
         "login": "Se connecter",

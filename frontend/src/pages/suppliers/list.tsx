@@ -194,6 +194,8 @@ export function SuppliersList() {
             link.href = referenceFile;
             link.download = res.filename;
             link.click();
+
+            showToast(t('ACCOUNTS.export_suppliers_success'), 'success');
         } catch (error) {
             console.error('Error while exporting suppliers :', error);
         }

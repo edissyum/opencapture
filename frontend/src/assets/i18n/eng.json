@@ -66,7 +66,9 @@
         "update_customer": "Update customer account",
         "add_customer": "Add a customer account",
         "edit_customer": "Edit customer account",
-        "edit_supplier": "Edit third-party account"
+        "edit_supplier": "Edit third-party account",
+        "export_suppliers": "Export third-party accounts",
+        "export_suppliers_success": "Third-party accounts exported successfully"
     },
     "AUTH": {
         "login": "Log in",
