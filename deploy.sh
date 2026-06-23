@@ -5,7 +5,8 @@
 # Principes :
 #   - L'image backend `opencapture-backend` est PARTAGEE par tous les stacks
 #     (api + workers + fs-watcher + init) -> construite UNE seule fois.
-#   - Le frontend est une image PAR tenant (config bakee au build) -> build par tenant.
+#   - L'image frontend `opencapture-frontend` est PARTAGEE par tous les tenants
+#     (bundle identique ; custom_id resolu au runtime) -> construite UNE seule fois.
 #   - Apres un build, chaque tenant doit etre recree (up -d) pour prendre la nouvelle
 #     image : les conteneurs ne se mettent PAS a jour seuls.
 #   - Volumes/donnees conserves (jamais de `down -v`).
@@ -23,14 +24,14 @@
 #   --all            tous les tenants decouverts (default + stub-tenants/* sauf _template-*)
 #   --pull           git pull (--ff-only) avant de builder
 #   --backend-only   ne (re)build que le backend (image partagee)
-#   --frontend-only  ne (re)build que le(s) frontend(s)
+#   --frontend-only  ne (re)build que l'image frontend (partagee), puis recree
 #   --no-build       ne rien builder, juste recreer (up -d)   [ex: apres modif .env]
 #   -h | --help      cette aide
 #
 # Exemples :
 #   ./deploy.sh --all                   # backend 1x + build front + recreate de tous les tenants
 #   ./deploy.sh site1                   # backend 1x + front de site1 + recreate site1
-#   ./deploy.sh --frontend-only site1   # juste le front de site1
+#   ./deploy.sh --frontend-only site1   # rebuild l'image frontend partagee + recree site1
 #   ./deploy.sh --backend-only --all    # backend 1x + recreate de tous les tenants
 #   ./deploy.sh --no-build site1        # juste recreer site1 (aucun rebuild)
 #   ./deploy.sh --pull site1 site2      # git pull puis build+deploy site1 et site2
@@ -133,12 +134,13 @@ if [ "$BUILD_BACKEND" = 1 ]; then
         -f "$REPO_ROOT/infra/docker-compose.yml" build backend
 fi
 
-# 2) Frontend : par tenant (images distinctes <tenant>-frontend).
+# 2) Image PARTAGEE frontend (construite UNE fois) : opencapture-frontend.
+#    Le bundle est identique pour tous les tenants (custom_id resolu au
+#    runtime : SPA via l'URL + nginx via envsubst). Plus de build par tenant.
 if [ "$BUILD_FRONTEND" = 1 ]; then
-    for t in "${TENANTS[@]}"; do
-        echo "==> Build frontend [$t]..."
-        dc "$t" build frontend
-    done
+    echo "==> Build image frontend (partagee)..."
+    docker compose --project-directory "$REPO_ROOT/infra" \
+        -f "$REPO_ROOT/infra/docker-compose.yml" build frontend
 fi
 
 # 2bis) Image PARTAGEE webdav (opt-in) : INDEPENDANTE du backend. Construite UNE

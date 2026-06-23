@@ -230,6 +230,13 @@ services:
     # infra/webdav/docker-compose.yml dans son docker-compose.yml.
 
     frontend:
+        # Image PARTAGÉE par tous les tenants (comme opencapture-backend).
+        # Le bundle Vite est identique pour chaque tenant : VITE_BACKEND_URL
+        # est figé à "/" et l'identité du tenant (custom_id) est résolue au
+        # RUNTIME — par le SPA depuis l'URL du navigateur, et par nginx via
+        # envsubst (${CUSTOM_ID}) au démarrage du conteneur. Rien de
+        # spécifique au tenant n'est baké → une seule image suffit.
+        image: opencapture-frontend
         build:
             context: ..
             dockerfile: infra/frontend.Dockerfile

@@ -124,7 +124,9 @@ tournent le même code, depuis la même image.
 - **Une image backend partagée** : son `build` a pour `context: ..` (la racine du repo),
   donc voit `backend/`, `frontend/`, `postgres/`, `src/`, `custom/`. Les 6 services backend
   (init, api, workers, fs-watcher) la réutilisent avec un `command:` différent. Le frontend
-  a sa propre image (nginx + bundle), **par tenant** (la config est bakée au build).
+  (nginx + bundle Vite) a **lui aussi une image partagée** (`opencapture-frontend`) : le bundle
+  est identique pour tous les tenants — rien n'est baké, le `custom_id` est résolu au **runtime**
+  (le SPA le lit depuis l'URL du navigateur ; nginx l'injecte via `envsubst` au démarrage).
 - **Isolation à deux niveaux** : (1) chaque tenant a son projet Compose
   `name: opencapture_${CUSTOM_ID}` → conteneurs / réseaux / volumes nommés **préfixés**,
   aucune collision possible ; (2) chaque tenant pointe ses propres chemins via les `*_PATH`
