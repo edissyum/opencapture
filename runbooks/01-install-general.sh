@@ -9,7 +9,6 @@
 
 # Purger d'éventuels anciens paquets Docker
 sudo apt remove docker.io docker-compose docker-doc podman-docker containerd runc
-
 # Dépendances (git inclus pour le clone plus bas)
 sudo apt update && sudo apt install -y ca-certificates curl gnupg lsb-release git
 
@@ -44,13 +43,16 @@ git clone git@github.com:edissyum/opencapture_docker.git
 cd opencapture_docker
 
 # Racine des données hors repo — UNE variable (à reporter dans le .env : OC_DATA_ROOT).
-OC_DATA_ROOT=/opt/edissyum/opencapture
+export OC_DATA_ROOT=/opt/edissyum/opencapture
 # Arborescence des données hors repo (par tenant + partagé)
 sudo mkdir -p "$OC_DATA_ROOT/tenants"
 sudo mkdir -p "$OC_DATA_ROOT/shared-by-tenants/shared-ai-models"
 sudo mkdir -p "$OC_DATA_ROOT/shared-by-tenants/traefik/dynamic"
 sudo mkdir -p "$OC_DATA_ROOT/shared-by-tenants/traefik/certs"
 sudo mkdir -p "$OC_DATA_ROOT/shared-by-tenants/traefik/letsencrypt"
+# Données possédées par l'utilisateur courant (= APP_UID ci-dessous) -> écriture
+# OK (évite "tenants/ est root, écriture refusée" lors des dépôts/imports manuels).
+sudo chown -R "$(id -u):$(id -g)" "$OC_DATA_ROOT"
 
 # Réseau Docker partagé (Traefik <-> frontends des tenants)
 docker network create frontend
@@ -61,6 +63,12 @@ docker network create frontend
 # /app n'est pas inscriptible pour eux (matplotlib/fontconfig en erreur).
 # -> new-tenant.sh reprend ces valeurs ; en création manuelle, aligner le
 #    stub-tenants/<id>/.env (cf. runbooks 02/03/04). Définis donc APP_UID AVANT ce build.
+cp .env.example .env
+# Reporter OC_DATA_ROOT + aligner APP_UID/APP_GID sur l'utilisateur courant.
+# Valeurs NUMÉRIQUES via id -u / id -g (baké dans l'image partagée) — surtout
+# PAS $USER (un nom, pas un uid). Édite le reste du .env si besoin (ports…).
+sed -i "s#^OC_DATA_ROOT=.*#OC_DATA_ROOT=$OC_DATA_ROOT#" .env
+sed -i -e "s/^APP_UID=.*/APP_UID=$(id -u)/" -e "s/^APP_GID=.*/APP_GID=$(id -g)/" .env
 docker compose --project-directory infra -f infra/docker-compose.yml build backend
 
 # Traefik partagé (daemon unique) — chemins dérivés d'OC_DATA_ROOT (une variable)
