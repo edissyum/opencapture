@@ -21,29 +21,21 @@ d'exposition selon le TLS. Données hors repo sous `/opt`.
 
 ## 1. Installation générale (une fois par serveur)
 
-> Prérequis système (Docker Engine + Compose v2) : voir [01-install-general.sh](01-install-general.sh).
+**Tout est dans [01-install-general.sh](01-install-general.sh)** — à dérouler **une seule
+fois par serveur**, **ligne par ligne** (ne PAS exécuter d'un bloc : c'est une référence à
+copier-coller). Il couvre, dans l'ordre :
 
-```bash
-# Sources
-git clone git@github.com:edissyum/opencapture_docker.git
-cd opencapture_docker
+1. **Prérequis système** : Docker Engine + Compose v2 (dépôt officiel Docker).
+2. **Sources** : `git clone` + `cd opencapture_docker`.
+3. **`.env` global** : `cp .env.example .env`, puis `OC_DATA_ROOT` + `APP_UID`/`APP_GID`
+   (= `id -u`/`id -g`, valeurs **numériques** baké dans l'image partagée).
+4. **Arborescence des données** hors repo (`$OC_DATA_ROOT/{tenants,shared-by-tenants/...}`)
+   + `chown` à l'utilisateur courant.
+5. **Réseau `frontend`** + **image backend partagée** (`build backend`, 1 seule fois).
+6. **Traefik partagé** (daemon unique, chemins dérivés d'`OC_DATA_ROOT`).
 
-# Données hors repo (par tenant + partagé)
-sudo mkdir -p /opt/edissyum/opencapture/tenants
-sudo mkdir -p /opt/edissyum/opencapture/shared-by-tenants/shared-ai-models
-sudo mkdir -p /opt/edissyum/opencapture/shared-by-tenants/traefik/{dynamic,certs,letsencrypt}
-
-# Réseau Docker partagé + image backend partagée (1 seule fois)
-docker network create frontend
-docker compose --project-directory infra -f infra/docker-compose.yml build backend
-
-# Traefik partagé (daemon unique ; data sur /opt)
-OC_DYNAMIC_PATH=/opt/edissyum/opencapture/shared-by-tenants/traefik/dynamic \
-OC_CERTS_PATH=/opt/edissyum/opencapture/shared-by-tenants/traefik/certs \
-LETSENCRYPT_PATH=/opt/edissyum/opencapture/shared-by-tenants/traefik/letsencrypt \
-LETSENCRYPT_EMAIL=admin@edissyum.com \
-docker compose -f infra/docker-compose.traefik-server.yml up -d
-```
+> ⚠️ Exporte d'abord la racine pour toute la session : `export OC_DATA_ROOT=/opt/edissyum/opencapture`
+> (sinon `${OC_DATA_ROOT:-../data}` retombe sur `../data` et crée des chemins parasites).
 
 ---
 
@@ -59,7 +51,7 @@ docker compose -f infra/docker-compose.traefik-server.yml up -d
 
 Dans la suite : `<id>` = identifiant du tenant (minuscules/chiffres/`_`), `<fqdn>` = son domaine.
 
-### 2.a Avec les scripts (recommandé)
+### Procédure (avec `new-tenant.sh`)
 
 ```bash
 # 1. Créer le stub. mode = http | le | cert
@@ -77,36 +69,16 @@ sed "s/changeme/<id>/g" stub-tenants/<id>/tls.yml.example \
 ./deploy.sh <id>
 ```
 
-### 2.b Sans les scripts (manuel)
-
-```bash
-# 1. Copier le gabarit. mode = http | letsencrypt | cert
-cp -r stub-tenants/_template-<mode> stub-tenants/<id>
-mv stub-tenants/<id>/.env.example stub-tenants/<id>/.env
-
-# 2. Éditer TOUT le .env : CUSTOM_ID, OC_FQDN, POSTGRES_*, RABBITMQ_*,
-#    *_PATH = /opt/edissyum/opencapture/tenants/<id>/{pgdata,rabbitmq,custom,docservers,share}
-#    + APP_UID/APP_GID = MÊMES valeurs que le .env global (uid baké dans l'image
-#      partagée ; sinon /app non inscriptible). new-tenant.sh le fait tout seul.
-$EDITOR stub-tenants/<id>/.env
-
-# 3. (mode cert) déposer le PEM + le fragment tls.yml — cf. 2.a étape 3
-#    (auto-signé : voir 03-tenant-cert.sh pour la commande openssl)
-
-# 4. Démarrer (compose direct, sans deploy.sh)
-DIR=stub-tenants/<id>
-docker compose --project-directory "$DIR" -f "$DIR/docker-compose.yml" build frontend
-docker compose --project-directory "$DIR" -f "$DIR/docker-compose.yml" up -d
-```
-
-> **Différences scripts vs manuel**
-> - `new-tenant.sh` pré-remplit `CUSTOM_ID` / `POSTGRES_DB` / `POSTGRES_USER` / `RABBITMQ_USER`,
->   les 5 `*_PATH` et `APP_UID`/`APP_GID` (repris du `.env` global) → il ne reste que `OC_FQDN`
->   + les 2 mots de passe à saisir. En manuel, tu édites tous les champs (dont APP_UID/APP_GID).
-> - `deploy.sh <id>` = `build frontend` + `up -d` (+ build de l'image backend si absente). En
->   manuel, tu lances les deux `docker compose` toi-même.
-> - Dans les deux cas, le 1er démarrage déclenche le service `init` qui amorce le tenant
->   (schéma DB, config, assets, chemins) — rien à faire à la main pour ça.
+> `new-tenant.sh` pré-remplit `CUSTOM_ID` / `POSTGRES_DB` / `POSTGRES_USER` /
+> `RABBITMQ_USER`, les `*_PATH` et `APP_UID`/`APP_GID` (repris du `.env` global) ;
+> il ne te reste que `OC_FQDN` + les 2 mots de passe. `deploy.sh <id>` enchaîne
+> `build frontend` + `up -d`, et le 1er démarrage déclenche le service `init` qui
+> amorce le tenant (schéma DB, config, assets, chemins) — rien à faire à la main.
+>
+> ⚠️ La création **manuelle** (copier le gabarit + éditer le `.env` à la main) est
+> volontairement retirée : elle multiplie les erreurs (`changeme` oubliés,
+> `CUSTOM_ID` ≠ nom du dossier, `APP_UID` non aligné). Utilise **toujours**
+> `new-tenant.sh`.
 
 ---
 

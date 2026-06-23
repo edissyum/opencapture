@@ -6,6 +6,8 @@
 # ----------------------------------------------------------------------
 # Prérequis système — Docker Engine + Compose v2 (Debian)
 # ----------------------------------------------------------------------
+# Racine des données hors repo — UNE variable (à reporter dans le .env : OC_DATA_ROOT).
+export OC_DATA_ROOT=/opt/edissyum/opencapture
 
 # Purger d'éventuels anciens paquets Docker
 sudo apt remove docker.io docker-compose docker-doc podman-docker containerd runc
@@ -42,8 +44,7 @@ sudo usermod -aG docker $USER
 git clone git@github.com:edissyum/opencapture_docker.git
 cd opencapture_docker
 
-# Racine des données hors repo — UNE variable (à reporter dans le .env : OC_DATA_ROOT).
-export OC_DATA_ROOT=/opt/edissyum/opencapture
+
 # Arborescence des données hors repo (par tenant + partagé)
 sudo mkdir -p "$OC_DATA_ROOT/tenants"
 sudo mkdir -p "$OC_DATA_ROOT/shared-by-tenants/shared-ai-models"
