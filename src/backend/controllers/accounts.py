@@ -758,11 +758,11 @@ def fill_row(row, supplier, address, ind):
         row.append(not supplier[ind])
     elif ind in supplier:
         if supplier[ind]:
-            supplier[ind] = unidecode(supplier[ind])
+            supplier[ind] = unidecode(str(supplier[ind]))
         row.append(supplier[ind])
     elif ind in address:
         if address[ind]:
-            address[ind] = unidecode(address[ind])
+            address[ind] = unidecode(str(address[ind]))
         row.append(address[ind])
     else:
         row.append('')
