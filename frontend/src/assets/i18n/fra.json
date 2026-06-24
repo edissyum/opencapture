@@ -75,7 +75,9 @@
         "edit_customer": "Modifier le compte client",
         "edit_supplier": "Modifier le compte de tiers",
         "export_suppliers": "Exporter les comptes de tiers",
-        "export_suppliers_success": "Comptes de tiers exportés avec succès"
+        "export_suppliers_success": "Comptes de tiers exportés avec succès",
+        "import_suppliers": "Importer les comptes de tiers",
+        "columns_config": "Configuration des colonnes"
     },
     "AUTH": {
         "login": "Se connecter",
@@ -731,7 +733,6 @@
         "upload_dropzone": "Cliquez pour choisir un fichier",
         "upload_dropzone_2": "ou faites-le glisser dans cette zone",
         "max_filesize": "Taille maximale du fichier : {{maxSize}} Mo",
-        "allowed_extensions": "Extensions autorisées",
         "too_many_files": "Le nombre maximum de fichiers autorisés est de {{maxFiles}}",
         "file_rejected": "Le fichier a été rejeté",
         "invalid_file_type": "Type de fichier invalide. Les types de fichiers autorisés sont : {{types}}",
@@ -752,7 +753,10 @@
         "select_workflow": "Choix du workflow",
         "select_workflow_hint": "Sélectionnez le workflow à appliquer lors du téléversement des documents",
         "add_document": "Ajout des documents",
-        "add_document_hint": "Sélectionnez un ou plusieurs documents à téléverser"
+        "add_document_hint": "Sélectionnez un ou plusieurs documents à téléverser",
+        "allowed_extensions_many": "Extensions autorisées",
+        "allowed_extensions_one": "Extension autorisée",
+        "allowed_extensions_other": "Extensions autorisées"
     },
     "USERS": {
         "delete_users": "Supprimer",

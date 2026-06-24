@@ -75,7 +75,9 @@
         "edit_customer": "Editar cuenta de cliente",
         "edit_supplier": "Editar cuenta de tercero",
         "export_suppliers": "Exportar cuentas de terceros",
-        "export_suppliers_success": "Exportación de cuentas de terceros realizada con éxito"
+        "export_suppliers_success": "Exportación de cuentas de terceros realizada con éxito",
+        "import_suppliers": "Importar cuentas de terceros",
+        "columns_config": "Configuración de columnas"
     },
     "AUTH": {
         "login": "Iniciar sesión",
@@ -731,7 +733,6 @@
         "upload_dropzone": "Haga clic para elegir un archivo",
         "upload_dropzone_2": "o arrástrelo a esta zona",
         "max_filesize": "Tamaño máximo del archivo: {{maxSize}} MB",
-        "allowed_extensions": "Extensiones permitidas",
         "too_many_files": "El número máximo de archivos permitidos es {{maxFiles}}",
         "file_rejected": "El archivo fue rechazado",
         "invalid_file_type": "Tipo de archivo inválido. Los tipos de archivo permitidos son: {{types}}",
@@ -752,7 +753,10 @@
         "select_workflow": "Seleccionar un flujo de trabajo",
         "select_workflow_hint": "Seleccione el flujo de trabajo que se aplicará al cargar documentos",
         "add_document": "Agregar documentos",
-        "add_document_hint": "Seleccione uno o más documentos para cargar."
+        "add_document_hint": "Seleccione uno o más documentos para cargar.",
+        "allowed_extensions_many": "Extensiones permitidas",
+        "allowed_extensions_one": "Extensión permitida",
+        "allowed_extensions_other": "Extensiones permitidas"
     },
     "USERS": {
         "delete_users": "Eliminar",

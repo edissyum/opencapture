@@ -68,7 +68,9 @@
         "edit_customer": "Edit customer account",
         "edit_supplier": "Edit third-party account",
         "export_suppliers": "Export third-party accounts",
-        "export_suppliers_success": "Third-party accounts exported successfully"
+        "export_suppliers_success": "Third-party accounts exported successfully",
+        "import_suppliers": "Import third-party accounts",
+        "columns_config": "Columns configuration"
     },
     "AUTH": {
         "login": "Log in",
@@ -687,7 +689,6 @@
         "upload_dropzone": "Click to choose a file",
         "upload_dropzone_2": "or drag it into this area",
         "max_filesize": "Maximum file size: {{maxSize}} MB",
-        "allowed_extensions": "Allowed extensions",
         "too_many_files": "The maximum number of allowed files is {{maxFiles}}",
         "file_rejected": "The file was rejected",
         "invalid_file_type": "Invalid file type. Allowed file types are: {{types}}",
@@ -706,7 +707,9 @@
         "select_workflow": "Select a workflow",
         "select_workflow_hint": "Select the workflow to apply when uploading documents",
         "add_document": "Adding documents",
-        "add_document_hint": "Select one or more documents to upload"
+        "add_document_hint": "Select one or more documents to upload",
+        "allowed_extensions_one": "Allowed extension",
+        "allowed_extensions_other": "Allowed extensions"
     },
     "USERS": {
         "delete_users": "Delete",

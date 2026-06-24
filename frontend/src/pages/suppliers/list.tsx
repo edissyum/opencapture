@@ -18,14 +18,14 @@
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CirclePause, FileText, Trash2, Upload, UserRoundPlus } from "lucide-react";
-
+import { CirclePause, Download, FileText, Trash2, Upload, UserRoundPlus } from "lucide-react";
 
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
 import { Table } from "../../components/list/Table";
 import { showToast } from "../../components/ToastProvider";
 import { hasRequiredPermissions } from "../../components/auth/auth";
+import { ImportSpreadSheet } from "../../components/settings/ImportSpreadSheet";
 
 import { useUser } from "../../services/hooks/useUser";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
@@ -34,13 +34,13 @@ import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
 export function SuppliersList() {
     const { user } = useUser();
     const { get, del } = axiosApiCall();
-
     const navigate = useNavigate();
 
     const [suppliers, setSuppliers] = useState([]);
     const [totalSuppliers, setTotalSuppliers] = useState(0);
     const [selectedSuppliers, setSelectedSuppliers] = useState<any[]>([]);
     const [loadingSuppliers, setLoadingSuppliers] = useState(false);
+
     const [searchTerm, setSearchTerm] = useState('');
     const [lazyParams, setLazyParams] = useState({
         first: 0,
@@ -49,6 +49,11 @@ export function SuppliersList() {
         sortField: null as string | null,
         sortOrder: null as 1 | -1 | null
     });
+
+    const [openImport, setOpenImport] = useState(false);
+
+    const importColumns = ['name', 'vat_number', 'siret', 'siren', 'duns', 'bic', 'rccm', 'iban', 'email', 'address1',
+        'address2', 'postal_code', 'city', 'country', 'footer_coherence', 'document_lang', 'default_currency', 'informal_contact'];
 
     const columns = [
         { id: 'id', field: 'id', header: '', sortable: true },
@@ -203,6 +208,13 @@ export function SuppliersList() {
 
     return (
         <div className="p-6 bg-(--bg-secondary) h-full w-full flex flex-col flex-1">
+            { openImport && (
+                <ImportSpreadSheet
+                    columns={ importColumns }
+                    onClose={ () => setOpenImport(false) }
+                />
+            ) }
+
             <div className='flex items-center gap-6 mb-4'>
                 <span className='flex items-center gap-1'>
                     <FileText size={ 16 }/>
@@ -234,6 +246,19 @@ export function SuppliersList() {
                                 data-tooltip-content={ t('ACCOUNTS.export_suppliers') }
                             >
                                 <Upload size={ 16 }/>
+                            </Button>
+                        ) }
+
+                        { hasRequiredPermissions(user, ['import_suppliers']) && (
+                            <Button
+                                size='sm'
+                                variant="bg_white"
+                                className='p-2.5 border'
+                                data-tooltip-id='tooltip'
+                                onClick={ () => setOpenImport(true) }
+                                data-tooltip-content={ t('ACCOUNTS.import_suppliers') }
+                            >
+                                <Download size={ 16 }/>
                             </Button>
                         ) }
                     </div>
