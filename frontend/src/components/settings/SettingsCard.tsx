@@ -31,15 +31,15 @@ interface settingCardsProps {
 }
 
 export function SettingsCard({
-                                 show = true,
-                                 icon,
-                                 title,
-                                 description,
-                                 to,
-                                 className,
-                                 module,
-                                 unpinFav
-                             }: settingCardsProps) {
+    show = true,
+    icon,
+    title,
+    description,
+    to,
+    className,
+    module,
+    unpinFav
+}: settingCardsProps) {
     if (!show) return null;
 
     const [hovered, setHovered] = useState(false);
