@@ -302,7 +302,11 @@
         "executed_outputs": "Cadenas salientes ejecutadas",
         "field_required": "Campo obligatorio",
         "file_required": "Archivo obligatorio",
-        "save_modifications": "Guardar modificaciones"
+        "save_modifications": "Guardar modificaciones",
+        "no_data": "Ningún dato",
+        "import": "Importar",
+        "skip_header": "Omitir la primera línea (cabecera)",
+        "importing": "Importando..."
     },
     "HISTORY": {
         "document_validated": "Documento n°<strong>{{ documentId }}</strong> validado",

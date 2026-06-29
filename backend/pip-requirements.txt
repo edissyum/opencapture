@@ -11,8 +11,8 @@ pypdf==6.14.2
 pyjwt==2.13.0
 deskew==1.6.1
 pyzbar==0.1.9
-pandas==3.0.3
-factur-x==4.3
+pandas==3.0.4
+factur-x==5.0
 mpmath==1.3.0
 kuyruk==10.2.1
 pillow==12.2.0
@@ -22,7 +22,7 @@ thefuzz==0.22.1
 werkzeug==3.1.8
 pyflakes==3.4.0
 rfc3161ng==2.1.3
-pdftotext==3.0.0
+pdftotext==4.0.0
 unidecode==1.4.0
 tnefparse==1.4.0
 requests==2.34.2
@@ -45,7 +45,7 @@ python-bidi==0.6.10
 pytesseract==0.3.13
 configparser==7.2.0
 scikit-learn==1.9.0
-ultralytics==8.4.76
+ultralytics==8.4.82
 python-magic==0.4.27
 transformers==5.12.1
 Flask-Limiter==4.1.1
