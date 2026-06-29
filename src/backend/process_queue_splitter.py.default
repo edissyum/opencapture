@@ -72,14 +72,6 @@ def launch(args):
         batch_folder = files.get_random_string(15)
         batch_folder_path = f"{docservers['SPLITTER_BATCHES']}/{batch_folder}/"
         batch_thumbs_path = f"{docservers['SPLITTER_THUMB']}/{batch_folder}/"
-        os.mkdir(batch_folder_path)
-        os.mkdir(batch_thumbs_path)
-
-        try:
-            os.chmod(batch_folder_path, int('775', base=8))
-            os.chmod(batch_thumbs_path, int('775', base=8))
-        except OSError:
-            pass
 
         files = Files('', log, docservers, configurations, regex, languages, database)
 
@@ -157,6 +149,14 @@ def launch(args):
         try:
             if args['file'] is not None:
                 path = args['file']
+                os.mkdir(batch_folder_path)
+                os.mkdir(batch_thumbs_path)
+
+                try:
+                    os.chmod(batch_folder_path, int('775', base=8))
+                    os.chmod(batch_thumbs_path, int('775', base=8))
+                except OSError:
+                    pass
 
                 attachments = []
                 if 'attachments' in args and args['attachments']:
