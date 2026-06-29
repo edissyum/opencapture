@@ -222,7 +222,7 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                                                      onChange={ (e) => {
                                                          setNewDoctypeIsDefault(e.value);
                                                      } }/>
-                                        <label htmlFor={ 'isDefault' }
+                                        <label htmlFor='isDefault'
                                                className="flex items-center gap-4 cursor-pointer">
                                             { t('DOCTYPES.is_default') }
                                         </label>
@@ -335,7 +335,7 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                                                  is_default: !selectedDoctype.is_default
                                              });
                                          } }/>
-                            <label htmlFor={ 'isDefault' } className="flex items-center gap-4 cursor-pointer">
+                            <label htmlFor='isDefault' className="flex items-center gap-4 cursor-pointer">
                                 { t('DOCTYPES.is_default') }
                             </label>
                         </div>

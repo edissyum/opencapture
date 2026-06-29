@@ -33,7 +33,7 @@ import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
 
 export function SuppliersList() {
     const { user } = useUser();
-    const { get, del } = axiosApiCall();
+    const { get, post, del } = axiosApiCall();
     const navigate = useNavigate();
 
     const [suppliers, setSuppliers] = useState([]);
@@ -51,9 +51,11 @@ export function SuppliersList() {
     });
 
     const [openImport, setOpenImport] = useState(false);
+    const [loadingImport, setLoadingImport] = useState(false);
 
-    const importColumns = ['name', 'vat_number', 'siret', 'siren', 'duns', 'bic', 'rccm', 'iban', 'email', 'address1',
-        'address2', 'postal_code', 'city', 'country', 'footer_coherence', 'document_lang', 'default_currency', 'informal_contact'];
+    const importColumns = ['name', 'lastname', 'firstname', 'civility', 'function', 'vat_number', 'siret',
+        'siren', 'duns', 'bic', 'rccm', 'iban', 'email', 'phone', 'address1', 'address2', 'city', 'postal_code', 'country',
+        'footer_coherence', 'document_lang', 'default_currency', 'informal_contact'];
 
     const columns = [
         { id: 'id', field: 'id', header: '', sortable: true },
@@ -192,7 +194,7 @@ export function SuppliersList() {
     const handleExportSuppliers = async () => {
         try {
             await get('/accounts/supplier/fillReferenceFile');
-            const res = await get('/accounts/supplier/getReferenceFile')
+            const res = await get('/accounts/supplier/getReferenceFile');
             const mimeType = res.mimetype;
             const referenceFile = 'data:' + mimeType + ';base64, ' + res.file;
             const link = document.createElement("a");
@@ -206,11 +208,34 @@ export function SuppliersList() {
         }
     }
 
+    const handleImportSuppliers = async (file: File | null, columns: string[], skipHeader: boolean) => {
+        if (!file) return;
+
+        setLoadingImport(true);
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.set('skipHeader', String(skipHeader));
+        formData.set('selectedColumns', String(columns));
+
+        await post('/accounts/supplier/importSuppliers', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        });
+
+        setLoadingImport(false);
+        // setOpenImport(false);
+        showToast(t('ACCOUNTS.import_suppliers_success'), 'success');
+    }
+
     return (
         <div className="p-6 bg-(--bg-secondary) h-full w-full flex flex-col flex-1">
             { openImport && (
                 <ImportSpreadSheet
                     columns={ importColumns }
+                    loading={ loadingImport }
+                    onValidate={ handleImportSuppliers }
                     onClose={ () => setOpenImport(false) }
                 />
             ) }
@@ -252,7 +277,7 @@ export function SuppliersList() {
                         { hasRequiredPermissions(user, ['import_suppliers']) && (
                             <Button
                                 size='sm'
-                                variant="bg_white"
+                                variant='bg_white'
                                 className='p-2.5 border'
                                 data-tooltip-id='tooltip'
                                 onClick={ () => setOpenImport(true) }

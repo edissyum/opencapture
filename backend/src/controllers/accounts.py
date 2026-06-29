@@ -752,8 +752,13 @@ def delete_supplier(supplier_id):
 
 def import_suppliers(args):
     for file in args['files']:
+        sample_bytes = args['files'][file].stream.read(2048)
+        sample_text = sample_bytes.decode("utf-8", errors="ignore")
+        delimiter = csv.Sniffer().sniff(sample_text).delimiter
+
+        args['files'][file].stream.seek(0)
         stream = codecs.iterdecode(args['files'][file].stream, 'utf-8')
-        for cpt, row in enumerate(csv.reader(stream, dialect=csv.excel)):
+        for cpt, row in enumerate(csv.reader(stream, dialect=csv.excel, delimiter=delimiter)):
             if args['skip_header'] and cpt == 0:
                 continue
             footer_coherence = row[args['selected_columns'].index('footer_coherence')]
@@ -768,8 +773,13 @@ def import_suppliers(args):
             account = {
                 'info': {
                     'name': row[args['selected_columns'].index('name')],
+                    'lastname': row[args['selected_columns'].index('lastname')],
+                    'firstname': row[args['selected_columns'].index('firstname')],
+                    'civility': row[args['selected_columns'].index('civility')],
+                    'function': row[args['selected_columns'].index('function')],
                     'siret': row[args['selected_columns'].index('siret')],
                     'siren': row[args['selected_columns'].index('siren')],
+                    'phone': row[args['selected_columns'].index('phone')],
                     'email': row[args['selected_columns'].index('email')],
                     'bic': row[args['selected_columns'].index('bic')],
                     'rccm': row[args['selected_columns'].index('rccm')],

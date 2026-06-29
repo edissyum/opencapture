@@ -282,7 +282,11 @@
         "executed_outputs": "Output chains executed",
         "field_required": "Field is required",
         "file_required": "File is required",
-        "save_modifications": "Save modifications"
+        "save_modifications": "Save modifications",
+        "no_data": "No data",
+        "import": "Import",
+        "skip_header": "Skip header",
+        "importing": "Importing..."
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validated",

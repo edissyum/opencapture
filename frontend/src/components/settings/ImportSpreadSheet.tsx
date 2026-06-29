@@ -18,29 +18,68 @@
 import { t } from "i18next";
 import * as XLSX from "xlsx";
 import { X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { InputSwitch } from "primereact/inputswitch";
 
-import { useState } from "react";
+import { Button } from "../Button";
+import { Dropdown } from "../Dropdown";
 import UploadDropzone from "../upload/Dropzone";
-import { Dropdown } from "../Dropdown.tsx";
 
-export function ImportSpreadSheet({ onClose, columns }: { onClose: () => void, columns: string[] }) {
+export function ImportSpreadSheet({onClose, onValidate, columns, loading = false}: {
+    columns: string[],
+    loading?: boolean,
+    onClose: () => void,
+    onValidate: (file: File | null, columns: string[], skipHeader: boolean) => void
+}) {
     const [editedColumns, setEditedColumns] = useState<string[]>(columns);
 
-    const [headers, setHeaders] = useState<string[]>([]);
+    const [file, setFile] = useState<File | null>(null);
+    const [sheet, setSheet] = useState<XLSX.WorkSheet | null>(null);
+
     const [rows, setRows] = useState<string[][]>([]);
+    const [headers, setHeaders] = useState<string[]>([]);
+
+    const [skipHeader, setSkipHeader] = useState<boolean>(true);
+
+    useEffect(() => {
+        if (!sheet) return;
+
+        loadDatas(sheet);
+    }, [skipHeader]);
 
     const handleImport = async (file: File) => {
+        if (!file) return;
+
+        setFile(file);
+
         const buffer = await file.arrayBuffer();
         const workbook = XLSX.read(buffer, {
             type: "array",
             codepage: 65001
         });
 
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const _sheet = workbook.Sheets[workbook.SheetNames[0]];
+        setSheet(_sheet);
 
-        const data = XLSX.utils.sheet_to_json(sheet, { header: 1 }) as string[][];
+        loadDatas(_sheet);
+    }
+
+    const loadDatas = (sheet: any) => {
+        const data = XLSX.utils.sheet_to_json(sheet, {
+            header: 1,
+            defval: (
+                <div className='text-(--text-secondary)'>
+                    { t('GLOBAL.no_data') }
+                </div>
+            )
+        }) as string[][];
+
         setHeaders(data[0] as string[]);
-        setRows(data.slice(1) as string[][]);
+        if (skipHeader) {
+            setRows(data.slice(1) as string[][]);
+        } else {
+            setRows(data as string[][]);
+        }
     }
 
     return (
@@ -56,7 +95,7 @@ export function ImportSpreadSheet({ onClose, columns }: { onClose: () => void, c
                         <X/>
                     </div>
                 </div>
-                <div className='overflow-hidden flex flex-col gap-4 p-6 h-full'>
+                <div className='overflow-hidden flex flex-col gap-4 p-6 h-full min-h-0'>
                     <div>
                         <UploadDropzone
                             maxFiles={ 1 }
@@ -66,35 +105,58 @@ export function ImportSpreadSheet({ onClose, columns }: { onClose: () => void, c
                         />
                     </div>
 
-                    <div className='border rounded-md border-(--border-secondary) p-4 flex flex-col gap-4 h-full'>
-                        <h4 className='font-semibold'>{ t('ACCOUNTS.columns_config') }</h4>
-                        <div className='overflow-y-auto h-full flex gap-8'>
-                            { editedColumns.map((col, idx) => (
-                                <Dropdown
-                                    id={ idx }
-                                    key={ idx }
-                                    className='min-w-60'
-                                    options={ columns.map((c) => ({ label: c, value: c })) }
-                                    value={ col }
-                                    onChange={ (selected: any) => {
-                                        const newColumns = [...editedColumns];
-                                        newColumns[idx] = selected.value;
-                                        setEditedColumns(newColumns);
-                                    } }
-                                />
-                            )) }
+                    <div className='border rounded-md border-(--border-secondary) p-4 flex flex-col gap-4 h-full
+                                    min-h-0 overflow-hidden'>
+                        <div className='flex'>
+                            <h4 className='font-semibold'>{ t('ACCOUNTS.columns_config') }</h4>
+                            <div className='ml-auto flex'>
+                                <InputSwitch inputId='skipHeader' checked={ skipHeader } onChange={ (e) => setSkipHeader(e.value) }/>
+                                <label htmlFor='skipHeader' className="flex items-center gap-4 cursor-pointer">
+                                    { t('GLOBAL.skip_header') }
+                                </label>
+                            </div>
                         </div>
-                        <div className='overflow-auto pb-50'>
-                            { rows.map((col, idx) => (
-                                <div key={ idx } className='flex gap-8 border-b border-(--border-secondary)'>
-                                    { col.map((cell, cellIdx) => (
-                                        <div key={ cellIdx } className='min-w-60 p-2'>
-                                            { cell }
+                        { rows.length > 0 && headers.length > 0 && (
+                            <div className='h-full min-h-0 flex flex-col overflow-y-auto'>
+                                <div className='flex pb-4 gap-8'>
+                                    { editedColumns.map((col, idx) => (
+                                        <Dropdown
+                                            id={ idx }
+                                            key={ idx }
+                                            className='min-w-60'
+                                            options={ columns.map((c) => ({ label: c, value: c })) }
+                                            value={ col }
+                                            onChange={ (selected: any) => {
+                                                const newColumns = [...editedColumns];
+                                                newColumns[idx] = selected.value;
+                                                setEditedColumns(newColumns);
+                                            } }
+                                        />
+                                    )) }
+                                </div>
+                                <div className='min-h-0 flex-1'>
+                                    { rows.map((col, idx) => (
+                                        <div key={ idx } className='flex gap-8'>
+                                            { col.map((cell, cellIdx) => (
+                                                <div key={ cellIdx } className='min-w-60 p-2 truncate'>
+                                                    { cell }
+                                                </div>
+                                            )) }
                                         </div>
                                     )) }
                                 </div>
-                            )) }
-                        </div>
+                            </div>
+                        ) }
+                    </div>
+
+                    <div className='ml-auto flex gap-4'>
+                        <Button variant={ "no_bg" } onClick={ () => onClose() }>
+                            { t('GLOBAL.cancel') }
+                        </Button>
+                        <Button disabled={ rows.length == 0 || headers.length == 0 || loading }
+                                onClick={ () => onValidate(file, editedColumns, skipHeader) }>
+                            { loading ? t('GLOBAL.importing') : t('GLOBAL.import') }
+                        </Button>
                     </div>
                 </div>
             </div>

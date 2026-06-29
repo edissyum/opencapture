@@ -700,7 +700,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                             <div className='flex items-center gap-2'>
                                 <InputSwitch inputId='inputScripting' checked={ inputScripting }
                                              onChange={ (e) => setInputScripting(e.value) }/>
-                                <label htmlFor={ 'inputScripting' } className="cursor-pointer">
+                                <label htmlFor='inputScripting' className="cursor-pointer">
                                     { t('WORKFLOWS.input_scripting') }
                                 </label>
                             </div>
@@ -776,7 +776,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                             <div className='flex items-center gap-2'>
                                 <InputSwitch inputId='processScripting' checked={ processScripting }
                                              onChange={ (e) => setProcessScripting(e.value) }/>
-                                <label htmlFor={ 'processScripting' }
+                                <label htmlFor='processScripting'
                                        className="flex items-center gap-4 cursor-pointer">
                                     { t('WORKFLOWS.process_scripting') }
                                 </label>

@@ -302,7 +302,11 @@
         "executed_outputs": "Chaînes sortantes exécutées",
         "field_required": "Champ obligatoire",
         "file_required": "Fichier obligatoire",
-        "save_modifications": "Sauvegarder les modifications"
+        "save_modifications": "Sauvegarder les modifications",
+        "no_data": "Aucune donnée",
+        "import": "Importer",
+        "skip_header": "Sauter la ligne d'en-tête",
+        "importing": "Importation en cours..."
     },
     "HISTORY": {
         "document_validated": "Document n°<strong>{{ documentId }}</strong> validé",
