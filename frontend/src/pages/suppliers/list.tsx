@@ -225,7 +225,7 @@ export function SuppliersList() {
         });
 
         setLoadingImport(false);
-        // setOpenImport(false);
+        setOpenImport(false);
         showToast(t('ACCOUNTS.import_suppliers_success'), 'success');
     }
 
