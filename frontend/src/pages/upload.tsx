@@ -117,7 +117,7 @@ export function UploadPage() {
             try {
                 await post(`/${ module }/upload`, formData, {
                     headers: {
-                        "Content-Type": "multipart/form-data",
+                        "Content-Type": "multipart/form-data"
                     },
                     onUploadProgress: (progressEvent) => {
                         setProgress((prev) => ({

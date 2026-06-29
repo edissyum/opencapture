@@ -33,6 +33,7 @@ import { Button } from "../../Button";
 import { Dropdown } from "../../Dropdown";
 import { Loader } from "../../loader/Loader";
 import { showToast } from "../../ToastProvider";
+import { ImportSpreadSheet } from "../ImportSpreadSheet.tsx";
 
 function SortableFieldItem({ field, lastField, onRemove }: { field: any, lastField: boolean,  onRemove?: (field: any) => void }) {
     const {
@@ -97,8 +98,9 @@ export function DoctypesTree({
     const [forms, setForms] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [loadingExport, setLoadingExport] = useState(false);
+    const [loadingImport, setLoadingImport] = useState(false);
     const [showExportDialog, setShowExportDialog] = useState(false);
-    const [, setShowImportDialog] = useState(false);
+    const [showImportDialog, setShowImportDialog] = useState(false);
 
     const [doctypes, setDoctypes] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -127,15 +129,15 @@ export function DoctypesTree({
     ];
 
     const [format, _] = useState("CSV");
-    const [delimiter, setDelimiter] = useState(delimiterOptions[0].value);
+    const [delimiter, setDelimiter] = useState(delimiterOptions[2].value);
 
     const availableFields = [
-        { label: t('VERIFIER.id'), id: 'key', selected: true },
-        { label: t('DOCTYPES.field_code'), id: 'code', selected: true },
-        { label: t('DOCTYPES.field_type'), id: 'type', selected: false },
         { label: t('DOCTYPES.field_label'), id: 'label', selected: true },
+        { label: t('DOCTYPES.field_type'), id: 'type', selected: true },
+        { label: t('VERIFIER.id'), id: 'key', selected: true },
+        { label: t('DOCTYPES.field_form_id'), id: 'form_id', selected: true },
+        { label: t('DOCTYPES.field_code'), id: 'code', selected: true },
         { label: t('DOCTYPES.field_status'), id: 'status', selected: false },
-        { label: t('DOCTYPES.field_form_id'), id: 'form_id', selected: false },
         { label: t('DOCTYPES.default_doctype'), id: 'isDefault', selected: false }
     ];
 
@@ -279,13 +281,20 @@ export function DoctypesTree({
                 return;
             }
 
-            const csvContent = atob(response.encoded_file);
-            const blob = new Blob([csvContent], { type: "data:application/octet-stream;base64" });
+            const binary = atob(response.encoded_file);
+            const bytes = new Uint8Array(binary.length);
+
+            for (let i = 0; i < binary.length; i++) {
+                bytes[i] = binary.charCodeAt(i);
+            }
+
+            const blob = new Blob([bytes], { type: "text/csv;charset=utf-8" });
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.href = url;
             link.download = `doctypes.${ format.toLowerCase() }`;
             link.click();
+            window.URL.revokeObjectURL(url);
 
             showToast(t('DOCTYPES.export_success'), 'success');
         } catch (error) {
@@ -295,10 +304,37 @@ export function DoctypesTree({
         }
     };
 
+    const handleImportDoctypes = async (formData: any) => {
+        if (!formData) return;
+
+        setLoadingImport(true);
+
+        await post('/doctypes/csv/import', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        });
+
+        setLoadingImport(false);
+        setShowImportDialog(false);
+        setForceRelaunch(f => f + 1);
+        showToast(t('DOCTYPES.import_success'), 'success');
+    }
+
     if (loading) return <Loader/>;
 
     return (
         <div className="h-full overflow-hidden flex">
+            { showImportDialog && (
+                <ImportSpreadSheet
+                    loading={ loadingImport }
+                    onValidate={ handleImportDoctypes }
+                    title={ t('DOCTYPES.import_doctypes') }
+                    onClose={ () => setShowImportDialog(false) }
+                    columns={ ['label', 'type', 'key', 'form_id', 'code'] }
+                />
+            ) }
+
             { showExportDialog && (
                 <>
                     <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"

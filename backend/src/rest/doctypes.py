@@ -112,6 +112,7 @@ def csv_preview():
 def import_from_csv():
     if not privileges.has_privileges(request.environ['user_id'], ['settings', 'document_type_splitter']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/doctypes/generateSeparator'}), 403
+
     args = {
         'files': request.files,
         'skip_header': request.form['skipHeader'],

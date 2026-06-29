@@ -158,7 +158,7 @@ export function AttachmentsList({
         try {
             await post(`/attachments/${ module }/upload`, attachments, {
                 headers: {
-                    "Content-Type": "multipart/form-data",
+                    "Content-Type": "multipart/form-data"
                 }
             });
             refreshAttachments().then();

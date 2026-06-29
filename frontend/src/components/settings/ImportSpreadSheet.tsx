@@ -25,11 +25,12 @@ import { Button } from "../Button";
 import { Dropdown } from "../Dropdown";
 import UploadDropzone from "../upload/Dropzone";
 
-export function ImportSpreadSheet({onClose, onValidate, columns, loading = false}: {
+export function ImportSpreadSheet({onClose, onValidate, columns, title, loading = false}: {
+    title: string,
     columns: string[],
     loading?: boolean,
     onClose: () => void,
-    onValidate: (file: File | null, columns: string[], skipHeader: boolean) => void
+    onValidate: (formData: any) => void
 }) {
     const [editedColumns, setEditedColumns] = useState<string[]>(columns);
 
@@ -82,6 +83,17 @@ export function ImportSpreadSheet({onClose, onValidate, columns, loading = false
         }
     }
 
+    const handleValidate = () => {
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.set('skipHeader', String(skipHeader));
+        formData.set('selectedColumns', String(columns));
+
+        onValidate && onValidate(formData);
+    }
+
     return (
         <>
             <div className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm"
@@ -90,7 +102,7 @@ export function ImportSpreadSheet({onClose, onValidate, columns, loading = false
                             w-4/5 h-11/12 max-h-screen border border-(--border-secondary)
                             rounded-lg bg-(--bg-primary) flex flex-col">
                 <div className='flex items-center p-6 pb-0'>
-                    <h2>{ t('ACCOUNTS.import_suppliers') }</h2>
+                    <h2>{ title }</h2>
                     <div className='ml-auto cursor-pointer text-(--text-secondary)' onClick={ () => onClose() }>
                         <X/>
                     </div>
@@ -105,9 +117,9 @@ export function ImportSpreadSheet({onClose, onValidate, columns, loading = false
                         />
                     </div>
 
-                    <div className='border rounded-md border-(--border-secondary) p-4 flex flex-col gap-4 h-full
+                    <div className='border rounded-md border-(--border-secondary) flex flex-col gap-4 h-full
                                     min-h-0 overflow-hidden'>
-                        <div className='flex'>
+                        <div className='flex p-4 pb-0'>
                             <h4 className='font-semibold'>{ t('ACCOUNTS.columns_config') }</h4>
                             <div className='ml-auto flex'>
                                 <InputSwitch inputId='skipHeader' checked={ skipHeader } onChange={ (e) => setSkipHeader(e.value) }/>
@@ -116,16 +128,17 @@ export function ImportSpreadSheet({onClose, onValidate, columns, loading = false
                                 </label>
                             </div>
                         </div>
-                        { rows.length > 0 && headers.length > 0 && (
-                            <div className='h-full min-h-0 flex flex-col overflow-y-auto'>
+
+                        { rows.length > 0 && (
+                            <div className='h-full min-h-0 flex flex-col overflow-y-auto p-4'>
                                 <div className='flex pb-4 gap-8'>
                                     { editedColumns.map((col, idx) => (
                                         <Dropdown
                                             id={ idx }
                                             key={ idx }
+                                            value={ col }
                                             className='min-w-60'
                                             options={ columns.map((c) => ({ label: c, value: c })) }
-                                            value={ col }
                                             onChange={ (selected: any) => {
                                                 const newColumns = [...editedColumns];
                                                 newColumns[idx] = selected.value;
@@ -138,7 +151,7 @@ export function ImportSpreadSheet({onClose, onValidate, columns, loading = false
                                     { rows.map((col, idx) => (
                                         <div key={ idx } className='flex gap-8'>
                                             { col.map((cell, cellIdx) => (
-                                                <div key={ cellIdx } className='min-w-60 p-2 truncate'>
+                                                <div key={ cellIdx } className='min-w-60 w-full p-2 truncate'>
                                                     { cell }
                                                 </div>
                                             )) }
@@ -154,7 +167,7 @@ export function ImportSpreadSheet({onClose, onValidate, columns, loading = false
                             { t('GLOBAL.cancel') }
                         </Button>
                         <Button disabled={ rows.length == 0 || headers.length == 0 || loading }
-                                onClick={ () => onValidate(file, editedColumns, skipHeader) }>
+                                onClick={ handleValidate }>
                             { loading ? t('GLOBAL.importing') : t('GLOBAL.import') }
                         </Button>
                     </div>

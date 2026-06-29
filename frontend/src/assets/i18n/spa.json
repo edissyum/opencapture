@@ -77,7 +77,8 @@
         "export_suppliers": "Exportar cuentas de terceros",
         "export_suppliers_success": "Exportación de cuentas de terceros realizada con éxito",
         "import_suppliers": "Importar cuentas de terceros",
-        "columns_config": "Configuración de columnas"
+        "columns_config": "Configuración de columnas",
+        "import_suppliers_success": "Importación de cuentas de terceros realizada con éxito"
     },
     "AUTH": {
         "login": "Iniciar sesión",
@@ -1376,7 +1377,9 @@
         "field_type": "Tipo de datos",
         "exporting": "Exportando...",
         "export_failed": "Error durante la exportación de los tipos de documentos, por favor inténtelo de nuevo",
-        "export_success": "Tipos de documentos exportados con éxito"
+        "export_success": "Tipos de documentos exportados con éxito",
+        "import_doctypes": "Importar tipos de documentos",
+        "import_success": "Tipos de documentos importados con éxito"
     },
     "ABOUT": {
         "see_changelog": "ver el registro de cambios",

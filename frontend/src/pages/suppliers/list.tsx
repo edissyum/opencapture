@@ -98,27 +98,28 @@ export function SuppliersList() {
         if (loadingSuppliers) return;
         setLoadingSuppliers(true);
 
-        const fetchSuppliers = async () => {
-            try {
-                const response = await get('/accounts/suppliers/list', {
-                    params: {
-                        offset: lazyParams.first,
-                        limit: lazyParams.rows,
-                        filter: lazyParams.sortField,
-                        order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null,
-                        search: searchTerm,
-                    }
-                });
-                setTotalSuppliers(response.suppliers[0]?.total || 0);
-                setSuppliers(response.suppliers);
-            } catch (error) {
-                console.error('Error while fetching suppliers :', error);
-            } finally {
-                setLoadingSuppliers(false);
-            }
-        }
         fetchSuppliers().then();
     }, [lazyParams, searchTerm]);
+
+    const fetchSuppliers = async () => {
+        try {
+            const response = await get('/accounts/suppliers/list', {
+                params: {
+                    search: searchTerm,
+                    limit: lazyParams.rows,
+                    offset: lazyParams.first,
+                    filter: lazyParams.sortField,
+                    order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null
+                }
+            });
+            setTotalSuppliers(response.suppliers[0]?.total || 0);
+            setSuppliers(response.suppliers);
+        } catch (error) {
+            console.error('Error while fetching suppliers :', error);
+        } finally {
+            setLoadingSuppliers(false);
+        }
+    }
 
     const refresh = () => {
         setTimeout(() => {
@@ -208,24 +209,22 @@ export function SuppliersList() {
         }
     }
 
-    const handleImportSuppliers = async (file: File | null, columns: string[], skipHeader: boolean) => {
-        if (!file) return;
+    const handleImportSuppliers = async (formData: any) => {
+        if (!formData) return;
 
         setLoadingImport(true);
 
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.set('skipHeader', String(skipHeader));
-        formData.set('selectedColumns', String(columns));
-
         await post('/accounts/supplier/importSuppliers', formData, {
             headers: {
-                "Content-Type": "multipart/form-data",
+                "Content-Type": "multipart/form-data"
             }
         });
 
-        setLoadingImport(false);
+        await fetchSuppliers();
+
         setOpenImport(false);
+        setLoadingImport(false);
+
         showToast(t('ACCOUNTS.import_suppliers_success'), 'success');
     }
 
@@ -237,6 +236,7 @@ export function SuppliersList() {
                     loading={ loadingImport }
                     onValidate={ handleImportSuppliers }
                     onClose={ () => setOpenImport(false) }
+                    title={ t('ACCOUNTS.import_suppliers') }
                 />
             ) }
 

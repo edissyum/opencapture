@@ -70,7 +70,8 @@
         "export_suppliers": "Export third-party accounts",
         "export_suppliers_success": "Third-party accounts exported successfully",
         "import_suppliers": "Import third-party accounts",
-        "columns_config": "Columns configuration"
+        "columns_config": "Columns configuration",
+        "import_suppliers_success": "Third-party accounts imported successfully"
     },
     "AUTH": {
         "login": "Log in",
@@ -1287,7 +1288,9 @@
         "field_type": "Data type",
         "exporting": "Exporting...",
         "export_failed": "Error exporting document types, please try again",
-        "export_success": "Document types exported successfully"
+        "export_success": "Document types exported successfully",
+        "import_doctypes": "Import document types",
+        "import_success": "Document types imported successfully"
     },
     "ABOUT": {
         "see_changelog": "see the changelog",
