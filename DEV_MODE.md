@@ -56,6 +56,7 @@ cd /opt/edissyum/opencapture/
 cp .dev_env.default .dev_env
 
 # Edit the `.dev_env` file to set your environment variables as needed.
+# You need to replace VITE_BACKEND_URL if you install it on a VM 
 nano .dev_env
 
 # Finally, source the `.dev_env` file to load the environment variables into your shell.

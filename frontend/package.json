@@ -49,7 +49,7 @@
         "react-router-dom": "^7.18.1",
         "react-toastify": "^11.1.0",
         "react-tooltip": "^6.0.8",
-        "recharts": "^3.9.0",
+        "recharts": "^3.9.1",
         "tailwindcss": "^4.3.2",
         "tinymce": "^8.6.0",
         "xlsx": "^0.18.5",
@@ -68,6 +68,6 @@
         "lucide-react": "^1.22.0",
         "typescript": "~6.0.3",
         "typescript-eslint": "^8.62.1",
-        "vite": "^8.1.0"
+        "vite": "^8.1.1"
     }
 }
