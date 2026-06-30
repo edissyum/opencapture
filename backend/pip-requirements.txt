@@ -12,7 +12,7 @@ pyjwt==2.13.0
 deskew==1.6.1
 pyzbar==0.1.9
 pandas==3.0.4
-factur-x==5.0
+factur-x==5.1
 mpmath==1.3.0
 kuyruk==10.2.1
 pillow==12.2.0
@@ -45,7 +45,7 @@ python-bidi==0.6.10
 pytesseract==0.3.13
 configparser==7.2.0
 scikit-learn==1.9.0
-ultralytics==8.4.82
+ultralytics==8.4.83
 python-magic==0.4.27
 transformers==5.12.1
 Flask-Limiter==4.1.1

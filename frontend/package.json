@@ -37,8 +37,8 @@
         "axios": "^1.18.1",
         "dayjs": "^1.11.21",
         "dompurify": "^3.4.11",
-        "fs-extra": "^11.3.5",
-        "i18next": "^26.3.3",
+        "fs-extra": "^11.3.6",
+        "i18next": "^26.3.4",
         "primereact": "^10.9.8",
         "react": "^19.2.7",
         "react-dom": "^19.2.7",
@@ -46,7 +46,7 @@
         "react-hook-form": "^7.80.0",
         "react-i18next": "^17.0.8",
         "react-pdf": "^10.4.1",
-        "react-router-dom": "^7.18.0",
+        "react-router-dom": "^7.18.1",
         "react-toastify": "^11.1.0",
         "react-tooltip": "^6.0.8",
         "recharts": "^3.9.0",
@@ -67,7 +67,7 @@
         "i18next-scanner": "^4.6.0",
         "lucide-react": "^1.22.0",
         "typescript": "~6.0.3",
-        "typescript-eslint": "^8.62.0",
+        "typescript-eslint": "^8.62.1",
         "vite": "^8.1.0"
     }
 }
