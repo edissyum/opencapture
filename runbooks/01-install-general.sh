@@ -6,6 +6,13 @@
 # ----------------------------------------------------------------------
 # Prérequis système — Docker Engine + Compose v2 (Debian)
 # ----------------------------------------------------------------------
+
+# Si on est en root créer un compte edissyum
+useradd -m -s /bin/bash -G sudo edissyum
+passwd edissyum
+
+# Se connecter à partir de maintenant en edissyum
+
 # Racine des données hors repo — UNE variable (à reporter dans le .env : OC_DATA_ROOT).
 export OC_DATA_ROOT=/opt/edissyum/opencapture
 
@@ -15,7 +22,7 @@ sudo apt remove docker.io docker-compose docker-doc podman-docker containerd run
 sudo apt update && sudo apt install -y ca-certificates curl gnupg lsb-release git
 # Pour avoir les heures selon le timezone on isntalle ces 2 paquets explications dans guide section logs
 # Utile car Docker normalise tous les timestamps en UTC => docker logs -t est figé en UTC 
-sudo apt install moreutils jq
+sudo apt install moreutils jq curl gpg git
 
 # Clé GPG officielle Docker
 sudo install -m 0755 -d /etc/apt/keyrings
