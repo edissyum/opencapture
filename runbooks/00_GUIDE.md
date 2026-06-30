@@ -202,6 +202,50 @@ docker stats --no-stream     # snapshot CPU/RAM par conteneur
 docker stats                 # en continu
 ```
 
+### 4.d.5 Requête dans POSTGRESQL
+
+```bash
+cd ~/opencapture_docker
+DIR=stub-tenants/<tenant>
+DC="docker compose --project-directory $DIR -f $DIR/docker-compose.yml"
+
+
+$DC exec -T postgres psql -U <user> -d <base> <<'SQL'
+INSERT INTO "configurations" ("label", "data")
+VALUES ('timeoutUpload', '{"type": "int", "value": "2000", "description": "Délai maximum de téléchargement de fichier"}')
+ON CONFLICT ("label") DO NOTHING;
+SQL
+
+$DC exec -T postgres psql -U <user> -d <base> -c \
+"SELECT label FROM configurations WHERE label='timeoutUpload';
+ SELECT id,label,parent FROM privileges WHERE label='certified_copy';"
+ ```
+
+### 4.d.6 Destruction d'un tenant
+
+```bash
+cd ~/opencapture_docker
+ID=<tenant>                                  # <-- le tenant à détruire
+DIR=stub-tenants/$ID
+DC="docker compose --project-directory $DIR -f $DIR/docker-compose.yml"
+
+# 1) Conteneurs + réseau + volumes anonymes + image frontend locale du tenant
+$DC down --remove-orphans --volumes --rmi local
+
+# 2) Données du tenant (DB + rabbitmq + custom + docservers + share) — IRRÉVERSIBLE
+sudo rm -rf /opt/edissyum/opencapture/tenants/$ID
+
+# 3) Le stub (compose + .env + config)
+rm -rf stub-tenants/$ID
+
+# 4) (mode cert uniquement) fragment Traefik dynamique du tenant
+sudo rm -f /opt/edissyum/opencapture/shared-by-tenants/traefik/dynamic/$ID.yml
+
+# 5) TODO : Comptes SFTP/SMB/WebDAV 
+
+```
+
+
 ---
 
 ## 5. Accès SFTP (optionnel)
