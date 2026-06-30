@@ -14,15 +14,16 @@ passwd edissyum
 # Se connecter à partir de maintenant en edissyum
 
 # Racine des données hors repo — UNE variable (à reporter dans le .env : OC_DATA_ROOT).
-export OC_DATA_ROOT=/opt/edissyum/opencapture
+echo 'export OC_DATA_ROOT=/opt/edissyum/opencapture' >> ~/.bashrc
+source ~/.bashrc
 
 # Purger d'éventuels anciens paquets Docker
 sudo apt remove docker.io docker-compose docker-doc podman-docker containerd runc
 # Dépendances (git inclus pour le clone plus bas)
-sudo apt update && sudo apt install -y ca-certificates curl gnupg lsb-release git
+sudo apt update && sudo apt install -y ca-certificates curl gnupg lsb-release git curl gpg 
 # Pour avoir les heures selon le timezone on isntalle ces 2 paquets explications dans guide section logs
 # Utile car Docker normalise tous les timestamps en UTC => docker logs -t est figé en UTC 
-sudo apt install moreutils jq curl gpg git
+sudo apt install moreutils jq 
 
 # Clé GPG officielle Docker
 sudo install -m 0755 -d /etc/apt/keyrings
@@ -50,8 +51,8 @@ sudo usermod -aG docker $USER
 # OpenCapture — infra partagée
 # ----------------------------------------------------------------------
 
-# Sources
-git clone git@github.com:edissyum/opencapture_docker.git
+# Sources (penser à créer un jeton côté github pour le mot de passe)
+git clone -b docker_claude1 https://github.com/edissyum/opencapture_docker/
 cd opencapture_docker
 
 

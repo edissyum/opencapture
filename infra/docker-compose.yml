@@ -77,8 +77,28 @@ x-backend-volumes: &backend-volumes
     # rotate est seedé au bootstrap si absent ; contact vide => IA contact désactivée.
     - ${SHARED_AI_MODELS_PATH:-${OC_DATA_ROOT:-../data}/shared-by-tenants/shared-ai-models}:/app/instance/artificial_intelligence
 
+
+# --- QoS : profils de ressources ------------------------------------------
+# mem_limit      = plafond DUR RAM (OOM dans le cgroup, pas global)
+# memswap_limit  = RAM+swap ; == mem_limit => swap INTERDIT ; > => swap autorisé
+# mem_swappiness = appétence au swap (0 = jamais ; 60 = normal)
+# cpu_shares     = poids RELATIF en contention (ne plafonne pas)
+x-res-postgres:  &res-postgres  { mem_limit: 512m,  memswap_limit: 512m,  mem_swappiness: 0,  cpu_shares: 1024 }
+x-res-rabbitmq:  &res-rabbitmq  { mem_limit: 512m,  memswap_limit: 512m,  mem_swappiness: 0,  cpu_shares: 512  }
+x-res-backend:   &res-backend   { mem_limit: 1280m, memswap_limit: 1280m, mem_swappiness: 0,  cpu_shares: 1024 }
+x-res-verifier:  &res-verifier  { mem_limit: 2g,    memswap_limit: 4g,    mem_swappiness: 60, cpu_shares: 2048 }
+x-res-splitter:  &res-splitter  { mem_limit: 1536m, memswap_limit: 2560m, mem_swappiness: 60, cpu_shares: 1536 }
+x-res-mail:      &res-mail      { mem_limit: 512m,  memswap_limit: 512m,  mem_swappiness: 0,  cpu_shares: 256  }
+x-res-fswatcher: &res-fswatcher { mem_limit: 256m,  memswap_limit: 256m,  mem_swappiness: 0,  cpu_shares: 256  }
+x-res-frontend:  &res-frontend  { mem_limit: 128m,  memswap_limit: 128m,  mem_swappiness: 0,  cpu_shares: 256  }
+
+# Réserve le cœur 0 au système ; tenants confinés aux cœurs 1-7.
+x-cpuset-tenants: &cpuset { cpuset: "1-7" }
+
+
 services:
     postgres:
+        <<: [*res-postgres, *cpuset]    # QoS : plafonds RAM/swap + poids CPU + coeur 0 réservé au système
         # Image officielle. Les fichiers SQL sont montés en bind dans
         # /docker-entrypoint-initdb.d/ et joues une seule fois au premier
         # démarrage (pgdata vide). Les préfixes 01_/02_/03_ dans le
@@ -108,6 +128,7 @@ services:
         restart: unless-stopped
 
     rabbitmq:
+        <<: [*res-rabbitmq, *cpuset]
         image: rabbitmq:4-management-alpine
         environment:
             RABBITMQ_DEFAULT_USER:  ${RABBITMQ_USER}
@@ -124,7 +145,7 @@ services:
         restart: unless-stopped
 
     init:
-        <<: *backend-build
+        <<: [*backend-build, *res-backend, *cpuset]
         image: opencapture-backend
         environment:
             <<: *backend-env
@@ -136,7 +157,7 @@ services:
         restart: "no"
 
     backend:
-        <<: *backend-build
+        <<: [*backend-build, *res-backend, *cpuset]
         image: opencapture-backend
         environment:
             <<: *backend-env
@@ -161,7 +182,7 @@ services:
         restart: unless-stopped
 
     worker-verifier:
-        <<: *backend-build
+        <<: [*backend-build, *res-verifier, *cpuset]
         image: opencapture-backend
         environment:
             <<: *backend-env
@@ -177,7 +198,7 @@ services:
         restart: unless-stopped
 
     worker-splitter:
-        <<: *backend-build
+        <<: [*backend-build, *res-splitter, *cpuset]
         image: opencapture-backend
         environment:
             <<: *backend-env
@@ -193,7 +214,7 @@ services:
         restart: unless-stopped
 
     worker-mail:
-        <<: *backend-build
+        <<: [*backend-build, *res-mail, *cpuset]
         image: opencapture-backend
         environment:
             <<: *backend-env
@@ -210,7 +231,7 @@ services:
         restart: unless-stopped
 
     fs-watcher:
-        <<: *backend-build
+        <<: [*backend-build, *res-fswatcher, *cpuset]
         image: opencapture-backend
         environment:
             <<: *backend-env
@@ -230,6 +251,7 @@ services:
     # infra/webdav/docker-compose.yml dans son docker-compose.yml.
 
     frontend:
+        <<: [*res-frontend, *cpuset]
         # Image PARTAGÉE par tous les tenants (comme opencapture-backend).
         # Le bundle Vite est identique pour chaque tenant : VITE_BACKEND_URL
         # est figé à "/" et l'identité du tenant (custom_id) est résolue au
