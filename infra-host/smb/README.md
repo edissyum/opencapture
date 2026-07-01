@@ -1,7 +1,7 @@
 # Serveur SMB multi-tenant (Samba standalone)
 
 Accès dépôt de fichiers par tenant en **SMB** (lecteur réseau Windows / macOS /
-Linux), branché sur le dossier `share` du tenant (`/opt/edissyum/opencapture/tenants/<id>/share`) —
+Linux), branché sur le dossier `share` du tenant (`${OC_DATA_ROOT}/tenants/<id>/share`) —
 celui que surveille le `fs-watcher` OpenCapture.
 
 ## Pourquoi UN SEUL démon (et pas un Samba par tenant)
@@ -36,7 +36,7 @@ Samba locaux** (`tdbsam`) sur un serveur **standalone**.
 | Élément | Choix |
 |---|---|
 | Protocole | **SMB2/3** (port 445), démon unique partagé, NetBIOS désactivé |
-| Multi-tenant | un **partage `[<id>]`** par tenant → `/opt/edissyum/opencapture/tenants/<id>/share` |
+| Multi-tenant | un **partage `[<id>]`** par tenant → `${OC_DATA_ROOT}/tenants/<id>/share` |
 | Comptes | **locaux** (`tdbsam`), un par tenant, `valid users = <id>` |
 | Identité fichiers | `force user/group` = le nom portant **`$APP_UID:$APP_GID`** (dérivé de l'UID) |
 | Chiffrement | **SMB3 `smb encrypt = required`** (clé dérivée de l'auth, **pas de cert**) |

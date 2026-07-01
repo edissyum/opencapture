@@ -4,7 +4,7 @@
 #
 # Mode standalone, 1 IP : SMB (445, TCP brut, SANS SNI) ne se route pas par
 # domaine -> UN SEUL démon smbd, un partage [<id>] par tenant sur
-# /opt/edissyum/opencapture/tenants/<id>/share, fichiers forcés sur le compte de service OpenCapture
+# ${OC_DATA_ROOT}/tenants/<id>/share, fichiers forcés sur le compte de service OpenCapture
 # ($APP_UID/$APP_GID) -> lisibles ET supprimables par le fs-watcher. Détail :
 # infra-host/smb/README.md. (Même esprit que le SFTP : runbooks/05-sftp-server.sh.)
 #
