@@ -486,7 +486,7 @@ export function OutputEditor({ module }: { module: string }) {
 
                                     <Button onClick={ outputType.output_type_id === 'export_mem' ? handleNextStep : handleSubmit }
                                             className="px-12"
-                                            disabled={ loading }>
+                                            disabled={ loading || loadingStep }>
                                         { outputType.output_type_id === 'export_mem' ? (
                                             t("GLOBAL.next")
                                         ) : (
@@ -554,7 +554,7 @@ export function OutputEditor({ module }: { module: string }) {
                                             <ArrowLeft/> { t("MAILCOLLECT.previous") }
                                         </Button>
 
-                                        <Button onClick={ handleSubmit } disabled={ loading }>
+                                        <Button onClick={ handleSubmit } disabled={ loading || loadingStep }>
                                             <>
                                                 { outputId ? (
                                                     <>

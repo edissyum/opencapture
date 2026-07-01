@@ -14,7 +14,7 @@ pyzbar==0.1.9
 pandas==3.0.4
 factur-x==5.1
 mpmath==1.3.0
-kuyruk==10.2.1
+kuyruk==10.2.2
 pillow==12.2.0
 imutils==0.5.4
 psycopg==3.3.4
