@@ -283,13 +283,22 @@ export function OutputEditor({ module }: { module: string }) {
 
     const handleAuthChange = (e: any, option: any) => {
         const value = e.target.value;
+
         setOutput((prev: any) => {
-            const newAuthOptions = prev.data.options.auth.map((o: any) => {
+            const optionExist = prev.data.options.auth.find((o: any) => o.id === option.id);
+
+            if (!optionExist) {
+                option.value = value;
+                prev.data.options.auth.push(option);
+            }
+
+            let newAuthOptions = prev.data.options.auth.map((o: any) => {
                 if (o.id === option.id) {
                     return { ...o, value };
                 }
                 return o;
             });
+
             return {
                 ...prev,
                 data: {
