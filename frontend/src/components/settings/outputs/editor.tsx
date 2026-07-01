@@ -123,6 +123,11 @@ export function OutputEditor({ module }: { module: string }) {
         mode: "onChange"
     });
 
+    const ocrise = watchDetails('ocrise');
+    const output_label = watchDetails('output_label');
+    const output_type_id = watchDetails('output_type_id');
+    const compress_type = watchDetails('compress_type');
+
     // Fetch output details
     useEffect(() => {
         if (!outputId || outputTypes.length == 0) return;
@@ -153,7 +158,10 @@ export function OutputEditor({ module }: { module: string }) {
 
     // handle output type change to check input types
     useEffect(() => {
+        if (outputId) return;
+
         if (outputType && outputType.data && outputType.data.options && outputType.data.options.parameters) {
+            output.data = outputType.data;
             outputType.data.options.parameters.forEach((option: any) => {
                 if (option.type === 'textarea') {
                     const value = output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '';
@@ -239,9 +247,8 @@ export function OutputEditor({ module }: { module: string }) {
 
         const res = await executeAuthFunction(authFunctionName, authOptions, { post });
 
-        showToast(t(res.message), res.success ? "success" : "error");
         if (res && res.success) {
-            if (output.output_type_id === 'export_mem') {
+            if (outputType.output_type_id === 'export_mem') {
                 for (const data of Object.keys(output.data.options)) {
                     for (const option of output.data.options[data]) {
                         if (option.webservice) {
@@ -271,7 +278,11 @@ export function OutputEditor({ module }: { module: string }) {
                     }
                 }
             }
+
+            showToast(t(res.message), "success");
             stepperRef.current?.nextCallback();
+        } else {
+            showToast(t(res.message), "error");
         }
 
         setLoadingStep(false);
@@ -342,11 +353,6 @@ export function OutputEditor({ module }: { module: string }) {
     }
 
     const handlePreviousStep = () => stepperRef.current?.prevCallback();
-
-    const output_label = watchDetails('output_label');
-    const output_type_id = watchDetails('output_type_id');
-    const compress_type = watchDetails('compress_type');
-    const ocrise = watchDetails('ocrise');
 
     const handleSubmit = async () => {
         if (Object.keys(detailsErrors).length > 0 || !output_label || !output_type_id) {
