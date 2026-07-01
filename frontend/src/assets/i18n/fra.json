@@ -490,7 +490,8 @@
         "document_identifier": "Identifiant du document",
         "document_index": "Index du document",
         "format": "Format",
-        "batch_identifier": "Identifiant du lot"
+        "batch_identifier": "Identifiant du lot",
+        "links_hint": "Cet onglet permet de paramétrer la liaison d'un document à un autre en se basant sur une donnée spécifique. <br><br><i>Exemple : Lier une facture à un devis dans MEM Courrier dont le numéro de devis est dans le champ personnalisé numéro 30</i>"
     },
     "ROLES": {
         "add_role": "Ajouter un rôle",

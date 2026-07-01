@@ -465,7 +465,8 @@
         "document_identifier": "Document ID",
         "document_index": "Document index",
         "format": "Format",
-        "batch_identifier": "Batch ID"
+        "batch_identifier": "Batch ID",
+        "links_hint": "This tab is used to configure the link from one document to another based on specific data. <br><i>Example: Link an invoice to an estimate in MEM Courrier whose estimate number is in the custom field number 30</i>"
     },
     "ROLES": {
         "add_role": "Add a role",

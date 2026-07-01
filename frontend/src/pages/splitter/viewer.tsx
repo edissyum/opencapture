@@ -180,11 +180,16 @@ export function SplitterViewerPage() {
         });
     }, [addDocumentTrigger]);
 
-    const handleSelectionChange = useCallback((page: any, checked: boolean) => {
+    const handleSelectionChange = (page: any, checked: boolean) => {
+        if (checked) {
+            const alreadyChecked = selectedPages.filter((p: any) => p.id === page.id).length > 0;
+            if (alreadyChecked) return;
+        }
+
         setSelectedPages(prev =>
             checked ? [...prev, page] : prev.filter((p: any) => p.id !== page.id)
         );
-    }, []);
+    }
 
     const handlePreview = useCallback(async (page: any) => {
         const response = await get(`/splitter/pages/${ page.id }/fullThumbnail`);

@@ -40,7 +40,8 @@ export default function Hint({ children, variant = "success" }: any) {
 
     return (
         <span className={ `${ baseClasses } ${ variants[variant] } flex items-center gap-1 mb-4` }>
-            { logoVariants[variant] } { children }
+            { logoVariants[variant] }
+            <div dangerouslySetInnerHTML={{ __html: children } }/>
         </span>
     );
 }
