@@ -40,6 +40,7 @@ import { DynamicForm } from "../../form/DynamicForm";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 import { copyToClipboard } from "../../../services/hooks/copyToClipboard";
 import { useCustomFields } from "../../../services/hooks/useCustomFields";
+import Hint from "../../Hint";
 
 export function OutputEditor({ module }: { module: string }) {
     const { get, post, put } = axiosApiCall();
@@ -506,8 +507,7 @@ export function OutputEditor({ module }: { module: string }) {
                                                                 stickyScroll: {
                                                                     enabled: false
                                                                 },
-                                                                contextmenu: true,
-                                                                minimap: { enabled: true }
+                                                                contextmenu: true
                                                             } }
                                                             onChange={ (value) => {
                                                                 handleSpecificLinksChange({ target: { value: value } }, option, 'parameters')
@@ -569,6 +569,9 @@ export function OutputEditor({ module }: { module: string }) {
 
                         { outputType.output_type_id === 'export_mem' && (
                             <StepperPanel header={ t("OUTPUTS.links") }>
+                                <Hint>
+                                    { t('OUTPUTS.links_hint') }
+                                </Hint>
                                 <div className='flex flex-col gap-4'>
                                     <div className='grid grid-cols-2 gap-4'>
                                         { outputType?.data?.options.links.map((option: any) => (
