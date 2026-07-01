@@ -18,26 +18,29 @@
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CirclePause, FileText, Trash2, UserRoundPlus } from "lucide-react";
-
+import { CirclePause, Download, FileText, Trash2, Upload, UserRoundPlus } from "lucide-react";
 
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
 import { Table } from "../../components/list/Table";
 import { showToast } from "../../components/ToastProvider";
+import { hasRequiredPermissions } from "../../components/auth/auth";
+import { ImportSpreadSheet } from "../../components/settings/ImportSpreadSheet";
 
+import { useUser } from "../../services/hooks/useUser";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
 
 export function SuppliersList() {
-    const { get, del } = axiosApiCall();
-
+    const { user } = useUser();
+    const { get, post, del } = axiosApiCall();
     const navigate = useNavigate();
 
     const [suppliers, setSuppliers] = useState([]);
     const [totalSuppliers, setTotalSuppliers] = useState(0);
     const [selectedSuppliers, setSelectedSuppliers] = useState<any[]>([]);
     const [loadingSuppliers, setLoadingSuppliers] = useState(false);
+
     const [searchTerm, setSearchTerm] = useState('');
     const [lazyParams, setLazyParams] = useState({
         first: 0,
@@ -46,6 +49,13 @@ export function SuppliersList() {
         sortField: null as string | null,
         sortOrder: null as 1 | -1 | null
     });
+
+    const [openImport, setOpenImport] = useState(false);
+    const [loadingImport, setLoadingImport] = useState(false);
+
+    const importColumns = ['name', 'lastname', 'firstname', 'civility', 'function', 'vat_number', 'siret',
+        'siren', 'duns', 'bic', 'rccm', 'iban', 'email', 'phone', 'address1', 'address2', 'city', 'postal_code', 'country',
+        'footer_coherence', 'document_lang', 'default_currency', 'informal_contact'];
 
     const columns = [
         { id: 'id', field: 'id', header: '', sortable: true },
@@ -88,27 +98,28 @@ export function SuppliersList() {
         if (loadingSuppliers) return;
         setLoadingSuppliers(true);
 
-        const fetchSuppliers = async () => {
-            try {
-                const response = await get('/accounts/suppliers/list', {
-                    params: {
-                        offset: lazyParams.first,
-                        limit: lazyParams.rows,
-                        filter: lazyParams.sortField,
-                        order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null,
-                        search: searchTerm,
-                    }
-                });
-                setTotalSuppliers(response.suppliers[0]?.total || 0);
-                setSuppliers(response.suppliers);
-            } catch (error) {
-                console.error('Error while fetching suppliers :', error);
-            } finally {
-                setLoadingSuppliers(false);
-            }
-        }
         fetchSuppliers().then();
     }, [lazyParams, searchTerm]);
+
+    const fetchSuppliers = async () => {
+        try {
+            const response = await get('/accounts/suppliers/list', {
+                params: {
+                    search: searchTerm,
+                    limit: lazyParams.rows,
+                    offset: lazyParams.first,
+                    filter: lazyParams.sortField,
+                    order: lazyParams.sortOrder === 1 ? 'asc' : lazyParams.sortOrder === -1 ? 'desc' : null
+                }
+            });
+            setTotalSuppliers(response.suppliers[0]?.total || 0);
+            setSuppliers(response.suppliers);
+        } catch (error) {
+            console.error('Error while fetching suppliers :', error);
+        } finally {
+            setLoadingSuppliers(false);
+        }
+    }
 
     const refresh = () => {
         setTimeout(() => {
@@ -181,8 +192,54 @@ export function SuppliersList() {
         }
     }
 
+    const handleExportSuppliers = async () => {
+        try {
+            await get('/accounts/supplier/fillReferenceFile');
+            const res = await get('/accounts/supplier/getReferenceFile');
+            const mimeType = res.mimetype;
+            const referenceFile = 'data:' + mimeType + ';base64, ' + res.file;
+            const link = document.createElement("a");
+            link.href = referenceFile;
+            link.download = res.filename;
+            link.click();
+
+            showToast(t('ACCOUNTS.export_suppliers_success'), 'success');
+        } catch (error) {
+            console.error('Error while exporting suppliers :', error);
+        }
+    }
+
+    const handleImportSuppliers = async (formData: any) => {
+        if (!formData) return;
+
+        setLoadingImport(true);
+
+        await post('/accounts/supplier/importSuppliers', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        });
+
+        await fetchSuppliers();
+
+        setOpenImport(false);
+        setLoadingImport(false);
+
+        showToast(t('ACCOUNTS.import_suppliers_success'), 'success');
+    }
+
     return (
         <div className="p-6 bg-(--bg-secondary) h-full w-full flex flex-col flex-1">
+            { openImport && (
+                <ImportSpreadSheet
+                    columns={ importColumns }
+                    loading={ loadingImport }
+                    onValidate={ handleImportSuppliers }
+                    onClose={ () => setOpenImport(false) }
+                    title={ t('ACCOUNTS.import_suppliers') }
+                />
+            ) }
+
             <div className='flex items-center gap-6 mb-4'>
                 <span className='flex items-center gap-1'>
                     <FileText size={ 16 }/>
@@ -194,13 +251,42 @@ export function SuppliersList() {
                        value={ searchTerm } placeholder={ t('GLOBAL.search') }
                        onChange={ (e) => setSearchTerm(e.target.value) }/>
                 <span className='ml-auto text-(--text-secondary) cursor-pointer'>
-                    <Button
-                        size='sm'
-                        variant="bg_white"
-                        className='p-2 px-3 border'
-                        onClick={ () => navigate('/suppliers/create') }>
-                        <UserRoundPlus size={ 16 }/> { t('ACCOUNTS.add_supplier') }
-                    </Button>
+                    <div className='flex items-center gap-2'>
+                        <Button
+                            size='sm'
+                            variant="bg_white"
+                            className='p-2 px-3 border'
+                            onClick={ () => navigate('/suppliers/create') }
+                        >
+                            <UserRoundPlus size={ 16 }/> { t('ACCOUNTS.add_supplier') }
+                        </Button>
+
+                        { hasRequiredPermissions(user, ['export_suppliers']) && (
+                            <Button
+                                size='sm'
+                                variant="bg_white"
+                                className='p-2.5 border'
+                                onClick={ handleExportSuppliers }
+                                data-tooltip-id='tooltip'
+                                data-tooltip-content={ t('ACCOUNTS.export_suppliers') }
+                            >
+                                <Upload size={ 16 }/>
+                            </Button>
+                        ) }
+
+                        { hasRequiredPermissions(user, ['import_suppliers']) && (
+                            <Button
+                                size='sm'
+                                variant='bg_white'
+                                className='p-2.5 border'
+                                data-tooltip-id='tooltip'
+                                onClick={ () => setOpenImport(true) }
+                                data-tooltip-content={ t('ACCOUNTS.import_suppliers') }
+                            >
+                                <Download size={ 16 }/>
+                            </Button>
+                        ) }
+                    </div>
                 </span>
             </div>
             <Table

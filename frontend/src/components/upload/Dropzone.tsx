@@ -124,12 +124,13 @@ export default function UploadDropzone({
                                 { t('UPLOAD.max_filesize', { maxSize: maxSize / (1024 * 1024) }) }
                             </p>
                             <p className="text-(--text-secondary) text-sm">
-                                { t('UPLOAD.allowed_extensions') } : { [...new Set(Object.values(accept).flat())].join(", ") }
+                                { t('UPLOAD.allowed_extensions', { count: Object.values(accept).length }) } : { [...new Set(Object.values(accept).flat())].join(", ") }
                             </p>
                         </div>
                     </div>
                 ) }
             </div>
+
             { files.length > 0 && showPreview && (
                 <div className="mt-4 space-y-2 overflow-y-auto">
                     { files.map((file: any) => (

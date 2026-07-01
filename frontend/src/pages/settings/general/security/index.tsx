@@ -375,7 +375,7 @@ export function SettingsGeneralSecurity() {
                                         }
                                     } }
                                 />
-                                <label htmlFor={ 'enable_min' } className='cursor-pointer'>
+                                <label htmlFor='enable_min' className='cursor-pointer'>
                                     { t('SECURITY.enable_min_length') }
                                 </label>
                             </div>

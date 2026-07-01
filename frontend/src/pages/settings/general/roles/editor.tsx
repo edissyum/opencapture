@@ -34,9 +34,10 @@ import { useUser } from "../../../../services/hooks/useUser";
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 
 export function SettingsGeneralRoleEditor() {
+    const navigate = useNavigate();
     const { user, loadingUser } = useUser();
     const { get, put, post } = axiosApiCall();
-    const navigate = useNavigate();
+
     const { roleId } = useParams<{ roleId: any }>();
 
     const privilegeClasses = 'flex items-center gap-2 border border-(--border-primary) rounded-md p-2 bg-(--bg-selected) truncate';

@@ -24,8 +24,11 @@ DELETE FROM docservers WHERE docserver_id = 'SPLITTER_METADATA_PATH';
 ALTER TABLE roles DROP COLUMN enabled;
 
 -- Mise à jour des libellés de la configuration
-DELETE FROM configurations WHERE label = 'loginBottomMessage';
 UPDATE configurations set label = 'loginMessage' WHERE label = 'loginTopMessage';
+
+-- Suppression des paramètres obsolètes
+DELETE FROM configurations WHERE label = 'timeoutUpload';
+DELETE FROM configurations WHERE label = 'loginBottomMessage';
 
 -- Ajout de la nouvelle table gérant les paramètres favoris
 CREATE TABLE settings_favorites

@@ -539,8 +539,8 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                         { module === 'splitter' && (
                             <TabPanel header={ t("FORMS.doctypes") }>
                                 <DoctypeDetails
-                                    doctypes={ doctypes } selectedDoctype={ selectedDoctype }
                                     formId={ formId }
+                                    doctypes={ doctypes } selectedDoctype={ selectedDoctype }
                                     doctypeUpdated={ () => setDoctypeUpdatedCpt(prev => prev + 1) }
                                     doctypeChanged={ (doctype) => {
                                         setSelectedDoctype(doctype)

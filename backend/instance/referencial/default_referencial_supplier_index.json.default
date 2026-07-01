@@ -12,6 +12,7 @@
     "rccm"                : "RCCM",
     "iban"                : "IBAN",
     "email"               : "EMAIL",
+    "phone"               : "PHONE",
     "address1"            : "Adresse 1",
     "address2"            : "Adresse 2",
     "city"                : "VILLE",

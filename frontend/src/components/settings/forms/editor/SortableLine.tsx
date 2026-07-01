@@ -18,11 +18,11 @@ import { t } from "i18next";
 import { useRef } from "react";
 import { CSS } from "@dnd-kit/utilities";
 import { ContextMenu } from "primereact/contextmenu";
+import { InputSwitch } from "primereact/inputswitch";
 import { Copy, GripVertical, Settings, Trash2 } from "lucide-react";
 import { defaultAnimateLayoutChanges, useSortable } from "@dnd-kit/sortable";
 
 import { DroppableLine } from "./DroppableLine";
-import { InputSwitch } from "primereact/inputswitch";
 
 export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDeleteLine, onUpdateLine, module }: any) {
     const cm = useRef({ current: null } as any);

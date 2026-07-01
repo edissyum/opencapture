@@ -233,6 +233,7 @@ def export_doctypes(args):
 
         for column in args['columns']:
             columns.append(column['label'])
+
         csv_writer.writerow(columns)
         for doctype in _doctypes:
             for column in args['columns']:
@@ -283,8 +284,14 @@ def import_from_csv(args):
     try:
         for file in args['files']:
             _f = args['files'][file]
+
+            sample_bytes = _f.stream.read(2048)
+            sample_text = sample_bytes.decode("utf-8", errors="ignore")
+            delimiter = csv.Sniffer().sniff(sample_text).delimiter
+            _f.stream.seek(0)
+
             stream = codecs.iterdecode(_f.stream, 'utf-8')
-            for cpt, row in enumerate(csv.reader(stream, dialect=csv.excel)):
+            for cpt, row in enumerate(csv.reader(stream, dialect=csv.excel, delimiter=delimiter)):
                 if args['skip_header'] and cpt == 0:
                     continue
 

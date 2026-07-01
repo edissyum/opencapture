@@ -190,7 +190,7 @@ export function SettingsSplitterCertifiedCopy() {
         formData.append("file", file);
         await put('/config/uploadFileCertifiedCopy', formData, {
             headers: {
-                "Content-Type": "multipart/form-data",
+                "Content-Type": "multipart/form-data"
             }
         });
         showToast(t("CERTIFIED-COPY.file_upload_success", { fileName: file.name }), "success");

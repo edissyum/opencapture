@@ -73,7 +73,12 @@
         "update_customer": "Actualizar cuenta de cliente",
         "add_customer": "Añadir una cuenta de cliente",
         "edit_customer": "Editar cuenta de cliente",
-        "edit_supplier": "Editar cuenta de tercero"
+        "edit_supplier": "Editar cuenta de tercero",
+        "export_suppliers": "Exportar cuentas de terceros",
+        "export_suppliers_success": "Exportación de cuentas de terceros realizada con éxito",
+        "import_suppliers": "Importar cuentas de terceros",
+        "columns_config": "Configuración de columnas",
+        "import_suppliers_success": "Importación de cuentas de terceros realizada con éxito"
     },
     "AUTH": {
         "login": "Iniciar sesión",
@@ -298,7 +303,11 @@
         "executed_outputs": "Cadenas salientes ejecutadas",
         "field_required": "Campo obligatorio",
         "file_required": "Archivo obligatorio",
-        "save_modifications": "Guardar modificaciones"
+        "save_modifications": "Guardar modificaciones",
+        "no_data": "Ningún dato",
+        "import": "Importar",
+        "skip_header": "Omitir la primera línea (cabecera)",
+        "importing": "Importando..."
     },
     "HISTORY": {
         "document_validated": "Documento n°<strong>{{ documentId }}</strong> validado",
@@ -729,7 +738,6 @@
         "upload_dropzone": "Haga clic para elegir un archivo",
         "upload_dropzone_2": "o arrástrelo a esta zona",
         "max_filesize": "Tamaño máximo del archivo: {{maxSize}} MB",
-        "allowed_extensions": "Extensiones permitidas",
         "too_many_files": "El número máximo de archivos permitidos es {{maxFiles}}",
         "file_rejected": "El archivo fue rechazado",
         "invalid_file_type": "Tipo de archivo inválido. Los tipos de archivo permitidos son: {{types}}",
@@ -750,7 +758,10 @@
         "select_workflow": "Seleccionar un flujo de trabajo",
         "select_workflow_hint": "Seleccione el flujo de trabajo que se aplicará al cargar documentos",
         "add_document": "Agregar documentos",
-        "add_document_hint": "Seleccione uno o más documentos para cargar."
+        "add_document_hint": "Seleccione uno o más documentos para cargar.",
+        "allowed_extensions_many": "Extensiones permitidas",
+        "allowed_extensions_one": "Extensión permitida",
+        "allowed_extensions_other": "Extensiones permitidas"
     },
     "USERS": {
         "delete_users": "Eliminar",
@@ -1366,7 +1377,9 @@
         "field_type": "Tipo de datos",
         "exporting": "Exportando...",
         "export_failed": "Error durante la exportación de los tipos de documentos, por favor inténtelo de nuevo",
-        "export_success": "Tipos de documentos exportados con éxito"
+        "export_success": "Tipos de documentos exportados con éxito",
+        "import_doctypes": "Importar tipos de documentos",
+        "import_success": "Tipos de documentos importados con éxito"
     },
     "ABOUT": {
         "see_changelog": "ver el registro de cambios",

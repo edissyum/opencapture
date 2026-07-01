@@ -222,7 +222,7 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                                                      onChange={ (e) => {
                                                          setNewDoctypeIsDefault(e.value);
                                                      } }/>
-                                        <label htmlFor={ 'isDefault' }
+                                        <label htmlFor='isDefault'
                                                className="flex items-center gap-4 cursor-pointer">
                                             { t('DOCTYPES.is_default') }
                                         </label>
@@ -247,13 +247,13 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                     <div className="flex w-fit gap-1 text-sm text-(--text-secondary) border
                                     border-(--border-secondary) bg-(--bg-primary) rounded-xl p-2">
                         { info.breadcrumb.map((b: any, i: number) => (
-                            <>
+                            <div key={ b.code } className='flex'>
                                 { i > 0 && (
                                     <span className='flex items-center'>
                                         <ChevronRight size={ 18 }/>
                                     </span>
                                 ) }
-                                <span key={ b.code } className='flex items-center'>
+                                <span className='flex items-center'>
                                     <span className='px-2.5 py-1 rounded-full flex items-center gap-1 bg-transparent transition-colors
                                                    hover:bg-(--bg-secondary) cursor-pointer'
                                           onClick={ () => doctypeChanged?.(() => {
@@ -273,7 +273,7 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                                         ) }
                                     </span>
                                 </span>
-                            </>
+                            </div>
                         )) }
                     </div>
                     <div className='ml-auto flex gap-2'>
@@ -335,7 +335,7 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                                                  is_default: !selectedDoctype.is_default
                                              });
                                          } }/>
-                            <label htmlFor={ 'isDefault' } className="flex items-center gap-4 cursor-pointer">
+                            <label htmlFor='isDefault' className="flex items-center gap-4 cursor-pointer">
                                 { t('DOCTYPES.is_default') }
                             </label>
                         </div>
