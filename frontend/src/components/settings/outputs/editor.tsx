@@ -159,7 +159,34 @@ export function OutputEditor({ module }: { module: string }) {
     // handle output type change to check input types
     useEffect(() => {
         if (outputType && outputType.data && outputType.data.options && outputType.data.options.parameters) {
-            if (outputType.data.options.parameters.length > 0 && output.data.options.parameters.length === 0) {
+            if (outputType.data.options.links.length > 0 &&
+                (!output.data.options.links || output.data.options.links.length === 0)) {
+                const newLinks = outputType.data.options.links.map((option: any) => {
+                    return {
+                        id: option.id,
+                        type: option.type,
+                        hint: option.hint,
+                        label: option.label,
+                        required: option.required,
+                        placeholder: option.placeholder,
+                        webservice: option.webservice ?? ''
+                    }
+                });
+
+                setOutput((prev: any) => ({
+                    ...prev,
+                    data: {
+                        ...prev.data,
+                        options: {
+                            ...prev.data.options,
+                            links: newLinks
+                        }
+                    }
+                }));
+            }
+
+            if (outputType.data.options.parameters.length > 0 &&
+                (!output.data.options.parameters || output.data.options.parameters.length === 0)) {
                 const newParameters = outputType.data.options.parameters.map((option: any) => {
                     return {
                         id: option.id,
