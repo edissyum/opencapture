@@ -17,6 +17,10 @@ passwd edissyum
 echo 'export OC_DATA_ROOT=/opt/edissyum/opencapture' >> ~/.bashrc
 source ~/.bashrc
 
+# Définir son éditeur préféré : nano, vi, ...
+echo 'export EDITOR=nano' >> ~/.bashrc
+source ~/.bashrc 
+
 # Purger d'éventuels anciens paquets Docker
 sudo apt remove docker.io docker-compose docker-doc podman-docker containerd runc
 # Dépendances (git inclus pour le clone plus bas)
