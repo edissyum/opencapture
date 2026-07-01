@@ -2,7 +2,7 @@
 
 Déploiement multi-tenant : une **infra partagée** (Traefik, réseau, image backend) installée
 **une fois par serveur**, puis **un tenant par instance** dans `stub-tenants/<id>/`. Trois modes
-d'exposition selon le TLS. Données hors repo sous `/opt`.
+d'exposition selon le TLS. Données hors repo, sous `$OC_DATA_ROOT` (p. ex. `/opt/edissyum/opencapture`).
 
 | Doc / script | Rôle |
 |---|---|
@@ -45,6 +45,8 @@ copier-coller). Il couvre, dans l'ordre :
 
 Les ressources sont limitées par défaut comme ci-dessous dans infra/docker-compose.yml. Il faut penser à modifier en fonction des ressources du serveur.
 
+Le script [../checkos.sh](../checkos.sh) fournit une vérification basique des ressources OS en fonction des ressources réelles de la machine (RAM, swap, cœurs) au regard des profils `x-res-*`, et préconise un nombre max de tenants.
+
 La CPU 0 n'est pas attribuée aux tenants pour ne pas bloquer le serveur en cas de surcharge. A voir si du nice est utile.
 
 ```json
@@ -86,9 +88,9 @@ Dans la suite : `<id>` = identifiant du tenant (minuscules/chiffres/`_`), `<fqdn
 $EDITOR stub-tenants/<id>/.env       # OC_FQDN + POSTGRES_PASSWORD + RABBITMQ_PASS
 
 # 3. (mode cert UNIQUEMENT) cert côté Traefik
-sudo cp <id>.crt <id>.key /opt/edissyum/opencapture/shared-by-tenants/traefik/certs/
+sudo cp <id>.crt <id>.key ${OC_DATA_ROOT}/shared-by-tenants/traefik/certs/
 sed "s/changeme/<id>/g" stub-tenants/<id>/tls.yml.example \
-  | sudo tee /opt/edissyum/opencapture/shared-by-tenants/traefik/dynamic/<id>.yml
+  | sudo tee ${OC_DATA_ROOT}/shared-by-tenants/traefik/dynamic/<id>.yml
 
 # 4. Déployer
 ./deploy.sh <id>
@@ -211,10 +213,6 @@ docker exec -it opencapture_test2-backend-1 sh -lc 'tail -f /app/custom/test2/lo
 tail -f ${OC_DATA_ROOT}/tenants/<tenant>/custom/<tenant>/data/log/OpenCapture.log
 tail -f ${OC_DATA_ROOT}/tenants/<tenant>/custom/<tenant>/data/MailCollect/MAIL_1/<date>/BATCH_*/<ts>.log  # log par lot de collecte mail
 tail -f ${OC_DATA_ROOT}/tenants/<tenant>/custom/<tenant>/bin/ldap/log/technique.log  # log technique LDAP
-# Exemple avec OC_DATA_ROOT = /opt/edissyum/opencapture
-tail -f /opt/edissyum/opencapture/tenants/test2/custom/test2/data/log/OpenCapture.log
-tail -f /opt/edissyum/opencapture/tenants/test2/custom/test2/data/MailCollect/MAIL_1/<date>/BATCH_*/<ts>.log
-tail -f /opt/edissyum/opencapture/tenants/test2/custom/test2/bin/ldap/log/technique.log
 ```
 ### 4.d.2 Via docker compose (depuis le dossier du tenant)
 
@@ -269,13 +267,13 @@ DC="docker compose --project-directory $DIR -f $DIR/docker-compose.yml"
 $DC down --remove-orphans --volumes --rmi local
 
 # 2) Données du tenant (DB + rabbitmq + custom + docservers + share) — IRRÉVERSIBLE
-sudo rm -rf /opt/edissyum/opencapture/tenants/$ID
+sudo rm -rf ${OC_DATA_ROOT}/tenants/$ID
 
 # 3) Le stub (compose + .env + config)
 rm -rf stub-tenants/$ID
 
 # 4) (mode cert uniquement) fragment Traefik dynamique du tenant
-sudo rm -f /opt/edissyum/opencapture/shared-by-tenants/traefik/dynamic/$ID.yml
+sudo rm -f ${OC_DATA_ROOT}/shared-by-tenants/traefik/dynamic/$ID.yml
 
 # 5) TODO : Comptes SFTP/SMB/WebDAV 
 
@@ -300,7 +298,7 @@ docker exec opencapture_<id>-worker-mail-1 nproc
 ### 6.1 Accès SFTP (optionnel)
 
 Dépôt de fichiers par tenant via **ProFTPD `mod_sftp`**, branché sur
-`/opt/edissyum/opencapture/tenants/<id>/share` (surveillé par le `fs-watcher`). **SFTP uniquement** :
+`${OC_DATA_ROOT}/tenants/<id>/share` (surveillé par le `fs-watcher`). **SFTP uniquement** :
 sur un serveur à une seule IP, on ne peut pas servir un cert FTPS par tenant
 (il faudrait du SNI, non fiable sur ProFTPD) ; le SFTP n'a pas de cert de
 domaine (clé d'hôte SSH unique) → multi-tenant trivial. Comptes virtuels
@@ -322,7 +320,7 @@ Détail du design et exploitation : [../infra-host/sftp/README.md](../infra-host
 ### 6.2 Accès WebDAV (optionnel)
 
 Dépôt de fichiers par tenant en **montage de lecteur réseau** (Explorateur
-Windows, Finder macOS, davfs2), branché sur `/opt/edissyum/opencapture/tenants/<id>/share`
+Windows, Finder macOS, davfs2), branché sur `${OC_DATA_ROOT}/tenants/<id>/share`
 (surveillé par le `fs-watcher`). Servi sous **`https://<fqdn>/dav/`** : le
 frontend nginx proxifie `/dav/` vers un conteneur **Apache `mod_dav`** par
 tenant (nginx n'a pas de module WebDAV). **Path et pas sous-domaine** → réutilise
@@ -352,7 +350,7 @@ Détail du design et exploitation : [06-webdav-server.sh](06-webdav-server.sh) +
 ## 6.3 Accès SMB / Samba (optionnel)
 
 Dépôt de fichiers par tenant en **partage réseau SMB** (lecteur Windows, Finder
-macOS, `mount.cifs` Linux), branché sur `/opt/edissyum/opencapture/tenants/<id>/share` (surveillé par
+macOS, `mount.cifs` Linux), branché sur `${OC_DATA_ROOT}/tenants/<id>/share` (surveillé par
 le `fs-watcher`). **Un seul démon Samba standalone** installé sur l'hôte : SMB est
 sur le **port 445 sans SNI**, non routable par domaine (comme le SFTP, contrairement
 au WebDAV) → on distingue les tenants par le **nom de partage** (`\\serveur\<id>`),
@@ -548,8 +546,8 @@ par la règle `Host()` ; il suffit donc que le **SAN** du cert couvre exactement
 et le routeur du tenant porte `tls=true` **sans** `certresolver` (overlay
 `docker-compose.traefik-cert.yml`). Avantage : **pas besoin de DNS public ni des ports 80/443**
 ouverts (aucun challenge ACME). Le cert (`.crt` = chaîne complète, `.key` = clé privée **sans
-passphrase**) va dans `/opt/edissyum/opencapture/shared-by-tenants/traefik/certs/` ; un fragment `tls.yml` par
-tenant dans `/opt/edissyum/opencapture/shared-by-tenants/traefik/dynamic/<id>.yml` (provider fichier `watch=true`
+passphrase**) va dans `${OC_DATA_ROOT}/shared-by-tenants/traefik/certs/` ; un fragment `tls.yml` par
+tenant dans `${OC_DATA_ROOT}/shared-by-tenants/traefik/dynamic/<id>.yml` (provider fichier `watch=true`
 → **rechargé à chaud**, utile aussi au renouvellement). Conversion d'un `.pfx`/`.p12`
 (Windows/AD) en PEM :
 
@@ -703,30 +701,30 @@ docker compose exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB
   2. **Lire son contenu** sans shell dans Traefik : le monter dans un conteneur jetable →
      `docker run --rm -v traefik_letsencrypt:/v alpine ls -l /v` (ou `… cat /v/acme.json`).
   3. **Raccourci ici** : ce volume est en réalité **bind-backé** vers `${LETSENCRYPT_PATH}`
-     (= `/opt/edissyum/opencapture/shared-by-tenants/traefik/letsencrypt` en prod) — `docker volume inspect` le montre
+     (= `${OC_DATA_ROOT}/shared-by-tenants/traefik/letsencrypt` en prod) — `docker volume inspect` le montre
      dans `Options.device`. Donc le fichier est lisible directement à
-     **`/opt/edissyum/opencapture/shared-by-tenants/traefik/letsencrypt/acme.json`** sur l'hôte.
+     **`${OC_DATA_ROOT}/shared-by-tenants/traefik/letsencrypt/acme.json`** sur l'hôte.
 
 ### Lien volumes hôte ↔ conteneur
 
 Par tenant — les chemins hôte sont les valeurs `*_PATH` du `.env` (en prod :
-`/opt/edissyum/opencapture/tenants/<id>/…` ; défaut compose si non renseigné : `../data/<id>/…`) :
+`${OC_DATA_ROOT}/tenants/<id>/…` ; défaut compose si non renseigné : `../data/<id>/…`) :
 
 | Hôte (prod) | Conteneur | Contenu |
 |---|---|---|
-| `/opt/edissyum/opencapture/tenants/<id>/pgdata` | `postgres:/var/lib/postgresql/data` | base PostgreSQL |
-| `/opt/edissyum/opencapture/tenants/<id>/rabbitmq` | `rabbitmq:/var/lib/rabbitmq` | files RabbitMQ |
-| `/opt/edissyum/opencapture/tenants/<id>/custom` | `backend:/app/custom` | config tenant, logs, MailCollect |
-| `/opt/edissyum/opencapture/tenants/<id>/docservers` | `backend:/app/docservers` | documents traités, modèles IA du tenant |
-| `/opt/edissyum/opencapture/tenants/<id>/share` | `backend:/app/share` | entrées (`entrant/`) et sorties (`export/`) |
-| `/opt/edissyum/opencapture/shared-by-tenants/shared-ai-models` | `backend:/app/instance/artificial_intelligence` | modèles IA partagés (rotate, contact) |
-| `/opt/edissyum/opencapture/shared-by-tenants/traefik/letsencrypt` | `traefik:/letsencrypt` | certificats Let's Encrypt (acme.json) |
-| `/opt/edissyum/opencapture/shared-by-tenants/traefik/certs` | `traefik:/certs` | certs TLS fournis par les clients (PEM) |
+| `${OC_DATA_ROOT}/tenants/<id>/pgdata` | `postgres:/var/lib/postgresql/data` | base PostgreSQL |
+| `${OC_DATA_ROOT}/tenants/<id>/rabbitmq` | `rabbitmq:/var/lib/rabbitmq` | files RabbitMQ |
+| `${OC_DATA_ROOT}/tenants/<id>/custom` | `backend:/app/custom` | config tenant, logs, MailCollect |
+| `${OC_DATA_ROOT}/tenants/<id>/docservers` | `backend:/app/docservers` | documents traités, modèles IA du tenant |
+| `${OC_DATA_ROOT}/tenants/<id>/share` | `backend:/app/share` | entrées (`entrant/`) et sorties (`export/`) |
+| `${OC_DATA_ROOT}/shared-by-tenants/shared-ai-models` | `backend:/app/instance/artificial_intelligence` | modèles IA partagés (rotate, contact) |
+| `${OC_DATA_ROOT}/shared-by-tenants/traefik/letsencrypt` | `traefik:/letsencrypt` | certificats Let's Encrypt (acme.json) |
+| `${OC_DATA_ROOT}/shared-by-tenants/traefik/certs` | `traefik:/certs` | certs TLS fournis par les clients (PEM) |
 
-> Concrètement : un PDF déposé dans `/opt/edissyum/opencapture/tenants/<id>/share/entrant/splitter/default/` (hôte)
+> Concrètement : un PDF déposé dans `${OC_DATA_ROOT}/tenants/<id>/share/entrant/splitter/default/` (hôte)
 > apparaît dans `/app/share/entrant/splitter/default/` (conteneur) → c'est ce que `fs-watcher`
 > détecte. Inversement, les sorties écrites par les workers dans `/app/share/export/…` sont
-> lisibles directement sous `/opt/edissyum/opencapture/tenants/<id>/share/export/…` sur l'hôte.
+> lisibles directement sous `${OC_DATA_ROOT}/tenants/<id>/share/export/…` sur l'hôte.
 
 ## Annexe E — Glossaire Docker
 
@@ -763,10 +761,10 @@ Par tenant — les chemins hôte sont les valeurs `*_PATH` du `.env` (en prod :
   `docker-entrypoint.sh`) ; le `CMD`/`command:` lui passe des **arguments** (ici **le rôle** :
   `api`, `worker-splitter`…). Docker exécute `ENTRYPOINT + CMD` (cf. Annexe C).
 - **Bind mount** : tu mappes un **dossier précis de l'hôte** dans le conteneur — ici
-  `/opt/edissyum/opencapture/tenants/<id>/docservers` (hôte) ↔ `/app/docservers` (conteneur). Les fichiers sont
+  `${OC_DATA_ROOT}/tenants/<id>/docservers` (hôte) ↔ `/app/docservers` (conteneur). Les fichiers sont
   **directement visibles et éditables sur l'hôte**. **C'est ce qu'utilise OpenCapture**
   (pgdata, custom, docservers, share). Comme c'est un dossier hôte, **`down -v` ne le supprime
-  PAS** ; pour tout effacer il faut `rm -rf /opt/edissyum/opencapture/tenants/<id>`.
+  PAS** ; pour tout effacer il faut `rm -rf ${OC_DATA_ROOT}/tenants/<id>`.
 - **Volume nommé** : Docker gère lui-même le stockage dans sa zone interne
   (`/var/lib/docker/volumes/<nom>`) ; on y accède **par son nom**, pas par un chemin hôte.
   Plus portable, mais moins direct à inspecter. `down -v` **supprime** les volumes nommés
