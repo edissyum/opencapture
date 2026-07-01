@@ -268,12 +268,15 @@ export function OutputEditor({ module }: { module: string }) {
 
         const res = await executeAuthFunction(authFunctionName, authOptions, { post });
 
+        let errorInWs = false;
+
         if (res && res.success) {
             if (outputType.output_type_id === 'export_mem') {
                 for (const data of Object.keys(output.data.options)) {
                     for (const option of output.data.options[data]) {
                         if (option.webservice) {
                             const res = await executeMEMFunction(option.webservice, authOptions, { post });
+
                             if (res && res.success && res.data) {
                                 setOutput((prev: any) => {
                                     const newParameters = prev.data.options[data].map((o: any) => {
@@ -294,14 +297,18 @@ export function OutputEditor({ module }: { module: string }) {
                                         }
                                     };
                                 });
+                            } else {
+                                errorInWs = true;
                             }
                         }
                     }
                 }
             }
 
-            showToast(t(res.message), "success");
-            stepperRef.current?.nextCallback();
+            if (!errorInWs) {
+                stepperRef.current?.nextCallback();
+                showToast(t(res.message), "success");
+            }
         } else {
             showToast(t(res.message), "error");
         }
@@ -447,7 +454,7 @@ export function OutputEditor({ module }: { module: string }) {
                                     )) }
                                 </div>
                                 <div className="flex justify-end">
-                                    <Button onClick={ handleAuthStep } className="ml-auto px-12" disabled={ loadingStep }>
+                                    <Button onClick={ handleAuthStep } className="ml-auto px-8" disabled={ loadingStep }>
                                         { loadingStep ? t("OUTPUTS.testing_connection") : t("OUTPUTS.test_connection") }
                                     </Button>
                                 </div>
@@ -512,8 +519,7 @@ export function OutputEditor({ module }: { module: string }) {
                                     </Button>
 
                                     <Button onClick={ outputType.output_type_id === 'export_mem' ? handleNextStep : handleSubmit }
-                                            className="px-12"
-                                            disabled={ loading || loadingStep }>
+                                            className="px-8" disabled={ loading || loadingStep }>
                                         { outputType.output_type_id === 'export_mem' ? (
                                             t("GLOBAL.next")
                                         ) : (

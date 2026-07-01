@@ -99,9 +99,9 @@ const createMEMFunctionsMap: any = ({ post }: any) => ({
     },
     getUsersFromMem: async (args: any) => {
         const res = await post('/mem/getUsers', args);
-        if (res && res[0].users) {
+        if (res && res.users) {
             let usersOptions: any = [];
-            for (const user of res[0].users) {
+            for (const user of res.users) {
                 usersOptions.push({ id: user.id, label: user.firstname + ' ' + user.lastname });
             }
             return { success: true, data: usersOptions };
@@ -129,6 +129,7 @@ const createMEMFunctionsMap: any = ({ post }: any) => ({
     },
     getIndexingModelsFromMem: async (args: any) => {
         const res = await post('/mem/getIndexingModels', args);
+
         if (res && res.indexingModels) {
             let indexingModelsOptions: any = [];
             for (const model of res.indexingModels) {
