@@ -120,6 +120,7 @@ sed "s/changeme/<id>/g" stub-tenants/<id>/tls.yml.example \
 ### 4.a Commandes générales
 
 ```bash
+# Pour un tenant en se plaçant dans son dossier
 DIR=stub-tenants/<id>
 DC="docker compose --project-directory $DIR -f $DIR/docker-compose.yml"
 
@@ -129,6 +130,16 @@ $DC logs -f backend     # logs API (suivre)
 $DC restart backend     # redémarrer un service
 $DC exec backend env | grep -E 'CUSTOM_ID|POSTGRES|RABBIT'   # vérifier la config injectée
 $DC down                # arrêter — JAMAIS `down -v` (-v supprime les données !)
+
+# Pour un tenant depuis la racine (répertoire dans lequel on fait le git pull et qui contient infra)
+dc() { docker compose --project-directory "stub-tenants/$1" -f "stub-tenants/$1/docker-compose.yml" "${@:2}"; }
+dc <id> down          
+dc <id> restart
+dc <id> up -d
+
+# Pour tous les tenants faire une commande du type : down | stop | restart | "up -d" | "down -v" (ci-dessous down)
+for d in stub-tenants/*/; do id=$(basename "$d"); case "$id" in _template-*) continue;; esac; [ -f "$d/docker-compose.yml" ] && docker compose --project-directory "$d" -f "$d/docker-compose.yml" down; done
+
 ```
 
 ### 4.b Reconstruire après une mise à jour du code (avec `deploy.sh`) :
@@ -270,10 +281,23 @@ sudo rm -f /opt/edissyum/opencapture/shared-by-tenants/traefik/dynamic/$ID.yml
 
 ```
 
+## 5. Tunning
+
+```bash 
+# En live
+docker stats opencapture_<id>-worker-mail-1
+
+# Combien de coeurs le conteneur voit (= le plafond du %) 
+# Si docker stats ne dépasse jamais 100 % alors que nproc en montre 7 --> c'est bien 1 seul coeur.
+docker exec opencapture_<id>-worker-mail-1 nproc
+ 
+```
 
 ---
 
-## 5. Accès SFTP (optionnel)
+## 6. Accès distant 
+
+### 6.1 Accès SFTP (optionnel)
 
 Dépôt de fichiers par tenant via **ProFTPD `mod_sftp`**, branché sur
 `/opt/edissyum/opencapture/tenants/<id>/share` (surveillé par le `fs-watcher`). **SFTP uniquement** :
@@ -295,7 +319,7 @@ Détail du design et exploitation : [../infra-host/sftp/README.md](../infra-host
 
 ---
 
-## 6. Accès WebDAV (optionnel)
+### 6.2 Accès WebDAV (optionnel)
 
 Dépôt de fichiers par tenant en **montage de lecteur réseau** (Explorateur
 Windows, Finder macOS, davfs2), branché sur `/opt/edissyum/opencapture/tenants/<id>/share`
@@ -325,7 +349,7 @@ Détail du design et exploitation : [06-webdav-server.sh](06-webdav-server.sh) +
 
 ---
 
-## 7. Accès SMB / Samba (optionnel)
+## 6.3 Accès SMB / Samba (optionnel)
 
 Dépôt de fichiers par tenant en **partage réseau SMB** (lecteur Windows, Finder
 macOS, `mount.cifs` Linux), branché sur `/opt/edissyum/opencapture/tenants/<id>/share` (surveillé par
