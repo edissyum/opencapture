@@ -158,10 +158,31 @@ export function OutputEditor({ module }: { module: string }) {
 
     // handle output type change to check input types
     useEffect(() => {
-        if (outputId) return;
-
         if (outputType && outputType.data && outputType.data.options && outputType.data.options.parameters) {
-            output.data = outputType.data;
+            if (outputType.data.options.parameters.length > 0 && output.data.options.parameters.length === 0) {
+                const newParameters = outputType.data.options.parameters.map((option: any) => {
+                    return {
+                        id: option.id,
+                        type: option.type,
+                        label: option.label,
+                        required: option.required,
+                        placeholder: option.placeholder,
+                        webservice: option.webservice ?? ''
+                    }
+                });
+
+                setOutput((prev: any) => ({
+                    ...prev,
+                    data: {
+                        ...prev.data,
+                        options: {
+                            ...prev.data.options,
+                            parameters: newParameters
+                        }
+                    }
+                }));
+            }
+
             outputType.data.options.parameters.forEach((option: any) => {
                 if (option.type === 'textarea') {
                     const value = output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '';
