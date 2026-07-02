@@ -670,7 +670,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
       {
         "id": "openads_api",
         "type": "text",
-        "label": "OpenAds api",
+        "label": "OpenAds API",
         "required": "true",
         "placeholder": "https://example.com/demo/openads"
       },

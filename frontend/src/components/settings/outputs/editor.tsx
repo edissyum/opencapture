@@ -160,7 +160,7 @@ export function OutputEditor({ module }: { module: string }) {
     // handle output type change to check input types
     useEffect(() => {
         if (outputType && outputType.data && outputType.data.options && outputType.data.options.parameters) {
-            if (outputType.data.options.links.length > 0 &&
+            if (outputType.data.options.links?.length > 0 &&
                 (!output.data.options.links || output.data.options.links.length === 0)) {
                 const newLinks = outputType.data.options.links.map((option: any) => {
                     return {
