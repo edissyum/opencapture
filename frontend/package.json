@@ -51,7 +51,7 @@
         "react-tooltip": "^6.0.8",
         "recharts": "^3.9.1",
         "tailwindcss": "^4.3.2",
-        "tinymce": "^8.6.0",
+        "tinymce": "^8.7.0",
         "xlsx": "^0.18.5",
         "zod": "^4.4.3"
     },
@@ -68,6 +68,6 @@
         "lucide-react": "^1.23.0",
         "typescript": "~6.0.3",
         "typescript-eslint": "^8.62.1",
-        "vite": "^8.1.2"
+        "vite": "^8.1.3"
     }
 }

@@ -52,7 +52,7 @@ Flask-Limiter==4.1.1
 pycryptodome==3.23.0
 pypdf[crypto]==6.14.2
 qwen-vl-utils==0.0.14
-opencv-python==4.13.0.92
+opencv-python==5.0.0.93
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.12.1
 torchvision==0.27.1
