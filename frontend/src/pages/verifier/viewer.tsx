@@ -54,7 +54,7 @@ import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { useFormFields } from "../../services/hooks/useFormFields";
 import { useCustomFields } from "../../services/hooks/useCustomFields";
 import { useHistoryLogger } from "../../services/hooks/useHistoryLogger";
-import { useUnsavedChangesWarning } from "../../services/hooks/useUnsavedChangesWarning.tsx";
+import { useUnsavedChangesWarning } from "../../services/hooks/useUnsavedChangesWarning";
 
 export function VerifierViewerPage() {
     const { get, post, put } = axiosApiCall();
