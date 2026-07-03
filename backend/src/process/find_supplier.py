@@ -94,9 +94,9 @@ class FindSupplier:
                     })
 
                     if customer:
-                        if (existing_supplier['siret'] == customer[0]['siret']
-                                or existing_supplier['siren'] == customer[0]['siren']
-                                or existing_supplier['vat_number'] == customer[0]['vat_number']):
+                        if (existing_supplier[0]['siret'] == customer[0]['siret']
+                                or existing_supplier[0]['siren'] == customer[0]['siren']
+                                or existing_supplier[0]['vat_number'] == customer[0]['vat_number']):
                             return False
                 return existing_supplier[0]
         return False
