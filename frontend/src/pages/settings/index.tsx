@@ -82,15 +82,17 @@ export function SettingsIndex() {
 
     return (
         <div className="p-6 flex flex-col gap-6">
-            <div className='flex flex-col gap-1'>
-                <h3 className="text-xl font-bold flex items-center gap-1">
-                    { t('SETTINGS.favorites') }
-                </h3>
-                <p className="text-(--text-secondary)">
-                    { t('SETTINGS.favorites_subtitle') }
-                </p>
+            <div className='flex flex-col gap-2'>
+                <div className='flex flex-col gap-1'>
+                    <h3 className="text-xl font-bold">
+                        { t('SETTINGS.favorites') }
+                    </h3>
+                    <p className="text-(--text-secondary)">
+                        { t('SETTINGS.favorites_subtitle') }
+                    </p>
+                </div>
                 { favoriteOptions && favoriteOptions.length > 0 ? (
-                    <div className='grid grid-cols-3 gap-6'>
+                    <div className='grid grid-cols-3 gap-4'>
                         { favoriteOptions.map((option, index) => (
                             <SettingsCard key={ index } icon={ option['icon'] } title={ option['name'] }
                                           description={ option['description'] } to={ option['href'] }
@@ -128,14 +130,16 @@ export function SettingsIndex() {
                     </div>
                 ) }
             </div>
-            <div className='flex flex-col gap-1'>
-                <h3 className="text-xl font-bold flex items-center gap-1">
-                    { t('SETTINGS.title') }
-                </h3>
-                <p className="text-(--text-secondary)">
-                    { t('SETTINGS.subtitle') }
-                </p>
-                <div className='grid grid-cols-3 gap-6'>
+            <div className='flex flex-col gap-2'>
+                <div className='flex flex-col gap-1'>
+                    <h3 className="text-xl font-bold">
+                        { t('SETTINGS.title') }
+                    </h3>
+                    <p className="text-(--text-secondary)">
+                        { t('SETTINGS.subtitle') }
+                    </p>
+                </div>
+                <div className='grid grid-cols-3 gap-4'>
                     { options.map((option) => (
                         <SettingsCard key={ option['name'] } icon={ option['icon'] } title={ option['name'] }
                                       description={ option['description'] } to={ option['href'] }/>
