@@ -5,15 +5,15 @@
 # (gitignoré) et est géré par `ftpasswd` via new-sftp-account.sh.
 #
 # Une ligne par tenant. uid/gid = compte de service OpenCapture ($APP_UID/$APP_GID,
-# défaut 1050) ; home = racine du chroot ; shell = /bin/false.
+# défaut 1000) ; home = racine du chroot ; shell = /bin/false.
 #
 # Format :
 #   <user>:<hash>:<uid>:<gid>::<home>:<shell>
 #
 # Exemple (hash factice) :
-#   test2:$6$xxxxxxxx$............:1050:1050::/opt/edissyum/opencapture/tenants/test2/share:/bin/false
+#   test2:$6$xxxxxxxx$............:1000:1000::/opt/edissyum/opencapture/tenants/test2/share:/bin/false
 #
 # Création / mise à jour d'un compte :
 #   sudo ftpasswd --passwd --file=/etc/proftpd/ftpd.passwd \
-#       --name=<id> --uid=1050 --gid=1050 \
+#       --name=<id> --uid=1000 --gid=1000 \
 #       --home=/opt/edissyum/opencapture/tenants/<id>/share --shell=/bin/false
