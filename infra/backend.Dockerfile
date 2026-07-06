@@ -41,8 +41,8 @@ FROM python:3.13-slim-bookworm AS runtime
 # UID/GID paramétrables au build pour s'aligner sur un compte hôte
 # existant (cf. APP_UID/APP_GID dans .env). L'entrypoint relit aussi
 # ces valeurs au runtime et peut droper vers un autre UID sans rebuild.
-ARG APP_UID=1050
-ARG APP_GID=1050
+ARG APP_UID=1000
+ARG APP_GID=1000
 ARG APP_USER=opencapture
 
 ENV PIP_NO_CACHE_DIR=1 \
