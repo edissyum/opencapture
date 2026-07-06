@@ -4,6 +4,25 @@ Multi-tenant deployment: a **shared infra** (Traefik, network, backend image) in
 **once per server**, then **one tenant per instance** under `stub-tenants/<id>/`. Three exposure
 modes depending on TLS. Data kept outside the repo, under `$OC_DATA_ROOT` (e.g. `/opt/edissyum/opencapture`).
 
+> ### 🔑 OC_DATA_ROOT — THE authoritative variable (one decision per server)
+>
+> **`OC_DATA_ROOT` is the single root of all data kept outside the repo: the ONLY value to decide
+> per server. Everything else derives from it — never hard-code a data path anywhere else.**
+>
+> - **Where to set it:** at install time, in [01-install-general.md](01-install-general.md), via
+>   `export OC_DATA_ROOT=…` added to `~/.bashrc` (then `source ~/.bashrc`). This is the **only place**
+>   where the data location is chosen (prod: `/opt/edissyum/opencapture`; adapt per server, e.g. VM:
+>   `/var/edissyum/opencapture`).
+> - **What derives from it, automatically:** the **global `.env`** (01-install copies the bashrc value
+>   into it) → the **data tree** `${OC_DATA_ROOT}/{tenants,shared-by-tenants/…}` → the **Traefik** paths
+>   (certs/dynamic/letsencrypt) → **each tenant's `.env`** (`new-tenant.sh` reuses that same value) →
+>   all the containers' **volumes** (`${OC_DATA_ROOT}/tenants/<id>/…`).
+> - **Runtime precedence:** `docker compose` prefers the **exported variable** (bashrc) over the `.env`.
+>   Keep it exported in your session: it wins; the `.env` is only a fallback (cron, sudo, non-login shell).
+>
+> ➡️ **To move all data:** change that **single** line in 01-install (bashrc), `source ~/.bashrc`, then
+> move the folders.
+
 | Doc / script | Role |
 |---|---|
 | [01-install-general.md](01-install-general.md) | infra install commands (Docker + Traefik) |
@@ -82,7 +101,7 @@ In what follows: `<id>` = the tenant identifier (lowercase/digits/`_`), `<fqdn>`
 
 ```bash
 # 1. Create the stub. mode = http | le | cert
-./new-tenant.sh <mode> <id>          # copies the template + pre-fills CUSTOM_ID, DB, user, *_PATH
+./new-tenant.sh <mode> <id>          # copies the template + pre-fills CUSTOM_ID, DB, user, OC_DATA_ROOT, APP_UID/GID
 
 # 2. Fill in BY HAND what the script tells you
 $EDITOR stub-tenants/<id>/.env       # OC_FQDN + POSTGRES_PASSWORD + RABBITMQ_PASS
@@ -97,7 +116,8 @@ sed "s/changeme/<id>/g" stub-tenants/<id>/tls.yml.example \
 ```
 
 > `new-tenant.sh` pre-fills `CUSTOM_ID` / `POSTGRES_DB` / `POSTGRES_USER` /
-> `RABBITMQ_USER`, the `*_PATH` and `APP_UID`/`APP_GID` (taken from the global `.env`);
+> `RABBITMQ_USER`, plus `OC_DATA_ROOT` (taken from the bashrc, else from the global `.env` — see the
+> 🔑 box at the top of this guide) and `APP_UID`/`APP_GID` (taken from the global `.env`);
 > you're only left with `OC_FQDN` + the 2 passwords. `deploy.sh <id>` chains
 > `build frontend` + `up -d`, and the first startup triggers the `init` service which
 > bootstraps the tenant (DB schema, config, assets, paths) — nothing to do by hand.
@@ -279,6 +299,26 @@ sudo rm -f ${OC_DATA_ROOT}/shared-by-tenants/traefik/dynamic/$ID.yml
 
 ```
 
+### 4.d.7 Changing a tenant's FQDN
+
+```bash
+
+# Example tenant "demo"
+cd ~/opencapture_docker
+
+# Set the new FQDN in the .env
+sed -i 's#^OC_FQDN=.*#OC_FQDN=demo.open-capture.com#' stub-tenants/demo/.env
+
+# Rebuild and recreate
+#   builds the opencapture-backend image
+#   then up -d demo -> recreate = bootstrap rewrites custom.ini.url + Traefik new Host + LE cert
+./deploy.sh demo
+
+# Checks
+grep '^url' /opt/edissyum/opencapture/tenants/demo/custom/custom.ini   # url = demo.open-capture.com
+curl -sI https://demo.open-capture.com/ | head -5                       # HTTP 200/302 + valid cert
+```
+
 ## 5. Tuning
 
 ```bash 
@@ -455,8 +495,8 @@ different role**:
 | `fs-watcher` | `fs-watcher` | Watches `share/entrant/`, triggers the workflows. |
 
 The entrypoint starts as **root** (to `chown` the bind mounts) then **drops** to the service
-account defined by `APP_UID`/`APP_GID`/`APP_USER` (in the `.env` — `1050` is only the
-template default, e.g. `1000` elsewhere) via `gosu`. `APP_UID/APP_GID` are baked at build
+account defined by `APP_UID`/`APP_GID`/`APP_USER` (in the `.env` — `1000` is only the
+default; `01-install` sets it to `id -u`) via `gosu`. `APP_UID/APP_GID` are baked at build
 **and** re-read at runtime → changing the UID via `.env` + `up -d` needs no rebuild.
 
 **Example: `command: ["worker-splitter"]`.** The service is declared in the compose like this:
@@ -566,7 +606,7 @@ openssl pkcs12 -in client.pfx -clcerts -nokeys  -out client.crt # leaf (+ chain 
 > folder and reads certs from **a single** `certs/`. Since the daemon is shared, so is its
 > config folder — even though each entry (`<id>.crt`, `<id>.key`, `<id>.yml`)
 > is specific to one tenant. So it's not misplaced tenant data, but the **shared
-> infra's config**. *(Conversely, `shared-by-tenants/shared-ai-models/` is genuinely
+> infra's config**. *(Conversely, `shared-by-tenants/ai-models/` is genuinely
 > shared; a tenant's own AI models stay under
 > `tenants/<id>/docservers/.../ai/models`.)* Two consequences:
 > - **Backup**: a backup of `tenants/<id>` alone does NOT capture its TLS cert/fragment
@@ -716,7 +756,7 @@ Per tenant — the host paths are the `.env` `*_PATH` values (in prod:
 | `${OC_DATA_ROOT}/tenants/<id>/custom` | `backend:/app/custom` | tenant config, logs, MailCollect |
 | `${OC_DATA_ROOT}/tenants/<id>/docservers` | `backend:/app/docservers` | processed documents, tenant AI models |
 | `${OC_DATA_ROOT}/tenants/<id>/share` | `backend:/app/share` | inputs (`entrant/`) and outputs (`export/`) |
-| `${OC_DATA_ROOT}/shared-by-tenants/shared-ai-models` | `backend:/app/instance/artificial_intelligence` | shared AI models (rotate, contact) |
+| `${OC_DATA_ROOT}/shared-by-tenants/ai-models` | `backend:/app/instance/artificial_intelligence` | shared AI models (rotate, contact) |
 | `${OC_DATA_ROOT}/shared-by-tenants/traefik/letsencrypt` | `traefik:/letsencrypt` | Let's Encrypt certificates (acme.json) |
 | `${OC_DATA_ROOT}/shared-by-tenants/traefik/certs` | `traefik:/certs` | client-provided TLS certs (PEM) |
 

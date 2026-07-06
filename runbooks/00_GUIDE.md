@@ -4,6 +4,26 @@ Déploiement multi-tenant : une **infra partagée** (Traefik, réseau, image bac
 **une fois par serveur**, puis **un tenant par instance** dans `stub-tenants/<id>/`. Trois modes
 d'exposition selon le TLS. Données hors repo, sous `$OC_DATA_ROOT` (p. ex. `/opt/edissyum/opencapture`).
 
+> ### OC_DATA_ROOT — LA variable qui fait foi (une seule décision par serveur)
+>
+> **`OC_DATA_ROOT` est la racine unique des données hors dépôt : la SEULE valeur à décider par
+> serveur. Tout le reste en découle — ne jamais coder de chemin de données en dur ailleurs.**
+>
+> - **Où la définir :** à l'installation, dans [01-install-general.md](01-install-general.md), via
+>   `export OC_DATA_ROOT=…` ajouté au `~/.bashrc` (puis `source ~/.bashrc`). C'est le **seul endroit**
+>   où l'on choisit l'emplacement des données (prod : `/opt/edissyum/opencapture` ; à adapter par
+>   serveur, ex. VM : `/var/edissyum/opencapture`).
+> - **Ce qui en découle, automatiquement :** le **`.env` global** (01-install y recopie la valeur du
+>   bashrc) → l'**arborescence des données** `${OC_DATA_ROOT}/{tenants,shared-by-tenants/…}` → les
+>   chemins **Traefik** (certs/dynamic/letsencrypt) → le **`.env` de chaque tenant** (`new-tenant.sh`
+>   reprend cette même valeur) → tous les **volumes** des conteneurs (`${OC_DATA_ROOT}/tenants/<id>/…`).
+> - **Priorité au runtime :** `docker compose` privilégie la **variable exportée** (bashrc) sur le
+>   `.env`. La garder exportée dans la session : c'est elle qui gagne ; le `.env` ne sert que de repli
+>   (cron, sudo, shell non-login).
+>
+> ➡️ **Pour déplacer toutes les données :** changer cette **seule** ligne dans 01-install (bashrc),
+> `source ~/.bashrc`, puis déplacer les dossiers.
+
 | Doc / script | Rôle |
 |---|---|
 | [01-install-general.md](01-install-general.md) | commandes d'installation infra (Docker + Traefik) |
@@ -34,7 +54,7 @@ copier-coller). Il couvre, dans l'ordre :
 5. **Réseau `frontend`** + **image backend partagée** (`build backend`, 1 seule fois).
 6. **Traefik partagé** (daemon unique, chemins dérivés d'`OC_DATA_ROOT`).
 
-> ⚠️ Exporte d'abord la racine pour toute la session : `export OC_DATA_ROOT=/opt/edissyum/opencapture`
+> ⚠️ Exporter d'abord la racine pour toute la session : `export OC_DATA_ROOT=/opt/edissyum/opencapture`
 > (sinon `${OC_DATA_ROOT:-../data}` retombe sur `../data` et crée des chemins parasites).
 
 ---
@@ -82,7 +102,7 @@ Dans la suite : `<id>` = identifiant du tenant (minuscules/chiffres/`_`), `<fqdn
 
 ```bash
 # 1. Créer le stub. mode = http | le | cert
-./new-tenant.sh <mode> <id>          # copie le gabarit + pré-remplit CUSTOM_ID, DB, user, *_PATH
+./new-tenant.sh <mode> <id>          # copie le gabarit + pré-remplit CUSTOM_ID, DB, user, OC_DATA_ROOT, APP_UID/GID
 
 # 2. Renseigner À LA MAIN ce que le script indique
 $EDITOR stub-tenants/<id>/.env       # OC_FQDN + POSTGRES_PASSWORD + RABBITMQ_PASS
@@ -97,14 +117,15 @@ sed "s/changeme/<id>/g" stub-tenants/<id>/tls.yml.example \
 ```
 
 > `new-tenant.sh` pré-remplit `CUSTOM_ID` / `POSTGRES_DB` / `POSTGRES_USER` /
-> `RABBITMQ_USER`, les `*_PATH` et `APP_UID`/`APP_GID` (repris du `.env` global) ;
-> il ne te reste que `OC_FQDN` + les 2 mots de passe. `deploy.sh <id>` enchaîne
+> `RABBITMQ_USER`, ainsi que `OC_DATA_ROOT` (repris du bashrc, sinon du `.env` global — cf.
+> l'encadré 🔑 en tête de guide) et `APP_UID`/`APP_GID` (repris du `.env` global) ;
+> il ne reste que `OC_FQDN` + les 2 mots de passe. `deploy.sh <id>` enchaîne
 > `build frontend` + `up -d`, et le 1er démarrage déclenche le service `init` qui
 > amorce le tenant (schéma DB, config, assets, chemins) — rien à faire à la main.
 >
 > ⚠️ La création **manuelle** (copier le gabarit + éditer le `.env` à la main) est
 > volontairement retirée : elle multiplie les erreurs (`changeme` oubliés,
-> `CUSTOM_ID` ≠ nom du dossier, `APP_UID` non aligné). Utilise **toujours**
+> `CUSTOM_ID` ≠ nom du dossier, `APP_UID` non aligné). Utiliser **toujours**
 > `new-tenant.sh`.
 
 ---
@@ -277,6 +298,26 @@ sudo rm -f ${OC_DATA_ROOT}/shared-by-tenants/traefik/dynamic/$ID.yml
 
 # 5) TODO : Comptes SFTP/SMB/WebDAV 
 
+```
+
+### 4.d.7 Changement de FQDN d'un tenant
+
+```bash
+
+# Example tenant "demo"
+cd ~/opencapture_docker
+
+# Mettre le nouveau FQDN dans le .env
+sed -i 's#^OC_FQDN=.*#OC_FQDN=demo.open-capture.com#' stub-tenants/demo/.env
+
+# Rebuild et recreate 
+#   build l'image opencapture-backend 
+#   puis up -d demo -> recreate = bootstrap réécrit custom.ini.url + Traefik nouveau Host + cert LE
+./deploy.sh demo
+
+# Vérifs
+grep '^url' /opt/edissyum/opencapture/tenants/demo/custom/custom.ini   # url = demo.open-capture.com
+curl -sI https://demo.open-capture.com/ | head -5                       # HTTP 200/302 + cert valide
 ```
 
 ## 5. Tunning
@@ -455,8 +496,8 @@ rôle différent** :
 | `fs-watcher` | `fs-watcher` | Surveille `share/entrant/`, déclenche les workflows. |
 
 L'entrypoint démarre **root** (pour `chown` les bind mounts) puis **droppe** vers le compte
-de service défini par `APP_UID`/`APP_GID`/`APP_USER` (dans le `.env` — `1050` n'est que le
-défaut du template, p. ex. `1000` ailleurs) via `gosu`. `APP_UID/APP_GID` sont bakés au build
+de service défini par `APP_UID`/`APP_GID`/`APP_USER` (dans le `.env` — `1000` n'est que le
+défaut ; `01-install` le règle sur `id -u`) via `gosu`. `APP_UID/APP_GID` sont bakés au build
 **et** relus au runtime → changer l'UID via `.env` + `up -d` ne nécessite pas de rebuild.
 
 **Exemple : `command: ["worker-splitter"]`.** Le service est déclaré ainsi dans la compose :
@@ -566,7 +607,7 @@ openssl pkcs12 -in client.pfx -clcerts -nokeys  -out client.crt # leaf (+ chaîn
 > `dynamic/` et lit les certs dans **un unique** `certs/`. Le démon étant partagé, son
 > dossier de config l'est aussi — même si chaque entrée (`<id>.crt`, `<id>.key`, `<id>.yml`)
 > est propre à un tenant. Ce n'est donc pas de la donnée tenant mal rangée, mais la **config
-> de l'infra partagée**. *(À l'inverse, `shared-by-tenants/shared-ai-models/` est réellement
+> de l'infra partagée**. *(À l'inverse, `shared-by-tenants/ai-models/` est réellement
 > commun ; les modèles IA propres à un tenant restent sous
 > `tenants/<id>/docservers/.../ai/models`.)* Deux conséquences :
 > - **Sauvegarde** : un backup de `tenants/<id>` seul ne capture PAS son cert/fragment TLS
@@ -657,7 +698,7 @@ on les réutilise dans le conteneur via `sh -c '… "$POSTGRES_USER" … "$POSTG
 # 1) Session interactive (recommandée pour toute MODIFICATION)
 docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
 #   dans psql :  \l (bases)  \dt (tables)  \d ai_models (colonnes)  \du (rôles)  \q (quitter)
-#   puis tes requêtes, ex. :
+#   puis les requêtes, ex. :
 #     SELECT id, model_label, status FROM ai_models ORDER BY id;
 #     BEGIN; UPDATE ai_models SET status='DEL' WHERE id IN (11,12); COMMIT;   -- ROLLBACK; pour annuler
 
@@ -717,7 +758,7 @@ Par tenant — les chemins hôte sont les valeurs `*_PATH` du `.env` (en prod :
 | `${OC_DATA_ROOT}/tenants/<id>/custom` | `backend:/app/custom` | config tenant, logs, MailCollect |
 | `${OC_DATA_ROOT}/tenants/<id>/docservers` | `backend:/app/docservers` | documents traités, modèles IA du tenant |
 | `${OC_DATA_ROOT}/tenants/<id>/share` | `backend:/app/share` | entrées (`entrant/`) et sorties (`export/`) |
-| `${OC_DATA_ROOT}/shared-by-tenants/shared-ai-models` | `backend:/app/instance/artificial_intelligence` | modèles IA partagés (rotate, contact) |
+| `${OC_DATA_ROOT}/shared-by-tenants/ai-models` | `backend:/app/instance/artificial_intelligence` | modèles IA partagés (rotate, contact) |
 | `${OC_DATA_ROOT}/shared-by-tenants/traefik/letsencrypt` | `traefik:/letsencrypt` | certificats Let's Encrypt (acme.json) |
 | `${OC_DATA_ROOT}/shared-by-tenants/traefik/certs` | `traefik:/certs` | certs TLS fournis par les clients (PEM) |
 
@@ -760,7 +801,7 @@ Par tenant — les chemins hôte sont les valeurs `*_PATH` du `.env` (en prod :
 - **`ENTRYPOINT` vs `CMD` / `command:`** : l'`ENTRYPOINT` est le programme lancé (ici toujours
   `docker-entrypoint.sh`) ; le `CMD`/`command:` lui passe des **arguments** (ici **le rôle** :
   `api`, `worker-splitter`…). Docker exécute `ENTRYPOINT + CMD` (cf. Annexe C).
-- **Bind mount** : tu mappes un **dossier précis de l'hôte** dans le conteneur — ici
+- **Bind mount** : on mappe un **dossier précis de l'hôte** dans le conteneur — ici
   `${OC_DATA_ROOT}/tenants/<id>/docservers` (hôte) ↔ `/app/docservers` (conteneur). Les fichiers sont
   **directement visibles et éditables sur l'hôte**. **C'est ce qu'utilise OpenCapture**
   (pgdata, custom, docservers, share). Comme c'est un dossier hôte, **`down -v` ne le supprime
@@ -770,7 +811,7 @@ Par tenant — les chemins hôte sont les valeurs `*_PATH` du `.env` (en prod :
   Plus portable, mais moins direct à inspecter. `down -v` **supprime** les volumes nommés
   (ici : le volume `letsencrypt` de Traefik).
 - *Les deux* **persistent hors de l'image** (un rebuild ne touche jamais aux données). La
-  seule différence : avec un **bind mount c'est toi** qui choisis le dossier hôte ; avec un
+  seule différence : avec un **bind mount c'est l'opérateur** qui choisit le dossier hôte ; avec un
   **volume nommé c'est Docker** qui décide où ranger les fichiers.
 - **`docker compose up -d`** : crée/démarre les conteneurs en arrière-plan (`-d` = *detached*)
   et **recrée** ceux dont la **config ou l'image a changé**. `down` les arrête ; **`down -v`
@@ -780,7 +821,7 @@ Par tenant — les chemins hôte sont les valeurs `*_PATH` du `.env` (en prod :
   (`backend`, `frontend`…) ; un **projet** = un groupe de services isolé (ici
   `opencapture_<id>`, d'où des conteneurs/volumes/réseau **préfixés**).
 - **Tag** : étiquette de version d'une image (`opencapture-backend:latest`). `latest` = la
-  dernière **construite**, pas forcément « à jour » si tu n'as pas rebuild.
+  dernière **construite**, pas forcément « à jour » en l'absence de rebuild.
 - **Registry / `pull` / `push`** : dépôt d'images distant (Docker Hub, GHCR…). `pull`
   télécharge, `push` envoie. Ici les images applicatives sont **construites localement** (pas
   de registry) ; seules `postgres`/`rabbitmq`/`traefik`/`node`/`nginx` sont *pull* depuis Docker Hub.
