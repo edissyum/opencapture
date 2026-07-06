@@ -24,6 +24,12 @@ from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_config_from_custom_id
 
 
+def get_data(datas, _key):
+    if _key in datas and datas[_key]:
+        return datas[_key]
+    return ''
+
+
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument("-c", "--custom-id", required=False, help="Identifier of the custom")
@@ -92,8 +98,8 @@ if __name__ == '__main__':
                 duns = None
 
             INFORMAL_CONTACT = False
-            if data[spreadsheet.referencial_supplier_array['informal_contact']] and \
-                    (data[spreadsheet.referencial_supplier_array['informal_contact']].lower() == 'true'):
+            informal = get_data(data, spreadsheet.referencial_supplier_array['informal_contact'])
+            if informal or informal.lower() == 'true':
                 INFORMAL_CONTACT = True
 
             if not vat_number and not duns and not INFORMAL_CONTACT:
@@ -132,9 +138,9 @@ if __name__ == '__main__':
                     log.debug('Address inserted : ' + str(address_id))
 
                 GET_ONLY_RAW_FOOTER = True
-                if data[spreadsheet.referencial_supplier_array['get_only_raw_footer']] and \
-                        (data[spreadsheet.referencial_supplier_array['get_only_raw_footer']] or
-                        data[spreadsheet.referencial_supplier_array['get_only_raw_footer']].lower() == 'true'):
+
+                get_only = get_data(data, spreadsheet.referencial_supplier_array['get_only_raw_footer'])
+                if get_only or get_only.lower() == 'true':
                     GET_ONLY_RAW_FOOTER = False
 
                 _vat = data
@@ -142,11 +148,10 @@ if __name__ == '__main__':
                     'table': 'accounts_supplier',
                     'columns': {
                         'vat_number': str(vat_number)[:20] if vat_number else None,
-                        'name': str(_vat[spreadsheet.referencial_supplier_array['name']]),
-                        'lastname': str(data[spreadsheet.referencial_supplier_array['lastname']]).strip(),
-                        'firstname': str(data[spreadsheet.referencial_supplier_array['firstname']]).strip(),
-                        'civility': str(data[spreadsheet.referencial_supplier_array['civility']]).strip(),
-                        'function': str(data[spreadsheet.referencial_supplier_array['function']]).strip(),
+                        'name': str(get_data(_vat, spreadsheet.referencial_supplier_array['name'])).strip(),
+                        'lastname': str(get_data(_vat, spreadsheet.referencial_supplier_array['lastname']).strip()),
+                        'firstname': str(get_data(_vat, spreadsheet.referencial_supplier_array['firstname']).strip()),
+                        'function': str(get_data(_vat, spreadsheet.referencial_supplier_array['function']).strip()),
                         'siren': str(_vat[spreadsheet.referencial_supplier_array['siren']]),
                         'siret': str(_vat[spreadsheet.referencial_supplier_array['siret']]),
                         'iban': str(_vat[spreadsheet.referencial_supplier_array['iban']]),
@@ -160,6 +165,11 @@ if __name__ == '__main__':
                         'default_currency': str(_vat[spreadsheet.referencial_supplier_array['default_currency']])
                     }
                 }
+
+                civility = get_data(_vat, spreadsheet.referencial_supplier_array['civility'])
+                if civility:
+                    args['columns']['civility'] = int(civility)
+
                 log.debug('Supplier data : ' + str(args['columns']))
 
                 for key in args['columns']:
@@ -239,11 +249,10 @@ if __name__ == '__main__':
                         'table': ['accounts_supplier'],
                         'set': {
                             'vat_number': str(vat_number)[:20] if vat_number else None,
-                            'name': str(data[spreadsheet.referencial_supplier_array['name']]).strip(),
-                            'lastname': str(data[spreadsheet.referencial_supplier_array['lastname']]).strip(),
-                            'firstname': str(data[spreadsheet.referencial_supplier_array['firstname']]).strip(),
-                            'civility': str(data[spreadsheet.referencial_supplier_array['civility']]).strip(),
-                            'function': str(data[spreadsheet.referencial_supplier_array['function']]).strip(),
+                            'name': str(get_data(data, spreadsheet.referencial_supplier_array['name'])).strip(),
+                            'lastname': str(get_data(data, spreadsheet.referencial_supplier_array['lastname'])).strip(),
+                            'firstname': str(get_data(data, spreadsheet.referencial_supplier_array['firstname'])).strip(),
+                            'function': str(get_data(data, spreadsheet.referencial_supplier_array['function'])).strip(),
                             'siren': str(data[spreadsheet.referencial_supplier_array['siren']]).strip(),
                             'siret': str(data[spreadsheet.referencial_supplier_array['siret']]).strip(),
                             'iban': str(data[spreadsheet.referencial_supplier_array['iban']]).strip(),
@@ -259,6 +268,10 @@ if __name__ == '__main__':
                         'where': ['vat_number = %s OR duns = %s' + (' OR email = %s' if INFORMAL_CONTACT and email else '')],
                         'data': [str(vat_number), str(duns)]
                     }
+
+                    civility = get_data(data, spreadsheet.referencial_supplier_array['civility'])
+                    if civility:
+                        args['set']['civility'] = int(civility)
 
                     if INFORMAL_CONTACT and email:
                         args['data'].append(str(email))
