@@ -24,7 +24,7 @@
 #   Certs client éventuels : déposer les PEM dans le dossier /certs
 #     (= ${OC_DATA_ROOT}/shared-by-tenants/traefik/certs ; prod
 #     OC_DATA_ROOT=/opt/edissyum/opencapture) + un fragment tls.yml PAR tenant
-#     dans /dynamic (cf. runbooks/03-tenant-cert.sh et
+#     dans /dynamic (cf. runbooks/03-tenant-cert.md et
 #     stub-tenants/_template-cert/tls.yml.example).
 #
 # Usage :

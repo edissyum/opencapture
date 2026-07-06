@@ -8,7 +8,7 @@
 # Le daemon est le MÊME pour tous les modes ; ce qui change, c'est cet
 # overlay. Alternative HTTPS : docker-compose.traefik.yml (labels TLS +
 # certresolver=myresolver -> Let's Encrypt). Cert client : overlay
-# docker-compose.traefik-cert.yml (tls=true sans certresolver, cf. runbooks/03-tenant-cert.sh).
+# docker-compose.traefik-cert.yml (tls=true sans certresolver, cf. runbooks/03-tenant-cert.md).
 #
 # Pré-requis :
 #   docker network create frontend     # une fois

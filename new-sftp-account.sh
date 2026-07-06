@@ -11,7 +11,7 @@
 # Usage (en root sur le serveur, depuis le dépôt) :
 #   sudo ./new-sftp-account.sh <id>
 #
-# Prérequis : runbooks/05-sftp-server.sh joué une fois (ProFTPD installé,
+# Prérequis : runbooks/05-sftp-server.md joué une fois (ProFTPD installé,
 # /etc/proftpd/ftpd.passwd en place).
 
 set -euo pipefail

@@ -6,7 +6,7 @@
 # domaine -> UN SEUL démon smbd, un partage [<id>] par tenant sur
 # ${OC_DATA_ROOT}/tenants/<id>/share, fichiers forcés sur le compte de service OpenCapture
 # ($APP_UID/$APP_GID) -> lisibles ET supprimables par le fs-watcher. Détail :
-# infra-host/smb/README.md. (Même esprit que le SFTP : runbooks/05-sftp-server.sh.)
+# infra-host/smb/README.md. (Même esprit que le SFTP : runbooks/05-sftp-server.md.)
 #
 # Prérequis : infra installée (01) ; tenants créés (new-tenant.sh + deploy.sh).
 

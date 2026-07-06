@@ -6,11 +6,11 @@ d'exposition selon le TLS. Données hors repo, sous `$OC_DATA_ROOT` (p. ex. `/op
 
 | Doc / script | Rôle |
 |---|---|
-| [01-install-general.sh](01-install-general.sh) | commandes d'installation infra (Docker + Traefik) |
-| [02-tenant-letsencrypt.sh](02-tenant-letsencrypt.sh) / [03-tenant-cert.sh](03-tenant-cert.sh) / [04-tenant-http.sh](04-tenant-http.sh) | runbooks par mode (création + exploitation) |
-| [05-sftp-server.sh](05-sftp-server.sh) | serveur SFTP multi-tenant (ProFTPD `mod_sftp`) — install + ajout d'un tenant |
-| [06-webdav-server.sh](06-webdav-server.sh) | serveur WebDAV multi-tenant (Apache `mod_dav`) — exploitation + ajout d'un tenant |
-| [07-smb-server.sh](07-smb-server.sh) | serveur SMB multi-tenant (Samba standalone) — install + ajout d'un tenant |
+| [01-install-general.md](01-install-general.md) | commandes d'installation infra (Docker + Traefik) |
+| [02-tenant-letsencrypt.md](02-tenant-letsencrypt.md) / [03-tenant-cert.md](03-tenant-cert.md) / [04-tenant-http.md](04-tenant-http.md) | runbooks par mode (création + exploitation) |
+| [05-sftp-server.md](05-sftp-server.md) | serveur SFTP multi-tenant (ProFTPD `mod_sftp`) — install + ajout d'un tenant |
+| [06-webdav-server.md](06-webdav-server.md) | serveur WebDAV multi-tenant (Apache `mod_dav`) — exploitation + ajout d'un tenant |
+| [07-smb-server.md](07-smb-server.md) | serveur SMB multi-tenant (Samba standalone) — install + ajout d'un tenant |
 | [../new-tenant.sh](../new-tenant.sh) | crée le stub d'un tenant (copie le gabarit + pré-remplit le `.env`) |
 | [../new-sftp-account.sh](../new-sftp-account.sh) | crée l'accès SFTP d'un tenant (compte virtuel chrooté) |
 | [../new-webdav-account.sh](../new-webdav-account.sh) | crée l'accès WebDAV d'un tenant (compte htpasswd) |
@@ -21,7 +21,7 @@ d'exposition selon le TLS. Données hors repo, sous `$OC_DATA_ROOT` (p. ex. `/op
 
 ## 1. Installation générale (une fois par serveur)
 
-**Tout est dans [01-install-general.sh](01-install-general.sh)** — à dérouler **une seule
+**Tout est dans [01-install-general.md](01-install-general.md)** — à dérouler **une seule
 fois par serveur**, **ligne par ligne** (ne PAS exécuter d'un bloc : c'est une référence à
 copier-coller). Il couvre, dans l'ordre :
 
@@ -306,7 +306,7 @@ chrootés, mappés sur `$APP_UID/$APP_GID`.
 
 ```bash
 # Une fois par serveur : install ProFTPD mod_sftp (cf. runbook : clés, pare-feu)
-sudo bash runbooks/05-sftp-server.sh        # à jouer pas-à-pas, pas d'un bloc
+sudo bash runbooks/05-sftp-server.md        # à jouer pas-à-pas, pas d'un bloc
 
 # Par tenant (aucun reload nécessaire) :
 sudo ./new-sftp-account.sh <id>              # crée le compte virtuel chrooté
@@ -342,7 +342,7 @@ sudo ./new-webdav-account.sh <id>           # login = <id> ; demande le mot de p
 # Connexion client : monter https://<fqdn>/dav/ comme lecteur réseau.
 ```
 
-Détail du design et exploitation : [06-webdav-server.sh](06-webdav-server.sh) +
+Détail du design et exploitation : [06-webdav-server.md](06-webdav-server.md) +
 [../infra/webdav/README.md](../infra/webdav/README.md).
 
 ---
@@ -360,23 +360,23 @@ certificat** à gérer.
 
 ```bash
 # Une fois par serveur : install Samba (cf. runbook : compte de service, 445, conf)
-sudo bash runbooks/07-smb-server.sh         # à jouer pas-à-pas, pas d'un bloc
+sudo bash runbooks/07-smb-server.md         # à jouer pas-à-pas, pas d'un bloc
 
 # Par tenant (pas de restart, reload à chaud) :
 sudo ./new-smb-account.sh <id>              # crée le compte local + le partage [<id>]
 # Connexion client : \\<serveur>\<id>  (ou \\<domaine-client>\<id>), identifiants <id>
 ```
 
-Détail du design et exploitation : [07-smb-server.sh](07-smb-server.sh) +
+Détail du design et exploitation : [07-smb-server.md](07-smb-server.md) +
 [../infra-host/smb/README.md](../infra-host/smb/README.md).
 
 ---
 
 ## Voir aussi
-- Runbooks par mode : [02-tenant-letsencrypt.sh](02-tenant-letsencrypt.sh), [03-tenant-cert.sh](03-tenant-cert.sh), [04-tenant-http.sh](04-tenant-http.sh)
-- Serveur SFTP : [05-sftp-server.sh](05-sftp-server.sh) + [../infra-host/sftp/README.md](../infra-host/sftp/README.md)
-- Serveur WebDAV : [06-webdav-server.sh](06-webdav-server.sh) + [../infra/webdav/README.md](../infra/webdav/README.md)
-- Serveur SMB : [07-smb-server.sh](07-smb-server.sh) + [../infra-host/smb/README.md](../infra-host/smb/README.md)
+- Runbooks par mode : [02-tenant-letsencrypt.md](02-tenant-letsencrypt.md), [03-tenant-cert.md](03-tenant-cert.md), [04-tenant-http.md](04-tenant-http.md)
+- Serveur SFTP : [05-sftp-server.md](05-sftp-server.md) + [../infra-host/sftp/README.md](../infra-host/sftp/README.md)
+- Serveur WebDAV : [06-webdav-server.md](06-webdav-server.md) + [../infra/webdav/README.md](../infra/webdav/README.md)
+- Serveur SMB : [07-smb-server.md](07-smb-server.md) + [../infra-host/smb/README.md](../infra-host/smb/README.md)
 - Architecture multi-tenant : [../infra/MULTITENANT.md](../infra/MULTITENANT.md)
 - **Annexes techniques** (rebuild, multi-stage, rôles de l'image, pipeline, commandes par conteneur, glossaire) : ci-dessous dans ce document.
 
@@ -540,7 +540,7 @@ le réseau externe `frontend` et pose une route `Host(${OC_FQDN})` TLS (resolver
 Le seul point d'entrée public est Traefik (les autres services restent sur le réseau interne).
 
 ### TLS — certificat fourni par le client (servi par SNI)
-Procédure : section 2 ci-dessus + [03-tenant-cert.sh](03-tenant-cert.sh). Principe : Traefik
+Procédure : section 2 ci-dessus + [03-tenant-cert.md](03-tenant-cert.md). Principe : Traefik
 choisit le certificat au handshake TLS **par SNI** (le nom demandé par le navigateur), pas
 par la règle `Host()` ; il suffit donc que le **SAN** du cert couvre exactement l'`OC_FQDN`,
 et le routeur du tenant porte `tls=true` **sans** `certresolver` (overlay

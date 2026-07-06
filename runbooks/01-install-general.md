@@ -107,10 +107,10 @@ docker ps --filter name=opencapture_traefik
 docker logs -f opencapture_traefik
 docker compose -f infra/docker-compose.traefik-server.yml restart
 
-# SFTP multi-tenant -> runbooks/05-sftp-server.sh
+# SFTP multi-tenant -> runbooks/05-sftp-server.md
 # (ProFTPD mod_sftp, comptes virtuels chrootés mappés sur $APP_UID/$APP_GID ;
 #  voir infra-host/sftp/README.md). À faire après avoir créé les tenants.
 #
-# SMB/Samba multi-tenant -> runbooks/07-smb-server.sh
+# SMB/Samba multi-tenant -> runbooks/07-smb-server.md
 # (Samba standalone, comptes locaux + partage [<id>] forcé sur $APP_UID/$APP_GID ;
 #  voir infra-host/smb/README.md). À faire après avoir créé les tenants.
