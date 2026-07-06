@@ -178,9 +178,21 @@ ensure_custom_ini_entry() {
             [ -n "${OC_FQDN:-}" ] && echo "url = ${OC_FQDN}"
             echo
         } >> "${CUSTOM_INI}"
-    elif [ -n "${OC_FQDN:-}" ] && ! grep -A 3 "^\[${CUSTOM_ID}\]" "${CUSTOM_INI}" | grep -q "^url = "; then
-        log "patching [${CUSTOM_ID}] in ${CUSTOM_INI} with url = ${OC_FQDN}"
-        sed -i "/^\[${CUSTOM_ID}\]/a url = ${OC_FQDN}" "${CUSTOM_INI}"
+    elif [ -n "${OC_FQDN:-}" ]; then
+        # La section existe. On garantit que `url` COLLE à OC_FQDN :
+        #   - absente        -> on l'ajoute ;
+        #   - présente/diff.  -> on la met à jour (sinon un changement de FQDN via
+        #                        .env ne se propagerait pas : sans ça l'accès clean
+        #                        URL resterait sur l'ancien domaine).
+        # custom.ini est MONO-SECTION par tenant en Docker (docker-bootstrap le
+        # régénère pour ce seul tenant), donc remplacer la ligne `url` est sûr.
+        if ! grep -A 3 "^\[${CUSTOM_ID}\]" "${CUSTOM_INI}" | grep -q "^url = "; then
+            log "patching [${CUSTOM_ID}] in ${CUSTOM_INI} with url = ${OC_FQDN}"
+            sed -i "/^\[${CUSTOM_ID}\]/a url = ${OC_FQDN}" "${CUSTOM_INI}"
+        elif ! grep -qx "url = ${OC_FQDN}" "${CUSTOM_INI}"; then
+            log "updating url in [${CUSTOM_ID}] -> ${OC_FQDN}"
+            sed -i "s|^url = .*|url = ${OC_FQDN}|" "${CUSTOM_INI}"
+        fi
     fi
 }
 ensure_custom_ini_entry
