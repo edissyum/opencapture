@@ -37,10 +37,10 @@ case "$id" in
         exit 2 ;;
 esac
 
-# uid/gid + racine des données : depuis le .env racine (défauts 1050 / /opt/edissyum/opencapture).
+# uid/gid + racine des données : depuis le .env racine (défauts 1000 / /opt/edissyum/opencapture).
 root_env="$REPO_ROOT/.env"
-app_uid="$(grep -m1 '^APP_UID=' "$root_env" 2>/dev/null | cut -d= -f2 || true)"; app_uid="${app_uid:-1050}"
-app_gid="$(grep -m1 '^APP_GID=' "$root_env" 2>/dev/null | cut -d= -f2 || true)"; app_gid="${app_gid:-1050}"
+app_uid="$(grep -m1 '^APP_UID=' "$root_env" 2>/dev/null | cut -d= -f2 || true)"; app_uid="${app_uid:-1000}"
+app_gid="$(grep -m1 '^APP_GID=' "$root_env" 2>/dev/null | cut -d= -f2 || true)"; app_gid="${app_gid:-1000}"
 oc_root="$(grep -m1 '^OC_DATA_ROOT=' "$root_env" 2>/dev/null | cut -d= -f2- || true)"; oc_root="${oc_root:-/opt/edissyum/opencapture}"
 
 share="$oc_root/tenants/$id/share"

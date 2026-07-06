@@ -8,14 +8,14 @@
 set -euo pipefail
 
 # ------------------------------------------------------------
-# Privilege drop (UID/GID pilotés par l'env, défaut 1050).
+# Privilege drop (UID/GID pilotés par l'env, défaut 1000).
 # L'image démarre en root pour pouvoir chown les bind mounts que
 # Docker vient de créer en root, puis re-exec ce même script via
 # gosu sous le compte de service. Au 2e passage on tourne déjà en
 # APP_UID (id -u != 0) donc le bloc est sauté.
 # ------------------------------------------------------------
-APP_UID="${APP_UID:-1050}"
-APP_GID="${APP_GID:-1050}"
+APP_UID="${APP_UID:-1000}"
+APP_GID="${APP_GID:-1000}"
 APP_USER="${APP_USER:-opencapture}"
 
 if [ "$(id -u)" = "0" ]; then

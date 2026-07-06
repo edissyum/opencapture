@@ -38,7 +38,7 @@ services:
             TZ: ${TZ:-Europe/Paris}
         # Compte de service OpenCapture -> les fichiers déposés sont en
         # APP_UID:APP_GID, donc lisibles ET supprimables par le fs-watcher.
-        user: "${APP_UID:-1050}:${APP_GID:-1050}"
+        user: "${APP_UID:-1000}:${APP_GID:-1000}"
         volumes:
             # Le share du tenant = racine WebDAV (servi sous /dav par Apache).
             - ${SHARE_PATH:-${OC_DATA_ROOT:-../data}/tenants/${CUSTOM_ID:-default}/share}:/data

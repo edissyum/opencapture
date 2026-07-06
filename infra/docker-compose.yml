@@ -28,10 +28,10 @@ x-backend-build: &backend-build
         context: ..
         dockerfile: infra/backend.Dockerfile
         args:
-            # Compte de service baké dans l'image (défaut 1050). Image
+            # Compte de service baké dans l'image (défaut 1000). Image
             # partagée par tous les tenants -> un seul APP_UID global.
-            APP_UID:  ${APP_UID:-1050}
-            APP_GID:  ${APP_GID:-1050}
+            APP_UID:  ${APP_UID:-1000}
+            APP_GID:  ${APP_GID:-1000}
             APP_USER: ${APP_USER:-opencapture}
 
 x-backend-env: &backend-env
@@ -41,8 +41,8 @@ x-backend-env: &backend-env
     TZ:                  ${TZ:-Europe/Paris}
     # UID/GID cible relu par docker-entrypoint.sh au runtime (drop gosu
     # + chown des mounts). Surchargeable sans rebuild.
-    APP_UID:             ${APP_UID:-1050}
-    APP_GID:             ${APP_GID:-1050}
+    APP_UID:             ${APP_UID:-1000}
+    APP_GID:             ${APP_GID:-1000}
     APP_USER:            ${APP_USER:-opencapture}
     # FQDN du tenant. Utilisé par docker-bootstrap.sh pour écrire
     # `url = ${OC_FQDN}` dans custom.ini -> permet l'accès clean URL
@@ -75,7 +75,7 @@ x-backend-volumes: &backend-volumes
     - ${SHARE_PATH:-${OC_DATA_ROOT:-../data}/tenants/${CUSTOM_ID:-default}/share}:/app/share
     # Modèles IA PARTAGÉS (rotate_document.pt + contact/), déposés depuis l'hôte.
     # rotate est seedé au bootstrap si absent ; contact vide => IA contact désactivée.
-    - ${SHARED_AI_MODELS_PATH:-${OC_DATA_ROOT:-../data}/shared-by-tenants/shared-ai-models}:/app/instance/artificial_intelligence
+    - ${SHARED_AI_MODELS_PATH:-${OC_DATA_ROOT:-../data}/shared-by-tenants/ai-models}:/app/instance/artificial_intelligence
 
 
 # --- QoS : profils de ressources ------------------------------------------
@@ -286,5 +286,5 @@ services:
 # Docker auto-crée les dossiers hôte s'ils n'existent pas.
 # Chemins dérivés d'UNE variable .env : OC_DATA_ROOT (défaut ../data en dev).
 #   -> ${OC_DATA_ROOT}/tenants/${CUSTOM_ID}/{pgdata,rabbitmq,custom,docservers,share}
-#   -> ${OC_DATA_ROOT}/shared-by-tenants/shared-ai-models
+#   -> ${OC_DATA_ROOT}/shared-by-tenants/ai-models
 # Override ponctuel possible via un *_PATH explicite (PGDATA_PATH, etc.).

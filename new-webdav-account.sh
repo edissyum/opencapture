@@ -57,14 +57,14 @@ fi
 # uid/gid = compte de service du TENANT. Le conteneur webdav tourne en APP_UID
 # du tenant (son .env) ; le htpasswd (chmod 600) doit lui appartenir, sinon
 # Apache ne peut pas le lire. On lit donc le .env du tenant EN PRIORITÉ, puis le
-# .env racine, puis défaut 1050. (test1 = 1000 alors que le .env racine = 1050.)
+# .env racine, puis défaut 1000 (réglé sur id -u par 01-install / new-tenant.sh).
 app_uid=""; app_gid=""
 for env_file in "$REPO_ROOT/stub-tenants/$id/.env" "$REPO_ROOT/.env"; do
     [ -f "$env_file" ] || continue
     [ -n "$app_uid" ] || app_uid="$(grep -m1 '^APP_UID=' "$env_file" | cut -d= -f2 || true)"
     [ -n "$app_gid" ] || app_gid="$(grep -m1 '^APP_GID=' "$env_file" | cut -d= -f2 || true)"
 done
-app_uid="${app_uid:-1050}"; app_gid="${app_gid:-1050}"
+app_uid="${app_uid:-1000}"; app_gid="${app_gid:-1000}"
 
 # Racine des données : .env du tenant en priorité, sinon racine, sinon défaut prod.
 oc_root=""

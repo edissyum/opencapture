@@ -13,7 +13,13 @@ passwd edissyum
 
 # Se connecter à partir de maintenant en edissyum
 
-# Racine des données hors repo — UNE variable (à reporter dans le .env : OC_DATA_ROOT).
+# ===================== OC_DATA_ROOT : LA variable qui fait foi =====================
+# Racine UNIQUE des données hors repo. C'est la SEULE valeur à décider par serveur ;
+# tout en découle (.env global ci-dessous, arborescence, Traefik, .env de chaque
+# tenant via new-tenant.sh, volumes des conteneurs). À ADAPTER au serveur avant de
+# continuer (prod : /opt/edissyum/opencapture ; ex. VM : /var/edissyum/opencapture).
+# NB : docker compose privilégie cette variable EXPORTÉE sur le .env -> la garder
+# exportée dans la session (d'où le source ci-dessous).
 echo 'export OC_DATA_ROOT=/opt/edissyum/opencapture' >> ~/.bashrc
 source ~/.bashrc
 
@@ -62,7 +68,7 @@ cd opencapture_docker
 
 # Arborescence des données hors repo (par tenant + partagé)
 sudo mkdir -p "$OC_DATA_ROOT/tenants"
-sudo mkdir -p "$OC_DATA_ROOT/shared-by-tenants/shared-ai-models"
+sudo mkdir -p "$OC_DATA_ROOT/shared-by-tenants/ai-models"
 sudo mkdir -p "$OC_DATA_ROOT/shared-by-tenants/traefik/dynamic"
 sudo mkdir -p "$OC_DATA_ROOT/shared-by-tenants/traefik/certs"
 sudo mkdir -p "$OC_DATA_ROOT/shared-by-tenants/traefik/letsencrypt"

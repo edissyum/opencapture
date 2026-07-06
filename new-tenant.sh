@@ -54,19 +54,27 @@ sed -i \
     -e "s/^RABBITMQ_USER=.*/RABBITMQ_USER=$id/" \
     "$dst/.env"
 
-# Les chemins de données ne sont PLUS écrits ici : ils dérivent de OC_DATA_ROOT
-# (déjà dans le gabarit) + CUSTOM_ID, résolus dans infra/docker-compose.yml :
-#   ${OC_DATA_ROOT}/tenants/$id/{pgdata,rabbitmq,custom,docservers,share,webdav}
-oc_root="$(grep -m1 '^OC_DATA_ROOT=' "$dst/.env" | cut -d= -f2- || true)"
-oc_root="${oc_root:-/opt/edissyum/opencapture}"
+# --- OC_DATA_ROOT : défini à l'install serveur (runbooks/01-install -> bashrc) --
+# C'est la SEULE source de vérité ; tout le reste en découle. docker compose donne
+# la priorité à la variable EXPORTÉE sur le .env, donc on reprend $OC_DATA_ROOT
+# (bashrc) ; repli sur le .env global (qu'01-install renseigne depuis ce même
+# bashrc). Écrire la valeur dans le .env du stub le rend cohérent et sert de repli
+# quand compose tourne sans l'export (cron, sudo, shell non-login).
+global_env="$REPO_ROOT/.env"
+oc_root="${OC_DATA_ROOT:-}"
+[ -z "$oc_root" ] && [ -f "$global_env" ] && \
+    oc_root="$(grep -m1 '^OC_DATA_ROOT=' "$global_env" | cut -d= -f2- || true)"
+if [ -n "$oc_root" ]; then
+    sed -i "s#^OC_DATA_ROOT=.*#OC_DATA_ROOT=$oc_root#" "$dst/.env"   # '#' : la valeur contient des '/'
+else
+    echo "    ⚠ OC_DATA_ROOT introuvable (ni env bashrc ni .env global) : défaut du gabarit conservé." >&2
+    oc_root="$(grep -m1 '^OC_DATA_ROOT=' "$dst/.env" | cut -d= -f2-)"
+fi
 
 # --- APP_UID/APP_GID : repris du .env GLOBAL, JAMAIS du défaut du gabarit ------
-# L'image backend est PARTAGÉE et bâtie avec l'APP_UID du .env global : elle bake
-# /app (= HOME du compte de service) à cet uid. Si un tenant tourne avec un autre
-# uid, /app n'est plus inscriptible -> matplotlib/fontconfig en erreur (HOME),
-# et les fichiers déposés ne matchent plus le process. On force donc la valeur
-# globale pour que TOUS les tenants soient cohérents avec l'image.
-global_env="$REPO_ROOT/.env"
+# L'image backend est PARTAGÉE et bâtie avec l'APP_UID du .env global : /app
+# (= HOME du compte de service) est baké à cet uid. Un tenant à un autre uid ->
+# /app non inscriptible (matplotlib/fontconfig en erreur) et fichiers hors-uid.
 if [ -f "$global_env" ]; then
     g_uid="$(grep -m1 '^APP_UID=' "$global_env" | cut -d= -f2- || true)"
     g_gid="$(grep -m1 '^APP_GID=' "$global_env" | cut -d= -f2- || true)"
@@ -90,7 +98,7 @@ echo "      - RABBITMQ_PASS      : mot de passe RabbitMQ (fort)"
 echo
 echo "    Pré-remplis depuis l'id (à vérifier) :"
 echo "      - CUSTOM_ID=$id, POSTGRES_DB=opencapture_$id, POSTGRES_USER=$id, RABBITMQ_USER=$id"
-echo "      - données : $oc_root/tenants/$id/{pgdata,rabbitmq,custom,docservers,share} (via OC_DATA_ROOT)"
+echo "      - OC_DATA_ROOT=$oc_root (repris du bashrc/.env global) -> données : $oc_root/tenants/$id/{pgdata,rabbitmq,custom,docservers,share}"
 echo "      - APP_UID=${g_uid:-<gabarit>}, APP_GID=${g_gid:-<gabarit>} (repris du .env global)"
 
 if [ "$mode" = "cert" ]; then
