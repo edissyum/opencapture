@@ -1186,7 +1186,7 @@ export function SplitterViewerPage() {
                             >
                                 <div
                                     onClick={ () => attachmentsCount === 0 && !disabledBatch && !certifiedCopy && addDocument() }
-                                    className={ 'flex items-center gap-1' }>
+                                    className='flex items-center gap-1'>
                                     <Plus size={ 16 }/>
                                     { t('SPLITTER.add_document') }
                                 </div>

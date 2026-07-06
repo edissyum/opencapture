@@ -90,6 +90,7 @@ export function Login() {
                 }
             });
         }
+
         if (custom) {
             fetchLoginMessage().then();
             fetchEnabledMethod().then();
@@ -196,11 +197,16 @@ export function Login() {
                                     <div className='flex-col gap-4 transition-all'>
                                         <span className='text-(--color-primary)'>{ t('AUTH.usage_guide') }</span>
 
-                                        <a target="_blank"
-                                           href="https://edissyum.gitbook.io/open-capture-v4/utilisation/introduction"
-                                           className="text-(--text-secondary) font-normal text-sm flex gap-2 items-center cursor-pointer">
-                                            { t('AUTH.see_guide') }
-                                            <ArrowRight size={ 16 }/>
+                                        <a target='_blank'
+                                           href="https://edissyum.gitbook.io/open-capture-v4/utilisation/introduction">
+                                            <Button
+                                                size='sm'
+                                                variant='bg_white'
+                                                className="px-3 font-medium text-(--text-primary)"
+                                            >
+                                                { t('AUTH.see_guide') }
+                                                <ArrowRight size={ 16 }/>
+                                            </Button>
                                         </a>
 
                                         <div className='w-full h-full'>
@@ -209,7 +215,7 @@ export function Login() {
                                                 alt="Guide Preview"
                                                 className={ `absolute left-48 top-80 rounded-md scale-200 rotate-[8deg]
                                                              transition-all ease-[cubic-bezier(0.22,1,0.36,1)]
-                                                            ${ fade ? "opacity-100" : "opacity-0" }` }
+                                                             ${ fade ? "opacity-100" : "opacity-0" }` }
                                             />
                                         </div>
                                     </div>
@@ -256,8 +262,9 @@ export function Login() {
                                 <DynamicForm errors={ errors } control={ control } schema={ loginSchema }/>
 
                                 <div className="text-center">
-                                    <Button disabled={ !custom || !watchLogin || !watchPassword || Object.keys(errors).length > 0 }
-                                            type='submit' loading={ loadingLogin } className="w-full">
+                                    <Button
+                                        disabled={ !custom || !watchLogin || !watchPassword || Object.keys(errors).length > 0 }
+                                        type='submit' loading={ loadingLogin } className="w-full">
                                         { t('AUTH.login') }
                                     </Button>
                                     { !custom &&

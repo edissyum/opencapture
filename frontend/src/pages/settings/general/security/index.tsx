@@ -336,7 +336,7 @@ export function SettingsGeneralSecurity() {
 
     return (
         <div className="p-6 bg-(--bg-secondary) h-full overflow-auto">
-            <h3 className={ 'font-semibold text-(--text-primary)' }>
+            <h3 className='font-semibold text-(--text-primary)'>
                 { t('SECURITY.generate_auth_token') }
             </h3>
             <div onClick={ () => navigate('/settings/general/security/token') }

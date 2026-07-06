@@ -504,8 +504,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
 
                                     <Tooltip id="tooltip-1" place="right">
                                         <div className="flex flex-col gap-2 max-w-xs">
-                                            <img src={ '/imgs/regex_hint.svg' } className={ 'rounded-md' }
-                                                 alt={ 'Hint' }/>
+                                            <img src='/imgs/regex_hint.svg' className='rounded-md' alt='Hint'/>
                                             <div className='px-2'>
                                                 <p className='font-semibold mb-1'>{ t('REGEX.remove_keyword_title') }</p>
                                                 <span>{ t('REGEX.remove_keyword_hint') }</span>
@@ -539,7 +538,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                                     </h1>
 
                                     { watchTest && (
-                                        <div className={ 'mt-2 p-4 rounded-md w-fit' }>
+                                        <div className='mt-2 p-4 rounded-md w-fit'>
                                             <div dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(highlightedResult) } }/>
                                         </div>
                                     ) }
@@ -552,7 +551,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
             {/* watch need to match select or checkbox */ }
             { (watchType === 'select' || watchType === 'checkbox') && (
                 <div className='px-8'>
-                    <div className={ 'flex justify-between items-center' }>
+                    <div className='flex justify-between items-center'>
                         <h1 className="text-lg font-semibold mb-4 mt-6">
                             { t('CUSTOM-FIELDS.choices') }
                         </h1>
@@ -586,7 +585,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                                 setActiveAccordionIndexes([]);
                             }
                         } }
-                        className={ 'max-h-120 overflow-y-auto border-(--border-secondary)' }
+                        className='max-h-120 overflow-y-auto border-(--border-secondary)'
                     >
                         { selectOptions.map((option, index) => (
                             <AccordionTab key={ index } header={

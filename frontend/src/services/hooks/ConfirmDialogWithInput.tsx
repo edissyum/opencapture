@@ -58,7 +58,7 @@ export function showConfirmDialogWithInput({
 
         return (
             <div className="flex flex-col gap-3">
-                <div className={ `flex gap-4 text-(--text-secondary)` }>
+                <div className='flex gap-4 text-(--text-secondary)'>
                     { icon && <div className="flex justify-center">{ icon }</div> }
                     <span dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(message) } }/>
                 </div>

@@ -193,7 +193,7 @@ export function AboutPage() {
                                         https://edissyum.gitbook.io/open-capture
                                     </a>
                                 </div>
-                                <div className={ `${ classes }` }>
+                                <div className={ classes }>
                                     <p className='w-1/3'>{ t('ABOUT.support') }</p>
                                     <a className='text-(--color-primary)'
                                        href='https://github.com/edissyum/opencapture/issues' target='_blank'>

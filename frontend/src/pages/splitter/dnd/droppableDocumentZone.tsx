@@ -89,7 +89,7 @@ export function DroppableDocumentZone({
                         { virtualItems.map((virtualItem) => {
                             const page = pages[virtualItem.index];
                             return (
-                                <div key={ page.id } className={ `absolute top-0` }
+                                <div key={ page.id } className='absolute top-0'
                                      style={ {
                                          left: virtualItem.start,
                                          width: virtualItem.size - 12
