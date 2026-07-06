@@ -34,7 +34,7 @@ de domaine. → **multi-tenant trivial sur une seule IP**, sans aucun certificat
 | Protocole | **SFTP** (port 2222), service unique partagé |
 | Identité serveur | **Clé d'hôte SSH** partagée (TOFU côté client) |
 | Comptes | **Virtuels** (`/etc/proftpd/ftpd.passwd`), un par tenant, chroot sur son `share` |
-| Identité fichiers | **`$APP_UID:$APP_GID`** (compte de service OpenCapture, défaut 1050) |
+| Identité fichiers | **`$APP_UID:$APP_GID`** (compte de service OpenCapture, défaut 1000) |
 | Auth | mot de passe et/ou clé publique (`authorized_keys/<id>`) |
 
 ## Fichiers
