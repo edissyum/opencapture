@@ -49,6 +49,21 @@ UPDATE workflows SET input = REPLACE(REPLACE(input::text, :'share_src' || '/', '
 UPDATE workflows SET input = jsonb_set(input, '{input_folder}',
         to_jsonb(regexp_replace(btrim(input->>'input_folder'), '/{2,}', '/', 'g')))
  WHERE input ? 'input_folder' AND input->>'input_folder' IS NOT NULL;
+-- Collapse du nesting hérité v3 : certains input_folder valaient
+-- /var/share/<cid>/<cid>/entrant/splitter/ ; après le rewrite /var/share->/app/share
+-- il reste /app/share/<cid>/<cid>/entrant/... incompatible avec le layout conteneur
+-- (/app/share/{entrant,export}/...). On supprime tout segment entre /app/share/ et
+-- entrant|export. Les chemins déjà propres (/app/share/entrant/...) ne matchent pas.
+UPDATE workflows SET input = jsonb_set(input, '{input_folder}',
+        to_jsonb(regexp_replace(input->>'input_folder', '^/app/share/.+/(entrant|export)/', '/app/share/\1/')))
+ WHERE input ? 'input_folder' AND input->>'input_folder' ~ '^/app/share/.+/(entrant|export)/';
+-- Puis : un input_folder retombé sur la BASE nue (/app/share/entrant/{splitter,verifier})
+-- surveillerait le parent de TOUS les sous-dossiers des autres workflows -> double
+-- traitement. On le rattache au sous-dossier 'default/' (créé par le bootstrap et
+-- surveillé par le template watcher.ini). Cas typique : le default_workflow splitter v3.
+UPDATE workflows SET input = jsonb_set(input, '{input_folder}',
+        to_jsonb(rtrim(input->>'input_folder', '/') || '/default/'))
+ WHERE input->>'input_folder' ~ '^/app/share/entrant/(splitter|verifier)/?$';
 
 -- 5) outputs/outputs_types : dossier de sortie -> /app/share/export/<module>/
 UPDATE outputs SET data = jsonb_set(data, '{options,parameters,0,value}', to_jsonb('/app/share/export/verifier/'::text))
@@ -59,3 +74,41 @@ UPDATE outputs_types SET data = jsonb_set(data, '{options,parameters,0,placehold
  WHERE data #>>'{options,parameters,0,id}' = 'folder_out' AND module = 'verifier';
 UPDATE outputs_types SET data = jsonb_set(data, '{options,parameters,0,placeholder}', to_jsonb('/app/share/export/splitter/'::text))
  WHERE data #>>'{options,parameters,0,id}' = 'folder_out' AND module = 'splitter';
+
+-- 6) form_models_field : normaliser metadata_key null -> "" ------------------
+--    En 3.6.x, les champs splitter non liés à une métadonnée portent
+--    `metadata_key: null`. L'éditeur de formulaire v4 fait
+--    `Object.values(field).filter(v => typeof v !== 'boolean').map(mapField)`
+--    (frontend Editor.tsx) : la valeur `null` (typeof 'object') passe le filtre
+--    -> `mapField(null)` lit `null.id` -> l'ouverture du formulaire crashe
+--    (« Cannot read properties of null (reading 'id') »). La v3 tolérait le null.
+--    `""` est la valeur « non lié » attendue par la v4. Ciblé sur metadata_key
+--    (propriété de champ, jamais imbriquée) pour ne PAS toucher les null internes
+--    légitimes (ex. settings.regex). À étendre ici si d'autres clés de champ
+--    v3 arrivent en null au niveau supérieur.
+UPDATE form_models_field
+   SET fields = regexp_replace(fields::text, '"metadata_key"\s*:\s*null', '"metadata_key": ""', 'g')::jsonb
+ WHERE fields::text ~ '"metadata_key"\s*:\s*null';
+
+-- 7) form_models_field (SPLITTER) : re-emballer les champs metadata "flat" en LIGNES
+--    La v3 stocke batch_metadata/document_metadata = [champ, champ] (champs à plat).
+--    L'éditeur v4 attend des LIGNES : [[champ], [champ]] (il fait
+--    zone.lines.map(l => l.fields.map(...)) à la sauvegarde, et Object.values(ligne)
+--    au chargement -- cf. frontend Editor.tsx). Sans le niveau ligne, les zones
+--    « Métadonnées du lot/document » s'affichent VIDES (et un metadata_key null exposé
+--    comme valeur de ligne faisait crasher l'éditeur). On emballe chaque champ dans sa
+--    propre ligne (1 champ/ligne) ; l'utilisateur peut regrouper ensuite dans l'UI.
+--    Idempotent : ne touche que les zones dont les éléments sont des objets (= flat) ;
+--    une zone déjà en lignes (éléments = tableaux) ou vide n'est pas retouchée.
+UPDATE form_models_field ff
+   SET fields = jsonb_set(ff.fields, '{batch_metadata}',
+        (SELECT jsonb_agg(jsonb_build_array(e)) FROM jsonb_array_elements(ff.fields->'batch_metadata') e))
+  FROM form_models fm
+ WHERE fm.id = ff.form_id AND fm.module = 'splitter'
+   AND jsonb_typeof((ff.fields->'batch_metadata')->0) = 'object';
+UPDATE form_models_field ff
+   SET fields = jsonb_set(ff.fields, '{document_metadata}',
+        (SELECT jsonb_agg(jsonb_build_array(e)) FROM jsonb_array_elements(ff.fields->'document_metadata') e))
+  FROM form_models fm
+ WHERE fm.id = ff.form_id AND fm.module = 'splitter'
+   AND jsonb_typeof((ff.fields->'document_metadata')->0) = 'object';

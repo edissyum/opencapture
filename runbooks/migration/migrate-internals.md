@@ -2,8 +2,9 @@
 
 Explication du fonctionnement interne de `migrate.sh` (reprise d'une install
 OpenCapture **bare-metal** vers la stack **Docker** de ce dépôt). Pour la procédure
-pas-à-pas, voir [`10-migrate-v3-to-v4.md`](01-migrate-v3-to-v4.md) ; ici on explique
-le **pourquoi** et le **comment**.
+pas-à-pas (procédure générique + exemple concret), voir
+[`01-migrate-baremetal.md`](01-migrate-baremetal.md) ; ici on explique le
+**pourquoi** et le **comment**.
 
 ---
 
