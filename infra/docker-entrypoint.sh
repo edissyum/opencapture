@@ -116,12 +116,24 @@ case "$ROLE" in
         cd /app
         # GUNICORN_EXTRA_ARGS lets the dev overlay add --reload without
         # rewriting the whole command line.
+        #
+        # --preload (OPT-IN, défaut OFF) : le master importe wsgi:app une fois
+        # puis fork les workers -> pages communes partagées en copy-on-write.
+        # Bénéfice MARGINAL une fois l'import de torch rendu paresseux, et
+        # l'activer impose de toute façon un rebuild image + recréation du stack
+        # (ce bloc est baké dans l'entrypoint) -> ce n'est PAS un toggle à chaud.
+        # À activer par tenant APRÈS validation : GUNICORN_PRELOAD=1 dans son
+        # environment. Incompatible avec --reload (donc jamais en dev).
+        preload_arg=""
+        [ "${GUNICORN_PRELOAD:-0}" = "1" ] && preload_arg="--preload"
+
         # shellcheck disable=SC2086
         exec gunicorn --bind 0.0.0.0:8000 wsgi:app \
             --timeout 600 \
             --workers "${GUNICORN_WORKERS:-2}" \
             --threads "${GUNICORN_THREADS:-2}" \
             --worker-class gthread \
+            ${preload_arg} \
             --log-level "${GUNICORN_LOG_LEVEL:-info}" \
             --capture-output \
             --access-logfile - \

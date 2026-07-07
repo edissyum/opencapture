@@ -63,6 +63,19 @@ x-backend-env: &backend-env
     SHARE_PATH_CONTAINER: /app/share
     DOCSERVERS_PATH_CONTAINER: /app/docservers
     OC_PATH:             /app
+    # --- Plafonnement des threads des libs numériques (universel, tous rôles) --
+    # Sans ça, CHAQUE lib (torch/numpy/scipy/sklearn/OpenBLAS/MKL) ouvre un pool
+    # de threads = nb de cœurs visibles (7) DANS CHAQUE process (api, verifier,
+    # splitter). 3 process × 7 = 21 threads pour 7 cœurs → sur-souscription CPU
+    # (contention, lenteur) + arènes mémoire par thread. BLAS pur → 1 :
+    # OpenCapture ne fait pas de gros calcul matriciel hors VLM ⇒ coût perf ~nul.
+    OPENBLAS_NUM_THREADS: "1"
+    MKL_NUM_THREADS:      "1"
+    NUMEXPR_NUM_THREADS:  "1"
+    # OMP pilote AUSSI Tesseract (OCR) et l'intra-op torch → NE PAS mettre à 1
+    # (ralentirait l'OCR du verifier). 4 = compromis contention/OCR ; à ajuster
+    # selon le nombre de tenants qui tournent sur l'hôte.
+    OMP_NUM_THREADS:      "4"
 
 x-backend-volumes: &backend-volumes
     # Bind mounts directs : Docker crée le dossier hôte s'il n'existe pas.
