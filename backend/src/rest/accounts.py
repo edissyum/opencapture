@@ -24,12 +24,60 @@ from flask import Blueprint, request, make_response, jsonify
 from ..controllers import auth, accounts, verifier, privileges
 from ..helpers import get_context_var
 
+from flasgger import Schema, swag_from
+from marshmallow import fields
+class Supplier(Schema):
+    address1 = fields.Str()
+    address2 = fields.Str()
+    city = fields.Str()
+    country = fields.Str()
+    creation_date = fields.DateTime()
+    id = fields.Int()
+    postal_code = fields.Str()
+
 bp = Blueprint('accounts', __name__, url_prefix='/ws/')
+swag = {"swag": True, "tags": ["Accounts"]}
 
-
-@bp.route('accounts/suppliers/list', methods=['GET'])
+@bp.route('accounts/suppliers/list', methods=['GET'], **swag)
 @auth.token_required
 def suppliers_list():
+    """Retrieve third party accounts list
+    ---
+    security:
+      - Bearer: []
+    parameters:
+        - name: order
+          in: query
+          type: string
+          required: false
+        - name: filter
+          in: query
+          type: string
+          required: false
+        - name: search
+          in: query
+          type: string
+          required: false
+        - name: offset
+          in: query
+          type: integer
+          required: false
+        - name: limit
+          in: query
+          type: integer
+          required: false
+    responses:
+        200:
+            description: Third party accounts list
+            schema:
+                type: object
+                properties:
+                    suppliers:
+                        type: array
+                        items:
+                            $ref: '#/definitions/Supplier'
+    """
+
     if 'skip' not in request.environ or not request.environ['skip']:
         if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list | access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': '/accounts/suppliers/list'}), 403
@@ -51,9 +99,24 @@ def suppliers_list():
     return make_response(res[0], res[1])
 
 
-@bp.route('accounts/suppliers/getById/<int:supplier_id>', methods=['GET'])
+@bp.route('accounts/suppliers/getById/<int:supplier_id>', methods=['GET'],  **swag)
 @auth.token_required
 def get_supplier_by_id(supplier_id):
+    """Retrieve third party by id
+    ---
+    security:
+        - Bearer: []
+    parameters:
+        - name: supplier_id
+          in: path
+          type: integer
+          required: true
+    responses:
+        200:
+            description: Third party account
+            schema:
+                $ref: '#/definitions/Supplier'
+    """
     if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
                         'message': f'/accounts/suppliers/getById/{supplier_id}'}), 403
@@ -62,7 +125,7 @@ def get_supplier_by_id(supplier_id):
     return make_response(jsonify(supplier[0])), supplier[1]
 
 
-@bp.route('accounts/getAdressById/<int:address_id>', methods=['GET'])
+@bp.route('accounts/getAdressById/<int:address_id>', methods=['GET'],  **swag)
 @auth.token_required
 def get_address_by_id(address_id):
     if 'skip' not in request.environ or not request.environ['skip']:
@@ -75,7 +138,7 @@ def get_address_by_id(address_id):
     return make_response(jsonify(_address[0])), _address[1]
 
 
-@bp.route('accounts/suppliers/update/<int:supplier_id>', methods=['PUT'])
+@bp.route('accounts/suppliers/update/<int:supplier_id>', methods=['PUT'],  **swag)
 @auth.token_required
 def update_supplier(supplier_id):
     if 'skip' not in request.environ or not request.environ['skip']:
@@ -130,7 +193,7 @@ def update_supplier(supplier_id):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('accounts/supplier/<int:supplier_id>/updatePosition', methods=['PUT'])
+@bp.route('accounts/supplier/<int:supplier_id>/updatePosition', methods=['PUT'],  **swag)
 @auth.token_required
 def update_position(supplier_id):
     if 'skip' not in request.environ or not request.environ['skip']:
@@ -151,7 +214,7 @@ def update_position(supplier_id):
     return make_response(res[0], res[1])
 
 
-@bp.route('accounts/supplier/<int:supplier_id>/updatePage', methods=['PUT'])
+@bp.route('accounts/supplier/<int:supplier_id>/updatePage', methods=['PUT'],  **swag)
 @auth.token_required
 def update_page(supplier_id):
     if 'skip' not in request.environ or not request.environ['skip']:
@@ -172,7 +235,7 @@ def update_page(supplier_id):
     return make_response(res[0], res[1])
 
 
-@bp.route('accounts/addresses/update/<int:address_id>', methods=['PUT'])
+@bp.route('accounts/addresses/update/<int:address_id>', methods=['PUT'],  **swag)
 @auth.token_required
 def update_address(address_id):
     if not privileges.has_privileges(request.environ['user_id'],
@@ -198,7 +261,7 @@ def update_address(address_id):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('accounts/addresses/create', methods=['POST'])
+@bp.route('accounts/addresses/create', methods=['POST'],  **swag)
 @auth.token_required
 def create_address():
     if 'skip' not in request.environ or not request.environ['skip']:
@@ -233,7 +296,7 @@ def create_address():
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('accounts/suppliers/create', methods=['POST'])
+@bp.route('accounts/suppliers/create', methods=['POST'],  **swag)
 @auth.token_required
 def create_supplier():
     if 'skip' not in request.environ or not request.environ['skip']:
@@ -279,7 +342,7 @@ def create_supplier():
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('accounts/suppliers/delete/<int:supplier_id>', methods=['DELETE'])
+@bp.route('accounts/suppliers/delete/<int:supplier_id>', methods=['DELETE'],  **swag)
 @auth.token_required
 def delete_supplier(supplier_id):
     if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list', 'update_supplier']):
@@ -290,7 +353,7 @@ def delete_supplier(supplier_id):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('accounts/suppliers/deletePositions/<int:supplier_id>', methods=['DELETE'])
+@bp.route('accounts/suppliers/deletePositions/<int:supplier_id>', methods=['DELETE'],  **swag)
 @auth.token_required
 def delete_supplier_positions(supplier_id):
     if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list', 'update_supplier']):
@@ -301,7 +364,7 @@ def delete_supplier_positions(supplier_id):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('accounts/suppliers/<int:supplier_id>/deletePosition', methods=['PUT'])
+@bp.route('accounts/suppliers/<int:supplier_id>/deletePosition', methods=['PUT'],  **swag)
 @auth.token_required
 def delete_supplier_position(supplier_id):
     if not privileges.has_privileges(request.environ['user_id'],
@@ -330,7 +393,7 @@ def delete_supplier_position(supplier_id):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('accounts/suppliers/<int:supplier_id>/deletePage', methods=['PUT'])
+@bp.route('accounts/suppliers/<int:supplier_id>/deletePage', methods=['PUT'],  **swag)
 @auth.token_required
 def delete_supplier_page(supplier_id):
     if not privileges.has_privileges(request.environ['user_id'],
@@ -359,7 +422,7 @@ def delete_supplier_page(supplier_id):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('accounts/suppliers/skipAutoValidate/<int:supplier_id>', methods=['PUT'])
+@bp.route('accounts/suppliers/skipAutoValidate/<int:supplier_id>', methods=['PUT'],  **swag)
 @auth.token_required
 def skip_auto_validate(supplier_id):
     if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list', 'update_supplier']):
@@ -370,9 +433,9 @@ def skip_auto_validate(supplier_id):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('accounts/customers/list', methods=['GET'])
-@bp.route('accounts/customers/list/<string:module>', methods=['GET'])
-@bp.route('accounts/customers/list/<string:module>/<int:user_id>', methods=['GET'])
+@bp.route('accounts/customers/list', methods=['GET'],  **swag)
+@bp.route('accounts/customers/list/<string:module>', methods=['GET'],  **swag)
+@bp.route('accounts/customers/list/<string:module>/<int:user_id>', methods=['GET'],  **swag)
 @auth.token_required
 def customers_list(module=False, user_id=None):
     if not privileges.has_privileges(request.environ['user_id'], ['customers_list | access_verifier']):
@@ -394,7 +457,7 @@ def customers_list(module=False, user_id=None):
     return make_response(res[0], res[1])
 
 
-@bp.route('accounts/customers/getById/<int:customer_id>', methods=['GET'])
+@bp.route('accounts/customers/getById/<int:customer_id>', methods=['GET'],  **swag)
 @auth.token_required
 def get_customer_by_id(customer_id):
     if not privileges.has_privileges(request.environ['user_id'], ['customers_list']):
@@ -405,7 +468,7 @@ def get_customer_by_id(customer_id):
     return make_response(jsonify(_customer[0])), _customer[1]
 
 
-@bp.route('accounts/customers/update/<int:customer_id>', methods=['PUT'])
+@bp.route('accounts/customers/update/<int:customer_id>', methods=['PUT'],  **swag)
 @auth.token_required
 def update_customer(customer_id):
     if not privileges.has_privileges(request.environ['user_id'], ['update_customer']):
@@ -431,7 +494,7 @@ def update_customer(customer_id):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('accounts/customers/create', methods=['POST'])
+@bp.route('accounts/customers/create', methods=['POST'],  **swag)
 @auth.token_required
 def create_customer():
     if not privileges.has_privileges(request.environ['user_id'], ['create_customer']):
@@ -455,7 +518,7 @@ def create_customer():
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('accounts/customers/delete/<int:customer_id>', methods=['DELETE'])
+@bp.route('accounts/customers/delete/<int:customer_id>', methods=['DELETE'],  **swag)
 @auth.token_required
 def delete_customer(customer_id):
     if not privileges.has_privileges(request.environ['user_id'], ['customers_list', 'update_customer']):
@@ -466,28 +529,28 @@ def delete_customer(customer_id):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('accounts/customers/getAccountingPlan/<int:customer_id>', methods=['GET'])
+@bp.route('accounts/customers/getAccountingPlan/<int:customer_id>', methods=['GET'],  **swag)
 @auth.token_required
 def get_accouting_plan(customer_id):
     res = accounts.get_accounting_plan_by_customer_id(customer_id)
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('accounts/customers/getDefaultAccountingPlan', methods=['GET'])
+@bp.route('accounts/customers/getDefaultAccountingPlan', methods=['GET'],  **swag)
 @auth.token_required
 def get_default_accouting_plan():
     res = accounts.get_default_accounting_plan()
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('accounts/customers/getCurrencyCode', methods=['GET'])
+@bp.route('accounts/customers/getCurrencyCode', methods=['GET'],  **swag)
 @auth.token_required
 def get_currency_code():
     res = accounts.get_currency_code()
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('accounts/supplier/getReferenceFile', methods=['GET'])
+@bp.route('accounts/supplier/getReferenceFile', methods=['GET'],  **swag)
 @auth.token_required
 def get_reference_file():
     if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list', 'export_suppliers']):
@@ -503,7 +566,7 @@ def get_reference_file():
                           'file': str(base64.b64encode(file_content.get_data()).decode('utf-8'))}), 200
 
 
-@bp.route('accounts/supplier/fillReferenceFile', methods=['GET'])
+@bp.route('accounts/supplier/fillReferenceFile', methods=['GET'],  **swag)
 @auth.token_required
 def fill_reference_file():
     if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list', 'export_suppliers']):
@@ -514,7 +577,7 @@ def fill_reference_file():
     return res
 
 
-@bp.route('accounts/supplier/importSuppliers', methods=['POST'])
+@bp.route('accounts/supplier/importSuppliers', methods=['POST'],  **swag)
 @auth.token_required
 def import_suppliers():
     if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list']):
@@ -529,7 +592,7 @@ def import_suppliers():
     return res
 
 
-@bp.route('accounts/civilities/list', methods=['GET'])
+@bp.route('accounts/civilities/list', methods=['GET'],  **swag)
 @auth.token_required
 def get_civilities():
     if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list | access_verifier']):
@@ -539,7 +602,7 @@ def get_civilities():
     return make_response({'civilities': res}), res[1]
 
 
-@bp.route('accounts/civilities/delete/<int:civility_id>', methods=['DELETE'])
+@bp.route('accounts/civilities/delete/<int:civility_id>', methods=['DELETE'],  **swag)
 @auth.token_required
 def delete_civility(civility_id):
     if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list | access_verifier']):
@@ -550,7 +613,7 @@ def delete_civility(civility_id):
     return make_response(res[0]), res[1]
 
 
-@bp.route('accounts/civilities/create', methods=['POST'])
+@bp.route('accounts/civilities/create', methods=['POST'],  **swag)
 @auth.token_required
 def create_civility():
     if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list | access_verifier']):
