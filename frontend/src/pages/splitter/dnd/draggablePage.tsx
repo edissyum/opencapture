@@ -56,6 +56,8 @@ export const DraggablePage = React.memo(function DraggablePage({
 
     const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
 
+    const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
+
     useEffect(() => {
         if (!page.thumbnail) {
             setThumbnailUrl(null);
@@ -80,7 +82,7 @@ export const DraggablePage = React.memo(function DraggablePage({
                 hover:bg-(--bg-selected) hover:cursor-pointer min-w-64
                 ${ isSelected && 'bg-(--bg-selected) border-(--color-primary)' }` }>
             <div className={ `h-full w-full flex flex-col items-center cursor-grab active:cursor-grabbing
-                              ${disabled && 'pointer-events-none'}` }
+                              ${ disabled && 'pointer-events-none' }` }
                  { ...attributes }
                  { ...listeners }
             >
@@ -120,7 +122,8 @@ export const DraggablePage = React.memo(function DraggablePage({
                     </div>
                 ) }
 
-                <div className="w-full rounded-lg rounded-t-none p-2 flex items-center gap-1 bg-(--bg-primary) font-semibold">
+                <div className="w-full rounded-lg rounded-t-none p-2 flex items-center gap-1 bg-(--bg-primary)
+                                font-semibold">
                     <span className="text-sm">Page { page.source_page }</span>
                     <EllipsisVertical
                         size={ 18 } className={ `ml-auto ${ disabled ? 'cursor-not-allowed' : 'cursor-pointer' }` }
@@ -128,6 +131,10 @@ export const DraggablePage = React.memo(function DraggablePage({
                             if (disabled) return;
                             e.preventDefault();
                             e.stopPropagation();
+                            if (isContextMenuOpen) {
+                                cm.current?.hide();
+                                return;
+                            }
                             onSelectionChange?.(page, true);
                             cm.current?.show(e);
                         } }
@@ -136,7 +143,11 @@ export const DraggablePage = React.memo(function DraggablePage({
                         ref={ cm }
                         model={ menuItems }
                         className="w-auto!"
-                        onHide={ () => onSelectionChange?.(page, false) }
+                        onShow={ () => setIsContextMenuOpen(true) }
+                        onHide={ () => {
+                            setIsContextMenuOpen(false);
+                            onSelectionChange?.(page, false);
+                        } }
                     />
                 </div>
             </div>

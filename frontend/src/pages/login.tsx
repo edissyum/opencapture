@@ -18,7 +18,7 @@
 import z from "zod";
 import DOMPurify from "dompurify";
 import { useForm } from "react-hook-form";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -49,29 +49,7 @@ export function Login() {
     const [enabledLoginMethod, setEnabledLoginMethod] = useState<string>('');
 
     const [activeCard, setActiveCard] = useState<'guide' | 'capture'>('guide');
-    const [displayedCard, setDisplayedCard] = useState<'guide' | 'capture'>('guide');
-    const [fade, setFade] = useState(false);
-
     document.title = t('AUTH.connexion') + " - Open-Capture";
-
-    useEffect(() => {
-        setFade(false);
-
-        const timeout = setTimeout(() => {
-            setDisplayedCard(activeCard);
-            setFade(true);
-        }, 350);
-
-        return () => clearTimeout(timeout);
-    }, [activeCard]);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setActiveCard((prev) => (prev === 'guide' ? 'capture' : 'guide'));
-        }, 10000);
-
-        return () => clearInterval(interval);
-    }, []);
 
     // Fetch connection method from configuration
     useEffect(() => {
@@ -90,6 +68,7 @@ export function Login() {
                 }
             });
         }
+
         if (custom) {
             fetchLoginMessage().then();
             fetchEnabledMethod().then();
@@ -167,6 +146,10 @@ export function Login() {
         navigate('/reset-password');
     };
 
+    const changeCard = () => {
+        setActiveCard(activeCard === 'guide' ? 'capture' : 'guide');
+    }
+
     if (loading) return (
         <div className='h-screen'>
             <Loader/>
@@ -178,8 +161,13 @@ export function Login() {
             <div className="flex flex-1 items-center justify-center w-full">
                 <div className='bg-(--bg-primary) h-auto flex justify-center w-200 p-4 rounded-xl gap-6'>
                     <div className='bg-(--bg-primary) h-auto flex flex-1'>
-                        <div className='w-full bg-(--bg-selected) font-bold text-2xl overflow-hidden rounded-md flex flex-col relative
-                                        aspect-[0.70]'>
+                        <div className='group w-full bg-(--bg-selected) font-bold text-2xl overflow-hidden rounded-md flex
+                                        flex-col relative aspect-[0.70]'>
+                            <div className='group-hover:opacity-100 opacity-0 transition-all flex z-20 top-1/2
+                                            justify-between absolute w-full text-(--text-secondary)'>
+                                <ChevronLeft onClick={ changeCard } size={ 52 } className='cursor-pointer'/>
+                                <ChevronRight onClick={ changeCard } size={ 52 } className='cursor-pointer'/>
+                            </div>
                             <div className="absolute top-0 right-0 p-4 flex gap-2 z-10">
                                 <span onClick={ () => setActiveCard('guide') }
                                       className={ `size-2 rounded-full cursor-pointer transition-colors
@@ -190,31 +178,35 @@ export function Login() {
                                             ${ activeCard === 'capture' ? 'bg-(--color-primary)' : 'bg-(--bg-secondary)' }` }
                                 />
                             </div>
-                            <div
-                                className={ `px-8 pt-12 relative transition-opacity ${ fade ? "opacity-100" : "opacity-0" }` }>
-                                { displayedCard === 'guide' && (
+                            <div className='px-8 pt-12 relative transition-opacity'>
+                                { activeCard === 'guide' && (
                                     <div className='flex-col gap-4 transition-all'>
                                         <span className='text-(--color-primary)'>{ t('AUTH.usage_guide') }</span>
 
-                                        <a target="_blank"
-                                           href="https://edissyum.gitbook.io/open-capture-v4/utilisation/introduction"
-                                           className="text-(--text-secondary) font-normal text-sm flex gap-2 items-center cursor-pointer">
-                                            { t('AUTH.see_guide') }
-                                            <ArrowRight size={ 16 }/>
+                                        <a target='_blank'
+                                           href="https://edissyum.gitbook.io/open-capture-v4/utilisation/introduction">
+                                            <Button
+                                                size='sm'
+                                                variant='bg_white'
+                                                className="px-3 font-medium text-(--text-primary)"
+                                            >
+                                                { t('AUTH.see_guide') }
+                                                <ArrowRight size={ 16 }/>
+                                            </Button>
                                         </a>
 
                                         <div className='w-full h-full'>
                                             <img
                                                 src="/imgs/login/guide.svg"
                                                 alt="Guide Preview"
-                                                className={ `absolute left-48 top-80 rounded-md scale-200 rotate-[8deg]
-                                                             transition-all ease-[cubic-bezier(0.22,1,0.36,1)]
-                                                            ${ fade ? "opacity-100" : "opacity-0" }` }
+                                                className='absolute left-48 top-80 rounded-md scale-200 rotate-[8deg]
+                                                           transition-all ease-[cubic-bezier(0.22,1,0.36,1)]'
                                             />
                                         </div>
                                     </div>
                                 ) }
-                                { displayedCard === 'capture' && (
+
+                                { activeCard === 'capture' && (
                                     <div className='flex-col gap-4 transition-all'>
                                         <span className='text-(--color-primary)'>
                                             { t('AUTH.capture') }
@@ -226,9 +218,8 @@ export function Login() {
                                             <img
                                                 src="/imgs/login/capture.svg"
                                                 alt="Capture Preview"
-                                                className={ `absolute left-48 top-80 rounded-md rotate-[8deg] scale-200
-                                                             transition-all ease-[cubic-bezier(0.22,1,0.36,1)]
-                                                            ${ fade ? "opacity-100" : "opacity-0" } }` }
+                                                className='absolute left-48 top-80 rounded-md rotate-[8deg] scale-200
+                                                           transition-all ease-[cubic-bezier(0.22,1,0.36,1)]'
                                             />
                                         </div>
                                     </div>
@@ -256,8 +247,9 @@ export function Login() {
                                 <DynamicForm errors={ errors } control={ control } schema={ loginSchema }/>
 
                                 <div className="text-center">
-                                    <Button disabled={ !custom || !watchLogin || !watchPassword || Object.keys(errors).length > 0 }
-                                            type='submit' loading={ loadingLogin } className="w-full">
+                                    <Button
+                                        disabled={ !custom || !watchLogin || !watchPassword || Object.keys(errors).length > 0 }
+                                        type='submit' loading={ loadingLogin } className="w-full">
                                         { t('AUTH.login') }
                                     </Button>
                                     { !custom &&

@@ -40,6 +40,7 @@ import { DynamicForm } from "../../form/DynamicForm";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 import { copyToClipboard } from "../../../services/hooks/copyToClipboard";
 import { useCustomFields } from "../../../services/hooks/useCustomFields";
+import Hint from "../../Hint";
 
 export function OutputEditor({ module }: { module: string }) {
     const { get, post, put } = axiosApiCall();
@@ -159,7 +160,34 @@ export function OutputEditor({ module }: { module: string }) {
     // handle output type change to check input types
     useEffect(() => {
         if (outputType && outputType.data && outputType.data.options && outputType.data.options.parameters) {
-            if (outputType.data.options.parameters.length > 0 && output.data.options.parameters.length === 0) {
+            if (outputType.data.options.links?.length > 0 &&
+                (!output.data.options.links || output.data.options.links.length === 0)) {
+                const newLinks = outputType.data.options.links.map((option: any) => {
+                    return {
+                        id: option.id,
+                        type: option.type,
+                        hint: option.hint,
+                        label: option.label,
+                        required: option.required,
+                        placeholder: option.placeholder,
+                        webservice: option.webservice ?? ''
+                    }
+                });
+
+                setOutput((prev: any) => ({
+                    ...prev,
+                    data: {
+                        ...prev.data,
+                        options: {
+                            ...prev.data.options,
+                            links: newLinks
+                        }
+                    }
+                }));
+            }
+
+            if (outputType.data.options.parameters.length > 0 &&
+                (!output.data.options.parameters || output.data.options.parameters.length === 0)) {
                 const newParameters = outputType.data.options.parameters.map((option: any) => {
                     return {
                         id: option.id,
@@ -268,12 +296,15 @@ export function OutputEditor({ module }: { module: string }) {
 
         const res = await executeAuthFunction(authFunctionName, authOptions, { post });
 
+        let errorInWs = false;
+
         if (res && res.success) {
             if (outputType.output_type_id === 'export_mem') {
                 for (const data of Object.keys(output.data.options)) {
                     for (const option of output.data.options[data]) {
                         if (option.webservice) {
                             const res = await executeMEMFunction(option.webservice, authOptions, { post });
+
                             if (res && res.success && res.data) {
                                 setOutput((prev: any) => {
                                     const newParameters = prev.data.options[data].map((o: any) => {
@@ -294,14 +325,18 @@ export function OutputEditor({ module }: { module: string }) {
                                         }
                                     };
                                 });
+                            } else {
+                                errorInWs = true;
                             }
                         }
                     }
                 }
             }
 
-            showToast(t(res.message), "success");
-            stepperRef.current?.nextCallback();
+            if (!errorInWs) {
+                stepperRef.current?.nextCallback();
+                showToast(t(res.message), "success");
+            }
         } else {
             showToast(t(res.message), "error");
         }
@@ -447,7 +482,7 @@ export function OutputEditor({ module }: { module: string }) {
                                     )) }
                                 </div>
                                 <div className="flex justify-end">
-                                    <Button onClick={ handleAuthStep } className="ml-auto px-12" disabled={ loadingStep }>
+                                    <Button onClick={ handleAuthStep } className="ml-auto px-8" disabled={ loadingStep }>
                                         { loadingStep ? t("OUTPUTS.testing_connection") : t("OUTPUTS.test_connection") }
                                     </Button>
                                 </div>
@@ -472,8 +507,7 @@ export function OutputEditor({ module }: { module: string }) {
                                                                 stickyScroll: {
                                                                     enabled: false
                                                                 },
-                                                                contextmenu: true,
-                                                                minimap: { enabled: true }
+                                                                contextmenu: true
                                                             } }
                                                             onChange={ (value) => {
                                                                 handleSpecificLinksChange({ target: { value: value } }, option, 'parameters')
@@ -512,8 +546,7 @@ export function OutputEditor({ module }: { module: string }) {
                                     </Button>
 
                                     <Button onClick={ outputType.output_type_id === 'export_mem' ? handleNextStep : handleSubmit }
-                                            className="px-12"
-                                            disabled={ loading || loadingStep }>
+                                            className="px-8" disabled={ loading || loadingStep }>
                                         { outputType.output_type_id === 'export_mem' ? (
                                             t("GLOBAL.next")
                                         ) : (
@@ -536,6 +569,9 @@ export function OutputEditor({ module }: { module: string }) {
 
                         { outputType.output_type_id === 'export_mem' && (
                             <StepperPanel header={ t("OUTPUTS.links") }>
+                                <Hint>
+                                    { t('OUTPUTS.links_hint') }
+                                </Hint>
                                 <div className='flex flex-col gap-4'>
                                     <div className='grid grid-cols-2 gap-4'>
                                         { outputType?.data?.options.links.map((option: any) => (

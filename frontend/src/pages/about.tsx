@@ -193,7 +193,7 @@ export function AboutPage() {
                                         https://edissyum.gitbook.io/open-capture
                                     </a>
                                 </div>
-                                <div className={ `${ classes }` }>
+                                <div className={ classes }>
                                     <p className='w-1/3'>{ t('ABOUT.support') }</p>
                                     <a className='text-(--color-primary)'
                                        href='https://github.com/edissyum/opencapture/issues' target='_blank'>
@@ -230,16 +230,12 @@ export function AboutPage() {
                                     </div>
                                     <div className='ml-4'>
                                         <p className='font-semibold'>Arthur MONDON</p>
-                                        <p className='text-(--text-secondary) text-sm'>{ t('ABOUT.mondon') }</p>
+                                        <p className='text-(--text-secondary) text-sm'>{ t('ABOUT.ui_designer') }</p>
                                     </div>
                                     <div className='ml-auto flex gap-1'>
                                         <div className='rounded-2xl bg-[#426CF5]/15 font-semibold
                                                     text-[#426CF5] border border-[#426CF5] px-3'>
                                             UX / UI
-                                        </div>
-                                        <div className='rounded-2xl bg-(--bg-secondary) font-semibold
-                                                    text-(--text-secondary) border border-(--border-secondary) px-3'>
-                                            DEV
                                         </div>
                                     </div>
                                 </div>

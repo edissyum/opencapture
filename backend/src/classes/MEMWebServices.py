@@ -47,31 +47,63 @@ class MEMWebServices:
             return [False, str(request_error)]
 
     def retrieve_users(self):
-        res = requests.get(self.base_url + '/users', auth=self.auth, timeout=self.timeout)
-        if res.status_code != 200:
-            self.log.error('(' + str(res.status_code) + ') getUsersError : ' + str(res.text))
-        return json.loads(res.text), res.status_code
+        try:
+            res = requests.get(self.base_url + '/users', auth=self.auth, timeout=self.timeout)
+            if res.status_code != 200:
+                self.log.error('(' + str(res.status_code) + ') getUsersError : ' + str(res.text))
+            return json.loads(res.text), res.status_code
+        except (Exception,) as _e:
+            self.log.error('getUsersError : ' + str(_e))
+            response = {
+                "errors": "RETRIEVE_USERS_ERROR",
+                "message": str(_e)
+            }
+            return response, 500
 
     def retrieve_entities(self):
-        res = requests.get(self.base_url + '/entities', auth=self.auth, timeout=self.timeout)
-        if res.status_code != 200:
-            self.log.error('(' + str(res.status_code) + ') getEntitiesError : ' + str(res.text))
-            return False
-        return json.loads(res.text)
+        try:
+            res = requests.get(self.base_url + '/entities', auth=self.auth, timeout=self.timeout)
+            if res.status_code != 200:
+                self.log.error('(' + str(res.status_code) + ') getEntitiesError : ' + str(res.text))
+
+            return json.loads(res.text), res.status_code
+        except (Exception,) as _e:
+            self.log.error('getEntitiesError : ' + str(_e))
+            response = {
+                "errors": "RETRIEVE_ENTITIES_ERROR",
+                "message": str(_e)
+            }
+            return response, 500
 
     def retrieve_custom_fields(self):
-        res = requests.get(self.base_url + '/customFields', auth=self.auth, timeout=self.timeout)
-        if res.status_code != 200:
-            self.log.error('(' + str(res.status_code) + ') getCustomFieldsError : ' + str(res.text))
-            return False
-        return json.loads(res.text)
+        try:
+            res = requests.get(self.base_url + '/customFields', auth=self.auth, timeout=self.timeout)
+            if res.status_code != 200:
+                self.log.error('(' + str(res.status_code) + ') getCustomFieldsError : ' + str(res.text))
+
+            return json.loads(res.text), res.status_code
+        except (Exception,) as _e:
+            self.log.error('getCustomFieldsError : ' + str(_e))
+            response = {
+                "errors": "RETRIEVE_CUSTOM_FIELDS_ERROR",
+                "message": _e
+            }
+            return response, 400
 
     def retrieve_contact_custom_fields(self):
-        res = requests.get(self.base_url + '/contactsCustomFields', auth=self.auth, timeout=self.timeout)
-        if res.status_code != 200:
-            self.log.error('(' + str(res.status_code) + ') getContactCustomFieldsError : ' + str(res.text))
-            return False
-        return json.loads(res.text)
+        try:
+            res = requests.get(self.base_url + '/contactsCustomFields', auth=self.auth, timeout=self.timeout)
+            if res.status_code != 200:
+                self.log.error('(' + str(res.status_code) + ') getContactCustomFieldsError : ' + str(res.text))
+
+            return json.loads(res.text), res.status_code
+        except (Exception,) as _e:
+            self.log.error('getContactCustomFieldsError : ' + str(_e))
+            response = {
+                "errors": "RETRIEVE_CONTACT_CUSTOM_FIELDS_ERROR",
+                "message": str(_e)
+            }
+            return response, 500
 
     def retrieve_contact(self, args):
         where = "where=custom_fields->>'" + str(args['vatNumberContactCustom']['id']) + "'='" + str(args['supplierCustomId']) + "'"
@@ -104,11 +136,18 @@ class MEMWebServices:
             return False
 
     def retrieve_priorities(self):
-        res = requests.get(self.base_url + '/priorities', auth=self.auth, timeout=self.timeout)
-        if res.status_code != 200:
-            self.log.error('(' + str(res.status_code) + ') getPrioritiesError : ' + str(res.text))
-            return False
-        return json.loads(res.text)
+        try:
+            res = requests.get(self.base_url + '/priorities', auth=self.auth, timeout=self.timeout)
+            if res.status_code != 200:
+                self.log.error('(' + str(res.status_code) + ') getPrioritiesError : ' + str(res.text))
+            return json.loads(res.text), res.status_code
+        except (Exception,) as _e:
+            self.log.error('getPrioritiesError : ' + str(_e))
+            response = {
+                "errors": "RETRIEVE_PRIORITIES_ERROR",
+                "message": str(_e)
+            }
+            return response, 500
 
     def retrieve_priority(self, priority):
         res = requests.get(self.base_url + '/priorities/' + priority, auth=self.auth, timeout=self.timeout)
@@ -132,25 +171,48 @@ class MEMWebServices:
         return json.loads(res.text)
 
     def retrieve_statuses(self):
-        res = requests.get(self.base_url + '/statuses', auth=self.auth, timeout=self.timeout)
-        if res.status_code != 200:
-            self.log.error('(' + str(res.status_code) + ') getStatusesError : ' + str(res.text))
-            return False
-        return json.loads(res.text)
+        try:
+            res = requests.get(self.base_url + '/statuses', auth=self.auth, timeout=self.timeout)
+            if res.status_code != 200:
+                self.log.error('(' + str(res.status_code) + ') getStatusesError : ' + str(res.text))
+            return json.loads(res.text), res.status_code
+        except (Exception,) as _e:
+            self.log.error('getStatusesError : ' + str(_e))
+            response = {
+                "errors": "RETRIEVE_STATUSES_ERROR",
+                "message": str(_e)
+            }
+            return response, 500
+
 
     def retrieve_indexing_models(self):
-        res = requests.get(self.base_url + '/indexingModels', auth=self.auth, timeout=self.timeout)
-        if res.status_code != 200:
-            self.log.error('(' + str(res.status_code) + ') getIndexinModelsError : ' + str(res.text))
-            return False
-        return json.loads(res.text)
+        try:
+            res = requests.get(self.base_url + '/indexingModels', auth=self.auth, timeout=self.timeout)
+            if res.status_code != 200:
+                self.log.error('(' + str(res.status_code) + ') getIndexingModelsError : ' + str(res.text))
+            return json.loads(res.text), res.status_code
+        except (Exception,) as _e:
+            self.log.error('getIndexingModelsError : ' + str(_e))
+            response = {
+                "errors": "RETRIEVE_INDEXING_MODELS_ERROR",
+                "message": str(_e)
+            }
+            return response, 500
 
     def retrieve_doctypes(self):
-        res = requests.get(self.base_url + '/doctypes/types', auth=self.auth, timeout=self.timeout)
-        if res.status_code != 200:
-            self.log.error('(' + str(res.status_code) + ') getDoctypesError : ' + str(res.text))
-            return False
-        return json.loads(res.text)
+        try:
+            res = requests.get(self.base_url + '/doctypes/types', auth=self.auth, timeout=self.timeout)
+            if res.status_code != 200:
+                self.log.error('(' + str(res.status_code) + ') getDoctypesError : ' + str(res.text))
+            return json.loads(res.text), res.status_code
+        except (Exception,) as _e:
+            self.log.error('getDoctypesError : ' + str(_e))
+            response = {
+                "errors": "RETRIEVE_DOCTYPES_ERROR",
+                "message": str(_e)
+            }
+            return response, 500
+
 
     def link_documents(self, res_id_master, res_id):
         data = {

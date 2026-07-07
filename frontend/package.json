@@ -43,15 +43,15 @@
         "react": "^19.2.7",
         "react-dom": "^19.2.7",
         "react-dropzone": "^15.0.0",
-        "react-hook-form": "^7.80.0",
+        "react-hook-form": "^7.81.0",
         "react-i18next": "^17.0.8",
         "react-pdf": "^10.4.1",
         "react-router-dom": "^7.18.1",
         "react-toastify": "^11.1.0",
         "react-tooltip": "^6.0.8",
-        "recharts": "^3.9.1",
+        "recharts": "^3.9.2",
         "tailwindcss": "^4.3.2",
-        "tinymce": "^8.6.0",
+        "tinymce": "^8.7.0",
         "xlsx": "^0.18.5",
         "zod": "^4.4.3"
     },
@@ -65,9 +65,9 @@
         "eslint-plugin-react-refresh": "^0.5.3",
         "globals": "^17.7.0",
         "i18next-scanner": "^4.6.0",
-        "lucide-react": "^1.22.0",
+        "lucide-react": "^1.23.0",
         "typescript": "~6.0.3",
         "typescript-eslint": "^8.62.1",
-        "vite": "^8.1.2"
+        "vite": "^8.1.3"
     }
 }

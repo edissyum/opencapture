@@ -180,11 +180,16 @@ export function SplitterViewerPage() {
         });
     }, [addDocumentTrigger]);
 
-    const handleSelectionChange = useCallback((page: any, checked: boolean) => {
+    const handleSelectionChange = (page: any, checked: boolean) => {
+        if (checked) {
+            const alreadyChecked = selectedPages.filter((p: any) => p.id === page.id).length > 0;
+            if (alreadyChecked) return;
+        }
+
         setSelectedPages(prev =>
             checked ? [...prev, page] : prev.filter((p: any) => p.id !== page.id)
         );
-    }, []);
+    }
 
     const handlePreview = useCallback(async (page: any) => {
         const response = await get(`/splitter/pages/${ page.id }/fullThumbnail`);
@@ -1181,7 +1186,7 @@ export function SplitterViewerPage() {
                             >
                                 <div
                                     onClick={ () => attachmentsCount === 0 && !disabledBatch && !certifiedCopy && addDocument() }
-                                    className={ 'flex items-center gap-1' }>
+                                    className='flex items-center gap-1'>
                                     <Plus size={ 16 }/>
                                     { t('SPLITTER.add_document') }
                                 </div>

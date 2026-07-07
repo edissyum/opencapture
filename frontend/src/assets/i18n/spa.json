@@ -490,7 +490,8 @@
         "document_identifier": "ID del documento",
         "document_index": "Índice de documentos",
         "format": "Formato",
-        "batch_identifier": "ID del lote"
+        "batch_identifier": "ID del lote",
+        "links_hint": "Esta pestaña permite configurar el enlace de un documento a otro basado en datos específicos. <br><i>Ejemplo: vincule una factura a una cita en Mem Courrier cuyo número de cotización está en el número de campo personalizado 30</i>"
     },
     "ROLES": {
         "add_role": "Añadir un rol",
@@ -1400,7 +1401,7 @@
         "software_website": "Sitio oficial del software",
         "support": "Soporte",
         "lead_dev": "Desarrollador principal",
-        "mondon": "Rediseño de la interfaz V4 - Desarrollos varios",
+        "ui_designer": "Rediseño de la interfaz V4",
         "misc_dev": "Desarrollos varios",
         "splitter_dev": "Desarrollos en el módulo Splitter",
         "technical_infos": "Información técnica",

@@ -33,7 +33,7 @@ import { Button } from "../../Button";
 import { Dropdown } from "../../Dropdown";
 import { Loader } from "../../loader/Loader";
 import { showToast } from "../../ToastProvider";
-import { ImportSpreadSheet } from "../ImportSpreadSheet.tsx";
+import { ImportSpreadSheet } from "../ImportSpreadSheet";
 
 function SortableFieldItem({ field, lastField, onRemove }: { field: any, lastField: boolean,  onRemove?: (field: any) => void }) {
     const {

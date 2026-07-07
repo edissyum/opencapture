@@ -57,8 +57,8 @@ def get_users():
             "message": message
         }, 400)
 
-    users = mem.get_users(request.json)
-    return make_response(jsonify(users)), 200
+    res = mem.get_users(request.json)
+    return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('mem/getDoctypes', methods=['POST'])
@@ -76,8 +76,8 @@ def get_doctypes():
             "message": message
         }, 400)
 
-    doctypes = mem.get_doctypes(request.json)
-    return make_response(jsonify(doctypes)), 200
+    res = mem.get_doctypes(request.json)
+    return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('mem/getEntities', methods=['POST'])
@@ -95,8 +95,8 @@ def get_entities():
             "message": message
         }, 400)
 
-    entities = mem.get_entities(request.json)
-    return make_response(jsonify(entities)), 200
+    res = mem.get_entities(request.json)
+    return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('mem/getCustomFields', methods=['POST'])
@@ -114,8 +114,8 @@ def get_custom_fields():
             "message": message
         }, 400)
 
-    entities = mem.get_custom_fields(request.json)
-    return make_response(jsonify(entities)), 200
+    res = mem.get_custom_fields(request.json)
+    return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('mem/getContactsCustomFields', methods=['POST'])
@@ -133,8 +133,8 @@ def get_contact_custom_fields():
             "message": message
         }, 400)
 
-    entities = mem.get_contact_custom_fields(request.json)
-    return make_response(jsonify(entities)), 200
+    res = mem.get_contact_custom_fields(request.json)
+    return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('mem/getPriorities', methods=['POST'])
@@ -152,8 +152,8 @@ def get_priorities():
             "message": message
         }, 400)
 
-    priorities = mem.get_priorities(request.json)
-    return make_response(jsonify(priorities)), 200
+    res = mem.get_priorities(request.json)
+    return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('mem/getStatuses', methods=['POST'])
@@ -171,8 +171,8 @@ def get_statuses():
             "message": message
         }, 400)
 
-    statuses = mem.get_statuses(request.json)
-    return make_response(jsonify(statuses)), 200
+    res = mem.get_statuses(request.json)
+    return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('mem/getDocumentsWithContact', methods=['POST'])
@@ -220,5 +220,5 @@ def get_indexing_models():
             "message": message
         }, 400)
 
-    indexing_models = mem.get_indexing_models(request.json)
-    return make_response(jsonify(indexing_models)), 200
+    res = mem.get_indexing_models(request.json)
+    return make_response(jsonify(res[0])), res[1]

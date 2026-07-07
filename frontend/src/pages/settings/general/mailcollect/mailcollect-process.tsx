@@ -255,7 +255,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                         <Input { ...registerAuth("hostname") }
                                label={ t("SMTP.host") }
                                error={ authErrors.hostname?.message }/>
-                        <Input className={ 'w-1/9' }
+                        <Input className='w-1/9'
                                { ...registerAuth("port") }
                                label={ t("SMTP.port") }
                                error={ authErrors.port?.message }/>
@@ -263,7 +263,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                autoComplete='new-mail'
                                label={ t("SMTP.login") }
                                error={ authErrors.login?.message }/>
-                        <Input className={ 'w-1/2' }
+                        <Input className='w-1/2'
                                { ...registerAuth("password") }
                                autoComplete='new-password'
                                label={ t("SMTP.password") }

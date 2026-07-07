@@ -34,8 +34,8 @@ export function Onboarding() {
 
         return {
             id: index + 1,
-            name: stepExportKey || `Step ${index + 1}`,
             component: Component,
+            name: stepExportKey || `Step ${ index + 1 }`
         };
     }).filter((s) => s.component);
 
@@ -82,23 +82,27 @@ export function Onboarding() {
 
     return (
         <div className="h-screen flex xl:items-center pt-4 xl:pt-0 justify-center bg-(--bg-secondary) overflow-y-scroll">
-            <div className="w-6/12 flex flex-col gap-2">
-                <h4 className="text-(--text-secondary)">{ t('ONBOARD.step') } { currentStep + 1 } { t('ONBOARD.on') } { steps.length }</h4>
+            <div className="max-w-8/12 flex flex-col gap-2">
+                <h4 className="text-(--text-secondary)">
+                    { t('ONBOARD.step') } { currentStep + 1 } { t('ONBOARD.on') } { steps.length }
+                </h4>
                 <div className="min-h-72">
-                    <StepComponent />
+                    <StepComponent/>
                 </div>
                 <div className="flex justify-end mt-4">
-                    {currentStep > 0 && <Button variant="no_bg" onClick={prev} className="mr-4">
-                        { t('ONBOARD.prev') }
-                    </Button>}
+                    { currentStep > 0 &&
+                        <Button variant="no_bg" onClick={ prev } className="mr-4">
+                            { t('ONBOARD.prev') }
+                        </Button>
+                    }
 
-                    {currentStep < steps.length - 1 ? (
-                        <Button variant="primary" onClick={next}>{ t('ONBOARD.next') }</Button>
+                    { currentStep < steps.length - 1 ? (
+                        <Button variant="primary" onClick={ next }>{ t('ONBOARD.next') }</Button>
                     ) : (
                         <Link to='/home'>
-                            <Button onClick={handleStart} variant="primary">{ t('ONBOARD.start') }</Button>
+                            <Button onClick={ handleStart } variant="primary">{ t('ONBOARD.start') }</Button>
                         </Link>
-                    )}
+                    ) }
                 </div>
             </div>
         </div>
