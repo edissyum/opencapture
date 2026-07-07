@@ -26,8 +26,8 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 from .rest.auth import limiter
 from werkzeug.wrappers import Request
-from .rest._definitions import definitions
 from .main import create_classes_from_custom_id
+from .rest._swagger import definitions, parameters
 from flask import request, g as current_context, Flask, session, jsonify
 from .functions import is_custom_exists, retrieve_custom_from_url, retrieve_custom_path, is_custom_exists_from_url, \
     retrieve_custom_id_from_url
@@ -107,6 +107,7 @@ swagger_template = {
             "description": "JWT Authorization header. Exemple: 'Bearer <token>'"
         }
     },
+    "parameters": parameters,
     "definitions": definitions
 }
 

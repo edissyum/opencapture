@@ -19,21 +19,10 @@ import os
 import base64
 import mimetypes
 from flask_babel import gettext
+from ..helpers import get_context_var
 from ..functions import rest_validator
 from flask import Blueprint, request, make_response, jsonify
 from ..controllers import auth, accounts, verifier, privileges
-from ..helpers import get_context_var
-
-from flasgger import Schema, swag_from
-from marshmallow import fields
-class Supplier(Schema):
-    address1 = fields.Str()
-    address2 = fields.Str()
-    city = fields.Str()
-    country = fields.Str()
-    creation_date = fields.DateTime()
-    id = fields.Int()
-    postal_code = fields.Str()
 
 bp = Blueprint('accounts', __name__, url_prefix='/ws/')
 swag = {"swag": True, "tags": ["Accounts"]}
@@ -46,26 +35,11 @@ def suppliers_list():
     security:
       - Bearer: []
     parameters:
-        - name: order
-          in: query
-          type: string
-          required: false
-        - name: filter
-          in: query
-          type: string
-          required: false
-        - name: search
-          in: query
-          type: string
-          required: false
-        - name: offset
-          in: query
-          type: integer
-          required: false
-        - name: limit
-          in: query
-          type: integer
-          required: false
+        - $ref: '#/parameters/order'
+        - $ref: '#/parameters/filter'
+        - $ref: '#/parameters/search'
+        - $ref: '#/parameters/offset'
+        - $ref: '#/parameters/limit'
     responses:
         200:
             description: Third party accounts list
@@ -419,17 +393,6 @@ def delete_supplier_page(supplier_id):
     else:
         field_id = request.json['field_id']
         res = accounts.delete_document_page_by_supplier_id(supplier_id, field_id, request.json['form_id'])
-    return make_response(jsonify(res[0])), res[1]
-
-
-@bp.route('accounts/suppliers/skipAutoValidate/<int:supplier_id>', methods=['PUT'],  **swag)
-@auth.token_required
-def skip_auto_validate(supplier_id):
-    if not privileges.has_privileges(request.environ['user_id'], ['suppliers_list', 'update_supplier']):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/accounts/suppliers/skipAutoValidate/{supplier_id}'}), 403
-
-    res = accounts.update_supplier(supplier_id, {'skip_auto_validate': True})
     return make_response(jsonify(res[0])), res[1]
 
 
