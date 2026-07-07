@@ -419,7 +419,7 @@ Détail du design et exploitation : [07-smb-server.md](07-smb-server.md) +
 - Serveur WebDAV : [06-webdav-server.md](06-webdav-server.md) + [../infra/webdav/README.md](../infra/webdav/README.md)
 - Serveur SMB : [07-smb-server.md](07-smb-server.md) + [../infra-host/smb/README.md](../infra-host/smb/README.md)
 - Architecture multi-tenant : [../infra/MULTITENANT.md](../infra/MULTITENANT.md)
-- **Annexes techniques** (rebuild, multi-stage, rôles de l'image, pipeline, commandes par conteneur, glossaire) : ci-dessous dans ce document.
+- **Annexes techniques** (rebuild, multi-stage, rôles de l'image, pipeline, commandes par conteneur, glossaire, reverse-proxy/IP réelle, résolution tenant & FQDN) : ci-dessous dans ce document.
 
 ---
 
@@ -830,3 +830,116 @@ Par tenant — les chemins hôte sont les valeurs `*_PATH` du `.env` (en prod :
 - **Réseau** : les conteneurs d'un projet se parlent sur un réseau interne **par nom de
   service** (`postgres`, `rabbitmq`, `backend`). Le réseau externe `frontend` relie les
   frontends à Traefik.
+
+## Annexe F — Chaîne reverse-proxy & IP réelle du client
+
+Une requête traverse **trois** couches avant d'atteindre l'application :
+
+```
+Navigateur ──TLS──▶ Traefik ──────▶ nginx (frontend) ──────▶ gunicorn (backend/api)
+ IP réelle           :80/:443        location /<id>/ws/        Flask
+                     Host(${FQDN})   proxy_set_header …        request.remote_addr
+```
+
+**Le problème.** Sans correctif, `request.remote_addr` côté Flask vaut l'IP de **nginx**
+(le dernier proxy), **identique pour tous les utilisateurs** d'un tenant. Deux impacts :
+
+- **Rate-limit** ([../backend/src/rest/auth.py:28](../backend/src/rest/auth.py#L28)) :
+  `flask-limiter` avec `key_func=get_remote_address`, `default_limits=["200/hour"]` (+ des
+  `5/minute` sur `/auth/login`, `/auth/…` — [auth.py:68](../backend/src/rest/auth.py#L68),
+  [85](../backend/src/rest/auth.py#L85), [115](../backend/src/rest/auth.py#L115)). Si tous
+  les utilisateurs partagent une seule IP, ils partagent **un seul seau** → « Trop de
+  requêtes » (HTTP 429) alors que chacun fait peu d'appels.
+- **Historique** : les événements journalisent `request.remote_addr`
+  ([../backend/src/rest/history.py:45](../backend/src/rest/history.py#L45), et de nombreux
+  contrôleurs) → sans correctif, **toutes** les lignes portent l'IP du proxy.
+
+**Ce que fait nginx** ([../infra/nginx.conf.template:48-54](../infra/nginx.conf.template#L48)) :
+il transmet les en-têtes standard au backend —
+
+```nginx
+proxy_set_header X-Real-IP         $remote_addr;
+proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;   # APPEND (chaîne d'IP)
+proxy_set_header X-Forwarded-Proto $scheme;
+```
+
+**Ce que fait le backend** ([../backend/wsgi.py:35](../backend/wsgi.py#L35)) : `ProxyFix`
+relit ces en-têtes pour restaurer la **vraie IP** —
+
+```python
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=2, x_proto=1, x_host=1, x_port=1)
+```
+
+> **Pourquoi `x_for=2` ?** `x_for` = nombre de proxies **de confiance** qui *appendent* à
+> `X-Forwarded-For`, comptés **depuis la droite** : Traefik ajoute l'IP réelle du client,
+> puis nginx ajoute l'IP de Traefik → **2**. ProxyFix prend donc la 2ᵉ entrée en partant de
+> la droite = l'IP client réelle.
+>
+> **Anti-spoofing.** Un `X-Forwarded-For` forgé par le client se retrouve **plus à gauche**
+> que les 2 entrées ajoutées par Traefik+nginx → il est **ignoré**. La valeur n'est donc
+> fiable **que si** le compte de proxies est exact.
+>
+> ⚠️ `x_for` **dépend de la chaîne**. Ajouter un reverse-proxy d'entreprise **devant**
+> Traefik (ou retirer nginx) casse le compte → réajuster `x_for` en conséquence.
+
+> **Portée du rate-limit.** Le stockage est `storage_uri="memory://"`
+> ([auth.py:28](../backend/src/rest/auth.py#L28)) : compteurs **en mémoire du process**
+> backend, non partagés entre workers gunicorn ni persistés au redémarrage. Chaque tenant a
+> son propre backend → seaux isolés par tenant.
+
+## Annexe G — Résolution du tenant & rôle d'`OC_FQDN`
+
+**Comment une requête est rattachée à un tenant.** Un *middleware* WSGI
+([../backend/src/__init__.py:36-70](../backend/src/__init__.py#L36)) inspecte chaque requête
+et détermine le `custom_id` par **deux voies** :
+
+1. **Par préfixe d'URL** — `.../<id>/ws/...`
+   ([__init__.py:60-68](../backend/src/__init__.py#L60)). Le segment avant `ws/` est le
+   `custom_id` ; `is_custom_exists()` vérifie qu'une section `[<id>]` existe dans
+   `custom.ini` ([../backend/src/functions.py:209](../backend/src/functions.py#L209)) ; le
+   préfixe est retiré de `PATH_INFO`. C'est la voie **par défaut** (le frontend appelle
+   `/<id>/ws/...`).
+2. **Par domaine (URL « propre »)** — `https://<fqdn>/` **sans** préfixe
+   ([__init__.py:44-58](../backend/src/__init__.py#L44)). Le domaine (`Host`/`Referer`) est
+   comparé au champ `url = <fqdn>` de `custom.ini` via
+   `is_custom_exists_from_url()` / `retrieve_custom_id_from_url()`
+   ([functions.py:295-318](../backend/src/functions.py#L295)). C'est ce qui permet de servir
+   le tenant à la racine du domaine, sans le préfixe `/<id>/`.
+
+> nginx expose **les deux formes** vers le backend : un `location` préfixé
+> `^/${CUSTOM_ID}/(ws|backend_oc)/` ([nginx.conf.template:48](../infra/nginx.conf.template#L48))
+> **et** un `location` non préfixé `^/(ws|backend_oc)/`
+> ([:67](../infra/nginx.conf.template#L67)) — miroir des deux voies ci-dessus.
+
+**Ce que fait `OC_FQDN`** (variable **runtime**, jamais bakée) :
+
+- **Route Traefik** : les labels posent `Host(`${OC_FQDN}`)` sur le routeur du tenant
+  ([../infra/docker-compose.traefik.yml:63](../infra/docker-compose.traefik.yml#L63) et
+  overlays `-cert`/`-http`) → le domaine est routé vers **ce** tenant.
+- **`custom.ini`** : au démarrage, `docker-bootstrap.sh` écrit/patche `url = ${OC_FQDN}`
+  dans la section du tenant ([../infra/docker-bootstrap.sh:176-194](../infra/docker-bootstrap.sh#L176))
+  → active la **voie 2** (URL propre).
+- **TLS** : en Let's Encrypt, le `certresolver` émet le cert pour ce `Host` ; en mode cert,
+  le **SAN** du certificat doit couvrir exactement `OC_FQDN`.
+
+**Ce que `OC_FQDN` ne fait PAS** : il **n'est baké dans aucune image**.
+
+- L'image **backend** est **partagée** → `OC_FQDN` n'y entre pas (env runtime).
+- L'image **frontend** est **partagée** elle aussi ([../deploy.sh:139-141](../deploy.sh#L139)),
+  bâtie avec `VITE_BACKEND_URL=/` **relatif**
+  ([../infra/frontend.Dockerfile:23](../infra/frontend.Dockerfile#L23)) → la SPA appelle le
+  backend en **same-origin**, donc le FQDN n'y est pas figé non plus. nginx écoute
+  `server_name _` ([nginx.conf.template:27-28](../infra/nginx.conf.template#L27)), tout Host
+  confondu.
+
+**Conséquence — changer de FQDN ne demande AUCUN rebuild, juste un *recreate*** :
+
+```bash
+sed -i 's#^OC_FQDN=.*#OC_FQDN=<nouveau-fqdn>#' stub-tenants/<id>/.env
+./deploy.sh --no-build <id>          # = up -d : recrée les conteneurs, sans rebuild
+```
+
+Au *recreate*, le conteneur reprend le nouveau label Traefik `Host()` et `docker-bootstrap.sh`
+réécrit `custom.ini` `url`. (`./deploy.sh <id>` fonctionne aussi mais **rebuild inutilement**
+les images partagées.) Cf. la procédure §4.d.7 et le tableau **Annexe A** (`OC_FQDN` = ligne
+« ❌ rebuild »).
