@@ -890,17 +890,17 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=2, x_proto=1, x_host=1, x_port=1)
 ## Annexe G — Résolution du tenant & rôle d'`OC_FQDN`
 
 **Comment une requête est rattachée à un tenant.** Un *middleware* WSGI
-([../backend/src/__init__.py:36-70](../backend/src/__init__.py#L36)) inspecte chaque requête
+([../backend/src/__init__.py:37-71](../backend/src/__init__.py#L37)) inspecte chaque requête
 et détermine le `custom_id` par **deux voies** :
 
 1. **Par préfixe d'URL** — `.../<id>/ws/...`
-   ([__init__.py:60-68](../backend/src/__init__.py#L60)). Le segment avant `ws/` est le
+   ([__init__.py:61-69](../backend/src/__init__.py#L61)). Le segment avant `ws/` est le
    `custom_id` ; `is_custom_exists()` vérifie qu'une section `[<id>]` existe dans
    `custom.ini` ([../backend/src/functions.py:209](../backend/src/functions.py#L209)) ; le
    préfixe est retiré de `PATH_INFO`. C'est la voie **par défaut** (le frontend appelle
    `/<id>/ws/...`).
 2. **Par domaine (URL « propre »)** — `https://<fqdn>/` **sans** préfixe
-   ([__init__.py:44-58](../backend/src/__init__.py#L44)). Le domaine (`Host`/`Referer`) est
+   ([__init__.py:45-59](../backend/src/__init__.py#L45)). Le domaine (`Host`/`Referer`) est
    comparé au champ `url = <fqdn>` de `custom.ini` via
    `is_custom_exists_from_url()` / `retrieve_custom_id_from_url()`
    ([functions.py:295-318](../backend/src/functions.py#L295)). C'est ce qui permet de servir
