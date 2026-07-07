@@ -629,6 +629,29 @@ reconcile_custom_files_v4() {
         done < <(find "$inst" -type f)
     fi
 
+    # 0a-bis) metadata_methods.json : ajouter la clé callOnScript aux méthodes héritées
+    #     v3. La v4 l'a introduite ; backend/load_referential_splitter.py fait
+    #     `if method['callOnScript']:` en accès DIRECT -> KeyError sur une méthode v3 qui
+    #     ne l'a pas (le fichier v3 est conservé tel quel par la copie cp -n ci-dessus).
+    #     Défaut `false` = sûr : le rechargement de référentiel saute la méthode (pas
+    #     d'exécution du script, qui viserait de toute façon des URLs de service à
+    #     (re)configurer par déploiement). Idempotent.
+    local mmj="$cdir/bin/scripts/splitter_metadata/metadata_methods.json"
+    if [ -f "$mmj" ]; then
+        if python3 - "$mmj" <<'PY'
+import json, sys
+p = sys.argv[1]
+d = json.load(open(p, encoding='utf-8'))
+changed = any('callOnScript' not in m for m in d.get('methods', []))
+for m in d.get('methods', []):
+    m.setdefault('callOnScript', False)
+if changed:
+    json.dump(d, open(p, 'w', encoding='utf-8'), ensure_ascii=False, indent=4)
+sys.exit(0 if changed else 2)
+PY
+        then log "    ~ metadata_methods.json : callOnScript ajouté (défaut false) aux méthodes v3"; fi
+    fi
+
     # 0b) Assets imgs : logo_company.png manquant -> 500 à la génération de séparateur
     #     Splitter (vécu). Idem opencapture/Open-Capture_Splitter/login_image.
     local a
