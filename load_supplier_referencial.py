@@ -25,7 +25,7 @@ from src.backend.functions import retrieve_config_from_custom_id
 
 
 def get_data(datas, _key):
-    if _key in datas and datas[_key]:
+    if _key in datas and datas[_key] and datas[_key] == datas[_key]:
         return datas[_key]
     return ''
 
@@ -69,6 +69,8 @@ if __name__ == '__main__':
 
         # Insert into database all the supplier not existing into the database
         count = 0
+        count_error = 0
+
         log.info("Line(s) to process : " +  str(len(spreadsheet.referencial_supplier_data)))
         for data in spreadsheet.referencial_supplier_data:
             log.debug('-' * 40)
@@ -99,7 +101,7 @@ if __name__ == '__main__':
 
             INFORMAL_CONTACT = False
             informal = get_data(data, spreadsheet.referencial_supplier_array['informal_contact'])
-            if informal or informal.lower() == 'true':
+            if informal and informal.lower() == 'true':
                 INFORMAL_CONTACT = True
 
             if not vat_number and not duns and not INFORMAL_CONTACT:
@@ -160,9 +162,9 @@ if __name__ == '__main__':
                         'informal_contact': INFORMAL_CONTACT,
                         'address_id': str(address_id),
                         'document_lang': str(_vat[spreadsheet.referencial_supplier_array['lang']]),
-                        'duns': str(_vat[spreadsheet.referencial_supplier_array['duns']]),
-                        'bic': str(_vat[spreadsheet.referencial_supplier_array['bic']]),
-                        'default_currency': str(_vat[spreadsheet.referencial_supplier_array['default_currency']])
+                        'duns': str(get_data(data, spreadsheet.referencial_supplier_array['duns'])),
+                        'bic': str(get_data(data, spreadsheet.referencial_supplier_array['bic'])),
+                        'default_currency': str(get_data(data, spreadsheet.referencial_supplier_array['default_currency']))
                     }
                 }
 
@@ -179,7 +181,10 @@ if __name__ == '__main__':
                 if 'name' in args['columns'] and args['columns']['name']:
                     try:
                         res = database.insert(args)
+                        if not res or 'duplicate key' in res:
+                            count_error += 1
                     except Exception as _e:
+                        count_error += 1
                         log.error('While adding supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]) + ' ' + str(_e))
                         continue
 
@@ -192,7 +197,6 @@ if __name__ == '__main__':
                         log.error('While adding supplier : ' +
                               str(data[spreadsheet.referencial_supplier_array['name']]), False)
             else:
-
                 log.debug('Updating supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]))
                 if vat_number or duns or (INFORMAL_CONTACT and email):
                     current_supplier = database.select({
@@ -249,6 +253,7 @@ if __name__ == '__main__':
                         'table': ['accounts_supplier'],
                         'set': {
                             'vat_number': str(vat_number)[:20] if vat_number else None,
+                            'duns': duns if duns else None,
                             'name': str(get_data(data, spreadsheet.referencial_supplier_array['name'])).strip(),
                             'lastname': str(get_data(data, spreadsheet.referencial_supplier_array['lastname'])).strip(),
                             'firstname': str(get_data(data, spreadsheet.referencial_supplier_array['firstname'])).strip(),
@@ -261,20 +266,30 @@ if __name__ == '__main__':
                             'informal_contact': INFORMAL_CONTACT,
                             'address_id': address_id,
                             'document_lang': str(data[spreadsheet.referencial_supplier_array['lang']]),
-                            'duns': str(data[spreadsheet.referencial_supplier_array['duns']]),
-                            'bic': str(data[spreadsheet.referencial_supplier_array['bic']]),
-                            'default_currency': str(data[spreadsheet.referencial_supplier_array['default_currency']])
+                            'bic': str(get_data(data, spreadsheet.referencial_supplier_array['bic'])),
+                            'default_currency': str(get_data(data, spreadsheet.referencial_supplier_array['default_currency']))
                         },
-                        'where': ['vat_number = %s OR duns = %s' + (' OR email = %s' if INFORMAL_CONTACT and email else '')],
-                        'data': [str(vat_number), str(duns)]
+                        'where': [],
+                        'data': []
                     }
+
+                    if vat_number and duns:
+                        args['where'] = ['vat_number = %s OR duns = %s']
+                        args['data'] = [str(vat_number), str(duns)]
+                    elif vat_number:
+                        args['where'] = ['vat_number = %s']
+                        args['data'] = [str(vat_number)]
+                    elif duns:
+                        args['where'] = ['duns = %s']
+                        args['data'] = [str(duns)]
+
+                    if INFORMAL_CONTACT and email:
+                        args['where'][0] += ' OR email = %s'
+                        args['data'].append(str(email))
 
                     civility = get_data(data, spreadsheet.referencial_supplier_array['civility'])
                     if civility:
                         args['set']['civility'] = int(civility)
-
-                    if INFORMAL_CONTACT and email:
-                        args['data'].append(str(email))
 
                     log.debug('Supplier data : ' + str(args['set']))
 
@@ -283,7 +298,10 @@ if __name__ == '__main__':
                             args['set'][key] = None
                     try:
                         res = database.update(args)
+                        if not res[0]:
+                            count_error += 1
                     except Exception as _e:
+                        count_error += 1
                         log.error('While updating supplier : ' + str(data[spreadsheet.referencial_supplier_array['name']]) + ' ' + str(_e))
                         continue
 
@@ -296,6 +314,7 @@ if __name__ == '__main__':
 
         log.debug('-' * 40)
         log.info('Referential supplier loaded successfully (' + str(count) + ' supplier(s) processed out of ' + str(len(spreadsheet.referencial_supplier_data)) + ')')
+        print(count, count_error)
         # Commit and close database connection
         database.conn.commit()
         database.conn.close()
