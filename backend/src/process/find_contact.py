@@ -16,14 +16,11 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev: Serena tetart <serena.tetart@edissyum.com>
 
-import json
 import os
 import re
+import json
 import subprocess
-
-import torch
 from flask import current_app
-from transformers import Qwen3VLForConditionalGeneration, AutoProcessor
 
 from ..controllers import accounts
 
@@ -137,6 +134,9 @@ def run_inference(img_path):
 
         out = result.stdout.replace("\n", "").replace("\"", "")
     else:  # Qwen3
+        import torch
+        from transformers import Qwen3VLForConditionalGeneration, AutoProcessor
+
         model = Qwen3VLForConditionalGeneration.from_pretrained(
             current_app.config['CONTACT_MODEL'],
             device_map="auto",
