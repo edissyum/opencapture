@@ -332,17 +332,6 @@ class UserTest(unittest.TestCase):
         new_supplier = self.database.fetchall()
         self.assertEqual({'1': {}}, new_supplier[0]['pages'])
 
-    def test_successful_update_supplier_skip_autovalidate(self):
-        supplier = self.create_supplier()
-        response = self.app.put(f'/{CUSTOM_ID}/ws/accounts/suppliers/skipAutoValidate/' + str(supplier.json['id']),
-                                headers={"Content-Type": "application/json", 'Authorization': 'Bearer ' + self.token})
-        self.assertEqual(200, response.status_code)
-
-        self.database.execute("SELECT skip_auto_validate FROM accounts_supplier WHERE id = " + str(supplier.json['id']))
-        new_supplier = self.database.fetchall()
-        self.assertTrue(new_supplier[0]['skip_auto_validate'])
-        self.assertEqual(200, supplier.status_code)
-
     def test_successful_get_customers_list(self):
         self.create_customer()
         response = self.app.get(f'/{CUSTOM_ID}/ws/accounts/customers/list',

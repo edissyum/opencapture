@@ -19,6 +19,7 @@
 import os
 import urllib.parse
 from flask_cors import CORS
+from flasgger import Swagger
 from ultralytics import YOLO
 from flask_babel import Babel
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -26,6 +27,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from .rest.auth import limiter
 from werkzeug.wrappers import Request
 from .main import create_classes_from_custom_id
+from .rest._swagger import definitions, parameters
 from flask import request, g as current_context, Flask, session, jsonify
 from .functions import is_custom_exists, retrieve_custom_from_url, retrieve_custom_path, is_custom_exists_from_url, \
     retrieve_custom_id_from_url
@@ -91,6 +93,26 @@ def get_locale():
 app = Flask(__name__)
 app.wsgi_app = Middleware(app.wsgi_app)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=2, x_host=1, x_port=1)
+
+swagger_template = {
+    "info": {
+        "title": "Open-Capture API",
+        "version": "1.0.0"
+    },
+    "securityDefinitions": {
+        "Bearer": {
+            "in": "header",
+            "type": "apiKey",
+            "name": "Authorization",
+            "description": "JWT Authorization header. Exemple: 'Bearer <token>'"
+        }
+    },
+    "parameters": parameters,
+    "definitions": definitions
+}
+
+Swagger(app, template=swagger_template)
+
 
 CORS(app, supports_credentials=True)
 
