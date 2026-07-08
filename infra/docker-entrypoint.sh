@@ -133,6 +133,8 @@ case "$ROLE" in
             --workers "${GUNICORN_WORKERS:-2}" \
             --threads "${GUNICORN_THREADS:-2}" \
             --worker-class gthread \
+            --max-requests "${GUNICORN_MAX_REQUESTS:-1000}" \
+            --max-requests-jitter "${GUNICORN_MAX_REQUESTS_JITTER:-100}" \
             ${preload_arg} \
             --log-level "${GUNICORN_LOG_LEVEL:-info}" \
             --capture-output \

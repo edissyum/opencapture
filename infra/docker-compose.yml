@@ -76,6 +76,18 @@ x-backend-env: &backend-env
     # (ralentirait l'OCR du verifier). 4 = compromis contention/OCR ; à ajuster
     # selon le nombre de tenants qui tournent sur l'hôte.
     OMP_NUM_THREADS:      "4"
+    # --- Réglages gunicorn (rôle api) — surchargeables PAR TENANT via .env --------
+    # --max-requests : recycle chaque worker après N requêtes -> rend la RAM
+    #   accumulée (anti-fuite/OOM ; ex. ouvertures répétées d'un doc dans le viewer).
+    # --max-requests-jitter : décale le recyclage entre workers (pas tous en même temps).
+    # threads : concurrence en mémoire PARTAGÉE (préférer à +workers quand la RAM
+    #   est le facteur limitant ; chaque worker duplique le baseline + la fuite).
+    GUNICORN_WORKERS:             ${GUNICORN_WORKERS:-2}
+    GUNICORN_THREADS:             ${GUNICORN_THREADS:-2}
+    GUNICORN_MAX_REQUESTS:        ${GUNICORN_MAX_REQUESTS:-1000}
+    GUNICORN_MAX_REQUESTS_JITTER: ${GUNICORN_MAX_REQUESTS_JITTER:-100}
+    GUNICORN_PRELOAD:             ${GUNICORN_PRELOAD:-0}
+    GUNICORN_EXTRA_ARGS:          ${GUNICORN_EXTRA_ARGS:-}
 
 x-backend-volumes: &backend-volumes
     # Bind mounts directs : Docker crée le dossier hôte s'il n'existe pas.
