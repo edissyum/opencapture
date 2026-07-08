@@ -1,8 +1,7 @@
 -- 4.0.0+.sql — résiduel de reprise, à jouer APRÈS postgres/sql/4.0.0.sql.
 -- Contient ce que 4.0.0.sql (montée officielle 3.6.x->4.0.0) ne couvre pas :
---   1) colonnes post-4.0.0 présentes dans structure.sql mais pas dans 4.0.0.sql ;
---   2) adaptation des chemins vers le layout conteneur /app (4.0.0.sql les a rendus
---      relatifs "./" ou laissés absolus /var/... ; ici on les fixe sur /app).
+-- adaptation des chemins vers le layout conteneur /app (4.0.0.sql les a rendus
+-- relatifs "./" ou laissés absolus /var/... ; ici on les fixe sur /app).
 -- Paramètres psql -v : cid docs_src docs_root share_src app_custom oc_root
 --   docs_src   = docservers du custom (ex. /var/docservers/opencapture/<cid>)
 --   docs_root  = son parent          (ex. /var/docservers/opencapture)
@@ -10,11 +9,7 @@
 --   app_custom = /app/custom/<cid>
 --   oc_root    = racine projet source (ex. /var/www/html/opencapture)
 
--- 1) Colonnes post-4.0.0 -----------------------------------------------------
-ALTER TABLE mailcollect ADD COLUMN IF NOT EXISTS "verifier_customer_id" INTEGER;
-ALTER TABLE mailcollect ADD COLUMN IF NOT EXISTS "verifier_form_id"     VARCHAR(255);
-
--- 2) docservers -> /app (sources absolues /var/... OU relatives "./" de 4.0.0.sql)
+-- 1) docservers -> /app (sources absolues /var/... OU relatives "./" de 4.0.0.sql)
 --    Du plus spécifique au plus générique.
 UPDATE docservers SET path = REPLACE(path, :'docs_src'  || '/', '/app/docservers/');
 UPDATE docservers SET path = REPLACE(path, :'docs_root' || '/', '/app/docservers/');
@@ -28,12 +23,16 @@ UPDATE docservers SET path = REGEXP_REPLACE(path, '^\./', '/app/');
 UPDATE docservers SET path = REGEXP_REPLACE(path, '/{2,}', '/', 'g');
 UPDATE docservers SET path = '/app' WHERE docserver_id = 'PROJECT_PATH';
 UPDATE docservers SET path = :'app_custom' || '/data/MailCollect/' WHERE docserver_id = 'MAILCOLLECT_BATCHES';
--- SPLITTER_SHARE : absent de 4.0.0.sql, requis par le Splitter.
+-- SPLITTER_SHARE : absent de 4.0.0.sql. Pas systématiquement présent en v3 (vérifié
+-- absent sur la source edissyum/.230 : `docservers` n'a pas cette ligne, contrairement
+-- à VERIFIER_SHARE) ; `docservers['SPLITTER_SHARE']` est lu en accès dict brut par
+-- scripting_functions.launch_script_splitter -> KeyError si absent et qu'un workflow
+-- splitter utilise le scripting custom. Garder l'insert idempotent.
 INSERT INTO docservers (docserver_id, path, description)
 SELECT 'SPLITTER_SHARE', '/app/share/export/splitter/', '[SPLITTER] Stockage des chaines sortantes'
 WHERE NOT EXISTS (SELECT 1 FROM docservers WHERE docserver_id = 'SPLITTER_SHARE');
 
--- 3) documents.path + attachments : chemins docservers ABSOLUS, non touchés par 4.0.0.sql
+-- 2) documents.path + attachments : chemins docservers ABSOLUS, non touchés par 4.0.0.sql
 UPDATE documents   SET path = REPLACE(path, :'docs_src'  || '/', '/app/docservers/') WHERE path LIKE :'docs_src'  || '/%';
 UPDATE documents   SET path = REPLACE(path, :'docs_root' || '/', '/app/docservers/') WHERE path LIKE :'docs_root' || '/%';
 UPDATE documents   SET path = REGEXP_REPLACE(path, '/{2,}', '/', 'g') WHERE path LIKE '%//%';
@@ -44,7 +43,7 @@ UPDATE attachments SET thumbnail_path = REPLACE(thumbnail_path, :'docs_root' || 
 UPDATE attachments SET path           = REGEXP_REPLACE(path, '/{2,}', '/', 'g')           WHERE path           LIKE '%//%';
 UPDATE attachments SET thumbnail_path = REGEXP_REPLACE(thumbnail_path, '/{2,}', '/', 'g') WHERE thumbnail_path LIKE '%//%';
 
--- 4) workflows : share -> /app/share, puis input_folder nettoyé (espaces parasites, //)
+-- 3) workflows : share -> /app/share, puis input_folder nettoyé (espaces parasites, //)
 UPDATE workflows SET input = REPLACE(REPLACE(input::text, :'share_src' || '/', '/app/share/'), '/var/share/', '/app/share/')::jsonb;
 UPDATE workflows SET input = jsonb_set(input, '{input_folder}',
         to_jsonb(regexp_replace(btrim(input->>'input_folder'), '/{2,}', '/', 'g')))
@@ -65,7 +64,7 @@ UPDATE workflows SET input = jsonb_set(input, '{input_folder}',
         to_jsonb(rtrim(input->>'input_folder', '/') || '/default/'))
  WHERE input->>'input_folder' ~ '^/app/share/entrant/(splitter|verifier)/?$';
 
--- 5) outputs/outputs_types : dossier de sortie -> /app/share/export/<module>/
+-- 4) outputs/outputs_types : dossier de sortie -> /app/share/export/<module>/
 UPDATE outputs SET data = jsonb_set(data, '{options,parameters,0,value}', to_jsonb('/app/share/export/verifier/'::text))
  WHERE data #>>'{options,parameters,0,id}' = 'folder_out' AND module = 'verifier';
 UPDATE outputs SET data = jsonb_set(data, '{options,parameters,0,value}', to_jsonb('/app/share/export/splitter/'::text))
@@ -75,7 +74,7 @@ UPDATE outputs_types SET data = jsonb_set(data, '{options,parameters,0,placehold
 UPDATE outputs_types SET data = jsonb_set(data, '{options,parameters,0,placeholder}', to_jsonb('/app/share/export/splitter/'::text))
  WHERE data #>>'{options,parameters,0,id}' = 'folder_out' AND module = 'splitter';
 
--- 6) form_models_field : normaliser metadata_key null -> "" ------------------
+-- 5) form_models_field : normaliser metadata_key null -> "" ------------------
 --    En 3.6.x, les champs splitter non liés à une métadonnée portent
 --    `metadata_key: null`. L'éditeur de formulaire v4 fait
 --    `Object.values(field).filter(v => typeof v !== 'boolean').map(mapField)`
@@ -90,7 +89,7 @@ UPDATE form_models_field
    SET fields = regexp_replace(fields::text, '"metadata_key"\s*:\s*null', '"metadata_key": ""', 'g')::jsonb
  WHERE fields::text ~ '"metadata_key"\s*:\s*null';
 
--- 7) form_models_field (SPLITTER) : re-emballer les champs metadata "flat" en LIGNES
+-- 6) form_models_field (SPLITTER) : re-emballer les champs metadata "flat" en LIGNES
 --    La v3 stocke batch_metadata/document_metadata = [champ, champ] (champs à plat).
 --    L'éditeur v4 attend des LIGNES : [[champ], [champ]] (il fait
 --    zone.lines.map(l => l.fields.map(...)) à la sauvegarde, et Object.values(ligne)
@@ -113,7 +112,7 @@ UPDATE form_models_field ff
  WHERE fm.id = ff.form_id AND fm.module = 'splitter'
    AND jsonb_typeof((ff.fields->'document_metadata')->0) = 'object';
 
--- 8) form_models_field (VERIFIER) : re-emballer les champs "flat" (v3) en LIGNES v4
+-- 7) form_models_field (VERIFIER) : re-emballer les champs "flat" (v3) en LIGNES v4
 --    Symétrique de l'étape 7 (splitter), mais format cible DIFFÉRENT : le verifier
 --    attend des lignes-OBJET {"0": champ, "duplicable": false} (cf. seed data_fr.sql,
 --    catégories supplier/facturation/lines/other), là où le splitter veut [[champ]].
