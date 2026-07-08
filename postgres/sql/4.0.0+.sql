@@ -112,3 +112,29 @@ UPDATE form_models_field ff
   FROM form_models fm
  WHERE fm.id = ff.form_id AND fm.module = 'splitter'
    AND jsonb_typeof((ff.fields->'document_metadata')->0) = 'object';
+
+-- 8) form_models_field (VERIFIER) : re-emballer les champs "flat" (v3) en LIGNES v4
+--    Symétrique de l'étape 7 (splitter), mais format cible DIFFÉRENT : le verifier
+--    attend des lignes-OBJET {"0": champ, "duplicable": false} (cf. seed data_fr.sql,
+--    catégories supplier/facturation/lines/other), là où le splitter veut [[champ]].
+--    Sans ce nesting, le viewer verifier fait Object.values(ligne) sur un champ plat
+--    -> itère des strings (valeurs de propriétés) -> `field.id.includes()` sur une
+--    string -> crash « Cannot read properties of undefined (reading 'includes') ».
+--    À jouer APRÈS l'étape couleurs de 4.0.0.sql (qui lit le flat). Idempotent :
+--    ne touche qu'une catégorie dont l'élément 0 est un champ brut (clé 'id' au
+--    1er niveau) ; une ligne déjà nichée ({"0":...}) ou une catégorie vide est ignorée.
+UPDATE form_models_field ff
+   SET fields = (
+       SELECT jsonb_object_agg(cat.key,
+           CASE WHEN jsonb_typeof(cat.value) = 'array'
+                     AND jsonb_typeof(cat.value->0) = 'object'
+                     AND (cat.value->0) ? 'id'
+                THEN (SELECT jsonb_agg(jsonb_build_object('0', e, 'duplicable', false))
+                      FROM jsonb_array_elements(cat.value) e)
+                ELSE cat.value END)
+       FROM jsonb_each(ff.fields) cat)
+  FROM form_models fm
+ WHERE fm.id = ff.form_id AND fm.module = 'verifier'
+   AND EXISTS (SELECT 1 FROM jsonb_each(ff.fields) c
+               WHERE jsonb_typeof(c.value) = 'array' AND jsonb_typeof(c.value->0) = 'object'
+                 AND (c.value->0) ? 'id');
