@@ -284,7 +284,10 @@ ID=<tenant>                                  # <-- le tenant à détruire
 DIR=stub-tenants/$ID
 DC="docker compose --project-directory $DIR -f $DIR/docker-compose.yml"
 
-# 1) Conteneurs + réseau + volumes anonymes + image frontend locale du tenant
+# 1) Conteneurs + réseau + volumes anonymes du tenant.
+#    NB : `--rmi local` ne retire que les images SANS tag custom ; backend et frontend
+#    sont des images PARTAGÉES (`opencapture-backend`/`-frontend`, tag custom) -> elles
+#    ne sont PAS supprimées, ce qui est voulu (ne jamais casser les autres tenants).
 $DC down --remove-orphans --volumes --rmi local
 
 # 2) Données du tenant (DB + rabbitmq + custom + docservers + share) — IRRÉVERSIBLE
@@ -440,9 +443,9 @@ Détail du design et exploitation : [07-smb-server.md](07-smb-server.md) +
 | Code **backend** (`backend/src/…`) | ✅ backend (1×, partagé) | `./deploy.sh --backend-only --all` |
 | Deps backend (`pip-requirements.txt`), `backend.Dockerfile`, `apt-requirements.txt` | ✅ backend | idem |
 | `infra/docker-entrypoint.sh` / `docker-bootstrap.sh` | ✅ backend | idem |
-| Code **frontend** (`frontend/src/…`) | ✅ frontend (par tenant) | `./deploy.sh --frontend-only <tenant>` |
-| Deps frontend (`package.json`), `frontend.Dockerfile`, `nginx.conf.template` | ✅ frontend | idem |
-| `.env` → **`VITE_BACKEND_URL`** (baké dans le bundle) | ✅ frontend | idem |
+| Code **frontend** (`frontend/src/…`) | ✅ frontend (1×, partagée) | `./deploy.sh --frontend-only --all` |
+| Deps frontend (`package.json`), `frontend.Dockerfile`, `nginx.conf.template` | ✅ frontend (1×, partagée) | idem |
+| **`VITE_BACKEND_URL`** (figé à `/` relatif, baké au build ; **non** piloté par `.env` en prod) | ✅ frontend | idem |
 | `docker-compose*.yml` (env, ports, volumes, command) | ❌ | `./deploy.sh --no-build <tenant>` |
 | `.env` runtime (mots de passe, chemins, `OC_FQDN`, `TZ`, `MAIL_POLL_INTERVAL`…) | ❌ | idem |
 | `.env` → **`APP_UID` / `APP_GID`** | ❌ (relu au runtime par l'entrypoint) | idem |
@@ -462,6 +465,11 @@ Les `Dockerfile` ont deux `FROM` : un stage **`builder`** (qui fabrique) et un s
 - `builder` (`node`) : `npm ci` + `npm run build` → produit `/app/dist`.
 - `runtime` (`nginx`) : `COPY --from=builder /app/dist /usr/share/nginx/html`.
 - Jeté : Node, npm, `node_modules`, les sources. Image finale ≈ 99 Mo (nginx + bundle).
+
+Le bundle Vite est bâti avec `VITE_BACKEND_URL=/` (relatif) → **identique pour tous les
+tenants** : l'image `opencapture-frontend` est **unique et partagée**, construite **une
+fois**. La spécialisation par tenant est faite **au runtime** (variable `CUSTOM_ID` →
+`envsubst` sur `nginx.conf.template`), pas au build (cf. Annexe C « Frontend » + Annexe G).
 
 **Backend** ([../infra/backend.Dockerfile](../infra/backend.Dockerfile)) :
 - `builder` : compile les *wheels* Python (avec `build-essential`, headers dev…).
@@ -574,11 +582,21 @@ file, un *consommateur* (le worker) le traite. Exemple pour le splitter :
    *enfiler*, le worker pour *exécuter*. *(verifier : même schéma avec la file
    `verifier_<id>`.)*
 
-### Frontend par tenant + Traefik
-Le frontend est une image **par tenant** (le build bake la config). L'overlay
-[../infra/docker-compose.traefik.yml](../infra/docker-compose.traefik.yml) branche le frontend sur
-le réseau externe `frontend` et pose une route `Host(${OC_FQDN})` TLS (resolver `myresolver`).
-Le seul point d'entrée public est Traefik (les autres services restent sur le réseau interne).
+### Frontend (image partagée) + Traefik
+Le frontend est **une image unique partagée**, `opencapture-frontend`
+([../infra/docker-compose.yml:286](../infra/docker-compose.yml#L286)), construite **une
+fois** (`build frontend`) : le bundle Vite est **identique pour tous les tenants**
+(`VITE_BACKEND_URL=/` relatif, [../infra/frontend.Dockerfile:23](../infra/frontend.Dockerfile#L23)),
+donc rien de spécifique au tenant n'est **baké**. La spécialisation est faite **au runtime**
+via la variable `CUSTOM_ID` du conteneur : l'entrypoint `nginx:alpine` passe
+`nginx.conf.template` dans `envsubst` au démarrage → les `location /${CUSTOM_ID}/ws/…`
+prennent la valeur du tenant. Un changement de code/deps frontend impose donc **un seul**
+rebuild partagé, puis un `up -d` de chaque tenant à rafraîchir (`./deploy.sh --frontend-only --all`).
+
+L'overlay [../infra/docker-compose.traefik.yml](../infra/docker-compose.traefik.yml) branche le
+frontend sur le réseau externe `frontend` et pose une route `Host(${OC_FQDN})` TLS (resolver
+`myresolver`). Le seul point d'entrée public est Traefik (les autres services restent sur le
+réseau interne). Détail du routage par domaine/préfixe et du rôle d'`OC_FQDN` : **Annexe G**.
 
 ### TLS — certificat fourni par le client (servi par SNI)
 Procédure : section 2 ci-dessus + [03-tenant-cert.md](03-tenant-cert.md). Principe : Traefik
