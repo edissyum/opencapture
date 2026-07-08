@@ -68,6 +68,8 @@ The [../checkos.sh](../checkos.sh) script provides a basic check of the OS resou
 
 CPU 0 is not assigned to tenants so as not to block the server in case of overload. To be seen whether nice is useful.
 
+⚠ The default `cpuset` (`1-7`) assumes an **8-core** host. On a smaller machine, `docker compose up -d` (hence `deploy.sh`) fails with *"Requested CPUs are not available"*. Set **`OC_CPUSET`** in the tenant's `.env` instead (e.g. 2-core VM → `OC_CPUSET=0-1`); the `1-7` default is unchanged for 8-core hosts.
+
 ```json
 # --- QoS: resource profiles ------------------------------------------------
 # mem_limit      = HARD RAM cap (OOM within the cgroup, not global)
@@ -83,8 +85,9 @@ x-res-mail:      &res-mail      { mem_limit: 512m,  memswap_limit: 512m,  mem_sw
 x-res-fswatcher: &res-fswatcher { mem_limit: 256m,  memswap_limit: 256m,  mem_swappiness: 0,  cpu_shares: 256  }
 x-res-frontend:  &res-frontend  { mem_limit: 128m,  memswap_limit: 128m,  mem_swappiness: 0,  cpu_shares: 256  }
 
-# Reserves core 0 for the system ; tenants confined to cores 1-7.
-x-cpuset-tenants: &cpuset { cpuset: "1-7" }
+# Reserves core 0 for the system ; tenants confined to cores 1-7 (8-core host).
+# Env-driven: set OC_CPUSET in the tenant's .env if the host has fewer cores.
+x-cpuset-tenants: &cpuset { cpuset: "${OC_CPUSET:-1-7}" }
 ```
 
 ### The 3 modes

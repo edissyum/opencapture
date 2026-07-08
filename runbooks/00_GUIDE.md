@@ -69,6 +69,8 @@ Le script [../checkos.sh](../checkos.sh) fournit une vérification basique des r
 
 La CPU 0 n'est pas attribuée aux tenants pour ne pas bloquer le serveur en cas de surcharge. A voir si du nice est utile.
 
+⚠ Le `cpuset` par défaut (`1-7`) suppose un hôte **8 cœurs**. Sur une machine plus petite, `docker compose up -d` (donc `deploy.sh`) échoue avec *« Requested CPUs are not available »*. Poser alors **`OC_CPUSET`** dans le `.env` du tenant (ex. VM 2 cœurs → `OC_CPUSET=0-1`) ; le défaut `1-7` reste inchangé pour les hôtes 8 cœurs.
+
 ```json
 # --- QoS : profils de ressources ------------------------------------------
 # mem_limit      = plafond DUR RAM (OOM dans le cgroup, pas global)
@@ -84,8 +86,9 @@ x-res-mail:      &res-mail      { mem_limit: 512m,  memswap_limit: 512m,  mem_sw
 x-res-fswatcher: &res-fswatcher { mem_limit: 256m,  memswap_limit: 256m,  mem_swappiness: 0,  cpu_shares: 256  }
 x-res-frontend:  &res-frontend  { mem_limit: 128m,  memswap_limit: 128m,  mem_swappiness: 0,  cpu_shares: 256  }
 
-# Réserve le cœur 0 au système ; tenants confinés aux cœurs 1-7.
-x-cpuset-tenants: &cpuset { cpuset: "1-7" }
+# Réserve le cœur 0 au système ; tenants confinés aux cœurs 1-7 (hôte 8 cœurs).
+# Piloté par env : OC_CPUSET dans le .env du tenant si l'hôte a moins de cœurs.
+x-cpuset-tenants: &cpuset { cpuset: "${OC_CPUSET:-1-7}" }
 ```
 
 ### Les 3 modes
