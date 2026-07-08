@@ -117,8 +117,11 @@ x-res-mail:      &res-mail      { mem_limit: 512m,  memswap_limit: 512m,  cpu_sh
 x-res-fswatcher: &res-fswatcher { mem_limit: 256m,  memswap_limit: 256m,  cpu_shares: 256  }
 x-res-frontend:  &res-frontend  { mem_limit: 128m,  memswap_limit: 128m,  cpu_shares: 256  }
 
-# Réserve le cœur 0 au système ; tenants confinés aux cœurs 1-7.
-x-cpuset-tenants: &cpuset { cpuset: "1-7" }
+# Réserve le cœur 0 au système ; tenants confinés aux cœurs 1-7 (hôte 8 cœurs).
+# Piloté par env pour les hôtes plus petits : poser OC_CPUSET dans le .env du
+# tenant (ex. VM 2 cœurs -> OC_CPUSET=0-1), sinon `up -d` échoue
+# ("Requested CPUs are not available"). Défaut inchangé = "1-7".
+x-cpuset-tenants: &cpuset { cpuset: "${OC_CPUSET:-1-7}" }
 
 
 services:
