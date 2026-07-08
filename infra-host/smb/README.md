@@ -48,7 +48,7 @@ Samba locaux** (`tdbsam`) sur un serveur **standalone**.
 ## Le compte de service côté hôte (important)
 
 Ce qui doit correspondre, c'est le **numéro** : `force user` doit désigner le
-**nom hôte qui porte `$APP_UID:$APP_GID`** (défaut 1050) — c'est l'UID/GID, pas le
+**nom hôte qui porte `$APP_UID:$APP_GID`** (défaut 1000) — c'est l'UID/GID, pas le
 nom, qui rend les fichiers lisibles/supprimables par le fs-watcher. Le nom peut
 donc différer de `APP_USER` du `.env`.
 

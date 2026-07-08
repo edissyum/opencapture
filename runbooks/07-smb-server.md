@@ -14,9 +14,9 @@
 # NB : en sudo, `~` = /root -> n'utilise PAS ~/opencapture_docker. $PWD est sûr.
 REPO="$PWD"
 
-# uid/gid/nom du compte de service OpenCapture (depuis le .env racine ; défaut 1050).
-APP_UID="$(grep -m1 '^APP_UID='  "$REPO/.env" | cut -d= -f2)";  APP_UID="${APP_UID:-1050}"
-APP_GID="$(grep -m1 '^APP_GID='  "$REPO/.env" | cut -d= -f2)";  APP_GID="${APP_GID:-1050}"
+# uid/gid/nom du compte de service OpenCapture (depuis le .env racine ; défaut 1000).
+APP_UID="$(grep -m1 '^APP_UID='  "$REPO/.env" | cut -d= -f2)";  APP_UID="${APP_UID:-1000}"
+APP_GID="$(grep -m1 '^APP_GID='  "$REPO/.env" | cut -d= -f2)";  APP_GID="${APP_GID:-1000}"
 APP_USER="$(grep -m1 '^APP_USER=' "$REPO/.env" | cut -d= -f2)"; APP_USER="${APP_USER:-opencapture}"
 
 # ----------------------------------------------------------------------
