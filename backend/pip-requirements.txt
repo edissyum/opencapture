@@ -1,6 +1,6 @@
 lxml==6.1.1
-nltk==3.9.4
 qrcode==8.2
+nltk==3.10.0
 fpdf2==2.8.7
 numpy==2.5.1
 msal==1.37.0
@@ -12,7 +12,7 @@ pyjwt==2.13.0
 deskew==1.6.1
 pyzbar==0.1.9
 pandas==3.0.4
-factur-x==5.1
+factur-x==6.1
 mpmath==1.3.0
 kuyruk==10.2.2
 pillow==12.3.0
@@ -46,7 +46,7 @@ python-bidi==0.6.11
 pytesseract==0.3.13
 configparser==7.2.0
 scikit-learn==1.9.0
-ultralytics==8.4.89
+ultralytics==8.4.90
 python-magic==0.4.27
 transformers==5.13.0
 Flask-Limiter==4.1.1
@@ -55,5 +55,5 @@ pypdf[crypto]==6.14.2
 qwen-vl-utils==0.0.14
 opencv-python==5.0.0.93
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.12.1
-torchvision==0.27.1
+torch==2.13.0
+torchvision==0.28.0
