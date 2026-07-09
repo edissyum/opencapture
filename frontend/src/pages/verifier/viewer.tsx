@@ -278,6 +278,7 @@ export function VerifierViewerPage() {
                     prepareDocumentData({ id: data }, supplierFull[data], supplierId);
                 }
             });
+            setSupplierExists(true);
         } catch (error) {
             setSupplierExists(false);
             console.error("Error fetching third party:", error);
