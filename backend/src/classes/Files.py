@@ -185,8 +185,10 @@ class Files:
                 output_path = output + '.jpg'
                 if convert_function == 'imagemagick':
                     cmd = f'convert -density 200 {file}[{str(page - 1)}] -quality 100 -alpha remove {output_path}'
-                    process = subprocess.Popen(cmd.split(' '))
-                    process.communicate()
+                    process = subprocess.Popen(cmd.split(' '), stderr=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
+                    _, stderr = process.communicate()
+                    if process.returncode != 0:
+                        raise Exception(f"Conversion failed: {stderr}")
                 else:
                     images = convert_from_path(file, first_page=page, last_page=page, dpi=300)
                     if images[0].height > 10000 or images[0].width > 10000:
@@ -221,7 +223,7 @@ class Files:
                     del chunk_images
             return outputs_paths
         except (Exception,) as error:
-            self.log.error('Error during pdf2image conversion : ' + str(error))
+            self.log.error(f'Error during {convert_function} conversion : ' + str(error))
             return False
 
     def save_img_with_pdf2image_min(self, file, output, single_file=True, module='verifier', chunk_size=10):
