@@ -114,6 +114,28 @@ smbclient "//<serveur>/<id>" -U "<id>" -m SMB3
 # Windows : \\<serveur>\<id>  (ou \\<domaine-client>\<id>), identifiants <id>.
 ```
 
+## Dépannage : « Multiple connections... using more than one user name »
+
+Limite **Windows** (pas Samba) : un poste ne peut garder qu'**une seule identité**
+active vers un même serveur SMB. Si une session traîne (poste sorti de veille,
+mot de passe SMB changé, redémarrage de `smbd`) et qu'une reconnexion est tentée,
+Windows la refuse avec ce message, y compris via l'explorateur (simple échec de
+dépôt, sans message clair). Aucun levier serveur ne force Windows à lâcher une
+session déjà établie — `deadtime` (ci-dessus) réduit juste la fenêtre où ça peut
+arriver en coupant les sessions inactives côté serveur.
+
+Résolution (**droits admin requis sur le poste Windows** — pas un cas pour un
+support à distance sans accès admin) :
+```
+net use * /delete /y
+```
+Si ça ne suffit pas (session sans lettre de lecteur, invisible dans `net use`) :
+```
+net stop lanmanworkstation
+net start lanmanworkstation
+```
+En dernier recours : redémarrer le poste Windows.
+
 ## Supprimer un tenant
 
 ```bash
