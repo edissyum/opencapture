@@ -331,6 +331,12 @@ export function VerifierViewerPage() {
 
         if (regionsList.length > 0 || documentData.positions.length === 0 || !fieldsZoneFilled) return;
 
+        const supplierFields = fieldsZone.find((zone: any) => zone.id === 'supplier')?.lines;
+        // If no supplier zone is setup in the form, setSupplierExists at True to avoid disabled validate button
+        if (supplierFields && supplierFields?.length == 0) {
+            setSupplierExists(true);
+        }
+
         Object.keys(documentData.positions).forEach((position) => {
             let label = '';
             const pos = documentData.positions[position];
@@ -722,11 +728,10 @@ export function VerifierViewerPage() {
             if (checkSupplier && !originalCurrentSupplier && value) {
                 supplierExists = false;
             }
+            setSupplierExists(supplierExists);
         }
 
-        setSupplierExists(supplierExists);
         setSupplierChanged(supplierChange);
-
         prepareDocumentData(field, value);
     }
 
@@ -1308,7 +1313,7 @@ export function VerifierViewerPage() {
                     <Loader/>
                 ) : (
                     <>
-                        { disableFields && (
+                        { disableFields && documentData.status === 'END' && (
                             <div className='mb-6 w-full bg-(--bg-error) p-4 rounded-lg flex flex-col gap-4 border
                                             border-(--text-error)'>
                                 <div className='flex items-center gap-3'>
@@ -1508,8 +1513,8 @@ export function VerifierViewerPage() {
                                 "data-tooltip-content": t('VERIFIER.save_supplier_modification')
                             }) }>
                                 <Button className='w-full' variant='danger' onClick={ () => refuseDocument() }
-                                        disabled={ loadingUpdateData || supplierChanged ||
-                                                   !supplierExists || formHasError || disableFields }>
+                                        disabled={ loadingUpdateData || supplierChanged || !supplierExists
+                                                   || formHasError || disableFields }>
                                     { !loadingUpdateRefuse ? t('FORMS.refuse') : t('FORMS.refuse_loading') }
                                 </Button>
                             </div>
@@ -1517,10 +1522,9 @@ export function VerifierViewerPage() {
                                 "data-tooltip-id": "tooltip",
                                 "data-tooltip-content": t('VERIFIER.save_supplier_modification')
                             }) }>
-                                <Button
-                                    disabled={ loadingUpdateData || supplierChanged || !supplierExists
-                                               || formHasError || disableFields }
-                                    className='w-full' onClick={ () => validateDocument() }>
+                                <Button className='w-full' onClick={ () => validateDocument() }
+                                        disabled={ loadingUpdateData || supplierChanged || (!supplierExists)
+                                                   || formHasError || disableFields }>
                                     { loadingUpdateValidate && !formHasError ? t('FORMS.validate_loading') : t('FORMS.validate') }
                                 </Button>
                             </div>
