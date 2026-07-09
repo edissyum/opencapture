@@ -40,7 +40,7 @@ export function ZoomControl({ zoom, setZoom }: any) {
 
             <Plus size={ 20 } onClick={ () => setZoom((z: number) => Math.min(z + 10, 200)) }/>
 
-            <span className="text-sm font-medium w-12 text-center text-(--text-primary)">
+            <span className="text-sm font-normal w-12 text-center text-(--text-primary)">
                 { zoom }%
             </span>
         </div>

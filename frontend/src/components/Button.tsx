@@ -55,7 +55,7 @@ export function Button({
         : false;
 
     let baseStyles =
-        "cursor-pointer inline-flex gap-2 items-center justify-center font-medium " +
+        "cursor-pointer inline-flex gap-2 items-center justify-center font-normal " +
         "transition-colors focus:outline-none disabled:opacity-50 disabled:pointer-events-none";
 
     if (!className?.includes('rounded-')) {
@@ -91,6 +91,9 @@ export function Button({
     }
     if (className?.includes('border-')) {
         variantStyles[variant] = variantStyles[variant].replace(/(border-\(|hover:border-)[^\s)]+/gm, '');
+    }
+    if (className?.includes('font-')) {
+        baseStyles = baseStyles.replace(/font-[^\s]+/gm, '');
     }
 
     const sizeStyles: Record<ButtonSize, string> = {
