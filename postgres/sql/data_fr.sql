@@ -219,7 +219,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
             },
             {
                 "id": "subject",
-                "type": "textarea",
+                "type": "text",
                 "label": "Sujet",
                 "hint": "Liste des identifiants techniques des champs, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
                 "required": true,
