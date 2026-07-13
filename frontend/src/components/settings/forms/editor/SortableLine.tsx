@@ -38,7 +38,7 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
                 />
             </span>,
             icon: <Copy size={ 16 }/>,
-            visible: zoneId !== 'zone-supplier' && module === 'verifier',
+            visible: zoneId !== 'zone-supplier' && module === 'verifier'
         },
         {
             label: <span className='critical'>{ t('FORMS.delete') } </span>,
@@ -55,8 +55,8 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
     const { setNodeRef, setActivatorNodeRef, listeners, transform, isDragging, isOver, transition } = useSortable({
         id: line.id,
         data: {
-            type: "line",
             line,
+            type: "line"
         },
         animateLayoutChanges
     });
@@ -87,11 +87,10 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
                         cm.current?.show(e)
                     } }
                     className='cursor-pointer group-hover:opacity-100 opacity-0 transition-opacity -translate-x-1/2
-                               text-(--text-secondary) absolute z-20 -top-5.5 p-0.5 left-1/2 border
+                               text-(--text-secondary) absolute z-20 -top-5 p-0.5 left-1/2 border before:translate-y-px
                                border-b-0 border-(--border-primary)/30 rounded-md rounded-b-none bg-[#E1EFE8]
-                               dark:bg-(--bg-secondary) before:content-[""] before:absolute before:bottom-0
-                               before:translate-y-px'>
-                  <Settings size={ 18 }/>
+                               dark:bg-(--bg-secondary) before:content-[""] before:absolute before:bottom-0'>
+                  <Settings size={ 16 }/>
                 </span>
                 <DroppableLine line={ line } onUpdateField={ onUpdateField } onDeleteField={ onDeleteField }
                                module={ module }/>
