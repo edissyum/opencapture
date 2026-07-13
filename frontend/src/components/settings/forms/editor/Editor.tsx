@@ -497,44 +497,47 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                             ) }
                         </TabPanel>
                         <TabPanel header={ t("SETTINGS.form_fields") }>
-                            <Accordion multiple activeIndex={ [0, 2] } className='p-6 pb-4'>
-                                { zones.map((zone: any) => (
-                                    <AccordionTab header={
-                                        <span className='flex items-center gap-2'>
-                                            { zone.name }
-                                            { module === 'verifier' && (
-                                                <div className='ml-auto cursor-pointer'>
-                                                    <EllipsisVertical
-                                                        size={ 20 }
-                                                        onClick={ (e) => {
-                                                            e.stopPropagation();
-                                                            e.stopPropagation();
-                                                            setSelectedZone(zone);
-                                                            cm.current?.show(e);
-                                                        } }
-                                                        data-tooltip-id="tooltip"
-                                                        className='hover:text-(--color-primary)'
-                                                        data-tooltip-content={ t('FORMS.change_label') }
-                                                    />
-                                                    <ContextMenu model={ menuItems } className="w-auto!" ref={ cm }/>
-                                                </div>
-                                            ) }
-                                        </span>
-                                    } key={ zone.id }>
-                                        <DroppableZone
-                                            key={ zone.id } zone={ zone } module={ module }
-                                            onUpdateLine={ handleUpdateLine }
-                                            onDeleteLine={ handleDeleteLine }
-                                            onDeleteField={ handleDeleteField }
-                                            onUpdateField={ handleUpdateField }
-                                        />
-                                    </AccordionTab>
-                                )) }
-                            </Accordion>
-                            <Button className='ml-6' variant="primary" onClick={ handleUpdate }
-                                    disabled={ isSubmitting }>
-                                { isSubmitting ? t('GLOBAL.saving') + "..." : t('GLOBAL.save_settings') }
-                            </Button>
+                            <div className='p-6 flex flex-col gap-4'>
+                                <Accordion multiple activeIndex={ [0, 2] } className=''>
+                                    { zones.map((zone: any) => (
+                                        <AccordionTab header={
+                                            <span className='flex items-center gap-2'>
+                                                { zone.name }
+                                                { module === 'verifier' && (
+                                                    <div className='ml-auto cursor-pointer'>
+                                                        <EllipsisVertical
+                                                            size={ 20 }
+                                                            onClick={ (e) => {
+                                                                e.stopPropagation();
+                                                                e.stopPropagation();
+                                                                setSelectedZone(zone);
+                                                                cm.current?.show(e);
+                                                            } }
+                                                            data-tooltip-id="tooltip"
+                                                            className='hover:text-(--color-primary)'
+                                                            data-tooltip-content={ t('FORMS.change_label') }
+                                                        />
+                                                        <ContextMenu model={ menuItems } className="w-auto!"
+                                                                     ref={ cm }/>
+                                                    </div>
+                                                ) }
+                                            </span>
+                                        } key={ zone.id }>
+                                            <DroppableZone
+                                                key={ zone.id } zone={ zone } module={ module }
+                                                onUpdateLine={ handleUpdateLine }
+                                                onDeleteLine={ handleDeleteLine }
+                                                onDeleteField={ handleDeleteField }
+                                                onUpdateField={ handleUpdateField }
+                                            />
+                                        </AccordionTab>
+                                    )) }
+                                </Accordion>
+                                <Button variant="primary" onClick={ handleUpdate }
+                                        disabled={ isSubmitting }>
+                                    { isSubmitting ? t('GLOBAL.saving') + "..." : t('GLOBAL.save_settings') }
+                                </Button>
+                            </div>
                         </TabPanel>
                         { module === 'splitter' && (
                             <TabPanel header={ t("FORMS.doctypes") }>
