@@ -12,7 +12,7 @@ pyjwt==2.13.0
 deskew==1.6.1
 pyzbar==0.1.9
 pandas==3.0.4
-factur-x==6.2
+factur-x==6.4
 mpmath==1.3.0
 sympy==1.14.0
 kuyruk==10.2.2
@@ -33,7 +33,7 @@ asn1crypto==1.5.1
 Bottleneck==1.6.0
 xlsxwriter==3.2.9
 pdf2image==1.17.0
-gitpython==3.1.51
+gitpython==3.1.52
 flask_cors==6.0.5
 flasgger==0.9.7.1
 pillow-heif==1.4.0
@@ -47,9 +47,9 @@ python-bidi==0.6.11
 pytesseract==0.3.13
 configparser==7.2.0
 scikit-learn==1.9.0
-ultralytics==8.4.93
+ultralytics==8.4.96
 python-magic==0.4.27
-transformers==5.13.1
+transformers==5.14.1
 Flask-Limiter==4.1.1
 pycryptodome==3.23.0
 pypdf[crypto]==6.14.2

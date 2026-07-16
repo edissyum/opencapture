@@ -30,7 +30,7 @@
         "@dnd-kit/sortable": "^10.0.0",
         "@hookform/resolvers": "^5.4.0",
         "@monaco-editor/react": "^4.7.0",
-        "@tailwindcss/vite": "^4.3.2",
+        "@tailwindcss/vite": "^4.3.3",
         "@tanstack/react-table": "^8.21.3",
         "@tanstack/react-virtual": "^3.14.6",
         "@tinymce/tinymce-react": "^6.3.0",
@@ -50,7 +50,7 @@
         "react-toastify": "^11.1.0",
         "react-tooltip": "^6.0.8",
         "recharts": "^3.9.2",
-        "tailwindcss": "^4.3.2",
+        "tailwindcss": "^4.3.3",
         "tinymce": "^8.8.0",
         "xlsx": "^0.18.5",
         "zod": "^4.4.3"
