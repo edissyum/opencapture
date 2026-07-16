@@ -239,7 +239,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             render={ ({ field }) => (
                                 <>
                                     <InputSwitch inputId={ 'secured_connection' } checked={ field.value }
-                                                 onChange={ (e) => setValueAuth("securedConnection", e.value) }/>
+                                                 onChange={ (e: any) => setValueAuth("securedConnection", e.value) }/>
                                     <label htmlFor='secured_connection'
                                            className="flex items-center gap-4 cursor-pointer select-none text-(--text-primary)">
                                         { t('MAILCOLLECT.secured_connection') }
@@ -366,7 +366,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             disabled={ folders.length === 0 }
                             label={ t("MAILCOLLECT.folder_to_crawl") }
                             options={ folders.map((folder) => ({ label: folder, value: folder })) }
-                            onChange={ (e) => field.onChange(e.value) }
+                            onChange={ (e: any) => field.onChange(e.value) }
                         />
                     ) }
                 />
@@ -407,7 +407,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             disabled={ folders.length === 0 }
                             label={ t("MAILCOLLECT.folder_destination") }
                             options={ folders.map((folder) => ({ label: folder, value: folder })) }
-                            onChange={ (e) => field.onChange(e.value) }
+                            onChange={ (e: any) => field.onChange(e.value) }
                         />
                     ) }
                 />
@@ -453,7 +453,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                         render={ ({ field }) => (
                             <div className='mb-6 flex gap-2 relative w-fit'>
                                 <InputSwitch inputId={ 'ocr_attachments' } checked={ field.value }
-                                             onChange={ (e) => field.onChange(e.value) }/>
+                                             onChange={ (e: any) => field.onChange(e.value) }/>
                                 <label htmlFor='ocr_attachments'
                                        className="flex items-center gap-4 cursor-pointer select-none">
                                     { t('MAILCOLLECT.ocr_attachments') }
@@ -472,7 +472,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                 render={ ({ field }) => (
                                     <div className='mb-6 flex gap-2'>
                                         <InputSwitch inputId={ 'verifier_insert_body_as_doc' } checked={ field.value }
-                                                     onChange={ (e) => field.onChange(e.value) }/>
+                                                     onChange={ (e: any) => field.onChange(e.value) }/>
                                         <label htmlFor='verifier_insert_body_as_doc'
                                                className="flex items-center gap-4 cursor-pointer select-none">
                                             { t('MAILCOLLECT.insert_body_as_doc') }
@@ -494,7 +494,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                                     label: workflow.label,
                                                     value: workflow.workflow_id
                                                 })) }
-                                                onChange={ (e) => field.onChange(e.value) }
+                                                onChange={ (e: any) => field.onChange(e.value) }
                                                 className="w-full"
                                             />
                                             <label
@@ -518,7 +518,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                 render={ ({ field }) => (
                                     <div className='mb-6 flex gap-2'>
                                         <InputSwitch inputId={ 'splitter_insert_body_as_doc' } checked={ field.value }
-                                                     onChange={ (e) => field.onChange(e.value) }/>
+                                                     onChange={ (e: any) => field.onChange(e.value) }/>
                                         <label htmlFor='splitter_insert_body_as_doc'
                                                className="flex items-center gap-4 cursor-pointer select-none">
                                             { t('MAILCOLLECT.insert_body_as_doc') }
@@ -540,7 +540,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                                     label: workflow.label,
                                                     value: workflow.workflow_id
                                                 })) }
-                                                onChange={ (e) => field.onChange(e.value) }
+                                                onChange={ (e: any) => field.onChange(e.value) }
                                                 className="w-full"
                                             />
                                             <label
