@@ -29,7 +29,6 @@ import tempfile
 from .. import shared
 from xml.dom import minidom
 from datetime import datetime
-from ..models import splitter
 from unidecode import unidecode
 from .NFZ42020 import hash_file_content
 from werkzeug.datastructures import FileStorage

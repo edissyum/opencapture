@@ -27,8 +27,8 @@ import { DndContext, type DragEndEvent, DragOverlay, type DragStartEvent, pointe
 import { findLineContainingField, findZoneContainingLine, getDropContext } from "./helpers";
 
 import { Button } from "../../../Button";
-import { Loader } from "../../../loader/Loader";
 import { FieldPalette } from "./FieldPalette";
+import { Loader } from "../../../loader/Loader";
 import { DroppableZone } from "./DroppableZone";
 import { DroppableLine } from "./DroppableLine";
 import { showToast } from "../../../ToastProvider";

@@ -126,7 +126,6 @@ with app.app_context():
     docservers_mailcollect = docservers_mailcollect[0]
     config_mail = {}
 
-
     for process in processes:
         print('Start process : ' + process['name'])
         for _p in process:
