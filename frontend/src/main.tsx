@@ -22,6 +22,7 @@ import { PrimeReactProvider } from "primereact/api";
 import './index.css'
 import { App } from "./App";
 import { ToastProvider } from "./components/ToastProvider";
+import { MantineProvider } from "@mantine/core";
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
@@ -33,7 +34,28 @@ createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <ToastProvider/>
         <PrimeReactProvider value={ value }>
-            <App/>
+            <MantineProvider theme={ {
+                fontFamily: 'inherit',
+                lineHeights: {
+                    xs: 'inherit',
+                    sm: 'inherit',
+                    md: 'inherit',
+                    lg: 'inherit',
+                    xl: 'inherit',
+                },
+                components: {
+                    Tabs: {
+                        vars: () => ({
+                            root: {
+                                '--tab-radius': '0',
+                                '--tabs-color': '#19864B'
+                            }
+                        })
+                    }
+                }
+            } }>
+                <App/>
+            </MantineProvider>
         </PrimeReactProvider>
     </StrictMode>,
 );

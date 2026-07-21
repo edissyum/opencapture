@@ -15,6 +15,13 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+.mantine-Tabs-list button {
+    @apply px-5;
+    @apply py-4;
+    @apply text-base!;
+    @apply font-normal!;
+}
+
 /* Tab header background and text color */
 .p-tabview .p-tabview-nav li .p-tabview-nav-link, .p-tabview-nav {
     @apply bg-(--bg-primary);

@@ -15,7 +15,13 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-@import "tailwindcss";
+@layer theme, base, mantine, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import '@mantine/core/styles.css' layer(mantine);
+@import "tailwindcss/utilities.css" layer(utilities);
+
 @import "./assets/css/tooltip.css";
 @import "./assets/css/react-pdf.css";
 @import "./assets/css/tox-editor.css";

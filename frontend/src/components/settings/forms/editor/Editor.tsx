@@ -15,13 +15,12 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { arrayMove } from "@dnd-kit/sortable";
-import { useEffect, useRef, useState } from "react";
 import { EllipsisVertical, Pen } from "lucide-react";
-import { ContextMenu } from "primereact/contextmenu";
 import { TabPanel, TabView } from "primereact/tabview";
-import { Accordion, AccordionTab } from "primereact/accordion";
+import { Tabs, Accordion as MantineAccordion, ActionIcon, Menu } from '@mantine/core';
 import { DndContext, type DragEndEvent, DragOverlay, type DragStartEvent, pointerWithin } from "@dnd-kit/core";
 
 import { findLineContainingField, findZoneContainingLine, getDropContext } from "./helpers";
@@ -49,7 +48,6 @@ import { DoctypeDetails } from "../../doctypes/doctypesDetails";
 export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const { get, post, put } = axiosApiCall();
     const { formId } = useParams<{ formId: any }>();
-    const cm = useRef({ current: null } as any);
 
     const menuItems: any = [
         {
@@ -481,6 +479,18 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
         <DndContext onDragEnd={ handleDragEnd } onDragStart={ handleDragStart } collisionDetection={ pointerWithin }>
             <div className="flex h-full">
                 <div className="flex flex-col border-r border-(--border-secondary) w-full">
+                    <Tabs defaultValue='details'>
+                        <Tabs.List>
+                            <Tabs.Tab value="details">{ t('SETTINGS.form_details') }</Tabs.Tab>
+                            <Tabs.Tab value="fields">{ t('SETTINGS.form_fields') }</Tabs.Tab>
+                            { module === 'splitter' && (
+                                <Tabs.Tab value="doctypes">{ t('FORMS.doctypes') }</Tabs.Tab>
+                                )}
+                            { module === 'splitter' && (
+                                <Tabs.Tab value="qr_code">{ t('FORMS.qr_code') }</Tabs.Tab>
+                            )}
+                        </Tabs.List>
+                    </Tabs>
                     <TabView activeIndex={ mainTabIndex } onTabChange={ (e) => setMainTabIndex(e.index) }>
                         <TabPanel header={ t("SETTINGS.form_details") } className='bg-(--bg-primary) h-full'>
                             { formSettingsLoading ? (
@@ -498,41 +508,89 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                         </TabPanel>
                         <TabPanel header={ t("SETTINGS.form_fields") }>
                             <div className='p-6 flex flex-col gap-4'>
-                                <Accordion multiple activeIndex={ [0, 2] } className=''>
+                                <MantineAccordion chevronPosition="left" variant="separated" multiple
+                                                  defaultValue={ ['zone-supplier', 'zone-facturation'] }>
                                     { zones.map((zone: any) => (
-                                        <AccordionTab header={
-                                            <span className='flex items-center gap-2'>
-                                                { zone.name }
-                                                { module === 'verifier' && (
-                                                    <div className='ml-auto cursor-pointer'>
-                                                        <EllipsisVertical
-                                                            size={ 20 }
-                                                            onClick={ (e) => {
-                                                                e.stopPropagation();
+                                        <MantineAccordion.Item key={ zone.id } value={ zone.id }>
+                                            <div className='flex items-center px-4 py-1.5'>
+                                                <MantineAccordion.Control>
+                                                    { zone.name }
+                                                </MantineAccordion.Control>
+                                                <Menu position="bottom-end" withinPortal>
+                                                    <Menu.Target>
+                                                        <ActionIcon
+                                                            variant="transparent"
+                                                            onClick={ (e: any) => {
                                                                 e.stopPropagation();
                                                                 setSelectedZone(zone);
-                                                                cm.current?.show(e);
                                                             } }
-                                                            data-tooltip-id="tooltip"
-                                                            className='hover:text-(--color-primary)'
-                                                            data-tooltip-content={ t('FORMS.change_label') }
-                                                        />
-                                                        <ContextMenu model={ menuItems } className="w-auto!"
-                                                                     ref={ cm }/>
-                                                    </div>
-                                                ) }
-                                            </span>
-                                        } key={ zone.id }>
-                                            <DroppableZone
-                                                key={ zone.id } zone={ zone } module={ module }
-                                                onUpdateLine={ handleUpdateLine }
-                                                onDeleteLine={ handleDeleteLine }
-                                                onDeleteField={ handleDeleteField }
-                                                onUpdateField={ handleUpdateField }
-                                            />
-                                        </AccordionTab>
+                                                        >
+                                                            <EllipsisVertical
+                                                                size={ 20 }
+                                                                data-tooltip-id="tooltip"
+                                                                className='text-(--text-primary) hover:text-(--color-primary)'
+                                                                data-tooltip-content={ t('FORMS.change_label') }
+                                                            />
+                                                        </ActionIcon>
+                                                    </Menu.Target>
+
+                                                    <Menu.Dropdown>
+                                                        { menuItems.map((item: any, index: number) => (
+                                                            <Menu.Item key={ index } leftSection={ item.icon }
+                                                                       onClick={ item.command }>
+                                                                { item.label }
+                                                            </Menu.Item>
+                                                        )) }
+                                                    </Menu.Dropdown>
+                                                </Menu>
+                                            </div>
+                                            <MantineAccordion.Panel className='border-t border-(--border-secondary)'>
+                                                <DroppableZone
+                                                    key={ zone.id } zone={ zone } module={ module }
+                                                    onUpdateLine={ handleUpdateLine }
+                                                    onDeleteLine={ handleDeleteLine }
+                                                    onDeleteField={ handleDeleteField }
+                                                    onUpdateField={ handleUpdateField }
+                                                />
+                                            </MantineAccordion.Panel>
+                                        </MantineAccordion.Item>
                                     )) }
-                                </Accordion>
+                                </MantineAccordion>
+                                {/*<Accordion multiple activeIndex={ [0, 2] }>*/ }
+                                {/*    { zones.map((zone: any) => (*/ }
+                                {/*        <AccordionTab header={*/ }
+                                {/*            <span className='flex items-center gap-2'>*/ }
+                                {/*                { zone.name }*/ }
+                                {/*                { module === 'verifier' && (*/ }
+                                {/*                    <div className='ml-auto cursor-pointer'>*/ }
+                                {/*                        <EllipsisVertical*/ }
+                                {/*                            size={ 20 }*/ }
+                                {/*                            onClick={ (e) => {*/ }
+                                {/*                                e.stopPropagation();*/ }
+                                {/*                                e.stopPropagation();*/ }
+                                {/*                                setSelectedZone(zone);*/ }
+                                {/*                                cm.current?.show(e);*/ }
+                                {/*                            } }*/ }
+                                {/*                            data-tooltip-id="tooltip"*/ }
+                                {/*                            className='hover:text-(--color-primary)'*/ }
+                                {/*                            data-tooltip-content={ t('FORMS.change_label') }*/ }
+                                {/*                        />*/ }
+                                {/*                        <ContextMenu model={ menuItems } className="w-auto!"*/ }
+                                {/*                                     ref={ cm }/>*/ }
+                                {/*                    </div>*/ }
+                                {/*                ) }*/ }
+                                {/*            </span>*/ }
+                                {/*        } key={ zone.id }>*/ }
+                                {/*            <DroppableZone*/ }
+                                {/*                key={ zone.id } zone={ zone } module={ module }*/ }
+                                {/*                onUpdateLine={ handleUpdateLine }*/ }
+                                {/*                onDeleteLine={ handleDeleteLine }*/ }
+                                {/*                onDeleteField={ handleDeleteField }*/ }
+                                {/*                onUpdateField={ handleUpdateField }*/ }
+                                {/*            />*/ }
+                                {/*        </AccordionTab>*/ }
+                                {/*    )) }*/ }
+                                {/*</Accordion>*/ }
                                 <Button variant="primary" onClick={ handleUpdate }
                                         disabled={ isSubmitting }>
                                     { isSubmitting ? t('GLOBAL.saving') + "..." : t('GLOBAL.save_settings') }
@@ -550,6 +608,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                                     } }/>
                             </TabPanel>
                         ) }
+
                         { module === 'splitter' && (
                             <TabPanel header={ t("FORMS.qr_code") } className='bg-(--bg-primary) h-full'>
                                 <QrSeparator selectedDoctype={ selectedDoctype }/>
