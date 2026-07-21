@@ -27,7 +27,7 @@ from src.classes.Mail import Mail
 from src.classes.Log import Log as log
 from src.main_splitter import launch as launch_splitter
 from src.functions import retrieve_config_from_custom_id
-from src.main import launch as launch_verifier, create_classes_from_custom_id
+from src.main import launch as launch_verifier, create_classes_from_custom_id, create_database_class
 
 
 def str2bool(value):
@@ -101,7 +101,7 @@ if not retrieve_config_from_custom_id(args['custom_id']):
     sys.exit('Custom config file couldn\'t be found')
 
 with app.app_context():
-    database, config, regex, files, ocr, _, _, spreadsheet, smtp, docservers, configurations, languages, _, _ = create_classes_from_custom_id(args['custom_id'])
+    database = create_database_class(args['custom_id'])
 
     processes = database.select({
         'select': ['*'],
@@ -159,6 +159,8 @@ with app.app_context():
             mail.select_folder(folder_to_crawl)
             emails = mail.retrieve_message(folder_to_crawl)
             if len(emails) > 0:
+                database, config, _, _, _, _, _, _, smtp, _, configurations, _, _, _ = create_classes_from_custom_id(args['custom_id'])
+
                 now = datetime.datetime.now()
                 if not os.path.exists(path):
                     os.makedirs(path)

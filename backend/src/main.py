@@ -48,6 +48,41 @@ def init_shared_from_custom_id(custom_id):
     shared.upload_path = custom_path + '/instance/upload/'
     return True
 
+def create_database_class(custom_id):
+    config_file = retrieve_config_from_custom_id(custom_id)
+    if config_file is False:
+        return False, 'missing_custom_or_file_doesnt_exists'
+
+    if not init_shared_from_custom_id(custom_id):
+        return False, 'missing_custom_path'
+
+    config = Config(config_file)
+
+    try:
+        if 'config' not in current_context:
+            current_context.config = config.cfg
+    except RuntimeError:
+        pass
+
+    log = Log(config.cfg['GLOBAL']['logfile'], False, config.cfg['GLOBAL']['debugmode'])
+
+    if 'log' not in current_context:
+        current_context.log = log
+
+    db_user = config.cfg['DATABASE']['postgresuser']
+    db_pwd  = config.cfg['DATABASE']['postgrespassword']
+    db_name = config.cfg['DATABASE']['postgresdatabase']
+    db_host = config.cfg['DATABASE']['postgreshost']
+    db_port = config.cfg['DATABASE']['postgresport']
+
+    database = Database(log, db_name, db_user, db_pwd, db_host, db_port)
+    if not database.conn:
+        import psycopg
+        raise psycopg.OperationalError()
+
+    return database
+
+
 def create_classes_from_custom_id(custom_id, load_smtp=False):
     config_file = retrieve_config_from_custom_id(custom_id)
     if config_file is False:
