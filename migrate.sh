@@ -399,12 +399,13 @@ cmd_import() {
         # Métadonnées source (lecture sûre, sans eval).
         [ -f "$cb/meta.env" ] || die "[$cid] meta.env manquant"
         meta() { trim "$(grep -m1 "^$1=" "$cb/meta.env" | cut -d= -f2-)"; }
-        local URL CUSTOM_SRC DOCSERVERS_SRC SHARE_SRC OC_ROOT
+        local URL CUSTOM_SRC DOCSERVERS_SRC SHARE_SRC OC_ROOT SRC_CUSTOM_ID
         URL="$(meta URL)"
         CUSTOM_SRC="$(meta CUSTOM_SRC)"
         DOCSERVERS_SRC="$(meta DOCSERVERS_SRC)"
         SHARE_SRC="$(meta SHARE_SRC)"
         OC_ROOT="$(meta OC_ROOT)"
+        SRC_CUSTOM_ID="$(meta CUSTOM_ID)"
 
         # Diagnostic de version (bloquant sauf --force).
         if ! diagnose_one "$cb" "$cid"; then
@@ -538,6 +539,27 @@ cmd_import() {
         patch_db_paths "$cid" "$POSTGRES_USER" "$POSTGRES_DB" \
             "${DOCSERVERS_SRC%/}" "${SHARE_SRC%/}" "$APP_CUSTOM" \
             "$(dirname "${DOCSERVERS_SRC%/}")" "${OC_ROOT%/}"
+
+        # Renommage du custom (dossier bundle renommé <> CUSTOM_ID de meta.env,
+        # écrit à l'export = l'id SOURCE) : patch_db_paths ne réécrit que le
+        # préfixe oc_root/custom/<CID CIBLE>/ -> ne matche pas les valeurs
+        # stockées sous l'ANCIEN nom (ex. REFERENTIALS_PATH en absolu). Vécu :
+        # tenant `opencapture` <- custom source `edissyum`, 1 résidu. Fait
+        # AUTOMATIQUEMENT ici plutôt que de rejouer le SQL à la main.
+        if [ -n "$SRC_CUSTOM_ID" ] && [ "$SRC_CUSTOM_ID" != "$cid" ]; then
+            log "  renommage détecté ($SRC_CUSTOM_ID -> $cid) : correction des chemins /app/custom/$SRC_CUSTOM_ID/ résiduels"
+            dc "$cid" exec -T postgres psql -q -U "$POSTGRES_USER" -d "$POSTGRES_DB" \
+                -v old="/app/custom/${SRC_CUSTOM_ID}/" -v new="/app/custom/${cid}/" \
+                -c "UPDATE docservers SET path = REPLACE(path, :'old', :'new') WHERE path LIKE :'old' || '%';" \
+                >/dev/null 2>&1 || warn "[$cid] correction du renommage échouée (rejouer à la main : UPDATE docservers SET path=REPLACE(path,'/app/custom/$SRC_CUSTOM_ID/','/app/custom/$cid/') WHERE path LIKE '/app/custom/$SRC_CUSTOM_ID/%')"
+            # Résidus TEXTE (hors chemins réécrits) dans les scripts custom :
+            # signalés, pas corrigés en aveugle (peut être une vraie donnée,
+            # ex. un DN LDAP, pas juste un chemin).
+            local leftovers
+            leftovers="$(grep -rl "$SRC_CUSTOM_ID" "$tdir/custom/$cid/" 2>/dev/null || true)"
+            [ -n "$leftovers" ] && warn "[$cid] '$SRC_CUSTOM_ID' encore référencé dans ces fichiers (à vérifier manuellement) :" \
+                && echo "$leftovers" | sed 's/^/     /'
+        fi
 
         # 4) Déploiement complet (bootstrap court-circuite : config.ini présent,
         #    self-heal de [DATABASE]/custom.ini/watcher.ini).
