@@ -15,11 +15,45 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+.mantine-Tabs-root {
+    @apply flex;
+    @apply h-full;
+    @apply flex-col;
+    @apply  min-h-0;
+}
+
+.mantine-Tabs-list button:where([data-active]) {
+    @apply text-(--color-primary)!;
+}
+
 .mantine-Tabs-list button {
     @apply px-5;
     @apply py-4;
     @apply text-base!;
-    @apply font-normal!;
+    @apply font-medium;
+    @apply text-(--text-secondary);
+}
+
+.mantine-Tabs-list:before {
+    @apply border-(--border-secondary);
+}
+
+.mantine-Tabs-panel {
+    @apply flex;
+    @apply h-full;
+    @apply flex-1;
+    @apply min-h-0;
+    @apply flex-col;
+    @apply overflow-y-auto;
+    @apply bg-(--bg-secondary);
+}
+
+.mantine-Scroller-control {
+    @apply w-16!;
+}
+
+.mantine-Scroller-chevron {
+    @apply size-16!;
 }
 
 /* Tab header background and text color */
@@ -59,12 +93,6 @@
 .p-tabview .p-tabview-nav li .p-tabview-nav-link {
     @apply m-0;
     @apply border-0!;
-}
-
-
-
-.available_fields .p-tabview-panels {
-    @apply bg-(--bg-primary)!;
 }
 
 /* Tab nav */

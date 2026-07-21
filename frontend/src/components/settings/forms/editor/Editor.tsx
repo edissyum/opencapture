@@ -19,8 +19,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { arrayMove } from "@dnd-kit/sortable";
 import { EllipsisVertical, Pen } from "lucide-react";
-import { TabPanel, TabView } from "primereact/tabview";
-import { Tabs, Accordion as MantineAccordion, ActionIcon, Menu } from '@mantine/core';
+import { Tabs, Accordion as Accordion, ActionIcon, Menu, Scroller } from '@mantine/core';
 import { DndContext, type DragEndEvent, DragOverlay, type DragStartEvent, pointerWithin } from "@dnd-kit/core";
 
 import { findLineContainingField, findZoneContainingLine, getDropContext } from "./helpers";
@@ -63,7 +62,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
 
     if (!formId) return null;
 
-    const [mainTabIndex, setMainTabIndex] = useState(0);
+    const [mainTabIndex, setMainTabIndex] = useState('');
 
     let tabs: any;
     let defaultTab: any;
@@ -83,7 +82,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
             supplier: t('ACCOUNTS.suppliers_list'),
             lines: t('VERIFIER.lines'),
             billing: t('VERIFIER.facturation'),
-            custom_fields: t('VERIFIER.custom_fields')
+            customFields: t('VERIFIER.custom_fields')
         };
         availableFields = getAvailableFields(t);
         defaultTab = 'supplier';
@@ -478,21 +477,19 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
     return (
         <DndContext onDragEnd={ handleDragEnd } onDragStart={ handleDragStart } collisionDetection={ pointerWithin }>
             <div className="flex h-full">
-                <div className="flex flex-col border-r border-(--border-secondary) w-full">
-                    <Tabs defaultValue='details'>
+                <div className="flex flex-col border-r border-(--border-secondary) w-full overflow-hidden min-h-0">
+                    <Tabs defaultValue='details' onChange={ (e: any) => setMainTabIndex(e) }>
                         <Tabs.List>
                             <Tabs.Tab value="details">{ t('SETTINGS.form_details') }</Tabs.Tab>
                             <Tabs.Tab value="fields">{ t('SETTINGS.form_fields') }</Tabs.Tab>
                             { module === 'splitter' && (
                                 <Tabs.Tab value="doctypes">{ t('FORMS.doctypes') }</Tabs.Tab>
-                                )}
+                            ) }
                             { module === 'splitter' && (
                                 <Tabs.Tab value="qr_code">{ t('FORMS.qr_code') }</Tabs.Tab>
-                            )}
+                            ) }
                         </Tabs.List>
-                    </Tabs>
-                    <TabView activeIndex={ mainTabIndex } onTabChange={ (e) => setMainTabIndex(e.index) }>
-                        <TabPanel header={ t("SETTINGS.form_details") } className='bg-(--bg-primary) h-full'>
+                        <Tabs.Panel value="details" className="bg-(--bg-primary)!">
                             { formSettingsLoading ? (
                                 <Loader/>
                             ) : (
@@ -505,17 +502,17 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                                     submitLabelLoading={ t('GLOBAL.saving') }
                                 />
                             ) }
-                        </TabPanel>
-                        <TabPanel header={ t("SETTINGS.form_fields") }>
+                        </Tabs.Panel>
+                        <Tabs.Panel value="fields">
                             <div className='p-6 flex flex-col gap-4'>
-                                <MantineAccordion chevronPosition="left" variant="separated" multiple
-                                                  defaultValue={ ['zone-supplier', 'zone-facturation'] }>
+                                <Accordion chevronPosition="left" variant="separated" multiple
+                                           defaultValue={ ['zone-supplier', 'zone-facturation', 'zone-batch_metadata', 'zone-document_metadata'] }>
                                     { zones.map((zone: any) => (
-                                        <MantineAccordion.Item key={ zone.id } value={ zone.id }>
+                                        <Accordion.Item key={ zone.id } value={ zone.id }>
                                             <div className='flex items-center px-4 py-1.5'>
-                                                <MantineAccordion.Control>
+                                                <Accordion.Control>
                                                     { zone.name }
-                                                </MantineAccordion.Control>
+                                                </Accordion.Control>
                                                 <Menu position="bottom-end" withinPortal>
                                                     <Menu.Target>
                                                         <ActionIcon
@@ -544,7 +541,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                                                     </Menu.Dropdown>
                                                 </Menu>
                                             </div>
-                                            <MantineAccordion.Panel className='border-t border-(--border-secondary)'>
+                                            <Accordion.Panel className='border-t border-(--border-secondary)'>
                                                 <DroppableZone
                                                     key={ zone.id } zone={ zone } module={ module }
                                                     onUpdateLine={ handleUpdateLine }
@@ -552,94 +549,60 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                                                     onDeleteField={ handleDeleteField }
                                                     onUpdateField={ handleUpdateField }
                                                 />
-                                            </MantineAccordion.Panel>
-                                        </MantineAccordion.Item>
+                                            </Accordion.Panel>
+                                        </Accordion.Item>
                                     )) }
-                                </MantineAccordion>
-                                {/*<Accordion multiple activeIndex={ [0, 2] }>*/ }
-                                {/*    { zones.map((zone: any) => (*/ }
-                                {/*        <AccordionTab header={*/ }
-                                {/*            <span className='flex items-center gap-2'>*/ }
-                                {/*                { zone.name }*/ }
-                                {/*                { module === 'verifier' && (*/ }
-                                {/*                    <div className='ml-auto cursor-pointer'>*/ }
-                                {/*                        <EllipsisVertical*/ }
-                                {/*                            size={ 20 }*/ }
-                                {/*                            onClick={ (e) => {*/ }
-                                {/*                                e.stopPropagation();*/ }
-                                {/*                                e.stopPropagation();*/ }
-                                {/*                                setSelectedZone(zone);*/ }
-                                {/*                                cm.current?.show(e);*/ }
-                                {/*                            } }*/ }
-                                {/*                            data-tooltip-id="tooltip"*/ }
-                                {/*                            className='hover:text-(--color-primary)'*/ }
-                                {/*                            data-tooltip-content={ t('FORMS.change_label') }*/ }
-                                {/*                        />*/ }
-                                {/*                        <ContextMenu model={ menuItems } className="w-auto!"*/ }
-                                {/*                                     ref={ cm }/>*/ }
-                                {/*                    </div>*/ }
-                                {/*                ) }*/ }
-                                {/*            </span>*/ }
-                                {/*        } key={ zone.id }>*/ }
-                                {/*            <DroppableZone*/ }
-                                {/*                key={ zone.id } zone={ zone } module={ module }*/ }
-                                {/*                onUpdateLine={ handleUpdateLine }*/ }
-                                {/*                onDeleteLine={ handleDeleteLine }*/ }
-                                {/*                onDeleteField={ handleDeleteField }*/ }
-                                {/*                onUpdateField={ handleUpdateField }*/ }
-                                {/*            />*/ }
-                                {/*        </AccordionTab>*/ }
-                                {/*    )) }*/ }
-                                {/*</Accordion>*/ }
-                                <Button variant="primary" onClick={ handleUpdate }
-                                        disabled={ isSubmitting }>
+                                </Accordion>
+                                <Button variant="primary" onClick={ handleUpdate } disabled={ isSubmitting }>
                                     { isSubmitting ? t('GLOBAL.saving') + "..." : t('GLOBAL.save_settings') }
                                 </Button>
                             </div>
-                        </TabPanel>
+                        </Tabs.Panel>
                         { module === 'splitter' && (
-                            <TabPanel header={ t("FORMS.doctypes") }>
+                            <Tabs.Panel value="doctypes">
                                 <DoctypeDetails
                                     formId={ formId }
                                     doctypes={ doctypes } selectedDoctype={ selectedDoctype }
                                     doctypeUpdated={ () => setDoctypeUpdatedCpt(prev => prev + 1) }
                                     doctypeChanged={ (doctype) => {
                                         setSelectedDoctype(doctype)
-                                    } }/>
-                            </TabPanel>
+                                    } }
+                                />
+                            </Tabs.Panel>
                         ) }
-
                         { module === 'splitter' && (
-                            <TabPanel header={ t("FORMS.qr_code") } className='bg-(--bg-primary) h-full'>
+                            <Tabs.Panel value="qr_code" className='bg-(--bg-primary)!'>
                                 <QrSeparator selectedDoctype={ selectedDoctype }/>
-                            </TabPanel>
+                            </Tabs.Panel>
                         ) }
-                    </TabView>
+                    </Tabs>
                 </div>
 
-                { mainTabIndex === 1 && (
+                { mainTabIndex === 'fields' && (
                     <div className="shrink-0 w-[20rem] h-full flex flex-col">
-                        <TabView
-                            scrollable
-                            className="available_fields"
-                            activeIndex={ Object.keys(availableFields).indexOf(activeTab as string) }
-                            onTabChange={ (e) =>
-                                setActiveTab(Object.keys(availableFields)[e.index] as keyof typeof availableFields)
-                            }
-                        >
+                        <Tabs defaultValue={ defaultTab } onChange={ (value: any) => setActiveTab(value) }>
+                            <Tabs.List>
+                                <Scroller>
+                                    { Object.keys(tabs).map((tab) => (
+                                        <Tabs.Tab key={ tab } value={ tab }>
+                                            { tabs[tab] }
+                                        </Tabs.Tab>
+                                    )) }
+                                </Scroller>
+                            </Tabs.List>
                             { Object.keys(tabs).map((tab) => (
-                                <TabPanel key={ tab } header={ tabs[tab] }>
+                                <Tabs.Panel key={ tab } value={ tab } className='bg-(--bg-primary)!'>
                                     <FieldPalette fields={ availableItems }/>
-                                </TabPanel>
+                                </Tabs.Panel>
                             )) }
-                        </TabView>
+                        </Tabs>
                     </div>
                 ) }
 
-                { [2, 3].includes(mainTabIndex) && module === 'splitter' && (
+                { ['doctypes', 'qr_code'].includes(mainTabIndex) && module === 'splitter' && (
                     <div className="shrink-0 w-[22rem] h-full flex flex-col">
-                        <DoctypesTree key={ doctypeUpdatedCpt } formId={ parseInt(formId) } editor={ true }
-                                      selectedDoctype={ selectedDoctype }
+                        <DoctypesTree key={ doctypeUpdatedCpt } formId={ parseInt(formId) }
+                                      selectedDoctype={ selectedDoctype } editor={ true }
                                       onDoctypesLoaded={ (doctypes) => setDoctypes(doctypes) }
                                       onSelect={ (node) => setSelectedDoctype(node) }/>
                     </div>
