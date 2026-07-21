@@ -30,7 +30,7 @@ source ~/.bashrc
 # Purger d'éventuels anciens paquets Docker
 sudo apt remove docker.io docker-compose docker-doc podman-docker containerd runc
 # Dépendances (git inclus pour le clone plus bas)
-sudo apt update && sudo apt install -y ca-certificates curl gnupg lsb-release git curl gpg 
+sudo apt update && sudo apt install -y ca-certificates curl gnupg lsb-release git curl gpg sshpass python3
 # Pour avoir les heures selon le timezone on isntalle ces 2 paquets explications dans guide section logs
 # Utile car Docker normalise tous les timestamps en UTC => docker logs -t est figé en UTC 
 sudo apt install moreutils jq 
