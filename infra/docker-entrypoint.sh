@@ -21,10 +21,23 @@ APP_USER="${APP_USER:-opencapture}"
 if [ "$(id -u)" = "0" ]; then
     # Si l'UID cible n'a pas d'entrée passwd (surcharge runtime sans
     # rebuild), en créer une (-o = non unique autorisé) pour les libs
-    # qui appellent getpwuid().
+    # qui appellent getpwuid() (ex. getpass.getuser(), utilisé par torch).
+    # Le groupe/user "${APP_USER}" existe déjà (bâti dans l'image à l'UID/GID
+    # de build, cf. Dockerfile) : un groupadd/useradd sous ce MÊME nom échoue
+    # ("already exists") sans toucher à l'UID -> pas d'entrée pour la cible,
+    # échec silencieux (vécu : image bâtie en 1001, tenant en 1000 -> crash
+    # getpass au boot). On modifie l'existant au lieu d'en recréer un second.
     if ! getent passwd "${APP_UID}" >/dev/null 2>&1; then
-        groupadd -o -g "${APP_GID}" "${APP_USER}" 2>/dev/null || true
-        useradd  -o -u "${APP_UID}" -g "${APP_GID}" -d /app -s /bin/bash -M "${APP_USER}" 2>/dev/null || true
+        if getent group "${APP_USER}" >/dev/null 2>&1; then
+            groupmod -o -g "${APP_GID}" "${APP_USER}" 2>/dev/null || true
+        else
+            groupadd -o -g "${APP_GID}" "${APP_USER}" 2>/dev/null || true
+        fi
+        if getent passwd "${APP_USER}" >/dev/null 2>&1; then
+            usermod -o -u "${APP_UID}" -g "${APP_GID}" "${APP_USER}" 2>/dev/null || true
+        else
+            useradd -o -u "${APP_UID}" -g "${APP_GID}" -d /app -s /bin/bash -M "${APP_USER}" 2>/dev/null || true
+        fi
     fi
 
     # Racines de montage partagées (Docker les auto-crée en root).
