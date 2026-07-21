@@ -97,20 +97,29 @@ UPDATE form_models_field
 --    « Métadonnées du lot/document » s'affichent VIDES (et un metadata_key null exposé
 --    comme valeur de ligne faisait crasher l'éditeur). On emballe chaque champ dans sa
 --    propre ligne (1 champ/ligne) ; l'utilisateur peut regrouper ensuite dans l'UI.
---    Idempotent : ne touche que les zones dont les éléments sont des objets (= flat) ;
---    une zone déjà en lignes (éléments = tableaux) ou vide n'est pas retouchée.
+--    Idempotent : ne touche que les zones dont les éléments sont des CHAMPS BRUTS (clé
+--    'id' au 1er niveau, comme l'étape 7/verifier) ; une zone déjà en lignes (éléments
+--    = tableaux), déjà en objets-ligne verifier ({"0":champ,"duplicable":...}, SANS clé
+--    'id' au 1er niveau) ou vide n'est pas retouchée. Sans la clé 'id', ce custom avait
+--    des batch_metadata/document_metadata DÉJÀ au format objet-ligne verifier (v3 source
+--    atypique) -> le guard précédent (juste jsonb_typeof=object) les re-emballait quand
+--    même dans un niveau de tableau EN TROP ([[{"0":...}]] au lieu de [{"0":...}]) ->
+--    viewer.tsx (splitter) : `field.id.replace(...)` sur le wrapper (pas de clé 'id')
+--    -> crash pour TOUT document. Vécu 2026-07-21, cf. runbooks/migration.
 UPDATE form_models_field ff
    SET fields = jsonb_set(ff.fields, '{batch_metadata}',
         (SELECT jsonb_agg(jsonb_build_array(e)) FROM jsonb_array_elements(ff.fields->'batch_metadata') e))
   FROM form_models fm
  WHERE fm.id = ff.form_id AND fm.module = 'splitter'
-   AND jsonb_typeof((ff.fields->'batch_metadata')->0) = 'object';
+   AND jsonb_typeof((ff.fields->'batch_metadata')->0) = 'object'
+   AND (ff.fields->'batch_metadata'->0) ? 'id';
 UPDATE form_models_field ff
    SET fields = jsonb_set(ff.fields, '{document_metadata}',
         (SELECT jsonb_agg(jsonb_build_array(e)) FROM jsonb_array_elements(ff.fields->'document_metadata') e))
   FROM form_models fm
  WHERE fm.id = ff.form_id AND fm.module = 'splitter'
-   AND jsonb_typeof((ff.fields->'document_metadata')->0) = 'object';
+   AND jsonb_typeof((ff.fields->'document_metadata')->0) = 'object'
+   AND (ff.fields->'document_metadata'->0) ? 'id';
 
 -- 7) form_models_field (VERIFIER) : re-emballer les champs "flat" (v3) en LIGNES v4
 --    Symétrique de l'étape 7 (splitter), mais format cible DIFFÉRENT : le verifier
