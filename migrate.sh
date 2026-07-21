@@ -417,13 +417,15 @@ cmd_import() {
         [ -f "$stub_env" ] || die "[$cid] stub absent : crée-le d'abord (./new-tenant.sh <http|le|cert> $cid) puis édite stub-tenants/$cid/.env (OC_FQDN${URL:+ ex. $URL}, mots de passe)"
 
         # Variables de la cible depuis le .env du tenant.
-        local OC_DATA_ROOT POSTGRES_DB POSTGRES_USER POSTGRES_PASSWORD
+        local OC_DATA_ROOT POSTGRES_DB POSTGRES_USER POSTGRES_PASSWORD PGDATA_PATH
         OC_DATA_ROOT="$(trim "$(grep -m1 '^OC_DATA_ROOT=' "$stub_env" | cut -d= -f2-)")"
         POSTGRES_DB="$(trim "$(grep -m1 '^POSTGRES_DB=' "$stub_env" | cut -d= -f2-)")"
         POSTGRES_USER="$(trim "$(grep -m1 '^POSTGRES_USER=' "$stub_env" | cut -d= -f2-)")"
         POSTGRES_PASSWORD="$(trim "$(grep -m1 '^POSTGRES_PASSWORD=' "$stub_env" | cut -d= -f2-)")"
+        PGDATA_PATH="$(trim "$(grep -m1 '^PGDATA_PATH=' "$stub_env" | cut -d= -f2-)")"
         : "${OC_DATA_ROOT:=/opt/edissyum/opencapture}"
         local tdir="$OC_DATA_ROOT/tenants/$cid"
+        : "${PGDATA_PATH:=$tdir/pgdata}"
 
         # 1) Dépose les fichiers (idempotent ; n'écrase pas les modèles IA partagés).
         log "  dépose custom/ docservers/ share/ -> $tdir"
@@ -513,6 +515,7 @@ cmd_import() {
         reconcile_custom_files_v4 "$tdir/custom/$cid" "$cid"
 
         # 3) Base de données : démarre postgres, restaure le dump, patche les chemins.
+        align_pgdata_owner "$cid" "$PGDATA_PATH"
         log "  démarrage postgres + restauration du dump"
         dc "$cid" up -d postgres
         wait_pg_healthy "$cid"
@@ -770,6 +773,36 @@ wait_pg_healthy() {
         sleep 2
     done
     die "[$cid] postgres ne devient pas prêt"
+}
+
+# UID:GID réel du process postgres DANS L'IMAGE — jamais figé en dur (varie
+# selon la variante/tag). Lu via un conteneur JETABLE de la même image, en
+# outrepassant l'entrypoint (pas de mutation, pgdata pas touché).
+postgres_image_owner() {
+    local t="$1" dir
+    dir="$(compose_dir_for "$t")" || return 1
+    dc "$t" run --rm --no-deps --entrypoint sh postgres -c 'id -u postgres; id -g postgres' 2>/dev/null \
+        | tr '\n' ':' | sed 's/:$//'
+}
+
+# Aligne le propriétaire de pgdata sur celui-ci AVANT le démarrage. Sans ça,
+# un pgdata déjà peuplé par un autre contexte (import interrompu, script relancé
+# avec/sans sudo, restauration manuelle...) reste illisible pour le postgres du
+# conteneur -> FATAL en boucle ("could not open file... Permission denied"),
+# car l'auto-chown de l'image ne joue qu'à l'initdb (PGDATA vide), jamais rejoué
+# ensuite. Best-effort : un chown qui échoue (pas de sudo) ne doit pas bloquer
+# un pgdata déjà correct.
+align_pgdata_owner() {
+    local t="$1" pgdata_dir="$2"
+    [ -d "$pgdata_dir" ] || return 0
+    local owner; owner="$(postgres_image_owner "$t")"
+    if [ -z "$owner" ]; then
+        warn "[$t] UID postgres de l'image introuvable — droits pgdata non vérifiés"
+        return 0
+    fi
+    chown -R "$owner" "$pgdata_dir" 2>/dev/null \
+        && log "  droits pgdata alignés sur postgres ($owner)" \
+        || warn "[$t] chown pgdata échoué (relancer avec sudo si pgdata appartient à un autre utilisateur)"
 }
 
 # ===========================================================================
