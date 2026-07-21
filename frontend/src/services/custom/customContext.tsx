@@ -25,5 +25,7 @@ export const CustomProvider: React.FC<{
     custom: string | null;
     children: React.ReactNode;
 }> = ({ custom, children }) => (
-    <CustomContext.Provider value={custom}>{children}</CustomContext.Provider>
+    <CustomContext.Provider value={ custom }>
+        { children }
+    </CustomContext.Provider>
 );
