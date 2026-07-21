@@ -74,75 +74,21 @@ UPDATE outputs_types SET data = jsonb_set(data, '{options,parameters,0,placehold
 UPDATE outputs_types SET data = jsonb_set(data, '{options,parameters,0,placeholder}', to_jsonb('/app/share/export/splitter/'::text))
  WHERE data #>>'{options,parameters,0,id}' = 'folder_out' AND module = 'splitter';
 
--- 5) form_models_field : normaliser metadata_key null -> "" ------------------
---    En 3.6.x, les champs splitter non liés à une métadonnée portent
---    `metadata_key: null`. L'éditeur de formulaire v4 fait
---    `Object.values(field).filter(v => typeof v !== 'boolean').map(mapField)`
---    (frontend Editor.tsx) : la valeur `null` (typeof 'object') passe le filtre
---    -> `mapField(null)` lit `null.id` -> l'ouverture du formulaire crashe
---    (« Cannot read properties of null (reading 'id') »). La v3 tolérait le null.
---    `""` est la valeur « non lié » attendue par la v4. Ciblé sur metadata_key
---    (propriété de champ, jamais imbriquée) pour ne PAS toucher les null internes
---    légitimes (ex. settings.regex). À étendre ici si d'autres clés de champ
---    v3 arrivent en null au niveau supérieur.
-UPDATE form_models_field
-   SET fields = regexp_replace(fields::text, '"metadata_key"\s*:\s*null', '"metadata_key": ""', 'g')::jsonb
- WHERE fields::text ~ '"metadata_key"\s*:\s*null';
-
--- 6) form_models_field (SPLITTER) : re-emballer les champs metadata "flat" en LIGNES
---    La v3 stocke batch_metadata/document_metadata = [champ, champ] (champs à plat).
---    L'éditeur v4 attend des LIGNES : [[champ], [champ]] (il fait
---    zone.lines.map(l => l.fields.map(...)) à la sauvegarde, et Object.values(ligne)
---    au chargement -- cf. frontend Editor.tsx). Sans le niveau ligne, les zones
---    « Métadonnées du lot/document » s'affichent VIDES (et un metadata_key null exposé
---    comme valeur de ligne faisait crasher l'éditeur). On emballe chaque champ dans sa
---    propre ligne (1 champ/ligne) ; l'utilisateur peut regrouper ensuite dans l'UI.
---    Idempotent : ne touche que les zones dont les éléments sont des CHAMPS BRUTS (clé
---    'id' au 1er niveau, comme l'étape 7/verifier) ; une zone déjà en lignes (éléments
---    = tableaux), déjà en objets-ligne verifier ({"0":champ,"duplicable":...}, SANS clé
---    'id' au 1er niveau) ou vide n'est pas retouchée. Sans la clé 'id', ce custom avait
---    des batch_metadata/document_metadata DÉJÀ au format objet-ligne verifier (v3 source
---    atypique) -> le guard précédent (juste jsonb_typeof=object) les re-emballait quand
---    même dans un niveau de tableau EN TROP ([[{"0":...}]] au lieu de [{"0":...}]) ->
---    viewer.tsx (splitter) : `field.id.replace(...)` sur le wrapper (pas de clé 'id')
---    -> crash pour TOUT document. Vécu 2026-07-21, cf. runbooks/migration.
-UPDATE form_models_field ff
-   SET fields = jsonb_set(ff.fields, '{batch_metadata}',
-        (SELECT jsonb_agg(jsonb_build_array(e)) FROM jsonb_array_elements(ff.fields->'batch_metadata') e))
-  FROM form_models fm
- WHERE fm.id = ff.form_id AND fm.module = 'splitter'
-   AND jsonb_typeof((ff.fields->'batch_metadata')->0) = 'object'
-   AND (ff.fields->'batch_metadata'->0) ? 'id';
-UPDATE form_models_field ff
-   SET fields = jsonb_set(ff.fields, '{document_metadata}',
-        (SELECT jsonb_agg(jsonb_build_array(e)) FROM jsonb_array_elements(ff.fields->'document_metadata') e))
-  FROM form_models fm
- WHERE fm.id = ff.form_id AND fm.module = 'splitter'
-   AND jsonb_typeof((ff.fields->'document_metadata')->0) = 'object'
-   AND (ff.fields->'document_metadata'->0) ? 'id';
-
--- 7) form_models_field (VERIFIER) : re-emballer les champs "flat" (v3) en LIGNES v4
---    Symétrique de l'étape 7 (splitter), mais format cible DIFFÉRENT : le verifier
---    attend des lignes-OBJET {"0": champ, "duplicable": false} (cf. seed data_fr.sql,
---    catégories supplier/facturation/lines/other), là où le splitter veut [[champ]].
---    Sans ce nesting, le viewer verifier fait Object.values(ligne) sur un champ plat
---    -> itère des strings (valeurs de propriétés) -> `field.id.includes()` sur une
---    string -> crash « Cannot read properties of undefined (reading 'includes') ».
---    À jouer APRÈS l'étape couleurs de 4.0.0.sql (qui lit le flat). Idempotent :
---    ne touche qu'une catégorie dont l'élément 0 est un champ brut (clé 'id' au
---    1er niveau) ; une ligne déjà nichée ({"0":...}) ou une catégorie vide est ignorée.
-UPDATE form_models_field ff
-   SET fields = (
-       SELECT jsonb_object_agg(cat.key,
-           CASE WHEN jsonb_typeof(cat.value) = 'array'
-                     AND jsonb_typeof(cat.value->0) = 'object'
-                     AND (cat.value->0) ? 'id'
-                THEN (SELECT jsonb_agg(jsonb_build_object('0', e, 'duplicable', false))
-                      FROM jsonb_array_elements(cat.value) e)
-                ELSE cat.value END)
-       FROM jsonb_each(ff.fields) cat)
-  FROM form_models fm
- WHERE fm.id = ff.form_id AND fm.module = 'verifier'
-   AND EXISTS (SELECT 1 FROM jsonb_each(ff.fields) c
-               WHERE jsonb_typeof(c.value) = 'array' AND jsonb_typeof(c.value->0) = 'object'
-                 AND (c.value->0) ? 'id');
+-- 5) form_models_field : reshape metadata/champs "flat" en LIGNES -----------
+--    SUPPRIMÉ (2026-07-21) : postgres/sql/4.0.0.sql (§ "Modification de la
+--    structure des champs dans form_models_field") fait DÉJÀ ce reshape, pour
+--    verifier ET splitter, de façon générique (toutes les sections de `fields`
+--    via jsonb_each, pas juste supplier/facturation/batch_metadata/
+--    document_metadata) et plus fine (regroupe par ligne selon la largeur
+--    réelle des champs -- w-full/w-1/2/etc. -- pas juste "1 champ/ligne").
+--    Il utilise le MÊME garde-fou (`value->0 ? 'id'`) et produit le MÊME
+--    format cible {"0":champ,...,"duplicable":false}. Une version antérieure
+--    de ce fichier ré-appliquait un reshape maison APRÈS celui de 4.0.0.sql,
+--    avec un garde-fou plus faible (sans la clé 'id') -> ré-emballait la
+--    donnée DÉJÀ correcte dans un niveau de tableau EN TROP
+--    ([[{"0":...}]] au lieu de [{"0":...}]) -> `field.id.replace(...)` dans
+--    frontend/src/pages/splitter/viewer.tsx sur un objet sans clé 'id' ->
+--    crash pour TOUT document (vécu 2026-07-21). Idem pour la normalisation
+--    `metadata_key: null -> ""` : le rebuild de 4.0.0.sql ne recopie pas cette
+--    clé (jsonb_build_object avec une liste explicite de clés), donc elle
+--    disparaît déjà après son passage -- rien à normaliser derrière.
