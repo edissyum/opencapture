@@ -548,10 +548,19 @@ cmd_import() {
         # AUTOMATIQUEMENT ici plutôt que de rejouer le SQL à la main.
         if [ -n "$SRC_CUSTOM_ID" ] && [ "$SRC_CUSTOM_ID" != "$cid" ]; then
             log "  renommage détecté ($SRC_CUSTOM_ID -> $cid) : correction des chemins /app/custom/$SRC_CUSTOM_ID/ résiduels"
-            dc "$cid" exec -T postgres psql -q -U "$POSTGRES_USER" -d "$POSTGRES_DB" \
-                -v old="/app/custom/${SRC_CUSTOM_ID}/" -v new="/app/custom/${cid}/" \
-                -c "UPDATE docservers SET path = REPLACE(path, :'old', :'new') WHERE path LIKE :'old' || '%';" \
-                >/dev/null 2>&1 || warn "[$cid] correction du renommage échouée (rejouer à la main : UPDATE docservers SET path=REPLACE(path,'/app/custom/$SRC_CUSTOM_ID/','/app/custom/$cid/') WHERE path LIKE '/app/custom/$SRC_CUSTOM_ID/%')"
+            # -c n'interpole PAS les :'var' (contrairement à -f/stdin) -> la
+            # substitution psql est silencieusement ignorée, postgres reçoit
+            # ":'old'" tel quel et lève une erreur de syntaxe (vécu : échec
+            # systématique, avalé par 2>/dev/null, résidu jamais corrigé).
+            # On passe le SQL par stdin (comme patch_db_paths) où :'var' marche.
+            if ! dc "$cid" exec -T postgres psql -q -U "$POSTGRES_USER" -d "$POSTGRES_DB" \
+                    -v old="/app/custom/${SRC_CUSTOM_ID}/" -v new="/app/custom/${cid}/" \
+                    >/dev/null 2>&1 <<'SQL'
+UPDATE docservers SET path = REPLACE(path, :'old', :'new') WHERE path LIKE :'old' || '%';
+SQL
+            then
+                warn "[$cid] correction du renommage échouée (rejouer à la main : UPDATE docservers SET path=REPLACE(path,'/app/custom/$SRC_CUSTOM_ID/','/app/custom/$cid/') WHERE path LIKE '/app/custom/$SRC_CUSTOM_ID/%')"
+            fi
             # Résidus TEXTE (hors chemins réécrits) dans les scripts custom :
             # signalés, pas corrigés en aveugle (peut être une vraie donnée,
             # ex. un DN LDAP, pas juste un chemin).
