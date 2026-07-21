@@ -22,6 +22,16 @@
     @apply  min-h-0;
 }
 
+.mantine-Tabs-list {
+    @apply border-b;
+    @apply border-(--border-secondary);
+}
+
+.mantine-Tabs-tab:hover:not([data-active]) {
+    @apply border-b;
+    @apply border-(--border-secondary);
+}
+
 .mantine-Tabs-list button:where([data-active]) {
     @apply text-(--color-primary)!;
 }
@@ -35,6 +45,7 @@
 }
 
 .mantine-Tabs-list:before {
+    @apply border-0;
     @apply border-(--border-secondary);
 }
 
