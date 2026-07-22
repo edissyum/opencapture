@@ -18,8 +18,9 @@
 .mantine-Tabs-root {
     @apply flex;
     @apply h-full;
+    @apply w-full;
+    @apply min-h-0;
     @apply flex-col;
-    @apply  min-h-0;
 }
 
 .mantine-Tabs-list {
@@ -65,68 +66,4 @@
 
 .mantine-Scroller-chevron {
     @apply size-16!;
-}
-
-/* Tab header background and text color */
-.p-tabview .p-tabview-nav li .p-tabview-nav-link, .p-tabview-nav {
-    @apply bg-(--bg-primary);
-    @apply font-normal;
-}
-
-.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
-    @apply text-(--color-primary)!;
-    @apply border-(--color-primary)!;
-    @apply border-b-2!;
-}
-
-.p-tabview {
-    @apply flex;
-    @apply h-full;
-    @apply flex-col;
-}
-
-/* Tab panels */
-.p-tabview-panels {
-    @apply flex;
-    @apply p-6;
-    @apply h-full;
-    @apply flex-col;
-    @apply overflow-y-auto;
-    @apply bg-(--bg-secondary);
-}
-
-.p-tabview .p-tabview-nav,
-.p-tabview .p-tabview-nav li .p-tabview-nav-link {
-    @apply border-b!;
-    @apply border-(--border-secondary);
-}
-
-.p-tabview .p-tabview-nav li .p-tabview-nav-link {
-    @apply m-0;
-    @apply border-0!;
-}
-
-/* Tab nav */
-.p-tabview .p-tabview-nav-btn.p-link {
-    @apply w-8;
-    @apply shadow-none;
-    @apply border-b;
-    @apply text-(--color-primary);
-    @apply border-(--border-secondary);
-}
-
-.p-tabview-nav-prev {
-    @apply border-r-2;
-}
-
-.p-tabview-nav-next {
-    @apply border-l;
-}
-
-.p-tabview-scrollable .p-tabview-nav-container {
-    @apply overflow-visible;
-}
-
-.p-tabview .p-tabview-nav-btn.p-link {
-    @apply bg-(--bg-primary);
 }

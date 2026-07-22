@@ -18,8 +18,8 @@ import { z } from "zod";
 import { t } from "i18next";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
+import { Scroller, Tabs } from "@mantine/core";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TabPanel, TabView } from "primereact/tabview";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Loader } from "../../../../components/loader/Loader";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -46,7 +46,7 @@ export function SettingsVerifierPositionMaskEditor() {
     const availableBillingFields = getAvailableFields(t)['billing'];
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [activeTabIndex, setActiveTabIndex] = useState(0);
+    const [activeTabIndex, setActiveTabIndex] = useState('');
 
     const [forms, setForms] = useState<any[]>([]);
     const [positionMask, setPositionMask] = useState<any>({});
@@ -298,8 +298,12 @@ export function SettingsVerifierPositionMaskEditor() {
 
     return (
         <div className="flex h-full">
-            <TabView className="w-full" activeIndex={ activeTabIndex } onTabChange={ (e) => setActiveTabIndex(e.index) }>
-                <TabPanel header={ t("POSITIONS-MASKS.mask_details") } className='bg-(--bg-primary) h-full'>
+            <Tabs defaultValue='details' onChange={ (e: any) => setActiveTabIndex(e) }>
+                <Tabs.List>
+                    <Tabs.Tab value="details">{ t('POSITIONS-MASKS.mask_details') }</Tabs.Tab>
+                    <Tabs.Tab value="zones">{ t('POSITIONS-MASKS.zones') }</Tabs.Tab>
+                </Tabs.List>
+                <Tabs.Panel value="details" className="bg-(--bg-primary)!">
                     <div className='flex flex-col gap-4 p-6 w-1/3'>
                         <h1 className="text-lg font-bold">{ t('SETTINGS.general') }</h1>
                         <DynamicForm schema={ detailsSchema } control={ control } errors={ errors }/>
@@ -318,8 +322,8 @@ export function SettingsVerifierPositionMaskEditor() {
                             ) }
                         </div>
                     </div>
-                </TabPanel>
-                <TabPanel header={ t("POSITIONS-MASKS.zones") }>
+                </Tabs.Panel>
+                <Tabs.Panel value="zones">
                     <div className='p-6 h-full'>
                         { thumbnail ? (
                             <div className=''>
@@ -375,13 +379,23 @@ export function SettingsVerifierPositionMaskEditor() {
                             />
                         ) }
                     </div>
-                </TabPanel>
-            </TabView>
+                </Tabs.Panel>
+            </Tabs>
 
-            { activeTabIndex === 1 && (
-                <div className="available_fields shrink-0 w-[20rem] flex flex-col border-l border-(--border-secondary)">
-                    <TabView className='bg-(--bg-primary)'>
-                        <TabPanel header={ t("FORMS.facturation") }>
+            { activeTabIndex === 'zones' && (
+                <div className="shrink-0 w-[20rem] flex flex-col border-l border-(--border-secondary)">
+                    <Tabs defaultValue='facturation'>
+                        <Tabs.List>
+                            <Scroller>
+                                <Tabs.Tab value='facturation'>
+                                    { t('FORMS.facturation') }
+                                </Tabs.Tab>
+                                <Tabs.Tab value='custom_fields'>
+                                    { t('VERIFIER.custom_fields_other') }
+                                </Tabs.Tab>
+                            </Scroller>
+                        </Tabs.List>
+                        <Tabs.Panel value="facturation" className="bg-(--bg-primary)!">
                             { availableBillingFields.map((field: any) => (
                                 <div key={ field.id }
                                      onClick={ () => setFocusedField(field) }
@@ -390,12 +404,14 @@ export function SettingsVerifierPositionMaskEditor() {
                                     { t(field.label) }
                                     <Input id={ `regex-${ field.id }` } label={ t('POSITIONS-MASKS.regex_associated') }
                                            type="text" name={ field.id } value={ positionMask.regex[field.id] || '' }
-                                           onBlur={ (e: any) => { updateRegex(field.id, e.target.value).then() } }
+                                           onBlur={ (e: any) => {
+                                               updateRegex(field.id, e.target.value).then()
+                                           } }
                                     />
                                 </div>
                             )) }
-                        </TabPanel>
-                        <TabPanel header={ t("VERIFIER.custom_fields_other") }>
+                        </Tabs.Panel>
+                        <Tabs.Panel value="custom_fields" className="bg-(--bg-primary)!">
                             { customFields.map((field: any) => (
                                 <div key={ `custom_${ field.id }` }
                                      onClick={ () => {
@@ -409,12 +425,14 @@ export function SettingsVerifierPositionMaskEditor() {
                                     { t(field.label) }
                                     <Input id={ `regex-${ field.id }` } label={ t('POSITIONS-MASKS.regex_associated') }
                                            type="text" name={ `custom_${ field.id }` }
-                                           onBlur={ (e: any) => { updateRegex(field.id, e.target.value).then() } }
+                                           onBlur={ (e: any) => {
+                                               updateRegex(field.id, e.target.value).then()
+                                           } }
                                            value={ positionMask.regex[`custom_${ field.id }`] }/>
                                 </div>
                             )) }
-                        </TabPanel>
-                    </TabView>
+                        </Tabs.Panel>
+                    </Tabs>
                 </div>
             ) }
         </div>
