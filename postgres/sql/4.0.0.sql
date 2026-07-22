@@ -571,3 +571,9 @@ WHERE output_type_id = 'export_xml' AND module = 'splitter';
 
 -- Ajout d'un privilèges pour la copie conforme
 INSERT INTO "privileges" ("label", "parent") VALUES ('certified_copy', 'splitter');
+
+-- Utiliser l'id technique pour le workflow dans la table monitoring au lieu du workflow_id
+UPDATE monitoring m SET workflow_id = w.id FROM workflows w WHERE m.workflow_id = w.workflow_id AND m.module = w.module;
+UPDATE monitoring SET workflow_id = NULL WHERE workflow_id !~ '^\d+$';
+
+ALTER TABLE monitoring ALTER COLUMN workflow_id TYPE INTEGER USING workflow_id::integer;

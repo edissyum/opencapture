@@ -85,7 +85,7 @@ export function UploadPage() {
                 get(`workflows/${ selectedModule }/list/user/${ user.id }`).then((response) => {
                     setWorkflows(response.workflows);
                     if (response.workflows.length == 1) {
-                        setSelectedWorkflow(response.workflows[0].workflow_id);
+                        setSelectedWorkflow(response.workflows[0].id);
                     }
 
                     setWorkflowLoading(false);
@@ -175,7 +175,7 @@ export function UploadPage() {
                                                border-(--border-primary) border text-(--color-primary) font-semibold
                                                cursor-pointer '>
                                     <Pencil size={ 16 }/>
-                                    { workflows.find(w => w.workflow_id === selectedWorkflow)?.label }
+                                    { workflows.find(w => w.id === selectedWorkflow)?.label }
                                 </div>
                             ) }
                         </div>
@@ -191,10 +191,10 @@ export function UploadPage() {
                             { filteredWorkflows.map((workflow) => (
                                 <div
                                     key={ workflow.id }
-                                    onClick={ () => setSelectedWorkflow(workflow.workflow_id) }
+                                    onClick={ () => setSelectedWorkflow(workflow.id) }
                                     className={ `flex items-center gap-1 p-2 border border-(--border-secondary) rounded-md cursor-pointer 
                                                  hover:border-(--border-primary) transition-colors min-w-0
-                                                 ${ selectedWorkflow === workflow.workflow_id ? 'text-(--color-primary) border-(--color-primary) font-semibold bg-(--bg-selected)' : '' }` }
+                                                 ${ selectedWorkflow === workflow.id ? 'text-(--color-primary) border-(--color-primary) font-semibold bg-(--bg-selected)' : '' }` }
                                 >
                                     <p className='truncate select-none whitespace-nowrap'>{ workflow.label }</p>
                                 </div>

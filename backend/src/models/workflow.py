@@ -53,24 +53,6 @@ def get_workflow_by_id(args):
     return _workflow, error
 
 
-def get_workflow_by_workflow_id(args):
-    database = get_context_var('database', 0)
-    error = None
-    _workflow = database.select({
-        'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['workflows'],
-        'where': ['workflow_id = %s', 'module = %s'],
-        'data': [args['workflow_id'], args['module']]
-    })
-
-    if not _workflow:
-        error = gettext('WORKFLOW_DOESNT_EXISTS')
-    else:
-        _workflow = _workflow[0]
-
-    return _workflow, error
-
-
 def create_workflow(args):
     database = get_context_var('database', 0)
     error = None

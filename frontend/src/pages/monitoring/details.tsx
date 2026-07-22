@@ -171,7 +171,7 @@ export function MonitoringDetails() {
 
         const fetchWorkflowDetails = async () => {
             try {
-                const response = await get(`/workflows/${ process.module }/getByWorkflowId/${ process.workflow_id }`);
+                const response = await get(`/workflows/${ process.module }/getById/${ process.workflow_id }`);
                 if (response) {
                     setWorkflowLabel(response.label);
                 }

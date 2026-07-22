@@ -389,7 +389,7 @@ CREATE TABLE "ai_models" (
 CREATE TABLE "monitoring" (
     "id"                 SERIAL         UNIQUE PRIMARY KEY,
     "token"              VARCHAR(255),
-    "workflow_id"        VARCHAR(255),
+    "workflow_id"        INTEGER        DEFAULT null,
     "status"             VARCHAR(10),
     "elapsed_time"       VARCHAR(20),
     "document_ids"       INTEGER[],

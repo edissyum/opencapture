@@ -364,7 +364,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         workflow_settings = database.select({
             'select': ['*'],
             'table': ['workflows'],
-            'where': ['workflow_id = %s', 'module = %s'],
+            'where': ['id = %s', 'module = %s'],
             'data': [args['workflow_id'], 'verifier']
         })
         if workflow_settings:
