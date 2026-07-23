@@ -74,21 +74,3 @@ UPDATE outputs_types SET data = jsonb_set(data, '{options,parameters,0,placehold
 UPDATE outputs_types SET data = jsonb_set(data, '{options,parameters,0,placeholder}', to_jsonb('/app/share/export/splitter/'::text))
  WHERE data #>>'{options,parameters,0,id}' = 'folder_out' AND module = 'splitter';
 
--- 5) form_models_field : reshape metadata/champs "flat" en LIGNES -----------
---    SUPPRIMÉ (2026-07-21) : postgres/sql/4.0.0.sql (§ "Modification de la
---    structure des champs dans form_models_field") fait DÉJÀ ce reshape, pour
---    verifier ET splitter, de façon générique (toutes les sections de `fields`
---    via jsonb_each, pas juste supplier/facturation/batch_metadata/
---    document_metadata) et plus fine (regroupe par ligne selon la largeur
---    réelle des champs -- w-full/w-1/2/etc. -- pas juste "1 champ/ligne").
---    Il utilise le MÊME garde-fou (`value->0 ? 'id'`) et produit le MÊME
---    format cible {"0":champ,...,"duplicable":false}. Une version antérieure
---    de ce fichier ré-appliquait un reshape maison APRÈS celui de 4.0.0.sql,
---    avec un garde-fou plus faible (sans la clé 'id') -> ré-emballait la
---    donnée DÉJÀ correcte dans un niveau de tableau EN TROP
---    ([[{"0":...}]] au lieu de [{"0":...}]) -> `field.id.replace(...)` dans
---    frontend/src/pages/splitter/viewer.tsx sur un objet sans clé 'id' ->
---    crash pour TOUT document (vécu 2026-07-21). Idem pour la normalisation
---    `metadata_key: null -> ""` : le rebuild de 4.0.0.sql ne recopie pas cette
---    clé (jsonb_build_object avec une liste explicite de clés), donc elle
---    disparaît déjà après son passage -- rien à normaliser derrière.
