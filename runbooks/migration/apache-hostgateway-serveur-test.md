@@ -1,12 +1,12 @@
-# Apache + host-gateway — VM serveur de test principal interne (serveur de test principal interne)
+# Apache + host-gateway — serveur de test principal interne
 
 > Brouillon de documentation, pas encore relu ni commité. Décrit l'état constaté
 > le 2026-07-08 sur `/etc/apache2/sites-enabled/mem.conf` et la configuration
 > `host-gateway` proposée côté `infra/docker-compose.yml` (commit `22768fe`).
 
-## 1. Contexte de la VM
+## 1. Contexte du serveur
 
-Cette VM héberge deux générations d'Open-Capture côte à côte :
+Ce serveur héberge deux générations d'Open-Capture côte à côte :
 - la **v3 installée directement sur le serveur** (hors conteneur, custom
   `edissyum`), sous `/var/www/html/opencapture/`, toujours joignable via
   `/opencapturev3/`.
@@ -110,14 +110,14 @@ de routage interne à Traefik, **sans entrée DNS réelle** (le domaine n'est pa
 public/résolu). Sans réécriture, chaque poste client qui veut accéder au
 tenant devrait avoir une entrée dans son fichier hosts local
 (`/etc/hosts`/`C:\Windows\System32\drivers\etc\hosts`) faisant pointer ce FQDN
-vers l'IP de la VM — à poser et maintenir sur **chaque poste**, y compris ceux
-des utilisateurs finaux, ce qui n'est pas praticable. En intercalant Apache
-(déjà joignable par l'IP nue de la VM, sans rien à configurer côté client) et
-en lui faisant porter le bon Host au moment de reproxifier vers Traefik, aucun
-poste n'a besoin de connaître ce FQDN : tout le monde tape l'IP (ou le nom
-d'hôte réseau existant), Apache fait la traduction en interne. Ça permet aussi
-de faire cohabiter v3 et v4 sous la même IP/port 80 sans FQDN dédié ni
-certificat à gérer pour ce cas précis (mode HTTP interne).
+vers l'IP du serveur — à poser et maintenir sur **chaque poste**, y compris
+ceux des utilisateurs finaux, ce qui n'est pas praticable. En intercalant
+Apache (déjà joignable par l'IP nue du serveur, sans rien à configurer côté
+client) et en lui faisant porter le bon Host au moment de reproxifier vers
+Traefik, aucun poste n'a besoin de connaître ce FQDN : tout le monde tape l'IP
+(ou le nom d'hôte réseau existant), Apache fait la traduction en interne. Ça
+permet aussi de faire cohabiter v3 et v4 sous la même IP/port 80 sans FQDN
+dédié ni certificat à gérer pour ce cas précis (mode HTTP interne).
 
 Ce mécanisme est **indépendant** de `host-gateway` (§3) : l'un réécrit un
 en-tête HTTP pour satisfaire un routeur L7 (Traefik), l'autre résout un nom en
@@ -258,10 +258,10 @@ désigne **lui-même**, plus la machine hôte. Le connecteur casse silencieuseme
 (timeout/connexion refusée) sans rapport évident avec la migration.
 
 Deux façons de corriger, pesées avant de choisir `host-gateway` :
-- **Coder en dur l'IP de la VM** (`serveur de test principal interne`) dans le champ `host` du
-  connecteur : marche immédiatement, mais casse si l'IP change, et la
-  configuration n'est pas réutilisable telle quelle si le même custom est
-  redéployé sur un autre serveur (il faudrait ressaisir l'IP à chaque fois).
+- **Coder en dur l'IP du serveur** dans le champ `host` du connecteur : marche
+  immédiatement, mais casse si l'IP change, et la configuration n'est pas
+  réutilisable telle quelle si le même custom est redéployé sur un autre
+  serveur (il faudrait ressaisir l'IP à chaque fois).
 - **`network_mode: host`** sur le conteneur : ferait de `localhost` un alias
   direct de l'hôte, donc plus proche du comportement v3 — mais casse
   l'isolation réseau du conteneur et son rattachement au réseau Traefik
@@ -269,7 +269,7 @@ Deux façons de corriger, pesées avant de choisir `host-gateway` :
   Docker), donc écarté.
 
 `host-gateway` a été retenu comme compromis : un **alias stable et portable**
-(`host.docker.internal`) qui ne dépend pas de l'IP de la VM et n'entame pas
+(`host.docker.internal`) qui ne dépend pas de l'IP du serveur et n'entame pas
 l'isolation réseau des conteneurs — seul le champ `host` du connecteur change
 (`localhost` → `host.docker.internal`), sans toucher à l'architecture réseau
 existante (Traefik, réseau `frontend`, etc.).
@@ -283,7 +283,7 @@ existante (Traefik, réseau `frontend`, etc.).
    passerelle atteint : `0.0.0.0` (toutes interfaces), **pas** `127.0.0.1`
    seul. Un service en loopback pur reste injoignable depuis le conteneur, la
    passerelle bridge n'étant pas la boucle locale de l'hôte.
-   → Vérifié sur serveur de test principal interne : Apache écoute sur `*:80`/`*:443` (§2), donc OK ici.
+   → Vérifié sur ce serveur : Apache écoute sur `*:80`/`*:443` (§2), donc OK ici.
 3. `extra_hosts` est figé à la **création** du conteneur : un changement dans
    le compose exige `docker compose up -d <service>` (recreate), un simple
    `restart` ne suffit pas.
@@ -298,7 +298,7 @@ Dans l'UI OC v4 (Paramètres → Sorties), le champ `host` du connecteur MEM :
 - **Si Apache change un jour de scope d'écoute** (ex. restriction à
   `127.0.0.1` pour durcir la surface d'attaque), `host-gateway` cesse de
   fonctionner silencieusement — les appels sortants du connecteur timeoutent.
-  Aucune alerte automatique : à surveiller si la conf Apache de cette VM est
+  Aucune alerte automatique : à surveiller si la conf Apache de ce serveur est
   revue.
 - **Pare-feu hôte** (`ufw`/`iptables`/`firewalld`) : si des règles restreignent
   le trafic entrant sur l'interface bridge Docker (peu probable par défaut,
@@ -315,9 +315,9 @@ Dans l'UI OC v4 (Paramètres → Sorties), le champ `host` du connecteur MEM :
   nom en IP réseau (couche 3/hosts), le trick Apache réécrit un en-tête HTTP
   pour le routage Traefik (couche 7). Les deux coexistent sans interaction.
 - **Alternative plus simple mais moins portable** : utiliser directement l'IP
-  de la VM (`serveur de test principal interne`) dans le champ `host` du connecteur, sans toucher
-  au compose. Fonctionne tout de suite, mais casse si l'IP change ou si la
-  configuration est répliquée telle quelle sur un autre serveur.
+  du serveur dans le champ `host` du connecteur, sans toucher au compose.
+  Fonctionne tout de suite, mais casse si l'IP change ou si la configuration
+  est répliquée telle quelle sur un autre serveur.
 - **Vérification rapide après déploiement** :
   ```bash
   docker exec <container_backend> getent hosts host.docker.internal

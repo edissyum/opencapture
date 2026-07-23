@@ -230,7 +230,7 @@ une fois, puis redémarrer le fs-watcher (`dc $DEST_ID restart fs-watcher`).
 `http://localhost/...`, valide quand tout tournait sur la même machine) → à réauditer
 pour être joignables depuis le réseau Docker. Solution retenue pour MEM Courrier
 (`extra_hosts: host.docker.internal:host-gateway`) et ses limites :
-[`serveur de test principal interne-apache-hostgateway.md`](serveur de test principal interne-apache-hostgateway.md).
+[`apache-hostgateway-serveur-test.md`](apache-hostgateway-serveur-test.md).
 
 ---
 
@@ -375,7 +375,7 @@ l'étape 3, à faire **avant** l'import (prérequis 3).
   (OpenGRU), `export_facturx`. Leurs URLs/credentials visaient l'hôte (`localhost`…,
   valide quand tout tournait sur la même machine) → **à réauditer** pour être
   joignables depuis le réseau Docker. Cas traité en détail (MEM Courrier, trick
-  `host-gateway`, points de vigilance) : [`serveur de test principal interne-apache-hostgateway.md`](serveur de test principal interne-apache-hostgateway.md).
+  `host-gateway`, points de vigilance) : [`apache-hostgateway-serveur-test.md`](apache-hostgateway-serveur-test.md).
 - **OCForMEM** (`/opt/edissyum/opencaptureformem`) : appli companion **séparée** ;
   décider migration vs maintien hors conteneur (les exports MEM en dépendent).
 - **Alfresco / services externes** : à rendre joignables depuis les conteneurs.
