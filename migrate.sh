@@ -39,7 +39,7 @@
 #   # Source locale (bare-metal sur la même machine que Docker) :
 #   ./migrate.sh export --source local --oc-root /var/www/html/opencapture --out /tmp/oc-bundle
 #
-# Prérequis IMPORTANTS (voir runbooks/migration/01-migrate-baremetal.md) :
+# Prérequis IMPORTANTS (voir runbooks/migration/01-migrate-vers-docker.md) :
 #   - Migration À FROID : arrêter le traitement sur la source (workers, watcher,
 #     mailcollect) et vider les files avant l'export, sinon états incohérents.
 #   - Pour chaque custom, le stub tenant doit exister AVANT l'import :
