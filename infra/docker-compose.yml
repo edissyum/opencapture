@@ -89,6 +89,19 @@ x-backend-env: &backend-env
     GUNICORN_PRELOAD:             ${GUNICORN_PRELOAD:-0}
     GUNICORN_EXTRA_ARGS:          ${GUNICORN_EXTRA_ARGS:-}
 
+x-backend-extra-hosts: &backend-extra-hosts
+    # Permet aux connecteurs de sortie (MEM Courrier, etc.) configurés en
+    # v3 avec un host "localhost" (le connecteur et OC tournaient sur la
+    # même machine bare-metal) de continuer à joindre ce service une fois
+    # OC dockerisé : dans un conteneur, "localhost" se désigne lui-même,
+    # pas l'hôte. host-gateway résout host.docker.internal vers la
+    # passerelle Docker côté hôte (Linux, Docker Engine >= 20.10).
+    # Reste à faire côté appli : changer le champ "host" du connecteur de
+    # http://localhost/... vers http://host.docker.internal/... (marche
+    # seulement si le service cible écoute sur 0.0.0.0, pas 127.0.0.1 seul).
+    extra_hosts:
+        - "host.docker.internal:host-gateway"
+
 x-backend-volumes: &backend-volumes
     # Bind mounts directs : Docker crée le dossier hôte s'il n'existe pas.
     # Chemins DÉRIVÉS d'UNE racine : ${OC_DATA_ROOT}/tenants/${CUSTOM_ID}/...
@@ -185,7 +198,7 @@ services:
         restart: "no"
 
     backend:
-        <<: [*backend-build, *res-backend, *cpuset]
+        <<: [*backend-build, *res-backend, *cpuset, *backend-extra-hosts]
         image: opencapture-backend
         environment:
             <<: *backend-env
@@ -210,7 +223,7 @@ services:
         restart: unless-stopped
 
     worker-verifier:
-        <<: [*backend-build, *res-verifier, *cpuset]
+        <<: [*backend-build, *res-verifier, *cpuset, *backend-extra-hosts]
         image: opencapture-backend
         environment:
             <<: *backend-env
