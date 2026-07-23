@@ -635,8 +635,7 @@ The overlay [../infra/docker-compose.override.yml](../infra/docker-compose.overr
 (auto-loaded when you run `docker compose up` **from `infra/`**): **bind-mounted** code
 (no rebuild to change code), gunicorn `--reload`, and **Vite HMR** on `:5173` instead
 of nginx. Launch: `cd infra && docker compose up -d --build`.
-(`infra/docker-compose-dev.yml` is an old minimal overlay kept for compat —
-prefer `override.yml`.) To develop **outside Docker** (bare-metal, systemd/venv), see
+To develop **outside Docker** (bare-metal, systemd/venv), see
 [../DEV_MODE.md](../DEV_MODE.md).
 
 ### Multi-tenant
