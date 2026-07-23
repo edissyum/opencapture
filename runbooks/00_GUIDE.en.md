@@ -74,16 +74,15 @@ CPU 0 is not assigned to tenants so as not to block the server in case of overlo
 # --- QoS: resource profiles ------------------------------------------------
 # mem_limit      = HARD RAM cap (OOM within the cgroup, not global)
 # memswap_limit  = RAM+swap ; == mem_limit => swap FORBIDDEN ; > => swap allowed
-# mem_swappiness = swap appetite (0 = never ; 60 = normal)
 # cpu_shares     = RELATIVE weight under contention (does not cap)
-x-res-postgres:  &res-postgres  { mem_limit: 512m,  memswap_limit: 512m,  mem_swappiness: 0,  cpu_shares: 1024 } # no swap
-x-res-rabbitmq:  &res-rabbitmq  { mem_limit: 512m,  memswap_limit: 512m,  mem_swappiness: 0,  cpu_shares: 512  } 
-x-res-backend:   &res-backend   { mem_limit: 1280m, memswap_limit: 1280m, mem_swappiness: 0,  cpu_shares: 1024 }
-x-res-verifier:  &res-verifier  { mem_limit: 2g,    memswap_limit: 4g,    mem_swappiness: 60, cpu_shares: 2048 } # 2g of swap
-x-res-splitter:  &res-splitter  { mem_limit: 1536m, memswap_limit: 2560m, mem_swappiness: 60, cpu_shares: 1536 }
-x-res-mail:      &res-mail      { mem_limit: 512m,  memswap_limit: 512m,  mem_swappiness: 0,  cpu_shares: 256  }
-x-res-fswatcher: &res-fswatcher { mem_limit: 256m,  memswap_limit: 256m,  mem_swappiness: 0,  cpu_shares: 256  }
-x-res-frontend:  &res-frontend  { mem_limit: 128m,  memswap_limit: 128m,  mem_swappiness: 0,  cpu_shares: 256  }
+x-res-postgres:  &res-postgres  { mem_limit: 512m,  memswap_limit: 512m,  cpu_shares: 1024 }
+x-res-rabbitmq:  &res-rabbitmq  { mem_limit: 512m,  memswap_limit: 512m,  cpu_shares: 512  }
+x-res-backend:   &res-backend   { mem_limit: 1280m, memswap_limit: 1280m, cpu_shares: 1024 }
+x-res-verifier:  &res-verifier  { mem_limit: 2g,    memswap_limit: 4g,    cpu_shares: 2048 }
+x-res-splitter:  &res-splitter  { mem_limit: 1536m, memswap_limit: 2560m, cpu_shares: 1536 }
+x-res-mail:      &res-mail      { mem_limit: 512m,  memswap_limit: 512m,  cpu_shares: 256  }
+x-res-fswatcher: &res-fswatcher { mem_limit: 256m,  memswap_limit: 256m,  cpu_shares: 256  }
+x-res-frontend:  &res-frontend  { mem_limit: 128m,  memswap_limit: 128m,  cpu_shares: 256  }
 
 # Reserves core 0 for the system ; tenants confined to cores 1-7 (8-core host).
 # Env-driven: set OC_CPUSET in the tenant's .env if the host has fewer cores.
@@ -286,7 +285,10 @@ ID=<tenant>                                  # <-- the tenant to destroy
 DIR=stub-tenants/$ID
 DC="docker compose --project-directory $DIR -f $DIR/docker-compose.yml"
 
-# 1) Containers + network + anonymous volumes + the tenant's local frontend image
+# 1) Containers + network + anonymous volumes of the tenant.
+#    NB: `--rmi local` only removes images WITHOUT a custom tag; backend and frontend
+#    are SHARED images (`opencapture-backend`/`-frontend`, custom tag) -> they are
+#    NOT removed, which is intended (never break the other tenants).
 $DC down --remove-orphans --volumes --rmi local
 
 # 2) Tenant data (DB + rabbitmq + custom + docservers + share) — IRREVERSIBLE
@@ -442,9 +444,9 @@ Design and operations details: [07-smb-server.md](07-smb-server.md) +
 | **backend** code (`backend/src/…`) | ✅ backend (1×, shared) | `./deploy.sh --backend-only --all` |
 | backend deps (`pip-requirements.txt`), `backend.Dockerfile`, `apt-requirements.txt` | ✅ backend | same |
 | `infra/docker-entrypoint.sh` / `docker-bootstrap.sh` | ✅ backend | same |
-| **frontend** code (`frontend/src/…`) | ✅ frontend (per tenant) | `./deploy.sh --frontend-only <tenant>` |
-| frontend deps (`package.json`), `frontend.Dockerfile`, `nginx.conf.template` | ✅ frontend | same |
-| `.env` → **`VITE_BACKEND_URL`** (baked into the bundle) | ✅ frontend | same |
+| **frontend** code (`frontend/src/…`) | ✅ frontend (1×, shared) | `./deploy.sh --frontend-only --all` |
+| frontend deps (`package.json`), `frontend.Dockerfile`, `nginx.conf.template` | ✅ frontend (1×, shared) | same |
+| **`VITE_BACKEND_URL`** (fixed to `/` relative, baked at build time; **not** driven by `.env` in prod) | ✅ frontend | same |
 | `docker-compose*.yml` (env, ports, volumes, command) | ❌ | `./deploy.sh --no-build <tenant>` |
 | runtime `.env` (passwords, paths, `OC_FQDN`, `TZ`, `MAIL_POLL_INTERVAL`…) | ❌ | same |
 | `.env` → **`APP_UID` / `APP_GID`** | ❌ (re-read at runtime by the entrypoint) | same |
@@ -576,11 +578,21 @@ queue, a *consumer* (the worker) processes it. Example for the splitter:
    *enqueue*, the worker to *execute*. *(verifier: same pattern with the queue
    `verifier_<id>`.)*
 
-### Per-tenant frontend + Traefik
-The frontend is a **per-tenant** image (the build bakes the config). The overlay
-[../infra/docker-compose.traefik.yml](../infra/docker-compose.traefik.yml) wires the frontend onto
-the external `frontend` network and sets up a `Host(${OC_FQDN})` TLS route (resolver `myresolver`).
-The only public entry point is Traefik (the other services stay on the internal network).
+### Frontend (shared image) + Traefik
+The frontend is **a single shared image**, `opencapture-frontend`
+([../infra/docker-compose.yml:286](../infra/docker-compose.yml#L286)), built **once**
+(`build frontend`): the Vite bundle is **identical for every tenant**
+(`VITE_BACKEND_URL=/` relative, [../infra/frontend.Dockerfile:23](../infra/frontend.Dockerfile#L23)),
+so nothing tenant-specific is **baked in**. Specialization happens **at runtime**
+via the container's `CUSTOM_ID` variable: the `nginx:alpine` entrypoint runs
+`nginx.conf.template` through `envsubst` at startup → the `location /${CUSTOM_ID}/ws/…`
+blocks pick up the tenant's value. A frontend code/deps change therefore needs **one**
+shared rebuild, then an `up -d` per tenant to refresh (`./deploy.sh --frontend-only --all`).
+
+The overlay [../infra/docker-compose.traefik.yml](../infra/docker-compose.traefik.yml) wires the
+frontend onto the external `frontend` network and sets up a `Host(${OC_FQDN})` TLS route (resolver
+`myresolver`). The only public entry point is Traefik (the other services stay on the
+internal network). Domain/prefix routing details and `OC_FQDN`'s role: **Annex G**.
 
 ### TLS — client-provided certificate (served by SNI)
 Procedure: section 2 above + [03-tenant-cert.md](03-tenant-cert.md). Principle: Traefik

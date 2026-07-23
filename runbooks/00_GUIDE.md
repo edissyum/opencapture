@@ -75,16 +75,15 @@ La CPU 0 n'est pas attribuée aux tenants pour ne pas bloquer le serveur en cas 
 # --- QoS : profils de ressources ------------------------------------------
 # mem_limit      = plafond DUR RAM (OOM dans le cgroup, pas global)
 # memswap_limit  = RAM+swap ; == mem_limit => swap INTERDIT ; > => swap autorisé
-# mem_swappiness = appétence au swap (0 = jamais ; 60 = normal)
 # cpu_shares     = poids RELATIF en contention (ne plafonne pas)
-x-res-postgres:  &res-postgres  { mem_limit: 512m,  memswap_limit: 512m,  mem_swappiness: 0,  cpu_shares: 1024 } # pas de swap
-x-res-rabbitmq:  &res-rabbitmq  { mem_limit: 512m,  memswap_limit: 512m,  mem_swappiness: 0,  cpu_shares: 512  } 
-x-res-backend:   &res-backend   { mem_limit: 1280m, memswap_limit: 1280m, mem_swappiness: 0,  cpu_shares: 1024 }
-x-res-verifier:  &res-verifier  { mem_limit: 2g,    memswap_limit: 4g,    mem_swappiness: 60, cpu_shares: 2048 } # 2g de swap
-x-res-splitter:  &res-splitter  { mem_limit: 1536m, memswap_limit: 2560m, mem_swappiness: 60, cpu_shares: 1536 }
-x-res-mail:      &res-mail      { mem_limit: 512m,  memswap_limit: 512m,  mem_swappiness: 0,  cpu_shares: 256  }
-x-res-fswatcher: &res-fswatcher { mem_limit: 256m,  memswap_limit: 256m,  mem_swappiness: 0,  cpu_shares: 256  }
-x-res-frontend:  &res-frontend  { mem_limit: 128m,  memswap_limit: 128m,  mem_swappiness: 0,  cpu_shares: 256  }
+x-res-postgres:  &res-postgres  { mem_limit: 512m,  memswap_limit: 512m,  cpu_shares: 1024 }
+x-res-rabbitmq:  &res-rabbitmq  { mem_limit: 512m,  memswap_limit: 512m,  cpu_shares: 512  }
+x-res-backend:   &res-backend   { mem_limit: 1280m, memswap_limit: 1280m, cpu_shares: 1024 }
+x-res-verifier:  &res-verifier  { mem_limit: 2g,    memswap_limit: 4g,    cpu_shares: 2048 }
+x-res-splitter:  &res-splitter  { mem_limit: 1536m, memswap_limit: 2560m, cpu_shares: 1536 }
+x-res-mail:      &res-mail      { mem_limit: 512m,  memswap_limit: 512m,  cpu_shares: 256  }
+x-res-fswatcher: &res-fswatcher { mem_limit: 256m,  memswap_limit: 256m,  cpu_shares: 256  }
+x-res-frontend:  &res-frontend  { mem_limit: 128m,  memswap_limit: 128m,  cpu_shares: 256  }
 
 # Réserve le cœur 0 au système ; tenants confinés aux cœurs 1-7 (hôte 8 cœurs).
 # Piloté par env : OC_CPUSET dans le .env du tenant si l'hôte a moins de cœurs.

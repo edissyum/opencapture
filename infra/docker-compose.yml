@@ -119,7 +119,6 @@ x-backend-volumes: &backend-volumes
 # --- QoS : profils de ressources ------------------------------------------
 # mem_limit      = plafond DUR RAM (OOM dans le cgroup, pas global)
 # memswap_limit  = RAM+swap ; == mem_limit => swap INTERDIT ; > => swap autorisé
-# mem_swappiness = appétence au swap (0 = jamais ; 60 = normal)
 # cpu_shares     = poids RELATIF en contention (ne plafonne pas)
 x-res-postgres:  &res-postgres  { mem_limit: 512m,  memswap_limit: 512m,  cpu_shares: 1024 }
 x-res-rabbitmq:  &res-rabbitmq  { mem_limit: 512m,  memswap_limit: 512m,  cpu_shares: 512  }
