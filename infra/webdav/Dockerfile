@@ -1,31 +1,32 @@
-# Image WebDAV par tenant — Apache httpd + mod_dav.
+# Per-tenant WebDAV image — Apache httpd + mod_dav.
 #
-# Sert /data (= le `share` du tenant, monté en volume) en WebDAV sous /dav,
-# protégé par Basic auth (htpasswd monté en lecture seule dans /conf). Le
-# conteneur tourne en uid NON-ROOT (le compose impose `user: APP_UID:APP_GID`)
-# -> les fichiers déposés sont possédés par le compte de service OpenCapture,
-# donc lisibles ET supprimables par le fs-watcher (même logique que mod_sftp).
+# Serves /data (= the tenant's `share`, mounted as a volume) over WebDAV
+# under /dav, protected by Basic auth (htpasswd mounted read-only into
+# /conf). The container runs as a NON-ROOT uid (the compose file enforces
+# `user: APP_UID:APP_GID`) -> files dropped in are owned by the
+# OpenCapture service account, so they're readable AND removable by the
+# fs-watcher (same logic as mod_sftp).
 #
-# Image PARTAGÉE (opencapture-webdav) : la config est identique pour tous les
-# tenants ; les différences (share, htpasswd) viennent des bind-mounts du
-# compose. Construite UNE fois (cf. deploy.sh), comme opencapture-backend.
+# SHARED image (opencapture-webdav): the config is identical for every
+# tenant; the differences (share, htpasswd) come from the compose file's
+# bind mounts. Built ONCE (see deploy.sh), like opencapture-backend.
 #
-# Contexte de build = racine du dépôt (cf. infra/webdav/docker-compose.yml et
-# deploy.sh) -> le COPY ci-dessous part de la racine.
+# Build context = repo root (see infra/webdav/docker-compose.yml and
+# deploy.sh) -> the COPY below starts from the root.
 FROM httpd:2.4-alpine
 
-# mod_dav_fs a besoin d'un pilote DBM (APR-util) pour sa base de verrous WebDAV
-# (DavLockDB). L'image httpd:alpine n'en embarque AUCUN (apr-util-1 ne contient
-# que crypto + ldap) -> sans ça, PUT/LOCK échouent en 500 avec
+# mod_dav_fs needs a DBM driver (APR-util) for its WebDAV lock database
+# (DavLockDB). The httpd:alpine image ships NONE (apr-util-1 only
+# contains crypto + ldap) -> without this, PUT/LOCK fail with a 500:
 #   "AH00576: The DBM driver could not be loaded".
-# gdbm = pilote DBM par défaut d'APR-util sur Alpine.
+# gdbm = APR-util's default DBM driver on Alpine.
 RUN apk add --no-cache apr-util-dbm_gdbm
 
-# Notre config remplace entièrement celle de l'image (rootless, mod_dav, auth).
+# Our config entirely replaces the image's (rootless, mod_dav, auth).
 COPY infra/webdav/httpd.conf /usr/local/apache2/conf/httpd.conf
 
-# httpd écoute en 8080 : un uid non-root ne peut pas binder un port < 1024.
-# Le frontend nginx proxifie /dav/ vers webdav:8080 (réseau interne).
+# httpd listens on 8080: a non-root uid can't bind a port below 1024.
+# The nginx frontend proxies /dav/ to webdav:8080 (internal network).
 EXPOSE 8080
 
-# CMD hérité de l'image httpd : ["httpd-foreground"].
+# CMD inherited from the httpd image: ["httpd-foreground"].

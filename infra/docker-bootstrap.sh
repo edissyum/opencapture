@@ -61,12 +61,12 @@ mkdir -p \
 touch "${CUSTOM_DIR}/data/log/OpenCapture.log"
 
 # ------------------------------------------------------------
-# Modèles IA PARTAGÉS : le dossier instance/artificial_intelligence est un
-# bind mount hôte (potentiellement vide au 1er démarrage). On y sème le
-# modèle de rotation par défaut (livré baké HORS du montage, dans
-# /opt/oc-default-models) s'il manque, et on garantit le sous-dossier
-# contact/ (vide => IA de contact désactivée proprement). Idempotent : un
-# modèle déposé par l'utilisateur n'est jamais écrasé.
+# SHARED AI models: the instance/artificial_intelligence folder is a
+# host bind mount (potentially empty on first startup). We seed it with
+# the default rotation model (shipped baked OUTSIDE the mount, in
+# /opt/oc-default-models) if it's missing, and ensure the contact/
+# sub-folder exists (empty => contact AI cleanly disabled). Idempotent:
+# a model dropped in by the user is never overwritten.
 # ------------------------------------------------------------
 AI_SHARED_DIR="${OC_PATH}/instance/artificial_intelligence"
 mkdir -p "${AI_SHARED_DIR}/contact"
@@ -98,14 +98,14 @@ ensure_watcher_ini() {
         -e "s#/var/www/html/opencapture/#${CUSTOM_DIR}/#g" \
         "$target"
 
-    # Aligner les noms de section sur ceux que l'app génère au runtime :
-    # createScriptAndWatcher écrit [<module>_<workflow_id>_<custom_id>]
-    # (cf. backend/src/controllers/workflow.py:358-360), alors que le template
-    # est NON suffixé. Sans ce renommage, dès la 1re création/édition d'un
-    # workflow dans l'UI, l'app ne retrouve pas la section (dédup sur le nom
-    # EXACT) et en AJOUTE une 2e suffixée sur le MÊME dossier -> double
-    # traitement. On suffixe donc toutes les sections (sauf [DEFAULT]) avec le
-    # custom_id, comme le fait l'app.
+    # Align section names with what the app generates at runtime:
+    # createScriptAndWatcher writes [<module>_<workflow_id>_<custom_id>]
+    # (see backend/src/controllers/workflow.py:358-360), while the template
+    # is NOT suffixed. Without this rename, as soon as a workflow is
+    # created/edited in the UI, the app can't find the section (dedup on
+    # the EXACT name) and ADDS a 2nd suffixed one pointing at the SAME
+    # folder -> double processing. So we suffix every section (except
+    # [DEFAULT]) with the custom_id, just like the app does.
     sed -i -E "/^\[DEFAULT\]\$/! s/^\[([A-Za-z0-9_]+)\]\$/[\1_${CUSTOM_ID}]/" "$target"
 }
 ensure_watcher_ini
@@ -157,11 +157,11 @@ ensure_database_section
 
 # ------------------------------------------------------------
 # Self-heal: ensure custom.ini contains a [${CUSTOM_ID}] section
-# with `path` and `url`. Doit s'exécuter AVANT le short-circuit
-# pour rattraper les tenants créés sous l'ancien bootstrap qui ne
-# l'avait pas dans la phase first-init, et pour ajouter le champ
-# `url` aux tenants qui en sont dépourvus (cf. backend commit
-# 75a66fe "Improve custom handling using url").
+# with `path` and `url`. Must run BEFORE the short-circuit to catch
+# up tenants created under the old bootstrap that didn't have it in
+# the first-init phase, and to add the `url` field to tenants that
+# lack it (see backend commit 75a66fe "Improve custom handling using
+# url").
 # ------------------------------------------------------------
 ensure_custom_ini_entry() {
     mkdir -p "${OC_PATH}/custom"
@@ -171,21 +171,22 @@ ensure_custom_ini_entry() {
         {
             echo "[${CUSTOM_ID}]"
             echo "path = ${CUSTOM_DIR}"
-            # `url` est lu par is_custom_exists_from_url /
+            # `url` is read by is_custom_exists_from_url /
             # retrieve_custom_id_from_url (backend/src/functions.py)
-            # pour l'accès clean URL http://${OC_FQDN}/ sans le
-            # préfixe /${CUSTOM_ID}/.
+            # for clean-URL access at http://${OC_FQDN}/ without the
+            # /${CUSTOM_ID}/ prefix.
             [ -n "${OC_FQDN:-}" ] && echo "url = ${OC_FQDN}"
             echo
         } >> "${CUSTOM_INI}"
     elif [ -n "${OC_FQDN:-}" ]; then
-        # La section existe. On garantit que `url` COLLE à OC_FQDN :
-        #   - absente        -> on l'ajoute ;
-        #   - présente/diff.  -> on la met à jour (sinon un changement de FQDN via
-        #                        .env ne se propagerait pas : sans ça l'accès clean
-        #                        URL resterait sur l'ancien domaine).
-        # custom.ini est MONO-SECTION par tenant en Docker (docker-bootstrap le
-        # régénère pour ce seul tenant), donc remplacer la ligne `url` est sûr.
+        # The section exists. We guarantee that `url` MATCHES OC_FQDN:
+        #   - missing        -> add it;
+        #   - present/diff.  -> update it (otherwise changing the FQDN via
+        #                       .env wouldn't propagate: without this, clean
+        #                       URL access would stay on the old domain).
+        # custom.ini is SINGLE-SECTION per tenant in Docker (docker-bootstrap
+        # regenerates it for that one tenant only), so replacing the `url`
+        # line is safe.
         if ! grep -A 3 "^\[${CUSTOM_ID}\]" "${CUSTOM_INI}" | grep -q "^url = "; then
             log "patching [${CUSTOM_ID}] in ${CUSTOM_INI} with url = ${OC_FQDN}"
             sed -i "/^\[${CUSTOM_ID}\]/a url = ${OC_FQDN}" "${CUSTOM_INI}"
@@ -268,18 +269,19 @@ if [ -f "${CUSTOM_DIR}/config/watcher.ini" ]; then
 fi
 
 # ------------------------------------------------------------
-# secret_key (custom.ini déjà géré par ensure_custom_ini_entry
-# au-dessus du short-circuit).
+# secret_key (custom.ini already handled by ensure_custom_ini_entry
+# above the short-circuit).
 # ------------------------------------------------------------
 if [ ! -s "${CUSTOM_DIR}/config/secret_key" ]; then
     python -c 'import secrets; print(secrets.token_hex(32))' > "${CUSTOM_DIR}/config/secret_key"
 fi
 
-# Le config.ini vient d'être créé par find/sed sur les .default ;
-# il a la section [DATABASE] avec les valeurs du .default (vides /
-# localhost / opencapture_edissyum). On rejoue ensure_database_section
-# maintenant que le fichier existe pour qu'elle remplisse avec l'env.
-# (Le premier appel en haut du script a no-op'é car config.ini n'existait pas.)
+# config.ini was just created by find/sed on the .default files; it
+# has the [DATABASE] section with the .default values (empty /
+# localhost / opencapture_edissyum). We replay ensure_database_section
+# now that the file exists so it fills in from the env.
+# (The first call at the top of the script was a no-op since config.ini
+# didn't exist yet.)
 ensure_database_section
 
 # ------------------------------------------------------------
@@ -313,10 +315,11 @@ UPDATE docservers SET path=REPLACE(path, './data/' , '${CUSTOM_DIR}/data/');
 UPDATE docservers SET path=REPLACE(path, './instance/' , '${CUSTOM_DIR}/instance/');
 UPDATE docservers SET path=REPLACE(path, '//' , '/');
 
--- PROJECT_PATH est seedé à './' et n'est patché par aucun REPLACE ci-dessus.
--- Le backend l'utilise comme racine (§§OC_PATH§§ = PROJECT_PATH + '/') pour
--- générer les scripts de workflow fs-watcher. Le forcer au layout conteneur,
--- sinon les scripts générés ont OCPath='.//' (launch_worker.py introuvable).
+-- PROJECT_PATH is seeded to './' and isn't touched by any REPLACE above.
+-- The backend uses it as the root (§§OC_PATH§§ = PROJECT_PATH + '/') to
+-- generate the fs-watcher workflow scripts. Force it to the container
+-- layout, otherwise the generated scripts get OCPath='.//' (launch_worker.py
+-- not found).
 UPDATE docservers SET path='${OC_PATH}' WHERE docserver_id='PROJECT_PATH';
 
 UPDATE workflows SET input = REPLACE(input::TEXT, '/var/share/', '${SHARE_PATH}/')::JSONB;

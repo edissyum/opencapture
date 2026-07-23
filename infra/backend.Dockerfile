@@ -37,10 +37,11 @@ RUN python -m pip install --upgrade pip wheel setuptools pycparser \
 
 FROM python:3.13-slim-bookworm AS runtime
 
-# Compte de service partagé par tous les conteneurs backend / tenants.
-# UID/GID paramétrables au build pour s'aligner sur un compte hôte
-# existant (cf. APP_UID/APP_GID dans .env). L'entrypoint relit aussi
-# ces valeurs au runtime et peut droper vers un autre UID sans rebuild.
+# Service account shared by all backend / tenant containers.
+# UID/GID are configurable at build time to align with an existing
+# host account (see APP_UID/APP_GID in .env). The entrypoint also
+# re-reads these values at runtime and can drop to another UID without
+# a rebuild.
 ARG APP_UID=1000
 ARG APP_GID=1000
 ARG APP_USER=opencapture
@@ -71,9 +72,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         # Shared libs that don't have a CLI front-end on this image.
         libgl1 \
         libmagic1 \
-        # `file` CLI (libmagic front-end) : les scripts de workflow
-        # fs-watcher détectent le type MIME via `file -b -i` ; sans lui,
-        # le PDF est rejeté comme "not valid".
+        # `file` CLI (libmagic front-end): the fs-watcher workflow
+        # scripts detect the MIME type via `file -b -i`; without it,
+        # the PDF is rejected as "not valid".
         file \
         libcairo2 \
         libheif1 \
@@ -107,10 +108,10 @@ RUN python -m pip install --upgrade pip \
         --force-reinstall --no-deps pyinotify-elephant-fork \
     && rm -rf /wheels /tmp/pip-requirements.txt
 
-# Corpora NLTK requis par ArtificialIntelligence.py (word_tokenize /
-# stopwords FR). Téléchargés au build dans un chemin de la liste de
-# recherche par défaut de NLTK : données intégrées à l'image, donc pas
-# d'egress au runtime ni de souci de permission sur les bind-mounts.
+# NLTK corpora required by ArtificialIntelligence.py (word_tokenize /
+# stopwords FR). Downloaded at build time into one of NLTK's default
+# search paths: data is baked into the image, so no runtime egress and
+# no permission issues on the bind mounts.
 RUN python -m nltk.downloader -d "$NLTK_DATA" punkt punkt_tab stopwords
 
 # Allow ImageMagick to read/write PDFs (the default Debian policy blocks PDF).
@@ -122,9 +123,9 @@ WORKDIR /app
 # App code (everything under backend/ at the repo root).
 COPY backend/ /app/
 
-# Défauts des modèles IA PARTAGÉS, conservés HORS du montage bind
-# /app/instance/artificial_intelligence pour que docker-bootstrap.sh puisse
-# semer le dossier hôte partagé (initialement vide) au premier démarrage.
+# Defaults for the SHARED AI models, kept OUTSIDE the
+# /app/instance/artificial_intelligence bind mount so docker-bootstrap.sh
+# can seed the shared host folder (initially empty) on first startup.
 COPY backend/instance/artificial_intelligence/rotate_document.pt /opt/oc-default-models/rotate_document.pt
 
 # Entrypoint scripts live in infra/, copied into /app/ to keep the
@@ -133,9 +134,9 @@ COPY infra/docker-entrypoint.sh /app/docker-entrypoint.sh
 COPY infra/docker-bootstrap.sh  /app/docker-bootstrap.sh
 RUN chmod +x /app/docker-entrypoint.sh /app/docker-bootstrap.sh
 
-# Compte de service par défaut (home=/app, shell bash pour le rôle
-# "shell"). L'ENTRYPOINT reste root au démarrage : il chown les bind
-# mounts puis droppe vers ce compte via gosu (cf. docker-entrypoint.sh).
+# Default service account (home=/app, bash shell for the "shell"
+# role). The ENTRYPOINT stays root at startup: it chowns the bind
+# mounts then drops to this account via gosu (see docker-entrypoint.sh).
 RUN groupadd -g "${APP_GID}" "${APP_USER}" \
     && useradd -u "${APP_UID}" -g "${APP_GID}" -d /app -s /bin/bash -M "${APP_USER}" \
     && chown -R "${APP_UID}:${APP_GID}" /app /tmp/opencapture

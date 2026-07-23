@@ -1,38 +1,38 @@
-# Traefik STANDALONE — UN SEUL daemon pour TOUS les modes.
+# STANDALONE Traefik — ONE SINGLE daemon for ALL modes.
 #
-# Ce Traefik partagé sert simultanément les 3 modes TLS ; ce n'est pas le
-# daemon qui choisit, c'est CHAQUE tenant via ses labels :
-#   - HTTP pur        : tenant en `entrypoints=web` (overlay traefik-http.yml)
-#   - HTTPS Let's Encrypt : tenant `tls=true` + `certresolver=myresolver`
-#                       (overlay traefik.yml) -> cert auto via ACME
-#   - HTTPS cert client : tenant `tls=true` SANS certresolver (overlay traefik-cert.yml)
-#                       -> cert PEM fourni, servi par SNI (provider fichier)
-# Chaque capacité est INERTE tant qu'aucun tenant ne l'utilise (ACME ne se
-# déclenche que pour un router qui pose certresolver ; un cert client n'est
-# servi que si un PEM matche le SNI).
+# This shared Traefik serves all 3 TLS modes simultaneously; it's not the
+# daemon that chooses, it's EACH tenant via its labels:
+#   - Plain HTTP           : tenant with `entrypoints=web` (traefik-http.yml overlay)
+#   - HTTPS Let's Encrypt  : tenant with `tls=true` + `certresolver=myresolver`
+#                       (traefik.yml overlay) -> auto cert via ACME
+#   - HTTPS client cert    : tenant with `tls=true` WITHOUT certresolver (traefik-cert.yml overlay)
+#                       -> provided PEM cert, served via SNI (file provider)
+# Each capability is INERT until a tenant uses it (ACME only triggers for a
+# router that sets certresolver; a client cert is only served if a PEM
+# matches the SNI).
 #
-# Pas de redirection HTTP->HTTPS forcée au niveau du daemon : elle casserait
-# les tenants HTTP pur. La redirection se fait PAR TENANT via un middleware sur
-# son propre router -> intégrée par défaut aux overlays traefik.yml (LE) et
-# traefik-cert.yml ; les tenants HTTP pur (traefik-http.yml) n'en ont pas.
+# No forced HTTP->HTTPS redirect at the daemon level: it would break plain
+# HTTP tenants. The redirect happens PER TENANT via a middleware on its own
+# router -> included by default in the traefik.yml (LE) and traefik-cert.yml
+# overlays; plain HTTP tenants (traefik-http.yml) don't have one.
 #
-# Pré-requis hôte :
-#   docker network create frontend                  # une fois
-#   .env -> LETSENCRYPT_EMAIL=<email valide>        # si tenants LE (ACME)
-#   ports 80 + 443 ouverts depuis Internet          # pour le challenge LE
-#                                                   #   (tenants LE seulement)
-#   Certs client éventuels : déposer les PEM dans le dossier /certs
-#     (= ${OC_DATA_ROOT}/shared-by-tenants/traefik/certs ; prod
-#     OC_DATA_ROOT=/opt/edissyum/opencapture) + un fragment tls.yml PAR tenant
-#     dans /dynamic (cf. runbooks/03-tenant-cert.md et
+# Host prerequisites:
+#   docker network create frontend                  # once
+#   .env -> LETSENCRYPT_EMAIL=<valid email>         # if LE (ACME) tenants
+#   ports 80 + 443 open from the Internet           # for the LE challenge
+#                                                   #   (LE tenants only)
+#   Any client certs: drop the PEMs into the /certs folder
+#     (= ${OC_DATA_ROOT}/shared-by-tenants/traefik/certs; prod
+#     OC_DATA_ROOT=/opt/edissyum/opencapture) + one tls.yml fragment PER tenant
+#     in /dynamic (see runbooks/en/03-tenant-cert.md and
 #     stub-tenants/_template-cert/tls.yml.example).
 #
-# Usage :
+# Usage:
 #   OC_DATA_ROOT=/opt/edissyum/opencapture \
 #   docker compose -f infra/docker-compose.traefik-server.yml up -d
-#   # puis chaque tenant : cd stub-tenants/<id> && docker compose up -d
+#   # then for each tenant: cd stub-tenants/<id> && docker compose up -d
 #
-# Dashboard : http://127.0.0.1:8081/ (bindé localhost ; tunnel SSH si distant).
+# Dashboard: http://127.0.0.1:8081/ (bound to localhost; SSH tunnel if remote).
 
 name: traefik
 
@@ -43,9 +43,9 @@ networks:
 
 volumes:
     letsencrypt:
-        # Stockage acme.json (clé privée + certs LE). PERSISTANT. Si tu
-        # changes de machine, copie ce dossier pour ne pas re-générer les
-        # certs (limite de rate LE : 50 certs/semaine/domaine).
+        # Storage for acme.json (private key + LE certs). PERSISTENT. If you
+        # change machines, copy this folder over to avoid regenerating the
+        # certs (LE rate limit: 50 certs/week/domain).
         driver: local
         driver_opts:
             type: none
@@ -54,39 +54,40 @@ volumes:
 
 services:
     traefik:
-        # v3.7 : le provider Docker s'entend avec les démons Docker récents
-        # (>= v25, API min 1.40). La v3.5 parlait au démon en API 1.24, refusée
-        # (« client version 1.24 is too old »), bloquant toutes les routes. Ne
-        # pas redescendre sous v3.7. (DOCKER_API_VERSION est ignoré par Traefik.)
+        # v3.7: the Docker provider gets along with recent Docker daemons
+        # (>= v25, API min 1.40). v3.5 spoke to the daemon over API 1.24,
+        # which got rejected ("client version 1.24 is too old"), blocking
+        # every route. Do not go back below v3.7. (DOCKER_API_VERSION is
+        # ignored by Traefik.)
         image: traefik:v3.7
         container_name: opencapture_traefik
         command:
-            # API + dashboard (insecure => bind localement seulement).
+            # API + dashboard (insecure => bound locally only).
             - "--api.dashboard=true"
             - "--api.insecure=true"
 
-            # Provider Docker — lit les labels des tenants.
+            # Docker provider — reads the tenants' labels.
             - "--providers.docker=true"
             - "--providers.docker.exposedbydefault=false"
             - "--providers.docker.network=frontend"
 
-            # Provider Fichier — certs FOURNIS par les clients (servis par
-            # SNI). Toujours actif ; inerte tant que tls.yml ne déclare rien.
-            # watch=true => rechargement à chaud (édition tls.yml / remplacement
-            # d'un .crt/.key) sans redémarrer Traefik.
+            # File provider — certs PROVIDED by clients (served via
+            # SNI). Always active; inert as long as no tls.yml declares
+            # anything. watch=true => hot-reload (editing tls.yml /
+            # replacing a .crt/.key) without restarting Traefik.
             - "--providers.file.directory=/dynamic"
             - "--providers.file.watch=true"
 
-            # Entrypoints : HTTP (80) ET HTTPS (443) toujours disponibles.
+            # Entrypoints: HTTP (80) AND HTTPS (443) always available.
             - "--entrypoints.web.address=:80"
             - "--entrypoints.websecure.address=:443"
 
-            # Let's Encrypt via tlsChallenge — utilisé UNIQUEMENT par les
-            # tenants dont le router porte certresolver=myresolver.
+            # Let's Encrypt via tlsChallenge — used ONLY by tenants whose
+            # router carries certresolver=myresolver.
             - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
             - "--certificatesresolvers.myresolver.acme.email=${LETSENCRYPT_EMAIL:-admin@example.com}"
             - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
-            # Staging LE (certs non-trusted) pour tester sans rate-limit :
+            # LE staging (untrusted certs) to test without hitting the rate limit:
             # - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
 
             - "--accesslog=true"
@@ -95,12 +96,12 @@ services:
         ports:
             - "80:80"
             - "443:443"
-            # Dashboard exposé UNIQUEMENT sur localhost (tunnel SSH si distant).
+            # Dashboard exposed ONLY on localhost (SSH tunnel if remote).
             - "127.0.0.1:8081:8080"
 
-        # Rotation des logs stdout (accesslog + log applicatif Traefik) :
-        # driver json-file par défaut = taille illimitée sinon. Même plafond
-        # que infra/docker-compose.yml (x-logging).
+        # Rotation of stdout logs (accesslog + Traefik application log):
+        # json-file driver defaults to unlimited size otherwise. Same cap
+        # as infra/docker-compose.yml (x-logging).
         logging:
             driver: json-file
             options:
@@ -110,12 +111,12 @@ services:
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock:ro
             - letsencrypt:/letsencrypt
-            # Config dynamique (provider fichier) : fragments tls.yml des certs.
-            # Dérivé de OC_DATA_ROOT (défaut ../data en dev ;
-            # prod OC_DATA_ROOT=/opt/edissyum/opencapture). Override : OC_DYNAMIC_PATH.
+            # Dynamic config (file provider): certs' tls.yml fragments.
+            # Derived from OC_DATA_ROOT (defaults to ../data in dev;
+            # prod OC_DATA_ROOT=/opt/edissyum/opencapture). Override: OC_DYNAMIC_PATH.
             - ${OC_DYNAMIC_PATH:-${OC_DATA_ROOT:-../data}/shared-by-tenants/traefik/dynamic}:/dynamic:ro
-            # Certs client (PEM + clé). Dossier hôte NON versionné : on n'y
-            # commit JAMAIS de clé privée. Override : OC_CERTS_PATH.
+            # Client certs (PEM + key). Host folder NOT versioned: a
+            # private key must NEVER be committed there. Override: OC_CERTS_PATH.
             - ${OC_CERTS_PATH:-${OC_DATA_ROOT:-../data}/shared-by-tenants/traefik/certs}:/certs:ro
 
         networks:

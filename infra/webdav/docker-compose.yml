@@ -1,49 +1,49 @@
-# Overlay OPT-IN : accès WebDAV du tenant (Apache mod_dav).
+# OPT-IN overlay: tenant WebDAV access (Apache mod_dav).
 #
-# Le WebDAV n'est PAS dans la stack de base : un tenant l'active en incluant cet
-# overlay dans son docker-compose.yml (comme les overlays Traefik) :
+# WebDAV is NOT part of the base stack: a tenant enables it by including
+# this overlay in its docker-compose.yml (like the Traefik overlays):
 #
 #   include:
 #       - path: ../../infra/docker-compose.yml
 #       - path: ../../infra/docker-compose.traefik-*.yml
-#       - path: ../../infra/webdav/docker-compose.yml      # <- active le WebDAV
+#       - path: ../../infra/webdav/docker-compose.yml      # <- enables WebDAV
 #
-# Effets :
-#   - Ajoute un conteneur `webdav` (Apache mod_dav) qui sert le `share` du tenant
-#     sous https://<fqdn>/dav/ (le frontend nginx proxifie /dav/ -> webdav:8080).
-#   - Réseau INTERNE uniquement (pas de label Traefik, pas d'exposition directe) :
-#     seul le frontend l'atteint.
-#   - Tourne en APP_UID:APP_GID -> fichiers déposés lisibles/supprimables par le
-#     fs-watcher (même propriété que le SFTP, via l'uid du conteneur).
+# Effects:
+#   - Adds a `webdav` container (Apache mod_dav) that serves the tenant's
+#     `share` under https://<fqdn>/dav/ (the nginx frontend proxies /dav/ -> webdav:8080).
+#   - INTERNAL network only (no Traefik label, no direct exposure):
+#     only the frontend reaches it.
+#   - Runs as APP_UID:APP_GID -> files dropped in are readable/removable by
+#     the fs-watcher (same ownership as SFTP, via the container's uid).
 #
-# Sans cet overlay, le frontend répond 501 sur /dav/ (« WebDAV non activé »), le
-# reste du site fonctionne normalement.
+# Without this overlay, the frontend responds 501 on /dav/ ("WebDAV not
+# enabled"), the rest of the site works normally.
 #
-# Image partagée opencapture-webdav : construite par deploy.sh (docker build,
-# indépendamment du backend) dès qu'un tenant inclut cet overlay.
+# Shared opencapture-webdav image: built by deploy.sh (docker build,
+# independent of the backend) as soon as a tenant includes this overlay.
 #
-# Après activation : déployer (./deploy.sh <id>) puis créer un compte
+# After enabling: deploy (./deploy.sh <id>) then create an account
 #   sudo ./new-webdav-account.sh <id>
 
 services:
     webdav:
         build:
-            # Cet overlay est dans infra/webdav/ ; le contexte remonte 2 crans
-            # jusqu'à la racine du dépôt (où le COPY du Dockerfile prend ses
-            # chemins infra/webdav/...).
+            # This overlay lives in infra/webdav/; the context goes up 2
+            # levels to the repo root (where the Dockerfile's COPY takes
+            # its infra/webdav/... paths from).
             context: ../..
             dockerfile: infra/webdav/Dockerfile
         image: opencapture-webdav
         environment:
             TZ: ${TZ:-Europe/Paris}
-        # Compte de service OpenCapture -> les fichiers déposés sont en
-        # APP_UID:APP_GID, donc lisibles ET supprimables par le fs-watcher.
+        # OpenCapture service account -> files dropped in are owned by
+        # APP_UID:APP_GID, so they're readable AND removable by the fs-watcher.
         user: "${APP_UID:-1000}:${APP_GID:-1000}"
         volumes:
-            # Le share du tenant = racine WebDAV (servi sous /dav par Apache).
+            # The tenant's share = WebDAV root (served under /dav by Apache).
             - ${SHARE_PATH:-${OC_DATA_ROOT:-../data}/tenants/${CUSTOM_ID:-default}/share}:/data
-            # htpasswd du tenant (Basic auth), hors repo, en lecture seule.
-            # Provisionné par new-webdav-account.sh ; fermé tant qu'il est absent.
+            # Tenant's htpasswd (Basic auth), outside the repo, read-only.
+            # Provisioned by new-webdav-account.sh; locked out while absent.
             - ${WEBDAV_CONF_PATH:-${OC_DATA_ROOT:-../data}/tenants/${CUSTOM_ID:-default}/webdav}:/conf:ro
         depends_on:
             init:

@@ -8,25 +8,26 @@
 set -euo pipefail
 
 # ------------------------------------------------------------
-# Privilege drop (UID/GID pilotés par l'env, défaut 1000).
-# L'image démarre en root pour pouvoir chown les bind mounts que
-# Docker vient de créer en root, puis re-exec ce même script via
-# gosu sous le compte de service. Au 2e passage on tourne déjà en
-# APP_UID (id -u != 0) donc le bloc est sauté.
+# Privilege drop (UID/GID driven by the env, default 1000).
+# The image starts as root so it can chown the bind mounts that
+# Docker just created as root, then re-execs this same script via
+# gosu under the service account. On the 2nd pass we're already
+# running as APP_UID (id -u != 0) so this block is skipped.
 # ------------------------------------------------------------
 APP_UID="${APP_UID:-1000}"
 APP_GID="${APP_GID:-1000}"
 APP_USER="${APP_USER:-opencapture}"
 
 if [ "$(id -u)" = "0" ]; then
-    # Si l'UID cible n'a pas d'entrée passwd (surcharge runtime sans
-    # rebuild), en créer une (-o = non unique autorisé) pour les libs
-    # qui appellent getpwuid() (ex. getpass.getuser(), utilisé par torch).
-    # Le groupe/user "${APP_USER}" existe déjà (bâti dans l'image à l'UID/GID
-    # de build, cf. Dockerfile) : un groupadd/useradd sous ce MÊME nom échoue
-    # ("already exists") sans toucher à l'UID -> pas d'entrée pour la cible,
-    # échec silencieux (vécu : image bâtie en 1001, tenant en 1000 -> crash
-    # getpass au boot). On modifie l'existant au lieu d'en recréer un second.
+    # If the target UID has no passwd entry (runtime override without a
+    # rebuild), create one (-o = non-unique allowed) for libs that call
+    # getpwuid() (e.g. getpass.getuser(), used by torch). The
+    # "${APP_USER}" group/user already exists (built into the image at
+    # the build UID/GID, see Dockerfile): a groupadd/useradd under that
+    # SAME name fails ("already exists") without touching the UID -> no
+    # entry for the target, silent failure (seen in practice: image built
+    # at 1001, tenant at 1000 -> getpass crash at boot). We modify the
+    # existing one instead of creating a second.
     if ! getent passwd "${APP_UID}" >/dev/null 2>&1; then
         if getent group "${APP_USER}" >/dev/null 2>&1; then
             groupmod -o -g "${APP_GID}" "${APP_USER}" 2>/dev/null || true
@@ -40,37 +41,37 @@ if [ "$(id -u)" = "0" ]; then
         fi
     fi
 
-    # Racines de montage partagées (Docker les auto-crée en root).
-    # Le dernier est le point de montage des modèles IA partagés
-    # (bind RW depuis l'hôte) : à chown pour que le compte de service y accède
-    # (et que docker-bootstrap.sh puisse y semer rotate_document.pt).
+    # Shared mount roots (Docker auto-creates them as root).
+    # The last one is the mount point for the shared AI models
+    # (RW bind from the host): chown it so the service account can
+    # access it (and so docker-bootstrap.sh can seed rotate_document.pt there).
     mkdir -p /app/custom /app/docservers /app/share /tmp/opencapture \
              /app/instance/artificial_intelligence
-    # chown top-level systématique : O(1), inoffensif.
+    # Systematic top-level chown: O(1), harmless.
     chown "${APP_UID}:${APP_GID}" /app/custom /app/docservers /app/share /tmp/opencapture \
              /app/instance/artificial_intelligence
 
-    # chown -R récursif seulement au rôle init et seulement si pas déjà
-    # fait (sentinelle) -> évite de parcourir des docservers volumineux
-    # à chaque `up`. Pour forcer une re-réconciliation : supprimer le
-    # fichier sentinelle puis relancer init.
+    # Recursive chown -R only for the init role, and only if not already
+    # done (sentinel) -> avoids walking potentially huge docservers on
+    # every `up`. To force a re-reconciliation: delete the sentinel
+    # file then rerun init.
     if [ "${1:-api}" = "init" ]; then
         SENTINEL="/app/custom/.ownership-${APP_UID}-ok"
         if [ ! -e "$SENTINEL" ]; then
             echo "[entrypoint] reconciling ownership -> ${APP_UID}:${APP_GID} (one-time)"
             chown -R "${APP_UID}:${APP_GID}" /app/custom /app/docservers /app/share || true
-            # Sentinelle possédée par le compte de service (pas root) pour
-            # qu'un audit `find ! -uid <uid>` ne la signale pas.
+            # Sentinel owned by the service account (not root) so a
+            # `find ! -uid <uid>` audit doesn't flag it.
             touch "$SENTINEL" && chown "${APP_UID}:${APP_GID}" "$SENTINEL" || true
         fi
     fi
 
-    # Re-exec ce script sous l'UID cible (numérique = sûr même si
-    # surchargé). exec remplace le process : pas de double set -e.
+    # Re-exec this script under the target UID (numeric = safe even if
+    # overridden). exec replaces the process: no double set -e.
     exec gosu "${APP_UID}:${APP_GID}" "$0" "$@"
 fi
 # ------------------------------------------------------------
-# À partir d'ici on tourne en APP_UID.
+# From here on we're running as APP_UID.
 # ------------------------------------------------------------
 
 ROLE="${1:-api}"
@@ -130,13 +131,13 @@ case "$ROLE" in
         # GUNICORN_EXTRA_ARGS lets the dev overlay add --reload without
         # rewriting the whole command line.
         #
-        # --preload (OPT-IN, défaut OFF) : le master importe wsgi:app une fois
-        # puis fork les workers -> pages communes partagées en copy-on-write.
-        # Bénéfice MARGINAL une fois l'import de torch rendu paresseux, et
-        # l'activer impose de toute façon un rebuild image + recréation du stack
-        # (ce bloc est baké dans l'entrypoint) -> ce n'est PAS un toggle à chaud.
-        # À activer par tenant APRÈS validation : GUNICORN_PRELOAD=1 dans son
-        # environment. Incompatible avec --reload (donc jamais en dev).
+        # --preload (OPT-IN, default OFF): the master imports wsgi:app once
+        # then forks the workers -> shared pages via copy-on-write.
+        # MARGINAL benefit once the torch import is made lazy, and
+        # enabling it requires an image rebuild + stack recreation anyway
+        # (this block is baked into the entrypoint) -> NOT a hot toggle.
+        # Enable per tenant AFTER validation: GUNICORN_PRELOAD=1 in its
+        # environment. Incompatible with --reload (so never in dev).
         preload_arg=""
         [ "${GUNICORN_PRELOAD:-0}" = "1" ] && preload_arg="--preload"
 

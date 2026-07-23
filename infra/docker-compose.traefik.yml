@@ -1,65 +1,65 @@
-# Overlay pour exposer Open-Capture via un Traefik partagé.
+# Overlay to expose Open-Capture via a shared Traefik.
 #
-# Pré-requis hôte :
-#   1. Le réseau Docker `frontend` (externe) doit exister :
+# Host prerequisites:
+#   1. The (external) Docker network `frontend` must exist:
 #        docker network create frontend
-#      Sinon le up de cet overlay échouera avec "network frontend not
+#      Otherwise bringing up this overlay fails with "network frontend not
 #      found".
 #
-#   2. Un Traefik sur ce même réseau doit tourner (cf. /opt/docker/traefik/).
-#      Le Traefik doit avoir au minimum :
+#   2. A Traefik instance on that same network must be running (see
+#      /opt/docker/traefik/). That Traefik must have at least:
 #        - --providers.docker=true
 #        - --providers.docker.network=frontend
-#        - --certificatesresolvers.myresolver.acme.* (pour le TLS LE)
+#        - --certificatesresolvers.myresolver.acme.* (for LE TLS)
 #
-# Effets :
-#   - Le service `frontend` (nginx OC) rejoint le réseau externe
-#     `frontend` en plus de son réseau interne.
-#   - Le port hôte 8080 disparaît : Traefik est le SEUL point d'entrée.
-#   - Les labels enregistrent une route Host(`${OC_FQDN}`) en HTTPS (TLS auto
-#     via le certresolver `myresolver`) + une redirection HTTP->HTTPS : le port
-#     80 renvoie un 301 vers https (2 routeurs : `-web` redirige, l'autre sert).
-#   - Aucun autre service OC (backend, workers, postgres, rabbit) n'est
-#     exposé à Traefik (ils restent sur le réseau interne).
+# Effects:
+#   - The `frontend` service (nginx OC) joins the external `frontend`
+#     network in addition to its internal network.
+#   - The 8080 host port disappears: Traefik is the ONLY entry point.
+#   - The labels register a Host(`${OC_FQDN}`) route over HTTPS (auto TLS
+#     via the `myresolver` certresolver) + an HTTP->HTTPS redirect: port
+#     80 returns a 301 to https (2 routers: `-web` redirects, the other serves).
+#   - No other OC service (backend, workers, postgres, rabbit) is
+#     exposed to Traefik (they stay on the internal network).
 #
-# Lancement :
+# Launch:
 #   docker compose \
 #       -f infra/docker-compose.yml \
 #       -f infra/docker-compose.traefik.yml \
 #       up -d
 
 networks:
-    # Réseau interne de la stack OC (par défaut nommé d'après le projet).
-    # On le redéclare juste pour pouvoir le combiner explicitement.
+    # Internal network of the OC stack (named after the project by default).
+    # We redeclare it just so we can combine it explicitly.
     default:
-    # Réseau partagé avec Traefik. Doit être pré-créé sur l'hôte.
+    # Network shared with Traefik. Must be pre-created on the host.
     frontend:
         name: frontend
         external: true
 
 services:
     frontend:
-        # Vire le port hôte 8080 du compose de base ; Traefik prend le relais.
-        # !override remplace la liste des ports (compose v2.24+).
+        # Drops the 8080 host port from the base compose; Traefik takes over.
+        # !override replaces the ports list (compose v2.24+).
         ports: !override []
         networks:
             - default
             - frontend
-        # Liste (pas map) pour que la substitution ${CUSTOM_ID} marche
-        # dans la CLÉ du label (Docker compose n'interpole pas les
-        # clés de map mais le fait dans les éléments de liste).
+        # List (not a map) so the ${CUSTOM_ID} substitution works in the
+        # label's KEY (Docker compose doesn't interpolate map keys but
+        # does so in list items).
         labels:
             - "traefik.enable=true"
             - "traefik.docker.network=frontend"
 
-            # Routeur HTTP (port 80) -> redirige vers HTTPS (301).
+            # HTTP router (port 80) -> redirects to HTTPS (301).
             - "traefik.http.routers.${CUSTOM_ID}-web.rule=Host(`${OC_FQDN}`)"
             - "traefik.http.routers.${CUSTOM_ID}-web.entrypoints=web"
             - "traefik.http.routers.${CUSTOM_ID}-web.middlewares=${CUSTOM_ID}-tohttps"
             - "traefik.http.middlewares.${CUSTOM_ID}-tohttps.redirectscheme.scheme=https"
             - "traefik.http.middlewares.${CUSTOM_ID}-tohttps.redirectscheme.permanent=true"
 
-            # Routeur HTTPS (port 443) -> sert l'app ; cert auto via Let's Encrypt.
+            # HTTPS router (port 443) -> serves the app; auto cert via Let's Encrypt.
             - "traefik.http.routers.${CUSTOM_ID}.rule=Host(`${OC_FQDN}`)"
             - "traefik.http.routers.${CUSTOM_ID}.entrypoints=websecure"
             - "traefik.http.routers.${CUSTOM_ID}.tls=true"

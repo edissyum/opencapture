@@ -1,27 +1,28 @@
-# Overlay pour exposer un tenant en HTTP pur (sans TLS).
+# Overlay to expose a tenant over plain HTTP (no TLS).
 #
-# Ce fichier ne lance PAS Traefik. Il attache juste le service OC
-# `frontend` au réseau Docker externe `frontend` et pose des labels
-# `entrypoints=web` (HTTP), lus par le daemon Traefik partagé
-# (docker-compose.traefik-server.yml) pour créer le router.
+# This file does NOT start Traefik. It just attaches the OC `frontend`
+# service to the external `frontend` Docker network and sets
+# `entrypoints=web` (HTTP) labels, read by the shared Traefik daemon
+# (docker-compose.traefik-server.yml) to create the router.
 #
-# Le daemon est le MÊME pour tous les modes ; ce qui change, c'est cet
-# overlay. Alternative HTTPS : docker-compose.traefik.yml (labels TLS +
-# certresolver=myresolver -> Let's Encrypt). Cert client : overlay
-# docker-compose.traefik-cert.yml (tls=true sans certresolver, cf. runbooks/03-tenant-cert.md).
+# The daemon is the SAME for all modes; what changes is this overlay.
+# HTTPS alternative: docker-compose.traefik.yml (TLS labels +
+# certresolver=myresolver -> Let's Encrypt). Client cert: overlay
+# docker-compose.traefik-cert.yml (tls=true without certresolver, see
+# runbooks/en/03-tenant-cert.md).
 #
-# Pré-requis :
-#   docker network create frontend     # une fois
-#   Traefik standalone up :
+# Prerequisites:
+#   docker network create frontend     # once
+#   Standalone Traefik up:
 #     docker compose -f infra/docker-compose.traefik-server.yml up -d
 #   /etc/hosts -> 127.0.0.1 site1.edissyum.com
 #   .env -> OC_FQDN=site1.edissyum.com
 #
-# Usage :
+# Usage:
 #   docker compose -f infra/docker-compose.yml \
 #                  -f infra/docker-compose.traefik-http.yml up -d
 #
-# Test :
+# Test:
 #   curl -H "Host: site1.edissyum.com" http://localhost:${FRONTEND_PORT:-8080}/edissyum/
 
 networks:
@@ -32,14 +33,14 @@ networks:
 
 services:
     frontend:
-        # Plus de port hôte : Traefik est l'unique point d'entrée HTTP.
+        # No more host port: Traefik is the sole HTTP entry point.
         ports: !override []
         networks:
             - default
             - frontend
-        # Liste (pas map) pour que ${CUSTOM_ID} soit substitué dans
-        # la clé du label (compose n'interpole que les valeurs dans
-        # les maps).
+        # List (not a map) so ${CUSTOM_ID} is substituted in the
+        # label's key (compose only interpolates values inside
+        # maps).
         labels:
             - "traefik.enable=true"
             - "traefik.docker.network=frontend"

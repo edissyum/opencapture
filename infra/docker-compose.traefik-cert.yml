@@ -1,44 +1,44 @@
-# Overlay : cert FOURNI (client) ou AUTO-SIGNÉ, servi par SNI via le provider
-# fichier du Traefik partagé. tls=true SANS certresolver (pas d'ACME).
+# Overlay: PROVIDED (client) or SELF-SIGNED cert, served via SNI through the
+# shared Traefik's file provider. tls=true WITHOUT certresolver (no ACME).
 #
-# Identique à docker-compose.traefik.yml (Let's Encrypt) AU DÉTAIL PRÈS de la
-# ligne `certresolver` qui est ABSENTE ici : Traefik choisit alors le cert au
-# handshake par SNI (le SAN du cert doit couvrir exactement ${OC_FQDN}).
+# Identical to docker-compose.traefik.yml (Let's Encrypt) EXCEPT for the
+# `certresolver` line, which is ABSENT here: Traefik then picks the cert at
+# handshake time via SNI (the cert's SAN must cover exactly ${OC_FQDN}).
 #
-# Avantage : pas d'ACME -> pas besoin de DNS public ni des ports 80/443 ouverts
-# vers Internet (fonctionne sur DNS interne).
+# Advantage: no ACME -> no need for public DNS nor ports 80/443 open to the
+# Internet (works over internal DNS).
 #
-# Pré-requis hôte :
-#   1. Réseau Docker `frontend` (externe) + Traefik partagé dessus
-#      (cf. infra/docker-compose.traefik-server.yml).
-#   2. Déposer le PEM dans le dossier monté /certs du Traefik
-#      (/opt/edissyum/opencapture/shared-by-tenants/traefik/certs/) :
-#        <id>.crt  = chaîne complète (leaf + intermédiaires)
-#        <id>.key  = clé privée SANS passphrase
-#      Auto-signé : openssl req -x509 -newkey rsa:2048 -nodes -days 825 \
+# Host prerequisites:
+#   1. The (external) Docker network `frontend` + a shared Traefik on it
+#      (see infra/docker-compose.traefik-server.yml).
+#   2. Drop the PEM into the Traefik's mounted /certs folder
+#      (/opt/edissyum/opencapture/shared-by-tenants/traefik/certs/):
+#        <id>.crt  = full chain (leaf + intermediates)
+#        <id>.key  = private key WITHOUT passphrase
+#      Self-signed: openssl req -x509 -newkey rsa:2048 -nodes -days 825 \
 #          -keyout <id>.key -out <id>.crt \
 #          -subj "/CN=<fqdn>" -addext "subjectAltName=DNS:<fqdn>"
-#   3. Déclarer le cert dans le provider fichier (watch=true, hot-reload) :
-#      un fragment PAR tenant -> /opt/edissyum/opencapture/shared-by-tenants/traefik/dynamic/<id>.yml
-#      (cf. stub-tenants/_template-cert/tls.yml.example). Traefik agrège tous
-#      les fichiers de /dynamic.
+#   3. Declare the cert in the file provider (watch=true, hot-reload):
+#      one fragment PER tenant -> /opt/edissyum/opencapture/shared-by-tenants/traefik/dynamic/<id>.yml
+#      (see stub-tenants/_template-cert/tls.yml.example). Traefik aggregates
+#      all files under /dynamic.
 #
-# Lancement :
+# Launch:
 #   docker compose -f infra/docker-compose.yml \
 #                  -f infra/docker-compose.traefik-cert.yml up -d
-#   (ou via le stub d'un tenant qui include ces deux fichiers.)
+#   (or via a tenant's stub that includes these two files.)
 
 networks:
-    # Réseau interne de la stack OC (nommé d'après le projet).
+    # Internal network of the OC stack (named after the project).
     default:
-    # Réseau partagé avec Traefik. Doit être pré-créé sur l'hôte.
+    # Network shared with Traefik. Must be pre-created on the host.
     frontend:
         name: frontend
         external: true
 
 services:
     frontend:
-        # Vire le port hôte du compose de base ; Traefik prend le relais.
+        # Drops the host port from the base compose; Traefik takes over.
         ports: !override []
         networks:
             - default
@@ -47,16 +47,16 @@ services:
             - "traefik.enable=true"
             - "traefik.docker.network=frontend"
 
-            # Routeur HTTP (port 80) -> redirige vers HTTPS (301).
+            # HTTP router (port 80) -> redirects to HTTPS (301).
             - "traefik.http.routers.${CUSTOM_ID}-web.rule=Host(`${OC_FQDN}`)"
             - "traefik.http.routers.${CUSTOM_ID}-web.entrypoints=web"
             - "traefik.http.routers.${CUSTOM_ID}-web.middlewares=${CUSTOM_ID}-tohttps"
             - "traefik.http.middlewares.${CUSTOM_ID}-tohttps.redirectscheme.scheme=https"
             - "traefik.http.middlewares.${CUSTOM_ID}-tohttps.redirectscheme.permanent=true"
 
-            # Routeur HTTPS (port 443) -> sert l'app ; cert FOURNI servi par SNI.
+            # HTTPS router (port 443) -> serves the app; PROVIDED cert served via SNI.
             - "traefik.http.routers.${CUSTOM_ID}.rule=Host(`${OC_FQDN}`)"
             - "traefik.http.routers.${CUSTOM_ID}.entrypoints=websecure"
             - "traefik.http.routers.${CUSTOM_ID}.tls=true"
-            # PAS de certresolver -> cert servi par le provider fichier (SNI).
+            # NO certresolver -> cert served by the file provider (SNI).
             - "traefik.http.services.${CUSTOM_ID}.loadbalancer.server.port=80"
