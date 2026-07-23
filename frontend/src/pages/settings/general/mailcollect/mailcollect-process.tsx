@@ -23,7 +23,6 @@ import { ArrowLeft, Ban, CircleQuestionMark, CornerUpRight } from "lucide-react"
 
 import { Stepper } from "primereact/stepper";
 import { FloatLabel } from "primereact/floatlabel";
-import { InputSwitch } from "primereact/inputswitch";
 import { StepperPanel } from "primereact/stepperpanel";
 
 import { getSchemaForAuthMethod } from "./authSchema";
@@ -35,6 +34,8 @@ import { Dropdown } from "../../../../components/Dropdown";
 import { showToast } from "../../../../components/ToastProvider";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { InputSwitch } from "../../../../components/InputSwitch.tsx";
+import { DynamicForm } from "../../../../components/form/DynamicForm.tsx";
 
 export function MailCollectProcess({ process, workflows }: { process: any, workflows: any }) {
     const { post } = axiosApiCall();
@@ -238,12 +239,12 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='securedConnection'
                             render={ ({ field }) => (
                                 <>
-                                    <InputSwitch inputId='secured_connection' checked={ field.value }
-                                                 onChange={ (e: any) => setValueAuth("securedConnection", e.value) }/>
-                                    <label htmlFor='secured_connection'
-                                           className="flex items-center gap-4 cursor-pointer select-none text-(--text-primary)">
-                                        { t('MAILCOLLECT.secured_connection') }
-                                    </label>
+                                    <InputSwitch
+                                        id='secured_connection'
+                                        checked={ field.value }
+                                        label={ t('MAILCOLLECT.secured_connection') }
+                                        onChange={ (value) => setValueAuth("securedConnection", value) }
+                                    />
                                 </>
                             ) }
                         />
@@ -452,12 +453,11 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                         control={ modulesControl }
                         render={ ({ field }) => (
                             <div className='mb-6 flex gap-2 relative w-fit'>
-                                <InputSwitch inputId='ocr_attachments' checked={ field.value }
-                                             onChange={ (e: any) => field.onChange(e.value) }/>
-                                <label htmlFor='ocr_attachments'
-                                       className="flex items-center gap-4 cursor-pointer select-none">
-                                    { t('MAILCOLLECT.ocr_attachments') }
-                                </label>
+                                <InputSwitch
+                                    id='ocr_attachments'
+                                    checked={ field.value }
+                                    label={ t('MAILCOLLECT.ocr_attachments') }
+                                    onChange={ (value) => field.onChange(value) }/>
                                 <span className={ `absolute cursor-pointer z-10 -right-6 -top-0.5 text-(--text-secondary)` }>
                                     <CircleQuestionMark data-tooltip-id="tooltip" data-tooltip-content={ t('MAILCOLLECT.ocr_attachments_hint') } size={ 16 }/>
                                 </span>
@@ -471,12 +471,11 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                 control={ modulesControl }
                                 render={ ({ field }) => (
                                     <div className='mb-6 flex gap-2'>
-                                        <InputSwitch inputId='verifier_insert_body_as_doc' checked={ field.value }
-                                                     onChange={ (e: any) => field.onChange(e.value) }/>
-                                        <label htmlFor='verifier_insert_body_as_doc'
-                                               className="flex items-center gap-4 cursor-pointer select-none">
-                                            { t('MAILCOLLECT.insert_body_as_doc') }
-                                        </label>
+                                        <InputSwitch
+                                            id='verifier_insert_body_as_doc'
+                                            checked={ field.value }
+                                            label={ t('MAILCOLLECT.insert_body_as_doc') }
+                                            onChange={ (value) => field.onChange(value) }/>
                                     </div>
                                 ) }
                             />
@@ -517,12 +516,11 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                 control={ modulesControl }
                                 render={ ({ field }) => (
                                     <div className='mb-6 flex gap-2'>
-                                        <InputSwitch inputId='splitter_insert_body_as_doc' checked={ field.value }
-                                                     onChange={ (e: any) => field.onChange(e.value) }/>
-                                        <label htmlFor='splitter_insert_body_as_doc'
-                                               className="flex items-center gap-4 cursor-pointer select-none">
-                                            { t('MAILCOLLECT.insert_body_as_doc') }
-                                        </label>
+                                        <InputSwitch
+                                            id='splitter_insert_body_as_doc'
+                                            checked={ field.value }
+                                            label={ t('MAILCOLLECT.insert_body_as_doc') }
+                                            onChange={ (value) => field.onChange(value) }/>
                                     </div>
                                 ) }
                             />
