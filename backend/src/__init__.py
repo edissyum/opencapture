@@ -20,7 +20,6 @@ import os
 import urllib.parse
 from flask_cors import CORS
 from flasgger import Swagger
-from ultralytics import YOLO
 from flask_babel import Babel
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -148,14 +147,30 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 instance_path = os.path.abspath(os.path.join(BASE_DIR, "../instance"))
 
 # Load Artificial Intelligence model to rotate document
+# Loading torch/ultralytics + the model weights takes several seconds and used
+# to run unconditionally at import time -> every process that does `from src
+# import app` (gunicorn workers, the one-shot fs-watcher scripts that only
+# enqueue a task, ...) paid for it even when it never rotates a single image.
+# Deferred to first actual call instead, cached afterwards on the instance.
+class _LazyRotateModel:
+    def __init__(self, model_path):
+        self._model_path = model_path
+        self._model = None
+
+    def __call__(self, *args, **kwargs):
+        if self._model is None:
+            from ultralytics import YOLO
+            self._model = YOLO(self._model_path, verbose=False)
+            try:
+                self._model('init_model.jpg')
+            except FileNotFoundError:
+                pass
+        return self._model(*args, **kwargs)
+
 rotate_model = None
 rotate_model_path = os.path.join(instance_path, "artificial_intelligence/rotate_document.pt")
 if os.path.isfile(rotate_model_path):
-    rotate_model = YOLO(rotate_model_path, verbose=False)
-    try:
-        rotate_model('init_model.jpg')
-    except FileNotFoundError:
-        pass
+    rotate_model = _LazyRotateModel(rotate_model_path)
 
 # Load Artificial Intelligence model to detect contact
 contact_model = None
