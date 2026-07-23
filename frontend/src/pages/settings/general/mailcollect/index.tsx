@@ -17,13 +17,13 @@
 import { t } from "i18next";
 import { useEffect, useRef, useState } from "react";
 import { ContextMenu } from "primereact/contextmenu";
-import { InputSwitch } from "primereact/inputswitch";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import { Copy, EllipsisVertical, Inbox, PencilLine, Plus, Trash } from "lucide-react";
 
 import { Button } from "../../../../components/Button";
 import { Loader } from "../../../../components/loader/Loader";
 import { showToast } from "../../../../components/ToastProvider";
+import { InputSwitch } from "../../../../components/InputSwitch";
 
 import { MailCollectProcess } from "./mailcollect-process";
 
@@ -292,12 +292,12 @@ export function SettingsGeneralMailcollect() {
                                 <span>
                                     { process.name }
                                 </span>
-                                <span className='flex ml-auto items-center gap-2'>
+                                <span className='flex ml-auto items-center gap-2'
+                                      onClick={ (e) => e.stopPropagation() }>
                                     <InputSwitch
                                         data-tooltip-id="tooltip"
                                         data-tooltip-content={ process.enabled ? t('MAILCOLLECT.disable_process') : t('MAILCOLLECT.enable_process') }
-                                        inputId={ 'enable_' + idx } checked={ process.enabled }
-                                        onClick={ (e) => e.stopPropagation() }
+                                        id={ 'enable_' + idx } checked={ process.enabled }
                                         onChange={ () => handleToggleEnableProcess(process) }/>
                                     <EllipsisVertical onClick={ (e) => {
                                         setSelectedProcess(process);

@@ -15,18 +15,18 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
+import { Popover } from "@mantine/core";
+import { useRef, useState } from "react";
 import { GripVertical } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
 
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
-import { InputSwitch } from "primereact/inputswitch";
-import { OverlayPanel } from "primereact/overlaypanel";
 
 import Hint from "../../../Hint";
 import Input from "../../../Input";
 import { Button } from "../../../Button";
 import { Dropdown } from "../../../Dropdown";
+import { InputSwitch } from "../../../InputSwitch";
 
 import { getColorOptions, getFormatLabels } from "./schemas";
 
@@ -45,15 +45,12 @@ type Field = {
     field_metadata?: boolean;
 };
 
-export function SortableField({ field, onUpdateField, onDeleteField, module, activeOverlayId, setActiveOverlayId }: {
+export function SortableField({ field, onUpdateField, onDeleteField, module }: {
     field: Field;
     module?: string;
-    activeOverlayId: string | null;
     onDeleteField: (id: string) => void;
-    setActiveOverlayId: (id: string | null) => void;
     onUpdateField: (id: string, updated: Field) => void;
 }) {
-    const op = useRef<OverlayPanel | null>(null);
     const [editableField, setEditableField] = useState<Field>(field);
 
     const formatLabels = getFormatLabels(t);
@@ -69,75 +66,49 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
         transition: transition ?? "transform 250ms ease"
     };
 
-    const openOverlay = (e: React.MouseEvent) => {
-        e.stopPropagation();
-
-        if (activeOverlayId === field.id) {
-            op.current?.hide();
-            setActiveOverlayId(null);
-        } else {
-            setActiveOverlayId(field.id);
-            op.current?.toggle(e);
-            setEditableField(field);
-        }
-    };
-
-    useEffect(() => {
-        if (activeOverlayId !== field.id) {
-            op.current?.hide();
-        }
-    }, [activeOverlayId]);
-
     const handleSave = () => {
         onUpdateField(field.id, editableField);
-        op.current?.hide();
-    };
-
-    const [open, setOpen] = useState(false);
-    const ref = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (ref.current && !ref.current.contains(event.target as Node)) {
-                setOpen(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-
-    const handleSelect = (color: string) => {
-        setEditableField((prev) => ({ ...prev, color: color }));
         setOpen(false);
     };
 
+    const [open, setOpen] = useState(false);
+    const [openColors, setOpenColors] = useState(false);
+    const ref = useRef<HTMLDivElement>(null);
+
+    const handleSelectColor = (color: string) => {
+        setEditableField((prev) => ({ ...prev, color: color }));
+        setOpenColors(false);
+    };
+
     return (
-        <>
-            <div ref={ setNodeRef } style={ style } onClick={ openOverlay }
-                 className="SortableField truncate bg-(--bg-primary) border border-(--border-secondary)
-                   rounded-md px-3 py-2 flex items-center gap-2 hover:border-(--border-primary)
-                   transition-colors select-none">
-                <button type="button" aria-label="Déplacer le champ" { ...attributes } { ...listeners }
-                        onClick={ (e) => e.stopPropagation() }
-                        className="cursor-grab text-(--text-secondary) hover:text-(--text-primary)">
-                    <GripVertical size={ 16 }/>
-                </button>
+        <Popover opened={ open } withinPortal position="bottom-start" onChange={ setOpen }>
+            <Popover.Target>
+                <div ref={ setNodeRef } style={ style } onClick={ () => setOpen(!open) }
+                     className="SortableField truncate bg-(--bg-primary) border border-(--border-secondary)
+                       rounded-md px-3 py-2 flex items-center gap-2 hover:border-(--border-primary)
+                       transition-colors select-none">
+                    <button type="button" aria-label="Déplacer le champ" { ...attributes } { ...listeners }
+                            onClick={ (e) => e.stopPropagation() }
+                            className="cursor-grab text-(--text-secondary) hover:text-(--text-primary)">
+                        <GripVertical size={ 16 }/>
+                    </button>
 
-                <div className="min-w-0 flex-1 truncate cursor-pointer">
-                    { t(field.label) }
+                    <div className="min-w-0 flex-1 truncate cursor-pointer">
+                        { t(field.label) }
+                    </div>
                 </div>
-            </div>
+            </Popover.Target>
 
-            <OverlayPanel ref={ op } dismissable
-                          className="bg-(--bg-primary)! p-3 w-1/2 shadow-none! border! border-(--border-secondary)! min-h-[20%] max-h-[60%]">
+            <Popover.Dropdown>
                 <div className="flex flex-col gap-3 space-y-3">
-                    <Input id={ 'label-' + editableField.id }
-                           className="w-full"
-                           label={ t('FORMS.field_label') }
-                           value={ t(editableField.label) }
-                           onChange={ (e: any) =>
-                               setEditableField((prev) => ({ ...prev, label: e.target.value }))
-                           }
+                    <Input
+                        id={ 'label-' + editableField.id }
+                        className="w-full"
+                        label={ t('FORMS.field_label') }
+                        value={ t(editableField.label) }
+                        onChange={ (e: any) =>
+                            setEditableField((prev) => ({ ...prev, label: e.target.value }))
+                        }
                     />
                     <Dropdown
                         className="w-full"
@@ -150,24 +121,26 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
                         }
                     />
 
-                    <Input id={ "default_value-" + editableField.id }
-                           className="w-full"
-                           hint={ t('FORMS.default_value_hint') }
-                           label={ t('FORMS.default_value') }
-                           value={ editableField.default_value }
-                           onChange={ (e: any) =>
-                               setEditableField((prev) => ({ ...prev, default_value: e.target.value }))
-                           }
+                    <Input
+                        id={ "default_value-" + editableField.id }
+                        className="w-full"
+                        hint={ t('FORMS.default_value_hint') }
+                        label={ t('FORMS.default_value') }
+                        value={ editableField.default_value }
+                        onChange={ (e: any) =>
+                            setEditableField((prev) => ({ ...prev, default_value: e.target.value }))
+                        }
                     />
 
                     { module === 'verifier' && (
                         <div ref={ ref } className="relative inline-block w-full">
-                            <div onClick={ () => setOpen((o) => !o) }
+                            <div onClick={ () => setOpenColors((o) => !o) }
                                  className="flex items-center justify-center border rounded-md cursor-pointer transition-all select-none h-10"
                                  style={ {
                                      backgroundColor: editableField.color + '1A',
                                      color: editableField.color
-                                 } }>
+                                 } }
+                            >
                                 { editableField.color ? (
                                     <>
                                         { colorOptions.find((c) => c.value === editableField.color)?.name }
@@ -177,7 +150,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
                                 ) }
                             </div>
 
-                            { open && (
+                            { openColors && (
                                 <div
                                     className="left-0 mt-2 w-full p-3 bg-white border rounded-lg shadow-lg grid grid-cols-6 gap-2 z-50"
                                     style={ {
@@ -187,7 +160,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
                                     { colorOptions.map((color) => (
                                         <div
                                             key={ color.value }
-                                            onClick={ () => handleSelect(color.value) }
+                                            onClick={ () => handleSelectColor(color.value) }
                                             title={ color.name }
                                             className="w-full flex justify-center items-center h-14 rounded-md cursor-pointer border hover:scale-110 transition-transform bg-opacity-10"
                                             style={ {
@@ -205,17 +178,15 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
                     { module === 'splitter' && (
                         <div>
                             <div className="flex items-center gap-2">
-                                <InputSwitch inputId={ 'field_metadata-' + editableField.id }
-                                             checked={ !!editableField.field_metadata }
-                                             onChange={ (e) => setEditableField((prev) => ({
-                                                 ...prev,
-                                                 field_metadata: e.value
-                                             })) }
+                                <InputSwitch
+                                    id={ 'field_metadata-' + editableField.id }
+                                    checked={ !!editableField.field_metadata }
+                                    label={ t('FORMS.field_metadata') }
+                                    onChange={ (value) => setEditableField((prev) => ({
+                                        ...prev,
+                                        field_metadata: value
+                                    })) }
                                 />
-                                <label htmlFor={ 'field_metadata-' + editableField.id }
-                                       className="flex items-center gap-4 cursor-pointer select-none text-(--text-secondary)">
-                                    { t('FORMS.field_metadata') }
-                                </label>
                             </div>
                             { editableField.field_metadata && (
                                 <div className='mt-4'>
@@ -262,35 +233,31 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
                         </div>
                     ) }
 
-                    <div className='flex gap-2'>
+                    <div className='flex gap-4'>
                         <div className="flex items-center gap-2">
-                            <InputSwitch inputId={ 'required-' + editableField.id }
-                                         checked={ !!editableField.required }
-                                         onChange={ (e) => setEditableField((prev) => ({
-                                             ...prev,
-                                             required: e.value
-                                         })) }
+                            <InputSwitch
+                                id={ 'required-' + editableField.id }
+                                label={ t('FORMS.field_required') }
+                                checked={ !!editableField.required }
+                                onChange={ (value) => setEditableField((prev) => ({
+                                    ...prev,
+                                    required: value
+                                })) }
                             />
-                            <label htmlFor={ 'required-' + editableField.id }
-                                   className="flex items-center gap-4 cursor-pointer select-none text-(--text-secondary)">
-                                { t('FORMS.field_required') }
-                            </label>
                         </div>
 
                         { module === 'splitter' && (
                             <div>
                                 <div className="flex items-center gap-2">
-                                    <InputSwitch inputId={ 'disabled-' + editableField.id }
-                                                 checked={ !!editableField.disabled }
-                                                 onChange={ (e) => setEditableField((prev) => ({
-                                                     ...prev,
-                                                     disabled: e.value
-                                                 })) }
+                                    <InputSwitch
+                                        id={ 'disabled-' + editableField.id }
+                                        checked={ !!editableField.disabled }
+                                        label={ t('FORMS.field_disabled') }
+                                        onChange={ (value) => setEditableField((prev) => ({
+                                            ...prev,
+                                            disabled: value
+                                        })) }
                                     />
-                                    <label htmlFor={ 'disabled-' + editableField.id }
-                                           className="flex items-center gap-4 cursor-pointer select-none text-(--text-secondary)">
-                                        { t('FORMS.field_disabled') }
-                                    </label>
                                 </div>
                             </div>
                         ) }
@@ -298,7 +265,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
 
                     <div className="flex gap-2">
                         <div className='flex ml-auto gap-4'>
-                            <Button variant="no_bg" onClick={ () => op.current?.hide() }>
+                            <Button variant="no_bg" onClick={ () => setOpen(false) }>
                                 { t('GLOBAL.cancel') }
                             </Button>
                             <Button variant='danger' onClick={ () => onDeleteField(field.id) }>
@@ -310,7 +277,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
                         </div>
                     </div>
                 </div>
-            </OverlayPanel>
-        </>
+            </Popover.Dropdown>
+        </Popover>
     );
 }

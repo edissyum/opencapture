@@ -480,14 +480,16 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                 <div className="flex flex-col border-r border-(--border-secondary) w-full overflow-hidden min-h-0">
                     <Tabs defaultValue='details' onChange={ (e: any) => setMainTabIndex(e) }>
                         <Tabs.List>
-                            <Tabs.Tab value="details">{ t('SETTINGS.form_details') }</Tabs.Tab>
-                            <Tabs.Tab value="fields">{ t('SETTINGS.form_fields') }</Tabs.Tab>
-                            { module === 'splitter' && (
-                                <Tabs.Tab value="doctypes">{ t('FORMS.doctypes') }</Tabs.Tab>
-                            ) }
-                            { module === 'splitter' && (
-                                <Tabs.Tab value="qr_code">{ t('FORMS.qr_code') }</Tabs.Tab>
-                            ) }
+                            <Scroller>
+                                <Tabs.Tab value="details">{ t('SETTINGS.form_details') }</Tabs.Tab>
+                                <Tabs.Tab value="fields">{ t('SETTINGS.form_fields') }</Tabs.Tab>
+                                { module === 'splitter' && (
+                                    <Tabs.Tab value="doctypes">{ t('FORMS.doctypes') }</Tabs.Tab>
+                                ) }
+                                { module === 'splitter' && (
+                                    <Tabs.Tab value="qr_code">{ t('FORMS.qr_code') }</Tabs.Tab>
+                                ) }
+                            </Scroller>
                         </Tabs.List>
                         <Tabs.Panel value="details" className="bg-(--bg-primary)!">
                             { formSettingsLoading ? (
