@@ -98,6 +98,15 @@ services:
             # Dashboard exposé UNIQUEMENT sur localhost (tunnel SSH si distant).
             - "127.0.0.1:8081:8080"
 
+        # Rotation des logs stdout (accesslog + log applicatif Traefik) :
+        # driver json-file par défaut = taille illimitée sinon. Même plafond
+        # que infra/docker-compose.yml (x-logging).
+        logging:
+            driver: json-file
+            options:
+                max-size: "10m"
+                max-file: "5"
+
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock:ro
             - letsencrypt:/letsencrypt

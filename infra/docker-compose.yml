@@ -135,10 +135,21 @@ x-res-frontend:  &res-frontend  { mem_limit: 128m,  memswap_limit: 128m,  cpu_sh
 # ("Requested CPUs are not available"). Défaut inchangé = "1-7".
 x-cpuset-tenants: &cpuset { cpuset: "${OC_CPUSET:-1-7}" }
 
+# Rotation des logs stdout/stderr des conteneurs (driver json-file par défaut
+# = taille illimitée sinon). Les logs applicatifs (OpenCapture.log, etc.)
+# tournent déjà côté code (RotatingFileHandlerUmask) ; ceci ne couvre que
+# les logs Docker (gunicorn access/error, workers, postgres, rabbitmq...).
+x-logging: &default-logging
+    driver: json-file
+    options:
+        max-size: "10m"
+        max-file: "5"
+
 
 services:
     postgres:
         <<: [*res-postgres, *cpuset]    # QoS : plafonds RAM/swap + poids CPU + coeur 0 réservé au système
+        logging: *default-logging
         # Image officielle. Les fichiers SQL sont montés en bind dans
         # /docker-entrypoint-initdb.d/ et joues une seule fois au premier
         # démarrage (pgdata vide). Les préfixes 01_/02_/03_ dans le
@@ -169,6 +180,7 @@ services:
 
     rabbitmq:
         <<: [*res-rabbitmq, *cpuset]
+        logging: *default-logging
         image: rabbitmq:4-management-alpine
         environment:
             RABBITMQ_DEFAULT_USER:  ${RABBITMQ_USER}
@@ -187,6 +199,7 @@ services:
     init:
         <<: [*backend-build, *res-backend, *cpuset]
         image: opencapture-backend
+        logging: *default-logging
         environment:
             <<: *backend-env
         volumes: *backend-volumes
@@ -199,6 +212,7 @@ services:
     backend:
         <<: [*backend-build, *res-backend, *cpuset, *backend-extra-hosts]
         image: opencapture-backend
+        logging: *default-logging
         environment:
             <<: *backend-env
         volumes: *backend-volumes
@@ -224,6 +238,7 @@ services:
     worker-verifier:
         <<: [*backend-build, *res-verifier, *cpuset, *backend-extra-hosts]
         image: opencapture-backend
+        logging: *default-logging
         environment:
             <<: *backend-env
         volumes: *backend-volumes
@@ -240,6 +255,7 @@ services:
     worker-splitter:
         <<: [*backend-build, *res-splitter, *cpuset]
         image: opencapture-backend
+        logging: *default-logging
         environment:
             <<: *backend-env
         volumes: *backend-volumes
@@ -256,6 +272,7 @@ services:
     worker-mail:
         <<: [*backend-build, *res-mail, *cpuset]
         image: opencapture-backend
+        logging: *default-logging
         environment:
             <<: *backend-env
             MAIL_POLL_INTERVAL: ${MAIL_POLL_INTERVAL:-60}
@@ -273,6 +290,7 @@ services:
     fs-watcher:
         <<: [*backend-build, *res-fswatcher, *cpuset]
         image: opencapture-backend
+        logging: *default-logging
         environment:
             <<: *backend-env
         volumes: *backend-volumes
@@ -299,6 +317,7 @@ services:
         # envsubst (${CUSTOM_ID}) au démarrage du conteneur. Rien de
         # spécifique au tenant n'est baké → une seule image suffit.
         image: opencapture-frontend
+        logging: *default-logging
         build:
             context: ..
             dockerfile: infra/frontend.Dockerfile
