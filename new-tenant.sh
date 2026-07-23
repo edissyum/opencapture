@@ -54,7 +54,7 @@ sed -i \
     -e "s/^RABBITMQ_USER=.*/RABBITMQ_USER=$id/" \
     "$dst/.env"
 
-# --- OC_DATA_ROOT : défini à l'install serveur (runbooks/01-install -> bashrc) --
+# --- OC_DATA_ROOT : défini à l'install serveur (runbooks/fr/01-install -> bashrc) --
 # C'est la SEULE source de vérité ; tout le reste en découle. docker compose donne
 # la priorité à la variable EXPORTÉE sur le .env, donc on reprend $OC_DATA_ROOT
 # (bashrc) ; repli sur le .env global (qu'01-install renseigne depuis ce même

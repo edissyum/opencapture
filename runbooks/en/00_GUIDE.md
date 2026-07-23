@@ -30,11 +30,11 @@ modes depending on TLS. Data kept outside the repo, under `$OC_DATA_ROOT` (e.g. 
 | [05-sftp-server.md](05-sftp-server.md) | multi-tenant SFTP server (ProFTPD `mod_sftp`) — install + adding a tenant |
 | [06-webdav-server.md](06-webdav-server.md) | multi-tenant WebDAV server (Apache `mod_dav`) — operations + adding a tenant |
 | [07-smb-server.md](07-smb-server.md) | multi-tenant SMB server (standalone Samba) — install + adding a tenant |
-| [../new-tenant.sh](../new-tenant.sh) | creates a tenant's stub (copies the template + pre-fills the `.env`) |
-| [../new-sftp-account.sh](../new-sftp-account.sh) | creates a tenant's SFTP access (chrooted virtual account) |
-| [../new-webdav-account.sh](../new-webdav-account.sh) | creates a tenant's WebDAV access (htpasswd account) |
-| [../new-smb-account.sh](../new-smb-account.sh) | creates a tenant's SMB access (local Samba account + share) |
-| [../deploy.sh](../deploy.sh) | builds + (re)deploys an **existing** tenant |
+| [../new-tenant.sh](../../new-tenant.sh) | creates a tenant's stub (copies the template + pre-fills the `.env`) |
+| [../new-sftp-account.sh](../../new-sftp-account.sh) | creates a tenant's SFTP access (chrooted virtual account) |
+| [../new-webdav-account.sh](../../new-webdav-account.sh) | creates a tenant's WebDAV access (htpasswd account) |
+| [../new-smb-account.sh](../../new-smb-account.sh) | creates a tenant's SMB access (local Samba account + share) |
+| [../deploy.sh](../../deploy.sh) | builds + (re)deploys an **existing** tenant |
 
 ---
 
@@ -64,7 +64,7 @@ covers, in order:
 
 Resources are limited by default as shown below in infra/docker-compose.yml. Remember to adjust them according to the server's resources.
 
-The [../checkos.sh](../checkos.sh) script provides a basic check of the OS resources against the machine's actual resources (RAM, swap, cores) versus the `x-res-*` profiles, and recommends a maximum number of tenants.
+The [../checkos.sh](../../checkos.sh) script provides a basic check of the OS resources against the machine's actual resources (RAM, swap, cores) versus the `x-res-*` profiles, and recommends a maximum number of tenants.
 
 CPU 0 is not assigned to tenants so as not to block the server in case of overload. To be seen whether nice is useful.
 
@@ -358,7 +358,7 @@ sudo ./new-sftp-account.sh <id>              # creates the chrooted virtual acco
 # Client connection: sftp -P 2222 <id>@<server>
 ```
 
-Design and operations details: [../infra-host/sftp/README.md](../infra-host/sftp/README.md).
+Design and operations details: [../infra-host/sftp/README.md](../../infra-host/sftp/README.md).
 
 ---
 
@@ -388,7 +388,7 @@ sudo ./new-webdav-account.sh <id>           # login = <id> ; prompts for the pas
 ```
 
 Design and operations details: [06-webdav-server.md](06-webdav-server.md) +
-[../infra/webdav/README.md](../infra/webdav/README.md).
+[../infra/webdav/README.md](../../infra/webdav/README.md).
 
 ---
 
@@ -413,16 +413,16 @@ sudo ./new-smb-account.sh <id>              # creates the local account + the [<
 ```
 
 Design and operations details: [07-smb-server.md](07-smb-server.md) +
-[../infra-host/smb/README.md](../infra-host/smb/README.md).
+[../infra-host/smb/README.md](../../infra-host/smb/README.md).
 
 ---
 
 ## See also
 - Per-mode runbooks: [02-tenant-letsencrypt.md](02-tenant-letsencrypt.md), [03-tenant-cert.md](03-tenant-cert.md), [04-tenant-http.md](04-tenant-http.md)
-- SFTP server: [05-sftp-server.md](05-sftp-server.md) + [../infra-host/sftp/README.md](../infra-host/sftp/README.md)
-- WebDAV server: [06-webdav-server.md](06-webdav-server.md) + [../infra/webdav/README.md](../infra/webdav/README.md)
-- SMB server: [07-smb-server.md](07-smb-server.md) + [../infra-host/smb/README.md](../infra-host/smb/README.md)
-- Multi-tenant architecture: [../infra/MULTITENANT.md](../infra/MULTITENANT.md)
+- SFTP server: [05-sftp-server.md](05-sftp-server.md) + [../infra-host/sftp/README.md](../../infra-host/sftp/README.md)
+- WebDAV server: [06-webdav-server.md](06-webdav-server.md) + [../infra/webdav/README.md](../../infra/webdav/README.md)
+- SMB server: [07-smb-server.md](07-smb-server.md) + [../infra-host/smb/README.md](../../infra-host/smb/README.md)
+- Multi-tenant architecture: [../infra/MULTITENANT.md](../../infra/MULTITENANT.md)
 - **Technical appendices** (rebuild, multi-stage, image roles, pipeline, per-container commands, glossary, reverse-proxy/real IP, tenant resolution & FQDN): below in this document.
 
 ---
@@ -462,12 +462,12 @@ The `Dockerfile`s have two `FROM`s: a **`builder`** stage (that builds) and a
 **`runtime`** stage (the final image). **Only the last stage becomes the image**; the builder is
 **discarded** — only what is explicitly `COPY --from=builder` survives.
 
-**Frontend** ([../infra/frontend.Dockerfile](../infra/frontend.Dockerfile)):
+**Frontend** ([../infra/frontend.Dockerfile](../../infra/frontend.Dockerfile)):
 - `builder` (`node`): `npm ci` + `npm run build` → produces `/app/dist`.
 - `runtime` (`nginx`): `COPY --from=builder /app/dist /usr/share/nginx/html`.
 - Discarded: Node, npm, `node_modules`, the sources. Final image ≈ 99 MB (nginx + bundle).
 
-**Backend** ([../infra/backend.Dockerfile](../infra/backend.Dockerfile)):
+**Backend** ([../infra/backend.Dockerfile](../../infra/backend.Dockerfile)):
 - `builder`: compiles the Python *wheels* (with `build-essential`, dev headers…).
 - `runtime`: installs the pre-compiled wheels + runtime libs only.
 - Discarded: the compiler and the dev headers.
@@ -482,7 +482,7 @@ the **build cache** (separate from the image) to speed up rebuilds.
 
 ### One backend image, several roles
 All backend services share the `opencapture-backend` image. The image's `ENTRYPOINT` is
-**always** [../infra/docker-entrypoint.sh](../infra/docker-entrypoint.sh); what changes
+**always** [../infra/docker-entrypoint.sh](../../infra/docker-entrypoint.sh); what changes
 from one service to another is the `command:` declared in the compose — whose
 **first argument is the role**. The entrypoint reads it (`ROLE="${1:-api}"`, default `api`),
 waits for the relevant dependencies (Postgres/RabbitMQ depending on the role), then a `case "$ROLE"`
@@ -559,13 +559,13 @@ queue, a *consumer* (the worker) processes it. Example for the splitter:
 
 1. **Producer — `fs-watcher` container.** The `watcher` process watches the folders in
    `watcher.ini`; a drop triggers the configured command
-   ([splitter_workflows/default_workflow.sh](../backend/installer/bin/scripts/splitter_workflows/default_workflow.sh)),
+   ([splitter_workflows/default_workflow.sh](../../backend/installer/bin/scripts/splitter_workflows/default_workflow.sh)),
    which validates the PDF and launches
-   [launch_worker_splitter.py](../backend/launch_worker_splitter.py) → inserts a
-   `monitoring` row (`wait`) → [main_splitter.launch](../backend/src/main_splitter.py#L22) →
+   [launch_worker_splitter.py](../../backend/launch_worker_splitter.py) → inserts a
+   `monitoring` row (`wait`) → [main_splitter.launch](../../backend/src/main_splitter.py#L22) →
    calls `process_queue_splitter.launch(args)`. This function is decorated
    **`@kuyruk.task(queue='splitter_<id>')`**
-   ([process_queue_splitter.py.default:44](../backend/src/process_queue_splitter.py.default#L44)):
+   ([process_queue_splitter.py.default:44](../../backend/src/process_queue_splitter.py.default#L44)):
    in kuyruk, **calling the task PUBLISHES it to RabbitMQ** (it processes nothing). fs-watcher
    returns immediately. *(The API/UI is the other producer, on upload.)*
 2. **Consumer — `worker-splitter` container.** `kuyruk … worker --queue splitter_<id>`
@@ -580,16 +580,16 @@ queue, a *consumer* (the worker) processes it. Example for the splitter:
 
 ### Frontend (shared image) + Traefik
 The frontend is **a single shared image**, `opencapture-frontend`
-([../infra/docker-compose.yml:286](../infra/docker-compose.yml#L286)), built **once**
+([../infra/docker-compose.yml:286](../../infra/docker-compose.yml#L286)), built **once**
 (`build frontend`): the Vite bundle is **identical for every tenant**
-(`VITE_BACKEND_URL=/` relative, [../infra/frontend.Dockerfile:23](../infra/frontend.Dockerfile#L23)),
+(`VITE_BACKEND_URL=/` relative, [../infra/frontend.Dockerfile:23](../../infra/frontend.Dockerfile#L23)),
 so nothing tenant-specific is **baked in**. Specialization happens **at runtime**
 via the container's `CUSTOM_ID` variable: the `nginx:alpine` entrypoint runs
 `nginx.conf.template` through `envsubst` at startup → the `location /${CUSTOM_ID}/ws/…`
 blocks pick up the tenant's value. A frontend code/deps change therefore needs **one**
 shared rebuild, then an `up -d` per tenant to refresh (`./deploy.sh --frontend-only --all`).
 
-The overlay [../infra/docker-compose.traefik.yml](../infra/docker-compose.traefik.yml) wires the
+The overlay [../infra/docker-compose.traefik.yml](../../infra/docker-compose.traefik.yml) wires the
 frontend onto the external `frontend` network and sets up a `Host(${OC_FQDN})` TLS route (resolver
 `myresolver`). The only public entry point is Traefik (the other services stay on the
 internal network). Domain/prefix routing details and `OC_FQDN`'s role: **Annex G**.
@@ -631,31 +631,31 @@ openssl pkcs12 -in client.pfx -clcerts -nokeys  -out client.crt # leaf (+ chain 
 >   entry in `letsencrypt/acme.json` if it was on Let's Encrypt).
 
 ### Development mode (Docker)
-The overlay [../infra/docker-compose.override.yml](../infra/docker-compose.override.yml)
+The overlay [../infra/docker-compose.override.yml](../../infra/docker-compose.override.yml)
 (auto-loaded when you run `docker compose up` **from `infra/`**): **bind-mounted** code
 (no rebuild to change code), gunicorn `--reload`, and **Vite HMR** on `:5173` instead
 of nginx. Launch: `cd infra && docker compose up -d --build`.
 To develop **outside Docker** (bare-metal, systemd/venv), see
-[../DEV_MODE.md](../DEV_MODE.md).
+[../DEV_MODE.md](../../DEV_MODE.md).
 
 ### Multi-tenant
 Each tenant has its own Compose project `opencapture_<CUSTOM_ID>` (prefixed
 containers/volumes/network → no collision), its own DB and its own RabbitMQ. To add one:
 repeat the section 2 steps with a new `<id>`/FQDN. Details and alternatives (including the bare-metal
-`create_custom.sh` script) in [../infra/MULTITENANT.md](../infra/MULTITENANT.md)
-and [../infra/BOOTSTRAP_COMPARISON.md](../infra/BOOTSTRAP_COMPARISON.md).
+`create_custom.sh` script) in [../infra/MULTITENANT.md](../../infra/MULTITENANT.md)
+and [../infra/BOOTSTRAP_COMPARISON.md](../../infra/BOOTSTRAP_COMPARISON.md).
 
 ### Compliance (optional)
 A sealed **NF Z42-020** journal (SHA-256 chaining + RFC 3161 timestamping) is available,
-**disabled by default**, for the Splitter module. See [../NF_Z42-020.md](../NF_Z42-020.md).
+**disabled by default**, for the Splitter module. See [../NF_Z42-020.md](../../NF_Z42-020.md).
 
 ### Reference documentation
-- [../infra/MULTITENANT.md](../infra/MULTITENANT.md) — multi-tenant organization (`include:` methodology).
-- [../infra/BOOTSTRAP_COMPARISON.md](../infra/BOOTSTRAP_COMPARISON.md) — `create_custom.sh` (bare-metal) vs `docker-bootstrap.sh`.
-- [../infra/SCHEDULING.md](../infra/SCHEDULING.md) — recurring tasks (Ofelia, **not integrated** as of today).
-- [../TERMINOLOGIE.md](../TERMINOLOGIE.md) — why "tenant" rather than "custom"/"client".
-- [../NF_Z42-020.md](../NF_Z42-020.md) — sealed journal (Splitter option).
-- [../DEV_MODE.md](../DEV_MODE.md) — bare-metal development (outside Docker).
+- [../infra/MULTITENANT.md](../../infra/MULTITENANT.md) — multi-tenant organization (`include:` methodology).
+- [../infra/BOOTSTRAP_COMPARISON.md](../../infra/BOOTSTRAP_COMPARISON.md) — `create_custom.sh` (bare-metal) vs `docker-bootstrap.sh`.
+- [../infra/SCHEDULING.md](../../infra/SCHEDULING.md) — recurring tasks (Ofelia, **not integrated** as of today).
+- [../TERMINOLOGIE.md](../../TERMINOLOGIE.md) — why "tenant" rather than "custom"/"client".
+- [../NF_Z42-020.md](../../NF_Z42-020.md) — sealed journal (Splitter option).
+- [../DEV_MODE.md](../../DEV_MODE.md) — bare-metal development (outside Docker).
 
 ## Appendix D — Useful Docker commands (per container)
 
@@ -856,17 +856,17 @@ Browser ──TLS──▶ Traefik ──────▶ nginx (frontend) ──
 **The problem.** Without a fix, `request.remote_addr` on the Flask side is the IP of **nginx**
 (the last proxy), **the same for every user** of a tenant. Two impacts:
 
-- **Rate-limit** ([../backend/src/rest/auth.py:28](../backend/src/rest/auth.py#L28)):
+- **Rate-limit** ([../backend/src/rest/auth.py:28](../../backend/src/rest/auth.py#L28)):
   `flask-limiter` with `key_func=get_remote_address`, `default_limits=["200/hour"]` (plus
-  `5/minute` on `/auth/login`, `/auth/…` — [auth.py:68](../backend/src/rest/auth.py#L68),
-  [85](../backend/src/rest/auth.py#L85), [115](../backend/src/rest/auth.py#L115)). If every
+  `5/minute` on `/auth/login`, `/auth/…` — [auth.py:68](../../backend/src/rest/auth.py#L68),
+  [85](../../backend/src/rest/auth.py#L85), [115](../../backend/src/rest/auth.py#L115)). If every
   user shares a single IP, they share **a single bucket** → "Too many requests" (HTTP 429)
   even though each makes few calls.
 - **History**: events log `request.remote_addr`
-  ([../backend/src/rest/history.py:45](../backend/src/rest/history.py#L45), and many
+  ([../backend/src/rest/history.py:45](../../backend/src/rest/history.py#L45), and many
   controllers) → without a fix, **every** row carries the proxy IP.
 
-**What nginx does** ([../infra/nginx.conf.template:48-54](../infra/nginx.conf.template#L48)):
+**What nginx does** ([../infra/nginx.conf.template:48-54](../../infra/nginx.conf.template#L48)):
 it forwards the standard headers to the backend —
 
 ```nginx
@@ -875,7 +875,7 @@ proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;   # APPEND (IP ch
 proxy_set_header X-Forwarded-Proto $scheme;
 ```
 
-**What the backend does** ([../backend/wsgi.py:35](../backend/wsgi.py#L35)): `ProxyFix`
+**What the backend does** ([../backend/wsgi.py:35](../../backend/wsgi.py#L35)): `ProxyFix`
 re-reads these headers to restore the **real IP** —
 
 ```python
@@ -895,41 +895,41 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=2, x_proto=1, x_host=1, x_port=1)
 > Traefik (or removing nginx) breaks the count → adjust `x_for` accordingly.
 
 > **Rate-limit scope.** Storage is `storage_uri="memory://"`
-> ([auth.py:28](../backend/src/rest/auth.py#L28)): counters **in the backend process
+> ([auth.py:28](../../backend/src/rest/auth.py#L28)): counters **in the backend process
 > memory**, not shared between gunicorn workers nor persisted across restarts. Each tenant
 > has its own backend → buckets isolated per tenant.
 
 ## Appendix G — Tenant resolution & the role of `OC_FQDN`
 
 **How a request is attached to a tenant.** A WSGI *middleware*
-([../backend/src/__init__.py:37-71](../backend/src/__init__.py#L37)) inspects each request and
+([../backend/src/__init__.py:37-71](../../backend/src/__init__.py#L37)) inspects each request and
 determines the `custom_id` via **two paths**:
 
 1. **By URL prefix** — `.../<id>/ws/...`
-   ([__init__.py:61-69](../backend/src/__init__.py#L61)). The segment before `ws/` is the
+   ([__init__.py:61-69](../../backend/src/__init__.py#L61)). The segment before `ws/` is the
    `custom_id`; `is_custom_exists()` checks that a `[<id>]` section exists in `custom.ini`
-   ([../backend/src/functions.py:209](../backend/src/functions.py#L209)); the prefix is
+   ([../backend/src/functions.py:209](../../backend/src/functions.py#L209)); the prefix is
    stripped from `PATH_INFO`. This is the **default** path (the frontend calls
    `/<id>/ws/...`).
 2. **By domain (clean URL)** — `https://<fqdn>/` **without** a prefix
-   ([__init__.py:45-59](../backend/src/__init__.py#L45)). The domain (`Host`/`Referer`) is
+   ([__init__.py:45-59](../../backend/src/__init__.py#L45)). The domain (`Host`/`Referer`) is
    compared to the `url = <fqdn>` field in `custom.ini` via
    `is_custom_exists_from_url()` / `retrieve_custom_id_from_url()`
-   ([functions.py:295-318](../backend/src/functions.py#L295)). This is what lets the tenant be
+   ([functions.py:295-318](../../backend/src/functions.py#L295)). This is what lets the tenant be
    served at the domain root, without the `/<id>/` prefix.
 
 > nginx exposes **both forms** to the backend: a prefixed `location`
-> `^/${CUSTOM_ID}/(ws|backend_oc)/` ([nginx.conf.template:48](../infra/nginx.conf.template#L48))
+> `^/${CUSTOM_ID}/(ws|backend_oc)/` ([nginx.conf.template:48](../../infra/nginx.conf.template#L48))
 > **and** an unprefixed `location` `^/(ws|backend_oc)/`
-> ([:67](../infra/nginx.conf.template#L67)) — mirroring the two paths above.
+> ([:67](../../infra/nginx.conf.template#L67)) — mirroring the two paths above.
 
 **What `OC_FQDN` does** (a **runtime** variable, never baked):
 
 - **Traefik route**: the labels set `Host(`${OC_FQDN}`)` on the tenant's router
-  ([../infra/docker-compose.traefik.yml:63](../infra/docker-compose.traefik.yml#L63) and the
+  ([../infra/docker-compose.traefik.yml:63](../../infra/docker-compose.traefik.yml#L63) and the
   `-cert`/`-http` overlays) → the domain is routed to **this** tenant.
 - **`custom.ini`**: at startup, `docker-bootstrap.sh` writes/patches `url = ${OC_FQDN}` in the
-  tenant's section ([../infra/docker-bootstrap.sh:176-194](../infra/docker-bootstrap.sh#L176))
+  tenant's section ([../infra/docker-bootstrap.sh:176-194](../../infra/docker-bootstrap.sh#L176))
   → enables **path 2** (clean URL).
 - **TLS**: with Let's Encrypt, the `certresolver` issues the cert for this `Host`; in cert
   mode, the certificate's **SAN** must cover exactly `OC_FQDN`.
@@ -937,10 +937,10 @@ determines the `custom_id` via **two paths**:
 **What `OC_FQDN` does NOT do**: it is **baked into no image**.
 
 - The **backend** image is **shared** → `OC_FQDN` does not enter it (runtime env).
-- The **frontend** image is **shared** too ([../deploy.sh:139-141](../deploy.sh#L139)), built
-  with `VITE_BACKEND_URL=/` **relative** ([../infra/frontend.Dockerfile:23](../infra/frontend.Dockerfile#L23))
+- The **frontend** image is **shared** too ([../deploy.sh:139-141](../../deploy.sh#L139)), built
+  with `VITE_BACKEND_URL=/` **relative** ([../infra/frontend.Dockerfile:23](../../infra/frontend.Dockerfile#L23))
   → the SPA calls the backend **same-origin**, so the FQDN is not frozen there either. nginx
-  listens on `server_name _` ([nginx.conf.template:27-28](../infra/nginx.conf.template#L27)),
+  listens on `server_name _` ([nginx.conf.template:27-28](../../infra/nginx.conf.template#L27)),
   any Host.
 
 **Consequence — changing the FQDN needs NO rebuild, just a *recreate***:

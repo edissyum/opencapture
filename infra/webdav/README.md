@@ -85,7 +85,7 @@ deux raisons :
 | bloc `location ^~ /dav/` dans `infra/nginx.conf.template` | Proxy frontend -> `webdav:8080` (501 si non activé). |
 | `/opt/edissyum/opencapture/tenants/<id>/webdav/htpasswd` | Comptes WebDAV du tenant. **Secret**, hors dépôt. |
 | `../../new-webdav-account.sh` | Crée/complète l'accès WebDAV d'un tenant. |
-| `../../runbooks/06-webdav-server.md` | Exploitation pas-à-pas. |
+| `../../runbooks/fr/06-webdav-server.md` | Exploitation pas-à-pas. |
 
 ## Activation (opt-in)
 
@@ -119,7 +119,7 @@ est stocké dans `/opt/edissyum/opencapture/tenants/<id>/webdav/htpasswd` (hors 
 | Supprimer un compte | `docker run --rm -v /opt/edissyum/opencapture/tenants/<id>/webdav:/work opencapture-webdav htpasswd -D /work/htpasswd <login>` |
 
 Aucun reload dans tous les cas. Détail + variante non-interactive :
-[../../runbooks/06-webdav-server.md](../../runbooks/06-webdav-server.md).
+[../../runbooks/fr/06-webdav-server.md](../../runbooks/fr/06-webdav-server.md).
 
 ## Où déposer les fichiers
 

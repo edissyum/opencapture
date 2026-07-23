@@ -4,7 +4,7 @@
 > `include:` (méthodo A) plutôt qu'en dupliquant les composes par tenant (méthodo B),
 > et comment cela se transpose à Kubernetes. La **mécanique** Docker détaillée (image à
 > rôles, pipeline, bind mounts, glossaire) est dans
-> [../runbooks/00_GUIDE.md](../runbooks/00_GUIDE.md) (Annexes C et E) ; la **procédure**
+> [../runbooks/fr/00_GUIDE.md](../runbooks/fr/00_GUIDE.md) (Annexes C et E) ; la **procédure**
 > (créer/déployer un tenant) y est aussi (sections 1-7).
 
 ## Contexte
@@ -134,7 +134,7 @@ tournent le même code, depuis la même image.
   bases et données **totalement disjointes**.
 
 > Détail de cette mécanique (image à rôles, pipeline fs-watcher→RabbitMQ, bind mounts,
-> glossaire Docker) : [../runbooks/00_GUIDE.md](../runbooks/00_GUIDE.md) Annexes C et E.
+> glossaire Docker) : [../runbooks/fr/00_GUIDE.md](../runbooks/fr/00_GUIDE.md) Annexes C et E.
 
 ### Règle à respecter dans `infra/`
 
@@ -193,4 +193,4 @@ C'est un travail mécanique de quelques heures si la méthodo A est en place. Av
 Le seul cas où B serait justifié, c'est si les tenants sont amenés à diverger fortement et durablement (versions différentes, services différents, stacks différentes). Tant que tous les tenants tournent la même version d'OpenCapture, A gagne sur tous les axes sauf la lisibilité immédiate — et ce dernier point est compensé par le fait que le `docker-compose.yml` d'un tenant fait 3 lignes : il *montre* explicitement qu'il s'appuie sur `infra/`.
 
 > Procédure opérationnelle (créer / déployer / exploiter un tenant, via `new-tenant.sh`
-> et `deploy.sh`) : voir [../runbooks/00_GUIDE.md](../runbooks/00_GUIDE.md).
+> et `deploy.sh`) : voir [../runbooks/fr/00_GUIDE.md](../runbooks/fr/00_GUIDE.md).

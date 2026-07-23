@@ -2,7 +2,7 @@
 
 Reprise d'une installation OpenCapture existante (hors conteneur, sur serveur physique
 ou VM) vers la stack **Docker** de ce dépôt, via l'outil
-[`../../migrate.sh`](../../migrate.sh).
+[`../../../migrate.sh`](../../../migrate.sh).
 
 - **Partie 1 — Procédure générique** : réutilisable, à dérouler en remplaçant les
   paramètres en tête.

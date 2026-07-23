@@ -11,7 +11,7 @@
 # Usage (en root sur le serveur, depuis le dépôt) :
 #   sudo ./new-smb-account.sh <id>
 #
-# Prérequis : runbooks/07-smb-server.md joué une fois (Samba installé,
+# Prérequis : runbooks/fr/07-smb-server.md joué une fois (Samba installé,
 # compte de service hôte créé, /etc/samba/oc-shares.conf en place).
 
 set -euo pipefail
@@ -51,7 +51,7 @@ force_name="$(getent passwd "$app_uid" | cut -d: -f1)"
 force_group="$(getent group  "$app_gid" | cut -d: -f1)"
 if [ -z "$force_name" ] || [ -z "$force_group" ]; then
     echo "Aucun compte/groupe hôte ne porte APP_UID:APP_GID ($app_uid:$app_gid) —" >&2
-    echo "lance d'abord runbooks/07-smb-server.md (crée le compte de service)." >&2
+    echo "lance d'abord runbooks/fr/07-smb-server.md (crée le compte de service)." >&2
     exit 2
 fi
 
