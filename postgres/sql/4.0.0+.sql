@@ -1,7 +1,10 @@
 -- 4.0.0+.sql — résiduel de reprise, à jouer APRÈS postgres/sql/4.0.0.sql.
 -- Contient ce que 4.0.0.sql (montée officielle 3.6.x->4.0.0) ne couvre pas :
--- adaptation des chemins vers le layout conteneur /app (4.0.0.sql les a rendus
--- relatifs "./" ou laissés absolus /var/... ; ici on les fixe sur /app).
+--   1) colonnes post-4.0.0 présentes dans structure.sql mais pas dans 4.0.0.sql
+--      (4.0.0.sql n'ajoute QUE mailcollect.ocr_attachments — vérifié dans le
+--      script officiel — pas verifier_customer_id/verifier_form_id) ;
+--   2) adaptation des chemins vers le layout conteneur /app (4.0.0.sql les a rendus
+--      relatifs "./" ou laissés absolus /var/... ; ici on les fixe sur /app).
 -- Paramètres psql -v : cid docs_src docs_root share_src app_custom oc_root
 --   docs_src   = docservers du custom (ex. /var/docservers/opencapture/<cid>)
 --   docs_root  = son parent          (ex. /var/docservers/opencapture)
@@ -9,7 +12,11 @@
 --   app_custom = /app/custom/<cid>
 --   oc_root    = racine projet source (ex. /var/www/html/opencapture)
 
--- 1) docservers -> /app (sources absolues /var/... OU relatives "./" de 4.0.0.sql)
+-- 1) Colonnes post-4.0.0 -----------------------------------------------------
+ALTER TABLE mailcollect ADD COLUMN IF NOT EXISTS "verifier_customer_id" INTEGER;
+ALTER TABLE mailcollect ADD COLUMN IF NOT EXISTS "verifier_form_id"     VARCHAR(255);
+
+-- 2) docservers -> /app (sources absolues /var/... OU relatives "./" de 4.0.0.sql)
 --    Du plus spécifique au plus générique.
 UPDATE docservers SET path = REPLACE(path, :'docs_src'  || '/', '/app/docservers/');
 UPDATE docservers SET path = REPLACE(path, :'docs_root' || '/', '/app/docservers/');
@@ -32,7 +39,7 @@ INSERT INTO docservers (docserver_id, path, description)
 SELECT 'SPLITTER_SHARE', '/app/share/export/splitter/', '[SPLITTER] Stockage des chaines sortantes'
 WHERE NOT EXISTS (SELECT 1 FROM docservers WHERE docserver_id = 'SPLITTER_SHARE');
 
--- 2) documents.path + attachments : chemins docservers ABSOLUS, non touchés par 4.0.0.sql
+-- 3) documents.path + attachments : chemins docservers ABSOLUS, non touchés par 4.0.0.sql
 UPDATE documents   SET path = REPLACE(path, :'docs_src'  || '/', '/app/docservers/') WHERE path LIKE :'docs_src'  || '/%';
 UPDATE documents   SET path = REPLACE(path, :'docs_root' || '/', '/app/docservers/') WHERE path LIKE :'docs_root' || '/%';
 UPDATE documents   SET path = REGEXP_REPLACE(path, '/{2,}', '/', 'g') WHERE path LIKE '%//%';
@@ -43,7 +50,7 @@ UPDATE attachments SET thumbnail_path = REPLACE(thumbnail_path, :'docs_root' || 
 UPDATE attachments SET path           = REGEXP_REPLACE(path, '/{2,}', '/', 'g')           WHERE path           LIKE '%//%';
 UPDATE attachments SET thumbnail_path = REGEXP_REPLACE(thumbnail_path, '/{2,}', '/', 'g') WHERE thumbnail_path LIKE '%//%';
 
--- 3) workflows : share -> /app/share, puis input_folder nettoyé (espaces parasites, //)
+-- 4) workflows : share -> /app/share, puis input_folder nettoyé (espaces parasites, //)
 UPDATE workflows SET input = REPLACE(REPLACE(input::text, :'share_src' || '/', '/app/share/'), '/var/share/', '/app/share/')::jsonb;
 UPDATE workflows SET input = jsonb_set(input, '{input_folder}',
         to_jsonb(regexp_replace(btrim(input->>'input_folder'), '/{2,}', '/', 'g')))
@@ -64,7 +71,7 @@ UPDATE workflows SET input = jsonb_set(input, '{input_folder}',
         to_jsonb(rtrim(input->>'input_folder', '/') || '/default/'))
  WHERE input->>'input_folder' ~ '^/app/share/entrant/(splitter|verifier)/?$';
 
--- 4) outputs/outputs_types : dossier de sortie -> /app/share/export/<module>/
+-- 5) outputs/outputs_types : dossier de sortie -> /app/share/export/<module>/
 UPDATE outputs SET data = jsonb_set(data, '{options,parameters,0,value}', to_jsonb('/app/share/export/verifier/'::text))
  WHERE data #>>'{options,parameters,0,id}' = 'folder_out' AND module = 'verifier';
 UPDATE outputs SET data = jsonb_set(data, '{options,parameters,0,value}', to_jsonb('/app/share/export/splitter/'::text))
