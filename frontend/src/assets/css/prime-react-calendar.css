@@ -15,8 +15,14 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-.p-inputtext:enabled:focus,
-.p-inputtext:enabled:hover {
+.mantine-DateInput-wrapper input {
+    @apply h-12.5!;
+    @apply rounded-md;
+    @apply border-(--border-secondary);
+}
+
+.mantine-DateInput-wrapper input:focus,
+.mantine-DateInput-wrapper input:hover {
     @apply shadow-none;
     @apply outline-none;
     @apply border-(--color-primary);

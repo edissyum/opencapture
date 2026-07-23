@@ -20,6 +20,7 @@
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/preflight.css" layer(base);
 @import '@mantine/core/styles.css' layer(mantine);
+@import '@mantine/dates/styles.css' layer(mantine);
 @import "tailwindcss/utilities.css" layer(utilities);
 
 @import "./assets/css/tooltip.css";

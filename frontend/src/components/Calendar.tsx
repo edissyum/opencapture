@@ -17,8 +17,9 @@
 
 import dayjs from "dayjs";
 import DOMPurify from "dompurify";
+import { DateInput } from '@mantine/dates';
+
 import { addLocale } from "primereact/api";
-import { Calendar } from "primereact/calendar";
 import { FloatLabel } from "primereact/floatlabel";
 import React, { useEffect, useState } from "react";
 import { Calendar as CalendarIcon } from "lucide-react";
@@ -53,18 +54,11 @@ const ISOCalendar: React.FC<ISOCalendarProps> = ({
         return new Date(year, month - 1, day);
     };
 
-    const dateToIso = (date?: Date | null): string | null => {
-        if (!date) return null;
-        const y = date.getFullYear();
-        const m = String(date.getMonth() + 1).padStart(2, "0");
-        const d = String(date.getDate()).padStart(2, "0");
-        return `${ y }-${ m }-${ d }`;
+    const handleChange = (date: string | null) => {
+        onChange?.(date);
     };
 
-    const handleChange: any = (e: { value: Date | Date[] | null }) => {
-        const date = e.value as Date | null;
-        onChange?.(dateToIso(date));
-    };
+    const hasValue = !!value;
 
     useEffect(() => {
         addLocale("fr", {
@@ -163,30 +157,26 @@ const ISOCalendar: React.FC<ISOCalendarProps> = ({
         setLocaleLang(finalLang);
     }, []);
 
+    const valueFormat = localeLang === "en" ? "MM/DD/YYYY" : "DD/MM/YYYY";
+
     if (!localeLang) return null;
 
     return (
         <div className="flex flex-col">
             <div title={ label } className={ `${ disabled ? 'cursor-not-allowed' : '' }` }>
                 <FloatLabel className="w-full calendar">
-                    <Calendar
-                        showIcon
+                    <DateInput
                         id={ id }
-                        className={ `w-full ${disabled ? 'pointer-events-none' : '' }` }
-                        locale={ localeLang }
+                        className={ `w-full ${ hasValue ? 'p-inputwrapper-filled' : '' }` }
+                        required={ required }
                         disabled={ disabled }
-                        // @ts-ignore
                         onClick={ onClick }
                         onChange={ handleChange }
                         value={ isoToDate(value) }
-                        icon={ <CalendarIcon size={ 18 }/> }
-                        dateFormat={
-                            localeLang === "fr"
-                                ? "dd/mm/yy"
-                                : localeLang === "es"
-                                    ? "dd/mm/yy"
-                                    : "mm/dd/yy"
-                        }
+                        locale={ localeLang }
+                        valueFormat={ valueFormat }
+                        placeholder={ label }
+                        rightSection={ <CalendarIcon size={ 18 }/> }
                     />
 
                     { label && (
