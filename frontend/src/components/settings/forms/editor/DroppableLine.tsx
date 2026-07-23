@@ -14,7 +14,6 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 
@@ -29,8 +28,6 @@ export function DroppableLine({ line, onUpdateField, onDeleteField, module }: an
                 line.fields.length === 4 ? 'w-1/4' :
                     'w-1/5';
 
-    const [activeOverlayId, setActiveOverlayId] = useState<string | null>(null);
-
     return (
         <SortableContext id={ line.id } items={ line.fields.map((f: any) => f.id) }
                          strategy={ horizontalListSortingStrategy }>
@@ -39,8 +36,7 @@ export function DroppableLine({ line, onUpdateField, onDeleteField, module }: an
                     line.fields.map((f: any) => (
                         <div key={ f.id } className={ `${ fieldWidth } flex-1 min-w-1/6` }>
                             <SortableField field={ f } onUpdateField={ onUpdateField } onDeleteField={ onDeleteField }
-                                           module={ module } activeOverlayId={ activeOverlayId }
-                                           setActiveOverlayId={ setActiveOverlayId }/>
+                                           module={ module } />
                         </div>
                     ))
                 ) }

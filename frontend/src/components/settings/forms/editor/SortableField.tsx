@@ -16,8 +16,8 @@
 
 import { t } from "i18next";
 import { Popover } from "@mantine/core";
+import { useRef, useState } from "react";
 import { GripVertical } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
 
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
@@ -45,12 +45,10 @@ type Field = {
     field_metadata?: boolean;
 };
 
-export function SortableField({ field, onUpdateField, onDeleteField, module, activeOverlayId, setActiveOverlayId }: {
+export function SortableField({ field, onUpdateField, onDeleteField, module }: {
     field: Field;
     module?: string;
-    activeOverlayId: string | null;
     onDeleteField: (id: string) => void;
-    setActiveOverlayId: (id: string | null) => void;
     onUpdateField: (id: string, updated: Field) => void;
 }) {
     const [editableField, setEditableField] = useState<Field>(field);
@@ -68,54 +66,24 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
         transition: transition ?? "transform 250ms ease"
     };
 
-    const openOverlay = (e: React.MouseEvent) => {
-        e.stopPropagation();
-
-        if (activeOverlayId === field.id) {
-            setActiveOverlayId(null);
-        } else {
-            setActiveOverlayId(field.id);
-            setEditableField(field);
-        }
-    };
-
     const handleSave = () => {
         onUpdateField(field.id, editableField);
-        setActiveOverlayId(null);
-    };
-
-    const [open, setOpen] = useState(false);
-    const ref = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (ref.current && !ref.current.contains(event.target as Node)) {
-                setOpen(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-
-    const handleSelect = (color: string) => {
-        setEditableField((prev) => ({ ...prev, color: color }));
         setOpen(false);
     };
 
+    const [open, setOpen] = useState(false);
+    const [openColors, setOpenColors] = useState(false);
+    const ref = useRef<HTMLDivElement>(null);
+
+    const handleSelectColor = (color: string) => {
+        setEditableField((prev) => ({ ...prev, color: color }));
+        setOpenColors(false);
+    };
+
     return (
-        <Popover
-            opened={ activeOverlayId === field.id }
-            onClose={ () => setActiveOverlayId(null) }
-            position="bottom-start"
-            width="50%"
-            withinPortal
-            shadow="none"
-            classNames={ {
-                dropdown: "bg-(--bg-primary)! p-3 shadow-none! border! border-(--border-secondary)! min-h-[20%] max-h-[60%]"
-            } }
-        >
+        <Popover opened={ open } withinPortal position="bottom-start" onChange={ setOpen }>
             <Popover.Target>
-                <div ref={ setNodeRef } style={ style } onClick={ openOverlay }
+                <div ref={ setNodeRef } style={ style } onClick={ () => setOpen(!open) }
                      className="SortableField truncate bg-(--bg-primary) border border-(--border-secondary)
                        rounded-md px-3 py-2 flex items-center gap-2 hover:border-(--border-primary)
                        transition-colors select-none">
@@ -133,13 +101,14 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
 
             <Popover.Dropdown>
                 <div className="flex flex-col gap-3 space-y-3">
-                    <Input id={ 'label-' + editableField.id }
-                           className="w-full"
-                           label={ t('FORMS.field_label') }
-                           value={ t(editableField.label) }
-                           onChange={ (e: any) =>
-                               setEditableField((prev) => ({ ...prev, label: e.target.value }))
-                           }
+                    <Input
+                        id={ 'label-' + editableField.id }
+                        className="w-full"
+                        label={ t('FORMS.field_label') }
+                        value={ t(editableField.label) }
+                        onChange={ (e: any) =>
+                            setEditableField((prev) => ({ ...prev, label: e.target.value }))
+                        }
                     />
                     <Dropdown
                         className="w-full"
@@ -152,24 +121,26 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
                         }
                     />
 
-                    <Input id={ "default_value-" + editableField.id }
-                           className="w-full"
-                           hint={ t('FORMS.default_value_hint') }
-                           label={ t('FORMS.default_value') }
-                           value={ editableField.default_value }
-                           onChange={ (e: any) =>
-                               setEditableField((prev) => ({ ...prev, default_value: e.target.value }))
-                           }
+                    <Input
+                        id={ "default_value-" + editableField.id }
+                        className="w-full"
+                        hint={ t('FORMS.default_value_hint') }
+                        label={ t('FORMS.default_value') }
+                        value={ editableField.default_value }
+                        onChange={ (e: any) =>
+                            setEditableField((prev) => ({ ...prev, default_value: e.target.value }))
+                        }
                     />
 
                     { module === 'verifier' && (
                         <div ref={ ref } className="relative inline-block w-full">
-                            <div onClick={ () => setOpen((o) => !o) }
+                            <div onClick={ () => setOpenColors((o) => !o) }
                                  className="flex items-center justify-center border rounded-md cursor-pointer transition-all select-none h-10"
                                  style={ {
                                      backgroundColor: editableField.color + '1A',
                                      color: editableField.color
-                                 } }>
+                                 } }
+                            >
                                 { editableField.color ? (
                                     <>
                                         { colorOptions.find((c) => c.value === editableField.color)?.name }
@@ -179,7 +150,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
                                 ) }
                             </div>
 
-                            { open && (
+                            { openColors && (
                                 <div
                                     className="left-0 mt-2 w-full p-3 bg-white border rounded-lg shadow-lg grid grid-cols-6 gap-2 z-50"
                                     style={ {
@@ -189,7 +160,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
                                     { colorOptions.map((color) => (
                                         <div
                                             key={ color.value }
-                                            onClick={ () => handleSelect(color.value) }
+                                            onClick={ () => handleSelectColor(color.value) }
                                             title={ color.name }
                                             className="w-full flex justify-center items-center h-14 rounded-md cursor-pointer border hover:scale-110 transition-transform bg-opacity-10"
                                             style={ {
@@ -294,7 +265,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
 
                     <div className="flex gap-2">
                         <div className='flex ml-auto gap-4'>
-                            <Button variant="no_bg" onClick={ () => setActiveOverlayId(null) }>
+                            <Button variant="no_bg" onClick={ () => setOpen(false) }>
                                 { t('GLOBAL.cancel') }
                             </Button>
                             <Button variant='danger' onClick={ () => onDeleteField(field.id) }>
