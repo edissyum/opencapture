@@ -16,11 +16,11 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import { InputSwitch } from "primereact/inputswitch";
 
 import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
 import { Dropdown } from "../../../../components/Dropdown";
+import { InputSwitch } from "../../../../components/InputSwitch";
 import MultiSelectInput from "../../../../components/MultiSelect";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
@@ -93,14 +93,14 @@ export function SettingsSplitterFormsDetails({
 
                 <div className='flex items-center gap-2'>
                     <InputSwitch
-                        inputId="default_form"
+                        id="default_form"
+                        label={ t('FORMS.default_form') }
                         checked={ formSettings.default_form }
-                        onChange={ (e) => setFormSettings({
+                        onChange={ (value) => setFormSettings({
                             ...formSettings,
-                            default_form: e.value
+                            default_form: value
                         }) }
                     />
-                    <label htmlFor='default_form' className='cursor-pointer'>{ t('FORMS.default_form') }</label>
                 </div>
             </div>
             <div className='flex flex-col gap-4'>

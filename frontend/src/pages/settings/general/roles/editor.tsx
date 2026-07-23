@@ -19,7 +19,6 @@ import { t } from "i18next";
 import { ShieldCog, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { InputSwitch } from "primereact/inputswitch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
 import { Accordion, AccordionTab } from "primereact/accordion";
@@ -27,6 +26,7 @@ import { Accordion, AccordionTab } from "primereact/accordion";
 import { getPrivilegesParent } from "./helpers";
 
 import { Button } from "../../../../components/Button";
+import { InputSwitch } from "../../../../components/InputSwitch";
 import { showToast } from "../../../../components/ToastProvider";
 import { DynamicForm } from "../../../../components/form/DynamicForm";
 
@@ -34,9 +34,9 @@ import { useUser } from "../../../../services/hooks/useUser";
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 
 export function SettingsGeneralRoleEditor() {
-    const navigate = useNavigate();
     const { user, loadingUser } = useUser();
     const { get, put, post } = axiosApiCall();
+    const navigate = useNavigate();
 
     const { roleId } = useParams<{ roleId: any }>();
 
@@ -245,8 +245,8 @@ export function SettingsGeneralRoleEditor() {
         await put(`/roles/updatePrivilege/${ roleId }`, { privileges: privilegesIds });
     }
 
-    const handleTogglePrivilege = (e: any, privilege: any) => {
-        const isChecked = e.value;
+    const handleTogglePrivilege = (value: boolean, privilege: any) => {
+        const isChecked = value;
         setRolePrivileges((prev: any) => {
             if (isChecked) {
                 return [...prev, privilege.label];
@@ -279,16 +279,18 @@ export function SettingsGeneralRoleEditor() {
                                         <div key={ r.id }
                                              className='flex items-center gap-3 border border-(--border-primary) rounded-md p-3'>
                                             <InputSwitch
-                                                className='shrink-0'
-                                                inputId={ r.id }
+                                                id={ r.id }
+                                                label={ r.label }
                                                 checked={ role.assign_roles?.includes(r.id) }
                                                 onChange={ () => {
+                                                    console.log('here')
                                                     if (role.assign_roles?.includes(r.id)) {
                                                         setRole((prev: any) => ({
                                                             ...prev,
                                                             assign_roles: prev.assign_roles.filter((roleId: any) => roleId !== r.id)
                                                         }));
                                                     } else {
+                                                        console.log('here')
                                                         setRole((prev: any) => ({
                                                             ...prev,
                                                             assign_roles: prev.assign_roles ? [...prev.assign_roles, r.id] : [r.id]
@@ -296,9 +298,6 @@ export function SettingsGeneralRoleEditor() {
                                                     }
                                                 } }
                                             />
-                                            <label htmlFor={ r.id } className='cursor-pointer'>
-                                                { r.label }
-                                            </label>
                                         </div>
                                     )) }
                                 </div>
@@ -361,17 +360,17 @@ export function SettingsGeneralRoleEditor() {
                                     { Object.values(privileges).filter((privilege: any) => privilege.parent === parent.id).map((privilege: any) => (
                                         <div key={ privilege.id } className={ privilegeClasses }>
                                             <InputSwitch
-                                                className='shrink-0'
-                                                inputId={ privilege.label }
+                                                id={ privilege.label }
+                                                label={ t(`PRIVILEGES.${ privilege.label }`) }
                                                 checked={ rolePrivileges?.includes(privilege.label) }
-                                                onChange={ (e: any) => handleTogglePrivilege(e, privilege) }
+                                                onChange={ (value) => handleTogglePrivilege(value, privilege) }
                                             />
 
-                                            <label htmlFor={ privilege.label }
-                                                   title={ t(`PRIVILEGES.${ privilege.label }`) }
-                                                   className='cursor-pointer truncate'>
-                                                { t(`PRIVILEGES.${ privilege.label }`) }
-                                            </label>
+                                            {/*<label htmlFor={ privilege.label }*/}
+                                            {/*       title={ t(`PRIVILEGES.${ privilege.label }`) }*/}
+                                            {/*       className='cursor-pointer truncate'>*/}
+                                            {/*    { t(`PRIVILEGES.${ privilege.label }`) }*/}
+                                            {/*</label>*/}
 
                                             { (privilege.label === 'add_role' || privilege.label === 'update_role') && (
                                                 <div key={ privilege.label }

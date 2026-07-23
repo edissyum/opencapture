@@ -16,13 +16,13 @@
 
 import { type JSX } from "react";
 import { Controller } from "react-hook-form";
-import { InputSwitch } from "primereact/inputswitch";
 import { Calendar, CaseSensitive, CircleQuestionMark, ListTodo, Regex, SquareCheckBig, TextInitial } from "lucide-react";
 
 import Input from "../Input";
 import { RadioBox } from "../RadioBox";
 import { Checkbox } from "../Checkbox";
 import { Dropdown } from "../Dropdown";
+import { InputSwitch } from "../InputSwitch";
 import MultiSelectInput from "../MultiSelect";
 
 export function DynamicForm({ className, schema, control, errors, gap = 4, grid = false }: any) {
@@ -99,15 +99,13 @@ export function DynamicForm({ className, schema, control, errors, gap = 4, grid 
                                 <div
                                     className={ `flex w-fit gap-2 items-center relative ${ field.disabled ? 'cursor-not-allowed' : '' }` }>
                                     <InputSwitch
-                                        inputId={ f.name }
+                                        id={ f.name }
                                         checked={ f.value }
+                                        label={ field.label }
                                         disabled={ field.disabled }
-                                        onChange={ e => f.onChange(e.value) }
+                                        onChange={ (value) => f.onChange(value) }
                                     />
-                                    <label htmlFor={ f.name }
-                                           className={ `${ field.disabled ? 'cursor-not-allowed' : 'cursor-pointer' }` }>
-                                        { field.label }
-                                    </label>
+
                                     { field.hint && (
                                         <span className={ `absolute cursor-pointer z-10 -right-5 top-0 text-(--text-secondary)` }>
                                             <CircleQuestionMark data-tooltip-id="tooltip" size={ 16 }

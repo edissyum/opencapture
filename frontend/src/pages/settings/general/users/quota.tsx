@@ -16,15 +16,15 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import { InputSwitch } from "primereact/inputswitch";
-
-import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 
 import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
 import { Loader } from "../../../../components/loader/Loader";
+import { InputSwitch } from "../../../../components/InputSwitch";
 import { showToast } from "../../../../components/ToastProvider";
 import MultiSelectInput from "../../../../components/MultiSelect";
+
+import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 
 export function SettingsGeneralUserQuota() {
     const { get, put } = axiosApiCall();
@@ -83,11 +83,12 @@ export function SettingsGeneralUserQuota() {
             <h2>{ t('SETTINGS.user_quota') }</h2>
             <div className='flex flex-col gap-6'>
                 <div className='flex items-center gap-2'>
-                    <InputSwitch inputId='userQuotaEnabled' checked={ userQuota.enabled }
-                                 onChange={ (e) => setUserQuota({ ...userQuota, enabled: e.value }) }/>
-                    <label className="mt-1.5" htmlFor='userQuotaEnabled'>
-                        { t('USERS.user_quota_enable') }
-                    </label>
+                    <InputSwitch
+                        id='userQuotaEnabled'
+                        checked={ userQuota.enabled }
+                        label={ t('USERS.user_quota_enable') }
+                        onChange={ (value) => setUserQuota({ ...userQuota, enabled: value }) }
+                    />
                 </div>
                 <div className='w-1/3'>
                     <Input label={ t('USERS.user_quota_number') } type='number'

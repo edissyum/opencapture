@@ -238,7 +238,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='securedConnection'
                             render={ ({ field }) => (
                                 <>
-                                    <InputSwitch inputId={ 'secured_connection' } checked={ field.value }
+                                    <InputSwitch inputId='secured_connection' checked={ field.value }
                                                  onChange={ (e: any) => setValueAuth("securedConnection", e.value) }/>
                                     <label htmlFor='secured_connection'
                                            className="flex items-center gap-4 cursor-pointer select-none text-(--text-primary)">
@@ -452,7 +452,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                         control={ modulesControl }
                         render={ ({ field }) => (
                             <div className='mb-6 flex gap-2 relative w-fit'>
-                                <InputSwitch inputId={ 'ocr_attachments' } checked={ field.value }
+                                <InputSwitch inputId='ocr_attachments' checked={ field.value }
                                              onChange={ (e: any) => field.onChange(e.value) }/>
                                 <label htmlFor='ocr_attachments'
                                        className="flex items-center gap-4 cursor-pointer select-none">
@@ -471,7 +471,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                 control={ modulesControl }
                                 render={ ({ field }) => (
                                     <div className='mb-6 flex gap-2'>
-                                        <InputSwitch inputId={ 'verifier_insert_body_as_doc' } checked={ field.value }
+                                        <InputSwitch inputId='verifier_insert_body_as_doc' checked={ field.value }
                                                      onChange={ (e: any) => field.onChange(e.value) }/>
                                         <label htmlFor='verifier_insert_body_as_doc'
                                                className="flex items-center gap-4 cursor-pointer select-none">
@@ -517,7 +517,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                 control={ modulesControl }
                                 render={ ({ field }) => (
                                     <div className='mb-6 flex gap-2'>
-                                        <InputSwitch inputId={ 'splitter_insert_body_as_doc' } checked={ field.value }
+                                        <InputSwitch inputId='splitter_insert_body_as_doc' checked={ field.value }
                                                      onChange={ (e: any) => field.onChange(e.value) }/>
                                         <label htmlFor='splitter_insert_body_as_doc'
                                                className="flex items-center gap-4 cursor-pointer select-none">

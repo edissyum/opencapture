@@ -20,8 +20,8 @@ import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Stepper } from "primereact/stepper";
 import { Editor } from "@monaco-editor/react";
+import { Scroller, Tabs } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
-import { InputSwitch } from "primereact/inputswitch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { StepperPanel } from "primereact/stepperpanel";
 import { useNavigate, useParams } from "react-router-dom";
@@ -29,18 +29,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import { executeAuthFunction, executeMEMFunction, getTestConnectionMapping } from "./functions";
 import { getCompressTypeOptions, getSystemFieldsOptionsSplitter, getSystemFieldsOptionsVerifier } from "./helpers";
 
+import Hint from "../../Hint";
 import Input from "../../Input";
 import { Button } from "../../Button";
 import { Dropdown } from "../../Dropdown";
 import { Loader } from "../../loader/Loader";
+import { InputSwitch } from "../../InputSwitch";
 import { showToast } from "../../ToastProvider";
 import { DynamicForm } from "../../form/DynamicForm";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 import { copyToClipboard } from "../../../services/hooks/copyToClipboard";
 import { useCustomFields } from "../../../services/hooks/useCustomFields";
-import Hint from "../../Hint";
-import { Scroller, Tabs } from "@mantine/core";
 
 export function OutputEditor({ module }: { module: string }) {
     const { get, post, put } = axiosApiCall();
@@ -594,14 +594,13 @@ export function OutputEditor({ module }: { module: string }) {
                                                 ) }
                                                 { option.type === 'boolean' && (
                                                     <div className='flex items-center gap-2'>
-                                                        <InputSwitch name={ option.id } id={ option.id }
-                                                                     checked={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || false }
-                                                                     onChange={ (e) => {
-                                                                         handleSpecificLinksChange({ target: { value: e.value } }, option, 'links')
-                                                                     } }/>
-                                                        <label htmlFor={ option.id } className='cursor-pointer'>
-                                                            { option.label }
-                                                        </label>
+                                                        <InputSwitch
+                                                            id={ option.id }
+                                                            label={ option.label }
+                                                            checked={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || false }
+                                                            onChange={ (value) => {
+                                                                handleSpecificLinksChange({ target: { value } }, option, 'links')
+                                                            } }/>
                                                     </div>
                                                 ) }
                                                 { option.type === 'text' && !option.webservice && (

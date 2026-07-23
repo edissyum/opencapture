@@ -18,23 +18,26 @@ import { t } from "i18next";
 import { useRef } from "react";
 import { CSS } from "@dnd-kit/utilities";
 import { ContextMenu } from "primereact/contextmenu";
-import { InputSwitch } from "primereact/inputswitch";
 import { Copy, GripVertical, Settings, Trash2 } from "lucide-react";
 import { defaultAnimateLayoutChanges, useSortable } from "@dnd-kit/sortable";
 
 import { DroppableLine } from "./DroppableLine";
 
+import { InputSwitch } from "../../../InputSwitch";
+
 export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDeleteLine, onUpdateLine, module }: any) {
     const cm = useRef({ current: null } as any);
     const menuModel: any = [
         {
-            label: <span className='flex items-center gap-2'>
+            label: <span className='flex items-center gap-2' onClick={ (e) => e.stopPropagation() }>
                 { t('FORMS.duplicable') }
-                <InputSwitch inputId={ 'duplicate-' + line.id } checked={ line.duplicable }
-                             onClick={ (e) => e.stopPropagation() }
-                             onChange={ (e) => {
-                                 onUpdateLine({ id: line.id, duplicable: e.value })
-                             } }
+                <InputSwitch
+                    id={ 'duplicate-' + line.id }
+                    checked={ line.duplicable }
+                    onChange={ (value) => {
+                        console.log(value)
+                        onUpdateLine({ id: line.id, duplicable: value })
+                    } }
                 />
             </span>,
             icon: <Copy size={ 16 }/>,

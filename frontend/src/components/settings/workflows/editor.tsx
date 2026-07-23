@@ -24,7 +24,6 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { ArrowLeft, Terminal } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { InputSwitch } from "primereact/inputswitch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { StepperPanel } from "primereact/stepperpanel";
 
@@ -34,9 +33,16 @@ import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 import { Button } from "../../Button";
 import { Loader } from "../../loader/Loader";
 import { showToast } from "../../ToastProvider";
+import { InputSwitch } from "../../InputSwitch";
 import { DynamicForm } from "../../form/DynamicForm";
 
-import { getConvertOptions, getRotationOptions, getSplitterMethods, getSystemFields, getTesseractOptions } from "./helpers";
+import {
+    getConvertOptions,
+    getRotationOptions,
+    getSplitterMethods,
+    getSystemFields,
+    getTesseractOptions
+} from "./helpers";
 
 export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const custom = useCustom();
@@ -685,7 +691,8 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 </h1>
 
                 <div className='w-full'>
-                    <DynamicForm errors={ detailsErrors } control={ detailsControl } schema={ detailSchema } grid={ 2 }/>
+                    <DynamicForm errors={ detailsErrors } control={ detailsControl } schema={ detailSchema }
+                                 grid={ 2 }/>
                 </div>
             </div>
 
@@ -693,16 +700,19 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                      onChangeStep={ (e: any) => setStepperIndex(e.index) }>
                 <StepperPanel header={ t("WORKFLOWS.input") }>
                     <div className='flex flex-col gap-2'>
-                        <DynamicForm schema={ inputSchemaFields } control={ workflowControl } errors={ workflowErrors } grid={ 2 }/>
-                        <DynamicForm schema={ inputSchemaEndSwitchs } control={ workflowControl } errors={ workflowErrors } gap={ 2 }/>
+                        <DynamicForm schema={ inputSchemaFields } control={ workflowControl } errors={ workflowErrors }
+                                     grid={ 2 }/>
+                        <DynamicForm schema={ inputSchemaEndSwitchs } control={ workflowControl }
+                                     errors={ workflowErrors } gap={ 2 }/>
 
                         { allowScripting && (
                             <div className='flex items-center gap-2'>
-                                <InputSwitch inputId='inputScripting' checked={ inputScripting }
-                                             onChange={ (e) => setInputScripting(e.value) }/>
-                                <label htmlFor='inputScripting' className="cursor-pointer">
-                                    { t('WORKFLOWS.input_scripting') }
-                                </label>
+                                <InputSwitch
+                                    id='inputScripting'
+                                    checked={ inputScripting }
+                                    label={ t('WORKFLOWS.input_scripting') }
+                                    onChange={ (value) => setInputScripting(value) }
+                                />
                             </div>
                         ) }
 
@@ -765,21 +775,24 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
                 <StepperPanel header={ t("WORKFLOWS.process") }>
                     <div className='flex flex-col gap-2'>
-                        <DynamicForm schema={ processSchemaStartSwitchs } control={ workflowControl } errors={ workflowErrors }
+                        <DynamicForm schema={ processSchemaStartSwitchs } control={ workflowControl }
+                                     errors={ workflowErrors }
                                      gap={ 2 } className='mb-2'/>
-                        <DynamicForm schema={ processSchemaInputFields } control={ workflowControl } errors={ workflowErrors }
+                        <DynamicForm schema={ processSchemaInputFields } control={ workflowControl }
+                                     errors={ workflowErrors }
                                      grid={ 2 }/>
-                        <DynamicForm schema={ processSchemaEndSwitchs } control={ workflowControl } errors={ workflowErrors }
+                        <DynamicForm schema={ processSchemaEndSwitchs } control={ workflowControl }
+                                     errors={ workflowErrors }
                                      gap={ 2 }/>
 
                         { allowScripting && (
                             <div className='flex items-center gap-2'>
-                                <InputSwitch inputId='processScripting' checked={ processScripting }
-                                             onChange={ (e) => setProcessScripting(e.value) }/>
-                                <label htmlFor='processScripting'
-                                       className="flex items-center gap-4 cursor-pointer">
-                                    { t('WORKFLOWS.process_scripting') }
-                                </label>
+                                <InputSwitch
+                                    id='processScripting'
+                                    checked={ processScripting }
+                                    label={ t('WORKFLOWS.process_scripting') }
+                                    onChange={ (value) => setProcessScripting(value) }
+                                />
                             </div>
                         ) }
 
@@ -801,7 +814,8 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                     // @ts-ignore
                     <StepperPanel header={
                         <div className='flex items-center gap-2'>
-                            <Terminal className='bg-(--border-secondary) text-(--text-secondary) p-2 rounded-lg' size={ 36 }/>
+                            <Terminal className='bg-(--border-secondary) text-(--text-secondary) p-2 rounded-lg'
+                                      size={ 36 }/>
                             <div className='text-(--text-secondary)'>
                                 { t("WORKFLOWS.process_scripting") }
                             </div>

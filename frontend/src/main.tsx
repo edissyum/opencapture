@@ -35,6 +35,7 @@ createRoot(document.getElementById('root')!).render(
         <ToastProvider/>
         <PrimeReactProvider value={ value }>
             <MantineProvider theme={ {
+                cursorType: 'pointer',
                 fontFamily: 'inherit',
                 lineHeights: {
                     xs: 'inherit',

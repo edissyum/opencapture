@@ -18,7 +18,6 @@ import z from "zod";
 import { t } from "i18next";
 import DOMPurify from "dompurify";
 import { Tooltip } from "react-tooltip";
-import { InputSwitch } from "primereact/inputswitch";
 import { ContextMenu } from "primereact/contextmenu";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
@@ -30,9 +29,10 @@ import { CircleQuestionMark, EllipsisVertical, Plus, Trash } from "lucide-react"
 import Input from "../../Input";
 import { Button } from "../../Button";
 import { Dropdown } from "../../Dropdown";
-
+import { InputSwitch } from "../../InputSwitch";
 import { showToast } from "../../ToastProvider";
 import { DynamicForm } from "../../form/DynamicForm";
+
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 import { useCustomFields } from "../../../services/hooks/useCustomFields";
 
@@ -489,14 +489,11 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                             render={ ({ field }) => (
                                 <div className="flex items-center gap-2 relative w-fit mb-2">
                                     <InputSwitch
-                                        inputId={ field.name }
+                                        id={ field.name }
                                         checked={ !!field.value }
-                                        onChange={ e => field.onChange(e.value) }
+                                        onChange={ (value) => field.onChange(value) }
+                                        label={ t("REGEX.remove_keyword") }
                                     />
-
-                                    <label htmlFor={ field.name } className="cursor-pointer">
-                                        { t("REGEX.remove_keyword") }
-                                    </label>
 
                                     <span className={ `absolute cursor-pointer z-10 -right-5 top-1.5
                                                    text-(--text-secondary)` }>
@@ -558,10 +555,10 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                         { watchType === 'select' && (
                             <div className="flex items-center gap-2">
                                 <InputSwitch
-                                    inputId='conditional_custom_field'
+                                    id='conditional_custom_field'
                                     checked={ isOptionsConditional }
-                                    onChange={ (e) => {
-                                        setIsOptionsConditional(e.value);
+                                    onChange={ (value) => {
+                                        setIsOptionsConditional(value);
                                     } }
                                 />
                                 <label htmlFor='conditional_custom_field'
