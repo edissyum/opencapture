@@ -927,11 +927,10 @@ def export_mem(data, document_info, log, regex, database):
                     })
 
                     if 'document_due_date' in document_info['datas'] and document_info['datas']['document_due_date']:
-                        document_due_date = pd.to_datetime(document_info['datas']['document_due_date'],
-                                                           format=regex['format_date'])
-                        if document_due_date.date() > datetime.date.today():
+                        document_due_date = pd.to_datetime(document_info['datas']['document_due_date']).date()
+                        if document_due_date > datetime.date.today():
                             args.update({
-                                'processLimitDate': str(document_due_date.date())
+                                'processLimitDate': str(document_due_date)
                             })
 
                     if _data['id'] == 'priority' and 'processLimitDate' not in args:
