@@ -16,7 +16,6 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import DOMPurify from "dompurify";
-import { InputText } from "primereact/inputtext";
 import { FloatLabel } from "primereact/floatlabel";
 import React, { useEffect, useRef, useState } from "react";
 import { CircleQuestionMark, Eye, EyeOff } from "lucide-react";
@@ -109,7 +108,7 @@ const Input: React.FC<InputProps> = ({
                     ) }
 
                     { /*@ts-ignore*/ }
-                    <InputText
+                    <input
                         id={ id }
                         ref={ inputRef }
                         className={ `disabled:bg-(--bg-secondary) disabled:cursor-not-allowed! border-0!

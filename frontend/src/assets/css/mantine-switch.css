@@ -15,17 +15,15 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import React, { createContext, useContext } from "react";
+.mantine-Switch-body {
+    @apply flex;
+    @apply items-center;
+}
 
-const CustomContext = createContext<string | null>(null);
+.mantine-Switch-body input {
+    @apply cursor-pointer!;
+}
 
-export const useCustom = () => useContext(CustomContext);
-
-export const CustomProvider: React.FC<{
-    custom: string | null;
-    children: React.ReactNode;
-}> = ({ custom, children }) => (
-    <CustomContext.Provider value={ custom }>
-        { children }
-    </CustomContext.Provider>
-);
+.mantine-Switch-labelWrapper {
+    @apply text-base;
+}

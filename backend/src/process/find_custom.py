@@ -339,7 +339,6 @@ class FindCustom:
 
         for text in [self.header_text, self.footer_text, self.text]:
             for line in text:
-                print(line.content)
                 if 'content' in regex_settings and regex_settings['content']:
                     upper_line = line.content.upper()
                     if 'remove_special_char' in regex_settings and regex_settings['remove_special_char']:

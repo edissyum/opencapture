@@ -237,7 +237,7 @@ CREATE TABLE "history" (
     "history_desc"      VARCHAR(255),
     "user_ip"           VARCHAR(20),
     "user_info"         VARCHAR(255),
-    "workflow_id"       VARCHAR(255),
+    "workflow_id"       INTEGER     DEFAULT null,
     "user_id"           INTEGER,
     "custom_fields"     JSONB       DEFAULT '{}'
 );
@@ -365,8 +365,6 @@ CREATE TABLE "mailcollect" (
     "folder_destination"            VARCHAR(255) NOT NULL,
     "action_after_process"          VARCHAR(255) NOT NULL,
     "verifier_workflow_id"          VARCHAR(255),
-    "verifier_customer_id"          INTEGER,
-    "verifier_form_id"              VARCHAR(255),
     "verifier_insert_body_as_doc"   BOOLEAN      DEFAULT False,
     "splitter_insert_body_as_doc"   BOOLEAN      DEFAULT False
 );
@@ -391,7 +389,7 @@ CREATE TABLE "ai_models" (
 CREATE TABLE "monitoring" (
     "id"                 SERIAL         UNIQUE PRIMARY KEY,
     "token"              VARCHAR(255),
-    "workflow_id"        VARCHAR(255),
+    "workflow_id"        INTEGER        DEFAULT null,
     "status"             VARCHAR(10),
     "elapsed_time"       VARCHAR(20),
     "document_ids"       INTEGER[],

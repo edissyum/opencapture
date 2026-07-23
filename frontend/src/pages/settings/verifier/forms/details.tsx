@@ -17,12 +17,13 @@
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { CircleQuestionMark } from "lucide-react";
-import { InputSwitch } from "primereact/inputswitch";
 
 import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
+import { InputSwitch } from "../../../../components/InputSwitch";
 import MultiSelectInput from "../../../../components/MultiSelect";
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+
 
 export function SettingsVerifierFormsDetails({
     submit,
@@ -30,7 +31,7 @@ export function SettingsVerifierFormsDetails({
     isSubmitting,
     formSettings,
     setFormSettings,
-    submitLabelLoading,
+submitLabelLoading,
 }: {
     formSettings: any;
     submitLabel: string;
@@ -81,14 +82,14 @@ export function SettingsVerifierFormsDetails({
 
                 <div className='flex items-center gap-2'>
                     <InputSwitch
-                        inputId="default_form"
+                        id="default_form"
                         checked={ formSettings.default_form }
-                        onChange={ (e) => setFormSettings({
+                        label={ t('FORMS.default_form') }
+                        onChange={ (value) => setFormSettings({
                             ...formSettings,
-                            default_form: e.value
+                            default_form: value
                         }) }
                     />
-                    <label htmlFor='default_form' className='cursor-pointer'>{ t('FORMS.default_form') }</label>
                 </div>
             </div>
             <div className='flex flex-col gap-4'>
@@ -117,16 +118,17 @@ export function SettingsVerifierFormsDetails({
                 <h3 className="text-lg font-semibold text-(--text-primary)">{ t('SETTINGS.advanced') }</h3>
                 <div className='flex items-center gap-2'>
                     <InputSwitch
-                        inputId="allow_learning"
-                        checked={ formSettings.settings.allow_learning }
-                        onChange={ (e) => setFormSettings({
+                        id="allow_learning"
+                        checked={ formSettings.allow_learning }
+                        label={ t('FORMS.allow_learning') }
+                        onChange={ (value) => setFormSettings({
                             ...formSettings,
                             settings: {
                                 ...formSettings.settings,
-                                allow_learning: e.value
+                                allow_learning: value
                             }
-                        }) }/>
-                    <label htmlFor='allow_learning' className='cursor-pointer'>{ t('FORMS.allow_learning') }</label>
+                        }) }
+                    />
                     <div className="text-(--text-secondary) cursor-pointer"
                          data-tooltip-id="tooltip"
                          data-tooltip-content={ t('FORMS.allow_learning_hint') }>

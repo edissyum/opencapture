@@ -20,27 +20,27 @@ import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Stepper } from "primereact/stepper";
 import { Editor } from "@monaco-editor/react";
+import { Scroller, Tabs } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
-import { InputSwitch } from "primereact/inputswitch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { StepperPanel } from "primereact/stepperpanel";
-import { TabPanel, TabView } from "primereact/tabview";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { executeAuthFunction, executeMEMFunction, getTestConnectionMapping } from "./functions";
 import { getCompressTypeOptions, getSystemFieldsOptionsSplitter, getSystemFieldsOptionsVerifier } from "./helpers";
 
+import Hint from "../../Hint";
 import Input from "../../Input";
 import { Button } from "../../Button";
 import { Dropdown } from "../../Dropdown";
 import { Loader } from "../../loader/Loader";
+import { InputSwitch } from "../../InputSwitch";
 import { showToast } from "../../ToastProvider";
 import { DynamicForm } from "../../form/DynamicForm";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 import { copyToClipboard } from "../../../services/hooks/copyToClipboard";
 import { useCustomFields } from "../../../services/hooks/useCustomFields";
-import Hint from "../../Hint";
 
 export function OutputEditor({ module }: { module: string }) {
     const { get, post, put } = axiosApiCall();
@@ -462,18 +462,21 @@ export function OutputEditor({ module }: { module: string }) {
                     </h1>
 
                     <div className='w-full'>
-                        <DynamicForm errors={ detailsErrors } control={ detailsControl } schema={ detailSchema } grid={ 2 }/>
+                        <DynamicForm errors={ detailsErrors } control={ detailsControl } schema={ detailSchema }
+                                     grid={ 2 }/>
                     </div>
                 </div>
 
                 { outputType && Object.keys(outputType).length > 0 && (
-                    <Stepper ref={ stepperRef } linear activeStep={ stepperIndex } onChangeStep={ (e: any) => setStepperIndex(e.index) }>
+                    <Stepper ref={ stepperRef } linear activeStep={ stepperIndex }
+                             onChangeStep={ (e: any) => setStepperIndex(e.index) }>
                         <StepperPanel header={ t("SMTP.authentication") }>
                             <div className='flex flex-col gap-4'>
                                 <div className='flex gap-6 w-full'>
                                     { outputType?.data?.options.auth && outputType?.data?.options.auth.map((option: any) => (
                                         <div key={ option.id } className="w-full gap-2">
-                                            <Input id={ option.id } type={ option.type } name={ option.id } label={ option.label }
+                                            <Input id={ option.id } type={ option.type } name={ option.id }
+                                                   label={ option.label }
                                                    value={ output?.data?.options?.auth?.find((o: any) => o.id === option.id)?.value || '' }
                                                    onChange={ (e) => {
                                                        handleAuthChange(e, option)
@@ -482,7 +485,8 @@ export function OutputEditor({ module }: { module: string }) {
                                     )) }
                                 </div>
                                 <div className="flex justify-end">
-                                    <Button onClick={ handleAuthStep } className="ml-auto px-8" disabled={ loadingStep }>
+                                    <Button onClick={ handleAuthStep } className="ml-auto px-8"
+                                            disabled={ loadingStep }>
                                         { loadingStep ? t("OUTPUTS.testing_connection") : t("OUTPUTS.test_connection") }
                                     </Button>
                                 </div>
@@ -545,8 +549,9 @@ export function OutputEditor({ module }: { module: string }) {
                                         <ArrowLeft/> { t("MAILCOLLECT.previous") }
                                     </Button>
 
-                                    <Button onClick={ outputType.output_type_id === 'export_mem' ? handleNextStep : handleSubmit }
-                                            className="px-8" disabled={ loading || loadingStep }>
+                                    <Button
+                                        onClick={ outputType.output_type_id === 'export_mem' ? handleNextStep : handleSubmit }
+                                        className="px-8" disabled={ loading || loadingStep }>
                                         { outputType.output_type_id === 'export_mem' ? (
                                             t("GLOBAL.next")
                                         ) : (
@@ -589,14 +594,13 @@ export function OutputEditor({ module }: { module: string }) {
                                                 ) }
                                                 { option.type === 'boolean' && (
                                                     <div className='flex items-center gap-2'>
-                                                        <InputSwitch name={ option.id } id={ option.id }
-                                                                     checked={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || false }
-                                                                     onChange={ (e) => {
-                                                                         handleSpecificLinksChange({ target: { value: e.value } }, option, 'links')
-                                                                     } }/>
-                                                        <label htmlFor={ option.id } className='cursor-pointer'>
-                                                            { option.label }
-                                                        </label>
+                                                        <InputSwitch
+                                                            id={ option.id }
+                                                            label={ option.label }
+                                                            checked={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || false }
+                                                            onChange={ (value) => {
+                                                                handleSpecificLinksChange({ target: { value } }, option, 'links')
+                                                            } }/>
                                                     </div>
                                                 ) }
                                                 { option.type === 'text' && !option.webservice && (
@@ -640,9 +644,21 @@ export function OutputEditor({ module }: { module: string }) {
 
             { stepperIndex !== 0 && (
                 <div className="shrink-0 w-[20rem] h-full flex flex-col border-l border-(--border-secondary)">
-                    <TabView scrollable className="available_fields">
-                        <TabPanel header={ t("VERIFIER.system_fields") }>
-                            <div className="p-6 flex flex-col gap-2">
+                    <Tabs defaultValue='available_fields'>
+                        <Tabs.List>
+                            <Scroller>
+                                <Tabs.Tab key={ 'available_fields' } value={ 'available_fields' }>
+                                    { t("VERIFIER.system_fields") }
+                                </Tabs.Tab>
+                                { customFields.length > 0 && (
+                                    <Tabs.Tab key={ 'custom_fields' } value={ 'custom_fields' }>
+                                        { t("VERIFIER.custom_fields") }
+                                    </Tabs.Tab>
+                                ) }
+                            </Scroller>
+                        </Tabs.List>
+                        <Tabs.Panel key={ 'available_fields' } value={ 'available_fields' }>
+                            <div className="p-4 flex flex-col gap-2">
                                 { availableSystemFields.map((option: any) => (
                                     <div key={ option.id } data-tooltip-id='tooltip'
                                          data-tooltip-content={ t("OUTPUTS.copy_to_clipboard") }
@@ -650,7 +666,7 @@ export function OutputEditor({ module }: { module: string }) {
                                              await copyToClipboard(option.id);
                                          } }
                                          className='flex flex-col border border-(--border-secondary) rounded-lg
-                                                    transition-colors bg-(--bg-primary) px-6 py-2 w-full cursor-pointer hover:bg-(--bg-secondary)'>
+                                                    transition-colors bg-(--bg-primary) px-4 py-2 w-full cursor-pointer hover:bg-(--bg-secondary)'>
                                         <div className='text-(--text-primary) font-semibold'>
                                             { option.label }
                                         </div>
@@ -660,10 +676,10 @@ export function OutputEditor({ module }: { module: string }) {
                                     </div>
                                 )) }
                             </div>
-                        </TabPanel>
+                        </Tabs.Panel>
                         { customFields.length > 0 && (
-                            <TabPanel header={ t("VERIFIER.custom_fields") }>
-                                <div className="p-6 flex flex-col gap-2">
+                            <Tabs.Panel key={ 'custom_fields' } value={ 'custom_fields' }>
+                                <div className="p-4 flex flex-col gap-2">
                                     { customFields.map((field: any) => (
                                         <div key={ field.id } data-tooltip-id='tooltip'
                                              data-tooltip-content={ t("OUTPUTS.copy_to_clipboard") }
@@ -671,7 +687,7 @@ export function OutputEditor({ module }: { module: string }) {
                                                  await copyToClipboard(field.label_short);
                                              } }
                                              className='flex flex-col border border-(--border-secondary) rounded-lg
-                                                        transition-colors bg-(--bg-primary) px-6 py-2 w-full cursor-pointer hover:bg-(--bg-secondary)'>
+                                                        transition-colors bg-(--bg-primary) px-4 py-2 w-full cursor-pointer hover:bg-(--bg-secondary)'>
                                             <div className='text-(--text-primary) font-semibold'>
                                                 { field.label }
                                             </div>
@@ -681,9 +697,9 @@ export function OutputEditor({ module }: { module: string }) {
                                         </div>
                                     )) }
                                 </div>
-                            </TabPanel>
+                            </Tabs.Panel>
                         ) }
-                    </TabView>
+                    </Tabs>
                 </div>
             ) }
         </div>

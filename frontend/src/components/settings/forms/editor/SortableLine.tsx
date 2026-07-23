@@ -18,27 +18,30 @@ import { t } from "i18next";
 import { useRef } from "react";
 import { CSS } from "@dnd-kit/utilities";
 import { ContextMenu } from "primereact/contextmenu";
-import { InputSwitch } from "primereact/inputswitch";
 import { Copy, GripVertical, Settings, Trash2 } from "lucide-react";
 import { defaultAnimateLayoutChanges, useSortable } from "@dnd-kit/sortable";
 
 import { DroppableLine } from "./DroppableLine";
 
+import { InputSwitch } from "../../../InputSwitch";
+
 export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDeleteLine, onUpdateLine, module }: any) {
     const cm = useRef({ current: null } as any);
     const menuModel: any = [
         {
-            label: <span className='flex items-center gap-2'>
+            label: <span className='flex items-center gap-2' onClick={ (e) => e.stopPropagation() }>
                 { t('FORMS.duplicable') }
-                <InputSwitch inputId={ 'duplicate-' + line.id } checked={ line.duplicable }
-                             onClick={ (e) => e.stopPropagation() }
-                             onChange={ (e) => {
-                                 onUpdateLine({ id: line.id, duplicable: e.value })
-                             } }
+                <InputSwitch
+                    id={ 'duplicate-' + line.id }
+                    checked={ line.duplicable }
+                    onChange={ (value) => {
+                        console.log(value)
+                        onUpdateLine({ id: line.id, duplicable: value })
+                    } }
                 />
             </span>,
             icon: <Copy size={ 16 }/>,
-            visible: zoneId !== 'zone-supplier' && module === 'verifier',
+            visible: zoneId !== 'zone-supplier' && module === 'verifier'
         },
         {
             label: <span className='critical'>{ t('FORMS.delete') } </span>,
@@ -55,8 +58,8 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
     const { setNodeRef, setActivatorNodeRef, listeners, transform, isDragging, isOver, transition } = useSortable({
         id: line.id,
         data: {
-            type: "line",
             line,
+            type: "line"
         },
         animateLayoutChanges
     });
@@ -87,11 +90,10 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
                         cm.current?.show(e)
                     } }
                     className='cursor-pointer group-hover:opacity-100 opacity-0 transition-opacity -translate-x-1/2
-                               text-(--text-secondary) absolute z-20 -top-5.5 p-0.5 left-1/2 border
+                               text-(--text-secondary) absolute z-20 -top-5 p-0.5 left-1/2 border before:translate-y-px
                                border-b-0 border-(--border-primary)/30 rounded-md rounded-b-none bg-[#E1EFE8]
-                               dark:bg-(--bg-secondary) before:content-[""] before:absolute before:bottom-0
-                               before:translate-y-px'>
-                  <Settings size={ 18 }/>
+                               dark:bg-(--bg-secondary) before:content-[""] before:absolute before:bottom-0'>
+                  <Settings size={ 16 }/>
                 </span>
                 <DroppableLine line={ line } onUpdateField={ onUpdateField } onDeleteField={ onDeleteField }
                                module={ module }/>

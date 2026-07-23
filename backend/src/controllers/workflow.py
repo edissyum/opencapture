@@ -123,19 +123,6 @@ def get_workflow_by_id(workflow_id):
         return response, 400
 
 
-def get_workflow_by_workflow_id(workflow_id, module):
-    workflow_info, error = workflow.get_workflow_by_workflow_id({'workflow_id': workflow_id, 'module': module})
-
-    if error is None:
-        return workflow_info, 200
-    else:
-        response = {
-            "errors": gettext('GET_WORKFLOW_BY_WORKFLOW_ID_ERROR'),
-            "message": gettext(error)
-        }
-        return response, 400
-
-
 def duplicate_workflow(args):
     workflow_info, error = workflow.get_workflow_by_id({'workflow_id': args['workflow_id']})
     if error is None:

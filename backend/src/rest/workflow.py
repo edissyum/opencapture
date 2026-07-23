@@ -114,18 +114,6 @@ def get_workflow_by_id(workflow_id, module):
     return make_response(jsonify(_workflow[0])), _workflow[1]
 
 
-@bp.route('workflows/<string:module>/getByWorkflowId/<string:workflow_id>', methods=['GET'])
-@auth.token_required
-def get_workflow_by_workflow_id(workflow_id, module):
-    list_priv = ['settings | monitoring', 'update_workflow | monitoring'] if module == 'verifier' else ['settings | monitoring', 'update_workflow_splitter | monitoring']
-    if not privileges.has_privileges(request.environ['user_id'], list_priv):
-        return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                        'message': f'/workflows/{module}/getByWorkflowId/{workflow_id}'}), 403
-
-    _workflow = workflow.get_workflow_by_workflow_id(workflow_id, module)
-    return make_response(jsonify(_workflow[0])), _workflow[1]
-
-
 @bp.route('workflows/duplicate/<int:workflow_id>', methods=['POST'])
 @auth.token_required
 def duplicate_workflow(workflow_id):

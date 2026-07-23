@@ -232,7 +232,6 @@ class SMTP:
 
         try:
             res = self.conn.sendmail(from_addr=msg['From'], to_addrs=msg['To'], msg=msg.as_string())
-            print(res)
         except smtplib.SMTPException as smtp_error:
             print(smtp_error)
             print('Erreur lors de l\'envoi du mail : ' + str(smtp_error))

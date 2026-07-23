@@ -62,7 +62,7 @@ export function SettingsGeneralUsers() {
             header: t('GLOBAL.status'),
             body: (row: any) => (
                 <span
-                    className={ `px-2 py-1 rounded-lg text-xs font-medium 
+                    className={ `px-2 py-1 rounded-lg text-xs font-normal 
                         ${ row.enabled ? 'bg-(--bg-success) text-(--text-success)' : 'bg-(--bg-error) text-(--text-error)' }` }>
                     { row.enabled ? t('USERS.active') : t('USERS.inactive') }
                 </span>

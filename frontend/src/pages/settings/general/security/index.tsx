@@ -20,7 +20,6 @@ import { useForm } from "react-hook-form";
 import { Stepper } from "primereact/stepper";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { InputSwitch } from "primereact/inputswitch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { StepperPanel } from "primereact/stepperpanel";
 import { Accordion, AccordionTab } from "primereact/accordion";
@@ -28,6 +27,7 @@ import { Accordion, AccordionTab } from "primereact/accordion";
 import { Button } from "../../../../components/Button";
 import { RadioBox } from "../../../../components/RadioBox";
 import { showToast } from "../../../../components/ToastProvider";
+import { InputSwitch } from "../../../../components/InputSwitch";
 import { DynamicForm } from "../../../../components/form/DynamicForm";
 
 import { useUser } from "../../../../services/hooks/useUser";
@@ -365,19 +365,17 @@ export function SettingsGeneralSecurity() {
                         <div className='w-1/3 flex flex-col gap-4'>
                             <div className='flex items-center'>
                                 <InputSwitch
-                                    inputId={ 'enable_min' }
+                                    id='enable_min'
+                                    label={ t('SECURITY.enable_min_length') }
                                     checked={ currentMinLength > 0 }
-                                    onChange={ e => {
-                                        if (!e.value) {
+                                    onChange={ (value) => {
+                                        if (!value) {
                                             defaultSetValue('minLength', 0);
                                         } else {
                                             defaultSetValue('minLength', 8);
                                         }
                                     } }
                                 />
-                                <label htmlFor='enable_min' className='cursor-pointer'>
-                                    { t('SECURITY.enable_min_length') }
-                                </label>
                             </div>
                             <DynamicForm schema={ defaultSchema } control={ defaultControl } errors={ defaultErrors } gap={ 2 }/>
                         </div>

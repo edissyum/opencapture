@@ -75,7 +75,7 @@ export function CustomFieldsList({ module }: { module: string }) {
         { id: 'label_short', field: 'label_short', header: t('ROLES.label_short') },
         {
             id: 'type', field: 'type', header: t('CUSTOM-FIELDS.type'), body: (row: any) => (
-                <span className={ `px-2 py-1 rounded-lg text-xs font-medium` }>
+                <span className={ `px-2 py-1 rounded-lg text-xs font-normal` }>
                     { row.type === 'text' && t('CUSTOM-FIELDS.type_text') }
                     { row.type === 'select' && t('CUSTOM-FIELDS.type_select') }
                     { row.type === 'regex' && t('CUSTOM-FIELDS.type_regex') }

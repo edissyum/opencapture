@@ -23,7 +23,6 @@ import { ArrowLeft, Ban, CircleQuestionMark, CornerUpRight } from "lucide-react"
 
 import { Stepper } from "primereact/stepper";
 import { FloatLabel } from "primereact/floatlabel";
-import { InputSwitch } from "primereact/inputswitch";
 import { StepperPanel } from "primereact/stepperpanel";
 
 import { getSchemaForAuthMethod } from "./authSchema";
@@ -32,6 +31,7 @@ import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
 import { RadioBox } from "../../../../components/RadioBox";
 import { Dropdown } from "../../../../components/Dropdown";
+import { InputSwitch } from "../../../../components/InputSwitch";
 import { showToast } from "../../../../components/ToastProvider";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
@@ -101,7 +101,6 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
     const authSchema: any = getSchemaForAuthMethod(authMethod);
     const {
         control: controlAuth,
-        register: registerAuth,
         setValue: setValueAuth,
         getValues: getValuesAuth,
         handleSubmit: handleSubmitAuth,
@@ -238,12 +237,12 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='securedConnection'
                             render={ ({ field }) => (
                                 <>
-                                    <InputSwitch inputId={ 'secured_connection' } checked={ field.value }
-                                                 onChange={ (e) => setValueAuth("securedConnection", e.value) }/>
-                                    <label htmlFor='secured_connection'
-                                           className="flex items-center gap-4 cursor-pointer select-none text-(--text-primary)">
-                                        { t('MAILCOLLECT.secured_connection') }
-                                    </label>
+                                    <InputSwitch
+                                        id='secured_connection'
+                                        checked={ field.value }
+                                        label={ t('MAILCOLLECT.secured_connection') }
+                                        onChange={ (value) => setValueAuth("securedConnection", value) }
+                                    />
                                 </>
                             ) }
                         />
@@ -252,91 +251,200 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
 
                 { authMethod === "imap" && (
                     <div className='grid grid-cols-2 gap-4'>
-                        <Input { ...registerAuth("hostname") }
-                               label={ t("SMTP.host") }
-                               error={ authErrors.hostname?.message }/>
-                        <Input className='w-1/9'
-                               { ...registerAuth("port") }
-                               label={ t("SMTP.port") }
-                               error={ authErrors.port?.message }/>
-                        <Input { ...registerAuth("login") }
-                               autoComplete='new-mail'
-                               label={ t("SMTP.login") }
-                               error={ authErrors.login?.message }/>
-                        <Input className='w-1/2'
-                               { ...registerAuth("password") }
-                               autoComplete='new-password'
-                               label={ t("SMTP.password") }
-                               type="password"
-                               error={ authErrors.password?.message }/>
+                        <Controller
+                            control={ controlAuth }
+                            name='hostname'
+                            render={ ({ field }) => (
+                                <Input { ...field }
+                                       label={ t("SMTP.host") }
+                                       error={ authErrors.hostname?.message }/>
+                            ) }
+                        />
+                        <Controller
+                            control={ controlAuth }
+                            name='port'
+                            render={ ({ field }) => (
+                                <Input className='w-1/9'
+                                       { ...field }
+                                       label={ t("SMTP.port") }
+                                       error={ authErrors.port?.message }/>
+                            ) }
+                        />
+                        <Controller
+                            control={ controlAuth }
+                            name='login'
+                            render={ ({ field }) => (
+                                <Input { ...field }
+                                       label={ t("SMTP.login") }
+                                       error={ authErrors.login?.message }/>
+                            ) }
+                        />
+                        <Controller
+                            control={ controlAuth }
+                            name='password'
+                            render={ ({ field }) => (
+                                <Input className='w-1/2'
+                                       { ...field }
+                                       type="password"
+                                       label={ t("SMTP.password") }
+                                       error={ authErrors.password?.message }/>
+                            ) }
+                        />
                     </div>
                 ) }
 
                 { authMethod === "oauth" && (
                     <div className='grid grid-cols-4 gap-4'>
-                        <Input id='hostname' { ...registerAuth("hostname") }
-                               label={ t("SMTP.host") }
-                               error={ authErrors.hostname?.message }/>
-                        <Input id='login' { ...registerAuth("login") }
-                               label={ t("SMTP.login") }
-                               error={ authErrors.login?.message }/>
-                        <Input id='scopes' { ...registerAuth("scopes") }
-                               label={ t("MAILCOLLECT.scope") }
-                               error={ authErrors.scopes?.message }/>
-                        <Input id='authority_url' { ...registerAuth("authority_url") }
-                               label={ t("MAILCOLLECT.authority_url") }
-                               error={ authErrors.authority_url?.message }/>
-                        <Input id='client_id' { ...registerAuth("client_id") }
-                               label={ t("MAILCOLLECT.client_id") }
-                               error={ authErrors.client_id?.message }/>
-                        <Input id='tenant_id' { ...registerAuth("tenant_id") }
-                               label={ t("MAILCOLLECT.tenant_id") }
-                               error={ authErrors.tenant_id?.message }/>
-                        <Input id='client_secret' { ...registerAuth("client_secret") }
-                               label={ t("MAILCOLLECT.client_secret") }
-                               error={ authErrors.client_secret?.message }/>
+                        <Controller
+                            control={ controlAuth }
+                            name='hostname'
+                            render={ ({ field }) => (
+                                <Input { ...field }
+                                       label={ t("SMTP.host") }
+                                       error={ authErrors.hostname?.message }/>
+                            ) }
+                        />
+                        <Controller
+                            control={ controlAuth }
+                            name='login'
+                            render={ ({ field }) => (
+                                <Input { ...field }
+                                       label={ t("SMTP.login") }
+                                       error={ authErrors.login?.message }/>
+                            ) }
+                        />
+                        <Controller
+                            control={ controlAuth }
+                            name='scopes'
+                            render={ ({ field }) => (
+                                <Input { ...field }
+                                       label={ t("MAILCOLLECT.scope") }
+                                       error={ authErrors.scopes?.message }/>
+                            ) }
+                        />
+                        <Controller
+                            control={ controlAuth }
+                            name='authority_url'
+                            render={ ({ field }) => (
+                                <Input { ...field }
+                                       label={ t("MAILCOLLECT.authority_url") }
+                                       error={ authErrors.authority_url?.message }/>
+                            ) }
+                        />
+                        <Controller
+                            control={ controlAuth }
+                            name='client_id'
+                            render={ ({ field }) => (
+                                <Input { ...field }
+                                       label={ t("MAILCOLLECT.client_id") }
+                                       error={ authErrors.client_id?.message }/>
+                            ) }
+                        />
+                        <Controller
+                            control={ controlAuth }
+                            name='tenant_id'
+                            render={ ({ field }) => (
+                                <Input { ...field }
+                                       label={ t("MAILCOLLECT.tenant_id") }
+                                       error={ authErrors.tenant_id?.message }/>
+                            ) }
+                        />
+                        <Controller
+                            control={ controlAuth }
+                            name='client_secret'
+                            render={ ({ field }) => (
+                                <Input { ...field }
+                                       label={ t("MAILCOLLECT.client_secret") }
+                                       error={ authErrors.client_secret?.message }/>
+                            ) }
+                        />
                     </div>
                 ) }
 
                 { authMethod === "graphql" && (
                     <div className='grid grid-cols-3 gap-4'>
-                        <Input id='login'
-                               { ...registerAuth("login") }
-                               autoComplete='new-mail'
-                               label={ t("SMTP.login") }
-                               error={ authErrors.login?.message }/>
-                        <Input id='grant_type'
-                               { ...registerAuth("grant_type") }
-                               label={ t("MAILCOLLECT.grant_type") }
-                               error={ authErrors.grant_type?.message }/>
-                        <Input id='scope'
-                               { ...registerAuth("scope") }
-                               label={ t("MAILCOLLECT.scope") }
-                               error={ authErrors.scope?.message }/>
-                        <Input id='users_url'
-                               { ...registerAuth("users_url") }
-                               label={ t("MAILCOLLECT.users_url") }
-                               error={ authErrors.users_url?.message }/>
-                        <Input id='message_url'
-                               { ...registerAuth("message_url") }
-                               label={ t("MAILCOLLECT.message_url") }
-                               error={ authErrors.message_url?.message }/>
-                        <Input id='get_token_url'
-                               { ...registerAuth("get_token_url") }
-                               label={ t("MAILCOLLECT.get_token_url") }
-                               error={ authErrors.get_token_url?.message }/>
-                        <Input id='client_id'
-                               { ...registerAuth("client_id") }
-                               label={ t("MAILCOLLECT.client_id") }
-                               error={ authErrors.client_id?.message }/>
-                        <Input id='tenant_id'
-                               { ...registerAuth("tenant_id") }
-                               label={ t("MAILCOLLECT.tenant_id") }
-                               error={ authErrors.tenant_id?.message }/>
-                        <Input id='client_secret'
-                               { ...registerAuth("client_secret") }
-                               label={ t("MAILCOLLECT.client_secret") }
-                               error={ authErrors.client_secret?.message }/>
+                        <Controller
+                            control={ controlAuth }
+                            name='login'
+                            render={ ({ field }) => (
+                                <Input { ...field }
+                                        autoComplete='new-mail'
+                                        label={ t("SMTP.login") }
+                                        error={ authErrors.login?.message }/>
+                            ) }
+                        />
+                        <Controller
+                            control={ controlAuth }
+                            name='grant_type'
+                            render={ ({ field }) => (
+                                <Input { ...field }
+                                        label={ t("MAILCOLLECT.grant_type") }
+                                        error={ authErrors.grant_type?.message }/>
+                            ) }
+                        />
+                        <Controller
+                            control={ controlAuth }
+                            name='scope'
+                            render={ ({ field }) => (
+                                <Input { ...field }
+                                        label={ t("MAILCOLLECT.scope") }
+                                        error={ authErrors.scope?.message }/>
+                            ) }
+                        />
+                        <Controller
+                            control={ controlAuth }
+                            name='users_url'
+                            render={ ({ field }) => (
+                                <Input { ...field }
+                                        label={ t("MAILCOLLECT.users_url") }
+                                        error={ authErrors.users_url?.message }/>
+                            ) }
+                        />
+                        <Controller
+                            control={ controlAuth }
+                            name='message_url'
+                            render={ ({ field }) => (
+                                <Input { ...field }
+                                        label={ t("MAILCOLLECT.message_url") }
+                                        error={ authErrors.message_url?.message }/>
+                            ) }
+                        />
+                        <Controller
+                            control={ controlAuth }
+                            name='get_token_url'
+                            render={ ({ field }) => (
+                                <Input { ...field }
+                                        label={ t("MAILCOLLECT.get_token_url") }
+                                        error={ authErrors.get_token_url?.message }/>
+                            ) }
+                        />
+                        <Controller
+                            control={ controlAuth }
+                            name='client_id'
+                            render={ ({ field }) => (
+                                <Input { ...field }
+                                        label={ t("MAILCOLLECT.client_id") }
+                                        error={ authErrors.client_id?.message }/>
+                            ) }
+                        />
+                        <Controller
+                            control={ controlAuth }
+                            name='tenant_id'
+                            render={ ({ field }) => (
+                                <Input { ...field }
+                                        label={ t("MAILCOLLECT.tenant_id") }
+                                        error={ authErrors.tenant_id?.message }/>
+                            ) }
+                        />
+                        <Controller
+                            control={ controlAuth }
+                            name='client_secret'
+                            render={ ({ field }) => (
+                                <Input { ...field }
+                                        label={ t("MAILCOLLECT.client_secret") }
+                                        error={ authErrors.client_secret?.message }/>
+                            ) }
+                        />
                     </div>
                 ) }
 
@@ -366,7 +474,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             disabled={ folders.length === 0 }
                             label={ t("MAILCOLLECT.folder_to_crawl") }
                             options={ folders.map((folder) => ({ label: folder, value: folder })) }
-                            onChange={ (e) => field.onChange(e.value) }
+                            onChange={ (e: any) => field.onChange(e.value) }
                         />
                     ) }
                 />
@@ -407,7 +515,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             disabled={ folders.length === 0 }
                             label={ t("MAILCOLLECT.folder_destination") }
                             options={ folders.map((folder) => ({ label: folder, value: folder })) }
-                            onChange={ (e) => field.onChange(e.value) }
+                            onChange={ (e: any) => field.onChange(e.value) }
                         />
                     ) }
                 />
@@ -452,12 +560,11 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                         control={ modulesControl }
                         render={ ({ field }) => (
                             <div className='mb-6 flex gap-2 relative w-fit'>
-                                <InputSwitch inputId={ 'ocr_attachments' } checked={ field.value }
-                                             onChange={ (e) => field.onChange(e.value) }/>
-                                <label htmlFor='ocr_attachments'
-                                       className="flex items-center gap-4 cursor-pointer select-none">
-                                    { t('MAILCOLLECT.ocr_attachments') }
-                                </label>
+                                <InputSwitch
+                                    id='ocr_attachments'
+                                    checked={ field.value }
+                                    label={ t('MAILCOLLECT.ocr_attachments') }
+                                    onChange={ (value) => field.onChange(value) }/>
                                 <span className={ `absolute cursor-pointer z-10 -right-6 -top-0.5 text-(--text-secondary)` }>
                                     <CircleQuestionMark data-tooltip-id="tooltip" data-tooltip-content={ t('MAILCOLLECT.ocr_attachments_hint') } size={ 16 }/>
                                 </span>
@@ -471,12 +578,11 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                 control={ modulesControl }
                                 render={ ({ field }) => (
                                     <div className='mb-6 flex gap-2'>
-                                        <InputSwitch inputId={ 'verifier_insert_body_as_doc' } checked={ field.value }
-                                                     onChange={ (e) => field.onChange(e.value) }/>
-                                        <label htmlFor='verifier_insert_body_as_doc'
-                                               className="flex items-center gap-4 cursor-pointer select-none">
-                                            { t('MAILCOLLECT.insert_body_as_doc') }
-                                        </label>
+                                        <InputSwitch
+                                            id='verifier_insert_body_as_doc'
+                                            checked={ field.value }
+                                            label={ t('MAILCOLLECT.insert_body_as_doc') }
+                                            onChange={ (value) => field.onChange(value) }/>
                                     </div>
                                 ) }
                             />
@@ -494,7 +600,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                                     label: workflow.label,
                                                     value: workflow.workflow_id
                                                 })) }
-                                                onChange={ (e) => field.onChange(e.value) }
+                                                onChange={ (e: any) => field.onChange(e.value) }
                                                 className="w-full"
                                             />
                                             <label
@@ -517,12 +623,11 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                 control={ modulesControl }
                                 render={ ({ field }) => (
                                     <div className='mb-6 flex gap-2'>
-                                        <InputSwitch inputId={ 'splitter_insert_body_as_doc' } checked={ field.value }
-                                                     onChange={ (e) => field.onChange(e.value) }/>
-                                        <label htmlFor='splitter_insert_body_as_doc'
-                                               className="flex items-center gap-4 cursor-pointer select-none">
-                                            { t('MAILCOLLECT.insert_body_as_doc') }
-                                        </label>
+                                        <InputSwitch
+                                            id='splitter_insert_body_as_doc'
+                                            checked={ field.value }
+                                            label={ t('MAILCOLLECT.insert_body_as_doc') }
+                                            onChange={ (value) => field.onChange(value) }/>
                                     </div>
                                 ) }
                             />
@@ -540,7 +645,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                                     label: workflow.label,
                                                     value: workflow.workflow_id
                                                 })) }
-                                                onChange={ (e) => field.onChange(e.value) }
+                                                onChange={ (e: any) => field.onChange(e.value) }
                                                 className="w-full"
                                             />
                                             <label

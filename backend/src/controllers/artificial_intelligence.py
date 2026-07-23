@@ -222,7 +222,8 @@ def launch_train(data, model_name, module):
 
     folders = []
     for element in data['documents']:
-        folders.append(element['folder'])
+        if element['active']:
+            folders.append(element['folder'])
     min_proba = data['min_proba']
 
     path = docservers.get('VERIFIER_TRAIN_PATH_FILES') if module == 'verifier' else docservers.get(
@@ -361,6 +362,12 @@ def add_train_text_to_csv(file_path, csv_file, chosen_files, model_id, module):
                     rows.append(line)
                     log.info(f"{file_name} : done ({str(i)} out of {str(fold_length)};"
                              f" folder {str(j)} / {str(len(chosen_files))})")
+
+                    try:
+                        if file_name.lower().endswith('.pdf'):
+                            os.remove(files.jpg_name)
+                    except FileNotFoundError:
+                        pass
 
                     args = {
                         'percentage': str(round(total_files * percent, 1)) + " %"

@@ -54,13 +54,11 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
         setAllowDownload(false);
 
         if (!selectedSeparator) return;
-        if (selectedSeparator === 'docTypeSeparator' && !selectedDoctype) {
-            setThumbnailSafe(null);
-            return;
-        }
-        if (selectedDoctype && ['folder', 'root'].includes(selectedDoctype.type)) {
-            setThumbnailSafe(null);
-            return;
+        if (selectedSeparator === 'docTypeSeparator') {
+            if (!selectedDoctype || (selectedDoctype && ['folder', 'root'].includes(selectedDoctype.type))) {
+                setThumbnailSafe(null);
+                return;
+            }
         }
 
         const generateQrSeparator = async () => {

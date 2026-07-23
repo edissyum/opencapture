@@ -20,7 +20,6 @@ import { File, X } from "lucide-react";
 import { Panel } from "primereact/panel";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { InputSwitch } from "primereact/inputswitch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -29,6 +28,7 @@ import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 import { Button } from "../../Button";
 import { Dropdown } from "../../Dropdown";
 import { Loader } from "../../loader/Loader";
+import { InputSwitch } from "../../InputSwitch";
 import { showToast } from "../../ToastProvider";
 import { DynamicForm } from "../../form/DynamicForm";
 import { DoctypesTree } from "../doctypes/doctypesTree";
@@ -316,8 +316,11 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
                                 <div className='flex items-center'>
                                     <span>{ doc.folder }</span>
                                     <span className='ml-auto'>
-                                        <InputSwitch checked={ doc.active }
-                                                     onChange={ (e) => handleEnableDocument(e, doc) }/>
+                                        <InputSwitch
+                                            id={ doc.folder }
+                                            checked={ doc.active }
+                                            onChange={ (e) => handleEnableDocument(e, doc) }
+                                        />
                                     </span>
                                 </div>
                             }>

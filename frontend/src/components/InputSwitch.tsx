@@ -15,17 +15,31 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import React, { createContext, useContext } from "react";
+import React from "react";
+import { Switch } from "@mantine/core";
 
-const CustomContext = createContext<string | null>(null);
+export function InputSwitch({ id, label, checked, disabled, onChange }: {
+    id: string;
+    label?: string;
+    checked: boolean;
+    disabled?: boolean;
+    onChange: (value: boolean) => void;
+}) {
 
-export const useCustom = () => useContext(CustomContext);
+    const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        onChange(event.target.checked);
+    }
 
-export const CustomProvider: React.FC<{
-    custom: string | null;
-    children: React.ReactNode;
-}> = ({ custom, children }) => (
-    <CustomContext.Provider value={ custom }>
-        { children }
-    </CustomContext.Provider>
-);
+    return(
+        <Switch
+            id={ id }
+            key={ id }
+            label={ label }
+            checked={ checked }
+            disabled={ disabled }
+            onChange={ handleOnChange }
+            color="var(--color-primary)"
+            withThumbIndicator={ false }
+        />
+    )
+}

@@ -17,7 +17,6 @@
 import { z } from "zod";
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import { InputSwitch } from "primereact/inputswitch";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -25,6 +24,7 @@ import Input from "../../../components/Input";
 import { Button } from "../../../components/Button";
 import { RadioBox } from "../../../components/RadioBox";
 import { showToast } from "../../../components/ToastProvider";
+import { InputSwitch } from "../../../components/InputSwitch";
 
 import { emptyToUndefined } from "../../../services/zod";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
@@ -182,7 +182,8 @@ export function SettingsGeneralSMTP() {
                                      className={ `border border-(--border-secondary) hover:border-(--border-primary) transition-colors
                              rounded-lg px-8 py-3 cursor-pointer flex items-center justify-center gap-4
                              ${ selectedProvider === provider.name ? 'bg-(--bg-selected) border-(--border-primary)!' : '' } ` }>
-                                    { provider.logo && <img src={ provider.logo } alt={ provider.name } className='h-5'/> }
+                                    { provider.logo &&
+                                        <img src={ provider.logo } alt={ provider.name } className='h-5'/> }
                                     <p className='text-lg font-semibold'>{ provider.name }</p>
                                 </div>
                             )) }
@@ -225,12 +226,12 @@ export function SettingsGeneralSMTP() {
                                     name='smtpAuth'
                                     render={ ({ field }) => (
                                         <div className='flex gap-1'>
-                                            <InputSwitch inputId='smtp_auth' checked={ field.value }
-                                                         onChange={ (e) => field.onChange(e.value) }/>
-                                            <label htmlFor='smtp_auth'
-                                                   className="flex items-center gap-4 cursor-pointer select-none">
-                                                { t('SMTP.smtp_auth') }
-                                            </label>
+                                            <InputSwitch
+                                                id='smtp_auth'
+                                                checked={ field.value }
+                                                label={ t('SMTP.smtp_auth') }
+                                                onChange={ (value) => field.onChange(value) }
+                                            />
                                         </div>
                                     ) }
                                 />
@@ -295,12 +296,11 @@ export function SettingsGeneralSMTP() {
                                     name='smtpNotifOnError'
                                     render={ ({ field }) => (
                                         <div className='flex gap-1'>
-                                            <InputSwitch inputId='enable_error_notifications' checked={ field.value }
-                                                         onChange={ (e) => field.onChange(e.value) }/>
-                                            <label htmlFor='enable_error_notifications'
-                                                   className="flex items-center gap-4 cursor-pointer select-none">
-                                                { t('SMTP.enable_error_notifications') }
-                                            </label>
+                                            <InputSwitch
+                                                id='enable_error_notifications' checked={ field.value }
+                                                label={ t('SMTP.enable_error_notifications') }
+                                                onChange={ (value) => field.onChange(value) }
+                                            />
                                         </div>
                                     ) }
                                 />

@@ -96,12 +96,12 @@ export function AiDoctypesList({ module }: { module: string }) {
             header: t('AI-DOCTYPES.percentage'),
             body: (row: any) => (
                 <span className="block truncate max-w-[40rem] whitespace-nowrap">
-                    { row.percentage.replace('%', '').replace('.0', '').trim() == '100' ? (
+                    { row?.percentage?.replace('%', '').replace('.0', '').trim() == '100' ? (
                         <Check data-tooltip-id='tooltip' data-tooltip-content={ t('AI-DOCTYPES.end') }/>
                     ) : (
                         <div className='flex items-center gap-1'>
                             <Loader2 className="animate-spin "/>
-                            { row.percentage }
+                            { row?.percentage ? row?.percentage : '0 %' }
                         </div>
                     ) }
                 </span>

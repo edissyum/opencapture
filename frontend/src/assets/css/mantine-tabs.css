@@ -1,0 +1,69 @@
+/** This file is part of Open-Capture.
+
+ Open-Capture is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+
+ @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
+
+.mantine-Tabs-root {
+    @apply flex;
+    @apply h-full;
+    @apply w-full;
+    @apply min-h-0;
+    @apply flex-col;
+}
+
+.mantine-Tabs-list {
+    @apply border-b;
+    @apply border-(--border-secondary);
+}
+
+.mantine-Tabs-tab:hover:not([data-active]) {
+    @apply border-b;
+    @apply border-(--border-secondary);
+}
+
+.mantine-Tabs-list button:where([data-active]) {
+    @apply text-(--color-primary)!;
+}
+
+.mantine-Tabs-list button {
+    @apply px-5;
+    @apply py-4;
+    @apply text-base!;
+    @apply font-medium;
+    @apply text-(--text-secondary);
+}
+
+.mantine-Tabs-list:before {
+    @apply border-0;
+    @apply border-(--border-secondary);
+}
+
+.mantine-Tabs-panel {
+    @apply flex;
+    @apply h-full;
+    @apply flex-1;
+    @apply min-h-0;
+    @apply flex-col;
+    @apply overflow-y-auto;
+    @apply bg-(--bg-secondary);
+}
+
+.mantine-Scroller-control {
+    @apply w-16!;
+}
+
+.mantine-Scroller-chevron {
+    @apply size-16!;
+}
