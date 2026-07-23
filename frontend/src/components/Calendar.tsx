@@ -15,11 +15,11 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import "dayjs/locale/fr";
+import "dayjs/locale/es";
 import dayjs from "dayjs";
 import DOMPurify from "dompurify";
 import { DateInput } from '@mantine/dates';
-
-import { addLocale } from "primereact/api";
 import { FloatLabel } from "primereact/floatlabel";
 import React, { useEffect, useState } from "react";
 import { Calendar as CalendarIcon } from "lucide-react";
@@ -61,93 +61,6 @@ const ISOCalendar: React.FC<ISOCalendarProps> = ({
     const hasValue = !!value;
 
     useEffect(() => {
-        addLocale("fr", {
-            firstDayOfWeek: 1,
-            dayNames: [
-                "dimanche", "lundi", "mardi", "mercredi",
-                "jeudi", "vendredi", "samedi"
-            ],
-            dayNamesShort: ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"],
-            dayNamesMin: ["Di", "Lu", "Ma", "Me", "Je", "Ve", "Sa"],
-            monthNames: [
-                "janvier", "février", "mars", "avril", "mai", "juin",
-                "juillet", "août", "septembre", "octobre", "novembre", "décembre"
-            ],
-            monthNamesShort: [
-                "janv", "févr", "mars", "avr", "mai", "juin",
-                "juil", "août", "sept", "oct", "nov", "déc"
-            ],
-            today: "Aujourd'hui",
-            clear: "Effacer",
-            chooseDate: "Choisir une date",
-            chooseMonth: "Choisir un mois",
-            chooseYear: "Choisir une année",
-            prevMonth: "Mois précédent",
-            nextMonth: "Mois suivant",
-            prevYear: "Année précédente",
-            nextYear: "Année suivante",
-            prevDecade: "Décennie précédente",
-            nextDecade: "Décennie suivante"
-        });
-
-        addLocale("es", {
-            firstDayOfWeek: 1,
-            dayNames: [
-                "domingo", "lunes", "martes", "miércoles",
-                "jueves", "viernes", "sábado"
-            ],
-            dayNamesShort: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"],
-            dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
-            monthNames: [
-                "enero", "febrero", "marzo", "abril", "mayo", "junio",
-                "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
-            ],
-            monthNamesShort: [
-                "ene", "feb", "mar", "abr", "may", "jun",
-                "jul", "ago", "sep", "oct", "nov", "dic"
-            ],
-            today: "Hoy",
-            clear: "Borrar",
-            chooseDate: "Elegir fecha",
-            chooseMonth: "Elegir mes",
-            chooseYear: "Elegir año",
-            prevMonth: "Mes anterior",
-            nextMonth: "Mes siguiente",
-            prevYear: "Año anterior",
-            nextYear: "Año siguiente",
-            prevDecade: "Década anterior",
-            nextDecade: "Década siguiente"
-        });
-
-        addLocale("en", {
-            firstDayOfWeek: 1,
-            dayNames: [
-                "Sunday", "Monday", "Tuesday", "Wednesday",
-                "Thursday", "Friday", "Saturday"
-            ],
-            dayNamesShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-            dayNamesMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
-            monthNames: [
-                "January", "February", "March", "April", "May", "June",
-                "July", "August", "September", "October", "November", "December"
-            ],
-            monthNamesShort: [
-                "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-            ],
-            today: "Today",
-            clear: "Clear",
-            chooseDate: "Choose date",
-            chooseMonth: "Choose month",
-            chooseYear: "Choose year",
-            prevMonth: "Previous month",
-            nextMonth: "Next month",
-            prevYear: "Previous year",
-            nextYear: "Next year",
-            prevDecade: "Previous decade",
-            nextDecade: "Next decade"
-        });
-
         const lang = localStorage.getItem("backendLang") || "fr";
         const finalLang =
             lang.startsWith("fr") ? "fr" :
