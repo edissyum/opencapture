@@ -85,6 +85,24 @@ else
     echo "    ⚠ .env global absent ($global_env) : APP_UID/APP_GID laissés au défaut du gabarit." >&2
 fi
 
+# --- OC_CPUSET : réserve le cœur 0 au système, tenant confiné au reste. Le
+# défaut compose (1-7) suppose un hôte à 8 cœurs ; en dessous, `up -d` échoue
+# ("Requested CPUs are not available") si on ne l'ajuste pas. Détection via
+# nproc DE LA MACHINE QUI EXÉCUTE CE SCRIPT — pas forcément le serveur cible
+# si le stub est préparé en local puis copié/déployé ailleurs (cf. rappel
+# ci-dessous).
+cores="$(nproc 2>/dev/null || echo 8)"
+if [ "$cores" -lt 8 ]; then
+    if [ "$cores" -le 1 ]; then
+        cpuset="0"
+    else
+        cpuset="1-$((cores - 1))"
+    fi
+    sed -i "s/^#OC_CPUSET=.*/OC_CPUSET=$cpuset/" "$dst/.env"
+else
+    cpuset="1-7 (défaut compose ; hôte $cores cœurs >= 8, rien posé dans le .env)"
+fi
+
 # --- Ce qu'il reste à renseigner À LA MAIN ---
 echo
 echo "==> Tenant '$id' créé (mode $mode)."
@@ -100,6 +118,9 @@ echo "    Pré-remplis depuis l'id (à vérifier) :"
 echo "      - CUSTOM_ID=$id, POSTGRES_DB=opencapture_$id, POSTGRES_USER=$id, RABBITMQ_USER=$id"
 echo "      - OC_DATA_ROOT=$oc_root (repris du bashrc/.env global) -> données : $oc_root/tenants/$id/{pgdata,rabbitmq,custom,docservers,share}"
 echo "      - APP_UID=${g_uid:-<gabarit>}, APP_GID=${g_gid:-<gabarit>} (repris du .env global)"
+echo "      - OC_CPUSET=$cpuset (auto-détecté : nproc=$cores cœur(s) sur CETTE machine)"
+echo "        -> À VÉRIFIER sur le SERVEUR CIBLE si ce n'est pas la même machine (nombre de"
+echo "           cœurs réel, et cohérence avec les autres tenants déjà présents sur cet hôte)."
 
 if [ "$mode" = "cert" ]; then
     echo

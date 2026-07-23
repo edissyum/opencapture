@@ -4,9 +4,13 @@
 # tenant de test : verifier, splitter, mail (greenmail), fs-watcher.
 #
 # Usage :
-#   ./tests/run_tests.sh                # test1 (defaut)
-#   ./tests/run_tests.sh test1 autre    # un ou plusieurs tenants
-#   ./tests/run_tests.sh --rebuild      # force le rebuild des images
+#   ./tests/run_tests.sh <tenant> [<tenant> ...]   # un ou plusieurs tenants
+#   ./tests/run_tests.sh --rebuild <tenant> ...    # force le rebuild des images
+#
+# Aucun tenant par défaut : le(s) tenant(s) à tester doivent exister
+# (stub-tenants/<id>/) et sont passés explicitement en argument. Pas de
+# création automatique — crée un tenant de test avec :
+#   ./new-tenant.sh http <id> && ./deploy.sh <id>
 #
 # Chaque tenant est : reset (down -v + wipe data) -> up -d -> 4 checks.
 # Le stack est LAISSÉ EN MARCHE à la fin (inspection). Code retour 0 si
@@ -30,10 +34,21 @@ for a in "$@"; do
         *)  TENANTS+=("$a") ;;
     esac
 done
-[ ${#TENANTS[@]} -eq 0 ] && TENANTS=(test1)
+if [ ${#TENANTS[@]} -eq 0 ]; then
+    echo "Aucun tenant spécifié — rien à tester." >&2
+    echo "Usage : $0 <tenant> [<tenant> ...]" >&2
+    echo "Crée un tenant de test avec : ./new-tenant.sh http <id> && ./deploy.sh <id>" >&2
+    exit 2
+fi
+for t in "${TENANTS[@]}"; do
+    [ -f "$REPO_ROOT/stub-tenants/$t/docker-compose.yml" ] || {
+        echo "Tenant introuvable : stub-tenants/$t/ (crée-le avec ./new-tenant.sh)" >&2
+        exit 2
+    }
+done
 
 # Prérequis routage HTTP (idempotents). Sans eux les tests passent toujours
-# (DB/FS/logs), mais l'UI http://test1.edissyum.com serait en 404.
+# (DB/FS/logs), mais l'UI http://<tenant>.<domaine> serait en 404.
 ensure_traefik() {
     if docker network inspect frontend >/dev/null 2>&1; then
         echo "[pré] réseau frontend : OK"

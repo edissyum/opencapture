@@ -668,7 +668,7 @@ Un journal scellé **NF Z42-020** (chaînage SHA-256 + horodatage RFC 3161) est 
 > **Cibler un tenant.** Le plus simple : se placer dans son dossier, `docker compose`
 > résout le `.env` et le projet automatiquement :
 > ```bash
-> cd stub-tenants/site1       # ou stub-tenants/test1 ; ou infra/ pour "default"
+> cd stub-tenants/site1       # ou infra/ pour "default"
 > docker compose ps
 > docker compose exec backend bash
 > docker compose logs -f worker-splitter
@@ -792,7 +792,7 @@ Par tenant — les chemins hôte sont les valeurs `*_PATH` du `.env` (en prod :
   son projet Compose, son FQDN), identifiée par son **`CUSTOM_ID`**. Le code OpenCapture
   l'appelle « **custom** » (`custom/<id>/`, `custom.ini`, `create_custom.sh`, `CUSTOM_ID`).
   Tous les tenants **partagent la même image backend** mais ne partagent **aucune donnée**.
-  Un tenant peut être un client, un environnement de **test** (`test1`) ou une **démo**
+  Un tenant peut être un client, un environnement de **test** ou une **démo**
   (`default`) — d'où le terme neutre « tenant » plutôt que « client ».
 - **Image** : modèle **en lecture seule** = OS minimal + dépendances + code, prêt à lancer.
   Ici : `opencapture-backend`, `<tenant>-frontend`, `postgres:17.6`…

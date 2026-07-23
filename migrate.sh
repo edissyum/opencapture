@@ -469,7 +469,7 @@ cmd_import() {
         #     notamment watcherConfig pointe souvent vers ./instance/config/ (global)
         #     alors que le watcher.ini est PAR custom -> sinon l'enregistrement d'un
         #     workflow échoue ("FS_WATCHER_CONFIG_DOESNT_EXIST"). On force les chemins
-        #     /app/custom/<id>/... comme le fait un tenant natif (test1).
+        #     /app/custom/<id>/... comme le fait un tenant natif Docker.
         #     Classes [Aa]... pour matcher les clés en camelCase (source brute) ET en
         #     minuscules (après réécriture configparser du bootstrap).
         local cfg="$tdir/custom/$cid/config/config.ini"

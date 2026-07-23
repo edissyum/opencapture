@@ -5,18 +5,16 @@ frontend/src/assets/i18n/to_merge
 .env*
 !.env.example
 
-# stub-tenants/ : seuls les gabarits _template-*/ et le tenant de référence test1
-# sont suivis (ils gardent le dossier en vie -> pas besoin de .gitkeep). Tout
-# tenant de PROD (stub-tenants/<id>/) est créé à la main et reste hors git
-# (docker-compose.yml + .env). On ignore le CONTENU (stub-tenants/*), pas le
-# dossier : git ne réinclut pas un fichier si un dossier parent est exclu.
+# stub-tenants/ : seuls les gabarits _template-*/ sont suivis (ils gardent le
+# dossier en vie -> pas besoin de .gitkeep). Tout tenant (stub-tenants/<id>/,
+# y compris les tenants de test créés via ./new-tenant.sh) est créé à la main
+# et reste hors git (docker-compose.yml + .env). On ignore le CONTENU
+# (stub-tenants/*), pas le dossier : git ne réinclut pas un fichier si un
+# dossier parent est exclu.
 stub-tenants/*
 !stub-tenants/_template-letsencrypt/
 !stub-tenants/_template-cert/
 !stub-tenants/_template-http/
-!stub-tenants/test1/
-# .env* (ci-dessus) ré-ignore stub-tenants/test1/.env -> le réautoriser en dernier.
-!stub-tenants/test1/.env
 
 # Fragments TLS déposés en dev dans le /dynamic du repo : ne pas committer
 # (seul .gitkeep garde le dossier ; le tls.yml.example du gabarit reste suivi).

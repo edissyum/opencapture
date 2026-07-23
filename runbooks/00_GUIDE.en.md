@@ -662,7 +662,7 @@ A sealed **NF Z42-020** journal (SHA-256 chaining + RFC 3161 timestamping) is av
 > **Targeting a tenant.** Simplest: cd into its folder, `docker compose`
 > resolves the `.env` and project automatically:
 > ```bash
-> cd stub-tenants/site1       # or stub-tenants/test1 ; or infra/ for "default"
+> cd stub-tenants/site1       # or infra/ for "default"
 > docker compose ps
 > docker compose exec backend bash
 > docker compose logs -f worker-splitter
@@ -785,7 +785,7 @@ Per tenant — the host paths are the `.env` `*_PATH` values (in prod:
   its Compose project, its FQDN), identified by its **`CUSTOM_ID`**. The OpenCapture code
   calls it "**custom**" (`custom/<id>/`, `custom.ini`, `create_custom.sh`, `CUSTOM_ID`).
   All tenants **share the same backend image** but share **no data**.
-  A tenant can be a client, a **test** environment (`test1`) or a **demo**
+  A tenant can be a client, a **test** environment or a **demo**
   (`default`) — hence the neutral term "tenant" rather than "client".
 - **Image**: a **read-only** template = minimal OS + dependencies + code, ready to run.
   Here: `opencapture-backend`, `<tenant>-frontend`, `postgres:17.6`…
