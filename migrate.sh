@@ -532,8 +532,17 @@ cmd_import() {
         fi
 
         log "  restauration db.dump.sql -> $POSTGRES_DB"
-        dc "$cid" exec -T postgres psql -v ON_ERROR_STOP=0 -U "$POSTGRES_USER" -d "$POSTGRES_DB" \
-            < "$cb/db.dump.sql" > /dev/null
+        local restore_tries=0
+        until dc "$cid" exec -T postgres psql -v ON_ERROR_STOP=0 -U "$POSTGRES_USER" -d "$POSTGRES_DB" \
+                < "$cb/db.dump.sql" > /dev/null; do
+            restore_tries=$((restore_tries + 1))
+            # Même bascule temporaire->définitive que wait_pg_healthy : une restauration
+            # peut tomber en pleine coupure malgré l'attente. Quelques tentatives
+            # absorbent ce cas sans dépendre du format exact des logs postgres.
+            [ "$restore_tries" -ge 3 ] && die "[$cid] restauration db.dump.sql échouée après $restore_tries tentatives"
+            warn "[$cid] restauration db.dump.sql échouée (postgres pas encore stable) — nouvelle tentative dans 5s"
+            sleep 5
+        done
 
         log "  patch des chemins dans la base"
         patch_db_paths "$cid" "$POSTGRES_USER" "$POSTGRES_DB" \
@@ -800,7 +809,15 @@ patch_db_paths() {
 wait_pg_healthy() {
     local cid="$1" i
     for i in $(seq 1 60); do
-        if dc "$cid" exec -T postgres pg_isready -q 2>/dev/null; then return 0; fi
+        if dc "$cid" exec -T postgres pg_isready -q 2>/dev/null; then
+            # Volume pgdata neuf : postgres démarre une instance TEMPORAIRE pour
+            # jouer initdb/docker-entrypoint-initdb.d, s'arrête ("database system
+            # is shutting down"), puis redémarre pour de bon. pg_isready répond OK
+            # dès l'instance temporaire -> laisser passer la bascule avant de
+            # rendre la main (sinon la restauration qui suit tombe en pleine coupure).
+            sleep 3
+            return 0
+        fi
         sleep 2
     done
     die "[$cid] postgres ne devient pas prêt"
