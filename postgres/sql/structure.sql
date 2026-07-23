@@ -237,7 +237,7 @@ CREATE TABLE "history" (
     "history_desc"      VARCHAR(255),
     "user_ip"           VARCHAR(20),
     "user_info"         VARCHAR(255),
-    "workflow_id"       VARCHAR(255),
+    "workflow_id"       INTEGER     DEFAULT null,
     "user_id"           INTEGER,
     "custom_fields"     JSONB       DEFAULT '{}'
 );
