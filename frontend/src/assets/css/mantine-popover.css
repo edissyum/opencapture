@@ -17,13 +17,14 @@
 
 /* Overlay popup on small screen */
 
-.p-overlaypanel {
+.mantine-Popover-dropdown {
+    @apply p-6;
     @apply z-40!;
     @apply overflow-auto;
 }
 
 @media only screen and (max-width: 1400px) {
-    .p-overlaypanel {
+    .mantine-Popover-dropdown {
         @apply w-1/2!;
         @apply h-[70%]!;
         @apply top-1/2!;

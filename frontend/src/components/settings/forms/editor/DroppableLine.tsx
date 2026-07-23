@@ -14,11 +14,11 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 
 import { SortableField } from "./SortableField"
-import { useState } from "react";
 
 export function DroppableLine({ line, onUpdateField, onDeleteField, module }: any) {
     const { setNodeRef } = useDroppable({ id: line.id });

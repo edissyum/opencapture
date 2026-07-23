@@ -15,18 +15,18 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
+import { Popover } from "@mantine/core";
 import { GripVertical } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
-import { InputSwitch } from "primereact/inputswitch";
-import { OverlayPanel } from "primereact/overlaypanel";
 
 import Hint from "../../../Hint";
 import Input from "../../../Input";
 import { Button } from "../../../Button";
 import { Dropdown } from "../../../Dropdown";
+import { InputSwitch } from "../../../InputSwitch";
 
 import { getColorOptions, getFormatLabels } from "./schemas";
 
@@ -53,7 +53,6 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
     setActiveOverlayId: (id: string | null) => void;
     onUpdateField: (id: string, updated: Field) => void;
 }) {
-    const op = useRef<OverlayPanel | null>(null);
     const [editableField, setEditableField] = useState<Field>(field);
 
     const formatLabels = getFormatLabels(t);
@@ -73,24 +72,16 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
         e.stopPropagation();
 
         if (activeOverlayId === field.id) {
-            op.current?.hide();
             setActiveOverlayId(null);
         } else {
             setActiveOverlayId(field.id);
-            op.current?.toggle(e);
             setEditableField(field);
         }
     };
 
-    useEffect(() => {
-        if (activeOverlayId !== field.id) {
-            op.current?.hide();
-        }
-    }, [activeOverlayId]);
-
     const handleSave = () => {
         onUpdateField(field.id, editableField);
-        op.current?.hide();
+        setActiveOverlayId(null);
     };
 
     const [open, setOpen] = useState(false);
@@ -112,24 +103,35 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
     };
 
     return (
-        <>
-            <div ref={ setNodeRef } style={ style } onClick={ openOverlay }
-                 className="SortableField truncate bg-(--bg-primary) border border-(--border-secondary)
-                   rounded-md px-3 py-2 flex items-center gap-2 hover:border-(--border-primary)
-                   transition-colors select-none">
-                <button type="button" aria-label="Déplacer le champ" { ...attributes } { ...listeners }
-                        onClick={ (e) => e.stopPropagation() }
-                        className="cursor-grab text-(--text-secondary) hover:text-(--text-primary)">
-                    <GripVertical size={ 16 }/>
-                </button>
+        <Popover
+            opened={ activeOverlayId === field.id }
+            onClose={ () => setActiveOverlayId(null) }
+            position="bottom-start"
+            width="50%"
+            withinPortal
+            shadow="none"
+            classNames={ {
+                dropdown: "bg-(--bg-primary)! p-3 shadow-none! border! border-(--border-secondary)! min-h-[20%] max-h-[60%]"
+            } }
+        >
+            <Popover.Target>
+                <div ref={ setNodeRef } style={ style } onClick={ openOverlay }
+                     className="SortableField truncate bg-(--bg-primary) border border-(--border-secondary)
+                       rounded-md px-3 py-2 flex items-center gap-2 hover:border-(--border-primary)
+                       transition-colors select-none">
+                    <button type="button" aria-label="Déplacer le champ" { ...attributes } { ...listeners }
+                            onClick={ (e) => e.stopPropagation() }
+                            className="cursor-grab text-(--text-secondary) hover:text-(--text-primary)">
+                        <GripVertical size={ 16 }/>
+                    </button>
 
-                <div className="min-w-0 flex-1 truncate cursor-pointer">
-                    { t(field.label) }
+                    <div className="min-w-0 flex-1 truncate cursor-pointer">
+                        { t(field.label) }
+                    </div>
                 </div>
-            </div>
+            </Popover.Target>
 
-            <OverlayPanel ref={ op } dismissable
-                          className="bg-(--bg-primary)! p-3 w-1/2 shadow-none! border! border-(--border-secondary)! min-h-[20%] max-h-[60%]">
+            <Popover.Dropdown>
                 <div className="flex flex-col gap-3 space-y-3">
                     <Input id={ 'label-' + editableField.id }
                            className="w-full"
@@ -205,17 +207,15 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
                     { module === 'splitter' && (
                         <div>
                             <div className="flex items-center gap-2">
-                                <InputSwitch inputId={ 'field_metadata-' + editableField.id }
-                                             checked={ !!editableField.field_metadata }
-                                             onChange={ (e) => setEditableField((prev) => ({
-                                                 ...prev,
-                                                 field_metadata: e.value
-                                             })) }
+                                <InputSwitch
+                                    id={ 'field_metadata-' + editableField.id }
+                                    checked={ !!editableField.field_metadata }
+                                    label={ t('FORMS.field_metadata') }
+                                    onChange={ (value) => setEditableField((prev) => ({
+                                        ...prev,
+                                        field_metadata: value
+                                    })) }
                                 />
-                                <label htmlFor={ 'field_metadata-' + editableField.id }
-                                       className="flex items-center gap-4 cursor-pointer select-none text-(--text-secondary)">
-                                    { t('FORMS.field_metadata') }
-                                </label>
                             </div>
                             { editableField.field_metadata && (
                                 <div className='mt-4'>
@@ -262,35 +262,31 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
                         </div>
                     ) }
 
-                    <div className='flex gap-2'>
+                    <div className='flex gap-4'>
                         <div className="flex items-center gap-2">
-                            <InputSwitch inputId={ 'required-' + editableField.id }
-                                         checked={ !!editableField.required }
-                                         onChange={ (e) => setEditableField((prev) => ({
-                                             ...prev,
-                                             required: e.value
-                                         })) }
+                            <InputSwitch
+                                id={ 'required-' + editableField.id }
+                                label={ t('FORMS.field_required') }
+                                checked={ !!editableField.required }
+                                onChange={ (value) => setEditableField((prev) => ({
+                                    ...prev,
+                                    required: value
+                                })) }
                             />
-                            <label htmlFor={ 'required-' + editableField.id }
-                                   className="flex items-center gap-4 cursor-pointer select-none text-(--text-secondary)">
-                                { t('FORMS.field_required') }
-                            </label>
                         </div>
 
                         { module === 'splitter' && (
                             <div>
                                 <div className="flex items-center gap-2">
-                                    <InputSwitch inputId={ 'disabled-' + editableField.id }
-                                                 checked={ !!editableField.disabled }
-                                                 onChange={ (e) => setEditableField((prev) => ({
-                                                     ...prev,
-                                                     disabled: e.value
-                                                 })) }
+                                    <InputSwitch
+                                        id={ 'disabled-' + editableField.id }
+                                        checked={ !!editableField.disabled }
+                                        label={ t('FORMS.field_disabled') }
+                                        onChange={ (value) => setEditableField((prev) => ({
+                                            ...prev,
+                                            disabled: value
+                                        })) }
                                     />
-                                    <label htmlFor={ 'disabled-' + editableField.id }
-                                           className="flex items-center gap-4 cursor-pointer select-none text-(--text-secondary)">
-                                        { t('FORMS.field_disabled') }
-                                    </label>
                                 </div>
                             </div>
                         ) }
@@ -298,7 +294,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
 
                     <div className="flex gap-2">
                         <div className='flex ml-auto gap-4'>
-                            <Button variant="no_bg" onClick={ () => op.current?.hide() }>
+                            <Button variant="no_bg" onClick={ () => setActiveOverlayId(null) }>
                                 { t('GLOBAL.cancel') }
                             </Button>
                             <Button variant='danger' onClick={ () => onDeleteField(field.id) }>
@@ -310,7 +306,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module, act
                         </div>
                     </div>
                 </div>
-            </OverlayPanel>
-        </>
+            </Popover.Dropdown>
+        </Popover>
     );
 }

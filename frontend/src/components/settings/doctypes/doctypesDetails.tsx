@@ -15,14 +15,24 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { InputSwitch } from "primereact/inputswitch";
-import { ContextMenu } from "primereact/contextmenu";
-import { ChevronRight, EllipsisVertical, File, FilePlusCorner, Folder, FolderOpen, FolderPlus, Trash, X } from "lucide-react";
+import { Menu } from "@mantine/core";
+import { useEffect, useMemo, useState } from "react";
+import {
+    ChevronRight,
+    EllipsisVertical,
+    File,
+    FilePlusCorner,
+    Folder,
+    FolderOpen,
+    FolderPlus,
+    Trash,
+    X
+} from "lucide-react";
 
 import Input from "../../Input";
 import { Button } from "../../Button";
 import { showToast } from "../../ToastProvider";
+import { InputSwitch } from "../../InputSwitch";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../../services/hooks/ConfirmDialog";
@@ -35,7 +45,6 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
     doctypeChanged: (d: any) => void
 }) {
     const { post } = axiosApiCall();
-    const cm = useRef({ current: null } as any);
 
     const ROOT_NODE = { type: "root", code: "0", label: t('DOCTYPES.root') };
 
@@ -218,14 +227,13 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                                 } }/>
                                 { newDoctypeType === 'document' && (
                                     <div className='flex items-center'>
-                                        <InputSwitch inputId='isDefault' checked={ newDoctypeIsDefault }
-                                                     onChange={ (e) => {
-                                                         setNewDoctypeIsDefault(e.value);
-                                                     } }/>
-                                        <label htmlFor='isDefault'
-                                               className="flex items-center gap-4 cursor-pointer">
-                                            { t('DOCTYPES.is_default') }
-                                        </label>
+                                        <InputSwitch
+                                            id='isDefault'
+                                            label={ t('DOCTYPES.is_default') }
+                                            checked={ newDoctypeIsDefault }
+                                            onChange={ (value) => {
+                                                setNewDoctypeIsDefault(value);
+                                            } }/>
                                     </div>
                                 ) }
                             </div>
@@ -296,15 +304,23 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                             </>
                         ) }
                         <div className={ `flex cursor-pointer items-center px-2 border border-(--border-secondary)
-                                          bg-(--bg-primary) rounded-lg ${ selectedDoctype.code === "root" && 'cursor-not-allowed!' }` }
-                             onClick={ (e) => {
-                                 cm.current?.show(e);
-                             } }
-                        >
-                            <EllipsisVertical size={ 18 }
-                                              className={ `${ selectedDoctype.code === "root" && 'pointer-events-none' }` }
-                            />
-                            <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }/>
+                                          bg-(--bg-primary) rounded-lg ${ selectedDoctype.code === "root" && 'cursor-not-allowed!' }` }>
+                            <Menu position="bottom-end" withinPortal>
+                                <Menu.Target>
+                                    <EllipsisVertical
+                                        size={ 18 }
+                                        className={ `${ selectedDoctype.code === "root" && 'pointer-events-none' }` }
+                                    />
+                                </Menu.Target>
+                                <Menu.Dropdown>
+                                    { menuModel.map((item: any, index: number) => (
+                                        <Menu.Item key={ index } leftSection={ item.icon }
+                                                   onClick={ item.command }>
+                                            { item.label }
+                                        </Menu.Item>
+                                    )) }
+                                </Menu.Dropdown>
+                            </Menu>
                         </div>
                     </div>
                 </div>
@@ -312,7 +328,8 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
 
             { selectedDoctype.type === 'document' ? (
                 <div>
-                    <div className="p-4 rounded-xl border border-(--border-secondary) bg-(--bg-primary) flex flex-col gap-4">
+                    <div
+                        className="p-4 rounded-xl border border-(--border-secondary) bg-(--bg-primary) flex flex-col gap-4">
                         <h3 className='text-lg font-semibold'>
                             { t('DOCTYPES.update_doctype') }
                         </h3>
@@ -328,16 +345,16 @@ export function DoctypeDetails({ selectedDoctype, doctypes, formId, doctypeChang
                                    disabled/>
                         </div>
                         <div className="flex items-center gap-2">
-                            <InputSwitch inputId='isDefault' checked={ selectedDoctype.is_default }
-                                         onChange={ () => {
-                                             doctypeChanged?.({
-                                                 ...selectedDoctype,
-                                                 is_default: !selectedDoctype.is_default
-                                             });
-                                         } }/>
-                            <label htmlFor='isDefault' className="flex items-center gap-4 cursor-pointer">
-                                { t('DOCTYPES.is_default') }
-                            </label>
+                            <InputSwitch
+                                id='isDefault'
+                                label={ t('DOCTYPES.is_default') }
+                                checked={ selectedDoctype.is_default }
+                                onChange={ () => {
+                                    doctypeChanged?.({
+                                        ...selectedDoctype,
+                                        is_default: !selectedDoctype.is_default
+                                    });
+                                } }/>
                         </div>
                     </div>
                     <div className='flex justify-end mt-4'>

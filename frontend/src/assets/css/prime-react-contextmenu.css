@@ -15,6 +15,11 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+.mantine-Menu-item:has(.critical):hover svg,
+.mantine-Menu-item:has(.critical):hover span {
+    @apply text-(--text-error)!;
+}
+
 .p-contextmenu-root-list > .p-menuitem > .p-menuitem-content > .p-menuitem-link > .p-menuitem-text {
     @apply mr-10;
 }
@@ -44,11 +49,6 @@
     @apply px-3;
     @apply gap-2;
     @apply py-2.5;
-}
-
-.p-menuitem-content .p-menuitem-link:has(.critical):hover svg,
-.p-menuitem-content .p-menuitem-link:has(.critical):hover span {
-    @apply text-(--text-error)!;
 }
 
 .p-paginator, .p-dropdown, .p-contextmenu, .p-submenu-list {
