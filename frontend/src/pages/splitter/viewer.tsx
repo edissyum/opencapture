@@ -19,7 +19,6 @@ import dayjs from "dayjs";
 import { t } from "i18next";
 import DOMPurify from "dompurify";
 import { Panel } from "primereact/panel";
-import { Divider } from "primereact/divider";
 import { ContextMenu } from "primereact/contextmenu";
 import { useNavigate, useParams } from "react-router-dom";
 import { Accordion, AccordionTab } from "primereact/accordion";
@@ -85,6 +84,7 @@ import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
 
 import { b64ToFile } from "../settings/general/customization";
 import { Tooltip } from "react-tooltip";
+import { Divider } from "@mantine/core";
 
 export function SplitterViewerPage() {
     const { get, post, del } = axiosApiCall();
@@ -1173,7 +1173,7 @@ export function SplitterViewerPage() {
                                 { t('SPLITTER.rotation') }
                             </div>
 
-                            <Divider layout="vertical"/>
+                            <Divider orientation="vertical"/>
 
                             <div
                                 className={ `flex items-center text-(--text-primary) font-semibold text-sm gap-1  rounded-xl p-3

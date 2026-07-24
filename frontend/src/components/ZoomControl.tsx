@@ -15,7 +15,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { Slider } from "primereact/slider";
+import { Slider } from '@mantine/core';
 import { Minus, Plus } from "lucide-react";
 
 export function ZoomControl({ zoom, setZoom }: any) {
@@ -25,17 +25,18 @@ export function ZoomControl({ zoom, setZoom }: any) {
     };
 
     return (
-        <div
-            className="flex items-center gap-3 select-none w-full">
+        <div className="flex items-center gap-3 select-none w-full">
             <Minus size={ 20 } onClick={ () => setZoom((z: number) => Math.max(z - 10, 100)) }/>
 
             <Slider
-                value={ zoom }
-                onChange={ (e) => handleZoomChange(e.value) }
                 min={ 100 }
                 max={ 200 }
                 step={ 10 }
+                value={ zoom }
                 className="w-full"
+                color="var(--color-primary)"
+                showLabelOnHover={ false }
+                onChange={ (value) => handleZoomChange(value) }
             />
 
             <Plus size={ 20 } onClick={ () => setZoom((z: number) => Math.min(z + 10, 200)) }/>

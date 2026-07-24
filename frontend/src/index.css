@@ -30,18 +30,16 @@
 @import "./assets/css/mantine-switch.css";
 @import "./assets/css/tailwind-theme.css";
 @import "./assets/css/mantine-popover.css";
+@import "./assets/css/mantine-calendar.css";
 @import "./assets/css/prime-react-tree.css";
-@import "./assets/css/prime-react-slider.css";
+@import "./assets/css/mantine-accordion.css";
 @import "./assets/css/prime-react-dialog.css";
 @import "./assets/css/prime-react-stepper.css";
 @import "./assets/css/mantine-multiselect.css";
-@import "./assets/css/prime-react-divider.css";
-@import "assets/css/mantine-calendar.css";
+@import "./assets/css/mantine-autocomplete.css";
 @import "./assets/css/prime-react-dropdown.css";
 @import "./assets/css/prime-react-datatable.css";
-@import "assets/css/mantine-accordion.css";
 @import "./assets/css/prime-react-contextmenu.css";
-@import "assets/css/mantine-autocomplete.css";
 
 @import 'primereact/resources/themes/lara-light-indigo/theme.css';
 
