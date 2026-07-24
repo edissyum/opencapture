@@ -134,7 +134,7 @@ export function Grid<T extends { id: string }>({
                         <Button
                             key={ idx }
                             size={ "sm" }
-                            variant={ "no_bg_border" }
+                            variant="no_bg_border"
                             className="p-2 border"
                             onClick={ action.command }
                             disabled={ selectedRows.length === 0 || action.disabled }
