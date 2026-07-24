@@ -886,12 +886,12 @@ export function VerifierViewerPage() {
         return field;
     }
 
-    const handleSupplierSearch = (e: any, fieldId: string) => {
-        if (!e.query || e.query.trim() === '') {
+    const handleSupplierSearch = (value: string, fieldId: string) => {
+        if (!value || value.trim() === '') {
             setSuggestionsSuppliers(allSuppliers.slice(0, 100));
             return;
         }
-        const query = e.query.toLowerCase();
+        const query = value.toLowerCase();
         const filtered = allSuppliers.filter((supplier) =>
             fieldId === 'name' ? supplier.name?.toLowerCase().includes(query) : supplier.lastname?.toLowerCase().includes(query)
         );
@@ -1438,17 +1438,7 @@ export function VerifierViewerPage() {
                                                                             value={ tmpDocumentData?.datas?.[field.id] ?? "" }
                                                                             optionLabel={ field.id === 'name' ? 'name' : 'lastname' }
                                                                             onChange={ (value) => handleSupplierChange(field, value) }
-                                                                            search={ (e) => handleSupplierSearch(e, field.id) }
-                                                                            itemTemplate={ (supplier: any) => (
-                                                                                <div>
-                                                                                    { field.id === 'name' ? supplier.name : supplier.lastname }
-                                                                                    { field.id === 'lastname' && supplier.firstname ? ` ${ supplier.firstname }` : '' }
-                                                                                    <span
-                                                                                        className='text-(--text-secondary)'>
-                                                                                        { field.id === 'lastname' && supplier.name ? ` (${ supplier.name })` : '' }
-                                                                                    </span>
-                                                                                </div>
-                                                                            ) }
+                                                                            search={ (value: string) => handleSupplierSearch(value, field.id) }
                                                                         />
                                                                     ) : (
                                                                         <Input

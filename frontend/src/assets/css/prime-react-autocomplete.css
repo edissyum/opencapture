@@ -15,36 +15,19 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-
-.p-autocomplete-input {
-    @apply w-full;
+.mantine-Input-wrapper input {
+    @apply h-12.5!;
+    @apply rounded-md;
+    @apply border-(--border-secondary);
 }
 
-.p-autocomplete-dropdown:focus {
+.mantine-Input-wrapper input:focus,
+.mantine-Input-wrapper input:hover {
     @apply shadow-none;
+    @apply outline-none;
+    @apply border-(--color-primary);
 }
 
-.p-autocomplete-dropdown {
-    @apply border-l-0;
-    @apply bg-transparent;
-    @apply text-(--text-primary);
-    @apply border-(--border-secondary);
-}
-
-.p-autocomplete-input:hover + .p-autocomplete-dropdown,
-.p-autocomplete-input:focus + .p-autocomplete-dropdown {
-    @apply border-(--border-primary);
-}
-
-.p-inputwrapper-filled:hover .p-inputtext,
-.p-inputwrapper-filled:hover .p-autocomplete-dropdown {
-    @apply border-(--border-primary);
-}
-
-.p-autocomplete-input {
-    @apply border-(--border-secondary);
-}
-
-.autocompleteError input {
-    @apply border-(--text-error);
+.mantine-Autocomplete-dropdown {
+    @apply p-2!;
 }

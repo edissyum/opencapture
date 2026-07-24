@@ -15,25 +15,22 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import React, { useRef } from "react";
+import DOMPurify from "dompurify";
+import React, { useMemo, useState } from "react";
 
 import { FloatLabel } from "primereact/floatlabel";
-import { AutoComplete } from "primereact/autocomplete";
-import DOMPurify from "dompurify";
+import { Autocomplete as AutocompleteMantine } from '@mantine/core';
 
 interface AutocompleteProps extends React.InputHTMLAttributes<HTMLInputElement> {
     id: string;
-    label?: string;
     error?: any;
+    label?: string;
     value: any[] | any;
-    dropdown?: boolean;
-    multiple?: boolean;
     required?: boolean;
     disabled?: boolean;
     optionLabel?: string;
     suggestions: string[];
-    itemTemplate?: (item: any) => React.ReactNode;
-    search: (event: { query: string }) => void;
+    search: (event: string) => void;
     onChange: (value: any[] | any) => void;
 }
 
@@ -43,38 +40,49 @@ const AutocompleteInput: React.FC<AutocompleteProps> = ({
     label,
     error,
     suggestions,
-    itemTemplate,
-    dropdown = false,
-    multiple = false,
     required = false,
     disabled = false,
     optionLabel = "name",
     search,
     onChange
 }) => {
-    const autoRef = useRef<any>(null);
+
+    const [inputValue, setInputValue] = useState<string>(
+        value ? (typeof value === 'string' ? value : value[optionLabel] ?? '') : ''
+    );
+
+    const { data, itemsByValue } = useMemo(() => {
+        const map = new Map<string, any>();
+        const opts = suggestions.map((item: any) => {
+            const label = typeof item === 'string' ? item : (item[optionLabel] ?? '');
+            const key = typeof item === 'string' ? item : String(item.id ?? label);
+            map.set(key, item);
+            return { value: key, label };
+        }).filter(opt => opt.label !== '');
+        return { data: opts, itemsByValue: map };
+    }, [suggestions, optionLabel]);
 
     return (
         <div>
             <FloatLabel className={ `w-full ${ disabled ? 'cursor-not-allowed' : '' }` }>
-                <AutoComplete
-                    key={ id }
-                    name={ id }
-                    ref={ autoRef }
-                    value={ value }
-                    multiple={ multiple }
-                    dropdown={ dropdown }
-                    disabled={ disabled }
+                <AutocompleteMantine
+                    id={ id }
+                    data={ data }
+                    className={ `w-full ${ inputValue ? 'p-inputwrapper-filled' : '' }` }
+                    value={ inputValue }
                     required={ required }
-                    className={ `
-                        w-full ${ disabled ? 'pointer-events-none' : '' }
-                        ${ error ? 'autocompleteError' : '' }
-                    ` }
-                    completeMethod={ search }
-                    suggestions={ suggestions }
-                    itemTemplate={ itemTemplate }
-                    field={ itemTemplate ? undefined : optionLabel }
-                    onChange={ (e: any) => onChange(e.value) }
+                    disabled={ disabled }
+                    onChange={ (val: string) => {
+                        setInputValue(val);
+                        search(val);
+                    } }
+                    onOptionSubmit={ (key: string) => {
+                        const item = itemsByValue.get(key);
+                        if (item) {
+                            setInputValue(typeof item === 'string' ? item : item[optionLabel] ?? '');
+                            onChange(item);
+                        }
+                    } }
                 />
 
                 { label && (
