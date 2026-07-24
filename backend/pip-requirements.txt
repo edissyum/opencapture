@@ -38,10 +38,10 @@ flask_cors==6.0.5
 flasgger==0.9.7.1
 pillow-heif==1.5.0
 accelerate==1.14.0
-imap-tools==1.13.0
+imap-tools==1.14.0
 fs-watcher==1.0.11
 Flask-Babel==4.0.0
-schwifty==2026.7.2
+schwifty==2026.7.3
 tokenizers==0.22.2
 python-bidi==0.6.11
 pytesseract==0.3.13
