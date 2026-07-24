@@ -17,7 +17,6 @@
 import { z } from "zod";
 import { t } from "i18next";
 import { File, X } from "lucide-react";
-import { Panel } from "primereact/panel";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,6 +31,7 @@ import { InputSwitch } from "../../InputSwitch";
 import { showToast } from "../../ToastProvider";
 import { DynamicForm } from "../../form/DynamicForm";
 import { DoctypesTree } from "../doctypes/doctypesTree";
+import { Panel } from "../../Panel.tsx";
 
 export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const navigate = useNavigate();
@@ -313,7 +313,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
                     <div className='grid grid-cols-4 gap-4'>
                         { documents && documents.map((doc: any) => (
                             <Panel key={ doc.folder } header={
-                                <div className='flex items-center'>
+                                <div className='flex items-center font-semibold'>
                                     <span>{ doc.folder }</span>
                                     <span className='ml-auto'>
                                         <InputSwitch
@@ -324,7 +324,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
                                     </span>
                                 </div>
                             }>
-                                <div className='p-6'>
+                                <div>
                                     { module === 'verifier' ? (
                                         <Dropdown id={ 'workflow' } value={ doc.workflow_id }
                                                   label={ t('AI-DOCTYPES.workflow_associated') }
