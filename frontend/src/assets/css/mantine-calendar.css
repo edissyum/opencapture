@@ -16,7 +16,6 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 .mantine-DateInput-wrapper input {
-    @apply h-12.5!;
     @apply rounded-md;
     @apply border-(--border-secondary);
 }

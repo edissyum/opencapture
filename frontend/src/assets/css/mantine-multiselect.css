@@ -15,19 +15,11 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-.mantine-Input-wrapper input:not(.mantine-MultiSelect-inputField) {
-    @apply h-12.5!;
-    @apply rounded-md;
-    @apply border-(--border-secondary);
+.mantine-MultiSelect-inputField {
+    @apply h-10!;
 }
 
-.mantine-Input-wrapper input:focus,
-.mantine-Input-wrapper input:hover {
-    @apply shadow-none;
-    @apply outline-none;
+.mantine-MultiSelect-input:hover,
+.mantine-MultiSelect-input:focus-within {
     @apply border-(--color-primary);
-}
-
-.mantine-Autocomplete-dropdown {
-    @apply p-2!;
 }

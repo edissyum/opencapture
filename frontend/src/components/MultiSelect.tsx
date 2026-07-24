@@ -16,11 +16,10 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { X } from "lucide-react";
-import React, { useState } from "react";
+import { MultiSelect } from "@mantine/core";
+import React, { useMemo, useState } from "react";
 
-import { FloatLabel } from "primereact/floatlabel";
-import { MultiSelect } from "primereact/multiselect";
+import { FloatingLabel, useFloatingLabel } from "./FloatingLabel";
 
 interface MultiSelectProps extends React.InputHTMLAttributes<HTMLInputElement> {
     id: string;
@@ -57,14 +56,31 @@ const MultiSelectInput: React.FC<MultiSelectProps> = ({
     required = false,
     onChange
 }) => {
+    const [searchValue, setSearchValue] = useState("");
 
-    const [filterValue, setFilterValue] = useState("");
+    const hasValue = !!value && value.length > 0;
+    const { floating, onFocus, onBlur } = useFloatingLabel(hasValue);
 
-    const highlightJSX: any = (node: any, filter: any) => {
-        if (!filter || !node) return node;
+    const searchFields = useMemo(
+        () => (filterBy ? filterBy.split(",") : [optionLabel]),
+        [filterBy, optionLabel]
+    );
+
+    const { data, itemsByValue } = useMemo(() => {
+        const map = new Map<string, any>();
+        const opts = options.map((option: any) => {
+            const key = String(option[optionValue]);
+            map.set(key, option);
+            return { value: key, label: String(option[optionLabel] ?? "") };
+        });
+        return { data: opts, itemsByValue: map };
+    }, [options, optionValue, optionLabel]);
+
+    const highlightJSX: any = (node: any, query: string) => {
+        if (!query || !node) return node;
 
         if (typeof node === "string") {
-            const regex = new RegExp(`(${filter})`, "gi");
+            const regex = new RegExp(`(${ query })`, "gi");
             const parts = node.split(regex);
 
             return parts.map((part, i) =>
@@ -78,70 +94,57 @@ const MultiSelectInput: React.FC<MultiSelectProps> = ({
             // @ts-ignore
             ...node.props,
             // @ts-ignore
-            children: React.Children.map(node.props.children, child =>
-                highlightJSX(child, filter)
+            children: React.Children.map(node.props.children, (child: any) =>
+                highlightJSX(child, query)
             ),
         });
     };
 
-    const wrappedItemTemplate = (option: any) => {
-        const originalJSX = itemTemplate
-            ? itemTemplate(option)
-            : option[optionLabel];
-        return highlightJSX(originalJSX, filterValue);
-    };
-
-    const multiSelectEl: any = (
-        <MultiSelect
-            id={ id }
-            display="chip"
-            value={ value }
-            filter={ filter }
-            className='w-full'
-            invalid={ invalid }
-            options={ options }
-            disabled={ disabled }
-            required={ required }
-            focusOnHover={ false }
-            selectOnFocus={ false }
-            autoOptionFocus={ false }
-            optionValue={ optionValue }
-            optionLabel={ optionLabel }
-            placeholder={ placeholder }
-            removeIcon={ (options: any) => (
-                <i { ...options.iconProps }
-                   className={ `${ options.iconProps?.className ?? "" }` }>
-                    <X size={ 16 }/>
-                </i>
-            ) }
-
-            itemTemplate={ wrappedItemTemplate }
-            filterBy={ filterBy ? filterBy : optionLabel }
-            emptyMessage={ t('GLOBAL.no_result_found') }
-            emptyFilterMessage={ t('GLOBAL.no_result_found') }
-            virtualScrollerOptions={ { itemSize: 45, orientation: 'vertical', showSpacer: false } }
-            onChange={ onChange }
-            onFilter={ (e) => setFilterValue(e.filter) }
-        />
-    );
-
     return (
         <div className={ `${ className } group group-focus-within:border-(--border-primary) relative flex
                           justify-items-stretch ${ disabled ? 'cursor-not-allowed' : '' }` }>
-            { placeholder ? (
-                <span className='w-full'>
-                    { multiSelectEl }
-                </span>
-            ) : (
-                <FloatLabel className='w-full'>
-                    { multiSelectEl }
-                    { label && (
-                        <label htmlFor={ id } className='select-none'>
-                            { label }
-                            { required && <span className="text-(--text-error) ml-1">*</span> }
-                        </label>
-                    ) }
-                </FloatLabel>
+            <MultiSelect
+                clearable
+                id={ id }
+                data={ data }
+                error={ invalid }
+                disabled={ disabled }
+                required={ required }
+                searchable={ filter }
+                className='w-full'
+                searchValue={ searchValue }
+                placeholder={ placeholder }
+                value={ (value ?? []).map(String) }
+                onSearchChange={ setSearchValue }
+                nothingFoundMessage={ t('GLOBAL.no_result_found') }
+                filter={ ({ options: parsedOptions, search }) => {
+                    if (!search) return parsedOptions;
+                    const query = search.toLowerCase();
+                    return parsedOptions.filter((opt: any) => {
+                        const original = itemsByValue.get(opt.value);
+                        if (!original) return false;
+                        return searchFields.some((field) =>
+                            String(original[field] ?? "").toLowerCase().includes(query)
+                        );
+                    });
+                } }
+                renderOption={ ({ option }) => {
+                    const original = itemsByValue.get(option.value);
+                    const content = itemTemplate && original ? itemTemplate(original) : option.label;
+                    return highlightJSX(content, searchValue);
+                } }
+                onBlur={ onBlur }
+                onFocus={ onFocus }
+                onChange={ (newValue) => {
+                    const original = newValue.map((v) => itemsByValue.get(v)?.[optionValue] ?? v);
+                    onChange({ value: original });
+                } }
+            />
+
+            { label && !placeholder && (
+                <FloatingLabel htmlFor={ id } floating={ floating } required={ required }>
+                    { label }
+                </FloatingLabel>
             ) }
         </div>
     );
