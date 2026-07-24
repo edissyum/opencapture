@@ -92,7 +92,8 @@ def get_suppliers(_args):
 
 
 def get_supplier_by_id(supplier_id):
-    supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
+    select = ["id, name, lastname, vat_number, siret, siren, iban, duns, email, phone, address_id"]
+    supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id, 'select': select})
 
     if error is None:
         return supplier_info, 200
@@ -105,7 +106,8 @@ def get_supplier_by_id(supplier_id):
 
 
 def get_address_by_id(address_id):
-    address_info, error = accounts.get_address_by_id({'address_id': address_id})
+    select = ["id, address1, address2, postal_code, city, country"]
+    address_info, error = accounts.get_address_by_id({'address_id': address_id, 'select': select})
 
     if error is None:
         return address_info, 200
@@ -305,7 +307,8 @@ def update_position_by_supplier_id(supplier_id, data):
             column: position
         })
 
-        _, error = accounts.update_supplier({'set': {"positions": json.dumps(supplier_positions)}, 'supplier_id': supplier_id})
+        _, error = accounts.update_supplier(
+            {'set': {"positions": json.dumps(supplier_positions)}, 'supplier_id': supplier_id})
         if error is None:
             return '', 200
         else:
@@ -467,8 +470,10 @@ def create_supplier(data, from_api=False):
         'address_id': data['address_id'] if 'address_id' in data and data['address_id'] else None,
         'get_only_raw_footer': data['get_only_raw_footer'] if 'get_only_raw_footer' in data else False,
         'document_lang': data['document_lang'] if 'document_lang' in data and data['document_lang'] else 'fra',
-        'default_currency': data['default_currency'] if 'default_currency' in data and data['default_currency'] else None,
-        'informal_contact': data['informal_contact'] if 'informal_contact' in data and data['informal_contact'] else False
+        'default_currency': data['default_currency'] if 'default_currency' in data and data[
+            'default_currency'] else None,
+        'informal_contact': data['informal_contact'] if 'informal_contact' in data and data[
+            'informal_contact'] else False
     }
 
     if 'default_accounting_plan' in data and data['default_accounting_plan']:
@@ -767,8 +772,10 @@ def import_suppliers(args):
             if footer_coherence == 'True' or footer_coherence == 'true':
                 get_only_raw_footer = False
 
-            duns = row[args['selected_columns'].index('duns')] if not row[args['selected_columns'].index('duns')] == '' else None
-            vat_number = row[args['selected_columns'].index('vat_number')] if not row[args['selected_columns'].index('vat_number')] == '' else None
+            duns = row[args['selected_columns'].index('duns')] if not row[args['selected_columns'].index(
+                'duns')] == '' else None
+            vat_number = row[args['selected_columns'].index('vat_number')] if not row[args['selected_columns'].index(
+                'vat_number')] == '' else None
 
             account = {
                 'info': {
@@ -799,7 +806,8 @@ def import_suppliers(args):
                 }
             }
 
-            third_party = accounts.get_suppliers({'where': ['vat_number = %s OR duns = %s'], 'data': [account['info']['vat_number'], account['info']['duns']]})
+            third_party = accounts.get_suppliers({'where': ['vat_number = %s OR duns = %s'],
+                                                  'data': [account['info']['vat_number'], account['info']['duns']]})
             if third_party:
                 accounts.update_supplier({'set': account['info'], 'supplier_id': third_party[0]['id']})
                 accounts.update_address({'set': account['address'], 'address_id': third_party[0]['address_id']})
@@ -868,6 +876,7 @@ def fill_reference_file():
 def get_civilities():
     return accounts.get_civilities()
 
+
 def delete_civility(civility_id):
     civility = accounts.get_civility_by_id({'civility_id': civility_id})
     if civility:
@@ -886,6 +895,7 @@ def delete_civility(civility_id):
             "message": gettext('CIVILITY_NOT_FOUND')
         }
         return response, 400
+
 
 def create_civility(data):
     civility = accounts.get_civility_by_label({'label': data['label']})
