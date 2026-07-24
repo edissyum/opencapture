@@ -29,6 +29,8 @@ import tempfile
 from .. import shared
 from xml.dom import minidom
 from datetime import datetime
+from ..models import workflow
+from flask_babel import gettext
 from unidecode import unidecode
 from .NFZ42020 import hash_file_content
 from werkzeug.datastructures import FileStorage
@@ -227,7 +229,7 @@ class Splitter:
             workflow_settings = self.db.select({
                 'select': ['id', 'input, process'],
                 'table': ['workflows'],
-                'where': ['workflow_id = %s', 'module = %s'],
+                'where': ['id = %s', 'module = %s'],
                 'data': [upload_args['workflow_id'], 'splitter']
             })
 
@@ -579,6 +581,18 @@ class Splitter:
             for sub_key in json_body['datas']:
                 json_body['datas'][sub_key] = ''.join(construct_with_var(json_body['datas'][sub_key],
                                                                          metadata['custom_fields'], sub_key))
+
+        if isinstance(json_body['workflowId'], str):
+            _w = workflow.get_workflows({
+                'select': ['id'],
+                'where': ['workflow_id = %s', 'module = %s'],
+                'data': [json_body['workflowId'], 'verifier']
+            })
+
+            if _w:
+                json_body['workflowId'] = _w[0]['id']
+            else:
+                return False, gettext('VERIFIER_WORKFLOW_NOT_FOUND')
 
         tmp_json_body = json.loads(parameters['body_template'])
         for document in batch['documents']:

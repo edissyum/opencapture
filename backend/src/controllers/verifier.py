@@ -521,6 +521,7 @@ def export_mem(document_id, data):
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if not error:
         return verifier_exports.export_mem(data['data'], document_info, log, regex, database)
+    return None
 
 
 def export_coog(document_id, data):
