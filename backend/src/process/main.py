@@ -91,7 +91,6 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
 
     md5 = hash_file_content(file, hash_algorithm='md5')
     sha256 = hash_file_content(file, hash_algorithm='sha256')
-
     document_data = {
         'filename': os.path.basename(file),
         'md5': md5,
@@ -341,7 +340,6 @@ def found_data_recursively(log, data_name, ocr, file, nb_pages, text_by_pages, d
 
 def process(args, file, log, config, files, ocr, regex, database, docservers, configurations, languages):
     filename = os.path.basename(file)
-    log.info('Processing file using workflow&nbsp;<strong>' + args['workflow_id'] + '</strong>&nbsp;: ' + filename)
     datas = {
         'datas': {},
         'pages': {},
@@ -359,7 +357,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     log.debug('Number of pages in document : ' + str(nb_pages))
 
-    workflow_settings = {}
     if 'workflow_id' in args:
         workflow_settings = database.select({
             'select': ['*'],
@@ -369,6 +366,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         })
         if workflow_settings:
             workflow_settings = workflow_settings[0]
+
+            log.info('Processing file using workflow&nbsp;<strong>' + workflow_settings['workflow_id'] + '</strong>&nbsp;: ' + filename)
+
+
             if workflow_settings['input']['rotation'] and workflow_settings['input']['rotation'] != 'no_rotation':
                 rotate_document(file, workflow_settings['input']['rotation'])
                 log.info('Document rotated by ' + str(workflow_settings['input']['rotation']) +
@@ -376,6 +377,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         else:
             log.error('Workflow not found in database : ' + args['workflow_id'])
             return None
+    else:
+        return None
 
     system_fields_to_find = []
     custom_fields_to_find = []
@@ -383,35 +386,34 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     convert_function = 'pdf2image'
     tesseract_function = 'line_box_builder'
 
-    if workflow_settings:
-        if 'tesseract_function' in workflow_settings['process'] and workflow_settings['process']['tesseract_function']:
-            tesseract_function = workflow_settings['process']['tesseract_function']
-        if 'convert_function' in workflow_settings['process'] and workflow_settings['process']['convert_function']:
-            convert_function = workflow_settings['process']['convert_function']
+    if 'tesseract_function' in workflow_settings['process'] and workflow_settings['process']['tesseract_function']:
+        tesseract_function = workflow_settings['process']['tesseract_function']
+    if 'convert_function' in workflow_settings['process'] and workflow_settings['process']['convert_function']:
+        convert_function = workflow_settings['process']['convert_function']
 
-        if workflow_settings['input']['apply_process']:
-            for field in workflow_settings['process']['system_fields']:
-                system_fields_to_find.append(field)
-            if 'custom_fields' in workflow_settings['process'] and workflow_settings['process']['custom_fields']:
-                for field in workflow_settings['process']['custom_fields']:
-                    custom_fields_to_find.append(field)
-        else:
-            custom_fields_to_find = []
+    if workflow_settings['input']['apply_process']:
+        for field in workflow_settings['process']['system_fields']:
+            system_fields_to_find.append(field)
+        if 'custom_fields' in workflow_settings['process'] and workflow_settings['process']['custom_fields']:
+            for field in workflow_settings['process']['custom_fields']:
+                custom_fields_to_find.append(field)
+    else:
+        custom_fields_to_find = []
 
-        if 'ai_model_id' in workflow_settings['input'] and workflow_settings['input']['ai_model_id']:
-            ai_model_id = workflow_settings['input']['ai_model_id']
-            res = find_workflow_with_ia(file, ai_model_id, database, docservers, Files, ocr, log)
-            if res:
-                log.info('Workflow with AI model ' + str(ai_model_id) + ' found for document, send to workflow : ' + res)
-                return send_to_workflow({
-                    'log': log,
-                    'file': file,
-                    'ip': args['ip'],
-                    'workflow_id': res,
-                    'datas': args['datas'],
-                    'user_info': args['user_info'],
-                    'custom_id': args['custom_id']
-                })
+    if 'ai_model_id' in workflow_settings['input'] and workflow_settings['input']['ai_model_id']:
+        ai_model_id = workflow_settings['input']['ai_model_id']
+        res = find_workflow_with_ia(file, ai_model_id, database, docservers, Files, ocr, log)
+        if res:
+            log.info('Workflow with AI model ' + str(ai_model_id) + ' found for document, send to workflow : ' + res)
+            return send_to_workflow({
+                'log': log,
+                'file': file,
+                'ip': args['ip'],
+                'workflow_id': res,
+                'datas': args['datas'],
+                'user_info': args['user_info'],
+                'custom_id': args['custom_id']
+            })
 
     log.debug('Convert function to use for document processing : ' + convert_function)
     log.debug('Tesseract function to use for document processing : ' + tesseract_function)

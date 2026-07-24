@@ -119,7 +119,7 @@ def launch(args):
                 outputs = database.select({
                     'select': ['output'],
                     'table': ['workflows'],
-                    'where': ['workflow_id = %s', 'module = %s'],
+                    'where': ['id = %s', 'module = %s'],
                     'data': [args['workflow_id'], 'splitter']
                 })
                 if outputs:
@@ -258,7 +258,7 @@ def launch(args):
                     'workflow_id': args['workflow_id'],
                     'history_submodule': 'upload_file',
                     'user_id': args['user_id'] if 'user_id' in args and args['user_id'] else 0,
-                    'history_desc': f"{gettext('BATCH')} n°<strong>{str(batch_id)}</strong> {gettext('CREATED_USING')} <strong>{args['workflow_id']}</strong>"
+                    'history_desc': f"{gettext('BATCH')} n°<strong>{str(batch_id)}</strong> {gettext('CREATED_USING')} <strong>{workflow_settings[0]['workflow_id']}</strong>"
                 }
             })
 
