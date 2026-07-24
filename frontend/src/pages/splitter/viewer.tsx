@@ -1534,7 +1534,7 @@ export function SplitterViewerPage() {
                                     </div>
                                 }>
                                     { documentMetadata.length > 0 && document.pages.length > 0 && (
-                                        <div>
+                                        <div className='p-4 pb-0'>
                                             <h3 className='font-semibold text-(--text-secondary) flex items-center cursor-pointer gap-1'
                                                 onClick={ () => setDocumentMetadataOpen(prev => !prev) }
                                             >

@@ -15,7 +15,6 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { Panel } from "primereact/panel";
 import { useEffect, useState } from "react";
 import { ArrowRight, Building2, CircleAlert, Code, Cpu, Library, Shield, Tag, Users } from "lucide-react";
 
@@ -24,6 +23,7 @@ import { axiosApiCall } from "../services/hooks/axiosApiCall";
 
 import { Button } from "../components/Button";
 import { Loader } from "../components/loader/Loader";
+import { Panel } from "../components/Panel.tsx";
 
 export function AboutPage() {
     const { get } = axiosApiCall();
@@ -139,7 +139,7 @@ export function AboutPage() {
                     </div>
                     <div className='w-full flex flex-col gap-4'>
                         <Panel header={
-                            <div className='flex items-center gap-3 text-(--text-secondary)'>
+                            <div className='flex items-center gap-3 text-(--text-secondary) font-semibold'>
                                 <Shield/> { t('ABOUT.license_desc') }
                             </div>
                         }>
@@ -160,7 +160,7 @@ export function AboutPage() {
                         </Panel>
 
                         <Panel header={
-                            <div className='flex items-center gap-3 text-(--text-secondary)'>
+                            <div className='flex items-center gap-3 text-(--text-secondary) font-semibold'>
                                 <Building2/> { t('ABOUT.editor') }
                             </div>
                         }>
@@ -204,7 +204,7 @@ export function AboutPage() {
                         </Panel>
 
                         <Panel header={
-                            <div className='flex items-center gap-3 text-(--text-secondary)'>
+                            <div className='flex items-center gap-3 text-(--text-secondary) font-semibold'>
                                 <Users/> { t('ABOUT.team') }
                             </div>
                         }>
@@ -299,7 +299,7 @@ export function AboutPage() {
                         </Panel>
 
                         <Panel header={
-                            <div className='flex items-center gap-3 text-(--text-secondary)'>
+                            <div className='flex items-center gap-3 text-(--text-secondary) font-semibold'>
                                 <Code/> { t('ABOUT.technical_infos') }
                             </div>
                         }>
@@ -322,7 +322,7 @@ export function AboutPage() {
                         </Panel>
 
                         <Panel header={
-                            <div className='flex items-center gap-3 text-(--text-secondary)'>
+                            <div className='flex items-center gap-3 text-(--text-secondary) font-semibold'>
                                 <Library/> { t('ABOUT.lib_front') }
                             </div>
                         }>
@@ -354,7 +354,7 @@ export function AboutPage() {
                         </Panel>
 
                         <Panel header={
-                            <div className='flex items-center gap-3 text-(--text-secondary)'>
+                            <div className='flex items-center gap-3 text-(--text-secondary) font-semibold'>
                                 <Cpu/> { t('ABOUT.lib_backend') }
                             </div>
                         }>

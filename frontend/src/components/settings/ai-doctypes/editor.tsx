@@ -324,7 +324,7 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
                                     </span>
                                 </div>
                             }>
-                                <div>
+                                <div className='p-4'>
                                     { module === 'verifier' ? (
                                         <Dropdown id={ 'workflow' } value={ doc.workflow_id }
                                                   label={ t('AI-DOCTYPES.workflow_associated') }

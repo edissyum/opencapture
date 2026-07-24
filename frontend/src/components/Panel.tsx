@@ -23,7 +23,7 @@ export function Panel({ header, children }: { header: React.ReactNode; children:
             <div className='bg-(--bg-primary) p-4 border border-b-0 border-(--border-secondary) rounded-t-xl'>
                 { header }
             </div>
-            <div className='bg-(--bg-primary) p-4 border border-(--border-secondary) rounded-b-xl'>
+            <div className='bg-(--bg-primary) border border-(--border-secondary) rounded-b-xl'>
                 <div>{children}</div>
             </div>
         </div>
