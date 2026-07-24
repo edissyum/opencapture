@@ -92,7 +92,7 @@ def get_suppliers(_args):
 
 
 def get_supplier_by_id(supplier_id):
-    select = ["id, name, lastname, vat_number, siret, siren, iban, duns, email, phone, address_id"]
+    select = ["name, lastname, vat_number, siret, siren, iban, duns, email, phone, address_id"]
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id, 'select': select})
 
     if error is None:
@@ -106,7 +106,7 @@ def get_supplier_by_id(supplier_id):
 
 
 def get_address_by_id(address_id):
-    select = ["id, address1, address2, postal_code, city, country"]
+    select = ["address1, address2, postal_code, city, country"]
     address_info, error = accounts.get_address_by_id({'address_id': address_id, 'select': select})
 
     if error is None:
