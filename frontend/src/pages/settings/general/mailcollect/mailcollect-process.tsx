@@ -16,14 +16,12 @@
 
 import { z } from "zod";
 import { t } from "i18next";
+import { Stepper } from "primereact/stepper";
 import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { ArrowLeft, Ban, CircleQuestionMark, CornerUpRight } from "lucide-react";
-
-import { Stepper } from "primereact/stepper";
-import { FloatLabel } from "primereact/floatlabel";
 import { StepperPanel } from "primereact/stepperpanel";
+import { ArrowLeft, Ban, CircleQuestionMark, CornerUpRight } from "lucide-react";
 
 import { getSchemaForAuthMethod } from "./authSchema";
 
@@ -591,7 +589,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                 control={ modulesControl }
                                 render={ ({ field }) => (
                                     <>
-                                        <FloatLabel>
+                                        <div className='relative'>
                                             <Dropdown
                                                 filter
                                                 id="verifier_workflow_id"
@@ -603,9 +601,14 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                                 onChange={ (e: any) => field.onChange(e.value) }
                                                 className="w-full"
                                             />
-                                            <label
-                                                htmlFor="verifier_workflow_id">{ t("MAILCOLLECT.select_workflow") }</label>
-                                        </FloatLabel>
+                                            <label className={ `absolute left-3 select-none pointer-events-none transition-all 
+                                                        duration-150 top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary) 
+                                                        text-(--text-secondary)` }
+                                            >
+                                                { t("MAILCOLLECT.select_workflow") }
+                                            </label>
+                                        </div>
+
                                         { moduleErrors && moduleErrors['verifier_workflow_id'] && (
                                             <p className="text-(--text-error) mt-2">
                                                 { moduleErrors['verifier_workflow_id']?.message as string }
@@ -636,7 +639,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                 control={ modulesControl }
                                 render={ ({ field }) => (
                                     <>
-                                        <FloatLabel>
+                                        <div className='relative'>
                                             <Dropdown
                                                 filter
                                                 id="splitter_workflow_id"
@@ -648,9 +651,14 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                                 onChange={ (e: any) => field.onChange(e.value) }
                                                 className="w-full"
                                             />
-                                            <label
-                                                htmlFor="splitter_workflow_id">{ t("MAILCOLLECT.select_workflow") }</label>
-                                        </FloatLabel>
+                                            <label className={ `absolute left-3 select-none pointer-events-none transition-all 
+                                                        duration-150 top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary) 
+                                                        text-(--text-secondary)` }
+                                            >
+                                                { t("MAILCOLLECT.select_workflow") }
+                                            </label>
+                                        </div>
+
                                         { moduleErrors && moduleErrors['splitter_workflow_id'] && (
                                             <p className="text-(--text-error) mt-2">
                                                 { moduleErrors['splitter_workflow_id']?.message as string }

@@ -152,14 +152,14 @@ h3, h1 {
     @apply leading-none;
 }
 
-.p-inputtext {
-    font-family: "Montserrat", sans-serif;
-}
+input:disabled {
+    @apply opacity-70;
+    @apply cursor-not-allowed;
+    @apply bg-(--bg-primary)!;
 
-/* Fix placeholder for input in FloatLabel */
-.p-float-label input::placeholder {
-    @apply opacity-100;
-    @apply text-(--text-secondary);
+    &:hover {
+        @apply border-(--border-secondary);
+    }
 }
 
 /* Toastify customization */

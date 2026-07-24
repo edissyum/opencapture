@@ -18,7 +18,8 @@
 import DOMPurify from "dompurify";
 import { Autocomplete } from '@mantine/core';
 import React, { useMemo, useState } from "react";
-import { FloatLabel } from "primereact/floatlabel";
+
+import { FloatingLabel, useFloatingLabel } from "./FloatingLabel";
 
 interface AutocompleteProps extends React.InputHTMLAttributes<HTMLInputElement> {
     id: string;
@@ -50,6 +51,8 @@ const AutocompleteInput: React.FC<AutocompleteProps> = ({
         value ? (typeof value === 'string' ? value : value[optionLabel] ?? '') : ''
     );
 
+    const { floating, onFocus, onBlur } = useFloatingLabel(!!inputValue);
+
     const { data, itemsByValue } = useMemo(() => {
         const map = new Map<string, any>();
         const opts = suggestions.map((item: any) => {
@@ -63,14 +66,16 @@ const AutocompleteInput: React.FC<AutocompleteProps> = ({
 
     return (
         <div>
-            <FloatLabel className={ `w-full ${ disabled ? 'cursor-not-allowed' : '' }` }>
+            <div className={ `relative w-full ${ disabled ? 'cursor-not-allowed' : '' }` }>
                 <Autocomplete
                     id={ id }
                     data={ data }
-                    className={ `w-full ${ inputValue ? 'p-inputwrapper-filled' : '' }` }
+                    className='w-full'
                     value={ inputValue }
                     required={ required }
                     disabled={ disabled }
+                    onFocus={ onFocus }
+                    onBlur={ onBlur }
                     onChange={ (val: string) => {
                         setInputValue(val);
                         search(val);
@@ -85,12 +90,11 @@ const AutocompleteInput: React.FC<AutocompleteProps> = ({
                 />
 
                 { label && (
-                    <label htmlFor={ id }>
+                    <FloatingLabel htmlFor={ id } floating={ floating } required={ required }>
                         { label }
-                        { required && <span className="text-(--text-error) ml-1">*</span> }
-                    </label>
+                    </FloatingLabel>
                 ) }
-            </FloatLabel>
+            </div>
             { error && (
                 <p className="text-(--text-error) text-xs ml-1 mt-1"
                    dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(error) } }/>

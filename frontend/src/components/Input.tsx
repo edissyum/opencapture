@@ -16,9 +16,10 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import DOMPurify from "dompurify";
-import { FloatLabel } from "primereact/floatlabel";
 import React, { useEffect, useRef, useState } from "react";
 import { CircleQuestionMark, Eye, EyeOff } from "lucide-react";
+
+import { FloatingLabel, useFloatingLabel } from "./FloatingLabel";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     error?: any;
@@ -44,6 +45,8 @@ const Input: React.FC<InputProps> = ({
     type = "text",
     className = "",
     height = "h-12",
+    onFocus,
+    onBlur,
     ...props
 }) => {
     const [passwordVisible, setPasswordVisible] = React.useState(false);
@@ -55,6 +58,8 @@ const Input: React.FC<InputProps> = ({
     const hasValue = props.value !== undefined && props.value !== null && props.value !== '';
 
     const value = props.value ?? "";
+
+    const { floating, onFocus: onFloatFocus, onBlur: onFloatBlur } = useFloatingLabel(hasValue);
 
     const [textWidth, setTextWidth] = useState(0);
     const textRef = useRef<HTMLSpanElement>(null);
@@ -88,7 +93,7 @@ const Input: React.FC<InputProps> = ({
                               relative flex justify-items-stretch transition-colors
                               ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' }
                               ${ disabled ? 'cursor-not-allowed opacity-50' : 'hover:border-(--border-primary)!' }` }>
-                <FloatLabel className='w-full'>
+                <div className='relative w-full'>
                     { bgColor && hasValue && (
                         <>
                             <div
@@ -111,10 +116,7 @@ const Input: React.FC<InputProps> = ({
                     <input
                         id={ id }
                         ref={ inputRef }
-                        className={ `disabled:bg-(--bg-secondary) disabled:cursor-not-allowed! border-0!
-                                     w-full! px-3! py-2! focus:outline-none! ${ height }
-                                     ${ props.placeholder || hasValue ? "p-inputwrapper-filled" : "" }`
-                        }
+                        className={ `border-0! w-full! px-3! py-2! focus:outline-none! ${ height }` }
                         style={ {
                             fontWeight: `${ textWeight ? textWeight : '400' }`,
                             color: `${ textColor ? `var(--${ textColor })` : 'var(--text-primary)' }`
@@ -123,15 +125,22 @@ const Input: React.FC<InputProps> = ({
                         disabled={ disabled }
                         required={ required }
                         aria-required={ required }
+                        onFocus={ (e) => {
+                            onFloatFocus();
+                            onFocus?.(e);
+                        } }
+                        onBlur={ (e) => {
+                            onFloatBlur();
+                            onBlur?.(e);
+                        } }
                         { ...props }
                     />
                     { label && (
-                        <label htmlFor={ id } className='select-none'>
+                        <FloatingLabel htmlFor={ id } floating={ floating } required={ required }>
                             { label }
-                            { required && <span className="text-(--text-error) ml-1">*</span> }
-                        </label>
+                        </FloatingLabel>
                     ) }
-                </FloatLabel>
+                </div>
 
                 { hint && (
                     <span className={ `absolute cursor-pointer z-10 right-1.5 top-1.5 text-(--text-secondary)` }>

@@ -124,39 +124,6 @@
     @apply bg-(--color-primary);
 }
 
-/* Floating label */
-.p-float-label:has(.p-filled) label,
-.p-float-label:has(input:focus) label,
-.p-float-label:has(textarea:focus) label,
-.p-float-label:has(.p-inputwrapper-filled) label {
-    @apply px-1;
-    @apply h-3.5;
-    @apply top-0.5;
-    @apply bg-(--bg-primary);
-    @apply text-(--text-secondary);
-}
-
-.p-float-label label {
-    @apply truncate;
-    @apply max-w-[90%];
-    @apply leading-[1.05];
-    @apply text-(--text-secondary);
-}
-
-/* Input switch */
-.p-inputswitch {
-    @apply -ml-1;
-    @apply scale-80;
-}
-
-.p-inputswitch .p-inputswitch-slider::before {
-    margin-top: -0.600rem;
-}
-
-.p-inputswitch.p-highlight .p-inputswitch-slider {
-    @apply bg-(--color-primary);
-}
-
 /* Radio button */
 .p-radiobutton.p-highlight .p-radiobutton-box {
     @apply border-(--color-primary);

@@ -20,9 +20,10 @@ import "dayjs/locale/es";
 import dayjs from "dayjs";
 import DOMPurify from "dompurify";
 import { DateInput } from '@mantine/dates';
-import { FloatLabel } from "primereact/floatlabel";
 import React, { useEffect, useState } from "react";
 import { Calendar as CalendarIcon } from "lucide-react";
+
+import { FloatingLabel, useFloatingLabel } from "./FloatingLabel";
 
 interface ISOCalendarProps {
     id: string;
@@ -60,6 +61,8 @@ const ISOCalendar: React.FC<ISOCalendarProps> = ({
 
     const hasValue = !!value;
 
+    const { floating, onFocus, onBlur } = useFloatingLabel(hasValue);
+
     useEffect(() => {
         const lang = localStorage.getItem("backendLang") || "fr";
         const finalLang =
@@ -76,29 +79,28 @@ const ISOCalendar: React.FC<ISOCalendarProps> = ({
 
     return (
         <div className="flex flex-col">
-            <div title={ label } className={ `${ disabled ? 'cursor-not-allowed' : '' }` }>
-                <FloatLabel className="w-full calendar">
-                    <DateInput
-                        id={ id }
-                        className={ `w-full ${ hasValue ? 'p-inputwrapper-filled' : '' }` }
-                        required={ required }
-                        disabled={ disabled }
-                        onClick={ onClick }
-                        onChange={ handleChange }
-                        value={ isoToDate(value) }
-                        locale={ localeLang }
-                        valueFormat={ valueFormat }
-                        placeholder={ label }
-                        rightSection={ <CalendarIcon size={ 18 }/> }
-                    />
+            <div title={ label } className={ `relative w-full ${ disabled ? 'cursor-not-allowed' : '' }` }>
+                <DateInput
+                    id={ id }
+                    className='w-full'
+                    required={ required }
+                    disabled={ disabled }
+                    onClick={ onClick }
+                    onChange={ handleChange }
+                    onFocus={ onFocus }
+                    onBlur={ onBlur }
+                    value={ isoToDate(value) }
+                    locale={ localeLang }
+                    valueFormat={ valueFormat }
+                    placeholder={ label }
+                    rightSection={ <CalendarIcon size={ 18 }/> }
+                />
 
-                    { label && (
-                        <label htmlFor={ id } className='max-w-8/12 truncate'>
-                            { label }
-                            { required && <span className="text-(--text-error) ml-1">*</span> }
-                        </label>
-                    ) }
-                </FloatLabel>
+                { label && (
+                    <FloatingLabel htmlFor={ id } floating={ floating } required={ required } className='max-w-8/12 truncate'>
+                        { label }
+                    </FloatingLabel>
+                ) }
             </div>
             { error && <p className="text-(--text-error) text-sm "
                           dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(error) } }></p> }

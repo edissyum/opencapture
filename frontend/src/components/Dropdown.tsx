@@ -17,10 +17,11 @@
 
 import React from "react";
 import DOMPurify from "dompurify";
-import { FloatLabel } from "primereact/floatlabel";
 import { Dropdown as PrimeDropdown } from "primereact/dropdown";
 import { CircleQuestionMark } from "lucide-react";
 import { t } from "i18next";
+
+import { FloatingLabel, useFloatingLabel } from "./FloatingLabel";
 
 interface DropdownProps {
     id: any;
@@ -57,6 +58,9 @@ export const Dropdown: React.FC<DropdownProps> = ({
     disabled = false,
     useExtraInLabel = false
 }) => {
+    const hasValue = value !== undefined && value !== null && value !== '';
+    const { floating, onFocus, onBlur } = useFloatingLabel(hasValue);
+
     let dropdownItemTemplate = undefined;
     let dropdownValueTemplate = undefined;
     if (useExtraInLabel) {
@@ -94,13 +98,15 @@ export const Dropdown: React.FC<DropdownProps> = ({
             valueTemplate={ dropdownValueTemplate }
             emptyMessage={ t('GLOBAL.no_result_found') }
             virtualScrollerOptions={ itemsSize ? { itemSize: itemsSize } : undefined }
+            onFocus={ onFocus }
+            onBlur={ onBlur }
             className={ `w-full min-h-12 flex items-center hover:border-(--border-primary)! ${ error ? 'border-(--text-error)!' : 'border-(--border-secondary)!' }` }
         />
     );
 
     return (
         <div className='w-full relative'>
-            <div className={ `${ className } group group-focus-within:border-(--border-primary) relative flex justify-items-stretch 
+            <div className={ `${ className } group group-focus-within:border-(--border-primary) relative flex justify-items-stretch
                               ${ disabled ? 'cursor-not-allowed opacity-70' : '' }` }
             >
                 { placeholder ? (
@@ -108,15 +114,14 @@ export const Dropdown: React.FC<DropdownProps> = ({
                         { dropdownEl }
                     </span>
                 ) : (
-                    <FloatLabel className='w-full'>
+                    <div className='relative w-full'>
                         { dropdownEl }
                         { label && (
-                            <label htmlFor={ id } className='select-none'>
+                            <FloatingLabel htmlFor={ id } floating={ floating } required={ required }>
                                 { label }
-                                { required && <span className="text-(--text-error) ml-1">*</span> }
-                            </label>
+                            </FloatingLabel>
                         ) }
-                    </FloatLabel>
+                    </div>
                 ) }
             </div>
             { hint && (
