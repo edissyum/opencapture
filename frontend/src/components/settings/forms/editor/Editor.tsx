@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { arrayMove } from "@dnd-kit/sortable";
 import { EllipsisVertical, Pen } from "lucide-react";
-import { Tabs, Accordion as Accordion, ActionIcon, Menu, Scroller } from '@mantine/core';
+import { Tabs, Accordion, ActionIcon, Menu, Scroller } from '@mantine/core';
 import { DndContext, type DragEndEvent, DragOverlay, type DragStartEvent, pointerWithin } from "@dnd-kit/core";
 
 import { findLineContainingField, findZoneContainingLine, getDropContext } from "./helpers";
@@ -511,7 +511,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                                            defaultValue={ ['zone-supplier', 'zone-facturation', 'zone-batch_metadata', 'zone-document_metadata'] }>
                                     { zones.map((zone: any) => (
                                         <Accordion.Item key={ zone.id } value={ zone.id }>
-                                            <div className='flex items-center px-4 py-1.5'>
+                                            <div className='flex items-center'>
                                                 <Accordion.Control>
                                                     { zone.name }
                                                 </Accordion.Control>
@@ -543,7 +543,7 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
                                                     </Menu.Dropdown>
                                                 </Menu>
                                             </div>
-                                            <Accordion.Panel className='border-t border-(--border-secondary)'>
+                                            <Accordion.Panel>
                                                 <DroppableZone
                                                     key={ zone.id } zone={ zone } module={ module }
                                                     onUpdateLine={ handleUpdateLine }

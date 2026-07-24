@@ -38,9 +38,9 @@
 @import "assets/css/mantine-calendar.css";
 @import "./assets/css/prime-react-dropdown.css";
 @import "./assets/css/prime-react-datatable.css";
-@import "./assets/css/prime-react-accordion.css";
+@import "assets/css/mantine-accordion.css";
 @import "./assets/css/prime-react-contextmenu.css";
-@import "./assets/css/prime-react-autocomplete.css";
+@import "assets/css/mantine-autocomplete.css";
 
 @import 'primereact/resources/themes/lara-light-indigo/theme.css';
 

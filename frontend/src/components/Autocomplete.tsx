@@ -16,10 +16,9 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import DOMPurify from "dompurify";
+import { Autocomplete } from '@mantine/core';
 import React, { useMemo, useState } from "react";
-
 import { FloatLabel } from "primereact/floatlabel";
-import { Autocomplete as AutocompleteMantine } from '@mantine/core';
 
 interface AutocompleteProps extends React.InputHTMLAttributes<HTMLInputElement> {
     id: string;
@@ -65,7 +64,7 @@ const AutocompleteInput: React.FC<AutocompleteProps> = ({
     return (
         <div>
             <FloatLabel className={ `w-full ${ disabled ? 'cursor-not-allowed' : '' }` }>
-                <AutocompleteMantine
+                <Autocomplete
                     id={ id }
                     data={ data }
                     className={ `w-full ${ inputValue ? 'p-inputwrapper-filled' : '' }` }

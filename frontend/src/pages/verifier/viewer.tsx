@@ -19,8 +19,8 @@ import dayjs from "dayjs";
 import { t } from "i18next";
 import { Tooltip } from "react-tooltip";
 import { useNavigate, useParams } from "react-router-dom";
-import { Accordion, AccordionTab } from "primereact/accordion";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { Accordion, ActionIcon } from '@mantine/core';
 import {
     ArrowLeft,
     ChevronLeft,
@@ -1329,151 +1329,159 @@ export function VerifierViewerPage() {
                                 </div>
                             </div>
                         ) }
-                        <Accordion multiple activeIndex={ [0] } className='flex flex-col gap-2'>
+                        <Accordion chevronPosition="left" variant="separated" multiple defaultValue={ ['supplier'] }>
                             { fieldsZone.filter((zone: any) => zone.lines.length > 0).map((zone) => (
-                                <AccordionTab key={ zone.id } header={
-                                    <span className='flex items-center gap-2 h-[20px]'>
-                                        <span>
+                                <Accordion.Item key={ zone.id } value={ zone.id }>
+                                    <div className='flex items-center'>
+                                        <Accordion.Control>
                                             { zone.name }
-                                        </span>
-                                        <span className='flex ml-auto'>
+                                        </Accordion.Control>
+                                        <ActionIcon variant="transparent">
                                             { supplierChanged && zone.id === 'supplier' && (
-                                                <Edit size={ 20 } data-tooltip-id="tooltip"
-                                                      onClick={ (e) => {
-                                                          e.preventDefault();
-                                                          e.stopPropagation();
-                                                          setShowSupplierEditor(true);
-                                                      } }
-                                                      data-tooltip-content={ t('VERIFIER.supplier_changed') }/>
-                                            ) }
-
-                                            { !supplierExists && zone.id === 'supplier' && (
-                                                <SquarePlus
-                                                    size={ 20 } data-tooltip-id="tooltip"
+                                                <Edit
+                                                    size={ 20 }
+                                                    className='text-(--text-primary) hover:text-(--color-primary)'
+                                                    data-tooltip-id="tooltip"
+                                                    data-tooltip-content={ t('VERIFIER.supplier_changed') }
                                                     onClick={ (e) => {
                                                         e.preventDefault();
                                                         e.stopPropagation();
                                                         setShowSupplierEditor(true);
                                                     } }
-                                                    data-tooltip-content={ t('VERIFIER.create_supplier') }
                                                 />
                                             ) }
-                                        </span>
-                                    </span>
-                                }>
-                                    <div className='w-full p-4 space-y-4'>
-                                        { zone.lines.map((line: any, index: number) => (
-                                            <div key={ index } className={ `flex gap-4` }>
-                                                { Object.values(line).filter((field: any) => typeof field !== 'boolean').map((field: any) => (
-                                                    <div key={ field.id } className={ `min-w-1/6 ${ getWidthLine(line) }` }>
-                                                        { field.type === 'date' && (
-                                                            <ISOCalendar
-                                                                id={ field.id }
-                                                                label={ t(field.label) }
-                                                                error={ errors[field.id] }
-                                                                disabled={ disableFields }
-                                                                required={ field.required }
-                                                                value={ tmpDocumentData?.datas?.[field.id] }
-                                                                onChange={ (e) => updateDocumentData(field, e) }
-                                                                onClick={ () => handleFocusField(field.id, field.label, field.color) }
-                                                            />
-                                                        ) }
 
-                                                        { field.type === 'select' && field.settings?.options && (
-                                                            <Dropdown
-                                                                id={ field.id }
-                                                                label={ t(field.label) }
-                                                                required={ field.required }
-                                                                disabled={ disableFields }
-                                                                value={ tmpDocumentData?.datas?.[field.id] }
-                                                                options={ getFilteredConditionalOptions(field) }
-                                                                onChange={ (e) => updateDocumentData(field, e.value) }
-                                                            />
-                                                        ) }
-
-                                                        { field.type === 'select' && field.id == 'accounting_plan' && (
-                                                            <Dropdown
-                                                                filter
-                                                                id={ field.id }
-                                                                itemsSize={ 50 }
-                                                                label={ t(field.label) }
-                                                                disabled={ disableFields }
-                                                                required={ field.required }
-                                                                value={ tmpDocumentData?.datas?.[field.id] }
-                                                                options={ accountingPlan.map((plan: any) => ({
-                                                                    value: plan.compte_num,
-                                                                    label: plan.compte_lib
-                                                                })) }
-                                                                onChange={ (e) => updateDocumentData(field, e.value) }
-                                                            />
-                                                        ) }
-
-                                                        { field.type === 'autocomplete' && (
-                                                            <Dropdown
-                                                                filter
-                                                                id={ field.id }
-                                                                itemsSize={ 50 }
-                                                                editable={ true }
-                                                                options={ field.values }
-                                                                label={ t(field.label) }
-                                                                useExtraInLabel={ true }
-                                                                error={ errors[field.id] }
-                                                                disabled={ disableFields }
-                                                                required={ field.required }
-                                                                value={ tmpDocumentData?.datas?.[field.id] }
-                                                                onChange={ (e) => updateDocumentData(field, e.value) }
-                                                            />
-                                                        ) }
-
-                                                        { field.type === 'text' && (
-                                                            <>
-                                                                { (zone.id === 'supplier' && (field.id === 'lastname' || field.id === 'name') ? (
-                                                                        <AutocompleteInput
-                                                                            id={ field.id }
-                                                                            label={ t(field.label) }
-                                                                            disabled={ disableFields }
-                                                                            error={ errors[field.id] }
-                                                                            required={ field.required }
-                                                                            suggestions={ suggestionsSuppliers }
-                                                                            value={ tmpDocumentData?.datas?.[field.id] ?? "" }
-                                                                            optionLabel={ field.id === 'name' ? 'name' : 'lastname' }
-                                                                            onChange={ (value) => handleSupplierChange(field, value) }
-                                                                            search={ (value: string) => handleSupplierSearch(value, field.id) }
-                                                                        />
-                                                                    ) : (
-                                                                        <Input
-                                                                            id={ field.id }
-                                                                            key={ field.id }
-                                                                            type={ field.type }
-                                                                            label={ t(field.label) }
-                                                                            disabled={ disableFields }
-                                                                            error={ errors[field.id] }
-                                                                            required={ field.required }
-                                                                            value={ tmpDocumentData?.datas?.[field.id] ?? "" }
-                                                                            onClick={ () => handleFocusField(field.id, field.label, field.color) }
-                                                                            onChange={ (e) => updateDocumentData(field, e.target.value) }
-                                                                        />
-                                                                    )
-                                                                ) }
-                                                            </>
-                                                        ) }
-                                                    </div>
-                                                )) }
-                                                { line.duplicable && (
-                                                    <div data-tooltip-id="tooltip"
-                                                         data-tooltip-content={ t('FORMS.duplicate_line') }
-                                                         className={ `flex items-center justify-center
-                                                                    ${ disableFields ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' }` }
-                                                         onClick={ () => {
-                                                             handleDuplicateLine(line, zone, index)
-                                                         } }>
-                                                        <Copy size={ 18 }/>
-                                                    </div>
-                                                ) }
-                                            </div>
-                                        )) }
+                                            { !supplierExists && zone.id === 'supplier' && (
+                                                <SquarePlus
+                                                    size={ 20 }
+                                                    className='text-(--text-primary) hover:text-(--color-primary)'
+                                                    data-tooltip-id="tooltip"
+                                                    data-tooltip-content={ t('VERIFIER.create_supplier') }
+                                                    onClick={ (e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        setShowSupplierEditor(true);
+                                                    } }
+                                                />
+                                            ) }
+                                        </ActionIcon>
                                     </div>
-                                </AccordionTab>
+                                    <Accordion.Panel>
+                                        <div className='w-full p-4 space-y-4'>
+                                            { zone.lines.map((line: any, index: number) => (
+                                                <div key={ index } className={ `flex gap-4` }>
+                                                    { Object.values(line).filter((field: any) => typeof field !== 'boolean').map((field: any) => (
+                                                        <div key={ field.id }
+                                                             className={ `min-w-1/6 ${ getWidthLine(line) }` }>
+                                                            { field.type === 'date' && (
+                                                                <ISOCalendar
+                                                                    id={ field.id }
+                                                                    label={ t(field.label) }
+                                                                    error={ errors[field.id] }
+                                                                    disabled={ disableFields }
+                                                                    required={ field.required }
+                                                                    value={ tmpDocumentData?.datas?.[field.id] }
+                                                                    onChange={ (e) => updateDocumentData(field, e) }
+                                                                    onClick={ () => handleFocusField(field.id, field.label, field.color) }
+                                                                />
+                                                            ) }
+
+                                                            { field.type === 'select' && field.settings?.options && (
+                                                                <Dropdown
+                                                                    id={ field.id }
+                                                                    label={ t(field.label) }
+                                                                    required={ field.required }
+                                                                    disabled={ disableFields }
+                                                                    value={ tmpDocumentData?.datas?.[field.id] }
+                                                                    options={ getFilteredConditionalOptions(field) }
+                                                                    onChange={ (e) => updateDocumentData(field, e.value) }
+                                                                />
+                                                            ) }
+
+                                                            { field.type === 'select' && field.id == 'accounting_plan' && (
+                                                                <Dropdown
+                                                                    filter
+                                                                    id={ field.id }
+                                                                    itemsSize={ 50 }
+                                                                    label={ t(field.label) }
+                                                                    disabled={ disableFields }
+                                                                    required={ field.required }
+                                                                    value={ tmpDocumentData?.datas?.[field.id] }
+                                                                    options={ accountingPlan.map((plan: any) => ({
+                                                                        value: plan.compte_num,
+                                                                        label: plan.compte_lib
+                                                                    })) }
+                                                                    onChange={ (e) => updateDocumentData(field, e.value) }
+                                                                />
+                                                            ) }
+
+                                                            { field.type === 'autocomplete' && (
+                                                                <Dropdown
+                                                                    filter
+                                                                    id={ field.id }
+                                                                    itemsSize={ 50 }
+                                                                    editable={ true }
+                                                                    options={ field.values }
+                                                                    label={ t(field.label) }
+                                                                    useExtraInLabel={ true }
+                                                                    error={ errors[field.id] }
+                                                                    disabled={ disableFields }
+                                                                    required={ field.required }
+                                                                    value={ tmpDocumentData?.datas?.[field.id] }
+                                                                    onChange={ (e) => updateDocumentData(field, e.value) }
+                                                                />
+                                                            ) }
+
+                                                            { field.type === 'text' && (
+                                                                <>
+                                                                    { (zone.id === 'supplier' && (field.id === 'lastname' || field.id === 'name') ? (
+                                                                            <AutocompleteInput
+                                                                                id={ field.id }
+                                                                                label={ t(field.label) }
+                                                                                disabled={ disableFields }
+                                                                                error={ errors[field.id] }
+                                                                                required={ field.required }
+                                                                                suggestions={ suggestionsSuppliers }
+                                                                                value={ tmpDocumentData?.datas?.[field.id] ?? "" }
+                                                                                optionLabel={ field.id === 'name' ? 'name' : 'lastname' }
+                                                                                onChange={ (value) => handleSupplierChange(field, value) }
+                                                                                search={ (value: string) => handleSupplierSearch(value, field.id) }
+                                                                            />
+                                                                        ) : (
+                                                                            <Input
+                                                                                id={ field.id }
+                                                                                key={ field.id }
+                                                                                type={ field.type }
+                                                                                label={ t(field.label) }
+                                                                                disabled={ disableFields }
+                                                                                error={ errors[field.id] }
+                                                                                required={ field.required }
+                                                                                value={ tmpDocumentData?.datas?.[field.id] ?? "" }
+                                                                                onClick={ () => handleFocusField(field.id, field.label, field.color) }
+                                                                                onChange={ (e) => updateDocumentData(field, e.target.value) }
+                                                                            />
+                                                                        )
+                                                                    ) }
+                                                                </>
+                                                            ) }
+                                                        </div>
+                                                    )) }
+                                                    { line.duplicable && (
+                                                        <div data-tooltip-id="tooltip"
+                                                             data-tooltip-content={ t('FORMS.duplicate_line') }
+                                                             className={ `flex items-center justify-center
+                                                                ${ disableFields ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' }` }
+                                                             onClick={ () => {
+                                                                 handleDuplicateLine(line, zone, index)
+                                                             } }>
+                                                            <Copy size={ 18 }/>
+                                                        </div>
+                                                    ) }
+                                                </div>
+                                            )) }
+                                        </div>
+                                    </Accordion.Panel>
+                                </Accordion.Item>
                             )) }
                         </Accordion>
                         <div className='flex mt-6 w-full items-center gap-4'>
@@ -1504,7 +1512,7 @@ export function VerifierViewerPage() {
                             }) }>
                                 <Button className='w-full' variant='danger' onClick={ () => refuseDocument() }
                                         disabled={ loadingUpdateData || supplierChanged || !supplierExists
-                                                   || formHasError || disableFields }>
+                                            || formHasError || disableFields }>
                                     { !loadingUpdateRefuse ? t('FORMS.refuse') : t('FORMS.refuse_loading') }
                                 </Button>
                             </div>
@@ -1514,7 +1522,7 @@ export function VerifierViewerPage() {
                             }) }>
                                 <Button className='w-full' onClick={ () => validateDocument() }
                                         disabled={ loadingUpdateData || supplierChanged || (!supplierExists)
-                                                   || formHasError || disableFields }>
+                                            || formHasError || disableFields }>
                                     { loadingUpdateValidate && !formHasError ? t('FORMS.validate_loading') : t('FORMS.validate') }
                                 </Button>
                             </div>

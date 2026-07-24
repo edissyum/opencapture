@@ -15,6 +15,15 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+.mantine-Accordion-control {
+    @apply px-4;
+    @apply py-1.5;
+}
+
+.mantine-ActionIcon-root {
+    @apply mr-4;
+}
+
 .mantine-Accordion-chevron {
     @apply m-0;
     @apply mr-2;
@@ -39,6 +48,8 @@
 }
 
 .mantine-Accordion-content {
+    @apply border-t;
+    @apply border-(--border-secondary);
     @apply p-0;
 }
 
