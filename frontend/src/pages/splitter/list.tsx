@@ -344,7 +344,7 @@ export function SplitterListPage() {
 
     return (
         <div className='flex h-full w-full overflow-hidden'>
-            <div className={ `h-full transition-all border-r-2 border-(--border-secondary) pb-10
+            <div className={ `h-full shrink-0 transition-all border-r-2 border-(--border-secondary) pb-10
                             ${ displayFilters ? "w-[350px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
                 <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2'>
                     <h1 className='text-2xl font-bold'>

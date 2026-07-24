@@ -437,7 +437,7 @@ export function VerifierListPage() {
 
     return (
         <div className='flex h-full w-full overflow-hidden'>
-            <div className={ `h-full transition-all border-r-2 border-(--border-secondary) pb-16
+            <div className={ `h-full shrink-0 transition-all border-r-2 border-(--border-secondary) pb-16
                             ${ displayFilters ? "w-[350px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
                 <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2'>
                     <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
