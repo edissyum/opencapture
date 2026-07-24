@@ -24,6 +24,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 
+import { Panel } from "../../Panel";
 import { Button } from "../../Button";
 import { Dropdown } from "../../Dropdown";
 import { Loader } from "../../loader/Loader";
@@ -31,7 +32,6 @@ import { InputSwitch } from "../../InputSwitch";
 import { showToast } from "../../ToastProvider";
 import { DynamicForm } from "../../form/DynamicForm";
 import { DoctypesTree } from "../doctypes/doctypesTree";
-import { Panel } from "../../Panel.tsx";
 
 export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }) {
     const navigate = useNavigate();
