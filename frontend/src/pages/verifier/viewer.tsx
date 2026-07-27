@@ -1125,7 +1125,11 @@ export function VerifierViewerPage() {
 
     const getFilteredConditionalOptions = (field: any) => {
         if (!field.settings?.options) return []
-        if (!field.settings?.conditional) return field.settings.options;
+        if (!field.settings?.conditional) {
+            return field.settings.options.map((option: any) => {
+                return { ...option, value: option.id };
+            });
+        }
 
         const options: any[] = [];
         field.settings.options.forEach((option: any) => {

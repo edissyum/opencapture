@@ -75,7 +75,7 @@ def check_code(code, docserver_path, input_path):
 def send_to_workflow(args):
     database = create_classes_from_custom_id(args['custom_id'], True)[0]
     workflow = database.select({
-        'select': ['input'],
+        'select': ['id', 'input'],
         'table': ['workflows'],
         'where': ['workflow_id = %s'],
         'data': [args['workflow_id']]
@@ -85,15 +85,17 @@ def send_to_workflow(args):
         args['log'].error(gettext('WORFKLOW_NOT_FOUND'))
         return False
 
+    workflow = workflow[0]
+
     new_file_name = args['file'].replace('.pdf', '_copy.pdf')
     shutil.copy(args['file'], new_file_name)
     launch({
         'ip': args['ip'],
         'file': new_file_name,
+        'workflow_id': workflow['id'],
         'user_info': args['user_info'],
         'custom_id': args['custom_id'],
         'original_filename': args['file'],
-        'workflow_id': args['workflow_id'],
         'current_step': args['log'].current_step,
         'task_id_monitor': args['log'].task_id_monitor,
         'datas': args['datas'] if 'datas' in args else {}
