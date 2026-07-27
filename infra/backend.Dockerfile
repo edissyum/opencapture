@@ -28,6 +28,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /build
 COPY backend/pip-requirements.txt ./
 
+# BuildKit cache mount: persists downloaded/built wheels across builds,
+# even when a pip-requirements.txt bump invalidates this layer. Survives
+# `docker compose build --no-cache` (BuildKit design, not a bug).
+#
+# Check it exists / see its size:
+#   docker buildx du --verbose | grep -B8 -A3 'cached mount .*pip'
+#   -> look for "Type: exec.cachemount"
+#
+# Force a genuine full re-download (--no-cache alone is NOT enough):
+#   docker builder prune -f --filter type=exec.cachemount   # this cache only
+#   docker builder prune -f                                 # or: entire build cache (slower next build, all images)
 RUN --mount=type=cache,target=/root/.cache/pip \
     python -m pip install --upgrade pip wheel setuptools pycparser \
     && python -m pip wheel \
