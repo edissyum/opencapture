@@ -151,7 +151,7 @@ def launch(args):
 
         log.debug('Check if workflow has specific settings for separation or blank page removal')
         if 'workflow_id' in args and args['workflow_id']:
-            log.debug('Retrieve workflow settings from database for workflow_id : ' + args['workflow_id'])
+            log.debug('Retrieve workflow settings from database for workflow_id : ' + str(args['workflow_id']))
 
             workflow_settings = database.select({
                 'select': ['workflow_id', 'input'],
@@ -161,6 +161,7 @@ def launch(args):
             })
 
             if workflow_settings:
+                log.debug('Workflow settings retrieved from database : ' + str(workflow_settings['workflow_id']))
                 if 'input' in workflow_settings[0]:
                     if 'splitter_method_id' in workflow_settings[0]['input']:
                         splitter_method = workflow_settings[0]['input']['splitter_method_id']
@@ -278,9 +279,9 @@ def launch(args):
                     _e = str(traceback.format_exc())
                     log.error(_e)
                     try:
-                        if not os.path.isdir(shared.error_path + '/' + args['workflow_id']):
-                            os.mkdir(shared.error_path + '/' + args['workflow_id'])
-                            os.chmod(shared.error_path + '/' + args['workflow_id'], int('775', base=8))
+                        if not os.path.isdir(shared.error_path + '/' + workflow_settings[0]['workflow_id']):
+                            os.mkdir(shared.error_path + '/' + workflow_settings[0]['workflow_id'])
+                            os.chmod(shared.error_path + '/' + workflow_settings[0]['workflow_id'], int('775', base=8))
 
                         if 'isMail' in args and args['isMail'] is True:
                             file_path = args['file']
@@ -289,7 +290,7 @@ def launch(args):
                                 file_path = path
                             else:
                                 file_path = path + file
-                        shutil.copy(file_path, shared.error_path + '/' + args['workflow_id'] + '/' + args['original_filename'])
+                        shutil.copy(file_path, shared.error_path + '/' + workflow_settings[0]['workflow_id'] + '/' + args['original_filename'])
                     except (Exception, ):
                         pass
 

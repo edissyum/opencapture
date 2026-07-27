@@ -66,7 +66,7 @@ export function SettingsSplitterCertifiedCopy() {
         provider: z.string().optional().describe(JSON.stringify({
             required: enabled,
             disabled: !enabled,
-            component: "dropdown",
+            component: "select",
             hint: selectedProvider?.hint,
             label: t("AI-LLM.provider"),
             options: providers.map(p => ({ value: p.id, label: p.label }))

@@ -118,7 +118,7 @@ export function CustomerEditor() {
         })),
         module: z.string().describe(JSON.stringify({
             required: true,
-            component: "dropdown",
+            component: "select",
             label: t("MAILCOLLECT.module"),
             options: [
                 { label: 'Verifier', value: "verifier" },

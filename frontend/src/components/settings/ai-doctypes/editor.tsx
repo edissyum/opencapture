@@ -26,7 +26,7 @@ import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 
 import { Panel } from "../../Panel";
 import { Button } from "../../Button";
-import { Dropdown } from "../../Dropdown";
+import { Select } from "../../Select.tsx";
 import { Loader } from "../../loader/Loader";
 import { InputSwitch } from "../../InputSwitch";
 import { showToast } from "../../ToastProvider";
@@ -326,22 +326,22 @@ export function AiDoctypesEditor({ module }: { module: 'verifier' | 'splitter' }
                             }>
                                 <div className='p-4'>
                                     { module === 'verifier' ? (
-                                        <Dropdown id={ 'workflow' } value={ doc.workflow_id }
+                                        <Select id={ 'workflow' } value={ doc.workflow_id }
                                                   label={ t('AI-DOCTYPES.workflow_associated') }
                                                   options={ workflows.map((wf: any) => ({
                                                       label: wf.label,
                                                       value: wf.workflow_id
                                                   })) }
-                                                  onChange={ (e) => handleWorkflowChange(e, doc) }/>
+                                                  onChange={ (value) => handleWorkflowChange(value, doc) }/>
                                     ) : (
                                         <div>
-                                            <Dropdown id={ 'form' } value={ doc.form }
+                                            <Select id={ 'form' } value={ doc.form }
                                                       label={ t('AI-DOCTYPES.form_associated') }
                                                       options={ forms.map((f: any) => ({
                                                           label: f.label,
                                                           value: f.id
                                                       })) }
-                                                      onChange={ (e) => handleFormChange(e, doc) }/>
+                                                      onChange={ (value) => handleFormChange(value, doc) }/>
 
                                             <div
                                                 className='relative mt-4 gap-4 cursor-pointer text-(--text-secondary) hover:text-(--color-primary)'

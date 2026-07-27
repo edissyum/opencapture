@@ -59,10 +59,23 @@ const AutocompleteInput: React.FC<AutocompleteProps> = ({
             const label = typeof item === 'string' ? item : (item[optionLabel] ?? '');
             const key = typeof item === 'string' ? item : String(item.id ?? label);
             map.set(key, item);
-            return { value: key, label };
+            return { value: key, label, extras: typeof item === 'string' ? undefined : item.extras };
         }).filter(opt => opt.label !== '');
         return { data: opts, itemsByValue: map };
     }, [suggestions, optionLabel]);
+
+    const renderOption = ({ option }: { option: any }) => (
+        <span className={ `flex items-center justify-between w-full` }>
+            <span>
+                { option.label }
+                { option.extras?.length > 0 && (
+                    <span className='text-(--text-secondary) text-sm ml-2'>
+                        — { option.extras.join(" - ") }
+                    </span>
+                ) }
+            </span>
+        </span>
+    );
 
     return (
         <div>
@@ -76,6 +89,7 @@ const AutocompleteInput: React.FC<AutocompleteProps> = ({
                     disabled={ disabled }
                     onFocus={ onFocus }
                     onBlur={ onBlur }
+                    renderOption={ renderOption }
                     onChange={ (val: string) => {
                         setInputValue(val);
                         search(val);

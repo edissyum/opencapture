@@ -82,7 +82,7 @@ const createMEMFunctionsMap: any = ({ post }: any) => ({
         if (res && res.doctypes) {
             let doctypesOptions: any = [];
             for (const doctype of res.doctypes) {
-                doctypesOptions.push({ id: doctype.type_id, label: doctype.description });
+                doctypesOptions.push({ value: doctype.type_id, label: doctype.description });
             }
             return { success: true, data: doctypesOptions };
         }
@@ -92,7 +92,7 @@ const createMEMFunctionsMap: any = ({ post }: any) => ({
         if (res && res.statuses) {
             let statusesOptions: any = [];
             for (const status of res.statuses) {
-                statusesOptions.push({ id: status.id, label: status.label_status });
+                statusesOptions.push({ value: status.id, label: status.label_status });
             }
             return { success: true, data: statusesOptions };
         }
@@ -102,7 +102,7 @@ const createMEMFunctionsMap: any = ({ post }: any) => ({
         if (res && res.users) {
             let usersOptions: any = [];
             for (const user of res.users) {
-                usersOptions.push({ id: user.id, label: user.firstname + ' ' + user.lastname });
+                usersOptions.push({ value: user.id, label: user.firstname + ' ' + user.lastname });
             }
             return { success: true, data: usersOptions };
         }
@@ -112,7 +112,7 @@ const createMEMFunctionsMap: any = ({ post }: any) => ({
         if (res && res.priorities) {
             let prioritiesOptions: any = [];
             for (const priority of res.priorities) {
-                prioritiesOptions.push({ id: priority.id, label: priority.label });
+                prioritiesOptions.push({ value: priority.id, label: priority.label });
             }
             return { success: true, data: prioritiesOptions };
         }
@@ -122,7 +122,7 @@ const createMEMFunctionsMap: any = ({ post }: any) => ({
         if (res && res.entities) {
             let entitiesOptions: any = [];
             for (const entity of res.entities) {
-                entitiesOptions.push({ id: entity.serialId, label: entity.entity_label });
+                entitiesOptions.push({ value: entity.serialId, label: entity.entity_label });
             }
             return { success: true, data: entitiesOptions };
         }
@@ -133,7 +133,7 @@ const createMEMFunctionsMap: any = ({ post }: any) => ({
         if (res && res.indexingModels) {
             let indexingModelsOptions: any = [];
             for (const model of res.indexingModels) {
-                indexingModelsOptions.push({ id: model.id, label: model.label });
+                indexingModelsOptions.push({ value: model.id, label: model.label });
             }
             return { success: true, data: indexingModelsOptions };
         }
@@ -143,7 +143,7 @@ const createMEMFunctionsMap: any = ({ post }: any) => ({
         if (res && res.customFields) {
             let customFieldsOptions: any = [];
             for (const field of res.customFields) {
-                customFieldsOptions.push({ id: field.id, label: field.label });
+                customFieldsOptions.push({ value: field.id, label: field.label });
             }
             return { success: true, data: customFieldsOptions };
         }
@@ -153,7 +153,7 @@ const createMEMFunctionsMap: any = ({ post }: any) => ({
         if (res && res.customFields) {
             let customFieldsOptions: any = [];
             for (const field of res.customFields) {
-                customFieldsOptions.push({ id: field.id, label: field.label });
+                customFieldsOptions.push({ value: field.id, label: field.label });
             }
             return { success: true, data: customFieldsOptions };
         }

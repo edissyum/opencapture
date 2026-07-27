@@ -20,7 +20,7 @@ import { CircleAlert, Copy } from "lucide-react";
 
 import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
-import { Dropdown } from "../../../../components/Dropdown";
+import { Select } from "../../../../components/Select.tsx";
 import { showToast } from "../../../../components/ToastProvider";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
@@ -59,7 +59,7 @@ export const SettingsGeneralTokenAuth = () => {
 
         try {
             const response = await post('/auth/generateAuthToken', {
-                username: selectedUser.username,
+                username: selectedUser,
                 expiration: tokenExpiration
             });
 
@@ -78,11 +78,13 @@ export const SettingsGeneralTokenAuth = () => {
             <h2>{ t('SECURITY.token_details') }</h2>
 
             <div className='w-1/3 flex flex-col gap-6'>
-                <Dropdown id='token-user-dropdown' filter value={ selectedUser } options={ users }
-                          label={ t('SECURITY.token_user') } required
-                          onChange={ (e) => {
-                              setSelectedUser(e.target.value)
-                          } }/>
+                <Select id='token-user-dropdown' filter value={ selectedUser }
+                        options={ users.map((user) => ({ value: user.username, label: `${user.firstname} ${user.lastname}` })) }
+                        label={ t('SECURITY.token_user') } required
+                        onChange={ (value) => {
+                            setSelectedUser(value)
+                        } }
+                />
 
                 <Input label={ t('SECURITY.token_expiration') }
                        value={ tokenExpiration } required
@@ -96,18 +98,21 @@ export const SettingsGeneralTokenAuth = () => {
             </div>
 
             { token && (
-                <div className='w-full bg-(--bg-selected) p-4 rounded-lg flex flex-col gap-4 border border-(--border-primary)'>
+                <div
+                    className='w-full bg-(--bg-selected) p-4 rounded-lg flex flex-col gap-4 border border-(--border-primary)'>
                     <div className='flex items-center gap-3'>
                         <div className='bg-(--color-primary) p-2 rounded-lg'>
                             <CircleAlert className="text-white" size={ 28 }/>
                         </div>
                         <div className='flex flex-col'>
-                            <span className='text-(--color-primary) font-semibold'>{ t('SECURITY.token_generated') }</span>
+                            <span
+                                className='text-(--color-primary) font-semibold'>{ t('SECURITY.token_generated') }</span>
                             <span className='text-(--text-secondary)'>{ t('SECURITY.token_generated_details') }</span>
                         </div>
                     </div>
                     <div className='flex gap-4'>
-                        <div className='bg-(--color-primary)/20 p-2 rounded-lg font-semibold text-(--color-primary) break-all'>
+                        <div
+                            className='bg-(--color-primary)/20 p-2 rounded-lg font-semibold text-(--color-primary) break-all'>
                             { token }
                         </div>
                         <div className='flex justify-end items-center cursor-pointer rounded-lg'>

@@ -15,21 +15,19 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-.mantine-MultiSelect-inputField {
-    @apply h-10!;
+.mantine-Select-input {
+    @apply cursor-pointer!;
 }
 
-.mantine-MultiSelect-input:hover,
-.mantine-MultiSelect-input:focus-within {
-    @apply border-(--color-primary);
+.mantine-Select-dropdown {
+    @apply p-2;
 }
 
-.mantine-MultiSelect-pill {
-    @apply h-8;
-    @apply bg-(--bg-secondary);
+.mantine-Select-option:where([data-checked]) {
+    @apply bg-(--bg-selected)!;
+    @apply text-(--color-primary);
 
-    & .mantine-Pill-label {
-        @apply leading-8;
-        @apply font-medium;
+    & svg {
+        @apply hidden;
     }
 }

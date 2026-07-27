@@ -32,7 +32,7 @@ import { getCompressTypeOptions, getSystemFieldsOptionsSplitter, getSystemFields
 import Hint from "../../Hint";
 import Input from "../../Input";
 import { Button } from "../../Button";
-import { Dropdown } from "../../Dropdown";
+import { Select } from "../../Select.tsx";
 import { Loader } from "../../loader/Loader";
 import { InputSwitch } from "../../InputSwitch";
 import { showToast } from "../../ToastProvider";
@@ -84,7 +84,7 @@ export function OutputEditor({ module }: { module: string }) {
     const detailSchema = z.object({
         output_type_id: z.string().min(3).describe(JSON.stringify({
             required: true,
-            component: "dropdown",
+            component: "select",
             disabled: outputId,
             label: t("OUTPUTS.type"),
             options: outputTypes.map((o: any) => ({ label: o.output_type_label, value: o.output_type_id }))
@@ -95,7 +95,7 @@ export function OutputEditor({ module }: { module: string }) {
             label: t("GLOBAL.label")
         })),
         compress_type: z.string().optional().describe(JSON.stringify({
-            component: "dropdown",
+            component: "select",
             show: ['export_pdf', 'export_cmis', 'export_openads'].includes(outputType?.output_type_id),
             label: t("OUTPUTS.compress_type"),
             options: getCompressTypeOptions().map((o: any) => ({ label: o.label, value: o.id }))
@@ -522,22 +522,23 @@ export function OutputEditor({ module }: { module: string }) {
                                                 </>
                                             ) }
                                             { option.type === 'text' && option.webservice && (
-                                                <Dropdown
-                                                    id={ option.id } label={ option.label } filter={ true }
+                                                <Select
+                                                    id={ option.id } label={ option.label } 
                                                     options={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.values || [] }
                                                     value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
-                                                    onChange={ (e) => {
-                                                        handleSpecificLinksChange(e, option, 'parameters')
+                                                    onChange={ (value) => {
+                                                        handleSpecificLinksChange({ target: { value: value } }, option, 'parameters')
                                                     } }
                                                 />
                                             ) }
                                             { option.type === 'text' && !option.webservice && (
-                                                <Input id={ option.id } type={ option.type } name={ option.id }
-                                                       label={ option.label } hint={ option.hint }
-                                                       value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
-                                                       onChange={ (e) => {
-                                                           handleSpecificLinksChange(e, option, 'parameters')
-                                                       } }/>
+                                                <Input
+                                                    id={ option.id } type={ option.type } name={ option.id }
+                                                    label={ option.label } hint={ option.hint }
+                                                    value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
+                                                    onChange={ (e) => {
+                                                        handleSpecificLinksChange(e, option, 'parameters')
+                                                    } }/>
                                             ) }
                                         </div>
                                     )) }
@@ -583,12 +584,12 @@ export function OutputEditor({ module }: { module: string }) {
                                             <div key={ option.id }
                                                  className={ `w-full gap-2 ${ option.type === 'boolean' ? 'col-span-2' : '' }` }>
                                                 { option.type === 'text' && option.webservice && (
-                                                    <Dropdown
-                                                        id={ option.id } label={ option.label } filter={ true }
+                                                    <Select
+                                                        id={ option.id } label={ option.label } 
                                                         options={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.values || [] }
                                                         value={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || '' }
-                                                        onChange={ (e) => {
-                                                            handleSpecificLinksChange(e, option, 'links')
+                                                        onChange={ (value) => {
+                                                            handleSpecificLinksChange({ target: { value: value } }, option, 'links')
                                                         } }
                                                     />
                                                 ) }

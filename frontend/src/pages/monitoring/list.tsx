@@ -182,9 +182,10 @@ export function MonitoringList() {
         setLoadingProcesses(true);
         fetchProcesses().then();
 
+        // Every 25 seconds, fetch processes list. Delay is long to avoid too many requests and 429 request error
         const interval = setInterval(() => {
             fetchProcesses().then();
-        }, 5000);
+        }, 25000);
 
         return () => clearInterval(interval);
     }, [lazyParams, debouncedSearchFilename, selectedModule, selectedStatus]);

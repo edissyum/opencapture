@@ -21,7 +21,7 @@ import { createRoot } from "react-dom/client";
 
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
-import { Dropdown } from "../../components/Dropdown";
+import { Select } from "../../components/Select.tsx";
 
 function ConfirmDialogWithInputView({
     icon,
@@ -77,22 +77,22 @@ function ConfirmDialogWithInputView({
                         />
                     ) }
                     { type === 'bool' && (
-                        <Dropdown
+                        <Select
                             id={ 'confirm-dialog-boolean' }
                             value={ val.toString() }
                             options={ [
                                 { label: t('GLOBAL.true'), value: 'true' },
                                 { label: t('GLOBAL.false'), value: 'false' }
                             ] }
-                            onChange={ (e) => setVal(e.value) }
+                            onChange={ (value: any) => setVal(value) }
                         />
                     ) }
                     { type === 'list' && options && (
-                        <Dropdown
+                        <Select
                             id={ 'confirm-dialog-boolean' }
                             value={ val }
                             options={ options }
-                            onChange={ (e) => setVal(e.value) }
+                            onChange={ (value: any) => setVal(value) }
                         />
                     ) }
                 </div>

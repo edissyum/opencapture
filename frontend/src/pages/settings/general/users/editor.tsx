@@ -88,7 +88,7 @@ export function SettingsGeneralUserEditor() {
             label: t("USERS.password_check")
         })),
         role: z.number().describe(JSON.stringify({
-            component: "dropdown",
+            component: "select",
             required: true,
             options: roles.map((role: any) => ({
                 value: role.id,
@@ -97,7 +97,7 @@ export function SettingsGeneralUserEditor() {
             label: t("USERS.role")
         })),
         mode: z.enum(['standard', 'webservice']).describe(JSON.stringify({
-            component: "dropdown",
+            component: "select",
             required: true,
             options: connectionModes.map((role: any) => ({
                 value: role.id,

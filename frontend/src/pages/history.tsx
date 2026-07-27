@@ -23,7 +23,7 @@ import { Activity, ChevronDown, Filter, Package } from "lucide-react";
 import { Button } from "../components/Button";
 import { Table } from "../components/list/Table";
 
-import { Dropdown } from "../components/Dropdown";
+import { Select } from "../components/Select.tsx";
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
 import { usePersistentState } from "../services/hooks/usePersistentState";
 
@@ -179,8 +179,8 @@ export function HistoryList() {
 
                         { open.user && (
                             <div className='p-4 pt-0'>
-                                <Dropdown
-                                    filter={ true }
+                                <Select
+                                    
                                     value={ selectedUser.toString() }
                                     id="folder_destination"
                                     className="w-full mb-2"
@@ -189,7 +189,7 @@ export function HistoryList() {
                                         label: user.lastname + ' ' + user.firstname + ' (' + user.username + ')',
                                         value: user.id.toString()
                                     })) }
-                                    onChange={ (e) => setSelectedUser(e.value.toString()) }
+                                    onChange={ (value) => setSelectedUser(value.toString()) }
                                 />
                             </div>
                         ) }
@@ -240,8 +240,8 @@ export function HistoryList() {
 
                         { open.submodule && (
                             <div className='p-4 pt-0'>
-                                <Dropdown
-                                    filter={ true }
+                                <Select
+                                    
                                     value={ selectedSubModule.toString() }
                                     id="folder_destination"
                                     className="w-full mb-2"
@@ -250,7 +250,7 @@ export function HistoryList() {
                                         label: submodule.label,
                                         value: submodule.id.toString()
                                     })) }
-                                    onChange={ (e) => setSelectedSubModule(e.value.toString()) }
+                                    onChange={ (value) => setSelectedSubModule(value.toString()) }
                                 />
                             </div>
                         ) }

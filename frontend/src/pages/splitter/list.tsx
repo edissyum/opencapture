@@ -45,7 +45,7 @@ import Input from "../../components/Input";
 import { Button } from "../../components/Button";
 import { Grid } from "../../components/list/Grid";
 import { Table } from "../../components/list/Table";
-import { Dropdown } from "../../components/Dropdown";
+import { Select } from "../../components/Select.tsx";
 import { Thumbnail } from "../../components/Thumbnail";
 import { showToast } from "../../components/ToastProvider";
 import MultiSelectInput from "../../components/MultiSelect";
@@ -462,8 +462,7 @@ export function SplitterListPage() {
 
                         { open.forms && (
                             <div className='p-4 pt-0'>
-                                <Dropdown
-                                    filter={ true }
+                                <Select
                                     id="search_form"
                                     value={ selectedForm.toString() }
                                     placeholder={ t('VERIFIER.search_form') }
@@ -471,7 +470,7 @@ export function SplitterListPage() {
                                         label: form.label,
                                         value: form.id.toString()
                                     })) }
-                                    onChange={ (e) => setSelectedForm(e.value.toString()) }
+                                    onChange={ (value) => setSelectedForm(value.toString()) }
                                     className="w-full mb-2"
                                 />
                             </div>

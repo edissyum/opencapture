@@ -73,7 +73,7 @@ import Input from "../../components/Input";
 import { Button } from "../../components/Button";
 import ISOCalendar from "../../components/Calendar";
 import { Checkbox } from "../../components/Checkbox";
-import { Dropdown } from "../../components/Dropdown";
+import { Select } from "../../components/Select.tsx";
 import { Loader } from "../../components/loader/Loader";
 import { showToast } from "../../components/ToastProvider";
 import { AttachmentsList } from "../../components/attachments/list";
@@ -946,7 +946,7 @@ export function SplitterViewerPage() {
         }
     }
 
-    const handleChangeForm = async (event: any) => {
+    const handleChangeForm = async (value: any) => {
         showConfirmDialog({
             title: t('SPLITTER.change_form'),
             message: t('SPLITTER.confirm_change_form'),
@@ -955,7 +955,7 @@ export function SplitterViewerPage() {
             onConfirm: async () => {
                 setLoading(true);
                 try {
-                    await post('/splitter/changeForm', { 'batchId': batchId, formId: event.value });
+                    await post('/splitter/changeForm', { 'batchId': batchId, formId: value });
                     showToast(t('SPLITTER.form_changed'), 'success');
                     setTimeout(() => {
                         navigate(0);
@@ -1404,17 +1404,18 @@ export function SplitterViewerPage() {
                                         </span>
                                         </div>
 
-                                        <Dropdown id={ "forms" }
-                                                  filter={ true }
-                                                  className="w-1/3"
-                                                  disabled={ disabledBatch }
-                                                  label={ t('VERIFIER.form') }
-                                                  options={ forms.map((form: any) => ({
-                                                      label: form.label,
-                                                      value: form.id
-                                                  })) }
-                                                  value={ batch.form_id }
-                                                  onChange={ handleChangeForm }
+                                        <Select
+                                            id={ "forms" }
+                                            
+                                            className="w-1/3"
+                                            disabled={ disabledBatch }
+                                            label={ t('VERIFIER.form') }
+                                            options={ forms.map((form: any) => ({
+                                                label: form.label,
+                                                value: form.id
+                                            })) }
+                                            value={ batch.form_id }
+                                            onChange={ handleChangeForm }
                                         />
 
                                         { batchMetadata && batchMetadata.length > 0 && (
@@ -1440,16 +1441,15 @@ export function SplitterViewerPage() {
                                                                 ) : (
                                                                     <div>
                                                                         { field.metadata_key && metadata.length > 0 ? (
-                                                                            <Dropdown
+                                                                            <Select
                                                                                 id={ field.id }
-                                                                                filter={ true }
+                                                                                
                                                                                 label={ field.label }
                                                                                 className="w-full"
-                                                                                useExtraInLabel={ true }
                                                                                 disabled={ disabledBatch }
                                                                                 options={ getMetadaValuesForField(field) }
                                                                                 value={ batchMetadataValues[field.label_short] }
-                                                                                onChange={ (e) => handleUpdateBatchMetadataValues(field, e.value) }
+                                                                                onChange={ (value) => handleUpdateBatchMetadataValues(field, value) }
                                                                             />
                                                                         ) : (
                                                                             <Input
@@ -1581,16 +1581,16 @@ export function SplitterViewerPage() {
                                                                         />
                                                                     ) }
                                                                     { field.type == 'select' && (
-                                                                        <Dropdown
-                                                                            filter={ true }
+                                                                        <Select
+                                                                            
                                                                             id={ field.id }
                                                                             label={ t(field.label) }
-                                                                            required={ field.required }
                                                                             disabled={ disabledBatch }
+                                                                            required={ field.required }
                                                                             value={ documentMetadataValues[document.id]?.[field.label_short] }
                                                                             options={ getFilteredConditionalOptions(document.id, field) }
-                                                                            onChange={ (e) => {
-                                                                                handleUpdateDocumentMetadataValues(document.id, field, e.target.value)
+                                                                            onChange={ (value) => {
+                                                                                handleUpdateDocumentMetadataValues(document.id, field, value)
                                                                             } }
                                                                         />
                                                                     ) }

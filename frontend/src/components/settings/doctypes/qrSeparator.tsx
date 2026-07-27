@@ -18,7 +18,7 @@ import { t } from "i18next";
 import { Download } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { Dropdown } from "../../Dropdown";
+import { Select } from "../../Select.tsx";
 import { Loader } from "../../loader/Loader";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
@@ -113,11 +113,11 @@ export function QrSeparator({ selectedDoctype }: { selectedDoctype: any }) {
         <div className="p-6 h-full">
             <div className='flex items-center justify-between gap-6'>
                 <div className='w-1/3'>
-                    <Dropdown
+                    <Select
                         id='qr-separator'
                         value={ selectedSeparator }
                         label={ t("SPLITTER.qr_separator") }
-                        onChange={ (e) => setSelectedSeparator(e.target.value) }
+                        onChange={ (value) => setSelectedSeparator(value) }
                         options={ separators.map((s) => ({ label: s.name, value: s.id })) }/>
                 </div>
 

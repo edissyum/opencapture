@@ -19,9 +19,9 @@ import { Controller } from "react-hook-form";
 import { Calendar, CaseSensitive, CircleQuestionMark, ListTodo, Regex, SquareCheckBig, TextInitial } from "lucide-react";
 
 import Input from "../Input";
+import { Select } from "../Select";
 import { RadioBox } from "../RadioBox";
 import { Checkbox } from "../Checkbox";
-import { Dropdown } from "../Dropdown";
 import { InputSwitch } from "../InputSwitch";
 import MultiSelectInput from "../MultiSelect";
 
@@ -160,14 +160,14 @@ export function DynamicForm({ className, schema, control, errors, gap = 4, grid 
                         ) }
                     />
                 )
-            case "dropdown":
+            case "select":
                 return (
                     <div className={ field.className || "" } key={ field.name }>
                         <Controller
                             name={ field.name }
                             control={ control }
                             render={ ({ field: f }) => (
-                                <Dropdown
+                                <Select
                                     id={ f.name }
                                     value={ f.value }
                                     hint={ field.hint }
@@ -178,7 +178,7 @@ export function DynamicForm({ className, schema, control, errors, gap = 4, grid 
                                     disabled={ field.disabled }
                                     filter={ field.filter || false }
                                     error={ errors[field.name]?.message }
-                                    onChange={ e => f.onChange(e.value) }
+                                    onChange={ (value) => f.onChange(value) }
                                 />
                             ) }
                         />

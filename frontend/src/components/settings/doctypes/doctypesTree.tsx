@@ -21,7 +21,18 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Tree, type TreeExpandedKeysType } from "primereact/tree";
 import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { ArrowRightToLine, Copy, Download, GripVertical, Maximize, Minimize, Plus, Sheet, Upload, X } from "lucide-react";
+import {
+    ArrowRightToLine,
+    Copy,
+    Download,
+    GripVertical,
+    Maximize,
+    Minimize,
+    Plus,
+    Sheet,
+    Upload,
+    X
+} from "lucide-react";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 
@@ -30,12 +41,16 @@ import { buildPrimeTree, collectExpanded, makeNodeTemplate } from "./helpers";
 import Hint from "../../Hint";
 import Input from "../../Input";
 import { Button } from "../../Button";
-import { Dropdown } from "../../Dropdown";
+import { Select } from "../../Select.tsx";
 import { Loader } from "../../loader/Loader";
 import { showToast } from "../../ToastProvider";
 import { ImportSpreadSheet } from "../ImportSpreadSheet";
 
-function SortableFieldItem({ field, lastField, onRemove }: { field: any, lastField: boolean,  onRemove?: (field: any) => void }) {
+function SortableFieldItem({ field, lastField, onRemove }: {
+    field: any,
+    lastField: boolean,
+    onRemove?: (field: any) => void
+}) {
     const {
         attributes,
         listeners,
@@ -53,7 +68,7 @@ function SortableFieldItem({ field, lastField, onRemove }: { field: any, lastFie
         <div
             ref={ setNodeRef }
             style={ style }
-            className={ `p-2 border-b border-(--border-secondary) flex gap-2 items-center ${ lastField ? 'border-b-0' : ''}` }
+            className={ `p-2 border-b border-(--border-secondary) flex gap-2 items-center ${ lastField ? 'border-b-0' : '' }` }
         >
             <div { ...attributes } { ...listeners } className="cursor-grab text-(--text-secondary)">
                 <GripVertical size={ 20 }/>
@@ -75,15 +90,15 @@ function SortableFieldItem({ field, lastField, onRemove }: { field: any, lastFie
 }
 
 export function DoctypesTree({
-    formId,
-    editor,
-    onSelect,
-    onTmpSelect,
-    doctypesList,
-    selectedDoctype,
-    onDoctypesLoaded,
-    canFolderBeSelected = true
-}: {
+                                 formId,
+                                 editor,
+                                 onSelect,
+                                 onTmpSelect,
+                                 doctypesList,
+                                 selectedDoctype,
+                                 onDoctypesLoaded,
+                                 canFolderBeSelected = true
+                             }: {
     formId: number;
     editor?: boolean;
     doctypesList?: any[];
@@ -125,7 +140,11 @@ export function DoctypesTree({
     const delimiterOptions = [
         { label: t("DOCTYPES.tab"), value: "TAB", icon: <ArrowRightToLine size={ 16 }/> },
         { label: t("DOCTYPES.comma"), value: "COMMA", icon: <span style={ { transform: "translateY(2px)" } }>,</span> },
-        { label: t("DOCTYPES.semicolon"), value: "SEMICOLON", icon: <span style={ { transform: "translateY(2px)" } }>;</span> }
+        {
+            label: t("DOCTYPES.semicolon"),
+            value: "SEMICOLON",
+            icon: <span style={ { transform: "translateY(2px)" } }>;</span>
+        }
     ];
 
     const [format, _] = useState("CSV");
@@ -384,9 +403,11 @@ export function DoctypesTree({
                                             items={ selectedFields.map(f => f.id) }
                                             strategy={ verticalListSortingStrategy }
                                         >
-                                            <div className='border border-(--border-secondary) rounded-lg flex flex-col gap-2'>
+                                            <div
+                                                className='border border-(--border-secondary) rounded-lg flex flex-col gap-2'>
                                                 { selectedFields.map(field => (
-                                                    <SortableFieldItem key={ field.id } field={ field } lastField={ field.id === selectedFields[selectedFields.length - 1].id }
+                                                    <SortableFieldItem key={ field.id } field={ field }
+                                                                       lastField={ field.id === selectedFields[selectedFields.length - 1].id }
                                                                        onRemove={ () => handleRemoveField(field) }/>
                                                 )) }
                                             </div>
@@ -427,8 +448,8 @@ export function DoctypesTree({
                     <div className="fixed z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                                             min-w-[32vw] h-fit max-h-screen border border-(--border-secondary)
                                             rounded-lg bg-(--bg-primary) flex flex-col">
-                        <div className='flex flex-col items-center px-6 p-6'>
-                            <div className='flex flex-col'>
+                        <div className='flex flex-col px-6 p-6'>
+                            <>
                                 <h2>
                                     { t('DOCTYPES.clone_doctype_title') }
                                 </h2>
@@ -439,16 +460,17 @@ export function DoctypesTree({
                                 <Hint variant='warning'>
                                     { t('GLOBAL.action_irreversible') }
                                 </Hint>
-                            </div>
+                            </>
                             <div className='absolute right-4 top-4 cursor-pointer text-(--text-secondary)'
                                  onClick={ () => setShowCloneDialog(false) }>
                                 <X/>
                             </div>
                             <div className='w-full flex flex-col gap-2 mt-2'>
-                                <Dropdown value={ selectedFormId } id="clone_form_select"
-                                          options={ forms.map((f: any) => ({ label: f.label, value: f.id })) }
-                                          onChange={ e => setSelectedFormId(e.value) }
-                                          label={ t('DOCTYPES.select_form_to_clone_from') }
+                                <Select
+                                    value={ selectedFormId } id="clone_form_select"
+                                    options={ forms.map((f: any) => ({ label: f.label, value: f.id })) }
+                                    onChange={ (value: any) => setSelectedFormId(value) }
+                                    label={ t('DOCTYPES.select_form_to_clone_from') }
                                 />
                             </div>
                             <div className='mt-4 flex justify-end w-full gap-4'>
