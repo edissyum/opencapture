@@ -21,10 +21,10 @@ import sys
 import time
 import json
 import traceback
-from kuyruk import Kuyruk
 from src import app, shared
 from flask_babel import gettext
 from src.classes.Log import Log
+from kuyruk import Kuyruk, Config
 from src.classes.Files import Files
 from src.classes.Splitter import Splitter
 from src.classes.SeparatorQR import SeparatorQR
@@ -32,8 +32,13 @@ from src.functions import retrieve_config_from_custom_id
 from src.scripting_functions import launch_script_splitter
 from src.main import timer, check_file, create_classes_from_custom_id
 
-kuyruk = Kuyruk()
-
+rabbit_custom = Config()
+rabbit_custom.RABBIT_HOST = os.environ.get('RABBIT_HOST', 'localhost')
+rabbit_custom.RABBIT_PORT = os.environ.get('RABBIT_PORT', 5672)
+rabbit_custom.RABBIT_USER = os.environ.get('RABBIT_USER', 'guest')
+rabbit_custom.RABBIT_PASSWORD = os.environ.get('RABBIT_PASSWORD', 'guest')
+rabbit_custom.RABBIT_VIRTUAL_HOST = os.environ.get('RABBIT_VIRTUAL_HOST', '/')
+kuyruk = Kuyruk(config=rabbit_custom)
 
 @kuyruk.task(queue='splitter_§§CUSTOM_ID§§')
 def launch(args):
