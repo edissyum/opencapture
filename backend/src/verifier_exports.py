@@ -120,8 +120,11 @@ def export_xml(data, log, document_info, database, enable_log=True):
                 xml_datas = Et.SubElement(root, 'DATAS')
                 xml_technical = Et.SubElement(root, 'TECHNICAL')
 
+                new_field = Et.SubElement(xml_technical, 'document_id')
+                new_field.text = str(document_info['id'])
+
                 for technical in document_info:
-                    if technical in ['path', 'filename', 'register_date', 'nb_pages', 'original_filename', 'md5', 'sha256']:
+                    if technical in ['path', 'filename', 'register_date', 'nb_pages', 'original_filename', 'md5', 'sha256', 'supplier_id']:
                         if technical in document_info and document_info[technical]:
                             new_field = Et.SubElement(xml_technical, technical)
                             new_field.text = str(document_info[technical])
@@ -927,11 +930,10 @@ def export_mem(data, document_info, log, regex, database):
                     })
 
                     if 'document_due_date' in document_info['datas'] and document_info['datas']['document_due_date']:
-                        document_due_date = pd.to_datetime(document_info['datas']['document_due_date'],
-                                                           format='%Y-%m-%d')
-                        if document_due_date.date() > datetime.date.today():
+                        document_due_date = pd.to_datetime(document_info['datas']['document_due_date']).date()
+                        if document_due_date > datetime.date.today():
                             args.update({
-                                'processLimitDate': str(document_due_date.date())
+                                'processLimitDate': str(document_due_date)
                             })
 
                     if _data['id'] == 'priority' and 'processLimitDate' not in args:

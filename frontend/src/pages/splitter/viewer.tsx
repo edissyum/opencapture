@@ -18,13 +18,13 @@
 import dayjs from "dayjs";
 import { t } from "i18next";
 import DOMPurify from "dompurify";
-import { Panel } from "primereact/panel";
-import { Divider } from "primereact/divider";
 import { ContextMenu } from "primereact/contextmenu";
 import { useNavigate, useParams } from "react-router-dom";
-import { Accordion, AccordionTab } from "primereact/accordion";
+import { Accordion as Accordion } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+
+import { Panel } from "../../components/Panel";
 
 import {
     ArrowLeft,
@@ -85,6 +85,7 @@ import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
 
 import { b64ToFile } from "../settings/general/customization";
 import { Tooltip } from "react-tooltip";
+import { Divider } from "@mantine/core";
 
 export function SplitterViewerPage() {
     const { get, post, del } = axiosApiCall();
@@ -1173,7 +1174,7 @@ export function SplitterViewerPage() {
                                 { t('SPLITTER.rotation') }
                             </div>
 
-                            <Divider layout="vertical"/>
+                            <Divider orientation="vertical"/>
 
                             <div
                                 className={ `flex items-center text-(--text-primary) font-semibold text-sm gap-1  rounded-xl p-3
@@ -1380,98 +1381,104 @@ export function SplitterViewerPage() {
                 ) }
 
                 { !showAttachments && (
-                    <div ref={ listRef }
-                         className={ `${ disabledBatch || certifiedCopy ? 'pb-66' : 'pb-42' } px-8 h-full overflow-y-auto` }
-                         onClick={ () => setSelectedDocument(null) }>
-                        <Accordion className='mb-6' activeIndex={ 0 }>
-                            <AccordionTab header={ t('SPLITTER.batch_content') }>
-                                <div className='flex flex-col gap-6 p-4'>
-                                    <div className='text-(--text-secondary) flex items-center gap-4'>
+                    <div ref={ listRef } className={ `pb-24 px-8 h-full overflow-y-auto` }
+                         onClick={ () => setSelectedDocument(null) }
+                    >
+                        <Accordion className='mb-6' chevronPosition="left" defaultValue={ 'batch_metadata' }>
+                            <Accordion.Item key={ 'zone.id' } value='batch_metadata'>
+                                <Accordion.Control>
+                                    { t('SPLITTER.batch_content') }
+                                </Accordion.Control>
+                                <Accordion.Panel>
+                                    <div className='flex flex-col gap-6 p-4'>
+                                        <div className='text-(--text-secondary) flex items-center gap-4'>
                                         <span className='flex items-center'>
                                             <Layers size={ 16 }/>&nbsp;
                                             <span>{ pagesCount }</span>&nbsp;
                                             { t('SPLITTER.pages', { count: pagesCount }) }
                                         </span>
-                                        <span className='flex items-center'>
+                                            <span className='flex items-center'>
                                             <FileStack size={ 16 }/>&nbsp;
-                                            <span>{ documents.length }</span>&nbsp;
-                                            { t('SPLITTER.documents', { count: documents.length }) }
+                                                <span>{ documents.length }</span>&nbsp;
+                                                { t('SPLITTER.documents', { count: documents.length }) }
                                         </span>
-                                    </div>
-
-                                    <Dropdown id={ "forms" }
-                                              filter={ true }
-                                              className="w-1/3"
-                                              disabled={ disabledBatch }
-                                              label={ t('VERIFIER.form') }
-                                              options={ forms.map((form: any) => ({
-                                                  label: form.label,
-                                                  value: form.id
-                                              })) }
-                                              value={ batch.form_id }
-                                              onChange={ handleChangeForm }
-                                    />
-
-                                    { batchMetadata && batchMetadata.length > 0 && (
-                                        <div className='flex flex-col gap-4'>
-                                            <h3 className='font-semibold'>{ t('FORMS.metadata_batch') }</h3>
-                                            { batchMetadata.map((line: any, index: number) => (
-                                                <div key={ index } className='flex gap-4'>
-                                                    { line.map((field: any) => (
-                                                        <div key={ field.id }
-                                                             className={ `min-w-1/6 ${ getWidthLine(line) }` }>
-                                                            { field.type === 'date' ? (
-                                                                <ISOCalendar
-                                                                    id={ field.id }
-                                                                    key={ field.id }
-                                                                    label={ t(field.label) }
-                                                                    disabled={ disabledBatch }
-                                                                    required={ field.required }
-                                                                    value={ batchMetadataValues[field.label_short] }
-                                                                    onChange={ (e) => {
-                                                                        handleUpdateBatchMetadataValues(field, e)
-                                                                    } }
-                                                                />
-                                                            ) : (
-                                                                <div>
-                                                                    { field.metadata_key && metadata.length > 0 ? (
-                                                                        <Dropdown
-                                                                            id={ field.id }
-                                                                            filter={ true }
-                                                                            label={ field.label }
-                                                                            className="w-full"
-                                                                            useExtraInLabel={ true }
-                                                                            disabled={ disabledBatch }
-                                                                            options={ getMetadaValuesForField(field) }
-                                                                            value={ batchMetadataValues[field.label_short] }
-                                                                            onChange={ (e) => handleUpdateBatchMetadataValues(field, e.value) }
-                                                                        />
-                                                                    ) : (
-                                                                        <Input
-                                                                            id={ field.id }
-                                                                            key={ field.id }
-                                                                            type={ field.type }
-                                                                            label={ t(field.label) }
-                                                                            disabled={ disabledBatch }
-                                                                            required={ field.required }
-                                                                            value={ batchMetadataValues[field.label_short] }
-                                                                            onChange={ (e) => {
-                                                                                handleUpdateBatchMetadataValues(field, e.target.value)
-                                                                            } }
-                                                                        />
-                                                                    ) }
-                                                                </div>
-                                                            )
-                                                            }
-                                                        </div>
-                                                    )) }
-                                                </div>
-                                            )) }
                                         </div>
-                                    ) }
-                                </div>
-                            </AccordionTab>
+
+                                        <Dropdown id={ "forms" }
+                                                  filter={ true }
+                                                  className="w-1/3"
+                                                  disabled={ disabledBatch }
+                                                  label={ t('VERIFIER.form') }
+                                                  options={ forms.map((form: any) => ({
+                                                      label: form.label,
+                                                      value: form.id
+                                                  })) }
+                                                  value={ batch.form_id }
+                                                  onChange={ handleChangeForm }
+                                        />
+
+                                        { batchMetadata && batchMetadata.length > 0 && (
+                                            <div className='flex flex-col gap-4'>
+                                                <h3 className='font-semibold'>{ t('FORMS.metadata_batch') }</h3>
+                                                { batchMetadata.map((line: any, index: number) => (
+                                                    <div key={ index } className='flex gap-4'>
+                                                        { line.map((field: any) => (
+                                                            <div key={ field.id }
+                                                                 className={ `min-w-1/6 ${ getWidthLine(line) }` }>
+                                                                { field.type === 'date' ? (
+                                                                    <ISOCalendar
+                                                                        id={ field.id }
+                                                                        key={ field.id }
+                                                                        label={ t(field.label) }
+                                                                        disabled={ disabledBatch }
+                                                                        required={ field.required }
+                                                                        value={ batchMetadataValues[field.label_short] }
+                                                                        onChange={ (e) => {
+                                                                            handleUpdateBatchMetadataValues(field, e)
+                                                                        } }
+                                                                    />
+                                                                ) : (
+                                                                    <div>
+                                                                        { field.metadata_key && metadata.length > 0 ? (
+                                                                            <Dropdown
+                                                                                id={ field.id }
+                                                                                filter={ true }
+                                                                                label={ field.label }
+                                                                                className="w-full"
+                                                                                useExtraInLabel={ true }
+                                                                                disabled={ disabledBatch }
+                                                                                options={ getMetadaValuesForField(field) }
+                                                                                value={ batchMetadataValues[field.label_short] }
+                                                                                onChange={ (e) => handleUpdateBatchMetadataValues(field, e.value) }
+                                                                            />
+                                                                        ) : (
+                                                                            <Input
+                                                                                id={ field.id }
+                                                                                key={ field.id }
+                                                                                type={ field.type }
+                                                                                label={ t(field.label) }
+                                                                                disabled={ disabledBatch }
+                                                                                required={ field.required }
+                                                                                value={ batchMetadataValues[field.label_short] }
+                                                                                onChange={ (e) => {
+                                                                                    handleUpdateBatchMetadataValues(field, e.target.value)
+                                                                                } }
+                                                                            />
+                                                                        ) }
+                                                                    </div>
+                                                                )
+                                                                }
+                                                            </div>
+                                                        )) }
+                                                    </div>
+                                                )) }
+                                            </div>
+                                        ) }
+                                    </div>
+                                </Accordion.Panel>
+                            </Accordion.Item>
                         </Accordion>
+
 
                         <DndContext
                             sensors={ sensors }
@@ -1481,76 +1488,68 @@ export function SplitterViewerPage() {
                             collisionDetection={ pointerWithin }
                         >
                             { documents.map((document: any) => (
-                                <Panel
-                                    key={ document.id }
-                                    onClick={ (e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        setSelectedDocument(document);
-                                    } }
-                                    className='mb-4 w-full'
-                                    header={
-                                        <div className="flex items-center gap-1.5">
-                                            <div
-                                                className={ `${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer hover:text-(--color-primary)' }` }
-                                                onClick={ () => !disabledBatch && typeDocument(document) }>
-                                                { !document.doctype_label && (
-                                                    <div className='transition-colors items-center gap-2
+                                <Panel key={ document.id } header={
+                                    <div className="flex items-center gap-1.5">
+                                        <div
+                                            className={ `${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer hover:text-(--color-primary)' }` }
+                                            onClick={ () => !disabledBatch && typeDocument(document) }>
+                                            { !document.doctype_label && (
+                                                <div className='transition-colors items-center gap-2
                                                                 hover:text-(--text-error) text-(--text-error)/80 font-semibold flex'>
-                                                        <div className='bg-(--text-error)/20 rounded-md p-1'>
-                                                            <FolderTree size={ 20 }/>
-                                                        </div>
-                                                        { t('SPLITTER.type_document') }
+                                                    <div className='bg-(--text-error)/20 rounded-md p-1'>
+                                                        <FolderTree size={ 20 }/>
+                                                    </div>
+                                                    { t('SPLITTER.type_document') }
+                                                </div>
+                                            ) }
+                                            <div
+                                                className='transition-colors items-center gap-2 font-semibold flex'>
+                                                { document.doctype_label && (
+                                                    <div className='bg-(--bg-secondary) rounded-md p-1'>
+                                                        <File size={ 20 }/>
                                                     </div>
                                                 ) }
-                                                <div
-                                                    className='transition-colors items-center gap-2 font-semibold flex'>
-                                                    { document.doctype_label && (
-                                                        <div className='bg-(--bg-secondary) rounded-md p-1'>
-                                                            <File size={ 20 }/>
-                                                        </div>
-                                                    ) }
-                                                    <div>{ document.doctype_label }</div>
-                                                </div>
-                                            </div>
-                                            <div
-                                                className='text-(--text-secondary) font-medium flex items-center bg-(--bg-secondary) px-3 py-1 rounded-3xl'>
-                                                <span>{ document.pages.length }&nbsp;</span>
-                                                { t('SPLITTER.pages', { count: document.pages.length }) }
-                                            </div>
-                                            <div className='ml-auto'>
-                                                <EllipsisVertical
-                                                    size={ 18 }
-                                                    className={ `${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer' }` }
-                                                    onClick={ (e) => {
-                                                        if (disabledBatch) return;
-                                                        e.preventDefault();
-                                                        e.stopPropagation();
-                                                        setSelectedDocument(document);
-                                                        cm.current?.show(e);
-                                                    } }
-                                                />
-                                                <ContextMenu model={ menuItems } className="w-auto!" ref={ cm }/>
+                                                <div>{ document.doctype_label }</div>
                                             </div>
                                         </div>
-                                    }
-                                >
+                                        <div
+                                            className='text-(--text-secondary) font-medium flex items-center bg-(--bg-secondary) px-3 py-1 rounded-3xl'>
+                                            <span>{ document.pages.length }&nbsp;</span>
+                                            { t('SPLITTER.pages', { count: document.pages.length }) }
+                                        </div>
+                                        <div className='ml-auto'>
+                                            <EllipsisVertical
+                                                size={ 18 }
+                                                className={ `${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer' }` }
+                                                onClick={ (e) => {
+                                                    if (disabledBatch) return;
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    setSelectedDocument(document);
+                                                    cm.current?.show(e);
+                                                } }
+                                            />
+                                            <ContextMenu model={ menuItems } className="w-auto!" ref={ cm }/>
+                                        </div>
+                                    </div>
+                                }>
                                     { documentMetadata.length > 0 && document.pages.length > 0 && (
-                                        <div className='px-4 pt-4'>
-                                            <h3 className='font-semibold flex items-center cursor-pointer gap-1'
-                                                onClick={ () => setDocumentMetadataOpen(prev => !prev) }>
+                                        <div className='p-4 pb-0'>
+                                            <h3 className='font-semibold text-(--text-secondary) flex items-center cursor-pointer gap-1'
+                                                onClick={ () => setDocumentMetadataOpen(prev => !prev) }
+                                            >
                                                 { t('FORMS.metadata_document') }
                                                 <ChevronDown
                                                     size={ 16 }
                                                     className={ `transition-transform ${ documentMetadataOpen ? 'rotate-0' : '-rotate-90' }` }
                                                 />
                                             </h3>
-                                            <div className={ `grid transition-all` }
+                                            <div className='grid transition-all mb-4'
                                                  style={ { gridTemplateRows: documentMetadataOpen ? '1fr' : '0fr' } }
                                             >
                                                 <div className="overflow-hidden">
                                                     { documentMetadata.map((line: any, index: number) => (
-                                                        <div key={ index } className={ `flex gap-4 mt-4` }>
+                                                        <div key={ index } className='flex gap-4 mt-4'>
                                                             { line.map((field: any) => (
                                                                 <div key={ field.id }
                                                                      className={ `min-w-1/6 ${ getWidthLine(line) }` }>

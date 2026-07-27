@@ -15,27 +15,17 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-.p-radiobutton .p-radiobutton-box .p-radiobutton-icon {
-    @apply size-2.5;
-}
+import React from "react";
 
-.p-inputswitch.p-highlight .p-inputswitch-slider::before {
-    @apply left-0.5;
-}
-
-/* Overlay popup on small screen */
-.p-slider .p-slider-range {
-    @apply bg-(--color-primary);
-}
-
-.p-slider .p-slider-handle {
-    @apply border-(--color-primary);
-}
-
-.p-slider:not(.p-disabled) .p-slider-handle:hover {
-    @apply bg-(--color-primary);
-}
-
-.p-inputswitch .p-inputswitch-slider {
-    @apply bg-gray-400;
+export function Panel({ header, children }: { header: React.ReactNode; children: React.ReactNode }) {
+    return (
+        <div>
+            <div className='bg-(--bg-primary) p-4 border border-b-0 border-(--border-secondary) rounded-t-xl'>
+                { header }
+            </div>
+            <div className='bg-(--bg-primary) border border-(--border-secondary) rounded-b-xl'>
+                <div>{children}</div>
+            </div>
+        </div>
+    );
 }

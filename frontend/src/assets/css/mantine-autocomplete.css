@@ -15,11 +15,19 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-.p-divider.p-divider-vertical {
-    @apply py-2;
-    @apply mx-0.5;
+.mantine-Input-wrapper input:not(.mantine-MultiSelect-inputField) {
+    @apply h-12.5!;
+    @apply rounded-md;
+    @apply border-(--border-secondary);
 }
 
-.p-divider.p-divider-vertical::before {
-    @apply border-l!;
+.mantine-Input-wrapper input:focus,
+.mantine-Input-wrapper input:hover {
+    @apply shadow-none;
+    @apply outline-none;
+    @apply border-(--color-primary);
+}
+
+.mantine-Autocomplete-dropdown {
+    @apply p-2!;
 }

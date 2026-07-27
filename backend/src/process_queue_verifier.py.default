@@ -68,7 +68,7 @@ def execute(args, path, log, config, files, ocr, regex, database, docservers, co
                 workflow_settings = database.select({
                     'select': ['input'],
                     'table': ['workflows'],
-                    'where': ['workflow_id = %s', 'module = %s'],
+                    'where': ['id = %s', 'module = %s'],
                     'data': [args['workflow_id'], 'verifier']
                 })
 
@@ -154,7 +154,7 @@ def launch(args):
             log.debug('Retrieve workflow settings from database for workflow_id : ' + args['workflow_id'])
 
             workflow_settings = database.select({
-                'select': ['input'],
+                'select': ['workflow_id', 'input'],
                 'table': ['workflows'],
                 'where': ['id = %s', 'module = %s'],
                 'data': [args['workflow_id'], 'verifier']
@@ -212,7 +212,7 @@ def launch(args):
                 'workflow_id': args['workflow_id'],
                 'history_submodule': 'upload_file',
                 'user_id': args['user_id'] if 'user_id' in args and args['user_id'] else 0,
-                'history_desc': gettext('FILE_UPLOADED_WORKFLOW') + '&nbsp<strongshared.custom_path>' + args['workflow_id'] + '</strong>'
+                'history_desc': f"{gettext('FILE_UPLOADED_WORKFLOW')} <strong>{workflow_settings[0]['workflow_id']}</strong>",
             }
         })
 
@@ -269,9 +269,9 @@ def launch(args):
 
                     log.debug('List of document ids returned from processing : ' + str(list_of_ids))
 
-                    if os.path.isfile(shared.error_path + '/' + args['workflow_id'] + '/' + args['original_filename']):
+                    if os.path.isfile(shared.error_path + '/' + workflow_settings[0]['workflow_id'] + '/' + args['original_filename']):
                         try:
-                            os.remove(shared.error_path + '/' + args['workflow_id'] + '/' + args['original_filename'])
+                            os.remove(shared.error_path + '/' + workflow_settings[0]['workflow_id'] + '/' + args['original_filename'])
                         except (Exception, ):
                             pass
                 except (Exception,):

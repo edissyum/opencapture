@@ -127,8 +127,8 @@ export function Table<T extends { id: string }>({
                     <Button
                         size='sm'
                         key={ idx }
+                        variant="no_bg_border"
                         className='p-2 border gap-1'
-                        variant={ "no_bg_border" }
                         onClick={ action.command }
                         disabled={ selectedRows.length === 0 || action.disabled }>
                         { action.icon } { action.label }

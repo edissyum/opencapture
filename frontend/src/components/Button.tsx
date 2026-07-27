@@ -46,13 +46,11 @@ export function Button({
     variant = "primary",
     ...props
 }: ButtonProps) {
-    const location = useLocation();
-
-    const isActive = to
-        ? exact
-            ? location.pathname === to
-            : location.pathname.includes(to)
-        : false;
+    let isActive = false;
+    if (to) {
+        const location = useLocation();
+        isActive = exact ? location.pathname === to : location.pathname.includes(to)
+    }
 
     let baseStyles =
         "cursor-pointer inline-flex gap-2 items-center justify-center font-normal " +

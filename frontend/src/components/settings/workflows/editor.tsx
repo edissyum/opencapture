@@ -19,7 +19,6 @@ import { t } from "i18next";
 import { useForm } from "react-hook-form";
 import { Stepper } from "primereact/stepper";
 import { Editor } from '@monaco-editor/react';
-import { FloatLabel } from "primereact/floatlabel";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { ArrowLeft, Terminal } from "lucide-react";
@@ -739,7 +738,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                         header: { className: "stepper-secondary left-1/5 -translate-x-1/5" }
                     } }>
                         <div className='flex flex-col gap-4'>
-                            <FloatLabel className="w-full">
+                            <div className="relative">
                                 <Editor
                                     className='border border-(--border-secondary) rounded-md p-2'
                                     height="50vh"
@@ -752,10 +751,13 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                                     onChange={ (value) => setInputScript(value || '') }
                                     theme={ document.documentElement.classList.contains('dark') ? 'vs-dark' : '' }
                                 />
-                                <label className="text-(--text-secondary) top-0! bg-(--bg-primary) px-1">
+                                <label className={ `absolute left-3 select-none pointer-events-none transition-all 
+                                                    duration-150 top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary) 
+                                                    text-(--text-secondary)` }
+                                >
                                     { t("WORKFLOWS.script_content") }
                                 </label>
-                            </FloatLabel>
+                            </div>
                             <div className='flex justify-between'>
                                 <Button onClick={ handlePreviousStep } variant="no_bg"
                                         className="px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
@@ -823,7 +825,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                     } pt={ {
                         header: { className: "stepper-secondary left-3/5 translate-x-[30%]" }
                     } }>
-                        <FloatLabel className="w-full">
+                        <div className="relative">
                             <Editor
                                 className='border border-(--border-secondary) rounded-md p-2'
                                 height="50vh"
@@ -836,10 +838,13 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                                 onChange={ (value) => setProcessScript(value || '') }
                                 theme={ document.documentElement.classList.contains('dark') ? 'vs-dark' : '' }
                             />
-                            <label className="text-(--text-secondary) top-0! bg-(--bg-primary) px-1">
+                            <label className={ `absolute left-3 select-none pointer-events-none transition-all 
+                                                        duration-150 top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary) 
+                                                        text-(--text-secondary)` }
+                            >
                                 { t("WORKFLOWS.script_content") }
                             </label>
-                        </FloatLabel>
+                        </div>
 
                         <div className='mt-4 flex justify-between'>
                             <Button onClick={ handlePreviousStep } variant="no_bg"

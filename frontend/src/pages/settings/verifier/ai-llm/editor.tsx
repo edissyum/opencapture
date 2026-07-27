@@ -19,7 +19,6 @@ import { t } from "i18next";
 import { Copy } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Editor } from "@monaco-editor/react";
-import { FloatLabel } from "primereact/floatlabel";
 import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
@@ -333,7 +332,7 @@ export function SettingsVerifierAiLLMEditor() {
                     </Hint>
                 ) }
 
-                <FloatLabel>
+                <div className="relative">
                     <Editor
                         height='50vh'
                         defaultLanguage={ 'json' }
@@ -349,10 +348,13 @@ export function SettingsVerifierAiLLMEditor() {
                         onChange={ (value: any) => setAiLLMJson(value) }
                         theme={ document.documentElement.classList.contains('dark') ? 'vs-dark' : '' }
                     />
-                    <label className="text-(--text-secondary) text-sm top-0! bg-(--bg-primary) px-1">
+                    <label className={ `absolute left-3 select-none pointer-events-none transition-all 
+                                                        duration-150 top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary) 
+                                                        text-(--text-secondary)` }
+                    >
                         { t('AI-LLM.json_content') } <span className="text-(--text-error)">*</span>
                     </label>
-                </FloatLabel>
+                </div>
             </div>
 
             <div className="p-6 w-fit">

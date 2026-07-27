@@ -20,6 +20,7 @@
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/preflight.css" layer(base);
 @import '@mantine/core/styles.css' layer(mantine);
+@import '@mantine/dates/styles.css' layer(mantine);
 @import "tailwindcss/utilities.css" layer(utilities);
 
 @import "./assets/css/tooltip.css";
@@ -29,17 +30,16 @@
 @import "./assets/css/mantine-switch.css";
 @import "./assets/css/tailwind-theme.css";
 @import "./assets/css/mantine-popover.css";
+@import "./assets/css/mantine-calendar.css";
 @import "./assets/css/prime-react-tree.css";
-@import "./assets/css/prime-react-slider.css";
+@import "./assets/css/mantine-accordion.css";
 @import "./assets/css/prime-react-dialog.css";
 @import "./assets/css/prime-react-stepper.css";
-@import "./assets/css/prime-react-divider.css";
-@import "./assets/css/prime-react-calendar.css";
+@import "./assets/css/mantine-multiselect.css";
+@import "./assets/css/mantine-autocomplete.css";
 @import "./assets/css/prime-react-dropdown.css";
 @import "./assets/css/prime-react-datatable.css";
-@import "./assets/css/prime-react-accordion.css";
 @import "./assets/css/prime-react-contextmenu.css";
-@import "./assets/css/prime-react-autocomplete.css";
 
 @import 'primereact/resources/themes/lara-light-indigo/theme.css';
 
@@ -151,14 +151,14 @@ h3, h1 {
     @apply leading-none;
 }
 
-.p-inputtext {
-    font-family: "Montserrat", sans-serif;
-}
+input:disabled {
+    @apply opacity-70;
+    @apply cursor-not-allowed;
+    @apply bg-(--bg-primary)!;
 
-/* Fix placeholder for input in FloatLabel */
-.p-float-label input::placeholder {
-    @apply opacity-100;
-    @apply text-(--text-secondary);
+    &:hover {
+        @apply border-(--border-secondary);
+    }
 }
 
 /* Toastify customization */
