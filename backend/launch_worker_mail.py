@@ -142,8 +142,7 @@ with app.app_context():
         folder_to_crawl = config_mail['folder_to_crawl']
         folder_destination = config_mail['folder_destination']
         isSplitter = config_mail['is_splitter']
-        splitterWorkflowId = config_mail['splitter_workflow_id'] if 'splitter_workflow_id' in config_mail else None
-        verifierWorkflowId = config_mail['verifier_workflow_id'] if 'verifier_workflow_id' in config_mail else None
+        workflowId = config_mail['workflow_id']
         verifierInsertBody = config_mail['verifier_insert_body_as_doc']
         splitterInsertBody = config_mail['splitter_insert_body_as_doc']
         ocr_attachments = config_mail['ocr_attachments']
@@ -257,7 +256,7 @@ with app.app_context():
                                         'status': 'wait',
                                         'module': 'verifier' if not isSplitter else 'splitter',
                                         'filename': os.path.basename(attachment['file']),
-                                        'workflow_id': verifierWorkflowId if not isSplitter else splitterWorkflowId,
+                                        'workflow_id': workflowId,
                                         'source': 'cli'
                                     }
                                 })
@@ -279,7 +278,7 @@ with app.app_context():
                                             'user_info': 'mailcollect',
                                             'custom_id': args['custom_id'],
                                             'process_name': process['name'],
-                                            'workflow_id': verifierWorkflowId,
+                                            'workflow_id': workflowId,
                                             'task_id_monitor': task_id_monitor,
                                             'log': batch_path + '/' + date_batch + '.log',
                                             'nb_of_attachments': str(len(ret['attachments'])),
@@ -303,7 +302,7 @@ with app.app_context():
                                             'user_info': 'mailcollect',
                                             'file': attachment['file'],
                                             'custom_id': args['custom_id'],
-                                            'workflow_id': splitterWorkflowId,
+                                            'workflow_id': workflowId,
                                             'task_id_monitor': task_id_monitor,
                                             'log': batch_path + '/' + date_batch + '.log',
                                             'nb_of_attachments': str(len(ret['attachments'])),
@@ -328,7 +327,7 @@ with app.app_context():
                                 'status': 'wait',
                                 'module': 'verifier' if not isSplitter else 'splitter',
                                 'filename': ret['file']['filename'],
-                                'workflow_id': verifierWorkflowId if not isSplitter else splitterWorkflowId,
+                                'workflow_id': workflowId,
                                 'source': 'cli'
                             }
                         })
@@ -347,7 +346,7 @@ with app.app_context():
                                 'custom_id': args['custom_id'],
                                 'process_name': process['name'],
                                 'attachments': ret['attachments'],
-                                'workflow_id': verifierWorkflowId,
+                                'workflow_id': workflowId,
                                 'task_id_monitor': task_id_monitor,
                                 'log': batch_path + '/' + date_batch + '.log',
                                 'original_filename': os.path.basename(ret['file']['path']),

@@ -43,6 +43,17 @@ with app.app_context():
     _vars = create_classes_from_custom_id(args['custom_id'])
     database = _vars[0]
 
+    workflow_id = database.select({
+        'select': ['id'],
+        'table': ['workflows'],
+        'where': ['module = %s', 'workflow_id = %s'],
+        'values': ['splitter', args['workflow_id']]
+    })
+    if not workflow_id:
+        sys.exit('Workflow not found')
+
+    args['workflow_id'] = workflow_id[0]['id']
+
     args['source'] = 'fs-watcher'
     args['task_id_monitor'] = database.insert({
         'table': 'monitoring',

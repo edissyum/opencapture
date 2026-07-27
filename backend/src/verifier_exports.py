@@ -922,7 +922,6 @@ def export_mem(data, document_info, log, regex, database):
                     if 'webservice' in _data and _data['webservice']:
                         # Pour le webservices MEM Courrier, ce sont les identifiants qui sont utilisés
                         # et non les valeurs bruts (e.g COU plutôt que Service courrier)
-
                         if _data['value']:
                             value = _data['value']['id']
 
