@@ -28,7 +28,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /build
 COPY backend/pip-requirements.txt ./
 
-RUN python -m pip install --upgrade pip wheel setuptools pycparser \
+RUN --mount=type=cache,target=/root/.cache/pip \
+    python -m pip install --upgrade pip wheel setuptools pycparser \
     && python -m pip wheel \
         --wheel-dir=/wheels \
         -r pip-requirements.txt \
