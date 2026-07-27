@@ -306,20 +306,20 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             placeholder: `/var/share/${ custom }/input`
         })),
         customer_id: z.number().describe(JSON.stringify({
-            component: "dropdown",
+            component: "select",
             label: t("WORKFLOWS.customer"),
             required: module === 'splitter',
             options: customers.map((c: any) => ({ label: c.name, value: c.id }))
         })),
         ai_model_id: z.number().optional().describe(JSON.stringify({
-            component: "dropdown",
+            component: "select",
             label: t("WORKFLOWS.ai_model"),
             hint: t("WORKFLOWS.ai_model_hint"),
             options: aiModels.map((m: any) => ({ label: m.model_label, value: m.id }))
         })),
         splitter_method_id: z.string().optional().describe(JSON.stringify({
             required: true,
-            component: "dropdown",
+            component: "select",
             label: t("WORKFLOWS.splitter_method_id"),
             options: splitterMethods.map((m: any) => ({ label: m.label, value: m.id }))
         })),
@@ -345,7 +345,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
     if (module === 'verifier') {
         inputSchemaFields = inputSchemaFields.extend({
             rotation: z.string().optional().describe(JSON.stringify({
-                component: "dropdown",
+                component: "select",
                 label: t("WORKFLOWS.rotation"),
                 options: getRotationOptions().map((o: any) => ({ label: o.label, value: o.id }))
             }))
@@ -371,7 +371,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
     let processSchemaStartSwitchs: any = z.object({});
     let processSchemaInputFields: any = z.object({
         form_id: z.any().describe(JSON.stringify({
-            component: "dropdown",
+            component: "select",
             required: useInterface && stepperIndex == 1,
             disabled: !useInterface,
             label: t("VERIFIER.associated_form"),
@@ -414,7 +414,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         });
         processSchemaInputFields = processSchemaInputFields.extend({
             ai_llm: z.string().describe(JSON.stringify({
-                component: "dropdown",
+                component: "select",
                 label: t("WORKFLOWS.ai_llm"),
                 hint: t("WORKFLOWS.ai_llm_hint"),
                 options: aiLLM.map((m: any) => ({ label: m.name, value: String(m.id) }))
@@ -431,14 +431,14 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 options: customFields.map((f: any) => ({ label: f.label, value: f.id }))
             })),
             tesseract_function: z.string().describe(JSON.stringify({
-                component: "dropdown",
+                component: "select",
                 required: stepperIndex == 1,
                 label: t("WORKFLOWS.tesseract_function"),
                 hint: t("WORKFLOWS.tesseract_function_hint"),
                 options: getTesseractOptions().map((f: any) => ({ label: f.label, value: f.id }))
             })),
             convert_function: z.string().describe(JSON.stringify({
-                component: "dropdown",
+                component: "select",
                 required: stepperIndex == 1,
                 label: t("WORKFLOWS.convert_function"),
                 hint: t("WORKFLOWS.convert_function_hint"),
@@ -448,7 +448,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
     } else {
         processSchemaInputFields = processSchemaInputFields.extend({
             rotation: z.string().optional().describe(JSON.stringify({
-                component: "dropdown",
+                component: "select",
                 label: t("WORKFLOWS.rotation"),
                 options: getRotationOptions().map((o: any) => ({ label: o.label, value: o.id }))
             }))

@@ -28,7 +28,7 @@ import { getSchemaForAuthMethod } from "./authSchema";
 import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
 import { RadioBox } from "../../../../components/RadioBox";
-import { Dropdown } from "../../../../components/Dropdown";
+import { Select } from "../../../../components/Select.tsx";
 import { InputSwitch } from "../../../../components/InputSwitch";
 import { showToast } from "../../../../components/ToastProvider";
 
@@ -464,15 +464,15 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                     name="folder_to_crawl"
                     control={ foldersControl }
                     render={ ({ field }) => (
-                        <Dropdown
-                            filter={ true }
+                        <Select
+                            
                             className="w-full"
                             id="folder_to_crawl"
                             value={ field.value }
                             disabled={ folders.length === 0 }
                             label={ t("MAILCOLLECT.folder_to_crawl") }
                             options={ folders.map((folder) => ({ label: folder, value: folder })) }
-                            onChange={ (e: any) => field.onChange(e.value) }
+                            onChange={ (value) => field.onChange(value) }
                         />
                     ) }
                 />
@@ -505,15 +505,15 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                     name="folder_destination"
                     control={ foldersControl }
                     render={ ({ field }) => (
-                        <Dropdown
-                            filter={ true }
+                        <Select
+                            
                             value={ field.value }
                             id="folder_destination"
                             className="w-full mb-2"
                             disabled={ folders.length === 0 }
                             label={ t("MAILCOLLECT.folder_destination") }
                             options={ folders.map((folder) => ({ label: folder, value: folder })) }
-                            onChange={ (e: any) => field.onChange(e.value) }
+                            onChange={ (value) => field.onChange(value) }
                         />
                     ) }
                 />
@@ -590,7 +590,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                 render={ ({ field }) => (
                                     <>
                                         <div className='relative'>
-                                            <Dropdown
+                                            <Select
                                                 filter
                                                 id="verifier_workflow_id"
                                                 value={ field.value }
@@ -598,7 +598,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                                     label: workflow.label,
                                                     value: workflow.workflow_id
                                                 })) }
-                                                onChange={ (e: any) => field.onChange(e.value) }
+                                                onChange={ (value) => field.onChange(value) }
                                                 className="w-full"
                                             />
                                             <label className={ `absolute left-3 select-none pointer-events-none transition-all 
@@ -640,7 +640,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                 render={ ({ field }) => (
                                     <>
                                         <div className='relative'>
-                                            <Dropdown
+                                            <Select
                                                 filter
                                                 id="splitter_workflow_id"
                                                 value={ field.value }
@@ -648,7 +648,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                                     label: workflow.label,
                                                     value: workflow.workflow_id
                                                 })) }
-                                                onChange={ (e: any) => field.onChange(e.value) }
+                                                onChange={ (value) => field.onChange(value) }
                                                 className="w-full"
                                             />
                                             <label className={ `absolute left-3 select-none pointer-events-none transition-all 

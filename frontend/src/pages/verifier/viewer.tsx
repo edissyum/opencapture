@@ -41,7 +41,7 @@ import { SupplierEditor } from "../suppliers/editor";
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
 import ISOCalendar from "../../components/Calendar";
-import { Dropdown } from "../../components/Dropdown";
+import { Select } from "../../components/Select.tsx";
 import { Loader } from "../../components/loader/Loader";
 import { showToast } from "../../components/ToastProvider";
 import { ZoomControl } from "../../components/ZoomControl";
@@ -526,7 +526,8 @@ export function VerifierViewerPage() {
                                         if (field.id === data['openCaptureField']) {
                                             field.type = 'autocomplete';
                                             field.values = res.resources.map((doc: any) => ({
-                                                value: doc.data,
+                                                id: doc.res_id,
+                                                value: doc.res_id,
                                                 label: doc.data,
                                                 extras: [doc.alt_identifier]
                                             }));
@@ -691,10 +692,23 @@ export function VerifierViewerPage() {
             newZones[zoneIndex].lines.splice(insertIndex, 0, newLine);
             return newZones;
         });
+
+        setUnSavedChanges(true);
     }
 
     // Function to update document data (only array, not on database) and validate fields
     const updateDocumentData = (field: any, value: any, checkSupplier: boolean = true, fromInit: boolean = false) => {
+        // Autocomplete fields resolve to a MEM resource : store the chrono (label) as the field's value,
+        // but keep the res_id alongside so it can be sent to export_mem for linking
+        let resId: any = undefined;
+        if (field.type === 'autocomplete') {
+            const selected = (typeof value === 'object' && value !== null)
+                ? value
+                : field.values?.find((item: any) => item.value === value);
+            resId = selected ? selected.value : null;
+            value = selected ? selected.label : value;
+        }
+
         field.error = errorCheck(field, value);
         setErrors((prevErrors) => ({
             ...prevErrors,
@@ -705,9 +719,20 @@ export function VerifierViewerPage() {
             ...prevData,
             datas: {
                 ...prevData.datas,
-                [field.id]: value
+                [field.id]: value,
+                ...(field.type === 'autocomplete' ? { [`${ field.id }__res_id`]: resId } : {})
             }
         }));
+
+        if (field.type === 'autocomplete' && documentData.status !== 'END') {
+            setDocumentData((prevData: any) => ({
+                ...prevData,
+                datas: {
+                    ...prevData.datas,
+                    [`${ field.id }__res_id`]: resId
+                }
+            }));
+        }
 
         if (!fromInit && !checkIfFieldIsSupplierField(field.id)) {
             setUnSavedChanges(true);
@@ -1387,22 +1412,21 @@ export function VerifierViewerPage() {
                                                             ) }
 
                                                             { field.type === 'select' && field.settings?.options && (
-                                                                <Dropdown
+                                                                <Select
                                                                     id={ field.id }
                                                                     label={ t(field.label) }
                                                                     required={ field.required }
                                                                     disabled={ disableFields }
                                                                     value={ tmpDocumentData?.datas?.[field.id] }
                                                                     options={ getFilteredConditionalOptions(field) }
-                                                                    onChange={ (e) => updateDocumentData(field, e.value) }
+                                                                    onChange={ (value) => updateDocumentData(field, value) }
                                                                 />
                                                             ) }
 
-                                                            { field.type === 'select' && field.id == 'accounting_plan' && (
-                                                                <Dropdown
+                                                            { field.type === 'select' && field.id.includes('accounting_plan') && (
+                                                                <Select
                                                                     filter
                                                                     id={ field.id }
-                                                                    itemsSize={ 50 }
                                                                     label={ t(field.label) }
                                                                     disabled={ disableFields }
                                                                     required={ field.required }
@@ -1411,24 +1435,22 @@ export function VerifierViewerPage() {
                                                                         value: plan.compte_num,
                                                                         label: plan.compte_lib
                                                                     })) }
-                                                                    onChange={ (e) => updateDocumentData(field, e.value) }
+                                                                    onChange={ (value) => updateDocumentData(field, value) }
                                                                 />
                                                             ) }
 
                                                             { field.type === 'autocomplete' && (
-                                                                <Dropdown
-                                                                    filter
+                                                                <AutocompleteInput
                                                                     id={ field.id }
-                                                                    itemsSize={ 50 }
-                                                                    editable={ true }
-                                                                    options={ field.values }
+                                                                    optionLabel="label"
                                                                     label={ t(field.label) }
-                                                                    useExtraInLabel={ true }
                                                                     error={ errors[field.id] }
                                                                     disabled={ disableFields }
                                                                     required={ field.required }
-                                                                    value={ tmpDocumentData?.datas?.[field.id] }
-                                                                    onChange={ (e) => updateDocumentData(field, e.value) }
+                                                                    suggestions={ field.values || [] }
+                                                                    value={ tmpDocumentData?.datas?.[field.id] ?? "" }
+                                                                    onChange={ (value) => updateDocumentData(field, value) }
+                                                                    search={ () => {} }
                                                                 />
                                                             ) }
 

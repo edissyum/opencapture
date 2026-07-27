@@ -23,7 +23,7 @@ import { Bar, BarChart, Tooltip, XAxis, YAxis } from "recharts";
 import { statisticsFunctions } from "./functions";
 
 import { Button } from "../../components/Button";
-import { Dropdown } from "../../components/Dropdown";
+import { Select } from "../../components/Select.tsx";
 
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 
@@ -132,7 +132,7 @@ export function StatisticsPage() {
     }, []);
 
     useEffect(() => {
-        handleStatisticChange({ value: selectedStatisticId }, true).then();
+        handleStatisticChange(selectedStatisticId, true).then();
     }, [selectedYear]);
 
     const handleModuleChange = (e: any) => {
@@ -141,8 +141,8 @@ export function StatisticsPage() {
         setFilteredStatisticsOptions(statisticsOptions.filter(option => option.id.startsWith(e.value)));
     }
 
-    const handleStatisticChange = async (e: any, force = false) => {
-        const selectedOption = statisticsOptions.find(option => option.id === e.value);
+    const handleStatisticChange = async (value: any, force = false) => {
+        const selectedOption = statisticsOptions.find(option => option.id === value);
         if (selectedOption) {
             setSelectedStatisticId(selectedOption.id);
             if (statisticData[selectedOption.id] && !force) {
@@ -225,7 +225,7 @@ export function StatisticsPage() {
 
                         { open.statistics && (
                             <div className='p-4 pt-0'>
-                                <Dropdown
+                                <Select
                                     id="statistics"
                                     value={ selectedStatisticId }
                                     placeholder={ t('STATISTICS.select_statistic') }
@@ -233,7 +233,7 @@ export function StatisticsPage() {
                                         value: option.id,
                                         label: option.label
                                     })) }
-                                    onChange={ handleStatisticChange }
+                                    onChange={ (value) => handleStatisticChange(value) }
                                 />
                             </div>
                         ) }
@@ -250,7 +250,7 @@ export function StatisticsPage() {
 
                         { open.year && (
                             <div className='p-4 pt-0'>
-                                <Dropdown
+                                <Select
                                     id="year"
                                     value={ selectedYear }
                                     placeholder={ t('STATISTICS.select_year') }
@@ -258,7 +258,7 @@ export function StatisticsPage() {
                                         value: year.value,
                                         label: year.label
                                     })) }
-                                    onChange={ (e) => setSelectedYear(e.value) }
+                                    onChange={ (value: any) => setSelectedYear(value) }
                                 />
                             </div>
                         ) }

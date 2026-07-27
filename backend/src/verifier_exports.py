@@ -904,7 +904,7 @@ def export_mem(data, document_info, log, regex, database):
                     'addressStreet': supplier[0]['address1'],
                     'addressPostcode': supplier[0]['postal_code'],
                     'email': supplier[0]['email'] if supplier[0]['email'] else
-                    'A_renseigner_' + supplier[0]['name'].replace(' ', '_') + '@' + supplier[0]['vat_number'] + '.fr'
+                        'A_renseigner_' + supplier[0]['name'].replace(' ', '_') + '@' + supplier[0]['vat_number'] + '.fr'
                 }
 
                 if custom_field_contact_id and supplier[0]['vat_number'] and supplier[0]['siret']:
@@ -919,9 +919,10 @@ def export_mem(data, document_info, log, regex, database):
                 ws_data = data['options']['parameters']
                 for _data in ws_data:
                     value = _data['value']
-                    if 'webservice' in _data:
+                    if 'webservice' in _data and _data['webservice']:
                         # Pour le webservices MEM Courrier, ce sont les identifiants qui sont utilisés
                         # et non les valeurs bruts (e.g COU plutôt que Service courrier)
+
                         if _data['value']:
                             value = _data['value']['id']
 
@@ -1000,20 +1001,23 @@ def export_mem(data, document_info, log, regex, database):
                                             "filename": attachment['filename']
                                         }
                                         _ws.insert_attachment(res_id, attachments_files)
-                            if link_resource:
-                                if opencapture_field:
-                                    opencapture_field = ''.join(construct_with_var(opencapture_field, document_info))
-                                    if mem_custom_field:
-                                        if 'res_id' not in data or not data['res_id']:
-                                            docs = _ws.retrieve_doc_with_custom(mem_custom_field['id'], opencapture_field,
-                                                                                mem_clause)
-                                            if docs and docs['resources'] and len(docs['resources']) >= 1:
-                                                res_id = docs['resources'][0]['res_id']
-                                        else:
-                                            res_id = data['res_id']
-                                        if res_id != message['resId']:
-                                            _ws.link_documents(str(res_id), message['resId'])
 
+                        if link_resource:
+                            if opencapture_field:
+                                if mem_custom_field:
+                                    stored_res_id = document_info['datas'].get(f'{opencapture_field}__res_id')
+                                    if stored_res_id:
+                                        res_id = stored_res_id
+                                    else:
+                                        opencapture_field_value = ''.join(construct_with_var(opencapture_field, document_info))
+                                        docs = _ws.retrieve_doc_with_custom(mem_custom_field['id'], opencapture_field_value,
+                                                                            mem_clause)
+
+                                        if docs and docs['resources'] and len(docs['resources']) >= 1:
+                                            res_id = docs['resources'][0]['res_id']
+
+                                    if res_id != message['resId']:
+                                        _ws.link_documents(str(res_id), message['resId'])
                         log.debug('MEM Courrier export success')
                         return '', 200
                     else:

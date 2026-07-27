@@ -19,13 +19,13 @@ import { t } from "i18next";
 import * as XLSX from "xlsx";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { InputSwitch } from "primereact/inputswitch";
 
 import { Button } from "../Button";
-import { Dropdown } from "../Dropdown";
+import { Select } from "../Select.tsx";
 import UploadDropzone from "../upload/Dropzone";
+import { InputSwitch } from "../InputSwitch.tsx";
 
-export function ImportSpreadSheet({onClose, onValidate, columns, title, loading = false}: {
+export function ImportSpreadSheet({ onClose, onValidate, columns, title, loading = false }: {
     title: string,
     columns: string[],
     loading?: boolean,
@@ -121,8 +121,9 @@ export function ImportSpreadSheet({onClose, onValidate, columns, title, loading 
                                     min-h-0 overflow-hidden'>
                         <div className='flex p-4 pb-0'>
                             <h4 className='font-semibold'>{ t('ACCOUNTS.columns_config') }</h4>
-                            <div className='ml-auto flex'>
-                                <InputSwitch inputId='skipHeader' checked={ skipHeader } onChange={ (e) => setSkipHeader(e.value) }/>
+                            <div className='ml-auto flex items-center gap-2'>
+                                <InputSwitch id='skipHeader' checked={ skipHeader }
+                                             onChange={ (value) => setSkipHeader(value) }/>
                                 <label htmlFor='skipHeader' className="flex items-center gap-4 cursor-pointer">
                                     { t('GLOBAL.skip_header') }
                                 </label>
@@ -133,15 +134,15 @@ export function ImportSpreadSheet({onClose, onValidate, columns, title, loading 
                             <div className='h-full min-h-0 flex flex-col overflow-y-auto p-4'>
                                 <div className='flex pb-4 gap-8'>
                                     { editedColumns.map((col, idx) => (
-                                        <Dropdown
+                                        <Select
                                             id={ idx }
                                             key={ idx }
                                             value={ col }
                                             className='min-w-60'
                                             options={ columns.map((c) => ({ label: c, value: c })) }
-                                            onChange={ (selected: any) => {
+                                            onChange={ (value: any) => {
                                                 const newColumns = [...editedColumns];
-                                                newColumns[idx] = selected.value;
+                                                newColumns[idx] = value;
                                                 setEditedColumns(newColumns);
                                             } }
                                         />

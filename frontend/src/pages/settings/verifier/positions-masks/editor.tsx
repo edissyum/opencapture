@@ -76,13 +76,13 @@ export function SettingsVerifierPositionMaskEditor() {
             label: t("GLOBAL.label")
         })),
         form_id: z.number().describe(JSON.stringify({
-            component: "dropdown",
+            component: "select",
             filter: true,
             options: forms.map(form => ({ label: form.label, value: form.id })),
             label: t("VERIFIER.associated_form")
         })),
         supplier_id: z.number().describe(JSON.stringify({
-            component: "dropdown",
+            component: "select",
             filter: true,
             options: thirdPartyAccounts.map(account => ({ label: account.name, value: account.id })),
             label: t("POSITIONS-MASKS.supplier")

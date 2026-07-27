@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 
 import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
-import { Dropdown } from "../../../../components/Dropdown";
+import { Select } from "../../../../components/Select.tsx";
 import { InputSwitch } from "../../../../components/InputSwitch";
 import MultiSelectInput from "../../../../components/MultiSelect";
 
@@ -145,8 +145,7 @@ export function SettingsSplitterFormsDetails({
                     />
                 </div>
                 <div className='flex items-center gap-2'>
-                    <Dropdown
-                        filter={ true }
+                    <Select
                         className="w-1/2"
                         id="metadata_method"
                         label={ t('FORMS.select_metadata_method') }
@@ -155,11 +154,11 @@ export function SettingsSplitterFormsDetails({
                             label: metadataMethod.label
                         })) }
                         value={ formSettings.settings.metadata_method }
-                        onChange={ (e) => setFormSettings({
+                        onChange={ (value) => setFormSettings({
                             ...formSettings,
                             settings: {
                                 ...formSettings.settings,
-                                metadata_method: e.value
+                                metadata_method: value
                             }
                         }) }
                     />

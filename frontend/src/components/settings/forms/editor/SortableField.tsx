@@ -25,7 +25,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import Hint from "../../../Hint";
 import Input from "../../../Input";
 import { Button } from "../../../Button";
-import { Dropdown } from "../../../Dropdown";
+import { Select } from "../../../Select.tsx";
 import { InputSwitch } from "../../../InputSwitch";
 
 import { getColorOptions, getFormatLabels } from "./schemas";
@@ -110,14 +110,14 @@ export function SortableField({ field, onUpdateField, onDeleteField, module }: {
                             setEditableField((prev) => ({ ...prev, label: e.target.value }))
                         }
                     />
-                    <Dropdown
+                    <Select
                         className="w-full"
                         options={ formatLabels }
                         value={ editableField.format }
                         label={ t("FORMS.formats") }
                         id={ 'format-' + editableField.id }
-                        onChange={ (e) =>
-                            setEditableField((prev) => ({ ...prev, format: e.value }))
+                        onChange={ (value) =>
+                            setEditableField((prev) => ({ ...prev, format: value }))
                         }
                     />
 

@@ -223,7 +223,7 @@ export function SupplierEditor({
             label: t("ACCOUNTS.phone")
         })),
         civility: z.string().optional().describe(JSON.stringify({
-            component: "dropdown",
+            component: "select",
             options: civilities.map((civility) => ({
                 label: civility.label,
                 value: civility.id.toString()
@@ -310,7 +310,7 @@ export function SupplierEditor({
             label: t("ACCOUNTS.rccm")
         })),
         document_lang: z.string().describe(JSON.stringify({
-            component: "dropdown",
+            component: "select",
             options: [
                 { label: t('GLOBAL.french'), value: "fra" },
                 { label: t('GLOBAL.english'), value: "eng" }
@@ -318,12 +318,12 @@ export function SupplierEditor({
             label: t("ACCOUNTS.document_lang")
         })),
         default_currency: z.string().optional().describe(JSON.stringify({
-            component: "dropdown",
+            component: "select",
             options: currencies,
             label: t("ACCOUNTS.default_currency")
         })),
         form_id: z.number().optional().describe(JSON.stringify({
-            component: "dropdown",
+            component: "select",
             options: forms.map((form) => ({
                 label: form.label,
                 value: form.id
@@ -332,7 +332,7 @@ export function SupplierEditor({
             label: t("FORMS.form_name")
         })),
         default_accounting_plan: z.number().optional().describe(JSON.stringify({
-            component: "dropdown",
+            component: "select",
             filter: true,
             options: accountingPlans,
             className: "col-span-6",

@@ -28,7 +28,7 @@ import { CircleQuestionMark, EllipsisVertical, Plus, Trash } from "lucide-react"
 
 import Input from "../../Input";
 import { Button } from "../../Button";
-import { Dropdown } from "../../Dropdown";
+import { Select } from "../../Select";
 import { InputSwitch } from "../../InputSwitch";
 import { showToast } from "../../ToastProvider";
 import { DynamicForm } from "../../form/DynamicForm";
@@ -113,7 +113,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         detailsSchema = z.object({
             ...baseShape,
             metadata_key: z.string().nullable().optional().describe(JSON.stringify({
-                component: "dropdown",
+                component: "select",
                 editable: true,
                 type: "text",
                 label: t("CUSTOM-FIELDS.autocomplete"),
@@ -143,7 +143,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
 
     const regexDetailsSchema: any = z.object({
         format: z.string().nullable().describe(JSON.stringify({
-            component: "dropdown",
+            component: "select",
             label: t("REGEX.format"),
             options: [
                 { value: "text", label: t('FORMATS.text') },
@@ -629,14 +629,13 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
 
                                     { isOptionsConditional && (
                                         <div className='flex gap-4 w-1/2'>
-                                            <Dropdown
+                                            <Select
                                                 id={ `conditional_custom_field` }
-                                                filter={ true }
                                                 value={ option.conditional_custom_field }
                                                 label={ t('CUSTOM-FIELDS.conditional_custom_field') }
-                                                onChange={ (e) => {
+                                                onChange={ (value) => {
                                                     const newOptions = [...selectOptions];
-                                                    newOptions[index].conditional_custom_field = e.value;
+                                                    newOptions[index].conditional_custom_field = value;
                                                     setSelectOptions(newOptions);
                                                 } }
                                                 options={ customFields.filter((cf: any) => cf.id !== customFieldId).map((cf: any) => ({

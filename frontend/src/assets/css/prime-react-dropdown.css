@@ -15,6 +15,23 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+.mantine-Select-input {
+    @apply cursor-pointer!;
+}
+
+.mantine-Select-dropdown {
+    @apply p-2;
+}
+
+.mantine-Select-option:where([data-checked]) {
+    @apply bg-(--bg-selected)!;
+    @apply text-(--color-primary);
+
+    & svg {
+        @apply hidden;
+    }
+}
+
 .p-dropdown input {
     @apply cursor-text;
 }

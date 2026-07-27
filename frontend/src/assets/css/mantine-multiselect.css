@@ -23,3 +23,13 @@
 .mantine-MultiSelect-input:focus-within {
     @apply border-(--color-primary);
 }
+
+.mantine-MultiSelect-pill {
+    @apply h-8;
+    @apply bg-(--bg-secondary);
+
+    & .mantine-Pill-label {
+        @apply leading-8;
+        @apply font-medium;
+    }
+}

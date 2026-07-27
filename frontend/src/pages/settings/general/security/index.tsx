@@ -86,7 +86,7 @@ export function SettingsGeneralSecurity() {
 
     const ldapConnectionSchema = z.object({
         typeAD: z.enum(['openLDAP', 'adLDAP']).describe(JSON.stringify({
-            component: "dropdown",
+            component: "select",
             required: enabledAuth === 'ldap',
             label: t("SECURITY.ldap_ad_type"),
             options: [
@@ -177,7 +177,7 @@ export function SettingsGeneralSecurity() {
             hint: t('SECURITY.ldap_users_dn_hint')
         })),
         attributRoleDefault: z.number().describe(JSON.stringify({
-            component: "dropdown",
+            component: "select",
             required: enabledAuth === 'ldap' && stepperIndex == 1,
             label: t("SECURITY.attribut_role_default"),
             options: roles.map((role: any) => ({
