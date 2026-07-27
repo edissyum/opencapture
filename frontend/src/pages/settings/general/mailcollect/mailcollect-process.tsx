@@ -72,7 +72,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
         verifier_insert_body_as_doc: z.boolean().optional(),
         verifier_workflow_id: z.any().optional(),
         splitter_insert_body_as_doc: z.boolean().optional(),
-        splitter_workflow_id: z.any().optional()
+        workflow_id: z.any().optional()
     });
     const {
         control: modulesControl,
@@ -90,7 +90,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
     });
     const {
         control: foldersControl,
-        setValue: setValuFolders,
+        setValue: setValueFolders,
         handleSubmit: handleSubmitFolders
     } = useForm({
         resolver: zodResolver(foldersSchema),
@@ -119,8 +119,9 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
 
         Object.keys(process).forEach((key: any) => {
             if (foldersSchema.shape[key] && [null, undefined].indexOf(process[key]) === -1) {
-                setValuFolders(key, process[key]);
+                setValueFolders(key, process[key]);
             }
+
             if (modulesSchema.shape[key] && [null, undefined].indexOf(process[key]) === -1) {
                 setValueModules(key, process[key]);
             }
@@ -465,7 +466,6 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                     control={ foldersControl }
                     render={ ({ field }) => (
                         <Select
-                            
                             className="w-full"
                             id="folder_to_crawl"
                             value={ field.value }
@@ -506,7 +506,6 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                     control={ foldersControl }
                     render={ ({ field }) => (
                         <Select
-                            
                             value={ field.value }
                             id="folder_destination"
                             className="w-full mb-2"
@@ -546,6 +545,7 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                     onChange={ () => {
                                         field.onChange(module.value == 'splitter');
                                         setSelectedModule(module.value);
+                                        setValueModules('workflow_id', '');
                                     } }/>
                             ) }
                         />
@@ -584,39 +584,6 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                     </div>
                                 ) }
                             />
-                            <Controller
-                                name="verifier_workflow_id"
-                                control={ modulesControl }
-                                render={ ({ field }) => (
-                                    <>
-                                        <div className='relative'>
-                                            <Select
-                                                filter
-                                                id="verifier_workflow_id"
-                                                value={ field.value }
-                                                options={ workflows['verifier'].map((workflow: any) => ({
-                                                    label: workflow.label,
-                                                    value: workflow.workflow_id
-                                                })) }
-                                                onChange={ (value) => field.onChange(value) }
-                                                className="w-full"
-                                            />
-                                            <label className={ `absolute left-3 select-none pointer-events-none transition-all 
-                                                        duration-150 top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary) 
-                                                        text-(--text-secondary)` }
-                                            >
-                                                { t("MAILCOLLECT.select_workflow") }
-                                            </label>
-                                        </div>
-
-                                        { moduleErrors && moduleErrors['verifier_workflow_id'] && (
-                                            <p className="text-(--text-error) mt-2">
-                                                { moduleErrors['verifier_workflow_id']?.message as string }
-                                            </p>
-                                        ) }
-                                    </>
-                                ) }
-                            />
                         </>
                     ) }
                     { selectedModule === 'splitter' && (
@@ -634,41 +601,41 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                     </div>
                                 ) }
                             />
-                            <Controller
-                                name="splitter_workflow_id"
-                                control={ modulesControl }
-                                render={ ({ field }) => (
-                                    <>
-                                        <div className='relative'>
-                                            <Select
-                                                filter
-                                                id="splitter_workflow_id"
-                                                value={ field.value }
-                                                options={ workflows['splitter'].map((workflow: any) => ({
-                                                    label: workflow.label,
-                                                    value: workflow.workflow_id
-                                                })) }
-                                                onChange={ (value) => field.onChange(value) }
-                                                className="w-full"
-                                            />
-                                            <label className={ `absolute left-3 select-none pointer-events-none transition-all 
-                                                        duration-150 top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary) 
-                                                        text-(--text-secondary)` }
-                                            >
-                                                { t("MAILCOLLECT.select_workflow") }
-                                            </label>
-                                        </div>
-
-                                        { moduleErrors && moduleErrors['splitter_workflow_id'] && (
-                                            <p className="text-(--text-error) mt-2">
-                                                { moduleErrors['splitter_workflow_id']?.message as string }
-                                            </p>
-                                        ) }
-                                    </>
-                                ) }
-                            />
                         </>
                     ) }
+                    <Controller
+                        name="workflow_id"
+                        control={ modulesControl }
+                        render={ ({ field }) => (
+                            <>
+                                <div className='relative'>
+                                    <Select
+                                        filter
+                                        id="workflow_id"
+                                        value={ field.value }
+                                        options={ workflows[selectedModule].map((workflow: any) => ({
+                                            label: workflow.label,
+                                            value: workflow.id
+                                        })) }
+                                        onChange={ (value) => field.onChange(value) }
+                                        className="w-full"
+                                    />
+                                    <label className={ `absolute left-3 select-none pointer-events-none transition-all 
+                                                        duration-150 top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary) 
+                                                        text-(--text-secondary)` }
+                                    >
+                                        { t("MAILCOLLECT.select_workflow") }
+                                    </label>
+                                </div>
+
+                                { moduleErrors && moduleErrors['workflow_id'] && (
+                                    <p className="text-(--text-error) mt-2">
+                                        { moduleErrors['workflow_id']?.message as string }
+                                    </p>
+                                ) }
+                            </>
+                        ) }
+                    />
                 </div>
 
                 <div className="flex justify-between mt-6">

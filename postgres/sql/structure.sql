@@ -360,11 +360,10 @@ CREATE TABLE "mailcollect" (
     "is_splitter"                   BOOLEAN      DEFAULT False,
     "enabled"                       BOOLEAN      DEFAULT True,
     "ocr_attachments"               BOOLEAN      DEFAULT False,
-    "splitter_workflow_id"          VARCHAR(255),
+    "workflow_id"                   INTEGER      DEFAULT NULL,
     "folder_to_crawl"               VARCHAR(255) NOT NULL,
     "folder_destination"            VARCHAR(255) NOT NULL,
     "action_after_process"          VARCHAR(255) NOT NULL,
-    "verifier_workflow_id"          VARCHAR(255),
     "verifier_insert_body_as_doc"   BOOLEAN      DEFAULT False,
     "splitter_insert_body_as_doc"   BOOLEAN      DEFAULT False
 );

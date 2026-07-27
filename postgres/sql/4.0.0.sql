@@ -583,3 +583,12 @@ UPDATE history h SET workflow_id = w.id FROM workflows w WHERE h.workflow_id = w
 UPDATE history SET workflow_id = NULL WHERE workflow_id !~ '^\d+$';
 
 ALTER TABLE history ALTER COLUMN workflow_id TYPE INTEGER USING workflow_id::integer;
+
+-- Utiliser l'id technique du workflows pour les process mails
+ALTER TABLE mailcollect ADD column workflow_id INTEGER DEFAULT NULL;
+
+UPDATE mailcollect m SET workflow_id = w.id FROM workflows w WHERE is_splitter = True AND m.splitter_workflow_id = w.workflow_id AND w.module = 'splitter';
+UPDATE mailcollect m SET workflow_id = w.id FROM workflows w WHERE is_splitter = False AND m.verifier_workflow_id = w.workflow_id AND w.module = 'verifier';
+
+ALTER TABLE mailcollect DROP COLUMN splitter_workflow_id;
+ALTER TABLE mailcollect DROP COLUMN verifier_workflow_id;

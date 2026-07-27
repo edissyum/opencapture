@@ -161,7 +161,7 @@ def launch(args):
             })
 
             if workflow_settings:
-                log.debug('Workflow settings retrieved from database : ' + str(workflow_settings['workflow_id']))
+                log.debug('Workflow settings retrieved from database : ' + str(workflow_settings[0]['workflow_id']))
                 if 'input' in workflow_settings[0]:
                     if 'splitter_method_id' in workflow_settings[0]['input']:
                         splitter_method = workflow_settings[0]['input']['splitter_method_id']
