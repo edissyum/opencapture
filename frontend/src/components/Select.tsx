@@ -15,9 +15,9 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import React from "react";
 import { t } from "i18next";
 import DOMPurify from "dompurify";
+import React, { useMemo, useState } from "react";
 import { CircleQuestionMark } from "lucide-react";
 import { Select as SelectMantine } from "@mantine/core";
 
@@ -29,8 +29,10 @@ interface SelectProps {
     hint?: any;
     error?: any;
     label?: string;
+    filter?: boolean;
     className?: string;
     disabled?: boolean;
+    editable?: boolean;
     required?: boolean;
     placeholder?: string;
     onChange: (value: string) => void;
@@ -47,6 +49,7 @@ export const Select: React.FC<SelectProps> = ({
     onChange,
     required,
     className = "",
+    editable = false,
     placeholder = "",
     disabled = false,
 }) => {
@@ -55,21 +58,38 @@ export const Select: React.FC<SelectProps> = ({
 
     const uniqueOptions = [...new Map(options.map(item => [item.value, item])).values()];
 
+    // If editable is true, allow picking a value outside of the predefined options (usefull for splitter metadata in custom fields choices)
+    // It add a new option to the list of options if the currently typed text (search) is not already in the list, and if it's not empty
+    const [search, setSearch] = useState('');
+    const selectData = useMemo(() => {
+        if (!editable) return uniqueOptions;
+
+        let opts = uniqueOptions;
+        const trimmedSearch = search.trim();
+        if (trimmedSearch && !opts.some(opt => opt.value === trimmedSearch)) {
+            opts = [...opts, { value: trimmedSearch, label: trimmedSearch }];
+        }
+        if (value && !opts.some(opt => opt.value === value)) {
+            opts = [...opts, { value, label: value }];
+        }
+        return opts;
+    }, [uniqueOptions, editable, search, value]);
+
     const mantineRenderOption = ({ option }: { option: any }) => (
         <span>
             { option.label }
             { option.extras?.length > 0 && (
                 <span className='text-(--text-secondary) text-sm ml-2'>
-                        — { option.extras.join(" - ") }
-                    </span>
+                    — { option.extras.join(" - ") }
+                </span>
             ) }
         </span>
     );
 
     return (
         <div className='w-full relative'>
-            <div className={ `${ className } group group-focus-within:border-(--border-primary) relative flex justify-items-stretch
-                              ${ disabled ? 'cursor-not-allowed opacity-70' : '' }` }
+            <div className={ `${ className } group group-focus-within:border-(--border-primary) relative flex 
+                              justify-items-stretch ${ disabled ? 'cursor-not-allowed opacity-70' : '' }` }
             >
                 <span className='w-full'>
                     <SelectMantine
@@ -78,9 +98,11 @@ export const Select: React.FC<SelectProps> = ({
                         onBlur={ onBlur }
                         onFocus={ onFocus }
                         disabled={ disabled }
-                        data={ uniqueOptions }
+                        data={ selectData }
                         placeholder={ placeholder }
                         renderOption={ mantineRenderOption }
+                        searchValue={ editable ? search : undefined }
+                        onSearchChange={ editable ? setSearch : undefined }
                         onChange={ (value) => {
                             onChange(value)
                         } }
@@ -104,4 +126,4 @@ export const Select: React.FC<SelectProps> = ({
             ) }
         </div>
     );
-};
+}
