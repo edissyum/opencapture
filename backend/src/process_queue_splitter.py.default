@@ -21,10 +21,14 @@ import sys
 import time
 import json
 import traceback
+<<<<<<< HEAD
 from kuyruk import Kuyruk, Config
+=======
+>>>>>>> main
 from src import app, shared
 from flask_babel import gettext
 from src.classes.Log import Log
+from kuyruk import Kuyruk, Config
 from src.classes.Files import Files
 from src.classes.Splitter import Splitter
 from src.classes.SeparatorQR import SeparatorQR
@@ -39,7 +43,10 @@ rabbit_custom.RABBIT_USER = os.environ.get('RABBIT_USER', 'guest')
 rabbit_custom.RABBIT_PASSWORD = os.environ.get('RABBIT_PASSWORD', 'guest')
 rabbit_custom.RABBIT_VIRTUAL_HOST = os.environ.get('RABBIT_VIRTUAL_HOST', '/')
 kuyruk = Kuyruk(config=rabbit_custom)
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 
 @kuyruk.task(queue='splitter_§§CUSTOM_ID§§')
 def launch(args):
@@ -87,7 +94,7 @@ def launch(args):
         remove_blank_pages = False
 
         workflow_settings = database.select({
-            'select': ['input', 'process', 'output'],
+            'select': ['workflow_id', 'input', 'process', 'output'],
             'table': ['workflows'],
             'where': ['id = %s', 'module = %s'],
             'data': [args['workflow_id'], 'splitter']

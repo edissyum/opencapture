@@ -417,16 +417,18 @@ def insert(args):
         invoice_data['supplier_id'] = args['supplier_id']
 
     workflow_settings = {}
+
     if 'workflow_id' in args and args['workflow_id']:
         workflow_settings = database.select({
-            'select': ['id', 'input', 'process', 'output'],
+            'select': ['input', 'process', 'output'],
             'table': ['workflows'],
-            'where': ['workflow_id = %s', 'module = %s'],
+            'where': ['id = %s', 'module = %s'],
             'data': [args['workflow_id'], 'verifier']
         })
+
         if workflow_settings:
             workflow_settings = workflow_settings[0]
-            invoice_data['workflow_id'] = workflow_settings['id']
+            invoice_data['workflow_id'] = args['workflow_id']
             if workflow_settings['input']['customer_id']:
                 invoice_data.update({
                     'customer_id': workflow_settings['input']['customer_id']
