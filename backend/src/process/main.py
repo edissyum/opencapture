@@ -152,7 +152,7 @@ def insert(args, files, database, datas, full_jpg_filename, file, original_file,
             from_api = False
             if 'isMail' in args and args['isMail']:
                 from_api = True
-            attachments.handle_uploaded_file(args['attachments'], document_id, None, 'verifier', from_api)
+            attachments.handle_uploaded_file(args['attachments'], document_id, None, 'verifier', from_api, args['custom_id'])
 
         if 'splitter_batch_id' in args and args['splitter_batch_id']:
             splitter_attachments = attachments.get_attachments_by_batch_id(args['splitter_batch_id'], False)

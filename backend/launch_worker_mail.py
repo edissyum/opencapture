@@ -369,7 +369,7 @@ with app.app_context():
                                 'file': ret['file']['path'],
                                 'custom_id': args['custom_id'],
                                 'attachments': ret['attachments'],
-                                'workflow_id': splitterWorkflowId,
+                                'workflow_id': workflowId,
                                 'task_id_monitor': task_id_monitor,
                                 'log': batch_path + '/' + date_batch + '.log',
                                 'original_filename': os.path.basename(ret['file']['path']),

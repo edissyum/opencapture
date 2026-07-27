@@ -173,8 +173,8 @@ def launch_script_verifier(workflow_settings, docservers, step, log, file, datab
             log.error('[' + step.upper() + '_SCRIPT ERROR] ' + gettext('SCRIPT_CONTAINS_NOT_ALLOWED_CODE') +
                       '&nbsp;<strong>(' + message.strip() + ')</strong>')
             return False
-        else:
-            change_workflow = 'send_to_workflow({' in script
+
+        change_workflow = 'send_to_workflow({' in script
 
         rand = str(uuid.uuid4())
         tmp_file = shared.tmp_path + '/' + step + '_scripting_' + rand + '.py'
