@@ -106,8 +106,7 @@ class MEMWebServices:
             return response, 500
 
     def retrieve_contact(self, args):
-        where = "where=custom_fields->>'" + str(args['vatNumberContactCustom']['id']) + "'='" + str(args['supplierCustomId']) + "'"
-
+        where = "where=custom_fields->>'" + str(args['vatNumberContactCustom']) + "'='" + str(args['supplierCustomId']) + "'"
         try:
             res = requests.get(self.base_url + '/contacts?' + where, auth=self.auth, timeout=self.timeout)
             if res.status_code != 200:
@@ -119,7 +118,7 @@ class MEMWebServices:
             return False
 
     def get_document_with_contact(self, args):
-        where = "?custom_fields=" + str(args['memCustomField']['id'])
+        where = "?custom_fields=" + str(args['memCustomField'])
         if args['memClause']:
             where += '&clause=' + args['memClause']
 
@@ -218,7 +217,7 @@ class MEMWebServices:
         data = {
             'linkedResources': [res_id]
         }
-        print(res_id_master, data)
+
         res = requests.post(self.base_url + '/resources/' + res_id_master + '/linkedResources', auth=self.auth,
                             data=json.dumps(data), headers={'Connection': 'close', 'Content-Type': 'application/json'}, timeout=self.timeout)
         if res.status_code not in (200, 204):
