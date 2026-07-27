@@ -123,7 +123,7 @@ x-backend-volumes: &backend-volumes
 x-res-postgres:  &res-postgres  { mem_limit: 512m,  memswap_limit: 512m,  cpu_shares: 1024 }
 x-res-rabbitmq:  &res-rabbitmq  { mem_limit: 512m,  memswap_limit: 512m,  cpu_shares: 512  }
 x-res-backend:   &res-backend   { mem_limit: 1280m, memswap_limit: 1280m, cpu_shares: 1024 }
-x-res-verifier:  &res-verifier  { mem_limit: 6g,    memswap_limit: 8g,    cpu_shares: 2048 }
+x-res-verifier:  &res-verifier  { mem_limit: 9g,    memswap_limit: 11g,   cpu_shares: 2048 }
 x-res-splitter:  &res-splitter  { mem_limit: 1536m, memswap_limit: 2560m, cpu_shares: 1536 }
 x-res-mail:      &res-mail      { mem_limit: 512m,  memswap_limit: 512m,  cpu_shares: 256  }
 x-res-fswatcher: &res-fswatcher { mem_limit: 256m,  memswap_limit: 256m,  cpu_shares: 256  }
