@@ -93,12 +93,14 @@ export const Select: React.FC<SelectProps> = ({
             >
                 <span className='w-full'>
                     <SelectMantine
+                        id={ id }
                         searchable
                         value={ value }
                         onBlur={ onBlur }
                         onFocus={ onFocus }
-                        disabled={ disabled }
                         data={ selectData }
+                        disabled={ disabled }
+                        allowDeselect={ false }
                         placeholder={ placeholder }
                         renderOption={ mantineRenderOption }
                         searchValue={ editable ? search : undefined }

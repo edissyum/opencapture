@@ -34,10 +34,11 @@
 @import "./assets/css/mantine-radio.css";
 @import "./assets/css/prime-react-tree.css";
 @import "./assets/css/mantine-accordion.css";
+@import "./assets/css/mantine-pagination.css";
 @import "./assets/css/prime-react-stepper.css";
 @import "./assets/css/mantine-multiselect.css";
 @import "./assets/css/mantine-autocomplete.css";
-@import "assets/css/mantine-dropdown.css";
+@import "assets/css/mantine-select.css";
 @import "./assets/css/prime-react-datatable.css";
 @import "./assets/css/prime-react-contextmenu.css";
 

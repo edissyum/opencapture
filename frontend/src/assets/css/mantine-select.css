@@ -15,6 +15,11 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+.mantine-Select-input#rowsPerPage {
+    @apply h-10!;
+    @apply text-(--text-secondary);
+}
+
 .mantine-Select-input {
     @apply cursor-pointer!;
 }

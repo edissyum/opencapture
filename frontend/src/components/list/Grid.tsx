@@ -19,14 +19,13 @@ import { t } from "i18next";
 import { useNavigate } from "react-router-dom";
 import { EllipsisVertical } from "lucide-react";
 import React, { useMemo, useState } from "react";
-import { ActionIcon, Menu, Skeleton } from '@mantine/core';
-
-import { Paginator } from "primereact/paginator";
+import { ActionIcon, Menu, Pagination, Skeleton } from '@mantine/core';
 
 import { Button } from "../Button";
 import { Checkbox } from "../Checkbox";
 
 import { LazyBase64Image } from "./LazyImage";
+import { Select } from "../Select.tsx";
 
 type Column<T> = {
     id: string | undefined;
@@ -50,7 +49,7 @@ type CardListProps<T> = {
     skeletonRows?: number;
     selectedRows?: T[];
     paginatorLeftText: string;
-    rowsPerPageOptions?: number[];
+    rowsPerPageOptions?: any;
     onSelectionChange?: (selected: T[]) => void;
     lazyParams: {
         first: number;
@@ -73,12 +72,15 @@ export function Grid<T extends { id: string }>({
     lazyParams,
     loading = false,
     skeletonRows = 5,
-    rowsPerPage = 10,
     paginatorLeftText,
     selectedRows = [],
     pagination = false,
     totalRecords = data.length,
-    rowsPerPageOptions = [10, 20, 50],
+    rowsPerPageOptions = [
+        { "value": 10, "label": "10" },
+        { "value": 20, "label": "20" },
+        { "value": 50, "label": "50" }
+    ],
     emptyMessage = "Aucun élément trouvé",
     onSelectionChange,
     onLazyParamsChange
@@ -130,8 +132,8 @@ export function Grid<T extends { id: string }>({
                 { actions &&
                     actions.map((action, idx) => (
                         <Button
+                            size="sm"
                             key={ idx }
-                            size={ "sm" }
                             variant="no_bg_border"
                             className="p-2 border"
                             onClick={ action.command }
@@ -171,25 +173,44 @@ export function Grid<T extends { id: string }>({
     return (
         <>
             { pagination && (
-                <div className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-lg
-                                text-(--text-secondary) font-normal">
+                <div className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-lg font-normal
+                                text-(--text-secondary)">
                     { paginatorLeftData }
-                    <Paginator
-                        rows={ rowsPerPage }
-                        first={ lazyParams.first }
-                        totalRecords={ totalRecords }
-                        rowsPerPageOptions={ rowsPerPageOptions }
-                        onPageChange={ (e) =>
-                            onLazyParamsChange({
-                                ...lazyParams,
-                                first: e.first,
-                                rows: e.rows,
-                                page: e.page,
-                            })
-                        }
-                        template="RowsPerPageDropdown CurrentPageReport PrevPageLink NextPageLink"
-                        currentPageReportTemplate={ "{first} " + t("VERIFIER.to") + " {last} " + t("VERIFIER.of") + " {totalRecords}" }
-                    />
+                    <div className="flex items-center gap-4 p-2.5">
+                        <div className='w-16'>
+                            <Select
+                                id="rowsPerPage"
+                                options={ rowsPerPageOptions }
+                                value={ String(lazyParams.rows) }
+                                onChange={ (value) => {
+                                    if (!value) return;
+
+                                    onLazyParamsChange({
+                                        ...lazyParams,
+                                        page: 0,
+                                        first: 0,
+                                        rows: Number(value)
+                                    });
+                                } }
+                            />
+                        </div>
+
+                        <span>
+                            { totalRecords === 0 ? 0 : lazyParams.first + 1 } { t("VERIFIER.to") } { Math.min(lazyParams.first + lazyParams.rows, totalRecords) } { t("VERIFIER.of") } { totalRecords }
+                        </span>
+                        <Pagination
+                            withPages={ false }
+                            total={ Math.max(1, Math.ceil(totalRecords / lazyParams.rows)) }
+                            value={ Math.floor(lazyParams.first / lazyParams.rows) + 1 }
+                            onChange={ (newPage) => {
+                                onLazyParamsChange({
+                                    ...lazyParams,
+                                    first: (newPage - 1) * lazyParams.rows,
+                                    page: newPage - 1,
+                                });
+                            } }
+                        />
+                    </div>
                 </div>
             ) }
             { data.length === 0 ? (
