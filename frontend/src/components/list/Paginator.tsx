@@ -18,7 +18,7 @@
 import { t } from "i18next";
 import { Pagination } from '@mantine/core';
 
-import { Select } from "../Select.tsx";
+import { Select } from "../Select";
 
 type PaginatorProps = {
     first: number;

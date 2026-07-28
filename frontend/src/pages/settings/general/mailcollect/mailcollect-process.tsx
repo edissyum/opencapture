@@ -16,10 +16,10 @@
 
 import { z } from "zod";
 import { t } from "i18next";
+import { Stepper } from '@mantine/core';
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { Stepper as StepperMantine } from '@mantine/core';
 import { ArrowLeft, Ban, CircleQuestionMark, CornerUpRight } from "lucide-react";
 
 import { getSchemaForAuthMethod } from "./authSchema";
@@ -207,9 +207,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
     const [active, setActive] = useState(0);
 
     return (
-        <StepperMantine className='p-6' active={ active } onStepClick={ setActive }
-                        allowNextStepsSelect={ false } color='var(--color-primary)'>
-            <StepperMantine.Step label={ t("MAILCOLLECT.connection") }>
+        <Stepper className='p-6' active={ active } onStepClick={ setActive }>
+            <Stepper.Step label={ t("MAILCOLLECT.connection") }>
                 <h1 className="text-xl font-bold mb-4">{ t("MAILCOLLECT.auth_method") }</h1>
                 <div className="flex gap-4 mb-4">
                     { authMethods.map((method) => (
@@ -459,8 +458,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                         ) }
                     </Button>
                 </div>
-            </StepperMantine.Step>
-            <StepperMantine.Step label={ t("MAILCOLLECT.folders") }>
+            </Stepper.Step>
+            <Stepper.Step label={ t("MAILCOLLECT.folders") }>
                 <Controller
                     name="folder_to_crawl"
                     control={ foldersControl }
@@ -526,8 +525,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                         { t("GLOBAL.next") }
                     </Button>
                 </div>
-            </StepperMantine.Step>
-            <StepperMantine.Step label={ t("MAILCOLLECT.options") }>
+            </Stepper.Step>
+            <Stepper.Step label={ t("MAILCOLLECT.options") }>
                 <h1 className="text-xl font-bold mb-4">{ t("MAILCOLLECT.module") }</h1>
 
                 <div className="flex gap-4 mb-4">
@@ -651,8 +650,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                         ) }
                     </Button>
                 </div>
-            </StepperMantine.Step>
-        </StepperMantine>
+            </Stepper.Step>
+        </Stepper>
         // <Stepper ref={ stepperRef } linear className='p-4'>
         //
         //     <StepperPanel header={ t("MAILCOLLECT.folders") }>

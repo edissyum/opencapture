@@ -17,13 +17,11 @@
 import { z } from "zod";
 import { t } from "i18next";
 import { useForm } from "react-hook-form";
-import { Stepper } from "primereact/stepper";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { StepperPanel } from "primereact/stepperpanel";
-import { Accordion as AccordionMantine } from "@mantine/core";
+import { Accordion, Stepper } from "@mantine/core";
 
 import { Button } from "../../../../components/Button";
 import { RadioBox } from "../../../../components/RadioBox";
@@ -41,7 +39,6 @@ export function SettingsGeneralSecurity() {
     const { get, put, post } = axiosApiCall();
 
     const hasFetched = useRef(false);
-    const stepperRef = useRef<any>(null);
 
     const [roles, setRoles] = useState<any>([]);
     const [activeIndex, setActiveIndex] = useState<string[]>([]);
@@ -292,10 +289,10 @@ export function SettingsGeneralSecurity() {
         if (data && Object.keys(ldapErrors).length > 0) {
             return;
         }
-        stepperRef.current?.nextCallback();
+        setStepperIndex(stepperIndex + 1);
     }
 
-    const handlePreviousStep = () => stepperRef.current?.prevCallback();
+    const handlePreviousStep = () => setStepperIndex(stepperIndex - 1);
 
     const handleTestConnexion: any = async (data: FormData) => {
         setLoadingLdap(true);
@@ -348,13 +345,13 @@ export function SettingsGeneralSecurity() {
                 <ArrowRight size={ 18 }/>
             </div>
 
-            <AccordionMantine chevronPosition="left" variant="separated" multiple defaultValue={ activeIndex }
+            <Accordion chevronPosition="left" variant="separated" multiple defaultValue={ activeIndex }
                               onChange={ (e) => setActiveIndex(e) }>
-                <AccordionMantine.Item key='default' value='default'>
+                <Accordion.Item key='default' value='default'>
                     <div className='flex items-center'>
-                        <AccordionMantine.Control>
+                        <Accordion.Control>
                             { t('SECURITY.default_auth') }
-                        </AccordionMantine.Control>
+                        </Accordion.Control>
                         <span className='flex ml-auto mr-4' onClick={ (e) => e.stopPropagation() }>
                         <RadioBox
                             key='default'
@@ -364,7 +361,7 @@ export function SettingsGeneralSecurity() {
                             onChange={ () => setEnabledAuth('default') }/>
                     </span>
                     </div>
-                    <AccordionMantine.Panel>
+                    <Accordion.Panel>
                         <div className='p-6 text-(--text-primary) flex flex-col gap-4'>
                             <h1 className='font-semibold text-md'>
                                 { t('SECURITY.password_rules') }
@@ -389,27 +386,26 @@ export function SettingsGeneralSecurity() {
                                              gap={ 2 }/>
                             </div>
                         </div>
-                    </AccordionMantine.Panel>
-                </AccordionMantine.Item>
-                <AccordionMantine.Item key='ldap' value='ldap'>
+                    </Accordion.Panel>
+                </Accordion.Item>
+                <Accordion.Item key='ldap' value='ldap'>
                     <div className='flex items-center'>
-                        <AccordionMantine.Control>
+                        <Accordion.Control>
                             { t('SECURITY.ldap_auth') }
-                        </AccordionMantine.Control>
+                        </Accordion.Control>
                         <span className='flex ml-auto mr-4' onClick={ (e) => e.stopPropagation() }>
-                        <RadioBox
-                            border={ false }
-                            key={ 'ldap' }
-                            value={ enabledAuth }
-                            checked={ enabledAuth === 'ldap' }
-                            onChange={ () => setEnabledAuth('ldap') }/>
-                    </span>
+                            <RadioBox
+                                border={ false }
+                                key={ 'ldap' }
+                                value={ enabledAuth }
+                                checked={ enabledAuth === 'ldap' }
+                                onChange={ () => setEnabledAuth('ldap') }/>
+                        </span>
                     </div>
 
-                    <AccordionMantine.Panel>
-                        <Stepper ref={ stepperRef } linear className='p-4 pb-0' activeStep={ stepperIndex }
-                                 onChangeStep={ (e: any) => setStepperIndex(e.index) }>
-                            <StepperPanel header={ t("MAILCOLLECT.connection") }>
+                    <Accordion.Panel>
+                        <Stepper className='p-6' active={ stepperIndex } onStepClick={ setStepperIndex }>
+                            <Stepper.Step label={ t("MAILCOLLECT.connection") }>
                                 <DynamicForm schema={ ldapConnectionSchema } control={ ldapControl }
                                              errors={ ldapErrors }
                                              grid={ 4 }/>
@@ -426,8 +422,9 @@ export function SettingsGeneralSecurity() {
                                         ) }
                                     </Button>
                                 </div>
-                            </StepperPanel>
-                            <StepperPanel header={ t("SECURITY.synchronisation") }>
+                            </Stepper.Step>
+
+                            <Stepper.Step label={ t("SECURITY.synchronisation") }>
                                 <DynamicForm schema={ ldapSynchronisationSchema } control={ ldapControl }
                                              errors={ ldapErrors } grid={ 4 }/>
 
@@ -446,11 +443,11 @@ export function SettingsGeneralSecurity() {
                                         ) }
                                     </Button>
                                 </div>
-                            </StepperPanel>
+                            </Stepper.Step>
                         </Stepper>
-                    </AccordionMantine.Panel>
-                </AccordionMantine.Item>
-            </AccordionMantine>
+                    </Accordion.Panel>
+                </Accordion.Item>
+            </Accordion>
 
             <div>
                 <Button className='mt-8'

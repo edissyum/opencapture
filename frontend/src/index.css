@@ -31,11 +31,10 @@
 @import "./assets/css/tailwind-theme.css";
 @import "./assets/css/mantine-popover.css";
 @import "./assets/css/mantine-calendar.css";
-@import "./assets/css/mantine-radio.css";
 @import "./assets/css/prime-react-tree.css";
 @import "./assets/css/mantine-accordion.css";
 @import "./assets/css/mantine-pagination.css";
-@import "./assets/css/prime-react-stepper.css";
+@import "assets/css/mantine-stepper.css";
 @import "./assets/css/mantine-multiselect.css";
 @import "./assets/css/mantine-autocomplete.css";
 @import "assets/css/mantine-select.css";

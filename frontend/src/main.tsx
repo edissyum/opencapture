@@ -30,6 +30,8 @@ const value: any = {
     appendTo: document.body
 };
 
+const primaryColor = '#19864B';
+
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <ToastProvider/>
@@ -49,9 +51,30 @@ createRoot(document.getElementById('root')!).render(
                         vars: () => ({
                             root: {
                                 '--tab-radius': '0',
-                                '--tabs-color': '#19864B'
+                                '--tabs-color': primaryColor
                             }
                         })
+                    },
+                    Stepper: {
+                        defaultProps: {
+                            color: primaryColor,
+                            allowNextStepsSelect: false
+                        }
+                    },
+                    Slider: {
+                        defaultProps: {
+                            color: primaryColor
+                        }
+                    },
+                    Radio: {
+                        defaultProps: {
+                            color: primaryColor
+                        }
+                    },
+                    Switch: {
+                        defaultProps: {
+                            color: primaryColor
+                        }
                     }
                 }
             } }>

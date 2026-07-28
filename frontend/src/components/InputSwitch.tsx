@@ -38,7 +38,6 @@ export function InputSwitch({ id, label, checked, disabled, onChange }: {
             checked={ checked }
             disabled={ disabled }
             onChange={ handleOnChange }
-            color="var(--color-primary)"
             withThumbIndicator={ false }
         />
     )

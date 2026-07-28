@@ -39,7 +39,6 @@ export function RadioBox({ label, value, checked, onChange, border = true }: {
                 id={ value }
                 value={ value }
                 checked={ checked }
-                color="var(--color-primary)"
                 onChange={ handleOnChange }
             />
             { label }

@@ -35,7 +35,6 @@ export function ZoomControl({ zoom, setZoom }: any) {
                 value={ zoom }
                 className="w-full"
                 showLabelOnHover={ false }
-                color="var(--color-primary)"
                 onChange={ (value) => handleZoomChange(value) }
             />
 

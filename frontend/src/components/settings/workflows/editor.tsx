@@ -17,14 +17,14 @@
 import { z } from "zod";
 import { t } from "i18next";
 import { useForm } from "react-hook-form";
-import { Stepper } from "primereact/stepper";
 import { Editor } from '@monaco-editor/react';
 import { useNavigate, useParams } from "react-router-dom";
 
+import { useEffect, useState } from "react";
 import { ArrowLeft, Terminal } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { StepperPanel } from "primereact/stepperpanel";
+
+import { Stepper as StepperMantine } from "@mantine/core";
 
 import { useCustom } from "../../../services/custom/customContext";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
@@ -53,7 +53,6 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
     const [loadingScript, setLoadingScript] = useState(false);
     const [loadingUpdate, setLoadingUpdate] = useState(false);
 
-    const stepperRef = useRef<any>(null);
     const [stepperIndex, setStepperIndex] = useState(0);
 
     const [forms, setForms] = useState([]);
@@ -543,10 +542,10 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         if (data && Object.keys(workflowErrors).length > 0) {
             return;
         }
-        stepperRef.current?.nextCallback();
+        setStepperIndex(stepperIndex + 1);
     }
 
-    const handlePreviousStep = () => stepperRef.current?.prevCallback();
+    const handlePreviousStep = () => setStepperIndex(stepperIndex - 1);
 
     const handleSubmitStep = async (data: any) => {
         const label = detailsGetValues('label');
@@ -695,9 +694,8 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 </div>
             </div>
 
-            <Stepper ref={ stepperRef } linear className='p-4 workflowStepper' activeStep={ stepperIndex }
-                     onChangeStep={ (e: any) => setStepperIndex(e.index) }>
-                <StepperPanel header={ t("WORKFLOWS.input") }>
+            <StepperMantine className='p-6' active={ stepperIndex } onStepClick={ setStepperIndex }>
+                <StepperMantine.Step label={ t("WORKFLOWS.input") }>
                     <div className='flex flex-col gap-2'>
                         <DynamicForm schema={ inputSchemaFields } control={ workflowControl } errors={ workflowErrors }
                                      grid={ 2 }/>
@@ -722,11 +720,10 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                             </Button>
                         </div>
                     </div>
-                </StepperPanel>
+                </StepperMantine.Step>
 
                 { allowScripting && inputScripting && (
-                    // @ts-ignore
-                    <StepperPanel header={
+                    <StepperMantine.Step className='stepper-secondary' label={
                         <div className='flex items-center gap-2'>
                             <Terminal className='bg-(--border-secondary) text-(--text-secondary) p-2 rounded-lg'
                                       size={ 36 }/>
@@ -734,9 +731,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                                 { t("WORKFLOWS.input_scripting") }
                             </div>
                         </div>
-                    } pt={ {
-                        header: { className: "stepper-secondary left-1/5 -translate-x-1/5" }
-                    } }>
+                    }>
                         <div className='flex flex-col gap-4'>
                             <div className="relative">
                                 <Editor
@@ -772,10 +767,10 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                                 </Button>
                             </div>
                         </div>
-                    </StepperPanel>
+                    </StepperMantine.Step>
                 ) }
 
-                <StepperPanel header={ t("WORKFLOWS.process") }>
+                <StepperMantine.Step label={ t("WORKFLOWS.process") }>
                     <div className='flex flex-col gap-2'>
                         <DynamicForm schema={ processSchemaStartSwitchs } control={ workflowControl }
                                      errors={ workflowErrors }
@@ -810,11 +805,10 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                             </Button>
                         </div>
                     </div>
-                </StepperPanel>
+                </StepperMantine.Step>
 
                 { allowScripting && processScripting && (
-                    // @ts-ignore
-                    <StepperPanel header={
+                    <StepperMantine.Step className='stepper-secondary' label={
                         <div className='flex items-center gap-2'>
                             <Terminal className='bg-(--border-secondary) text-(--text-secondary) p-2 rounded-lg'
                                       size={ 36 }/>
@@ -822,9 +816,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                                 { t("WORKFLOWS.process_scripting") }
                             </div>
                         </div>
-                    } pt={ {
-                        header: { className: "stepper-secondary left-3/5 translate-x-[30%]" }
-                    } }>
+                    }>
                         <div className="relative">
                             <Editor
                                 className='border border-(--border-secondary) rounded-md p-2'
@@ -859,10 +851,10 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                                 { loadingScript ? t("WORKFLOWS.validating_script") : t("GLOBAL.next") }
                             </Button>
                         </div>
-                    </StepperPanel>
+                    </StepperMantine.Step>
                 ) }
 
-                <StepperPanel header={ t("WORKFLOWS.output") }>
+                <StepperMantine.Step label={ t("WORKFLOWS.output") }>
                     <DynamicForm schema={ outputSchema } control={ workflowControl } errors={ workflowErrors }/>
 
                     <div className='mt-4 flex justify-between'>
@@ -886,8 +878,9 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                             ) }
                         </Button>
                     </div>
-                </StepperPanel>
-            </Stepper>
+                </StepperMantine.Step>
+            </StepperMantine>
+
         </div>
     );
 }
