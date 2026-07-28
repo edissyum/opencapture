@@ -18,6 +18,7 @@ import { z } from "zod";
 import { t } from "i18next";
 import { useForm } from "react-hook-form";
 import { Stepper } from "primereact/stepper";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,14 +27,13 @@ import { Accordion as AccordionMantine } from "@mantine/core";
 
 import { Button } from "../../../../components/Button";
 import { RadioBox } from "../../../../components/RadioBox";
+import { Loader } from "../../../../components/loader/Loader";
 import { showToast } from "../../../../components/ToastProvider";
 import { InputSwitch } from "../../../../components/InputSwitch";
 import { DynamicForm } from "../../../../components/form/DynamicForm";
 
 import { useUser } from "../../../../services/hooks/useUser";
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
-import { useNavigate } from "react-router-dom";
-import { Loader } from "../../../../components/loader/Loader.tsx";
 
 export function SettingsGeneralSecurity() {
     const navigate = useNavigate();
@@ -357,8 +357,8 @@ export function SettingsGeneralSecurity() {
                         </AccordionMantine.Control>
                         <span className='flex ml-auto mr-4' onClick={ (e) => e.stopPropagation() }>
                         <RadioBox
+                            key='default'
                             border={ false }
-                            key={ 'default' }
                             value={ enabledAuth }
                             checked={ enabledAuth === 'default' }
                             onChange={ () => setEnabledAuth('default') }/>

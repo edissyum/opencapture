@@ -17,6 +17,7 @@
 
 import { t } from "i18next";
 import { useNavigate } from "react-router-dom";
+import { EllipsisVertical } from "lucide-react";
 import React, { useMemo, useState } from "react";
 import { ActionIcon, Menu, Skeleton } from '@mantine/core';
 
@@ -26,7 +27,6 @@ import { Button } from "../Button";
 import { Checkbox } from "../Checkbox";
 
 import { LazyBase64Image } from "./LazyImage";
-import { EllipsisVertical } from "lucide-react";
 
 type Column<T> = {
     id: string | undefined;

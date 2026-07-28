@@ -124,16 +124,6 @@
     @apply bg-(--color-primary);
 }
 
-/* Radio button */
-.p-radiobutton.p-highlight .p-radiobutton-box {
-    @apply border-(--color-primary);
-    @apply bg-(--color-primary);
-}
-
-.p-radiobutton:not(.p-disabled):has(.p-radiobutton-input:hover) .p-radiobutton-box {
-    @apply border-(--color-primary)/80;
-}
-
 .p-panel-header {
     @apply py-4;
     @apply border;

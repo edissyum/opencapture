@@ -41,7 +41,7 @@ import { buildPrimeTree, collectExpanded, makeNodeTemplate } from "./helpers";
 import Hint from "../../Hint";
 import Input from "../../Input";
 import { Button } from "../../Button";
-import { Select } from "../../Select.tsx";
+import { Select } from "../../Select";
 import { Loader } from "../../loader/Loader";
 import { showToast } from "../../ToastProvider";
 import { ImportSpreadSheet } from "../ImportSpreadSheet";

@@ -21,7 +21,7 @@ import { createRoot } from "react-dom/client";
 
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
-import { Select } from "../../components/Select.tsx";
+import { Select } from "../../components/Select";
 
 function ConfirmDialogWithInputView({
     icon,

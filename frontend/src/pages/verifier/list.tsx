@@ -16,6 +16,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
+import { Radio } from "@mantine/core";
 import { useEffect, useState } from "react";
 import {
     Briefcase,
@@ -32,13 +33,12 @@ import {
     Rows3,
     Trash2
 } from "lucide-react";
-import { RadioButton } from "primereact/radiobutton";
 
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
+import { Select } from "../../components/Select";
 import { Grid } from "../../components/list/Grid";
 import { Table } from "../../components/list/Table";
-import { Select } from "../../components/Select.tsx";
 import { Thumbnail } from "../../components/Thumbnail";
 import { showToast } from "../../components/ToastProvider";
 import MultiSelectInput from "../../components/MultiSelect";
@@ -460,15 +460,15 @@ export function VerifierListPage() {
                         { open.batches && (
                             <div className='flex flex-col p-4 pt-0'>
                                 { listTimes.map((time) => (
-                                    <div className='flex items-center text-(--text-secondary)' key={ time.id }>
-                                        <RadioButton
-                                            inputId={ time.id } checked={ selectedTime === time.id }
-                                            className='mr-1 scale-80'
+                                    <div className='flex items-center gap-2 text-(--text-secondary)' key={ time.id }>
+                                        <Radio
+                                            id={ time.id }
                                             value={ time.id }
+                                            checked={ selectedTime === time.id }
                                             onChange={ (e) => {
-                                                setSelectedTime(e.value);
+                                                setSelectedTime(e.target.value);
                                             } }>
-                                        </RadioButton>
+                                        </Radio>
                                         <label htmlFor={ time.id } key={ time.id } className='cursor-pointer whitespace-nowrap'>
                                             { time.label } ({ time.totals || 0 })
                                         </label>
@@ -490,16 +490,15 @@ export function VerifierListPage() {
                         { open.status && (
                             <div className='flex flex-col p-4 pt-0'>
                                 { Object.keys(listStatuses).map((key: any) => (
-                                    <div className='flex items-center text-(--text-secondary)' key={ key }>
-                                        <RadioButton
+                                    <div className='flex items-center gap-2 text-(--text-secondary)' key={ key }>
+                                        <Radio
+                                            id={ key }
                                             value={ key }
-                                            inputId={ key }
-                                            className='mr-1 scale-80'
                                             checked={ selectedStatus === listStatuses[key]?.id }
                                             onChange={ (e) => {
-                                                setSelectedStatus(listStatuses[e.value]?.id);
+                                                setSelectedStatus(listStatuses[e.target.value]?.id);
                                             } }>
-                                        </RadioButton>
+                                        </Radio>
                                         <label htmlFor={ key } key={ key } className='cursor-pointer whitespace-nowrap'>
                                             { listStatuses[key]?.label } ({ listStatuses[key]?.total || 0 })
                                         </label>

@@ -21,9 +21,9 @@ import { ArrowRight, Building2, CircleAlert, Code, Cpu, Library, Shield, Tag, Us
 import packageJson from '../../package.json';
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
 
+import { Panel } from "../components/Panel";
 import { Button } from "../components/Button";
 import { Loader } from "../components/loader/Loader";
-import { Panel } from "../components/Panel.tsx";
 
 export function AboutPage() {
     const { get } = axiosApiCall();

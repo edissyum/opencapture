@@ -31,8 +31,8 @@ import { getCompressTypeOptions, getSystemFieldsOptionsSplitter, getSystemFields
 
 import Hint from "../../Hint";
 import Input from "../../Input";
+import { Select } from "../../Select";
 import { Button } from "../../Button";
-import { Select } from "../../Select.tsx";
 import { Loader } from "../../loader/Loader";
 import { InputSwitch } from "../../InputSwitch";
 import { showToast } from "../../ToastProvider";

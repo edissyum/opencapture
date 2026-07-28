@@ -27,8 +27,8 @@ import { getSchemaForAuthMethod } from "./authSchema";
 
 import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
+import { Select } from "../../../../components/Select";
 import { RadioBox } from "../../../../components/RadioBox";
-import { Select } from "../../../../components/Select.tsx";
 import { InputSwitch } from "../../../../components/InputSwitch";
 import { showToast } from "../../../../components/ToastProvider";
 

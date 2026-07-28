@@ -15,8 +15,8 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { Skeleton } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { Skeleton } from "primereact/skeleton";
 
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 

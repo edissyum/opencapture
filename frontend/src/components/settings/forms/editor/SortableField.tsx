@@ -25,7 +25,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import Hint from "../../../Hint";
 import Input from "../../../Input";
 import { Button } from "../../../Button";
-import { Select } from "../../../Select.tsx";
+import { Select } from "../../../Select";
 import { InputSwitch } from "../../../InputSwitch";
 
 import { getColorOptions, getFormatLabels } from "./schemas";

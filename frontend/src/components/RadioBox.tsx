@@ -14,9 +14,9 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { RadioButton } from "primereact/radiobutton";
+import { Radio } from "@mantine/core";
 
-export function RadioBox({ label, value, checked, onChange, border=true }: {
+export function RadioBox({ label, value, checked, onChange, border = true }: {
     label?: string;
     value: string;
     border?: boolean;
@@ -29,14 +29,19 @@ export function RadioBox({ label, value, checked, onChange, border=true }: {
     };
 
     return (
-        <label key={ value } className={ `peer peer-checked:bg-(--color-primary) 
-                                ${ border ? 'border border-(--border-secondary) hover:border-(--border-primary) rounded-lg px-3 py-2': '' }
-                                transition-colors text-(--text-primary) cursor-pointer flex items-center 
-                                justify-center gap-1 bg-(--bg-primary) 
-                                ${ checked && border ? 'bg-(--bg-selected) border-(--color-primary)' : '' }` }>
-            <RadioButton inputId={ value } checked={ checked } className='mr-1 scale-80'
-                         value={ value } onChange={ handleOnChange }>
-            </RadioButton>
+        <label key={ value }
+               className={ `peer peer-checked:bg-(--color-primary) justify-center gap-2 
+                            ${ border ? 'border border-(--border-secondary) hover:border-(--border-primary) ' +
+                                        'rounded-lg px-3 py-2' : '' 
+                            } transition-colors text-(--text-primary) cursor-pointer flex items-center bg-(--bg-primary)
+                            ${ checked && border ? 'bg-(--bg-selected) border-(--color-primary)' : '' }` }>
+            <Radio
+                id={ value }
+                value={ value }
+                checked={ checked }
+                color="var(--color-primary)"
+                onChange={ handleOnChange }
+            />
             { label }
         </label>
     );

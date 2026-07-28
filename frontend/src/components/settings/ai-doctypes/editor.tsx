@@ -25,8 +25,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 
 import { Panel } from "../../Panel";
+import { Select } from "../../Select";
 import { Button } from "../../Button";
-import { Select } from "../../Select.tsx";
 import { Loader } from "../../loader/Loader";
 import { InputSwitch } from "../../InputSwitch";
 import { showToast } from "../../ToastProvider";
