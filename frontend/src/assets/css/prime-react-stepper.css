@@ -15,6 +15,20 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+.mantine-Stepper-steps {
+    @apply w-3/4;
+    @apply mb-4!;
+    @apply m-auto;
+}
+
+.mantine-Stepper-stepIcon:not([data-completed]) {
+    @apply bg-(--bg-secondary);
+}
+
+.mantine-Stepper-stepLabel {
+    @apply font-medium;
+}
+
 .stepper-secondary {
     @apply flex;
     @apply p-2;

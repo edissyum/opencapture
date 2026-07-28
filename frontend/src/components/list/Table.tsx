@@ -15,16 +15,15 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { t } from "i18next";
-import { Skeleton } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-import { ContextMenu } from "primereact/contextmenu";
-import React, { useMemo, useRef, useState } from "react";
-import { Column as PrimeColumn } from "primereact/column";
-import { ChevronsUpDown, EllipsisVertical } from "lucide-react";
-import { DataTable as PrimeDataTable } from "primereact/datatable";
+import React, { useMemo, useState } from "react";
+import { ChevronRight, ChevronsUpDown, EllipsisVertical } from "lucide-react";
+import { ActionIcon, Menu, Skeleton, Table as MantineTable } from "@mantine/core";
 
 import { Button } from "../Button";
+import { Checkbox } from "../Checkbox";
+
+import { Paginator } from "./Paginator";
 
 type Column<T> = {
     id: string | undefined;
@@ -50,7 +49,7 @@ type DataTableProps<T> = {
     skeletonRows?: number;
     paginatorLeftText?: string;
     checkboxSelection?: boolean;
-    rowsPerPageOptions?: number[];
+    rowsPerPageOptions?: { value: any; label: string }[];
     onSelectionChange?: (selected: T[]) => void;
     lazyParams: {
         first: number;
@@ -72,13 +71,16 @@ export function Table<T extends { id: string }>({
     lazyParams,
     loading = false,
     skeletonRows = 5,
-    rowsPerPage = 10,
     paginatorLeftText,
     selectedRows = [],
     pagination = false,
     checkboxSelection = false,
     totalRecords = data.length,
-    rowsPerPageOptions = [10, 20, 50],
+    rowsPerPageOptions = [
+        { "value": 10, "label": "10" },
+        { "value": 20, "label": "20" },
+        { "value": 50, "label": "50" }
+    ],
     emptyMessage = "Aucun élément trouvé",
     onSelectionChange,
     onLazyParamsChange
@@ -87,34 +89,77 @@ export function Table<T extends { id: string }>({
 
     const [_, setSelectedRows] = useState<T[]>([]);
     const [hoveredRow, setHoveredRow] = useState<string | null>(null);
-    const cm = useRef({ current: null } as any);
 
     const handleSelectionChange = (rows: T[]) => {
         setSelectedRows(rows);
         if (onSelectionChange) onSelectionChange(rows);
     };
 
-    const handleRowClick = (e: any) => {
-        const target = e.originalEvent?.target as HTMLElement | null;
-
-        // If click on checkbox, do not navigate. Instead, simulate toggle to avoid crysis
-        const clickedInSelectionColumn = !!target?.closest(".p-selection-column");
-        if (clickedInSelectionColumn) {
-            const clickedOnCheckbox = !!target?.closest(".p-checkbox");
-            if (!clickedOnCheckbox && checkboxSelection) {
-                const isSelected = selectedRows.some((row) => row.id === e.data.id);
-                const next = isSelected
-                    ? selectedRows.filter((row) => row.id !== e.data.id)
-                    : [...selectedRows, e.data];
-                handleSelectionChange(next);
-            }
-            return;
-        }
-
+    const handleRowClick = (row: T) => {
         if (baseLink) {
-            navigate(baseLink + e.data.id);
+            navigate(baseLink + row.id);
         }
-    }
+    };
+
+    const onSelect = (checked: boolean, id?: string) => {
+        let newSelectedRows = [...selectedRows];
+        if (checked) {
+            const found = data.find(d => d.id === id);
+            if (found) newSelectedRows.push(found);
+        } else {
+            newSelectedRows = newSelectedRows.filter(r => r.id !== id);
+        }
+        handleSelectionChange(newSelectedRows);
+    };
+
+    const selectAll = () => {
+        handleSelectionChange(selectedRows.length === data.length ? [] : data);
+    };
+
+    const handleMenuClose = () => {
+        setSelectedRows([]);
+        onSelectionChange && onSelectionChange([]);
+    };
+
+    const handleSort = (fieldId: string) => {
+        const newSortOrder: 1 | -1 = lazyParams.sortField === fieldId && lazyParams.sortOrder === 1 ? -1 : 1;
+        onLazyParamsChange({
+            ...lazyParams,
+            sortField: fieldId,
+            sortOrder: newSortOrder,
+        });
+    };
+
+    const renderMenuItems = (items: any[]) => items.map((item: any, index: number) => (
+        item.items && item.items.length > 0 ? (
+            <Menu.Sub key={ index }>
+                <Menu.Sub.Target>
+                    <Menu.Sub.Item
+                        leftSection={ item.icon }
+                        closeMenuOnClick={ false }
+                        rightSection={ <ChevronRight size={ 14 }/> }
+                        onClick={ (e: React.MouseEvent) => e.stopPropagation() }
+                    >
+                        { item.label }
+                    </Menu.Sub.Item>
+                </Menu.Sub.Target>
+                <Menu.Sub.Dropdown>
+                    { renderMenuItems(item.items) }
+                </Menu.Sub.Dropdown>
+            </Menu.Sub>
+        ) : (
+            <Menu.Item
+                key={ index }
+                leftSection={ item.icon }
+                onClick={ (e: React.MouseEvent) => {
+                    e.stopPropagation();
+                    item.command?.(e);
+                } }
+            >
+                { item.label }
+            </Menu.Item>
+        )
+    ));
 
     const paginatorLeftData = useMemo(() => {
         return (
@@ -175,103 +220,123 @@ export function Table<T extends { id: string }>({
         );
     }
 
+    const colSpan = columns.length + (checkboxSelection ? 1 : 0) + (actions && actions.length > 0 ? 1 : 0);
+
     return (
         <div className='border border-(--border-secondary) rounded-lg overflow-hidden w-full flex flex-col'>
-            { actionsLine && (
-                <ContextMenu model={ actionsLine(selectedRows[0]) } ref={ cm }/>
+            { pagination && (
+                <div className="flex items-center justify-between bg-(--bg-primary) px-4 border-b
+                                border-(--border-secondary) text-(--text-secondary) font-normal">
+                    { paginatorLeftData }
+                    <Paginator
+                        first={ lazyParams.first }
+                        rows={ lazyParams.rows }
+                        totalRecords={ totalRecords }
+                        rowsPerPageOptions={ rowsPerPageOptions }
+                        onChange={ (params) => onLazyParamsChange({ ...lazyParams, ...params }) }
+                    />
+                </div>
             ) }
             <div className='flex-1 overflow-auto'>
-                <PrimeDataTable
-                    lazy
-                    scrollable
-                    stripedRows
-                    dataKey="id"
-                    value={ data }
-                    scrollHeight="flex"
-                    rows={ rowsPerPage }
-                    paginator={ pagination }
-                    first={ lazyParams.first }
-                    paginatorPosition={ 'top' }
-                    totalRecords={ totalRecords }
-                    paginatorLeft={ paginatorLeftData }
-                    rowsPerPageOptions={ rowsPerPageOptions }
-                    sortField={ lazyParams.sortField ?? undefined }
-                    sortOrder={ lazyParams.sortOrder ?? undefined }
-                    paginatorTemplate="RowsPerPageDropdown CurrentPageReport FirstPageLink PrevPageLink NextPageLink LastPageLink"
-                    currentPageReportTemplate={ "{first} " + t('VERIFIER.to') + " {last} " + t('VERIFIER.of') + " {totalRecords}" }
-                    selection={ selectedRows }
-                    emptyMessage={ emptyMessage }
-                    selectionMode={ 'checkbox' }
-                    onSelectionChange={ (e: any) => {
-                        handleSelectionChange(e.value)
-                    } }
-                    className={ `w-full ${ !baseLink ? 'no_hover' : '' }` }
-                    contextMenuSelection={ selectedRows }
-                    onContextMenuSelectionChange={ (e: any) => {
-                        handleSelectionChange([e.value]);
-                        if (actionsLine) {
-                            cm.current?.show(e.originalEvent);
-                        }
-                    } }
-                    onPage={ (e) =>
-                        onLazyParamsChange({
-                            ...lazyParams,
-                            first: e.first,
-                            rows: e.rows,
-                            page: e.page,
-                        })
-                    }
-                    onSort={ (e) =>
-                        onLazyParamsChange({
-                            ...lazyParams,
-                            sortField: e.sortField,
-                            sortOrder: e.sortOrder,
-                        })
-                    }
-                    onRowClick={ (e) => {
-                        handleRowClick(e);
-                    } }
-                >
-                    { checkboxSelection && (
-                        <PrimeColumn selectionMode="multiple" headerClassName="max-w-5 w-5"/>
-                    ) }
+                <MantineTable stickyHeader className={ `w-full ${ !baseLink && 'no_hover' }` }>
+                    <MantineTable.Thead>
+                        <MantineTable.Tr>
+                            { checkboxSelection && (
+                                <MantineTable.Th className="max-w-5 w-5 leading-0">
+                                    <Checkbox
+                                        indeterminate={ selectedRows.length > 0 && selectedRows.length !== data.length }
+                                        checked={ data.length > 0 && selectedRows.length === data.length }
+                                        onChange={ selectAll }
+                                    />
+                                </MantineTable.Th>
+                            ) }
 
-                    { columns.map((col, idx) => (
-                        <PrimeColumn
-                            headerClassName={ `${ col.className } ${ checkboxSelection ? 'cursor-pointer' : 'cursor-auto' } text-(--text-secondary) font-normal pl-1 pr-1 py-2 border-(--border-secondary)` }
-                            bodyClassName={ `${ col.className } ${ checkboxSelection || baseLink ? 'cursor-pointer' : 'cursor-auto' } pl-1 pr-1 text-sm py-2` }
-                            key={ idx }
-                            field={ col.id as string }
-                            header={
-                                col.sortable ? <span className='flex items-center'>{ col.header }
-                                    <ChevronsUpDown size={ 14 } className='ml-1'/></span> : col.header
-                            }
-                            sortable={ col.sortable }
-                            body={ (rowData: any) =>
-                                col.body
-                                    ? col.body({ ...rowData, hoveredRow, setHoveredRow })
-                                    : rowData[col.field!]
-                            }
-                        />
-                    )) }
+                            { columns.map((col, idx) => (
+                                <MantineTable.Th
+                                    key={ idx }
+                                    onClick={ () => col.sortable && handleSort(col.id as string) }
+                                    className={ `${ col.className } ${ col.sortable ? 'cursor-pointer' : 'cursor-auto' }
+                                                text-(--text-secondary) font-normal pl-1 pr-1 py-2 border-(--border-secondary)
+                                                ${ col.sortable && lazyParams.sortField === col.id ? 'text-(--color-primary)!' : '' }` }
+                                >
+                                    { col.sortable ? (
+                                        <span className='flex items-center'>
+                                            { col.header }
+                                            <ChevronsUpDown size={ 14 } className='ml-1'/>
+                                        </span>
+                                    ) : col.header }
+                                </MantineTable.Th>
+                            )) }
 
-                    {
-                        actions && actions.length > 0 && (
-                            <PrimeColumn
-                                bodyClassName="pl-0! pr-0! text-sm"
-                                body={ (rowData: any) => (
-                                    <div className='cursor-pointer' onClick={ (e) => {
-                                        e.stopPropagation();
-                                        handleSelectionChange([rowData]);
-                                        cm.current?.show(e);
-                                    } }>
-                                        <EllipsisVertical size={ 18 }/>
-                                    </div>
+                            { actions && actions.length > 0 && (
+                                <MantineTable.Th className="w-10"/>
+                            ) }
+                        </MantineTable.Tr>
+                    </MantineTable.Thead>
+                    <MantineTable.Tbody>
+                        { data.length === 0 ? (
+                            <MantineTable.Tr>
+                                <MantineTable.Td colSpan={ colSpan } className="text-center py-8 text-(--text-secondary)">
+                                    { emptyMessage }
+                                </MantineTable.Td>
+                            </MantineTable.Tr>
+                        ) : data.map((row) => (
+                            <MantineTable.Tr
+                                key={ row.id }
+                                onClick={ () => handleRowClick(row) }
+                                onMouseEnter={ () => setHoveredRow(row.id) }
+                                onMouseLeave={ () => setHoveredRow(null) }
+                                className={ `${ checkboxSelection || baseLink ? 'cursor-pointer' : 'cursor-auto' }
+                                            ${ selectedRows.some(r => r.id === row.id) ? 'bg-(--bg-selected)! text-(--color-primary)!' : '' }` }
+                            >
+                                { checkboxSelection && (
+                                    <MantineTable.Td
+                                        className='leading-0'
+                                        onClick={ (e) => {
+                                            e.stopPropagation();
+                                            onSelect(!selectedRows.some(r => r.id === row.id), row.id);
+                                        } }
+                                    >
+                                        <Checkbox
+                                            id={ row.id }
+                                            checked={ selectedRows.some(r => r.id === row.id) }
+                                            onChange={ (checked: boolean, id: string | undefined) => onSelect(checked, id) }
+                                        />
+                                    </MantineTable.Td>
                                 ) }
-                            />
-                        )
-                    }
-                </PrimeDataTable>
+
+                                { columns.map((col, ci) => (
+                                    <MantineTable.Td key={ ci } className={ `${ col.className } pl-1 pr-1 text-sm py-2` }>
+                                        { col.body
+                                            ? col.body({ ...row, hoveredRow, setHoveredRow } as any)
+                                            : (row as any)[col.field!] }
+                                    </MantineTable.Td>
+                                )) }
+
+                                { actions && actions.length > 0 && (
+                                    <MantineTable.Td className="pl-0! pr-0! text-sm" onClick={ (e) => e.stopPropagation() }>
+                                        <Menu position="bottom-end" withinPortal onClose={ handleMenuClose }>
+                                            <Menu.Target>
+                                                <ActionIcon
+                                                    variant="transparent"
+                                                    onClick={ (e: any) => {
+                                                        e.stopPropagation();
+                                                        handleSelectionChange([row]);
+                                                    } }
+                                                >
+                                                    <EllipsisVertical className='text-(--text-primary)' size={ 18 }/>
+                                                </ActionIcon>
+                                            </Menu.Target>
+                                            <Menu.Dropdown>
+                                                { actionsLine && renderMenuItems(actionsLine(selectedRows[0])) }
+                                            </Menu.Dropdown>
+                                        </Menu>
+                                    </MantineTable.Td>
+                                ) }
+                            </MantineTable.Tr>
+                        )) }
+                    </MantineTable.Tbody>
+                </MantineTable>
             </div>
         </div>
     );

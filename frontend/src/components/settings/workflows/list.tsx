@@ -222,7 +222,12 @@ export function WorkflowsList({ module }: { module: string }) {
                 rowsPerPage={ lazyParams.rows }
                 skeletonRows={ lazyParams.rows }
                 totalRecords={ totalWorkflows || 0 }
-                rowsPerPageOptions={ [4, 8, 16, 32] }
+                rowsPerPageOptions={ [
+                            { "value": 4, "label": "4" },
+                            { "value": 8, "label": "8" },
+                            { "value": 16, "label": "16" },
+                            { "value": 32, "label": "32" }
+                        ] }
                 emptyMessage={ t("WORKFLOWS.no_workflows") }
                 paginatorLeftText={ t('WORKFLOWS.selected', { count: selectedWorkflows.length }) }
                 onLazyParamsChange={ setLazyParams }

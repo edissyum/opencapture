@@ -272,7 +272,12 @@ export function SettingsGeneralUsers() {
                 rowsPerPage={ lazyParams.rows }
                 skeletonRows={ lazyParams.rows }
                 totalRecords={ totalUsers || 0 }
-                rowsPerPageOptions={ [4, 8, 16, 32] }
+                rowsPerPageOptions={ [
+                            { "value": 4, "label": "4" },
+                            { "value": 8, "label": "8" },
+                            { "value": 16, "label": "16" },
+                            { "value": 32, "label": "32" }
+                        ] }
                 emptyMessage={ t("USERS.no_user") }
                 paginatorLeftText={ t('USERS.selected', { count: selectedUsers.length }) }
                 onLazyParamsChange={ setLazyParams }

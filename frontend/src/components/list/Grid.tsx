@@ -19,13 +19,13 @@ import { t } from "i18next";
 import { useNavigate } from "react-router-dom";
 import { EllipsisVertical } from "lucide-react";
 import React, { useMemo, useState } from "react";
-import { ActionIcon, Menu, Pagination, Skeleton } from '@mantine/core';
+import { ActionIcon, Menu, Skeleton } from '@mantine/core';
 
 import { Button } from "../Button";
 import { Checkbox } from "../Checkbox";
 
+import { Paginator } from "./Paginator";
 import { LazyBase64Image } from "./LazyImage";
-import { Select } from "../Select.tsx";
 
 type Column<T> = {
     id: string | undefined;
@@ -176,41 +176,13 @@ export function Grid<T extends { id: string }>({
                 <div className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-lg font-normal
                                 text-(--text-secondary)">
                     { paginatorLeftData }
-                    <div className="flex items-center gap-4 p-2.5">
-                        <div className='w-16'>
-                            <Select
-                                id="rowsPerPage"
-                                options={ rowsPerPageOptions }
-                                value={ String(lazyParams.rows) }
-                                onChange={ (value) => {
-                                    if (!value) return;
-
-                                    onLazyParamsChange({
-                                        ...lazyParams,
-                                        page: 0,
-                                        first: 0,
-                                        rows: Number(value)
-                                    });
-                                } }
-                            />
-                        </div>
-
-                        <span>
-                            { totalRecords === 0 ? 0 : lazyParams.first + 1 } { t("VERIFIER.to") } { Math.min(lazyParams.first + lazyParams.rows, totalRecords) } { t("VERIFIER.of") } { totalRecords }
-                        </span>
-                        <Pagination
-                            withPages={ false }
-                            total={ Math.max(1, Math.ceil(totalRecords / lazyParams.rows)) }
-                            value={ Math.floor(lazyParams.first / lazyParams.rows) + 1 }
-                            onChange={ (newPage) => {
-                                onLazyParamsChange({
-                                    ...lazyParams,
-                                    first: (newPage - 1) * lazyParams.rows,
-                                    page: newPage - 1,
-                                });
-                            } }
-                        />
-                    </div>
+                    <Paginator
+                        first={ lazyParams.first }
+                        rows={ lazyParams.rows }
+                        totalRecords={ totalRecords }
+                        rowsPerPageOptions={ rowsPerPageOptions }
+                        onChange={ (params) => onLazyParamsChange({ ...lazyParams, ...params }) }
+                    />
                 </div>
             ) }
             { data.length === 0 ? (

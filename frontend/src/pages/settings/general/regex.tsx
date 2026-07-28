@@ -137,7 +137,12 @@ export function SettingsGeneralRegex() {
                 actionsLine={ getActionsLine }
                 rowsPerPage={ lazyParams.rows }
                 skeletonRows={ lazyParams.rows }
-                rowsPerPageOptions={ [4, 8, 16, 32] }
+                rowsPerPageOptions={ [
+                            { "value": 4, "label": "4" },
+                            { "value": 8, "label": "8" },
+                            { "value": 16, "label": "16" },
+                            { "value": 32, "label": "32" }
+                        ] }
                 selectedRows={ selectedRegex }
                 totalRecords={ totalRegex || 0 }
                 emptyMessage={ t("SECURITY.no_configurations") }

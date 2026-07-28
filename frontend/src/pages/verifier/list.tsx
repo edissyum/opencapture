@@ -130,8 +130,8 @@ export function VerifierListPage() {
                         <span
                             className={ row?.form_id === form.id ? "text-(--color-primary) font-semibold" : "" }
                         >
-                        { form.label }
-                    </span>
+                            { form.label }
+                        </span>
                     ),
                     command: () => handleChangeForm(form.id)
                 }))
@@ -381,6 +381,7 @@ export function VerifierListPage() {
     }
 
     const handleChangeCustomer = async (customerId: string) => {
+        console.log('here')
         if (selectedDocuments.length === 0) return;
         if (selectedDocuments.length > 1) {
             showToast(t('VERIFIER.select_single_document_customer'), 'error');
@@ -390,6 +391,17 @@ export function VerifierListPage() {
         }
 
         setLoadingDocuments(true);
+
+        try {
+            await put(`verifier/documents/${ selectedDocuments[0].id }/update`, { "customer_id": customerId });
+            showToast(t('VERIFIER.associated_customer_changed_success'), 'success');
+        } catch (err) {
+            console.error("Error changing document associated customer:", err);
+        } finally {
+            setSelectedDocuments([]);
+            setTotalDocuments(0);
+            setLazyParams({ ...lazyParams, first: 0 });
+        }
     }
 
     const handleDelete = async () => {
@@ -670,7 +682,12 @@ export function VerifierListPage() {
                         skeletonRows={ lazyParams.rows }
                         selectedRows={ selectedDocuments }
                         totalRecords={ totalDocuments || 0 }
-                        rowsPerPageOptions={ [4, 8, 16, 32] }
+                        rowsPerPageOptions={ [
+                            { "value": 4, "label": "4" },
+                            { "value": 8, "label": "8" },
+                            { "value": 16, "label": "16" },
+                            { "value": 32, "label": "32" }
+                        ] }
                         emptyMessage={ t("VERIFIER.no_documents") }
                         paginatorLeftText={ t('VERIFIER.document_selected', { count: selectedDocuments.length }) }
                         onLazyParamsChange={ setLazyParams }

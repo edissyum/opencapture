@@ -39,7 +39,7 @@
 @import "./assets/css/mantine-multiselect.css";
 @import "./assets/css/mantine-autocomplete.css";
 @import "assets/css/mantine-select.css";
-@import "./assets/css/prime-react-datatable.css";
+@import "assets/css/mantine-datatable.css";
 @import "./assets/css/prime-react-contextmenu.css";
 
 @import 'primereact/resources/themes/lara-light-indigo/theme.css';
