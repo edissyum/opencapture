@@ -291,7 +291,7 @@ class Splitter:
 
             if upload_args['attachments']:
                 from ..controllers import attachments
-                attachments.handle_uploaded_file(upload_args['attachments'], None, batch_id, 'splitter', True)
+                attachments.handle_uploaded_file(upload_args['attachments'], None, batch_id, 'splitter', True, upload_args['custom_id'])
 
             batches_id.append(batch_id)
 

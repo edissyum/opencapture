@@ -34,8 +34,10 @@ from ..models import attachments, splitter
 from ..functions import check_extensions_mime, retrieve_custom_from_url
 
 
-def handle_uploaded_file(files, document_id, batch_id, module, from_api=False):
-    custom_id = retrieve_custom_from_url(request)
+def handle_uploaded_file(files, document_id, batch_id, module, from_api=False, custom_id=False):
+    if not custom_id:
+        custom_id = retrieve_custom_from_url(request)
+
     docservers = get_context_var('docservers', 9)
     message, code = check_extensions_mime(files, custom_id, 'attachments')
     if code != 200:
