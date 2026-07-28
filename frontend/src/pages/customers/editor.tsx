@@ -17,10 +17,10 @@
 import { z } from "zod";
 import { t } from "i18next";
 import { useForm } from "react-hook-form";
+import { Accordion } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
-import { Accordion, AccordionTab } from "primereact/accordion";
 
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 
@@ -217,17 +217,27 @@ export function CustomerEditor() {
 
     return (
         <div className="p-6 bg-(--bg-primary) h-full overflow-y-auto flex flex-col gap-4">
-            <Accordion multiple activeIndex={ 0 }>
-                <AccordionTab header={ t("ACCOUNTS.customer_information") }>
-                    <div className='p-6'>
-                        <DynamicForm grid={ 3 } errors={ errors } control={ control } schema={ customerSchema }/>
-                    </div>
-                </AccordionTab>
-                <AccordionTab header={ t("ACCOUNTS.customer_address") }>
-                    <div className='p-6'>
-                        <DynamicForm grid={ 2 } errors={ errors } control={ control } schema={ addressSchema }/>
-                    </div>
-                </AccordionTab>
+            <Accordion chevronPosition="left" variant="separated" multiple defaultValue={ ['customer'] }>
+                <Accordion.Item key={ 'customer' } value={ 'customer' }>
+                    <Accordion.Control>
+                        { t("ACCOUNTS.customer_information") }
+                    </Accordion.Control>
+                    <Accordion.Panel>
+                        <div className='p-6'>
+                            <DynamicForm grid={ 3 } errors={ errors } control={ control } schema={ customerSchema }/>
+                        </div>
+                    </Accordion.Panel>
+                </Accordion.Item>
+                <Accordion.Item key={ 'address' } value={ 'address' }>
+                    <Accordion.Control>
+                        { t("ACCOUNTS.customer_address") }
+                    </Accordion.Control>
+                    <Accordion.Panel>
+                        <div className='p-6'>
+                            <DynamicForm grid={ 2 } errors={ errors } control={ control } schema={ addressSchema }/>
+                        </div>
+                    </Accordion.Panel>
+                </Accordion.Item>
             </Accordion>
 
             <div className="w-fit">

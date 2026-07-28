@@ -16,12 +16,12 @@
 
 import { z } from "zod";
 import { t } from "i18next";
-import { ShieldCog, X } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { Accordion } from "@mantine/core";
+import { ShieldCog, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
-import { Accordion, AccordionTab } from "primereact/accordion";
 
 import { getPrivilegesParent } from "./helpers";
 
@@ -346,49 +346,50 @@ export function SettingsGeneralRoleEditor() {
                 </h1>
 
                 { privileges && Object.keys(privileges).length > 0 && (
-                    <Accordion multiple activeIndex={ [0, 1, 2, 3, 4] } className='accordionRoles'>
+                    <Accordion variant="separated" multiple
+                                      defaultValue={['general', 'administration', 'verifier', 'splitter', 'accounts']}
+                    >
                         { getPrivilegesParent().map((parent: any) => (
-                            <AccordionTab key={ parent.name } header={
-                                <div className='flex items-center gap-2'>
-                                    <div className='bg-(--bg-secondary) p-2 rounded-md'>
-                                        { parent.icon }
-                                    </div>
-                                    { parent.name }
-                                </div>
-                            }>
-                                <div className='p-4 grid grid-cols-4 gap-4'>
-                                    { Object.values(privileges).filter((privilege: any) => privilege.parent === parent.id).map((privilege: any) => (
-                                        <div key={ privilege.id } className={ privilegeClasses }>
-                                            <InputSwitch
-                                                id={ privilege.label }
-                                                label={ t(`PRIVILEGES.${ privilege.label }`) }
-                                                checked={ rolePrivileges?.includes(privilege.label) }
-                                                onChange={ (value) => handleTogglePrivilege(value, privilege) }
-                                            />
-
-                                            {/*<label htmlFor={ privilege.label }*/}
-                                            {/*       title={ t(`PRIVILEGES.${ privilege.label }`) }*/}
-                                            {/*       className='cursor-pointer truncate'>*/}
-                                            {/*    { t(`PRIVILEGES.${ privilege.label }`) }*/}
-                                            {/*</label>*/}
-
-                                            { (privilege.label === 'add_role' || privilege.label === 'update_role') && (
-                                                <div key={ privilege.label }
-                                                     className='cursor-pointer hover:text-(--color-primary)'
-                                                     data-tooltip-id='tooltip'
-                                                     data-tooltip-content={ t('ROLES.authorized_assign_roles') }
-                                                     onClick={ () => setShowAssignRoles(true) }
-                                                >
-                                                    <ShieldCog/>
-                                                </div>
-                                            ) }
+                            <Accordion.Item key={ parent.name } value={ parent.id }>
+                                <Accordion.Control>
+                                    <div className='flex items-center gap-2'>
+                                        <div className='bg-(--bg-secondary) p-2 rounded-md'>
+                                            { parent.icon }
                                         </div>
-                                    )) }
-                                </div>
-                            </AccordionTab>
+                                        { parent.name }
+                                    </div>
+                                </Accordion.Control>
+
+                                <Accordion.Panel>
+                                    <div className='p-4 grid grid-cols-4 gap-4'>
+                                        { Object.values(privileges).filter((privilege: any) => privilege.parent === parent.id).map((privilege: any) => (
+                                            <div key={ privilege.id } className={ privilegeClasses }>
+                                                <InputSwitch
+                                                    id={ privilege.label }
+                                                    label={ t(`PRIVILEGES.${ privilege.label }`) }
+                                                    checked={ rolePrivileges?.includes(privilege.label) }
+                                                    onChange={ (value) => handleTogglePrivilege(value, privilege) }
+                                                />
+
+                                                { (privilege.label === 'add_role' || privilege.label === 'update_role') && (
+                                                    <div key={ privilege.label }
+                                                         className='cursor-pointer hover:text-(--color-primary)'
+                                                         data-tooltip-id='tooltip'
+                                                         data-tooltip-content={ t('ROLES.authorized_assign_roles') }
+                                                         onClick={ () => setShowAssignRoles(true) }
+                                                    >
+                                                        <ShieldCog/>
+                                                    </div>
+                                                ) }
+                                            </div>
+                                        )) }
+                                    </div>
+                                </Accordion.Panel>
+                            </Accordion.Item>
                         )) }
                     </Accordion>
                 ) }
+
             </div>
 
             <div className="mt-4">

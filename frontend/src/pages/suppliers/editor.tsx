@@ -21,7 +21,6 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
-import { Accordion, AccordionTab } from "primereact/accordion";
 
 import { emptyToUndefined } from "../../services/zod";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
@@ -30,6 +29,7 @@ import { Button } from "../../components/Button";
 import { Loader } from "../../components/loader/Loader";
 import { showToast } from "../../components/ToastProvider";
 import { DynamicForm } from "../../components/form/DynamicForm";
+import { Accordion } from "@mantine/core";
 
 type SupplierEditorProps = {
     newDatas?: any;
@@ -498,17 +498,28 @@ export function SupplierEditor({
                 </div>
             ) }
             <DynamicForm grid={ 2 } errors={ errors } control={ control } schema={ supplierBooleansSchema }/>
-            <Accordion multiple activeIndex={ 0 }>
-                <AccordionTab header={ t("ACCOUNTS.supplier_information") }>
-                    <div className='p-6'>
-                        <DynamicForm grid={ 6 } errors={ errors } control={ control } schema={ supplierSchema }/>
-                    </div>
-                </AccordionTab>
-                <AccordionTab header={ t("ACCOUNTS.supplier_address") }>
-                    <div className='p-6'>
-                        <DynamicForm grid={ 2 } errors={ errors } control={ control } schema={ addressSchema }/>
-                    </div>
-                </AccordionTab>
+
+            <Accordion chevronPosition="left" variant="separated" multiple defaultValue={ ['supplier'] }>
+                <Accordion.Item key={ 'supplier' } value={ 'supplier' }>
+                    <Accordion.Control>
+                        { t("ACCOUNTS.supplier_information") }
+                    </Accordion.Control>
+                    <Accordion.Panel>
+                        <div className='p-6'>
+                            <DynamicForm grid={ 3 } errors={ errors } control={ control } schema={ supplierSchema }/>
+                        </div>
+                    </Accordion.Panel>
+                </Accordion.Item>
+                <Accordion.Item key={ 'address' } value={ 'address' }>
+                    <Accordion.Control>
+                        { t("ACCOUNTS.supplier_address") }
+                    </Accordion.Control>
+                    <Accordion.Panel>
+                        <div className='p-6'>
+                            <DynamicForm grid={ 2 } errors={ errors } control={ control } schema={ addressSchema }/>
+                        </div>
+                    </Accordion.Panel>
+                </Accordion.Item>
             </Accordion>
 
             <div className="w-fit">

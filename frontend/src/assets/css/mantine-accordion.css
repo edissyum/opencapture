@@ -161,13 +161,3 @@
     @apply items-center;
     @apply justify-between;
 }
-
-/* Move the toggle icon to the right for roles privileges screen */
-.accordionRoles .p-accordion-header .p-accordion-header-link .p-accordion-toggle-icon {
-    @apply order-2;
-    @apply ml-auto;
-}
-
-.accordionRoles .p-accordion-tab .p-accordion-header .p-accordion-header-link {
-    @apply p-4;
-}

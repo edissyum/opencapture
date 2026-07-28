@@ -15,9 +15,8 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { useEffect, useRef, useState } from "react";
-import { ContextMenu } from "primereact/contextmenu";
-import { Accordion, AccordionTab } from "primereact/accordion";
+import { useEffect, useState } from "react";
+import { Accordion as AccordionMantine, ActionIcon, Menu } from "@mantine/core";
 import { Copy, EllipsisVertical, Inbox, PencilLine, Plus, Trash } from "lucide-react";
 
 import { Button } from "../../../../components/Button";
@@ -34,7 +33,6 @@ import { showConfirmDialogWithInput } from "../../../../services/hooks/ConfirmDi
 export function SettingsGeneralMailcollect() {
     const { get, post, put, del } = axiosApiCall();
 
-    const cm = useRef({ current: null } as any);
     const [loading, setLoading] = useState(false);
     const [processList, setProcessList] = useState<any[]>([]);
 
@@ -263,7 +261,6 @@ export function SettingsGeneralMailcollect() {
 
     return (
         <div className="p-6 bg-(--bg-secondary) h-full overflow-y-scroll">
-
             { processList.length !== 0 && (
                 <div className="flex justify-end mb-4">
                     <Button size='sm' variant="bg_white" onClick={ handleAddProcess } className="p-2 px-3">
@@ -285,36 +282,52 @@ export function SettingsGeneralMailcollect() {
                     </Button>
                 </div>
             ) : (
-                <Accordion multiple activeIndex={ [0] }>
+                <AccordionMantine chevronPosition="left" variant="separated" multiple defaultValue={ ['0'] }>
                     { processList.map((process, idx) => (
-                        <AccordionTab header={
-                            <span className='flex items-center'>
-                                <span>
+                        <AccordionMantine.Item key={ idx } value={ idx.toString() }>
+                            <div className='flex items-center'>
+                                <AccordionMantine.Control>
                                     { process.name }
-                                </span>
-                                <span className='flex ml-auto items-center gap-2'
-                                      onClick={ (e) => e.stopPropagation() }>
-                                    <InputSwitch
-                                        data-tooltip-id="tooltip"
-                                        data-tooltip-content={ process.enabled ? t('MAILCOLLECT.disable_process') : t('MAILCOLLECT.enable_process') }
-                                        id={ 'enable_' + idx } checked={ process.enabled }
-                                        onChange={ () => handleToggleEnableProcess(process) }/>
-                                    <EllipsisVertical onClick={ (e) => {
-                                        setSelectedProcess(process);
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        cm.current?.show(e);
-                                    } }/>
-                                    { menuModel && (
-                                        <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }/>
-                                    ) }
-                                </span>
-                            </span>
-                        } key={ idx }>
-                            <MailCollectProcess key={ idx } process={ process } workflows={ workflows }/>
-                        </AccordionTab>
+                                </AccordionMantine.Control>
+                                <InputSwitch
+                                    data-tooltip-id="tooltip"
+                                    data-tooltip-content={ process.enabled ? t('MAILCOLLECT.disable_process') : t('MAILCOLLECT.enable_process') }
+                                    id={ 'enable_' + idx } checked={ process.enabled }
+                                    onChange={ () => handleToggleEnableProcess(process) }/>
+                                <Menu position="bottom-end" withinPortal>
+                                    <Menu.Target>
+                                        <ActionIcon
+                                            variant="transparent"
+                                            onClick={ (e: any) => {
+                                                e.stopPropagation();
+                                                setSelectedProcess(process);
+                                            } }
+                                        >
+                                            <EllipsisVertical
+                                                size={ 20 }
+                                                data-tooltip-id="tooltip"
+                                                className='text-(--text-primary) hover:text-(--color-primary)'
+                                                data-tooltip-content={ t('FORMS.change_label') }
+                                            />
+                                        </ActionIcon>
+                                    </Menu.Target>
+
+                                    <Menu.Dropdown>
+                                        { menuModel.map((item: any, index: number) => (
+                                            <Menu.Item key={ index } leftSection={ item.icon }
+                                                       onClick={ item.command }>
+                                                { item.label }
+                                            </Menu.Item>
+                                        )) }
+                                    </Menu.Dropdown>
+                                </Menu>
+                            </div>
+                            <AccordionMantine.Panel>
+                                <MailCollectProcess key={ idx } process={ process } workflows={ workflows }/>
+                            </AccordionMantine.Panel>
+                        </AccordionMantine.Item>
                     )) }
-                </Accordion>
+                </AccordionMantine>
             ) }
         </div>
     );
