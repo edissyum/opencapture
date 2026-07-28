@@ -22,7 +22,7 @@ import React, { useMemo, useRef, useState } from "react";
 
 import { Button } from "../Button";
 
-import { Skeleton } from "primereact/skeleton";
+import { Skeleton } from "@mantine/core";
 import { ContextMenu } from "primereact/contextmenu";
 import { Column as PrimeColumn } from "primereact/column";
 import { DataTable as PrimeDataTable } from "primereact/datatable";

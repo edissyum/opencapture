@@ -624,6 +624,5 @@ export function SplitterListPage() {
                 ) }
             </div>
         </div>
-    )
-        ;
+    );
 }
