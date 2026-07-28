@@ -16,16 +16,15 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { ChevronsUpDown, EllipsisVertical } from "lucide-react";
+import { Skeleton } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
+import { ContextMenu } from "primereact/contextmenu";
 import React, { useMemo, useRef, useState } from "react";
+import { Column as PrimeColumn } from "primereact/column";
+import { ChevronsUpDown, EllipsisVertical } from "lucide-react";
+import { DataTable as PrimeDataTable } from "primereact/datatable";
 
 import { Button } from "../Button";
-
-import { Skeleton } from "@mantine/core";
-import { ContextMenu } from "primereact/contextmenu";
-import { Column as PrimeColumn } from "primereact/column";
-import { DataTable as PrimeDataTable } from "primereact/datatable";
 
 type Column<T> = {
     id: string | undefined;
