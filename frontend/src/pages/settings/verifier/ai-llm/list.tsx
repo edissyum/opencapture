@@ -70,9 +70,9 @@ export function SettingsVerifierAiLLMList() {
     ];
 
     const columns = [
-        { id: 'id', field: 'id', header: '', sortable: true, className: 'max-w-10! w-10!' },
-        { id: 'name', field: 'name', header: t('GLOBAL.label'), sortable: true },
-        { id: 'provider', field: 'provider', header: t('AI-LLM.provider'), sortable: true },
+        { id: 'id', field: 'id', header: '', sortable: true, className: 'w-14' },
+        { id: 'name', field: 'name', header: t('GLOBAL.label'), sortable: true, className: 'w-60' },
+        { id: 'provider', field: 'provider', header: t('AI-LLM.provider'), sortable: true, className: 'w-60' },
         {
             id: 'url', field: 'url', header: t('AI-LLM.url'), className: 'max-w-[40rem]',
             body: (row: any) => (
