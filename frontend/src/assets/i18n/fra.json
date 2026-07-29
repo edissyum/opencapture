@@ -925,7 +925,8 @@
         "document_non_modifiable_details": "Vous ne pouvez pas modifier ce document car il a déjà été traité",
         "no_outputs": "Aucune chaîne sortante paramétrée pour ce document",
         "facturx_level": "Profil Factur-X",
-        "datas_updated": "Données du document mises à jour avec succès"
+        "datas_updated": "Données du document mises à jour avec succès",
+        "associated_customer_changed_success": "Compte client associé modifié avec succès"
     },
     "SECURITY": {
         "default_auth": "Authentification par défaut",
@@ -1043,7 +1044,9 @@
         "unbinding": "Déliasser",
         "unbinding_warning": "Il n'est pas possible de déliasser les pièces jointes si une ou plusieurs pièces jointes ne sont pas au format PDF",
         "add_attachemnt": "Pour ajouter une pièce jointe, cliquez sur le bouton ci-dessus",
-        "no_attachments": "Aucune pièce jointe"
+        "no_attachments": "Aucune pièce jointe",
+        "attachment_deleted": "Pièce jointe supprimée avec succès",
+        "attachment_uploaded": "Pièce jointe téléchargée avec succès"
     },
     "ADDRESSES": {
         "address1": "Numéro et rue",

@@ -34,7 +34,6 @@ export function ZoomControl({ zoom, setZoom }: any) {
                 step={ 10 }
                 value={ zoom }
                 className="w-full"
-                color="var(--color-primary)"
                 showLabelOnHover={ false }
                 onChange={ (value) => handleZoomChange(value) }
             />

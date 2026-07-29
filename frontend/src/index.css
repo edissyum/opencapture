@@ -23,25 +23,23 @@
 @import '@mantine/dates/styles.css' layer(mantine);
 @import "tailwindcss/utilities.css" layer(utilities);
 
-@import "./assets/css/tooltip.css";
-@import "./assets/css/react-pdf.css";
-@import "./assets/css/tox-editor.css";
-@import "./assets/css/mantine-tabs.css";
-@import "./assets/css/mantine-switch.css";
-@import "./assets/css/tailwind-theme.css";
-@import "./assets/css/mantine-popover.css";
-@import "./assets/css/mantine-calendar.css";
-@import "./assets/css/prime-react-tree.css";
-@import "./assets/css/mantine-accordion.css";
-@import "./assets/css/prime-react-dialog.css";
-@import "./assets/css/prime-react-stepper.css";
-@import "./assets/css/mantine-multiselect.css";
-@import "./assets/css/mantine-autocomplete.css";
-@import "assets/css/mantine-dropdown.css";
-@import "./assets/css/prime-react-datatable.css";
-@import "./assets/css/prime-react-contextmenu.css";
-
-@import 'primereact/resources/themes/lara-light-indigo/theme.css';
+@import "assets/css/tooltip.css";
+@import "assets/css/react-pdf.css";
+@import "assets/css/tox-editor.css";
+@import "assets/css/mantine-tabs.css";
+@import "assets/css/mantine-tree.css";
+@import "assets/css/mantine-menu.css";
+@import "assets/css/mantine-switch.css";
+@import "assets/css/tailwind-theme.css";
+@import "assets/css/mantine-select.css";
+@import "assets/css/mantine-popover.css";
+@import "assets/css/mantine-stepper.css";
+@import "assets/css/mantine-calendar.css";
+@import "assets/css/mantine-accordion.css";
+@import "assets/css/mantine-datatable.css";
+@import "assets/css/mantine-pagination.css";
+@import "assets/css/mantine-multiselect.css";
+@import "assets/css/mantine-autocomplete.css";
 
 @import "react-pdf/dist/Page/TextLayer.css";
 @import 'react-pdf/dist/Page/AnnotationLayer.css';

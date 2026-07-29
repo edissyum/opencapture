@@ -14,49 +14,65 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { StrictMode } from 'react'
-import { pdfjs } from "react-pdf";
+import { pdfjs } from 'react-pdf';
+import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client'
-import { PrimeReactProvider } from "primereact/api";
+import { MantineProvider } from "@mantine/core";
 
 import './index.css'
 import { App } from "./App";
 import { ToastProvider } from "./components/ToastProvider";
-import { MantineProvider } from "@mantine/core";
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
-const value: any = {
-    appendTo: document.body
-};
+const primaryColor = '#19864B';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <ToastProvider/>
-        <PrimeReactProvider value={ value }>
-            <MantineProvider theme={ {
-                cursorType: 'pointer',
-                fontFamily: 'inherit',
-                lineHeights: {
-                    xs: 'inherit',
-                    sm: 'inherit',
-                    md: 'inherit',
-                    lg: 'inherit',
-                    xl: 'inherit',
+        <MantineProvider theme={ {
+            cursorType: 'pointer',
+            fontFamily: 'inherit',
+            lineHeights: {
+                xs: 'inherit',
+                sm: 'inherit',
+                md: 'inherit',
+                lg: 'inherit',
+                xl: 'inherit',
+            },
+            components: {
+                Tabs: {
+                    vars: () => ({
+                        root: {
+                            '--tab-radius': '0',
+                            '--tabs-color': primaryColor
+                        }
+                    })
                 },
-                components: {
-                    Tabs: {
-                        vars: () => ({
-                            root: {
-                                '--tab-radius': '0',
-                                '--tabs-color': '#19864B'
-                            }
-                        })
+                Stepper: {
+                    defaultProps: {
+                        color: primaryColor,
+                        allowNextStepsSelect: false
+                    }
+                },
+                Slider: {
+                    defaultProps: {
+                        color: primaryColor
+                    }
+                },
+                Radio: {
+                    defaultProps: {
+                        color: primaryColor
+                    }
+                },
+                Switch: {
+                    defaultProps: {
+                        color: primaryColor
                     }
                 }
-            } }>
-                <App/>
-            </MantineProvider>
-        </PrimeReactProvider>
+            }
+        } }>
+            <App/>
+        </MantineProvider>
     </StrictMode>,
 );

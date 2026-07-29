@@ -15,19 +15,40 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-.mantine-Select-input {
-    @apply cursor-pointer!;
+.mantine-Stepper-steps {
+    @apply w-3/4;
+    @apply mb-4!;
+    @apply m-auto;
 }
 
-.mantine-Select-dropdown {
+.mantine-Stepper-step {
+    @apply flex;
+    @apply gap-1;
+    @apply flex-col;
+    @apply justify-center;
+
+    & .mantine-Stepper-stepBody {
+        @apply ml-0;
+    }
+}
+
+.mantine-Stepper-stepIcon:not([data-completed]) {
+    @apply bg-(--bg-secondary);
+}
+
+.mantine-Stepper-stepLabel {
+    @apply font-medium;
+}
+
+.stepper-secondary {
     @apply p-2;
-}
+    @apply border;
+    @apply rounded-xl;
+    @apply border-dashed;
+    @apply bg-(--bg-primary);
+    @apply border-(--border-secondary);
 
-.mantine-Select-option:where([data-checked]) {
-    @apply bg-(--bg-selected)!;
-    @apply text-(--color-primary);
-
-    & svg {
+    & .mantine-Stepper-stepWrapper {
         @apply hidden;
     }
 }

@@ -18,9 +18,9 @@
 import { t } from "i18next";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
+import { ActionIcon, Menu } from "@mantine/core";
+import React, { useEffect, useState } from "react";
 import { EllipsisVertical, Eye } from "lucide-react";
-import { ContextMenu } from "primereact/contextmenu";
-import React, { useEffect, useRef, useState } from "react";
 
 import { b64ToFile } from "../../settings/general/customization";
 
@@ -52,11 +52,7 @@ export const DraggablePage = React.memo(function DraggablePage({
         data: { page, documentId, type: 'page' }
     });
 
-    const cm = useRef<any>(null);
-
     const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
-
-    const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
 
     useEffect(() => {
         if (!page.thumbnail) {
@@ -122,33 +118,48 @@ export const DraggablePage = React.memo(function DraggablePage({
                     </div>
                 ) }
 
-                <div className="w-full rounded-lg rounded-t-none p-2 flex items-center gap-1 bg-(--bg-primary)
+                <div className="w-full rounded-lg rounded-t-none py-2 pr-2 pl-4 flex items-center gap-1 bg-(--bg-primary)
                                 font-semibold">
                     <span className="text-sm">Page { page.source_page }</span>
-                    <EllipsisVertical
-                        size={ 18 } className={ `ml-auto ${ disabled ? 'cursor-not-allowed' : 'cursor-pointer' }` }
-                        onClick={ (e) => {
-                            if (disabled) return;
-                            e.preventDefault();
-                            e.stopPropagation();
-                            if (isContextMenuOpen) {
-                                cm.current?.hide();
-                                return;
-                            }
-                            onSelectionChange?.(page, true);
-                            cm.current?.show(e);
-                        } }
-                    />
-                    <ContextMenu
-                        ref={ cm }
-                        model={ menuItems }
-                        className="w-auto!"
-                        onShow={ () => setIsContextMenuOpen(true) }
-                        onHide={ () => {
-                            setIsContextMenuOpen(false);
+
+                    <div className='ml-auto'>
+                        <Menu position="bottom-end" withinPortal onClose={ () => {
                             onSelectionChange?.(page, false);
-                        } }
-                    />
+                        } }>
+                            <Menu.Target>
+                                <ActionIcon
+                                    className='mr-0!'
+                                    variant="transparent"
+                                    onClick={ (e: any) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        onSelectionChange?.(page, true);
+                                    } }
+                                >
+                                    <EllipsisVertical
+                                        size={ 20 }
+                                        className='text-(--text-primary) hover:text-(--color-primary)'
+                                    />
+                                </ActionIcon>
+                            </Menu.Target>
+
+                            <Menu.Dropdown>
+                                { menuItems?.map((item: any, index: number) => (
+                                    <Menu.Item
+                                        key={ index }
+                                        leftSection={ item.icon }
+                                        disabled={ item.disabled }
+                                        onClick={ (e: React.MouseEvent) => {
+                                            e.stopPropagation();
+                                            item.command(e);
+                                        } }
+                                    >
+                                        { item.label }
+                                    </Menu.Item>
+                                )) }
+                            </Menu.Dropdown>
+                        </Menu>
+                    </div>
                 </div>
             </div>
         </div>

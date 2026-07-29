@@ -16,7 +16,6 @@
 
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import { RadioButton } from "primereact/radiobutton";
 import { Activity, ChevronDown, Filter, Loader2, Package, RotateCw } from "lucide-react";
 
 import Input from "../../components/Input";
@@ -28,6 +27,7 @@ import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
 import { usePersistentState } from "../../services/hooks/usePersistentState";
 import DOMPurify from "dompurify";
+import { Radio } from "@mantine/core";
 
 export function MonitoringList() {
     const { get, put } = axiosApiCall();
@@ -238,15 +238,15 @@ export function MonitoringList() {
                         { open.module && (
                             <div className='p-4 pt-0'>
                                 { listModules.map((module: any) => (
-                                    <div className='flex items-center text-(--text-secondary)' key={ module.id }>
-                                        <RadioButton
-                                            inputId={ module.id } checked={ selectedModule === module.id }
-                                            className='mr-1 scale-80'
+                                    <div className='flex items-center gap-2 text-(--text-secondary)' key={ module.id }>
+                                        <Radio
+                                            id={ module.id }
                                             value={ module.id }
+                                            checked={ selectedModule === module.id }
                                             onChange={ (e) => {
-                                                setSelectedModule(e.value);
+                                                setSelectedModule(e.target.value);
                                             } }>
-                                        </RadioButton>
+                                        </Radio>
                                         <label htmlFor={ module.id } key={ module.id } className='cursor-pointer whitespace-nowrap'>
                                             { module.label }
                                         </label>
@@ -270,15 +270,15 @@ export function MonitoringList() {
                         { open.status && (
                             <div className='flex flex-col p-4 pt-0'>
                                 { listStatuses.map((status: any) => (
-                                    <div className='flex items-center text-(--text-secondary)' key={ status.id }>
-                                        <RadioButton
-                                            inputId={ status.id } checked={ selectedStatus === status.id }
-                                            className='mr-1 scale-80'
+                                    <div className='flex items-center gap-2 text-(--text-secondary)' key={ status.id }>
+                                        <Radio
+                                            id={ status.id }
                                             value={ status.id }
+                                            checked={ selectedStatus === status.id }
                                             onChange={ (e) => {
-                                                setSelectedStatus(e.value);
+                                                setSelectedStatus(e.target.value);
                                             } }>
-                                        </RadioButton>
+                                        </Radio>
                                         <label htmlFor={ status.id } key={ status.id } className='cursor-pointer whitespace-nowrap'>
                                             { status.label }
                                         </label>
@@ -316,7 +316,12 @@ export function MonitoringList() {
                     rowsPerPage={ lazyParams.rows }
                     skeletonRows={ lazyParams.rows }
                     totalRecords={ totalProcesses || 0 }
-                    rowsPerPageOptions={ [4, 8, 16, 32] }
+                    rowsPerPageOptions={ [
+                            { "value": 4, "label": "4" },
+                            { "value": 8, "label": "8" },
+                            { "value": 16, "label": "16" },
+                            { "value": 32, "label": "32" }
+                        ] }
                     emptyMessage={ t("MONITORING.no_processes") }
                     onLazyParamsChange={ setLazyParams }
                 />

@@ -15,20 +15,45 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-.mantine-Input-wrapper input:not(.mantine-MultiSelect-inputField) {
-    @apply h-12.5!;
-    @apply text-base!;
-    @apply rounded-md;
+.mantine-Table-table thead {
+    @apply h-14;
+
+    & th {
+        @apply font-semibold!;
+        @apply bg-(--bg-primary)!;
+    }
+}
+
+.mantine-Table-table tbody tr:last-child > td {
+    @apply border-b-0!;
+}
+
+.mantine-Table-table tbody tr:nth-child(even) {
+    @apply bg-(--bg-primary);
+    @apply text-(--text-primary);
+}
+
+.mantine-Table-table tbody tr:nth-child(odd) {
+    @apply bg-(--bg-primary)/30;
+    @apply text-(--text-primary);
+}
+
+.mantine-Table-table thead th,
+.mantine-Table-table tbody td {
     @apply border-(--border-secondary);
 }
 
-.mantine-Input-wrapper input:focus,
-.mantine-Input-wrapper input:hover {
-    @apply shadow-none;
-    @apply outline-none;
-    @apply border-(--color-primary);
+.mantine-Table-table tbody tr {
+    @apply h-14;
 }
 
-.mantine-Autocomplete-dropdown {
-    @apply p-2!;
+.mantine-Table-table tbody tr:hover {
+    @apply bg-(--bg-selected)!;
+}
+
+.mantine-Table-table tbody td.truncate-data span:first-child {
+    @apply block;
+    @apply w-[98%];
+    @apply truncate;
+    @apply max-w-full;
 }

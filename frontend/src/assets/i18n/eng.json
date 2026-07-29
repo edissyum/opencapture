@@ -863,7 +863,8 @@
         "document_non_modifiable_details": "You cannot modify this document because it has already been processed",
         "no_outputs": "No output chains are configured for this document",
         "facturx_level": "Factur-X level",
-        "datas_updated": "Document data updated successfully"
+        "datas_updated": "Document data updated successfully",
+        "associated_customer_changed_success": "Associated customer successfully modified"
     },
     "SECURITY": {
         "default_auth": "Default authentication",
@@ -978,7 +979,9 @@
         "unbinding": "Unbundle",
         "unbinding_warning": "Attachments cannot be unbundled if one or more attachments are not in PDF format",
         "add_attachemnt": "To add an attachment, click the button above",
-        "no_attachments": "No attachments"
+        "no_attachments": "No attachments",
+        "attachment_deleted": "Attachment deleted successfully",
+        "attachment_uploaded": "Attachment uploaded successfully"
     },
     "ADDRESSES": {
         "address1": "Street number and name",

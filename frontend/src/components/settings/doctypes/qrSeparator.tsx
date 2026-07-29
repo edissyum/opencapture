@@ -18,7 +18,7 @@ import { t } from "i18next";
 import { Download } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { Select } from "../../Select.tsx";
+import { Select } from "../../Select";
 import { Loader } from "../../loader/Loader";
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";

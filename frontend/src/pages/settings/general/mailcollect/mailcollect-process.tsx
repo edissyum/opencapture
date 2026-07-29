@@ -16,19 +16,18 @@
 
 import { z } from "zod";
 import { t } from "i18next";
-import { Stepper } from "primereact/stepper";
-import { useEffect, useRef, useState } from "react";
+import { Stepper } from '@mantine/core';
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { StepperPanel } from "primereact/stepperpanel";
 import { ArrowLeft, Ban, CircleQuestionMark, CornerUpRight } from "lucide-react";
 
 import { getSchemaForAuthMethod } from "./authSchema";
 
 import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
+import { Select } from "../../../../components/Select";
 import { RadioBox } from "../../../../components/RadioBox";
-import { Select } from "../../../../components/Select.tsx";
 import { InputSwitch } from "../../../../components/InputSwitch";
 import { showToast } from "../../../../components/ToastProvider";
 
@@ -36,7 +35,6 @@ import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
 
 export function MailCollectProcess({ process, workflows }: { process: any, workflows: any }) {
     const { post } = axiosApiCall();
-    const stepperRef = useRef<any>(null);
     const authMethods = [
         {
             label: t('MAILCOLLECT.imap'),
@@ -169,9 +167,9 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                 process[key] = data[key];
             }
         });
-        stepperRef.current?.nextCallback();
+        setActive(active + 1);
     }
-    const handlePreviousStep = () => stepperRef.current?.prevCallback();
+    const handlePreviousStep = () => setActive(active - 1);
 
     const onSubmit = async (data: any) => {
         if (loading) return;
@@ -206,9 +204,11 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
         setLoading(false);
     }
 
+    const [active, setActive] = useState(0);
+
     return (
-        <Stepper ref={ stepperRef } linear className='p-4'>
-            <StepperPanel header={ t("MAILCOLLECT.connection") }>
+        <Stepper className='p-6' active={ active } onStepClick={ setActive }>
+            <Stepper.Step label={ t("MAILCOLLECT.connection") }>
                 <h1 className="text-xl font-bold mb-4">{ t("MAILCOLLECT.auth_method") }</h1>
                 <div className="flex gap-4 mb-4">
                     { authMethods.map((method) => (
@@ -367,9 +367,9 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='login'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                        autoComplete='new-mail'
-                                        label={ t("SMTP.login") }
-                                        error={ authErrors.login?.message }/>
+                                       autoComplete='new-mail'
+                                       label={ t("SMTP.login") }
+                                       error={ authErrors.login?.message }/>
                             ) }
                         />
                         <Controller
@@ -377,8 +377,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='grant_type'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                        label={ t("MAILCOLLECT.grant_type") }
-                                        error={ authErrors.grant_type?.message }/>
+                                       label={ t("MAILCOLLECT.grant_type") }
+                                       error={ authErrors.grant_type?.message }/>
                             ) }
                         />
                         <Controller
@@ -386,8 +386,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='scope'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                        label={ t("MAILCOLLECT.scope") }
-                                        error={ authErrors.scope?.message }/>
+                                       label={ t("MAILCOLLECT.scope") }
+                                       error={ authErrors.scope?.message }/>
                             ) }
                         />
                         <Controller
@@ -395,8 +395,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='users_url'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                        label={ t("MAILCOLLECT.users_url") }
-                                        error={ authErrors.users_url?.message }/>
+                                       label={ t("MAILCOLLECT.users_url") }
+                                       error={ authErrors.users_url?.message }/>
                             ) }
                         />
                         <Controller
@@ -404,8 +404,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='message_url'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                        label={ t("MAILCOLLECT.message_url") }
-                                        error={ authErrors.message_url?.message }/>
+                                       label={ t("MAILCOLLECT.message_url") }
+                                       error={ authErrors.message_url?.message }/>
                             ) }
                         />
                         <Controller
@@ -413,8 +413,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='get_token_url'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                        label={ t("MAILCOLLECT.get_token_url") }
-                                        error={ authErrors.get_token_url?.message }/>
+                                       label={ t("MAILCOLLECT.get_token_url") }
+                                       error={ authErrors.get_token_url?.message }/>
                             ) }
                         />
                         <Controller
@@ -422,8 +422,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='client_id'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                        label={ t("MAILCOLLECT.client_id") }
-                                        error={ authErrors.client_id?.message }/>
+                                       label={ t("MAILCOLLECT.client_id") }
+                                       error={ authErrors.client_id?.message }/>
                             ) }
                         />
                         <Controller
@@ -431,8 +431,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='tenant_id'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                        label={ t("MAILCOLLECT.tenant_id") }
-                                        error={ authErrors.tenant_id?.message }/>
+                                       label={ t("MAILCOLLECT.tenant_id") }
+                                       error={ authErrors.tenant_id?.message }/>
                             ) }
                         />
                         <Controller
@@ -440,8 +440,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                             name='client_secret'
                             render={ ({ field }) => (
                                 <Input { ...field }
-                                        label={ t("MAILCOLLECT.client_secret") }
-                                        error={ authErrors.client_secret?.message }/>
+                                       label={ t("MAILCOLLECT.client_secret") }
+                                       error={ authErrors.client_secret?.message }/>
                             ) }
                         />
                     </div>
@@ -458,9 +458,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                         ) }
                     </Button>
                 </div>
-            </StepperPanel>
-
-            <StepperPanel header={ t("MAILCOLLECT.folders") }>
+            </Stepper.Step>
+            <Stepper.Step label={ t("MAILCOLLECT.folders") }>
                 <Controller
                     name="folder_to_crawl"
                     control={ foldersControl }
@@ -526,9 +525,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                         { t("GLOBAL.next") }
                     </Button>
                 </div>
-            </StepperPanel>
-
-            <StepperPanel header={ t("MAILCOLLECT.options") }>
+            </Stepper.Step>
+            <Stepper.Step label={ t("MAILCOLLECT.options") }>
                 <h1 className="text-xl font-bold mb-4">{ t("MAILCOLLECT.module") }</h1>
 
                 <div className="flex gap-4 mb-4">
@@ -620,8 +618,8 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                         onChange={ (value) => field.onChange(value) }
                                         className="w-full"
                                     />
-                                    <label className={ `absolute left-3 select-none pointer-events-none transition-all 
-                                                        duration-150 top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary) 
+                                    <label className={ `absolute left-3 select-none pointer-events-none transition-all
+                                                        duration-150 top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary)
                                                         text-(--text-secondary)` }
                                     >
                                         { t("MAILCOLLECT.select_workflow") }
@@ -652,7 +650,17 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                         ) }
                     </Button>
                 </div>
-            </StepperPanel>
+            </Stepper.Step>
         </Stepper>
+        // <Stepper ref={ stepperRef } linear className='p-4'>
+        //
+        //     <StepperPanel header={ t("MAILCOLLECT.folders") }>
+        //
+        //     </StepperPanel>
+        //
+        //     <StepperPanel header={ t("MAILCOLLECT.options") }>
+        //
+        //     </StepperPanel>
+        // </Stepper>
     );
 }

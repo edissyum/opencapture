@@ -17,6 +17,7 @@
 
 .mantine-DateInput-wrapper input {
     @apply rounded-md;
+    @apply text-base;
     @apply border-(--border-secondary);
 }
 

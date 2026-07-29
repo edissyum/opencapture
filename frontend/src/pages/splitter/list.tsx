@@ -34,7 +34,6 @@ import {
     X
 } from "lucide-react";
 import DOMPurify from "dompurify";
-import { RadioButton } from "primereact/radiobutton";
 
 import { useUser } from "../../services/hooks/useUser";
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
@@ -42,13 +41,14 @@ import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
 import { usePersistentState } from "../../services/hooks/usePersistentState";
 
 import Input from "../../components/Input";
+import { Select } from "../../components/Select";
 import { Button } from "../../components/Button";
 import { Grid } from "../../components/list/Grid";
 import { Table } from "../../components/list/Table";
-import { Select } from "../../components/Select.tsx";
 import { Thumbnail } from "../../components/Thumbnail";
 import { showToast } from "../../components/ToastProvider";
 import MultiSelectInput from "../../components/MultiSelect";
+import { Radio } from "@mantine/core";
 
 export function SplitterListPage() {
     const { user, loadingUser } = useUser();
@@ -371,15 +371,15 @@ export function SplitterListPage() {
                         { open.batches && (
                             <div className='flex flex-col p-4 pt-0'>
                                 { listTimes.map((time) => (
-                                    <div className='flex items-center text-(--text-secondary)' key={ time.id }>
-                                        <RadioButton
-                                            inputId={ time.id } checked={ selectedTime === time.id }
-                                            className='mr-1 scale-80'
+                                    <div className='flex items-center gap-2 text-(--text-secondary)' key={ time.id }>
+                                        <Radio
+                                            id={ time.id }
                                             value={ time.id }
+                                            checked={ selectedTime === time.id }
                                             onChange={ (e) => {
-                                                setSelectedTime(e.value);
+                                                setSelectedTime(e.target.value);
                                             } }>
-                                        </RadioButton>
+                                        </Radio>
                                         <label htmlFor={ time.id } key={ time.id } className='cursor-pointer whitespace-nowrap'>
                                             { time.label } ({ time.totals || 0 })
                                         </label>
@@ -403,16 +403,15 @@ export function SplitterListPage() {
                         { open.status && (
                             <div className='flex flex-col p-4 pt-0'>
                                 { Object.keys(listStatuses).map((key: any) => (
-                                    <div className='flex items-center text-(--text-secondary)' key={ key }>
-                                        <RadioButton
-                                            inputId={ key }
-                                            checked={ selectedStatus === listStatuses[key]?.id }
-                                            className='mr-1 scale-80'
+                                    <div className='flex items-center gap-2 text-(--text-secondary)' key={ key }>
+                                        <Radio
+                                            id={ key }
                                             value={ key }
+                                            checked={ selectedStatus === listStatuses[key]?.id }
                                             onChange={ (e) => {
-                                                setSelectedStatus(listStatuses[e.value]?.id);
+                                                setSelectedStatus(listStatuses[e.target.value]?.id);
                                             } }>
-                                        </RadioButton>
+                                        </Radio>
                                         <label htmlFor={ key } key={ key } className='cursor-pointer whitespace-nowrap'>
                                             { listStatuses[key]?.label } ({ listStatuses[key]?.total || 0 })
                                         </label>
@@ -508,8 +507,8 @@ export function SplitterListPage() {
                                                       hover:border-(--color-primary) hover:bg-(--bg-selected) transition-colors
                                                       ${ selectedPrincipalBatchId === batch.id && 'bg-(--bg-selected) border-(--color-primary)' }` }>
                                         <div className='flex items-center gap-4'>
-                                            <RadioButton
-                                                inputId={ batch.id }
+                                            <Radio
+                                                id={ batch.id }
                                                 value={ selectedPrincipalBatchId }
                                                 checked={ selectedPrincipalBatchId === batch.id }
                                                 onChange={ () => {
@@ -593,7 +592,12 @@ export function SplitterListPage() {
                         skeletonRows={ lazyParams.rows }
                         selectedRows={ selectedBatches }
                         totalRecords={ totalBatches || 0 }
-                        rowsPerPageOptions={ [4, 8, 16, 32] }
+                        rowsPerPageOptions={ [
+                            { "value": 4, "label": "4" },
+                            { "value": 8, "label": "8" },
+                            { "value": 16, "label": "16" },
+                            { "value": 32, "label": "32" }
+                        ] }
                         emptyMessage={ t("SPLITTER.no_batches") }
                         paginatorLeftText={ t('SPLITTER.batch_selected', { count: selectedBatches.length }) }
                         onLazyParamsChange={ setLazyParams }
@@ -615,7 +619,12 @@ export function SplitterListPage() {
                         skeletonRows={ lazyParams.rows }
                         selectedRows={ selectedBatches }
                         totalRecords={ totalBatches || 0 }
-                        rowsPerPageOptions={ [4, 8, 16, 32] }
+                        rowsPerPageOptions={ [
+                            { "value": 4, "label": "4" },
+                            { "value": 8, "label": "8" },
+                            { "value": 16, "label": "16" },
+                            { "value": 32, "label": "32" }
+                        ] }
                         emptyMessage={ t("VERIFIER.no_documents") }
                         paginatorLeftText={ t('VERIFIER.document_selected', { count: selectedBatches.length }) }
                         onLazyParamsChange={ setLazyParams }
@@ -624,6 +633,5 @@ export function SplitterListPage() {
                 ) }
             </div>
         </div>
-    )
-        ;
+    );
 }

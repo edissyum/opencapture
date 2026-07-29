@@ -300,7 +300,12 @@ export function AiDoctypesList({ module }: { module: string }) {
                 rowsPerPage={ lazyParams.rows }
                 skeletonRows={ lazyParams.rows }
                 totalRecords={ totalAiDoctypes || 0 }
-                rowsPerPageOptions={ [4, 8, 16, 32] }
+                rowsPerPageOptions={ [
+                            { "value": 4, "label": "4" },
+                            { "value": 8, "label": "8" },
+                            { "value": 16, "label": "16" },
+                            { "value": 32, "label": "32" }
+                        ] }
                 emptyMessage={ t("AI-DOCTYPES.no_ai_doctypes") }
                 paginatorLeftText={ t('AI-DOCTYPES.selected', { count: selectedAiDoctypes.length }) }
                 onLazyParamsChange={ setLazyParams }

@@ -18,6 +18,11 @@
 .mantine-Accordion-control {
     @apply px-4;
     @apply py-1.5;
+
+    &:hover {
+        @apply rounded-xl;
+        @apply bg-(--bg-primary);
+    }
 }
 
 .mantine-ActionIcon-root {
@@ -124,16 +129,6 @@
     @apply bg-(--color-primary);
 }
 
-/* Radio button */
-.p-radiobutton.p-highlight .p-radiobutton-box {
-    @apply border-(--color-primary);
-    @apply bg-(--color-primary);
-}
-
-.p-radiobutton:not(.p-disabled):has(.p-radiobutton-input:hover) .p-radiobutton-box {
-    @apply border-(--color-primary)/80;
-}
-
 .p-panel-header {
     @apply py-4;
     @apply border;
@@ -160,14 +155,4 @@
     @apply flex;
     @apply items-center;
     @apply justify-between;
-}
-
-/* Move the toggle icon to the right for roles privileges screen */
-.accordionRoles .p-accordion-header .p-accordion-header-link .p-accordion-toggle-icon {
-    @apply order-2;
-    @apply ml-auto;
-}
-
-.accordionRoles .p-accordion-tab .p-accordion-header .p-accordion-header-link {
-    @apply p-4;
 }

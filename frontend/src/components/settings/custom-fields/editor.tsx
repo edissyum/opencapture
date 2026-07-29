@@ -18,12 +18,11 @@ import z from "zod";
 import { t } from "i18next";
 import DOMPurify from "dompurify";
 import { Tooltip } from "react-tooltip";
-import { ContextMenu } from "primereact/contextmenu";
+import { useEffect, useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Accordion, AccordionTab } from "primereact/accordion";
+import { Accordion, ActionIcon, Menu } from "@mantine/core";
 import { CircleQuestionMark, EllipsisVertical, Plus, Trash } from "lucide-react";
 
 import Input from "../../Input";
@@ -42,9 +41,8 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
 
     const navigate = useNavigate();
     const { customFields } = useCustomFields(module);
-    const cm = useRef({ current: null } as any);
-    const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(null);
     const [activeAccordionIndexes, setActiveAccordionIndexes] = useState<number[]>([]);
+    const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(null);
     const [autoFocusOptionIndex, setAutoFocusOptionIndex] = useState<number | null>(null);
 
     const [customField, setCustomField] = useState<any>({});
@@ -199,12 +197,10 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
             label: t("REGEX.test_value")
         }))
     });
-    const regexSchema: any = regexDetailsSchema.extend(regexContentSchema.shape).
-        extend(regexCleanSchema.shape).
-        extend(regexRemoveKeywordSchema.shape).
-        extend(regexTestSchema.shape);
+    const regexSchema: any = regexDetailsSchema.extend(regexContentSchema.shape).extend(regexCleanSchema.shape).extend(regexRemoveKeywordSchema.shape).extend(regexTestSchema.shape);
 
     const [selectOptions, setSelectOptions] = useState<{
+        idx: number;
         id: string;
         label: string;
         conditional_custom_field: any;
@@ -273,7 +269,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         }
 
         if (customField.settings.options && Array.isArray(customField.settings.options)) {
-            setSelectOptions(customField.settings.options);
+            setSelectOptions(customField.settings.options.map((option: any, idx: number) => ({ ...option, idx: idx + 1 })));
         }
     }, [customField]);
 
@@ -536,7 +532,8 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
 
                                     { watchTest && (
                                         <div className='mt-2 p-4 rounded-md w-fit'>
-                                            <div dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(highlightedResult) } }/>
+                                            <div
+                                                dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(highlightedResult) } }/>
                                         </div>
                                     ) }
 
@@ -545,6 +542,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                     </div>
                 </>
             ) }
+
             {/* watch need to match select or checkbox */ }
             { (watchType === 'select' || watchType === 'checkbox') && (
                 <div className='px-8'>
@@ -570,95 +568,103 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                         ) }
                     </div>
 
-                    <Accordion
-                        multiple
-                        activeIndex={ activeAccordionIndexes }
-                        onTabChange={ (e) => {
-                            if (Array.isArray(e.index)) {
-                                setActiveAccordionIndexes(e.index);
-                            } else if (typeof e.index === 'number') {
-                                setActiveAccordionIndexes([e.index]);
-                            } else {
-                                setActiveAccordionIndexes([]);
-                            }
-                        } }
-                        className='max-h-120 overflow-y-auto border-(--border-secondary)'
-                    >
+                    <Accordion chevronPosition="left" variant="separated" multiple>
                         { selectOptions.map((option, index) => (
-                            <AccordionTab key={ index } header={
-                                <span className='flex items-center gap-2'>
-                                    <span>
+                            <Accordion.Item key={ index } value={ option.idx.toString() }>
+                                <div className='flex items-center'>
+                                    <Accordion.Control>
                                         { option.label }
-                                    </span>
-                                    <span className='flex ml-auto'>
-                                        <EllipsisVertical onClick={ (e) => {
-                                            setSelectedOptionIndex(index);
-                                            e.preventDefault();
-                                            e.stopPropagation();
-                                            cm.current?.show(e);
-                                        } }/>
-                                        { menuModel && (
-                                            <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }/>
-                                        ) }
-                                    </span>
-                                </span>
-                            }>
-                                <div className='flex flex-col gap-4 mb-4 p-6 pb-0'>
-                                    <div className='w-1/3 flex flex-col gap-4'>
-                                        <Input type="text"
-                                               label={ t('GLOBAL.label') } value={ option.label }
-                                               autoFocus={ autoFocusOptionIndex === index }
-                                               onChange={ (e) => {
-                                                   const newOptions = [...selectOptions];
-                                                   newOptions[index].label = e.target.value;
-                                                   setSelectOptions(newOptions);
-                                               } }
-                                        />
-                                        <Input type="text"
-                                               label={ t('ROLES.label_short') } value={ option.id }
-                                               error={ duplicateOptionLabelShortIndexes.has(index)
-                                                   ? t('CUSTOM-FIELDS.choice_label_short_duplicate')
-                                                   : undefined }
-                                               onChange={ (e) => {
-                                                   const newOptions = [...selectOptions];
-                                                   newOptions[index].id = e.target.value;
-                                                   setSelectOptions(newOptions);
-                                               } }
-                                        />
-                                    </div>
-
-                                    { isOptionsConditional && (
-                                        <div className='flex gap-4 w-1/2'>
-                                            <Select
-                                                id={ `conditional_custom_field` }
-                                                value={ option.conditional_custom_field }
-                                                label={ t('CUSTOM-FIELDS.conditional_custom_field') }
-                                                onChange={ (value) => {
-                                                    const newOptions = [...selectOptions];
-                                                    newOptions[index].conditional_custom_field = value;
-                                                    setSelectOptions(newOptions);
+                                    </Accordion.Control>
+                                    <Menu position="bottom-end" withinPortal>
+                                        <Menu.Target>
+                                            <ActionIcon
+                                                variant="transparent"
+                                                onClick={ (e: any) => {
+                                                    e.stopPropagation();
+                                                    setSelectedOptionIndex(index);
                                                 } }
-                                                options={ customFields.filter((cf: any) => cf.id !== customFieldId).map((cf: any) => ({
-                                                    label: cf.label,
-                                                    value: cf.id
-                                                })) }
+                                            >
+                                                <EllipsisVertical
+                                                    size={ 20 }
+                                                    data-tooltip-id="tooltip"
+                                                    className='text-(--text-primary) hover:text-(--color-primary)'
+                                                    data-tooltip-content={ t('FORMS.change_label') }
+                                                />
+                                            </ActionIcon>
+                                        </Menu.Target>
+
+                                        <Menu.Dropdown>
+                                            { menuModel.map((item: any, index: number) => (
+                                                <Menu.Item
+                                                    key={ index }
+                                                    leftSection={ item.icon }
+                                                    disabled={ item.disabled }
+                                                    onClick={ item.command }>
+                                                    { item.label }
+                                                </Menu.Item>
+                                            )) }
+                                        </Menu.Dropdown>
+                                    </Menu>
+                                </div>
+
+                                <Accordion.Panel>
+                                    <div className='flex flex-col gap-4 mb-4 p-6 pb-0'>
+                                        <div className='w-1/3 flex flex-col gap-4'>
+                                            <Input type="text"
+                                                   label={ t('GLOBAL.label') } value={ option.label }
+                                                   autoFocus={ autoFocusOptionIndex === index }
+                                                   onChange={ (e) => {
+                                                       const newOptions = [...selectOptions];
+                                                       newOptions[index].label = e.target.value;
+                                                       setSelectOptions(newOptions);
+                                                   } }
                                             />
-
-                                            <Input
-                                                type="text"
-                                                label={ t('CUSTOM-FIELDS.conditional_value') }
-                                                value={ option.conditional_custom_value }
-                                                onChange={ (e) => {
-                                                    const newOptions = [...selectOptions];
-                                                    newOptions[index].conditional_custom_value = e.target.value;
-                                                    setSelectOptions(newOptions);
-                                                } }
+                                            <Input type="text"
+                                                   label={ t('ROLES.label_short') } value={ option.id }
+                                                   error={ duplicateOptionLabelShortIndexes.has(index)
+                                                       ? t('CUSTOM-FIELDS.choice_label_short_duplicate')
+                                                       : undefined }
+                                                   onChange={ (e) => {
+                                                       const newOptions = [...selectOptions];
+                                                       newOptions[index].id = e.target.value;
+                                                       setSelectOptions(newOptions);
+                                                   } }
                                             />
                                         </div>
-                                    ) }
-                                </div>
-                            </AccordionTab>
-                        )) }
+
+                                        { isOptionsConditional && (
+                                            <div className='flex gap-4 w-1/2'>
+                                                <Select
+                                                    id={ `conditional_custom_field` }
+                                                    value={ option.conditional_custom_field }
+                                                    label={ t('CUSTOM-FIELDS.conditional_custom_field') }
+                                                    onChange={ (value) => {
+                                                        const newOptions = [...selectOptions];
+                                                        newOptions[index].conditional_custom_field = value;
+                                                        setSelectOptions(newOptions);
+                                                    } }
+                                                    options={ customFields.filter((cf: any) => cf.id !== customFieldId).map((cf: any) => ({
+                                                        label: cf.label,
+                                                        value: cf.id
+                                                    })) }
+                                                />
+
+                                                <Input
+                                                    type="text"
+                                                    label={ t('CUSTOM-FIELDS.conditional_value') }
+                                                    value={ option.conditional_custom_value }
+                                                    onChange={ (e) => {
+                                                        const newOptions = [...selectOptions];
+                                                        newOptions[index].conditional_custom_value = e.target.value;
+                                                        setSelectOptions(newOptions);
+                                                    } }
+                                                />
+                                            </div>
+                                        ) }
+                                    </div>
+                                </Accordion.Panel>
+                            </Accordion.Item>
+                        ) )}
                     </Accordion>
 
                     <div className='mt-4 flex justify-end'>
@@ -667,6 +673,7 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                             setSelectOptions([
                                 ...selectOptions,
                                 {
+                                    idx: newOptionIndex + 1,
                                     id: '',
                                     label: '',
                                     conditional_custom_field: undefined,

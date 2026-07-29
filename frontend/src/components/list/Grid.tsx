@@ -17,17 +17,15 @@
 
 import { t } from "i18next";
 import { useNavigate } from "react-router-dom";
-import React, { useMemo, useRef, useState } from "react";
-
-import { Skeleton } from "primereact/skeleton";
-import { Paginator } from "primereact/paginator";
-import { ContextMenu } from "primereact/contextmenu";
+import { EllipsisVertical } from "lucide-react";
+import React, { useMemo, useState } from "react";
+import { ActionIcon, Menu, Skeleton } from '@mantine/core';
 
 import { Button } from "../Button";
 import { Checkbox } from "../Checkbox";
 
+import { Paginator } from "./Paginator";
 import { LazyBase64Image } from "./LazyImage";
-import { EllipsisVertical } from "lucide-react";
 
 type Column<T> = {
     id: string | undefined;
@@ -51,7 +49,7 @@ type CardListProps<T> = {
     skeletonRows?: number;
     selectedRows?: T[];
     paginatorLeftText: string;
-    rowsPerPageOptions?: number[];
+    rowsPerPageOptions?: any;
     onSelectionChange?: (selected: T[]) => void;
     lazyParams: {
         first: number;
@@ -74,19 +72,21 @@ export function Grid<T extends { id: string }>({
     lazyParams,
     loading = false,
     skeletonRows = 5,
-    rowsPerPage = 10,
     paginatorLeftText,
     selectedRows = [],
     pagination = false,
     totalRecords = data.length,
-    rowsPerPageOptions = [10, 20, 50],
+    rowsPerPageOptions = [
+        { "value": 10, "label": "10" },
+        { "value": 20, "label": "20" },
+        { "value": 50, "label": "50" }
+    ],
     emptyMessage = "Aucun élément trouvé",
     onSelectionChange,
     onLazyParamsChange
 }: CardListProps<T>) {
     const navigate = useNavigate();
     const [_, setSelectedRows] = useState<T[]>([]);
-    const cm = useRef({ current: null } as any);
 
     const handleRowClick = (row: T) => {
         if (baseLink) {
@@ -132,8 +132,8 @@ export function Grid<T extends { id: string }>({
                 { actions &&
                     actions.map((action, idx) => (
                         <Button
+                            size="sm"
                             key={ idx }
-                            size={ "sm" }
                             variant="no_bg_border"
                             className="p-2 border"
                             onClick={ action.command }
@@ -152,8 +152,8 @@ export function Grid<T extends { id: string }>({
                 { pagination && (
                     <div
                         className="flex items-center justify-between mt-4 bg-(--bg-primary) px-4 rounded-lg text-(--text-secondary) font-normal h-18 mb-4">
-                        <Skeleton width='20%' className='dark:bg-(--bg-secondary)!'/>
-                        <Skeleton width='30%' className='dark:bg-(--bg-secondary)!'/>
+                        <Skeleton width='20%' height={ 17 } className='dark:bg-(--bg-secondary)!'/>
+                        <Skeleton width='30%' height={ 17 } className='dark:bg-(--bg-secondary)!'/>
                     </div>
                 ) }
                 <div className="grid grid-cols-4 gap-6">
@@ -161,8 +161,8 @@ export function Grid<T extends { id: string }>({
                         <div key={ idx }
                              className="border border-(--border-secondary) rounded-lg p-4">
                             <Skeleton width="100%" height="8rem" className='dark:bg-(--text-secondary)!'/>
-                            <Skeleton className="dark:bg-(--bg-secondary)! mt-2" width="60%"/>
-                            <Skeleton className="dark:bg-(--bg-secondary)! mt-2" width="40%"/>
+                            <Skeleton className="dark:bg-(--bg-secondary)! mt-2" width="60%" height={ 12 }/>
+                            <Skeleton className="dark:bg-(--bg-secondary)! mt-2" width="40%" height={ 12 }/>
                         </div>
                     )) }
                 </div>
@@ -173,24 +173,15 @@ export function Grid<T extends { id: string }>({
     return (
         <>
             { pagination && (
-                <div className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-lg
-                                text-(--text-secondary) font-normal">
+                <div className="flex items-center justify-between bg-(--bg-primary) px-4 rounded-lg font-normal
+                                text-(--text-secondary)">
                     { paginatorLeftData }
                     <Paginator
-                        rows={ rowsPerPage }
                         first={ lazyParams.first }
+                        rows={ lazyParams.rows }
                         totalRecords={ totalRecords }
                         rowsPerPageOptions={ rowsPerPageOptions }
-                        onPageChange={ (e) =>
-                            onLazyParamsChange({
-                                ...lazyParams,
-                                first: e.first,
-                                rows: e.rows,
-                                page: e.page,
-                            })
-                        }
-                        template="RowsPerPageDropdown CurrentPageReport PrevPageLink NextPageLink"
-                        currentPageReportTemplate={ "{first} " + t("VERIFIER.to") + " {last} " + t("VERIFIER.of") + " {totalRecords}" }
+                        onChange={ (params) => onLazyParamsChange({ ...lazyParams, ...params }) }
                     />
                 </div>
             ) }
@@ -235,17 +226,40 @@ export function Grid<T extends { id: string }>({
                                             { col.body ? col.body(row) : (row as any)[col.field!] }
                                         </div>
                                     )) }
-                                    <div className="ml-auto -mr-3">
-                                        <EllipsisVertical onClick={ (e) => {
-                                            e.preventDefault();
-                                            e.stopPropagation();
-                                            setSelectedRows([row]);
-                                            cm.current?.show(e);
-                                            onSelectionChange && onSelectionChange([row]);
-                                        } }/>
+                                    <div className="ml-auto -mr-2.5">
                                         { actionsLine && (
-                                            <ContextMenu model={ actionsLine(selectedRows[0]) } className="w-auto!" ref={ cm }
-                                                         onHide={ handleMenuClose }/>
+                                            <Menu position="bottom-end" withinPortal onClose={ handleMenuClose }>
+                                                <Menu.Target>
+                                                    <ActionIcon
+                                                        className='mr-0!'
+                                                        variant="transparent"
+                                                        onClick={ (e: any) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+                                                            setSelectedRows([row]);
+                                                            onSelectionChange && onSelectionChange([row]);
+                                                        } }
+                                                    >
+                                                        <EllipsisVertical
+                                                            size={ 20 }
+                                                            className='text-(--text-primary) hover:text-(--color-primary)'
+                                                        />
+                                                    </ActionIcon>
+                                                </Menu.Target>
+
+                                                <Menu.Dropdown>
+                                                    { actionsLine(selectedRows[0]).map((item: any, index: number) => (
+                                                        <Menu.Item key={ index } leftSection={ item.icon }
+                                                                   disabled={ item.disabled }
+                                                                   onClick={ (e: React.MouseEvent) => {
+                                                                       e.stopPropagation();
+                                                                       item.command(e);
+                                                                   } }>
+                                                            { item.label }
+                                                        </Menu.Item>
+                                                    )) }
+                                                </Menu.Dropdown>
+                                            </Menu>
                                         ) }
                                     </div>
                                 </div>

@@ -18,13 +18,12 @@
 import dayjs from "dayjs";
 import { t } from "i18next";
 import DOMPurify from "dompurify";
-import { ContextMenu } from "primereact/contextmenu";
+import { Tooltip } from "react-tooltip";
+import { Divider } from "@mantine/core";
 import { useNavigate, useParams } from "react-router-dom";
-import { Accordion as Accordion } from "@mantine/core";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Accordion as Accordion, ActionIcon, Menu } from "@mantine/core";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-
-import { Panel } from "../../components/Panel";
 
 import {
     ArrowLeft,
@@ -70,10 +69,11 @@ import { useHistoryLogger } from "../../services/hooks/useHistoryLogger";
 import { useUnsavedChangesWarning } from "../../services/hooks/useUnsavedChangesWarning";
 
 import Input from "../../components/Input";
+import { Panel } from "../../components/Panel";
 import { Button } from "../../components/Button";
+import { Select } from "../../components/Select";
 import ISOCalendar from "../../components/Calendar";
 import { Checkbox } from "../../components/Checkbox";
-import { Select } from "../../components/Select.tsx";
 import { Loader } from "../../components/loader/Loader";
 import { showToast } from "../../components/ToastProvider";
 import { AttachmentsList } from "../../components/attachments/list";
@@ -84,13 +84,10 @@ import { DraggablePage } from "./dnd/draggablePage";
 import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
 
 import { b64ToFile } from "../settings/general/customization";
-import { Tooltip } from "react-tooltip";
-import { Divider } from "@mantine/core";
 
 export function SplitterViewerPage() {
     const { get, post, del } = axiosApiCall();
     const navigate = useNavigate();
-    const cm = useRef({ current: null } as any);
 
     const [unSavedChanges, setUnSavedChanges] = useState(false);
     useUnsavedChangesWarning(unSavedChanges);
@@ -229,7 +226,7 @@ export function SplitterViewerPage() {
             command: () => handleRotation()
         },
         {
-            label: t('SPLITTER.delete_page'),
+            label: <span className='critical'>{ t('SPLITTER.delete_page') }</span>,
             icon: <Trash2 size={ 16 }/>,
             command: () => handleDeletePage()
         }
@@ -1017,6 +1014,8 @@ export function SplitterViewerPage() {
     };
 
     const handleChangeDoctype = async (doctype: any) => {
+        if (!selectedDocument) return;
+
         setDocuments((docs: any[]) => {
             return docs.map(doc => {
                 if (doc.id === selectedDocument.id) {
@@ -1110,6 +1109,8 @@ export function SplitterViewerPage() {
         });
         return options;
     };
+
+    console.log(selectedDocument)
 
     if (loadingBatch || !batch) return <Loader/>;
 
@@ -1385,9 +1386,7 @@ export function SplitterViewerPage() {
                 ) }
 
                 { !showAttachments && (
-                    <div ref={ listRef } className={ `pb-24 px-8 h-full overflow-y-auto` }
-                         onClick={ () => setSelectedDocument(null) }
-                    >
+                    <div ref={ listRef } className='pb-24 px-8 h-full overflow-y-auto'>
                         <Accordion className='mb-6' chevronPosition="left" defaultValue={ 'batch_metadata' }>
                             <Accordion.Item key={ 'zone.id' } value='batch_metadata'>
                                 <Accordion.Control>
@@ -1522,18 +1521,40 @@ export function SplitterViewerPage() {
                                             { t('SPLITTER.pages', { count: document.pages.length }) }
                                         </div>
                                         <div className='ml-auto'>
-                                            <EllipsisVertical
-                                                size={ 18 }
-                                                className={ `${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer' }` }
-                                                onClick={ (e) => {
-                                                    if (disabledBatch) return;
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    setSelectedDocument(document);
-                                                    cm.current?.show(e);
-                                                } }
-                                            />
-                                            <ContextMenu model={ menuItems } className="w-auto!" ref={ cm }/>
+                                            <Menu position="bottom-end" withinPortal>
+                                                <Menu.Target>
+                                                    <ActionIcon
+                                                        className='mr-0!'
+                                                        variant="transparent"
+                                                        onClick={ (e: any) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+                                                            setSelectedDocument(document);
+                                                        } }
+                                                    >
+                                                        <EllipsisVertical
+                                                            size={ 20 }
+                                                            className='text-(--text-primary) hover:text-(--color-primary)'
+                                                        />
+                                                    </ActionIcon>
+                                                </Menu.Target>
+
+                                                <Menu.Dropdown>
+                                                    { menuItems?.map((item: any, index: number) => (
+                                                        <Menu.Item
+                                                            key={ index }
+                                                            leftSection={ item.icon }
+                                                            disabled={ item.disabled }
+                                                            onClick={ (e: React.MouseEvent) => {
+                                                                e.stopPropagation();
+                                                                item.command(e);
+                                                            } }
+                                                        >
+                                                            { item.label }
+                                                        </Menu.Item>
+                                                    )) }
+                                                </Menu.Dropdown>
+                                            </Menu>
                                         </div>
                                     </div>
                                 }>

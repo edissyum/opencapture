@@ -16,6 +16,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
+import { Radio } from "@mantine/core";
 import { useEffect, useState } from "react";
 import {
     Briefcase,
@@ -32,13 +33,12 @@ import {
     Rows3,
     Trash2
 } from "lucide-react";
-import { RadioButton } from "primereact/radiobutton";
 
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
+import { Select } from "../../components/Select";
 import { Grid } from "../../components/list/Grid";
 import { Table } from "../../components/list/Table";
-import { Select } from "../../components/Select.tsx";
 import { Thumbnail } from "../../components/Thumbnail";
 import { showToast } from "../../components/ToastProvider";
 import MultiSelectInput from "../../components/MultiSelect";
@@ -130,8 +130,8 @@ export function VerifierListPage() {
                         <span
                             className={ row?.form_id === form.id ? "text-(--color-primary) font-semibold" : "" }
                         >
-                        { form.label }
-                    </span>
+                            { form.label }
+                        </span>
                     ),
                     command: () => handleChangeForm(form.id)
                 }))
@@ -143,7 +143,8 @@ export function VerifierListPage() {
             items: Array.isArray(listCustomers)
                 ? listCustomers.map((customer: any) => ({
                     label: (
-                        <span className={ row?.customer_id === customer.id ? "text-(--color-primary) font-semibold" : "" }>
+                        <span
+                            className={ row?.customer_id === customer.id ? "text-(--color-primary) font-semibold" : "" }>
                             { customer.name }
                         </span>
                     ),
@@ -175,7 +176,8 @@ export function VerifierListPage() {
             header: t('VERIFIER.name'),
             body: (item: any) => (
                 <div className="font-semibold flex items-center gap-2" title={ item.supplier_name }>
-                    <span className='w-fit!'>{ item.supplier_name ? item.supplier_name : t('VERIFIER.unkown_supplier') }</span>
+                    <span
+                        className='w-fit!'>{ item.supplier_name ? item.supplier_name : t('VERIFIER.unkown_supplier') }</span>
                     { item.facturx && (
                         <span className='text-(--text-secondary) text-xs w-fit'
                               data-tooltip-id="tooltip"
@@ -388,6 +390,17 @@ export function VerifierListPage() {
         }
 
         setLoadingDocuments(true);
+
+        try {
+            await put(`verifier/documents/${ selectedDocuments[0].id }/update`, { "customer_id": customerId });
+            showToast(t('VERIFIER.associated_customer_changed_success'), 'success');
+        } catch (err) {
+            console.error("Error changing document associated customer:", err);
+        } finally {
+            setSelectedDocuments([]);
+            setTotalDocuments(0);
+            setLazyParams({ ...lazyParams, first: 0 });
+        }
     }
 
     const handleDelete = async () => {
@@ -441,35 +454,39 @@ export function VerifierListPage() {
                             ${ displayFilters ? "w-[350px] opacity-100" : "w-0 opacity-0 z-0" } bg-(--bg-primary)` }>
                 <div className='border-b border-(--border-secondary) p-4 flex items-center justify-between gap-2'>
                     <h1 className='text-2xl font-bold'>{ t('VERIFIER.filters') }</h1>
-                    <span className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary) whitespace-nowrap'
-                          onClick={ handleResetFilters }>
+                    <span
+                        className='cursor-pointer text-(--text-secondary) hover:text-(--color-primary) whitespace-nowrap'
+                        onClick={ handleResetFilters }>
                         { t('VERIFIER.erase_filters') }
                     </span>
                 </div>
                 <div className='flex flex-col h-full overflow-y-auto'>
-                    <div className={ `${ open.batches ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                    <div
+                        className={ `${ open.batches ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, batches: !open.batches }) }>
                             <div className="flex items-center gap-2">
                                 <Package className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.batches') }</h3>
                             </div>
-                            <ChevronDown size={ 18 } className={ `transition-transform ${ open.batches && "rotate-180" }` }/>
+                            <ChevronDown size={ 18 }
+                                         className={ `transition-transform ${ open.batches && "rotate-180" }` }/>
                         </div>
 
                         { open.batches && (
                             <div className='flex flex-col p-4 pt-0'>
                                 { listTimes.map((time) => (
-                                    <div className='flex items-center text-(--text-secondary)' key={ time.id }>
-                                        <RadioButton
-                                            inputId={ time.id } checked={ selectedTime === time.id }
-                                            className='mr-1 scale-80'
+                                    <div className='flex items-center gap-2 text-(--text-secondary)' key={ time.id }>
+                                        <Radio
+                                            id={ time.id }
                                             value={ time.id }
+                                            checked={ selectedTime === time.id }
                                             onChange={ (e) => {
-                                                setSelectedTime(e.value);
+                                                setSelectedTime(e.target.value);
                                             } }>
-                                        </RadioButton>
-                                        <label htmlFor={ time.id } key={ time.id } className='cursor-pointer whitespace-nowrap'>
+                                        </Radio>
+                                        <label htmlFor={ time.id } key={ time.id }
+                                               className='cursor-pointer whitespace-nowrap'>
                                             { time.label } ({ time.totals || 0 })
                                         </label>
                                     </div>
@@ -477,29 +494,30 @@ export function VerifierListPage() {
                             </div>
                         ) }
                     </div>
-                    <div className={ `${ open.status ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                    <div
+                        className={ `${ open.status ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, status: !open.status }) }>
                             <div className="flex items-center gap-2">
                                 <CircleCheckBig className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.status') }</h3>
                             </div>
-                            <ChevronDown size={ 18 } className={ `transition-transform ${ open.status && "rotate-180" }` }/>
+                            <ChevronDown size={ 18 }
+                                         className={ `transition-transform ${ open.status && "rotate-180" }` }/>
                         </div>
 
                         { open.status && (
                             <div className='flex flex-col p-4 pt-0'>
                                 { Object.keys(listStatuses).map((key: any) => (
-                                    <div className='flex items-center text-(--text-secondary)' key={ key }>
-                                        <RadioButton
+                                    <div className='flex items-center gap-2 text-(--text-secondary)' key={ key }>
+                                        <Radio
+                                            id={ key }
                                             value={ key }
-                                            inputId={ key }
-                                            className='mr-1 scale-80'
                                             checked={ selectedStatus === listStatuses[key]?.id }
                                             onChange={ (e) => {
-                                                setSelectedStatus(listStatuses[e.value]?.id);
+                                                setSelectedStatus(listStatuses[e.target.value]?.id);
                                             } }>
-                                        </RadioButton>
+                                        </Radio>
                                         <label htmlFor={ key } key={ key } className='cursor-pointer whitespace-nowrap'>
                                             { listStatuses[key]?.label } ({ listStatuses[key]?.total || 0 })
                                         </label>
@@ -508,14 +526,16 @@ export function VerifierListPage() {
                             </div>
                         ) }
                     </div>
-                    <div className={ `${ open.customers ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                    <div
+                        className={ `${ open.customers ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, customers: !open.customers }) }>
                             <div className="flex items-center gap-2 whitespace-nowrap">
                                 <Briefcase className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('ACCOUNTS.customers_list') }</h3>
                             </div>
-                            <ChevronDown size={ 18 } className={ `transition-transform ${ open.customers && "rotate-180" }` }/>
+                            <ChevronDown size={ 18 }
+                                         className={ `transition-transform ${ open.customers && "rotate-180" }` }/>
                         </div>
 
                         { open.customers && (
@@ -534,20 +554,22 @@ export function VerifierListPage() {
                             </div>
                         ) }
                     </div>
-                    <div className={ `${ open.forms ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                    <div
+                        className={ `${ open.forms ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, forms: !open.forms }) }>
                             <div className="flex items-center gap-2">
                                 <LayoutTemplate className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('GLOBAL.forms') }</h3>
                             </div>
-                            <ChevronDown size={ 18 } className={ `transition-transform ${ open.forms && "rotate-180" }` }/>
+                            <ChevronDown size={ 18 }
+                                         className={ `transition-transform ${ open.forms && "rotate-180" }` }/>
                         </div>
 
                         { open.forms && (
                             <div className='p-4 pt-0'>
                                 <Select
-                                    
+
                                     id="search_form"
                                     className="w-full mb-2"
                                     value={ selectedForm.toString() }
@@ -561,14 +583,16 @@ export function VerifierListPage() {
                             </div>
                         ) }
                     </div>
-                    <div className={ `${ open.suppliers ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
+                    <div
+                        className={ `${ open.suppliers ? 'bg-(--bg-secondary)' : '' } border-b border-(--border-secondary)` }>
                         <div className="p-4 cursor-pointer flex items-center justify-between"
                              onClick={ () => setOpen({ ...open, suppliers: !open.suppliers }) }>
                             <div className="flex items-center gap-2 whitespace-nowrap">
                                 <Building2 className="text-(--color-primary)" size={ 20 }/>
                                 <h3 className='text-lg font-semibold'>{ t('ACCOUNTS.suppliers_list') }</h3>
                             </div>
-                            <ChevronDown size={ 18 } className={ `transition-transform ${ open.suppliers && "rotate-180" }` }/>
+                            <ChevronDown size={ 18 }
+                                         className={ `transition-transform ${ open.suppliers && "rotate-180" }` }/>
                         </div>
 
                         { open.suppliers && (
@@ -612,10 +636,10 @@ export function VerifierListPage() {
             <div className='p-6 h-full w-full flex flex-col flex-1 z-10'>
                 <div className='flex items-center gap-6 mb-4'>
                     <Button variant='bg_white_rounded' icon={
-                                filtersChanged && !displayFilters ?
-                                    <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' } size={ 14 }/> :
-                                    <Filter size={ 14 }/>
-                            }
+                        filtersChanged && !displayFilters ?
+                            <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' } size={ 14 }/> :
+                            <Filter size={ 14 }/>
+                    }
                             onClick={ () => setDisplayFilters(!displayFilters) }
                             selected={ displayFilters }>
                         { t('VERIFIER.filters') }
@@ -657,7 +681,12 @@ export function VerifierListPage() {
                         skeletonRows={ lazyParams.rows }
                         selectedRows={ selectedDocuments }
                         totalRecords={ totalDocuments || 0 }
-                        rowsPerPageOptions={ [4, 8, 16, 32] }
+                        rowsPerPageOptions={ [
+                            { "value": 4, "label": "4" },
+                            { "value": 8, "label": "8" },
+                            { "value": 16, "label": "16" },
+                            { "value": 32, "label": "32" }
+                        ] }
                         emptyMessage={ t("VERIFIER.no_documents") }
                         paginatorLeftText={ t('VERIFIER.document_selected', { count: selectedDocuments.length }) }
                         onLazyParamsChange={ setLazyParams }
@@ -679,7 +708,12 @@ export function VerifierListPage() {
                         skeletonRows={ lazyParams.rows }
                         selectedRows={ selectedDocuments }
                         totalRecords={ totalDocuments || 0 }
-                        rowsPerPageOptions={ [4, 8, 16, 32] }
+                        rowsPerPageOptions={ [
+                            { "value": 4, "label": "4" },
+                            { "value": 8, "label": "8" },
+                            { "value": 16, "label": "16" },
+                            { "value": 32, "label": "32" },
+                        ] }
                         emptyMessage={ t("VERIFIER.no_documents") }
                         paginatorLeftText={ t('VERIFIER.document_selected', { count: selectedDocuments.length }) }
                         onLazyParamsChange={ setLazyParams }

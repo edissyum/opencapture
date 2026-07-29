@@ -18,12 +18,10 @@ import { z } from "zod";
 import { t } from "i18next";
 import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { Stepper } from "primereact/stepper";
+import { useEffect, useState } from "react";
 import { Editor } from "@monaco-editor/react";
-import { Scroller, Tabs } from "@mantine/core";
-import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { StepperPanel } from "primereact/stepperpanel";
+import { Scroller, Tabs, Stepper } from "@mantine/core";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { executeAuthFunction, executeMEMFunction, getTestConnectionMapping } from "./functions";
@@ -31,8 +29,8 @@ import { getCompressTypeOptions, getSystemFieldsOptionsSplitter, getSystemFields
 
 import Hint from "../../Hint";
 import Input from "../../Input";
+import { Select } from "../../Select";
 import { Button } from "../../Button";
-import { Select } from "../../Select.tsx";
 import { Loader } from "../../loader/Loader";
 import { InputSwitch } from "../../InputSwitch";
 import { showToast } from "../../ToastProvider";
@@ -50,7 +48,6 @@ export function OutputEditor({ module }: { module: string }) {
     const [loading, setLoading] = useState(true);
     const [loadingStep, setLoadingStep] = useState(false);
 
-    const stepperRef = useRef<any>(null);
     const [stepperIndex, setStepperIndex] = useState(0);
 
     const [outputTypes, setOutputTypes] = useState([]);
@@ -334,7 +331,7 @@ export function OutputEditor({ module }: { module: string }) {
             }
 
             if (!errorInWs) {
-                stepperRef.current?.nextCallback();
+                handleNextStep();
                 showToast(t(res.message), "success");
             }
         } else {
@@ -345,7 +342,7 @@ export function OutputEditor({ module }: { module: string }) {
     }
 
     const handleNextStep = () => {
-        stepperRef.current?.nextCallback();
+        setStepperIndex(stepperIndex + 1);
     }
 
     const handleAuthChange = (e: any, option: any) => {
@@ -408,7 +405,9 @@ export function OutputEditor({ module }: { module: string }) {
         });
     }
 
-    const handlePreviousStep = () => stepperRef.current?.prevCallback();
+    const handlePreviousStep = () => {
+        setStepperIndex(stepperIndex - 1);
+    }
 
     const handleSubmit = async () => {
         if (Object.keys(detailsErrors).length > 0 || !output_label || !output_type_id) {
@@ -468,9 +467,8 @@ export function OutputEditor({ module }: { module: string }) {
                 </div>
 
                 { outputType && Object.keys(outputType).length > 0 && (
-                    <Stepper ref={ stepperRef } linear activeStep={ stepperIndex }
-                             onChangeStep={ (e: any) => setStepperIndex(e.index) }>
-                        <StepperPanel header={ t("SMTP.authentication") }>
+                    <Stepper className='p-6' active={ stepperIndex } onStepClick={ setStepperIndex }>
+                        <Stepper.Step label={ t("SMTP.authentication") }>
                             <div className='flex flex-col gap-4'>
                                 <div className='flex gap-6 w-full'>
                                     { outputType?.data?.options.auth && outputType?.data?.options.auth.map((option: any) => (
@@ -491,9 +489,9 @@ export function OutputEditor({ module }: { module: string }) {
                                     </Button>
                                 </div>
                             </div>
-                        </StepperPanel>
+                        </Stepper.Step>
 
-                        <StepperPanel header={ t("OUTPUTS.specific") }>
+                        <Stepper.Step label={ t("OUTPUTS.specific") }>
                             <div className='flex flex-col gap-4'>
                                 <div className='grid grid-cols-2 gap-4'>
                                     { outputType?.data?.options.parameters.map((option: any) => (
@@ -523,7 +521,7 @@ export function OutputEditor({ module }: { module: string }) {
                                             ) }
                                             { option.type === 'text' && option.webservice && (
                                                 <Select
-                                                    id={ option.id } label={ option.label } 
+                                                    id={ option.id } label={ option.label }
                                                     options={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.values || [] }
                                                     value={ output?.data?.options?.parameters?.find((o: any) => o.id === option.id)?.value || '' }
                                                     onChange={ (value) => {
@@ -571,10 +569,10 @@ export function OutputEditor({ module }: { module: string }) {
                                     </Button>
                                 </div>
                             </div>
-                        </StepperPanel>
+                        </Stepper.Step>
 
-                        { outputType.output_type_id === 'export_mem' && (
-                            <StepperPanel header={ t("OUTPUTS.links") }>
+                        {  outputType.output_type_id === 'export_mem' && (
+                            <Stepper.Step label={ t("OUTPUTS.links") }>
                                 <Hint>
                                     { t('OUTPUTS.links_hint') }
                                 </Hint>
@@ -585,7 +583,7 @@ export function OutputEditor({ module }: { module: string }) {
                                                  className={ `w-full gap-2 ${ option.type === 'boolean' ? 'col-span-2' : '' }` }>
                                                 { option.type === 'text' && option.webservice && (
                                                     <Select
-                                                        id={ option.id } label={ option.label } 
+                                                        id={ option.id } label={ option.label }
                                                         options={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.values || [] }
                                                         value={ output?.data?.options?.links?.find((o: any) => o.id === option.id)?.value || '' }
                                                         onChange={ (value) => {
@@ -637,10 +635,10 @@ export function OutputEditor({ module }: { module: string }) {
                                         </Button>
                                     </div>
                                 </div>
-                            </StepperPanel>
-                        ) }
+                            </Stepper.Step>
+                        )}
                     </Stepper>
-                ) }
+                )}
             </div>
 
             { stepperIndex !== 0 && (

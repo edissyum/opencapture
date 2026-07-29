@@ -16,7 +16,6 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
-import { ContextMenu } from "primereact/contextmenu";
 import React, { useEffect, useRef, useState } from "react";
 import {
     ArrowLeft,
@@ -42,6 +41,8 @@ import { AttachmentsViewer } from "./viewer";
 
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
+import { ActionIcon, Menu } from "@mantine/core";
+import { showToast } from "../ToastProvider.tsx";
 
 type AttachmentsListProps = {
     module: string;
@@ -63,8 +64,6 @@ export function AttachmentsList({
     unBinding
 }: AttachmentsListProps) {
     const { get, post, del } = axiosApiCall();
-
-    const cm = useRef({ current: null } as any);
 
     const [loading, setLoading] = useState(false);
 
@@ -162,6 +161,7 @@ export function AttachmentsList({
                 }
             });
             refreshAttachments().then();
+            showToast(t('ATTACHMENTS.attachment_uploaded'), 'success');
         } catch (error) {
             setLoading(false);
             console.error("Error uploading attachment:", error);
@@ -214,6 +214,7 @@ export function AttachmentsList({
                     await refreshAttachments();
                     setShowAttachment(false);
                     setSelectedAttachment(null);
+                    showToast(t('ATTACHMENTS.attachment_deleted'), 'success');
                 } catch (error) {
                     setLoading(false);
                     console.error("Error deleting attachment:", error);
@@ -314,17 +315,43 @@ export function AttachmentsList({
                                                 ) }
                                             </div>
                                         </div>
-                                        <div className='px-4 py-3'>
+                                        <div className='pl-4 pr-3 py-3'>
                                             <div className='flex mb-2'>
                                                 <p className='font-semibold text-(--text-primary) truncate'>{ attachment.filename }</p>
-                                                <div className="ml-auto -mr-3">
-                                                    <EllipsisVertical onClick={ (e) => {
-                                                        e.preventDefault();
-                                                        e.stopPropagation();
-                                                        cm.current?.show(e);
-                                                        setSelectedAttachment(attachment);
-                                                    } }/>
-                                                    <ContextMenu model={ menuItems } className="w-auto!" ref={ cm }/>
+                                                <div className="ml-auto">
+                                                    <Menu position="bottom-end" withinPortal>
+                                                        <Menu.Target>
+                                                            <ActionIcon
+                                                                className='mr-0!'
+                                                                variant="transparent"
+                                                                onClick={ (e: any) => {
+                                                                    e.preventDefault();
+                                                                    e.stopPropagation();
+                                                                    setSelectedAttachment(attachment);
+                                                                } }
+                                                            >
+                                                                <EllipsisVertical
+                                                                    size={ 20 }
+                                                                    className='text-(--text-primary) hover:text-(--color-primary)'
+                                                                />
+                                                            </ActionIcon>
+                                                        </Menu.Target>
+
+                                                        <Menu.Dropdown>
+                                                            { menuItems?.map((item: any, index: number) => (
+                                                                <Menu.Item
+                                                                    key={ index } leftSection={ item.icon }
+                                                                    disabled={ item.disabled }
+                                                                    onClick={ (e: React.MouseEvent) => {
+                                                                        e.stopPropagation();
+                                                                        item.command(e);
+                                                                    } }
+                                                                >
+                                                                    { item.label }
+                                                                </Menu.Item>
+                                                            )) }
+                                                        </Menu.Dropdown>
+                                                    </Menu>
                                                 </div>
                                             </div>
                                             <p className='text-sm text-(--text-secondary)'>

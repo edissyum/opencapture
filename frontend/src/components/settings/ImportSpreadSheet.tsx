@@ -21,9 +21,10 @@ import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Button } from "../Button";
-import { Select } from "../Select.tsx";
+import { Select } from "../Select";
+import { InputSwitch } from "../InputSwitch";
+
 import UploadDropzone from "../upload/Dropzone";
-import { InputSwitch } from "../InputSwitch.tsx";
 
 export function ImportSpreadSheet({ onClose, onValidate, columns, title, loading = false }: {
     title: string,

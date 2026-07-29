@@ -14,9 +14,17 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import type { TreeNode } from "primereact/treenode";
-import type { TreeExpandedKeysType } from "primereact/tree";
 import { FileBadge, Folder, FolderOpen, File } from "lucide-react";
+
+export type DoctypeTreeNode = {
+    key: string;
+    label?: string;
+    data: any;
+    children?: DoctypeTreeNode[];
+    leaf?: boolean;
+};
+
+export type ExpandedKeysType = Record<string, boolean>;
 
 export function normalizeValue(v: string) {
     return v.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -32,28 +40,12 @@ export function buildTree(items: any, level = "0") {
     }));
 }
 
-export function filterItems(items: any, text: string) {
-    if (!text) return items;
-    const norm = normalizeValue(text);
-
-    let roots = items.filter(
-        (d: any) => normalizeValue(d.label).includes(norm)
-    );
-
-    [...roots].forEach((r: any) => {
-        roots = roots.concat(
-            items.filter((d: any) => d.code.startsWith(r.code + "."))
-        );
-    });
-    return roots;
-}
-
-export function buildPrimeTree(items: any[], level = "0"): TreeNode[] {
+export function buildDoctypesTree(items: any[], level = "0"): DoctypeTreeNode[] {
     return items.filter(o =>
         o.code.startsWith(level + "-") &&
         (o.code.match(/-/g) || []).length === (level.match(/-/g) || []).length + 1
     ).map(o => {
-        const children = buildPrimeTree(items, o.code);
+        const children = buildDoctypesTree(items, o.code);
         return {
             key: o.code,
             label: o.label,
@@ -64,13 +56,13 @@ export function buildPrimeTree(items: any[], level = "0"): TreeNode[] {
     });
 }
 
-export function collectExpanded(nodes: TreeNode[]) {
-    const keys: TreeExpandedKeysType = {};
+export function collectExpanded(nodes: DoctypeTreeNode[]) {
+    const keys: ExpandedKeysType = {};
 
-    const walk = (ns: TreeNode[]) =>
+    const walk = (ns: DoctypeTreeNode[]) =>
         ns.forEach(n => {
             if (n.children?.length) {
-                keys[n.key as string] = true;
+                keys[n.key] = true;
                 walk(n.children);
             }
         });
@@ -80,11 +72,11 @@ export function collectExpanded(nodes: TreeNode[]) {
 }
 
 
-export function makeNodeTemplate(searchText: string, expandedKeys: TreeExpandedKeysType) {
-    return (node: TreeNode) => {
+export function makeNodeTemplate(searchText: string, expandedKeys: ExpandedKeysType) {
+    return (node: DoctypeTreeNode) => {
         const doctype = node.data;
         const isFolder = doctype.type === "folder" || doctype.type === "root";
-        const isExpanded = isFolder && expandedKeys[node.key as string];
+        const isExpanded = isFolder && expandedKeys[node.key];
 
         const renderLabel = () => {
             if (!searchText) return doctype.label;

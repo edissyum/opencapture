@@ -15,20 +15,11 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-.mantine-Input-wrapper input:not(.mantine-MultiSelect-inputField) {
-    @apply h-12.5!;
-    @apply text-base!;
-    @apply rounded-md;
-    @apply border-(--border-secondary);
-}
-
-.mantine-Input-wrapper input:focus,
-.mantine-Input-wrapper input:hover {
-    @apply shadow-none;
-    @apply outline-none;
-    @apply border-(--color-primary);
-}
-
-.mantine-Autocomplete-dropdown {
+.mantine-Menu-dropdown .mantine-Popover-dropdown {
     @apply p-2!;
+}
+
+.mantine-Menu-item:has(.critical):hover svg,
+.mantine-Menu-item:has(.critical):hover span {
+    @apply text-(--text-error)!;
 }

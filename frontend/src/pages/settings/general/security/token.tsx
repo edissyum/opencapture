@@ -20,7 +20,7 @@ import { CircleAlert, Copy } from "lucide-react";
 
 import Input from "../../../../components/Input";
 import { Button } from "../../../../components/Button";
-import { Select } from "../../../../components/Select.tsx";
+import { Select } from "../../../../components/Select";
 import { showToast } from "../../../../components/ToastProvider";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";

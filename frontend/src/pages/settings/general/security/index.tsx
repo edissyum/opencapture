@@ -17,22 +17,21 @@
 import { z } from "zod";
 import { t } from "i18next";
 import { useForm } from "react-hook-form";
-import { Stepper } from "primereact/stepper";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { StepperPanel } from "primereact/stepperpanel";
-import { Accordion, AccordionTab } from "primereact/accordion";
+import { Accordion, Stepper } from "@mantine/core";
 
 import { Button } from "../../../../components/Button";
 import { RadioBox } from "../../../../components/RadioBox";
+import { Loader } from "../../../../components/loader/Loader";
 import { showToast } from "../../../../components/ToastProvider";
 import { InputSwitch } from "../../../../components/InputSwitch";
 import { DynamicForm } from "../../../../components/form/DynamicForm";
 
 import { useUser } from "../../../../services/hooks/useUser";
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
-import { useNavigate } from "react-router-dom";
 
 export function SettingsGeneralSecurity() {
     const navigate = useNavigate();
@@ -40,13 +39,13 @@ export function SettingsGeneralSecurity() {
     const { get, put, post } = axiosApiCall();
 
     const hasFetched = useRef(false);
-    const stepperRef = useRef<any>(null);
 
     const [roles, setRoles] = useState<any>([]);
-    const [activeIndex, setActiveIndex] = useState<number[]>([]);
+    const [activeIndex, setActiveIndex] = useState<string[]>([]);
     const [stepperIndex, setStepperIndex] = useState(0);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
     const [defaultAuth, setDefaultAuth] = useState<string>('');
+    const [loadingLdap, setLoadingLdap] = useState<boolean>(false);
     const [enabledAuth, setEnabledAuth] = useState<string>('default');
 
     useEffect(() => {
@@ -210,9 +209,7 @@ export function SettingsGeneralSecurity() {
         formState: { errors: ldapErrors }
     } = useForm({
         resolver: zodResolver(ldapConnectionSchema.extend(ldapSynchronisationSchema.shape)),
-        defaultValues: {
-
-        },
+        defaultValues: {},
         mode: "onChange"
     });
 
@@ -229,7 +226,7 @@ export function SettingsGeneralSecurity() {
             if (res.login_method_name) {
                 setDefaultAuth(res.login_method_name[0].method_name);
                 setEnabledAuth(res.login_method_name[0].method_name);
-                setActiveIndex(res.login_method_name[0].method_name === 'default' ? [0] : [1]);
+                setActiveIndex(res.login_method_name[0].method_name === 'default' ? ['default'] : ['ldap']);
             }
         }
 
@@ -240,6 +237,7 @@ export function SettingsGeneralSecurity() {
                     defaultSetValue(key, value);
                 });
             }
+            setLoading(false);
         };
 
         const fetchLdapSettings = async () => {
@@ -255,8 +253,8 @@ export function SettingsGeneralSecurity() {
         };
 
         fetchEnabledAuth().then();
-        fetchPasswordRules().then();
         fetchLdapSettings().then();
+        fetchPasswordRules().then();
     }, [])
 
     const handleUpdate: any = async (data: FormData) => {
@@ -291,27 +289,27 @@ export function SettingsGeneralSecurity() {
         if (data && Object.keys(ldapErrors).length > 0) {
             return;
         }
-        stepperRef.current?.nextCallback();
+        setStepperIndex(stepperIndex + 1);
     }
 
-    const handlePreviousStep = () => stepperRef.current?.prevCallback();
+    const handlePreviousStep = () => setStepperIndex(stepperIndex - 1);
 
     const handleTestConnexion: any = async (data: FormData) => {
-        setLoading(true);
+        setLoadingLdap(true);
 
         try {
             await post('/auth/connectionLdap', data);
             handleNextStep(data);
             showToast(t('MAILCOLLECT.ldap_connection_successful'), 'success');
-            setLoading(false);
+            setLoadingLdap(false);
         } catch (error) {
-            setLoading(false);
+            setLoadingLdap(false);
             console.error('Error testing LDAP connection :', error);
         }
     };
 
     const launchSync: any = async (data: FormData) => {
-        setLoading(true);
+        setLoadingLdap(true);
         try {
             const res = await post('/auth/ldapSynchronization', data);
 
@@ -330,9 +328,11 @@ export function SettingsGeneralSecurity() {
         } catch (error) {
             console.error('Error launching LDAP synchronization :', error);
         } finally {
-            setLoading(false);
+            setLoadingLdap(false);
         }
     }
+
+    if (loading) return <Loader/>;
 
     return (
         <div className="p-6 bg-(--bg-secondary) h-full overflow-auto">
@@ -344,48 +344,56 @@ export function SettingsGeneralSecurity() {
                 { t('SECURITY.here') }
                 <ArrowRight size={ 18 }/>
             </div>
-            <Accordion multiple activeIndex={ activeIndex } onTabChange={ (e) => setActiveIndex(e.index as number[]) }>
-                <AccordionTab header={
-                    <span className='flex items-center'>
-                        <span>{ t('SECURITY.default_auth') }</span>
-                        <span className='flex ml-auto' onClick={ (e) => e.stopPropagation() }>
-                            <RadioBox
-                                border={ false }
-                                key={ 'default' }
-                                value={ enabledAuth }
-                                checked={ enabledAuth === 'default' }
-                                onChange={ () => setEnabledAuth('default') }/>
-                        </span>
-                    </span>
-                }>
-                    <div className='p-4 text-(--text-primary) flex flex-col gap-4'>
-                        <h1 className='font-semibold text-md'>
-                            { t('SECURITY.password_rules') }
-                        </h1>
-                        <div className='w-1/3 flex flex-col gap-4'>
-                            <div className='flex items-center'>
-                                <InputSwitch
-                                    id='enable_min'
-                                    label={ t('SECURITY.enable_min_length') }
-                                    checked={ currentMinLength > 0 }
-                                    onChange={ (value) => {
-                                        if (!value) {
-                                            defaultSetValue('minLength', 0);
-                                        } else {
-                                            defaultSetValue('minLength', 8);
-                                        }
-                                    } }
-                                />
-                            </div>
-                            <DynamicForm schema={ defaultSchema } control={ defaultControl } errors={ defaultErrors } gap={ 2 }/>
-                        </div>
-                    </div>
-                </AccordionTab>
 
-                <AccordionTab header={
-                    <span className='flex items-center'>
-                        <span>{ t('SECURITY.ldap_auth') }</span>
-                        <span className='flex ml-auto' onClick={ (e) => e.stopPropagation() }>
+            <Accordion chevronPosition="left" variant="separated" multiple defaultValue={ activeIndex }
+                              onChange={ (e) => setActiveIndex(e) }>
+                <Accordion.Item key='default' value='default'>
+                    <div className='flex items-center'>
+                        <Accordion.Control>
+                            { t('SECURITY.default_auth') }
+                        </Accordion.Control>
+                        <span className='flex ml-auto mr-4' onClick={ (e) => e.stopPropagation() }>
+                        <RadioBox
+                            key='default'
+                            border={ false }
+                            value={ enabledAuth }
+                            checked={ enabledAuth === 'default' }
+                            onChange={ () => setEnabledAuth('default') }/>
+                    </span>
+                    </div>
+                    <Accordion.Panel>
+                        <div className='p-6 text-(--text-primary) flex flex-col gap-4'>
+                            <h1 className='font-semibold text-md'>
+                                { t('SECURITY.password_rules') }
+                            </h1>
+                            <div className='w-1/3 flex flex-col gap-4'>
+                                <div className='flex items-center'>
+                                    <InputSwitch
+                                        id='enable_min'
+                                        label={ t('SECURITY.enable_min_length') }
+                                        checked={ currentMinLength > 0 }
+                                        onChange={ (value) => {
+                                            if (!value) {
+                                                defaultSetValue('minLength', 0);
+                                            } else {
+                                                defaultSetValue('minLength', 8);
+                                            }
+                                        } }
+                                    />
+                                </div>
+                                <DynamicForm schema={ defaultSchema } control={ defaultControl }
+                                             errors={ defaultErrors }
+                                             gap={ 2 }/>
+                            </div>
+                        </div>
+                    </Accordion.Panel>
+                </Accordion.Item>
+                <Accordion.Item key='ldap' value='ldap'>
+                    <div className='flex items-center'>
+                        <Accordion.Control>
+                            { t('SECURITY.ldap_auth') }
+                        </Accordion.Control>
+                        <span className='flex ml-auto mr-4' onClick={ (e) => e.stopPropagation() }>
                             <RadioBox
                                 border={ false }
                                 key={ 'ldap' }
@@ -393,46 +401,52 @@ export function SettingsGeneralSecurity() {
                                 checked={ enabledAuth === 'ldap' }
                                 onChange={ () => setEnabledAuth('ldap') }/>
                         </span>
-                    </span>
-                }>
-                    <Stepper ref={ stepperRef } linear className='p-4 pb-0' activeStep={ stepperIndex }
-                             onChangeStep={ (e: any) => setStepperIndex(e.index) }>
-                        <StepperPanel header={ t("MAILCOLLECT.connection") }>
-                            <DynamicForm schema={ ldapConnectionSchema } control={ ldapControl } errors={ ldapErrors } grid={ 4 }/>
-                            <div className="flex justify-end mt-6">
-                                <Button onClick={ ldapHandleSubmit(handleTestConnexion) } className="ml-auto px-12"
-                                        data-tooltip-id='tooltip'
-                                        data-tooltip-content={ t("MAILCOLLECT.test_connexion_next") }
-                                        disabled={ loading || Object.keys(ldapErrors).length > 0 }>
-                                    { loading ? (
-                                        t("MAILCOLLECT.loading_test_connexion")
-                                    ) : (
-                                        t("GLOBAL.next")
-                                    ) }
-                                </Button>
-                            </div>
-                        </StepperPanel>
-                        <StepperPanel header={ t("SECURITY.synchronisation") }>
-                            <DynamicForm schema={ ldapSynchronisationSchema } control={ ldapControl } errors={ ldapErrors } grid={ 4 }/>
+                    </div>
 
-                            <div className="flex justify-between mt-6">
-                                <Button onClick={ handlePreviousStep } variant="no_bg"
-                                        className="mr-2 px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
-                                    <ArrowLeft/> { t("MAILCOLLECT.previous") }
-                                </Button>
-                                <Button onClick={ ldapHandleSubmit(launchSync) }
-                                        disabled={ Object.keys(ldapErrors).length > 0 || loading }
-                                        className="ml-auto px-12">
-                                    { loading ? (
-                                        t("SECURITY.test_sync_loading")
-                                    ) : (
-                                        t("SECURITY.test_sync")
-                                    ) }
-                                </Button>
-                            </div>
-                        </StepperPanel>
-                    </Stepper>
-                </AccordionTab>
+                    <Accordion.Panel>
+                        <Stepper className='p-6' active={ stepperIndex } onStepClick={ setStepperIndex }>
+                            <Stepper.Step label={ t("MAILCOLLECT.connection") }>
+                                <DynamicForm schema={ ldapConnectionSchema } control={ ldapControl }
+                                             errors={ ldapErrors }
+                                             grid={ 4 }/>
+                                <div className="flex justify-end mt-6">
+                                    <Button onClick={ ldapHandleSubmit(handleTestConnexion) }
+                                            className="ml-auto px-12"
+                                            data-tooltip-id='tooltip'
+                                            data-tooltip-content={ t("MAILCOLLECT.test_connexion_next") }
+                                            disabled={ loadingLdap || Object.keys(ldapErrors).length > 0 }>
+                                        { loadingLdap ? (
+                                            t("MAILCOLLECT.loading_test_connexion")
+                                        ) : (
+                                            t("GLOBAL.next")
+                                        ) }
+                                    </Button>
+                                </div>
+                            </Stepper.Step>
+
+                            <Stepper.Step label={ t("SECURITY.synchronisation") }>
+                                <DynamicForm schema={ ldapSynchronisationSchema } control={ ldapControl }
+                                             errors={ ldapErrors } grid={ 4 }/>
+
+                                <div className="flex justify-between mt-6">
+                                    <Button onClick={ handlePreviousStep } variant="no_bg"
+                                            className="mr-2 px-0! text-(--color-primary) border-transparent hover:text-(--text-primary)">
+                                        <ArrowLeft/> { t("MAILCOLLECT.previous") }
+                                    </Button>
+                                    <Button onClick={ ldapHandleSubmit(launchSync) }
+                                            disabled={ Object.keys(ldapErrors).length > 0 || loadingLdap }
+                                            className="ml-auto px-12">
+                                        { loadingLdap ? (
+                                            t("SECURITY.test_sync_loading")
+                                        ) : (
+                                            t("SECURITY.test_sync")
+                                        ) }
+                                    </Button>
+                                </div>
+                            </Stepper.Step>
+                        </Stepper>
+                    </Accordion.Panel>
+                </Accordion.Item>
             </Accordion>
 
             <div>

@@ -15,15 +15,15 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
+import { Radio } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { RadioButton } from "primereact/radiobutton";
 import { ChevronDown, Filter, Package } from "lucide-react";
 import { Bar, BarChart, Tooltip, XAxis, YAxis } from "recharts";
 
 import { statisticsFunctions } from "./functions";
 
 import { Button } from "../../components/Button";
-import { Select } from "../../components/Select.tsx";
+import { Select } from "../../components/Select";
 
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 
@@ -136,9 +136,9 @@ export function StatisticsPage() {
     }, [selectedYear]);
 
     const handleModuleChange = (e: any) => {
-        setSelectedModule(e.value);
+        setSelectedModule(e.target.value);
         setSelectedStatisticId(undefined);
-        setFilteredStatisticsOptions(statisticsOptions.filter(option => option.id.startsWith(e.value)));
+        setFilteredStatisticsOptions(statisticsOptions.filter(option => option.id.startsWith(e.target.value)));
     }
 
     const handleStatisticChange = async (value: any, force = false) => {
@@ -198,13 +198,13 @@ export function StatisticsPage() {
                         { open.module && (
                             <div className='p-4 pt-0'>
                                 { ['verifier', 'splitter'].map((module) => (
-                                    <div className='flex items-center text-(--text-secondary)' key={ module }>
-                                        <RadioButton
-                                            inputId={ module } checked={ selectedModule === module }
-                                            className='mr-1 scale-80'
+                                    <div className='flex items-center gap-2 text-(--text-secondary)' key={ module }>
+                                        <Radio
+                                            id={ module }
                                             value={ module }
+                                            checked={ selectedModule === module }
                                             onChange={ handleModuleChange }>
-                                        </RadioButton>
+                                        </Radio>
                                         <label htmlFor={ module } key={ module } className='cursor-pointer whitespace-nowrap'>
                                             { module[0].toUpperCase() + module.substring(1) }
                                         </label>

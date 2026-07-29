@@ -97,7 +97,7 @@ const ISOCalendar: React.FC<ISOCalendarProps> = ({
                 />
 
                 { label && (
-                    <FloatingLabel htmlFor={ id } floating={ floating } required={ required } className='max-w-8/12 truncate'>
+                    <FloatingLabel htmlFor={ id } floating={ floating } required={ required }>
                         { label }
                     </FloatingLabel>
                 ) }

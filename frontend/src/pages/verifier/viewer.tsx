@@ -40,8 +40,8 @@ import { SupplierEditor } from "../suppliers/editor";
 
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
+import { Select } from "../../components/Select";
 import ISOCalendar from "../../components/Calendar";
-import { Select } from "../../components/Select.tsx";
 import { Loader } from "../../components/loader/Loader";
 import { showToast } from "../../components/ToastProvider";
 import { ZoomControl } from "../../components/ZoomControl";

@@ -16,14 +16,14 @@
 
 import { t } from "i18next";
 import DOMPurify from "dompurify";
+import { Radio } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { RadioButton } from "primereact/radiobutton";
 import { Activity, ChevronDown, Filter, Package } from "lucide-react";
 
 import { Button } from "../components/Button";
+import { Select } from "../components/Select";
 import { Table } from "../components/list/Table";
 
-import { Select } from "../components/Select.tsx";
 import { axiosApiCall } from "../services/hooks/axiosApiCall";
 import { usePersistentState } from "../services/hooks/usePersistentState";
 
@@ -209,15 +209,15 @@ export function HistoryList() {
                         { open.module && (
                             <div className='p-4 pt-0'>
                                 { listModules.map((module: any) => (
-                                    <div className='flex items-center text-(--text-secondary)' key={ module.id }>
-                                        <RadioButton
-                                            inputId={ module.id } checked={ selectedModule === module.id }
-                                            className='mr-1 scale-80'
+                                    <div className='flex items-center gap-2 text-(--text-secondary)' key={ module.id }>
+                                        <Radio
+                                            id={ module.id }
                                             value={ module.id }
+                                            checked={ selectedModule === module.id }
                                             onChange={ (e) => {
-                                                setSelectedModule(e.value);
+                                                setSelectedModule(e.target.value);
                                             } }>
-                                        </RadioButton>
+                                        </Radio>
                                         <label htmlFor={ module.id } key={ module.id } className='cursor-pointer whitespace-nowrap'>
                                             { module.label }
                                         </label>
@@ -280,7 +280,12 @@ export function HistoryList() {
                     rowsPerPage={ lazyParams.rows }
                     skeletonRows={ lazyParams.rows }
                     totalRecords={ totalHistory || 0 }
-                    rowsPerPageOptions={ [4, 8, 16, 32] }
+                    rowsPerPageOptions={ [
+                            { "value": 4, "label": "4" },
+                            { "value": 8, "label": "8" },
+                            { "value": 16, "label": "16" },
+                            { "value": 32, "label": "32" }
+                        ] }
                     emptyMessage={ t("HISTORY.no_history") }
                     onLazyParamsChange={ setLazyParams }
                 />
