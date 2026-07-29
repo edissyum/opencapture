@@ -72,11 +72,11 @@ export function SettingsVerifierAiLLMList() {
     const columns = [
         { id: 'id', field: 'id', header: '', sortable: true, className: 'w-14' },
         { id: 'name', field: 'name', header: t('GLOBAL.label'), sortable: true, className: 'w-60' },
-        { id: 'provider', field: 'provider', header: t('AI-LLM.provider'), sortable: true, className: 'w-60' },
+        { id: 'provider', field: 'provider', header: t('AI-LLM.provider'), sortable: true, className: 'w-40' },
         {
-            id: 'url', field: 'url', header: t('AI-LLM.url'), className: 'max-w-[40rem]',
+            id: 'url', field: 'url', header: t('AI-LLM.url'), className: 'w-6/12',
             body: (row: any) => (
-                <span className="block truncate max-w-[40rem] whitespace-nowrap">
+                <span className="truncate whitespace-nowrap">
                     { row.url }
                 </span>
             )
