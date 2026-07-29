@@ -14,10 +14,10 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import React from "react";
 import { t } from "i18next";
-import { useRef } from "react";
 import { CSS } from "@dnd-kit/utilities";
-import { ContextMenu } from "primereact/contextmenu";
+import { ActionIcon, Menu } from "@mantine/core";
 import { Copy, GripVertical, Settings, Trash2 } from "lucide-react";
 import { defaultAnimateLayoutChanges, useSortable } from "@dnd-kit/sortable";
 
@@ -26,7 +26,6 @@ import { DroppableLine } from "./DroppableLine";
 import { InputSwitch } from "../../../InputSwitch";
 
 export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDeleteLine, onUpdateLine, module }: any) {
-    const cm = useRef({ current: null } as any);
     const menuModel: any = [
         {
             label: <span className='flex items-center gap-2' onClick={ (e) => e.stopPropagation() }>
@@ -35,7 +34,6 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
                     id={ 'duplicate-' + line.id }
                     checked={ line.duplicable }
                     onChange={ (value) => {
-                        console.log(value)
                         onUpdateLine({ id: line.id, duplicable: value })
                     } }
                 />
@@ -81,20 +79,46 @@ export function SortableLine({ line, zoneId, onUpdateField, onDeleteField, onDel
                     <GripVertical size={ 22 }/>
                 </div>
             ) }
-            <div className={ `group w-full p-2 ${ bg } border rounded-md hover:bg-[#E1EFE8]
-                              dark:hover:bg-(--bg-secondary) hover:border-(--border-primary)/30
-                              transition-colors` }>
-                <ContextMenu model={ menuModel } className="w-auto!" ref={ cm }/>
-                <span
-                    onClick={ (e) => {
-                        cm.current?.show(e)
-                    } }
-                    className='cursor-pointer group-hover:opacity-100 opacity-0 transition-opacity -translate-x-1/2
-                               text-(--text-secondary) absolute z-20 -top-5 p-0.5 left-1/2 border before:translate-y-px
-                               border-b-0 border-(--border-primary)/30 rounded-md rounded-b-none bg-[#E1EFE8]
+            <div className={ `group w-full p-2 ${ bg } border rounded-md hover:bg-[#E1EFE8] transition-colors
+                              dark:hover:bg-(--bg-secondary) hover:border-(--border-primary)/30` }>
+                <div className='cursor-pointer group-hover:opacity-100 opacity-0 transition-opacity -translate-x-1/2
+                               text-(--text-secondary) absolute z-20 -top-5.5 p-0.5 left-1/2 border before:translate-y-px
+                               border-b-0 border-(--border-primary)/30 rounded-md rounded-b-none bg-[#E1EFE8] leading-0
                                dark:bg-(--bg-secondary) before:content-[""] before:absolute before:bottom-0'>
-                  <Settings size={ 16 }/>
-                </span>
+                    <Menu position="bottom-end" withinPortal>
+                        <Menu.Target>
+                            <ActionIcon
+                                size='xs'
+                                className='mr-0!'
+                                variant="transparent"
+                                onClick={ (e: any) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                } }
+                            >
+                                <Settings
+                                    size={ 16 }
+                                    className='text-(--text-secondary)'
+                                />
+                            </ActionIcon>
+                        </Menu.Target>
+
+                        <Menu.Dropdown>
+                            { menuModel.filter((item: any) => item.visible != false)?.map((item: any, index: number) => (
+                                <Menu.Item
+                                    key={ index } leftSection={ item.icon }
+                                    onClick={ (e: React.MouseEvent) => {
+                                        e.stopPropagation();
+                                        item.command(e);
+                                    } }
+                                >
+                                    { item.label }
+                                </Menu.Item>
+                            )) }
+                        </Menu.Dropdown>
+                    </Menu>
+                </div>
+
                 <DroppableLine line={ line } onUpdateField={ onUpdateField } onDeleteField={ onDeleteField }
                                module={ module }/>
             </div>

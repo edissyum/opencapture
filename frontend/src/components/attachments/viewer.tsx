@@ -17,8 +17,8 @@
 
 import { t } from "i18next";
 import { Document, Page } from "react-pdf";
-import { ContextMenu } from "primereact/contextmenu";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { ActionIcon, Menu } from "@mantine/core";
+import React, { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Download, EllipsisVertical, Trash2 } from "lucide-react";
 
 import { Button } from "../Button";
@@ -39,7 +39,6 @@ const attachmentCache = new Map<string, { mime: string; url: string }>();
 
 export function AttachmentsViewer({ show, module, attachment, onClose, onDelete, onDownload }: AttachmentsListProps) {
     const { post } = axiosApiCall();
-    const cm = useRef({ current: null } as any);
 
     const [numPages, setNumPages] = useState<number>();
     const [loading, setLoading] = useState(false);
@@ -121,12 +120,38 @@ export function AttachmentsViewer({ show, module, attachment, onClose, onDelete,
                             { t('ATTACHMENTS.back_to_attachments_list') }
                         </Button>
                         <div className='bg-(--bg-primary) rounded-lg cursor-pointer p-1 border border-(--border-secondary)'>
-                            <EllipsisVertical onClick={ (e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                cm.current?.show(e);
-                            } }/>
-                            <ContextMenu model={ menuItems } className="w-auto!" ref={ cm }/>
+
+                            <Menu position="bottom-end" withinPortal>
+                                <Menu.Target>
+                                    <ActionIcon
+                                        className='mr-0!'
+                                        variant="transparent"
+                                        onClick={ (e: any) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                        } }
+                                    >
+                                        <EllipsisVertical
+                                            size={ 16 }
+                                            className='text-(--text-primary) hover:text-(--color-primary)'
+                                        />
+                                    </ActionIcon>
+                                </Menu.Target>
+
+                                <Menu.Dropdown>
+                                    { menuItems.map((item: any, index: number) => (
+                                        <Menu.Item
+                                            key={ index } leftSection={ item.icon }
+                                            onClick={ (e: React.MouseEvent) => {
+                                                e.stopPropagation();
+                                                item.command(e);
+                                            } }
+                                        >
+                                            { item.label }
+                                        </Menu.Item>
+                                    )) }
+                                </Menu.Dropdown>
+                            </Menu>
                         </div>
                     </div>
                 </div>

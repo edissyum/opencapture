@@ -925,7 +925,8 @@
         "document_non_modifiable_details": "No puede modificar este documento porque ya ha sido procesado",
         "no_outputs": "No se ha configurado ninguna cadena de salida para este documento",
         "facturx_level": "Nivel Factur-X",
-        "datas_updated": "Datos actualizados con éxito"
+        "datas_updated": "Datos actualizados con éxito",
+        "associated_customer_changed_success": "Cliente asociado modificado con éxito"
     },
     "SECURITY": {
         "default_auth": "Autenticación predeterminada",
@@ -1043,7 +1044,9 @@
         "unbinding": "Desagrupar",
         "unbinding_warning": "No es posible desagrupar los adjuntos si uno o varios adjuntos no están en formato PDF",
         "add_attachemnt": "Para añadir un adjunto, haga clic en el botón de arriba",
-        "no_attachments": "Ningún adjunto"
+        "no_attachments": "Ningún adjunto",
+        "attachment_deleted": "Adjunto eliminado con éxito",
+        "attachment_uploaded": "Adjunto cargado con éxito"
     },
     "ADDRESSES": {
         "address1": "Número y calle",

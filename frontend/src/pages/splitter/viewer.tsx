@@ -18,13 +18,12 @@
 import dayjs from "dayjs";
 import { t } from "i18next";
 import DOMPurify from "dompurify";
-import { ContextMenu } from "primereact/contextmenu";
+import { Tooltip } from "react-tooltip";
+import { Divider } from "@mantine/core";
 import { useNavigate, useParams } from "react-router-dom";
-import { Accordion as Accordion } from "@mantine/core";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Accordion as Accordion, ActionIcon, Menu } from "@mantine/core";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-
-import { Panel } from "../../components/Panel";
 
 import {
     ArrowLeft,
@@ -70,6 +69,7 @@ import { useHistoryLogger } from "../../services/hooks/useHistoryLogger";
 import { useUnsavedChangesWarning } from "../../services/hooks/useUnsavedChangesWarning";
 
 import Input from "../../components/Input";
+import { Panel } from "../../components/Panel";
 import { Button } from "../../components/Button";
 import { Select } from "../../components/Select";
 import ISOCalendar from "../../components/Calendar";
@@ -84,13 +84,10 @@ import { DraggablePage } from "./dnd/draggablePage";
 import { DroppableDocumentZone } from "./dnd/droppableDocumentZone";
 
 import { b64ToFile } from "../settings/general/customization";
-import { Tooltip } from "react-tooltip";
-import { Divider } from "@mantine/core";
 
 export function SplitterViewerPage() {
     const { get, post, del } = axiosApiCall();
     const navigate = useNavigate();
-    const cm = useRef({ current: null } as any);
 
     const [unSavedChanges, setUnSavedChanges] = useState(false);
     useUnsavedChangesWarning(unSavedChanges);
@@ -229,7 +226,7 @@ export function SplitterViewerPage() {
             command: () => handleRotation()
         },
         {
-            label: t('SPLITTER.delete_page'),
+            label: <span className='critical'>{ t('SPLITTER.delete_page') }</span>,
             icon: <Trash2 size={ 16 }/>,
             command: () => handleDeletePage()
         }
@@ -1522,18 +1519,37 @@ export function SplitterViewerPage() {
                                             { t('SPLITTER.pages', { count: document.pages.length }) }
                                         </div>
                                         <div className='ml-auto'>
-                                            <EllipsisVertical
-                                                size={ 18 }
-                                                className={ `${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer' }` }
-                                                onClick={ (e) => {
-                                                    if (disabledBatch) return;
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    setSelectedDocument(document);
-                                                    cm.current?.show(e);
-                                                } }
-                                            />
-                                            <ContextMenu model={ menuItems } className="w-auto!" ref={ cm }/>
+                                            <Menu position="bottom-end" withinPortal>
+                                                <Menu.Target>
+                                                    <ActionIcon
+                                                        className='mr-0!'
+                                                        variant="transparent"
+                                                        onClick={ (e: any) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+                                                        } }
+                                                    >
+                                                        <EllipsisVertical
+                                                            size={ 20 }
+                                                            className='text-(--text-primary) hover:text-(--color-primary)'
+                                                        />
+                                                    </ActionIcon>
+                                                </Menu.Target>
+
+                                                <Menu.Dropdown>
+                                                    { menuItems?.map((item: any, index: number) => (
+                                                        <Menu.Item
+                                                            key={ index } leftSection={ item.icon }
+                                                            onClick={ (e: React.MouseEvent) => {
+                                                                e.stopPropagation();
+                                                                item.command(e);
+                                                            } }
+                                                        >
+                                                            { item.label }
+                                                        </Menu.Item>
+                                                    )) }
+                                                </Menu.Dropdown>
+                                            </Menu>
                                         </div>
                                     </div>
                                 }>

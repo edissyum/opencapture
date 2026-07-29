@@ -27,8 +27,8 @@ const PAGE_WIDTH = 268;
 
 interface DroppableDocumentZoneProps {
     pages: any[];
-    disabled: boolean;
     menuItems: any[];
+    disabled: boolean;
     isEmpty?: boolean;
     selectedPageIds: any[];
     documentId: string | number;

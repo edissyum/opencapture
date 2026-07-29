@@ -683,7 +683,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
 
     return (
         <div className="h-full overflow-y-auto">
-            <div className='px-8 pt-8'>
+            <div className='px-6 pt-6'>
                 <h1 className="text-lg font-semibold mb-4">
                     { t('WORKFLOWS.details') }
                 </h1>

@@ -148,16 +148,18 @@ export function Table<T extends { id: string }>({
                 </Menu.Sub.Dropdown>
             </Menu.Sub>
         ) : (
-            <Menu.Item
-                key={ index }
-                leftSection={ item.icon }
-                onClick={ (e: React.MouseEvent) => {
-                    e.stopPropagation();
-                    item.command?.(e);
-                } }
-            >
-                { item.label }
-            </Menu.Item>
+            item.visible !== false && (
+                <Menu.Item
+                    key={ index }
+                    leftSection={ item.icon }
+                    onClick={ (e: React.MouseEvent) => {
+                        e.stopPropagation();
+                        item.command?.(e);
+                    } }
+                >
+                    { item.label }
+                </Menu.Item>
+            )
         )
     ));
 
