@@ -17,7 +17,7 @@
 
 import { t } from "i18next";
 import DOMPurify from "dompurify";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { CircleQuestionMark } from "lucide-react";
 import { Select as SelectMantine } from "@mantine/core";
 
@@ -75,6 +75,17 @@ export const Select: React.FC<SelectProps> = ({
         return opts;
     }, [uniqueOptions, editable, search, value]);
 
+    // Mantine's Select only syncs its displayed text forward (when value matches an option),
+    // never backward when value is cleared to null/undefined - so we own the displayed text ourselves
+    useEffect(() => {
+        if (!hasValue) {
+            setSearch('');
+            return;
+        }
+        const selected = uniqueOptions.find(opt => opt.value === value);
+        setSearch(selected ? selected.label : (editable ? String(value) : ''));
+    }, [value, hasValue, uniqueOptions, editable]);
+
     const mantineRenderOption = ({ option }: { option: any }) => (
         <span>
             { option.label }
@@ -103,7 +114,7 @@ export const Select: React.FC<SelectProps> = ({
                         allowDeselect={ false }
                         placeholder={ placeholder }
                         renderOption={ mantineRenderOption }
-                        searchValue={ editable ? search : undefined }
+                        searchValue={ !hasValue ? '' : (editable ? search : undefined) }
                         onSearchChange={ editable ? setSearch : undefined }
                         onChange={ (value) => {
                             onChange(value)

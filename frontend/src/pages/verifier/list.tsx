@@ -168,7 +168,7 @@ export function VerifierListPage() {
             field: 'id',
             sortable: true,
             header: view == 'grid' ? t('VERIFIER.id') : '',
-            className: 'w-14'
+            className: `w-14 ${ filtersChanged && 'text-(--color-primary) font-medium' }`
         },
         {
             id: 'name',
@@ -439,6 +439,21 @@ export function VerifierListPage() {
         });
     }
 
+    const handleDisplayFilters = () => {
+        setDisplayFilters(!displayFilters);
+        if (!displayFilters) {
+            if (selectedForm) {
+                setOpen({ ...open, forms: true });
+            }
+            if (selectedCustomers?.length > 0) {
+                setOpen({ ...open, customers: true });
+            }
+            if (selectedSuppliers?.length > 0) {
+                setOpen({ ...open, suppliers: true });
+            }
+        }
+    }
+
     const handleResetFilters = () => {
         setSelectedTime('');
         setSelectedForm('');
@@ -645,7 +660,7 @@ export function VerifierListPage() {
                             <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' } size={ 14 }/> :
                             <Filter size={ 14 }/>
                     }
-                            onClick={ () => setDisplayFilters(!displayFilters) }
+                            onClick={ handleDisplayFilters }
                             selected={ displayFilters }>
                         { t('VERIFIER.filters') }
                     </Button>
@@ -711,6 +726,7 @@ export function VerifierListPage() {
                         actionsLine={ getActionsLine }
                         rowsPerPage={ lazyParams.rows }
                         skeletonRows={ lazyParams.rows }
+                        filtersChanged={ filtersChanged }
                         selectedRows={ selectedDocuments }
                         totalRecords={ totalDocuments || 0 }
                         rowsPerPageOptions={ [
