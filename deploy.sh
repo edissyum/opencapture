@@ -78,10 +78,15 @@ compose_dir_for() {
 }
 
 # docker compose cible pour un tenant : dc <tenant> <args...>
+# Un -f explicite desactive l'auto-decouverte de docker-compose.override.yml
+# par le CLI -> on le rajoute nous-memes s'il existe (overrides par tenant,
+# ex. mem_limit/GUNICORN_* geres hors .env).
 dc() {
     local t="$1"; shift
     local dir; dir="$(compose_dir_for "$t")"
-    docker compose --project-directory "$dir" -f "$dir/docker-compose.yml" "$@"
+    local files=(-f "$dir/docker-compose.yml")
+    [ -f "$dir/docker-compose.override.yml" ] && files+=(-f "$dir/docker-compose.override.yml")
+    docker compose --project-directory "$dir" "${files[@]}" "$@"
 }
 
 # Vrai si le tenant ACTIVE l'overlay WebDAV (opt-in) : ligne d'include NON
