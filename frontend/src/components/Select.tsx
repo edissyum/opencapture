@@ -118,7 +118,7 @@ export const Select: React.FC<SelectProps> = ({
                 </span>
             </div>
             { hint && (
-                <span className={ `absolute cursor-pointer z-10 -right-5 top-0 text-(--text-secondary)` }>
+                <span className={ `absolute cursor-pointer bg-(--bg-primary) z-10 -right-1 -top-1 text-(--text-secondary)` }>
                     <CircleQuestionMark data-tooltip-id="tooltip" data-tooltip-content={ hint } size={ 16 }/>
                 </span>
             ) }

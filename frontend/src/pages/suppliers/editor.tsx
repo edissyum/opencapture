@@ -506,7 +506,7 @@ export function SupplierEditor({
                     </Accordion.Control>
                     <Accordion.Panel>
                         <div className='p-6'>
-                            <DynamicForm grid={ 3 } errors={ errors } control={ control } schema={ supplierSchema }/>
+                            <DynamicForm grid={ 5 } errors={ errors } control={ control } schema={ supplierSchema }/>
                         </div>
                     </Accordion.Panel>
                 </Accordion.Item>
