@@ -1110,8 +1110,6 @@ export function SplitterViewerPage() {
         return options;
     };
 
-    console.log(selectedDocument)
-
     if (loadingBatch || !batch) return <Loader/>;
 
     return (
