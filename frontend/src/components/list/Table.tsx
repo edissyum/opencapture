@@ -259,7 +259,7 @@ export function Table<T extends { id: string }>({
                                     key={ idx }
                                     onClick={ () => col.sortable && handleSort(col.id as string) }
                                     className={ `${ col.className } ${ col.sortable ? 'cursor-pointer' : 'cursor-auto' }
-                                                text-(--text-secondary) font-normal pl-1 pr-1 py-2 border-(--border-secondary)
+                                                text-(--text-secondary) font-normal py-2 border-(--border-secondary)
                                                 ${ col.sortable && lazyParams.sortField === col.id ? 'text-(--color-primary)!' : '' }` }
                                 >
                                     { col.sortable ? (
