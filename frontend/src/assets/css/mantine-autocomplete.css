@@ -17,6 +17,7 @@
 
 .mantine-Input-wrapper input:not(.mantine-MultiSelect-inputField) {
     @apply h-12.5!;
+    @apply text-base!;
     @apply rounded-md;
     @apply border-(--border-secondary);
 }
