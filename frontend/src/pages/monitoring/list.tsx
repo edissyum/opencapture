@@ -73,7 +73,11 @@ export function MonitoringList() {
 
     const columns: any = [
         {
-            id: 'module', field: 'module', header: t('MAILCOLLECT.module'), body: (row: any) => (
+            id: 'module',
+            field: 'module',
+            className: 'w-1/12',
+            header: t('MAILCOLLECT.module'),
+            body: (row: any) => (
                 <span>{ row.module[0].toUpperCase() + row.module.slice(1) }</span>
             )
         },
@@ -81,25 +85,32 @@ export function MonitoringList() {
             id: 'creation_date',
             field: 'creation_date',
             header: t('MONITORING.creation_date'),
-            className: 'w-60 max-w-60'
+            className: 'w-3/24'
         },
-        { id: 'end_date', field: 'end_date', header: t('MONITORING.end_date'), className: 'w-60 max-w-60' },
+        {
+            id: 'end_date',
+            field: 'end_date',
+            header: t('MONITORING.end_date'),
+            className: 'w-3/24'
+        },
         {
             id: 'filename',
             field: 'filename',
             header: t('VERIFIER.filename'),
-            className: 'max-w-60',
+            className: 'w-6/24',
             body: (row: any) => (
-                <span className="block max-w-64 truncate" data-tooltip-id="tooltip"
-                      data-tooltip-content={ row.filename }>
+                <span className="truncate" data-tooltip-id="tooltip" data-tooltip-content={ row.filename }>
                     { row.filename }
                 </span>
             )
         },
         {
-            id: 'last_message', field: 'last_message', header: t('MONITORING.last_message'), className: 'max-w-[50rem]',
+            id: 'last_message',
+            field: 'last_message',
+            header: t('MONITORING.last_message'),
+            className: 'w-4/12',
             body: (row: any) => (
-                <span className={ `block truncate max-w-[50rem] whitespace-nowrap
+                <span className={ `truncate
                                    ${ row.status === 'done' && !row.error && 'text-(--color-primary)' }
                                    ${ (row.status === 'error' || row.error) && 'text-(--text-error)' }` }
                       dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(row.last_message) } }
@@ -107,7 +118,11 @@ export function MonitoringList() {
             )
         },
         {
-            id: 'status', field: 'status', header: t('GLOBAL.status'), body: (row: any) => (
+            id: 'status',
+            field: 'status',
+            className: 'w-5/48',
+            header: t('GLOBAL.status'),
+            body: (row: any) => (
                 <span>
                     { row.status === 'running' && (
                         <Loader2 className="animate-spin "/>

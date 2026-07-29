@@ -240,12 +240,12 @@ export function Table<T extends { id: string }>({
                     />
                 </div>
             ) }
-            <div className='flex-1 overflow-auto'>
-                <MantineTable stickyHeader className={ `w-full ${ !baseLink && 'no_hover' }` }>
+            <div className='flex-1 overflow-y-auto overflow-x-hidden'>
+                <MantineTable stickyHeader className={ `table-fixed w-full ${ !baseLink && 'no_hover' } ${ checkboxSelection && 'checkbox'}` }>
                     <MantineTable.Thead>
                         <MantineTable.Tr>
                             { checkboxSelection && (
-                                <MantineTable.Th className="max-w-5 w-5 leading-0">
+                                <MantineTable.Th className="w-10 leading-0 pl-4">
                                     <Checkbox
                                         indeterminate={ selectedRows.length > 0 && selectedRows.length !== data.length }
                                         checked={ data.length > 0 && selectedRows.length === data.length }
@@ -259,7 +259,8 @@ export function Table<T extends { id: string }>({
                                     key={ idx }
                                     onClick={ () => col.sortable && handleSort(col.id as string) }
                                     className={ `${ col.className } ${ col.sortable ? 'cursor-pointer' : 'cursor-auto' }
-                                                text-(--text-secondary) font-normal pl-1 pr-1 py-2 border-(--border-secondary)
+                                                text-(--text-secondary) font-normal py-2 border-(--border-secondary)
+                                                ${ idx === 0 && !checkboxSelection ? 'pl-4' : 'pl-1' }
                                                 ${ col.sortable && lazyParams.sortField === col.id ? 'text-(--color-primary)!' : '' }` }
                                 >
                                     { col.sortable ? (
@@ -294,7 +295,7 @@ export function Table<T extends { id: string }>({
                             >
                                 { checkboxSelection && (
                                     <MantineTable.Td
-                                        className='leading-0'
+                                        className='leading-0 pl-4'
                                         onClick={ (e) => {
                                             e.stopPropagation();
                                             onSelect(!selectedRows.some(r => r.id === row.id), row.id);
@@ -309,7 +310,7 @@ export function Table<T extends { id: string }>({
                                 ) }
 
                                 { columns.map((col, ci) => (
-                                    <MantineTable.Td key={ ci } className={ `${ col.className } pl-1 pr-1 text-sm py-2` }>
+                                    <MantineTable.Td key={ ci } className={ `${ col.className } truncate ${ ci === 0 && !checkboxSelection ? 'pl-4' : 'pl-1' } pr-1 text-sm py-2` }>
                                         { col.body
                                             ? col.body({ ...row, hoveredRow, setHoveredRow } as any)
                                             : (row as any)[col.field!] }

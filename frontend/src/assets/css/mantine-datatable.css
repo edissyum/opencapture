@@ -38,6 +38,10 @@
     @apply text-(--text-primary);
 }
 
+.checkbox tbody td:nth-child(2) {
+    @apply pl-3;
+}
+
 .mantine-Table-table thead th,
 .mantine-Table-table tbody td {
     @apply border-(--border-secondary);

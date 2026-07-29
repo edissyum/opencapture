@@ -134,7 +134,7 @@ export function SplitterListPage() {
             header: view == 'grid' ? t('SPLITTER.id') : '',
             field: 'id',
             sortable: true,
-            className: 'max-w-14! w-14!'
+            className: 'w-14'
         },
         {
             id: 'filename',
@@ -148,15 +148,16 @@ export function SplitterListPage() {
         },
         {
             id: 'creation_date',
-            header: t('VERIFIER.creation_date'),
             sortable: true,
+            className: 'w-2/12',
+            header: t('VERIFIER.creation_date'),
             field: 'batch_date'
         },
         { id: 'form_label', header: t('VERIFIER.form'), field: 'form_label' },
         {
             id: 'nb_pages',
             header: '',
-            className: 'max-w-16! w-16! p-2!',
+            className: 'w-1/12',
             body: (item: any) => (
                 <div className='flex gap-1 justify-end'>
                     <div className='flex justify-center items-center text-(--color-primary) gap-0.5'
