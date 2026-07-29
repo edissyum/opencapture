@@ -1406,8 +1406,7 @@ export function SplitterViewerPage() {
                                         </div>
 
                                         <Select
-                                            id={ "forms" }
-                                            
+                                            id="forms"
                                             className="w-1/3"
                                             disabled={ disabledBatch }
                                             label={ t('VERIFIER.form') }
@@ -1480,7 +1479,6 @@ export function SplitterViewerPage() {
                             </Accordion.Item>
                         </Accordion>
 
-
                         <DndContext
                             sensors={ sensors }
                             onDragEnd={ handleDragEnd }
@@ -1488,158 +1486,160 @@ export function SplitterViewerPage() {
                             onDragStart={ handleDragStart }
                             collisionDetection={ pointerWithin }
                         >
-                            { documents.map((document: any) => (
-                                <Panel key={ document.id } header={
-                                    <div className="flex items-center gap-1.5">
-                                        <div
-                                            className={ `${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer hover:text-(--color-primary)' }` }
-                                            onClick={ () => !disabledBatch && typeDocument(document) }>
-                                            { !document.doctype_label && (
-                                                <div className='transition-colors items-center gap-2
-                                                                hover:text-(--text-error) text-(--text-error)/80 font-semibold flex'>
-                                                    <div className='bg-(--text-error)/20 rounded-md p-1'>
-                                                        <FolderTree size={ 20 }/>
-                                                    </div>
-                                                    { t('SPLITTER.type_document') }
-                                                </div>
-                                            ) }
+                            <div className='flex flex-col gap-2'>
+                                { documents.map((document: any) => (
+                                    <Panel key={ document.id } header={
+                                        <div className="flex items-center gap-1.5">
                                             <div
-                                                className='transition-colors items-center gap-2 font-semibold flex'>
-                                                { document.doctype_label && (
-                                                    <div className='bg-(--bg-secondary) rounded-md p-1'>
-                                                        <File size={ 20 }/>
+                                                className={ `${ disabledBatch ? 'cursor-not-allowed' : 'cursor-pointer hover:text-(--color-primary)' }` }
+                                                onClick={ () => !disabledBatch && typeDocument(document) }>
+                                                { !document.doctype_label && (
+                                                    <div className='transition-colors items-center gap-2
+                                                                hover:text-(--text-error) text-(--text-error)/80 font-semibold flex'>
+                                                        <div className='bg-(--text-error)/20 rounded-md p-1'>
+                                                            <FolderTree size={ 20 }/>
+                                                        </div>
+                                                        { t('SPLITTER.type_document') }
                                                     </div>
                                                 ) }
-                                                <div>{ document.doctype_label }</div>
-                                            </div>
-                                        </div>
-                                        <div
-                                            className='text-(--text-secondary) font-medium flex items-center bg-(--bg-secondary) px-3 py-1 rounded-3xl'>
-                                            <span>{ document.pages.length }&nbsp;</span>
-                                            { t('SPLITTER.pages', { count: document.pages.length }) }
-                                        </div>
-                                        <div className='ml-auto'>
-                                            <Menu position="bottom-end" withinPortal>
-                                                <Menu.Target>
-                                                    <ActionIcon
-                                                        className='mr-0!'
-                                                        variant="transparent"
-                                                        onClick={ (e: any) => {
-                                                            e.preventDefault();
-                                                            e.stopPropagation();
-                                                            setSelectedDocument(document);
-                                                        } }
-                                                    >
-                                                        <EllipsisVertical
-                                                            size={ 20 }
-                                                            className='text-(--text-primary) hover:text-(--color-primary)'
-                                                        />
-                                                    </ActionIcon>
-                                                </Menu.Target>
-
-                                                <Menu.Dropdown>
-                                                    { menuItems?.map((item: any, index: number) => (
-                                                        <Menu.Item
-                                                            key={ index }
-                                                            leftSection={ item.icon }
-                                                            disabled={ item.disabled }
-                                                            onClick={ (e: React.MouseEvent) => {
-                                                                e.stopPropagation();
-                                                                item.command(e);
-                                                            } }
-                                                        >
-                                                            { item.label }
-                                                        </Menu.Item>
-                                                    )) }
-                                                </Menu.Dropdown>
-                                            </Menu>
-                                        </div>
-                                    </div>
-                                }>
-                                    { documentMetadata.length > 0 && document.pages.length > 0 && (
-                                        <div className='p-4 pb-0'>
-                                            <h3 className='font-semibold text-(--text-secondary) flex items-center cursor-pointer gap-1'
-                                                onClick={ () => setDocumentMetadataOpen(prev => !prev) }
-                                            >
-                                                { t('FORMS.metadata_document') }
-                                                <ChevronDown
-                                                    size={ 16 }
-                                                    className={ `transition-transform ${ documentMetadataOpen ? 'rotate-0' : '-rotate-90' }` }
-                                                />
-                                            </h3>
-                                            <div className='grid transition-all mb-4'
-                                                 style={ { gridTemplateRows: documentMetadataOpen ? '1fr' : '0fr' } }
-                                            >
-                                                <div className="overflow-hidden">
-                                                    { documentMetadata.map((line: any, index: number) => (
-                                                        <div key={ index } className='flex gap-4 mt-4'>
-                                                            { line.map((field: any) => (
-                                                                <div key={ field.id }
-                                                                     className={ `min-w-1/6 ${ getWidthLine(line) }` }>
-                                                                    { field.type === 'date' && (
-                                                                        <ISOCalendar
-                                                                            id={ field.id }
-                                                                            key={ field.id }
-                                                                            label={ t(field.label) }
-                                                                            disabled={ disabledBatch }
-                                                                            required={ field.required }
-                                                                            value={ documentMetadataValues[document.id]?.[field.label_short] }
-                                                                            onChange={ (e) => {
-                                                                                handleUpdateDocumentMetadataValues(document.id, field, e)
-                                                                            } }
-                                                                        />
-                                                                    ) }
-                                                                    { field.type == 'text' && (
-                                                                        <Input
-                                                                            id={ field.id }
-                                                                            key={ field.id }
-                                                                            type={ field.type }
-                                                                            label={ t(field.label) }
-                                                                            disabled={ disabledBatch }
-                                                                            required={ field.required }
-                                                                            value={ documentMetadataValues[document.id]?.[field.label_short] }
-                                                                            onChange={ (e) => {
-                                                                                handleUpdateDocumentMetadataValues(document.id, field, e.target.value)
-                                                                            } }
-                                                                        />
-                                                                    ) }
-                                                                    { field.type == 'select' && (
-                                                                        <Select
-                                                                            
-                                                                            id={ field.id }
-                                                                            label={ t(field.label) }
-                                                                            disabled={ disabledBatch }
-                                                                            required={ field.required }
-                                                                            value={ documentMetadataValues[document.id]?.[field.label_short] }
-                                                                            options={ getFilteredConditionalOptions(document.id, field) }
-                                                                            onChange={ (value) => {
-                                                                                handleUpdateDocumentMetadataValues(document.id, field, value)
-                                                                            } }
-                                                                        />
-                                                                    ) }
-                                                                </div>
-                                                            )) }
+                                                <div
+                                                    className='transition-colors items-center gap-2 font-semibold flex'>
+                                                    { document.doctype_label && (
+                                                        <div className='bg-(--bg-secondary) rounded-md p-1'>
+                                                            <File size={ 20 }/>
                                                         </div>
-                                                    )) }
+                                                    ) }
+                                                    <div>{ document.doctype_label }</div>
                                                 </div>
                                             </div>
+                                            <div
+                                                className='text-(--text-secondary) font-medium flex items-center bg-(--bg-secondary) px-3 py-1 rounded-3xl'>
+                                                <span>{ document.pages.length }&nbsp;</span>
+                                                { t('SPLITTER.pages', { count: document.pages.length }) }
+                                            </div>
+                                            <div className='ml-auto'>
+                                                <Menu position="bottom-end" withinPortal>
+                                                    <Menu.Target>
+                                                        <ActionIcon
+                                                            className='mr-0!'
+                                                            variant="transparent"
+                                                            onClick={ (e: any) => {
+                                                                e.preventDefault();
+                                                                e.stopPropagation();
+                                                                setSelectedDocument(document);
+                                                            } }
+                                                        >
+                                                            <EllipsisVertical
+                                                                size={ 20 }
+                                                                className='text-(--text-primary) hover:text-(--color-primary)'
+                                                            />
+                                                        </ActionIcon>
+                                                    </Menu.Target>
+
+                                                    <Menu.Dropdown>
+                                                        { menuItems?.map((item: any, index: number) => (
+                                                            <Menu.Item
+                                                                key={ index }
+                                                                leftSection={ item.icon }
+                                                                disabled={ item.disabled }
+                                                                onClick={ (e: React.MouseEvent) => {
+                                                                    e.stopPropagation();
+                                                                    item.command(e);
+                                                                } }
+                                                            >
+                                                                { item.label }
+                                                            </Menu.Item>
+                                                        )) }
+                                                    </Menu.Dropdown>
+                                                </Menu>
+                                            </div>
                                         </div>
-                                    ) }
-                                    <SortableContext strategy={ verticalListSortingStrategy }
-                                                     items={ document.pages.map((p: any) => `page-${ p.id }`) }>
-                                        <DroppableDocumentZone
-                                            pages={ document.pages }
-                                            documentId={ document.id }
-                                            menuItems={ pageMenuItems }
-                                            isEmpty={ document.pages.length === 0 }
-                                            disabled={ disabledBatch || certifiedCopy }
-                                            selectedPageIds={ selectedPages.map(p => p.id) }
-                                            onSelectionChange={ handleSelectionChange }
-                                            onZoom={ handlePreview }
-                                        />
-                                    </SortableContext>
-                                </Panel>
-                            )) }
+                                    }>
+                                        { documentMetadata.length > 0 && document.pages.length > 0 && (
+                                            <div className='p-4 pb-0'>
+                                                <h3 className='font-semibold text-(--text-secondary) flex items-center cursor-pointer gap-1'
+                                                    onClick={ () => setDocumentMetadataOpen(prev => !prev) }
+                                                >
+                                                    { t('FORMS.metadata_document') }
+                                                    <ChevronDown
+                                                        size={ 16 }
+                                                        className={ `transition-transform ${ documentMetadataOpen ? 'rotate-0' : '-rotate-90' }` }
+                                                    />
+                                                </h3>
+                                                <div className='grid transition-all mb-4'
+                                                     style={ { gridTemplateRows: documentMetadataOpen ? '1fr' : '0fr' } }
+                                                >
+                                                    <div className="overflow-hidden">
+                                                        { documentMetadata.map((line: any, index: number) => (
+                                                            <div key={ index } className='flex gap-4 mt-4'>
+                                                                { line.map((field: any) => (
+                                                                    <div key={ field.id }
+                                                                         className={ `min-w-1/6 ${ getWidthLine(line) }` }>
+                                                                        { field.type === 'date' && (
+                                                                            <ISOCalendar
+                                                                                id={ field.id }
+                                                                                key={ field.id }
+                                                                                label={ t(field.label) }
+                                                                                disabled={ disabledBatch }
+                                                                                required={ field.required }
+                                                                                value={ documentMetadataValues[document.id]?.[field.label_short] }
+                                                                                onChange={ (e) => {
+                                                                                    handleUpdateDocumentMetadataValues(document.id, field, e)
+                                                                                } }
+                                                                            />
+                                                                        ) }
+                                                                        { field.type == 'text' && (
+                                                                            <Input
+                                                                                id={ field.id }
+                                                                                key={ field.id }
+                                                                                type={ field.type }
+                                                                                label={ t(field.label) }
+                                                                                disabled={ disabledBatch }
+                                                                                required={ field.required }
+                                                                                value={ documentMetadataValues[document.id]?.[field.label_short] }
+                                                                                onChange={ (e) => {
+                                                                                    handleUpdateDocumentMetadataValues(document.id, field, e.target.value)
+                                                                                } }
+                                                                            />
+                                                                        ) }
+                                                                        { field.type == 'select' && (
+                                                                            <Select
+
+                                                                                id={ field.id }
+                                                                                label={ t(field.label) }
+                                                                                disabled={ disabledBatch }
+                                                                                required={ field.required }
+                                                                                value={ documentMetadataValues[document.id]?.[field.label_short] }
+                                                                                options={ getFilteredConditionalOptions(document.id, field) }
+                                                                                onChange={ (value) => {
+                                                                                    handleUpdateDocumentMetadataValues(document.id, field, value)
+                                                                                } }
+                                                                            />
+                                                                        ) }
+                                                                    </div>
+                                                                )) }
+                                                            </div>
+                                                        )) }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ) }
+                                        <SortableContext strategy={ verticalListSortingStrategy }
+                                                         items={ document.pages.map((p: any) => `page-${ p.id }`) }>
+                                            <DroppableDocumentZone
+                                                pages={ document.pages }
+                                                documentId={ document.id }
+                                                menuItems={ pageMenuItems }
+                                                isEmpty={ document.pages.length === 0 }
+                                                disabled={ disabledBatch || certifiedCopy }
+                                                selectedPageIds={ selectedPages.map(p => p.id) }
+                                                onSelectionChange={ handleSelectionChange }
+                                                onZoom={ handlePreview }
+                                            />
+                                        </SortableContext>
+                                    </Panel>
+                                )) }
+                            </div>
 
                             <DragOverlay>
                                 { activeDragItem?.type === 'page' && (
