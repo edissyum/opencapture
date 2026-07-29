@@ -165,14 +165,14 @@ export function VerifierListPage() {
     const columns: any = [
         {
             id: 'id',
-            header: view == 'grid' ? t('VERIFIER.id') : '',
             field: 'id',
             sortable: true,
-            className: 'max-w-14! w-14!'
+            header: view == 'grid' ? t('VERIFIER.id') : '',
+            className: 'w-14'
         },
         {
             id: 'name',
-            className: 'w-md',
+            className: 'w-4/12',
             header: t('VERIFIER.name'),
             body: (item: any) => (
                 <div className="font-semibold flex items-center gap-2" title={ item.supplier_name }>
@@ -191,7 +191,7 @@ export function VerifierListPage() {
         },
         {
             id: 'register_date',
-            className: 'w-40',
+            className: 'w-3/12',
             header: t('VERIFIER.creation_date'),
             sortable: true,
             body: (item: any) => (
@@ -205,11 +205,16 @@ export function VerifierListPage() {
                 }).format(new Date(item.register_date)).replace(' ', ' ' + t('GLOBAL.at') + ' ').replace(',', '').replaceAll('/', '-')
             )
         },
-        { id: 'form_label', className: 'w-60', header: t('VERIFIER.form'), field: 'form_label' },
+        {
+            id: 'form_label',
+            className: 'w-3/12',
+            header: t('VERIFIER.form'),
+            field: 'form_label'
+        },
         {
             id: 'filename',
+            className: 'w-4/12',
             header: t('VERIFIER.filename'),
-            className: 'truncate max-w-xs! w-xs!',
             body: (item: any) => (
                 <span title={ item.original_filename }>
                     { item.original_filename }
@@ -219,7 +224,7 @@ export function VerifierListPage() {
         {
             id: 'nb_pages',
             header: '',
-            className: 'max-w-16! w-16! p-2!',
+            className: 'w-1/12',
             body: (item: any) => (
                 <div className='flex gap-1 justify-end'>
                     <div className='flex justify-center items-center text-(--color-primary) gap-0.5'
