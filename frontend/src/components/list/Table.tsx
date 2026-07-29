@@ -241,11 +241,11 @@ export function Table<T extends { id: string }>({
                 </div>
             ) }
             <div className='flex-1 overflow-auto'>
-                <MantineTable stickyHeader className={ `w-full ${ !baseLink && 'no_hover' }` }>
+                <MantineTable stickyHeader className={ `table-fixed w-full ${ !baseLink && 'no_hover' }` }>
                     <MantineTable.Thead>
                         <MantineTable.Tr>
                             { checkboxSelection && (
-                                <MantineTable.Th className="max-w-5 w-5 leading-0">
+                                <MantineTable.Th className="max-w-10 w-10 leading-0">
                                     <Checkbox
                                         indeterminate={ selectedRows.length > 0 && selectedRows.length !== data.length }
                                         checked={ data.length > 0 && selectedRows.length === data.length }
@@ -259,7 +259,7 @@ export function Table<T extends { id: string }>({
                                     key={ idx }
                                     onClick={ () => col.sortable && handleSort(col.id as string) }
                                     className={ `${ col.className } ${ col.sortable ? 'cursor-pointer' : 'cursor-auto' }
-                                                text-(--text-secondary) font-normal py-2 border-(--border-secondary)
+                                                text-(--text-secondary) font-normal pl-1 py-2 border-(--border-secondary) 
                                                 ${ col.sortable && lazyParams.sortField === col.id ? 'text-(--color-primary)!' : '' }` }
                                 >
                                     { col.sortable ? (
@@ -309,7 +309,7 @@ export function Table<T extends { id: string }>({
                                 ) }
 
                                 { columns.map((col, ci) => (
-                                    <MantineTable.Td key={ ci } className={ `${ col.className } pl-1 pr-1 text-sm py-2` }>
+                                    <MantineTable.Td key={ ci } className={ `${ col.className } truncate pl-1 pr-1 text-sm py-2` }>
                                         { col.body
                                             ? col.body({ ...row, hoveredRow, setHoveredRow } as any)
                                             : (row as any)[col.field!] }
