@@ -322,3 +322,43 @@ Dans l'UI OC v4 (Paramètres → Sorties), le champ `host` du connecteur MEM :
   ```bash
   docker exec <container_backend> getent hosts host.docker.internal
   ```
+
+## 5. Paramétrage d'une chaîne sortante vers OCforMEM
+
+### 5.1 Configuration du watcher
+
+```bash
+vi /var/www/html/opencapture/instance/config/watcher.ini
+```
+
+```ini
+[mem_entrant_cou_v4]
+watch = /var/edissyum/opencapture/tenants/opencapture/share/export/splitter/COU
+events = move,close
+include_extensions = pdf,PDF
+command = /opt/edissyum/opencaptureformem/scripts/launch_IN_COU.sh $filename
+```
+
+```bash
+sudo systemctl status fs-watcher.service   # relancer le service watcher pour prendre en compte le rajout ci-dessus
+tail -f /opt/edissyum/opencaptureformem/data/log/OCForMEM.log   # logs du watcher bare-metal
+```
+
+### 5.2 Correspondance des chemins (hôte ↔ conteneur) et sens du flux
+
+`/var/edissyum/opencapture/tenants/opencapture/share/export/splitter/COU` est
+la vue **côté hôte** du répertoire paramétré ainsi dans la **chaîne sortante
+n°11 « Export GED - MEM Courrier »** du splitter : `/app/share/export/splitter/COU/`
+côté conteneur — les deux chemins désignent le même dossier.
+
+C'est le conteneur Docker (splitter) qui écrit dans ce répertoire partagé via
+le workflow **« Document GEC MEM Courrier »** qui utilise cette chaîne
+sortante — le fs-watcher bare-metal ne fait que surveiller et consommer ce
+que Docker y dépose.
+
+### 5.3 Test
+
+Il faut téléverser un fichier dans le workflow « Document GEC MEM Courrier »
+dans l'UI OC v4, puis suivre le traitement via les logs :
+- `tail -f /opt/edissyum/opencaptureformem/data/log/OCForMEM.log` : côté hôte
+- `docker exec -it opencapture_opencapture-worker-splitter-1 bash -c 'tail -f custom/opencapture/data/log/OpenCapture.log'` : côté conteneur
