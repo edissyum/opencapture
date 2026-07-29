@@ -283,14 +283,12 @@ export function SettingsGeneralRoleEditor() {
                                                 label={ r.label }
                                                 checked={ role.assign_roles?.includes(r.id) }
                                                 onChange={ () => {
-                                                    console.log('here')
                                                     if (role.assign_roles?.includes(r.id)) {
                                                         setRole((prev: any) => ({
                                                             ...prev,
                                                             assign_roles: prev.assign_roles.filter((roleId: any) => roleId !== r.id)
                                                         }));
                                                     } else {
-                                                        console.log('here')
                                                         setRole((prev: any) => ({
                                                             ...prev,
                                                             assign_roles: prev.assign_roles ? [...prev.assign_roles, r.id] : [r.id]

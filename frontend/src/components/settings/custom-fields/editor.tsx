@@ -440,7 +440,6 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
         setSelectedOptionIndex(null);
     }
 
-    console.log(selectOptions)
     return (
         <div className="h-full overflow-y-auto">
             <div className='p-6 pb-0 flex flex-col gap-4'>

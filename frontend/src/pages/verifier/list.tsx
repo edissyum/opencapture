@@ -381,7 +381,6 @@ export function VerifierListPage() {
     }
 
     const handleChangeCustomer = async (customerId: string) => {
-        console.log('here')
         if (selectedDocuments.length === 0) return;
         if (selectedDocuments.length > 1) {
             showToast(t('VERIFIER.select_single_document_customer'), 'error');
