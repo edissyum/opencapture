@@ -535,8 +535,11 @@ export function FormEditor({ module }: { module: 'verifier' | 'splitter' }) {
 
                                                     <Menu.Dropdown>
                                                         { menuItems.map((item: any, index: number) => (
-                                                            <Menu.Item key={ index } leftSection={ item.icon }
-                                                                       onClick={ item.command }>
+                                                            <Menu.Item
+                                                                key={ index }
+                                                                leftSection={ item.icon }
+                                                                disabled={ item.disabled }
+                                                                onClick={ item.command }>
                                                                 { item.label }
                                                             </Menu.Item>
                                                         )) }

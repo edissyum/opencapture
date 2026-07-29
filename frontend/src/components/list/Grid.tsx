@@ -250,6 +250,7 @@ export function Grid<T extends { id: string }>({
                                                 <Menu.Dropdown>
                                                     { actionsLine(selectedRows[0]).map((item: any, index: number) => (
                                                         <Menu.Item key={ index } leftSection={ item.icon }
+                                                                   disabled={ item.disabled }
                                                                    onClick={ (e: React.MouseEvent) => {
                                                                        e.stopPropagation();
                                                                        item.command(e);

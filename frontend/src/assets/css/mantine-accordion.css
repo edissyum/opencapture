@@ -18,6 +18,11 @@
 .mantine-Accordion-control {
     @apply px-4;
     @apply py-1.5;
+
+    &:hover {
+        @apply rounded-xl;
+        @apply bg-(--bg-primary);
+    }
 }
 
 .mantine-ActionIcon-root {

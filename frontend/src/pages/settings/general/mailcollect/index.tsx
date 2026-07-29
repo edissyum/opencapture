@@ -315,7 +315,7 @@ export function SettingsGeneralMailcollect() {
                                     <Menu.Dropdown>
                                         { menuModel.map((item: any, index: number) => (
                                             <Menu.Item key={ index } leftSection={ item.icon }
-                                                       onClick={ item.command }>
+                                                       disabled={ item.disabled } onClick={ item.command }>
                                                 { item.label }
                                             </Menu.Item>
                                         )) }

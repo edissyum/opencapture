@@ -152,6 +152,7 @@ export function Table<T extends { id: string }>({
                 <Menu.Item
                     key={ index }
                     leftSection={ item.icon }
+                    disabled={ item.disabled }
                     onClick={ (e: React.MouseEvent) => {
                         e.stopPropagation();
                         item.command?.(e);

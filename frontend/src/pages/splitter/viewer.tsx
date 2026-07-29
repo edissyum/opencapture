@@ -1110,6 +1110,8 @@ export function SplitterViewerPage() {
         return options;
     };
 
+    console.log(selectedDocument)
+
     if (loadingBatch || !batch) return <Loader/>;
 
     return (
@@ -1384,9 +1386,7 @@ export function SplitterViewerPage() {
                 ) }
 
                 { !showAttachments && (
-                    <div ref={ listRef } className={ `pb-24 px-8 h-full overflow-y-auto` }
-                         onClick={ () => setSelectedDocument(null) }
-                    >
+                    <div ref={ listRef } className='pb-24 px-8 h-full overflow-y-auto'>
                         <Accordion className='mb-6' chevronPosition="left" defaultValue={ 'batch_metadata' }>
                             <Accordion.Item key={ 'zone.id' } value='batch_metadata'>
                                 <Accordion.Control>
@@ -1529,6 +1529,7 @@ export function SplitterViewerPage() {
                                                         onClick={ (e: any) => {
                                                             e.preventDefault();
                                                             e.stopPropagation();
+                                                            setSelectedDocument(document);
                                                         } }
                                                     >
                                                         <EllipsisVertical
@@ -1541,7 +1542,9 @@ export function SplitterViewerPage() {
                                                 <Menu.Dropdown>
                                                     { menuItems?.map((item: any, index: number) => (
                                                         <Menu.Item
-                                                            key={ index } leftSection={ item.icon }
+                                                            key={ index }
+                                                            leftSection={ item.icon }
+                                                            disabled={ item.disabled }
                                                             onClick={ (e: React.MouseEvent) => {
                                                                 e.stopPropagation();
                                                                 item.command(e);
