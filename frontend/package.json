@@ -42,7 +42,6 @@
         "dompurify": "^3.4.12",
         "fs-extra": "^11.4.0",
         "i18next": "^26.3.6",
-        "primereact": "^10.9.8",
         "react": "^19.2.8",
         "react-dom": "^19.2.8",
         "react-dropzone": "^19.1.1",

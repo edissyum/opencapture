@@ -16,13 +16,13 @@
 
 import { t } from "i18next";
 import { CSS } from "@dnd-kit/utilities";
-import type { TreeNode } from "primereact/treenode";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Tree, type TreeExpandedKeysType } from "primereact/tree";
 import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import {
     ArrowRightToLine,
+    ChevronDown,
+    ChevronRight,
     Copy,
     Download,
     GripVertical,
@@ -36,7 +36,7 @@ import {
 
 import { axiosApiCall } from "../../../services/hooks/axiosApiCall";
 
-import { buildPrimeTree, collectExpanded, makeNodeTemplate } from "./helpers";
+import { buildDoctypesTree, collectExpanded, type DoctypeTreeNode, type ExpandedKeysType, makeNodeTemplate } from "./helpers";
 
 import Hint from "../../Hint";
 import Input from "../../Input";
@@ -45,6 +45,75 @@ import { Select } from "../../Select";
 import { Loader } from "../../loader/Loader";
 import { showToast } from "../../ToastProvider";
 import { ImportSpreadSheet } from "../ImportSpreadSheet";
+
+function DoctypeNode({
+                          node,
+                          depth,
+                          editor,
+                          expandedKeys,
+                          selectedKey,
+                          renderLabel,
+                          onToggle,
+                          onNodeClick,
+                          onNodeDoubleClick
+                      }: {
+    node: DoctypeTreeNode;
+    depth: number;
+    editor?: boolean;
+    expandedKeys: ExpandedKeysType;
+    selectedKey: string | null;
+    renderLabel: (node: DoctypeTreeNode) => React.ReactNode;
+    onToggle: (key: string) => void;
+    onNodeClick: (node: DoctypeTreeNode) => void;
+    onNodeDoubleClick: (node: DoctypeTreeNode) => void;
+}) {
+    const hasChildren = !!node.children?.length;
+    const isExpanded = expandedKeys[node.key];
+    const isSelected = selectedKey === node.key;
+
+    return (
+        <div>
+            <div
+                onClick={ () => onNodeClick(node) }
+                onDoubleClick={ () => onNodeDoubleClick(node) }
+                style={ { marginLeft: `${ depth * 1.25 }rem` } }
+                className={ `flex items-center py-1 px-1 rounded-md cursor-pointer transition-colors
+                            ${ isSelected ? 'bg-(--color-primary) text-white node-selected' : 'hover:bg-(--bg-selected)' }` }
+            >
+                <span
+                    className={ `shrink-0 flex items-center justify-center size-5 ${ hasChildren ? 'cursor-pointer' : 'hidden' }` }
+                    onClick={ (e) => {
+                        e.stopPropagation();
+                        if (hasChildren) onToggle(node.key);
+                    } }
+                >
+                    { hasChildren && (isExpanded ? <ChevronDown size={ 16 }/> : <ChevronRight size={ 16 }/>) }
+                </span>
+
+                { renderLabel(node) }
+            </div>
+
+            { hasChildren && isExpanded && (
+                <div>
+                    { node.children!.map(child => (
+                        <DoctypeNode
+                            node={ child }
+                            key={ child.key }
+                            editor={ editor }
+                            depth={ depth + 1 }
+                            expandedKeys={ expandedKeys }
+                            selectedKey={ selectedKey }
+                            renderLabel={ renderLabel }
+                            onToggle={ onToggle }
+                            onNodeClick={ onNodeClick }
+                            onNodeDoubleClick={ onNodeDoubleClick }
+                        />
+                    )) }
+                </div>
+            ) }
+        </div>
+    );
+}
 
 function SortableFieldItem({ field, lastField, onRemove }: {
     field: any,
@@ -119,7 +188,7 @@ export function DoctypesTree({
 
     const [doctypes, setDoctypes] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const [expandedKeys, setExpandedKeys] = useState<TreeExpandedKeysType>({});
+    const [expandedKeys, setExpandedKeys] = useState<ExpandedKeysType>({});
     const [selectedKey, setSelectedKey] = useState<string | null>(null);
     const [selectedFormId, setSelectedFormId] = useState<number | null>(null);
 
@@ -168,9 +237,8 @@ export function DoctypesTree({
         availableFields.filter(f => f.selected)
     );
 
-    const ROOT_NODE: TreeNode = {
+    const ROOT_NODE: DoctypeTreeNode = {
         key: "0",
-        selectable: true,
         data: { code: "0", label: t('DOCTYPES.root'), type: "root" }
     };
 
@@ -222,7 +290,7 @@ export function DoctypesTree({
     const treeNodes = useMemo(() => {
         if (!doctypes) return [];
 
-        const children = buildPrimeTree(doctypes);
+        const children = buildDoctypesTree(doctypes);
 
         if (!editor) {
             return children;
@@ -486,103 +554,109 @@ export function DoctypesTree({
                 </>
             ) }
 
-            <Tree
-                value={ treeNodes }
-                selectionMode="single"
-                expandedKeys={ expandedKeys }
-                selectionKeys={ selectedKey }
-                onSelectionChange={ editor ? handleSelect : undefined }
-                nodeTemplate={ makeNodeTemplate(searchTerm, expandedKeys) }
-                onToggle={ e => setExpandedKeys(e.value) }
-                onNodeClick={ e => {
-                    const key = e.node.key as string;
-                    if (!editor && e.node.data?.type === "document") {
-                        onTmpSelect?.(e.node.data);
-                        setSelectedKey(key as string);
-                    } else if (!editor && e.node.data?.type === "folder") {
-                        setExpandedKeys(prev =>
-                            prev[key]
-                                ? Object.fromEntries(
-                                    Object.entries(prev).filter(([k]) => k !== key)
-                                )
-                                : { ...prev, [key]: true }
-                        );
-                    }
-                } }
-                onNodeDoubleClick={ e => {
-                    if (e.node.data?.type === "folder") {
-                        const key = e.node.key as string;
+            <div className="flex-1 flex flex-col overflow-hidden">
+                <div className="p-6 pb-0 flex flex-col gap-2">
+                    <Input
+                        type="text"
+                        value={ searchTerm }
+                        onChange={ e => {
+                            const v = e.target.value;
+                            setSearchTerm(v);
 
-                        setExpandedKeys(prev =>
-                            prev[key]
-                                ? Object.fromEntries(
-                                    Object.entries(prev).filter(([k]) => k !== key)
-                                )
-                                : { ...prev, [key]: true }
-                        );
-                    } else {
-                        handleSelect({ value: e.node.key });
-                    }
-                } }
-                filter
-                filterMode="lenient"
-                emptyMessage={
-                    searchTerm ? t('GLOBAL.no_results_for') +
-                        `"${ searchTerm }"`
-                        : t("DOCTYPES.no_doctypes")
-                }
-                filterTemplate={ () => (
-                    <div className="p-6 pb-0 flex flex-col gap-2">
-                        <Input
-                            type="text"
-                            value={ searchTerm }
-                            onChange={ e => {
-                                const v = e.target.value;
-                                setSearchTerm(v);
+                            if (v) expandAll();
+                        } }
+                        label={ t("GLOBAL.search") }
+                    />
 
-                                if (v) expandAll();
-                            } }
-                            label={ t("GLOBAL.search") }
-                        />
+                    <div className="flex mb-3">
+                        <div className="actionsButton">
+                            <span onClick={ expandAll } className="rounded-l-md dark:bg-(--bg-secondary) border">
+                                <Maximize size={ 16 }/>
+                            </span>
 
-                        <div className="flex mb-3">
-                            <div className="actionsButton">
-                                <span onClick={ expandAll } className="rounded-l-md dark:bg-(--bg-secondary) border">
-                                    <Maximize size={ 16 }/>
+                            <span onClick={ collapseAll }
+                                  className="rounded-r-md dark:bg-(--bg-secondary) border border-l-0">
+                                <Minimize size={ 16 }/>
+                            </span>
+                        </div>
+
+                        { editor && (
+                            <div className="actionsButton ml-auto">
+                                <span className="rounded-l-md dark:bg-(--bg-secondary) border"
+                                      onClick={ () => setShowImportDialog(true) }
+                                      data-tooltip-id='tooltip' data-tooltip-content={ t('DOCTYPES.import') }>
+                                    <Download size={ 16 }/>
                                 </span>
 
-                                <span onClick={ collapseAll }
-                                      className="rounded-r-md dark:bg-(--bg-secondary) border border-l-0">
-                                    <Minimize size={ 16 }/>
+                                <span className="rounded-r-md dark:bg-(--bg-secondary) border border-l-0"
+                                      onClick={ () => setShowExportDialog(true) }
+                                      data-tooltip-id='tooltip' data-tooltip-content={ t('DOCTYPES.export') }>
+                                    <Upload size={ 16 }/>
+                                </span>
+
+                                <span className="rounded-md dark:bg-(--bg-secondary) ml-2 border"
+                                      onClick={ () => setShowCloneDialog(true) }
+                                      data-tooltip-content={ t('DOCTYPES.clone_doctype') }
+                                      data-tooltip-id='tooltip'>
+                                    <Copy size={ 16 }/>
                                 </span>
                             </div>
-
-                            { editor && (
-                                <div className="actionsButton ml-auto">
-                                    <span className="rounded-l-md dark:bg-(--bg-secondary) border"
-                                          onClick={ () => setShowImportDialog(true) }
-                                          data-tooltip-id='tooltip' data-tooltip-content={ t('DOCTYPES.import') }>
-                                        <Download size={ 16 }/>
-                                    </span>
-
-                                    <span className="rounded-r-md dark:bg-(--bg-secondary) border border-l-0"
-                                          onClick={ () => setShowExportDialog(true) }
-                                          data-tooltip-id='tooltip' data-tooltip-content={ t('DOCTYPES.export') }>
-                                        <Upload size={ 16 }/>
-                                    </span>
-
-                                    <span className="rounded-md dark:bg-(--bg-secondary) ml-2 border"
-                                          onClick={ () => setShowCloneDialog(true) }
-                                          data-tooltip-content={ t('DOCTYPES.clone_doctype') }
-                                          data-tooltip-id='tooltip'>
-                                        <Copy size={ 16 }/>
-                                    </span>
-                                </div>
-                            ) }
-                        </div>
+                        ) }
                     </div>
-                ) }
-            />
+                </div>
+
+                <div className="flex-1 overflow-y-auto px-6 pb-6">
+                    { treeNodes.length === 0 ? (
+                        <div className="text-center text-(--text-secondary) py-8">
+                            { searchTerm ? t('GLOBAL.no_results_for') + `"${ searchTerm }"` : t("DOCTYPES.no_doctypes") }
+                        </div>
+                    ) : (
+                        treeNodes.map(node => (
+                            <DoctypeNode
+                                key={ node.key }
+                                node={ node }
+                                depth={ 0 }
+                                editor={ editor }
+                                expandedKeys={ expandedKeys }
+                                selectedKey={ selectedKey }
+                                renderLabel={ makeNodeTemplate(searchTerm, expandedKeys) }
+                                onToggle={ key => setExpandedKeys(prev =>
+                                    prev[key]
+                                        ? Object.fromEntries(Object.entries(prev).filter(([k]) => k !== key))
+                                        : { ...prev, [key]: true }
+                                ) }
+                                onNodeClick={ node => {
+                                    const key = node.key;
+                                    if (!editor && node.data?.type === "document") {
+                                        onTmpSelect?.(node.data);
+                                        setSelectedKey(key);
+                                    } else if (!editor && node.data?.type === "folder") {
+                                        setExpandedKeys(prev =>
+                                            prev[key]
+                                                ? Object.fromEntries(Object.entries(prev).filter(([k]) => k !== key))
+                                                : { ...prev, [key]: true }
+                                        );
+                                    } else if (editor) {
+                                        handleSelect({ value: key });
+                                    }
+                                } }
+                                onNodeDoubleClick={ node => {
+                                    if (node.data?.type === "folder") {
+                                        const key = node.key;
+                                        setExpandedKeys(prev =>
+                                            prev[key]
+                                                ? Object.fromEntries(Object.entries(prev).filter(([k]) => k !== key))
+                                                : { ...prev, [key]: true }
+                                        );
+                                    } else {
+                                        handleSelect({ value: node.key });
+                                    }
+                                } }
+                            />
+                        ))
+                    ) }
+                </div>
+            </div>
         </div>
     );
 }

@@ -1014,6 +1014,8 @@ export function SplitterViewerPage() {
     };
 
     const handleChangeDoctype = async (doctype: any) => {
+        if (!selectedDocument) return;
+
         setDocuments((docs: any[]) => {
             return docs.map(doc => {
                 if (doc.id === selectedDocument.id) {
