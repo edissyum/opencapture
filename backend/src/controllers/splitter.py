@@ -536,17 +536,12 @@ def create_document(args):
         })
 
     if res:
-        workflow_id = None
-        workflow_info = workflow.get_workflow_by_id({'workflow_id': args['workflowId']})
-        if workflow_info and workflow_info[0]:
-            workflow_id = workflow_info[0]['workflow_id']
-
         database.insert({
             'table': 'history',
             'columns': {
-                'workflow_id': workflow_id,
                 'history_module': 'splitter',
                 'user_ip': request.remote_addr,
+                'workflow_id': args['workflowId'],
                 'history_submodule': 'create_document',
                 'user_info': request.environ['user_info'],
                 'custom_fields': json.dumps({"splitter_document_id": res}),
