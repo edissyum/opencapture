@@ -7,8 +7,10 @@
 
 FROM python:3.13-slim-bookworm AS builder
 
-ENV PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+# PIP_NO_CACHE_DIR is intentionally NOT set here: this stage's pip wheel
+# step relies on the BuildKit cache mount below, which PIP_NO_CACHE_DIR
+# would silently defeat (pip would never write into it).
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PYTHONDONTWRITEBYTECODE=1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
