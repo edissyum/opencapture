@@ -131,10 +131,10 @@ export function SplitterListPage() {
     const columns: any = [
         {
             id: 'id',
-            header: view == 'grid' ? t('SPLITTER.id') : '',
             field: 'id',
             sortable: true,
-            className: 'w-14'
+            header: view == 'grid' ? t('SPLITTER.id') : '',
+            className: `w-14 ${ filtersChanged && 'text-(--color-primary) font-medium' }`
         },
         {
             id: 'filename',
@@ -327,6 +327,18 @@ export function SplitterListPage() {
             setLazyParams({ ...lazyParams, first: 0 });
         } catch (err) {
             console.error("Erreur lors de la fusion des lots :", err);
+        }
+    }
+
+    const handleDisplayFilters = () => {
+        setDisplayFilters(!displayFilters);
+        if (!displayFilters) {
+            if (selectedForm) {
+                setOpen({ ...open, forms: true });
+            }
+            if (selectedCustomers?.length > 0) {
+                setOpen({ ...open, customers: true });
+            }
         }
     }
 
@@ -554,7 +566,7 @@ export function SplitterListPage() {
                                 <Filter fill={ 'var(--color-primary)' } stroke={ 'var(--color-primary)' } size={ 14 }/> :
                                 <Filter size={ 14 }/>
                             }
-                            onClick={ () => setDisplayFilters(!displayFilters) }>
+                            onClick={ handleDisplayFilters }>
                         { t('VERIFIER.filters') }
                     </Button>
                     <span className='flex items-center gap-1'>
@@ -619,6 +631,7 @@ export function SplitterListPage() {
                         rowsPerPage={ lazyParams.rows }
                         skeletonRows={ lazyParams.rows }
                         selectedRows={ selectedBatches }
+                        filtersChanged={ filtersChanged }
                         totalRecords={ totalBatches || 0 }
                         rowsPerPageOptions={ [
                             { "value": 4, "label": "4" },

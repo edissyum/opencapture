@@ -17,6 +17,7 @@
 
 .mantine-MultiSelect-inputField {
     @apply h-10!;
+    @apply text-base;
 }
 
 .mantine-MultiSelect-input:hover,
