@@ -21,10 +21,9 @@
 }
 
 .mantine-Select-input {
-    @apply cursor-pointer!;
     @apply h-12!;
-    @apply min-h-12!;
     @apply text-base!;
+    @apply cursor-pointer!;
 }
 
 .mantine-Select-option:where([data-checked]) {
