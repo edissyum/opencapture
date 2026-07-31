@@ -592,3 +592,40 @@ UPDATE mailcollect m SET workflow_id = w.id FROM workflows w WHERE is_splitter =
 
 ALTER TABLE mailcollect DROP COLUMN splitter_workflow_id;
 ALTER TABLE mailcollect DROP COLUMN verifier_workflow_id;
+
+-- Migration des chaînes sortants de type MEM
+
+UPDATE outputs
+SET data = jsonb_set(
+    jsonb_set(
+        data,
+        '{options,links}',
+        (
+            SELECT jsonb_agg(
+                CASE
+                    WHEN elem->>'webservice' IS NOT NULL
+                        AND elem->>'webservice' <> ''
+                        AND elem->'value' IS NOT NULL
+                        AND elem->'value' <> 'null'::jsonb
+                        AND jsonb_typeof(elem->'value') = 'object'
+                        THEN jsonb_set(elem, '{value}', to_jsonb(elem->'value'->>'id'))
+                    ELSE elem
+                END
+            ) FROM jsonb_array_elements(data->'options'->'links') elem
+        )),
+        '{options,parameters}',
+        (
+            SELECT jsonb_agg(
+                CASE
+                    WHEN elem->>'webservice' IS NOT NULL
+                        AND elem->>'webservice' <> ''
+                        AND elem->'value' IS NOT NULL
+                        AND elem->'value' <> 'null'::jsonb
+                        AND jsonb_typeof(elem->'value') = 'object'
+                        THEN jsonb_set(elem, '{value}', to_jsonb(elem->'value'->>'id'))
+                    ELSE elem
+                END
+            ) FROM jsonb_array_elements(data->'options'->'parameters') elem
+        )
+)
+WHERE output_type_id = 'export_mem';
