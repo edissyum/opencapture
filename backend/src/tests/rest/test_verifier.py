@@ -359,7 +359,7 @@ class VerifierTest(unittest.TestCase):
         is_facturx = False
         with open(f'{filename}', 'rb') as f:
             _, _xml_content = facturx.get_facturx_xml_from_pdf(f.read(), check_schematron=False)
-            if _ is not None:
+            if _ not in [None, False] and _xml_content not in [None, False]:
                 is_facturx = True
 
         self.assertEqual(200, response.status_code)

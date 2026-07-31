@@ -69,10 +69,12 @@ export function MonitoringDetails() {
     }, [steps, lazyParams]);
 
     const columns: any = [
-        { field: 'step', header: t('MONITORING.step') },
-        { field: 'date', header: t('MONITORING.exec_date'), className: 'w-60 max-w-60' },
+        { field: 'step', header: t('MONITORING.step'), className: 'w-20' },
+        { field: 'date', header: t('MONITORING.exec_date'), className: 'w-40' },
         {
-            field: 'message', header: t('MONITORING.event_details'), body: (row: any) => (
+            field: 'message',
+            header: t('MONITORING.event_details'),
+            body: (row: any) => (
                 <span className={ `${ row.status === 'done' && !row.error && 'text-(--color-primary)' }
                                    ${ (row.status === 'error' || row.error) && 'cursor-pointer text-(--text-error)' }` }
                       { ...((row.status === 'error' || row.error) && {
@@ -85,11 +87,16 @@ export function MonitoringDetails() {
                               showToast(t('MONITORING.error_message_copied'), 'success');
                           }
                       } }
-                      dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(row.message_formatted) } }/>
+                      dangerouslySetInnerHTML={ { __html: DOMPurify.sanitize(row.message_formatted) } }
+                />
             )
         },
         {
-            id: 'status', field: 'status', header: t('GLOBAL.status'), body:
+            id: 'status',
+            field: 'status',
+            className: 'w-1/12',
+            header: t('GLOBAL.status'),
+            body:
                 (row: any) => (
                     <span>
                         { row.status === 'error' || row.error ? (
