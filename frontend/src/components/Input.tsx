@@ -47,6 +47,7 @@ const Input: React.FC<InputProps> = ({
     height = "h-12",
     onFocus,
     onBlur,
+    placeholder,
     ...props
 }) => {
     const [passwordVisible, setPasswordVisible] = React.useState(false);
@@ -125,6 +126,7 @@ const Input: React.FC<InputProps> = ({
                         disabled={ disabled }
                         required={ required }
                         aria-required={ required }
+                        placeholder={ label && !floating ? undefined : placeholder }
                         onFocus={ (e) => {
                             onFloatFocus();
                             onFocus?.(e);
