@@ -555,8 +555,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         const label = detailsGetValues('label');
         const workflowId = detailsGetValues('workflow_id');
         if (Object.keys(detailsErrors).length > 0 || !workflowId || !label) {
-            await detailsHandleSubmit(() => {
-            })();
+            await detailsHandleSubmit(() => {})();
             showToast(t("WORKFLOWS.fix_details_errors"), 'error');
             return;
         }
@@ -655,9 +654,11 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 await put(`/workflows/${ module }/update/${ workflowId }`, payload);
                 showToast(t('WORKFLOWS.update_success'), 'success');
             } else {
-                await post(`/workflows/${ module }/create`, payload);
-                showToast(t('WORKFLOWS.create_success'), 'success');
-                navigate(`/settings/${ module }/workflows`);
+                const res = await post(`/workflows/${ module }/create`, payload);
+                if (res.id) {
+                    navigate(`/settings/${ module }/workflows/edit/${ res.id }`);
+                    showToast(t('WORKFLOWS.create_success'), 'success');
+                }
             }
         } catch (error) {
             console.error('Error updating workflow :', error);
