@@ -27,10 +27,6 @@
     @apply text-base!;
 }
 
-.mantine-Select-dropdown {
-    @apply p-2;
-}
-
 .mantine-Select-option:where([data-checked]) {
     @apply bg-(--bg-selected)!;
     @apply text-(--color-primary);

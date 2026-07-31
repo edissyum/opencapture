@@ -18,7 +18,7 @@
 /* Overlay popup on small screen */
 
 .mantine-Popover-dropdown {
-    @apply p-6;
+    @apply p-3;
     @apply z-40!;
     @apply overflow-auto;
 }

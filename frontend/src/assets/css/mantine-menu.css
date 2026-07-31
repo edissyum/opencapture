@@ -15,10 +15,6 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-.mantine-Menu-dropdown .mantine-Popover-dropdown {
-    @apply p-2!;
-}
-
 .mantine-Menu-item:has(.critical):hover svg,
 .mantine-Menu-item:has(.critical):hover span {
     @apply text-(--text-error)!;

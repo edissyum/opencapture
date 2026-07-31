@@ -308,17 +308,20 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             component: "select",
             label: t("WORKFLOWS.customer"),
             required: module === 'splitter',
+            searchable: true,
             options: customers.map((c: any) => ({ label: c.name, value: c.id }))
         })),
         ai_model_id: z.number().optional().describe(JSON.stringify({
             component: "select",
             label: t("WORKFLOWS.ai_model"),
+            searchable: false,
             hint: t("WORKFLOWS.ai_model_hint"),
             options: aiModels.map((m: any) => ({ label: m.model_label, value: m.id }))
         })),
         splitter_method_id: z.string().optional().describe(JSON.stringify({
             required: true,
             component: "select",
+            searchable: false,
             label: t("WORKFLOWS.splitter_method_id"),
             options: splitterMethods.map((m: any) => ({ label: m.label, value: m.id }))
         })),
@@ -345,6 +348,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         inputSchemaFields = inputSchemaFields.extend({
             rotation: z.string().optional().describe(JSON.stringify({
                 component: "select",
+                searchable: false,
                 label: t("WORKFLOWS.rotation"),
                 options: getRotationOptions().map((o: any) => ({ label: o.label, value: o.id }))
             }))
