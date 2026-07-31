@@ -134,7 +134,7 @@ export function SplitterListPage() {
             field: 'id',
             sortable: true,
             header: view == 'grid' ? t('SPLITTER.id') : '',
-            className: `w-14 ${ filtersChanged && 'text-(--color-primary) font-medium' }`
+            className: `w-16 ${ filtersChanged && 'text-(--color-primary) font-medium' }`
         },
         {
             id: 'filename',

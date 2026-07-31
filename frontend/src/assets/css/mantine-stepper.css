@@ -51,4 +51,19 @@
     & .mantine-Stepper-stepWrapper {
         @apply hidden;
     }
+
+    &:where([data-progress]) {
+        @apply border-solid;
+        @apply bg-(--bg-selected);
+        @apply border-(--border-primary);
+
+        & .mantine-Stepper-stepLabel div div {
+            @apply text-(--color-primary);
+        }
+
+        & svg {
+            @apply text-(--bg-primary);
+            @apply bg-(--color-primary)/70;
+        }
+    }
 }
