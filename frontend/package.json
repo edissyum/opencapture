@@ -39,7 +39,7 @@
         "@tinymce/tinymce-react": "^6.3.0",
         "axios": "^1.19.0",
         "dayjs": "^1.11.21",
-        "dompurify": "^3.4.12",
+        "dompurify": "^3.4.13",
         "fs-extra": "^11.4.0",
         "i18next": "^26.3.6",
         "react": "^19.2.8",
