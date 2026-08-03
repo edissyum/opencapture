@@ -157,7 +157,7 @@ export function UploadPage() {
                 </div>
 
                 <div
-                    className='bg-(--bg-primary) py-4 px-6 rounded-md border border-(--border-secondary) flex flex-col gap-4'>
+                    className='bg-(--bg-primary) p-4 rounded-md border border-(--border-secondary) flex flex-col gap-4'>
                     <div className='flex items-center gap-4'>
                         <div className='rounded-full bg-(--color-primary) size-6 flex items-center justify-center
                                         text-white font-semibold'
@@ -220,7 +220,7 @@ export function UploadPage() {
                     </div>
                 </div>
 
-                <div className={ `bg-(--bg-primary) py-4 px-6 rounded-md border border-(--border-secondary) flex flex-col 
+                <div className={ `bg-(--bg-primary) p-4 rounded-md border border-(--border-secondary) flex flex-col 
                                   gap-4 ${ !selectedWorkflow ? 'opacity-50 pointer-events-none' : '' }` }>
                     <div className='flex items-center gap-4'>
                         <div className='rounded-full bg-(--color-primary) size-6 flex items-center justify-center
