@@ -278,13 +278,13 @@ export function Table<T extends { id: string }>({
                         </MantineTable.Tr>
                     </MantineTable.Thead>
                     <MantineTable.Tbody>
-                        { data.length === 0 ? (
+                        { data?.length === 0 ? (
                             <MantineTable.Tr>
                                 <MantineTable.Td colSpan={ colSpan } className="text-center py-8 text-(--text-secondary)">
                                     { emptyMessage }
                                 </MantineTable.Td>
                             </MantineTable.Tr>
-                        ) : data.map((row) => (
+                        ) : data?.map((row) => (
                             <MantineTable.Tr
                                 key={ row.id }
                                 onClick={ () => handleRowClick(row) }
