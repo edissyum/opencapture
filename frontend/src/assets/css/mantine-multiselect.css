@@ -20,8 +20,8 @@
     @apply text-base;
 }
 
-.mantine-MultiSelect-input:hover,
-.mantine-MultiSelect-input:focus-within {
+.mantine-MultiSelect-input:focus-within,
+.mantine-MultiSelect-input:hover:not([data-disabled]) {
     @apply border-(--color-primary);
 }
 
@@ -33,4 +33,9 @@
         @apply leading-8;
         @apply font-medium;
     }
+}
+
+.mantine-MultiSelect-option:where([data-checked]) {
+    @apply bg-(--bg-selected);
+    @apply text-(--color-primary);
 }
