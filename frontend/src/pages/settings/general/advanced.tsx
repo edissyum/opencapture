@@ -90,9 +90,9 @@ export function SettingsGeneralAdvanced() {
     }, [searchTerm]);
 
     const handleUpdate = () => {
-        let options = []
+        let options = [];
         if (selectedConfiguration[0].data.options) {
-            options = selectedConfiguration[0].data.options.map((option: string) => ({value: option, label: option}))
+            options = selectedConfiguration[0].data.options.map((option: string) => ({value: option, label: option}));
         }
 
         showConfirmDialogWithInput({
