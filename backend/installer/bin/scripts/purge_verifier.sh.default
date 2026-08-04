@@ -14,7 +14,7 @@
 
 # See LICENCE file at the root folder for more details.
 
-# @dev : Nathan CHEVAL <nathan.cheval@outlook.fr>
+# @dev : Nathan CHEVAL <nathan.cheval@edissyum.com>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 TARGET_STATUS="$1"

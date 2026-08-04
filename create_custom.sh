@@ -15,7 +15,7 @@
 
 # See LICENCE file at the root folder for more details.
 
-# @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 DEFAULT_PATH='.'
 CUSTOM_PATH="$DEFAULT_PATH/custom"
