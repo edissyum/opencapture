@@ -174,8 +174,7 @@ def run_inference(img_path, log):
         processor = AutoProcessor.from_pretrained(
             current_app.config['CONTACT_MODEL'],
             min_pixels=256 * 32 * 32,
-            max_pixels=1024 * 32 * 32,
-            use_fast=True
+            max_pixels=1024 * 32 * 32
         )
         messages = [{
             "role": "user",
