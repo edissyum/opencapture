@@ -90,13 +90,18 @@ export function SettingsGeneralAdvanced() {
     }, [searchTerm]);
 
     const handleUpdate = () => {
+        let options = []
+        if (selectedConfiguration[0].data.options) {
+            options = selectedConfiguration[0].data.options.map((option: string) => ({value: option, label: option}))
+        }
+
         showConfirmDialogWithInput({
             value: selectedConfiguration[0].data.value,
             title: t('SECURITY.update_configuration_modale'),
             message: t('SECURITY.update_configuration_details', { 'name': selectedConfiguration[0].label }),
             confirmText: t('GLOBAL.modify'),
             cancelText: t('GLOBAL.cancel'),
-            options: selectedConfiguration[0].data.options || [],
+            options: options,
             type: selectedConfiguration[0].data.type,
             onConfirm: (value) => {
                 const updateValue = async () => {
