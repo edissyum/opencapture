@@ -111,7 +111,7 @@ class FindName:
 
         if self.contact_model is not None:
             self.log.info('Using AI model to detect firstname and lastname. Only in first page.')
-            contact_data = run_inference(self.image)
+            contact_data = run_inference(self.image, self.log)
 
             if 'firstname' in contact_data:
                 firstname = contact_data['firstname'].capitalize()

@@ -121,8 +121,8 @@ export function SettingsGeneralAdvanced() {
     };
 
     const columns = [
-        { id: 'id', field: 'id', header: '', className: 'max-w-10! w-10!' },
-        { id: 'label', field: 'label', header: t('GLOBAL.label'), className: 'max-w-45! w-45!' },
+        { id: 'id', field: 'id', header: '', className: 'w-14!', sortable: true},
+        { id: 'label', field: 'label', header: t('GLOBAL.label'), className: 'w-2/12' },
         {
             id: 'description',
             className: 'max-w-3xl! w-3xl! truncate',
@@ -135,7 +135,7 @@ export function SettingsGeneralAdvanced() {
         },
         {
             id: 'type',
-            className: 'max-w-35! w-35! truncate',
+            className: 'w-2/12',
             header: t('SECURITY.data_type'),
             body: (row: any) => {
                 const typeMap: Record<string, string> = {
@@ -153,6 +153,7 @@ export function SettingsGeneralAdvanced() {
         },
         {
             id: 'value',
+            className: 'w-1/12',
             header: t('SECURITY.value'),
             body: (row: any) => {
                 if (row.data.type === 'bool') {

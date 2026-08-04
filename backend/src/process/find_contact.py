@@ -23,6 +23,7 @@ import subprocess
 from flask import current_app
 
 from ..controllers import accounts
+from ..helpers import get_context_var
 
 
 MAPPING = {
@@ -108,7 +109,7 @@ def has_cpu_flags():
     return False
 
 
-def run_inference(img_path):
+def run_inference(img_path, log):
     # Check all sub-folders for .gguf files
     out = ""
     workdir = None
@@ -150,10 +151,23 @@ def run_inference(img_path):
         import torch
         from transformers import Qwen3VLForConditionalGeneration, AutoProcessor
 
+        configurations = get_context_var('configurations', 10)
+        dtype_str = configurations.get('informalContactDtype', 'bfloat16')
+
+        dtype_map = {
+            "float32": torch.float32,
+            "bfloat16": torch.bfloat16,
+        }
+        try:
+            dtype = dtype_map[dtype_str]
+        except KeyError:
+            log.error(f"Unsupported dtype: {dtype_str}")
+            return None
+
         model = Qwen3VLForConditionalGeneration.from_pretrained(
             current_app.config['CONTACT_MODEL'],
             device_map="auto",
-            dtype=torch.float32
+            dtype=dtype
         )
         model.eval()
 
@@ -245,7 +259,7 @@ class FindContact:
             return None
 
         found_contact = {}
-        ai_contact = run_inference(self.image)
+        ai_contact = run_inference(self.image, self.log)
         for key in ai_contact:
             if ai_contact[key] and key in MAPPING.keys():
                 found_contact[MAPPING[key]] = ai_contact[key][:254]

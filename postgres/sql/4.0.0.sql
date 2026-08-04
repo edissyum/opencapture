@@ -629,3 +629,6 @@ SET data = jsonb_set(
         )
 )
 WHERE output_type_id = 'export_mem';
+
+-- Ajout d'une configuration pour selectionner le dtype de la recherche IA du contact informel
+INSERT INTO "configurations" ("label", "data") VALUES ('informalContactDtype', '{"type": "list", "value": "bfloat16", "options": ["float32", "bfloat16"], "description": "Définit le niveau de précision du modèle. bfloat16 (rapide et économe) ou float32 (précis et compatible)"}');
