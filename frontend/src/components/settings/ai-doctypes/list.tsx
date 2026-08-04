@@ -86,7 +86,7 @@ export function AiDoctypesList({ module }: { module: string }) {
     ];
 
     const columns = [
-        { id: 'id', field: 'id', header: '', sortable: true, className: 'max-w-10! w-10!' },
+        { id: 'id', field: 'id', header: '', sortable: true, className: 'w-16!' },
         { id: 'model_label', field: 'model_label', header: t('GLOBAL.label'), sortable: true },
         { id: 'accuracy_score', field: 'accuracy_score', header: t('AI-DOCTYPES.accuracy_score') },
         { id: 'min_proba', field: 'min_proba', header: t('AI-DOCTYPES.min_proba') },

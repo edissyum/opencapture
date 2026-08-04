@@ -54,7 +54,7 @@ export function FormsList({ module }: { module: string }) {
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
     const columns = [
-        { id: 'id', field: 'id', header: '', className: 'max-w-10! w-10!' },
+        { id: 'id', field: 'id', header: '', className: 'w-16' },
         { id: 'label', field: 'label', header: t('GLOBAL.label') },
         {
             id: 'status',
