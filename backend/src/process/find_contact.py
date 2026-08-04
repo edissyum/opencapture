@@ -13,7 +13,7 @@
 
 # See LICENCE file at the root folder for more details.
 
-# @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 # @dev: Serena tetart <serena.tetart@edissyum.com>
 
 import os
@@ -24,6 +24,19 @@ from flask import current_app
 
 from ..controllers import accounts
 
+
+MAPPING = {
+    'POSTAL_CODE': 'postal_code',
+    'CITY': 'city',
+    'NUM_STREET': 'num_address',
+    'STREET': 'address',
+    'ADD_ADDRESS': 'additional_address',
+    'PHONE': 'phone',
+    'EMAIL': 'email',
+    'LASTNAME': 'lastname',
+    'COMPANY': 'company',
+    'FIRSTNAME': 'firstname'
+}
 
 def parse_output(output: str):
     final_dict = {}
@@ -52,7 +65,7 @@ def parse_output(output: str):
                 if c not in "\n[]":
                     value_dict += c
                 i += 1
-            key_name = key_dict[2:].lower()
+            key_name = key_dict[2:].upper()
             if not sep_bool:
                 final_dict[key_name] = value_dict
             elif key_dict == "K_PHONE":
@@ -119,7 +132,7 @@ def run_inference(img_path):
             "--mmproj", f"{workdir}/mmproj-Qwen3-VL-2B-Instruct-FT-f16.gguf",
             "--image", img_path,
             "--image-min-tokens", "256",
-            "--image-max-tokens", "512",
+            "--image-max-tokens", "1024",
             "--threads", str(num_threads),
             "--temp", "0.0",
             "-p", "Extract sender's data in a python dictionary"
@@ -147,7 +160,7 @@ def run_inference(img_path):
         processor = AutoProcessor.from_pretrained(
             current_app.config['CONTACT_MODEL'],
             min_pixels=256 * 32 * 32,
-            max_pixels=512 * 32 * 32,
+            max_pixels=1024 * 32 * 32,
             use_fast=True
         )
         messages = [{
@@ -183,7 +196,7 @@ def run_inference(img_path):
                 skip_special_tokens=False,
                 clean_up_tokenization_spaces=False
             )
-            out = generated_texts[0][1:-11]
+            out = generated_texts[0]
 
     data = parse_output(out)
     if data and isinstance(data, str):
@@ -231,35 +244,50 @@ class FindContact:
             self.log.info('No contact model configured, skipping contact search/creation')
             return None
 
-        contact_data = run_inference(self.image)
-        if 'email' in contact_data:
-            contact = self.search_contact('email', contact_data['email'])
+        found_contact = {}
+        ai_contact = run_inference(self.image)
+        for key in ai_contact:
+            if ai_contact[key] and key in MAPPING.keys():
+                found_contact[MAPPING[key]] = ai_contact[key][:254]
+                if key in ('LASTNAME', 'COMPANY', 'CITY'):
+                    found_contact[MAPPING[key]] = found_contact[MAPPING[key]].upper()
+                elif key == 'FIRSTNAME':
+                    found_contact[MAPPING[key]] = found_contact[MAPPING[key]].capitalize()
+                elif key == 'EMAIL':
+                    found_contact[MAPPING[key]] = found_contact[MAPPING[key]].lower()
+                elif key == 'POSTAL_CODE' and len(found_contact[MAPPING[key]]) != 5:
+                    found_contact[MAPPING[key]] = ''
+                elif key == 'STREET':
+                    found_contact[MAPPING[key]] = found_contact[MAPPING[key]].upper()
+
+        if 'email' in found_contact:
+            contact = self.search_contact('email', found_contact['email'])
             if contact:
                 name = contact['name'] if contact['name'] else contact['lastname']
                 self.log.info('Third-party account found with AI : ' + name + ' using email : ' + contact['email'])
                 return [contact['vat_number'], {}, contact, '']
 
-        if 'phone' in contact_data:
-            contact = self.search_contact('phone', contact_data['phone'])
+        if 'phone' in found_contact:
+            contact = self.search_contact('phone', found_contact['phone'])
             if contact:
                 name = contact['name'] if contact['name'] else contact['lastname']
                 self.log.info('Third-party account found with AI : ' + name + ' using phone : ' + contact['phone'])
                 return [contact['vat_number'], {}, contact, '']
 
         # Create contact if not exists
-        if ('company' in contact_data and contact_data['company']) or ('lastname' in contact_data and contact_data['lastname']):
+        if ('company' in found_contact and found_contact['company']) or ('lastname' in found_contact and found_contact['lastname']):
             address = ''
-            if 'address' in contact_data and contact_data['address'] and 'num_address' in contact_data and contact_data[
+            if 'address' in found_contact and found_contact['address'] and 'num_address' in found_contact and found_contact[
                 'num_address']:
-                address = contact_data['num_address'] + ' ' + contact_data['address']
-            elif 'address' in contact_data and contact_data['address']:
-                address = contact_data['address']
+                address = found_contact['num_address'] + ' ' + found_contact['address']
+            elif 'address' in found_contact and found_contact['address']:
+                address = found_contact['address']
 
             address_data = {
-                'address1': address.title(),
-                'address2': contact_data['additional_address'].title() if 'additional_address' in contact_data else '',
-                'city': contact_data['city'].title() if 'city' in contact_data else '',
-                'postal_code': contact_data['postal_code'] if 'postal_code' in contact_data else ''
+                'address1': address,
+                'address2': found_contact['additional_address'].title() if 'additional_address' in found_contact else '',
+                'city': found_contact['city'] if 'city' in found_contact else '',
+                'postal_code': found_contact['postal_code'] if 'postal_code' in found_contact else ''
             }
             address = accounts.create_address(address_data)
 
@@ -267,7 +295,7 @@ class FindContact:
             if address:
                 address_id = address[0]['id']
 
-            contact_data = {
+            found_contact = {
                 'bic': None,
                 'duns': None,
                 'siret': None,
@@ -277,18 +305,18 @@ class FindContact:
                 'address_id': address_id,
                 'informal_contact': True,
                 'skip_auto_validate': False,
-                'email': contact_data['email'] if 'email' in contact_data else '',
-                'phone': contact_data['phone'] if 'phone' in contact_data else '',
-                'name': contact_data['company'] if 'company' in contact_data else '',
-                'lastname': contact_data['lastname'].upper() if 'lastname' in contact_data else '',
-                'firstname': contact_data['firstname'].capitalize() if 'firstname' in contact_data else '',
+                'email': found_contact['email'] if 'email' in found_contact else '',
+                'phone': found_contact['phone'] if 'phone' in found_contact else '',
+                'name': found_contact['company'] if 'company' in found_contact else '',
+                'lastname': found_contact['lastname'].upper() if 'lastname' in found_contact else '',
+                'firstname': found_contact['firstname'].capitalize() if 'firstname' in found_contact else '',
             }
-            contact_data = dict(list(contact_data.items()) + list(address_data.items()))
-            contact = accounts.create_supplier(contact_data, True)
+            found_contact = dict(list(found_contact.items()) + list(address_data.items()))
+            contact = accounts.create_supplier(found_contact, True)
             if contact:
-                contact_name = contact_data['name'] if contact_data['name'] else contact_data['lastname']
-                self.log.info('Third-party account created with AI : ' + contact_name)
+                contact_name = found_contact['name'] if found_contact['name'] else found_contact['lastname']
+                self.log.info(f'Third-party account created with AI : {contact_name}')
                 contact = contact[0]
-                contact_data['supplier_id'] = contact['id']
-                return ['', {}, contact_data, '']
+                found_contact['supplier_id'] = contact['id']
+                return ['', {}, found_contact, '']
         return None
