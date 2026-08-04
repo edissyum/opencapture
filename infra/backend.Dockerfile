@@ -122,6 +122,14 @@ RUN python -m pip install --upgrade pip \
         --force-reinstall --no-deps pyinotify-elephant-fork \
     && rm -rf /wheels /tmp/pip-requirements.txt
 
+# WORKDIR set here (rather than only at line ~135) so it's no longer "/"
+# for the nltk.downloader step below: nltk>=3.10.1 ships a CWE-427 import
+# guard (nltk/inisec.py) that blocks any import whose resolved path is
+# "inside" the current working directory. With cwd="/", every absolute
+# path on the filesystem is trivially "inside" it, so nltk's own
+# `import locale` gets blocked as a false positive.
+WORKDIR /app
+
 # NLTK corpora required by ArtificialIntelligence.py (word_tokenize /
 # stopwords FR). Downloaded at build time into one of NLTK's default
 # search paths: data is baked into the image, so no runtime egress and
@@ -131,8 +139,6 @@ RUN python -m nltk.downloader -d "$NLTK_DATA" punkt punkt_tab stopwords
 # Allow ImageMagick to read/write PDFs (the default Debian policy blocks PDF).
 RUN sed -i 's|<policy domain="coder" rights="none" pattern="PDF" />|<policy domain="coder" rights="read\|write" pattern="PDF" />|' \
         /etc/ImageMagick-6/policy.xml || true
-
-WORKDIR /app
 
 # App code (everything under backend/ at the repo root).
 COPY backend/ /app/
