@@ -34,6 +34,7 @@ interface SelectProps {
     disabled?: boolean;
     editable?: boolean;
     required?: boolean;
+    searchable?: boolean;
     placeholder?: string;
     onChange: (value: string) => void;
     options: { value: any; label: string }[];
@@ -50,8 +51,9 @@ export const Select: React.FC<SelectProps> = ({
     required,
     className = "",
     editable = false,
-    placeholder = "",
     disabled = false,
+    placeholder = "",
+    searchable = true
 }) => {
     const hasValue = value !== undefined && value !== null && value !== '';
     const { floating, onFocus, onBlur } = useFloatingLabel(hasValue);
@@ -105,13 +107,13 @@ export const Select: React.FC<SelectProps> = ({
                 <span className='w-full'>
                     <SelectMantine
                         id={ id }
-                        searchable
                         value={ value }
                         onBlur={ onBlur }
                         onFocus={ onFocus }
                         data={ selectData }
                         disabled={ disabled }
                         allowDeselect={ false }
+                        searchable={ searchable }
                         placeholder={ placeholder }
                         renderOption={ mantineRenderOption }
                         searchValue={ !hasValue ? '' : (editable ? search : undefined) }

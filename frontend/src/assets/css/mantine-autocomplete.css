@@ -28,7 +28,3 @@
     @apply outline-none;
     @apply border-(--color-primary);
 }
-
-.mantine-Autocomplete-dropdown {
-    @apply p-2!;
-}

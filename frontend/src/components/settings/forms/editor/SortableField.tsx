@@ -100,7 +100,7 @@ export function SortableField({ field, onUpdateField, onDeleteField, module }: {
             </Popover.Target>
 
             <Popover.Dropdown>
-                <div className="flex flex-col gap-3 space-y-3">
+                <div className="flex flex-col gap-3 space-y-3 p-2">
                     <Input
                         id={ 'label-' + editableField.id }
                         className="w-full"

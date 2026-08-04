@@ -13,7 +13,7 @@
 
 # See LICENCE file at the root folder for more details.
 
-# @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 from ..helpers import get_context_var
 from ..classes.MEMWebServices import MEMWebServices

@@ -1175,7 +1175,8 @@
         "validating": "Validation de l'étape en cours...",
         "customer_required": "Le compte client est obligatoire",
         "certified_copy": "Activer la copie conforme (NF Z42-020/26)",
-        "certified_copy_hint": "Si activé, la rotation/modification des pages, la suppression des pages blanches et la fusion de documents seront désactivés pour garantir l'intégrité du document original. Seule la séparation est disponible pour séparer les documents sans les modifier"
+        "certified_copy_hint": "Si activé, la rotation/modification des pages, la suppression des pages blanches et la fusion de documents seront désactivés pour garantir l'intégrité du document original. Seule la séparation est disponible pour séparer les documents sans les modifier",
+        "system_fields_hint": "Si la recherche de tiers est activée, la recherche de contact informel est indisponible. Et si la recherche de contact informel est activée, la recherche de tiers est indisponible"
     },
     "MONITORING": {
         "processes": "Processus",

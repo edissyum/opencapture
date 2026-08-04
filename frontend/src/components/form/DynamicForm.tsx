@@ -176,6 +176,7 @@ export function DynamicForm({ className, schema, control, errors, gap = 4, grid 
                                     required={ field.required }
                                     editable={ field.editable }
                                     disabled={ field.disabled }
+                                    searchable={ field.searchable }
                                     filter={ field.filter || false }
                                     error={ errors[field.name]?.message }
                                     onChange={ (value) => f.onChange(value) }

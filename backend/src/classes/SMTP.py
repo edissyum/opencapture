@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Open-Capture. If not, see <https://www.gnu.org/licenses/>.
 
-# @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import os
 import ssl

@@ -308,17 +308,20 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             component: "select",
             label: t("WORKFLOWS.customer"),
             required: module === 'splitter',
+            searchable: true,
             options: customers.map((c: any) => ({ label: c.name, value: c.id }))
         })),
         ai_model_id: z.number().optional().describe(JSON.stringify({
             component: "select",
             label: t("WORKFLOWS.ai_model"),
+            searchable: false,
             hint: t("WORKFLOWS.ai_model_hint"),
             options: aiModels.map((m: any) => ({ label: m.model_label, value: m.id }))
         })),
         splitter_method_id: z.string().optional().describe(JSON.stringify({
             required: true,
             component: "select",
+            searchable: false,
             label: t("WORKFLOWS.splitter_method_id"),
             options: splitterMethods.map((m: any) => ({ label: m.label, value: m.id }))
         })),
@@ -345,6 +348,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         inputSchemaFields = inputSchemaFields.extend({
             rotation: z.string().optional().describe(JSON.stringify({
                 component: "select",
+                searchable: false,
                 label: t("WORKFLOWS.rotation"),
                 options: getRotationOptions().map((o: any) => ({ label: o.label, value: o.id }))
             }))
@@ -421,6 +425,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             system_fields: z.array(z.string()).describe(JSON.stringify({
                 component: "multi_select",
                 label: t("WORKFLOWS.system_fields"),
+                hint: t("WORKFLOWS.system_fields_hint"),
                 options: getSystemFields().map((f: any) => ({ label: f.label, value: f.id }))
             })),
             custom_fields: z.array(z.number()).describe(JSON.stringify({
@@ -551,8 +556,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
         const label = detailsGetValues('label');
         const workflowId = detailsGetValues('workflow_id');
         if (Object.keys(detailsErrors).length > 0 || !workflowId || !label) {
-            await detailsHandleSubmit(() => {
-            })();
+            await detailsHandleSubmit(() => {})();
             showToast(t("WORKFLOWS.fix_details_errors"), 'error');
             return;
         }
@@ -651,9 +655,11 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
                 await put(`/workflows/${ module }/update/${ workflowId }`, payload);
                 showToast(t('WORKFLOWS.update_success'), 'success');
             } else {
-                await post(`/workflows/${ module }/create`, payload);
-                showToast(t('WORKFLOWS.create_success'), 'success');
-                navigate(`/settings/${ module }/workflows`);
+                const res = await post(`/workflows/${ module }/create`, payload);
+                if (res.id) {
+                    navigate(`/settings/${ module }/workflows/edit/${ res.id }`);
+                    showToast(t('WORKFLOWS.create_success'), 'success');
+                }
             }
         } catch (error) {
             console.error('Error updating workflow :', error);

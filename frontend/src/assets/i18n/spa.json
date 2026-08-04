@@ -1175,7 +1175,8 @@
         "validating": "Validando el paso...",
         "customer_required": "Es obligatorio tener una cuenta de cliente",
         "certified_copy": "Copia certificada",
-        "certified_copy_hint": "Si está habilitada, la rotación/modificación de páginas, la eliminación de páginas en blanco y la fusión de documentos se desactivarán para garantizar la integridad del documento original. Solo está disponible la opción de dividir documentos para separarlos sin modificarlos."
+        "certified_copy_hint": "Si está habilitada, la rotación/modificación de páginas, la eliminación de páginas en blanco y la fusión de documentos se desactivarán para garantizar la integridad del documento original. Solo está disponible la opción de dividir documentos para separarlos sin modificarlos.",
+        "system_fields_hint": "Si la búsqueda de terceros está habilitada, la búsqueda de contactos informales no estará disponible. Y si la búsqueda de contactos informales está habilitada, la búsqueda de terceros no estará disponible"
     },
     "MONITORING": {
         "processes": "Procesos",

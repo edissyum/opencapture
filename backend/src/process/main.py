@@ -13,7 +13,7 @@
 
 # See LICENCE file at the root folder for more details.
 
-# @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import json
 import os
@@ -339,7 +339,6 @@ def found_data_recursively(log, data_name, ocr, file, nb_pages, text_by_pages, d
 
 
 def process(args, file, log, config, files, ocr, regex, database, docservers, configurations, languages):
-    filename = os.path.basename(file)
     datas = {
         'datas': {},
         'pages': {},
@@ -366,9 +365,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         })
         if workflow_settings:
             workflow_settings = workflow_settings[0]
-
-            log.info('Processing file using workflow&nbsp;<strong>' + workflow_settings['workflow_id'] + '</strong>&nbsp;: ' + filename)
-
 
             if workflow_settings['input']['rotation'] and workflow_settings['input']['rotation'] != 'no_rotation':
                 rotate_document(file, workflow_settings['input']['rotation'])

@@ -13,7 +13,7 @@
 
 # See LICENCE file at the root folder for more details.
 
-# @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import os
 import time
@@ -50,6 +50,8 @@ logging.getLogger("factur-x").setLevel(logging.CRITICAL)
 def execute(args, path, log, config, files, ocr, regex, database, docservers, configurations, languages, mail, smtp):
     log.debug('Check if file is valid for processing : ' + path)
     if check_file(files, path, log):
+        filename = os.path.basename(path)
+
         log.debug('File is valid for processing')
         log.debug('Check if file is a FacturX invoice')
 
@@ -62,20 +64,24 @@ def execute(args, path, log, config, files, ocr, regex, database, docservers, co
 
         log.debug('Is FacturX : ' + str(is_facturx))
 
+        workflow_settings = False
+        if 'workflow_id' in args and args['workflow_id']:
+            workflow_settings = database.select({
+                'select': ['workflow_id', 'input'],
+                'table': ['workflows'],
+                'where': ['id = %s', 'module = %s'],
+                'data': [args['workflow_id'], 'verifier']
+            })
+
+            log.info('Processing file using workflow&nbsp;<strong>' + workflow_settings[0]['workflow_id'] +
+                     '</strong>&nbsp;: ' + str(filename))
+
         if not is_facturx:
             skip = res = False
-            if 'workflow_id' in args and args['workflow_id']:
-                workflow_settings = database.select({
-                    'select': ['input'],
-                    'table': ['workflows'],
-                    'where': ['id = %s', 'module = %s'],
-                    'data': [args['workflow_id'], 'verifier']
-                })
-
-                if workflow_settings:
-                    if workflow_settings[0]['input']['facturx_only']:
-                        log.info('FacturX only workflow, skipping this document')
-                        skip = True
+            if 'workflow_id' in args and args['workflow_id'] and workflow_settings:
+                if workflow_settings[0]['input']['facturx_only']:
+                    log.info('FacturX only workflow, skipping this document')
+                    skip = True
 
             if not skip:
                 log.debug('Process file with main processing module')
