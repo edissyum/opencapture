@@ -425,6 +425,7 @@ export function WorkflowEditor({ module }: { module: 'verifier' | 'splitter' }) 
             system_fields: z.array(z.string()).describe(JSON.stringify({
                 component: "multi_select",
                 label: t("WORKFLOWS.system_fields"),
+                hint: t("WORKFLOWS.system_fields_hint"),
                 options: getSystemFields().map((f: any) => ({ label: f.label, value: f.id }))
             })),
             custom_fields: z.array(z.number()).describe(JSON.stringify({
