@@ -120,7 +120,7 @@ export function SplitterViewerPage() {
     const [addDocumentTrigger, setAddDocumentTrigger] = useState(0);
     const [documentMetadata, setDocumentMetadata] = useState<any>(null);
     const [documentMetadataValues, setDocumentMetadataValues] = useState<any>({});
-    const [documentMetadataOpen, setDocumentMetadataOpen] = useState<boolean>(false);
+    const [documentMetadataOpen, setDocumentMetadataOpen] = useState<boolean>(true);
 
     const [metadata, setMetadata] = useState<any>([]);
     const [certifiedCopy, setCertifiedCopy] = useState<boolean>(false);
@@ -1399,10 +1399,10 @@ export function SplitterViewerPage() {
                                             <span>{ pagesCount }</span>&nbsp;
                                             { t('SPLITTER.pages', { count: pagesCount }) }
                                         </span>
-                                            <span className='flex items-center'>
+                                        <span className='flex items-center'>
                                             <FileStack size={ 16 }/>&nbsp;
-                                                <span>{ documents.length }</span>&nbsp;
-                                                { t('SPLITTER.documents', { count: documents.length }) }
+                                            <span>{ documents.length }</span>&nbsp;
+                                            { t('SPLITTER.documents', { count: documents.length }) }
                                         </span>
                                         </div>
 
