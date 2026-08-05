@@ -135,6 +135,9 @@ def get_attachments_by_document_id(document_id, get_thumb=True):
                 with open(thumbnail_path, 'rb') as f:
                     attachment['thumb'] = base64.b64encode(f.read()).decode('utf-8')
 
+            if not os.path.isfile(path):
+                continue
+
             mime = magic.Magic(mime=True)
             mime_type = mime.from_file(path)
             attachment['mime_type'] = mime_type
@@ -151,6 +154,9 @@ def get_attachments_by_batch_id(batch_id, get_thumb=True):
             # Older attachments are stored in VERIFIER_ATTACHMENTS (bug fixed in v4)
             if not os.path.isfile(path):
                 path = docservers['VERIFIER_ATTACHMENTS' ] + '/' + attachment['path']
+
+            if not os.path.isfile(path):
+                continue
 
             thumbnail_path = docservers['SPLITTER_THUMB'] + '/' + attachment['thumbnail_path'] if attachment.get('thumbnail_path') else None
             extension = os.path.splitext(attachment['filename'])[1]
@@ -189,7 +195,14 @@ def download_attachment(attachment_id, module):
     if _attachment:
         mime = magic.Magic(mime=True)
         docservers = get_context_var('docservers', 9)
-        path = docservers[module.upper() + '_ATTACHMENTS'] + '/' + _attachment['path']
+
+        path = docservers['VERIFIER_ATTACHMENTS'] + '/' + _attachment['path']
+        if module == 'splitter':
+            path = docservers['SPLITTER_ATTACHMENTS'] + '/' + _attachment['path']
+
+        if not os.path.isfile(path):
+            return None, ''
+
         mime_type = mime.from_file(path)
         with open(path, 'rb') as file:
             content = file.read()
