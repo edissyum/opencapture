@@ -116,10 +116,10 @@ export function CustomFieldsEditor({ module }: { module: 'verifier' | 'splitter'
                 type: "text",
                 label: t("CUSTOM-FIELDS.autocomplete"),
                 options: [
-                    { label: t('SPLITTER.separator_mem'), value: 'SEPARATOR_MEM' },
-                    { label: t('SPLITTER.separator_meta1'), value: 'SEPARATOR_META1' },
-                    { label: t('SPLITTER.separator_meta2'), value: 'SEPARATOR_META2' },
-                    { label: t('SPLITTER.separator_meta3'), value: 'SEPARATOR_META3' }
+                    { label: t('SPLITTER.separator_mem'), value: 'SEPARATOR_MEM', extras: ['SEPARATOR_MEM'] },
+                    { label: t('SPLITTER.separator_meta1'), value: 'SEPARATOR_META1', extras: ['SEPARATOR_META1'] },
+                    { label: t('SPLITTER.separator_meta2'), value: 'SEPARATOR_META2', extras: ['SEPARATOR_META2'] },
+                    { label: t('SPLITTER.separator_meta3'), value: 'SEPARATOR_META3', extras: ['SEPARATOR_META3'] }
                 ]
             }))
         });
