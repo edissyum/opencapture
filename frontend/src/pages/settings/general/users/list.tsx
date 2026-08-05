@@ -46,7 +46,7 @@ export function SettingsGeneralUsers() {
     });
 
     const columns = [
-        { id: 'id', field: 'id', header: '', sortable: true, className: 'max-w-10! w-10!' },
+        { id: 'id', field: 'id', header: '', sortable: true, className: 'w-16' },
         {
             id: 'username',
             field: 'username',

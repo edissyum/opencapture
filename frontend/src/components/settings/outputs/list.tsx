@@ -75,7 +75,7 @@ export function OutputsList({ module }: { module: string }) {
     ];
 
     const columns = [
-        { id: 'id', field: 'id', header: '', sortable: true, className: 'max-w-10! w-10!' },
+        { id: 'id', field: 'id', header: '', sortable: true, className: 'w-16' },
         { id: 'output_label', field: 'output_label', header: t('GLOBAL.label'), sortable: true },
         { id: 'output_type_id', field: 'output_type_id', header: t('ROLES.label_short'), sortable: true }
     ];

@@ -47,7 +47,7 @@ export function SettingsGeneralRoles() {
     });
 
     const columns = [
-        { id: 'id', field: 'id', header: '', sortable: true, className: 'max-w-10! w-10!' },
+        { id: 'id', field: 'id', header: '', sortable: true, className: 'w-16' },
         { id: 'label_short', field: 'label_short', sortable: true, header: t('ROLES.label_short') },
         { id: 'label', field: 'label', header: t('GLOBAL.label'), sortable: true }
     ];

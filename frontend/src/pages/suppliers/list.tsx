@@ -58,7 +58,7 @@ export function SuppliersList() {
         'footer_coherence', 'document_lang', 'default_currency', 'informal_contact'];
 
     const columns = [
-        { id: 'id', field: 'id', header: '', sortable: true },
+        { id: 'id', field: 'id', header: '', sortable: true, className: 'w-20' },
         { id: 'name', field: 'name', sortable: true, header: t('ACCOUNTS.name') },
         { id: 'lastname', field: 'lastname', sortable: true, header: t('ACCOUNTS.lastname') },
         { id: 'firstname', field: 'firstname', sortable: true, header: t('ACCOUNTS.firstname') },

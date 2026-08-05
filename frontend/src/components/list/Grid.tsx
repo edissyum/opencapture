@@ -25,6 +25,7 @@ import { Button } from "../Button";
 import { Checkbox } from "../Checkbox";
 
 import { Paginator } from "./Paginator";
+import { renderMenuItems } from "./Table";
 import { LazyBase64Image } from "./LazyImage";
 
 type Column<T> = {
@@ -216,10 +217,10 @@ export function Grid<T extends { id: string }>({
                                     onChange={ (checked: boolean, id: string | undefined) => onSelect(checked, id) }
                                 />
                             </div>
-                            <div className={`px-6 py-3 border border-t-0 rounded-md rounded-t-none transition-colors
+                            <div className={`py-3 border border-t-0 rounded-md rounded-t-none transition-colors
                                            border-(--border-secondary) group-hover:border-(--text-secondary)
                                            ${ filtersChanged && 'border-2 border-(--color-primary)' }`}>
-                                <div className="flex gap-2 mb-1">
+                                <div className="flex gap-2 mb-1 pl-4">
                                     { columns.filter(col => col.id === 'nb_pages').map((col) => (
                                         <div key={ col.id }>
                                             { col.body ? col.body(row) : (row as any)[col.field!] }
@@ -230,7 +231,7 @@ export function Grid<T extends { id: string }>({
                                             { col.body ? col.body(row) : (row as any)[col.field!] }
                                         </div>
                                     )) }
-                                    <div className="ml-auto -mr-2.5">
+                                    <div className="ml-auto">
                                         { actionsLine && (
                                             <Menu position="bottom-end" withinPortal onClose={ handleMenuClose }>
                                                 <Menu.Target>
@@ -238,30 +239,16 @@ export function Grid<T extends { id: string }>({
                                                         className='mr-0!'
                                                         variant="transparent"
                                                         onClick={ (e: any) => {
-                                                            e.preventDefault();
                                                             e.stopPropagation();
                                                             setSelectedRows([row]);
                                                             onSelectionChange && onSelectionChange([row]);
                                                         } }
                                                     >
-                                                        <EllipsisVertical
-                                                            size={ 20 }
-                                                            className='text-(--text-primary) hover:text-(--color-primary)'
-                                                        />
+                                                        <EllipsisVertical className='text-(--text-primary)' size={ 18 }/>
                                                     </ActionIcon>
                                                 </Menu.Target>
-
                                                 <Menu.Dropdown>
-                                                    { actionsLine(selectedRows[0]).map((item: any, index: number) => (
-                                                        <Menu.Item key={ index } leftSection={ item.icon }
-                                                                   disabled={ item.disabled }
-                                                                   onClick={ (e: React.MouseEvent) => {
-                                                                       e.stopPropagation();
-                                                                       item.command(e);
-                                                                   } }>
-                                                            { item.label }
-                                                        </Menu.Item>
-                                                    )) }
+                                                    { actionsLine && renderMenuItems(actionsLine(selectedRows[0])) }
                                                 </Menu.Dropdown>
                                             </Menu>
                                         ) }
@@ -269,7 +256,7 @@ export function Grid<T extends { id: string }>({
                                 </div>
 
                                 { columns.filter(col => ![module === 'verifier' ? 'name' : 'filename', 'thumbnail', 'nb_pages'].includes(col.id as string)).map((col) => (
-                                    <div key={ col.id } className="text-sm mb-1 truncate">
+                                    <div key={ col.id } className="text-sm mb-1 truncate px-4">
                                         <span className="text-(--text-secondary) mr-1">
                                             { col.header } :
                                         </span>

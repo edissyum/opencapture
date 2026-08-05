@@ -70,7 +70,7 @@ export function SettingsVerifierPositionsMasksList() {
     ];
 
     const columns = [
-        { id: 'id', field: 'id', header: '', sortable: true, className: 'max-w-10! w-10!' },
+        { id: 'id', field: 'id', header: '', sortable: true, className: 'w-16' },
         { id: 'label', field: 'label', header: t('GLOBAL.label'), sortable: true },
         { id: 'supplier_name', field: 'supplier_name', header: t('ACCOUNTS.supplier_name'), sortable: true },
         { id: 'form_label', field: 'form_label', header: t('VERIFIER.form'), sortable: true },

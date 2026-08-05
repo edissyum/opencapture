@@ -18,10 +18,13 @@ import { t } from "i18next";
 import DOMPurify from "dompurify";
 import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
+import { MantineProvider } from "@mantine/core";
 
 import Input from "../../components/Input";
 import { Button } from "../../components/Button";
 import { Select } from "../../components/Select";
+
+import { mantineTheme } from "../mantineTheme";
 
 function ConfirmDialogWithInputView({
     icon,
@@ -78,8 +81,9 @@ function ConfirmDialogWithInputView({
                     ) }
                     { type === 'bool' && (
                         <Select
-                            id={ 'confirm-dialog-boolean' }
+                            id='confirm-dialog-boolean'
                             value={ val.toString() }
+                            withinPortal={ false }
                             options={ [
                                 { label: t('GLOBAL.true'), value: 'true' },
                                 { label: t('GLOBAL.false'), value: 'false' }
@@ -89,8 +93,9 @@ function ConfirmDialogWithInputView({
                     ) }
                     { type === 'list' && options && (
                         <Select
-                            id={ 'confirm-dialog-boolean' }
+                            id='confirm-dialog-boolean'
                             value={ val }
+                            withinPortal={ false }
                             options={ options }
                             onChange={ (value: any) => setVal(value) }
                         />
@@ -151,25 +156,27 @@ export function showConfirmDialogWithInput({
     };
 
     root.render(
-        <ConfirmDialogWithInputView
-            icon={ icon }
-            title={ title }
-            message={ message }
-            value={ value }
-            label={ label }
-            options={ options }
-            type={ type }
-            placeholder={ placeholder }
-            confirmText={ confirmText }
-            cancelText={ cancelText }
-            accept={ (val) => {
-                onConfirm(val);
-                cleanup();
-            } }
-            reject={ () => {
-                if (onCancel) onCancel();
-                cleanup();
-            } }
-        />
+        <MantineProvider theme={ mantineTheme }>
+            <ConfirmDialogWithInputView
+                icon={ icon }
+                title={ title }
+                message={ message }
+                value={ value }
+                label={ label }
+                options={ options }
+                type={ type }
+                placeholder={ placeholder }
+                confirmText={ confirmText }
+                cancelText={ cancelText }
+                accept={ (val) => {
+                    onConfirm(val);
+                    cleanup();
+                } }
+                reject={ () => {
+                    if (onCancel) onCancel();
+                    cleanup();
+                } }
+            />
+        </MantineProvider>
     );
 }
