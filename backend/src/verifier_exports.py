@@ -584,8 +584,9 @@ def export_pdf(data, log, document_info, compress_type, ocrise, enable_log=True)
                 with ZipFile(folder_out + '/' + zip_filename, 'w') as zip_file:
                     for attachment in attachments_list:
                         if attachment:
-                            if os.path.exists(attachment['path']):
-                                zip_file.write(attachment['path'], attachment['filename'])
+                            attachment_path = docservers['VERIFIER_ATTACHMENTS'] + '/' + attachment['path']
+                            if os.path.exists(attachment_path):
+                                zip_file.write(attachment_path, attachment['filename'])
 
         log.debug('PDF export success')
         return folder_out + '/' + filename, 200
@@ -693,13 +694,15 @@ def export_coog(data, document_info, log, database):
                 if res[0]:
                     coog_id = res[1][0]['id']
                     document_id = document_info['id']
+                    docservers = get_context_var('docservers', 9)
                     attachments_list = attachments.get_attachments_by_document_id(document_id)
                     if attachments_list:
                         attachments_files = []
                         for attachment in attachments_list:
                             if attachment:
-                                if os.path.isfile(attachment['path']):
-                                    with open(attachment['path'], 'rb') as _file:
+                                attachment_path = docservers['VERIFIER_ATTACHMENTS'] + '/' + attachment['path']
+                                if os.path.isfile(attachment_path):
+                                    with open(attachment_path, 'rb') as _file:
                                         b64_encoded = base64.b64encode(_file.read()).decode('utf-8')
 
                                     attachments_files.append({
@@ -793,17 +796,19 @@ def export_opencrm(data, document_info, log, database):
                 }
                 return response, 400
 
+            docservers = get_context_var('docservers', 9)
             attachments_files = []
             attachments_list = attachments.get_attachments_by_document_id(document_info['id'])
             if attachments_list:
                 for attachment in attachments_list:
-                    if os.path.isfile(attachment['path']):
-                        with open(attachment['path'], 'rb') as _file:
+                    attachment_path = docservers['VERIFIER_ATTACHMENTS'] + '/' + attachment['path']
+                    if os.path.isfile(attachment_path):
+                        with open(attachment_path, 'rb') as _file:
                             b64_encoded = base64.b64encode(_file.read()).decode('utf-8')
 
                         attachments_files.append({
                             "nom": attachment['filename'],
-                            "type_mime": mimetypes.guess_type(attachment['path'])[0],
+                            "type_mime": mimetypes.guess_type(attachment_path)[0],
                             "base64": b64_encoded
                         })
 
@@ -993,8 +998,9 @@ def export_mem(data, document_info, log, regex, database):
                         if attachments_list:
                             for attachment in attachments_list:
                                 if attachment:
-                                    if os.path.isfile(attachment['path']):
-                                        with open(attachment['path'], 'rb') as _file:
+                                    attachment_path = docservers['VERIFIER_ATTACHMENTS'] + '/' + attachment['path']
+                                    if os.path.isfile(attachment_path):
+                                        with open(attachment_path, 'rb') as _file:
                                             b64_encoded = base64.b64encode(_file.read()).decode('utf-8')
 
                                         attachments_files = {
