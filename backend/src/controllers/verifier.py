@@ -634,7 +634,7 @@ def launch_output_script(document_id, workflow_settings, outputs):
                     })
                     if document_info:
                         datas = document_info[0]
-                        file = datas['path'] + '/' + datas['filename']
+                        file = docservers['VERIFIER_ORIGINAL_DOC'] + '/' + datas['path'] + '/' + datas['filename']
                         data = {
                             'log': log,
                             'file': file,
@@ -688,7 +688,9 @@ def get_thumb_by_document_id(document_id):
 def get_original_doc_by_document_id(document_id):
     document_info, error = verifier.get_document_by_id({'document_id': document_id})
     if not error:
-        path = document_info['path'] + '/' + document_info['filename']
+        docservers = get_context_var('docservers', 9)
+
+        path = docservers['VERIFIER_ORIGINAL_DOC'] + '/' + document_info['path'] + '/' + document_info['filename']
         mime = magic.Magic(mime=True)
         mime_type = mime.from_file(path)
         with open(path, 'rb') as file:

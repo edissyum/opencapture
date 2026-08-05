@@ -632,3 +632,36 @@ WHERE output_type_id = 'export_mem';
 
 -- Ajout d'une configuration pour selectionner le dtype de la recherche IA du contact informel
 INSERT INTO "configurations" ("label", "data") VALUES ('informalContactDtype', '{"type": "list", "value": "bfloat16", "options": ["float32", "bfloat16"], "description": "Définit le niveau de précision du modèle. bfloat16 (rapide et économe) ou float32 (précis et compatible)"}');
+
+-- Modification de la table documents pour supprimer les chemins absolus
+UPDATE documents d
+SET path = REGEXP_REPLACE(REPLACE(d.path, ds.path, ''), '^/+', '')
+FROM docservers ds
+WHERE ds.docserver_id = 'VERIFIER_ORIGINAL_DOC';
+
+-- Modification de la table attachments pour supprimer les chemins absolus
+UPDATE attachments a
+SET path = REGEXP_REPLACE(REPLACE(a.path, ds.path, ''), '^/+', '')
+FROM docservers ds
+WHERE ds.docserver_id = 'VERIFIER_ATTACHMENTS' AND a.document_id is not NULL AND a.path LIKE '%' || ds.path || '%';
+
+UPDATE attachments a
+SET thumbnail_path = REGEXP_REPLACE(REPLACE(a.thumbnail_path, ds.path, ''), '^/+', '')
+FROM docservers ds
+WHERE ds.docserver_id = 'VERIFIER_THUMB' AND a.document_id is not NULL;
+
+UPDATE attachments a
+SET path = REGEXP_REPLACE(REPLACE(a.path, ds.path, ''), '^/+', '')
+FROM docservers ds
+WHERE ds.docserver_id = 'SPLITTER_ATTACHMENTS' AND a.batch_id is not NULL AND a.path LIKE '%' || ds.path || '%';
+
+UPDATE attachments a
+SET thumbnail_path = REGEXP_REPLACE(REPLACE(a.thumbnail_path, ds.path, ''), '^/+', '')
+FROM docservers ds
+WHERE ds.docserver_id = 'SPLITTER_THUMB' AND a.batch_id is not NULL;
+
+-- Jusqu'à présent les attachments étaient toujours insérés avec le chemin du VERIFIER
+UPDATE attachments a
+SET path = REGEXP_REPLACE(REPLACE(a.path, ds.path, ''), '^/+', '')
+FROM docservers ds
+WHERE ds.docserver_id = 'VERIFIER_ATTACHMENTS' AND a.batch_id is not NULL AND a.path LIKE '%' || ds.path || '%';

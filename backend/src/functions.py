@@ -179,7 +179,7 @@ def check_extensions_mime(files, custom_id, document_type='document'):
 
 
 def delete_documents(docservers, path, filename, full_jpg_filename):
-    pdf_file = path + '/' + filename
+    pdf_file = docservers['VERIFIER_ORIGINAL_DOC'] + '/' + path + '/' + filename
     thumb_filename = docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename.replace('%03d.jpg', '001.jpg')
     full_jpg_filename = docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename.replace('%03d.jpg', '*')
     jpg_filelist = glob.glob(full_jpg_filename)

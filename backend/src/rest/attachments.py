@@ -108,7 +108,7 @@ def download_attachment_verifier(attachment_id):
     if not privileges.has_privileges(request.environ['user_id'], ['access_verifier', 'attachments_list_verifier']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/attachments/verifier/download/{attachment_id}'}), 403
 
-    file_content, mime = attachments.download_attachment(attachment_id)
+    file_content, mime = attachments.download_attachment(attachment_id, 'verifier')
     if file_content is None:
         return make_response({'errors': gettext('DOWNLOAD_FILE'), 'message': gettext('FILE_NOT_FOUND')}, 404)
     return make_response({'file': str(base64.b64encode(file_content).decode('utf-8')), 'mime': mime}), 200
@@ -119,7 +119,7 @@ def download_attachment_splitter(attachment_id):
     if not privileges.has_privileges(request.environ['user_id'], ['access_splitter', 'attachments_list_splitter']):
         return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'), 'message': f'/attachments/splitter/download/{attachment_id}'}), 403
 
-    file_content, mime = attachments.download_attachment(attachment_id)
+    file_content, mime = attachments.download_attachment(attachment_id, 'splitter')
     if file_content is None:
         return make_response({'errors': gettext('DOWNLOAD_FILE'), 'message': gettext('FILE_NOT_FOUND')}, 404)
     return make_response({'file': str(base64.b64encode(file_content).decode('utf-8')), 'mime': mime}), 200
