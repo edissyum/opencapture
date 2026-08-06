@@ -140,7 +140,7 @@ export function SplitterViewerPage() {
             }
         };
     }, []);
-    console.log(documents);
+
     const setThumbnailSafe = useCallback((url: string | null) => {
         if (thumbnailRef.current) {
             URL.revokeObjectURL(thumbnailRef.current);
