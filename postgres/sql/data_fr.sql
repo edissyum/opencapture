@@ -67,6 +67,7 @@ INSERT INTO "configurations" ("label", "data", "display") VALUES ('passwordRules
 INSERT INTO "configurations" ("label", "data") VALUES ('defaultModule', '{"type": "list", "value": "splitter", "options": ["splitter", "verifier"], "description": "Module sélectionné par défaut"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('enableSplitterProgressBar', '{"type": "bool", "value": false, "description": "Activer la barre de progression pour le module Splitter"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('enableAttachments', '{"type": "bool", "value": true, "description": "Activer l''affichage des pièces jointes dans les module Verifier et Splitter"}');
+INSERT INTO "configurations" ("label", "data") VALUES ('informalContactDtype', '{"type": "list", "value": "bfloat16", "options": ["float32", "bfloat16"], "description": "Définit le niveau de précision du modèle. bfloat16 (rapide et économe) ou float32 (précis et compatible)"}');
 
 -- CRÉATION DES DOCSERVERS
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('PROJECT_PATH', 'Chemin vers l''instance d''Open-Capture', './');

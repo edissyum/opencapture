@@ -95,7 +95,7 @@ export default function Sidebar() {
         }
     }, [location.pathname]);
 
-    const standardClasses = "whitespace-nowrap flex items-center rounded-lg p-3 gap-2 hover:text-(--text-primary) text-(--text-secondary) font-semibold transition-colors border border-transparent";
+    const standardClasses = "whitespace-nowrap flex items-center rounded-lg p-3 gap-2 hover:text-(--color-primary) text-(--text-secondary) font-semibold transition-colors border border-transparent";
     const activeClasses = "bg-(--bg-selected) text-(--color-primary)! hover:text-(--color-primary)! border-(--border-primary)!";
 
     const handleCollapse = () => {

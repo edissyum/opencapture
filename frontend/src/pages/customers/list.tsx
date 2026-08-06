@@ -47,11 +47,11 @@ export function CustomersList() {
     });
 
     const columns = [
-        { id: 'id', field: 'id', header: '', sortable: true },
+        { id: 'id', field: 'id', header: '', sortable: true, className: 'w-16' },
         { id: 'name', field: 'name', sortable: true, header: t('ACCOUNTS.name') },
         { id: 'company_number', field: 'company_number', header: t('ACCOUNTS.company_number') },
         { id: 'vat_number', field: 'vat_number', header: t('ACCOUNTS.vat_number') },
-        { id: 'module', field: 'module', header: t('MAILCOLLECT.module') }
+        { id: 'module', field: 'module', header: t('MAILCOLLECT.module'), className: 'w-1/20' }
     ];
 
     const actions: any = [

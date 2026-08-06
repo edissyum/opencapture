@@ -21,57 +21,15 @@ import { MantineProvider } from "@mantine/core";
 
 import './index.css'
 import { App } from "./App";
+import { mantineTheme } from "./services/mantineTheme";
 import { ToastProvider } from "./components/ToastProvider";
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
-const primaryColor = '#19864B';
-
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <ToastProvider/>
-        <MantineProvider theme={ {
-            cursorType: 'pointer',
-            fontFamily: 'inherit',
-            lineHeights: {
-                xs: 'inherit',
-                sm: 'inherit',
-                md: 'inherit',
-                lg: 'inherit',
-                xl: 'inherit',
-            },
-            components: {
-                Tabs: {
-                    vars: () => ({
-                        root: {
-                            '--tab-radius': '0',
-                            '--tabs-color': primaryColor
-                        }
-                    })
-                },
-                Stepper: {
-                    defaultProps: {
-                        color: primaryColor,
-                        allowNextStepsSelect: false
-                    }
-                },
-                Slider: {
-                    defaultProps: {
-                        color: primaryColor
-                    }
-                },
-                Radio: {
-                    defaultProps: {
-                        color: primaryColor
-                    }
-                },
-                Switch: {
-                    defaultProps: {
-                        color: primaryColor
-                    }
-                }
-            }
-        } }>
+        <MantineProvider theme={ mantineTheme }>
             <App/>
         </MantineProvider>
     </StrictMode>,

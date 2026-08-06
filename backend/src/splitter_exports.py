@@ -212,8 +212,11 @@ def export_pdf_files(batch, parameters, log, docservers, nfz42020):
             with ZipFile(document['folder_out'] + '/' + zip_filename, 'w') as zip_file:
                 for attachment in attachments_list:
                     if attachment:
-                        if os.path.exists(attachment['path']):
-                            zip_file.write(attachment['path'], attachment['filename'])
+                        attachment_path = docservers['SPLITTER_ATTACHMENTS'] + '/' + attachment['path']
+                        if not os.path.exists(attachment_path):
+                            attachment_path = docservers['VERIFIER_ATTACHMENTS'] + '/' + attachment['path']
+                        if os.path.exists(attachment_path):
+                            zip_file.write(attachment_path, attachment['filename'])
 
         batch['outputs_result_files'].append(export_path)
         batch['documents'][index]['export_path'] = export_path

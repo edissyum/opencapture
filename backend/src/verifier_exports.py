@@ -488,7 +488,8 @@ def export_facturx(data, log, document_info):
         due_payable = Et.SubElement(data_parent, 'ram:DuePayableAmount')
         due_payable.text = str(document_info['datas']['total_ttc'])
 
-        file = document_info['path'] + '/' + document_info['filename']
+        docservers = get_context_var('docservers', 9)
+        file = docservers['VERIFIER_ORIGINAL_DOC'] + '/' + document_info['path'] + '/' + document_info['filename']
         facturx.generate_from_file(file, Et.tostring(root), output_pdf_file=folder_out + '/' + filename)
         
         log.debug('FacturX PDF export success')
@@ -551,7 +552,8 @@ def export_pdf(data, log, document_info, compress_type, ocrise, enable_log=True)
     log.debug('PDF path : ' + folder_out + '/' + filename)
 
     if os.path.isdir(folder_out):
-        file = document_info['path'] + '/' + document_info['filename']
+        docservers = get_context_var('docservers', 9)
+        file = docservers['VERIFIER_ORIGINAL_DOC'] + '/' + document_info['path'] + '/' + document_info['filename']
         if ocrise:
             Files.ocrise_pdf(file, log, folder_out + '/' + filename)
         else:
@@ -582,8 +584,9 @@ def export_pdf(data, log, document_info, compress_type, ocrise, enable_log=True)
                 with ZipFile(folder_out + '/' + zip_filename, 'w') as zip_file:
                     for attachment in attachments_list:
                         if attachment:
-                            if os.path.exists(attachment['path']):
-                                zip_file.write(attachment['path'], attachment['filename'])
+                            attachment_path = docservers['VERIFIER_ATTACHMENTS'] + '/' + attachment['path']
+                            if os.path.exists(attachment_path):
+                                zip_file.write(attachment_path, attachment['filename'])
 
         log.debug('PDF export success')
         return folder_out + '/' + filename, 200
@@ -691,13 +694,15 @@ def export_coog(data, document_info, log, database):
                 if res[0]:
                     coog_id = res[1][0]['id']
                     document_id = document_info['id']
+                    docservers = get_context_var('docservers', 9)
                     attachments_list = attachments.get_attachments_by_document_id(document_id)
                     if attachments_list:
                         attachments_files = []
                         for attachment in attachments_list:
                             if attachment:
-                                if os.path.isfile(attachment['path']):
-                                    with open(attachment['path'], 'rb') as _file:
+                                attachment_path = docservers['VERIFIER_ATTACHMENTS'] + '/' + attachment['path']
+                                if os.path.isfile(attachment_path):
+                                    with open(attachment_path, 'rb') as _file:
                                         b64_encoded = base64.b64encode(_file.read()).decode('utf-8')
 
                                     attachments_files.append({
@@ -791,17 +796,19 @@ def export_opencrm(data, document_info, log, database):
                 }
                 return response, 400
 
+            docservers = get_context_var('docservers', 9)
             attachments_files = []
             attachments_list = attachments.get_attachments_by_document_id(document_info['id'])
             if attachments_list:
                 for attachment in attachments_list:
-                    if os.path.isfile(attachment['path']):
-                        with open(attachment['path'], 'rb') as _file:
+                    attachment_path = docservers['VERIFIER_ATTACHMENTS'] + '/' + attachment['path']
+                    if os.path.isfile(attachment_path):
+                        with open(attachment_path, 'rb') as _file:
                             b64_encoded = base64.b64encode(_file.read()).decode('utf-8')
 
                         attachments_files.append({
                             "nom": attachment['filename'],
-                            "type_mime": mimetypes.guess_type(attachment['path'])[0],
+                            "type_mime": mimetypes.guess_type(attachment_path)[0],
                             "base64": b64_encoded
                         })
 
@@ -962,7 +969,8 @@ def export_mem(data, document_info, log, regex, database):
                             'subject': ''.join(subject)
                         })
 
-                file = document_info['path'] + '/' + document_info['filename']
+                docservers = get_context_var('docservers', 9)
+                file = docservers['VERIFIER_ORIGINAL_DOC'] + '/' + document_info['path'] + '/' + document_info['filename']
                 if os.path.isfile(file):
                     with open(file, 'rb') as file:
                         args.update({
@@ -990,8 +998,9 @@ def export_mem(data, document_info, log, regex, database):
                         if attachments_list:
                             for attachment in attachments_list:
                                 if attachment:
-                                    if os.path.isfile(attachment['path']):
-                                        with open(attachment['path'], 'rb') as _file:
+                                    attachment_path = docservers['VERIFIER_ATTACHMENTS'] + '/' + attachment['path']
+                                    if os.path.isfile(attachment_path):
+                                        with open(attachment_path, 'rb') as _file:
                                             b64_encoded = base64.b64encode(_file.read()).decode('utf-8')
 
                                         attachments_files = {
@@ -1156,6 +1165,7 @@ def export_cmis(data, document_info, log, database, compress_type, ocrise):
 
 def construct_with_var(data, document_info, separator=None):
     _data = []
+    docservers = get_context_var('docservers', 9)
     if isinstance(document_info['datas'], str):
         data_tmp = json.loads(document_info['datas'])
         document_info['datas'] = data_tmp
@@ -1210,13 +1220,13 @@ def construct_with_var(data, document_info, separator=None):
             if 'supplier_id' in document_info and document_info['supplier_id']:
                 _data.append(str(document_info['supplier_id']))
         elif column_strip == 'b64_file_content':
-            file = document_info['path'] + '/' + document_info['filename']
+            file = docservers['VERIFIER_ORIGINAL_DOC'] + '/' + document_info['path'] + '/' + document_info['filename']
             if os.path.isfile(file):
                 with open(file, 'rb') as _file:
                     b64_encoded = base64.b64encode(_file.read())
                     _data.append(str(b64_encoded.decode('utf-8')))
         elif column_strip == 'mime_type':
-            file = document_info['path'] + '/' + document_info['filename']
+            file = docservers['VERIFIER_ORIGINAL_DOC'] + '/' + document_info['path'] + '/' + document_info['filename']
             if os.path.isfile(file):
                 mime_type = mimetypes.guess_type(file)[0]
                 if mime_type:

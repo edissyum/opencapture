@@ -120,7 +120,7 @@ export function SplitterViewerPage() {
     const [addDocumentTrigger, setAddDocumentTrigger] = useState(0);
     const [documentMetadata, setDocumentMetadata] = useState<any>(null);
     const [documentMetadataValues, setDocumentMetadataValues] = useState<any>({});
-    const [documentMetadataOpen, setDocumentMetadataOpen] = useState<boolean>(false);
+    const [documentMetadataOpen, setDocumentMetadataOpen] = useState<boolean>(true);
 
     const [metadata, setMetadata] = useState<any>([]);
     const [certifiedCopy, setCertifiedCopy] = useState<boolean>(false);
@@ -140,7 +140,7 @@ export function SplitterViewerPage() {
             }
         };
     }, []);
-
+    console.log(documents);
     const setThumbnailSafe = useCallback((url: string | null) => {
         if (thumbnailRef.current) {
             URL.revokeObjectURL(thumbnailRef.current);
@@ -692,6 +692,7 @@ export function SplitterViewerPage() {
             onConfirm: async () => {
                 setUnSavedChanges(true);
                 setDeletedPages((prev) => [...prev, ...selectedPages]);
+                setSelectedPages([]);
                 setDocuments((docs: any[]) => {
                     const next = docs.map(doc => ({ ...doc, pages: [...doc.pages] }));
                     selectedPages.forEach((page) => {
@@ -1221,7 +1222,7 @@ export function SplitterViewerPage() {
                                              className={ `${ disabledBatch ? 'pointer-events-none opacity-50' : 'cursor-pointer' }` }/>
                             </div>
 
-                            <Button disabled={ loading || disabledBatch }
+                            <Button disabled={ loading || disabledBatch || documents.length === 0 }
                                     className='flex items-center gap-2 px-3!'
                                     onClick={ handleValidateBatch }>
                                 <PackageCheck size={ 16 }/>
@@ -1292,15 +1293,15 @@ export function SplitterViewerPage() {
                         </div>
 
                         { enableAttachments && (
-                            <div className={ `${ documents.length > 1 && 'cursor-not-allowed!' }` }
+                            <div className={ `${ (documents.length === 0 || documents.length > 1) && 'cursor-not-allowed!' }` }
                                  data-tooltip-id="tooltip"
-                                 data-tooltip-content={ documents.length > 1 ? t('SPLITTER.one_document') : '' }
+                                 data-tooltip-content={ (documents.length === 0 || documents.length > 1) ? t('SPLITTER.one_document') : '' }
                             >
                                 <div className={
                                     `flex items-center justify-center bg-(--bg-primary) p-3.5 rounded-full
                                 border border-(--border-secondary) hover:border-(--border-primary)
                                 hover:text-(--color-primary) transition-colors shrink-0 relative cursor-pointer
-                                ${ documents.length > 1 && 'opacity-50 pointer-events-none' }`
+                                    ${ (documents.length === 0 || documents.length > 1) && 'opacity-50 pointer-events-none' }`
                                 }
                                      onClick={ () => setShowAttachments(true) }
                                      data-tooltip-id="tooltip"
@@ -1398,10 +1399,10 @@ export function SplitterViewerPage() {
                                             <span>{ pagesCount }</span>&nbsp;
                                             { t('SPLITTER.pages', { count: pagesCount }) }
                                         </span>
-                                            <span className='flex items-center'>
+                                        <span className='flex items-center'>
                                             <FileStack size={ 16 }/>&nbsp;
-                                                <span>{ documents.length }</span>&nbsp;
-                                                { t('SPLITTER.documents', { count: documents.length }) }
+                                            <span>{ documents.length }</span>&nbsp;
+                                            { t('SPLITTER.documents', { count: documents.length }) }
                                         </span>
                                         </div>
 

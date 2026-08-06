@@ -35,6 +35,7 @@ interface SelectProps {
     editable?: boolean;
     required?: boolean;
     searchable?: boolean;
+    withinPortal?: boolean;
     placeholder?: string;
     onChange: (value: string) => void;
     options: { value: any; label: string }[];
@@ -53,12 +54,18 @@ export const Select: React.FC<SelectProps> = ({
     editable = false,
     disabled = false,
     placeholder = "",
-    searchable = true
+    searchable = true,
+    withinPortal = true
 }) => {
     const hasValue = value !== undefined && value !== null && value !== '';
     const { floating, onFocus, onBlur } = useFloatingLabel(hasValue);
 
-    const uniqueOptions = [...new Map(options.map(item => [item.value, item])).values()];
+    // Memoized so its reference stays stable across re-renders (e.g. while typing in editable mode) -
+    // otherwise the resync effect below (which depends on it) re-fires on every keystroke and stomps the typed text
+    const uniqueOptions = useMemo(
+        () => [...new Map(options.map(item => [item.value, item])).values()],
+        [options]
+    );
 
     // If editable is true, allow picking a value outside of the predefined options (usefull for splitter metadata in custom fields choices)
     // It add a new option to the list of options if the currently typed text (search) is not already in the list, and if it's not empty
@@ -66,9 +73,12 @@ export const Select: React.FC<SelectProps> = ({
     const selectData = useMemo(() => {
         if (!editable) return uniqueOptions;
 
-        let opts = uniqueOptions;
         const trimmedSearch = search.trim();
-        if (trimmedSearch && !opts.some(opt => opt.value === trimmedSearch)) {
+        let opts = uniqueOptions;
+
+        // search mirrors the displayed label (see the effect below), so compare against labels, not values,
+        // otherwise a selected predefined option (label !== value) gets re-injected as a bogus duplicate
+        if (trimmedSearch && !opts.some(opt => opt.label === trimmedSearch || opt.value === trimmedSearch)) {
             opts = [...opts, { value: trimmedSearch, label: trimmedSearch }];
         }
         if (value && !opts.some(opt => opt.value === value)) {
@@ -115,6 +125,7 @@ export const Select: React.FC<SelectProps> = ({
                         allowDeselect={ false }
                         searchable={ searchable }
                         placeholder={ placeholder }
+                        comboboxProps={ { withinPortal } }
                         renderOption={ mantineRenderOption }
                         searchValue={ !hasValue ? '' : (editable ? search : undefined) }
                         onSearchChange={ editable ? setSearch : undefined }

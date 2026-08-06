@@ -16,6 +16,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { t } from "i18next";
+import { ActionIcon, Menu } from "@mantine/core";
 import React, { useEffect, useRef, useState } from "react";
 import {
     ArrowLeft,
@@ -37,12 +38,12 @@ import {
 import Hint from "../Hint";
 import { Button } from "../Button";
 import { Loader } from "../loader/Loader";
+import { showToast } from "../ToastProvider";
+
 import { AttachmentsViewer } from "./viewer";
 
 import { axiosApiCall } from "../../services/hooks/axiosApiCall";
 import { showConfirmDialog } from "../../services/hooks/ConfirmDialog";
-import { ActionIcon, Menu } from "@mantine/core";
-import { showToast } from "../ToastProvider.tsx";
 
 type AttachmentsListProps = {
     module: string;

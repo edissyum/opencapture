@@ -34,6 +34,40 @@ type Column<T> = {
     body?: (item: T) => React.ReactNode;
 };
 
+export const renderMenuItems = (items: any[]) => items.map((item: any, index: number) => (
+    item.items && item.items.length > 0 ? (
+        <Menu.Sub key={ index }>
+            <Menu.Sub.Target>
+                <Menu.Sub.Item
+                    leftSection={ item.icon }
+                    closeMenuOnClick={ false }
+                    rightSection={ <ChevronRight size={ 14 }/> }
+                    onClick={ (e: React.MouseEvent) => e.stopPropagation() }
+                >
+                    { item.label }
+                </Menu.Sub.Item>
+            </Menu.Sub.Target>
+            <Menu.Sub.Dropdown>
+                { renderMenuItems(item.items) }
+            </Menu.Sub.Dropdown>
+        </Menu.Sub>
+    ) : (
+        item.visible !== false && (
+            <Menu.Item
+                key={ index }
+                leftSection={ item.icon }
+                disabled={ item.disabled }
+                onClick={ (e: React.MouseEvent) => {
+                    e.stopPropagation();
+                    item.command?.(e);
+                } }
+            >
+                { item.label }
+            </Menu.Item>
+        )
+    )
+));
+
 type DataTableProps<T> = {
     data: T[];
     actions?: any[];
@@ -129,40 +163,6 @@ export function Table<T extends { id: string }>({
             sortOrder: newSortOrder,
         });
     };
-
-    const renderMenuItems = (items: any[]) => items.map((item: any, index: number) => (
-        item.items && item.items.length > 0 ? (
-            <Menu.Sub key={ index }>
-                <Menu.Sub.Target>
-                    <Menu.Sub.Item
-                        leftSection={ item.icon }
-                        closeMenuOnClick={ false }
-                        rightSection={ <ChevronRight size={ 14 }/> }
-                        onClick={ (e: React.MouseEvent) => e.stopPropagation() }
-                    >
-                        { item.label }
-                    </Menu.Sub.Item>
-                </Menu.Sub.Target>
-                <Menu.Sub.Dropdown>
-                    { renderMenuItems(item.items) }
-                </Menu.Sub.Dropdown>
-            </Menu.Sub>
-        ) : (
-            item.visible !== false && (
-                <Menu.Item
-                    key={ index }
-                    leftSection={ item.icon }
-                    disabled={ item.disabled }
-                    onClick={ (e: React.MouseEvent) => {
-                        e.stopPropagation();
-                        item.command?.(e);
-                    } }
-                >
-                    { item.label }
-                </Menu.Item>
-            )
-        )
-    ));
 
     const paginatorLeftData = useMemo(() => {
         return (

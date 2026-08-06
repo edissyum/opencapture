@@ -55,7 +55,7 @@ def handle_uploaded_file(files, document_id, batch_id, module, from_api=False, c
         original_filename = _f.filename
         filename = Files.save_uploaded_file(_f, shared.upload_path)
         if filename:
-            file = Files.move_to_docservers(docservers, filename, attachments=True)
+            file = Files.move_to_docservers(docservers, filename, attachments=True, module=module)
             if file:
                 extension = os.path.splitext(original_filename)[1]
                 if extension.lower() in ['.pdf', '.heif', '.heic']:
@@ -70,11 +70,21 @@ def handle_uploaded_file(files, document_id, batch_id, module, from_api=False, c
                     docserver = docservers['VERIFIER_THUMB']
                     if module == 'splitter':
                         docserver = docservers['SPLITTER_THUMB']
+
                     thumb_path = Files.move_to_docservers_image(docserver, tmp_file, thumb_filename, copy=True)
                     thumb_path = thumb_path.replace('//', '/')
+                    thumb_path = thumb_path.replace(docserver, '')
 
                     if os.path.isfile(tmp_file):
                         os.remove(tmp_file)
+
+                path_docserver = docservers['VERIFIER_ATTACHMENTS']
+                if module == 'splitter':
+                    path_docserver = docservers['SPLITTER_ATTACHMENTS']
+
+                file = file.replace(path_docserver, '')
+                file = file.lstrip('/')
+
                 args = {
                     'columns': {
                         'path': file,
@@ -112,19 +122,24 @@ def get_attachments_by_document_id(document_id, get_thumb=True):
     _attachments = attachments.get_attachments_by_document_id(document_id)
 
     if _attachments and get_thumb:
+        docservers = get_context_var('docservers', 9)
         for attachment in _attachments:
+            path = docservers['VERIFIER_ATTACHMENTS' ] + '/' + attachment['path']
             extension = os.path.splitext(attachment['filename'])[1]
-            if ('path' in attachment and os.path.isfile(attachment['path']) and
-                    extension.lower() in ['.png', '.jpg', '.jpeg', '.gif']):
-                with open(attachment['path'], 'rb') as f:
+
+            thumbnail_path = docservers['VERIFIER_THUMB'] + '/' + attachment['thumbnail_path'] if attachment.get('thumbnail_path') else None
+            if os.path.isfile(path) and extension.lower() in ['.png', '.jpg', '.jpeg', '.gif']:
+                with open(path, 'rb') as f:
                     attachment['thumb'] = base64.b64encode(f.read()).decode('utf-8')
-            elif ('thumbnail_path' in attachment and attachment['thumbnail_path']
-                  and os.path.isfile(attachment['thumbnail_path'])):
-                with open(attachment['thumbnail_path'], 'rb') as f:
+            elif thumbnail_path and os.path.isfile(thumbnail_path):
+                with open(thumbnail_path, 'rb') as f:
                     attachment['thumb'] = base64.b64encode(f.read()).decode('utf-8')
 
+            if not os.path.isfile(path):
+                continue
+
             mime = magic.Magic(mime=True)
-            mime_type = mime.from_file(attachment['path'])
+            mime_type = mime.from_file(path)
             attachment['mime_type'] = mime_type
     return _attachments, 200
 
@@ -133,19 +148,27 @@ def get_attachments_by_batch_id(batch_id, get_thumb=True):
     _attachments = attachments.get_attachments_by_batch_id(batch_id)
 
     if _attachments and get_thumb:
+        docservers = get_context_var('docservers', 9)
         for attachment in _attachments:
+            path = docservers['SPLITTER_ATTACHMENTS' ] + '/' + attachment['path']
+            # Older attachments are stored in VERIFIER_ATTACHMENTS (bug fixed in v4)
+            if not os.path.isfile(path):
+                path = docservers['VERIFIER_ATTACHMENTS' ] + '/' + attachment['path']
+
+            if not os.path.isfile(path):
+                continue
+
+            thumbnail_path = docservers['SPLITTER_THUMB'] + '/' + attachment['thumbnail_path'] if attachment.get('thumbnail_path') else None
             extension = os.path.splitext(attachment['filename'])[1]
-            if ('path' in attachment and os.path.isfile(attachment['path']) and
-                    extension.lower() in ['.png', '.jpg', '.jpeg', '.gif']):
-                with open(attachment['path'], 'rb') as f:
+            if os.path.isfile(path) and extension.lower() in ['.png', '.jpg', '.jpeg', '.gif']:
+                with open(path, 'rb') as f:
                     attachment['thumb'] = base64.b64encode(f.read()).decode('utf-8')
-            elif ('thumbnail_path' in attachment and attachment['thumbnail_path']
-                  and os.path.isfile(attachment['thumbnail_path'])):
-                with open(attachment['thumbnail_path'], 'rb') as f:
+            elif thumbnail_path and os.path.isfile(thumbnail_path):
+                with open(thumbnail_path, 'rb') as f:
                     attachment['thumb'] = base64.b64encode(f.read()).decode('utf-8')
 
             mime = magic.Magic(mime=True)
-            mime_type = mime.from_file(attachment['path'])
+            mime_type = mime.from_file(path)
             attachment['mime_type'] = mime_type
     return _attachments, 200
 
@@ -166,13 +189,22 @@ def delete_attachment(attachment_id, module):
     return _attachment, 200
 
 
-def download_attachment(attachment_id):
+def download_attachment(attachment_id, module):
     _attachment = attachments.get_attachment_by_id(attachment_id)
 
     if _attachment:
         mime = magic.Magic(mime=True)
-        mime_type = mime.from_file(_attachment['path'])
-        with open(_attachment['path'], 'rb') as file:
+        docservers = get_context_var('docservers', 9)
+
+        path = docservers['VERIFIER_ATTACHMENTS'] + '/' + _attachment['path']
+        if module == 'splitter':
+            path = docservers['SPLITTER_ATTACHMENTS'] + '/' + _attachment['path']
+
+        if not os.path.isfile(path):
+            return None, ''
+
+        mime_type = mime.from_file(path)
+        with open(path, 'rb') as file:
             content = file.read()
 
         if not content:
@@ -195,7 +227,10 @@ def unbind_attachment(args):
             pdf = pypdf.PdfReader(original_filepath, strict=False)
             max_source_page = len(pdf.pages)
             if batch:
-                file_path = attachment['path']
+                file_path = docservers['SPLITTER_ATTACHMENTS'] + '/' + attachment['path']
+                # Older attachments are stored in VERIFIER_ATTACHMENTS (bug fixed in v4)
+                if not os.path.isfile(file_path):
+                    file_path = docservers['VERIFIER_ATTACHMENTS'] + '/' + attachment['path']
                 thumb_folder = docservers['SPLITTER_THUMB'] + '/' + batch['batch_folder']
                 batch_folder = docservers['SPLITTER_BATCHES'] + '/' + batch['batch_folder']
                 if os.path.isfile(file_path):

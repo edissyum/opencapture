@@ -176,8 +176,9 @@ export function VerifierListPage() {
             header: t('VERIFIER.name'),
             body: (item: any) => (
                 <div className="font-semibold flex items-center gap-2" title={ item.supplier_name }>
-                    <span
-                        className='w-fit truncate'>{ item.supplier_name ? item.supplier_name : t('VERIFIER.unkown_supplier') }</span>
+                    <span className='w-fit truncate'>
+                        { item.supplier_name ? item.supplier_name : t('VERIFIER.unkown_supplier') }
+                    </span>
                     { item.facturx && (
                         <span className='text-(--text-secondary) text-xs w-fit'
                               data-tooltip-id="tooltip"
@@ -191,9 +192,9 @@ export function VerifierListPage() {
         },
         {
             id: 'register_date',
+            sortable: true,
             className: 'w-3/12',
             header: t('VERIFIER.creation_date'),
-            sortable: true,
             body: (item: any) => (
                 new Intl.DateTimeFormat(locale, {
                     timeZone: 'UTC',
@@ -245,7 +246,7 @@ export function VerifierListPage() {
         {
             id: 'thumbnail',
             header: '',
-            className: 'max-w-14! w-14! cursor-default!',
+            className: 'w-10 cursor-default!',
             body: (item: any) => (
                 <div onClick={ (e) => {
                     e.preventDefault();
