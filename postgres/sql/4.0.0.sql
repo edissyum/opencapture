@@ -659,9 +659,3 @@ UPDATE attachments a
 SET thumbnail_path = REGEXP_REPLACE(REPLACE(a.thumbnail_path, ds.path, ''), '^/+', '')
 FROM docservers ds
 WHERE ds.docserver_id = 'SPLITTER_THUMB' AND a.batch_id is not NULL;
-
--- Jusqu'à présent les attachments étaient toujours insérés avec le chemin du VERIFIER
-UPDATE attachments a
-SET path = REGEXP_REPLACE(REPLACE(a.path, ds.path, ''), '^/+', '')
-FROM docservers ds
-WHERE ds.docserver_id = 'VERIFIER_ATTACHMENTS' AND a.batch_id is not NULL AND a.path LIKE '%' || ds.path || '%';
