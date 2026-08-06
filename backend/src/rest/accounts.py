@@ -106,7 +106,7 @@ def get_address_by_id(address_id):
         if not privileges.has_privileges(request.environ['user_id'],
                                          ['update_supplier | update_customer | access_verifier']):
             return jsonify({'errors': gettext('UNAUTHORIZED_ROUTE'),
-                            'message': f'/accounts/suppliers/getById/{address_id}'}), 403
+                            'message': f'/accounts/getAdressById/{address_id}'}), 403
 
     _address = accounts.get_address_by_id(address_id)
     return make_response(jsonify(_address[0])), _address[1]

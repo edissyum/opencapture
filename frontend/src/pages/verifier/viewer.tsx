@@ -273,7 +273,7 @@ export function VerifierViewerPage() {
             setOriginalCurrentSupplier(supplierFull);
 
             Object.keys(supplierFull).forEach((data: any) => {
-                if (supplierFull[data] && (supplierId || (!tmpDocumentData?.datas?.[data] || tmpDocumentData?.datas?.[data] === ''))) {
+                if (data != "id" && supplierFull[data] && (supplierId || (!tmpDocumentData?.datas?.[data] || tmpDocumentData?.datas?.[data] === ''))) {
                     updateDocumentData({ id: data }, supplierFull[data], false, true);
                     prepareDocumentData({ id: data }, supplierFull[data], supplierId);
                 }
