@@ -26,4 +26,8 @@ for custom_name in ${SECTIONS[@]}; do
     if ! crudini --get $opencapturePath/custom/$custom_name/config/config.ini GLOBAL debugMode; then
         crudini --set $opencapturePath/custom/$custom_name/config/config.ini GLOBAL debugMode False
     fi
+    cp $opencapturePath/bin/scripts/splitter_methods/qr_code_OC.py "$opencapturePath/custom/$custom_name/bin/scripts/splitter_methods/."
+
+    cp $opencapturePath/src/backend/process_queue_splitter.py.default "$opencapturePath/custom/$custom_name/src/backend/process_queue_splitter.py"
+    sed -i "s#§§CUSTOM_ID§§#$custom_name#g" "$opencapturePath/custom/$custom_name/src/backend/process_queue_splitter.py"
 done
