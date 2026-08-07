@@ -65,8 +65,13 @@ def process(args):
     if args['ocrise']:
         args['files'].ocrise_pdf(file, args['log'])
 
-    process_res = args['splitter'].create_batches(args, file, original_file)
-    return process_res
+    result_batches = args['splitter'].result_batches
+    if result_batches == [[]] :
+        args['splitter'].log.error("The document is not valid because it contains no usable pages.")
+        return 0
+    else :
+        process_res = args['splitter'].create_batches(args, file, original_file)
+        return process_res
 
 
 def split(splitter, pages):
