@@ -212,7 +212,7 @@ def launch(args):
             log.error(_e)
             error = True
         
-        if error:
+        if error and os.path.exists(batch_folder_path) and os.path.exists(batch_thumbs_path):
             shutil.rmtree(batch_folder_path)
             shutil.rmtree(batch_thumbs_path)
 
