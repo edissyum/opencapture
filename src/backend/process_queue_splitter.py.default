@@ -158,7 +158,7 @@ def launch(args):
                 except OSError:
                     pass
 
-                remove = False
+                error = False
                 attachments = []
                 if 'attachments' in args and args['attachments']:
                     attachments = args['attachments']
@@ -203,16 +203,16 @@ def launch(args):
                                             created_batches = split_res['batches_id']
                                             log.info(f"Batches created : {','.join(str(batch) for batch in created_batches)}")
                                         else :
-                                            remove = True
+                                            error = True
                     else:
                         log.error("The workflow_id doesn't exists in database")
-                        remove = True
+                        error = True
         except (Exception,):
             _e = str(traceback.format_exc())
             log.error(_e)
-            remove = True
+            error = True
         
-        if remove:
+        if error:
             shutil.rmtree(batch_folder_path)
             shutil.rmtree(batch_thumbs_path)
 
