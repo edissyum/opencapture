@@ -21,6 +21,7 @@ import sys
 import time
 import json
 import traceback
+import shutil
 from kuyruk import Kuyruk
 from src.backend import app
 from flask_babel import gettext
