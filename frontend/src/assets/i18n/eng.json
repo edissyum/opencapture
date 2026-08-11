@@ -590,7 +590,10 @@
         "navigate_to_settings": "Navigate to a setting",
         "add_favorite_details": "Find your favorite settings in one click for quick access. Once added, your favorites will be accessible here",
         "certified_copy": "Certified copy",
-        "certified_copy_description": "Compliance with standard NF Z42-020/26"
+        "certified_copy_description": "Compliance with standard NF Z42-020/26",
+        "favorites_added": "Favorites added successfully",
+        "favorites_removed": "Favorites removed successfully",
+        "remove_favorite": "Remove from favorites"
     },
     "SMTP": {
         "authentication": "Authentication",

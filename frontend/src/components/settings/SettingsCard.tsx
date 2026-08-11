@@ -15,6 +15,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+import { t } from "i18next";
 import { PinOff } from "lucide-react";
 import { Link } from "react-router-dom";
 import { type ReactNode, useState } from "react";
@@ -51,7 +52,10 @@ export function SettingsCard({
                  className={ `text-(--text-primary) bg-(--bg-secondary) p-2 rounded-md ${ unpinFav && 'hover:bg-(--color-primary)/20' }` }
             >
                 { unpinFav && hovered ? (
-                    <PinOff onClick={ (e) => {
+                    <PinOff
+                        data-tooltip-id="tooltip"
+                        data-tooltip-content={ t("SETTINGS.remove_favorite") }
+                        onClick={ (e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         if (unpinFav) unpinFav();

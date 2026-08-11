@@ -626,7 +626,10 @@
         "navigate_to_settings": "Naviguez vers un paramètre",
         "add_favorite_details": "Retrouvez en un clic vos paramètres favoris pour un accès rapide. Une fois ajoutés, vos favoris seront accessibles ici",
         "certified_copy": "Copie conforme",
-        "certified_copy_description": "Conformité norme NF Z42-020/26"
+        "certified_copy_description": "Conformité norme NF Z42-020/26",
+        "favorites_added": "Favoris ajouté avec succès",
+        "favorites_removed": "Favoris supprimé avec succès",
+        "remove_favorite": "Supprimer des favoris"
     },
     "SMTP": {
         "authentication": "Authentification",
