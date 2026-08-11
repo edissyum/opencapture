@@ -18,12 +18,18 @@
 .mantine-Switch-body {
     @apply flex;
     @apply items-center;
-}
 
-.mantine-Switch-body input {
-    @apply cursor-pointer!;
+    & input {
+        @apply cursor-pointer!;
+    }
 }
 
 .mantine-Switch-labelWrapper {
     @apply text-base;
+}
+
+.mantine-Switch-input[data-checked="false"] {
+    & ~ .mantine-Switch-track {
+        @apply bg-(--bg-secondary);
+    }
 }

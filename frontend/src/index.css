@@ -128,7 +128,7 @@
 
     --bg-primary: theme(colors.gray.900);
     --bg-selected: theme(colors.green-600);
-    --bg-secondary: theme(colors.gray.800);
+    --bg-secondary: theme(colors.gray.600);
 
     --border-primary: theme(colors.green-400);
     --border-secondary: theme(colors.gray.700);

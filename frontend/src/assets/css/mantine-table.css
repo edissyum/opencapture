@@ -15,6 +15,10 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+.mantine-Table-table {
+    --table-border-color: var(--border-primary);
+}
+
 .mantine-Table-table thead {
     @apply h-14;
 

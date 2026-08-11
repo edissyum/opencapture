@@ -32,6 +32,10 @@
     }
 }
 
+.mantine-Stepper-stepIcon {
+    @apply text-(--text-primary);
+}
+
 .mantine-Stepper-stepIcon:not([data-completed]) {
     @apply bg-(--bg-secondary);
 }
