@@ -1302,7 +1302,7 @@ export function VerifierViewerPage() {
                                     cursor-pointer border border-(--border-secondary) min-w-[160px] whitespace-nowrap">
                                 <button onClick={ handlePrev }
                                         disabled={ currentPage === 1 }
-                                        className={ `cursor-pointer rounded-full transition-colors p-2
+                                        className={ `cursor-pointer rounded-full transition-colors p-2 hover:text-(--color-primary)
                                                     ${ currentPage === 1 ? "text-(--text-secondary) cursor-not-allowed"
                                             : "hover:bg-(--bg-secondary) text-(--text-primary)" }` }
                                 >
@@ -1316,7 +1316,7 @@ export function VerifierViewerPage() {
                                 <button
                                     onClick={ handleNext }
                                     disabled={ currentPage === totalPages }
-                                    className={ `cursor-pointer rounded-full transition-colors p-2
+                                    className={ `cursor-pointer rounded-full transition-colors p-2 hover:text-(--color-primary)
                                 ${ currentPage === totalPages ? "text-(--text-secondary) cursor-not-allowed"
                                         : "hover:bg-(--bg-secondary) text-(--text-primary)" }` }>
                                     <ChevronRight size={ 16 }/>
