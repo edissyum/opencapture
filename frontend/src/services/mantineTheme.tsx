@@ -14,9 +14,20 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import type { MantineThemeOverride } from "@mantine/core";
+import type { CSSVariablesResolver, MantineThemeOverride } from "@mantine/core";
 
 export const primaryColor = '#19864B';
+
+export const mantineCssVariablesResolver: CSSVariablesResolver = () => ({
+    variables: {
+        '--mantine-color-text': 'var(--text-primary)',
+        '--mantine-color-body': 'var(--bg-primary)',
+        '--mantine-color-dimmed': 'var(--text-secondary)',
+        '--mantine-color-placeholder': 'var(--text-secondary)'
+    },
+    light: {},
+    dark: {},
+});
 
 export const mantineTheme: MantineThemeOverride = {
     cursorType: 'pointer',
