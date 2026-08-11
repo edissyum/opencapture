@@ -16,8 +16,9 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 .mantine-DateInput-wrapper input {
-    @apply rounded-md;
     @apply text-base;
+    @apply rounded-md;
+    @apply bg-(--bg-primary);
     @apply border-(--border-secondary);
 }
 
@@ -39,4 +40,9 @@
 
 .mantine-DateInput-day:where([data-today]) {
     @apply bg-(--bg-secondary);
+}
+
+.mantine-DateInput-calendarHeaderLevel:hover,
+.mantine-DateInput-calendarHeaderControl:hover {
+    @apply bg-(--bg-secondary)!;
 }

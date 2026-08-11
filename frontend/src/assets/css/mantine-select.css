@@ -27,6 +27,10 @@
     @apply bg-(--bg-primary);
 }
 
+.mantine-Select-option:hover {
+    @apply bg-(--bg-secondary);
+}
+
 .mantine-Select-option:where([data-checked]) {
     @apply bg-(--bg-selected)!;
     @apply text-(--color-primary);
