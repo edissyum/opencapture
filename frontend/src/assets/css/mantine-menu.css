@@ -15,6 +15,15 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
+.mantine-Menu-dropdown {
+    @apply bg-(--bg-primary);
+    @apply border-(--border-secondary);
+}
+
+.mantine-Menu-item:hover{
+    @apply bg-(--bg-secondary);
+}
+
 .mantine-Menu-item:has(.critical):hover svg,
 .mantine-Menu-item:has(.critical):hover span {
     @apply text-(--text-error)!;

@@ -21,15 +21,15 @@ import { MantineProvider } from "@mantine/core";
 
 import './index.css'
 import { App } from "./App";
-import { mantineTheme } from "./services/mantineTheme";
 import { ToastProvider } from "./components/ToastProvider";
+import { mantineCssVariablesResolver, mantineTheme } from "./services/mantineTheme";
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <ToastProvider/>
-        <MantineProvider theme={ mantineTheme }>
+        <MantineProvider theme={ mantineTheme } cssVariablesResolver={ mantineCssVariablesResolver }>
             <App/>
         </MantineProvider>
     </StrictMode>,
