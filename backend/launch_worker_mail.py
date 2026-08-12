@@ -146,6 +146,9 @@ with app.app_context():
         verifierInsertBody = config_mail['verifier_insert_body_as_doc']
         splitterInsertBody = config_mail['splitter_insert_body_as_doc']
         ocr_attachments = config_mail['ocr_attachments']
+        sender_custom_id = config_mail['sender_custom_id']
+        copy_custom_id = config_mail['copy_custom_id']
+        recipient_custom_id = config_mail['recipient_custom_id']
 
         mail.test_connection(secured_connection)
 
@@ -245,6 +248,28 @@ with app.app_context():
                     document_date = document_date.strftime('%Y-%m-%d %H:%M:%S')
                     Log.debug('Document date after formatting is : ' + str(document_date))
 
+                    custom_fields = {}
+                    if sender_custom_id and msg['from']:
+                        custom_fields[sender_custom_id] = msg['from']
+
+                    if recipient_custom_id and msg['to']:
+                        to_str = ''
+                        for to in msg['to_values']:
+                            if mail.method == 'graphql':
+                                to_str += to['emailAddress']['name'] + ' <' + to['emailAddress']['address'] + '>;'
+                            else:
+                                to_str += to.full + ';'
+                        custom_fields[recipient_custom_id] = to_str
+
+                    if copy_custom_id and msg['cc_values']:
+                        cc_str = ''
+                        for cc in msg['cc_values']:
+                            if mail.method == 'graphql':
+                                cc_str += cc['emailAddress']['name'] + ' <' + cc['emailAddress']['address'] + '>;'
+                            else:
+                               cc_str += cc.full + ';'
+                        custom_fields[copy_custom_id] = cc_str
+
                     if not insert_doc:
                         if len(ret['attachments']) > 0:
                             Log.info('Found ' + str(len(ret['attachments'])) + ' attachments')
@@ -274,11 +299,11 @@ with app.app_context():
                                             'source': 'email',
                                             'process': process,
                                             'batch_path': batch_path,
+                                            'workflow_id': workflowId,
                                             'file': attachment['file'],
                                             'user_info': 'mailcollect',
                                             'custom_id': args['custom_id'],
                                             'process_name': process['name'],
-                                            'workflow_id': workflowId,
                                             'task_id_monitor': task_id_monitor,
                                             'log': batch_path + '/' + date_batch + '.log',
                                             'nb_of_attachments': str(len(ret['attachments'])),
@@ -286,8 +311,9 @@ with app.app_context():
                                             'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
                                             'msg': {
                                                 'uid': msg_id,
+                                                'date': document_date,
                                                 'subject': msg['subject'],
-                                                'date': document_date
+                                                'custom_fields': custom_fields
                                             }
                                         })
                                         Log.debug('Verifier successfully launched for attachment n°'+ str(cpt))
@@ -298,11 +324,11 @@ with app.app_context():
                                             'cpt': str(cpt),
                                             'ip': '0.0.0.0',
                                             'batch_path': batch_path,
+                                            'workflow_id': workflowId,
                                             'process': process['name'],
                                             'user_info': 'mailcollect',
                                             'file': attachment['file'],
                                             'custom_id': args['custom_id'],
-                                            'workflow_id': workflowId,
                                             'task_id_monitor': task_id_monitor,
                                             'log': batch_path + '/' + date_batch + '.log',
                                             'nb_of_attachments': str(len(ret['attachments'])),
@@ -310,8 +336,9 @@ with app.app_context():
                                             'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
                                             'msg': {
                                                 'uid': msg_id,
-                                                'subject': msg['subject'] if msg['subject'] else gettext('NO_SUBJECT'),
-                                                'date': document_date
+                                                'date': document_date,
+                                                'custom_fields': custom_fields,
+                                                'subject': msg['subject'] if msg['subject'] else gettext('NO_SUBJECT')
                                             }
                                         })
                                         Log.debug('Splitter successfully launched for attachment n°'+ str(cpt))
@@ -340,21 +367,22 @@ with app.app_context():
                                 'ip': '0.0.0.0',
                                 'source': 'email',
                                 'process': process,
-                                'file': ret['file']['path'],
                                 'batch_path': batch_path,
+                                'workflow_id': workflowId,
                                 'user_info': 'mailcollect',
+                                'file': ret['file']['path'],
                                 'custom_id': args['custom_id'],
                                 'process_name': process['name'],
                                 'attachments': ret['attachments'],
-                                'workflow_id': workflowId,
                                 'task_id_monitor': task_id_monitor,
                                 'log': batch_path + '/' + date_batch + '.log',
                                 'original_filename': os.path.basename(ret['file']['path']),
                                 'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
                                 'msg': {
                                     'uid': msg_id,
+                                    'date': document_date,
                                     'subject': msg['subject'],
-                                    'date': document_date
+                                    'custom_fields': custom_fields
                                 }
                             })
                             Log.debug('Verifier launched for mail body')
@@ -376,8 +404,9 @@ with app.app_context():
                                 'error_path': path_without_time + '/_ERROR/' + process['name'] + '/' + year + month + day,
                                 'msg': {
                                     'uid': msg_id,
-                                    'subject': msg['subject'] if msg['subject'] else gettext('NO_SUBJECT') + ' - ' + document_date,
-                                    'date': document_date
+                                    'date': document_date,
+                                    'custom_fields': custom_fields,
+                                    'subject': msg['subject'] if msg['subject'] else gettext('NO_SUBJECT') + ' - ' + document_date
                                 }
                             })
                             Log.debug('Splitter launched for mail body')

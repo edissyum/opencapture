@@ -365,7 +365,10 @@ CREATE TABLE "mailcollect" (
     "folder_destination"            VARCHAR(255) NOT NULL,
     "action_after_process"          VARCHAR(255) NOT NULL,
     "verifier_insert_body_as_doc"   BOOLEAN      DEFAULT False,
-    "splitter_insert_body_as_doc"   BOOLEAN      DEFAULT False
+    "splitter_insert_body_as_doc"   BOOLEAN      DEFAULT False,
+    "sender_custom_id"              INTEGER      DEFAULT NULL,
+    "copy_custom_id"                INTEGER      DEFAULT NULL,
+    "recipient_custom_id"           INTEGER      DEFAULT NULL
 );
 
 CREATE SEQUENCE splitter_referential_call_count AS INTEGER;

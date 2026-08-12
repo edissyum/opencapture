@@ -391,7 +391,12 @@
         "enter_new_process_name_create": "Introduzca el nombre del nuevo proceso MailCollect",
         "ldap_connection_successful": "Conexión LDAP exitosa",
         "ocr_attachments": "OCR de los adjuntos",
-        "ocr_attachments_hint": "Si está activado, los adjuntos serán procesados con OCR antes de ser tratados por Open-Capture. Solo funciona con adjuntos en formato PDF."
+        "ocr_attachments_hint": "Si está activado, los adjuntos serán procesados con OCR antes de ser tratados por Open-Capture. Solo funciona con adjuntos en formato PDF.",
+        "correspondants_informations": "Información del correspondiente",
+        "correspondants_description": "Guarda la información de los corresponsales (expedidor, destino, copia) del correo",
+        "select_sender_custom_id": "Campo de remitente personalizado",
+        "select_copy_custom_id": "Campo de copia personalizado",
+        "select_recipient_custom_id": "Campo de destinatario personalizado"
     },
     "ONBOARD": {
         "select_module": "Selección del módulo predeterminado",

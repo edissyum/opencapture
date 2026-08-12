@@ -32,6 +32,7 @@ import { InputSwitch } from "../../../../components/InputSwitch";
 import { showToast } from "../../../../components/ToastProvider";
 
 import { axiosApiCall } from "../../../../services/hooks/axiosApiCall";
+import { useCustomFields } from "../../../../services/hooks/useCustomFields.tsx";
 
 export function MailCollectProcess({ process, workflows }: { process: any, workflows: any }) {
     const { post } = axiosApiCall();
@@ -50,6 +51,14 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
     const [selectedModule, setSelectedModule] = useState<string>(
         process.is_splitter ? 'splitter' : 'verifier'
     );
+
+    const { customFields: customFieldsSplitter } = useCustomFields('splitter');
+    const { customFields: customFieldsVerifier } = useCustomFields('verifier');
+
+    const customFields: any = {
+        splitter: customFieldsSplitter,
+        verifier: customFieldsVerifier
+    };
 
     const [authMethod, setAuthMethod] = useState<"imap" | "oauth" | "graphql">(
         (process.authMethod as any) || "imap"
@@ -70,7 +79,10 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
         verifier_insert_body_as_doc: z.boolean().optional(),
         verifier_workflow_id: z.any().optional(),
         splitter_insert_body_as_doc: z.boolean().optional(),
-        workflow_id: z.any().optional()
+        workflow_id: z.any().optional(),
+        copy_custom_id: z.number().optional(),
+        sender_custom_id: z.number().optional(),
+        recipient_custom_id: z.number().optional()
     });
     const {
         control: modulesControl,
@@ -527,113 +539,204 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                 </div>
             </Stepper.Step>
             <Stepper.Step label={ t("MAILCOLLECT.options") }>
-                <h1 className="text-xl font-bold mb-4">{ t("MAILCOLLECT.module") }</h1>
+                <div className='flex flex-col gap-4'>
+                    <h1 className="text-xl font-bold">{ t("MAILCOLLECT.module") }</h1>
 
-                <div className="flex gap-4 mb-4">
-                    { modules.map((module) => (
+                    <div className="flex gap-4">
+                        { modules.map((module) => (
+                            <Controller
+                                name='is_splitter'
+                                key={ module.value }
+                                control={ modulesControl }
+                                render={ ({ field }) => (
+                                    <RadioBox
+                                        label={ module.label }
+                                        value={ module.value }
+                                        checked={ selectedModule === module.value }
+                                        onChange={ () => {
+                                            field.onChange(module.value == 'splitter');
+                                            setSelectedModule(module.value);
+                                            setValueModules('workflow_id', '');
+                                        } }/>
+                                ) }
+                            />
+                        )) }
+                    </div>
+
+                    <div>
                         <Controller
-                            name='is_splitter'
-                            key={ module.value }
+                            name="ocr_attachments"
                             control={ modulesControl }
                             render={ ({ field }) => (
-                                <RadioBox
-                                    label={ module.label }
-                                    value={ module.value }
-                                    checked={ selectedModule === module.value }
-                                    onChange={ () => {
-                                        field.onChange(module.value == 'splitter');
-                                        setSelectedModule(module.value);
-                                        setValueModules('workflow_id', '');
-                                    } }/>
+                                <div className='mb-3 flex gap-2 relative w-fit'>
+                                    <InputSwitch
+                                        id='ocr_attachments'
+                                        checked={ field.value }
+                                        label={ t('MAILCOLLECT.ocr_attachments') }
+                                        onChange={ (value) => field.onChange(value) }/>
+                                    <span
+                                        className={ `absolute cursor-pointer z-10 -right-6 -top-0.5 text-(--text-secondary)` }>
+                                    <CircleQuestionMark data-tooltip-id="tooltip"
+                                                        data-tooltip-content={ t('MAILCOLLECT.ocr_attachments_hint') }
+                                                        size={ 16 }/>
+                                </span>
+                                </div>
                             ) }
                         />
-                    )) }
-                </div>
-
-                <div>
-                    <Controller
-                        name="ocr_attachments"
-                        control={ modulesControl }
-                        render={ ({ field }) => (
-                            <div className='mb-6 flex gap-2 relative w-fit'>
-                                <InputSwitch
-                                    id='ocr_attachments'
-                                    checked={ field.value }
-                                    label={ t('MAILCOLLECT.ocr_attachments') }
-                                    onChange={ (value) => field.onChange(value) }/>
-                                <span className={ `absolute cursor-pointer z-10 -right-6 -top-0.5 text-(--text-secondary)` }>
-                                    <CircleQuestionMark data-tooltip-id="tooltip" data-tooltip-content={ t('MAILCOLLECT.ocr_attachments_hint') } size={ 16 }/>
-                                </span>
-                            </div>
-                        ) }
-                    />
-                    { selectedModule === 'verifier' && (
-                        <>
-                            <Controller
-                                name="verifier_insert_body_as_doc"
-                                control={ modulesControl }
-                                render={ ({ field }) => (
-                                    <div className='mb-6 flex gap-2'>
-                                        <InputSwitch
-                                            id='verifier_insert_body_as_doc'
-                                            checked={ field.value }
-                                            label={ t('MAILCOLLECT.insert_body_as_doc') }
-                                            onChange={ (value) => field.onChange(value) }/>
-                                    </div>
-                                ) }
-                            />
-                        </>
-                    ) }
-                    { selectedModule === 'splitter' && (
-                        <>
-                            <Controller
-                                name="splitter_insert_body_as_doc"
-                                control={ modulesControl }
-                                render={ ({ field }) => (
-                                    <div className='mb-6 flex gap-2'>
-                                        <InputSwitch
-                                            id='splitter_insert_body_as_doc'
-                                            checked={ field.value }
-                                            label={ t('MAILCOLLECT.insert_body_as_doc') }
-                                            onChange={ (value) => field.onChange(value) }/>
-                                    </div>
-                                ) }
-                            />
-                        </>
-                    ) }
-                    <Controller
-                        name="workflow_id"
-                        control={ modulesControl }
-                        render={ ({ field }) => (
+                        { selectedModule === 'verifier' && (
                             <>
-                                <div className='relative'>
-                                    <Select
-                                        filter
-                                        id="workflow_id"
-                                        value={ field.value }
-                                        options={ workflows[selectedModule].map((workflow: any) => ({
-                                            label: workflow.label,
-                                            value: workflow.id
-                                        })) }
-                                        onChange={ (value) => field.onChange(value) }
-                                        className="w-full"
-                                    />
-                                    <label className={ `absolute left-3 select-none pointer-events-none transition-all
-                                                        duration-150 top-0 -translate-y-1/2 px-1 text-xs bg-(--bg-primary)
-                                                        text-(--text-secondary)` }
-                                    >
-                                        { t("MAILCOLLECT.select_workflow") }
-                                    </label>
-                                </div>
-
-                                { moduleErrors && moduleErrors['workflow_id'] && (
-                                    <p className="text-(--text-error) mt-2">
-                                        { moduleErrors['workflow_id']?.message as string }
-                                    </p>
-                                ) }
+                                <Controller
+                                    name="verifier_insert_body_as_doc"
+                                    control={ modulesControl }
+                                    render={ ({ field }) => (
+                                        <div className='mb-6 flex gap-2'>
+                                            <InputSwitch
+                                                id='verifier_insert_body_as_doc'
+                                                checked={ field.value }
+                                                label={ t('MAILCOLLECT.insert_body_as_doc') }
+                                                onChange={ (value) => field.onChange(value) }/>
+                                        </div>
+                                    ) }
+                                />
                             </>
                         ) }
-                    />
+                        { selectedModule === 'splitter' && (
+                            <>
+                                <Controller
+                                    name="splitter_insert_body_as_doc"
+                                    control={ modulesControl }
+                                    render={ ({ field }) => (
+                                        <div className='mb-6 flex gap-2'>
+                                            <InputSwitch
+                                                id='splitter_insert_body_as_doc'
+                                                checked={ field.value }
+                                                label={ t('MAILCOLLECT.insert_body_as_doc') }
+                                                onChange={ (value) => field.onChange(value) }/>
+                                        </div>
+                                    ) }
+                                />
+                            </>
+                        ) }
+                        <Controller
+                            name="workflow_id"
+                            control={ modulesControl }
+                            render={ ({ field }) => (
+                                <>
+                                    <div className='relative'>
+                                        <Select
+                                            filter
+                                            id="workflow_id"
+                                            value={ field.value }
+                                            label={ t("MAILCOLLECT.select_workflow") }
+                                            options={ workflows[selectedModule].map((workflow: any) => ({
+                                                label: workflow.label,
+                                                value: workflow.id
+                                            })) }
+                                            onChange={ (value) => field.onChange(value) }
+                                        />
+                                    </div>
+
+                                    { moduleErrors && moduleErrors['workflow_id'] && (
+                                        <p className="text-(--text-error) mt-2">
+                                            { moduleErrors['workflow_id']?.message as string }
+                                        </p>
+                                    ) }
+                                </>
+                            ) }
+                        />
+                    </div>
+
+                    <div className='flex flex-col gap-1'>
+                        <h1 className="text-xl font-bold">{ t("MAILCOLLECT.correspondants_informations") }</h1>
+                        <p className='text-(--text-secondary)'>{ t("MAILCOLLECT.correspondants_description") }</p>
+                    </div>
+
+                    <div className='flex gap-4 grid-cols-3'>
+                        <Controller
+                            name="sender_custom_id"
+                            control={ modulesControl }
+                            render={ ({ field }) => (
+                                <>
+                                    <div className='relative w-full'>
+                                        <Select
+                                            filter
+                                            id="sender_custom_id"
+                                            value={ field.value }
+                                            label={ t("MAILCOLLECT.select_sender_custom_id") }
+                                            options={ customFields[selectedModule].map((custom: any) => ({
+                                                label: custom.label,
+                                                value: custom.id
+                                            })) }
+                                            onChange={ (value) => field.onChange(value) }
+                                        />
+                                    </div>
+
+                                    { moduleErrors && moduleErrors['sender_custom_id'] && (
+                                        <p className="text-(--text-error) mt-2">
+                                            { moduleErrors['sender_custom_id']?.message as string }
+                                        </p>
+                                    ) }
+                                </>
+                            ) }
+                        />
+
+                        <Controller
+                            name="copy_custom_id"
+                            control={ modulesControl }
+                            render={ ({ field }) => (
+                                <>
+                                    <div className='relative w-full'>
+                                        <Select
+                                            filter
+                                            id="copy_custom_id"
+                                            value={ field.value }
+                                            label={ t("MAILCOLLECT.select_copy_custom_id") }
+                                            options={ customFields[selectedModule].map((custom: any) => ({
+                                                label: custom.label,
+                                                value: custom.id
+                                            })) }
+                                            onChange={ (value) => field.onChange(value) }
+                                        />
+                                    </div>
+
+                                    { moduleErrors && moduleErrors['copy_custom_id'] && (
+                                        <p className="text-(--text-error) mt-2">
+                                            { moduleErrors['sender_custom_id']?.message as string }
+                                        </p>
+                                    ) }
+                                </>
+                            ) }
+                        />
+
+                        <Controller
+                            name="recipient_custom_id"
+                            control={ modulesControl }
+                            render={ ({ field }) => (
+                                <>
+                                    <div className='relative w-full'>
+                                        <Select
+                                            filter
+                                            id="recipient_custom_id"
+                                            value={ field.value }
+                                            label={ t("MAILCOLLECT.select_recipient_custom_id") }
+                                            options={ customFields[selectedModule].map((custom: any) => ({
+                                                label: custom.label,
+                                                value: custom.id
+                                            })) }
+                                            onChange={ (value) => field.onChange(value) }
+                                        />
+                                    </div>
+
+                                    { moduleErrors && moduleErrors['recipient_custom_id'] && (
+                                        <p className="text-(--text-error) mt-2">
+                                            { moduleErrors['sender_custom_id']?.message as string }
+                                        </p>
+                                    ) }
+                                </>
+                            ) }
+                        />
+                    </div>
+
                 </div>
 
                 <div className="flex justify-between mt-6">
@@ -652,15 +755,5 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                 </div>
             </Stepper.Step>
         </Stepper>
-        // <Stepper ref={ stepperRef } linear className='p-4'>
-        //
-        //     <StepperPanel header={ t("MAILCOLLECT.folders") }>
-        //
-        //     </StepperPanel>
-        //
-        //     <StepperPanel header={ t("MAILCOLLECT.options") }>
-        //
-        //     </StepperPanel>
-        // </Stepper>
     );
 }
