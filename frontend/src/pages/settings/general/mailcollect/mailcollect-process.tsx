@@ -557,6 +557,9 @@ export function MailCollectProcess({ process, workflows }: { process: any, workf
                                             field.onChange(module.value == 'splitter');
                                             setSelectedModule(module.value);
                                             setValueModules('workflow_id', '');
+                                            setValueModules('copy_custom_id', '');
+                                            setValueModules('sender_custom_id', '');
+                                            setValueModules('recipient_custom_id', '');
                                         } }/>
                                 ) }
                             />
